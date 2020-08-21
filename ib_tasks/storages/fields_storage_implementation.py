@@ -12,7 +12,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldIdWithGoFIdDTO, StageTaskFieldsDTO, \
     TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
-    FieldsStorageInterface
+    FieldsStorageInterface, FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (
@@ -318,3 +318,17 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             for user_field_permission in user_field_permission_details
         ]
         return user_field_permission_dtos
+
+    def get_field_type_dtos(self, field_ids: List[str]) -> List[FieldTypeDTO]:
+        field_types = Field.objects.filter(
+            field_id__in=field_ids
+        ).values('field_id', 'field_type')
+
+        return [
+            FieldTypeDTO(
+                field_id=field_type['field_id'],
+                field_type=field_type['field_type']
+            )
+            for field_type in field_types
+        ]
+

@@ -7,6 +7,7 @@ from typing import Tuple
 
 from elasticsearch_dsl import Q, Search
 
+from ib_tasks.constants.enum import Operators
 from ib_tasks.documents.elastic_task import *
 from ib_tasks.documents.elastic_task import ElasticFieldDTO, \
     Field
@@ -72,7 +73,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from django.conf import settings
         connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
                                       timeout=20)
-        search = self._get_search_task_objects(filter_dtos)
+        search = self._get_filter_task_objects(filter_dtos)
 
         task_objects = search.filter('terms', stages__stage_id__keyword=stage_ids)
 
@@ -203,3 +204,135 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         return ElasticSearchTask.objects.filter(
             task_id=task_id
         ).exists()
+
+    def _get_filter_task_objects(self, filter_dtos: List[ApplyFilterDTO]):
+
+        from collections import defaultdict
+        filter_operations_map = defaultdict(lambda: [])
+        for filter_dto in filter_dtos:
+            filter_operations_map[filter_dto.operator].append(filter_dto)
+
+        query = None
+        for counter, key, value in enumerate(filter_operations_map.items()):
+            current_queue = self._get_q_object_based_on_operation(
+                operation=key, filter_dtos=filter_dtos
+            )
+            if counter == 0:
+                query = current_queue
+            else:
+                query = query & current_queue
+
+        search = Search(index=TASK_INDEX_NAME)
+        if query is None:
+            task_objects = search
+        else:
+            task_objects = search.filter(query)
+        return task_objects
+
+    @staticmethod
+    def _prepare_q_objects_for_eq_operation(filter_dtos: List[ApplyFilterDTO]):
+        query = None
+        for counter, item in enumerate(filter_dtos):
+            current_queue = Q('term', template_id__keyword=item.template_id) \
+                            & Q('term',
+                                fields__field_id__keyword=item.field_id) \
+                            & Q('term', fields__value__keyword=item.value)
+            if counter == 0:
+                query = current_queue
+            else:
+                query = query & current_queue
+        return query
+
+    @staticmethod
+    def _prepare_q_objects_for_neq_operation(filter_dtos: List[ApplyFilterDTO]):
+        query = None
+        for counter, item in enumerate(filter_dtos):
+            current_queue = ~Q('term', template_id__keyword=item.template_id) \
+                            & ~Q('term', fields__field_id__keyword=item.field_id) \
+                            & ~Q('term', fields__value__keyword=item.value)
+            if counter == 0:
+                query = current_queue
+            else:
+                query = query & current_queue
+        return query
+
+    @staticmethod
+    def _prepare_q_objects_for_gte_operation(filter_dtos: List[ApplyFilterDTO]):
+        query = None
+        for counter, item in enumerate(filter_dtos):
+            current_queue = Q('term', template_id__keyword=item.template_id) \
+                            & Q('term', fields__field_id__keyword=item.field_id) \
+                            & Q('range', fields__value__keyword={"gte": item.value})
+            if counter == 0:
+                query = current_queue
+            else:
+                query = query & current_queue
+        return query
+
+    @staticmethod
+    def _prepare_q_objects_for_gt_operation(filter_dtos: List[ApplyFilterDTO]):
+        query = None
+        for counter, item in enumerate(filter_dtos):
+            current_queue = Q('term', template_id__keyword=item.template_id) \
+                            & Q('term', fields__field_id__keyword=item.field_id) \
+                            & Q('range', fields__value__keyword={"gt": item.value})
+            if counter == 0:
+                query = current_queue
+            else:
+                query = query & current_queue
+        return query
+
+    @staticmethod
+    def _prepare_q_objects_for_lte_operation(filter_dtos: List[ApplyFilterDTO]):
+        query = None
+        for counter, item in enumerate(filter_dtos):
+            current_queue = Q('term', template_id__keyword=item.template_id) \
+                            & Q('term', fields__field_id__keyword=item.field_id) \
+                            & Q('range', fields__value__keyword={"lte": item.value})
+            if counter == 0:
+                query = current_queue
+            else:
+                query = query & current_queue
+        return query
+
+    @staticmethod
+    def _prepare_q_objects_for_lt_operation(filter_dtos: List[ApplyFilterDTO]):
+        query = None
+        for counter, item in enumerate(filter_dtos):
+            current_queue = Q('term', template_id__keyword=item.template_id) \
+                            & Q('term', fields__field_id__keyword=item.field_id) \
+                            & Q('range', fields__value__keyword={"lt": item.value})
+            if counter == 0:
+                query = current_queue
+            else:
+                query = query & current_queue
+        return query
+
+    def _get_q_object_based_on_operation(
+            self, operation: Operators, filter_dtos: List[ApplyFilterDTO]):
+        q_object = None
+        if operation == Operators.EQ.value:
+            q_object = self._prepare_q_objects_for_eq_operation(
+                filter_dtos=filter_dtos
+            )
+        elif operation == Operators.NE.value:
+            q_object = self._prepare_q_objects_for_neq_operation(
+                filter_dtos=filter_dtos
+            )
+        elif operation == Operators.GTE.value:
+            q_object = self._prepare_q_objects_for_gte_operation(
+                filter_dtos=filter_dtos
+            )
+        elif operation == Operators.GT.value:
+            q_object = self._prepare_q_objects_for_gt_operation(
+                filter_dtos=filter_dtos
+            )
+        elif operation == Operators.LTE.value:
+            q_object = self._prepare_q_objects_for_lte_operation(
+                filter_dtos=filter_dtos
+            )
+        elif operation == Operators.LT.value:
+            q_object = self._prepare_q_objects_for_lt_operation(
+                filter_dtos=filter_dtos
+            )
+        return q_object
