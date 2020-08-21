@@ -146,8 +146,8 @@ def populate_test_users():
             ]
         },
         {
-            "email": "thrivikram@ibhubs.co",
-            "name": "Thrivikram",
+            "email": "trivikram@ibhubs.co",
+            "name": "Trivikram",
             "password": "Sample123@",
             "is_admin": False,
             "company_name": "Proyuga",
