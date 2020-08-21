@@ -221,3 +221,12 @@ class AuthService:
             converted_user_tokens_dto = self._convert_to_user_tokens_dto(
                 user_auth_tokens_dto)
             return converted_user_tokens_dto
+
+    def create_auth_tokens_for_user(
+            self, user_id: str, expiry_in_seconds: int) -> UserTokensDTO:
+        user_auth_tokens_dto = self.interface.create_auth_tokens_for_user(
+            user_id=user_id,
+            expiry_in_seconds=expiry_in_seconds)
+        converted_user_tokens_dto = self._convert_to_user_tokens_dto(
+            user_auth_tokens_dto)
+        return converted_user_tokens_dto

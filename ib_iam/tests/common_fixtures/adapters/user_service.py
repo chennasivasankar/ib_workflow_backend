@@ -74,3 +74,24 @@ def deactivate_user_in_ib_users_mock(mocker):
         "ib_users.interfaces.service_interface.ServiceInterface.deactivate_user"
     )
     return mock
+
+
+def get_user_id_for_given_email_mock(mocker):
+    mock = mocker.patch(
+        "ib_iam.adapters.user_service.UserService.get_user_id_for_given_email"
+    )
+    return mock
+
+
+def is_active_user_account_mock(mocker):
+    mock = mocker.patch(
+        "ib_iam.adapters.user_service.UserService.is_active_user_account"
+    )
+    return mock
+
+
+def activate_user_account_mock(mocker):
+    mock = mocker.patch(
+        "ib_iam.adapters.user_service.UserService.activate_user_account"
+    )
+    return mock
