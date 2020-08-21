@@ -46,10 +46,10 @@ class TestSearchableFieldValuesPresenterImplementation:
         # Arrange
         searchable_value_details = [{
             'id': 'user_1',
-            'name': 'user_name_1'
+            'value': 'user_name_1'
         }, {
             'id': 'user_2',
-            'name': 'user_name_2'
+            'value': 'user_name_2'
         }]
         from ib_tasks.tests.factories.interactor_dtos import\
             SearchableFieldUserDetailDTOFactory

@@ -148,3 +148,12 @@ class TaskStageCompleteDetailsDTO:
     task_stage_dtos: List[TaskStageHistoryDTO]
     log_duration_dtos: List[LogDurationDTO]
     assignee_details: List[AssigneeDetailsDTO]
+
+
+@dataclass()
+class StageActionLogicDTO:
+    action_id: int
+    stage_id: str
+    action_logic: str
+    action_name: str
+    py_function_import_path: str
