@@ -25,6 +25,9 @@ def populate(spread_sheet_name: str):
     #role.add_roles_details_to_database(spread_sheet_name, ROLES_SUBSHEET_NAME)
     populate_test_users()
 
+    from ib_iam.populate.populate_elastic_search_data import populate_data
+    populate_data()
+
 
 def populate_admin_users():
     admin_users = [
