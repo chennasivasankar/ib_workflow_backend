@@ -307,3 +307,8 @@ USER_PERMISSION_DENIED = (
     "user doesn't have permission",
     "USER_PERMISSION_DENIED"
 )
+
+INVALID_USER_ID = (
+    "User with id {} doesn't exist",
+    "INVALID_USER_ID"
+)

@@ -24,7 +24,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    CurrentStageDetailsDTO
+    CurrentStageDetailsDTO, StageIdWithValueDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     TaskDueParametersDTO, \
@@ -265,7 +265,7 @@ class TaskIdWithStageAssigneeDTOFactory(factory.Factory):
 
     task_id = factory.sequence(lambda n: n + 1)
     db_stage_id = factory.Sequence(lambda n: n + 1)
-    assignee_id = factory.sequence(lambda n: "user_{}".format(n))
+    assignee_id = factory.sequence(lambda n: "user_{}".format(n+1))
 
 
 class StageAssigneeDetailsDTOFactory(factory.Factory):
@@ -516,4 +516,12 @@ class StageAssigneeDTOFactory(factory.Factory):
         model = StageAssigneeDTO
 
     db_stage_id = factory.Sequence(lambda n: n + 1)
-    assignee_id = factory.sequence(lambda n: "user_{}".format(n+1))
+    assignee_id = factory.sequence(lambda n: "user_{}".format(n + 1))
+
+
+class StageIdWithValueDTOFactory(factory.Factory):
+    class Meta:
+        model = StageIdWithValueDTO
+
+    db_stage_id = factory.Sequence(lambda n: n + 1)
+    stage_value = factory.Sequence(lambda n: n + 1)
