@@ -4,9 +4,9 @@ REQUEST_BODY_JSON = """
 {
     "members": [
         {
-            "team_member_level_id": "4b6a66c9-5d65-4a04-9dad-a6183d0efeb0",
+            "team_member_level_id": "0ca2c4fa-fdc5-49e6-bba2-5948a4893d78",
             "member_ids": [
-                "2ced69ef-4c5d-449a-8e24-deaba7b960b8"
+                "835da30c-3266-4f27-9f33-13b5fcb0890e"
             ]
         }
     ]

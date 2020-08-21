@@ -37,7 +37,7 @@ class TestCase02GetConfigurationDetailsAPITestCase(TestUtils):
     def set_up(self):
         from ib_iam.tests.factories.models \
             import TeamFactory, CompanyFactory, RoleFactory, \
-            UserTeamFactory, \
+            TeamUserFactory, \
             UserRoleFactory
         from ib_iam.tests.common_fixtures.reset_fixture \
             import reset_sequence_for_model_factories
@@ -48,7 +48,7 @@ class TestCase02GetConfigurationDetailsAPITestCase(TestUtils):
         for count, user_id in enumerate(USER_IDS):
             from ib_iam.tests.factories.models import UserDetailsFactory
             UserDetailsFactory.create(user_id=user_id, company=company)
-            UserTeamFactory.create(user_id=user_id, team=teams[count])
+            TeamUserFactory.create(user_id=user_id, team=teams[count])
             UserRoleFactory.create(user_id=user_id, role=roles[count])
 
     @pytest.mark.django_db

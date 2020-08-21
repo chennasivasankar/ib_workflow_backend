@@ -3,7 +3,7 @@ import factory
 from ib_iam import models
 from ib_iam.models import Role, Team, Company
 from ib_iam.models.team_member_level import TeamMemberLevel
-from ib_iam.models.user import UserDetails, UserTeam, UserRole
+from ib_iam.models.user import UserDetails, TeamUser, UserRole
 
 
 class CompanyFactory(factory.django.DjangoModelFactory):
@@ -47,9 +47,9 @@ class UserDetailsFactory(factory.django.DjangoModelFactory):
     cover_page_url = factory.sequence(lambda n: "url%d" % n)
 
 
-class UserTeamFactory(factory.django.DjangoModelFactory):
+class TeamUserFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = UserTeam
+        model = TeamUser
 
     user_id = factory.sequence(lambda number: "user%s" % number)
     team = factory.Iterator(models.Team.objects.all())

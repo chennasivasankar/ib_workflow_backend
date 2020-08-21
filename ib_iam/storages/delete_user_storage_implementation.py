@@ -1,7 +1,7 @@
 from ib_iam.interactors.storage_interfaces.delete_user_storage_interface import \
     DeleteUserStorageInterface
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO
-from ib_iam.models import UserDetails, UserRole, UserTeam
+from ib_iam.models import UserDetails, UserRole, TeamUser
 
 
 class DeleteUserStorageImplementation(DeleteUserStorageInterface):
@@ -12,7 +12,7 @@ class DeleteUserStorageImplementation(DeleteUserStorageInterface):
         UserRole.objects.filter(user_id=user_id).delete()
 
     def delete_user_teams(self, user_id: str):
-        UserTeam.objects.filter(user_id=user_id).delete()
+        TeamUser.objects.filter(user_id=user_id).delete()
 
     def get_user_details(self, user_id: str) -> UserDTO:
         try:

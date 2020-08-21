@@ -66,8 +66,8 @@ class UserStorageImplementation(UserStorageInterface):
         UserRole.objects.filter(user_id=user_id).delete()
 
     def remove_teams_for_user(self, user_id: str):
-        from ib_iam.models import UserTeam
-        UserTeam.objects.filter(user_id=user_id).delete()
+        from ib_iam.models import TeamUser
+        TeamUser.objects.filter(user_id=user_id).delete()
 
     def add_roles_to_the_user(self, user_id: str, role_ids: List[str]):
         from ib_iam.models import UserRole
@@ -76,10 +76,10 @@ class UserStorageImplementation(UserStorageInterface):
         UserRole.objects.bulk_create(user_roles)
 
     def add_user_to_the_teams(self, user_id: str, team_ids: List[str]):
-        from ib_iam.models import UserTeam
-        user_teams = [UserTeam(user_id=user_id, team_id=team_id)
+        from ib_iam.models import TeamUser
+        user_teams = [TeamUser(user_id=user_id, team_id=team_id)
                       for team_id in team_ids]
-        UserTeam.objects.bulk_create(user_teams)
+        TeamUser.objects.bulk_create(user_teams)
 
     def update_user_details(self, company_id: str, user_id: str, name: str):
         from ib_iam.models import UserDetails
@@ -137,8 +137,8 @@ class UserStorageImplementation(UserStorageInterface):
 
     def get_team_details_of_users_bulk(
             self, user_ids: List[str]) -> List[UserTeamDTO]:
-        from ib_iam.models import UserTeam
-        user_teams = UserTeam.objects.filter(user_id__in=user_ids) \
+        from ib_iam.models import TeamUser
+        user_teams = TeamUser.objects.filter(user_id__in=user_ids) \
             .select_related('team')
         team_dtos = []
         for user_team in user_teams:
@@ -335,8 +335,8 @@ class UserStorageImplementation(UserStorageInterface):
 
     def get_team_user_ids_dtos(self, team_ids: List[str]) -> \
             List[TeamUserIdsDTO]:
-        from ib_iam.models import UserTeam
-        team_users = UserTeam.objects.filter(
+        from ib_iam.models import TeamUser
+        team_users = TeamUser.objects.filter(
             team__team_id__in=team_ids
         ).values_list('team__team_id', 'user_id')
         from collections import defaultdict

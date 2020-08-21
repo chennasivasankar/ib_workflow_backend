@@ -47,8 +47,8 @@ class TestCase01AddMembersToSuperiorsAPITestCase(TestUtils):
             headers=headers,
             snapshot=snapshot)
 
-        from ib_iam.models import UserTeam
-        user_team_objects = UserTeam.objects.filter(
+        from ib_iam.models import TeamUser
+        user_team_objects = TeamUser.objects.filter(
             team_id=team_id
         )
         user_team_list = user_team_objects.values(
@@ -88,9 +88,9 @@ class TestCase01AddMembersToSuperiorsAPITestCase(TestUtils):
             "20be920b-7b4c-49e7-8adb-41a0c18da848",
             "30be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
-        from ib_iam.tests.factories.models import UserTeamFactory
+        from ib_iam.tests.factories.models import TeamUserFactory
         user_team_objects_of_level_one = [
-            UserTeamFactory(
+            TeamUserFactory(
                 user_id=user_id,
                 team=team_object,
                 team_member_level=team_member_level_object
@@ -109,9 +109,9 @@ class TestCase01AddMembersToSuperiorsAPITestCase(TestUtils):
             "50be920b-7b4c-49e7-8adb-41a0c18da848",
             "60be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
-        from ib_iam.tests.factories.models import UserTeamFactory
+        from ib_iam.tests.factories.models import TeamUserFactory
         user_team_objects = [
-            UserTeamFactory(
+            TeamUserFactory(
                 user_id=user_id,
                 team=team_object,
                 team_member_level=team_member_level_object

@@ -79,8 +79,8 @@ def reset_sequence_user_details_factory():
 
 
 def reset_sequence_user_team_factory():
-    from ib_iam.tests.factories.models import UserTeamFactory
-    UserTeamFactory.reset_sequence(0)
+    from ib_iam.tests.factories.models import TeamUserFactory
+    TeamUserFactory.reset_sequence(0)
 
 
 def reset_sequence_user_role_factory():

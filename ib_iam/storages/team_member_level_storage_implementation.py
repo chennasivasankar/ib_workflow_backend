@@ -66,16 +66,16 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
         team_id = team_member_level_object.team_id
 
         member_ids = team_member_level_id_with_member_ids_dto.member_ids
-        from ib_iam.models import UserTeam
-        UserTeam.objects.filter(
+        from ib_iam.models import TeamUser
+        TeamUser.objects.filter(
             team_id=team_id, user_id__in=member_ids
         ).update(team_member_level=team_member_level_object)
 
     def get_member_details(self, team_id: str, level_hierarchy: int) \
             -> List[MemberDTO]:
-        from ib_iam.models import UserTeam
+        from ib_iam.models import TeamUser
         member_id_with_immediate_superior_user_id_list = \
-            UserTeam.objects.filter(
+            TeamUser.objects.filter(
                 team_id=team_id,
                 team_member_level__level_hierarchy=level_hierarchy
             ).values("user_id", "immediate_superior_team_user_id")
@@ -107,8 +107,8 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
 
     def get_immediate_superior_user_id(self, team_id: str, user_id: str) -> \
             Optional[str]:
-        from ib_iam.models import UserTeam
-        user_team_object = UserTeam.objects.get(
+        from ib_iam.models import TeamUser
+        user_team_object = TeamUser.objects.get(
             team_id=team_id, user_id=user_id
         )
         immediate_superior_team_user_object = \
@@ -126,10 +126,10 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
             immediate_superior_user_id_with_member_ids_dto.member_ids
         immediate_superior_user_id = \
             immediate_superior_user_id_with_member_ids_dto.immediate_superior_user_id
-        from ib_iam.models import UserTeam
-        user_team_object = UserTeam.objects.get(
+        from ib_iam.models import TeamUser
+        user_team_object = TeamUser.objects.get(
             user_id=immediate_superior_user_id)
-        UserTeam.objects.filter(
+        TeamUser.objects.filter(
             team_id=team_id,
             team_member_level__level_hierarchy=member_level_hierarchy,
             user_id__in=member_ids
