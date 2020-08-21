@@ -36,13 +36,11 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
             self, task_display_id_with_stage_assignees_dto:
             TaskDisplayIdWithStageAssigneesDTO,
             presenter: UpdateTaskStageAssigneesPresenterInterface):
-        print("task_display_id_with_stage_assignees_dto",
-              task_display_id_with_stage_assignees_dto)
+
 
         try:
             task_id = self.get_task_id_for_task_display_id(
                 task_display_id_with_stage_assignees_dto.task_display_id)
-            print("task_id", task_id)
             task_id_with_stage_assignees_dto = TaskIdWithStageAssigneesDTO(
                 task_id=task_id,
                 stage_assignees=task_display_id_with_stage_assignees_dto.
@@ -78,8 +76,6 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
     def validations_of_request(self,
                                task_id_with_stage_assignees_dto:
                                TaskIdWithStageAssigneesDTO):
-        print("task_id_with_stage_assignees_dto",
-              task_id_with_stage_assignees_dto)
         stage_ids = self._get_stage_ids_from_given_dto(
             task_id_with_stage_assignees_dto)
         self._check_duplicate_stage_ids(stage_ids)

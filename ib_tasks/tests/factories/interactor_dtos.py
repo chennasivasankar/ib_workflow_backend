@@ -528,4 +528,4 @@ class StageIdWithValueDTOFactory(factory.Factory):
         model = StageIdWithValueDTO
 
     db_stage_id = factory.Sequence(lambda n: n + 1)
-    stage_value = factory.Sequence(lambda n: n + 1)
+    stage_value = factory.Sequence(lambda n: n)
