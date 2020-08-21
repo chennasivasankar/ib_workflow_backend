@@ -52,7 +52,7 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_user_details(self, company_id: str, user_id: str, name: str):
+    def update_user_details(self, company_id: Optional[str], user_id: str, name: str):
         pass
 
     @abstractmethod
@@ -124,7 +124,7 @@ class UserStorageInterface(ABC):
 
     @abstractmethod
     def create_user(self, is_admin: bool, user_id: str, name: str,
-                    company_id: str = None):
+                    company_id: Optional[str] = None):
         pass
 
     @abstractmethod

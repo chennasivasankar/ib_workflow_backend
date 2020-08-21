@@ -257,7 +257,6 @@
             }
           },
           "required": [
-            "company_id",
             "role_ids",
             "team_ids"
           ]
