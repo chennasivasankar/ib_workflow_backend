@@ -82,7 +82,8 @@ class UserService:
         user_profile = UserProfileDTO(
             name=user_profile_dto.name,
             email=user_profile_dto.email,
-            profile_pic_url=user_profile_dto.profile_pic_url
+            profile_pic_url=user_profile_dto.profile_pic_url,
+            is_email_verified=user_profile_dto.is_email_verify
         )
         try:
             self.interface.update_user_profile(
