@@ -24,3 +24,5 @@ snapshots['TestGetTaskPresenterImplementation.test_raise_exception_for_invalid_s
 snapshots['TestGetTaskPresenterImplementation.test_raise_exception_for_invalid_country_ids exception_object'] = b'{"response": "Something went wrong contact Admin", "http_status_code": 404, "res_status": "SEARCHABLE_RECORDS_NOT_FOUND"}'
 
 snapshots['TestGetTaskPresenterImplementation.test_raise_exception_for_invalid_user_ids exception_object'] = b'{"response": "Something went wrong contact Admin", "http_status_code": 404, "res_status": "SEARCHABLE_RECORDS_NOT_FOUND"}'
+
+snapshots['TestGetTaskPresenterImplementation.test_raise_invalid_searchable_records_found exception_object'] = b'{"response": "Something went wrong contact Admin", "http_status_code": 404, "res_status": "SEARCHABLE_RECORDS_NOT_FOUND"}'

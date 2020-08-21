@@ -1,11 +1,11 @@
-from typing import List
+from typing import List, Optional
 
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.adapters.service_adapter import get_service_adapter
 from ib_iam.app_interfaces.dtos import SearchableDTO
 from ib_iam.constants.enums import Searchable
 from ib_iam.exceptions.custom_exceptions import InvalidStateIds, \
-    InvalidCountryIds, InvalidUserIds
+    InvalidCountryIds, InvalidUserIds, InvalidCityIds
 from ib_iam.interactors.storage_interfaces.dtos import SearchableDetailsDTO
 from ib_iam.interactors.storage_interfaces.searchable_storage_interface \
     import \
@@ -55,7 +55,7 @@ class GetSearchableDetailsInteractor:
             searchable_type_user_dto.id
             for searchable_type_user_dto in searchable_type_user_dtos
         ]
-        valid_user_ids = self._get_valid_user_ids(ids)
+        valid_user_ids = self.storage.get_valid_user_ids(ids)
         self._validate_user_ids(ids, valid_user_ids)
         user_details_dtos = self._get_user_details_dtos(ids)
         searchable_type_user_details_dtos = []
@@ -69,18 +69,17 @@ class GetSearchableDetailsInteractor:
             )
         return searchable_type_user_details_dtos
 
-    def _get_valid_user_ids(self, ids: List[str]):
-        valid_user_ids = self.storage.get_valid_user_ids(ids)
-        return valid_user_ids
-
     @staticmethod
-    def _validate_user_ids(ids: List[str], valid_user_ids: List[str]):
+    def _validate_user_ids(
+            ids: List[str], valid_user_ids: List[str]
+    ) -> Optional[InvalidUserIds]:
         invalid_user_ids = []
         for id in ids:
             if id not in valid_user_ids:
                 invalid_user_ids.append(id)
         if invalid_user_ids:
             raise InvalidUserIds(invalid_user_ids)
+        return
 
     @staticmethod
     def _get_user_details_dtos(ids: List[str]) -> List[UserProfileDTO]:
@@ -121,14 +120,15 @@ class GetSearchableDetailsInteractor:
         if is_searchable_type_country_dtos_empty:
             return []
 
-        ids = [
+        country_ids = [
             searchable_type_country_dto.id
             for searchable_type_country_dto in searchable_type_country_dtos
         ]
+        valid_country_ids = self.storage.get_valid_country_ids(country_ids)
+        self._validate_country_ids(country_ids, valid_country_ids)
         searchable_type_country_details_dtos = \
             self.storage.get_searchable_type_country_details_dtos(
-                ids)
-        self._validate_country_ids(ids, searchable_type_country_details_dtos)
+                valid_country_ids)
         return searchable_type_country_details_dtos
 
     def _get_searchable_type_state_details_dtos(
@@ -143,14 +143,15 @@ class GetSearchableDetailsInteractor:
         if is_searchable_type_state_dtos_empty:
             return []
 
-        ids = [
+        state_ids = [
             searchable_type_state_dto.id
             for searchable_type_state_dto in searchable_type_state_dtos
         ]
+        valid_state_ids = self.storage.get_valid_state_ids(state_ids)
+        self._validate_state_ids(state_ids, valid_state_ids)
         searchable_type_state_details_dtos = \
             self.storage.get_searchable_type_state_details_dtos(
-                ids)
-        self._validate_state_ids(ids, searchable_type_state_details_dtos)
+                valid_state_ids)
         return searchable_type_state_details_dtos
 
     def _get_searchable_type_city_details_dtos(
@@ -165,64 +166,52 @@ class GetSearchableDetailsInteractor:
         if is_searchable_type_city_dtos_empty:
             return []
 
-        ids = [
+        city_ids = [
             searchable_type_city_dto.id
             for searchable_type_city_dto in searchable_type_city_dtos
         ]
+        valid_city_ids = self.storage.get_valid_city_ids(city_ids)
+        self._validate_city_ids(city_ids, valid_city_ids)
         searchable_type_city_details_dtos = \
             self.storage.get_searchable_type_city_details_dtos(
-                ids)
-        self._validate_city_ids(ids, searchable_type_city_details_dtos)
+                valid_city_ids)
         return searchable_type_city_details_dtos
 
     @staticmethod
     def _validate_city_ids(
-            ids: List[int],
-            searchable_type_city_details_dtos: List[SearchableDetailsDTO]
-    ):
-        actual_ids = [
-            searchable_type_city_details_dto.id
-            for searchable_type_city_details_dto in
-            searchable_type_city_details_dtos
-        ]
+            city_ids: List[int],
+            valid_city_ids: List[int]
+    ) -> Optional[InvalidCityIds]:
         invalid_ids = []
-        for id in ids:
-            if id not in actual_ids:
-                invalid_ids.append(id)
+        for city_id in city_ids:
+            if city_id not in valid_city_ids:
+                invalid_ids.append(city_id)
         if invalid_ids:
-            from ib_iam.exceptions.custom_exceptions import InvalidCityIds
             raise InvalidCityIds(invalid_ids)
+        return
 
     @staticmethod
     def _validate_state_ids(
-            ids: List[int],
-            searchable_type_state_details_dtos: List[SearchableDetailsDTO]
-    ):
-        actual_ids = [
-            searchable_type_state_details_dto.id
-            for searchable_type_state_details_dto in
-            searchable_type_state_details_dtos
-        ]
+            state_ids: List[int],
+            valid_state_ids: List[int]
+    ) -> Optional[InvalidStateIds]:
         invalid_ids = []
-        for id in ids:
-            if id not in actual_ids:
-                invalid_ids.append(id)
+        for state_id in state_ids:
+            if state_id not in valid_state_ids:
+                invalid_ids.append(state_id)
         if invalid_ids:
             raise InvalidStateIds(invalid_ids)
+        return
 
     @staticmethod
     def _validate_country_ids(
-            ids: List[int],
-            searchable_type_country_details_dtos: List[SearchableDetailsDTO]
+            country_ids: List[int],
+            valid_country_ids: List[int]
     ):
-        actual_ids = [
-            searchable_type_country_details_dto.id
-            for searchable_type_country_details_dto in
-            searchable_type_country_details_dtos
-        ]
         invalid_ids = []
-        for id in ids:
-            if id not in actual_ids:
-                invalid_ids.append(id)
+        for country_id in country_ids:
+            if country_id not in valid_country_ids:
+                invalid_ids.append(country_id)
         if invalid_ids:
             raise InvalidCountryIds(invalid_ids)
+        return

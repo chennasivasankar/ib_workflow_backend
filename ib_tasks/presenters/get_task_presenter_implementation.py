@@ -5,11 +5,9 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 from ib_tasks.constants.constants import DATETIME_FORMAT
-from ib_tasks.constants.exception_messages import SEARCHABLE_RECORDS_NOT_FOUND
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
-    InvalidStageIdsForTask, InvalidTaskDisplayId, InvalidUserIdsException, \
-    InvalidCountryIdsException, InvalidStateIdsException, \
-    InvalidCityIdsException
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidTaskIdException, \
+    InvalidStageIdsForTask, InvalidTaskDisplayId
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import GetTaskPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
@@ -25,43 +23,9 @@ from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 class GetTaskPresenterImplementation(GetTaskPresenterInterface,
                                      HTTPResponseMixin):
 
-    def raise_invalid_city_ids(self, err: InvalidCityIdsException):
-        response_message = SEARCHABLE_RECORDS_NOT_FOUND[0]
-        data = {
-            "response": response_message,
-            "http_status_code": 404,
-            "res_status": SEARCHABLE_RECORDS_NOT_FOUND[1]
-        }
-        response_object = self.prepare_404_not_found_response(
-            response_dict=data
-        )
-        return response_object
-
-    def raise_invalid_state_ids(self, err: InvalidStateIdsException):
-        response_message = SEARCHABLE_RECORDS_NOT_FOUND[0]
-        data = {
-            "response": response_message,
-            "http_status_code": 404,
-            "res_status": SEARCHABLE_RECORDS_NOT_FOUND[1]
-        }
-        response_object = self.prepare_404_not_found_response(
-            response_dict=data
-        )
-        return response_object
-
-    def raise_invalid_country_ids(self, err: InvalidCountryIdsException):
-        response_message = SEARCHABLE_RECORDS_NOT_FOUND[0]
-        data = {
-            "response": response_message,
-            "http_status_code": 404,
-            "res_status": SEARCHABLE_RECORDS_NOT_FOUND[1]
-        }
-        response_object = self.prepare_404_not_found_response(
-            response_dict=data
-        )
-        return response_object
-
-    def raise_invalid_user_ids(self, err: InvalidUserIdsException):
+    def raise_invalid_searchable_records_found(self):
+        from ib_tasks.constants.exception_messages import \
+            SEARCHABLE_RECORDS_NOT_FOUND
         response_message = SEARCHABLE_RECORDS_NOT_FOUND[0]
         data = {
             "response": response_message,

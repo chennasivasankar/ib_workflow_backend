@@ -9,6 +9,33 @@ from ib_iam.interactors.storage_interfaces.searchable_storage_interface \
 
 class SearchableStorageImplementation(SearchableStorageInterface):
 
+    def get_valid_city_ids(self, city_ids: List[int]) -> List[int]:
+        from ib_iam.models import City
+        valid_city_ids = list(
+            City.objects.filter(
+                id__in=city_ids
+            ).values_list('id', flat=True)
+        )
+        return valid_city_ids
+
+    def get_valid_state_ids(self, state_ids: List[int]) -> List[int]:
+        from ib_iam.models import State
+        valid_state_ids = list(
+            State.objects.filter(
+                id__in=state_ids
+            ).values_list('id', flat=True)
+        )
+        return valid_state_ids
+
+    def get_valid_country_ids(self, country_ids: List[int]) -> List[int]:
+        from ib_iam.models import Country
+        valid_country_ids = list(
+            Country.objects.filter(
+                id__in=country_ids
+            ).values_list('id', flat=True)
+        )
+        return valid_country_ids
+
     def get_valid_user_ids(self, ids: List[str]) -> List[str]:
         from ib_iam.models import UserDetails
         valid_user_ids = list(

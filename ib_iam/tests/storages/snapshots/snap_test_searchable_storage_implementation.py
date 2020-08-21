@@ -30,12 +30,42 @@ snapshots['TestSearchableStorageImplementation.test_given_country_ids_returns_se
     GenericRepr("SearchableDetailsDTO(search_type='COUNTRY', id=18, value='country_name17')")
 ]
 
-snapshots['TestSearchableStorageImplementation.test_given_user_ids_returns_get_searchable_type_user_details_dtos searchable_type_user_details_dtos'] = [
-    GenericRepr("SearchableDetailsDTO(search_type='USER', id='123e4567-e89b-12d3-a456-426614174000', value='name1')"),
-    GenericRepr("SearchableDetailsDTO(search_type='USER', id='123e4567-e89b-12d3-a456-426614174001', value='name2')"),
-    GenericRepr("SearchableDetailsDTO(search_type='USER', id='123e4567-e89b-12d3-a456-426614174002', value='name3')"),
-    GenericRepr("SearchableDetailsDTO(search_type='USER', id='123e4567-e89b-12d3-a456-426614174003', value='name4')")
+snapshots['TestSearchableStorageImplementation.test_given_user_ids_returns_valid_user_ids ['user0', 'user1', 'user2', 'user3', 'user4', 'user5', 'user6', 'user7', 'user8', 'user9']'] = [
+    'user0',
+    'user1',
+    'user2',
+    'user3',
+    'user4',
+    'user5',
+    'user6',
+    'user7',
+    'user8',
+    'user9'
 ]
 
-snapshots['TestSearchableStorageImplementation.test_given_user_ids_returns_valid_user_ids 1'] = [
+snapshots['TestSearchableStorageImplementation.test_given_city_ids_returns_valid_city_ids valid_city_ids'] = [
+    1,
+    2,
+    3,
+    4,
+    5
+]
+
+snapshots['TestSearchableStorageImplementation.test_given_state_id_returns_valid_state_ids valid_state_ids'] = [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+]
+
+snapshots['TestSearchableStorageImplementation.test_given_country_ids_return_valid_country_ids valid_country_ids'] = [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
 ]

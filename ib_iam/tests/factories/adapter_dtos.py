@@ -30,6 +30,12 @@ class SearchableDTOFactory(factory.Factory):
     class Meta:
         model = SearchableDTO
 
-    search_type = Searchable.CITY.value
-    id = 1
-
+    search_type = factory.Iterator(
+        [
+            Searchable.CITY.value,
+            Searchable.STATE.value,
+            Searchable.COUNTRY.value,
+            Searchable.USER.value
+        ]
+    )
+    id = factory.sequence(lambda counter: counter)

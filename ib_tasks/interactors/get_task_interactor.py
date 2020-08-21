@@ -77,17 +77,17 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         except UserPermissionDenied:
             response = presenter.raise_user_permission_denied()
             return response
-        except InvalidCityIdsException as err:
-            response = presenter.raise_invalid_city_ids(err)
+        except InvalidCityIdsException:
+            response = presenter.raise_invalid_searchable_records_found()
             return response
-        except InvalidStateIdsException as err:
-            response = presenter.raise_invalid_state_ids(err)
+        except InvalidStateIdsException:
+            response = presenter.raise_invalid_searchable_records_found()
             return response
-        except InvalidCountryIdsException as err:
-            response = presenter.raise_invalid_country_ids(err)
+        except InvalidCountryIdsException:
+            response = presenter.raise_invalid_searchable_records_found()
             return response
-        except InvalidUserIdsException as err:
-            response = presenter.raise_invalid_user_ids(err)
+        except InvalidUserIdsException:
+            response = presenter.raise_invalid_searchable_records_found()
             return response
 
     def get_task_details_response(

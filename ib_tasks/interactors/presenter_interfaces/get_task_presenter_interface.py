@@ -43,17 +43,5 @@ class GetTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_city_ids(self, err: InvalidCityIdsException):
-        pass
-
-    @abc.abstractmethod
-    def raise_invalid_state_ids(self, err: InvalidStateIdsException):
-        pass
-
-    @abc.abstractmethod
-    def raise_invalid_country_ids(self, err: InvalidCountryIdsException):
-        pass
-
-    @abc.abstractmethod
-    def raise_invalid_user_ids(self, err: InvalidUserIdsException):
+    def raise_invalid_searchable_records_found(self):
         pass
