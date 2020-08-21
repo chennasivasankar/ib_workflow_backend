@@ -1,15 +1,12 @@
 """
-test with user who does not have write permission for a gof
-when there are gof write permission roles in db for given gofs
+test with invalid fields of gof
 """
 
-import factory
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
-    TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, GoFRoleFactory
+    TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory
 from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
@@ -35,24 +32,12 @@ class TestCase11UpdateTaskAPITestCase(TestUtils):
         template_id = "TEMPLATE-1"
         gof_ids = ["GOF-1", "GOF-2"]
         field_ids = ["FIELD-1", "FIELD-2", "FIELD-3", "FIELD-4"]
-        gof_write_permission_roles = ["FIN_GOF_CREATOR"]
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        user_roles_mock_method = get_user_role_ids(mocker)
+
+        import factory
         gofs = GoFFactory.create_batch(size=len(gof_ids),
                                        gof_id=factory.Iterator(gof_ids))
-        gof_roles = GoFRoleFactory.create_batch(
-            size=2, gof=factory.Iterator(gofs),
-            role=factory.Iterator(gof_write_permission_roles),
-            permission_type=PermissionTypes.WRITE.value
-        )
-        fields = [
-            FieldFactory.create(field_id=field_ids[0], gof=gofs[0]),
-            FieldFactory.create(field_id=field_ids[1], gof=gofs[0]),
-            FieldFactory.create(field_id=field_ids[2], gof=gofs[1]),
-            FieldFactory.create(field_id=field_ids[3], gof=gofs[1])
-        ]
-
+        fields = FieldFactory.create_batch(
+            size=len(field_ids), field_id=factory.Iterator(field_ids))
         task_template = TaskTemplateFactory.create(template_id=template_id)
         task_template_gofs = GoFToTaskTemplateFactory.create_batch(
             size=len(gofs), task_template=task_template,
@@ -61,7 +46,7 @@ class TestCase11UpdateTaskAPITestCase(TestUtils):
             task_display_id=task_id, template_id=task_template.template_id)
 
     @pytest.mark.django_db
-    def test_case(self, snapshot, mocker):
+    def test_case(self, snapshot):
         body = {
             "task_id": "IBWF-1",
             "title": "updated_title",

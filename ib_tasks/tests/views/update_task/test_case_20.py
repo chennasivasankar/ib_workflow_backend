@@ -1,5 +1,5 @@
 """
-test with weak password for password field
+test with invalid value for url field
 """
 
 import pytest
@@ -47,7 +47,7 @@ class TestCase20UpdateTaskAPITestCase(TestUtils):
 
         field = FieldFactory.create(
             field_id=field_id, gof=gof,
-            field_type=FieldTypes.PASSWORD.value
+            field_type=FieldTypes.URL.value
         )
 
         field_role = FieldRoleFactory.create(
@@ -82,7 +82,7 @@ class TestCase20UpdateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD-1",
-                            "field_response": "strong_password"
+                            "field_response": "google.com"
                         }
                     ]
                 }

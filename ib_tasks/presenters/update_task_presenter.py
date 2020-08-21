@@ -18,7 +18,7 @@ from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.stage_custom_exceptions import \
-    StageIdsWithInvalidPermissionForAssignee
+    StageIdsWithInvalidPermissionForAssignee, InvalidStageId
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId
@@ -29,6 +29,16 @@ from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
 class UpdateTaskPresenterImplementation(
     UpdateTaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_invalid_stage_id(self, err: InvalidStageId):
+        from ib_tasks.constants.exception_messages import INVALID_STAGE_ID
+        message = INVALID_STAGE_ID[0].format(err.stage_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_STAGE_ID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_invalid_task_display_id(self, err: InvalidTaskDisplayId):
         from ib_tasks.constants.exception_messages import \

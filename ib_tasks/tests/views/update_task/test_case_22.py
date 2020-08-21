@@ -1,5 +1,5 @@
 """
-test with invalid value for float field
+test with invalid value for number field
 """
 
 import pytest
@@ -47,7 +47,7 @@ class TestCase22UpdateTaskAPITestCase(TestUtils):
 
         field = FieldFactory.create(
             field_id=field_id, gof=gof,
-            field_type=FieldTypes.FLOAT.value
+            field_type=FieldTypes.NUMBER.value
         )
 
         field_role = FieldRoleFactory.create(
@@ -82,7 +82,7 @@ class TestCase22UpdateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD-1",
-                            "field_response": "float_value"
+                            "field_response": "number"
                         }
                     ]
                 }

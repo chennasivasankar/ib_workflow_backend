@@ -1,5 +1,5 @@
 """
-test with invalid date format in date field
+test with incorrect multi select label in multi select label field
 """
 
 import pytest
@@ -47,7 +47,8 @@ class TestCase29UpdateTaskAPITestCase(TestUtils):
 
         field = FieldFactory.create(
             field_id=field_id, gof=gof,
-            field_type=FieldTypes.DATE.value
+            field_type=FieldTypes.MULTI_SELECT_LABELS.value,
+            field_values='["interactors", "storages"]'
         )
 
         field_role = FieldRoleFactory.create(
@@ -82,7 +83,7 @@ class TestCase29UpdateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD-1",
-                            "field_response": "9-9-2020"
+                            "field_response": '["interactors", "views"]'
                         }
                     ]
                 }

@@ -1,6 +1,6 @@
 """
 test with user who does not have write permission for a field
-when there are field write permission roles in db
+when there are no field write permission roles in db
 """
 
 import factory
@@ -9,8 +9,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
-    TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, \
-    GoFRoleFactory, FieldRoleFactory
+    TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, GoFRoleFactory
 from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
@@ -30,7 +29,6 @@ class TestCase14UpdateTaskAPITestCase(TestUtils):
         TaskTemplateFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
         GoFRoleFactory.reset_sequence()
-        FieldRoleFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
@@ -38,7 +36,6 @@ class TestCase14UpdateTaskAPITestCase(TestUtils):
         template_id = "TEMPLATE-1"
         gof_ids = ["GOF-1", "GOF-2"]
         field_ids = ["FIELD-1", "FIELD-2", "FIELD-3", "FIELD-4"]
-        field_write_permission_role = "FIELD_EDITOR"
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
         user_roles_mock_method = get_user_role_ids(mocker)
@@ -56,11 +53,6 @@ class TestCase14UpdateTaskAPITestCase(TestUtils):
             FieldFactory.create(field_id=field_ids[2], gof=gofs[1]),
             FieldFactory.create(field_id=field_ids[3], gof=gofs[1])
         ]
-        field_roles = FieldRoleFactory.create_batch(
-            size=len(fields), role=field_write_permission_role,
-            field=factory.Iterator(fields),
-            permission_type=PermissionTypes.WRITE.value
-        )
 
         task_template = TaskTemplateFactory.create(template_id=template_id)
         task_template_gofs = GoFToTaskTemplateFactory.create_batch(

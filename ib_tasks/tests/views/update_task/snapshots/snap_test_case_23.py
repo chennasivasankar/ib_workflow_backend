@@ -11,6 +11,6 @@ snapshots['TestCase23UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase23UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'INVALID_VALUE_FOR_DROPDOWN',
-    'response': "Invalid dropdown value: dropdown_value for field: FIELD-1! Try with these dropdown values: ['interactors', 'storages']"
+    'res_status': 'INVALID_STAGE_ID',
+    'response': 'please give a valid stage id, 1 is invalid stage id'
 }

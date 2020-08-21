@@ -1,6 +1,6 @@
 """
 test with invalid value for phone number field
-when field response is having less than 10 digits
+when field response is having non digit characters
 """
 
 import pytest
@@ -83,7 +83,7 @@ class TestCase17UpdateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD-1",
-                            "field_response": "93456"
+                            "field_response": "phone_number"
                         }
                     ]
                 }

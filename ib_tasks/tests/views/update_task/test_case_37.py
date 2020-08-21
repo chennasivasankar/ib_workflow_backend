@@ -1,6 +1,5 @@
 """
-test with invalid date in date field
-with a date value greater than 31
+test with invalid url for image field
 """
 
 import pytest
@@ -14,7 +13,7 @@ from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase33UpdateTaskAPITestCase(TestUtils):
+class TestCase37UpdateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -48,7 +47,8 @@ class TestCase33UpdateTaskAPITestCase(TestUtils):
 
         field = FieldFactory.create(
             field_id=field_id, gof=gof,
-            field_type=FieldTypes.DATE.value
+            field_type=FieldTypes.IMAGE_UPLOADER.value,
+            allowed_formats='[".jpeg", ".png"]'
         )
 
         field_role = FieldRoleFactory.create(
@@ -83,7 +83,7 @@ class TestCase33UpdateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD-1",
-                            "field_response": "2020-09-40"
+                            "field_response": "image_url.com"
                         }
                     ]
                 }

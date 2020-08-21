@@ -1,5 +1,5 @@
 """
-test with invalid value for url field
+test with invalid value for email field
 """
 
 import pytest
@@ -47,7 +47,7 @@ class TestCase19UpdateTaskAPITestCase(TestUtils):
 
         field = FieldFactory.create(
             field_id=field_id, gof=gof,
-            field_type=FieldTypes.URL.value
+            field_type=FieldTypes.EMAIL.value
         )
 
         field_role = FieldRoleFactory.create(
@@ -82,7 +82,7 @@ class TestCase19UpdateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD-1",
-                            "field_response": "google.com"
+                            "field_response": "email.com"
                         }
                     ]
                 }

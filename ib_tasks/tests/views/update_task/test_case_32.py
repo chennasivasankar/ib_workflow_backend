@@ -1,6 +1,6 @@
 """
 test with invalid date in date field
-with a date value greater than 31
+with a month value greater than 12
 """
 
 import pytest
@@ -83,7 +83,7 @@ class TestCase32UpdateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD-1",
-                            "field_response": "2020-09-40"
+                            "field_response": "2020-15-09"
                         }
                     ]
                 }

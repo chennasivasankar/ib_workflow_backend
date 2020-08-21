@@ -1,5 +1,5 @@
 """
-test with incorrect checkbox options in checkbox group field
+test with incorrect radio group choice in radio group field
 """
 
 import pytest
@@ -47,7 +47,7 @@ class TestCase26UpdateTaskAPITestCase(TestUtils):
 
         field = FieldFactory.create(
             field_id=field_id, gof=gof,
-            field_type=FieldTypes.CHECKBOX_GROUP.value,
+            field_type=FieldTypes.RADIO_GROUP.value,
             field_values='["interactors", "storages"]'
         )
 
@@ -83,7 +83,7 @@ class TestCase26UpdateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD-1",
-                            "field_response": '["interactors", "views"]'
+                            "field_response": "radio_group_choice"
                         }
                     ]
                 }

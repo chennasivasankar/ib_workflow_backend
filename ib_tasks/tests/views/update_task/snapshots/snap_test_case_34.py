@@ -11,6 +11,6 @@ snapshots['TestCase34UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase34UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'INVALID_TIME_FORMAT',
-    'response': 'given invalid format for time: 20:70:00 for field: FIELD-1! Try with this format: %H:%M:%S'
+    'res_status': 'INVALID_STAGE_ID',
+    'response': 'please give a valid stage id, 1 is invalid stage id'
 }

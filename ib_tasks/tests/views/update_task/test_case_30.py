@@ -1,5 +1,5 @@
 """
-test with invalid time format in time field
+test with invalid date format in date field
 """
 
 import pytest
@@ -47,7 +47,7 @@ class TestCase30UpdateTaskAPITestCase(TestUtils):
 
         field = FieldFactory.create(
             field_id=field_id, gof=gof,
-            field_type=FieldTypes.TIME.value
+            field_type=FieldTypes.DATE.value
         )
 
         field_role = FieldRoleFactory.create(
@@ -82,7 +82,7 @@ class TestCase30UpdateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD-1",
-                            "field_response": "12-00"
+                            "field_response": "9-9-2020"
                         }
                     ]
                 }

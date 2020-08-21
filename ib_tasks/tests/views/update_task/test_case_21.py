@@ -1,5 +1,5 @@
 """
-test with invalid value for number field
+test with weak password for password field
 """
 
 import pytest
@@ -47,7 +47,7 @@ class TestCase21UpdateTaskAPITestCase(TestUtils):
 
         field = FieldFactory.create(
             field_id=field_id, gof=gof,
-            field_type=FieldTypes.NUMBER.value
+            field_type=FieldTypes.PASSWORD.value
         )
 
         field_role = FieldRoleFactory.create(
@@ -82,7 +82,7 @@ class TestCase21UpdateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD-1",
-                            "field_response": "number"
+                            "field_response": "strong_password"
                         }
                     ]
                 }

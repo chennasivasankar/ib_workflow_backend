@@ -1,5 +1,5 @@
 """
-test with incorrect radio group choice in radio group field
+test with incorrect name in gof selector field
 """
 
 import pytest
@@ -47,8 +47,10 @@ class TestCase25UpdateTaskAPITestCase(TestUtils):
 
         field = FieldFactory.create(
             field_id=field_id, gof=gof,
-            field_type=FieldTypes.RADIO_GROUP.value,
-            field_values='["interactors", "storages"]'
+            field_type=FieldTypes.GOF_SELECTOR.value,
+            field_values='[{"name": "Individual", "gof_ids": ['
+                         '"FIN_VENDOR_BASIC_DETAILS"]}, {"name": "Company", '
+                         '"gof_ids": ["FIN_VENDOR_COMPANY_DETAILS"]}]'
         )
 
         field_role = FieldRoleFactory.create(
@@ -83,7 +85,7 @@ class TestCase25UpdateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD-1",
-                            "field_response": "radio_group_choice"
+                            "field_response": "gof_selector_name"
                         }
                     ]
                 }

@@ -1,6 +1,6 @@
 """
 test with invalid time in time field
-when minutes is greater than 60
+when hours is greater than 23
 """
 
 import pytest
@@ -83,7 +83,7 @@ class TestCase34UpdateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD-1",
-                            "field_response": "20:70:00"
+                            "field_response": "24:00:00"
                         }
                     ]
                 }

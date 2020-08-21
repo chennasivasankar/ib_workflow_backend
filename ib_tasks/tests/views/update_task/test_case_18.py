@@ -1,5 +1,6 @@
 """
-test with invalid value for email field
+test with invalid value for phone number field
+when field response is having less than 10 digits
 """
 
 import pytest
@@ -47,7 +48,7 @@ class TestCase18UpdateTaskAPITestCase(TestUtils):
 
         field = FieldFactory.create(
             field_id=field_id, gof=gof,
-            field_type=FieldTypes.EMAIL.value
+            field_type=FieldTypes.PHONE_NUMBER.value
         )
 
         field_role = FieldRoleFactory.create(
@@ -82,7 +83,7 @@ class TestCase18UpdateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD-1",
-                            "field_response": "email.com"
+                            "field_response": "93456"
                         }
                     ]
                 }

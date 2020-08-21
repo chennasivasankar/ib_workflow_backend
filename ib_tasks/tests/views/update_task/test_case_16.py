@@ -1,12 +1,11 @@
 """
-test with invalid value for phone number field
-when field response is having non digit characters
+test with empty value for a required field
 """
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from ib_tasks.constants.enum import PermissionTypes, FieldTypes
+from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
     TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, \
     GoFRoleFactory, FieldRoleFactory
@@ -45,12 +44,7 @@ class TestCase16UpdateTaskAPITestCase(TestUtils):
         gof_role = GoFRoleFactory.create(
             role=user_roles[0], gof=gof,
             permission_type=PermissionTypes.WRITE.value)
-
-        field = FieldFactory.create(
-            field_id=field_id, gof=gof,
-            field_type=FieldTypes.PHONE_NUMBER.value
-        )
-
+        field = FieldFactory.create(field_id=field_id, gof=gof)
         field_role = FieldRoleFactory.create(
             role=user_roles[0], field=field,
             permission_type=PermissionTypes.WRITE.value)
@@ -83,7 +77,7 @@ class TestCase16UpdateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD-1",
-                            "field_response": "phone_number"
+                            "field_response": "   "
                         }
                     ]
                 }

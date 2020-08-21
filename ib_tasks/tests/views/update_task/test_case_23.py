@@ -1,5 +1,5 @@
 """
-test with invalid value for dropdown field
+test with invalid value for float field
 """
 
 import pytest
@@ -47,8 +47,7 @@ class TestCase23UpdateTaskAPITestCase(TestUtils):
 
         field = FieldFactory.create(
             field_id=field_id, gof=gof,
-            field_type=FieldTypes.DROPDOWN.value,
-            field_values='["interactors", "storages"]'
+            field_type=FieldTypes.FLOAT.value
         )
 
         field_role = FieldRoleFactory.create(
@@ -83,7 +82,7 @@ class TestCase23UpdateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD-1",
-                            "field_response": "dropdown_value"
+                            "field_response": "float_value"
                         }
                     ]
                 }

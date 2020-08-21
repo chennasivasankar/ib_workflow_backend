@@ -1,6 +1,7 @@
 from typing import List, Optional, Union
 
 from ib_tasks.constants.config import TIME_FORMAT
+from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.documents.elastic_task import ElasticFieldDTO
 from ib_tasks.exceptions.action_custom_exceptions import \
     InvalidActionException, InvalidKeyError, InvalidCustomLogicException
@@ -27,7 +28,6 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
 from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import \
-    InvalidTaskTemplateIds, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId
 from ib_tasks.interactors.create_or_update_task \
     .template_gofs_fields_base_validations import \
@@ -216,10 +216,10 @@ class CreateTaskInteractor:
             action_id=task_dto.action_id)
         if not is_valid_action_id:
             raise InvalidActionException(task_dto.action_id)
-        self._validate_task_details(task_dto)
-        self._validate_same_gof_order(task_dto.gof_fields_dtos)
         action_type = self.action_storage.get_action_type_for_given_action_id(
             action_id=task_dto.action_id)
+        self._validate_task_details(task_dto, action_type)
+        self._validate_same_gof_order(task_dto.gof_fields_dtos)
         base_validations_interactor = \
             TemplateGoFsFieldsBaseValidationsInteractor(
                 self.task_storage, self.gof_storage,
@@ -363,14 +363,25 @@ class CreateTaskInteractor:
         duplicate_values.sort()
         return duplicate_values
 
-    def _validate_task_details(self,
-                               task_dto: Union[CreateTaskDTO, UpdateTaskDTO]):
+    def _validate_task_details(
+            self, task_dto: Union[CreateTaskDTO, UpdateTaskDTO],
+            action_type: Optional[ActionTypes]
+    ):
         start_date = task_dto.start_date
         due_date = task_dto.due_date
         due_time = task_dto.due_time
+        dates_validation_is_not_required = False
+        action_type_is_no_validations = action_type == \
+                                        ActionTypes.NO_VALIDATIONS.value
+        if action_type_is_no_validations:
+            empty_values_given = (
+                not start_date or not due_date or not due_time)
+            if empty_values_given:
+                dates_validation_is_not_required = True
+        if dates_validation_is_not_required:
+            return
         self._validate_start_date_and_due_date_dependencies(
-            start_date, due_date
-        )
+            start_date, due_date)
         import datetime
         self._validate_due_time_format(due_time)
         due_date_is_expired = (due_date < datetime.datetime.today().date())

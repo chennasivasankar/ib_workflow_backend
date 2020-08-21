@@ -1,7 +1,9 @@
 """
-test with empty value for a required field
+test with user who does not have write permission for a field
+when there are field write permission roles in db
 """
 
+import factory
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
@@ -34,23 +36,36 @@ class TestCase15UpdateTaskAPITestCase(TestUtils):
     def setup(self, mocker):
         task_id = "IBWF-1"
         template_id = "TEMPLATE-1"
-        gof_id = "GOF-1"
-        field_id = "FIELD-1"
+        gof_ids = ["GOF-1", "GOF-2"]
+        field_ids = ["FIELD-1", "FIELD-2", "FIELD-3", "FIELD-4"]
+        field_write_permission_role = "FIELD_EDITOR"
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
         user_roles_mock_method = get_user_role_ids(mocker)
         user_roles = user_roles_mock_method.return_value
-        gof = GoFFactory.create(gof_id=gof_id)
-        gof_role = GoFRoleFactory.create(
-            role=user_roles[0], gof=gof,
-            permission_type=PermissionTypes.WRITE.value)
-        field = FieldFactory.create(field_id=field_id, gof=gof)
-        field_role = FieldRoleFactory.create(
-            role=user_roles[0], field=field,
-            permission_type=PermissionTypes.WRITE.value)
+        gofs = GoFFactory.create_batch(size=len(gof_ids),
+                                       gof_id=factory.Iterator(gof_ids))
+        gof_roles = GoFRoleFactory.create_batch(
+            size=len(gofs), role=factory.Iterator(user_roles),
+            gof=factory.Iterator(gofs),
+            permission_type=PermissionTypes.WRITE.value
+        )
+        fields = [
+            FieldFactory.create(field_id=field_ids[0], gof=gofs[0]),
+            FieldFactory.create(field_id=field_ids[1], gof=gofs[0]),
+            FieldFactory.create(field_id=field_ids[2], gof=gofs[1]),
+            FieldFactory.create(field_id=field_ids[3], gof=gofs[1])
+        ]
+        field_roles = FieldRoleFactory.create_batch(
+            size=len(fields), role=field_write_permission_role,
+            field=factory.Iterator(fields),
+            permission_type=PermissionTypes.WRITE.value
+        )
+
         task_template = TaskTemplateFactory.create(template_id=template_id)
-        task_template_gofs = GoFToTaskTemplateFactory.create(
-            task_template=task_template, gof=gof)
+        task_template_gofs = GoFToTaskTemplateFactory.create_batch(
+            size=len(gofs), task_template=task_template,
+            gof=factory.Iterator(gofs))
         task = TaskFactory.create(
             task_display_id=task_id, template_id=task_template.template_id)
 
@@ -77,7 +92,22 @@ class TestCase15UpdateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD-1",
-                            "field_response": "   "
+                            "field_response": "new updated string"
+                        },
+                        {
+                            "field_id": "FIELD-2",
+                            "field_response":
+                                "https://image.flaticon.com/icons/svg/1829/1829070.svg"
+                        }
+                    ]
+                },
+                {
+                    "gof_id": "GOF-2",
+                    "same_gof_order": 0,
+                    "gof_fields": [
+                        {
+                            "field_id": "FIELD-3",
+                            "field_response": "[\"interactors\"]"
                         }
                     ]
                 }

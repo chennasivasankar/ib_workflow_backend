@@ -1,5 +1,5 @@
 """
-test with incorrect multi select options in multi selection field
+test with incorrect checkbox options in checkbox group field
 """
 
 import pytest
@@ -47,7 +47,7 @@ class TestCase27UpdateTaskAPITestCase(TestUtils):
 
         field = FieldFactory.create(
             field_id=field_id, gof=gof,
-            field_type=FieldTypes.MULTI_SELECT_FIELD.value,
+            field_type=FieldTypes.CHECKBOX_GROUP.value,
             field_values='["interactors", "storages"]'
         )
 

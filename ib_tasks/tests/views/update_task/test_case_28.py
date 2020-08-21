@@ -1,5 +1,5 @@
 """
-test with incorrect multi select label in multi select label field
+test with incorrect multi select options in multi selection field
 """
 
 import pytest
@@ -47,7 +47,7 @@ class TestCase28UpdateTaskAPITestCase(TestUtils):
 
         field = FieldFactory.create(
             field_id=field_id, gof=gof,
-            field_type=FieldTypes.MULTI_SELECT_LABELS.value,
+            field_type=FieldTypes.MULTI_SELECT_FIELD.value,
             field_values='["interactors", "storages"]'
         )
 
