@@ -33,7 +33,7 @@ class ElasticCountryDTO:
 
 class Country(Document):
     country_id = Integer()
-    country_name = Completion()
+    country_name = Text()
 
     class Index:
         name = COUNTRY_INDEX_NAME
@@ -47,7 +47,7 @@ class ElasticStateDTO:
 
 class State(Document):
     state_id = Integer()
-    state_name = Completion()
+    state_name = Text()
 
     class Index:
         name = STATE_INDEX_NAME
@@ -61,7 +61,7 @@ class ElasticCityDTO:
 
 class City(Document):
     city_id = Integer()
-    city_name = Completion()
+    city_name = Text()
 
     class Index:
         name = CITY_INDEX_NAME
