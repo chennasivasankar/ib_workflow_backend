@@ -17,13 +17,12 @@ def get_company_id(company_name):
 @transaction.atomic()
 def populate(spread_sheet_name: str):
     from ib_iam.populate.add_roles_details import RoleDetails
-    role = RoleDetails()
-    from ib_iam.constants.config import ROLES_SUBSHEET_NAME
-
     populate_admin_users()
     populate_companies()
     populate_teams()
-    role.add_roles_details_to_database(spread_sheet_name, ROLES_SUBSHEET_NAME)
+    #role = RoleDetails()
+    #from ib_iam.constants.config import ROLES_SUBSHEET_NAME
+    #role.add_roles_details_to_database(spread_sheet_name, ROLES_SUBSHEET_NAME)
     populate_test_users()
 
 
