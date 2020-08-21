@@ -5,11 +5,9 @@ import pytest
 from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO
-from ib_tasks.tests.factories.interactor_dtos import FieldDisplayDTOFactory, \
-    TaskStageDTOFactory
-from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory
+from ib_tasks.tests.factories.interactor_dtos import TaskStageDTOFactory
 from ib_tasks.tests.factories.adapter_dtos import (
-    ColumnStageDTOFactory, BoardDTOFactory, ColumnDTOFactory
+    ColumnStageDTOFactory, BoardDTOFactory, ColumnDTOFactory, AssigneeDetailsDTOFactory
 )
 from ib_tasks.tests.factories.interactor_dtos import FieldDisplayDTOFactory, \
     TaskCurrentStageDetailsDTOFactory
@@ -142,19 +140,22 @@ class TestCreateOrUpdateTaskPresenterImplementation:
             column_stage_dtos=column_stage_dtos,
             columns_dtos=ColumnDTOFactory.create_batch(size=3)
         )
+        assignee_dtos = [AssigneeDetailsDTOFactory()]
         return TaskCompleteDetailsDTO(
             task_id=1,
             task_boards_details=task_board_details,
             actions_dto=ActionDTOFactory.create_batch(size=3),
             field_dtos=FieldDisplayDTOFactory.create_batch(size=3),
             assignees_details=[],
-            task_stage_details=TaskStageDTOFactory.create_batch(3)
+            task_stage_details=TaskStageDTOFactory.create_batch(3),
+            task_display_id=''
         )
 
     def test_get_response_for_user_action_on_task(
             self, presenter, snapshot, task_complete_details
     ):
         # Arrange
+        TaskCurrentStageDetailsDTOFactory.reset_sequence(1)
         task_current_stage_details_dto = TaskCurrentStageDetailsDTOFactory()
 
         # Act

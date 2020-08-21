@@ -28,5 +28,5 @@ class TestUpdateTaskStages:
         from ib_tasks.models import CurrentTaskStage
         task_stage_obj = CurrentTaskStage.objects.get(id=3)
         assert CurrentTaskStage.objects.filter(id__in=[1, 2]).exists() == False
-        assert task_stage_obj.task_display_id == 1
+        assert task_stage_obj.task_id == 1
         assert task_stage_obj.stage_id == 1
