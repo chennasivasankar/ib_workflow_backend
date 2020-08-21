@@ -20,9 +20,9 @@ class TestCase02SendVerifyEmailLinkAPITestCase(TestUtils):
         get_user_id_for_given_email_mock = get_user_id_for_given_email_mock(
             mocker=mocker)
         from ib_iam.interactors.send_verify_email_link_interactor import \
-            AccountDoesNotExists
+            UserAccountDoesNotExist
         get_user_id_for_given_email_mock.side_effect = \
-            AccountDoesNotExists()
+            UserAccountDoesNotExist()
 
     @pytest.mark.django_db
     def test_case_invalid_email_then_raise_account_not_found_exception(

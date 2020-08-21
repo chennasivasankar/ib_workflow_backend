@@ -66,10 +66,9 @@ class TestSendLinkToUserMail:
             get_user_id_for_given_email_mock
         get_user_id_for_given_email_mock = get_user_id_for_given_email_mock(
             mocker=mocker)
-        from ib_iam.interactors.send_verify_email_link_interactor import \
-            AccountDoesNotExists
+        from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
         get_user_id_for_given_email_mock.side_effect = \
-            AccountDoesNotExists()
+            UserAccountDoesNotExist()
         presenter_mock.raise_account_does_not_exist_exception.return_value = \
             Mock()
 

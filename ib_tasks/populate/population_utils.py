@@ -27,9 +27,9 @@ def populate_data():
     task_template = PopulateTaskTemplates()
     task_template.populate_task_templates()
 
-    # roles = RoleDetails()
-    # roles.add_roles_details_to_database(
-    #     GOOGLE_SHEET_NAME, ROLES_SUB_SHEET)
+    roles = RoleDetails()
+    roles.add_roles_details_to_database(
+        GOOGLE_SHEET_NAME, ROLES_SUB_SHEET)
 
     gofs = PopulateGoFs()
     gofs.create_or_update_gofs()
