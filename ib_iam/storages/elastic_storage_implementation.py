@@ -66,7 +66,7 @@ class ElasticStorageImplementation(ElasticSearchStorageInterface):
                     "match",
                     name={
                         "query": search_query,
-                        "fuzziness": "2"
+                        "fuzziness": "5"
                     }
                 )
             )
@@ -105,7 +105,7 @@ class ElasticStorageImplementation(ElasticSearchStorageInterface):
                     "match",
                     country_name={
                         "query": search_query,
-                        "fuzziness": "2"
+                        "fuzziness": "5"
                     }
                 )
             )
@@ -146,7 +146,7 @@ class ElasticStorageImplementation(ElasticSearchStorageInterface):
                     "match",
                     state_name={
                         "query": search_query,
-                        "fuzziness": "2"
+                        "fuzziness": "5"
                     }
                 )
             )
@@ -189,7 +189,7 @@ class ElasticStorageImplementation(ElasticSearchStorageInterface):
                     "match",
                     city_name={
                         "query": search_query,
-                        "fuzziness": "2"
+                        "fuzziness": "5"
                     }
                 )
             )

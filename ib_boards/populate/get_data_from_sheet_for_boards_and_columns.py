@@ -13,10 +13,11 @@ class GetBoardsAndColumnsDataFromSheet:
         from ib_boards.populate.get_data_from_sheet import GetDataFromSheet
         return GetDataFromSheet()
 
-    def get_data_from_sheet(self):
+    def get_data_from_sheet(self, spread_sheet_name: str):
 
         from ib_boards.constants.constants import BOARDS_AND_COLUMN_SUB_SHEET
         field_records = self.data_sheet.get_data_from_sub_sheet(
+            spread_sheet_name=spread_sheet_name,
             sub_sheet_name=BOARDS_AND_COLUMN_SUB_SHEET
         )
         self.validate_keys_in_given_dict(
@@ -28,8 +29,9 @@ class GetBoardsAndColumnsDataFromSheet:
         ]
         return boards_columns_dicts
 
-    def create_boards_and_columns(self):
-        boards_columns_dicts = self.get_data_from_sheet()
+    def create_boards_and_columns(self, spread_sheet_name: str):
+        boards_columns_dicts = \
+            self.get_data_from_sheet(spread_sheet_name=spread_sheet_name)
         from ib_boards.populate.populate_script_to_create_boards_and_columns \
             import PopulateCreateBoardsAndColumns
         populate_script = PopulateCreateBoardsAndColumns()
@@ -37,8 +39,9 @@ class GetBoardsAndColumnsDataFromSheet:
             boards_columns_dicts=boards_columns_dicts
         )
 
-    def add_or_delete_columns_for_board(self):
-        boards_columns_dicts = self.get_data_from_sheet()
+    def add_or_delete_columns_for_board(self, spread_sheet_name: str):
+        boards_columns_dicts = \
+            self.get_data_from_sheet(spread_sheet_name=spread_sheet_name)
         from ib_boards.populate.populate_script_for_add_or_delete_columns_for_board \
             import PopulateAddOrDeleteColumnsForBoard
         populate_script = PopulateAddOrDeleteColumnsForBoard()

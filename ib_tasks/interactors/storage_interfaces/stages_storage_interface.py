@@ -143,3 +143,7 @@ class StageStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_valid_template_ids(self, template_ids: List[str]) -> List[str]:
         pass
+
+    @abc.abstractmethod
+    def get_stage_ids_having_actions(self, user_roles: List[str]) -> List[str]:
+        pass

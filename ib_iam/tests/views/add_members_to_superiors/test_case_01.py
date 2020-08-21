@@ -19,13 +19,13 @@ class TestCase01AddMembersToSuperiorsAPITestCase(TestUtils):
         member_level_hierarchy = 0
         user_team_objects_of_level_one = prepare_user_teams_setup
         add_members_to_superior = [{
-            "immediate_superior_user_id": user_team_objects_of_level_one[0].id,
+            "immediate_superior_user_id": user_team_objects_of_level_one[0].user_id,
             "member_ids": [
                 "40be920b-7b4c-49e7-8adb-41a0c18da848",
                 "50be920b-7b4c-49e7-8adb-41a0c18da848"
             ]
         }, {
-            "immediate_superior_user_id": user_team_objects_of_level_one[1].id,
+            "immediate_superior_user_id": user_team_objects_of_level_one[1].user_id,
             "member_ids": [
                 "60be920b-7b4c-49e7-8adb-41a0c18da848"
             ]
@@ -36,7 +36,7 @@ class TestCase01AddMembersToSuperiorsAPITestCase(TestUtils):
         }
         path_params = {
             "team_id": team_id,
-            "member_level_hierarchy": member_level_hierarchy
+            "level_hierarchy": member_level_hierarchy
         }
         query_params = {}
         headers = {}
