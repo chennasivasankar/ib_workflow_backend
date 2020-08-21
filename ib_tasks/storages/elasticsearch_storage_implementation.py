@@ -34,8 +34,10 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         )
         field_dtos = elastic_task_dto.fields
         stages = elastic_task_dto.stages
-        task_obj.add_fields(field_dtos=field_dtos)
-        task_obj.add_stages(stages)
+        field_objects = self._get_field_objects(field_dtos=field_dtos)
+        stage_objects = self.get_stage_objects(stages_ids=stages)
+        task_obj.fields = field_objects
+        task_obj.stages = stage_objects
         task_obj.save()
         elastic_task_id = task_obj.meta.id
         return elastic_task_id
@@ -65,12 +67,14 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
     def filter_tasks(
             self, filter_dtos: List[ApplyFilterDTO], offset: int,
-            limit: int) -> Tuple[List[int], int]:
+            stage_ids: List[str], limit: int) -> Tuple[List[int], int]:
         from elasticsearch_dsl import connections
         from django.conf import settings
         connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
                                       timeout=20)
-        task_objects = self._get_search_task_objects(filter_dtos)
+        search = self._get_search_task_objects(filter_dtos)
+
+        task_objects = search.filter('terms', stages__stage_id__keyword=stage_ids)
 
         total_tasks = task_objects.count()
         return [

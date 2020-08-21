@@ -15,11 +15,14 @@ def get_company_id(company_name):
 
 
 @transaction.atomic()
-def populate():
+def populate(spread_sheet_name: str):
+    from ib_iam.populate.add_roles_details import RoleDetails
     populate_admin_users()
     populate_companies()
     populate_teams()
-    populate_roles()
+    #role = RoleDetails()
+    #from ib_iam.constants.config import ROLES_SUBSHEET_NAME
+    #role.add_roles_details_to_database(spread_sheet_name, ROLES_SUBSHEET_NAME)
     populate_test_users()
 
 
@@ -122,15 +125,6 @@ def populate_teams():
         team_storage.add_team(
             user_id=team["created_by_id"],
             team_name_and_description_dto=team_name_and_description_dto)
-
-
-def populate_roles():
-    from ib_iam.populate.add_roles_details import RoleDetails
-    role = RoleDetails()
-    role.add_roles_details_to_database(
-        "Vendor Configuration_v0 - Test",
-        "Roles"
-    )
 
 
 def populate_test_users():

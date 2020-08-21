@@ -25,12 +25,6 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_start_date_is_ahead_
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_start_date_is_ahead_of_due_date response'] = 'given start date 2020-05-04 is ahead of given due date 2020-04-04 '
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_is_behind_start_date http_status_code'] = 400
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_is_behind_start_date res_status'] = 'DUE_DATE_IS_BEHIND_START_DATE'
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_is_behind_start_date response'] = 'given due date 2020-04-04 is behind given start date 2020-05-04'
-
 snapshots['TestCreateTaskPresenterImplementation.test_raise_due_time_has_expired_for_today http_status_code'] = 400
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_due_time_has_expired_for_today res_status'] = 'DUE_TIME_HAS_EXPIRED_FOR_TODAY'
@@ -131,13 +125,9 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_gof_writa
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_gof_writable_permission res_status'] = 'USER_NEEDS_GOF_WRITABLE_PERMISSION'
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_gof_writable_permission response'] = "user user_1 needs write access on gof gof_1, because user does not have ['role_1', 'role_2'] roles"
-
 snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission http_status_code'] = 400
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission res_status'] = 'USER_NEEDS_FILED_WRITABLE_PERMISSION'
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission response'] = "user user_1 needs write access on field field_1, because user does not have ['role_1', 'role_2'] roles"
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_empty_value_in_required_field http_status_code'] = 400
 
@@ -268,14 +258,18 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_user_b
 snapshots['TestCreateTaskPresenterImplementation.test_get_create_task_response create_task_response'] = {
     'stages': [
         {
-            'stage_display_name': 'stage_display_name_0',
-            'stage_id': 'stage_0'
+            'stage_display_name': 'stage_display_name_2',
+            'stage_id': 'stage_2'
         },
         {
-            'stage_display_name': 'stage_display_name_1',
-            'stage_id': 'stage_1'
+            'stage_display_name': 'stage_display_name_3',
+            'stage_id': 'stage_3'
         }
     ],
     'task_id': 'task_display_0',
     'user_has_permission': True
 }
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_gof_writable_permission response'] = "user needs write access on gof gof_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission response'] = "user needs write access on field field_1, because user does not have at least one role in ['role_1', 'role_2'] roles"

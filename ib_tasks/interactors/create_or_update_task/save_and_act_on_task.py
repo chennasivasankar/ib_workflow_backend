@@ -218,6 +218,8 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         is_valid_action_id = self.storage.validate_action(task_dto.action_id)
         if not is_valid_action_id:
             raise InvalidActionException(task_dto.action_id)
+        action_type = self.action_storage.get_action_type_for_given_action_id(
+            action_id=task_dto.action_id)
         update_task_interactor = UpdateTaskInteractor(
             task_storage=self.task_storage, gof_storage=self.gof_storage,
             create_task_storage=self.create_task_storage,
@@ -233,7 +235,7 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             stage_assignee=task_dto.stage_assignee,
             gof_fields_dtos=task_dto.gof_fields_dtos
         )
-        update_task_interactor.update_task(update_task_dto)
+        update_task_interactor.update_task(update_task_dto, action_type)
         act_on_task_interactor = UserActionOnTaskInteractor(
             user_id=task_dto.created_by_id, board_id=None,
             task_storage=self.task_storage,
