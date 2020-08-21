@@ -1,18 +1,16 @@
-
 from ib_iam.documents.elastic_docs import *
 from ib_iam.models import UserDetails
-from ib_iam.storages.elastic_storage_implementation import ElasticStorageImplementation
+from ib_iam.storages.elastic_storage_implementation import \
+    ElasticStorageImplementation
 
 
 def populate_data():
-
     populate_elastic_search_country_data()
     populate_elastic_search_state_data()
     populate_elastic_search_city_data()
 
 
 def populate_existing_users_to_elastic_search_database():
-
     storage = ElasticStorageImplementation()
     user_objs = UserDetails.objects.all()
 
@@ -27,7 +25,6 @@ def populate_existing_users_to_elastic_search_database():
 
 
 def populate_elastic_search_country_data():
-
     country_dtos = [
         ElasticCountryDTO(
             country_id=1,
@@ -51,7 +48,7 @@ def populate_elastic_search_country_data():
         ),
         ElasticCountryDTO(
             country_id=1,
-            country_name="Pakistan"   
+            country_name="Pakistan"
         )
     ]
     storage = ElasticStorageImplementation()

@@ -13,6 +13,14 @@ class UserDetails(models.Model):
 
 class UserTeam(models.Model):
     user_id = models.CharField(max_length=1000)
+    team_member_level = models.ForeignKey(
+        "TeamMemberLevel", on_delete=models.SET_NULL,
+        null=True, blank=True
+    )
+    immediate_superior_team_user = models.ForeignKey(
+        "self", on_delete=models.SET_NULL,
+        null=True, blank=True
+    )
     team = models.ForeignKey('Team', on_delete=models.CASCADE,
                              related_name="users")
 

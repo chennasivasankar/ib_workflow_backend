@@ -72,6 +72,6 @@ class TestGetUserDetailsForGivenRoleIds:
     @staticmethod
     def interactor_init(user_storage_mock):
         from ib_iam.interactors.get_users_list_interactor import \
-            GetUsersDetailsInteractor
-        interactor = GetUsersDetailsInteractor(user_storage=user_storage_mock)
+            GetListOfUsersInteractor
+        interactor = GetListOfUsersInteractor(user_storage=user_storage_mock)
         return interactor

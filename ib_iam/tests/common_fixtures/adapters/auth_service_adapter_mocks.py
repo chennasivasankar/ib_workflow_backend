@@ -37,3 +37,10 @@ def prepare_get_refresh_auth_tokens_dto_mock(mocker):
         "ib_iam.adapters.auth_service.AuthService.get_refresh_auth_tokens_dto"
     )
     return mock
+
+
+def create_auth_tokens_for_user_mock(mocker):
+    mock = mocker.patch(
+        "ib_iam.adapters.auth_service.AuthService.create_auth_tokens_for_user"
+    )
+    return mock

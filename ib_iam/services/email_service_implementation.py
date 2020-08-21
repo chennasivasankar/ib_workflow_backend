@@ -13,6 +13,7 @@ class EmailSenderImpl(EmailSender):
     def __init__(self, subject: str, email_body_template: str):
         self.subject = subject
         self.email_body_template = email_body_template
+        print(email_body_template,"asd")
 
     def send_email(self, email: str, data: dict):
         from django.template import Template
