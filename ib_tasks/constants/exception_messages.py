@@ -154,7 +154,7 @@ INVALID_VALUE_FOR_DROPDOWN = (
     "INVALID_VALUE_FOR_DROPDOWN")
 INCORRECT_NAME_IN_GOF_SELECTOR_FIELD = (
     "Invalid gof selector name: {} for field: {}! Try with these gof "
-    "selector names: {} "
+    "selector names: {} ",
     "INCORRECT_NAME_IN_GOF_SELECTOR_FIELD")
 INCORRECT_RADIO_GROUP_CHOICE = (
     "Invalid radio group choice: {} for field: {}! Try with these valid "

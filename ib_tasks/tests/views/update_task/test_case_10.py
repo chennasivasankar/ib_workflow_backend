@@ -1,5 +1,5 @@
 """
-test with fields of gof
+test with invalid fields of gof
 """
 
 import pytest

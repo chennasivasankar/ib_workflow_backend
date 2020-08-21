@@ -1,8 +1,7 @@
 """
-test with user who does not have write permission for a gof
+test with user who does not have write permission for a field
+when there are no field write permission roles in db
 """
-import uuid
-from unittest.mock import patch
 
 import factory
 import pytest
@@ -15,7 +14,7 @@ from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01UpdateTaskAPITestCase(TestUtils):
+class TestCase13UpdateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -23,20 +22,29 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        TaskFactory.reset_sequence()
+        GoFFactory.reset_sequence()
+        FieldFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence()
+        GoFToTaskTemplateFactory.reset_sequence()
+        GoFRoleFactory.reset_sequence()
+
+    @pytest.fixture(autouse=True)
     def setup(self, mocker):
         task_id = "IBWF-1"
         template_id = "TEMPLATE-1"
         gof_ids = ["GOF-1", "GOF-2"]
         field_ids = ["FIELD-1", "FIELD-2", "FIELD-3", "FIELD-4"]
-        gof_write_permission_roles = ["FIN_GOF_CREATOR", "FIN_GOF_EDITOR"]
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
-        valid_roles = get_user_role_ids(mocker)
+        user_roles_mock_method = get_user_role_ids(mocker)
+        user_roles = user_roles_mock_method.return_value
         gofs = GoFFactory.create_batch(size=len(gof_ids),
                                        gof_id=factory.Iterator(gof_ids))
         gof_roles = GoFRoleFactory.create_batch(
-            size=2, gof=factory.Iterator(gofs),
-            role=factory.Iterator(gof_write_permission_roles),
+            size=len(gofs), role=factory.Iterator(user_roles),
+            gof=factory.Iterator(gofs),
             permission_type=PermissionTypes.WRITE.value
         )
         fields = [
@@ -100,12 +108,8 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
-        user_id = "b913daae-e562-4267-bf38-c8d0b5df6d6f"
-        with patch('uuid.uuid4') as uuid_mock:
-            uuid_mock.return_value = uuid.UUID(
-                int=0x12345678123456781234567812345678)
-            self.make_api_call(body=body,
-                               path_params=path_params,
-                               query_params=query_params,
-                               headers=headers,
-                               snapshot=snapshot)
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)

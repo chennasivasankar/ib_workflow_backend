@@ -1,19 +1,20 @@
 """
 test with user who does not have write permission for a gof
-when gof write permission roles are empty in db for a gof
+when there are gof write permission roles in db for given gofs
 """
 
 import factory
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
+from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
-    TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory
+    TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, GoFRoleFactory
 from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase12UpdateTaskAPITestCase(TestUtils):
+class TestCase11UpdateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -34,11 +35,17 @@ class TestCase12UpdateTaskAPITestCase(TestUtils):
         template_id = "TEMPLATE-1"
         gof_ids = ["GOF-1", "GOF-2"]
         field_ids = ["FIELD-1", "FIELD-2", "FIELD-3", "FIELD-4"]
+        gof_write_permission_roles = ["FIN_GOF_CREATOR"]
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
         user_roles_mock_method = get_user_role_ids(mocker)
         gofs = GoFFactory.create_batch(size=len(gof_ids),
                                        gof_id=factory.Iterator(gof_ids))
+        gof_roles = GoFRoleFactory.create_batch(
+            size=2, gof=factory.Iterator(gofs),
+            role=factory.Iterator(gof_write_permission_roles),
+            permission_type=PermissionTypes.WRITE.value
+        )
         fields = [
             FieldFactory.create(field_id=field_ids[0], gof=gofs[0]),
             FieldFactory.create(field_id=field_ids[1], gof=gofs[0]),
