@@ -124,7 +124,7 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
             immediate_superior_user_id_with_member_ids_dto.immediate_superior_user_id
         from ib_iam.models import UserTeam
         user_team_object = UserTeam.objects.get(
-            user_id=immediate_superior_user_id)
+            user_id=immediate_superior_user_id, team_id=team_id)
         UserTeam.objects.filter(
             team_id=team_id,
             team_member_level__level_hierarchy=member_level_hierarchy,
