@@ -17,7 +17,7 @@ class TeamStorageImplementation(TeamStorageInterface):
     def get_teams_with_total_teams_count_dto(
             self, pagination_dto: PaginationDTO
     ) -> TeamsWithTotalTeamsCountDTO:
-        team_objects = Team.objects.all()
+        team_objects = Team.objects.all().order_by('name')
         total_teams_count = len(team_objects)
         offset = pagination_dto.offset
         limit = pagination_dto.limit
