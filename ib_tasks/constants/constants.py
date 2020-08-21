@@ -22,7 +22,6 @@ MULTI_VALUES_INPUT_FIELDS = [
     FieldTypes.CHECKBOX_GROUP.value, FieldTypes.MULTI_SELECT_FIELD.value,
     FieldTypes.MULTI_SELECT_LABELS.value
 ]
-
 GOOGLE_SHEET_NAME = "Vendor Configuration_v1 - Test"
 TASK_TEMPLATE_SUB_SHEET_TITLE = "Task Templates"
 GOF_SUB_SHEET_TITLE = "GOF"
