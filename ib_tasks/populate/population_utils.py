@@ -65,13 +65,13 @@ def populate_data():
 def delete_elastic_search_data():
     from elasticsearch_dsl import connections
     from django.conf import settings
-    from ib_tasks.documents.elastic_task import Task
+    from ib_tasks.documents.elastic_task import TASK_INDEX_NAME
     connections.create_connection(
         hosts=[settings.ELASTICSEARCH_ENDPOINT], timeout=20
     )
     from elasticsearch import Elasticsearch
     es = Elasticsearch(hosts=[settings.ELASTICSEARCH_ENDPOINT])
     indices = [
-        Task
+        TASK_INDEX_NAME
     ]
     es.delete_by_query(index=indices, body={"query": {"match_all": {}}})
