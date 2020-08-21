@@ -60,7 +60,8 @@ class GetSheetDataForStageActions:
                 Optional("Action Type"): str,
                 Optional("Transition Template ID"): str
 
-            }]
+            }],
+            ignore_extra_keys=True
         )
         try:
             schema.validate(actions_dict)

@@ -93,7 +93,8 @@ class AddNewUserInteractor(ValidationMixin):
         self._validate_email_and_throw_exception(email=email)
         self._validate_roles(role_ids=role_ids)
         self._validate_teams(team_ids=team_ids)
-        self._validate_company_id(company_id=company_id)
+        if company_id is not None:
+            self._validate_company_id(company_id=company_id)
 
     def _create_user_in_ib_users(self, email, name):
         new_user_id = self._create_user_account_with_email(email=email)
