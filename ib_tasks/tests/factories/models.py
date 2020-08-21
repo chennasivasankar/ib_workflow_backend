@@ -269,19 +269,6 @@ class CurrentTaskStageModelFactory(factory.django.DjangoModelFactory):
     stage = factory.SubFactory(StageModelFactory)
 
 
-class TaskLogFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = TaskLog
-
-    task = factory.SubFactory(TaskFactory)
-    task_json = """ values"""
-    action = factory.SubFactory(StageActionFactory)
-    acted_at = "2020-10-25 12:00:00"
-    user_id = factory.sequence(
-        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
-            counter))
-
-
 class FilterFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Filter
