@@ -39,8 +39,8 @@ def validation_for_list_of_status_dict(status_dict: List[Dict]):
         [{
             "task_template_id": str,
             "status_variable_id": str
-        }]
-
+        }],
+        ignore_extra_keys=True
     )
 
     try:
