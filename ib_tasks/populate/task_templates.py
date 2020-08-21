@@ -5,10 +5,9 @@ from ib_tasks.populate.populate_template import PopulateTemplate
 
 class PopulateTaskTemplates(PopulateTemplate):
 
-    def populate_task_templates(self):
+    def populate_task_templates(self, spread_sheet_name: str):
         from ib_tasks.utils.get_google_sheet import get_google_sheet
-        from ib_tasks.constants.constants import GOOGLE_SHEET_NAME
-        sheet = get_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
+        sheet = get_google_sheet(sheet_name=spread_sheet_name)
 
         from ib_tasks.constants.constants import TASK_TEMPLATE_SUB_SHEET_TITLE
         task_templates_dicts = \
