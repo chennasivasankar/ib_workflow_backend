@@ -11,7 +11,7 @@ class UserDetails(models.Model):
                                 blank=True, related_name="users")
 
 
-class TeamUser(models.Model):
+class UserTeam(models.Model):
     user_id = models.CharField(max_length=1000)
     team_member_level = models.ForeignKey(
         "TeamMemberLevel", on_delete=models.SET_NULL,

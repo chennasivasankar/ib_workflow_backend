@@ -1,5 +1,5 @@
 from ib_iam.tests.factories.models import (
-    UserDetailsFactory, TeamFactory, TeamUserFactory
+    UserDetailsFactory, TeamFactory, UserTeamFactory
 )
 import pytest
 
@@ -38,7 +38,7 @@ def create_teams():
 
 @pytest.fixture()
 def create_members(create_teams):
-    TeamUserFactory.reset_sequence(1)
+    UserTeamFactory.reset_sequence(1)
     team_members = [
         {
             "team_id": team_ids[0],
@@ -55,7 +55,7 @@ def create_members(create_teams):
 
     ]
     team_member_objects = [
-        TeamUserFactory.create(team_id=team["team_id"], user_id=user_id)
+        UserTeamFactory.create(team_id=team["team_id"], user_id=user_id)
         for team in team_members for user_id in team["user_ids"]
     ]
     return team_member_objects

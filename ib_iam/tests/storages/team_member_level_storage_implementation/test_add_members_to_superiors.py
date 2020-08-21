@@ -25,9 +25,9 @@ class TestAddMembersToSuperiors:
             "20be920b-7b4c-49e7-8adb-41a0c18da848",
             "30be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
-        from ib_iam.tests.factories.models import TeamUserFactory
+        from ib_iam.tests.factories.models import UserTeamFactory
         user_team_objects_of_level_one = [
-            TeamUserFactory(
+            UserTeamFactory(
                 user_id=user_id,
                 team=team_object,
                 team_member_level=team_member_level_object
@@ -46,9 +46,9 @@ class TestAddMembersToSuperiors:
             "50be920b-7b4c-49e7-8adb-41a0c18da848",
             "60be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
-        from ib_iam.tests.factories.models import TeamUserFactory
+        from ib_iam.tests.factories.models import UserTeamFactory
         user_team_objects = [
-            TeamUserFactory(
+            UserTeamFactory(
                 user_id=user_id,
                 team=team_object,
                 team_member_level=team_member_level_object
@@ -101,8 +101,8 @@ class TestAddMembersToSuperiors:
         )
 
         # Assert
-        from ib_iam.models import TeamUser
-        user_team_objects = TeamUser.objects.filter(
+        from ib_iam.models import UserTeam
+        user_team_objects = UserTeam.objects.filter(
             team_id=team_id
         )
         user_team_list = user_team_objects.values(

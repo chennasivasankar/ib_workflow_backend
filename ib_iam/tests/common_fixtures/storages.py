@@ -1,7 +1,7 @@
 import pytest
 
 from ib_iam.tests.factories.models import UserDetailsFactory, CompanyFactory, \
-    TeamUserFactory, TeamFactory, RoleFactory, UserRoleFactory
+    UserTeamFactory, TeamFactory, RoleFactory, UserRoleFactory
 
 from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
 from ib_iam.tests.factories.storage_dtos \
@@ -12,7 +12,7 @@ from ib_iam.tests.factories.storage_dtos \
 def reset_sequence():
     UserDetailsFactory.reset_sequence(0)
     CompanyFactory.reset_sequence(0)
-    TeamUserFactory.reset_sequence(0)
+    UserTeamFactory.reset_sequence(0)
     UserRoleFactory.reset_sequence(0)
     RoleFactory.reset_sequence(0)
     TeamFactory.reset_sequence(0)
@@ -58,7 +58,7 @@ def users_team():
     for team_id in teams:
         team = TeamFactory.create(team_id=team_id)
         for i in range(1, 4):
-            user = TeamUserFactory.create(user_id=f"user{i}", team=team)
+            user = UserTeamFactory.create(user_id=f"user{i}", team=team)
             users.append(user)
     return users
 

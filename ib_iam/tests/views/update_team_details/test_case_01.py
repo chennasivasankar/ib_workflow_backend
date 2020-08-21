@@ -4,7 +4,7 @@
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...factories.models import TeamFactory, TeamUserFactory, \
+from ...factories.models import TeamFactory, UserTeamFactory, \
     UserDetailsFactory
 
 
@@ -19,13 +19,13 @@ class TestCase01UpdateTeamDetailsAPITestCase(TestUtils):
     def setup(self, api_user):
         user_id = str(api_user.user_id)
         UserDetailsFactory.reset_sequence(1)
-        TeamUserFactory.reset_sequence(1)
+        UserTeamFactory.reset_sequence(1)
         TeamFactory.reset_sequence(1)
         UserDetailsFactory(user_id=user_id, is_admin=True)
         team_id = "f2c02d98-f311-4ab2-8673-3daa00757002"
         team = TeamFactory.create(team_id=team_id)
         for user_id in ["2", "3"]:
-            TeamUserFactory.create(team=team, user_id=user_id)
+            UserTeamFactory.create(team=team, user_id=user_id)
             UserDetailsFactory.create(user_id=user_id)
         return team_id
 

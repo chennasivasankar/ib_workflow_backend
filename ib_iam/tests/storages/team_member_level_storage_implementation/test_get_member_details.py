@@ -26,9 +26,9 @@ class TestGetMemberDetails:
             "20be920b-7b4c-49e7-8adb-41a0c18da848",
             "30be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
-        from ib_iam.tests.factories.models import TeamUserFactory
+        from ib_iam.tests.factories.models import UserTeamFactory
         user_team_objects = [
-            TeamUserFactory(
+            UserTeamFactory(
                 user_id=user_id,
                 team=team_object,
                 team_member_level=team_member_level_object

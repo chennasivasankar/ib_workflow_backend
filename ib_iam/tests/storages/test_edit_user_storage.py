@@ -2,7 +2,7 @@ import pytest
 
 from ib_iam.storages.user_storage_implementation import UserStorageImplementation
 from ib_iam.tests.factories.models \
-    import CompanyFactory, TeamFactory, RoleFactory, UserDetailsFactory, TeamUserFactory, UserRoleFactory
+    import CompanyFactory, TeamFactory, RoleFactory, UserDetailsFactory, UserTeamFactory, UserRoleFactory
 
 
 @pytest.fixture()
@@ -29,7 +29,7 @@ def user_teams():
                 "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
     teams = [TeamFactory.create(team_id=team_id)
              for team_id in team_ids]
-    TeamUserFactory.create(user_id="ef6d1fc6-ac3f-4d2d-a983-752c992e8444",
+    UserTeamFactory.create(user_id="ef6d1fc6-ac3f-4d2d-a983-752c992e8444",
                            team=teams[0])
 
 
@@ -112,8 +112,8 @@ class TestEditUserStorage:
             user_id=user_id, team_ids=team_ids)
 
         # Assert
-        from ib_iam.models import TeamUser
-        user_objs = TeamUser.objects.filter(user_id=user_id)
+        from ib_iam.models import UserTeam
+        user_objs = UserTeam.objects.filter(user_id=user_id)
         assert len(user_objs) == len(team_ids)
         assert str(user_objs[0].team_id) == team_ids[0]
 
@@ -143,8 +143,8 @@ class TestEditUserStorage:
         storage.remove_teams_for_user(user_id=user_id)
 
         # Assert
-        from ib_iam.models import TeamUser
-        user_objs = TeamUser.objects.filter(user_id=user_id)
+        from ib_iam.models import UserTeam
+        user_objs = UserTeam.objects.filter(user_id=user_id)
         assert len(user_objs) == 0
 
     @pytest.mark.django_db
