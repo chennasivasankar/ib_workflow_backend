@@ -76,9 +76,11 @@ class TestCase01UserSignupAPITestCase(TestUtils):
         create_user_profile_adapter_mock = create_user_profile_adapter_mock(
             mocker=mocker)
         create_user_profile_adapter_mock.return_value = None
-        from ib_iam.tests.common_fixtures.adapters.user_service import \
-            update_user_profile_success_adapter_mock
-        update_user_profile_success_adapter_mock(mocker=mocker)
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
+            update_is_email_verified_value_mock
+        update_is_email_verified_value_mock = update_is_email_verified_value_mock(
+            mocker=mocker)
+        update_is_email_verified_value_mock.return_value = None
         send_verification_email_mock = self.send_verification_email_mock(
             mocker=mocker)
         send_verification_email_mock.return_value = None

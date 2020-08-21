@@ -16,8 +16,11 @@ class TestCase01GetFiltersAPITestCase(TestUtils):
 
     @pytest.fixture(autouse=True)
     def setup(self, api_user):
-        from ib_tasks.tests.factories.models \
-            import FilterConditionFactory, FieldFactory, FilterFactory
+        from ib_tasks.tests.factories.models import (
+            FilterConditionFactory, FieldFactory,
+            FilterFactory, TaskTemplateFactory
+        )
+        TaskTemplateFactory.reset_sequence()
         FilterConditionFactory.reset_sequence(1)
         FieldFactory.reset_sequence(1)
         FilterFactory.reset_sequence(1)
