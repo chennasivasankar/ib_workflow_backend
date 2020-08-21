@@ -9,7 +9,7 @@ class TestGetExistingStageIds:
 
     @pytest.fixture
     def populate_data(self):
-        TaskTemplateStatusVariableFactory.reset_sequence()
+        TaskTemplateStatusVariableFactory.reset_sequence(1)
         TaskTemplateStatusVariableFactory.create_batch(size=2)
 
     def test_get_existing_stage_ids(self, populate_data):
