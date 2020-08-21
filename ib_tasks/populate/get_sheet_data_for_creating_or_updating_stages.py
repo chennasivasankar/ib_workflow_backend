@@ -8,9 +8,11 @@ class GetSheetDataForStages:
         from ib_tasks.populate.get_data_from_sheet import GetDataFromSheet
         return GetDataFromSheet()
 
-    def get_data_from_stage_id_and_values_sub_sheet(self):
+    def get_data_from_stage_id_and_values_sub_sheet(self,
+                                                    spread_sheet_name: str):
         from ib_tasks.constants.constants import STAGE_ID_AND_VALUES_SUB_SHEET
         field_records = self.data_sheet.get_data_from_sub_sheet(
+            spread_sheet_name=spread_sheet_name,
             sub_sheet_name=STAGE_ID_AND_VALUES_SUB_SHEET
         )
 

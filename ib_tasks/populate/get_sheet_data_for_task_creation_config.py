@@ -13,9 +13,11 @@ class GetSheetDataForTaskCreationConfig:
         from ib_tasks.populate.get_data_from_sheet import GetDataFromSheet
         return GetDataFromSheet()
 
-    def get_data_from_task_creation_config_sub_sheet(self):
+    def get_data_from_task_creation_config_sub_sheet(self,
+                                                     spread_sheet_name: str):
         from ib_tasks.constants.constants import TASK_CREATION_CONFIG_SUB_SHEET
         field_records = self.data_sheet.get_data_from_sub_sheet(
+            spread_sheet_name=spread_sheet_name,
             sub_sheet_name=TASK_CREATION_CONFIG_SUB_SHEET
         )
         self._validation_for_task_creation_config_dict(field_records)
