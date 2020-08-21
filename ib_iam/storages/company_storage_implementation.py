@@ -1,17 +1,16 @@
 from typing import List
+
 from ib_iam.interactors.storage_interfaces.company_storage_interface import \
     CompanyStorageInterface
 from ib_iam.interactors.storage_interfaces.dtos import \
-    CompanyNameLogoAndDescriptionDTO
+    CompanyNameLogoAndDescriptionDTO, CompanyDTO, CompanyIdWithEmployeeIdsDTO
 from ib_iam.models import UserDetails, Company
-from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDTO, CompanyIdWithEmployeeIdsDTO)
 
 
 class CompanyStorageImplementation(CompanyStorageInterface):
 
     def get_company_dtos(self) -> List[CompanyDTO]:
-        company_objects = Company.objects.all()
+        company_objects = Company.objects.all().order_by('name')
         company_dtos = [
             self._convert_company_object_to_company_dto(
                 company_object=company_object
