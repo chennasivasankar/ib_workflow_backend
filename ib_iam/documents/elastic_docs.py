@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from django.conf import settings
-from elasticsearch_dsl import Document, Text, Integer
+from elasticsearch_dsl import Document, Text, Integer, Completion
 
 USER_INDEX_NAME = 'user-{}'.format(settings.STAGE)
 COUNTRY_INDEX_NAME = 'country-{}'.format(settings.STAGE)
@@ -33,7 +33,7 @@ class ElasticCountryDTO:
 
 class Country(Document):
     country_id = Integer()
-    country_name = Text()
+    country_name = Completion()
 
     class Index:
         name = COUNTRY_INDEX_NAME
@@ -47,7 +47,7 @@ class ElasticStateDTO:
 
 class State(Document):
     state_id = Integer()
-    state_name = Text()
+    state_name = Completion()
 
     class Index:
         name = STATE_INDEX_NAME
@@ -61,7 +61,7 @@ class ElasticCityDTO:
 
 class City(Document):
     city_id = Integer()
-    city_name = Text()
+    city_name = Completion()
 
     class Index:
         name = CITY_INDEX_NAME
