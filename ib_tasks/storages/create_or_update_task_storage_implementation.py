@@ -346,3 +346,6 @@ class CreateOrUpdateTaskStorageImplementation(
 
     def get_initial_stage_for_task_template(self, template_id: str) -> str:
         pass
+
+    def get_task_ids(self) -> List[int]:
+        return list(Task.objects.values_list('id', flat=True))

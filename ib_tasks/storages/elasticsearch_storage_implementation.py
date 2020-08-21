@@ -37,8 +37,8 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         stages = elastic_task_dto.stages
         field_objects = self._get_field_objects(field_dtos=field_dtos)
         stage_objects = self.get_stage_objects(stages_ids=stages)
-        task_obj.fields = field_objects
-        task_obj.stages = stage_objects
+        task_obj.add_fields(field_dtos=field_dtos)
+        task_obj.add_stages(stages=stages)
         task_obj.save()
         elastic_task_id = task_obj.meta.id
         return elastic_task_id
@@ -235,7 +235,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             current_queue = Q('term', template_id__keyword=item.template_id) \
                             & Q('term',
                                 fields__field_id__keyword=item.field_id) \
-                            & Q('term', fields__value__keyword=item.value)
+                            & Q('term', fields__value=item.value)
             if counter == 0:
                 query = current_queue
             else:

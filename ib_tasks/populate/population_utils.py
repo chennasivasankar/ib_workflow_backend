@@ -1,7 +1,7 @@
+from typing import List
+
 from django.db import transaction
 
-from ib_iam.populate.add_roles_details import RoleDetails
-from ib_tasks.constants.constants import GOOGLE_SHEET_NAME, ROLES_SUB_SHEET
 from ib_tasks.populate.get_sheet_data_for_creating_or_updating_stages import \
     GetSheetDataForStages
 from ib_tasks.populate.get_sheet_data_for_stage_actions import \
@@ -75,3 +75,35 @@ def delete_elastic_search_data():
         TASK_INDEX_NAME
     ]
     es.delete_by_query(index=indices, body={"query": {"match_all": {}}})
+
+
+def create_tasks_in_elasticsearch_data(task_ids: List[int]):
+    from ib_tasks.storages.elasticsearch_storage_implementation import \
+        ElasticSearchStorageImplementation
+    elasticsearch_storage = ElasticSearchStorageImplementation()
+    from ib_tasks.storages.fields_storage_implementation import \
+        FieldsStorageImplementation
+    field_storage = FieldsStorageImplementation()
+    from ib_tasks.storages.tasks_storage_implementation import \
+        TasksStorageImplementation
+    task_storage = TasksStorageImplementation()
+    from ib_tasks.storages.create_or_update_task_storage_implementation import \
+        CreateOrUpdateTaskStorageImplementation
+    storage = CreateOrUpdateTaskStorageImplementation()
+    from ib_tasks.storages.storage_implementation import \
+        StagesStorageImplementation
+    stage_storage = StagesStorageImplementation()
+    task_ids = storage.get_task_ids()
+    from ib_tasks.interactors.create_tasks_into_elasticsearch_interactor import \
+        CreateDataIntoElasticsearchInteractor
+    interactor = CreateDataIntoElasticsearchInteractor(
+        elasticsearch_storage=elasticsearch_storage,
+        storage=storage,
+        task_storage=task_storage,
+        stage_storage=stage_storage,
+        field_storage=field_storage
+    )
+    for task_id in task_ids:
+        interactor.create_task_in_elasticsearch_storage(
+            task_id=task_id
+        )
