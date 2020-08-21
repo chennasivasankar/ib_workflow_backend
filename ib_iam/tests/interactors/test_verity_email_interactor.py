@@ -78,13 +78,12 @@ class TestVerifyEmailInteractor:
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
             name="Baba", user_id=user_id, is_email_verify=False)
-        from ib_iam.tests.common_fixtures.adapters.user_service import \
-            update_user_profile_success_adapter_mock
-        update_user_profile_success_adapter_mock = \
-            update_user_profile_success_adapter_mock(mocker=mocker)
-        user_profile_dto = UserProfileDTOFactory.create(
-            name="Baba", is_email_verify=True, user_id=user_id, email=None,
-            profile_pic_url=None)
+
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
+            update_is_email_verified_value_mock
+        update_is_email_verified_value_mock = update_is_email_verified_value_mock(
+            mocker=mocker)
+        update_is_email_verified_value_mock.return_value = None
         presenter_mock.get_response_for_verified_email.return_value \
             = Mock()
 
@@ -92,7 +91,6 @@ class TestVerifyEmailInteractor:
             user_id=user_id, presenter=presenter_mock)
 
         get_user_profile_dto_mock.assert_called_once_with(user_id=user_id)
-        update_user_profile_success_adapter_mock.assert_called_once_with(
-            user_id=user_id,
-            user_profile_dto=user_profile_dto)
+        update_is_email_verified_value_mock.assert_called_once_with(
+            user_id=user_id, is_email_verified=True)
         presenter_mock.get_response_for_verified_email.assert_called_once()
