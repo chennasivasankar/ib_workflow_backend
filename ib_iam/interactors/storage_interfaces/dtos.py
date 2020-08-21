@@ -4,6 +4,14 @@ from typing import Optional, List
 
 
 @dataclass
+class UserProfileDTO:
+    user_id: str
+    name: str
+    email: str
+    profile_pic_url: str
+
+
+@dataclass
 class UserDTO:
     user_id: str
     is_admin: bool
@@ -39,8 +47,8 @@ class UserTeamDTO:
 @dataclass
 class UserCompanyDTO:
     user_id: str
-    company_id: str
-    company_name: str
+    company_id: Optional[str] = None
+    company_name: Optional[str] = None
 
 
 @dataclass
@@ -122,8 +130,8 @@ class EmployeeDTO:
 @dataclass
 class CompanyNameLogoAndDescriptionDTO:
     name: str
-    description: str
-    logo_url: Optional[str] = None
+    description: Optional[str]
+    logo_url: Optional[str]
 
 
 @dataclass
@@ -155,3 +163,16 @@ class CompanyWithCompanyIdAndUserIdsDTO:
     description: str
     logo_url: Optional[str]
     user_ids: List[str]
+
+
+@dataclass
+class TeamMemberLevelDetailsDTO:
+    team_member_level_id: str
+    team_member_level_name: str
+    level_hierarchy: int
+
+
+@dataclass
+class MemberDTO:
+    member_id: str
+    immediate_superior_team_user_id: str = None

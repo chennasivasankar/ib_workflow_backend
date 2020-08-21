@@ -21,8 +21,6 @@ class GetDiscussionInteractor:
             filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO,
             presenter: GetDiscussionsPresenterInterface
     ):
-        from ib_discussions.exceptions.custom_exceptions import \
-            EntityIdNotFound, InvalidEntityTypeForEntityId
         try:
             response = self._get_discussions_response(
                 entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
@@ -34,11 +32,6 @@ class GetDiscussionInteractor:
             response = presenter.raise_exception_for_invalid_offset()
         except InvalidLimit:
             response = presenter.raise_exception_for_invalid_limit()
-        except EntityIdNotFound:
-            response = presenter.raise_exception_for_entity_id_not_found()
-        except InvalidEntityTypeForEntityId:
-            response = presenter. \
-                raise_exception_for_invalid_entity_type_for_entity_id()
         except InvalidUserId:
             response = presenter.raise_exception_for_invalid_user_id()
         return response

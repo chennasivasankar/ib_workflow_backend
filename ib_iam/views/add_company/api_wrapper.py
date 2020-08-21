@@ -6,7 +6,8 @@ from ib_iam.interactors.storage_interfaces.dtos import \
     CompanyWithUserIdsDTO
 from ib_iam.presenters.add_company_presenter_implementation import \
     AddCompanyPresenterImplementation
-from ib_iam.storages.company_storage_implementation import CompanyStorageImplementation
+from ib_iam.storages.company_storage_implementation import \
+    CompanyStorageImplementation
 from ...storages.user_storage_implementation import UserStorageImplementation
 
 
@@ -16,8 +17,8 @@ def api_wrapper(*args, **kwargs):
     user_id = str(user_object.user_id)
     request_data = kwargs["request_data"]
     name = request_data["name"]
-    description = request_data["description"]
-    logo_url = request_data["logo_url"]
+    description = request_data.get("description", None)
+    logo_url = request_data.get("logo_url", None)
     user_ids = request_data["employee_ids"]
 
     company_storage = CompanyStorageImplementation()
@@ -26,10 +27,9 @@ def api_wrapper(*args, **kwargs):
     interactor = CompanyInteractor(company_storage=company_storage,
                                    user_storage=user_storage)
 
-    company_with_user_ids_dto = CompanyWithUserIdsDTO(name=name,
-                                                      logo_url=logo_url,
-                                                      description=description,
-                                                      user_ids=user_ids)
+    company_with_user_ids_dto = CompanyWithUserIdsDTO(
+        name=name, logo_url=logo_url, description=description,
+        user_ids=user_ids)
 
     response_data = interactor.add_company_wrapper(
         user_id=user_id,
