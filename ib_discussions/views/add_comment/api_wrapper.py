@@ -15,6 +15,7 @@ def api_wrapper(*args, **kwargs):
     request_data = kwargs["request_data"]
     comment_content = request_data["comment_content"]
     mention_user_ids = request_data["mention_user_ids"]
+    mention_user_ids = [str(mention_user_id) for mention_user_id in mention_user_ids]
     multimedia_list = request_data["multimedia"]
 
     from ib_discussions.tests.factories.interactor_dtos import \
