@@ -143,7 +143,7 @@ class GetTaskStagesHistory(GetTaskIdForTaskDisplayIdMixin):
         ]
         from ib_tasks.adapters.service_adapter import get_service_adapter
         adapter = get_service_adapter()
-        log_duration_dtos = adapter.assignee_details_service\
+        log_duration_dtos = adapter.utility_service\
             .get_log_duration_dtos(entity_dtos=entity_dtos)
         return log_duration_dtos
 

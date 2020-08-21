@@ -26,6 +26,11 @@ class ServiceAdapter:
         from .search_service import SearchService
         return SearchService()
 
+    @property
+    def utility_service(self):
+        from .utility_tools_service import UtilityToolsService
+        return UtilityToolsService()
+
 
 def get_service_adapter():
     return ServiceAdapter()

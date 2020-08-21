@@ -17,7 +17,9 @@ class TestGetFiltersDetails:
         filter_id = 1
 
         # Act
-        response = storage.enable_filter_status(filter_id=filter_id)
+        response = storage.update_filter_status(
+            filter_id=filter_id, is_selected=Status.ENABLED.value
+        )
 
         # Assert
         from ib_tasks.models import Filter

@@ -37,12 +37,11 @@ class TestGetEnableMultipleGofIds:
         GOFMultipleEnableDTOFactory.reset_sequence(1)
         expected = GOFMultipleEnableDTOFactory.create_batch(size=2)
         expected.append(GOFMultipleEnableDTOFactory(multiple_status=False))
-        gof_ids = ['gof_1', 'gof_2', 'gof_3']
         template_id = "template_1"
 
         # Act
         response = storage.get_enable_multiple_gofs_field_to_gof_ids(
-            template_id=template_id, gof_ids=gof_ids
+            template_id=template_id
         )
 
         # Assert
