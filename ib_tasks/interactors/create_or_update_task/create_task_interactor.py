@@ -28,7 +28,7 @@ from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId
 from ib_tasks.interactors.create_or_update_task \
     .template_gofs_fields_base_validations import \
     TemplateGoFsFieldsBaseValidationsInteractor
@@ -101,7 +101,7 @@ class CreateTaskInteractor:
         try:
             return self._prepare_create_task_response(
                 task_dto, presenter)
-        except InvalidTaskTemplateIds as err:
+        except InvalidTaskTemplateDBId as err:
             return presenter.raise_invalid_task_template_ids(err)
         except InvalidActionException as err:
             return presenter.raise_invalid_action_id(err)
@@ -292,13 +292,12 @@ class CreateTaskInteractor:
 
     def _validate_task_template_id(
             self, task_template_id: str
-    ) -> Optional[InvalidTaskTemplateIds]:
+    ) -> Optional[InvalidTaskTemplateDBId]:
         task_template_existence = \
             self.task_template_storage.check_is_template_exists(
                 template_id=task_template_id)
         if not task_template_existence:
-            raise InvalidTaskTemplateIds(
-                invalid_task_template_ids=[task_template_id])
+            raise InvalidTaskTemplateDBId(task_template_id)
         return
 
     def _prepare_task_gof_fields_dtos(

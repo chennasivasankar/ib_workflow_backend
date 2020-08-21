@@ -89,8 +89,6 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_templat
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_ids res_status'] = 'INVALID_TASK_TEMPLATE_IDS'
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_ids response'] = "invalid task template ids: ['template_1', 'template_2']"
-
 snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_action_id http_status_code'] = 400
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_action_id res_status'] = 'INVALID_ACTION_ID'
@@ -279,3 +277,5 @@ snapshots['TestCreateTaskPresenterImplementation.test_get_create_task_response c
 snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_gof_writable_permission response'] = "user needs write access on gof gof_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission response'] = "user needs write access on field field_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_ids response'] = 'invalid task template ids: template_1'

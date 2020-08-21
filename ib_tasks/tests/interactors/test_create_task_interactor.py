@@ -152,7 +152,7 @@ class TestCreateTaskInteractor:
         presenter_mock.raise_invalid_task_template_ids.assert_called_once()
         call_args = presenter_mock.raise_invalid_task_template_ids.call_args
         error_object = call_args[0][0]
-        invalid_template_id = error_object.invalid_task_template_ids[0]
+        invalid_template_id = error_object.task_template_id
         assert invalid_template_id == given_template_id
 
     def test_with_invalid_action_id(
