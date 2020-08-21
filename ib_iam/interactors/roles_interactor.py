@@ -81,6 +81,9 @@ class RolesInteractor:
     def get_valid_role_ids(self, role_ids: List[str]):
         role_ids = list(set(role_ids))
         valid_role_ids = self.storage.get_valid_role_ids(role_ids=role_ids)
+        from ib_iam.constants.config import ALL_ROLES_ID
+        if ALL_ROLES_ID in role_ids:
+            valid_role_ids.append(ALL_ROLES_ID)
         return valid_role_ids
 
     def get_user_role_ids(self, user_id: str) -> List[str]:

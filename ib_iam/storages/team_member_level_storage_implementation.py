@@ -14,12 +14,8 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
             self, team_id: str,
             team_member_level_dtos: List[TeamMemberLevelDTO]):
         from ib_iam.models.team_member_level import TeamMemberLevel
-        level_hierarchies = [
-            team_member_level_dto.level_hierarchy
-            for team_member_level_dto in team_member_level_dtos
-        ]
         TeamMemberLevel.objects.filter(
-            team_id=team_id, level_hierarchy__in=level_hierarchies).delete()
+            team_id=team_id).delete()
         team_member_level_objects = [
             TeamMemberLevel(
                 team_id=team_id,

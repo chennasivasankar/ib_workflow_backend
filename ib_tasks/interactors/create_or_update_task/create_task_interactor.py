@@ -29,12 +29,16 @@ from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId
+from ib_tasks.interactors\
+    .call_action_logic_function_and_update_task_status_variables_interactor \
+    import \
+    InvalidMethodFound
 from ib_tasks.interactors.create_or_update_task \
     .template_gofs_fields_base_validations import \
     TemplateGoFsFieldsBaseValidationsInteractor
 from ib_tasks.interactors \
     .get_next_stages_random_assignees_of_a_task_interactor import \
-    InvalidModulePathFound, InvalidMethodFound
+    InvalidModulePathFound
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \

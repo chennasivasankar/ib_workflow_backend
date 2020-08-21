@@ -1,8 +1,5 @@
-from datetime import timedelta
 from typing import List
-
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
-from ib_tasks.interactors.stages_dtos import EntityTypeDTO, LogDurationDTO
 
 
 class AssigneeDetailsService:
@@ -26,15 +23,3 @@ class AssigneeDetailsService:
             for user_details_dto in user_details_dtos
         ]
         return assignee_details_dtos
-
-    def get_log_duration_dtos(
-            self, entity_dtos: List[EntityTypeDTO]
-    ) -> List[LogDurationDTO]:
-
-        return [
-            LogDurationDTO(
-                entity_id=entity_dto.entity_id,
-                duration=timedelta(seconds=300)
-            )
-            for entity_dto in entity_dtos
-        ]

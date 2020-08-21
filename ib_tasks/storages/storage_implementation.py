@@ -403,6 +403,19 @@ class StagesStorageImplementation(StageStorageInterface):
         permitted_user_role_ids_list = list(permitted_user_role_ids_queryset)
         return permitted_user_role_ids_list
 
+    def get_stage_ids_having_actions(self, user_roles: List[str]) -> List[str]:
+        stage_ids = ActionPermittedRoles.objects\
+            .filter(
+                Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+            )\
+            .values_list('action__stage_id', flat=True)
+        stage_ids = StagePermittedRoles.objects.filter(stage_id__in=stage_ids)\
+            .filter(
+                Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+            ).values_list('stage__stage_id', flat=True)
+        return sorted(list(set(stage_ids)))
+
+
 
 class StorageImplementation(StorageInterface):
 
@@ -565,7 +578,9 @@ class StorageImplementation(StorageInterface):
                 name=action_obj.name,
                 stage_id=action_obj.stage.stage_id,
                 button_text=action_obj.button_text,
-                button_color=action_obj.button_color
+                button_color=action_obj.button_color,
+                action_type=action_obj.action_type,
+                transition_template_id=action_obj.transition_template_id
             )
             for action_obj in action_objs
         ]

@@ -6,14 +6,12 @@ from ib_tasks.utils.get_google_sheet import get_google_sheet
 
 
 class PopulateGoFs:
-    def create_or_update_gofs(self):
-        from ib_tasks.constants.constants import (
-            GOOGLE_SHEET_NAME, GOF_SUB_SHEET_TITLE
-        )
+    def create_or_update_gofs(self, spread_sheet_name: str):
+        from ib_tasks.constants.constants import GOF_SUB_SHEET_TITLE
         from ib_tasks.interactors.create_or_update_gofs import \
             CreateOrUpdateGoFsInteractor
 
-        sheet = get_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
+        sheet = get_google_sheet(sheet_name=spread_sheet_name)
         gof_sheet = sheet.worksheet(GOF_SUB_SHEET_TITLE)
         gof_records = gof_sheet.get_all_records()
         complete_gof_details_dtos = self.prepare_complete_gof_details_dtos(

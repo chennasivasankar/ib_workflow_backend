@@ -13,12 +13,6 @@ snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_wit
 
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_with_invalid_task_display_id json_response'] = 'task_display_id is invalid task_id send valid task_id'
 
-snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_invalid_task_template_ids http_status_code'] = 400
-
-snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_invalid_task_template_ids res_status'] = 'INVALID_TASK_TEMPLATE_IDS'
-
-snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_invalid_task_template_ids json_response'] = "invalid task template ids: ['template_1', 'template_2']"
-
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_invalid_gof_ids http_status_code'] = 400
 
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_invalid_gof_ids res_status'] = 'INVALID_GOF_IDS'

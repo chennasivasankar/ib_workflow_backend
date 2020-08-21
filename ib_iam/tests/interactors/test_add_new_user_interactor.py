@@ -277,8 +277,6 @@ class TestAddNewUserIneractor:
         storage_mock.check_is_exists_company_id.return_value = True
         elastic_storage.create_elastic_user.return_value = elastic_user_id
         storage_mock.get_role_objs_ids.return_value = ids_of_role_objs
-        presenter_mock.raise_user_account_already_exist_with_this_email_exception. \
-            return_value = Mock()
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import create_user_account_adapter_mock, \
             create_user_profile_adapter_mock
@@ -321,8 +319,6 @@ class TestAddNewUserIneractor:
         )
         storage_mock.is_user_admin.return_value = True
         elastic_storage.create_elastic_user.return_value = elastic_user_id
-        presenter_mock.raise_user_account_already_exist_with_this_email_exception. \
-            return_value = Mock()
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import create_user_account_adapter_mock, \
             create_user_profile_adapter_mock
@@ -345,6 +341,53 @@ class TestAddNewUserIneractor:
         user_profile_adapter_mock.assert_called_once_with(
             user_id=new_user_id, user_profile_dto=user_profile_dto)
 
+    def test_add_new_user_when_company_is_none_adds_user_successfully(
+            self, storage_mock, presenter_mock, mocker, elastic_storage,
+            set_up):
+        # Arrange
+        user_id = "user_1"
+        new_user_id = "user1"
+        user_profile_dto = set_up[0]
+        add_user_details_dto = set_up[5]
+        add_user_details_dto.company_id = None
+        elastic_user_id = "elastic_user_1"
+        interactor = AddNewUserInteractor(
+            user_storage=storage_mock, elastic_storage=elastic_storage
+        )
+        storage_mock.is_user_admin.return_value = True
+        elastic_storage.create_elastic_user.return_value = elastic_user_id
+        from ib_iam.tests.common_fixtures.adapters.user_service \
+            import create_user_account_adapter_mock, \
+            create_user_profile_adapter_mock
+        user_account_adapter_mock = \
+            create_user_account_adapter_mock(mocker=mocker)
+        user_account_adapter_mock.return_value = new_user_id
+        user_profile_adapter_mock = \
+            create_user_profile_adapter_mock(mocker=mocker)
+        user_profile_adapter_mock.return_value = user_profile_dto
+
+        # Act
+        interactor.add_new_user_wrapper(
+            user_id=user_id,
+            add_user_details_dto=add_user_details_dto,
+            presenter=presenter_mock)
+
+        # Assert
+        user_account_adapter_mock.assert_called_once_with(
+            email=add_user_details_dto.email)
+        user_profile_adapter_mock.assert_called_once_with(
+            user_id=new_user_id, user_profile_dto=user_profile_dto)
+        storage_mock.check_are_valid_team_ids.assert_called_once_with(
+            team_ids=add_user_details_dto.team_ids)
+        storage_mock.is_user_admin.assert_called_once_with(user_id=user_id)
+        storage_mock.check_are_valid_role_ids.assert_called_once_with(
+            role_ids=add_user_details_dto.role_ids)
+        elastic_storage.create_elastic_user.assert_called_once_with(
+            user_id=new_user_id, name=add_user_details_dto.name)
+        elastic_storage.create_elastic_user_intermediary.assert_called_once_with(
+            elastic_user_id=elastic_user_id, user_id=new_user_id)
+
+
     def test_add_new_user(
             self, storage_mock, presenter_mock, mocker, elastic_storage,
             set_up):
@@ -359,8 +402,6 @@ class TestAddNewUserIneractor:
         )
         storage_mock.is_user_admin.return_value = True
         elastic_storage.create_elastic_user.return_value = elastic_user_id
-        presenter_mock.raise_user_account_already_exist_with_this_email_exception. \
-            return_value = Mock()
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import create_user_account_adapter_mock, \
             create_user_profile_adapter_mock

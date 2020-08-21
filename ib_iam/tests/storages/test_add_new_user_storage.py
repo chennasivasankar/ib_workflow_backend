@@ -41,12 +41,12 @@ def roles():
 class TestAddNewUserStorage:
 
     @pytest.mark.django_db
-    def test_create_user(self):
+    def test_create_user(self, company_id):
         # Arrange
         user_id = "user_1"
         name = "test_name"
         is_admin = True
-        company_id = 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
+        company_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8331"
         storage = UserStorageImplementation()
         CompanyFactory(company_id=company_id)
 
@@ -61,6 +61,31 @@ class TestAddNewUserStorage:
         user_object = UserDetails.objects.get(user_id=user_id)
 
         assert str(user_object.company_id) == company_id
+        assert user_object.name == name
+        assert user_object.user_id == user_id
+        assert user_object.is_admin == is_admin
+
+    @pytest.mark.django_db
+    def test_create_user(self):
+        # Arrange
+        user_id = "user_1"
+        name = "test_name"
+        is_admin = True
+        company_id = None
+        storage = UserStorageImplementation()
+        CompanyFactory(company_id=company_id)
+
+        # Act
+        storage.create_user(
+            company_id=company_id, is_admin=is_admin, user_id=user_id,
+            name=name
+        )
+
+        # Assert
+        from ib_iam.models import UserDetails
+        user_object = UserDetails.objects.get(user_id=user_id)
+
+        assert user_object.company_id == company_id
         assert user_object.name == name
         assert user_object.user_id == user_id
         assert user_object.is_admin == is_admin

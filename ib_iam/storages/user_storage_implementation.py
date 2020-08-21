@@ -1,6 +1,6 @@
-from typing import List
+from typing import List, Optional
 
-from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO, UserProfileDTO
+from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, CompanyDTO, \
@@ -81,7 +81,8 @@ class UserStorageImplementation(UserStorageInterface):
                       for team_id in team_ids]
         UserTeam.objects.bulk_create(user_teams)
 
-    def update_user_details(self, company_id: str, user_id: str, name: str):
+    def update_user_details(
+            self, company_id: Optional[str], user_id: str, name: str):
         from ib_iam.models import UserDetails
         user = UserDetails.objects.get(user_id=user_id)
         user.company_id = company_id
@@ -89,7 +90,7 @@ class UserStorageImplementation(UserStorageInterface):
         user.save()
 
     def create_user(self, is_admin: bool, user_id: str, name: str,
-                    company_id: str = None):
+                    company_id: Optional[str] = None):
         from ib_iam.models import UserDetails
         UserDetails.objects.create(
             user_id=user_id, is_admin=is_admin,
