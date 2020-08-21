@@ -14,7 +14,9 @@ class TestCasePopulateTasks:
             "action_name": "action_name_1",
             "roles": "ROLE_1",
             "button_text": "button_text_1",
-            "button_color": "button_color_1"
+            "button_color": "button_color_1",
+            "action_type": "NO VALIDATIONS",
+            "transition_template_id": "transition_id"
         }
         import json
         import pytest
@@ -27,7 +29,9 @@ class TestCasePopulateTasks:
                 "action_name": "action_name_1",
                 "roles": "ROLE_1",
                 "button_text": "button_text_1",
-                "button_color": "button_color_1"
+                "button_color": "button_color_1",
+                "action_type": "NO VALIDATIONS",
+                "transition_template_id": "transition_id"
             }
         ]
         from ib_tasks.populate.populate_task_initial_stage_actions_logic \
@@ -53,7 +57,9 @@ class TestCasePopulateTasks:
                 "action_name": "action_name_1",
                 "roles": "ROLE_1",
                 "button_text": "button_text_1",
-                "button_color": "button_color_1"
+                "button_color": "button_color_1",
+                "action_type": "NO VALIDATIONS",
+                "transition_template_id": "transition_id"
             }
         ]
         import pytest
@@ -67,8 +73,7 @@ class TestCasePopulateTasks:
             populate_tasks(tasks=tasks)
 
     @staticmethod
-    @mock.patch('builtins.open', new_callable=mock.mock_open)
-    def test_given_valid_key_creates_dtos(os_system, mocker):
+    def test_given_valid_key_creates_dtos(mocker):
         # Arrange
         tasks = [
             {
@@ -78,7 +83,9 @@ class TestCasePopulateTasks:
                 "action_name": "action_name_1",
                 "roles": "ROLE_1",
                 "button_text": "button_text_1",
-                "button_color": "button_color_1"
+                "button_color": "button_color_1",
+                "action_type": "NO VALIDATIONS",
+                "transition_template_id": "transition_id"
             }
         ]
         from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO
@@ -88,9 +95,11 @@ class TestCasePopulateTasks:
             action_name="action_name_1",
             logic="logic_1",
             roles=["ROLE_1"],
-            function_path='ib_tasks.populate.task_initial_stage_actions_logic.stage_1_action_name_1',
+            function_path='ib_tasks.populate.stage_actions_logic.stage_1_action_name_1',
             button_text="button_text_1",
-            button_color="button_color_1"
+            button_color="button_color_1",
+            action_type="NO VALIDATIONS",
+            transition_template_id="transition_id"
         )]
         from ib_tasks.populate.populate_task_initial_stage_actions_logic \
             import populate_tasks
@@ -103,6 +112,3 @@ class TestCasePopulateTasks:
 
         # Assert
         mock_obj.called_once()
-        os_system.assert_called_with(
-            'ib_tasks/populate/task_initial_stage_actions_logic.py', "a"
-        )

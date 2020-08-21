@@ -1,17 +1,22 @@
 """
-test with invalid gofs to task_template
+test with user who does not have write permission for a gof
 """
+import uuid
+from unittest.mock import patch
 
+import factory
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
+from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
-    TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory
+    TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, \
+    GoFRoleFactory, FieldRoleFactory
 from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase08UpdateTaskAPITestCase(TestUtils):
+class TestCase12UpdateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -25,6 +30,8 @@ class TestCase08UpdateTaskAPITestCase(TestUtils):
         FieldFactory.reset_sequence()
         TaskTemplateFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
+        FieldRoleFactory.reset_sequence()
+        GoFRoleFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
@@ -32,21 +39,38 @@ class TestCase08UpdateTaskAPITestCase(TestUtils):
         template_id = "TEMPLATE-1"
         gof_ids = ["GOF-1", "GOF-2"]
         field_ids = ["FIELD-1", "FIELD-2", "FIELD-3", "FIELD-4"]
-
-        import factory
+        gof_write_permission_roles = ["FIN_GOF_CREATOR", "FIN_GOF_EDITOR"]
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids
+        valid_roles = get_user_role_ids(mocker)
         gofs = GoFFactory.create_batch(size=len(gof_ids),
                                        gof_id=factory.Iterator(gof_ids))
-        fields = FieldFactory.create_batch(
-            size=len(field_ids), field_id=factory.Iterator(field_ids))
+        gof_roles = GoFRoleFactory.create_batch(
+            size=2, gof=factory.Iterator(gofs),
+            role=factory.Iterator(valid_roles),
+            permission_type=PermissionTypes.WRITE.value
+        )
+        fields = [
+            FieldFactory.create(field_id=field_ids[0], gof=gofs[0]),
+            FieldFactory.create(field_id=field_ids[1], gof=gofs[0]),
+            FieldFactory.create(field_id=field_ids[2], gof=gofs[1]),
+            FieldFactory.create(field_id=field_ids[3], gof=gofs[1])
+        ]
+        field_roles = FieldRoleFactory.create_batch(
+            size=len(fields), field=factory.Iterator(fields),
+            role=factory.Iterator(valid_roles),
+            permission_type=PermissionTypes.WRITE.value
+        )
+
         task_template = TaskTemplateFactory.create(template_id=template_id)
         task_template_gofs = GoFToTaskTemplateFactory.create_batch(
-            size=2, task_template=task_template,
-            gof__gof_id=factory.Iterator(["GOF-3", "GOF-4"]))
+            size=len(gofs), task_template=task_template,
+            gof=factory.Iterator(gofs))
         task = TaskFactory.create(
             task_display_id=task_id, template_id=task_template.template_id)
 
     @pytest.mark.django_db
-    def test_case(self, snapshot):
+    def test_case(self, snapshot, mocker):
         body = {
             "task_id": "IBWF-1",
             "title": "updated_title",
@@ -92,8 +116,12 @@ class TestCase08UpdateTaskAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
-        self.make_api_call(body=body,
-                           path_params=path_params,
-                           query_params=query_params,
-                           headers=headers,
-                           snapshot=snapshot)
+        user_id = "b913daae-e562-4267-bf38-c8d0b5df6d6f"
+        with patch('uuid.uuid4') as uuid_mock:
+            uuid_mock.return_value = uuid.UUID(
+                int=0x12345678123456781234567812345678)
+            self.make_api_call(body=body,
+                               path_params=path_params,
+                               query_params=query_params,
+                               headers=headers,
+                               snapshot=snapshot)

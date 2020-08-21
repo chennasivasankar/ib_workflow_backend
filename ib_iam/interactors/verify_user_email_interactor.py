@@ -31,15 +31,8 @@ class VerifyEmailInteractor:
             email=user_profile_dto.email,
             is_email_verified=user_profile_dto.is_email_verify
         )
-        from ib_iam.adapters.dtos import UserProfileDTO
-        user_profile_dto = UserProfileDTO(
-            name=user_profile_dto.name,
-            user_id=user_id,
-            is_email_verify=True
-        )
-        adapter.user_service.update_user_profile(
-            user_id=user_id,
-            user_profile_dto=user_profile_dto)
+        adapter.auth_service.update_is_email_verified_value_in_ib_user_profile_details(
+            user_id=user_id, is_email_verified=True)
 
     @staticmethod
     def _validate_email_to_link_to_user_account(
