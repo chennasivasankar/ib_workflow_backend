@@ -161,11 +161,13 @@ class TestGetUsers:
             'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
         }]
         from ib_iam.tests.factories.storage_dtos import UserDTOFactory
+        UserDTOFactory.reset_sequence(1)
         expected_output = [
             UserDTOFactory(
                 user_id=user_dict["user_id"],
                 is_admin=user_dict["is_admin"],
-                company_id=user_dict["company_id"]
+                company_id=user_dict["company_id"],
+                cover_page_url=None
             )
             for user_dict in users_list
         ]
@@ -200,11 +202,13 @@ class TestGetUsers:
             'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
         }]
         from ib_iam.tests.factories.storage_dtos import UserDTOFactory
+        UserDTOFactory.reset_sequence(1)
         expected_output = [
             UserDTOFactory(
                 user_id=user_dict["user_id"],
                 is_admin=user_dict["is_admin"],
-                company_id=user_dict["company_id"]
+                company_id=user_dict["company_id"],
+                cover_page_url=None
             )
             for user_dict in users_list
         ]
@@ -298,18 +302,23 @@ class TestGetUsers:
         assert actual_user_ids == expected_user_ids
 
     @pytest.mark.django_db
-    def test_update_user_name(self):
+    def test_update_user_name_and_covere_page(self):
         from ib_iam.tests.factories.models import UserDetailsFactory
         user_id = "6ce31e92-f188-4019-b295-2e5ddc9c7a11"
         UserDetailsFactory(user_id=user_id)
         expected_name = "testusername"
+        expected_cover_page_url = ""
         storage = UserStorageImplementation()
 
-        storage.update_user_name(user_id=user_id, name=expected_name)
+        storage.update_user_name_and_cover_page_url(
+            user_id=user_id, name=expected_name,
+            cover_page_url=expected_cover_page_url
+        )
 
         from ib_iam.models import UserDetails
         user_object = UserDetails.objects.get(user_id=user_id)
         assert user_object.name == expected_name
+        assert user_object.cover_page_url == expected_cover_page_url
 
     @pytest.mark.django_db
     def test_get_all_distinct_roles(self):
@@ -503,3 +512,121 @@ class TestGetUsers:
 
         # Assert
         assert output == expected_db_role_ids
+
+    @pytest.mark.django_db
+    def test_get_user_related_team_dtos(self):
+        from ib_iam.tests.factories.models import TeamFactory, UserTeamFactory
+        from ib_iam.tests.factories.storage_dtos import TeamDTOFactory
+        TeamFactory.reset_sequence(1)
+        TeamDTOFactory.reset_sequence(1)
+        user_id = "6ce31e92-f188-4019-b295-2e5ddc9c7a11"
+        team_ids = ["ec0be686-1c8f-4da6-afbe-3553f3e22104",
+                    "8c944891-c90f-47b0-beb0-efd167c9e36e"]
+        team_objects = [TeamFactory.create(team_id=team_id)
+                        for team_id in team_ids]
+        for team_object in team_objects:
+            UserTeamFactory.create(team=team_object, user_id=user_id)
+        expected_team_dtos = [TeamDTOFactory.create(team_id=team_id)
+                              for team_id in team_ids]
+        storage = UserStorageImplementation()
+
+        actual_team_dtos = storage.get_user_related_team_dtos(user_id=user_id)
+
+        assert actual_team_dtos == expected_team_dtos
+
+    @pytest.mark.django_db
+    def test_get_user_related_company_dto_as_user_company_exists_returns_company_dto(
+            self):
+        from ib_iam.tests.factories.models import \
+            CompanyFactory, UserDetailsFactory
+        from ib_iam.tests.factories.storage_dtos import CompanyDTOFactory
+        CompanyFactory.reset_sequence(1, force=True)
+        CompanyDTOFactory.reset_sequence(1, force=True)
+        user_id = "6ce31e92-f188-4019-b295-2e5ddc9c7a11"
+        company_id = "ec0be686-1c8f-4da6-afbe-3553f3e22104"
+        company_object = CompanyFactory.create(company_id=company_id)
+        UserDetailsFactory.create(company=company_object, user_id=user_id)
+        from ib_iam.interactors.storage_interfaces.dtos import CompanyDTO
+        expected_company_dto = CompanyDTO(company_id=company_id,
+                                          name='company 1',
+                                          description='description 1',
+                                          logo_url='url 1')
+        storage = UserStorageImplementation()
+
+        actual_company_dto = storage.get_user_related_company_dto(
+            user_id=user_id)
+
+        assert actual_company_dto == expected_company_dto
+
+    @pytest.mark.django_db
+    def test_get_user_related_company_dto_as_user_company_not_exists_returns_none(
+            self):
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        user_id = "6ce31e92-f188-4019-b295-2e5ddc9c7a11"
+        UserDetailsFactory.create(user_id=user_id, company=None)
+        expected_response = None
+        storage = UserStorageImplementation()
+
+        actual_response = storage.get_user_related_company_dto(
+            user_id=user_id)
+
+        assert actual_response == expected_response
+
+    @pytest.mark.django_db
+    def test_get_team_user_ids_dtos_returns_team_users_dtos(self):
+        storage = UserStorageImplementation()
+        from ib_iam.tests.factories.storage_dtos import TeamUserIdsDTOFactory
+        team_id = 'f2c02d98-f311-4ab2-8673-3daa00757002'
+        user_ids = ['2bdb417e-4632-419a-8ddd-085ea272c6eb',
+                    '4b8fb6eb-fa7d-47c1-8726-cd917901104e']
+        from ib_iam.tests.factories.models import TeamFactory
+        from ib_iam.tests.factories.models import UserTeamFactory
+        team_object = TeamFactory.create(team_id=team_id)
+        for user_id in user_ids:
+            UserTeamFactory.create(team=team_object, user_id=user_id)
+        expected_dto = [TeamUserIdsDTOFactory(team_id=team_id,
+                                              user_ids=user_ids)]
+
+        actual_dto = storage.get_team_user_ids_dtos(team_ids=[team_id])
+
+        assert actual_dto == expected_dto
+
+    @pytest.mark.django_db
+    def test_get_company_employee_ids_dto_returns_company_employee_ids_dto(
+            self):
+        from ib_iam.tests.factories.models import \
+            UserDetailsFactory, CompanyFactory
+        storage = UserStorageImplementation()
+        company_id = 'f2c02d98-f311-4ab2-8673-3daa00757002'
+        user_ids = ['2bdb417e-4632-419a-8ddd-085ea272c6eb',
+                    '4b8fb6eb-fa7d-47c1-8726-cd917901104e']
+        company_object = CompanyFactory.create(company_id=company_id)
+        for user_id in user_ids:
+            UserDetailsFactory.create(company=company_object, user_id=user_id)
+        from ib_iam.tests.factories.storage_dtos import \
+            CompanyIdWithEmployeeIdsDTOFactory
+        expected_dto = CompanyIdWithEmployeeIdsDTOFactory(
+            company_id=company_id, employee_ids=user_ids)
+
+        actual_dto = storage.get_company_employee_ids_dto(
+            company_id=company_id)
+
+        assert actual_dto == expected_dto
+
+    @pytest.mark.django_db
+    def test_get_user_details_returns_user_dto(self):
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        storage = UserStorageImplementation()
+        user_id = 'f2c02d98-f311-4ab2-8673-3daa00757002'
+        UserDetailsFactory.reset_sequence(1)
+        user_object = UserDetailsFactory.create(user_id=user_id, company=None)
+
+        from ib_iam.tests.factories.storage_dtos import UserDTOFactory
+        UserDTOFactory.reset_sequence(1)
+        expected_dto = UserDTOFactory(user_id=user_id,
+                                      is_admin=user_object.is_admin,
+                                      company_id=None)
+
+        actual_dto = storage.get_user_details(user_id=user_id)
+
+        assert actual_dto == expected_dto

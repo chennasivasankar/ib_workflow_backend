@@ -39,6 +39,9 @@ class GetTaskIdsInteractor:
         self.task_storage = task_storage
 
     def get_task_ids(self, task_details_configs: List[TaskDetailsConfigDTO]):
+        is_empty = not task_details_configs
+        if is_empty:
+            return []
         self._validate_given_data(task_details_configs=task_details_configs)
         filter_dtos = self.filter_storage.get_enabled_filters_dto_to_user(
             user_id=task_details_configs[0].user_id

@@ -53,13 +53,9 @@ snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_rai
 
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_user_needs_gof_writable_permission res_status'] = 'USER_NEEDS_GOF_WRITABLE_PERMISSION'
 
-snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_user_needs_gof_writable_permission json_response'] = "user user_1 needs write access on gof gof_1, because user does not have ['role_1', 'role_2'] roles"
-
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_user_needs_field_writable_permission http_status_code'] = 400
 
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_user_needs_field_writable_permission res_status'] = 'USER_NEEDS_FILED_WRITABLE_PERMISSION'
-
-snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_user_needs_field_writable_permission json_response'] = "user user_1 needs write access on field field_1, because user does not have ['role_1', 'role_2'] roles"
 
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_exception_for_empty_value_in_required_field http_status_code'] = 400
 
@@ -214,3 +210,7 @@ snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_rai
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_invalid_task_id res_status'] = 'INVALID_TASK_ID'
 
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_invalid_task_id json_response'] = 'invalid task id is: 1, please send valid task id'
+
+snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_user_needs_gof_writable_permission json_response'] = "user needs write access on gof gof_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
+
+snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_user_needs_field_writable_permission json_response'] = "user needs write access on field field_1, because user does not have at least one role in ['role_1', 'role_2'] roles"

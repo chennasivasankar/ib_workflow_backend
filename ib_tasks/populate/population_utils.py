@@ -1,7 +1,8 @@
 from django.db import transaction
 
+from ib_boards.constants.constants import GOOGLE_SHEET_NAME
 from ib_iam.populate.add_roles_details import RoleDetails
-from ib_tasks.constants.constants import GOOGLE_SHEET_NAME, ROLES_SUB_SHEET
+from ib_tasks.constants.constants import ROLES_SUB_SHEET
 from ib_tasks.populate.get_sheet_data_for_creating_or_updating_stages import \
     GetSheetDataForStages
 from ib_tasks.populate.get_sheet_data_for_stage_actions import \
@@ -60,3 +61,18 @@ def populate_data():
 
     task_creation_config = GetSheetDataForTaskCreationConfig()
     task_creation_config.get_data_from_task_creation_config_sub_sheet()
+
+
+def delete_elastic_search_data():
+    from elasticsearch_dsl import connections
+    from django.conf import settings
+    from ib_tasks.documents.elastic_task import TASK_INDEX_NAME
+    connections.create_connection(
+        hosts=[settings.ELASTICSEARCH_ENDPOINT], timeout=20
+    )
+    from elasticsearch import Elasticsearch
+    es = Elasticsearch(hosts=[settings.ELASTICSEARCH_ENDPOINT])
+    indices = [
+        TASK_INDEX_NAME
+    ]
+    es.delete_by_query(index=indices, body={"query": {"match_all": {}}})

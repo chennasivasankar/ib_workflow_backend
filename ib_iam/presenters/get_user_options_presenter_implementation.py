@@ -1,3 +1,5 @@
+from typing import List
+
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_iam.constants.enums import StatusCode
@@ -5,6 +7,8 @@ from ib_iam.interactors.presenter_interfaces.dtos \
     import UserOptionsDetailsDTO
 from ib_iam.interactors.presenter_interfaces.get_user_options_presenter_interface import \
     GetUserOptionsPresenterInterface
+from ib_iam.interactors.storage_interfaces.dtos import CompanyIdAndNameDTO, \
+    RoleIdAndNameDTO, TeamIdAndNameDTO
 
 
 class GetUserOptionsPresenterImplementation(GetUserOptionsPresenterInterface,
@@ -37,31 +41,32 @@ class GetUserOptionsPresenterImplementation(GetUserOptionsPresenterInterface,
             response_dict=response_dict)
 
     @staticmethod
-    def _get_company_details(companies):
-        companies_details = []
-        for company in companies:
-            companies_details.append({
-                "company_id": company.company_id,
-                "company_name": company.company_name
-            })
-        return companies_details
+    def _get_company_details(
+            company_dtos: List[CompanyIdAndNameDTO]) -> List[dict]:
+        companies = [
+            {
+                "company_id": company_id_and_name_dto.company_id,
+                "company_name": company_id_and_name_dto.company_name
+            } for company_id_and_name_dto in company_dtos
+        ]
+        return companies
 
     @staticmethod
-    def _get_role_details(roles):
-        roles_details = []
-        for role in roles:
-            roles_details.append({
-                "role_id": role.role_id,
-                "role_name": role.name
-            })
-        return roles_details
+    def _get_role_details(role_dtos: List[RoleIdAndNameDTO]) -> List[dict]:
+        roles = [
+            {
+                "role_id": role_id_and_name_dto.role_id,
+                "role_name": role_id_and_name_dto.name
+            } for role_id_and_name_dto in role_dtos
+        ]
+        return roles
 
     @staticmethod
-    def _get_team_details(teams):
-        teams_details = []
-        for team in teams:
-            teams_details.append({
-                "team_id": team.team_id,
-                "team_name": team.team_name
-            })
-        return teams_details
+    def _get_team_details(team_dtos: List[TeamIdAndNameDTO]) -> List[dict]:
+        teams = [
+            {
+                "team_id": team_id_and_name_dto.team_id,
+                "team_name": team_id_and_name_dto.team_name
+            } for team_id_and_name_dto in team_dtos
+        ]
+        return teams

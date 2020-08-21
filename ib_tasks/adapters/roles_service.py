@@ -14,7 +14,13 @@ class RolesService:
     def get_db_roles(self):
         # TODO: call service interface
         return ['FIN_PAYMENT_APPROVER', 'FIN_FINANCE_RP',
-                'FIN_ACCOUNTS_LEVEL4_VERIFIER', 'FIN_PAYMENTS_RP']
+                'FIN_ACCOUNTS_LEVEL4_VERIFIER', 'FIN_PAYMENTS_RP',
+                'FIN_COMPLIANCE_APPROVER', 'FIN_PAYMENTS_LEVEL3_VERIFIER',
+                'FIN_PAYMENTS_LEVEL2_VERIFIER', 'FIN_PAYMENTS_LEVEL1_VERIFIER',
+                'PR_PENDING_ACCOUNTS_LEVEL1_VERIFICATION',
+                'FIN_ACCOUNTS_LEVEL1_VERIFIER', 'FIN_ACCOUNTS_LEVEL2_VERIFIER',
+                'FIN_ACCOUNTS_LEVEL3_VERIFIER'
+                ]
 
     def get_user_roles(self, user_id):
         pass

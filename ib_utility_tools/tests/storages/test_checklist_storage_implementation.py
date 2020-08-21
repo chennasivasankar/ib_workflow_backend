@@ -15,8 +15,8 @@ class TestChecklistStorageImplementation:
 
     @pytest.fixture
     def create_checklist_items_for_checklist_id(self):
-        checklist_item_ids = ['7ee2c7b4-34c8-4d65-a83a-f87da75db24e',
-                              '09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5a']
+        checklist_item_ids = ['09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5a',
+                              '7ee2c7b4-34c8-4d65-a83a-f87da75db24e']
         checklist_id = '2bdb417e-4632-419a-8ddd-085ea272c6eb'
         checklist_object = ChecklistFactory.create(checklist_id=checklist_id)
         from ib_utility_tools.tests.factories.models import \
@@ -27,12 +27,12 @@ class TestChecklistStorageImplementation:
                                         checklist=checklist_object)
             for checklist_item_id in checklist_item_ids
         ]
-        return checklist_id
+        return checklist_id, checklist_item_ids
 
     @pytest.fixture
     def expected_checklist_item_dtos(self):
-        checklist_item_ids = ['7ee2c7b4-34c8-4d65-a83a-f87da75db24e',
-                              '09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5a']
+        checklist_item_ids = ['09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5a',
+                              '7ee2c7b4-34c8-4d65-a83a-f87da75db24e']
         from ib_utility_tools.tests.factories.storage_dtos import \
             ChecklistItemWithIdDTOFactory
         ChecklistItemWithIdDTOFactory.reset_sequence(1)
@@ -137,9 +137,38 @@ class TestChecklistStorageImplementation:
     def test_get_checklist_items_dto(self, storage,
                                      create_checklist_items_for_checklist_id,
                                      expected_checklist_item_dtos):
-        checklist_id = create_checklist_items_for_checklist_id
+        checklist_id, _ = create_checklist_items_for_checklist_id
 
         checklist_item_dtos = storage.get_checklist_item_dtos(
             checklist_id=checklist_id)
 
         assert checklist_item_dtos == expected_checklist_item_dtos
+
+    @pytest.mark.django_db
+    def test_delete_checklist_items_bulk_deletes_the_items(
+            self, storage, create_checklist_items_for_checklist_id):
+        _, checklist_item_ids = \
+            create_checklist_items_for_checklist_id
+        expected_response = False
+
+        storage.delete_checklist_items_bulk(
+            checklist_item_ids=checklist_item_ids)
+
+        checklist_items = ChecklistItem.objects.filter(
+            checklist_item_id__in=checklist_item_ids)
+        actual_response = checklist_items.exists()
+        assert actual_response == expected_response
+
+    @pytest.mark.django_db
+    def test_get_valid_checklist_item_ids_valid_checklist_item_ids(
+            self, storage, create_checklist_items_for_checklist_id):
+        _, checklist_item_ids = \
+            create_checklist_items_for_checklist_id
+        expected_checklist_item_ids = checklist_item_ids.copy()
+        checklist_item_ids.append(
+            '09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5d')
+
+        actual_checklist_item_ids = storage.get_valid_checklist_item_ids(
+            checklist_item_ids=checklist_item_ids)
+
+        assert list(actual_checklist_item_ids) == expected_checklist_item_ids

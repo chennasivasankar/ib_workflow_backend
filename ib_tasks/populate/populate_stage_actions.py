@@ -4,7 +4,6 @@ from typing import Dict, Any, List
 def populate_stage_actions(action_dicts: List[Dict]):
     actions_dtos = []
     validation_for_action_dict(action_dicts)
-    writing_data_to_task_actions_logic(action_dicts)
     actions_dict = _remove_white_spaces_and_apply_replaces_to_roles(
         action_dicts)
     for action_dict in actions_dict:
@@ -33,33 +32,6 @@ def _remove_white_spaces_and_apply_replaces_to_roles(
         roles = roles.split(",")
         action_dict["roles"] = roles
     return action_dicts
-
-
-def writing_data_to_task_actions_logic(action_dicts: List[Dict]):
-    with open('ib_tasks/populate/stage_actions_logic.py', "a") as file:
-        for action_dict in action_dicts:
-            _define_single_method(file=file, action_dict=action_dict)
-        file.close()
-
-
-def _define_single_method(file, action_dict: Dict[str, str]):
-    stage_id = action_dict["stage_id"]
-    action_name = action_dict["action_name"]
-    action_logic = action_dict['action_logic']
-    function_name = f'{stage_id}_{action_name}'
-    function_name = function_name.replace(' ', '_').replace('-', '_').replace('\n', '')
-    file.write(
-        f"\n\ndef {function_name}(task_dict, global_constants, stage_value_dict):\n")
-
-    action_logic_lines = action_logic.split("\n")
-    new_lines = []
-    for line in action_logic_lines:
-        line = '\t' + line
-        new_lines.append(line)
-
-    new_action_logic = "\n".join(new_lines)
-    file.write(new_action_logic + "\n")
-    file.write("\t" + "return task_dict\n")
 
 
 def _validate_action_logic(action_logic: str):

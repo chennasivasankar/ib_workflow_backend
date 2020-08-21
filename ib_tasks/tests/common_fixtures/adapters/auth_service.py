@@ -15,6 +15,20 @@ def get_user_dtos_based_on_limit_and_offset_mock(mocker):
     return mock
 
 
+def search_users_mock(mocker):
+    path = 'ib_tasks.adapters.search_service.SearchService.get_search_user_ids'
+    mock_obj = mocker.patch(path)
+
+    return mock_obj
+
+
+def assignees_details_mock(mocker):
+
+    path = 'ib_tasks.adapters.assignees_details_service.AssigneeDetailsService.get_assignees_details_dtos'
+    mock_obj = mocker.patch(path)
+    return mock_obj
+
+
 def get_all_user_dtos_based_on_query_mock(mocker):
     mock = mocker.patch(
         "ib_tasks.adapters.auth_service.AuthService."

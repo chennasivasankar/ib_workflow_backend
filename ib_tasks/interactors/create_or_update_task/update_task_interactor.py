@@ -186,7 +186,7 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         )
         self.update_task(task_dto_with_db_task_id)
 
-    def update_task(self, task_dto: UpdateTaskDTO):
+    def update_task(self, task_dto: UpdateTaskDTO, action_type=None):
         task_id = task_dto.task_id
         self._validate_task_id(task_id)
         task_template_id = \
@@ -201,7 +201,7 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         base_validations_interactor \
             .perform_base_validations_for_template_gofs_and_fields(
             task_dto.gof_fields_dtos, task_dto.created_by_id,
-            task_template_id, action_type=None)
+            task_template_id, action_type=action_type)
         self.create_task_storage.update_task_with_given_task_details(
             task_dto=task_dto)
         existing_gofs = \

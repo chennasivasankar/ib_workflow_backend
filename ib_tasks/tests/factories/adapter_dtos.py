@@ -1,6 +1,8 @@
 import factory
 from ib_tasks.adapters.dtos import *
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
+from ib_tasks.constants.constants import STAGE_TASK
+from ib_tasks.interactors.stages_dtos import EntityTypeDTO
 
 
 class BoardDTOFactory(factory.Factory):
@@ -52,3 +54,11 @@ class UserDetailsDTOFactory(factory.Factory):
     user_id = factory.Sequence(lambda n: 'user_id_%d' % (n + 1))
     user_name = factory.Sequence(lambda n: 'user_name_%d' % (n + 1))
     profile_pic_url = factory.Sequence(lambda n: 'profile_pic_%d' % (n + 1))
+
+
+class EntityTypeDTOFactory(factory.Factory):
+    class Meta:
+        model = EntityTypeDTO
+
+    entity_id = factory.Sequence(lambda n: n)
+    entity_type = STAGE_TASK

@@ -65,3 +65,16 @@ class ChecklistStorageImplementation(ChecklistStorageInterface):
             text=checklist_item_object.text,
             is_checked=checklist_item_object.is_checked)
         return checklist_item_with_id_dto
+
+    def delete_checklist_items_bulk(self, checklist_item_ids: List[str]):
+        ChecklistItem.objects \
+            .filter(checklist_item_id__in=checklist_item_ids) \
+            .delete()
+
+    def get_valid_checklist_item_ids(self, checklist_item_ids: List[str]) \
+            -> List[str]:
+        valid_checklist_item_ids = ChecklistItem.objects \
+            .filter(checklist_item_id__in=checklist_item_ids) \
+            .values_list("checklist_item_id", flat=True)
+        valid_checklist_item_ids = list(map(str, valid_checklist_item_ids))
+        return valid_checklist_item_ids
