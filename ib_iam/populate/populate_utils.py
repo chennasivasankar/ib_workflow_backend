@@ -19,7 +19,7 @@ def populate():
     populate_admin_users()
     populate_companies()
     populate_teams()
-    populate_roles()
+    #populate_roles()
     populate_test_users()
 
 
