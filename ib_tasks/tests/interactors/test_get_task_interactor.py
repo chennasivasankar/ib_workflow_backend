@@ -194,7 +194,7 @@ class TestGetTaskInteractor:
 
     @pytest.fixture
     def user_roles(self):
-        user_role_ids = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER',
+        user_role_ids = ['FIN_PAYMENT_REQUESTER',
                          'FIN_PAYMENT_POC',
                          'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
                          'FIN_COMPLIANCE_APPROVER',

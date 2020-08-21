@@ -53,9 +53,7 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
             get_task_id_with_stage_details_dtos_based_on_stage_value(
                 stage_values=stage_values,
                 task_ids_group_by_stage_value_dtos=
-                task_ids_group_by_stage_value_dtos,
-                user_id=user_id
-            )
+                task_ids_group_by_stage_value_dtos)
         task_ids = []
         task_id_with_single_stage_details_dto = []
         for task_id_with_stage_details_dto in task_id_with_stage_details_dtos:

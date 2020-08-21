@@ -100,7 +100,6 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
             self, role_ids_group_by_stage_id_dtos: List[StageIdWithRoleIdsDTO],
             stage_detail_dtos: List[StageDetailsDTO]
     ) -> List[StageWithUserDetailsDTO]:
-
         assignee_with_current_tasks_count_dtos = self. \
             _get_assignee_with_current_tasks_count_dtos()
         stage_with_user_details_dtos = []
