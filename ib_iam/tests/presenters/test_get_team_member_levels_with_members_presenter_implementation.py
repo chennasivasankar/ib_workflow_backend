@@ -12,6 +12,25 @@ class TestGetTeamMemberLevelsWithMembersPresenterImplementation:
         presenter = GetTeamMemberLevelsWithMembersPresenterImplementation()
         return presenter
 
+    def test_prepare_success_response_for_team_member_levels_with_members(
+            self, presenter, prepare_complete_team_member_levels_details_dto,
+            snapshot
+    ):
+        # Arrange
+        complete_team_member_levels_details_dto = \
+            prepare_complete_team_member_levels_details_dto
+
+        # Act
+        response = presenter.prepare_success_response_for_team_member_levels_with_members(
+            complete_team_member_levels_details_dto=complete_team_member_levels_details_dto
+        )
+
+        # Assert
+        response_dict = json.loads(response.content)
+
+        snapshot.assert_match(
+            response_dict, "complete_team_member_levels_details")
+
     @pytest.fixture()
     def prepare_team_member_level_details_dtos(self):
         team_member_level_details_list = [{
@@ -251,22 +270,3 @@ class TestGetTeamMemberLevelsWithMembersPresenterImplementation:
                 member_id_with_subordinate_member_ids_dtos=prepare_member_id_with_subordinate_member_ids_dtos
             )
         return complete_team_member_levels_details_dto
-
-    def test_prepare_success_response_for_team_member_levels_with_members(
-            self, presenter, prepare_complete_team_member_levels_details_dto,
-            snapshot
-    ):
-        # Arrange
-        complete_team_member_levels_details_dto = \
-            prepare_complete_team_member_levels_details_dto
-
-        # Act
-        response = presenter.prepare_success_response_for_team_member_levels_with_members(
-            complete_team_member_levels_details_dto=complete_team_member_levels_details_dto
-        )
-
-        # Assert
-        response_dict = json.loads(response.content)
-
-        snapshot.assert_match(
-            response_dict, "complete_team_member_levels_details")

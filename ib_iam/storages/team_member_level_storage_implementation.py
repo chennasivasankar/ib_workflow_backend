@@ -3,8 +3,8 @@ from typing import List, Optional
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import \
-    TeamMemberLevelDetailsDTO, MemberDTO
-from ib_iam.interactors.storage_interfaces.level_storage_interface import \
+    TeamMemberLevelDetailsDTO, MemberDTO, MemberIdWithSubordinateMemberIdsDTO
+from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface import \
     TeamMemberLevelStorageInterface
 
 
@@ -133,3 +133,35 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
             immediate_superior_team_user=user_team_object
         )
         return
+
+    def get_member_id_with_subordinate_member_ids_dtos(
+            self, team_id: str, member_ids: List[str]
+    ) -> List[MemberIdWithSubordinateMemberIdsDTO]:
+        member_ids = list(set(member_ids))
+        from ib_iam.models import UserTeam
+        user_team_objects = UserTeam.objects.filter(
+            team_id=team_id, user_id__in=member_ids
+        )
+        member_id_with_subordinate_member_ids_dtos = [
+            self.get_member_id_with_subordinate_member_ids_dto(user_team_object)
+            for user_team_object in user_team_objects
+        ]
+        return member_id_with_subordinate_member_ids_dtos
+
+    @staticmethod
+    def get_member_id_with_subordinate_member_ids_dto(user_team_object):
+        subordinate_member_ids = \
+            user_team_object.subordinate_members.values_list(
+                "user_id", flat=True
+            )
+        subordinate_member_ids = [
+            str(subordinate_member_id) for
+            subordinate_member_id in
+            subordinate_member_ids
+        ]
+        member_id_with_subordinate_member_ids_dto = \
+            MemberIdWithSubordinateMemberIdsDTO(
+                member_id=str(user_team_object.user_id),
+                subordinate_member_ids=subordinate_member_ids
+            )
+        return member_id_with_subordinate_member_ids_dto

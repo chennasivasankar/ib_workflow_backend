@@ -2,8 +2,7 @@ from typing import List
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_iam.interactors.dtos.dtos import CompleteTeamMemberLevelsDetailsDTO, \
-    TeamMemberLevelIdWithMemberIdsDTO
+from ib_iam.interactors.dtos.dtos import CompleteTeamMemberLevelsDetailsDTO
 from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
     GetTeamMemberLevelsWithMembersPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import \
