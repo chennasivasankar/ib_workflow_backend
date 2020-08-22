@@ -143,10 +143,26 @@ class FilterInteractor(ValidationMixin):
             filter_id=filter_id, user_id=user_id
         )
 
-    def get_filters_details(self, user_id: str):
+    def get_filters_details_wrapper(self, user_id: str, project_id: str):
 
-        filters_dto = \
-            self.filter_storage.get_filters_dto_to_user(user_id=user_id)
+        try:
+            filter_details = self._get_filters_details(
+                user_id=user_id, project_id=project_id
+            )
+        except InvalidProjectId:
+            return self.presenter.get_response_for_invalid_project_id()
+        except UserIsNotInProject:
+            return self.presenter.get_response_for_user_not_in_project()
+        return self.presenter.get_response_for_get_filters_details(
+            filter_complete_details=filter_details
+        )
+
+    def _get_filters_details(self, user_id: str, project_id: str):
+
+        self._validate_project_data(project_id=project_id, user_id=user_id)
+        filters_dto = self.filter_storage.get_filters_dto_to_user(
+            user_id=user_id, project_id=project_id
+        )
         filter_ids = self._get_filter_ids(filters_dto)
         conditions_dto = \
             self.filter_storage.get_conditions_to_filters(filter_ids=filter_ids)
@@ -154,9 +170,7 @@ class FilterInteractor(ValidationMixin):
             filters_dto=filters_dto,
             conditions_dto=conditions_dto
         )
-        return self.presenter.get_response_for_get_filters_details(
-            filter_complete_details=filter_complete_details_dto
-        )
+        return filter_complete_details_dto
 
     def update_filter_select_status_wrapper(
             self, user_id: str, filter_id: int, is_selected: Status):
