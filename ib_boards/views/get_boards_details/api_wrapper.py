@@ -2,11 +2,11 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
 from .validator_class import ValidatorClass
-from ...interactors.dtos import GetBoardsDTO
-from ...interactors.get_boards_interactor import GetBoardsInteractor
-from ...presenters.presenter_implementation import \
+from ib_boards.interactors.dtos import GetBoardsDTO
+from ib_boards.interactors.get_boards_interactor import GetBoardsInteractor
+from ib_boards.presenters.presenter_implementation import \
     GetBoardsPresenterImplementation
-from ...storages.storage_implementation import StorageImplementation
+from ib_boards.storages.storage_implementation import StorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
