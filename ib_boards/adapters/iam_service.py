@@ -23,3 +23,9 @@ class IamService:
             role_ids=user_roles
         )
         return valid_role_ids
+
+    def validate_if_user_is_in_project(self):
+        raise NotImplemented
+
+    def validate_project_id(self):
+        raise NotImplemented
