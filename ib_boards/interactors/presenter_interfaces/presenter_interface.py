@@ -45,6 +45,9 @@ class GetBoardsPresenterInterface(abc.ABC):
     def get_response_for_offset_exceeds_total_tasks(self):
         pass
 
+    @abc.abstractmethod
+    def get_response_for_invalid_project_id(self, err: ):
+
 
 class PresenterInterface(abc.ABC):
     @abc.abstractmethod

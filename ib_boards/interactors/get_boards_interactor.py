@@ -5,10 +5,12 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
+from ib_boards.adapters.iam_service import InvalidProjectIdsException
 from ib_boards.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue, UserDoNotHaveAccessToBoards, \
     OffsetValueExceedsTotalTasksCount
 from ib_boards.interactors.dtos import GetBoardsDTO, StarredAndOtherBoardsDTO
+from ib_boards.interactors.mixins.validation_mixins import ValidationMixin
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetBoardsPresenterInterface
 from ib_boards.interactors.storage_interfaces.dtos import BoardDTO
@@ -16,7 +18,7 @@ from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
 
-class GetBoardsInteractor:
+class GetBoardsInteractor(ValidationMixin):
 
     def __init__(self, storage: StorageInterface):
         self.storage = storage
@@ -36,12 +38,22 @@ class GetBoardsInteractor:
             return presenter.get_response_for_invalid_limit()
         except OffsetValueExceedsTotalTasksCount:
             return presenter.get_response_for_offset_exceeds_total_tasks()
+        except InvalidProjectIdsException as err:
+            return presenter.get_response_for_invalid_project_id(err)
+
         return presenter.get_response_for_get_boards(
             starred_and_other_boards_dto=starred_and_other_boards_dto,
             total_boards=total_boards
         )
 
     def get_boards(self, get_boards_dto: GetBoardsDTO):
+        project_id = get_boards_dto.project_id
+        project_ids = [project_id]
+        user_id = get_boards_dto.user_id
+        self.validate_given_project_ids(project_ids=project_ids)
+
+        self.validate_if_user_is_in_project(project_id=project_id,
+                                            user_id=user_id)
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         user_id = get_boards_dto.user_id
