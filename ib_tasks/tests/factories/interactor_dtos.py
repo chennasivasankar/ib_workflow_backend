@@ -104,9 +104,9 @@ class TaskTemplateStageActionDTOFactory(factory.Factory):
 
 
 class TaskStageDTOFactory(factory.Factory):
-
     class Meta:
         model = TaskStageDTO
+
     stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
     db_stage_id = factory.Sequence(lambda n: 'db_stage_%d' % (n + 1))
     display_name = factory.Sequence(lambda n: 'display_name_%d' % (n + 1))
@@ -269,7 +269,8 @@ class TaskIdWithStageAssigneeDTOFactory(factory.Factory):
 
     task_id = factory.sequence(lambda n: n + 1)
     db_stage_id = factory.Sequence(lambda n: n + 1)
-    assignee_id = factory.sequence(lambda n: "user_{}".format(n+1))
+    assignee_id = factory.sequence(lambda n: "user_{}".format(n + 1))
+    team_id = factory.sequence(lambda n: "team_{}".format(n + 1))
 
 
 class StageAssigneeDetailsDTOFactory(factory.Factory):
@@ -521,6 +522,7 @@ class StageAssigneeDTOFactory(factory.Factory):
 
     db_stage_id = factory.Sequence(lambda n: n + 1)
     assignee_id = factory.sequence(lambda n: "user_{}".format(n + 1))
+    team_id = factory.sequence(lambda n: "team_{}".format(n + 1))
 
 
 class StageIdWithValueDTOFactory(factory.Factory):

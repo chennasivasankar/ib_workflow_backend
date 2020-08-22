@@ -292,7 +292,8 @@ class StagesStorageImplementation(StageStorageInterface):
             TaskStageHistory(
                 task_id=each_task_id_with_stage_assignee_dto.task_id,
                 stage_id=each_task_id_with_stage_assignee_dto.db_stage_id,
-                assignee_id=each_task_id_with_stage_assignee_dto.assignee_id)
+                assignee_id=each_task_id_with_stage_assignee_dto.assignee_id,
+            team_id=each_task_id_with_stage_assignee_dto.team_id)
             for each_task_id_with_stage_assignee_dto in
             task_id_with_stage_assignee_dtos
         ]
@@ -354,7 +355,7 @@ class StagesStorageImplementation(StageStorageInterface):
             assignee_id__isnull=True).values('stage_id', 'assignee_id'))
         stages_having_assignee_dtos = [StageAssigneeDTO(
             assignee_id=task_stage_obj['assignee_id'],
-            db_stage_id=task_stage_obj['stage_id']) for
+            db_stage_id=task_stage_obj['stage_id'], team_id=task_stage_obj['team_id']) for
             task_stage_obj in task_stage_objs]
         return stages_having_assignee_dtos
 

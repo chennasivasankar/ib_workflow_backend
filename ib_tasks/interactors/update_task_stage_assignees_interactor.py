@@ -121,10 +121,8 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
         for user_given_stage_assignee_dto in user_given_stage_assignee_dtos:
             for stage_assignee_dto_having_assignees in \
                     stage_assignee_dtos_having_assignees:
-                if user_given_stage_assignee_dto.assignee_id == \
-                        stage_assignee_dto_having_assignees.assignee_id \
-                        and user_given_stage_assignee_dto.db_stage_id == \
-                        stage_assignee_dto_having_assignees.db_stage_id:
+                if user_given_stage_assignee_dto == \
+                        stage_assignee_dto_having_assignees:
                     matched_stage_assignee_dtos.append(
                         stage_assignee_dto_having_assignees)
         matched_stage_ids_in_stage_assignee_dtos = [
@@ -164,7 +162,8 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
                             assignee_id=each_task_id_with_stage_assignees_dto.
                                 assignee_id,
                             db_stage_id=each_task_stage_id,
-                            task_id=task_id))
+                            task_id=task_id,
+                        team_id=each_task_id_with_stage_assignees_dto.team_id))
 
         return task_id_with_stage_assignee_dtos
 

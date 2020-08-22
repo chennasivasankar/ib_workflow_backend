@@ -259,7 +259,7 @@ class TestUpdateTaskStageAssigneesInteractor:
         StageAssigneeDTOFactory.reset_sequence()
         from ib_tasks.tests.factories.interactor_dtos import \
             TaskIdWithStageAssigneeDTOFactory
-        TaskIdWithStageAssigneeDTOFactory.reset_sequence()
+        TaskIdWithStageAssigneeDTOFactory.reset_sequence(1)
         task_storage_mock.check_is_task_exists.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = 1
         stage_storage_mock. \
@@ -288,8 +288,7 @@ class TestUpdateTaskStageAssigneesInteractor:
             assert_called_once_with(task_id=1, db_stage_ids=[1])
         stage_storage_mock.create_task_stage_assignees.assert_called_once_with(
             task_id_with_stage_assignee_dtos=
-            [TaskIdWithStageAssigneeDTOFactory(
-                db_stage_id=2, assignee_id='user_2')])
+            [TaskIdWithStageAssigneeDTOFactory(task_id=1)])
 
     def test_given_stages_having_none_assignees_in_db(
             self, mocker, stage_role_dtos, stage_storage_mock,
@@ -301,7 +300,7 @@ class TestUpdateTaskStageAssigneesInteractor:
         StageAssigneeDTOFactory.reset_sequence()
         from ib_tasks.tests.factories.interactor_dtos import \
             TaskIdWithStageAssigneeDTOFactory
-        TaskIdWithStageAssigneeDTOFactory.reset_sequence()
+        TaskIdWithStageAssigneeDTOFactory.reset_sequence(1)
         task_storage_mock.check_is_task_exists.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = 1
         stage_storage_mock. \
@@ -331,8 +330,8 @@ class TestUpdateTaskStageAssigneesInteractor:
             assert_called_once_with(task_id=1, db_stage_ids=[1])
         stage_storage_mock.create_task_stage_assignees.assert_called_once_with(
             task_id_with_stage_assignee_dtos=
-            [TaskIdWithStageAssigneeDTOFactory(
-                db_stage_id=2, assignee_id='user_2')])
+            [TaskIdWithStageAssigneeDTOFactory(task_id=1
+                )])
 
     def test_given_stages_having_different_assignees_in_db(
             self, mocker, stage_role_dtos, stage_storage_mock,
