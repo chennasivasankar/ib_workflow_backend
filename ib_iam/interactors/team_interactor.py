@@ -1,16 +1,18 @@
+from typing import List
+
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
     TeamNameAlreadyExists, InvalidUserIds, DuplicateUserIds, InvalidTeamId
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
     .delete_team_presenter_interface import DeleteTeamPresenterInterface
-from ib_iam.interactors.presenter_interfaces \
-    .update_team_presenter_interface import UpdateTeamPresenterInterface
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
     TeamPresenterInterface)
-from ib_iam.interactors.storage_interfaces.team_storage_interface import (
-    TeamStorageInterface)
+from ib_iam.interactors.presenter_interfaces \
+    .update_team_presenter_interface import UpdateTeamPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import (
     TeamWithUserIdsDTO, TeamWithTeamIdAndUserIdsDTO, TeamNameAndDescriptionDTO)
+from ib_iam.interactors.storage_interfaces.team_storage_interface import (
+    TeamStorageInterface)
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 
@@ -142,17 +144,25 @@ class TeamInteractor(ValidationMixin):
 
     def _validate_is_team_name_already_exists(self, name: str):
         team_id = \
-            self.team_storage.get_team_id_if_team_name_already_exists(name=name)
+            self.team_storage.get_team_id_if_team_name_already_exists(
+                name=name)
         is_team_name_already_exists = team_id is not None
         if is_team_name_already_exists:
             raise TeamNameAlreadyExists(team_name=name)
 
     def _validate_is_team_name_exists_for_update_team(self, name, team_id):
         team_id_from_db = \
-            self.team_storage.get_team_id_if_team_name_already_exists(name=name)
+            self.team_storage.get_team_id_if_team_name_already_exists(
+                name=name)
         is_team_name_exists = team_id_from_db is not None
         if is_team_name_exists:
             is_team_requested_name_already_assigned_to_other = \
                 team_id_from_db != team_id
             if is_team_requested_name_already_assigned_to_other:
                 raise TeamNameAlreadyExists(team_name=name)
+
+    def get_valid_team_ids(self, team_ids: List[str]) -> List[str]:
+        # todo check for duplicate team_ids and raise exception
+        valid_team_ids = self.team_storage.get_valid_team_ids(
+            team_ids=team_ids)
+        return valid_team_ids
