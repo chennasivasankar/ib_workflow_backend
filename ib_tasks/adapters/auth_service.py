@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_tasks.adapters.dtos import UserDetailsDTO, TeamDetailsDTO, \
-    UserIdWIthTeamDetailsDTOs, UserIdWithTeamId, UserIdWithTeamIdDTO
+    UserIdWIthTeamDetailsDTOs, TeamProjectDetailsDTO, TeamDetailsWithUserIdDTO
 from ib_tasks.interactors.field_dtos import SearchableFieldDetailDTO
 from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
     import SearchQueryWithPaginationDTO
@@ -54,10 +54,10 @@ class AuthService:
 
         return user_details_dtos
 
-    def get_permitted_user_details(self, role_ids: List[str]) \
+    def get_permitted_user_details(self, role_ids: List[str], project_id: str) \
             -> List[UserDetailsDTO]:
         user_profile_details_dtos = self.interface.get_user_details_for_given_role_ids(
-            role_ids=role_ids)
+            role_ids=role_ids, project_id=project_id)
         user_details_dtos = self._get_user_details_dtos(
             user_profile_details_dtos)
         return user_details_dtos
@@ -104,4 +104,9 @@ class AuthService:
 
     def validate_team_ids(self, team_ids: List[str]) -> \
             List[str]:
+        pass
+
+    def get_team_details_for_given_team_project_details_dto(
+            self, team_project_details_dto: TeamProjectDetailsDTO) -> \
+            List[TeamDetailsWithUserIdDTO]:
         pass

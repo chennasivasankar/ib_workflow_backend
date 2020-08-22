@@ -1,5 +1,7 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Union
+
+from ib_tasks.constants.enum import Searchable
 
 
 @dataclass()
@@ -55,6 +57,13 @@ class UserDetailsDTO:
 
 
 @dataclass
+class SearchableDetailsDTO:
+    search_type: Searchable
+    id: Union[int, str]
+    value: str
+
+
+@dataclass
 class TeamDetailsDTO:
     team_id: str
     name: str
@@ -77,3 +86,14 @@ class ProjectDetailsDTO:
 class UserIdWithTeamIdDTO:
     user_id: str
     team_id: str
+
+
+@dataclass
+class TeamProjectDetailsDTO:
+    project_id: str
+    team_user_dtos: List[UserIdWithTeamIdDTO]
+
+
+@dataclass
+class TeamDetailsWithUserIdDTO(TeamDetailsDTO):
+    user_id: str
