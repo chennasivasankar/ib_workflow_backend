@@ -1,17 +1,19 @@
 """
-test with invalid gofs to task_template
+test with invalid permission for assignee for given stage
 """
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
+from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
-    TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, StageFactory
+    TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, \
+    GoFRoleFactory, FieldRoleFactory
 from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase09UpdateTaskAPITestCase(TestUtils):
+class TestCase41UpdateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -25,31 +27,40 @@ class TestCase09UpdateTaskAPITestCase(TestUtils):
         FieldFactory.reset_sequence()
         TaskTemplateFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
-        StageFactory.reset_sequence()
+        GoFRoleFactory.reset_sequence()
+        FieldRoleFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
         task_id = "IBWF-1"
-        stage_id = 1
         template_id = "TEMPLATE-1"
-        gof_ids = ["GOF-1", "GOF-2"]
-        field_ids = ["FIELD-1", "FIELD-2", "FIELD-3", "FIELD-4"]
+        gof_id = "GOF-1"
+        field_id = "FIELD-1"
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids
+        user_roles_mock_method = get_user_role_ids(mocker)
+        user_roles = user_roles_mock_method.return_value
+        gof = GoFFactory.create(gof_id=gof_id)
+        gof_role = GoFRoleFactory.create(
+            role=user_roles[0], gof=gof,
+            permission_type=PermissionTypes.WRITE.value)
 
-        import factory
-        StageFactory.create(id=stage_id)
-        gofs = GoFFactory.create_batch(size=len(gof_ids),
-                                       gof_id=factory.Iterator(gof_ids))
-        fields = FieldFactory.create_batch(
-            size=len(field_ids), field_id=factory.Iterator(field_ids))
+        field = FieldFactory.create(
+            field_id=field_id, gof=gof,
+            field_type=FieldTypes.FILE_UPLOADER.value,
+            allowed_formats='[".zip", ".pdf"]'
+        )
+        field_role = FieldRoleFactory.create(
+            role=user_roles[0], field=field,
+            permission_type=PermissionTypes.WRITE.value)
         task_template = TaskTemplateFactory.create(template_id=template_id)
-        task_template_gofs = GoFToTaskTemplateFactory.create_batch(
-            size=2, task_template=task_template,
-            gof__gof_id=factory.Iterator(["GOF-3", "GOF-4"]))
+        task_template_gofs = GoFToTaskTemplateFactory.create(
+            task_template=task_template, gof=gof)
         task = TaskFactory.create(
             task_display_id=task_id, template_id=task_template.template_id)
 
     @pytest.mark.django_db
-    def test_case(self, snapshot):
+    def test_case(self, snapshot, mocker):
         body = {
             "task_id": "IBWF-1",
             "title": "updated_title",
@@ -72,22 +83,7 @@ class TestCase09UpdateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD-1",
-                            "field_response": "new updated string"
-                        },
-                        {
-                            "field_id": "FIELD-2",
-                            "field_response":
-                                "https://image.flaticon.com/icons/svg/1829/1829070.svg"
-                        }
-                    ]
-                },
-                {
-                    "gof_id": "GOF-2",
-                    "same_gof_order": 0,
-                    "gof_fields": [
-                        {
-                            "field_id": "FIELD-3",
-                            "field_response": "[\"interactors\"]"
+                            "field_response": "https://www.url.com/file.zip"
                         }
                     ]
                 }

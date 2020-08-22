@@ -1,5 +1,5 @@
 """
-test with stage id
+test with invalid stage id
 """
 
 import pytest
