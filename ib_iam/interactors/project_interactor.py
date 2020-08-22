@@ -26,11 +26,20 @@ class ProjectInteractor:
 
     def get_team_details_for_given_project_team_user_details_dto(
             self, project_team_user_dto: ProjectTeamUserDTO):
+        # todo confirm and add invalid team and user exceptions
         self._validate_project(project_id=project_team_user_dto.project_id)
         self._validate_team_existence_in_project(
             project_team_user_dto=project_team_user_dto)
         self._validate_user_existence_in_given_team(
             project_team_user_dto=project_team_user_dto)
+        name = self.project_storage.get_team_name(
+            team_id=project_team_user_dto.team_id)
+        from ib_iam.app_interfaces.dtos import UserIdWithTeamIDAndNameDTO
+        user_id_with_team_id_and_name_dto = UserIdWithTeamIDAndNameDTO(
+            user_id=project_team_user_dto.user_id,
+            team_id=project_team_user_dto.team_id,
+            name=name)
+        return user_id_with_team_id_and_name_dto
 
     def _validate_project(self, project_id: str):
         valid_project_ids = self.project_storage \

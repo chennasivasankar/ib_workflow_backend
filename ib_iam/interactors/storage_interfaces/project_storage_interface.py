@@ -26,3 +26,7 @@ class ProjectStorageInterface(abc.ABC):
     @abc.abstractmethod
     def is_user_exists_in_team(self, team_id: str, user_id: str):
         pass
+
+    @abc.abstractmethod
+    def get_team_name(self, team_id: str) -> str:
+        pass

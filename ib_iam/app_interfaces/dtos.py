@@ -15,3 +15,10 @@ class ProjectTeamUserDTO:
     project_id: str
     team_id: str
     user_id: str
+
+
+@dataclass
+class UserIdWithTeamIDAndNameDTO:
+    team_id: str
+    user_id: str
+    name: str
