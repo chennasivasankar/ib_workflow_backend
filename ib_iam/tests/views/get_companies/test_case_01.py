@@ -67,6 +67,3 @@ class TestCase01GetCompaniesAPITestCase(TestUtils):
                 company_id=company["company_id"], name=company["name"])
             for employee_id in company["employees_ids"]:
                 UserDetailsFactory(user_id=employee_id, company=company_object)
-        from ib_iam.models import Company
-        print(Company.objects.all())
-        print("jaswanth")

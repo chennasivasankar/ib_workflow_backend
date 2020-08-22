@@ -157,10 +157,6 @@ class TestChecklistStorageImplementation:
 
         checklist_item_dtos = storage.get_checklist_item_dtos(
             checklist_id=checklist_id)
-        print("actual")
-        print(checklist_item_dtos)
-        print("expected")
-        print(expected_checklist_item_dtos)
 
         assert checklist_item_dtos == expected_checklist_item_dtos
 
