@@ -3,7 +3,7 @@ from datetime import time, datetime, timedelta
 from typing import Optional, List
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO, \
-    UserIdWIthTeamDetailsDTOs
+    UserIdWIthTeamDetailsDTOs, UserDetailsDTO
 
 
 @dataclass
@@ -163,3 +163,9 @@ class StageActionLogicDTO:
     action_logic: str
     action_name: str
     py_function_import_path: str
+
+
+@dataclass
+class UserDetailsWithTeamDetailsDTO:
+    user_details_dtos: List[UserDetailsDTO]
+    user_id_with_team_details_dtos: List[UserIdWIthTeamDetailsDTOs]

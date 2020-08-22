@@ -65,17 +65,18 @@ class AuthService:
         return user_details_dtos
 
     def get_user_details_for_the_given_role_ids_based_on_query(
-            self, role_ids: List[str],
+            self, role_ids: List[str], project_id: str,
             search_query_with_pagination_dto:
             SearchQueryWithPaginationDTO) -> List[UserDetailsDTO]:
         user_profile_details_dtos = self.interface. \
             get_user_details_for_the_given_role_ids_based_on_query(
             role_ids=role_ids, search_query_with_pagination_dto=
-            search_query_with_pagination_dto)
+            search_query_with_pagination_dto, project_id=project_id)
 
         user_details_dtos = self._get_user_details_dtos(
             user_profile_details_dtos)
         return user_details_dtos
+
 
     @staticmethod
     def _get_user_details_dtos(user_profile_details_dtos):
@@ -102,8 +103,10 @@ class AuthService:
 
     def get_team_info_for_given_user_ids(self, user_ids: List[str]) -> List[
         UserIdWIthTeamDetailsDTOs]:
-        raise NotImplementedError
-
+        # raise NotImplementedError
+        return [UserIdWIthTeamDetailsDTOs(user_id=user_id, team_details=[
+            TeamDetailsDTO(team_id="team_1", name="team_name_1"), TeamDetailsDTO(team_id="team_2", name="team_name_1")]) for user_id
+                in user_ids]
 
     def get_team_details_for_given_team_project_details_dto(
             self, team_project_details_dto: TeamProjectDetailsDTO) -> \

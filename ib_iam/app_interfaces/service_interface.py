@@ -120,7 +120,7 @@ class ServiceInterface:
 
     @staticmethod
     def get_user_details_for_the_given_role_ids_based_on_query(
-            role_ids: List[str],
+            role_ids: List[str],project_id: str,
             search_query_with_pagination_dto:
             SearchQueryWithPaginationDTO
     ) -> List[UserProfileDTO]:
