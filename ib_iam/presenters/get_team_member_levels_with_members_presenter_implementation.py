@@ -59,7 +59,10 @@ class GetTeamMemberLevelsWithMembersPresenterImplementation(
             }
             team_member_levels_with_members.append(
                 team_member_level_details_dict)
-        return team_member_levels_with_members
+        response_dict = {
+            "team_member_levels_with_members": team_member_levels_with_members
+        }
+        return self.prepare_200_success_response(response_dict=response_dict)
 
     @staticmethod
     def _prepare_member_id_wise_subordinate_member_ids_dict(
