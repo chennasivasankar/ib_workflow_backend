@@ -65,40 +65,56 @@ class GetBoardsInteractor(ValidationMixin):
             user_id=user_id)
         self.storage.validate_user_role_with_boards_roles(user_role=user_role)
 
+        limit, offset = self._pagination_validations(get_boards_dto)
+
+        all_boards_details_dtos, total_boards = self._get_all_boards_details_dtos(
+            limit, offset, project_id, user_id)
+        return all_boards_details_dtos, total_boards
+
+    def _get_all_boards_details_dtos(self, limit: int, offset: int,
+                                     project_id: str, user_id: str):
+        other_boards_ids, starred_board_ids = self.storage.get_board_ids(
+            user_id=user_id, project_id=project_id
+        )
+        all_board_ids = other_boards_ids + starred_board_ids
+        total_boards = len(all_board_ids)
+        if offset >= total_boards:
+            raise OffsetValueExceedsTotalTasksCount
+
+        board_ids = all_board_ids[offset:offset + limit]
+        all_boards_details_dtos = self._get_board_details_dtos(
+            board_ids, other_boards_ids, starred_board_ids)
+
+        return all_boards_details_dtos, total_boards
+
+    def _get_board_details_dtos(self, board_ids: List[str],
+                                other_boards_ids: List[str],
+                                starred_board_ids: List[str]):
+        from ib_boards.interactors.get_board_details_interactor \
+            import GetBoardsDetailsInteractor
+        board_details_interactor = GetBoardsDetailsInteractor(
+            storage=self.storage
+        )
+        boards_details_dtos = board_details_interactor.get_boards_details(
+            board_ids=board_ids
+        )
+        starred_board_dtos, other_boards_dtos = self._map_starred_boards_and_all_boards(
+            boards_details_dtos, starred_board_ids, other_boards_ids)
+        all_boards_details_dtos = StarredAndOtherBoardsDTO(
+            starred_boards_dtos=starred_board_dtos,
+            other_boards_dtos=other_boards_dtos
+        )
+        return all_boards_details_dtos
+
+    @staticmethod
+    def _pagination_validations(get_boards_dto):
         offset = get_boards_dto.offset
         limit = get_boards_dto.limit
         if offset < 0:
             raise InvalidOffsetValue
         if limit < 0:
             raise InvalidLimitValue
-
-        other_boards_ids, starred_board_ids = self.storage.get_board_ids(
-            user_id=user_id, project_id=project_id
-        )
-        from ib_boards.interactors.get_board_details_interactor \
-            import GetBoardsDetailsInteractor
-        board_details_interactor = GetBoardsDetailsInteractor(
-            storage=self.storage
-        )
-        all_board_ids = other_boards_ids + starred_board_ids
-
-        total_boards = len(all_board_ids)
-        if offset >= total_boards:
-            raise OffsetValueExceedsTotalTasksCount
-        board_ids = all_board_ids[offset:offset + limit]
-
-        boards_details_dtos = board_details_interactor.get_boards_details(
-            board_ids=board_ids
-        )
-
-        starred_board_dtos, other_boards_dtos = self._map_starred_boards_and_all_boards(
-            boards_details_dtos, starred_board_ids, other_boards_ids)
-
-        all_boards_details_dtos = StarredAndOtherBoardsDTO(
-            starred_boards_dtos=starred_board_dtos,
-            other_boards_dtos=other_boards_dtos
-        )
-        return all_boards_details_dtos, total_boards
+        return limit, offset
 
     @staticmethod
     def _map_starred_boards_and_all_boards(
