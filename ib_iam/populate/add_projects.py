@@ -22,9 +22,9 @@ class Project:
         from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
         project_dtos = [
             ProjectDTO(project_id=project['project_id'],
-                       name=project['name'],
+                       name=project['project_name'],
                        description=project.get('description', None),
-                       logo_url=project.get('logo_url', None)
+                       logo_url=project.get('project_logo_url', None)
                        ) for project in projects
         ]
         return project_dtos

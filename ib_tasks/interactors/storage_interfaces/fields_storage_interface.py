@@ -82,3 +82,11 @@ class FieldsStorageInterface(abc.ABC):
     def check_is_user_has_write_permission_for_field(
             self, field_id: str, user_roles: List[str]) -> bool:
         pass
+
+    @abc.abstractmethod
+    def get_field_ids_for_given_gofs(self, gof_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_field_dtos(self, field_ids: List[str]) -> List[FieldDTO]:
+        pass

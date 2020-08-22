@@ -5,7 +5,7 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
 
 from ib_tasks.interactors.task_dtos import FieldValuesDTO, \
     SaveAndActOnTaskDTO, \
-    StageIdWithAssigneeIdDTO, SaveAndActOnTaskWithTaskDisplayIdDTO
+    StageIdWithAssigneeDTO, SaveAndActOnTaskWithTaskDisplayIdDTO
 from .validator_class import ValidatorClass
 from ...interactors.create_or_update_task.save_and_act_on_task import \
     SaveAndActOnATaskInteractor
@@ -39,6 +39,7 @@ def api_wrapper(*args, **kwargs):
     task_gofs = request_data['task_gofs']
     stage_assignee_stage_id = request_data['stage_assignee']['stage_id']
     stage_assignee_assignee_id = request_data['stage_assignee']['assignee_id']
+    assignee_team_id = request_data['stage_assignee']['team_id']
 
     from ib_tasks.interactors.task_dtos import GoFFieldsDTO
 
@@ -52,9 +53,10 @@ def api_wrapper(*args, **kwargs):
         )
         task_gofs_dtos.append(gof_field_dto)
 
-    stage_assignee = StageIdWithAssigneeIdDTO(
+    stage_assignee = StageIdWithAssigneeDTO(
         stage_id=stage_assignee_stage_id,
-        assignee_id=stage_assignee_assignee_id
+        assignee_id=stage_assignee_assignee_id,
+        team_id=assignee_team_id
     )
 
     task_dto = SaveAndActOnTaskWithTaskDisplayIdDTO(
@@ -90,8 +92,7 @@ def api_wrapper(*args, **kwargs):
     )
 
     response = interactor.save_and_act_on_task_wrapper(
-        task_dto=task_dto, presenter=presenter
-    )
+        task_dto=task_dto, presenter=presenter)
     return response
 
 

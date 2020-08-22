@@ -3,6 +3,7 @@
 REQUEST_BODY_JSON = """
 {
     "name": "string",
+    "project_id": "string",
     "template_id": "string",
     "conditions": [
         {

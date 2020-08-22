@@ -3,9 +3,9 @@ from django.contrib import admin
 
 from ib_iam.models import (
     UserDetails, UserTeam, UserRole, Company,
-    Role, Team, ElasticUserIntermediary, TeamMemberLevel,
-    Project)
-from ib_iam.models.project import ProjectTeam
+    Role, Team, ElasticUserIntermediary, TeamMemberLevel, City, State, Country,
+    Project, ProjectTeam
+)
 
 
 class ElasticUserIntermediaryAdmin(admin.ModelAdmin):
@@ -84,3 +84,6 @@ admin.site.register(TeamMemberLevel, TeamMemberLevelAdmin)
 admin.site.register(ElasticUserIntermediary, ElasticUserIntermediaryAdmin)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(ProjectTeam, ProjectTeamAdmin)
+admin.site.register(City)
+admin.site.register(State)
+admin.site.register(Country)
