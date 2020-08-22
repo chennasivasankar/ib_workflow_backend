@@ -1,9 +1,10 @@
 import factory
 
+from ib_iam.constants.enums import Searchable
 from ib_iam.interactors.storage_interfaces.dtos \
     import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, \
-    UserProfileDTO, TeamMemberLevelDetailsDTO, MemberDTO, \
+    UserProfileDTO, TeamMemberLevelDetailsDTO, MemberDTO, SearchableDetailsDTO, ProjectDTO, TeamMemberLevelDetailsDTO, MemberDTO, \
     MemberIdWithSubordinateMemberIdsDTO
 
 
@@ -269,6 +270,32 @@ class MemberDTOFactory(factory.Factory):
 
     member_id = factory.Faker("uuid4")
     immediate_superior_team_user_id = factory.Faker("uuid4")
+
+
+class ProjectDTOFactory(factory.Factory):
+    class Meta:
+        model = ProjectDTO
+
+    project_id = factory.Sequence(lambda n: 'project %s' % n)
+    name = factory.Sequence(lambda n: 'name %s' % n)
+    description = factory.Sequence(lambda n: 'description %s' % n)
+    logo_url = factory.Sequence(lambda n: 'logo %s' % n)
+
+
+class SearchableDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchableDetailsDTO
+
+    search_type = factory.Iterator(
+        [
+            Searchable.CITY.value,
+            Searchable.STATE.value,
+            Searchable.COUNTRY.value,
+            Searchable.USER.value
+        ]
+    )
+    id = factory.sequence(lambda counter: counter)
+    value = factory.sequence(lambda counter: "name{}".format(counter))
 
 
 class MemberIdWithSubordinateMemberIdsDTOFactory(factory.Factory):

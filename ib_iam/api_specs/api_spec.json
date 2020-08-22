@@ -584,6 +584,27 @@
         "company_id"
       ]
     },
+    "Project": {
+      "type": "object",
+      "properties": {
+        "project_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "logo_url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id",
+        "name"
+      ]
+    },
     "LevelDetails": {
       "type": "object",
       "properties": {
@@ -2044,6 +2065,15 @@
           "team_member_levels_with_members"
         ]
       }
+    },
+    "SuccessForGetProjectsResponse": {
+      "description": "returns all Projects",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Project"
+        }
+      }
     }
   },
   "paths": {
@@ -2854,6 +2884,27 @@
         "responses": {
           "201": {
             "description": "Successfully add members to superiors"
+          }
+        }
+      }
+    },
+    "/projects/v1/": {
+      "get": {
+        "summary": "Get Projects",
+        "description": "Returns all Projects if accessed by admin",
+        "operationId": "get_projects",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/SuccessForGetProjectsResponse"
           }
         }
       }

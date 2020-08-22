@@ -6,7 +6,7 @@ import factory
 from ib_tasks.adapters.dtos import UserDetailsDTO
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
 from ib_tasks.constants.enum import Priority, ValidationType, FieldTypes, \
-    PermissionTypes, Status, Operators
+    PermissionTypes, Status, Operators, Searchable
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
 from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
@@ -22,7 +22,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     StageTaskFieldsDTO, FieldPermissionDTO, FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
     TaskGoFFieldDTO,
-    TaskGoFDTO, TaskDetailsDTO, TaskBaseDetailsDTO
+    TaskGoFDTO, TaskDetailsDTO, TaskBaseDetailsDTO, FieldSearchableDTO
 )
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, GoFToTaskTemplateDTO, \
@@ -673,3 +673,12 @@ class CurrentStageDetailsDTOFactory(factory.Factory):
     stage_id = factory.sequence(lambda counter: "stage_{}".format(counter))
     stage_display_name = factory.sequence(
         lambda counter: "name_{}".format(counter))
+
+
+class FieldSearchableDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldSearchableDTO
+
+    field_id = factory.sequence(lambda counter: "field{}".format(counter))
+    field_value = Searchable.CITY.value
+    field_response = "1"

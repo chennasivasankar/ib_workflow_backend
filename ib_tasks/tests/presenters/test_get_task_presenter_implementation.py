@@ -45,7 +45,7 @@ class TestGetTaskPresenterImplementation:
     def permission_task_gof_field_dtos(self):
         permission_task_gof_field_dtos = [
             TaskGoFFieldDTOFactory(task_gof_id=0, field_id="field0",
-                                   field_response="response0"),
+                                   field_response='{"id": 1, "value": "Hyderabad"}'),
             TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field2",
                                    field_response="response2"),
             TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field3",
@@ -198,7 +198,6 @@ class TestGetTaskPresenterImplementation:
         snapshot.assert_match(name="exception_object",
                               value=response_object.content)
 
-
     def test_raise_exception_for_invalid_task_display_id(
             self, presenter, snapshot
     ):
@@ -230,6 +229,20 @@ class TestGetTaskPresenterImplementation:
         # Assert
         snapshot.assert_match(name="exception_object",
                               value=response_object.content)
+
+    def test_raise_invalid_searchable_records_found(
+            self, presenter, snapshot
+    ):
+        # Arrange
+
+        # Act
+        response_object = presenter.raise_invalid_searchable_records_found()
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response_object.content
+        )
 
     def test_given_task_complete_details_dto_returns_task_details(
             self, presenter, task_complete_details_dto, snapshot
