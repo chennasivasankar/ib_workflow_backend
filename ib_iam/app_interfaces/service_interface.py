@@ -4,7 +4,7 @@ from ib_iam.adapters.dtos import UserProfileDTO, SearchQueryWithPaginationDTO
 from ib_iam.app_interfaces.dtos import SearchableDTO
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserIdAndNameDTO, \
-    TeamIdAndNameDTO
+    TeamIdAndNameDTO, ProjectDTO
 from ib_tasks.adapters.dtos import SearchableDetailsDTO
 
 
@@ -246,3 +246,12 @@ class ServiceInterface:
         interactor = TeamInteractor(
             user_storage=user_storage, team_storage=team_storage)
         return interactor.get_teams(team_ids=team_ids)
+
+    @staticmethod
+    def get_project_dtos_bulk(project_ids: List[str]) -> List[ProjectDTO]:
+        from ib_iam.interactors.project_interactor import ProjectInteractor
+        from ib_iam.storages.project_storage_implementation import \
+            ProjectStorageImplementation
+        project_storage = ProjectStorageImplementation()
+        interactor = ProjectInteractor(project_storage=project_storage)
+        return interactor.get_project_dtos_bulk(project_ids=project_ids)
