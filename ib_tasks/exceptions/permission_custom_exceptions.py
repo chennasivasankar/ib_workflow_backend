@@ -25,3 +25,8 @@ class UserNeedsFieldWritablePermission(Exception):
         self.user_id = user_id
         self.field_id = field_id
         self.required_roles = required_user_roles
+
+
+class InvalidUserIdException(Exception):
+    def __init__(self, user_id: str):
+        self.user_id = user_id

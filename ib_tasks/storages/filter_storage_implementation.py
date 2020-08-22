@@ -183,10 +183,11 @@ class FilterStorageImplementation(FilterStorageInterface):
             filter_id=filter_id
         )
 
-    def get_enabled_filters_dto_to_user(self, user_id: str) -> List[
-        ApplyFilterDTO]:
+    def get_enabled_filters_dto_to_user(self, user_id: str, project_id: str
+                                        ) -> List[ApplyFilterDTO]:
         filter_objects = FilterCondition.objects.filter(
-            filter__created_by=user_id, filter__is_selected=Status.ENABLED.value
+            filter__created_by=user_id, filter__is_selected=Status.ENABLED.value,
+            project_id=project_id
         ).annotate(template_id=F('filter__template_id'))
         filter_dtos = [
             ApplyFilterDTO(

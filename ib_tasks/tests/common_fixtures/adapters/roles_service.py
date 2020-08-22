@@ -1,4 +1,8 @@
+from typing import List
+
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
+from ib_tasks.exceptions.permission_custom_exceptions import \
+    InvalidUserIdException
 
 
 def get_valid_role_ids_in_given_role_ids(mocker):
@@ -33,10 +37,17 @@ def prepare_get_roles_for_valid_mock(mocker):
     return mock
 
 
+def get_user_role_ids_exception(mocker, user_id):
+    mock = mocker.patch(
+        "ib_tasks.adapters.roles_service.RolesService.get_user_role_ids")
+    mock.side_effect = InvalidUserIdException(user_id)
+    return mock
+
+
 def get_user_role_ids(mocker):
     mock = mocker.patch(
         "ib_tasks.adapters.roles_service.RolesService.get_user_role_ids")
-    user_role_ids = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC',
+    user_role_ids = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC',
                      'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
                      'FIN_COMPLIANCE_APPROVER', 'FIN_PAYMENTS_LEVEL1_VERIFIER',
                      'FIN_PAYMENTS_LEVEL2_VERIFIER',
@@ -44,6 +55,13 @@ def get_user_role_ids(mocker):
                      'FIN_PAYMENTS_RP', 'FIN_FINANCE_RP',
                      'FIN_ACCOUNTS_LEVEL1_VERIFIER',
                      'FIN_ACCOUNTS_LEVEL2_VERIFIER']
+    mock.return_value = user_role_ids
+    return mock
+
+
+def get_required_user_role_ids(mocker, user_role_ids: List[str]):
+    mock = mocker.patch(
+        "ib_tasks.adapters.roles_service.RolesService.get_user_role_ids")
     mock.return_value = user_role_ids
     return mock
 

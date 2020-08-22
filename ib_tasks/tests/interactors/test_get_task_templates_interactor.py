@@ -122,7 +122,7 @@ class TestGetTaskTemplatesInteractor:
         user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = ['field0', 'field1', 'field2', 'field3']
-        expected_roles = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER',
+        expected_roles = ['FIN_PAYMENT_REQUESTER',
                           'FIN_PAYMENT_POC',
                           'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
                           'FIN_COMPLIANCE_APPROVER',
@@ -261,7 +261,7 @@ class TestGetTaskTemplatesInteractor:
         user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = ['field0', 'field1', 'field2', 'field3']
-        expected_roles = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER',
+        expected_roles = ['FIN_PAYMENT_REQUESTER',
                           'FIN_PAYMENT_POC',
                           'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
                           'FIN_COMPLIANCE_APPROVER',
@@ -365,7 +365,7 @@ class TestGetTaskTemplatesInteractor:
         user_id = "user_1"
         expected_gof_ids = []
         expected_field_ids = ['field0', 'field1', 'field2', 'field3']
-        expected_roles = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER',
+        expected_roles = [ 'FIN_PAYMENT_REQUESTER',
                           'FIN_PAYMENT_POC',
                           'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
                           'FIN_COMPLIANCE_APPROVER',
@@ -470,7 +470,7 @@ class TestGetTaskTemplatesInteractor:
         user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = []
-        expected_roles = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER',
+        expected_roles = ['FIN_PAYMENT_REQUESTER',
                           'FIN_PAYMENT_POC',
                           'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
                           'FIN_COMPLIANCE_APPROVER',
@@ -569,7 +569,7 @@ class TestGetTaskTemplatesInteractor:
         user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = ['field0', 'field1', 'field2', 'field3']
-        expected_roles = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER',
+        expected_roles = ['FIN_PAYMENT_REQUESTER',
                           'FIN_PAYMENT_POC',
                           'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
                           'FIN_COMPLIANCE_APPROVER',
@@ -668,7 +668,7 @@ class TestGetTaskTemplatesInteractor:
         user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = ['field0', 'field1', 'field2', 'field3']
-        expected_roles = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER',
+        expected_roles = ['FIN_PAYMENT_REQUESTER',
                           'FIN_PAYMENT_POC',
                           'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
                           'FIN_COMPLIANCE_APPROVER',

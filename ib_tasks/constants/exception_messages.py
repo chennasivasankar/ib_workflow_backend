@@ -51,6 +51,7 @@ EMPTY_VALUE_FOR_FIELD_ID = "Field ids shouldn't be empty"
 EMPTY_VALUE_FOR_READ_PERMISSIONS = "Read Permission roles shouldn't be empty " \
                                    "" \
                                    "" \
+                                   "" \
                                    "for these fields ids {}"
 DUPLICATED_VALUES_FOR_READ_PERMISSIONS = "Repeated roles for read " \
                                          "permissions for these fields {}"
@@ -337,6 +338,10 @@ USER_PERMISSION_DENIED = (
     "user doesn't have permission",
     "USER_PERMISSION_DENIED"
 )
+INVALID_TASK_TEMPLATE_DB_ID = (
+    "{} invalid task template id, please give a valid task template id",
+    "INVALID_TASK_TEMPLATE_DB_ID"
+)
 
 INVALID_PROJECT_ID = ("given invalid project id: {}", "INVALID_PROJECT_ID")
 
@@ -353,4 +358,8 @@ INVALID_PROJECT_ID = (
 USER_NOT_IN_PROJECT = (
     "User Not a part of the Project",
     "USER_NOT_IN_PROJECT"
+)
+INVALID_USER_ID = (
+    "User with id {} doesn't exist",
+    "INVALID_USER_ID"
 )
