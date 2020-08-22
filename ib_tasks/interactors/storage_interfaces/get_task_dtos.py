@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Union
 
-from ib_tasks.constants.enum import Priority
+from ib_tasks.constants.enum import Priority, Searchable
 
 
 @dataclass
@@ -41,3 +41,10 @@ class TaskDetailsDTO:
 class TemplateFieldsDTO:
     task_template_id: str
     field_ids: List[str]
+
+
+@dataclass
+class FieldSearchableDTO:
+    field_id: str
+    field_value: Searchable
+    field_response: Union[int, str]

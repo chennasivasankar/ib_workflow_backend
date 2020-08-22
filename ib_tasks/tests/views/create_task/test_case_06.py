@@ -8,7 +8,7 @@ from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import StageActionFactory, TaskTemplateFactory
 
 
-class TestCase01CreateTaskAPITestCase(TestUtils):
+class TestCase06CreateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -18,9 +18,10 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
     @pytest.fixture
     def reset_sequence(self):
         TaskTemplateFactory.reset_sequence()
+        StageActionFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
-    def setup(self, reset_sequence):
+    def setup(self):
         TaskTemplateFactory()
         StageActionFactory()
 
@@ -32,9 +33,9 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
             "action_id": 1,
             "title": "task_title",
             "description": "task_description",
-            "start_date": "2099-12-31",
+            "start_date": "2005-12-31",
             "due_date": {
-                "date": "2099-12-31",
+                "date": "2010-12-31",
                 "time": "12:00:00"
             },
             "priority": "HIGH",

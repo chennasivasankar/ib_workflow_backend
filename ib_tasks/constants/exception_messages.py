@@ -342,3 +342,18 @@ INVALID_TASK_TEMPLATE_DB_ID = (
     "{} invalid task template id, please give a valid task template id",
     "INVALID_TASK_TEMPLATE_DB_ID"
 )
+
+SEARCHABLE_RECORDS_NOT_FOUND = (
+    "Something went wrong contact Admin",
+    "SEARCHABLE_RECORDS_NOT_FOUND"
+)
+
+INVALID_PROJECT_ID = (
+    "{} is invalid project id, please send valid project id",
+    "INVALID_PROJECT_ID"
+)
+
+USER_NOT_IN_PROJECT = (
+    "User Not a part of the Project",
+    "USER_NOT_IN_PROJECT"
+)

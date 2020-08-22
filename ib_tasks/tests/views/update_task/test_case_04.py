@@ -43,7 +43,8 @@ class TestCase04UpdateTaskAPITestCase(TestUtils):
             "priority": "HIGH",
             "stage_assignee": {
                 "stage_id": 1,
-                "assignee_id": "assignee_id_1"
+                "assignee_id": "assignee_id_1",
+                "team_id": "team_1"
             },
             "task_gofs": [
                 {
