@@ -345,6 +345,12 @@ SEARCHABLE_RECORDS_NOT_FOUND = (
     "SEARCHABLE_RECORDS_NOT_FOUND"
 )
 
+INVALID_PROJECT_ID = (
+    "{} is invalid project id, please send valid project id",
+    "INVALID_PROJECT_ID"
+)
 
-
-
+USER_NOT_IN_PROJECT = (
+    "User Not a part of the Project",
+    "USER_NOT_IN_PROJECT"
+)
