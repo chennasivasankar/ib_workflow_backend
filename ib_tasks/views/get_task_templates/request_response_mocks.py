@@ -3,9 +3,17 @@
 
 RESPONSE_200_JSON = """
 {
+    "projects": [
+        {
+            "project_id": "string",
+            "project_name": "string",
+            "project_logo_url": "string"
+        }
+    ],
     "task_templates": [
         {
             "template_id": "string",
+            "project_id": "string",
             "template_name": "string",
             "actions": [
                 {
