@@ -146,8 +146,8 @@ class FilterInteractor(ValidationMixin):
             filter_details = self._get_filters_details(
                 user_id=user_id, project_id=project_id
             )
-        except InvalidProjectId:
-            return self.presenter.get_response_for_invalid_project_id()
+        except InvalidProjectIdsException as err:
+            return self.presenter.get_response_for_invalid_project_id(err=err)
         except UserIsNotInProject:
             return self.presenter.get_response_for_user_not_in_project()
         return self.presenter.get_response_for_get_filters_details(
