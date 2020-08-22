@@ -2,6 +2,7 @@ import abc
 from dataclasses import dataclass
 from typing import List
 
+from ib_tasks.adapters.auth_service import InvalidProjectIdsException
 from ib_tasks.constants.enum import Status
 from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO, \
     FilterCompleteDetailsDTO
@@ -71,4 +72,13 @@ class FilterPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def get_response_for_get_task_templates_fields(
             self, task_template_fields: TaskTemplateFieldsDto):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_project_id(
+            self, err: InvalidProjectIdsException):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_user_not_in_project(self):
         pass

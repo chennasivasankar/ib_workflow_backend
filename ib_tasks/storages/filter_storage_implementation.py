@@ -42,8 +42,8 @@ class FilterStorageImplementation(FilterStorageInterface):
             for condition_obj in condition_objs
         ]
 
-    def get_filters_dto_to_user(self, user_id: str) -> List[FilterDTO]:
-        filter_objs = Filter.objects.filter(created_by=user_id) \
+    def get_filters_dto_to_user(self, user_id: str, project_id: str) -> List[FilterDTO]:
+        filter_objs = Filter.objects.filter(created_by=user_id, project_id=project_id) \
             .annotate(template_name=F('template__name'))
         return self._get_filter_dtos(filter_objs=filter_objs)
 
@@ -100,6 +100,7 @@ class FilterStorageImplementation(FilterStorageInterface):
         filter_object = Filter.objects.create(
             created_by=filter_dto.user_id,
             name=filter_dto.filter_name,
+            project_id=filter_dto.project_id,
             template_id=filter_dto.template_id
         )
         self._create_filter_conditions(
@@ -182,10 +183,11 @@ class FilterStorageImplementation(FilterStorageInterface):
             filter_id=filter_id
         )
 
-    def get_enabled_filters_dto_to_user(self, user_id: str) -> List[
-        ApplyFilterDTO]:
+    def get_enabled_filters_dto_to_user(self, user_id: str, project_id: str
+                                        ) -> List[ApplyFilterDTO]:
         filter_objects = FilterCondition.objects.filter(
-            filter__created_by=user_id, filter__is_selected=Status.ENABLED.value
+            filter__created_by=user_id, filter__is_selected=Status.ENABLED.value,
+            project_id=project_id
         ).annotate(template_id=F('filter__template_id'))
         filter_dtos = [
             ApplyFilterDTO(
