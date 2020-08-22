@@ -257,8 +257,8 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
              if d["assignee_id"] == assignee_id_with_current_less_tasks),
             None)
         # #FIXME: Handle assignee id index none usecase
-        # if assignee_id_index is None:
-        #     assignee_id_index = 0
+        if assignee_id_index is None:
+            assignee_id_index = 0
         return assignee_id_index
 
     @staticmethod
