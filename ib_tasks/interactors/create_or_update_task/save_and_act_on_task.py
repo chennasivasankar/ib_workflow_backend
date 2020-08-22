@@ -23,7 +23,7 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee, DuplicateStageIds, \
-    InvalidDbStageIdsListException
+    InvalidDbStageIdsListException, InvalidStageId
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId
 from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
@@ -94,6 +94,8 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter.raise_invalid_action_id(err)
         except InvalidTaskException as err:
             return presenter.raise_invalid_task_id(err)
+        except InvalidStageId as err:
+            return presenter.raise_invalid_stage_id(err)
         except InvalidDueTimeFormat as err:
             return presenter.raise_invalid_due_time_format(err)
         except StartDateIsAheadOfDueDate as err:

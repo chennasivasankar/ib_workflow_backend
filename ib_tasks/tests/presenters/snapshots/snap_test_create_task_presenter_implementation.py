@@ -83,8 +83,6 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_templat
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_ids res_status'] = 'INVALID_TASK_TEMPLATE_IDS'
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_ids response'] = "invalid task template ids: ['template_1', 'template_2']"
-
 snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_action_id http_status_code'] = 400
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_action_id res_status'] = 'INVALID_ACTION_ID'
@@ -181,8 +179,6 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invali
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value res_status'] = 'INCORRECT_NAME_IN_GOF_SELECTOR_FIELD'
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value response'] = "Invalid gof selector name: city for field: field_1! Try with these gof_id values: ['Mr', 'Mrs']"
-
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_choice_in_radio_group_field http_status_code'] = 400
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_choice_in_radio_group_field res_status'] = 'INCORRECT_RADIO_GROUP_CHOICE'
@@ -255,6 +251,14 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_user_b
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_user_board_permission_denied response'] = 'User do not have access to the board: board_1'
 
+snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_gof_writable_permission response'] = "user needs write access on gof gof_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission response'] = "user needs write access on field field_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_ids response'] = 'invalid task template ids: template_1'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value response'] = "Invalid gof selector name: city for field: field_1! Try with these gof selector names: ['Mr', 'Mrs'] "
+
 snapshots['TestCreateTaskPresenterImplementation.test_get_create_task_response create_task_response'] = {
     'stages': [
         {
@@ -269,7 +273,3 @@ snapshots['TestCreateTaskPresenterImplementation.test_get_create_task_response c
     'task_id': 'task_display_0',
     'user_has_permission': True
 }
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_gof_writable_permission response'] = "user needs write access on gof gof_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission response'] = "user needs write access on field field_1, because user does not have at least one role in ['role_1', 'role_2'] roles"

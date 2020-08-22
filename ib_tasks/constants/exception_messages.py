@@ -50,6 +50,7 @@ INVALID_GOF_IDS_EXCEPTION_MESSAGE = "Invalid values for gof_ids {}"
 EMPTY_VALUE_FOR_FIELD_ID = "Field ids shouldn't be empty"
 EMPTY_VALUE_FOR_READ_PERMISSIONS = "Read Permission roles shouldn't be empty " \
                                    "" \
+                                   "" \
                                    "for these fields ids {}"
 DUPLICATED_VALUES_FOR_READ_PERMISSIONS = "Repeated roles for read " \
                                          "permissions for these fields {}"
@@ -152,8 +153,8 @@ INVALID_VALUE_FOR_DROPDOWN = (
     "values: {}",
     "INVALID_VALUE_FOR_DROPDOWN")
 INCORRECT_NAME_IN_GOF_SELECTOR_FIELD = (
-    "Invalid gof selector name: {} for field: {}! Try with these gof_id "
-    "values: {}",
+    "Invalid gof selector name: {} for field: {}! Try with these gof "
+    "selector names: {} ",
     "INCORRECT_NAME_IN_GOF_SELECTOR_FIELD")
 INCORRECT_RADIO_GROUP_CHOICE = (
     "Invalid radio group choice: {} for field: {}! Try with these valid "
@@ -187,9 +188,7 @@ INVALID_IMAGE_URL = ("Invalid url for an image: {} for field: {}!",
                      "INVALID_IMAGE_URL")
 INVALID_FILE_URL = ("Invalid url for a file: {} for field: {}!",
                     "INVALID_FILE_URL")
-INVALID_NAME_IN_GOF_SELECTOR_FIELD = (
-    "Invalid gof selector name: {} in gof_selector_field!",
-    "INVALID_NAME_IN_GOF_SELECTOR_FIELD")
+
 INVALID_FILE_FORMAT = (
     "Invalid format for a file: {} for field: {}! Try with these formats: {}",
     "INVALID_FILE_FORMAT")

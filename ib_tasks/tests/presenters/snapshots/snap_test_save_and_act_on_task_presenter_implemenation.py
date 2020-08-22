@@ -145,8 +145,6 @@ snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for
 
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value res_status'] = 'INCORRECT_NAME_IN_GOF_SELECTOR_FIELD'
 
-snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value json_response'] = "Invalid gof selector name: city for field: field_1! Try with these gof_id values: ['Mr', 'Mrs']"
-
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_invalid_choice_in_radio_group_field http_status_code'] = 400
 
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_invalid_choice_in_radio_group_field res_status'] = 'INCORRECT_RADIO_GROUP_CHOICE'
@@ -261,6 +259,12 @@ snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_stage_ids_wit
 
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_stage_ids_with_invalid_permission_for_assignee_exception response'] = 'Stage ids with invalid permission of assignees that you have sent are: [1, 2],please assign valid assignees for stages'
 
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_user_needs_gof_writable_permission json_response'] = 'user needs write access on gof user_1, because user does not have at least one role in gof_1 roles'
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_user_needs_field_writable_permission json_response'] = 'user needs write access on field user_1, because user does not have at least one role in field_1 roles'
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value json_response'] = "Invalid gof selector name: city for field: field_1! Try with these gof selector names: ['Mr', 'Mrs'] "
+
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_get_save_and_act_on_task_response task_current_stage_details'] = {
     'stages': [
         {
@@ -276,6 +280,8 @@ snapshots['TestSaveAndActOnATaskPresenterImplementation.test_get_save_and_act_on
     'user_has_permission': True
 }
 
-snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_user_needs_gof_writable_permission json_response'] = 'user needs write access on gof user_1, because user does not have at least one role in gof_1 roles'
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_invalid_stage_id http_status_code'] = 400
 
-snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_user_needs_field_writable_permission json_response'] = 'user needs write access on field user_1, because user does not have at least one role in field_1 roles'
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_invalid_stage_id res_status'] = 'INVALID_STAGE_ID'
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_invalid_stage_id json_response'] = 'please give a valid stage id, 1 is invalid stage id'
