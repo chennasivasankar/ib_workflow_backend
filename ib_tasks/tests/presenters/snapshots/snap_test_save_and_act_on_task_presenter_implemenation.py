@@ -279,3 +279,9 @@ snapshots['TestSaveAndActOnATaskPresenterImplementation.test_get_save_and_act_on
     'task_id': 'task_display_0',
     'user_has_permission': True
 }
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_invalid_stage_id http_status_code'] = 400
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_invalid_stage_id res_status'] = 'INVALID_STAGE_ID'
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_invalid_stage_id json_response'] = 'please give a valid stage id, 1 is invalid stage id'
