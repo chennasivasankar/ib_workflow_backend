@@ -3,7 +3,7 @@ Created on: 15/07/20
 Author: Pavankumar Pamuru
 
 """
-from typing import List
+from typing import List, Tuple
 
 from ib_boards.adapters.iam_service import InvalidProjectIdsException, \
     UserIsNotInProjectException
@@ -72,7 +72,8 @@ class GetBoardsInteractor(ValidationMixin):
         return all_boards_details_dtos, total_boards
 
     def _get_all_boards_details_dtos(self, limit: int, offset: int,
-                                     project_id: str, user_id: str):
+                                     project_id: str, user_id: str) -> \
+            Tuple[StarredAndOtherBoardsDTO, int]:
         other_boards_ids, starred_board_ids = self.storage.get_board_ids(
             user_id=user_id, project_id=project_id
         )
@@ -89,7 +90,8 @@ class GetBoardsInteractor(ValidationMixin):
 
     def _get_board_details_dtos(self, board_ids: List[str],
                                 other_boards_ids: List[str],
-                                starred_board_ids: List[str]):
+                                starred_board_ids: List[str]) -> \
+            StarredAndOtherBoardsDTO:
         from ib_boards.interactors.get_board_details_interactor \
             import GetBoardsDetailsInteractor
         board_details_interactor = GetBoardsDetailsInteractor(
