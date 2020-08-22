@@ -3,7 +3,16 @@ Created on: 24/07/20
 Author: Pavankumar Pamuru
 
 """
-from typing import List
+from typing import List, Optional
+
+
+class InvalidProjectIds(Exception):
+    def __init__(self, invalid_project_id: str):
+        self.invalid_project_id = invalid_project_id
+
+
+class UserIsNotInProject(Exception):
+    pass
 
 
 class IamService:
@@ -27,5 +36,6 @@ class IamService:
     def validate_if_user_is_in_project(self, user_id: str, project_id: str):
         raise NotImplementedError
 
-    def validate_project_id(self, project_id: str):
+    def validate_project_ids(self, project_ids: List[str]) -> \
+            List[str]:
         raise NotImplementedError
