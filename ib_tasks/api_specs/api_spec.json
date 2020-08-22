@@ -1547,13 +1547,6 @@
       "type": "integer",
       "required": true
     },
-    "ProjectIdParameter": {
-      "name": "project_id",
-      "description": "Offset Parameter",
-      "in": "query",
-      "type": "integer",
-      "required": true
-    },
     "SearchableQueryParameter": {
       "name": "search_query",
       "description": "Searchable Query Parameter",
@@ -2814,7 +2807,7 @@
             "$ref": "#/parameters/OffsetParameter"
           },
           {
-            "$ref": "#/parameters/ProjectIdParameter"
+            "$ref": "#/parameters/ProjectIDParameter"
           }
         ],
         "responses": {

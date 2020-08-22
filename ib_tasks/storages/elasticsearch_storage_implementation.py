@@ -261,7 +261,8 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def _prepare_q_objects_for_eq_operation(filter_dtos: List[ApplyFilterDTO]):
         query = None
         for counter, item in enumerate(filter_dtos):
-            current_queue = Q('term', template_id__keyword=item.template_id) \
+            current_queue = Q('term', project_id__keyword=item.project_id) \
+                            & Q('term', template_id__keyword=item.template_id) \
                             & Q('term',
                                 fields__field_id__keyword=item.field_id) \
                             & Q('term', fields__value__keyword=item.value)
@@ -275,7 +276,8 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def _prepare_q_objects_for_neq_operation(filter_dtos: List[ApplyFilterDTO]):
         query = None
         for counter, item in enumerate(filter_dtos):
-            current_queue = ~Q('term', template_id__keyword=item.template_id) \
+            current_queue = Q('term', project_id__keyword=item.project_id) \
+                            & ~Q('term', template_id__keyword=item.template_id) \
                             & ~Q('term',
                                  fields__field_id__keyword=item.field_id) \
                             & ~Q('term', fields__value__keyword=item.value)
@@ -289,7 +291,8 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def _prepare_q_objects_for_gte_operation(filter_dtos: List[ApplyFilterDTO]):
         query = None
         for counter, item in enumerate(filter_dtos):
-            current_queue = Q('term', template_id__keyword=item.template_id) \
+            current_queue = Q('term', project_id__keyword=item.project_id) \
+                            & Q('term', template_id__keyword=item.template_id) \
                             & Q('term', fields__field_id__keyword=item.field_id) \
                             & Q('range', fields__value={"gte": item.value})
             if counter == 0:
@@ -302,7 +305,8 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def _prepare_q_objects_for_gt_operation(filter_dtos: List[ApplyFilterDTO]):
         query = None
         for counter, item in enumerate(filter_dtos):
-            current_queue = Q('term', template_id__keyword=item.template_id) \
+            current_queue = Q('term', project_id__keyword=item.project_id) \
+                            & Q('term', template_id__keyword=item.template_id) \
                             & Q('term', fields__field_id__keyword=item.field_id) \
                             & Q('range', fields__value={"gt": item.value})
             if counter == 0:
@@ -315,7 +319,8 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def _prepare_q_objects_for_lte_operation(filter_dtos: List[ApplyFilterDTO]):
         query = None
         for counter, item in enumerate(filter_dtos):
-            current_queue = Q('term', template_id__keyword=item.template_id) \
+            current_queue = Q('term', project_id__keyword=item.project_id) \
+                            & Q('term', template_id__keyword=item.template_id) \
                             & Q('term', fields__field_id__keyword=item.field_id) \
                             & Q('range', fields__value={"lte": int(item.value)})
             if counter == 0:
@@ -328,7 +333,8 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def _prepare_q_objects_for_lt_operation(filter_dtos: List[ApplyFilterDTO]):
         query = None
         for counter, item in enumerate(filter_dtos):
-            current_queue = Q('term', template_id__keyword=item.template_id) \
+            current_queue = Q('term', project_id__keyword=item.project_id) \
+                            & Q('term', template_id__keyword=item.template_id) \
                             & Q('term', fields__field_id__keyword=item.field_id) \
                             & Q('range', fields__value={"lt": item.value})
             if counter == 0:
