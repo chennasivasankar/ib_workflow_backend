@@ -139,3 +139,7 @@ class InvalidStateIds(Exception):
 class InvalidCountryIds(Exception):
     def __init__(self, country_ids: List[int]):
         self.country_ids = country_ids
+
+
+class InvalidTeamIds(Exception):
+    pass

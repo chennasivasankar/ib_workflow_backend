@@ -1,6 +1,7 @@
 from typing import List, Optional
 
-from ib_iam.interactors.storage_interfaces.dtos import TeamNameAndDescriptionDTO
+from ib_iam.interactors.storage_interfaces.dtos import \
+    TeamNameAndDescriptionDTO, TeamIdAndNameDTO
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
     TeamStorageInterface
 from ib_iam.models import UserDetails, Team, UserTeam
@@ -112,3 +113,10 @@ class TeamStorageImplementation(TeamStorageInterface):
             for team_object in team_objects
         ]
         return team_dtos
+
+    def get_team_id_and_name_dtos(
+            self, team_ids: List[str]) -> List[TeamIdAndNameDTO]:
+        team_objects = Team.objects.filter(team_id__in=team_ids)
+        return [TeamIdAndNameDTO(
+            team_id=team_object.team_id, team_name=team_object.name
+        ) for team_object in team_objects]
