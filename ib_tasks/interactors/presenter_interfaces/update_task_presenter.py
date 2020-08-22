@@ -2,7 +2,7 @@ import abc
 
 from ib_tasks.exceptions.datetime_custom_exceptions import DueDateHasExpired
 from ib_tasks.exceptions.stage_custom_exceptions import \
-    StageIdsWithInvalidPermissionForAssignee
+    StageIdsWithInvalidPermissionForAssignee, InvalidStageId
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId
 
 
@@ -148,6 +148,10 @@ class UpdateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_invalid_task_display_id(self, err: InvalidTaskDisplayId):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_stage_id(self, err: InvalidStageId):
         pass
 
 
