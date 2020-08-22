@@ -61,3 +61,39 @@ class SearchableDetailsDTO:
     search_type: Searchable
     id: Union[int, str]
     value: str
+
+
+@dataclass
+class TeamDetailsDTO:
+    team_id: str
+    name: str
+
+
+@dataclass
+class UserIdWIthTeamDetailsDTOs:
+    user_id: str
+    team_details: List[TeamDetailsDTO]
+
+
+@dataclass
+class ProjectDetailsDTO:
+    project_id: str
+    name: str
+    logo_url: str
+
+
+@dataclass
+class UserIdWithTeamIdDTO:
+    user_id: str
+    team_id: str
+
+
+@dataclass
+class TeamProjectDetailsDTO:
+    project_id: str
+    team_user_dtos: List[UserIdWithTeamIdDTO]
+
+
+@dataclass
+class TeamDetailsWithUserIdDTO(TeamDetailsDTO):
+    user_id: str
