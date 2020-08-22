@@ -1902,7 +1902,7 @@ class TestCreateTaskInteractor:
             .assert_called_once_with(task_dto)
         create_task_storage_mock.create_task_gofs.assert_called_once_with(
             task_gof_dtos=expected_task_gof_dtos)
-        create_task_storage_mock.create_task_gof_fields\
+        create_task_storage_mock.create_task_gof_fields \
             .assert_called_once_with(expected_task_gof_field_dtos)
         create_task_storage_mock.set_status_variables_for_template_and_task \
             .assert_called_once_with(
@@ -2103,8 +2103,9 @@ class TestCreateTaskInteractor:
             task_stage_storage=task_stage_storage_mock
         )
         given_method_name = "invalid method"
-        from ib_tasks.interactors \
-            .get_next_stages_random_assignees_of_a_task_interactor import \
+
+        from ib_tasks.interactors\
+            .call_action_logic_function_and_update_task_status_variables_interactor import \
             InvalidMethodFound
         user_action_on_task_mock.side_effect = InvalidMethodFound(
             given_method_name)

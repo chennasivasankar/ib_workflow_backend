@@ -251,21 +251,6 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_user_b
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_user_board_permission_denied response'] = 'User do not have access to the board: board_1'
 
-snapshots['TestCreateTaskPresenterImplementation.test_get_create_task_response create_task_response'] = {
-    'stages': [
-        {
-            'stage_display_name': 'stage_display_name_2',
-            'stage_id': 'stage_2'
-        },
-        {
-            'stage_display_name': 'stage_display_name_3',
-            'stage_id': 'stage_3'
-        }
-    ],
-    'task_id': 'task_display_0',
-    'user_has_permission': True
-}
-
 snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_gof_writable_permission response'] = "user needs write access on gof gof_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission response'] = "user needs write access on field field_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
@@ -273,3 +258,18 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_wri
 snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_ids response'] = 'invalid task template ids: template_1'
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value response'] = "Invalid gof selector name: city for field: field_1! Try with these gof selector names: ['Mr', 'Mrs'] "
+
+snapshots['TestCreateTaskPresenterImplementation.test_get_create_task_response create_task_response'] = {
+    'stages': [
+        {
+            'stage_display_name': 'stage_display_name_0',
+            'stage_id': 'stage_0'
+        },
+        {
+            'stage_display_name': 'stage_display_name_1',
+            'stage_id': 'stage_1'
+        }
+    ],
+    'task_id': 'task_display_0',
+    'user_has_permission': True
+}

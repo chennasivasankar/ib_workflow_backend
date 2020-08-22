@@ -259,23 +259,23 @@ snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_stage_ids_wit
 
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_stage_ids_with_invalid_permission_for_assignee_exception response'] = 'Stage ids with invalid permission of assignees that you have sent are: [1, 2],please assign valid assignees for stages'
 
-snapshots['TestSaveAndActOnATaskPresenterImplementation.test_get_save_and_act_on_task_response task_current_stage_details'] = {
-    'stages': [
-        {
-            'stage_display_name': 'stage_display_name_4',
-            'stage_id': 'stage_4'
-        },
-        {
-            'stage_display_name': 'stage_display_name_5',
-            'stage_id': 'stage_5'
-        }
-    ],
-    'task_id': 'task_display_0',
-    'user_has_permission': True
-}
-
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_user_needs_gof_writable_permission json_response'] = 'user needs write access on gof user_1, because user does not have at least one role in gof_1 roles'
 
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_user_needs_field_writable_permission json_response'] = 'user needs write access on field user_1, because user does not have at least one role in field_1 roles'
 
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value json_response'] = "Invalid gof selector name: city for field: field_1! Try with these gof selector names: ['Mr', 'Mrs'] "
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_get_save_and_act_on_task_response task_current_stage_details'] = {
+    'stages': [
+        {
+            'stage_display_name': 'stage_display_name_2',
+            'stage_id': 'stage_2'
+        },
+        {
+            'stage_display_name': 'stage_display_name_3',
+            'stage_id': 'stage_3'
+        }
+    ],
+    'task_id': 'task_display_0',
+    'user_has_permission': True
+}

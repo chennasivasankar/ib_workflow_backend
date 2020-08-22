@@ -812,6 +812,9 @@ class TestCreateTaskPresenterImplementation:
         # Arrange
         from ib_tasks.tests.factories.interactor_dtos import \
             TaskCurrentStageDetailsDTOFactory
+        from ib_tasks.tests.factories.interactor_dtos import \
+            CurrentStageDetailsDTOFactory
+        CurrentStageDetailsDTOFactory.reset_sequence()
         TaskCurrentStageDetailsDTOFactory.reset_sequence()
 
         task_current_stage_details_dto = TaskCurrentStageDetailsDTOFactory()
