@@ -17,3 +17,9 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             for project_dto in project_dtos
         ]
         Project.objects.bulk_create(projects)
+
+    def get_valid_project_ids_from_given_project_ids(
+            self, project_ids: List[str]) -> List[str]:
+        project_ids = Project.objects.filter(project_id__in=project_ids) \
+            .values_list("project_id", flat=True)
+        return list(project_ids)

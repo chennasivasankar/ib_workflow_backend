@@ -28,7 +28,25 @@ class TestProjectStorageImplementation:
 
         # Assert
         from ib_iam.models import Project
-        project_ids = Project.objects.values_list("project_id", flat=True)
-        actual_project_ids = list(map(str, project_ids))
+        actual_project_ids = Project.objects.values_list("project_id",
+                                                         flat=True)
+
+        assert list(actual_project_ids) == expected_project_ids
+
+    @pytest.mark.django_db
+    def test_get_valid_project_ids_from_given_project_ids_returns_project_ids(
+            self):
+        from ib_iam.tests.factories.models import ProjectFactory
+        expected_project_ids = ["641bfcc5-e1ea-4231-b482-f7f34fb5c7c4",
+                                "641bfcc5-e1ea-4231-b482-f7f34fb5c7c5"]
+        for project_id in expected_project_ids:
+            ProjectFactory.create(project_id=project_id)
+        invalid_project_ids = expected_project_ids.copy()
+        invalid_project_ids.append("641bfcc5-e1ea-4231-b482-f7f34fb5c7c6")
+        project_storage = ProjectStorageImplementation()
+
+        actual_project_ids = project_storage \
+            .get_valid_project_ids_from_given_project_ids(
+            project_ids=invalid_project_ids)
 
         assert actual_project_ids == expected_project_ids
