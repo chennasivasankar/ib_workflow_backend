@@ -5,7 +5,8 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
-from ib_boards.adapters.iam_service import InvalidProjectIdsException, UserIsNotInProjectException
+from ib_boards.adapters.iam_service import InvalidProjectIdsException, \
+    UserIsNotInProjectException
 from ib_boards.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue, UserDoNotHaveAccessToBoards, \
     OffsetValueExceedsTotalTasksCount

@@ -15,11 +15,13 @@ def api_wrapper(*args, **kwargs):
     params = kwargs['query_params']
     offset = params['offset']
     limit = params['limit']
+    project_id = params['project_id']
 
     boards_dto = GetBoardsDTO(
         user_id=user.user_id,
         offset=offset,
-        limit=limit
+        limit=limit,
+        project_id=project_id
     )
     storage = StorageImplementation()
     presenter = GetBoardsPresenterImplementation()
