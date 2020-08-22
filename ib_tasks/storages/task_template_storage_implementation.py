@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTransitionChecklistTemplateId
@@ -10,8 +10,8 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TemplateDTO
-from ib_tasks.models import TaskTemplate, TaskTemplateGoFs
+    TemplateDTO, ProjectIdWithTaskTemplateIdDTO
+from ib_tasks.models import TaskTemplate, TaskTemplateGoFs, ProjectTaskTemplate
 
 
 class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
@@ -251,3 +251,31 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
         gof_ids_list = list(gof_ids_queryset)
         return gof_ids_list
+
+    def get_project_id_with_task_template_id_dtos(
+            self) -> List[ProjectIdWithTaskTemplateIdDTO]:
+        project_id_with_task_template_id_dicts = \
+            ProjectTaskTemplate.objects.all().values(
+                'task_template_id', 'project_id')
+        project_id_with_template_id_dtos = \
+            self._convert_project_id_with_template_id_dicts_to_dtos(
+                project_id_with_task_template_id_dicts=
+                project_id_with_task_template_id_dicts)
+
+        return project_id_with_template_id_dtos
+
+    @staticmethod
+    def _convert_project_id_with_template_id_dicts_to_dtos(
+            project_id_with_task_template_id_dicts: List[Dict]
+    ) -> List[ProjectIdWithTaskTemplateIdDTO]:
+        project_id_with_template_id_dtos = [
+            ProjectIdWithTaskTemplateIdDTO(
+                project_id=project_id_with_template_id['project_id'],
+                task_template_id=
+                project_id_with_template_id['task_template_id']
+            )
+            for project_id_with_template_id in
+            project_id_with_task_template_id_dicts
+        ]
+
+        return project_id_with_template_id_dtos
