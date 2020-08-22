@@ -1,7 +1,7 @@
 import factory
 
 from ib_iam import models
-from ib_iam.models import Role, Team, Company
+from ib_iam.models import Role, Team, Company, Project
 from ib_iam.models.team_member_level import TeamMemberLevel
 from ib_iam.models.user import UserDetails, UserTeam, UserRole
 
@@ -86,3 +86,13 @@ class TeamMemberLevelFactory(factory.DjangoModelFactory):
         "Product Owner"
     ])
     level_hierarchy = factory.Iterator([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+
+class ProjectFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Project
+
+    project_id = factory.Sequence(lambda n: 'project %s' % n)
+    name = factory.Sequence(lambda n: 'name %s' % n)
+    description = factory.Sequence(lambda n: 'description %s' % n)
+    logo_url = factory.Sequence(lambda n: 'logo %s' % n)
