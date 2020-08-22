@@ -33,7 +33,6 @@
   "security": [
   ],
   "definitions": {
-
     "SaveAndActOnATaskRequestBody": {
       "allOf": [
         {
@@ -225,7 +224,8 @@
       },
       "required": [
         "updated_due_date_time",
-        "reason_id", "task_id"
+        "reason_id",
+        "task_id"
       ]
     },
     "CreateTaskRequestBody": {
@@ -422,8 +422,8 @@
             ]
           }
         },
-        "task_current_stages_details":{
-           "$ref":"#/definitions/TaskWithCurrentStages"
+        "task_current_stages_details": {
+          "$ref": "#/definitions/TaskWithCurrentStages"
         }
       },
       "required": [
@@ -563,7 +563,7 @@
         "profile_pic_url": {
           "type": "string"
         },
-        "team_info":{
+        "team_info": {
           "$ref": "#/definitions/TeamInfo"
         }
       },
@@ -582,10 +582,9 @@
         "assignee_id": {
           "type": "string"
         },
-        "team_id":{
+        "team_id": {
           "type": "string"
         }
-
       },
       "required": [
         "stage_id",
@@ -646,9 +645,9 @@
     "TaskStageAssignees": {
       "type": "object",
       "properties": {
-        "task_id":{
-               "type":"string"
-            },
+        "task_id": {
+          "type": "string"
+        },
         "stage_assignees": {
           "type": "array",
           "items": {
@@ -690,7 +689,7 @@
         "button_color"
       ]
     },
-    "ProjectInfo":  {
+    "ProjectInfo": {
       "type": "object",
       "properties": {
         "project_id": {
@@ -704,9 +703,9 @@
         }
       },
       "required": [
-          "project_id",
-          "project_name"
-        ]
+        "project_id",
+        "project_name"
+      ]
     },
     "TeamInfo": {
       "type": "object",
@@ -719,9 +718,9 @@
         }
       },
       "required": [
-          "team_id",
-          "team_name"
-        ]
+        "team_id",
+        "team_name"
+      ]
     },
     "GetTaskResponseBody": {
       "type": "object",
@@ -729,7 +728,7 @@
         "task_id": {
           "type": "string"
         },
-        "project_info":{
+        "project_info": {
           "$ref": "#/definitions/ProjectInfo"
         },
         "template_id": {
@@ -1392,30 +1391,32 @@
         "stages_history"
       ]
     },
-      "NextStageAssigneesRequestBody":{
-         "type":"object",
-         "properties":{
-            "task_id":{
-               "type":"string"
-            },
-            "action_id":{
-               "type":"string"
-            }
-         },
-         "required":[
-            "task_id",
-            "action_id"
-         ]
+    "NextStageAssigneesRequestBody": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "action_id": {
+          "type": "string"
+        }
       },
-      "TaskIdRequestBody": {
-          "type": "object",
-          "properties": {
-            "task_id": {
-              "type": "string"
-            }
-          },
-          "required": ["task_id"]
-      }
+      "required": [
+        "task_id",
+        "action_id"
+      ]
+    },
+    "TaskIdRequestBody": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "task_id"
+      ]
+    }
   },
   "parameters": {
     "AddTaskReasonsParameter": {
@@ -1533,7 +1534,7 @@
       "schema": {
         "$ref": "#/definitions/UpdateTaskRequestBody"
       }
-      },
+    },
     "TaskIdRequestBody": {
       "in": "body",
       "name": "TaskId",
@@ -1665,15 +1666,15 @@
       "description": "stage id",
       "type": "integer"
     },
-      "GetNextStageAssigneesRequestBodyParameter":{
-         "in":"body",
-         "name":"GetNextStageAssigneesRequestBody",
-         "description":"get next stage assignees for a task",
-         "required":true,
-         "schema":{
-            "$ref":"#/definitions/NextStageAssigneesRequestBody"
-         }
+    "GetNextStageAssigneesRequestBodyParameter": {
+      "in": "body",
+      "name": "GetNextStageAssigneesRequestBody",
+      "description": "get next stage assignees for a task",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/NextStageAssigneesRequestBody"
       }
+    }
   },
   "responses": {
     "CreateTaskSuccessResponse": {
@@ -1707,22 +1708,11 @@
     "GetTaskTemplateResponse": {
       "description": "OK",
       "schema": {
-        "type": "object",
-          "properties": {
-            "projects": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/ProjectInfo"
-              }
-            },
-            "task_templates": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Template"
-              }
-            }
-          }
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Template"
         }
+      }
     },
     "GetTransitionTemplateResponse": {
       "description": "OK",
@@ -2465,7 +2455,7 @@
             "profile_pic_url": {
               "type": "string"
             },
-            "team_info":{
+            "team_info": {
               "$ref": "#/definitions/TeamInfo"
             }
           },
@@ -3040,34 +3030,34 @@
           }
         }
       },
-         "put":{
-            "operationId":"update_assignees_of_diff_stages_for_a_task",
-            "summary":"update assignees of different stages for a given task",
-            "description":"update assignees of different stages for a given task",
-            "security":[
-               {
-                  "oauth":[
-                     "read"
-                  ]
-               }
-            ],
-            "parameters":[
-               {
-                  "$ref":"#/parameters/TaskStageAssigneesParameter"
-               }
-            ],
-            "responses":{
-               "200":{
-                  "description":"OK"
-               },
-               "400":{
-                  "$ref":"#/responses/UpdateTaskStageAssigneesFailureResponse"
-               },
-               "404":{
-                  "$ref":"#/responses/UpdateTaskStageAssigneesNotFoundResponse"
-               }
-            }
-         }
+      "put": {
+        "operationId": "update_assignees_of_diff_stages_for_a_task",
+        "summary": "update assignees of different stages for a given task",
+        "description": "update assignees of different stages for a given task",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TaskStageAssigneesParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/responses/UpdateTaskStageAssigneesFailureResponse"
+          },
+          "404": {
+            "$ref": "#/responses/UpdateTaskStageAssigneesNotFoundResponse"
+          }
+        }
+      }
     },
     "/transition_checklist/v1/": {
       "post": {
@@ -3124,7 +3114,8 @@
             "$ref": "#/responses/TaskIsNotAssignedToUserResponse"
           }
         }
-      }},
+      }
+    },
     "/task/reasons/v1/": {
       "post": {
         "operationId": "add_reason_for_missing_due_date_time",
