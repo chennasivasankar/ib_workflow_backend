@@ -45,7 +45,8 @@ class GetSheetDataForStatusVariables:
                 "Task Template ID": str,
                 "Status Variable ID": str
 
-            }]
+            }],
+            ignore_extra_keys=True
         )
         schema.validate(actions_dict)
         try:
