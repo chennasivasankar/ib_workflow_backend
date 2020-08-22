@@ -73,3 +73,9 @@ class AuthService:
                            profile_pic_url=each_user_profile_detail_dto.profile_pic_url)
             for each_user_profile_detail_dto in user_profile_details_dtos]
         return user_details_dtos
+
+    def validate_if_user_is_in_project(self, user_id: str, project_id: str):
+        raise NotImplementedError
+
+    def validate_project_id(self, project_id: str):
+        raise NotImplementedError
