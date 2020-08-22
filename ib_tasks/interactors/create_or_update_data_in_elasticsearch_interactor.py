@@ -6,7 +6,7 @@ Author: Pavankumar Pamuru
 from typing import List
 
 from ib_tasks.constants.enum import FieldTypes
-from ib_tasks.documents.elastic_task import ElasticFieldDTO
+from ib_tasks.documents.elastic_task import ElasticFieldDTO, ElasticTaskDTO
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
@@ -34,8 +34,11 @@ class CreateOrUpdateDataInElasticSearchInteractor:
             self.elasticsearch_storage.validate_task_id_in_elasticsearch(
                 task_id=task_id
             )
+        project_id = self.task_storage.get_project_id_for_the_task_id(
+            task_id=task_id
+        )
         elastic_task_dto = self._get_elastic_task_dto(
-            task_dto=task_dto, stage_ids=stage_ids, task_id=task_id)
+            task_dto=task_dto, stage_ids=stage_ids, task_id=task_id, project_id=project_id)
         if is_task_id_exists:
             self.elasticsearch_storage.update_task(task_dto=elastic_task_dto)
         else:
@@ -47,12 +50,13 @@ class CreateOrUpdateDataInElasticSearchInteractor:
             )
 
     def _get_elastic_task_dto(
-            self, task_dto: TaskDetailsDTO, stage_ids: List[str], task_id: int):
+            self, task_dto: TaskDetailsDTO, stage_ids: List[str],
+            task_id: int, project_id: str) -> ElasticTaskDTO:
         fields = self._get_field_dtos_with_exact_data_type(
             task_dto=task_dto
         )
-        from ib_tasks.documents.elastic_task import ElasticTaskDTO
         return ElasticTaskDTO(
+            project_id=project_id,
             template_id=task_dto.task_base_details_dto.template_id,
             task_id=task_id,
             title=task_dto.task_base_details_dto.title,
@@ -95,8 +99,4 @@ class CreateOrUpdateDataInElasticSearchInteractor:
     @staticmethod
     def _get_field_response_with_exact_data_type(
             field_response: str, field_type: FieldTypes):
-        if field_type == FieldTypes.FLOAT.value:
-            return float(field_response)
-        elif field_type == FieldTypes.NUMBER.value:
-            return int(field_response)
         return field_response

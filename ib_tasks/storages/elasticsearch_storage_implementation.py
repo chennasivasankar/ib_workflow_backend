@@ -29,6 +29,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
                                       timeout=20)
 
         task_obj = Task(
+            project_id=elastic_task_dto.project_id,
             template_id=elastic_task_dto.template_id,
             task_id=elastic_task_dto.task_id,
             title=elastic_task_dto.title
@@ -71,7 +72,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from django.conf import settings
         connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
                                       timeout=20)
-        search = self._get_filter_task_objects(filter_dtos)
+        search = self._get_search_task_objects(filter_dtos)
 
         task_objects = search.filter('terms', stages__stage_id__keyword=stage_ids)
 
@@ -86,10 +87,11 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
         query = None
         for counter, item in enumerate(filter_dtos):
-            current_queue = Q('term', template_id__keyword=item.template_id) \
-                            & Q('term',
-                                fields__field_id__keyword=item.field_id) \
+            current_queue = Q('term', project_id__keyword=item.project_id) \
+                            & Q('term', template_id__keyword=item.template_id) \
+                            & Q('term', fields__field_id__keyword=item.field_id) \
                             & Q('term', fields__value__keyword=item.value)
+
             if counter == 0:
                 query = current_queue
             else:
@@ -226,6 +228,35 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             task_objects = search.filter(query)
         return task_objects
 
+    def _get_q_object_based_on_operation(
+            self, operation: Operators, filter_dtos: List[ApplyFilterDTO]):
+        q_object = None
+        if operation == Operators.EQ.value:
+            q_object = self._prepare_q_objects_for_eq_operation(
+                filter_dtos=filter_dtos
+            )
+        elif operation == Operators.NE.value:
+            q_object = self._prepare_q_objects_for_neq_operation(
+                filter_dtos=filter_dtos
+            )
+        elif operation == Operators.GTE.value:
+            q_object = self._prepare_q_objects_for_gte_operation(
+                filter_dtos=filter_dtos
+            )
+        elif operation == Operators.GT.value:
+            q_object = self._prepare_q_objects_for_gt_operation(
+                filter_dtos=filter_dtos
+            )
+        elif operation == Operators.LTE.value:
+            q_object = self._prepare_q_objects_for_lte_operation(
+                filter_dtos=filter_dtos
+            )
+        elif operation == Operators.LT.value:
+            q_object = self._prepare_q_objects_for_lt_operation(
+                filter_dtos=filter_dtos
+            )
+        return q_object
+
     @staticmethod
     def _prepare_q_objects_for_eq_operation(filter_dtos: List[ApplyFilterDTO]):
         query = None
@@ -233,7 +264,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             current_queue = Q('term', template_id__keyword=item.template_id) \
                             & Q('term',
                                 fields__field_id__keyword=item.field_id) \
-                            & Q('term', fields__value=item.value)
+                            & Q('term', fields__value__keyword=item.value)
             if counter == 0:
                 query = current_queue
             else:
@@ -245,7 +276,8 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         query = None
         for counter, item in enumerate(filter_dtos):
             current_queue = ~Q('term', template_id__keyword=item.template_id) \
-                            & ~Q('term', fields__field_id__keyword=item.field_id) \
+                            & ~Q('term',
+                                 fields__field_id__keyword=item.field_id) \
                             & ~Q('term', fields__value__keyword=item.value)
             if counter == 0:
                 query = current_queue
@@ -304,32 +336,3 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             else:
                 query = query & current_queue
         return query
-
-    def _get_q_object_based_on_operation(
-            self, operation: Operators, filter_dtos: List[ApplyFilterDTO]):
-        q_object = None
-        if operation == Operators.EQ.value:
-            q_object = self._prepare_q_objects_for_eq_operation(
-                filter_dtos=filter_dtos
-            )
-        elif operation == Operators.NE.value:
-            q_object = self._prepare_q_objects_for_neq_operation(
-                filter_dtos=filter_dtos
-            )
-        elif operation == Operators.GTE.value:
-            q_object = self._prepare_q_objects_for_gte_operation(
-                filter_dtos=filter_dtos
-            )
-        elif operation == Operators.GT.value:
-            q_object = self._prepare_q_objects_for_gt_operation(
-                filter_dtos=filter_dtos
-            )
-        elif operation == Operators.LTE.value:
-            q_object = self._prepare_q_objects_for_lte_operation(
-                filter_dtos=filter_dtos
-            )
-        elif operation == Operators.LT.value:
-            q_object = self._prepare_q_objects_for_lt_operation(
-                filter_dtos=filter_dtos
-            )
-        return q_object
