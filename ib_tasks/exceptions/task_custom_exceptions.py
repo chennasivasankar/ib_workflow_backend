@@ -36,6 +36,11 @@ class InvalidTaskTemplateIds(Exception):
         self.invalid_task_template_ids = invalid_task_template_ids
 
 
+class InvalidTaskTemplateDBId(Exception):
+    def __init__(self, invalid_task_template_id: str):
+        self.task_template_id = invalid_task_template_id
+
+
 class DuplicateTaskStatusVariableIds(Exception):
     def __init__(self, duplicate_status_ids_for_tasks: List[str]):
         self.task_ids = duplicate_status_ids_for_tasks
@@ -123,6 +128,4 @@ class InvalidTaskDisplayId(Exception):
 
 
 class UserPermissionDenied(Exception):
-   pass
-
-
+    pass

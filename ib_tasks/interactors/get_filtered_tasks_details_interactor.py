@@ -69,13 +69,18 @@ class GetTaskDetailsByFilterInteractor:
     def get_filtered_tasks_overview_for_user(
             self, user_id: str, limit: int, offset: int, view_type: ViewType):
 
+        from ib_tasks.adapters.service_adapter import get_service_adapter
+        roles_service = get_service_adapter().roles_service
+        user_roles = roles_service.get_user_role_ids(user_id=user_id)
+        stage_ids_having_actions = self.stage_storage\
+            .get_stage_ids_having_actions(user_roles=user_roles)
+
         from ib_tasks.interactors.get_task_ids_by_applying_filters_interactor import \
             GetTaskIdsBasedOnUserFilters
         filtered_task_ids_interactor = GetTaskIdsBasedOnUserFilters(
             filter_storage=self.filter_storage,
             elasticsearch_storage=self.elasticsearch_storage
         )
-
         from ib_tasks.interactors.get_all_task_overview_with_filters_and_searches_for_user import \
             GetTasksOverviewForUserInteractor
         task_details_interactor = GetTasksOverviewForUserInteractor(
@@ -86,7 +91,8 @@ class GetTaskDetailsByFilterInteractor:
             task_stage_storage=self.task_stage_storage
         )
         task_ids, total_tasks = filtered_task_ids_interactor.get_task_ids_by_applying_filters(
-            user_id=user_id, limit=limit, offset=offset
+            user_id=user_id, limit=limit, offset=offset,
+            stage_ids=stage_ids_having_actions
         )
         all_tasks_overview_details_dto = task_details_interactor. \
             get_filtered_tasks_overview_for_user(

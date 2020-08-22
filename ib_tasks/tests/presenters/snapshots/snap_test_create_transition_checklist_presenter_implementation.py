@@ -13,12 +13,6 @@ snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_wit
 
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_with_invalid_task_display_id json_response'] = 'task_display_id is invalid task_id send valid task_id'
 
-snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_invalid_task_template_ids http_status_code'] = 400
-
-snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_invalid_task_template_ids res_status'] = 'INVALID_TASK_TEMPLATE_IDS'
-
-snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_invalid_task_template_ids json_response'] = "invalid task template ids: ['template_1', 'template_2']"
-
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_invalid_gof_ids http_status_code'] = 400
 
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_invalid_gof_ids res_status'] = 'INVALID_GOF_IDS'
@@ -108,8 +102,6 @@ snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_rai
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value http_status_code'] = 400
 
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value res_status'] = 'INCORRECT_NAME_IN_GOF_SELECTOR_FIELD'
-
-snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value json_response'] = "Invalid gof selector name: city for field: field_1! Try with these gof_id values: ['Mr', 'Mrs']"
 
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_exception_for_invalid_choice_in_radio_group_field http_status_code'] = 400
 
@@ -214,3 +206,5 @@ snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_rai
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_user_needs_gof_writable_permission json_response'] = "user needs write access on gof gof_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
 
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_user_needs_field_writable_permission json_response'] = "user needs write access on field field_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
+
+snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value json_response'] = "Invalid gof selector name: city for field: field_1! Try with these gof selector names: ['Mr', 'Mrs'] "

@@ -9,7 +9,7 @@ def api_wrapper(*args, **kwargs):
     request_data = kwargs["request_data"]
 
     team_id = str(path_params["team_id"])
-    member_level_hierarchy = path_params["member_level_hierarchy"]
+    member_level_hierarchy = path_params["level_hierarchy"]
     members = request_data["add_members_to_superior"]
 
     from ib_iam.interactors.dtos.dtos import \
