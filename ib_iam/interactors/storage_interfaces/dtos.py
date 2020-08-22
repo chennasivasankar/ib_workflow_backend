@@ -176,3 +176,9 @@ class TeamMemberLevelDetailsDTO:
 class MemberDTO:
     member_id: str
     immediate_superior_team_user_id: str = None
+
+
+@dataclass
+class MemberIdWithSubordinateMemberIdsDTO:
+    member_id: str
+    subordinate_member_ids: List[str]

@@ -583,6 +583,27 @@
       "required": [
         "company_id"
       ]
+    },
+    "LevelDetails": {
+      "type": "object",
+      "properties": {
+        "team_member_level_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "team_member_level_name": {
+          "type": "string"
+        },
+        "level_hierarchy": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "required": [
+        "team_member_level_id",
+        "team_member_level_name",
+        "level_hierarchy"
+      ]
     }
   },
   "parameters": {
@@ -1939,25 +1960,7 @@
           "levels": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "team_member_level_id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "team_member_level_name": {
-                  "type": "string"
-                },
-                "level_hierarchy": {
-                  "type": "integer",
-                  "format": "int64"
-                }
-              },
-              "required": [
-                "team_member_level_id",
-                "team_member_level_name",
-                "level_hierarchy"
-              ]
+              "$ref": "#/definitions/LevelDetails"
             }
           }
         }
@@ -1981,12 +1984,68 @@
                     "immediate_superior_team_user_id": {
                       "type": "string"
                     }
-                  }
+                  },
+                  "required": [
+                    "immediate_superior_team_user_id"
+                  ]
                 }
               ]
             }
           }
         }
+      }
+    },
+    "GetTeamMembersSuccessResponse": {
+      "description": "Get team members success response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "team_member_levels_with_members": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "level_details": {
+                  "$ref": "#/definitions/LevelDetails"
+                },
+                "level_members": {
+                  "type": "array",
+                  "items": {
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/MemberDetails"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "immediate_superior_team_user_id": {
+                            "type": "string"
+                          },
+                          "immediate_subordinate_team_members": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/definitions/MemberDetails"
+                            }
+                          }
+                        },
+                        "required": [
+                          "immediate_subordinate_team_user_ids"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "level_details",
+                "level_members"
+              ]
+            }
+          }
+        },
+        "required": [
+          "team_member_levels_with_members"
+        ]
       }
     }
   },
@@ -2776,6 +2835,7 @@
       "post": {
         "summary": "Add Members To Superiors",
         "operationId": "add_members_to_superiors",
+        "description": "Add member to superiors to given team_id with level hierarchy",
         "security": [
           {
             "oauth": [
@@ -2797,6 +2857,23 @@
         "responses": {
           "201": {
             "description": "Successfully add members to superiors"
+          }
+        }
+      }
+    },
+    "/team/{team_id}/team_member_levels_with_members/v1/": {
+      "get": {
+        "summary": "Get Team Members Levels With Members",
+        "operationId": "get_team_member_levels_with_members",
+        "description": "Get all members of a team with level details",
+        "parameters": [
+          {
+            "$ref": "#/parameters/TeamIdPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTeamMembersSuccessResponse"
           }
         }
       }
