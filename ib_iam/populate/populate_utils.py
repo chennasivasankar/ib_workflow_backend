@@ -21,6 +21,17 @@ def get_role_ids_bulk():
 
 
 @transaction.atomic()
+def populate_projects(spread_sheet_name: str):
+    from ib_iam.populate.add_projects import Project
+    project = Project()
+    from ib_iam.constants.config import PORJECT_SUBSHEET_NAME
+    project.add_projects_to_database(
+        spread_sheet_name=spread_sheet_name,
+        sub_sheet_name=PORJECT_SUBSHEET_NAME
+    )
+
+
+@transaction.atomic()
 def populate(spread_sheet_name: str):
     from ib_iam.populate.add_roles_details import RoleDetails
     # role = RoleDetails()
