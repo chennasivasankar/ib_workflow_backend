@@ -72,3 +72,11 @@ class FilterPresenterInterface(abc.ABC):
     def get_response_for_get_task_templates_fields(
             self, task_template_fields: TaskTemplateFieldsDto):
         pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_project_id(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_user_not_in_project(self):
+        pass

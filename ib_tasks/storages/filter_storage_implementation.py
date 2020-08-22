@@ -100,6 +100,7 @@ class FilterStorageImplementation(FilterStorageInterface):
         filter_object = Filter.objects.create(
             created_by=filter_dto.user_id,
             name=filter_dto.filter_name,
+            project_id=filter_dto.project_id,
             template_id=filter_dto.template_id
         )
         self._create_filter_conditions(

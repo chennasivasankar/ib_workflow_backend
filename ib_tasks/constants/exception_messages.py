@@ -337,3 +337,13 @@ USER_PERMISSION_DENIED = (
     "user doesn't have permission",
     "USER_PERMISSION_DENIED"
 )
+
+INVALID_PROJECT_ID = (
+    "Invalid Project Id",
+    "INVALID_PROJECT_ID"
+)
+
+USER_NOT_IN_PROJECT = (
+    "User Not a part of the Project",
+    "USER_NOT_IN_PROJECT"
+)
