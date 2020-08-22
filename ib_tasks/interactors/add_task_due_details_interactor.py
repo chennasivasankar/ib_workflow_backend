@@ -24,8 +24,7 @@ class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
                                      due_details: TaskDueParametersDTO, task_display_id: str):
 
         try:
-            task_id = self.get_task_id_for_task_display_id(task_display_id)
-            self.add_task_due_details(due_details, task_id)
+            self.add_task_due_details(due_details, task_display_id)
         except InvalidTaskDisplayId as err:
             return presenter.response_for_invalid_task_id(err)
         except InvalidDueDateTimeException:
@@ -35,7 +34,9 @@ class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
         except InvalidReasonIdException:
             return presenter.response_for_invalid_reason_id()
 
-    def add_task_due_details(self, parameters: TaskDueParametersDTO, task_id: int):
+    def add_task_due_details(self, parameters: TaskDueParametersDTO,
+                             task_display_id: str):
+        task_id = self.get_task_id_for_task_display_id(task_display_id)
         due_details = self._get_parameters_dto(parameters, task_id)
         user_id = due_details.user_id
         reason_id = due_details.reason_id
