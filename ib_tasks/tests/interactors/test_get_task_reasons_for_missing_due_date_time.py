@@ -4,10 +4,12 @@ import pytest
 
 from ib_tasks.interactors.get_task_due_missing_reasons import \
     GetTaskDueMissingReasonsInteractor
-from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presenter import \
-    TaskDueDetailsPresenterInterface
-from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
-from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
+from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presenter \
+    import TaskDueDetailsPresenterInterface
+from ib_tasks.interactors.storage_interfaces.storage_interface import \
+    StorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+    TaskStorageInterface
 from ib_tasks.tests.common_fixtures.adapters.assignees_details_service import \
     assignee_details_dtos_mock
 from ib_tasks.tests.factories.storage_dtos import TaskDueMissingDTOFactory
