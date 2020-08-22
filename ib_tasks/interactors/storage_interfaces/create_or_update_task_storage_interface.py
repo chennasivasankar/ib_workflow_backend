@@ -6,7 +6,7 @@ from ib_tasks.exceptions.task_custom_exceptions \
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
 from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import TaskGoFDTO, \
-    TaskGoFFieldDTO, TaskBaseDetailsDTO
+    TaskGoFFieldDTO, TaskBaseDetailsDTO, FieldSearchableDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFDetailsDTO, TaskGoFWithTaskIdDTO
 from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO
@@ -111,6 +111,12 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def update_task_with_given_task_details(self, task_dto: UpdateTaskDTO):
+        pass
+
+    @abc.abstractmethod
+    def get_field_searchable_dtos(
+            self, field_ids: List[str], task_gof_ids: List[int]
+    ) -> List[FieldSearchableDTO]:
         pass
 
     @abc.abstractmethod
