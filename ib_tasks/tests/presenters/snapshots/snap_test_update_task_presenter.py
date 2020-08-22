@@ -139,8 +139,6 @@ snapshots['TestUpdateTaskPresenterImplementation.test_raise_exception_for_invali
 
 snapshots['TestUpdateTaskPresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value res_status'] = 'INCORRECT_NAME_IN_GOF_SELECTOR_FIELD'
 
-snapshots['TestUpdateTaskPresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value json_response'] = "Invalid gof selector name: city for field: field_1! Try with these gof_id values: ['Mr', 'Mrs']"
-
 snapshots['TestUpdateTaskPresenterImplementation.test_raise_exception_for_invalid_choice_in_radio_group_field http_status_code'] = 400
 
 snapshots['TestUpdateTaskPresenterImplementation.test_raise_exception_for_invalid_choice_in_radio_group_field res_status'] = 'INCORRECT_RADIO_GROUP_CHOICE'
@@ -214,3 +212,11 @@ snapshots['TestUpdateTaskPresenterImplementation.test_raise_invalid_task_id json
 snapshots['TestUpdateTaskPresenterImplementation.test_raise_user_needs_gof_writable_permission json_response'] = "user needs write access on gof gof_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
 
 snapshots['TestUpdateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission json_response'] = "user needs write access on field field_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
+
+snapshots['TestUpdateTaskPresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value json_response'] = "Invalid gof selector name: city for field: field_1! Try with these gof selector names: ['Mr', 'Mrs'] "
+
+snapshots['TestUpdateTaskPresenterImplementation.test_raise_invalid_stage_id http_status_code'] = 400
+
+snapshots['TestUpdateTaskPresenterImplementation.test_raise_invalid_stage_id res_status'] = 'INVALID_STAGE_ID'
+
+snapshots['TestUpdateTaskPresenterImplementation.test_raise_invalid_stage_id json_response'] = 'please give a valid stage id, 1 is invalid stage id'

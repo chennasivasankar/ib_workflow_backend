@@ -1,5 +1,5 @@
 """
-test with start date is ahead of due_date
+test with expired due date
 """
 
 import pytest
@@ -35,9 +35,9 @@ class TestCase04UpdateTaskAPITestCase(TestUtils):
             "task_id": "IBWF-1",
             "title": "updated_title",
             "description": "updated_description",
-            "start_date": "2020-09-20",
+            "start_date": "2020-08-01",
             "due_date": {
-                "date": "2020-09-10",
+                "date": "2020-08-02",
                 "time": "12:00:00"
             },
             "priority": "HIGH",

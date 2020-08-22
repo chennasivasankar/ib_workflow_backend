@@ -330,3 +330,13 @@ class TaskLogFactory(factory.django.DjangoModelFactory):
     action = factory.SubFactory(StageActionFactory)
     user_id = factory.Sequence(
         lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
+
+
+class StageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Stage
+
+    stage_id = factory.Sequence(lambda c: "stage_{}".format(c))
+    task_template_id = factory.Sequence(lambda c: "template_{}".format(c))
+    display_name = factory.Sequence(lambda c: "display_name_{}".format(c))
+    value = factory.Sequence(lambda c: c)
