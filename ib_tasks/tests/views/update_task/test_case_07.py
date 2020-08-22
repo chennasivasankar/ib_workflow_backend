@@ -1,13 +1,14 @@
 """
-test with invalid fields given to a gof that are not belongs to that gof raises exception
+test with invalid field ids
 """
-import json
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from ib_tasks.constants.enum import FieldTypes
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
+    FieldFactory
+from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
+    REQUEST_METHOD, URL_SUFFIX
 
 
 class TestCase07UpdateTaskAPITestCase(TestUtils):
@@ -18,72 +19,35 @@ class TestCase07UpdateTaskAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.fixture(autouse=True)
-    def setup(self, mocker):
-        import factory
-        from ib_tasks.tests.factories.models import TaskTemplateFactory, \
-            GoFFactory, GoFRoleFactory, TaskFactory, TaskGoFFactory, \
-            FieldFactory, FieldRoleFactory, GoFToTaskTemplateFactory, \
-            TaskGoFFieldFactory
-
-        TaskTemplateFactory.reset_sequence()
-        GoFRoleFactory.reset_sequence()
+    def reset_sequence(self):
+        TaskFactory.reset_sequence()
         GoFFactory.reset_sequence()
         FieldFactory.reset_sequence()
-        FieldRoleFactory.reset_sequence()
-        GoFToTaskTemplateFactory.reset_sequence()
 
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        get_user_role_ids(mocker)
-        template_id = "template_1"
-        gofs = GoFFactory.create_batch(size=2)
-        task_template = TaskTemplateFactory.create(template_id=template_id)
-        GoFToTaskTemplateFactory.create_batch(
-            size=2, task_template=task_template, gof=factory.Iterator(gofs)
-        )
-        gof_ids = [gof.gof_id for gof in gofs]
-        plain_text = FieldFactory.create(
-            gof=gofs[0], field_type=FieldTypes.PLAIN_TEXT.value
-        )
-        image_field = FieldFactory.create(
-            gof=gofs[0], field_type=FieldTypes.IMAGE_UPLOADER.value,
-            allowed_formats='[".jpeg", ".png", ".svg"]'
-        )
-        checkbox_group = FieldFactory.create(
-            gof=gofs[1], field_type=FieldTypes.CHECKBOX_GROUP.value,
-            field_values='["interactors", "storages", "presenters"]'
-        )
+    @pytest.fixture(autouse=True)
+    def setup(self, mocker):
+        task_id = "IBWF-1"
+        gof_ids = ["GOF-1", "GOF-2"]
+        field_ids = ["FIELD-1", "FIELD-2", "FIELD-3", "FIELD-4"]
 
-        task_obj = TaskFactory.create(template_id=template_id)
-        task_gofs = TaskGoFFactory.create_batch(
-            size=2, gof_id=factory.Iterator(gof_ids), task=task_obj
-        )
-        TaskGoFFieldFactory.create(
-            task_gof=task_gofs[0],
-            field=plain_text, field_response="string"
-        )
-        TaskGoFFieldFactory.create(
-            task_gof=task_gofs[0],
-            field=image_field,
-            field_response="https://www.freepngimg.com/thumb/light/20246-4"
-                           "-light-transparent.png"
-        )
-        TaskGoFFieldFactory.create(
-            task_gof=task_gofs[1],
-            field=checkbox_group,
-            field_response='["interactors", "storages"]'
-        )
+        import factory
+        gofs = GoFFactory.create_batch(size=len(gof_ids),
+                                       gof_id=factory.Iterator(gof_ids))
+
+        fields = FieldFactory.create_batch(
+            size=len(field_ids), field_id=factory.Iterator(field_ids))
+        task = TaskFactory.create(task_display_id=task_id)
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {
-            "task_id": 1,
+            "task_id": "IBWF-1",
             "title": "updated_title",
             "description": "updated_description",
-            "start_date": "2099-12-31",
+            "start_date": "2020-09-08",
             "due_date": {
-                "date": "2099-12-31",
-                "time": "12:00:00"
+                "date": "2020-09-09",
+                "time": "11:00:00"
             },
             "priority": "HIGH",
             "stage_assignee": {
@@ -92,26 +56,26 @@ class TestCase07UpdateTaskAPITestCase(TestUtils):
             },
             "task_gofs": [
                 {
-                    "gof_id": "gof_1",
+                    "gof_id": "GOF-1",
                     "same_gof_order": 0,
                     "gof_fields": [
                         {
-                            "field_id": "FIELD_ID-0",
+                            "field_id": "FIELD_ID-10",
                             "field_response": "new updated string"
                         },
                         {
-                            "field_id": "FIELD_ID-2",
+                            "field_id": "FIELD_ID-11",
                             "field_response":
                                 "https://image.flaticon.com/icons/svg/1829/1829070.svg"
                         }
                     ]
                 },
                 {
-                    "gof_id": "gof_2",
+                    "gof_id": "GOF-2",
                     "same_gof_order": 0,
                     "gof_fields": [
                         {
-                            "field_id": "FIELD_ID-2",
+                            "field_id": "FIELD_ID-12",
                             "field_response": "[\"interactors\"]"
                         }
                     ]

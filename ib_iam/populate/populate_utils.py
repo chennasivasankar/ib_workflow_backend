@@ -14,16 +14,25 @@ def get_company_id(company_name):
     return company_id
 
 
+def get_role_ids_bulk():
+    from ib_iam.models import Role
+    db_role_ids = list(Role.objects.values_list('id', flat=True))
+    return db_role_ids
+
+
 @transaction.atomic()
-def populate():
-    populate_admin_users()
+def populate(spread_sheet_name: str):
+    from ib_iam.populate.add_roles_details import RoleDetails
+    # role = RoleDetails()
+    # from ib_iam.constants.config import ROLES_SUBSHEET_NAME
+    # role.add_roles_details_to_database(spread_sheet_name, ROLES_SUBSHEET_NAME)
+    populate_admin_users_with_roles()
     populate_companies()
     populate_teams()
-    populate_roles()
     populate_test_users()
 
 
-def populate_admin_users():
+def populate_admin_users_with_roles():
     admin_users = [
         {
             "name": "Pavan",
@@ -54,6 +63,19 @@ def populate_admin_users():
         user_storage = UserStorageImplementation()
         user_storage.create_user(is_admin=admin_user["is_admin"],
                                  name=admin_user["name"], user_id=user_id)
+        populate_user_roles_for_admin_user(admin_user_id=user_id)
+
+
+def populate_user_roles_for_admin_user(admin_user_id: str):
+    """
+    Admin User have All roles
+    """
+    from ib_iam.storages.user_storage_implementation import \
+        UserStorageImplementation
+    db_role_ids = get_role_ids_bulk()
+    user_storage = UserStorageImplementation()
+    user_storage.add_roles_to_the_user(
+        user_id=admin_user_id, role_ids=db_role_ids)
 
 
 def populate_companies():
@@ -122,15 +144,6 @@ def populate_teams():
         team_storage.add_team(
             user_id=team["created_by_id"],
             team_name_and_description_dto=team_name_and_description_dto)
-
-
-def populate_roles():
-    from ib_iam.populate.add_roles_details import RoleDetails
-    role = RoleDetails()
-    role.add_roles_details_to_database(
-        "Vendor Configuration_v0 - Test",
-        "Roles"
-    )
 
 
 def populate_test_users():

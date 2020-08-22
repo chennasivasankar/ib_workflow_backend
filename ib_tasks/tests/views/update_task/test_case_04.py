@@ -1,14 +1,17 @@
 """
-test with invalid gof ids raises exception
+test with start date is ahead of due_date
 """
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+from freezegun import freeze_time
 
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ib_tasks.tests.factories.models import TaskFactory
+from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
+    REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase013UpdateTaskAPITestCase(TestUtils):
+class TestCase04UpdateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -16,28 +19,25 @@ class TestCase013UpdateTaskAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        TaskFactory.reset_sequence()
+
+    @pytest.fixture(autouse=True)
     def setup(self, mocker):
-        from ib_tasks.tests.factories.models import TaskTemplateFactory, \
-            TaskFactory
+        task_id = "IBWF-1"
 
-        TaskTemplateFactory.reset_sequence()
+        TaskFactory.create(task_display_id=task_id)
 
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        get_user_role_ids(mocker)
-
-        template_id = "template_1"
-        TaskFactory.create(template_id=template_id)
-
+    @freeze_time("2020-09-09 12:00:00")
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {
-            "task_id": 1,
+            "task_id": "IBWF-1",
             "title": "updated_title",
             "description": "updated_description",
-            "start_date": "2099-12-31",
+            "start_date": "2020-09-20",
             "due_date": {
-                "date": "2099-12-31",
+                "date": "2020-09-10",
                 "time": "12:00:00"
             },
             "priority": "HIGH",

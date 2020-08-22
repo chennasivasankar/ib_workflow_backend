@@ -13,9 +13,10 @@ class GetSheetDataForStatusVariables:
         from ib_tasks.populate.get_data_from_sheet import GetDataFromSheet
         return GetDataFromSheet()
 
-    def get_data_from_status_variables_sub_sheet(self):
+    def get_data_from_status_variables_sub_sheet(self, spread_sheet_name: str):
         from ib_tasks.constants.constants import STATUS_VARIABLES_SUB_SHEET
         field_records = self.data_sheet.get_data_from_sub_sheet(
+            spread_sheet_name=spread_sheet_name,
             sub_sheet_name=STATUS_VARIABLES_SUB_SHEET
         )
         self._validation_for_status_variables_dict(field_records)
@@ -44,7 +45,8 @@ class GetSheetDataForStatusVariables:
                 "Task Template ID": str,
                 "Status Variable ID": str
 
-            }]
+            }],
+            ignore_extra_keys=True
         )
         schema.validate(actions_dict)
         try:

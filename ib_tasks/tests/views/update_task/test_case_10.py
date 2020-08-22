@@ -1,5 +1,5 @@
 """
-test with invalid gofs to task_template
+test with fields of gof
 """
 
 import pytest
@@ -11,7 +11,7 @@ from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase08UpdateTaskAPITestCase(TestUtils):
+class TestCase10UpdateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -40,8 +40,8 @@ class TestCase08UpdateTaskAPITestCase(TestUtils):
             size=len(field_ids), field_id=factory.Iterator(field_ids))
         task_template = TaskTemplateFactory.create(template_id=template_id)
         task_template_gofs = GoFToTaskTemplateFactory.create_batch(
-            size=2, task_template=task_template,
-            gof__gof_id=factory.Iterator(["GOF-3", "GOF-4"]))
+            size=len(gofs), task_template=task_template,
+            gof=factory.Iterator(gofs))
         task = TaskFactory.create(
             task_display_id=task_id, template_id=task_template.template_id)
 

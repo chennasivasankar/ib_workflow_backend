@@ -1,17 +1,17 @@
 from typing import List
 
-from ib_tasks.constants.constants import GOOGLE_SHEET_NAME, \
-    GLOBAL_CONSTANTS_SUB_SHEET_TITLE
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO, \
     GlobalConstantsWithTemplateIdDTO
-from ib_tasks.utils.get_google_sheet import get_google_sheet
 
 
 class PopulateGlobalConstantsToTemplate:
 
-    def populate_global_constants_to_template(self):
-        sheet = get_google_sheet(GOOGLE_SHEET_NAME)
-        sheet = get_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
+    def populate_global_constants_to_template(self, spread_sheet_name: str):
+        from ib_tasks.utils.get_google_sheet import get_google_sheet
+        sheet = get_google_sheet(sheet_name=spread_sheet_name)
+
+        from ib_tasks.constants.constants import \
+            GLOBAL_CONSTANTS_SUB_SHEET_TITLE
         global_constants_with_template_ids_dicts = \
             sheet.worksheet(GLOBAL_CONSTANTS_SUB_SHEET_TITLE).get_all_records()
 
@@ -20,10 +20,6 @@ class PopulateGlobalConstantsToTemplate:
         for item in global_constants_with_template_ids_dicts:
             group_by_template_id_dict[item['Template ID']]. \
                 append([item['Constant name'], item['Value']])
-
-        group_by_template_id_dict = collections.OrderedDict(
-            sorted(dict.items(group_by_template_id_dict))
-        )
 
         for template_id, group in group_by_template_id_dict.items():
             global_constants_with_template_id_dto = \

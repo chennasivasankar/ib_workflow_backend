@@ -98,7 +98,8 @@ class EditUserInteractor(ValidationMixin):
                          company_id: str):
         self._validate_roles(role_ids=role_ids)
         self._validate_teams(team_ids=team_ids)
-        self._validate_company(company_id=company_id)
+        if company_id is not None:
+            self._validate_company(company_id=company_id)
 
     def _validate_roles(self, role_ids: List[str]):
         are_valid = self.user_storage.check_are_valid_role_ids(

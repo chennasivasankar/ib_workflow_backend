@@ -6,10 +6,9 @@ from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, \
 
 class PopulateGoFsToTransitionTemplate:
 
-    def populate_gofs_to_transition_templates(self):
+    def populate_gofs_to_transition_templates(self, spread_sheet_name: str):
         from ib_tasks.utils.get_google_sheet import get_google_sheet
-        from ib_tasks.constants.constants import GOOGLE_SHEET_NAME
-        sheet = get_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
+        sheet = get_google_sheet(sheet_name=spread_sheet_name)
 
         from ib_tasks.constants.constants import TRANSITION_TEMPLATES_SUB_SHEET
         gofs_with_template_ids_dicts = \

@@ -1,15 +1,11 @@
 from ib_iam.exceptions.custom_exceptions import InvalidEmail, \
     InvalidNameLength, NameShouldNotContainsNumbersSpecCharacters, \
-    UserAccountDoesNotExist
+    UserAccountDoesNotExist, UserAccountAlreadyExistWithThisEmail
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
     CreateUserAccountPresenterInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
-
-
-class AccountWithThisEmailAlreadyExistsException(Exception):
-    pass
 
 
 class PasswordDoesNotMatchedWithCriteriaException(Exception):
@@ -31,7 +27,7 @@ class SignupInteractor(ValidationMixin):
         try:
             self.create_user_account(email=email, name=name, password=password)
             response = presenter.get_response_for_create_user_account()
-        except AccountWithThisEmailAlreadyExistsException:
+        except UserAccountAlreadyExistWithThisEmail:
             response = presenter.raise_account_already_exists_exception()
         except PasswordDoesNotMatchedWithCriteriaException:
             response = presenter. \
@@ -64,20 +60,16 @@ class SignupInteractor(ValidationMixin):
         #         raise AccountWithThisEmailAlreadyExistsException
         # except UserAccountDoesNotExist:
         user_id = self._create_user_account(email=email, password=password,
-                                                name=name)
-        from ib_iam.adapters.dtos import UserProfileDTO
-        user_profile_dto = UserProfileDTO(
-            user_id=user_id, name=name,
-            email=email, is_email_verify=False)
-        adapter.user_service.update_user_profile(
-            user_id=user_id, user_profile_dto=user_profile_dto)
+                                            name=name)
+        adapter.auth_service.update_is_email_verified_value_in_ib_user_profile_details(
+            user_id=user_id, is_email_verified=False)
+        self.user_storage.create_user(user_id=user_id, is_admin=False,
+                                      name=name)
         from ib_iam.interactors.send_verify_email_link_interactor import \
             SendVerifyEmailLinkInteractor
         interactor = SendVerifyEmailLinkInteractor()
         interactor.send_verification_email(
             user_id=user_id, name=name, email=email)
-        self.user_storage.create_user(user_id=user_id, is_admin=False,
-                                      name=name)
 
     @staticmethod
     def _create_user_account(email: str, password: str,

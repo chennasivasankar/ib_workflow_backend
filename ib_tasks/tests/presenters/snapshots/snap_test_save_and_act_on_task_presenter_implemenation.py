@@ -89,13 +89,9 @@ snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_user_needs_go
 
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_user_needs_gof_writable_permission res_status'] = 'USER_NEEDS_GOF_WRITABLE_PERMISSION'
 
-snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_user_needs_gof_writable_permission json_response'] = "user user_1 needs write access on gof gof_1, because user does not have ['role_1', 'role_2'] roles"
-
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_user_needs_field_writable_permission http_status_code'] = 400
 
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_user_needs_field_writable_permission res_status'] = 'USER_NEEDS_FILED_WRITABLE_PERMISSION'
-
-snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_user_needs_field_writable_permission json_response'] = "user user_1 needs write access on field field_1, because user does not have ['role_1', 'role_2'] roles"
 
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_empty_value_in_required_field http_status_code'] = 400
 
@@ -279,3 +275,7 @@ snapshots['TestSaveAndActOnATaskPresenterImplementation.test_get_save_and_act_on
     'task_id': 'task_display_0',
     'user_has_permission': True
 }
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_user_needs_gof_writable_permission json_response'] = 'user needs write access on gof user_1, because user does not have at least one role in gof_1 roles'
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_user_needs_field_writable_permission json_response'] = 'user needs write access on field user_1, because user does not have at least one role in field_1 roles'

@@ -120,7 +120,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
                     "match",
                     title={
                         "query": search_query,
-                        "fuzziness": "2"
+                        "fuzziness": "5"
                     }
                 )
             )
@@ -162,7 +162,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
                     "match",
                     title={
                         "query": search_query,
-                        "fuzziness": "2"
+                        "fuzziness": "5"
                     }
                 )
             )
