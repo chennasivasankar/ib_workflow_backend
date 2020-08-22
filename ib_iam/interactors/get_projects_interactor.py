@@ -16,4 +16,6 @@ class GetProjectsInteractor:
             project_dtos=project_dtos)
 
     def get_projects(self):
+        # todo check if there is any permissions or
+        #  any different flow for user and admin
         return self.project_storage.get_project_dtos()
