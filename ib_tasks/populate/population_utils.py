@@ -87,7 +87,7 @@ def delete_elastic_search_data():
     es.delete_by_query(index=indices, body={"query": {"match_all": {}}})
 
 
-def create_tasks_in_elasticsearch_data(task_ids: List[int]):
+def create_tasks_in_elasticsearch_data(task_ids=None):
     from ib_tasks.storages.elasticsearch_storage_implementation import \
         ElasticSearchStorageImplementation
     elasticsearch_storage = ElasticSearchStorageImplementation()
@@ -103,7 +103,8 @@ def create_tasks_in_elasticsearch_data(task_ids: List[int]):
     from ib_tasks.storages.storage_implementation import \
         StagesStorageImplementation
     stage_storage = StagesStorageImplementation()
-    task_ids = storage.get_task_ids()
+    if task_ids is None:
+        task_ids = storage.get_task_ids()
     from ib_tasks.interactors.create_tasks_into_elasticsearch_interactor import \
         CreateDataIntoElasticsearchInteractor
     interactor = CreateDataIntoElasticsearchInteractor(
