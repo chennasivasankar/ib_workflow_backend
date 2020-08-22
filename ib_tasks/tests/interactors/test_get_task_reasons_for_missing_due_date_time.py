@@ -91,11 +91,12 @@ class TestGetTaskReasons:
         assignee_details_dtos = assignee_details_dtos_mock(mocker)
 
         # Act
-        interactor.get_task_due_missing_reasons_wrapper(
+        result = interactor.get_task_due_missing_reasons_wrapper(
             presenter=presenter, task_display_id=task_display_id, user_id=user_id
         )
 
         # Assert
+        assert result == expected_response
         storage.get_task_due_details.assert_called_once_with(
             task_id)
         presenter.get_response_for_get_task_due_details.assert_called_once()

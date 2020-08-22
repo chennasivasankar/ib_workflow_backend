@@ -1,8 +1,8 @@
 from typing import List
 
 from ib_tasks.adapters.service_adapter import get_service_adapter
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
-    UserIsNotAssigneeToTask, InvalidTaskDisplayId
+from ib_tasks.exceptions.task_custom_exceptions import UserIsNotAssigneeToTask, \
+    InvalidTaskDisplayId
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presenter import \
@@ -10,12 +10,13 @@ from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presente
 from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO, \
     TaskDueDetailsDTO
-from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+    TaskStorageInterface
 
 
 class GetTaskDueMissingReasonsInteractor(GetTaskIdForTaskDisplayIdMixin):
     def __init__(self, task_storage: TaskStorageInterface,
-                storage: StorageInterface):
+                 storage: StorageInterface):
         self.storage = storage
         self.task_storage = task_storage
 
@@ -24,20 +25,23 @@ class GetTaskDueMissingReasonsInteractor(GetTaskIdForTaskDisplayIdMixin):
             presenter: TaskDueDetailsPresenterInterface,
             task_display_id: str, user_id: str) -> List[TaskDueDetailsDTO]:
         try:
-            task_id = self.get_task_id_for_task_display_id(task_display_id)
-            task_dtos = self.get_task_due_missing_reasons(task_id, user_id)
+            task_dtos = self.get_task_due_missing_reasons(
+                task_display_id, user_id)
         except InvalidTaskDisplayId as err:
             return presenter.response_for_invalid_task_id(err)
         except UserIsNotAssigneeToTask as err:
             return presenter.response_for_user_is_not_assignee_for_task()
         return presenter.get_response_for_get_task_due_details(task_dtos)
 
-    def get_task_due_missing_reasons(self, task_id: int, user_id: str):
+    def get_task_due_missing_reasons(self, task_display_id: str,
+                                     user_id: str) -> List[TaskDueDetailsDTO]:
+        task_id = self.get_task_id_for_task_display_id(task_display_id)
         # self._validate_if_task_is_assigned_to_user(task_id, user_id)
         task_dtos = self._get_task_reasons(task_id)
         return task_dtos
 
-    def _validate_if_task_is_assigned_to_user(self, task_id: int, user_id: str):
+    def _validate_if_task_is_assigned_to_user(self, task_id: int,
+                                              user_id: str):
         is_assigned = self.storage.validate_if_task_is_assigned_to_user(
             task_id, user_id
         )
@@ -45,11 +49,12 @@ class GetTaskDueMissingReasonsInteractor(GetTaskIdForTaskDisplayIdMixin):
         if is_not_assigned:
             raise UserIsNotAssigneeToTask
 
-    def _get_task_reasons(self, task_id: int):
+    def _get_task_reasons(self, task_id: int) -> List[TaskDueDetailsDTO]:
         task_details = self.storage.get_task_due_details(task_id)
         user_ids = [task.user_id for task in task_details]
+        unique_user_ids = list(set(user_ids))
         user_service = get_service_adapter().assignee_details_service
-        user_dtos = user_service.get_assignees_details_dtos(user_ids)
+        user_dtos = user_service.get_assignees_details_dtos(unique_user_ids)
         users_dict = {}
         for user in user_dtos:
             users_dict[user.assignee_id] = user
@@ -58,7 +63,7 @@ class GetTaskDueMissingReasonsInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     @staticmethod
     def _map_user_and_tasks(task_details: List[TaskDueMissingDTO],
-                            users_dict):
+                            users_dict) -> List[TaskDueDetailsDTO]:
         tasks_dtos = []
         for task in task_details:
             tasks_dtos.append(
