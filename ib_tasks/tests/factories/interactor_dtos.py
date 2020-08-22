@@ -7,8 +7,7 @@ from ib_tasks.constants.enum import Searchable, Priority
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
 from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
-    import \
-    SearchQueryWithPaginationDTO
+    import SearchQueryWithPaginationDTO
 from ib_tasks.interactors.get_tasks_to_relevant_search_query import \
     SearchQueryDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
@@ -31,10 +30,10 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     TaskDueParametersDTO, \
     FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, \
     CreateTaskLogDTO, \
-    CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO, \
+    CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeDTO, \
     SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
     TaskDelayParametersDTO, UpdateTaskWithTaskDisplayIdDTO, \
-    SaveAndActOnTaskWithTaskDisplayIdDTO
+    SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO
 from ib_tasks.interactors.task_template_dtos import \
     CreateTransitionChecklistTemplateDTO, \
     CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
@@ -269,7 +268,7 @@ class TaskIdWithStageAssigneeDTOFactory(factory.Factory):
 
     task_id = factory.sequence(lambda n: n + 1)
     db_stage_id = factory.Sequence(lambda n: n + 1)
-    assignee_id = factory.sequence(lambda n: "user_{}".format(n + 1))
+    assignee_id = factory.sequence(lambda n: "user_{}".format(n))
     team_id = factory.sequence(lambda n: "team_{}".format(n + 1))
 
 
@@ -332,6 +331,7 @@ class CreateTaskDTOFactory(factory.Factory):
     class Meta:
         model = CreateTaskDTO
 
+    project_id = factory.Sequence(lambda c: "project_id_{}".format(c))
     task_template_id = factory.Sequence(lambda c: "task_template_{}".format(c))
     created_by_id = "123e4567-e89b-12d3-a456-426614174000"
     action_id = factory.Sequence(lambda c: "action_id_{}".format(c))
@@ -347,12 +347,13 @@ class CreateTaskDTOFactory(factory.Factory):
         return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
 
 
-class StageIdWithAssigneeIdDTOFactory(factory.Factory):
+class StageIdWithAssigneeDTOFactory(factory.Factory):
     class Meta:
-        model = StageIdWithAssigneeIdDTO
+        model = StageIdWithAssigneeDTO
 
     stage_id = factory.Sequence(lambda c: "stage_{}".format(c))
     assignee_id = factory.Sequence(lambda c: "assignee_{}".format(c))
+    team_id = factory.Sequence(lambda c: "team_{}".format(c))
 
 
 class UpdateTaskDTOFactory(factory.Factory):
@@ -367,7 +368,7 @@ class UpdateTaskDTOFactory(factory.Factory):
     due_date = datetime.today().date() + timedelta(days=2)
     due_time = "12:30:20"
     priority = Priority.HIGH.value
-    stage_assignee = factory.SubFactory(StageIdWithAssigneeIdDTOFactory)
+    stage_assignee = factory.SubFactory(StageIdWithAssigneeDTOFactory)
 
     @factory.lazy_attribute
     def gof_fields_dtos(self):
@@ -387,7 +388,7 @@ class UpdateTaskWithTaskDisplayIdDTOFactory(factory.Factory):
     due_date = datetime.today().date() + timedelta(days=2)
     due_time = "12:30:20"
     priority = Priority.HIGH.value
-    stage_assignee = factory.SubFactory(StageIdWithAssigneeIdDTOFactory)
+    stage_assignee = factory.SubFactory(StageIdWithAssigneeDTOFactory)
 
     @factory.lazy_attribute
     def gof_fields_dtos(self):
@@ -407,7 +408,7 @@ class SaveAndActOnTaskDTOFactory(factory.Factory):
     due_date = datetime.today().date() + timedelta(days=2)
     due_time = "12:30:20"
     priority = Priority.HIGH.value
-    stage_assignee = factory.SubFactory(StageIdWithAssigneeIdDTOFactory)
+    stage_assignee = factory.SubFactory(StageIdWithAssigneeDTOFactory)
 
     @factory.lazy_attribute
     def gof_fields_dtos(self):
@@ -427,7 +428,7 @@ class SaveAndActOnTaskWithTaskDisplayIdDTOFactory(factory.Factory):
     due_date = datetime.today().date() + timedelta(days=2)
     due_time = "12:30:20"
     priority = Priority.HIGH.value
-    stage_assignee = factory.SubFactory(StageIdWithAssigneeIdDTOFactory)
+    stage_assignee = factory.SubFactory(StageIdWithAssigneeDTOFactory)
 
     @factory.lazy_attribute
     def gof_fields_dtos(self):
@@ -522,8 +523,15 @@ class StageAssigneeDTOFactory(factory.Factory):
 
     db_stage_id = factory.Sequence(lambda n: n + 1)
     assignee_id = factory.sequence(lambda n: "user_{}".format(n + 1))
-    team_id = factory.sequence(lambda n: "team_{}".format(n + 1))
+    team_id = factory.Sequence(lambda n: "team_{}".format(n + 1))
 
+
+class SearchableDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchableDTO
+
+    search_type = Searchable.TEAM.value
+    id = "team1"
 
 class StageIdWithValueDTOFactory(factory.Factory):
     class Meta:
