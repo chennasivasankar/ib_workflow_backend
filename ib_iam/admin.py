@@ -3,13 +3,13 @@ from django.contrib import admin
 
 from ib_iam.models import (
     UserDetails, UserTeam, UserRole, Company,
-    Role, Team, ElasticUserIntermediary, TeamMemberLevel
+    Role, Team, ElasticUserIntermediary, TeamMemberLevel, City, State, Country,
+    Project, ProjectTeam
 )
 
 
 class ElasticUserIntermediaryAdmin(admin.ModelAdmin):
     list_display = ("user_id", "elastic_user_id")
-
 
 
 class CompanyAdmin(admin.ModelAdmin):
@@ -54,6 +54,26 @@ class TeamMemberLevelAdmin(admin.ModelAdmin):
     list_display = ("id", "team", "level_name", "level_hierarchy")
 
 
+class ProjectTeamInline(admin.TabularInline):
+    model = ProjectTeam
+
+
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ("project_id", "name", "description", "logo_url")
+    search_fields = ["name"]
+    list_filter = ["project_id"]
+    inlines = [
+        ProjectTeamInline
+    ]
+
+
+class ProjectTeamAdmin(admin.ModelAdmin):
+    list_display = ("project", "team")
+    search_fields = ["project"]
+    list_filter = ["project"]
+    raw_id_fields = ("team", "project")
+
+
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Role, RoleAdmin)
@@ -62,3 +82,8 @@ admin.site.register(UserRole, UserRoleAdmin)
 admin.site.register(UserTeam, UserTeamAdmin)
 admin.site.register(TeamMemberLevel, TeamMemberLevelAdmin)
 admin.site.register(ElasticUserIntermediary, ElasticUserIntermediaryAdmin)
+admin.site.register(Project, ProjectAdmin)
+admin.site.register(ProjectTeam, ProjectTeamAdmin)
+admin.site.register(City)
+admin.site.register(State)
+admin.site.register(Country)

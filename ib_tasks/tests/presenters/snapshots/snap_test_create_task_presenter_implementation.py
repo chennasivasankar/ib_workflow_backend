@@ -79,11 +79,11 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_duplicate_same_gof_o
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_duplicate_same_gof_orders_for_a_gof response'] = 'duplicate same gof orders given for gof gof_1, duplicates are [1, 2]'
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_ids http_status_code'] = 400
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_id http_status_code'] = 400
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_ids res_status'] = 'INVALID_TASK_TEMPLATE_IDS'
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_id res_status'] = 'INVALID_TASK_TEMPLATE_DB_ID'
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_ids response'] = "invalid task template ids: ['template_1', 'template_2']"
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_id response'] = 'template_1 invalid task template id, please give a valid task template id'
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_action_id http_status_code'] = 400
 
@@ -125,9 +125,13 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_gof_writa
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_gof_writable_permission res_status'] = 'USER_NEEDS_GOF_WRITABLE_PERMISSION'
 
+snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_gof_writable_permission response'] = "user needs write access on gof gof_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
+
 snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission http_status_code'] = 400
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission res_status'] = 'USER_NEEDS_FILED_WRITABLE_PERMISSION'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission response'] = "user needs write access on field field_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_empty_value_in_required_field http_status_code'] = 400
 
@@ -181,7 +185,7 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invali
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value res_status'] = 'INCORRECT_NAME_IN_GOF_SELECTOR_FIELD'
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value response'] = "Invalid gof selector name: city for field: field_1! Try with these gof_id values: ['Mr', 'Mrs']"
+snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value response'] = "Invalid gof selector name: city for field: field_1! Try with these gof selector names: ['Mr', 'Mrs'] "
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_choice_in_radio_group_field http_status_code'] = 400
 
@@ -258,18 +262,14 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_user_b
 snapshots['TestCreateTaskPresenterImplementation.test_get_create_task_response create_task_response'] = {
     'stages': [
         {
-            'stage_display_name': 'stage_display_name_2',
-            'stage_id': 'stage_2'
+            'stage_display_name': 'stage_display_name_0',
+            'stage_id': 'stage_0'
         },
         {
-            'stage_display_name': 'stage_display_name_3',
-            'stage_id': 'stage_3'
+            'stage_display_name': 'stage_display_name_1',
+            'stage_id': 'stage_1'
         }
     ],
     'task_id': 'task_display_0',
     'user_has_permission': True
 }
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_gof_writable_permission response'] = "user needs write access on gof gof_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission response'] = "user needs write access on field field_1, because user does not have at least one role in ['role_1', 'role_2'] roles"

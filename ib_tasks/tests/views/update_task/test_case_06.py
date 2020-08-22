@@ -1,11 +1,12 @@
 """
-test with invalid gof ids
+test with due time if due_date is selected today
 """
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+from freezegun import freeze_time
 
-from ib_tasks.tests.factories.models import TaskFactory, GoFFactory
+from ib_tasks.tests.factories.models import TaskFactory
 from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
@@ -20,18 +21,14 @@ class TestCase06UpdateTaskAPITestCase(TestUtils):
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
         TaskFactory.reset_sequence()
-        GoFFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
         task_id = "IBWF-1"
-        gof_ids = ["GOF-1", "GOF-2"]
 
-        import factory
-        gofs = GoFFactory.create_batch(size=len(gof_ids),
-                                       gof_id=factory.Iterator(gof_ids))
-        task = TaskFactory.create(task_display_id=task_id)
+        TaskFactory.create(task_display_id=task_id)
 
+    @freeze_time("2020-09-09 12:00:00")
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {
@@ -50,7 +47,7 @@ class TestCase06UpdateTaskAPITestCase(TestUtils):
             },
             "task_gofs": [
                 {
-                    "gof_id": "GOF-19",
+                    "gof_id": "gof_1",
                     "same_gof_order": 0,
                     "gof_fields": [
                         {
@@ -65,7 +62,7 @@ class TestCase06UpdateTaskAPITestCase(TestUtils):
                     ]
                 },
                 {
-                    "gof_id": "GOF-20",
+                    "gof_id": "gof_2",
                     "same_gof_order": 0,
                     "gof_fields": [
                         {

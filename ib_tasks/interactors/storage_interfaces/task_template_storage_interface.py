@@ -103,3 +103,7 @@ class TaskTemplateStorageInterface(abc.ABC):
             self, transition_checklist_template_id
     ) -> Optional[InvalidTransitionChecklistTemplateId]:
         pass
+
+    @abc.abstractmethod
+    def get_gof_ids_of_template(self, template_id: str) -> List[str]:
+        pass

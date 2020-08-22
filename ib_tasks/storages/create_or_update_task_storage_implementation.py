@@ -11,7 +11,7 @@ from ib_tasks.interactors.storage_interfaces. \
     create_or_update_task_storage_interface \
     import CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
-    TaskGoFFieldDTO, TaskGoFDTO, TaskBaseDetailsDTO
+    TaskGoFFieldDTO, TaskGoFDTO, TaskBaseDetailsDTO, FieldSearchableDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import (
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO)
 from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO
@@ -277,6 +277,7 @@ class CreateOrUpdateTaskStorageImplementation(
         )
         task_object = Task.objects.create(
             task_display_id=None,
+            project_id=task_dto.project_id,
             template_id=task_dto.task_template_id,
             created_by=task_dto.created_by_id,
             title=task_dto.title, description=task_dto.description,
@@ -346,3 +347,24 @@ class CreateOrUpdateTaskStorageImplementation(
 
     def get_initial_stage_for_task_template(self, template_id: str) -> str:
         pass
+
+    def get_field_searchable_dtos(
+            self, field_ids: List[str], task_gof_ids: List[int],
+    ) -> List[FieldSearchableDTO]:
+
+        from ib_tasks.constants.enum import FieldTypes
+        field_searchable_values = TaskGoFField.objects.filter(
+            field_id__in=field_ids,
+            task_gof_id__in=task_gof_ids,
+            field__field_type=FieldTypes.SEARCHABLE.value
+        ).values_list('field_id', 'field__field_values', 'field_response')
+
+        field_searchable_dtos = [
+            FieldSearchableDTO(
+                field_id=field_searchable_value[0],
+                field_value=field_searchable_value[1],
+                field_response=field_searchable_value[2]
+            )
+            for field_searchable_value in field_searchable_values
+        ]
+        return field_searchable_dtos
