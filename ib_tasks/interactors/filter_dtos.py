@@ -1,7 +1,7 @@
 
 
 from dataclasses import dataclass
-from typing import List, Any
+from typing import List, Any, Optional
 
 from ib_tasks.constants.enum import Operators, Status
 
@@ -40,14 +40,18 @@ class FilterCompleteDetailsDTO:
 
 @dataclass
 class CreateFilterDTO:
+    project_id: Optional[str]
     filter_name: str
     user_id: str
     template_id: str
 
 
 @dataclass
-class UpdateFilterDTO(CreateFilterDTO):
+class UpdateFilterDTO:
     filter_id: int
+    filter_name: str
+    user_id: str
+    template_id: str
 
 
 @dataclass

@@ -14,6 +14,10 @@ class InvalidFilterId(Exception):
     pass
 
 
+class InvalidProjectId(Exception):
+    pass
+
+
 class FieldIdsNotBelongsToTemplateId(Exception):
 
     def __init__(self, field_ids: List[str]):

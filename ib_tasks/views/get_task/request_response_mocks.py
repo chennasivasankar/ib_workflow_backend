@@ -4,6 +4,11 @@
 RESPONSE_200_JSON = """
 {
     "task_id": "string",
+    "project_info": {
+        "project_id": "string",
+        "project_name": "string",
+        "project_logo_url": "string"
+    },
     "template_id": "string",
     "title": "string",
     "description": "string",
@@ -31,7 +36,11 @@ RESPONSE_200_JSON = """
             "assignee": {
                 "assignee_id": "string",
                 "name": "string",
-                "profile_pic_url": "string"
+                "profile_pic_url": "string",
+                "team_info": {
+                    "team_id": "string",
+                    "team_name": "string"
+                }
             },
             "actions": [
                 {
