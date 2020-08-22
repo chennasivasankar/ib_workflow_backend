@@ -143,3 +143,7 @@ class InvalidCountryIds(Exception):
 
 class InvalidProjectId(Exception):
     pass
+
+
+class TeamNotExistsInGivenProject(Exception):
+    pass
