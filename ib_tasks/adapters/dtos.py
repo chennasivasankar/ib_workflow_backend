@@ -52,3 +52,28 @@ class UserDetailsDTO:
     user_id: str
     user_name: str
     profile_pic_url: str
+
+
+@dataclass
+class TeamDetailsDTO:
+    team_id: str
+    name: str
+
+
+@dataclass
+class UserIdWIthTeamDetailsDTOs:
+    user_id: str
+    team_details: List[TeamDetailsDTO]
+
+
+@dataclass
+class ProjectDetailsDTO:
+    project_id: str
+    name: str
+    logo_url: str
+
+
+@dataclass
+class UserIdWithTeamIdDTO:
+    user_id: str
+    team_id: str
