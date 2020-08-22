@@ -11,12 +11,34 @@ class TestAddMembersToSuperiors:
         return storage
 
     @pytest.fixture()
-    def create_user_teams(self, create_team):
-        team_object = create_team
+    def create_teams(self):
+        from ib_iam.tests.factories.models import TeamFactory
+        team1_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        team2_id = "00ae920b-7b4c-49e7-8adb-41a0c18da848"
+        user_id = "21be920b-7b4c-49e7-8adb-41a0c18da848"
+        team_objects = [
+            TeamFactory(
+                team_id=team1_id,
+                name="name",
+                description="description",
+                created_by=user_id
+            ),
+            TeamFactory(
+                team_id=team2_id,
+                name="Tech Team",
+                description="description",
+                created_by=user_id
+            )
+        ]
+        return team_objects
+
+    @pytest.fixture()
+    def create_user_teams(self, create_teams):
+        team_objects = create_teams
         from ib_iam.tests.factories.models import TeamMemberLevelFactory
         team_member_level_object = TeamMemberLevelFactory(
             id="00be920b-7b4c-49e7-8adb-41a0c18da848",
-            team=team_object,
+            team=team_objects[0],
             level_name="SDL",
             level_hierarchy=1
         )
@@ -29,15 +51,21 @@ class TestAddMembersToSuperiors:
         user_team_objects_of_level_one = [
             UserTeamFactory(
                 user_id=user_id,
-                team=team_object,
+                team=team_objects[0],
                 team_member_level=team_member_level_object
             )
             for user_id in user_ids
         ]
+        for user_id in user_ids:
+            UserTeamFactory(
+                user_id=user_id,
+                team=team_objects[1],
+                team_member_level=team_member_level_object
+            )
 
         team_member_level_object = TeamMemberLevelFactory(
             id="10be920b-7b4c-49e7-8adb-41a0c18da848",
-            team=team_object,
+            team=team_objects[0],
             level_name="Developer",
             level_hierarchy=0
         )
@@ -50,11 +78,18 @@ class TestAddMembersToSuperiors:
         user_team_objects = [
             UserTeamFactory(
                 user_id=user_id,
-                team=team_object,
+                team=team_objects[0],
                 team_member_level=team_member_level_object
             )
             for user_id in user_ids
         ]
+        for user_id in user_ids:
+            UserTeamFactory(
+                user_id=user_id,
+                team=team_objects[1],
+                team_member_level=team_member_level_object
+            )
+
         return user_team_objects_of_level_one
 
     @pytest.mark.django_db

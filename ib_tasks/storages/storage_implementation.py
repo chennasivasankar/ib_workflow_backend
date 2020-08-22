@@ -403,11 +403,18 @@ class StagesStorageImplementation(StageStorageInterface):
         permitted_user_role_ids_list = list(permitted_user_role_ids_queryset)
         return permitted_user_role_ids_list
 
-    def get_stage_ids_having_actions(self) -> List[str]:
-        stage_ids = StageAction.objects.values_list(
-            'stage__stage_id', flat=True
-        ).distinct()
-        return list(stage_ids)
+    def get_stage_ids_having_actions(self, user_roles: List[str]) -> List[str]:
+        stage_ids = ActionPermittedRoles.objects\
+            .filter(
+                Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+            )\
+            .values_list('action__stage_id', flat=True)
+        stage_ids = StagePermittedRoles.objects.filter(stage_id__in=stage_ids)\
+            .filter(
+                Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+            ).values_list('stage__stage_id', flat=True)
+        return sorted(list(set(stage_ids)))
+
 
 
 class StorageImplementation(StorageInterface):
