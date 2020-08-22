@@ -1,3 +1,4 @@
+import datetime
 import uuid
 
 from django.db import models
@@ -5,6 +6,10 @@ from django.db import models
 
 def generate_uuid():
     return uuid.uuid4()
+
+
+def get_datetime_now():
+    return datetime.datetime.now()
 
 
 class ChecklistItem(models.Model):
@@ -15,3 +20,4 @@ class ChecklistItem(models.Model):
                                   related_name="checklist_items")
     text = models.CharField(max_length=1000)
     is_checked = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=get_datetime_now)
