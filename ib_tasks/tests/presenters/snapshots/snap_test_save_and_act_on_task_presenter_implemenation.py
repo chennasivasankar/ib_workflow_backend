@@ -285,3 +285,9 @@ snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_invalid_stage
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_invalid_stage_id res_status'] = 'INVALID_STAGE_ID'
 
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_invalid_stage_id json_response'] = 'please give a valid stage id, 1 is invalid stage id'
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_invalid_present_stage_actions http_status_code'] = 400
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_invalid_present_stage_actions res_status'] = 'INVALID_PRESENT_STAGE_ACTION'
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_invalid_present_stage_actions response'] = '1 is invalid present stage action'

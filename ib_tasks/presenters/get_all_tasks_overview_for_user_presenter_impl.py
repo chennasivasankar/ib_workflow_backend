@@ -2,6 +2,7 @@ from typing import List, Dict, Optional
 import abc
 from typing import List
 
+from ib_tasks.adapters.auth_service import InvalidProjectIdsException
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.get_all_tasks_overview_for_user_presenter_interface import \
@@ -187,3 +188,28 @@ class GetFilteredTasksOverviewForUserPresenterImplementation(
         }
         return self.prepare_200_success_response(
             response_dict=all_tasks_overview_details_response_dict)
+
+    def get_response_for_invalid_project_id(
+            self, err: InvalidProjectIdsException):
+        from ib_tasks.constants.exception_messages import INVALID_PROJECT_ID
+        project_id = err.invalid_project_ids[0]
+        message = INVALID_PROJECT_ID[0].format(project_id)
+        response_dict = {
+            "response": message,
+            "http_status_code": 404,
+            "res_status": INVALID_PROJECT_ID[1]
+        }
+
+        response_object = self.prepare_404_not_found_response(response_dict)
+        return response_object
+
+    def get_response_for_user_not_in_project(self):
+        from ib_tasks.constants.exception_messages import USER_NOT_IN_PROJECT
+        response_dict = {
+            "response": USER_NOT_IN_PROJECT[0],
+            "http_status_code": 404,
+            "res_status": USER_NOT_IN_PROJECT[1]
+        }
+
+        response_object = self.prepare_403_forbidden_response(response_dict)
+        return response_object

@@ -109,8 +109,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             )
         except InvalidPresentStageAction as err:
             return presenter.raise_exception_for_invalid_present_actions(
-                error_obj=err
-            )
+                error_obj=err)
         except UserBoardPermissionDenied as err:
             return presenter.raise_exception_for_user_board_permission_denied(
                 error_obj=err

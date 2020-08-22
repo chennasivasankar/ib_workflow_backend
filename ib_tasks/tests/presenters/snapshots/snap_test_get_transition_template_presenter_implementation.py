@@ -31,7 +31,25 @@ snapshots['TestGetTransitionTemplatePresenterImplementation.test_when_complete_t
                     ],
                     'help_text': None,
                     'is_field_required': True,
-                    'is_field_writable': False,
+                    'is_field_writable': True,
+                    'placeholder_text': None,
+                    'tooltip': None,
+                    'validation_regex': None
+                },
+                {
+                    'allowed_formats': None,
+                    'display_name': 'field name',
+                    'error_msg': None,
+                    'field_id': 'field_3',
+                    'field_type': 'DROPDOWN',
+                    'field_values': [
+                        'Mr',
+                        'Mrs',
+                        'Ms'
+                    ],
+                    'help_text': None,
+                    'is_field_required': True,
+                    'is_field_writable': True,
                     'placeholder_text': None,
                     'tooltip': None,
                     'validation_regex': None
@@ -50,6 +68,24 @@ snapshots['TestGetTransitionTemplatePresenterImplementation.test_when_complete_t
                     'display_name': 'field name',
                     'error_msg': None,
                     'field_id': 'field_2',
+                    'field_type': 'DROPDOWN',
+                    'field_values': [
+                        'Mr',
+                        'Mrs',
+                        'Ms'
+                    ],
+                    'help_text': None,
+                    'is_field_required': True,
+                    'is_field_writable': True,
+                    'placeholder_text': None,
+                    'tooltip': None,
+                    'validation_regex': None
+                },
+                {
+                    'allowed_formats': None,
+                    'display_name': 'field name',
+                    'error_msg': None,
+                    'field_id': 'field_4',
                     'field_type': 'DROPDOWN',
                     'field_values': [
                         'Mr',

@@ -104,7 +104,15 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         return response_object
 
     def raise_exception_for_invalid_present_actions(self, error_obj):
-        pass
+        from ib_tasks.constants.exception_messages import \
+            INVALID_PRESENT_STAGE_ACTION
+        message = INVALID_PRESENT_STAGE_ACTION[0].format(error_obj.action_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_PRESENT_STAGE_ACTION[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_exception_for_user_board_permission_denied(
             self, error_obj: UserBoardPermissionDenied):

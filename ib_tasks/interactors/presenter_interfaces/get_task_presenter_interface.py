@@ -4,6 +4,9 @@ from typing import List
 
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
     InvalidStageIdsForTask, InvalidTaskDisplayId
+from ib_tasks.adapters.searchable_details_service import \
+    InvalidUserIdsException, InvalidStateIdsException, \
+    InvalidCountryIdsException, InvalidCityIdsException
 from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
     import TaskDetailsDTO
@@ -38,4 +41,8 @@ class GetTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_user_permission_denied(self):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_searchable_records_found(self):
         pass
