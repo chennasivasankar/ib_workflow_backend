@@ -36,6 +36,11 @@ class ServiceAdapter:
         from .project_service import ProjectService
         return ProjectService()
 
+    @property
+    def searchable_details_service(self):
+        from .searchable_details_service import SearchableDetailsService
+        return SearchableDetailsService()
+
 
 def get_service_adapter():
     return ServiceAdapter()

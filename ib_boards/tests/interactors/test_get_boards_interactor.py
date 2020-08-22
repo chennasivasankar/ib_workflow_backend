@@ -33,6 +33,7 @@ class TestGetBoardsInteractor:
     @pytest.fixture
     def get_boards_dto(self):
         return GetBoardsDTO(
+            project_id="project_id_1",
             user_id="user_id_1",
             offset=0,
             limit=100
@@ -41,6 +42,7 @@ class TestGetBoardsInteractor:
     @pytest.fixture
     def get_boards_dto_invalid_offset(self):
         return GetBoardsDTO(
+            project_id="project_id_1",
             user_id="user_id_1",
             offset=-1,
             limit=1
@@ -49,6 +51,7 @@ class TestGetBoardsInteractor:
     @pytest.fixture
     def get_boards_dto_invalid_limit(self):
         return GetBoardsDTO(
+            project_id="project_id_1",
             user_id="user_id_1",
             offset=1,
             limit=-2
@@ -57,6 +60,7 @@ class TestGetBoardsInteractor:
     @pytest.fixture
     def get_boards_dto_with_offset_exceeds(self):
         return GetBoardsDTO(
+            project_id="project_id_1",
             user_id="user_id_1",
             offset=10,
             limit=2

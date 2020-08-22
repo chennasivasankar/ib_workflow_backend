@@ -124,3 +124,18 @@ class InvalidNewPassword(Exception):
 
 class CurrentPasswordMismatch(Exception):
     pass
+
+
+class InvalidCityIds(Exception):
+    def __init__(self, city_ids: List[int]):
+        self.city_ids = city_ids
+
+
+class InvalidStateIds(Exception):
+    def __init__(self, state_ids: List[int]):
+        self.state_ids = state_ids
+
+
+class InvalidCountryIds(Exception):
+    def __init__(self, country_ids: List[int]):
+        self.country_ids = country_ids
