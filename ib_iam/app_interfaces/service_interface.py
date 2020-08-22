@@ -1,8 +1,10 @@
 from typing import List, Optional
 
 from ib_iam.adapters.dtos import UserProfileDTO, SearchQueryWithPaginationDTO
+from ib_iam.app_interfaces.dtos import SearchableDTO
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserIdAndNameDTO
+from ib_tasks.adapters.dtos import SearchableDetailsDTO
 
 
 class ServiceInterface:
@@ -204,3 +206,19 @@ class ServiceInterface:
             team_id=team_id, user_id=user_id
         )
         return immediate_superion_user_id
+
+    @staticmethod
+    def get_searchable_details_dtos(
+            searchable_dtos: List[SearchableDTO]
+    ) -> List[SearchableDetailsDTO]:
+        from ib_iam.interactors.get_searchable_details_interactor import \
+            GetSearchableDetailsInteractor
+        from ib_iam.storages.searchable_storage_implementtion import \
+            SearchableStorageImplementation
+        storage = SearchableStorageImplementation()
+        interactor = GetSearchableDetailsInteractor(storage=storage)
+        searchable_details_dtos = interactor.get_searchable_details_dtos(
+            searchable_dtos
+        )
+        return searchable_details_dtos
+
