@@ -3,7 +3,7 @@ from django.contrib import admin
 
 from ib_iam.models import (
     UserDetails, UserTeam, UserRole, Company,
-    Role, Team, ElasticUserIntermediary, TeamMemberLevel
+    Role, Team, ElasticUserIntermediary, TeamMemberLevel, City, State, Country
 )
 
 
@@ -62,3 +62,6 @@ admin.site.register(UserRole, UserRoleAdmin)
 admin.site.register(UserTeam, UserTeamAdmin)
 admin.site.register(TeamMemberLevel, TeamMemberLevelAdmin)
 admin.site.register(ElasticUserIntermediary, ElasticUserIntermediaryAdmin)
+admin.site.register(City)
+admin.site.register(State)
+admin.site.register(Country)

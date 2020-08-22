@@ -1,6 +1,8 @@
 import uuid
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional, List, Union
+
+from ib_iam.constants.enums import Searchable
 
 
 @dataclass
@@ -176,3 +178,9 @@ class TeamMemberLevelDetailsDTO:
 class MemberDTO:
     member_id: str
     immediate_superior_team_user_id: str = None
+
+@dataclass
+class SearchableDetailsDTO:
+    search_type: Searchable
+    id: Union[int, str]
+    value: str
