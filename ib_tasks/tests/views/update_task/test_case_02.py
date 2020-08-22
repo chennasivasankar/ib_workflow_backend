@@ -1,5 +1,5 @@
 """
-test with invalid due time format
+test with stage id
 """
 
 import pytest
@@ -36,7 +36,7 @@ class TestCase02UpdateTaskAPITestCase(TestUtils):
             "start_date": "2099-12-31",
             "due_date": {
                 "date": "2099-12-31",
-                "time": "12-00-00"
+                "time": "12:00:00"
             },
             "priority": "HIGH",
             "stage_assignee": {

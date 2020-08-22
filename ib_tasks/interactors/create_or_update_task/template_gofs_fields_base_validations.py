@@ -102,7 +102,9 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
 
     @staticmethod
     def any_in(user_roles: List[str], required_roles: List[str]) -> bool:
-        return any(role in required_roles for role in user_roles)
+        from ib_iam.constants.config import ALL_ROLES_ID
+        return any(role in required_roles for role in
+                   user_roles) or ALL_ROLES_ID in required_roles
 
     def _validate_for_given_fields_are_related_to_given_gofs(
             self, gof_fields_dtos: List[GoFFieldsDTO], gof_ids: List[str]
