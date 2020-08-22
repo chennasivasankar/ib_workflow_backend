@@ -118,6 +118,7 @@ class ServiceInterface:
             role_ids=role_ids)
         return user_details_dtos
 
+    # TODO: change the interactor method is not available in get_users_interactor
     @staticmethod
     def get_user_details_for_the_given_role_ids_based_on_query(
             role_ids: List[str],
@@ -222,7 +223,6 @@ class ServiceInterface:
             searchable_dtos
         )
         return searchable_details_dtos
-
 
     @staticmethod
     def get_valid_project_ids(project_ids: List[str]) -> List[str]:
