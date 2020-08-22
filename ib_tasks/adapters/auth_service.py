@@ -103,10 +103,8 @@ class AuthService:
 
     def get_team_info_for_given_user_ids(self, user_ids: List[str]) -> List[
         UserIdWIthTeamDetailsDTOs]:
-        # raise NotImplementedError
-        return [UserIdWIthTeamDetailsDTOs(user_id=user_id, team_details=[
-            TeamDetailsDTO(team_id="team_1", name="team_name_1"), TeamDetailsDTO(team_id="team_2", name="team_name_1")]) for user_id
-                in user_ids]
+        raise NotImplementedError
+
 
     def get_team_details_for_given_team_project_details_dto(
             self, team_project_details_dto: TeamProjectDetailsDTO) -> \
