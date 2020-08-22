@@ -1,8 +1,10 @@
 import pytest
 
-from ib_iam.storages.user_storage_implementation import UserStorageImplementation
+from ib_iam.storages.user_storage_implementation import \
+    UserStorageImplementation
 from ib_iam.tests.factories.models \
-    import CompanyFactory, TeamFactory, RoleFactory, UserDetailsFactory, UserTeamFactory, UserRoleFactory
+    import CompanyFactory, TeamFactory, RoleFactory, UserDetailsFactory, \
+    UserTeamFactory, UserRoleFactory
 
 
 @pytest.fixture()
@@ -78,6 +80,25 @@ class TestEditUserStorage:
         from ib_iam.models import UserDetails
         user = UserDetails.objects.get(user_id=user_id)
         assert str(user.company_id) == company_id
+
+    @pytest.mark.django_db
+    def test_add_company_to_user_when_company_is_none_adds_given_details(
+            self, model_reset_sequence, user_companies):
+        # Arrange
+        user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
+        is_admin = True
+        name = "test_name"
+        company_id = None
+        storage = UserStorageImplementation()
+
+        # Act
+        storage.update_user_details(
+            user_id=user_id, company_id=company_id, name=name)
+
+        # Assert
+        from ib_iam.models import UserDetails
+        user = UserDetails.objects.get(user_id=user_id)
+        assert user.company_id == company_id
 
     @pytest.mark.django_db
     def test_add_roles_to_user_adds_roles_with_given_details(

@@ -69,7 +69,8 @@ def validation_for_tasks_dict(tasks_dict: List[Dict]):
             Optional("button_color"): str,
             "action_type": str,
             "transition_template_id": str
-        }]
+        }],
+        ignore_extra_keys=True
     )
 
     try:

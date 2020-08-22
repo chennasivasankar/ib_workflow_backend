@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from django.conf import settings
-from elasticsearch_dsl import Document, Text, Integer
+from elasticsearch_dsl import Document, Text, Integer, Completion
 
 USER_INDEX_NAME = 'user-{}'.format(settings.STAGE)
 COUNTRY_INDEX_NAME = 'country-{}'.format(settings.STAGE)

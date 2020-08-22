@@ -19,6 +19,7 @@ class CreateReplyToCommentInteractor:
             self, presenter: CreateReplyPresenterInterface,
             create_complete_reply_to_comment_dto: CreateCompleteReplyToCommentDTO
     ):
+        # TODO: if comment_content empty we should have atleast multimedia input
         from ib_discussions.adapters.auth_service import InvalidUserIds
         from ib_discussions.exceptions.custom_exceptions import \
             CommentIdNotFound

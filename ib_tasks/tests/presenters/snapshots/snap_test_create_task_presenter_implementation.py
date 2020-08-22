@@ -25,12 +25,6 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_start_date_is_ahead_
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_start_date_is_ahead_of_due_date response'] = 'given start date 2020-05-04 is ahead of given due date 2020-04-04 '
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_is_behind_start_date http_status_code'] = 400
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_is_behind_start_date res_status'] = 'DUE_DATE_IS_BEHIND_START_DATE'
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_is_behind_start_date response'] = 'given due date 2020-04-04 is behind given start date 2020-05-04'
-
 snapshots['TestCreateTaskPresenterImplementation.test_raise_due_time_has_expired_for_today http_status_code'] = 400
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_due_time_has_expired_for_today res_status'] = 'DUE_TIME_HAS_EXPIRED_FOR_TODAY'
