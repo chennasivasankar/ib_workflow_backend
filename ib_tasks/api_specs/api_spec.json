@@ -1510,6 +1510,13 @@
       "type": "integer",
       "required": true
     },
+    "ProjectIdParameter": {
+      "name": "project_id",
+      "description": "Offset Parameter",
+      "in": "query",
+      "type": "integer",
+      "required": true
+    },
     "SearchableQueryParameter": {
       "name": "search_query",
       "description": "Searchable Query Parameter",
@@ -2751,7 +2758,7 @@
     },
     "/tasks_overview/v1/": {
       "get": {
-        "operationId": "get_all_tasks_overview",
+        "operationId": "get_project_tasks_overview",
         "summary": "get all tasks overview",
         "description": "get all tasks overview in home page",
         "security": [
@@ -2767,6 +2774,9 @@
           },
           {
             "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/ProjectIdParameter"
           }
         ],
         "responses": {
