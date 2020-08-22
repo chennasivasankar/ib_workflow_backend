@@ -5,11 +5,10 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...factories.models import StageActionFactory, TaskTemplateFactory, \
-    GoFFactory
+from ...factories.models import StageActionFactory, TaskTemplateFactory
 
 
-class TestCase01CreateTaskAPITestCase(TestUtils):
+class TestCase05CreateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -19,13 +18,12 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
     @pytest.fixture
     def reset_sequence(self):
         TaskTemplateFactory.reset_sequence()
-        GoFFactory.reset_sequence()
+        StageActionFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
-    def setup(self, reset_sequence):
+    def setup(self):
         TaskTemplateFactory()
         StageActionFactory()
-        GoFFactory()
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
@@ -37,20 +35,10 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
             "start_date": "2099-12-31",
             "due_date": {
                 "date": "2099-12-31",
-                "time": "12:00:00"
+                "time": "12/00:00"
             },
             "priority": "HIGH",
             "task_gofs": [
-                {
-                    "gof_id": "gof_1",
-                    "same_gof_order": 1,
-                    "gof_fields": [
-                        {
-                            "field_id": "FIELD_ID-0",
-                            "field_response": "field_0_response"
-                        }
-                    ]
-                },
                 {
                     "gof_id": "gof_1",
                     "same_gof_order": 1,

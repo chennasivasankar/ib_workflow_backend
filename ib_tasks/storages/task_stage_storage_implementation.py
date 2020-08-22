@@ -5,6 +5,8 @@ from django.db.models import Q
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.stages_dtos import TaskStageHistoryDTO, \
     StageMinimalDTO
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    FieldSearchableDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStageAssigneeDTO, CurrentStageDetailsDTO, AssigneeCurrentTasksCountDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \

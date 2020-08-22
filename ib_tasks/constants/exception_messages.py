@@ -337,3 +337,18 @@ USER_PERMISSION_DENIED = (
     "user doesn't have permission",
     "USER_PERMISSION_DENIED"
 )
+
+SEARCHABLE_RECORDS_NOT_FOUND = (
+    "Something went wrong contact Admin",
+    "SEARCHABLE_RECORDS_NOT_FOUND"
+)
+
+INVALID_PROJECT_ID = (
+    "{} is invalid project id, please send valid project id",
+    "INVALID_PROJECT_ID"
+)
+
+USER_NOT_IN_PROJECT = (
+    "User Not a part of the Project",
+    "USER_NOT_IN_PROJECT"
+)
