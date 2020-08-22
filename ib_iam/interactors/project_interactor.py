@@ -29,7 +29,8 @@ class ProjectInteractor:
         self._validate_project(project_id=project_team_user_dto.project_id)
         self._validate_team_existence_in_project(
             project_team_user_dto=project_team_user_dto)
-        # todo check user existence in given team
+        self._validate_user_existence_in_given_team(
+            project_team_user_dto=project_team_user_dto)
 
     def _validate_project(self, project_id: str):
         valid_project_ids = self.project_storage \
@@ -52,3 +53,14 @@ class ProjectInteractor:
             from ib_iam.exceptions.custom_exceptions import \
                 TeamNotExistsInGivenProject
             raise TeamNotExistsInGivenProject
+
+    def _validate_user_existence_in_given_team(
+            self, project_team_user_dto: ProjectTeamUserDTO):
+        is_user_exists_in_team = self.project_storage \
+            .is_user_exists_in_team(team_id=project_team_user_dto.team_id,
+                                    user_id=project_team_user_dto.user_id)
+        is_user_not_exists_in_team = not is_user_exists_in_team
+        if is_user_not_exists_in_team:
+            from ib_iam.exceptions.custom_exceptions import \
+                UserNotExistsInGivenTeam
+            raise UserNotExistsInGivenTeam

@@ -147,3 +147,7 @@ class InvalidProjectId(Exception):
 
 class TeamNotExistsInGivenProject(Exception):
     pass
+
+
+class UserNotExistsInGivenTeam(Exception):
+    pass
