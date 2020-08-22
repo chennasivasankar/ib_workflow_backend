@@ -25,10 +25,11 @@ class TestGetTasksOverviewForUserInteractor:
     def task_actions_fields(self):
         return [GetTaskStageCompleteDetailsDTO(
             task_id=1,
-            stage_id='stage_id_1',
-            stage_color="blue",
             db_stage_id=1,
-            display_name="display_name_1",
+            stage_id='stage_id_1',
+
+            display_name="stage_1",
+            stage_color="blue",
             field_dtos=[
                 FieldDetailsDTO(
                     field_type='Drop down',
@@ -68,22 +69,21 @@ class TestGetTasksOverviewForUserInteractor:
             TaskWithCompleteStageDetailsDTO(
                 task_with_stage_details_dto=TaskIdWithStageDetailsDTO(
                     db_stage_id=1, task_id=1, stage_id='stage_1',
-                    task_display_id="iBWF-1",
                     stage_display_name='stage_display_1',
-                    stage_color='color_1'),
-                stage_assignee_dto=StageAssigneeDetailsDTO(
+                    stage_color='color_1', task_display_id="task_1"),
+                stage_assignee_dto=[StageAssigneeDetailsDTO(
                     task_stage_id=1, stage_id=0,
                     assignee_details_dto=AssigneeDetailsDTO(
                         assignee_id='123e4567-e89b-12d3-a456-426614174000',
                         name='name_0',
                         profile_pic_url=
-                        'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM')))],
+                        'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM'))])],
             task_fields_and_action_details_dtos=[
                 GetTaskStageCompleteDetailsDTO(
                     task_id=1,
-                    stage_id='stage_id_1',
                     db_stage_id=1,
-                    display_name="display_name_1",
+                    stage_id='stage_id_1',
+                    display_name='stage_display_1',
                     stage_color='blue',
                     field_dtos=[FieldDetailsDTO(
                         field_type='Drop down',

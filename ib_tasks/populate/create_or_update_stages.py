@@ -52,7 +52,8 @@ def validation_for_list_of_stages_dict(stages_dict: List[Dict]):
             "stage_display_logic": str,
             "roles": str,
             "stage_color": str
-        }]
+        }],
+        ignore_extra_keys=True
 
     )
 

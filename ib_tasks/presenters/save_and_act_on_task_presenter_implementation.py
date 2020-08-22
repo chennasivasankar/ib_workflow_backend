@@ -21,7 +21,7 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserBoardPermissionDenied, UserActionPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import \
-    StageIdsWithInvalidPermissionForAssignee
+    StageIdsWithInvalidPermissionForAssignee, InvalidStageId
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
@@ -34,6 +34,16 @@ from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 class SaveAndActOnATaskPresenterImplementation(
     SaveAndActOnATaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_invalid_stage_id(self, err: InvalidStageId):
+        from ib_tasks.constants.exception_messages import INVALID_STAGE_ID
+        message = INVALID_STAGE_ID[0].format(err.stage_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_STAGE_ID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_due_date_has_expired(self, err: DueDateHasExpired):
         from ib_tasks.constants.exception_messages import \
@@ -117,7 +127,7 @@ class SaveAndActOnATaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_present_actions(self, error_obj):
+    def raise_exception_for_invalid_present_stage_actions(self, error_obj):
         from ib_tasks.constants.exception_messages import \
             INVALID_PRESENT_STAGE_ACTION
         message = INVALID_PRESENT_STAGE_ACTION[0].format(error_obj.action_id)

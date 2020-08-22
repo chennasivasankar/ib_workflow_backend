@@ -72,7 +72,7 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
                 AssigneeCurrentTasksCountDTO]) -> List[
         AssigneeCurrentTasksCountDTO]:
         assignee_ids_with_current_task_count = []
-        if assignee_ids_with_current_task_count:
+        if assignee_with_current_tasks_count_dtos:
             assignee_ids_with_current_task_count = [
                 assignee_with_current_tasks_count_dto.assignee_id for
                 assignee_with_current_tasks_count_dto in
@@ -100,10 +100,8 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
             self, role_ids_group_by_stage_id_dtos: List[StageIdWithRoleIdsDTO],
             stage_detail_dtos: List[StageDetailsDTO]
     ) -> List[StageWithUserDetailsDTO]:
-
         assignee_with_current_tasks_count_dtos = self. \
             _get_assignee_with_current_tasks_count_dtos()
-
         stage_with_user_details_dtos = []
         from ib_tasks.adapters.auth_service import AuthService
         auth_service_adapter = AuthService()
@@ -117,6 +115,7 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
                 for each_permitted_user_details_dto in
                 permitted_user_details_dtos
             ]
+
             permitted_assignee_with_current_tasks_count_dtos = self. \
                 _get_permitted_assignee_with_current_tasks_count_dtos(
                 permitted_user_ids, assignee_with_current_tasks_count_dtos)
@@ -135,7 +134,6 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
                         permitted_user_details_dto_having_less_tasks = \
                             permitted_user_details_dto
                         break
-
             stage_with_user_details_dto = self. \
                 _prepare_stage_with_user_details_dto(
                 stage_detail_dtos=stage_detail_dtos,
@@ -202,9 +200,6 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
             each_assignee_with_current_tasks_count_dto_dict[
                 'tasks_count'] = updated_task_count_of_assignee
             break
-        permitted_assignee_with_current_tasks_count_dtos_dict = sorted(
-            permitted_assignee_with_current_tasks_count_dtos_dict,
-            key=lambda i: i['tasks_count'])
         assignee_id_with_current_less_tasks = \
             permitted_assignee_with_current_tasks_count_dtos_dict[0][
                 'assignee_id']
@@ -261,6 +256,9 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
                 updated_task_count_dto_for_assignee_having_less_tasks_dict)
              if d["assignee_id"] == assignee_id_with_current_less_tasks),
             None)
+        # #FIXME: Handle assignee id index none usecase
+        if assignee_id_index is None:
+            assignee_id_index = 0
         return assignee_id_index
 
     @staticmethod

@@ -13,9 +13,11 @@ class GetSheetDataForStageActions:
         from ib_tasks.populate.get_data_from_sheet import GetDataFromSheet
         return GetDataFromSheet()
 
-    def get_data_from_stages_and_actions_sub_sheet(self):
+    def get_data_from_stages_and_actions_sub_sheet(self,
+                                                   spread_sheet_name: str):
         from ib_tasks.constants.constants import STAGES_AND_ACTIONS_SUB_SHEET
         field_records = self.data_sheet.get_data_from_sub_sheet(
+            spread_sheet_name=spread_sheet_name,
             sub_sheet_name=STAGES_AND_ACTIONS_SUB_SHEET
         )
 
@@ -49,17 +51,17 @@ class GetSheetDataForStageActions:
         schema = Schema(
             [{
                 "Stage ID*": And(str, len),
-                "Stage Display Name": And(str, len),
                 "Stage Display Logic": And(str, len),
                 "Action name": And(str, len),
                 "Role": And(str, len),
                 "Logic": And(str, len),
                 "Button Text": And(str, len),
                 Optional("Button Colour"): str,
-                "Action Type": str,
+                Optional("Action Type"): str,
                 Optional("Transition Template ID"): str
 
-            }]
+            }],
+            ignore_extra_keys=True
         )
         try:
             schema.validate(actions_dict)
@@ -69,7 +71,6 @@ class GetSheetDataForStageActions:
     def _raise_exception_for_valid_stage_actions_format(self):
         valid_format = {
             "Stage ID*": "PR_PAYMENT_REQUEST_DRAFTS",
-            "Stage Display Name": "Payment Request Drafts",
             "Stage Display Logic": "Value [Status1] == Value[PR_PAYMENT_REQUEST_DRAFTS]",
             "Action name": "Save Draft",
             "Role": "ALL_ROLES",

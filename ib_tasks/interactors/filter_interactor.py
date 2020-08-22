@@ -1,23 +1,24 @@
 from typing import Tuple, List
 
+from ib_tasks.adapters.auth_service import InvalidProjectIdsException, UserIsNotInProject
 from ib_tasks.constants.enum import Status
 from ib_tasks.exceptions.filter_exceptions import \
     FieldIdsNotBelongsToTemplateId, UserNotHaveAccessToFields, \
     InvalidFilterId, \
-    UserNotHaveAccessToFilter
+    UserNotHaveAccessToFilter, InvalidProjectId
 from ib_tasks.interactors.filter_dtos import FilterCompleteDetailsDTO, \
     CreateConditionDTO, CreateFilterDTO, FilterDTO, ConditionDTO, \
     UpdateFilterDTO
+from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
     import \
     FilterPresenterInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.filter_storage_interface \
     import FilterStorageInterface
-from ib_tasks.interactors.user_role_validation_interactor import UserRoleValidationInteractor
 
 
-class FilterInteractor:
+class FilterInteractor(ValidationMixin):
 
     def __init__(
             self, filter_storage: FilterStorageInterface,
@@ -40,6 +41,10 @@ class FilterInteractor:
             return self.presenter.get_response_for_invalid_task_template_id()
         except FieldIdsNotBelongsToTemplateId as error:
             return self.presenter.get_response_for_invalid_field_ids(error=error)
+        except InvalidProjectIdsException as err:
+            return self.presenter.get_response_for_invalid_project_id(err=err)
+        except UserIsNotInProject:
+            return self.presenter.get_response_for_user_not_in_project()
         except UserNotHaveAccessToFields:
             return self.presenter.get_response_for_user_not_have_access_to_fields()
         return self.presenter.get_response_for_create_filter(
@@ -51,6 +56,9 @@ class FilterInteractor:
             self, filter_dto: CreateFilterDTO,
             condition_dtos: List[CreateConditionDTO]) \
             -> Tuple[FilterDTO, List[ConditionDTO]]:
+        project_id = filter_dto.project_id
+        user_id = filter_dto.user_id
+        self._validate_project_data(project_id=project_id, user_id=user_id)
         self._validate_filter_data(
             filter_dto=filter_dto,
             condition_dtos=condition_dtos
@@ -59,6 +67,13 @@ class FilterInteractor:
             filter_dto=filter_dto, condition_dtos=condition_dtos
         )
         return filter_dto, condition_dtos
+
+    def _validate_project_data(self, project_id: str, user_id: str):
+
+        self.validate_given_project_ids(project_ids=[project_id])
+        self.validate_if_user_is_in_project(
+            project_id=project_id, user_id=user_id
+        )
 
     def update_filter_wrapper(
             self, filter_dto: UpdateFilterDTO,
@@ -125,46 +140,26 @@ class FilterInteractor:
             filter_id=filter_id, user_id=user_id
         )
 
-    def _validate_filter_data(
-            self, filter_dto: CreateFilterDTO,
-            condition_dtos: List[CreateConditionDTO]):
-        template_id = filter_dto.template_id
-        field_ids = [condition_dto.field_id for condition_dto in condition_dtos]
-        self.filter_storage.validate_template_id(
-            template_id=filter_dto.template_id
-        )
-        valid_field_ids = self.filter_storage.get_field_ids_for_task_template(
-            template_id=template_id, field_ids=field_ids
-        )
-        invalid_field_ids = [
-            invalid_field_id for invalid_field_id in field_ids
-            if invalid_field_id not in valid_field_ids
-        ]
-        if invalid_field_ids:
-            raise FieldIdsNotBelongsToTemplateId(field_ids=field_ids)
+    def get_filters_details_wrapper(self, user_id: str, project_id: str):
 
-        interactor = UserRoleValidationInteractor()
-        permitted_field_ids = interactor.get_field_ids_having_write_permission_for_user(
-            field_storage=self.field_storage,
-            user_id=filter_dto.user_id,
-            field_ids=field_ids)
-        if not set(valid_field_ids).issubset(permitted_field_ids):
-            raise UserNotHaveAccessToFields
-
-    def _validate_filter_id(self, filter_id: int):
-        self.filter_storage.validate_filter_id(
-            filter_id=filter_id
+        try:
+            filter_details = self._get_filters_details(
+                user_id=user_id, project_id=project_id
+            )
+        except InvalidProjectIdsException as err:
+            return self.presenter.get_response_for_invalid_project_id(err=err)
+        except UserIsNotInProject:
+            return self.presenter.get_response_for_user_not_in_project()
+        return self.presenter.get_response_for_get_filters_details(
+            filter_complete_details=filter_details
         )
 
-    def _validate_user_with_filter_id(self, user_id: str, filter_id: int):
-        self.filter_storage.validate_user_with_filter_id(
-            user_id=user_id, filter_id=filter_id
+    def _get_filters_details(self, user_id: str, project_id: str):
+
+        self._validate_project_data(project_id=project_id, user_id=user_id)
+        filters_dto = self.filter_storage.get_filters_dto_to_user(
+            user_id=user_id, project_id=project_id
         )
-
-    def get_filters_details(self, user_id: str):
-
-        filters_dto = \
-            self.filter_storage.get_filters_dto_to_user(user_id=user_id)
         filter_ids = self._get_filter_ids(filters_dto)
         conditions_dto = \
             self.filter_storage.get_conditions_to_filters(filter_ids=filter_ids)
@@ -172,9 +167,7 @@ class FilterInteractor:
             filters_dto=filters_dto,
             conditions_dto=conditions_dto
         )
-        return self.presenter.get_response_for_get_filters_details(
-            filter_complete_details=filter_complete_details_dto
-        )
+        return filter_complete_details_dto
 
     def update_filter_select_status_wrapper(
             self, user_id: str, filter_id: int, is_selected: Status):

@@ -1,6 +1,8 @@
 import uuid
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional, List, Union
+
+from ib_iam.constants.enums import Searchable
 
 
 @dataclass
@@ -16,6 +18,7 @@ class UserDTO:
     user_id: str
     is_admin: bool
     company_id: Optional[str] = None
+    cover_page_url: Optional[str] = None
 
 
 @dataclass
@@ -46,8 +49,8 @@ class UserTeamDTO:
 @dataclass
 class UserCompanyDTO:
     user_id: str
-    company_id: str
-    company_name: str
+    company_id: Optional[str] = None
+    company_name: Optional[str] = None
 
 
 @dataclass
@@ -129,13 +132,16 @@ class EmployeeDTO:
 @dataclass
 class CompanyNameLogoAndDescriptionDTO:
     name: str
-    description: str
-    logo_url: str
+    description: Optional[str]
+    logo_url: Optional[str]
 
 
 @dataclass
-class CompanyDTO(CompanyNameLogoAndDescriptionDTO):
+class CompanyDTO:
     company_id: str
+    name: str
+    description: str
+    logo_url: Optional[str]
 
 
 @dataclass
@@ -145,10 +151,49 @@ class CompanyIdWithEmployeeIdsDTO:
 
 
 @dataclass
-class CompanyWithUserIdsDTO(CompanyNameLogoAndDescriptionDTO):
+class CompanyWithUserIdsDTO:
+    user_ids: List[str]
+    name: str
+    description: str
+    logo_url: Optional[str]
+
+
+@dataclass
+class CompanyWithCompanyIdAndUserIdsDTO:
+    company_id: str
+    name: str
+    description: str
+    logo_url: Optional[str]
     user_ids: List[str]
 
 
 @dataclass
-class CompanyWithCompanyIdAndUserIdsDTO(CompanyWithUserIdsDTO):
-    company_id: str
+class TeamMemberLevelDetailsDTO:
+    team_member_level_id: str
+    team_member_level_name: str
+    level_hierarchy: int
+
+
+@dataclass
+class MemberDTO:
+    member_id: str
+    immediate_superior_team_user_id: str = None
+
+
+@dataclass
+class ProjectDTO:
+    project_id: str
+    name: str
+    description: Optional[str] = None
+    logo_url: Optional[str] = None
+
+@dataclass
+class SearchableDetailsDTO:
+    search_type: Searchable
+    id: Union[int, str]
+    value: str
+
+@dataclass
+class MemberIdWithSubordinateMemberIdsDTO:
+    member_id: str
+    subordinate_member_ids: List[str]

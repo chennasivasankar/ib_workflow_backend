@@ -71,7 +71,7 @@ class UserStagesWithPaginationDTO:
 class StageAssigneeDTO:
     db_stage_id: int
     assignee_id: str
-
+    team_id: str
 
 @dataclass
 class TaskIdWithStageAssigneesDTO:
@@ -86,11 +86,8 @@ class TaskDisplayIdWithStageAssigneesDTO:
 
 
 @dataclass
-class TaskIdWithStageAssigneeDTO:
+class TaskIdWithStageAssigneeDTO(StageAssigneeDTO):
     task_id: int
-    db_stage_id: int
-    assignee_id: str
-
 
 @dataclass
 class StageAssigneeDetailsDTO:
@@ -148,3 +145,12 @@ class TaskStageCompleteDetailsDTO:
     task_stage_dtos: List[TaskStageHistoryDTO]
     log_duration_dtos: List[LogDurationDTO]
     assignee_details: List[AssigneeDetailsDTO]
+
+
+@dataclass()
+class StageActionLogicDTO:
+    action_id: int
+    stage_id: str
+    action_logic: str
+    action_name: str
+    py_function_import_path: str

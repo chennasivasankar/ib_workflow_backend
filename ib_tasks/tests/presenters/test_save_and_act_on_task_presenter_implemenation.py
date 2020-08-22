@@ -76,6 +76,23 @@ class TestSaveAndActOnATaskPresenterImplementation:
         snapshot.assert_match(json_json_response['response'],
                               'json_response')
 
+    def test_raise_invalid_stage_id(self, presenter, snapshot):
+        # Arrange
+        stage_id = 1
+        from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId
+        err = InvalidStageId(stage_id)
+
+        # Act
+        json_response = presenter.raise_invalid_stage_id(err)
+
+        # Assert
+        json_json_response = json.loads(json_response.content)
+        snapshot.assert_match(
+            json_json_response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(json_json_response['res_status'], 'res_status')
+        snapshot.assert_match(json_json_response['response'],
+                              'json_response')
+
     def test_raise_due_date_has_expired(self, snapshot, presenter):
         # Arrange
         expected_due_date = datetime.date(2020, 3, 5)
@@ -750,7 +767,7 @@ class TestSaveAndActOnATaskPresenterImplementation:
         snapshot.assert_match(json_response['res_status'], 'res_status')
         snapshot.assert_match(json_response['response'], 'response')
 
-    def test_raise_exception_for_invalid_present_actions(
+    def test_raise_exception_for_invalid_present_stage_actions(
             self, snapshot, presenter):
         # Arrange
         expected_action_id = 1
@@ -761,7 +778,7 @@ class TestSaveAndActOnATaskPresenterImplementation:
 
         # Act
         response = \
-            presenter.raise_exception_for_invalid_present_actions(err)
+            presenter.raise_exception_for_invalid_present_stage_actions(err)
 
         # Assert
         json_response = json.loads(response.content)

@@ -1,9 +1,8 @@
-from typing import List, Dict, Any
+from typing import List, Dict
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO, ColumnStageDTO, \
-    AssigneeDetailsDTO
+from ib_tasks.adapters.dtos import ColumnStageDTO, AssigneeDetailsDTO
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied, UserBoardPermissionDenied
@@ -105,7 +104,15 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         return response_object
 
     def raise_exception_for_invalid_present_actions(self, error_obj):
-        pass
+        from ib_tasks.constants.exception_messages import \
+            INVALID_PRESENT_STAGE_ACTION
+        message = INVALID_PRESENT_STAGE_ACTION[0].format(error_obj.action_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_PRESENT_STAGE_ACTION[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_exception_for_user_board_permission_denied(
             self, error_obj: UserBoardPermissionDenied):
@@ -129,7 +136,6 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             task_current_stage_details_dto: TaskCurrentStageDetailsDTO
     ):
 
-        task_id = task_complete_details_dto.task_id
         is_board_id_none = not task_complete_details_dto.task_boards_details
         if is_board_id_none:
             current_board_details = None
@@ -258,11 +264,13 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
 
     @staticmethod
     def _get_assignee_details_dict(assignee_dto: AssigneeDetailsDTO):
-        return {
-            "assignee_id": assignee_dto.assignee_id,
-            "name": assignee_dto.name,
-            "profile_pic_url": assignee_dto.profile_pic_url
-        }
+
+        if assignee_dto:
+            return {
+                "assignee_id": assignee_dto.assignee_id,
+                "name": assignee_dto.name,
+                "profile_pic_url": assignee_dto.profile_pic_url
+            }
 
     @staticmethod
     def _get_actions_dict(actions_dto: List[ActionDTO]):

@@ -54,6 +54,26 @@ class UpdateTaskStageAssigneesPresenterImplementation(
         response_object = self.prepare_404_not_found_response(response_dict)
         return response_object
 
+    def raise_virtual_stage_ids_exception(self, virtual_stage_ids: List[int]):
+        from ib_tasks.constants.exception_messages import VIRTUAL_STAGE_IDS
+        response_dict = {
+            "response": VIRTUAL_STAGE_IDS[0].format(virtual_stage_ids),
+            "http_status_code": 400,
+            "res_status": VIRTUAL_STAGE_IDS[1]
+        }
+        response_object = self.prepare_400_bad_request_response(response_dict)
+        return response_object
+
+    def raise_invalid_user_id_exception(self, user_id: str):
+        from ib_tasks.constants.exception_messages import INVALID_USER_ID
+        response_dict = {
+            "response": INVALID_USER_ID[0].format(user_id),
+            "http_status_code": 404,
+            "res_status": INVALID_USER_ID[1]
+        }
+        response_object = self.prepare_404_not_found_response(response_dict)
+        return response_object
+
     def raise_stage_ids_with_invalid_permission_for_assignee_exception(
             self, invalid_stage_ids: List[int]):
         from ib_tasks.constants.exception_messages import \

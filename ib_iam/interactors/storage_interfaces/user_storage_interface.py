@@ -5,7 +5,8 @@ from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
 from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidUserIds
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, TeamIdAndNameDTO, \
-    RoleIdAndNameDTO, UserIdAndNameDTO
+    RoleIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, CompanyDTO, \
+    CompanyIdWithEmployeeIdsDTO
 
 
 class UserStorageInterface(ABC):
@@ -51,7 +52,7 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_user_details(self, company_id: str, user_id: str, name: str):
+    def update_user_details(self, company_id: Optional[str], user_id: str, name: str):
         pass
 
     @abstractmethod
@@ -123,11 +124,12 @@ class UserStorageInterface(ABC):
 
     @abstractmethod
     def create_user(self, is_admin: bool, user_id: str, name: str,
-                    company_id: str = None):
+                    company_id: Optional[str] = None):
         pass
 
     @abstractmethod
-    def update_user_name(self, user_id: str, name: str):
+    def update_user_name_and_cover_page_url(
+            self, name: str, cover_page_url: str, user_id: str):
         pass
 
     @abstractmethod
@@ -160,4 +162,26 @@ class UserStorageInterface(ABC):
 
     @abstractmethod
     def get_db_role_ids(self, role_ids: List[str]) -> List[str]:
+        pass
+
+    @abstractmethod
+    def get_user_related_team_dtos(self, user_id: str) -> List[TeamDTO]:
+        pass
+
+    @abstractmethod
+    def get_team_user_ids_dtos(self, team_ids: List[str]) -> \
+            List[TeamUserIdsDTO]:
+        pass
+
+    @abstractmethod
+    def get_user_related_company_dto(self, user_id: str) -> CompanyDTO:
+        pass
+
+    @abstractmethod
+    def get_company_employee_ids_dto(self, company_id: str) \
+            -> CompanyIdWithEmployeeIdsDTO:
+        pass
+
+    @abstractmethod
+    def get_user_details(self, user_id: str) -> UserDTO:
         pass

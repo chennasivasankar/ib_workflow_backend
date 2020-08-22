@@ -19,6 +19,7 @@ class ApplyFilterDTO:
     field_id: str
     operator: Operators
     value: str
+    project_id: str
 
 
 from ib_tasks.documents.elastic_task import ElasticTaskDTO, Task, QueryTasksDTO
@@ -36,7 +37,9 @@ class ElasticSearchStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def filter_tasks(self, filter_dtos: List[ApplyFilterDTO], offset: int, limit: int) -> Tuple[List[int], int]:
+    def filter_tasks(
+            self, filter_dtos: List[ApplyFilterDTO], offset: int, limit:
+            int, stage_ids: List[str]) -> Tuple[List[int], int]:
         pass
 
     @abc.abstractmethod

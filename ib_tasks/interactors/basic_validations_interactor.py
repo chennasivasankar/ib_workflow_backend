@@ -23,9 +23,10 @@ class BasicValidationsInteractor:
         )
         from ib_tasks.exceptions.task_custom_exceptions import \
             InvalidStagesTaskTemplateId
-        raise InvalidStagesTaskTemplateId(
-            invalid_stages_task_template_ids=invalid_stage_ids
-        )
+        if invalid_stage_ids:
+            raise InvalidStagesTaskTemplateId(
+                invalid_stages_task_template_ids=invalid_stage_ids
+            )
 
     def validate_template_ids(self, template_ids: List[str]) -> List[str]:
         return self.storage.get_valid_template_ids(

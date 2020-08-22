@@ -7,10 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase03UpdateTaskAPITestCase.test_case status_code'] = '500'
+snapshots['TestCase03UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase03UpdateTaskAPITestCase.test_case body'] = {
-    'res_status': [
-        '"START_DATE_IS_AHEAD_OF_DUE_DATE" is not a valid choice.'
-    ]
+    'http_status_code': 400,
+    'res_status': 'INVALID_STAGE_ID',
+    'response': 'please give a valid stage id, 1 is invalid stage id'
 }

@@ -23,7 +23,7 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     UserBoardPermissionDenied, UserActionPermissionDenied
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
@@ -32,6 +32,17 @@ from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 class CreateTaskPresenterImplementation(
     CreateTaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_exception_for_invalid_present_stage_actions(self, err):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_PRESENT_STAGE_ACTION
+        message = INVALID_PRESENT_STAGE_ACTION[0].format(err.action_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_PRESENT_STAGE_ACTION[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_due_date_has_expired(self, err: DueDateHasExpired):
         from ib_tasks.constants.exception_messages import \
@@ -198,16 +209,15 @@ class CreateTaskPresenterImplementation(
             data['stages'].append(stage)
         return self.prepare_201_created_response(response_dict=data)
 
-    def raise_invalid_task_template_ids(self, err: InvalidTaskTemplateIds):
+    def raise_invalid_task_template_id(self, err: InvalidTaskTemplateDBId):
         from ib_tasks.constants.exception_messages import \
-            INVALID_TASK_TEMPLATE_IDS
-        response_message = INVALID_TASK_TEMPLATE_IDS[0].format(
-            err.invalid_task_template_ids
-        )
+            INVALID_TASK_TEMPLATE_DB_ID
+        response_message = INVALID_TASK_TEMPLATE_DB_ID[0].format(
+            err.task_template_id)
         data = {
             "response": response_message,
             "http_status_code": 400,
-            "res_status": INVALID_TASK_TEMPLATE_IDS[1]
+            "res_status": INVALID_TASK_TEMPLATE_DB_ID[1]
         }
         return self.prepare_400_bad_request_response(data)
 
@@ -286,7 +296,7 @@ class CreateTaskPresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             USER_NEEDS_GOF_WRITABLE_PERMISSION
         response_message = USER_NEEDS_GOF_WRITABLE_PERMISSION[0].format(
-            err.user_id, err.gof_id, str(err.required_roles))
+            err.gof_id, str(err.required_roles))
         data = {
             "response": response_message,
             "http_status_code": 400,
@@ -300,7 +310,7 @@ class CreateTaskPresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             USER_NEEDS_FILED_WRITABLE_PERMISSION
         response_message = USER_NEEDS_FILED_WRITABLE_PERMISSION[0].format(
-            err.user_id, err.field_id, str(err.required_roles))
+            err.field_id, str(err.required_roles))
         data = {
             "response": response_message,
             "http_status_code": 400,

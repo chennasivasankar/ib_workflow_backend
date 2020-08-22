@@ -26,7 +26,8 @@ class TestCase06UpdateUserProfileAPITestCase(TestUtils):
             UserAccountAlreadyExistWithThisEmail
         body = {'name': 'username',
                 'email': 'jaswanthmamidipudi@gmail.com',
-                'profile_pic_url': 'https://sample.com'}
+                'profile_pic_url': 'https://sample.com',
+                "cover_page_url": ""}
         path_params = {}
         query_params = {}
         headers = {}

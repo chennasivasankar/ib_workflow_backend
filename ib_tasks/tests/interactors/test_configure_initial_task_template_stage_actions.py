@@ -1,25 +1,34 @@
 
+import pytest
 from unittest.mock import create_autospec
-
-from ib_tasks.interactors.configur_initial_task_template_stage_actions \
-    import (
-    ConfigureInitialTaskTemplateStageActions,
-    InvalidTaskTemplateIdsException
+from ib_tasks.interactors.configur_initial_task_template_stage_actions import (
+    ConfigureInitialTaskTemplateStageActions, InvalidTaskTemplateIdsException
 )
 from ib_tasks.interactors.stages_dtos import TemplateStageDTO
-from ib_tasks.interactors.storage_interfaces.storage_interface \
-    import StorageInterface
-from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
-    import \
-    TaskTemplateStorageInterface
 from ib_tasks.tests.factories.interactor_dtos \
     import TaskTemplateStageActionDTOFactory
 
 
 class TestConfigureInitialTaskTemplateStageActions:
 
+    @pytest.fixture()
+    def action_storage(self):
+        from ib_tasks.interactors.storage_interfaces.action_storage_interface \
+            import ActionStorageInterface
+        storage = create_autospec(ActionStorageInterface)
+        return storage
+
+    @pytest.fixture()
+    def template_storage(self):
+        from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
+            import TaskTemplateStorageInterface
+        storage = create_autospec(TaskTemplateStorageInterface)
+        return storage
+
+
     @staticmethod
-    def test_given_invalid_task_template_ids_raises_exception():
+    def test_given_invalid_task_template_ids_raises_exception(
+            action_storage, template_storage):
 
         # Arrange
         import pytest
@@ -32,12 +41,12 @@ class TestConfigureInitialTaskTemplateStageActions:
         tasks_dto = TaskTemplateStageActionDTOFactory.create_batch(size=2)
 
         task_template_ids = ["task_template_1", "task_template_2"]
-        storage = create_autospec(StorageInterface)
-        template_storage = create_autospec(TaskTemplateStorageInterface)
-        storage.get_valid_task_template_ids.return_value = ["task_template_1"]
+
+        action_storage.get_valid_task_template_ids\
+            .return_value = ["task_template_1"]
 
         interactor = ConfigureInitialTaskTemplateStageActions(
-            storage=storage,
+            storage=action_storage,
             template_storage=template_storage,
             tasks_dto=tasks_dto
         )
@@ -50,11 +59,12 @@ class TestConfigureInitialTaskTemplateStageActions:
         # Assert
         assert \
             err.value.task_template_ids_dict == expected_task_template_ids_dict
-        storage.get_valid_task_template_ids\
+        action_storage.get_valid_task_template_ids\
             .assert_called_once_with(task_template_ids=task_template_ids)
 
     @staticmethod
-    def test_given_more_than_one_stage_to_task_template_raises_exception():
+    def test_given_more_than_one_stage_to_task_template_raises_exception(
+            action_storage, template_storage):
         # Arrange
         import pytest
         import json
@@ -68,12 +78,11 @@ class TestConfigureInitialTaskTemplateStageActions:
         )
 
         task_template_ids = ["task_template_1", "task_template_2"]
-        storage = create_autospec(StorageInterface)
-        template_storage = create_autospec(TaskTemplateStorageInterface)
-        storage.get_valid_task_template_ids.return_value = task_template_ids
+        action_storage.get_valid_task_template_ids\
+            .return_value = task_template_ids
 
         interactor = ConfigureInitialTaskTemplateStageActions(
-            storage=storage,
+            storage=action_storage,
             template_storage=template_storage,
             tasks_dto=tasks_dto
         )
@@ -88,20 +97,20 @@ class TestConfigureInitialTaskTemplateStageActions:
         # Assert
         assert err.value.task_template_stages_dict == \
                expected_task_template_stages_dict
-        storage.get_valid_task_template_ids \
+        action_storage.get_valid_task_template_ids \
             .assert_called_once_with(task_template_ids=task_template_ids)
 
     @staticmethod
-    def test_given_valid_details_creates_stage_actions_to_task_template(mocker):
+    def test_given_valid_details_creates_stage_actions_to_task_template(
+            mocker, action_storage, template_storage):
 
         # Arrange
         TaskTemplateStageActionDTOFactory.reset_sequence(0)
         tasks_dto = TaskTemplateStageActionDTOFactory.create_batch(size=2)
 
         task_template_ids = ["task_template_1", "task_template_2"]
-        storage = create_autospec(StorageInterface)
-        template_storage = create_autospec(TaskTemplateStorageInterface)
-        storage.get_valid_task_template_ids.return_value = task_template_ids
+        action_storage.get_valid_task_template_ids\
+            .return_value = task_template_ids
         task_template_stage_dtos = [
             TemplateStageDTO(
                 task_template_id="task_template_1",
@@ -117,7 +126,7 @@ class TestConfigureInitialTaskTemplateStageActions:
         mock_obj = mocker.patch(path)
 
         interactor = ConfigureInitialTaskTemplateStageActions(
-            storage=storage,
+            storage=action_storage,
             template_storage=template_storage,
             tasks_dto=tasks_dto
         )
@@ -127,9 +136,9 @@ class TestConfigureInitialTaskTemplateStageActions:
 
         # Assert
 
-        storage.get_valid_task_template_ids \
+        action_storage.get_valid_task_template_ids \
             .assert_called_once_with(task_template_ids=task_template_ids)
-        storage.create_initial_stage_to_task_template.assert_called_once_with(
+        action_storage.create_initial_stage_to_task_template.assert_called_once_with(
             task_template_stage_dtos=task_template_stage_dtos
         )
         mock_obj.called_once()

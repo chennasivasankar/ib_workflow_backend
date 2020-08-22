@@ -1,9 +1,8 @@
-import uuid
-
 import factory
 
 from ib_iam import models
-from ib_iam.models import Role, Team, Company
+from ib_iam.models import Role, Team, Company, Country, State, City, Project
+from ib_iam.models.team_member_level import TeamMemberLevel
 from ib_iam.models.user import UserDetails, UserTeam, UserRole
 
 
@@ -45,6 +44,7 @@ class UserDetailsFactory(factory.django.DjangoModelFactory):
     is_admin = False
     name = factory.Faker('name')
     company = factory.SubFactory(CompanyFactory)
+    cover_page_url = factory.sequence(lambda n: "url%d" % n)
 
 
 class UserTeamFactory(factory.django.DjangoModelFactory):
@@ -53,6 +53,8 @@ class UserTeamFactory(factory.django.DjangoModelFactory):
 
     user_id = factory.sequence(lambda number: "user%s" % number)
     team = factory.Iterator(models.Team.objects.all())
+    team_member_level = None
+    immediate_superior_team_user = None
 
 
 class UserRoleFactory(factory.django.DjangoModelFactory):
@@ -69,3 +71,49 @@ class UserFactory(factory.django.DjangoModelFactory):
 
     user_id = factory.sequence(lambda n: n)
     is_admin = False
+
+
+class TeamMemberLevelFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = TeamMemberLevel
+
+    id = factory.Faker("uuid4")
+    team = factory.SubFactory(TeamFactory)
+    level_name = factory.Iterator([
+        "Developer",
+        "Software Developer Lead",
+        "Engineer Manager",
+        "Product Owner"
+    ])
+    level_hierarchy = factory.Iterator([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+
+class CountryFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Country
+
+    name = factory.sequence(lambda counter: "country_name{}".format(counter))
+
+
+class StateFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = State
+
+    name = factory.sequence(lambda counter: "state_name{}".format(counter))
+
+
+class CityFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = City
+
+    name = factory.sequence(lambda counter: "city_name{}".format(counter))
+
+
+class ProjectFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Project
+
+    project_id = factory.Sequence(lambda n: 'project %s' % n)
+    name = factory.Sequence(lambda n: 'name %s' % n)
+    description = factory.Sequence(lambda n: 'description %s' % n)
+    logo_url = factory.Sequence(lambda n: 'logo %s' % n)

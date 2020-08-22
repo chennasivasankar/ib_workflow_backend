@@ -2,6 +2,7 @@ import pytest
 
 from ib_tasks.storages.storage_implementation import \
     StagesStorageImplementation
+from ib_tasks.tests.factories.interactor_dtos import StageIdWithValueDTOFactory
 from ib_tasks.tests.factories.models import StageModelFactory
 
 
@@ -27,15 +28,15 @@ class TestValidateStageIds:
         # Assert
         assert valid_stage_ids == expected_result
 
-    def test_get_valid_db_stage_ids_in_given_db_stage_ids(self, create_stages):
+    def test_get_valid_db_stage_ids_with_stage_value(self, create_stages):
         # Arrange
         storage = StagesStorageImplementation()
         given_stage_ids = [1, 2, 3, 4]
-        expected_result = [1, 2, 3]
+        expected_result = StageIdWithValueDTOFactory.create_batch(3)
 
         # Act
-        valid_stage_ids = storage.get_valid_db_stage_ids_excluding_virtual_stages_in_given_db_stage_ids(
+        result = storage.get_valid_db_stage_ids_with_stage_value(
             given_stage_ids)
 
         # Assert
-        assert valid_stage_ids == expected_result
+        assert result == expected_result

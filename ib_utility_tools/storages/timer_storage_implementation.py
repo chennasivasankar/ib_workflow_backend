@@ -1,8 +1,7 @@
-import datetime
-from typing import Optional
+from typing import Optional, List
 
 from ib_utility_tools.interactors.storage_interfaces.dtos import \
-    TimerEntityDTO, TimerDetailsDTO
+    TimerEntityDTO, TimerDetailsDTO, CompleteTimerDetailsDTO
 from ib_utility_tools.interactors.storage_interfaces \
     .timer_storage_interface import TimerStorageInterface
 from ib_utility_tools.models import Timer
@@ -39,10 +38,21 @@ class TimerStorageImplementation(TimerStorageInterface):
                      timer_details_dto: TimerDetailsDTO):
         Timer.objects.filter(entity_id=timer_entity_dto.entity_id,
                              entity_type=timer_entity_dto.entity_type) \
-             .update(
-                start_datetime=timer_details_dto.start_datetime,
-                duration_in_seconds=timer_details_dto.duration_in_seconds,
-                is_running=timer_details_dto.is_running)
+            .update(
+            start_datetime=timer_details_dto.start_datetime,
+            duration_in_seconds=timer_details_dto.duration_in_seconds,
+            is_running=timer_details_dto.is_running)
+
+    def get_timer_details_dtos_for_given_entities(
+            self, timer_entity_dtos: List[TimerEntityDTO]) -> \
+            List[CompleteTimerDetailsDTO]:
+        entity_q_objects = self._prepare_entity_q_objects_for_given_dtos(
+            dtos=timer_entity_dtos)
+        timer_objects = Timer.objects.filter(entity_q_objects)
+        timer_details_dtos = [
+            self._prepare_complete_timer_details_dto(timer_object=timer_object)
+            for timer_object in timer_objects]
+        return timer_details_dtos
 
     @staticmethod
     def _prepare_timer_details_dto(timer_object) -> TimerDetailsDTO:
@@ -51,3 +61,23 @@ class TimerStorageImplementation(TimerStorageInterface):
             is_running=timer_object.is_running,
             start_datetime=timer_object.start_datetime)
         return timer_details_dto
+
+    @staticmethod
+    def _prepare_complete_timer_details_dto(
+            timer_object) -> CompleteTimerDetailsDTO:
+        timer_details_dto = CompleteTimerDetailsDTO(
+            entity_id=timer_object.entity_id,
+            entity_type=timer_object.entity_type,
+            duration_in_seconds=timer_object.duration_in_seconds,
+            is_running=timer_object.is_running,
+            start_datetime=timer_object.start_datetime)
+        return timer_details_dto
+
+    @staticmethod
+    def _prepare_entity_q_objects_for_given_dtos(dtos):
+        from django.db.models import Q
+        entity_q_objects = Q()
+        for dto in dtos:
+            entity_q_objects |= Q(entity_id=dto.entity_id,
+                                  entity_type=dto.entity_type)
+        return entity_q_objects

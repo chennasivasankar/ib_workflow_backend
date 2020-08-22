@@ -44,8 +44,7 @@ class CreateOrUpdateGoFsInteractor:
         service_adapter = get_roles_service_adapter()
         roles_service = service_adapter.roles_service
         valid_roles = roles_service.get_valid_role_ids_in_given_role_ids(
-            role_ids=role_ids
-        )
+            role_ids=role_ids)
         from ib_tasks.constants.constants import ALL_ROLES_ID
         if ALL_ROLES_ID in role_ids:
             valid_roles.append(ALL_ROLES_ID)

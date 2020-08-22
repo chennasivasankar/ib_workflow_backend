@@ -2,7 +2,7 @@ import abc
 
 from ib_tasks.exceptions.datetime_custom_exceptions import DueDateHasExpired
 from ib_tasks.exceptions.stage_custom_exceptions import \
-    StageIdsWithInvalidPermissionForAssignee
+    StageIdsWithInvalidPermissionForAssignee, InvalidStageId
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 
 
@@ -158,7 +158,7 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_present_actions(self, error_obj):
+    def raise_exception_for_invalid_present_stage_actions(self, error_obj):
         pass
 
     @abc.abstractmethod
@@ -191,4 +191,8 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_due_date_has_expired(self, err: DueDateHasExpired):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_stage_id(self, err: InvalidStageId):
         pass

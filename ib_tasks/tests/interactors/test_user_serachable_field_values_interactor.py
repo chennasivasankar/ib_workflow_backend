@@ -1,6 +1,6 @@
 import pytest
-
-
+from ib_tasks.tests.factories.interactor_dtos \
+    import SearchableFieldUserDetailDTOFactory
 
 
 class TestSearchableFieldValuesInteractor:
@@ -21,7 +21,7 @@ class TestSearchableFieldValuesInteractor:
         storage = create_autospec(ElasticSearchStorageInterface)
         return storage
 
-    @pytest.mark.parametrize("limit", [0, -1])
+    @pytest.mark.parametrize("limit", [-1, -2])
     def test_given_limit_values_less_than_one_raise_exception(
             self, limit, presenter_mock, elastic_storage_mock):
         # Arrange
@@ -35,7 +35,7 @@ class TestSearchableFieldValuesInteractor:
             side_effect = LimitShouldBeGreaterThanZeroException
         from ib_tasks.interactors.searchable_field_values_interactor import \
             SearchableFieldValuesInteractor
-        interactor = SearchableFieldValuesInteractor(elastic_storage=elastic_storage_mock)
+        interactor = SearchableFieldValuesInteractor()
 
         # Act
         with pytest.raises(LimitShouldBeGreaterThanZeroException):
@@ -62,7 +62,7 @@ class TestSearchableFieldValuesInteractor:
             .side_effect = OffsetShouldBeGreaterThanOrEqualToMinusOneException
         from ib_tasks.interactors.searchable_field_values_interactor import \
             SearchableFieldValuesInteractor
-        interactor = SearchableFieldValuesInteractor(elastic_storage=elastic_storage_mock)
+        interactor = SearchableFieldValuesInteractor()
 
         # Act
         with pytest.raises(
@@ -77,51 +77,49 @@ class TestSearchableFieldValuesInteractor:
 
     def test_get_searchable_field_value_details_given_valid_user_details(
             self, mocker, presenter_mock, elastic_storage_mock):
-        # Arrange
 
+        # Arrange
         from ib_tasks.tests.factories.interactor_dtos import \
             SearchableFieldTypeDTOFactory
         searchable_field_type_dto = SearchableFieldTypeDTOFactory(offset=0,
                                                                   limit=1)
-        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
-            get_user_dtos_based_on_limit_and_offset_mock
-        get_user_dtos_based_on_limit_and_offset_mock_method = \
-            get_user_dtos_based_on_limit_and_offset_mock(mocker)
-        searchable_user_detail_dtos = get_user_dtos_based_on_limit_and_offset_mock_method(
-        )
+
+        import json
+        name = json.dumps({
+            "name": 'name_1',
+            "profile_pic_url": 'profile_pic_url_1'
+        })
+        SearchableFieldUserDetailDTOFactory.reset_sequence()
+        search_dtos = [
+            SearchableFieldUserDetailDTOFactory(name=name)
+        ]
+
+        user_ids = ['user_1']
+        from ib_tasks.tests.common_fixtures.adapters.auth_service \
+            import search_users_mock, assignees_details_mock
+        search_mock = search_users_mock(mocker)
+        search_mock.return_value = user_ids
+        assignee_mock = assignees_details_mock(mocker)
+        from ib_tasks.tests.factories.adapter_dtos \
+            import AssigneeDetailsDTOFactory
+        AssigneeDetailsDTOFactory.reset_sequence(1)
+        assignee_mock.return_value = [
+            AssigneeDetailsDTOFactory(
+                assignee_id="user_1", profile_pic_url='profile_pic_url_1'
+            )
+        ]
 
         from ib_tasks.interactors.searchable_field_values_interactor import \
             SearchableFieldValuesInteractor
-        interactor = SearchableFieldValuesInteractor(elastic_storage=elastic_storage_mock)
+        interactor = SearchableFieldValuesInteractor()
 
+        # Act
         interactor.searchable_field_values_wrapper(
             presenter=presenter_mock,
             searchable_field_type_dto=searchable_field_type_dto)
-        get_user_dtos_based_on_limit_and_offset_mock_method.asser_called_once()
+
+        # Assert
+        assignee_mock.assert_called_once_with(assignee_ids=user_ids)
         presenter_mock.get_searchable_field_values_response.assert_called_once_with(
-            searchable_user_detail_dtos)
-
-    def test_get_searchable_field_value_details_given_valid_user_details_and_offset_one(
-            self, mocker, presenter_mock, elastic_storage_mock):
-        # Arrange
-
-        from ib_tasks.tests.factories.interactor_dtos import \
-            SearchableFieldTypeDTOFactory
-        searchable_field_type_dto = SearchableFieldTypeDTOFactory(offset=-1)
-        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
-            get_all_user_dtos_based_on_query_mock
-        get_all_user_dtos_based_on_query_mock_method = \
-            get_all_user_dtos_based_on_query_mock(mocker)
-        searchable_user_detail_dtos = \
-            get_all_user_dtos_based_on_query_mock_method()
-
-        from ib_tasks.interactors.searchable_field_values_interactor import \
-            SearchableFieldValuesInteractor
-        interactor = SearchableFieldValuesInteractor(elastic_storage=elastic_storage_mock)
-
-        interactor.searchable_field_values_wrapper(
-            presenter=presenter_mock,
-            searchable_field_type_dto=searchable_field_type_dto)
-        get_all_user_dtos_based_on_query_mock_method.asser_called_once()
-        presenter_mock.get_searchable_field_values_response. \
-            assert_called_once_with(searchable_user_detail_dtos)
+            search_dtos
+        )

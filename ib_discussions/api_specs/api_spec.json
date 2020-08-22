@@ -200,7 +200,6 @@
         }
       },
       "required": [
-        "comment_content",
         "mention_user_ids",
         "multimedia"
       ]
@@ -240,7 +239,6 @@
         "created_at",
         "is_editable",
         "comment_id",
-        "comment_content",
         "mention_users",
         "multimedia"
       ]
@@ -263,8 +261,7 @@
         },
         "required": [
           "user_id",
-          "name",
-          "profile_pic_url"
+          "name"
         ]
       }
     }
@@ -419,7 +416,6 @@
           }
         },
         "required": [
-          "comment_content",
           "mention_user_ids",
           "multimedia"
         ]

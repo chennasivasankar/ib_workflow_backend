@@ -7,7 +7,7 @@ from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.stage_custom_exceptions import \
     TransitionTemplateIsNotRelatedToGivenStageAction, InvalidStageId
-from ib_tasks.interactors.stages_dtos import TemplateStageDTO, StageActionDTO
+from ib_tasks.interactors.stages_dtos import TemplateStageDTO, StageActionDTO, StageActionLogicDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
@@ -247,12 +247,11 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
     def get_permitted_action_ids_given_stage_ids(self, user_roles: List[str],
                                                  stage_ids: List[str]) -> List[int]:
-        action_ids = list(ActionPermittedRoles.objects.filter(
+        action_ids = ActionPermittedRoles.objects.filter(
             Q(action__stage__stage_id__in=stage_ids),
-            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID))
-                          .values_list('action_id', flat=True)
-                          )
-        return list(set(action_ids))
+            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+        ).values_list('action_id', flat=True)
+        return sorted(list(set(action_ids)))
 
     def get_stage_ids_having_actions(self, db_stage_ids: List[int]) \
             -> List[int]:
@@ -260,3 +259,17 @@ class ActionsStorageImplementation(ActionStorageInterface):
             list(StageAction.objects.filter(stage_id__in=db_stage_ids).values_list(
                 'stage_id', flat=True))
         return db_stage_ids
+
+    def get_database_stage_actions(self) -> List[StageActionLogicDTO]:
+
+        action_objs = StageAction.objects.all().annotate(stage_name=F('stage__stage_id'))
+        return [
+            StageActionLogicDTO(
+                action_id=action_obj.id,
+                stage_id=action_obj.stage_name,
+                action_logic=action_obj.logic,
+                action_name=action_obj.name,
+                py_function_import_path=action_obj.py_function_import_path
+            )
+            for action_obj in action_objs
+        ]
