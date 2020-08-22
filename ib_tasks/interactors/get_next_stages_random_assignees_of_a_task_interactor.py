@@ -31,7 +31,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 
 
 class GetNextStagesRandomAssigneesOfATaskInteractor(
-    ValidationMixin, GetTaskIdForTaskDisplayIdMixin):
+        ValidationMixin, GetTaskIdForTaskDisplayIdMixin):
     def __init__(self, storage: StorageInterface,
                  stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,
