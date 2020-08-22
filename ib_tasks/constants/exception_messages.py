@@ -337,3 +337,5 @@ USER_PERMISSION_DENIED = (
     "user doesn't have permission",
     "USER_PERMISSION_DENIED"
 )
+
+INVALID_PROJECT_ID = ("given invalid project id: {}", "INVALID_PROJECT_ID")

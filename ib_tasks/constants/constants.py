@@ -33,6 +33,7 @@ UPLOADERS = [FieldTypes.IMAGE_UPLOADER.value, FieldTypes.FILE_UPLOADER.value]
 
 STAGES_AND_ACTIONS_SUB_SHEET = "Stages and Actions "
 TASK_CREATION_CONFIG_SUB_SHEET = "Task Creation Config"
+PROJECT_FOR_TASK_TEMPLATES_SUB_SHEET = "Project Task Templates"
 STAGE_ID_AND_VALUES_SUB_SHEET = "StageID and Values"
 STATUS_VARIABLES_SUB_SHEET = "Status Variables"
 ROLES_SUB_SHEET = "Roles"

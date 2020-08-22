@@ -5,14 +5,13 @@ from ib_boards.exceptions.custom_exceptions import InvalidTemplateFields
 from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.exceptions.roles_custom_exceptions import \
     InvalidStageRolesException
-from ib_tasks.exceptions.roles_custom_exceptions import \
-    InvalidStageRolesException
 from ib_tasks.exceptions.stage_custom_exceptions import (
     InvalidStageValues, DuplicateStageIds, InvalidStageDisplayLogic,
     InvalidStagesDisplayName)
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidStagesTaskTemplateId, InvalidTaskTemplateIds
-from ib_tasks.interactors.get_stage_display_logic_interactor import StageDisplayLogicInteractor
+from ib_tasks.interactors.get_stage_display_logic_interactor import \
+    StageDisplayLogicInteractor
 from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
@@ -205,8 +204,8 @@ class CreateOrUpdateStagesInteractor:
     def _validate_task_template_ids(self, task_template_ids: List[str]):
         invalid_task_template_ids = []
         valid_task_template_ids = self.task_template_storage. \
-            get_valid_template_ids_in_given_template_ids(
-            task_template_ids)
+            get_valid_task_template_ids_in_given_task_template_ids(
+                task_template_ids)
         for task_template_id in task_template_ids:
             if task_template_id not in valid_task_template_ids:
                 invalid_task_template_ids.append(task_template_id)

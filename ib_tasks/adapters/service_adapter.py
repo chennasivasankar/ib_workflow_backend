@@ -31,6 +31,11 @@ class ServiceAdapter:
         from .utility_tools_service import UtilityToolsService
         return UtilityToolsService()
 
+    @property
+    def project_service(self):
+        from .project_service import ProjectService
+        return ProjectService()
+
 
 def get_service_adapter():
     return ServiceAdapter()
