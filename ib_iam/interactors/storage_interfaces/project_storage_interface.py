@@ -18,3 +18,7 @@ class ProjectStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_project_dtos(self):
         pass
+
+    @abc.abstractmethod
+    def is_team_exists_in_project(self, project_id: str, team_id: str) -> bool:
+        pass
