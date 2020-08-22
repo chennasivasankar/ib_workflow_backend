@@ -41,8 +41,8 @@ class FilterInteractor(ValidationMixin):
             return self.presenter.get_response_for_invalid_task_template_id()
         except FieldIdsNotBelongsToTemplateId as error:
             return self.presenter.get_response_for_invalid_field_ids(error=error)
-        except InvalidProjectId:
-            return self.presenter.get_response_for_invalid_project_id()
+        except InvalidProjectIdsException as err:
+            return self.presenter.get_response_for_invalid_project_id(err=err)
         except UserIsNotInProject:
             return self.presenter.get_response_for_user_not_in_project()
         except UserNotHaveAccessToFields:
@@ -71,12 +71,9 @@ class FilterInteractor(ValidationMixin):
     def _validate_project_data(self, project_id: str, user_id: str):
 
         self.validate_given_project_ids(project_ids=[project_id])
-        try:
-            self.validate_if_user_is_in_project(
-                project_id=project_id, user_id=user_id
-            )
-        except InvalidProjectIdsException:
-            raise InvalidProjectId()
+        self.validate_if_user_is_in_project(
+            project_id=project_id, user_id=user_id
+        )
 
     def update_filter_wrapper(
             self, filter_dto: UpdateFilterDTO,

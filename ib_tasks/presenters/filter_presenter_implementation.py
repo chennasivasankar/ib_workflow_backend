@@ -2,6 +2,7 @@ from typing import List, Dict
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
+from ib_tasks.adapters.auth_service import InvalidProjectIdsException
 from ib_tasks.constants.enum import Status
 from ib_tasks.interactors.filter_dtos import FilterCompleteDetailsDTO, \
     ConditionDTO, FilterDTO
@@ -15,10 +16,13 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos import \
 class FilterPresenterImplementation(FilterPresenterInterface,
                                     HTTPResponseMixin):
 
-    def get_response_for_invalid_project_id(self):
+    def get_response_for_invalid_project_id(
+            self, err: InvalidProjectIdsException):
         from ib_tasks.constants.exception_messages import INVALID_PROJECT_ID
+        project_id = err.invalid_project_ids[0]
+        message = INVALID_PROJECT_ID[0].format(project_id)
         response_dict = {
-            "response": INVALID_PROJECT_ID[0],
+            "response": message,
             "http_status_code": 404,
             "res_status": INVALID_PROJECT_ID[1]
         }

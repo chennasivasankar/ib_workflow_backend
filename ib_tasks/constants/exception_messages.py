@@ -344,7 +344,7 @@ SEARCHABLE_RECORDS_NOT_FOUND = (
 )
 
 INVALID_PROJECT_ID = (
-    "Invalid Project Id",
+    "{} is invalid project id, please send valid project id",
     "INVALID_PROJECT_ID"
 )
 
