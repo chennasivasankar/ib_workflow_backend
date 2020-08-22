@@ -2,7 +2,8 @@ from dataclasses import dataclass
 from datetime import time, datetime, timedelta
 from typing import Optional, List
 
-from ib_tasks.adapters.dtos import AssigneeDetailsDTO
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO, \
+    UserIdWIthTeamDetailsDTOs
 
 
 @dataclass
@@ -73,6 +74,7 @@ class StageAssigneeDTO:
     assignee_id: str
     team_id: str
 
+
 @dataclass
 class TaskIdWithStageAssigneesDTO:
     task_id: int
@@ -89,6 +91,7 @@ class TaskDisplayIdWithStageAssigneesDTO:
 class TaskIdWithStageAssigneeDTO(StageAssigneeDTO):
     task_id: int
 
+
 @dataclass
 class StageAssigneeDetailsDTO:
     task_stage_id: int
@@ -101,6 +104,12 @@ class StageWithUserDetailsDTO:
     db_stage_id: int
     stage_display_name: str
     assignee_details_dto: Optional[AssigneeDetailsDTO]
+
+
+@dataclass
+class StageWithUserDetailsAndTeamDetailsDTO:
+    stages_with_user_details_dtos: List[StageWithUserDetailsDTO]
+    user_with_team_details_dtos: List[UserIdWIthTeamDetailsDTOs]
 
 
 @dataclass()

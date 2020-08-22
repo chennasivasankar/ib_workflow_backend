@@ -564,7 +564,10 @@
           "type": "string"
         },
         "team_info": {
-          "$ref": "#/definitions/TeamInfo"
+            "type": "array",
+          "items": {
+            "$ref": "#/definitions/TeamInfo"
+          }
         }
       },
       "required": [

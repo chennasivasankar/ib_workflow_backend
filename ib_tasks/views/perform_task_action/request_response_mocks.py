@@ -27,10 +27,12 @@ RESPONSE_200_JSON = """
                         "assignee_id": "string",
                         "name": "string",
                         "profile_pic_url": "string",
-                        "team_info": {
-                            "team_id": "string",
-                            "team_name": "string"
-                        }
+                        "team_info": [
+                            {
+                                "team_id": "string",
+                                "team_name": "string"
+                            }
+                        ]
                     },
                     "actions": [
                         {

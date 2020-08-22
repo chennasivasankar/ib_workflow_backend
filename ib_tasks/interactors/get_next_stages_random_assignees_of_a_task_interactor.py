@@ -15,7 +15,8 @@ from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.presenter_interfaces. \
     get_next_stages_random_assignees_of_a_task_presenter import \
     GetNextStagesRandomAssigneesOfATaskPresenterInterface
-from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO
+from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO, \
+    StageWithUserDetailsAndTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
@@ -31,7 +32,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 
 
 class GetNextStagesRandomAssigneesOfATaskInteractor(
-        ValidationMixin, GetTaskIdForTaskDisplayIdMixin):
+    ValidationMixin, GetTaskIdForTaskDisplayIdMixin):
     def __init__(self, storage: StorageInterface,
                  stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,
@@ -48,12 +49,12 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             presenter: GetNextStagesRandomAssigneesOfATaskPresenterInterface):
         try:
             task_id = self.get_task_id_for_task_display_id(task_display_id)
-            stage_with_user_details_dtos = \
+            stage_with_user_details_and_team_details_dto = \
                 self.get_next_stages_random_assignees_of_a_task(
                     task_id=task_id, action_id=action_id)
             return presenter. \
                 get_next_stages_random_assignees_of_a_task_response(
-                stage_with_user_details_dtos)
+                stage_with_user_details_and_team_details_dto)
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
         except InvalidTaskIdException as exception:
@@ -73,9 +74,10 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
 
     def get_next_stages_random_assignees_of_a_task(
             self, task_id: int,
-            action_id: int) -> List[StageWithUserDetailsDTO]:
+            action_id: int) -> StageWithUserDetailsAndTeamDetailsDTO:
         self.validate_task_id(task_id=task_id)
         self.validate_action_id(action_id=action_id)
+        project_id = self.task_storage.get_project_id_of_task(task_id)
         status_variable_dtos = self. \
             get_status_variables_dtos_of_task_based_on_action(
             task_id=task_id, action_id=action_id)
@@ -85,24 +87,25 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
         valid_next_stage_ids_of_task = self.stage_storage. \
             get_stage_ids_excluding_virtual_stages(
             next_stage_ids_of_task)
-        stages_having_user_details_dtos = self.\
+        stage_with_user_details_and_team_details_dto = self. \
             get_users_with_less_tasks_in_given_stages(
-            valid_next_stage_ids_of_task)
+            valid_next_stage_ids_of_task, project_id)
 
-        return stages_having_user_details_dtos
+        return stage_with_user_details_and_team_details_dto
 
     def get_users_with_less_tasks_in_given_stages(
-            self, stage_ids: List[str]) -> List[StageWithUserDetailsDTO]:
+            self, stage_ids: List[str], project_id: str) -> \
+            StageWithUserDetailsAndTeamDetailsDTO:
         get_users_with_less_tasks_interactor = \
             GetUsersWithLessTasksInGivenStagesInteractor(
                 action_storage=self.action_storage,
                 stage_storage=self.stage_storage,
                 task_stage_storage=self.task_stage_storage)
-        stages_having_user_details_dtos = \
+        stage_with_user_details_and_team_details_dto = \
             get_users_with_less_tasks_interactor. \
                 get_users_with_less_tasks_in_given_stages(
-                stage_ids=stage_ids)
-        return stages_having_user_details_dtos
+                stage_ids=stage_ids, project_id=project_id)
+        return stage_with_user_details_and_team_details_dto
 
     def get_status_variables_dtos_of_task_based_on_action(self, task_id: int,
                                                           action_id: int) -> \
