@@ -14,3 +14,7 @@ class ProjectStorageInterface(abc.ABC):
     def get_valid_project_ids_from_given_project_ids(
             self, project_ids: List[str]) -> List[str]:
         pass
+
+    @abc.abstractmethod
+    def get_project_dtos(self):
+        pass

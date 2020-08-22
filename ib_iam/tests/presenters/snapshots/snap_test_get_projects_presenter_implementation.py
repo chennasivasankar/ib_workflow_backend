@@ -7,9 +7,7 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01GetProjectsAPITestCase.test_case status_code'] = '200'
-
-snapshots['TestCase01GetProjectsAPITestCase.test_case body'] = [
+snapshots['TestGetProjectsPresenterImplementation.test_get_response_for_get_projects_returns_projects projects'] = [
     {
         'description': 'description 1',
         'logo_url': 'logo 1',
