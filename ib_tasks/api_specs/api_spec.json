@@ -1114,6 +1114,32 @@
         "name": {
           "type": "string"
         },
+        "project_id": {
+          "type": "string"
+        },
+        "template_id": {
+          "type": "string"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FilterCondition"
+          }
+        }
+      },
+      "required": [
+        "project_id",
+        "name",
+        "conditions",
+        "template_id"
+      ]
+    },
+    "FilterUpdateDetails": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
         "template_id": {
           "type": "string"
         },
@@ -1431,17 +1457,21 @@
       "in": "body",
       "name": "AdvancedSearchRequestBody",
       "description": "advanced search",
-      "required": false,
+      "required": true,
       "schema": {
         "type": "object",
         "properties": {
+          "project_id": {
+            "type": "string"
+          },
           "templates_conditions": {
             "type": "array",
             "items": {
               "$ref": "#/definitions/AdvancedSearchRequestBody"
             }
           }
-        }
+        },
+        "required": ["project_id"]
       }
     },
     "CreateTaskBodyParameter": {
@@ -1499,6 +1529,13 @@
     "LimitParameter": {
       "name": "limit",
       "description": "Limit Parameter",
+      "in": "query",
+      "type": "integer",
+      "required": true
+    },
+    "ProjectIDParameter": {
+      "name": "project_id",
+      "description": "Project Query Parameter",
       "in": "query",
       "type": "integer",
       "required": true
@@ -1631,7 +1668,7 @@
       "description": "update filter details",
       "required": true,
       "schema": {
-        "$ref": "#/definitions/FilterDetails"
+        "$ref": "#/definitions/FilterUpdateDetails"
       }
     },
     "UpdateFilterPathParameter": {
@@ -2830,6 +2867,9 @@
           }
         ],
         "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIDParameter"
+          }
         ],
         "responses": {
           "200": {
@@ -2934,7 +2974,11 @@
             ]
           }
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIDParameter"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Field details",
