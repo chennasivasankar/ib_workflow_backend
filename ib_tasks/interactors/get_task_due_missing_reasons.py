@@ -26,7 +26,7 @@ class GetTaskDueMissingReasonsInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_display_id: str, user_id: str) -> List[TaskDueDetailsDTO]:
         try:
             task_dtos = self.get_task_due_missing_reasons(
-                task_display_id, user_id)
+                task_display_id=task_display_id, user_id=user_id)
         except InvalidTaskDisplayId as err:
             return presenter.response_for_invalid_task_id(err)
         except UserIsNotAssigneeToTask as err:
@@ -35,22 +35,23 @@ class GetTaskDueMissingReasonsInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def get_task_due_missing_reasons(self, task_display_id: str,
                                      user_id: str) -> List[TaskDueDetailsDTO]:
-        task_id = self.get_task_id_for_task_display_id(task_display_id)
-        # self._validate_if_task_is_assigned_to_user(task_id, user_id)
-        task_dtos = self._get_task_reasons(task_id)
+        task_id = self.get_task_id_for_task_display_id(
+            task_display_id=task_display_id)
+        self._validate_if_task_is_assigned_to_user(task_id=task_id, user_id=user_id)
+        task_dtos = self._get_task_reasons(task_id=task_id)
         return task_dtos
 
     def _validate_if_task_is_assigned_to_user(self, task_id: int,
                                               user_id: str):
         is_assigned = self.storage.validate_if_task_is_assigned_to_user(
-            task_id, user_id
+            task_id=task_id, user_id=user_id
         )
         is_not_assigned = not is_assigned
         if is_not_assigned:
             raise UserIsNotAssigneeToTask
 
     def _get_task_reasons(self, task_id: int) -> List[TaskDueDetailsDTO]:
-        task_details = self.storage.get_task_due_details(task_id)
+        task_details = self.storage.get_task_due_details(task_id=task_id)
         user_ids = [task.user_id for task in task_details]
         unique_user_ids = list(set(user_ids))
         user_service = get_service_adapter().assignee_details_service
@@ -58,7 +59,9 @@ class GetTaskDueMissingReasonsInteractor(GetTaskIdForTaskDisplayIdMixin):
         users_dict = {}
         for user in user_dtos:
             users_dict[user.assignee_id] = user
-        task_dtos = self._map_user_and_tasks(task_details, users_dict)
+
+        task_dtos = self._map_user_and_tasks(task_details=task_details,
+                                             users_dict=users_dict)
         return task_dtos
 
     @staticmethod
