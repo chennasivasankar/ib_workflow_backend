@@ -1,4 +1,5 @@
 import factory
+
 from ib_tasks.adapters.dtos import *
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 from ib_tasks.constants.constants import STAGE_TASK
@@ -35,16 +36,22 @@ class ColumnFieldDTOFactory(factory.Factory):
         model = ColumnFieldDTO
 
     column_id = factory.Sequence(lambda n: 'column_%d' % (n + 1))
-    field_ids = factory.Sequence(lambda n: [f"field_{n + 1}", f"field_{n + 3}"])
+    field_ids = factory.Sequence(
+        lambda n: [f"field_{n + 1}", f"field_{n + 3}"])
 
 
 class AssigneeDetailsDTOFactory(factory.Factory):
     class Meta:
         model = AssigneeDetailsDTO
 
-    assignee_id = factory.sequence(lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(counter))
+    assignee_id = factory.sequence(
+        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+            counter))
     name = factory.sequence(lambda counter: "name_{}".format(counter))
-    profile_pic_url = "https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
+    profile_pic_url = "https://www.google.com/search?q=ibhubs&client=ubuntu" \
+                      "&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved" \
+                      "=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw" \
+                      "=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
 
 
 class UserDetailsDTOFactory(factory.Factory):
@@ -62,3 +69,12 @@ class EntityTypeDTOFactory(factory.Factory):
 
     entity_id = factory.Sequence(lambda n: n)
     entity_type = STAGE_TASK
+
+
+class SearchableDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchableDetailsDTO
+
+    search_type = Searchable.STATE.value
+    id = 2
+    value = "Hyderabad"

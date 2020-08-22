@@ -6,8 +6,7 @@ from ib_tasks.interactors.presenter_interfaces. \
     CompleteTransitionTemplateDTO
 from ib_tasks.tests.factories.storage_dtos import \
     TaskTemplateDTOFactory, UserFieldPermissionDTOFactory, FieldDTOFactory, \
-    GoFToTaskTemplateDTOFactory, GoFDTOFactory, \
-    FieldPermissionDTOFactory
+    GoFToTaskTemplateDTOFactory, GoFDTOFactory
 
 
 class TestGetTransitionTemplatePresenterImplementation:
@@ -17,10 +16,7 @@ class TestGetTransitionTemplatePresenterImplementation:
         TaskTemplateDTOFactory.reset_sequence()
         FieldDTOFactory.reset_sequence(1)
         GoFDTOFactory.reset_sequence(1)
-        UserFieldPermissionDTOFactory.reset_sequence()
         GoFToTaskTemplateDTOFactory.reset_sequence()
-        FieldPermissionDTOFactory.reset_sequence()
-        FieldPermissionDTOFactory.is_field_writable.reset()
 
     @pytest.fixture()
     def presenter(self):
@@ -46,17 +42,12 @@ class TestGetTransitionTemplatePresenterImplementation:
         UserFieldPermissionDTOFactory.create_batch(size=4)
         gofs_of_template_dtos = \
             GoFToTaskTemplateDTOFactory.create_batch(size=2)
-        field_with_permissions_dtos = \
-            FieldPermissionDTOFactory.create_batch(
-                size=2, field_dto=factory.Iterator(field_dtos),
-                is_field_writable=factory.Iterator([False, True])
-            )
 
         complete_transition_template_dto = CompleteTransitionTemplateDTO(
             transition_template_dto=transition_template_dto,
             gof_dtos=gof_dtos,
             gofs_of_transition_template_dtos=gofs_of_template_dtos,
-            field_with_permissions_dtos=field_with_permissions_dtos
+            field_dtos=field_dtos
         )
 
         # Act
@@ -96,13 +87,13 @@ class TestGetTransitionTemplatePresenterImplementation:
         gof_dtos = []
         UserFieldPermissionDTOFactory.create_batch(size=4)
         gofs_of_template_dtos = []
-        field_with_permissions_dtos = []
+        field_dtos = []
 
         complete_transition_template_dto = CompleteTransitionTemplateDTO(
             transition_template_dto=transition_template_dto,
             gof_dtos=gof_dtos,
             gofs_of_transition_template_dtos=gofs_of_template_dtos,
-            field_with_permissions_dtos=field_with_permissions_dtos
+            field_dtos=field_dtos
         )
 
         # Act
@@ -124,13 +115,13 @@ class TestGetTransitionTemplatePresenterImplementation:
         UserFieldPermissionDTOFactory.create_batch(size=4)
         gofs_of_template_dtos = \
             GoFToTaskTemplateDTOFactory.create_batch(size=2)
-        field_with_permissions_dtos = []
+        field_dtos = []
 
         complete_transition_template_dto = CompleteTransitionTemplateDTO(
             transition_template_dto=transition_template_dto,
             gof_dtos=gof_dtos,
             gofs_of_transition_template_dtos=gofs_of_template_dtos,
-            field_with_permissions_dtos=field_with_permissions_dtos
+            field_dtos=field_dtos
         )
 
         # Act

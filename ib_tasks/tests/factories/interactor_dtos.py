@@ -7,8 +7,7 @@ from ib_tasks.constants.enum import Searchable, Priority
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
 from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
-    import \
-    SearchQueryWithPaginationDTO
+    import SearchQueryWithPaginationDTO
 from ib_tasks.interactors.get_tasks_to_relevant_search_query import \
     SearchQueryDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
@@ -34,7 +33,7 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeDTO, \
     SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
     TaskDelayParametersDTO, UpdateTaskWithTaskDisplayIdDTO, \
-    SaveAndActOnTaskWithTaskDisplayIdDTO
+    SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO
 from ib_tasks.interactors.task_template_dtos import \
     CreateTransitionChecklistTemplateDTO, \
     CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
@@ -524,3 +523,11 @@ class StageAssigneeDTOFactory(factory.Factory):
     db_stage_id = factory.Sequence(lambda n: n + 1)
     assignee_id = factory.sequence(lambda n: "user_{}".format(n + 1))
     team_id = factory.Sequence(lambda n: "team_{}".format(n + 1))
+
+
+class SearchableDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchableDTO
+
+    search_type = Searchable.TEAM.value
+    id = "team1"

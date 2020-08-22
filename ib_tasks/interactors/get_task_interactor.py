@@ -1,8 +1,13 @@
 from typing import List
 
+from ib_tasks.adapters.dtos import SearchableDetailsDTO
+from ib_tasks.constants.enum import Searchable
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException, InvalidStageIdsForTask, \
     InvalidTaskDisplayId, UserPermissionDenied
+from ib_tasks.adapters.searchable_details_service import \
+    InvalidUserIdsException, InvalidStateIdsException, \
+    InvalidCountryIdsException, InvalidCityIdsException
 from ib_tasks.interactors.get_task_base_interactor \
     import GetTaskBaseInteractor
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
@@ -22,7 +27,7 @@ from ib_tasks.interactors.storage_interfaces.fields_storage_interface \
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
     TaskGoFDTO,
     TaskGoFFieldDTO,
-    TaskDetailsDTO
+    TaskDetailsDTO, FieldSearchableDTO
 )
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
@@ -31,7 +36,8 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
+from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO, \
+    SearchableDTO
 
 
 class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
@@ -71,6 +77,18 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return response
         except UserPermissionDenied:
             response = presenter.raise_user_permission_denied()
+            return response
+        except InvalidCityIdsException:
+            response = presenter.raise_invalid_searchable_records_found()
+            return response
+        except InvalidStateIdsException:
+            response = presenter.raise_invalid_searchable_records_found()
+            return response
+        except InvalidCountryIdsException:
+            response = presenter.raise_invalid_searchable_records_found()
+            return response
+        except InvalidUserIdsException:
+            response = presenter.raise_invalid_searchable_records_found()
             return response
 
     def get_task_details_response(
@@ -112,7 +130,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             self, stage_ids: List[int], user_roles: List[str]
     ) -> bool:
         is_user_has_permission = \
-            self.task_stage_storage\
+            self.task_stage_storage \
                 .is_user_has_permission_for_at_least_one_stage(
                     stage_ids=stage_ids, user_roles=user_roles
                 )
@@ -160,12 +178,156 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             self._get_permission_task_gof_field_dtos(
                 task_gof_field_dtos, user_roles
             )
+        permission_task_gof_field_dtos = \
+            self._get_task_gof_field_dtos_when_some_fields_are_searchable_type(
+                permission_task_gof_field_dtos
+            )
         task_details_dto = TaskDetailsDTO(
             task_base_details_dto=task_details_dto.task_base_details_dto,
             task_gof_dtos=permission_task_gof_dtos,
             task_gof_field_dtos=permission_task_gof_field_dtos
         )
         return task_details_dto
+
+    def _get_task_gof_field_dtos_when_some_fields_are_searchable_type(
+            self, permission_task_gof_field_dtos: List[TaskGoFFieldDTO]
+    ) -> List[TaskGoFFieldDTO]:
+
+        field_ids = [
+            permission_task_gof_field_dto.field_id
+            for permission_task_gof_field_dto in permission_task_gof_field_dtos
+        ]
+        task_gof_ids = [
+            permission_task_gof_field_dto.task_gof_id
+            for permission_task_gof_field_dto in permission_task_gof_field_dtos
+        ]
+        field_searchable_dtos = \
+            self.task_crud_storage.get_field_searchable_dtos(
+                field_ids, task_gof_ids)
+        is_field_searchable_dtos_empty = not field_searchable_dtos
+        if is_field_searchable_dtos_empty:
+            return permission_task_gof_field_dtos
+        task_gof_field_dtos = \
+            self._get_updated_field_response_for_task_gof_field_dtos(
+                permission_task_gof_field_dtos, field_searchable_dtos
+            )
+        return task_gof_field_dtos
+
+    def _get_updated_field_response_for_task_gof_field_dtos(
+            self, permission_task_gof_field_dtos: List[TaskGoFFieldDTO],
+            field_searchable_dtos: List[FieldSearchableDTO]
+    ):
+        field_searchable_dtos = self._get_updated_field_searchable_dtos(
+            field_searchable_dtos)
+        searchable_dtos = self._get_searchable_dtos(field_searchable_dtos)
+        searchable_details_dtos = self._get_searchable_details_dtos(
+            searchable_dtos
+        )
+        field_searchable_dtos = \
+            self._get_updated_field_response_for_field_searchable_dtos(
+                field_searchable_dtos, searchable_details_dtos
+            )
+        task_gof_field_dtos = self._get_updated_task_gof_field_dtos(
+            permission_task_gof_field_dtos, field_searchable_dtos
+        )
+        return task_gof_field_dtos
+
+    def _get_updated_task_gof_field_dtos(
+            self, permission_task_gof_field_dtos: List[TaskGoFFieldDTO],
+            field_searchable_dtos: List[FieldSearchableDTO]
+    ) -> List[TaskGoFFieldDTO]:
+        for permission_task_gof_field_dto in permission_task_gof_field_dtos:
+            field_id = permission_task_gof_field_dto.field_id
+            field_response = self._get_field_response(
+                field_id, field_searchable_dtos)
+            if field_response:
+                permission_task_gof_field_dto.field_response = field_response
+        return permission_task_gof_field_dtos
+
+    @staticmethod
+    def _get_field_response(
+            field_id: str,
+            field_searchable_dtos: List[FieldSearchableDTO]
+    ) -> str:
+        field_response = ""
+        for field_searchable_dto in field_searchable_dtos:
+            if field_id == field_searchable_dto.field_id:
+                return field_searchable_dto.field_response
+        return field_response
+
+    def _get_updated_field_response_for_field_searchable_dtos(
+            self, field_searchable_dtos: List[FieldSearchableDTO],
+            searchable_details_dtos: List[SearchableDetailsDTO]
+    ) -> List[FieldSearchableDTO]:
+
+        for field_searchable_dto in field_searchable_dtos:
+            field_response = self._get_updated_field_response(
+                field_searchable_dto, searchable_details_dtos
+            )
+            field_searchable_dto.field_response = field_response
+        return field_searchable_dtos
+
+    @staticmethod
+    def _get_updated_field_response(
+            field_searchable_dto: FieldSearchableDTO,
+            searchable_details_dtos: List[SearchableDetailsDTO]
+    ) -> str:
+        import json
+        field_value = field_searchable_dto.field_value
+        field_response = field_searchable_dto.field_response
+        for searchable_details_dto in searchable_details_dtos:
+            search_type = searchable_details_dto.search_type
+            id = searchable_details_dto.id
+            if field_value == search_type and field_response == id:
+                field_response = {
+                    "id": id,
+                    "value": searchable_details_dto.value
+                }
+                return json.dumps(field_response)
+
+    @staticmethod
+    def _get_searchable_details_dtos(
+            searchable_dtos: List[SearchableDTO]
+    ) -> List[SearchableDetailsDTO]:
+        from ib_tasks.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        searchable_details_service = service_adapter.searchable_details_service
+        searchable_details_dtos = \
+            searchable_details_service.get_searchable_details_dtos(
+                searchable_dtos
+            )
+        return searchable_details_dtos
+
+    @staticmethod
+    def _get_searchable_dtos(
+            field_searchable_dtos: List[FieldSearchableDTO]
+    ) -> List[SearchableDTO]:
+        searchable_dtos = [
+            SearchableDTO(
+                search_type=field_searchable_dto.field_value,
+                id=field_searchable_dto.field_response
+            )
+            for field_searchable_dto in field_searchable_dtos
+        ]
+        return searchable_dtos
+
+    @staticmethod
+    def _get_updated_field_searchable_dtos(
+            field_searchable_dtos: List[FieldSearchableDTO]
+    ) -> List[FieldSearchableDTO]:
+        searchable_types_with_response_id_as_string = [
+            Searchable.USER.value,
+            Searchable.TEAM.value,
+            Searchable.COMPANY.value,
+            Searchable.VENDOR.value,
+        ]
+        for field_searchable_dto in field_searchable_dtos:
+            if field_searchable_dto.field_value in \
+                    searchable_types_with_response_id_as_string:
+                continue
+            field_searchable_dto.field_response = int(
+                field_searchable_dto.field_response)
+        return field_searchable_dtos
 
     def _get_stages_and_actions_details_dtos(
             self, task_id: int, user_id: str

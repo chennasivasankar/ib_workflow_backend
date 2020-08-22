@@ -25,7 +25,8 @@ def api_wrapper(*args, **kwargs):
     filter_dto = CreateFilterDTO(
         filter_name=request_data['name'],
         template_id=request_data['template_id'],
-        user_id=user_id
+        user_id=user_id,
+        project_id=request_data['project_id']
     )
     conditions = request_data['conditions']
     condition_dtos = get_conditions_dtos(conditions=conditions)
