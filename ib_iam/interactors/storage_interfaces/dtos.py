@@ -192,3 +192,8 @@ class SearchableDetailsDTO:
     search_type: Searchable
     id: Union[int, str]
     value: str
+
+@dataclass
+class MemberIdWithSubordinateMemberIdsDTO:
+    member_id: str
+    subordinate_member_ids: List[str]

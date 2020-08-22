@@ -8,4 +8,4 @@ VALID_EMAIL_DOMAINS = ["ibhubs", "proyuga", "cybereye", "gmail"]
 PASSWORD_VALIDATION_EXPRESSION = \
     r"^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[@#$])[\w\d@#$]{6,12}$"
 ROLES_SUBSHEET_NAME = "Roles"
-PORJECT_SUBSHEET_NAME = "Projects"
+PROJECT_SUBSHEET_NAME = "Projects"

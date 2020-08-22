@@ -4,7 +4,8 @@ from ib_iam.constants.enums import Searchable
 from ib_iam.interactors.storage_interfaces.dtos \
     import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, \
-    UserProfileDTO, TeamMemberLevelDetailsDTO, MemberDTO, SearchableDetailsDTO, ProjectDTO
+    UserProfileDTO, TeamMemberLevelDetailsDTO, MemberDTO, SearchableDetailsDTO, ProjectDTO, TeamMemberLevelDetailsDTO, MemberDTO, \
+    MemberIdWithSubordinateMemberIdsDTO
 
 
 class UserDTOFactory(factory.Factory):
@@ -295,3 +296,13 @@ class SearchableDetailsDTOFactory(factory.Factory):
     )
     id = factory.sequence(lambda counter: counter)
     value = factory.sequence(lambda counter: "name{}".format(counter))
+
+
+class MemberIdWithSubordinateMemberIdsDTOFactory(factory.Factory):
+    class Meta:
+        model = MemberIdWithSubordinateMemberIdsDTO
+
+    member_id = factory.Faker("uuid4")
+    subordinate_member_ids = factory.Iterator(
+        [factory.Faker("uuid4"), factory.Faker("uuid4"), factory.Faker("uuid4")]
+    )

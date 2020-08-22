@@ -13,7 +13,7 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_201_JSON = """
 {
-    "team_id": "ee3eb12c-1aaa-42d9-91f6-c9f11b484b03"
+    "team_id": "0e664bb3-a574-4aba-8ad1-3a062199d5a9"
 }
 """
 

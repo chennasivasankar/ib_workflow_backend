@@ -4,9 +4,9 @@ REQUEST_BODY_JSON = """
 {
     "add_members_to_superior": [
         {
-            "immediate_superior_user_id": "96ca4f92-ad84-479d-b668-9de8682db75a",
+            "immediate_superior_user_id": "3aab4b18-c687-4991-9f2e-59527f4b2d3c",
             "member_ids": [
-                "7f4a25cd-6765-4632-9b43-265aca14be81"
+                "a0aa3436-9911-4506-9ee8-d0f4520d1cc3"
             ]
         }
     ]
