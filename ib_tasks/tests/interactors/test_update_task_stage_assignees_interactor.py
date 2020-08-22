@@ -268,7 +268,7 @@ class TestUpdateTaskStageAssigneesInteractor:
         stage_storage_mock.get_stage_role_dtos_given_db_stage_ids.\
             return_value = stage_role_dtos
         stage_storage_mock. \
-            get_task_stages_having_assignees_without_having_left_at_status. \
+            get_task_stages_assignees_without_having_left_at_status. \
             return_value = [StageAssigneeDTOFactory()]
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import get_user_role_ids
@@ -309,7 +309,7 @@ class TestUpdateTaskStageAssigneesInteractor:
         stage_storage_mock.get_stage_role_dtos_given_db_stage_ids.return_value \
             = stage_role_dtos
         stage_storage_mock. \
-            get_task_stages_having_assignees_without_having_left_at_status. \
+            get_task_stages_assignees_without_having_left_at_status. \
             return_value = [StageAssigneeDTOFactory(assignee_id=None)]
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import get_user_role_ids
@@ -352,7 +352,7 @@ class TestUpdateTaskStageAssigneesInteractor:
         stage_storage_mock.get_stage_role_dtos_given_db_stage_ids. \
             return_value = stage_role_dtos
         stage_storage_mock. \
-            get_task_stages_having_assignees_without_having_left_at_status. \
+            get_task_stages_assignees_without_having_left_at_status. \
             return_value = [StageAssigneeDTOFactory(assignee_id='user_3')]
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import get_user_role_ids

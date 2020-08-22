@@ -37,7 +37,6 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
             TaskDisplayIdWithStageAssigneesDTO,
             presenter: UpdateTaskStageAssigneesPresenterInterface):
 
-
         try:
             task_id = self.get_task_id_for_task_display_id(
                 task_display_id_with_stage_assignees_dto.task_display_id)
@@ -101,6 +100,8 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
                 task_id_with_stage_assignees_dto=
                 task_id_with_stage_assignees_dto
             )
+        print("role_ids_and_assignee_id_group_by_stage_id_dtos",
+              role_ids_and_assignee_id_group_by_stage_id_dtos)
         self._validate_does_given_assignee_of_stage_ids_have_valid_permission(
             role_ids_and_assignee_id_group_by_stage_id_dtos)
         return
@@ -113,7 +114,7 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
         stage_ids = self._get_stage_ids_from_given_dto(
             task_id_with_stage_assignees_dto)
         stage_assignee_dtos_having_assignees = self.stage_storage. \
-            get_task_stages_having_assignees_without_having_left_at_status(
+            get_task_stages_assignees_without_having_left_at_status(
             task_id=task_id, db_stage_ids=stage_ids)
         matched_stage_assignee_dtos = []
         user_given_stage_assignee_dtos = task_id_with_stage_assignees_dto. \
@@ -163,7 +164,7 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
                                 assignee_id,
                             db_stage_id=each_task_stage_id,
                             task_id=task_id,
-                        team_id=each_task_id_with_stage_assignees_dto.team_id))
+                            team_id=each_task_id_with_stage_assignees_dto.team_id))
 
         return task_id_with_stage_assignee_dtos
 
@@ -175,12 +176,14 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
         user_role_validation_interactor = UserRoleValidationInteractor()
         for each_stage_id_with_role_ids_and_assignee_id_dto in \
                 role_ids_and_assignee_id_group_by_stage_id_dtos:
-            user_has_required_permission = user_role_validation_interactor. \
-                does_user_has_required_permission(
-                user_id=each_stage_id_with_role_ids_and_assignee_id_dto.
-                    assignee_id,
-                role_ids=each_stage_id_with_role_ids_and_assignee_id_dto.
-                    role_ids)
+            user_has_required_permission = True
+            if each_stage_id_with_role_ids_and_assignee_id_dto.assignee_id is not None:
+                user_has_required_permission = user_role_validation_interactor. \
+                    does_user_has_required_permission(
+                    user_id=each_stage_id_with_role_ids_and_assignee_id_dto.
+                        assignee_id,
+                    role_ids=each_stage_id_with_role_ids_and_assignee_id_dto.
+                        role_ids)
             user_doesnt_has_required_permission = not \
                 user_has_required_permission
             if user_doesnt_has_required_permission:

@@ -346,13 +346,13 @@ class StagesStorageImplementation(StageStorageInterface):
             task_stage_objs, ['left_at']
         )
 
-    def get_task_stages_having_assignees_without_having_left_at_status(
+    def get_task_stages_assignees_without_having_left_at_status(
             self, task_id: int, db_stage_ids: List[int]) -> List[
         StageAssigneeDTO]:
         task_stage_objs = list(TaskStageHistory.objects.filter(
             task_id=task_id,
-            stage_id__in=db_stage_ids, left_at__isnull=True).exclude(
-            assignee_id__isnull=True).values('stage_id', 'assignee_id'))
+            stage_id__in=db_stage_ids, left_at__isnull=True)
+                               .values('stage_id', 'assignee_id', 'team_id'))
         stages_having_assignee_dtos = [StageAssigneeDTO(
             assignee_id=task_stage_obj['assignee_id'],
             db_stage_id=task_stage_obj['stage_id'], team_id=task_stage_obj['team_id']) for
