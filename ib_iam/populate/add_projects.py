@@ -23,7 +23,8 @@ class Project:
         project_dtos = [
             ProjectDTO(project_id=project['project_id'],
                        name=project['name'],
-                       description=project['description']
+                       description=project.get('description', None),
+                       logo_url=project.get('logo_url', None)
                        ) for project in projects
         ]
         return project_dtos
