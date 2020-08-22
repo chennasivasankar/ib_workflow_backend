@@ -47,7 +47,7 @@ class GetBoardsPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_response_for_invalid_project_id(self, err: InvalidProjectIdsException)\
+    def get_response_for_invalid_project_id(self, error: InvalidProjectIdsException)\
             -> response.HttpResponse:
         pass
 

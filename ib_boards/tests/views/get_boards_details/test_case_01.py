@@ -50,7 +50,7 @@ class TestCase01GetBoardsDetailsAPITestCase(TestUtils):
         query_params = {'limit': 11, 'offset': 0}
         headers = {}
 
-        response = self.default_test_case(
+        response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

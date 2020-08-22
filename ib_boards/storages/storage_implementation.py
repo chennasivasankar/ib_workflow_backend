@@ -227,7 +227,7 @@ class StorageImplementation(StorageInterface):
     def get_board_ids(self, user_id: str, project_id: str) -> \
             Tuple[List[str], List[str]]:
         starred_board_ids = list(UserStarredBoard.objects.filter(user_id=user_id,
-                                                                 project_id=project_id)
+                                                                 board__project_id=project_id)
                                  .values_list('board_id', flat=True))
         board_ids = list(Board.objects.filter(project_id=project_id)
                          .exclude(board_id__in=starred_board_ids)

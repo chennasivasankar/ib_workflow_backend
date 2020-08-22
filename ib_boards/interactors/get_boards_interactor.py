@@ -39,7 +39,7 @@ class GetBoardsInteractor(ValidationMixin):
         except OffsetValueExceedsTotalTasksCount:
             return presenter.get_response_for_offset_exceeds_total_tasks()
         except InvalidProjectIdsException as err:
-            return presenter.get_response_for_invalid_project_id(err)
+            return presenter.get_response_for_invalid_project_id(error=err)
         except UserIsNotInProjectException:
             return presenter.get_response_for_user_is_not_in_project()
 

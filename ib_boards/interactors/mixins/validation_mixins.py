@@ -1,5 +1,7 @@
 from typing import List
 
+from ib_boards.adapters.iam_service import InvalidProjectIdsException, UserIsNotInProjectException
+
 
 class ValidationMixin:
 
@@ -10,7 +12,14 @@ class ValidationMixin:
         @raise: InvalidProjectIdsException
         @rtype:
         """
-        raise NotImplementedError
+        adapter = self.get_service_adapter()
+        valid_project_ids = adapter.iam_service.validate_project_ids(
+            project_ids)
+        invalid_project_ids = [project_id for project_id in project_ids
+                               if project_id not in valid_project_ids]
+        if invalid_project_ids:
+            raise InvalidProjectIdsException(invalid_project_ids)
+        return
 
     def validate_if_user_is_in_project(self, user_id: str,
                                        project_id: str):
@@ -22,4 +31,13 @@ class ValidationMixin:
         @raise: UserIsNotInProjectException
         @rtype:
         """
-        raise NotImplementedError
+        adapter = self.get_service_adapter()
+        adapter.iam_service.validate_if_user_is_in_project(
+            user_id=user_id, project_id=project_id
+        )
+
+    @staticmethod
+    def get_service_adapter():
+        from ib_boards.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        return service_adapter
