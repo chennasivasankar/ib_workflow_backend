@@ -1,9 +1,10 @@
 import factory
 
 from ib_utility_tools.constants.enum import EntityType, TimerEntityType
-from ib_utility_tools.interactors.storage_interfaces.dtos import \
-    ChecklistItemWithEntityDTO, ChecklistItemWithChecklistIdDTO, EntityDTO, \
-    ChecklistItemWithIdDTO, TimerEntityDTO, TimerDetailsDTO
+from ib_utility_tools.interactors.storage_interfaces.dtos import (
+    ChecklistItemWithEntityDTO, ChecklistItemWithChecklistIdDTO, EntityDTO,
+    ChecklistItemWithIdDTO, TimerEntityDTO, TimerDetailsDTO,
+    CompleteTimerDetailsDTO)
 
 
 class EntityDTOFactory(factory.Factory):
@@ -54,3 +55,13 @@ class TimerDetailsDTOFactory(factory.Factory):
 
     duration_in_seconds = factory.Iterator([100, 300, 500])
     is_running = False
+    start_datetime = None
+
+
+class CompleteTimerDetailsDTOFactory(TimerEntityDTOFactory, factory.Factory):
+    class Meta:
+        model = CompleteTimerDetailsDTO
+
+    duration_in_seconds = factory.Iterator([100, 300, 500])
+    is_running = False
+    start_datetime = None

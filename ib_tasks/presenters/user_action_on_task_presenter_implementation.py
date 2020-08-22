@@ -1,9 +1,8 @@
-from typing import List, Dict, Any
+from typing import List, Dict
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO, ColumnStageDTO, \
-    AssigneeDetailsDTO
+from ib_tasks.adapters.dtos import ColumnStageDTO, AssigneeDetailsDTO
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied, UserBoardPermissionDenied
@@ -129,7 +128,6 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             task_current_stage_details_dto: TaskCurrentStageDetailsDTO
     ):
 
-        task_id = task_complete_details_dto.task_id
         is_board_id_none = not task_complete_details_dto.task_boards_details
         if is_board_id_none:
             current_board_details = None
@@ -138,7 +136,7 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
                 self._get_current_board_details(task_complete_details_dto)
 
         response_dict = {
-            "task_id": str(task_id),
+            "task_id": task_current_stage_details_dto.task_display_id,
             "current_board_details": current_board_details,
             "other_board_details": [],
             "task_current_stages_details": dict()
@@ -157,7 +155,6 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             task_current_stages_data['stages'].append(stage)
         response_dict["task_current_stages_details"] = task_current_stages_data
         response_object = self.prepare_200_success_response(response_dict)
-        content = response_object.content
         return response_object
 
     def _get_current_board_details(
@@ -259,11 +256,13 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
 
     @staticmethod
     def _get_assignee_details_dict(assignee_dto: AssigneeDetailsDTO):
-        return {
-            "assignee_id": assignee_dto.assignee_id,
-            "name": assignee_dto.name,
-            "profile_pic_url": assignee_dto.profile_pic_url
-        }
+
+        if assignee_dto:
+            return {
+                "assignee_id": assignee_dto.assignee_id,
+                "name": assignee_dto.name,
+                "profile_pic_url": assignee_dto.profile_pic_url
+            }
 
     @staticmethod
     def _get_actions_dict(actions_dto: List[ActionDTO]):
@@ -383,6 +382,9 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         for column_stage_dto in column_stage_dtos:
             column_id = column_stage_dto.column_id
             stage_id = column_stage_dto.stage_id
-            assignees_dict[column_id] = assignee_dtos_dict[stage_id]
+            try:
+                assignees_dict[column_id] = assignee_dtos_dict[stage_id]
+            except KeyError:
+                assignees_dict[column_id] = None
             task_stages_dtos_dict[column_id] = task_stages_dict[stage_id]
         return assignees_dict, task_stages_dtos_dict

@@ -18,7 +18,7 @@ from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.stage_custom_exceptions import \
-    StageIdsWithInvalidPermissionForAssignee
+    StageIdsWithInvalidPermissionForAssignee, InvalidStageId
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId
@@ -29,6 +29,16 @@ from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
 class UpdateTaskPresenterImplementation(
     UpdateTaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_invalid_stage_id(self, err: InvalidStageId):
+        from ib_tasks.constants.exception_messages import INVALID_STAGE_ID
+        message = INVALID_STAGE_ID[0].format(err.stage_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_STAGE_ID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_invalid_task_display_id(self, err: InvalidTaskDisplayId):
         from ib_tasks.constants.exception_messages import \
@@ -126,7 +136,7 @@ class UpdateTaskPresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             INVALID_TASK_ID
         response_message = INVALID_TASK_ID[0].format(
-            err.task_display_id
+            err.task_id
         )
         data = {
             "response": response_message,
@@ -213,7 +223,7 @@ class UpdateTaskPresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             USER_NEEDS_GOF_WRITABLE_PERMISSION
         response_message = USER_NEEDS_GOF_WRITABLE_PERMISSION[0].format(
-            err.user_id, err.gof_id, str(err.required_roles))
+            err.gof_id, str(err.required_roles))
         data = {
             "response": response_message,
             "http_status_code": 400,
@@ -227,7 +237,7 @@ class UpdateTaskPresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             USER_NEEDS_FILED_WRITABLE_PERMISSION
         response_message = USER_NEEDS_FILED_WRITABLE_PERMISSION[0].format(
-            err.user_id, err.field_id, str(err.required_roles))
+            err.field_id, str(err.required_roles))
         data = {
             "response": response_message,
             "http_status_code": 400,

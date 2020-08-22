@@ -30,7 +30,7 @@ media/
 
 mysite.log
 db.sqlite3
-*.ipynb
+#*.ipynb
 
 *.fuse*
 virtual_environment/
@@ -60,6 +60,3 @@ vedavidhbudimuri_ib-workflows-backend.aes
 test_data_for_integration.ipynb
 .gitignore
 env_*.sh
-
-
-venv/

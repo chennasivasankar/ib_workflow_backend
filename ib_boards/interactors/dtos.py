@@ -17,6 +17,7 @@ class ColumnTasksDTO:
     column_id: str
     stage_id: str
     task_id: int
+    task_display_id: str
 
 
 @dataclass
@@ -85,6 +86,7 @@ class BoardColumnsDTO:
 @dataclass
 class GetBoardsDTO:
     user_id: str
+    project_id: str
     offset: int
     limit: int
 
@@ -136,6 +138,7 @@ class TaskStatusDTO:
 @dataclass
 class TaskIdStageDTO:
     task_id: int
+    task_display_id: str
     stage_id: str
 
 

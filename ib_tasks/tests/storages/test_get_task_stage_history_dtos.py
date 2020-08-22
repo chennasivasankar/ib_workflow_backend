@@ -26,8 +26,11 @@ class TestGetTaskStageDTOs:
         TaskStageHistoryModelFactory(task=task)
         TaskStageHistoryModelFactory(left_at=None, task=task)
         task_stages = [
-            TaskStageHistoryDTOFactory(),
-            TaskStageHistoryDTOFactory(task_id=task_id, left_at=None)
+            TaskStageHistoryDTOFactory(assignee_id='123e4567-e89b-12d3-a456-426614174001'),
+            TaskStageHistoryDTOFactory(
+                task_id=task_id, left_at=None,
+                assignee_id='123e4567-e89b-12d3-a456-426614174002'
+            )
         ]
 
         # Act

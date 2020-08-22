@@ -30,8 +30,7 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO, ValidStageDTO, TaskStageIdsDTO, StageValueDTO, \
     StageDetailsDTO, StageDisplayValueDTO, StageIdWithTemplateIdDTO, \
-    StageRoleDTO, TaskStagesDTO, TaskTemplateStageDTO, TaskStageAssigneeDTO, \
-    TaskStageHavingAssigneeIdDTO, StageRoleDTO, TaskStagesDTO, \
+    StageRoleDTO, TaskStagesDTO, \
     TaskTemplateStageDTO, TaskStageAssigneeDTO, TaskStageHavingAssigneeIdDTO, \
     CurrentStageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
@@ -458,9 +457,9 @@ class TaskGoFFieldDTOFactory(factory.Factory):
     class Meta:
         model = TaskGoFFieldDTO
 
-    task_gof_id = factory.Sequence(lambda n: n)
     field_id = factory.Sequence(lambda n: "field{}".format(n))
     field_response = factory.Sequence(lambda n: "field_response{}".format(n))
+    task_gof_id = factory.Sequence(lambda n: n)
 
 
 class GlobalConstantDTOFactory(factory.Factory):
@@ -596,7 +595,7 @@ class UserDetailsDTOFactory(factory.Factory):
     profile_pic_url = factory.Sequence(lambda n: "profile_pic_%d" % (n + 1))
 
 
-class StageAssigneeDTOFactory(factory.Factory):
+class TaskStageAssigneeDTOFactory(factory.Factory):
     class Meta:
         model = TaskStageAssigneeDTO
 

@@ -6,14 +6,15 @@ import pytest
 from ib_tasks.interactors.create_or_update_task.save_and_act_on_task import \
     SaveAndActOnATaskInteractor
 from ib_tasks.tests.factories.interactor_dtos import \
-    SaveAndActOnTaskDTOFactory, GoFFieldsDTOFactory, FieldValuesDTOFactory
+    SaveAndActOnTaskWithTaskDisplayIdDTOFactory, GoFFieldsDTOFactory, \
+    FieldValuesDTOFactory
 
 
 class TestSaveAndActOnATaskInteractor:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
-        SaveAndActOnTaskDTOFactory.reset_sequence()
+        SaveAndActOnTaskWithTaskDisplayIdDTOFactory.reset_sequence()
 
     @pytest.fixture
     def task_storage_mock(self):
@@ -105,7 +106,8 @@ class TestSaveAndActOnATaskInteractor:
     ):
         # Arrange
         given_action_id = 1
-        task_dto = SaveAndActOnTaskDTOFactory(action_id=given_action_id)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            action_id=given_action_id)
         from ib_tasks.exceptions.action_custom_exceptions import \
             InvalidActionException
         storage_mock.validate_action.side_effect = InvalidActionException(
@@ -132,6 +134,47 @@ class TestSaveAndActOnATaskInteractor:
         invalid_action_id = error_object.action_id
         assert invalid_action_id == given_action_id
 
+    def test_with_invalid_task_display_id(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock,
+            action_storage_mock, task_stage_storage_mock,
+            presenter_mock, mock_object, update_task_mock
+    ):
+        # Arrange
+        given_task_display_id = "task_1"
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            task_display_id=given_task_display_id)
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            InvalidTaskDisplayId
+        task_storage_mock.check_is_valid_task_display_id.return_value = False
+        update_task_mock.side_effect = InvalidTaskDisplayId(
+            given_task_display_id)
+        interactor = SaveAndActOnATaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
+        presenter_mock.raise_invalid_task_display_id.return_value = mock_object
+
+        # Act
+        response = interactor.save_and_act_on_task_wrapper(presenter_mock,
+                                                           task_dto)
+
+        # Assert
+        assert response == mock_object
+        task_storage_mock.check_is_valid_task_display_id\
+            .assert_called_once_with(
+            task_display_id=given_task_display_id)
+        presenter_mock.raise_invalid_task_display_id.assert_called_once()
+        call_args = presenter_mock.raise_invalid_task_display_id.call_args
+        error_object = call_args[0][0]
+        invalid_task_display_id = error_object.task_display_id
+        assert invalid_task_display_id == given_task_display_id
+
     def test_with_invalid_task_id(
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
@@ -141,11 +184,13 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock, mock_object, update_task_mock
     ):
         # Arrange
-        given_task_id = 1
-        task_dto = SaveAndActOnTaskDTOFactory(task_id=given_task_id)
+        given_task_display_id = 1
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            task_display_id=given_task_display_id)
         from ib_tasks.exceptions.task_custom_exceptions import \
             InvalidTaskException
-        update_task_mock.side_effect = InvalidTaskException(given_task_id)
+        update_task_mock.side_effect = InvalidTaskException(
+            given_task_display_id)
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
@@ -164,8 +209,47 @@ class TestSaveAndActOnATaskInteractor:
         presenter_mock.raise_invalid_task_id.assert_called_once()
         call_args = presenter_mock.raise_invalid_task_id.call_args
         error_object = call_args[0][0]
-        invalid_task_id = error_object.task_display_id
-        assert invalid_task_id == given_task_id
+        invalid_task_id = error_object.task_id
+        assert invalid_task_id == given_task_display_id
+
+    def test_with_invalid_stage_id(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock,
+            action_storage_mock, task_stage_storage_mock,
+            presenter_mock, mock_object, update_task_mock
+    ):
+        # Arrange
+        given_task_display_id = 1
+        given_stage_id = 2
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            task_display_id=given_task_display_id,
+            stage_assignee__stage_id=given_stage_id)
+
+        from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId
+        update_task_mock.side_effect = InvalidStageId(
+            given_stage_id)
+        interactor = SaveAndActOnATaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
+        presenter_mock.raise_invalid_stage_id.return_value = mock_object
+
+        # Act
+        response = interactor.save_and_act_on_task_wrapper(presenter_mock,
+                                                           task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_invalid_stage_id.assert_called_once()
+        call_args = presenter_mock.raise_invalid_stage_id.call_args
+        error_object = call_args[0][0]
+        invalid_stage_id = error_object.stage_id
+        assert invalid_stage_id == given_stage_id
 
     def test_with_invalid_due_time_format(
             self, task_storage_mock, gof_storage_mock,
@@ -177,7 +261,8 @@ class TestSaveAndActOnATaskInteractor:
     ):
         # Arrange
         given_due_time = "12-00-00"
-        task_dto = SaveAndActOnTaskDTOFactory(due_time=given_due_time)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            due_time=given_due_time)
         from ib_tasks.exceptions.datetime_custom_exceptions import \
             InvalidDueTimeFormat
         update_task_mock.side_effect = InvalidDueTimeFormat(given_due_time)
@@ -213,7 +298,7 @@ class TestSaveAndActOnATaskInteractor:
         # Arrange
         given_start_date = datetime.date(2020, 9, 1)
         given_due_date = datetime.date(2020, 8, 1)
-        task_dto = SaveAndActOnTaskDTOFactory(
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
             start_date=given_start_date, due_date=given_due_date)
         from ib_tasks.exceptions.datetime_custom_exceptions import \
             StartDateIsAheadOfDueDate
@@ -255,7 +340,8 @@ class TestSaveAndActOnATaskInteractor:
     ):
         # Arrange
         given_due_time = "12-00-00"
-        task_dto = SaveAndActOnTaskDTOFactory(due_time=given_due_time)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            due_time=given_due_time)
         from ib_tasks.exceptions.datetime_custom_exceptions import \
             DueTimeHasExpiredForToday
         update_task_mock.side_effect = DueTimeHasExpiredForToday(
@@ -293,7 +379,7 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock, mock_object, update_task_mock
     ):
         # Arrange
-        task_dto = SaveAndActOnTaskDTOFactory()
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         given_gof_ids = ["gof_1", "gof_2"]
         from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
         update_task_mock.side_effect = InvalidGoFIds(given_gof_ids)
@@ -330,7 +416,7 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock, mock_object, update_task_mock
     ):
         # Arrange
-        task_dto = SaveAndActOnTaskDTOFactory()
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         given_field_ids = ["field_1", "field_2"]
         from ib_tasks.exceptions.fields_custom_exceptions import \
             InvalidFieldIds
@@ -366,7 +452,7 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock, mock_object, update_task_mock
     ):
         # Arrange
-        task_dto = SaveAndActOnTaskDTOFactory()
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         given_task_template_id = "task_template_1"
         given_gof_ids = ["gof_1", "gof_2"]
         from ib_tasks.exceptions.task_custom_exceptions import \
@@ -410,7 +496,7 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock, mock_object, update_task_mock
     ):
         # Arrange
-        task_dto = SaveAndActOnTaskDTOFactory()
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         given_gof_id = "gof_1"
         given_field_ids = ["field_1", "field_2"]
         from ib_tasks.exceptions.fields_custom_exceptions import \
@@ -454,7 +540,7 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock, mock_object, update_task_mock
     ):
         # Arrange
-        task_dto = SaveAndActOnTaskDTOFactory()
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         given_gof_id = "gof_1"
         given_field_ids = ["field_1", "field_2"]
         from ib_tasks.exceptions.task_custom_exceptions import \
@@ -498,7 +584,7 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock, mock_object, update_task_mock
     ):
         # Arrange
-        task_dto = SaveAndActOnTaskDTOFactory()
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         given_user_id = "user_1"
         given_gof_id = "gof_1"
         given_required_roles = ["role_1", "role2"]
@@ -546,7 +632,7 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock, mock_object, update_task_mock
     ):
         # Arrange
-        task_dto = SaveAndActOnTaskDTOFactory()
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         given_user_id = "user_1"
         given_field_id = "field_1"
         given_required_roles = ["role_1", "role2"]
@@ -601,7 +687,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             EmptyValueForRequiredField
         update_task_mock \
@@ -647,7 +734,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidPhoneNumberValue
@@ -697,7 +785,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidEmailFieldValue
@@ -747,7 +836,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidURLValue
@@ -797,7 +887,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             NotAStrongPassword
@@ -847,7 +938,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidNumberValue
@@ -897,7 +989,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidFloatValue
@@ -948,7 +1041,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidValueForDropdownField
@@ -1003,7 +1097,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             IncorrectNameInGoFSelectorField
@@ -1060,7 +1155,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             IncorrectRadioGroupChoice
@@ -1117,7 +1213,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=invalid_checkbox_options_selected)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             IncorrectCheckBoxOptionsSelected
@@ -1174,7 +1271,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=invalid_multi_select_options_selected)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             IncorrectMultiSelectOptionsSelected
@@ -1234,7 +1332,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=invalid_multi_select_labels_selected)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             IncorrectMultiSelectLabelsSelected
@@ -1294,7 +1393,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidDateFormat
@@ -1352,7 +1452,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidTimeFormat
@@ -1408,7 +1509,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidUrlForImage
@@ -1462,7 +1564,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidImageFormat
@@ -1517,7 +1620,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidUrlForFile
@@ -1572,7 +1676,8 @@ class TestSaveAndActOnATaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = SaveAndActOnTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidFileFormat
@@ -1622,7 +1727,8 @@ class TestSaveAndActOnATaskInteractor:
     ):
         # Arrange
         given_action_id = 1
-        task_dto = SaveAndActOnTaskDTOFactory(action_id=given_action_id)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            action_id=given_action_id)
 
         from ib_tasks.exceptions.permission_custom_exceptions import \
             UserActionPermissionDenied
@@ -1665,7 +1771,7 @@ class TestSaveAndActOnATaskInteractor:
             user_action_on_task_mock
     ):
         # Arrange
-        task_dto = SaveAndActOnTaskDTOFactory()
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         from ib_tasks.exceptions.stage_custom_exceptions import \
             StageIdsWithInvalidPermissionForAssignee
         given_stage_ids = [1, 2, 3]

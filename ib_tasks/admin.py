@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from ib_tasks.models import Stage, TaskTemplateStatusVariable, StageAction, \
     TaskTemplateInitialStage, TaskStatusVariable, StagePermittedRoles, \
-    TaskStageHistory, UserTaskDelayReason
+    TaskStageHistory, UserTaskDelayReason, ProjectTaskTemplate
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.gof import GoF
@@ -16,9 +16,10 @@ from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models.filter import Filter
 from ib_tasks.models.filter_condition import FilterCondition
+from ib_tasks.models.action_permitted_roles import ActionPermittedRoles
 
 
-
+admin.site.register(ActionPermittedRoles)
 admin.site.register(Filter)
 admin.site.register(FilterCondition)
 admin.site.register(ElasticSearchTask)
@@ -37,6 +38,7 @@ admin.site.register(TaskGoFField)
 admin.site.register(TaskTemplateGoFs)
 admin.site.register(TaskStageHistory)
 admin.site.register(UserTaskDelayReason)
+admin.site.register(ProjectTaskTemplate)
 
 
 class TaskStageInline(admin.StackedInline):
@@ -49,9 +51,9 @@ class TaskGoFInline(admin.StackedInline):
 
 
 class StagesAdmin(admin.ModelAdmin):
-    list_display_links = ('display_name', )
-    list_display = ('stage_id', 'display_name')
-    list_editable = ('stage_id', )
+    list_display_links = ('display_name',)
+    list_display = ('id', 'stage_id', 'display_name')
+    list_editable = ('stage_id',)
 
 
 class StagesActionsAdmin(admin.ModelAdmin):
@@ -71,7 +73,4 @@ admin.site.register(TaskLog)
 
 admin.site.register(Stage, StagesAdmin)
 
-
 admin.site.register(StageAction, StagesActionsAdmin)
-
-

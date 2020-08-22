@@ -39,19 +39,56 @@ class GetTaskIdsInteractor:
         self.task_storage = task_storage
 
     def get_task_ids(self, task_details_configs: List[TaskDetailsConfigDTO]):
+        is_empty = not task_details_configs
+        if is_empty:
+            return []
         self._validate_given_data(task_details_configs=task_details_configs)
-
-        total_task_ids_dtos = []
         filter_dtos = self.filter_storage.get_enabled_filters_dto_to_user(
             user_id=task_details_configs[0].user_id
         )
         # TODO need optimize db hits
+        total_task_ids_dtos = []
         for task_details_config in task_details_configs:
             task_ids_dto = self._get_task_ids_dto(
                 task_details_config, filter_dtos
             )
             total_task_ids_dtos.append(task_ids_dto)
-        return total_task_ids_dtos
+        task_ids = []
+        for total_task_ids_dto in total_task_ids_dtos:
+            for task_stage_id in total_task_ids_dto.task_stage_ids:
+                task_ids.append(task_stage_id.task_id)
+        task_ids = list(set(task_ids))
+        task_display_id_dtos = self.task_storage.get_task_display_ids_dtos(task_ids=task_ids)
+        task_display_id_dtos_dict = {}
+        for task_display_id_dto in task_display_id_dtos:
+            task_display_id_dtos_dict[task_display_id_dto.task_id] = task_display_id_dto.display_id
+        task_stage_details = self._get_task_stage_details(
+            task_display_id_dtos_dict=task_display_id_dtos_dict,
+            task_stage_dtos=total_task_ids_dtos
+        )
+        return task_stage_details
+
+    @staticmethod
+    def _get_task_stage_details(
+            task_display_id_dtos_dict, task_stage_dtos: List[TaskIdsDTO]) -> List[TaskIdsDTO]:
+        new_task_stage_details = []
+        for task_stage_dto in task_stage_dtos:
+            new_task_stage_dtos = []
+            for task_stage_id in task_stage_dto.task_stage_ids:
+                new_task_stage_dtos.append(
+                    TaskStageIdsDTO(
+                        task_id=task_stage_id.task_id,
+                        task_display_id=task_display_id_dtos_dict[task_stage_id.task_id],
+                        stage_id=task_stage_id.stage_id
+                    )
+                )
+            new_task_stage_dto = TaskIdsDTO(
+                unique_key=task_stage_dto.unique_key,
+                task_stage_ids=new_task_stage_dtos,
+                total_tasks=task_stage_dto.total_tasks
+            )
+            new_task_stage_details.append(new_task_stage_dto)
+        return new_task_stage_details
 
     def _validate_given_data(self, task_details_configs: List[TaskDetailsConfigDTO]):
         for task_details_config in task_details_configs:
@@ -96,3 +133,5 @@ class GetTaskIdsInteractor:
             filter_dtos=filter_dtos, task_details_config=task_details_config
         )
         return filtered_task_ids, total_tasks
+
+

@@ -29,14 +29,14 @@ class CreateOrUpdateTaskStorageImplementation(
     def update_task_with_given_task_details(self, task_dto: UpdateTaskDTO):
         task_obj = Task.objects.get(id=task_dto.task_id)
         import datetime
-        due_date = due_date_time = datetime.datetime.combine(
+        due_date_time = datetime.datetime.combine(
             task_dto.due_date,
             datetime.datetime.strptime(task_dto.due_time, TIME_FORMAT).time()
         )
         task_obj.title = task_dto.title
         task_obj.description = task_dto.description
         task_obj.start_date = task_dto.start_date
-        task_obj.due_date = due_date
+        task_obj.due_date = due_date_time
         task_obj.priority = task_dto.priority
         task_obj.save()
 

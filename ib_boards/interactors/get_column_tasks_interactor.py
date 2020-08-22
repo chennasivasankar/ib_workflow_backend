@@ -14,7 +14,7 @@ from ib_boards.interactors.dtos import ColumnTasksParametersDTO, \
 from ib_boards.interactors.get_tasks_details_for_the_column_ids import \
     ColumnsTasksParametersDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
-    GetColumnTasksPresenterInterface
+    GetColumnTasksPresenterInterface, TaskDisplayIdDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
@@ -28,7 +28,7 @@ class GetColumnTasksInteractor:
             presenter: GetColumnTasksPresenterInterface):
         from ib_boards.exceptions.custom_exceptions import InvalidColumnId
         try:
-            task_fields_dtos, tasks_action_dtos, total_tasks, task_ids, task_stage_dtos, assignees_dtos = \
+            task_fields_dtos, tasks_action_dtos, total_tasks, task_id_dtos, task_stage_dtos, assignees_dtos = \
                 self.get_column_tasks(
                     column_tasks_parameters=column_tasks_parameters
                 )
@@ -48,7 +48,7 @@ class GetColumnTasksInteractor:
             task_actions_dtos=tasks_action_dtos,
             task_fields_dtos=task_fields_dtos,
             total_tasks=total_tasks,
-            task_ids=task_ids,
+            task_id_dtos=task_id_dtos,
             task_stage_dtos=task_stage_dtos,
             assignees_dtos=assignees_dtos
         )
@@ -81,12 +81,15 @@ class GetColumnTasksInteractor:
                 column_tasks_parameters=column_tasks
             )
         total_tasks = task_ids_stages_dtos[0].total_tasks
-        task_ids = [
-            task_stage_dto.task_id
+        task_id_dtos = [
+            TaskDisplayIdDTO(
+                task_id=task_stage_dto.task_id,
+                display_id=task_stage_dto.task_display_id
+            )
             for task_stage_dto in task_ids_stages_dtos[0].task_stage_ids
         ]
         # TODO need to prepare DTO
-        return task_field_dtos, task_action_dtos, total_tasks, task_ids, task_stage_dtos, assignees_dtos
+        return task_field_dtos, task_action_dtos, total_tasks, task_id_dtos, task_stage_dtos, assignees_dtos
 
     def _validate_given_data(self, column_tasks_parameters):
         column_id = column_tasks_parameters.column_id

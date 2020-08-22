@@ -10,7 +10,7 @@ from ib_tasks.models import (
     UserTaskDelayReason, Task, TaskGoF, TaskGoFField,
     TaskTemplateGlobalConstants,
     TaskStatusVariable, Filter, FilterCondition, TaskLog,
-    StagePermittedRoles, ElasticSearchTask, TaskStageHistory)
+    StagePermittedRoles, ElasticSearchTask)
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -185,7 +185,7 @@ class FieldFactory(factory.django.DjangoModelFactory):
         )
 
 
-class GoFRoleFactory(factory.DjangoModelFactory):
+class GoFRoleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = GoFRole
 
@@ -194,7 +194,7 @@ class GoFRoleFactory(factory.DjangoModelFactory):
     permission_type = PermissionTypes.READ.value
 
 
-class FieldRoleFactory(factory.DjangoModelFactory):
+class FieldRoleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = FieldRole
 
@@ -269,19 +269,6 @@ class CurrentTaskStageModelFactory(factory.django.DjangoModelFactory):
     stage = factory.SubFactory(StageModelFactory)
 
 
-class TaskLogFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = TaskLog
-
-    task = factory.SubFactory(TaskFactory)
-    task_json = """ values"""
-    action = factory.SubFactory(StageActionFactory)
-    acted_at = "2020-10-25 12:00:00"
-    user_id = factory.sequence(
-        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
-            counter))
-
-
 class FilterFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Filter
@@ -333,15 +320,6 @@ class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
     task_id = factory.sequence(lambda n: n)
 
 
-class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = ElasticSearchTask
-
-    elasticsearch_id = factory.sequence(
-        lambda n: 'elastic_search_id_{}'.format(n))
-    task_id = factory.sequence(lambda n: n)
-
-
 class TaskLogFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskLog
@@ -352,3 +330,13 @@ class TaskLogFactory(factory.django.DjangoModelFactory):
     action = factory.SubFactory(StageActionFactory)
     user_id = factory.Sequence(
         lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
+
+
+class StageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Stage
+
+    stage_id = factory.Sequence(lambda c: "stage_{}".format(c))
+    task_template_id = factory.Sequence(lambda c: "template_{}".format(c))
+    display_name = factory.Sequence(lambda c: "display_name_{}".format(c))
+    value = factory.Sequence(lambda c: c)

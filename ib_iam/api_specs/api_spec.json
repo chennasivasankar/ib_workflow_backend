@@ -90,27 +90,6 @@
         "name"
       ]
     },
-    "UserWithExtraFields": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/UserDetails"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "profile_pic_url": {
-              "type": "string"
-            },
-            "is_admin": {
-              "type": "boolean"
-            }
-          },
-          "required": [
-            "is_admin"
-          ]
-        }
-      ]
-    },
     "UserId": {
       "type": "object",
       "properties": {
@@ -162,7 +141,11 @@
         "company_name": {
           "type": "string"
         }
-      }
+      },
+      "required": [
+        "company_id",
+        "company_name"
+      ]
     },
     "RoleDetails": {
       "type": "object",
@@ -210,14 +193,11 @@
             "company": {
               "$ref": "#/definitions/CompanyDetails"
             }
-          },
-          "required": [
-            "company"
-          ]
+          }
         }
       ]
     },
-    "UsersDetails": {
+    "ListOfUsers": {
       "type": "object",
       "properties": {
         "users": {
@@ -234,7 +214,7 @@
     "ListOfUsersWithTotalUsersCount": {
       "allOf": [
         {
-          "$ref": "#/definitions/UsersDetails"
+          "$ref": "#/definitions/ListOfUsers"
         },
         {
           "type": "object",
@@ -277,7 +257,6 @@
             }
           },
           "required": [
-            "company_id",
             "role_ids",
             "team_ids"
           ]
@@ -377,6 +356,31 @@
             "team_id": {
               "type": "string"
             },
+            "members": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MemberDetails"
+              }
+            }
+          },
+          "required": [
+            "team_id",
+            "members"
+          ]
+        }
+      ]
+    },
+    "TeamWithMembersAndNoOfMembersDetails": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/TeamNameAndDescription"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "team_id": {
+              "type": "string"
+            },
             "no_of_members": {
               "type": "integer"
             },
@@ -446,7 +450,7 @@
         "teams": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/TeamWithMembersDetails"
+            "$ref": "#/definitions/TeamWithMembersAndNoOfMembersDetails"
           }
         }
       },
@@ -619,6 +623,15 @@
             "properties": {
               "profile_pic_url": {
                 "type": "string"
+              },
+              "cover_page_url": {
+                "type": "string"
+              },
+              "role_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
               }
             }
           }
@@ -732,6 +745,14 @@
       "type": "string",
       "format": "uuid"
     },
+    "LevelHierarchyPathParameter": {
+      "name": "level_hierarchy",
+      "in": "path",
+      "required": true,
+      "description": "level hierarchy to identity particular level of peoples in that team",
+      "type": "integer",
+      "format": "int64"
+    },
     "UpdateTeamParameter": {
       "name": "update_team",
       "in": "body",
@@ -783,6 +804,148 @@
           "access_token",
           "refresh_token"
         ]
+      }
+    },
+    "SignUpParameters": {
+      "name": "SignUpParameters",
+      "description": "Parameters to signup the user",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "name",
+          "password"
+        ]
+      }
+    },
+    "EmailParameter": {
+      "name": "EmailParameter",
+      "description": "email to reset the password",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
+    },
+    "AddMemberLevelsParameter": {
+      "name": "AddMemberLevelsParameter",
+      "in": "body",
+      "required": true,
+      "description": "add member levels parameter",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "team_member_levels": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "level_name": {
+                  "type": "string"
+                },
+                "level_hierarchy": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "level_name",
+                "level_hierarchy"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "AddMembersToLevelsParameter": {
+      "name": "AddMembersToLevelsParameter",
+      "in": "body",
+      "required": true,
+      "description": "add members to levels",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "team_member_level_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "member_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              },
+              "required": [
+                "team_member_level_id",
+                "member_ids"
+              ]
+            }
+          }
+        },
+        "required": [
+          "members"
+        ]
+      }
+    },
+    "AddMembersToSuperiorsParameter": {
+      "name": "AddMembersToSuperiorsParameter",
+      "in": "body",
+      "required": true,
+      "description": "add members to superiors",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "add_members_to_superior": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "immediate_superior_user_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "member_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              },
+              "required": [
+                "immediate_superior_user_id",
+                "member_ids"
+              ]
+            }
+          }
+        }
       }
     }
   },
@@ -940,7 +1103,32 @@
                   "INVALID_EMAIL",
                   "EMAIL_ALREADY_IN_USE",
                   "INVALID_NAME_LENGTH",
+                  "DUPLICATE_ROLE_IDS",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "NotFoundForUpdateUserProfileResponse": {
+      "description": "bad request for update user profile",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_ROLE_IDS"
                 ]
               }
             },
@@ -1023,7 +1211,8 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_EMAIL"
+                  "INVALID_EMAIL",
+                  "EMAIL_IS_NOT_VERIFY"
                 ]
               }
             },
@@ -1160,7 +1349,65 @@
     "GetUserProfileSuccessResponse": {
       "description": "get user profile success response",
       "schema": {
-        "$ref": "#/definitions/UserWithExtraFields"
+        "allOf": [
+          {
+            "$ref": "#/definitions/UserDetails"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "profile_pic_url": {
+                "type": "string"
+              },
+              "cover_page_url": {
+                "type": "string"
+              },
+              "is_admin": {
+                "type": "boolean"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RoleDetails"
+                }
+              },
+              "company": {
+                "type": "object",
+                "properties": {
+                  "company_id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "logo_url": {
+                    "type": "string"
+                  },
+                  "employees": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/EmployeeDetails"
+                    }
+                  }
+                }
+              },
+              "teams": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/TeamWithMembersDetails"
+                }
+              }
+            },
+            "required": [
+              "is_admin",
+              "roles",
+              "teams"
+            ]
+          }
+        ]
       }
     },
     "GetUserProfileBadRequestResponse": {
@@ -1581,6 +1828,165 @@
           "refresh_token",
           "expires_in_seconds"
         ]
+      }
+    },
+    "SignUpBadRequestResponse": {
+      "description": "Bad request Response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "ACCOUNT_ALREADY_EXISTS",
+                  "PASSWORD_DOES_NOT_MATCH_CRITERIA",
+                  "INVALID_EMAIL",
+                  "INVALID_DOMAIN",
+                  "INVALID_NAME_LENGTH",
+                  "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "SendEmailVerifyLinkBadRequestResponse": {
+      "description": "BadRequest for send email verify link",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "EMAIL_ALREADY_VERIFIED"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "SendEmailVerifyLinkNotFoundResponse": {
+      "description": "Send email verify link not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "ACCOUNT_DOES_NOT_EXISTS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "VerifyEmailBadRequestResponse": {
+      "description": "Verify Email bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "EMAIL_ALREADY_VERIFIED"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetTeamMemberLevelsSuccessResponse": {
+      "description": "Success response for get team member levels",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "levels": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "team_member_level_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "team_member_level_name": {
+                  "type": "string"
+                },
+                "level_hierarchy": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              },
+              "required": [
+                "team_member_level_id",
+                "team_member_level_name",
+                "level_hierarchy"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "GetTeamMembersOfLevelHierarchySuccessResponse": {
+      "description": "Success response for get team members of level hierarchy",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "members": {
+            "type": "array",
+            "items": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/MemberDetails"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "immediate_superior_team_user_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
       }
     }
   },
@@ -2141,6 +2547,9 @@
           },
           "400": {
             "$ref": "#/responses/BadRequestForUpdateUserProfileResponse"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundForUpdateUserProfileResponse"
           }
         }
       }
@@ -2191,6 +2600,203 @@
           },
           "400": {
             "$ref": "#/responses/RefreshAuthTokensBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/user/signup/v1/": {
+      "post": {
+        "summary": "Create Account To User",
+        "description": "Create user account with given_details",
+        "operationId": "user_signup",
+        "parameters": [
+          {
+            "$ref": "#/parameters/SignUpParameters"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response"
+          },
+          "400": {
+            "$ref": "#/responses/SignUpBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/user/send/verify_email_link/v1/": {
+      "post": {
+        "summary": "send verify email link",
+        "operationId": "send_verify_email_link",
+        "description": "send verify link to email",
+        "parameters": [
+          {
+            "$ref": "#/parameters/EmailParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response"
+          },
+          "400": {
+            "$ref": "#/responses/SendEmailVerifyLinkBadRequestResponse"
+          },
+          "404": {
+            "$ref": "#/responses/SendEmailVerifyLinkNotFoundResponse"
+          }
+        }
+      }
+    },
+    "/user/verify_email/v1/": {
+      "post": {
+        "summary": "verify the user email",
+        "operationId": "verify_email",
+        "description": "verify the user email",
+        "parameters": [],
+        "security": [
+          {
+            "oauth": [
+              "write",
+              "read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response"
+          },
+          "400": {
+            "$ref": "#/responses/VerifyEmailBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/team/{team_id}/member_levels/v1/": {
+      "post": {
+        "operationId": "add_team_member_levels",
+        "summary": "Add Member Levels",
+        "description": "Add member levels to team",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TeamIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/AddMemberLevelsParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully created the team member levels"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get Team Member Levels",
+        "description": "Get levels for given team id in path",
+        "operationId": "get_team_member_levels",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TeamIdPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTeamMemberLevelsSuccessResponse"
+          }
+        }
+      }
+    },
+    "/team/{team_id}/add_members_to_levels/v1/": {
+      "post": {
+        "summary": "Add Users To Levels",
+        "operationId": "add_members_to_levels",
+        "description": "Add users to levels for given team id in path",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TeamIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/AddMembersToLevelsParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully add members to levels"
+          }
+        }
+      }
+    },
+    "/team/{team_id}/{level_hierarchy}/members/v1/": {
+      "get": {
+        "summary": "Get Team Members Of Level Hierarchy",
+        "operationId": "get_team_members_of_level_hierarchy",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "description": "Get team members in given level hierarchy",
+        "parameters": [
+          {
+            "$ref": "#/parameters/TeamIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/LevelHierarchyPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTeamMembersOfLevelHierarchySuccessResponse"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add Members To Superiors",
+        "operationId": "add_members_to_superiors",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TeamIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/LevelHierarchyPathParameter"
+          },
+          {
+            "$ref": "#/parameters/AddMembersToSuperiorsParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully add members to superiors"
           }
         }
       }

@@ -1,6 +1,7 @@
 from typing import List, Optional, Union
 
 from ib_tasks.constants.config import TIME_FORMAT
+from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.documents.elastic_task import ElasticFieldDTO
 from ib_tasks.exceptions.action_custom_exceptions import \
     InvalidActionException, InvalidKeyError, InvalidCustomLogicException
@@ -27,14 +28,17 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
 from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import \
-    InvalidTaskTemplateIds, \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId
+from ib_tasks.interactors\
+    .call_action_logic_function_and_update_task_status_variables_interactor \
+    import \
+    InvalidMethodFound
 from ib_tasks.interactors.create_or_update_task \
     .template_gofs_fields_base_validations import \
     TemplateGoFsFieldsBaseValidationsInteractor
 from ib_tasks.interactors \
     .get_next_stages_random_assignees_of_a_task_interactor import \
-    InvalidModulePathFound, InvalidMethodFound
+    InvalidModulePathFound
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -46,6 +50,8 @@ from ib_tasks.interactors.storage_interfaces.elastic_storage_interface \
     import ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    TaskGoFFieldDTO
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
@@ -53,7 +59,7 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
-    TaskGoFWithTaskIdDTO, TaskGoFFieldDTO, TaskGoFDetailsDTO
+    TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
     TaskStageStorageInterface
@@ -99,7 +105,7 @@ class CreateTaskInteractor:
         try:
             return self._prepare_create_task_response(
                 task_dto, presenter)
-        except InvalidTaskTemplateIds as err:
+        except InvalidTaskTemplateDBId as err:
             return presenter.raise_invalid_task_template_ids(err)
         except InvalidActionException as err:
             return presenter.raise_invalid_action_id(err)
@@ -214,11 +220,10 @@ class CreateTaskInteractor:
             action_id=task_dto.action_id)
         if not is_valid_action_id:
             raise InvalidActionException(task_dto.action_id)
-        self._validate_task_details(task_dto)
-        self._validate_same_gof_order(task_dto.gof_fields_dtos)
         action_type = self.action_storage.get_action_type_for_given_action_id(
-            action_id=task_dto.action_id
-        )
+            action_id=task_dto.action_id)
+        self._validate_task_details(task_dto, action_type)
+        self._validate_same_gof_order(task_dto.gof_fields_dtos)
         base_validations_interactor = \
             TemplateGoFsFieldsBaseValidationsInteractor(
                 self.task_storage, self.gof_storage,
@@ -242,18 +247,14 @@ class CreateTaskInteractor:
             for gof_fields_dto in task_dto.gof_fields_dtos
         ]
         task_gof_details_dtos = self.create_task_storage.create_task_gofs(
-            task_gof_dtos=task_gof_dtos
-        )
+            task_gof_dtos=task_gof_dtos)
         task_gof_field_dtos = self._prepare_task_gof_fields_dtos(
-            task_dto, task_gof_details_dtos
-        )
+            task_dto, task_gof_details_dtos)
         self.create_task_storage.create_task_gof_fields(task_gof_field_dtos)
         self.create_task_storage.set_status_variables_for_template_and_task(
-            task_dto.task_template_id, created_task_id
-        )
+            task_dto.task_template_id, created_task_id)
         self.create_task_storage.create_initial_task_stage(
-            task_id=created_task_id, template_id=task_dto.task_template_id
-        )
+            task_id=created_task_id, template_id=task_dto.task_template_id)
         act_on_task_interactor = UserActionOnTaskInteractor(
             user_id=task_dto.created_by_id, board_id=None,
             action_id=task_dto.action_id,
@@ -295,13 +296,12 @@ class CreateTaskInteractor:
 
     def _validate_task_template_id(
             self, task_template_id: str
-    ) -> Optional[InvalidTaskTemplateIds]:
+    ) -> Optional[InvalidTaskTemplateDBId]:
         task_template_existence = \
             self.task_template_storage.check_is_template_exists(
                 template_id=task_template_id)
         if not task_template_existence:
-            raise InvalidTaskTemplateIds(
-                invalid_task_template_ids=[task_template_id])
+            raise InvalidTaskTemplateDBId(task_template_id)
         return
 
     def _prepare_task_gof_fields_dtos(
@@ -367,14 +367,25 @@ class CreateTaskInteractor:
         duplicate_values.sort()
         return duplicate_values
 
-    def _validate_task_details(self,
-                               task_dto: Union[CreateTaskDTO, UpdateTaskDTO]):
+    def _validate_task_details(
+            self, task_dto: Union[CreateTaskDTO, UpdateTaskDTO],
+            action_type: Optional[ActionTypes]
+    ):
         start_date = task_dto.start_date
         due_date = task_dto.due_date
         due_time = task_dto.due_time
+        dates_validation_is_not_required = False
+        action_type_is_no_validations = action_type == \
+                                        ActionTypes.NO_VALIDATIONS.value
+        if action_type_is_no_validations:
+            empty_values_given = (
+                not start_date or not due_date or not due_time)
+            if empty_values_given:
+                dates_validation_is_not_required = True
+        if dates_validation_is_not_required:
+            return
         self._validate_start_date_and_due_date_dependencies(
-            start_date, due_date
-        )
+            start_date, due_date)
         import datetime
         self._validate_due_time_format(due_time)
         due_date_is_expired = (due_date < datetime.datetime.today().date())

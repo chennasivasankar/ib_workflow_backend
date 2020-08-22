@@ -33,7 +33,6 @@
   "security": [
   ],
   "definitions": {
-
     "SaveAndActOnATaskRequestBody": {
       "allOf": [
         {
@@ -225,12 +224,16 @@
       },
       "required": [
         "updated_due_date_time",
-        "reason_id", "task_id"
+        "reason_id",
+        "task_id"
       ]
     },
     "CreateTaskRequestBody": {
       "type": "object",
       "properties": {
+        "project_id": {
+          "type": "string"
+        },
         "task_template_id": {
           "type": "string"
         },
@@ -279,7 +282,8 @@
         "task_gofs",
         "action_id",
         "task_template_id",
-        "title"
+        "title",
+        "project_id"
       ]
     },
     "ActionDetailsResponse": {
@@ -314,10 +318,11 @@
           "type": "string"
         },
         "stage_with_actions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/StagesWithActions"
-          }
+          "allOf": [
+            {
+              "$ref": "#/definitions/StagesWithActions"
+            }
+          ]
         },
         "task_overview_fields": {
           "type": "array",
@@ -417,8 +422,8 @@
             ]
           }
         },
-        "task_current_stages_details":{
-           "$ref":"#/definitions/TaskWithCurrentStages"
+        "task_current_stages_details": {
+          "$ref": "#/definitions/TaskWithCurrentStages"
         }
       },
       "required": [
@@ -541,8 +546,7 @@
             }
           },
           "required": [
-            "field_display_name",
-            "field_response"
+            "field_display_name"
           ]
         }
       ]
@@ -558,11 +562,15 @@
         },
         "profile_pic_url": {
           "type": "string"
+        },
+        "team_info": {
+          "$ref": "#/definitions/TeamInfo"
         }
       },
       "required": [
         "assignee_id",
-        "name"
+        "name",
+        "team_info"
       ]
     },
     "StageWithAssignee": {
@@ -573,11 +581,14 @@
         },
         "assignee_id": {
           "type": "string"
+        },
+        "team_id": {
+          "type": "string"
         }
       },
       "required": [
-        "assignee_id",
-        "stage_id"
+        "stage_id",
+        "team_id"
       ]
     },
     "StagesWithActions": {
@@ -634,9 +645,9 @@
     "TaskStageAssignees": {
       "type": "object",
       "properties": {
-        "task_id":{
-               "type":"string"
-            },
+        "task_id": {
+          "type": "string"
+        },
         "stage_assignees": {
           "type": "array",
           "items": {
@@ -678,11 +689,47 @@
         "button_color"
       ]
     },
+    "ProjectInfo": {
+      "type": "object",
+      "properties": {
+        "project_id": {
+          "type": "string"
+        },
+        "project_name": {
+          "type": "string"
+        },
+        "project_logo_url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id",
+        "project_name"
+      ]
+    },
+    "TeamInfo": {
+      "type": "object",
+      "properties": {
+        "team_id": {
+          "type": "string"
+        },
+        "team_name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "team_id",
+        "team_name"
+      ]
+    },
     "GetTaskResponseBody": {
       "type": "object",
       "properties": {
         "task_id": {
           "type": "string"
+        },
+        "project_info": {
+          "$ref": "#/definitions/ProjectInfo"
         },
         "template_id": {
           "type": "string"
@@ -771,11 +818,15 @@
                   },
                   "profile_pic_url": {
                     "type": "string"
+                  },
+                  "team_info": {
+                    "$ref": "#/definitions/TeamInfo"
                   }
                 },
                 "required": [
                   "assignee_id",
-                  "name"
+                  "name",
+                  "team_info"
                 ]
               },
               "actions": {
@@ -828,7 +879,8 @@
         "title",
         "start_date",
         "due_date",
-        "priority"
+        "priority",
+        "project_info"
       ]
     },
     "UserDetails": {
@@ -894,8 +946,16 @@
             },
             "assignee_id": {
               "type": "string"
+            },
+            "team_id": {
+              "type": "string"
             }
-          }
+          },
+          "required": [
+            "stage_id",
+            "assignee_id",
+            "team_id"
+          ]
         },
         "task_gofs": {
           "type": "array",
@@ -1100,6 +1160,38 @@
         }
       ]
     },
+    "Template": {
+      "type": "object",
+      "properties": {
+        "template_id": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "template_name": {
+          "type": "string"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Action"
+          }
+        },
+        "group_of_fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GroupOfFields"
+          }
+        }
+      },
+      "required": [
+        "template_id",
+        "template_name",
+        "actions",
+        "group_of_fields"
+      ]
+    },
     "FilterDetailsCompleteDetails": {
       "type": "object",
       "properties": {
@@ -1299,21 +1391,32 @@
         "stages_history"
       ]
     },
-      "NextStageAssigneesRequestBody":{
-         "type":"object",
-         "properties":{
-            "task_id":{
-               "type":"string"
-            },
-            "action_id":{
-               "type":"string"
-            }
-         },
-         "required":[
-            "task_id",
-            "action_id"
-         ]
-      }
+    "NextStageAssigneesRequestBody": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "action_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "task_id",
+        "action_id"
+      ]
+    },
+    "TaskIdRequestBody": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "task_id"
+      ]
+    }
   },
   "parameters": {
     "AddTaskReasonsParameter": {
@@ -1431,7 +1534,7 @@
       "schema": {
         "$ref": "#/definitions/UpdateTaskRequestBody"
       }
-      },
+    },
     "TaskIdRequestBody": {
       "in": "body",
       "name": "TaskId",
@@ -1455,6 +1558,15 @@
       "name": "task_id",
       "required": true,
       "type": "string"
+    },
+    "TaskBodyParamaeter": {
+      "description": "Task Body Parameter",
+      "in": "body",
+      "name": "TaskBodyParameter",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/TaskIdRequestBody"
+      }
     },
     "TaskStageAssigneesParameter": {
       "description": "Task Stage Assignees Parameter",
@@ -1554,15 +1666,15 @@
       "description": "stage id",
       "type": "integer"
     },
-      "GetNextStageAssigneesRequestBodyParameter":{
-         "in":"body",
-         "name":"GetNextStageAssigneesRequestBody",
-         "description":"get next stage assignees for a task",
-         "required":true,
-         "schema":{
-            "$ref":"#/definitions/NextStageAssigneesRequestBody"
-         }
+    "GetNextStageAssigneesRequestBodyParameter": {
+      "in": "body",
+      "name": "GetNextStageAssigneesRequestBody",
+      "description": "get next stage assignees for a task",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/NextStageAssigneesRequestBody"
       }
+    }
   },
   "responses": {
     "CreateTaskSuccessResponse": {
@@ -1596,44 +1708,10 @@
     "GetTaskTemplateResponse": {
       "description": "OK",
       "schema": {
-        "type": "object",
-        "properties": {
-          "task_templates": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "template_id": {
-                  "type": "string"
-                },
-                "template_name": {
-                  "type": "string"
-                },
-                "actions": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/Action"
-                  }
-                },
-                "group_of_fields": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/GroupOfFields"
-                  }
-                }
-              },
-              "required": [
-                "template_id",
-                "template_name",
-                "actions",
-                "group_of_fields"
-              ]
-            }
-          }
-        },
-        "required": [
-          "task_templates"
-        ]
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Template"
+        }
       }
     },
     "GetTransitionTemplateResponse": {
@@ -1840,6 +1918,7 @@
             "type": "string",
             "enum": [
               "DUPLICATE_STAGE_IDS",
+              "VIRTUAL_STAGE_IDS",
               "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE"
             ]
           }
@@ -2375,11 +2454,15 @@
             },
             "profile_pic_url": {
               "type": "string"
+            },
+            "team_info": {
+              "$ref": "#/definitions/TeamInfo"
             }
           },
           "required": [
             "id",
-            "name"
+            "name",
+            "team_info"
           ]
         }
       }
@@ -2947,34 +3030,34 @@
           }
         }
       },
-         "put":{
-            "operationId":"update_assignees_of_diff_stages_for_a_task",
-            "summary":"update assignees of different stages for a given task",
-            "description":"update assignees of different stages for a given task",
-            "security":[
-               {
-                  "oauth":[
-                     "read"
-                  ]
-               }
-            ],
-            "parameters":[
-               {
-                  "$ref":"#/parameters/TaskStageAssigneesParameter"
-               }
-            ],
-            "responses":{
-               "200":{
-                  "description":"OK"
-               },
-               "400":{
-                  "$ref":"#/responses/UpdateTaskStageAssigneesFailureResponse"
-               },
-               "404":{
-                  "$ref":"#/responses/UpdateTaskStageAssigneesNotFoundResponse"
-               }
-            }
-         }
+      "put": {
+        "operationId": "update_assignees_of_diff_stages_for_a_task",
+        "summary": "update assignees of different stages for a given task",
+        "description": "update assignees of different stages for a given task",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TaskStageAssigneesParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/responses/UpdateTaskStageAssigneesFailureResponse"
+          },
+          "404": {
+            "$ref": "#/responses/UpdateTaskStageAssigneesNotFoundResponse"
+          }
+        }
+      }
     },
     "/transition_checklist/v1/": {
       "post": {
@@ -3031,7 +3114,8 @@
             "$ref": "#/responses/TaskIsNotAssignedToUserResponse"
           }
         }
-      }},
+      }
+    },
     "/task/reasons/v1/": {
       "post": {
         "operationId": "add_reason_for_missing_due_date_time",
@@ -3104,8 +3188,8 @@
         }
       }
     },
-    "/task/{task_id}/stage_log/v1/": {
-      "get": {
+    "/task/stage_log/v1/": {
+      "post": {
         "operationId": "get_stages_history_to_task",
         "summary": "get task stages information",
         "description": "get task stages history",
@@ -3118,7 +3202,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/TaskIDParameter"
+            "$ref": "#/parameters/TaskBodyParamaeter"
           }
         ],
         "responses": {
