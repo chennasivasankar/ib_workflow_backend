@@ -35,8 +35,6 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         )
         field_dtos = elastic_task_dto.fields
         stages = elastic_task_dto.stages
-        field_objects = self._get_field_objects(field_dtos=field_dtos)
-        stage_objects = self.get_stage_objects(stages_ids=stages)
         task_obj.add_fields(field_dtos=field_dtos)
         task_obj.add_stages(stages=stages)
         task_obj.save()
@@ -215,7 +213,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         query = None
         for key, value in filter_operations_map.items():
             current_queue = self._get_q_object_based_on_operation(
-                operation=key, filter_dtos=filter_dtos
+                operation=key, filter_dtos=value
             )
             if query is None:
                 query = current_queue

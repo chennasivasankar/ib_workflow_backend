@@ -29,7 +29,7 @@ class ElasticTaskDTO:
 
 class Field(InnerDoc):
     field_id = Text()
-    value = Keyword()
+    value = Keyword(fielddata=True)
 
 
 class Stage(InnerDoc):
