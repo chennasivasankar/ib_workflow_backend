@@ -32,7 +32,7 @@ class GetTeamMemberLevelsWithMembersInteractor:
         )
         return response
 
-    def get_team_member_levels_with_members(self, team_id) -> \
+    def get_team_member_levels_with_members(self, team_id: str) -> \
             CompleteTeamMemberLevelsDetailsDTO:
         # TODO: Optimisation should be done
         from ib_iam.interactors.get_team_member_levels_interactor import \
@@ -63,8 +63,8 @@ class GetTeamMemberLevelsWithMembersInteractor:
                     team_id=team_id,
                     level_hierarchy=team_member_level_details_dto.level_hierarchy
                 )
-            team_member_dtos.append(member_dtos)
-            team_user_profile_dtos.append(user_profile_dtos)
+            team_member_dtos.extend(member_dtos)
+            team_user_profile_dtos.extend(user_profile_dtos)
             team_member_ids = [member_dto.member_id for member_dto in
                                member_dtos]
             team_member_level_id_with_member_ids_dtos.append(

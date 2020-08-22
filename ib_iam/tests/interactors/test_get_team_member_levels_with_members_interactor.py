@@ -65,3 +65,5 @@ class TestGetTeamMemberLevelsWithMembersInteractor:
             assert_called_once()
         get_team_member_levels_mock.assert_called_once_with(
             team_id=team_id)
+        presenter_mock.prepare_success_response_for_team_member_levels_with_members. \
+            assert_called_once()

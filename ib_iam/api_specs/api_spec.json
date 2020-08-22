@@ -1984,10 +1984,7 @@
                     "immediate_superior_team_user_id": {
                       "type": "string"
                     }
-                  },
-                  "required": [
-                    "immediate_superior_team_user_id"
-                  ]
+                  }
                 }
               ]
             }
@@ -2029,7 +2026,7 @@
                           }
                         },
                         "required": [
-                          "immediate_subordinate_team_user_ids"
+                          "immediate_subordinate_team_members"
                         ]
                       }
                     ]
@@ -2866,6 +2863,13 @@
         "summary": "Get Team Members Levels With Members",
         "operationId": "get_team_member_levels_with_members",
         "description": "Get all members of a team with level details",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
         "parameters": [
           {
             "$ref": "#/parameters/TeamIdPathParameter"

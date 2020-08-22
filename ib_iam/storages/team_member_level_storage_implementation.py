@@ -64,6 +64,9 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
         member_ids = team_member_level_id_with_member_ids_dto.member_ids
         from ib_iam.models import UserTeam
         UserTeam.objects.filter(
+            team_member_level=team_member_level_object
+        ).update(team_member_level=None)
+        UserTeam.objects.filter(
             team_id=team_id, user_id__in=member_ids
         ).update(team_member_level=team_member_level_object)
 
