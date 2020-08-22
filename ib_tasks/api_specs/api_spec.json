@@ -2758,7 +2758,7 @@
     },
     "/tasks_overview/v1/": {
       "get": {
-        "operationId": "get_project_tasks_overview",
+        "operationId": "get_all_tasks_overview",
         "summary": "get all tasks overview",
         "description": "get all tasks overview in home page",
         "security": [
