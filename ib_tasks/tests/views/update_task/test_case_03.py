@@ -1,10 +1,9 @@
 """
-test with expired due date
+test with invalid due time format
 """
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-from freezegun import freeze_time
 
 from ib_tasks.tests.factories.models import TaskFactory
 from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
@@ -28,17 +27,16 @@ class TestCase03UpdateTaskAPITestCase(TestUtils):
 
         TaskFactory.create(task_display_id=task_id)
 
-    @freeze_time("2020-09-09 12:00:00")
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {
             "task_id": "IBWF-1",
             "title": "updated_title",
             "description": "updated_description",
-            "start_date": "2020-08-01",
+            "start_date": "2099-12-31",
             "due_date": {
-                "date": "2020-08-02",
-                "time": "12:00:00"
+                "date": "2099-12-31",
+                "time": "12-00-00"
             },
             "priority": "HIGH",
             "stage_assignee": {

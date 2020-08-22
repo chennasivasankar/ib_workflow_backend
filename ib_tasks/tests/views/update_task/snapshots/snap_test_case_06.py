@@ -7,18 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01UpdateTaskAPITestCase.test_case status_code'] = '400'
-
-snapshots['TestCase01UpdateTaskAPITestCase.test_case body'] = {
-    'http_status_code': 400,
-    'res_status': 'INVALID_GOF_IDS',
-    'response': "invalid gof ids: ['GOF-19', 'GOF-20']"
-}
-
 snapshots['TestCase06UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase06UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'INVALID_GOF_IDS',
-    'response': "invalid gof ids: ['GOF-19', 'GOF-20']"
+    'res_status': 'INVALID_STAGE_ID',
+    'response': 'please give a valid stage id, 1 is invalid stage id'
 }
