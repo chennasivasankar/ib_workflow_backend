@@ -326,6 +326,18 @@ class FieldsStorageImplementation(FieldsStorageInterface):
 
         return is_user_has_write_permission
 
+    def get_field_ids_for_given_gofs(self, gof_ids: List[str]) -> List[str]:
+        field_ids_queryset = Field.objects.filter(
+            gof_id__in=gof_ids).values_list('field_id', flat=True)
+        field_ids_list = list(field_ids_queryset)
+        return field_ids_list
+
+    def get_field_dtos(self, field_ids: List[str]) -> List[FieldDTO]:
+        field_objs = Field.objects.filter(field_id__in=field_ids)
+        field_dtos = self._convert_field_objs_to_field_dtos(
+            field_objs=field_objs)
+        return field_dtos
+
     @staticmethod
     def _convert_user_field_permission_details_to_dtos(
             user_field_permission_details: List[Dict]

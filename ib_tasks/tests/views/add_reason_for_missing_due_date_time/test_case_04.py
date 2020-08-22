@@ -20,15 +20,15 @@ class TestCase04AddReasonForMissingDueDateTimeAPITestCase(TestUtils):
         tasks = TaskFactory.create_batch(size=2)
         from ib_tasks.tests.factories.models import TaskLogFactory
         TaskLogFactory.reset_sequence()
-        TaskLogFactory(task=tasks[0], user_id=api_user.user_id)
+        TaskLogFactory(task=tasks[1], user_id=api_user.user_id)
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):
         body = {
-            'updated_due_date_time': '2020-08-10T11:30:45.34523',
+            'updated_due_date_time': '2020-08-26T11:30:45.34523',
             'reason_id': 1,
             'reason': 'string',
-            "task_id": "iBWF-1"
+            "task_id": "IBWF-1"
         }
         path_params = {}
         query_params = {}

@@ -23,6 +23,7 @@ class GoFFieldsDTO:
 
 @dataclass
 class CreateTaskDTO:
+    project_id: str
     task_template_id: str
     created_by_id: str
     action_id: int
@@ -36,9 +37,10 @@ class CreateTaskDTO:
 
 
 @dataclass
-class StageIdWithAssigneeIdDTO:
+class StageIdWithAssigneeDTO:
     stage_id: int
     assignee_id: str
+    team_id: str
 
 
 @dataclass
@@ -51,7 +53,7 @@ class UpdateTaskDTO:
     due_date: datetime.date
     due_time: str
     priority: Priority
-    stage_assignee: StageIdWithAssigneeIdDTO
+    stage_assignee: StageIdWithAssigneeDTO
     gof_fields_dtos: List[GoFFieldsDTO]
 
 
@@ -65,7 +67,7 @@ class UpdateTaskWithTaskDisplayIdDTO:
     due_date: datetime.date
     due_time: str
     priority: Priority
-    stage_assignee: StageIdWithAssigneeIdDTO
+    stage_assignee: StageIdWithAssigneeDTO
     gof_fields_dtos: List[GoFFieldsDTO]
 
 
@@ -80,7 +82,7 @@ class SaveAndActOnTaskDTO:
     due_date: datetime.date
     due_time: str
     priority: Priority
-    stage_assignee: StageIdWithAssigneeIdDTO
+    stage_assignee: StageIdWithAssigneeDTO
     gof_fields_dtos: List[GoFFieldsDTO]
 
 
@@ -95,7 +97,7 @@ class SaveAndActOnTaskWithTaskDisplayIdDTO:
     due_date: datetime.date
     due_time: str
     priority: Priority
-    stage_assignee: StageIdWithAssigneeIdDTO
+    stage_assignee: StageIdWithAssigneeDTO
     gof_fields_dtos: List[GoFFieldsDTO]
 
 

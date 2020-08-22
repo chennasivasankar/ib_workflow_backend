@@ -26,6 +26,7 @@ class TestCase03CreateTaskAPITestCase(TestUtils):
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {
+            "project_id": "project_1",
             "task_template_id": "template_1",
             "action_id": 1,
             "title": "task_title",

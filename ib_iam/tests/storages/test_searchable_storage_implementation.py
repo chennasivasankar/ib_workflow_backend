@@ -73,6 +73,7 @@ class TestSearchableStorageImplementation:
 
     def test_given_user_ids_returns_valid_user_ids(self, storage, snapshot):
         # Arrange
+        UserDetailsFactory.reset_sequence(0)
         user_objs = UserDetailsFactory.create_batch(size=10)
         valid_user_ids = [
             user_obj.user_id
@@ -85,7 +86,7 @@ class TestSearchableStorageImplementation:
         valid_user_ids = storage.get_valid_user_ids(ids=user_ids)
 
         # Assert
-        snapshot.assert_match(name=valid_user_ids, value=valid_user_ids)
+        snapshot.assert_match(name="valid_user_ids", value=valid_user_ids)
 
     def test_given_city_ids_returns_valid_city_ids(self, storage, snapshot):
         # Arrange

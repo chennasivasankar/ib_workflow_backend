@@ -4,7 +4,7 @@ from typing import List
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import \
-    TeamMemberLevelDetailsDTO, MemberDTO
+    TeamMemberLevelDetailsDTO, MemberDTO, MemberIdWithSubordinateMemberIdsDTO
 
 
 class TeamMemberLevelStorageInterface(ABC):
@@ -43,4 +43,10 @@ class TeamMemberLevelStorageInterface(ABC):
 
     @abstractmethod
     def get_immediate_superior_user_id(self, team_id: str, user_id: str) -> str:
+        pass
+
+    @abstractmethod
+    def get_member_id_with_subordinate_member_ids_dtos(
+            self, team_id: str, member_ids: List[str]
+    ) -> List[MemberIdWithSubordinateMemberIdsDTO]:
         pass

@@ -158,7 +158,7 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_present_actions(self, error_obj):
+    def raise_exception_for_invalid_present_stage_actions(self, error_obj):
         pass
 
     @abc.abstractmethod

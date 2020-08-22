@@ -269,3 +269,10 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
         gof_to_task_template_dtos = self._convert_task_template_gofs_to_dtos(
             task_template_gofs=task_template_gofs)
         return gof_to_task_template_dtos
+
+    def get_gof_ids_of_template(self, template_id: str) -> List[str]:
+        gof_ids_queryset = TaskTemplateGoFs.objects.filter(
+            task_template_id=template_id).values_list('gof_id', flat=True)
+
+        gof_ids_list = list(gof_ids_queryset)
+        return gof_ids_list

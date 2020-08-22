@@ -199,7 +199,7 @@ class TestCreateTaskPresenterImplementation:
         snapshot.assert_match(response['res_status'], 'res_status')
         snapshot.assert_match(response['response'], 'response')
 
-    def test_raise_invalid_task_template_ids(self, snapshot, presenter):
+    def test_raise_invalid_task_template_id(self, snapshot, presenter):
         # Arrange
         invalid_template_id = "template_1"
 
@@ -208,7 +208,7 @@ class TestCreateTaskPresenterImplementation:
         err = InvalidTaskTemplateDBId(invalid_template_id)
 
         # Act
-        response_object = presenter.raise_invalid_task_template_ids(err)
+        response_object = presenter.raise_invalid_task_template_id(err)
 
         # Assert
         response = json.loads(response_object.content)

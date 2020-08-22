@@ -2,10 +2,12 @@ import factory
 
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, AddUserDetailsDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO, \
-    CompleteUserProfileDTO
-
+    CompleteUserProfileDTO, CompleteTeamMemberLevelsDetailsDTO
 from ib_iam.interactors.update_user_password_interactor import \
     CurrentAndNewPasswordDTO
+from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
+from ib_iam.tests.factories.storage_dtos import MemberDTOFactory, \
+    TeamMemberLevelDetailsDTOFactory, MemberIdWithSubordinateMemberIdsDTOFactory
 
 
 class AddUserDetailsDTOFactory(factory.Factory):
@@ -63,4 +65,30 @@ class ImmediateSuperiorUserIdWithUserIdsDTOFactory(factory.Factory):
     immediate_superior_user_id = factory.Faker("uuid4")
     member_ids = factory.List(
         [factory.Faker("uuid4"), factory.Faker("uuid4"), factory.Faker("uuid4")]
+    )
+
+
+class CompleteTeamMemberLevelsDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = CompleteTeamMemberLevelsDetailsDTO
+
+    member_dtos = factory.List(
+        [factory.SubFactory(MemberDTOFactory),
+         factory.SubFactory(MemberDTOFactory)]
+    )
+    user_profile_dtos = factory.List(
+        [factory.SubFactory(UserProfileDTOFactory),
+         factory.SubFactory(UserProfileDTOFactory)]
+    )
+    team_member_level_details_dtos = factory.List(
+        [factory.SubFactory(TeamMemberLevelDetailsDTOFactory),
+         factory.SubFactory(TeamMemberLevelDetailsDTOFactory)]
+    )
+    team_member_level_id_with_member_ids_dtos = factory.List(
+        [factory.SubFactory(TeamMemberLevelIdWithMemberIdsDTOFactory),
+         factory.SubFactory(TeamMemberLevelIdWithMemberIdsDTOFactory)]
+    )
+    member_id_with_subordinate_member_ids_dtos = factory.List(
+        [factory.SubFactory(MemberIdWithSubordinateMemberIdsDTOFactory),
+         factory.SubFactory(MemberIdWithSubordinateMemberIdsDTOFactory)]
     )

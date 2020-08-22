@@ -19,7 +19,7 @@ class UserTeam(models.Model):
     )
     immediate_superior_team_user = models.ForeignKey(
         "self", on_delete=models.SET_NULL,
-        null=True, blank=True
+        null=True, blank=True, related_name="subordinate_members"
     )
     team = models.ForeignKey('Team', on_delete=models.CASCADE,
                              related_name="users")
