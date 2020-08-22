@@ -17,9 +17,9 @@ class GetTeamMembersOfLevelHierarchyPresenterImplementation(
             user_profile_dtos: List[UserProfileDTO]
     ):
         user_id_wise_user_profile_dto_dict = \
-            self._prepare_user_id_wise_user_profile_dto_dict(
+            self.prepare_user_id_wise_user_profile_dto_dict(
                 user_profile_dtos=user_profile_dtos)
-        member_id_wise_member_dto_dict = self._prepare_member_id_wise_member_dto_dict(
+        member_id_wise_member_dto_dict = self.prepare_member_id_wise_member_dto_dict(
             member_dtos=member_dtos)
 
         members = [
@@ -37,7 +37,7 @@ class GetTeamMembersOfLevelHierarchyPresenterImplementation(
         return self.prepare_200_success_response(response_dict=response_dict)
 
     @staticmethod
-    def _prepare_member_id_wise_member_dto_dict(member_dtos: List[MemberDTO]):
+    def prepare_member_id_wise_member_dto_dict(member_dtos: List[MemberDTO]):
         member_id_wise_member_dict = {
             member_dto.member_id: member_dto
             for member_dto in member_dtos
@@ -45,7 +45,7 @@ class GetTeamMembersOfLevelHierarchyPresenterImplementation(
         return member_id_wise_member_dict
 
     @staticmethod
-    def _prepare_user_id_wise_user_profile_dto_dict(
+    def prepare_user_id_wise_user_profile_dto_dict(
             user_profile_dtos: List[UserProfileDTO]):
         user_id_wise_user_profile_dict = {
             user_profile_dto.user_id: user_profile_dto

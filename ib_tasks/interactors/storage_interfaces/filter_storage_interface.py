@@ -64,5 +64,5 @@ class FilterStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_enabled_filters_dto_to_user(self, user_id: str):
+    def get_enabled_filters_dto_to_user(self, user_id: str, project_id: str):
         pass

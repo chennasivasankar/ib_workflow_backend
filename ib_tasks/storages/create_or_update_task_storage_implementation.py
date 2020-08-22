@@ -277,6 +277,7 @@ class CreateOrUpdateTaskStorageImplementation(
         )
         task_object = Task.objects.create(
             task_display_id=None,
+            project_id=task_dto.project_id,
             template_id=task_dto.task_template_id,
             created_by=task_dto.created_by_id,
             title=task_dto.title, description=task_dto.description,

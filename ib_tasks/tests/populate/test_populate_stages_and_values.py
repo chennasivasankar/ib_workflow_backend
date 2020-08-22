@@ -3,7 +3,7 @@ import json
 import pytest
 
 from ib_tasks.models import Stage
-from ib_tasks.tests.factories.models import TaskStatusVariableFactory, \
+from ib_tasks.tests.factories.models import TaskTemplateStatusVariableFactory, \
     GoFFactory, TaskTemplateFactory, \
     GoFToTaskTemplateFactory, FieldFactory, StageModelFactory
 
@@ -38,8 +38,8 @@ class TestPopulateStagesAndValues:
     def create_data(self):
         StageModelFactory.reset_sequence(1)
         StageModelFactory()
-        TaskStatusVariableFactory.reset_sequence()
-        TaskStatusVariableFactory.create_batch(size=15)
+        TaskTemplateStatusVariableFactory.reset_sequence()
+        TaskTemplateStatusVariableFactory.create_batch(size=15)
         GoFFactory.reset_sequence()
         gof_obj = GoFFactory()
         TaskTemplateFactory.reset_sequence()

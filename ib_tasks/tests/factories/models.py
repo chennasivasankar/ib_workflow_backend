@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import factory
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
-    Priority, ActionTypes, DelayReasons
+    Priority, ActionTypes, DELAY_REASONS
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     UserTaskDelayReason, Task, TaskGoF, TaskGoFField,
@@ -97,8 +97,8 @@ class TaskDueDetailsFactory(factory.django.DjangoModelFactory):
     count = factory.Sequence(lambda n: (n + 1))
     user_id = factory.Sequence(
         lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
-    reason_id = DelayReasons[0]['id']
-    reason = DelayReasons[0]['reason']
+    reason_id = DELAY_REASONS[0]['id']
+    reason = DELAY_REASONS[0]['reason']
 
 
 class StageActionFactory(factory.django.DjangoModelFactory):
@@ -133,7 +133,7 @@ class TaskTemplateStatusVariableFactory(factory.django.DjangoModelFactory):
         model = TaskTemplateStatusVariable
 
     task_template_id = factory.Sequence(lambda n: n)
-    variable = factory.Sequence(lambda n: "variable%d" % n)
+    variable = factory.Sequence(lambda n: "status_id_%d" % n)
     value = factory.Sequence(lambda n: n)
 
 

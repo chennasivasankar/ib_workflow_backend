@@ -4,6 +4,7 @@ from freezegun import freeze_time
 
 from ib_tasks.presenters.task_due_delay_presenter_implementation import \
     TaskDueDetailsPresenterImplementation
+from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
 from ib_tasks.tests.factories.interactor_dtos import GetTaskDueDetailsDTOFactory
 
 

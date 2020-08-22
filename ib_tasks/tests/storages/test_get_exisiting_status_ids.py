@@ -9,13 +9,13 @@ class TestGetExistingStageIds:
 
     @pytest.fixture
     def populate_data(self):
-        TaskTemplateStatusVariableFactory.reset_sequence(1)
-        TaskTemplateStatusVariableFactory.create_batch(size=2)
+        TaskTemplateStatusVariableFactory.reset_sequence()
+        TaskTemplateStatusVariableFactory.create_batch(size=3)
 
     def test_get_existing_stage_ids(self, populate_data):
         # Arrange
-        expected = ["variable1", "variable2"]
-        status_ids = ["variable1", "variable2"]
+        expected = ["status_id_1", "status_id_2"]
+        status_ids = ["status_id_1", "status_id_2"]
         storage = StagesStorageImplementation()
 
         # Act

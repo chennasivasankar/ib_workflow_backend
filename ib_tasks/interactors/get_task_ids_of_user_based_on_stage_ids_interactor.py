@@ -3,7 +3,7 @@ from typing import List
 from ib_tasks.interactors.stages_dtos import UserStagesWithPaginationDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageValueWithTaskIdsDTO, TaskIdWithStageDetailsDTO, \
-    TaskWithCompleteStageDetailsDTO
+    TaskWithCompleteStageDetailsDTO, TaskIdWithStageValueDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
@@ -68,7 +68,8 @@ class GetTaskStageDetailsOfUserBasedOnStagesInteractor:
 
         task_with_complete_stage_details_dtos = \
             self._get_task_with_complete_stage_details_dtos(
-                task_id_with_stage_details_dtos=task_id_with_single_stage_details_dto)
+                task_id_with_stage_details_dtos=
+                task_id_with_single_stage_details_dto)
         return task_with_complete_stage_details_dtos
 
     def _get_task_with_complete_stage_details_dtos(
@@ -92,14 +93,15 @@ class GetTaskStageDetailsOfUserBasedOnStagesInteractor:
             task_with_complete_stage_details_dto = \
                 TaskWithCompleteStageDetailsDTO(
                     task_with_stage_details_dto=task_id_with_stage_details_dto,
-                    stage_assignee_dto=stage_assignee_details_dtos[0])
+                    stage_assignee_dto=[stage_assignee_details_dtos[0]])
             task_with_complete_stage_details_dtos.append(
                 task_with_complete_stage_details_dto)
         return task_with_complete_stage_details_dtos
 
     @staticmethod
     def _get_task_ids_group_by_stage_value_dtos(
-            stage_values: List[int], task_id_with_max_stage_value_dtos
+            stage_values: List[int], task_id_with_max_stage_value_dtos:
+            List[TaskIdWithStageValueDTO]
     ) -> List[StageValueWithTaskIdsDTO]:
         task_ids_group_by_stage_value_dtos = []
         for each_value in stage_values:
@@ -110,7 +112,7 @@ class GetTaskStageDetailsOfUserBasedOnStagesInteractor:
                 if each_task_id_with_max_stage_value_dto.stage_value == \
                         each_value:
                     list_of_task_ids.append(
-                        each_task_id_with_max_stage_value_dto.task_display_id)
+                        each_task_id_with_max_stage_value_dto.task_id)
             each_stage_value_with_task_ids_dto = StageValueWithTaskIdsDTO(
                 stage_value=each_value, task_ids=list_of_task_ids)
             task_ids_group_by_stage_value_dtos.append(

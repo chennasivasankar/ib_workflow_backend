@@ -117,11 +117,13 @@ class TestGetColumnTasksInteractor:
     def task_stage_dtos(self):
         return [
             TaskIdStageDTO(
-                task_id="TASK_ID_1",
+                task_display_id="TASK_ID_1",
+                task_id=1,
                 stage_id="STAGE_ID_1"
             ),
             TaskIdStageDTO(
-                task_id="TASK_ID_2",
+                task_display_id="TASK_ID_2",
+                task_id=2,
                 stage_id="STAGE_ID_2"
             )
         ]
