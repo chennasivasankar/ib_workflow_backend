@@ -3,8 +3,7 @@ import factory
 from ib_iam.interactors.storage_interfaces.dtos \
     import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, \
-    UserProfileDTO, TeamMemberLevelDetailsDTO, MemberDTO
-
+    UserProfileDTO, TeamMemberLevelDetailsDTO, MemberDTO, ProjectDTO
 
 
 class UserDTOFactory(factory.Factory):
@@ -269,3 +268,13 @@ class MemberDTOFactory(factory.Factory):
 
     member_id = factory.Faker("uuid4")
     immediate_superior_team_user_id = factory.Faker("uuid4")
+
+
+class ProjectDTOFactory(factory.Factory):
+    class Meta:
+        model = ProjectDTO
+
+    project_id = factory.Sequence(lambda n: 'project %s' % n)
+    name = factory.Sequence(lambda n: 'name %s' % n)
+    description = factory.Sequence(lambda n: 'description %s' % n)
+    logo_url = factory.Sequence(lambda n: 'logo %s' % n)
