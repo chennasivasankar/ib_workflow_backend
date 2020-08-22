@@ -92,21 +92,21 @@ class AuthService:
         raise NotImplementedError
 
     def get_team_details(self, team_ids: List[str]) -> List[TeamDetailsDTO]:
-        pass
+        raise NotImplementedError
 
     def get_projects_info_for_given_ids(self, project_ids: List[str]) -> List[
         TeamDetailsDTO]:
-        pass
+        raise NotImplementedError
 
     def get_team_info_for_given_user_ids(self, user_ids: List[str]) -> List[
         UserIdWIthTeamDetailsDTOs]:
-        pass
+        raise NotImplementedError
+
+    def  get_team_details_for_given_team_project_details_dto(
+            self, team_project_details_dto: TeamProjectDetailsDTO) -> \
+            List[TeamDetailsWithUserIdDTO]:
+        raise NotImplementedError
 
     def validate_team_ids(self, team_ids: List[str]) -> \
             List[str]:
-        pass
-
-    def get_team_details_for_given_team_project_details_dto(
-            self, team_project_details_dto: TeamProjectDetailsDTO) -> \
-            List[TeamDetailsWithUserIdDTO]:
-        pass
+        raise NotImplementedError
