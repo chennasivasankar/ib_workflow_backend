@@ -506,19 +506,10 @@
     },
     "ProjectIdParameter": {
       "name": "project_id",
-      "in": "body",
+      "in": "query",
       "description": "project id value",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id"
-        ]
-      }
+      "type": "string",
+      "required": true
     },
     "ColumnIdParameter": {
       "name": "column_id",
