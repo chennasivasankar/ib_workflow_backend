@@ -30,16 +30,9 @@ def mock_get_user_roles(mocker, user_id: str):
     return mock
 
 
-def mock_validate_project_id(mocker, project_id: str):
-    mock = mocker.patch(
-        'ib_boards.adapters.iam_service.IamService.validate_project_id'
-    )
-    mock.return_value = True
-    return mock
-
-def mock_validate_project_ids(mocker, project_id: str):
+def mock_validate_project_ids(mocker, project_ids: List[str]):
     mock = mocker.patch(
         'ib_boards.adapters.iam_service.IamService.validate_project_ids'
     )
-    mock.return_value = True
+    mock.return_value = project_ids
     return mock
