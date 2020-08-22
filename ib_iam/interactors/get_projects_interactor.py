@@ -6,7 +6,7 @@ from ib_iam.interactors.storage_interfaces.project_storage_interface import \
 
 class GetProjectsInteractor:
 
-    def __int__(self, project_storage: ProjectStorageInterface):
+    def __init__(self, project_storage: ProjectStorageInterface):
         self.project_storage = project_storage
 
     def get_projects_wrapper(self,
