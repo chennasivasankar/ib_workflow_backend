@@ -3,7 +3,6 @@ from django.db import models
 
 class Project(models.Model):
     project_id = models.CharField(
-        editable=False,
         primary_key=True,
         max_length=100
     )
