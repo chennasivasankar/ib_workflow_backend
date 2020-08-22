@@ -30,7 +30,7 @@ snapshots['TestSearchableStorageImplementation.test_given_country_ids_returns_se
     GenericRepr("SearchableDetailsDTO(search_type='COUNTRY', id=18, value='country_name17')")
 ]
 
-snapshots['TestSearchableStorageImplementation.test_given_user_ids_returns_valid_user_ids ['user0', 'user1', 'user2', 'user3', 'user4', 'user5', 'user6', 'user7', 'user8', 'user9']'] = [
+snapshots['TestSearchableStorageImplementation.test_given_user_ids_returns_valid_user_ids valid_user_ids'] = [
     'user0',
     'user1',
     'user2',
