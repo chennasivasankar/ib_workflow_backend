@@ -86,6 +86,7 @@ class BoardColumnsDTO:
 @dataclass
 class GetBoardsDTO:
     user_id: str
+    project_id: str
     offset: int
     limit: int
 

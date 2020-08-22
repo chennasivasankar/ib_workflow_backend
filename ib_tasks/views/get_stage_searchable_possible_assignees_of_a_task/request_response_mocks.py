@@ -6,7 +6,11 @@ RESPONSE_200_JSON = """
     {
         "id": "string",
         "name": "string",
-        "profile_pic_url": "string"
+        "profile_pic_url": "string",
+        "team_info": {
+            "team_id": "string",
+            "team_name": "string"
+        }
     }
 ]
 """
