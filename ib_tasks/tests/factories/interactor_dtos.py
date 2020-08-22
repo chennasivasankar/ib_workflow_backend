@@ -34,7 +34,7 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO, \
     SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
     TaskDelayParametersDTO, UpdateTaskWithTaskDisplayIdDTO, \
-    SaveAndActOnTaskWithTaskDisplayIdDTO
+    SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO
 from ib_tasks.interactors.task_template_dtos import \
     CreateTransitionChecklistTemplateDTO, \
     CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
@@ -521,3 +521,11 @@ class StageAssigneeDTOFactory(factory.Factory):
 
     db_stage_id = factory.Sequence(lambda n: n + 1)
     assignee_id = factory.sequence(lambda n: "user_{}".format(n+1))
+
+
+class SearchableDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchableDTO
+
+    search_type = Searchable.TEAM.value
+    id = "team1"

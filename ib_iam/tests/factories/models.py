@@ -1,7 +1,7 @@
 import factory
 
 from ib_iam import models
-from ib_iam.models import Role, Team, Company
+from ib_iam.models import Role, Team, Company, Country, State, City
 from ib_iam.models.team_member_level import TeamMemberLevel
 from ib_iam.models.user import UserDetails, UserTeam, UserRole
 
@@ -86,3 +86,24 @@ class TeamMemberLevelFactory(factory.DjangoModelFactory):
         "Product Owner"
     ])
     level_hierarchy = factory.Iterator([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+
+class CountryFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Country
+
+    name = factory.sequence(lambda counter: "country_name{}".format(counter))
+
+
+class StateFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = State
+
+    name = factory.sequence(lambda counter: "state_name{}".format(counter))
+
+
+class CityFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = City
+
+    name = factory.sequence(lambda counter: "city_name{}".format(counter))

@@ -338,6 +338,11 @@ USER_PERMISSION_DENIED = (
     "USER_PERMISSION_DENIED"
 )
 
+SEARCHABLE_RECORDS_NOT_FOUND = (
+    "Something went wrong contact Admin",
+    "SEARCHABLE_RECORDS_NOT_FOUND"
+)
+
 INVALID_PROJECT_ID = (
     "Invalid Project Id",
     "INVALID_PROJECT_ID"
