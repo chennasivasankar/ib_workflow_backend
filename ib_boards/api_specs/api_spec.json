@@ -246,8 +246,7 @@
             }
           },
           "required": [
-            "field_display_name",
-            "field_response"
+            "field_display_name"
           ]
         }
       ]

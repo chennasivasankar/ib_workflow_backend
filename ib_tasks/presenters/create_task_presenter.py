@@ -23,7 +23,7 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     UserBoardPermissionDenied, UserActionPermissionDenied
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
@@ -198,12 +198,11 @@ class CreateTaskPresenterImplementation(
             data['stages'].append(stage)
         return self.prepare_201_created_response(response_dict=data)
 
-    def raise_invalid_task_template_ids(self, err: InvalidTaskTemplateIds):
+    def raise_invalid_task_template_ids(self, err: InvalidTaskTemplateDBId):
         from ib_tasks.constants.exception_messages import \
             INVALID_TASK_TEMPLATE_IDS
         response_message = INVALID_TASK_TEMPLATE_IDS[0].format(
-            err.invalid_task_template_ids
-        )
+            err.task_template_id)
         data = {
             "response": response_message,
             "http_status_code": 400,

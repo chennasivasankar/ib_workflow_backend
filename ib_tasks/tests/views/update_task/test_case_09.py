@@ -1,5 +1,5 @@
 """
-test with duplicate field ids of a gof
+test with invalid gofs to task_template
 """
 
 import pytest
@@ -40,8 +40,8 @@ class TestCase09UpdateTaskAPITestCase(TestUtils):
             size=len(field_ids), field_id=factory.Iterator(field_ids))
         task_template = TaskTemplateFactory.create(template_id=template_id)
         task_template_gofs = GoFToTaskTemplateFactory.create_batch(
-            size=len(gofs), task_template=task_template,
-            gof=factory.Iterator(gofs))
+            size=2, task_template=task_template,
+            gof__gof_id=factory.Iterator(["GOF-3", "GOF-4"]))
         task = TaskFactory.create(
             task_display_id=task_id, template_id=task_template.template_id)
 
@@ -71,7 +71,7 @@ class TestCase09UpdateTaskAPITestCase(TestUtils):
                             "field_response": "new updated string"
                         },
                         {
-                            "field_id": "FIELD-1",
+                            "field_id": "FIELD-2",
                             "field_response":
                                 "https://image.flaticon.com/icons/svg/1829/1829070.svg"
                         }

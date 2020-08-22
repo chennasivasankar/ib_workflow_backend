@@ -1,5 +1,5 @@
 """
-test with fields of gof
+test with duplicate field ids of a gof
 """
 
 import pytest
@@ -71,7 +71,7 @@ class TestCase10UpdateTaskAPITestCase(TestUtils):
                             "field_response": "new updated string"
                         },
                         {
-                            "field_id": "FIELD-2",
+                            "field_id": "FIELD-1",
                             "field_response":
                                 "https://image.flaticon.com/icons/svg/1829/1829070.svg"
                         }
