@@ -34,7 +34,7 @@ class Field(InnerDoc):
 
 
 class Stage(InnerDoc):
-    stage_id: Text()
+    stage_id = Text()
 
 
 class Task(Document):
