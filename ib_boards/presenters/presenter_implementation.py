@@ -3,6 +3,7 @@ from typing import List
 from django.http import response
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
+from ib_boards.adapters.iam_service import InvalidProjectIdsException
 from ib_boards.constants.exception_messages import (
     INVALID_BOARD_ID, INVALID_OFFSET_VALUE, INVALID_LIMIT_VALUE,
     USER_DONOT_HAVE_ACCESS)
@@ -83,6 +84,14 @@ class GetBoardsPresenterImplementation(GetBoardsPresenterInterface, HTTPResponse
         }
 
     def get_response_for_offset_exceeds_total_tasks(self):
+        pass
+
+    def get_response_for_invalid_project_id(self, err: InvalidProjectIdsException)\
+            -> response.HttpResponse:
+        pass
+
+    def get_response_for_user_is_not_in_project(self) \
+            -> response.HttpResponse:
         pass
 
 

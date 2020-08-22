@@ -5,7 +5,7 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
-from ib_boards.adapters.iam_service import InvalidProjectIdsException
+from ib_boards.adapters.iam_service import InvalidProjectIdsException, UserIsNotInProjectException
 from ib_boards.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue, UserDoNotHaveAccessToBoards, \
     OffsetValueExceedsTotalTasksCount
@@ -40,6 +40,8 @@ class GetBoardsInteractor(ValidationMixin):
             return presenter.get_response_for_offset_exceeds_total_tasks()
         except InvalidProjectIdsException as err:
             return presenter.get_response_for_invalid_project_id(err)
+        except UserIsNotInProjectException:
+            return presenter.get_response_for_user_is_not_in_project()
 
         return presenter.get_response_for_get_boards(
             starred_and_other_boards_dto=starred_and_other_boards_dto,
@@ -54,6 +56,7 @@ class GetBoardsInteractor(ValidationMixin):
 
         self.validate_if_user_is_in_project(project_id=project_id,
                                             user_id=user_id)
+
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         user_id = get_boards_dto.user_id
@@ -69,7 +72,7 @@ class GetBoardsInteractor(ValidationMixin):
             raise InvalidLimitValue
 
         other_boards_ids, starred_board_ids = self.storage.get_board_ids(
-            user_id=user_id,
+            user_id=user_id, project_id=project_id
         )
         from ib_boards.interactors.get_board_details_interactor \
             import GetBoardsDetailsInteractor
