@@ -8,3 +8,10 @@ from ib_iam.constants.enums import Searchable
 class SearchableDTO:
     search_type: Searchable
     id: Union[int, str]
+
+
+@dataclass
+class ProjectTeamUserDTO:
+    project_id: str
+    team_id: str
+    user_id: str
