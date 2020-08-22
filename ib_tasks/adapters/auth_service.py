@@ -6,6 +6,15 @@ from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
     import SearchQueryWithPaginationDTO
 
 
+class InvalidProjectIdsException(Exception):
+    def __init__(self, invalid_project_ids: List[str]):
+        self.invalid_project_ids = invalid_project_ids
+
+
+class UserIsNotInProject(Exception):
+    pass
+
+
 class AuthService:
     @property
     def interface(self):
@@ -56,10 +65,10 @@ class AuthService:
             self, role_ids: List[str],
             search_query_with_pagination_dto:
             SearchQueryWithPaginationDTO) -> List[UserDetailsDTO]:
-        user_profile_details_dtos = self.interface.\
+        user_profile_details_dtos = self.interface. \
             get_user_details_for_the_given_role_ids_based_on_query(
-                role_ids=role_ids, search_query_with_pagination_dto=
-                search_query_with_pagination_dto)
+            role_ids=role_ids, search_query_with_pagination_dto=
+            search_query_with_pagination_dto)
 
         user_details_dtos = self._get_user_details_dtos(
             user_profile_details_dtos)
@@ -77,5 +86,6 @@ class AuthService:
     def validate_if_user_is_in_project(self, user_id: str, project_id: str):
         raise NotImplementedError
 
-    def validate_project_id(self, project_id: str):
+    def validate_project_ids(self, project_ids: List[str]) -> \
+            List[str]:
         raise NotImplementedError

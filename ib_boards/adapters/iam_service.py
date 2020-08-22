@@ -6,12 +6,12 @@ Author: Pavankumar Pamuru
 from typing import List, Optional
 
 
-class InvalidProjectIds(Exception):
-    def __init__(self, invalid_project_id: str):
-        self.invalid_project_id = invalid_project_id
+class InvalidProjectIdsException(Exception):
+    def __init__(self, invalid_project_ids: List[str]):
+        self.invalid_project_ids = invalid_project_ids
 
 
-class UserIsNotInProject(Exception):
+class UserIsNotInProjectException(Exception):
     pass
 
 

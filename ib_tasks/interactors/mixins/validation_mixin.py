@@ -1,7 +1,4 @@
-from typing import List, Optional
-
-from ib_boards.adapters.iam_service import UserIsNotInProject, \
-    InvalidProjectIds
+from typing import List
 
 
 class ValidationMixin:
@@ -29,11 +26,25 @@ class ValidationMixin:
             self.stage_storage.check_is_stage_exists(stage_id=stage_id)
         return is_valid_stage
 
-    def validate_given_project_ids(self, project_ids: List[str]) -> \
-            Optional[InvalidProjectIds]:
+    def validate_given_project_ids(self, project_ids: List[str]):
+        """
+
+        @param project_ids:
+        @type project_ids:
+        @raise: InvalidProjectIdsException:
+        @rtype:
+        """
         raise NotImplementedError
 
     def validate_if_user_is_in_project(self, user_id: str,
-                                       project_id: str) -> \
-            Optional[UserIsNotInProject]:
+                                       project_id: str):
+        """
+
+        @param user_id:
+        @type user_id:
+        @param project_id:
+        @type project_id:
+        @raise: UserIsNotInProjectException
+        @rtype:
+        """
         raise NotImplementedError
