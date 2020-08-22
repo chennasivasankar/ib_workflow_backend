@@ -1,13 +1,15 @@
 from typing import Tuple, List
 
+from ib_tasks.adapters.auth_service import InvalidProjectIdsException, UserIsNotInProject
 from ib_tasks.constants.enum import Status
 from ib_tasks.exceptions.filter_exceptions import \
     FieldIdsNotBelongsToTemplateId, UserNotHaveAccessToFields, \
     InvalidFilterId, \
-    UserNotHaveAccessToFilter
+    UserNotHaveAccessToFilter, InvalidProjectId
 from ib_tasks.interactors.filter_dtos import FilterCompleteDetailsDTO, \
     CreateConditionDTO, CreateFilterDTO, FilterDTO, ConditionDTO, \
     UpdateFilterDTO
+from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
     import \
     FilterPresenterInterface
@@ -16,7 +18,7 @@ from ib_tasks.interactors.storage_interfaces.filter_storage_interface \
     import FilterStorageInterface
 
 
-class FilterInteractor:
+class FilterInteractor(ValidationMixin):
 
     def __init__(
             self, filter_storage: FilterStorageInterface,
@@ -39,6 +41,10 @@ class FilterInteractor:
             return self.presenter.get_response_for_invalid_task_template_id()
         except FieldIdsNotBelongsToTemplateId as error:
             return self.presenter.get_response_for_invalid_field_ids(error=error)
+        except InvalidProjectIdsException as err:
+            return self.presenter.get_response_for_invalid_project_id(err=err)
+        except UserIsNotInProject:
+            return self.presenter.get_response_for_user_not_in_project()
         except UserNotHaveAccessToFields:
             return self.presenter.get_response_for_user_not_have_access_to_fields()
         return self.presenter.get_response_for_create_filter(
@@ -50,6 +56,9 @@ class FilterInteractor:
             self, filter_dto: CreateFilterDTO,
             condition_dtos: List[CreateConditionDTO]) \
             -> Tuple[FilterDTO, List[ConditionDTO]]:
+        project_id = filter_dto.project_id
+        user_id = filter_dto.user_id
+        self._validate_project_data(project_id=project_id, user_id=user_id)
         self._validate_filter_data(
             filter_dto=filter_dto,
             condition_dtos=condition_dtos
@@ -58,6 +67,13 @@ class FilterInteractor:
             filter_dto=filter_dto, condition_dtos=condition_dtos
         )
         return filter_dto, condition_dtos
+
+    def _validate_project_data(self, project_id: str, user_id: str):
+
+        self.validate_given_project_ids(project_ids=[project_id])
+        self.validate_if_user_is_in_project(
+            project_id=project_id, user_id=user_id
+        )
 
     def update_filter_wrapper(
             self, filter_dto: UpdateFilterDTO,
