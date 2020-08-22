@@ -2,6 +2,7 @@
 
 REQUEST_BODY_JSON = """
 {
+    "project_id": "string",
     "templates_conditions": [
         {
             "template_id": "string",
