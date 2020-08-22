@@ -16,7 +16,7 @@ from .stage import Stage
 from .stage_actions import StageAction
 from .stage_permitted_roles import StagePermittedRoles
 from .task import Task
-from .task_due_details import UserTaskDelayReason
+from .user_task_delay_reason import UserTaskDelayReason
 from .task_gof import TaskGoF
 from .task_gof_field import TaskGoFField
 from .task_log import TaskLog

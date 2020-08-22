@@ -3,7 +3,7 @@ Created on: 24/07/20
 Author: Pavankumar Pamuru
 
 """
-from typing import List, Optional
+from typing import List
 
 
 class InvalidProjectIdsException(Exception):

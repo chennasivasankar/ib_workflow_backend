@@ -6,12 +6,16 @@ from ib_tasks.interactors.user_action_on_task_interactor \
     import UserActionOnTaskInteractor
 from ib_tasks.tests.factories.interactor_dtos import \
     TaskCurrentStageDetailsDTOFactory
+from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory, \
+    StageActionDetailsDTOFactory
 
 
 class TestUserActionOnTaskInteractor:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
+        ActionDTOFactory.reset_sequence()
+        StageActionDetailsDTOFactory.reset_sequence()
         TaskCurrentStageDetailsDTOFactory.reset_sequence()
 
     @staticmethod
@@ -350,7 +354,6 @@ class TestUserActionOnTaskInteractor:
             task_id
         mock_obj.return_value = True
 
-        storage.validate_task_id.return_value = True
         interactor = UserActionOnTaskInteractor(
             user_id=user_id, board_id=board_id, action_id=action_id,
             storage=storage, gof_storage=gof_storage,

@@ -21,7 +21,8 @@ class TaskColumnDTOFactory(factory.Factory):
         model = ColumnTasksDTO
 
     column_id = factory.Sequence(lambda n: f"COLUMN_ID_{n + 1}")
-    task_id = factory.Sequence(lambda n: "task_id_%d" % n)
+    task_display_id = factory.Sequence(lambda n: "task_id_%d" % n)
+    task_id = factory.Sequence(lambda n: n)
     stage_id = factory.Sequence(lambda n: f'stage_id_{n}')
 
 
