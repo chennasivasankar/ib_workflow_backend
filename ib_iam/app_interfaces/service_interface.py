@@ -204,3 +204,13 @@ class ServiceInterface:
             team_id=team_id, user_id=user_id
         )
         return immediate_superion_user_id
+
+    @staticmethod
+    def get_valid_project_ids(project_ids: List[str]) -> List[str]:
+        from ib_iam.interactors.project_interactor import ProjectInteractor
+        from ib_iam.storages.project_storage_implementation import \
+            ProjectStorageImplementation
+        project_storage = ProjectStorageImplementation()
+        interactor = ProjectInteractor(project_storage=project_storage)
+        project_ids = interactor.get_valid_project_ids(project_ids=project_ids)
+        return project_ids
