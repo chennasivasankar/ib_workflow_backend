@@ -1,7 +1,7 @@
 import factory
 
 from ib_iam import models
-from ib_iam.models import Role, Team, Company, Country, State, City
+from ib_iam.models import Role, Team, Company, Country, State, City, Project
 from ib_iam.models.team_member_level import TeamMemberLevel
 from ib_iam.models.user import UserDetails, UserTeam, UserRole
 
@@ -107,3 +107,13 @@ class CityFactory(factory.django.DjangoModelFactory):
         model = City
 
     name = factory.sequence(lambda counter: "city_name{}".format(counter))
+
+
+class ProjectFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Project
+
+    project_id = factory.Sequence(lambda n: 'project %s' % n)
+    name = factory.Sequence(lambda n: 'name %s' % n)
+    description = factory.Sequence(lambda n: 'description %s' % n)
+    logo_url = factory.Sequence(lambda n: 'logo %s' % n)

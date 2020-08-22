@@ -3,7 +3,7 @@ from typing import List
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelIdWithMemberIdsDTO
 from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
     AddMembersToLevelPresenterInterface
-from ib_iam.interactors.storage_interfaces.level_storage_interface import \
+from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface import \
     TeamMemberLevelStorageInterface
 
 

@@ -26,7 +26,7 @@ class TestGetTaskCurrentStagesInteractor:
 
     @pytest.fixture
     def user_roles(self):
-        user_roles = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC',
+        user_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC',
                       'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
                       'FIN_COMPLIANCE_APPROVER',
                       'FIN_PAYMENTS_LEVEL1_VERIFIER',

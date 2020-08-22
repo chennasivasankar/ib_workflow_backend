@@ -173,6 +173,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         StatusVariableDTOFactory.reset_sequence()
         statuses = [StatusVariableDTOFactory()]
         storage_mock.get_status_variables_to_task.return_value = statuses
+        task_storage_mock.get_task_id_for_task_display_id.return_value = 1
 
         interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
             storage=storage_mock, action_storage=action_storage_mock,
@@ -196,9 +197,9 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             stage_value_dict={}
         )
         storage_mock.get_global_constants_to_task \
-            .assert_called_once_with(task_display_id=task_display_id)
+            .assert_called_once_with(task_id=1)
         storage_mock.get_stage_dtos_to_task \
-            .assert_called_once_with(task_display_id=task_display_id)
+            .assert_called_once_with(task_id=1)
 
     @staticmethod
     def test_access_invalid_key_raises_invalid_key_error(storage_mock,
@@ -267,7 +268,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
 
         # Act
         actual_result = interactor.get_status_variables_dtos_of_task_based_on_action(
-            action_id=action_id, task_display_id=task_display_id)
+            action_id=action_id, task_id=1)
         # Assert
         storage_mock.get_path_name_to_action.assert_called_once_with(
             action_id=action_id
@@ -292,7 +293,6 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         storage_mock.get_status_variables_to_task.return_value = statuses
         storage_mock.get_task_template_stage_logic_to_task \
             .return_value = stage_display_value
-        storage_mock.validate_task_display_id.return_value = True
         from ib_tasks.tests.factories.interactor_dtos \
             import StatusOperandStageDTOFactory
         StatusOperandStageDTOFactory.reset_sequence()
@@ -308,7 +308,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
 
         # Act
         actual_result = interactor.get_next_stages_of_task(
-            task_display_id=task_display_id, status_variable_dtos=statuses)
+            task_id=1, status_variable_dtos=statuses)
         # Assert
 
         assert actual_result == ['stage_1', 'stage_2', 'stage_3']
@@ -335,7 +335,6 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         storage_mock.get_status_variables_to_task.return_value = statuses
         storage_mock.get_task_template_stage_logic_to_task \
             .return_value = stage_display_value
-        storage_mock.validate_task_display_id.return_value = True
         assignee_details_dto = AssigneeDetailsDTO(assignee_id='user_id_1',
                                                   name='user_name_1',
                                                   profile_pic_url='profile_pic_1')
@@ -396,10 +395,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         storage_mock.get_status_variables_to_task.return_value = statuses
         storage_mock.get_task_template_stage_logic_to_task \
             .return_value = stage_display_value
-        storage_mock.validate_task_display_id.return_value = True
-        assignee_details_dto = AssigneeDetailsDTO(assignee_id="",
-                                                  name="",
-                                                  profile_pic_url="")
+        assignee_details_dto = None
         stage_with_user_details_dtos = [
             StageWithUserDetailsDTO(db_stage_id=1, stage_display_name='name_0',
                                     assignee_details_dto=assignee_details_dto)]
@@ -428,6 +424,6 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             presenter=presenter_mock)
         # Assert
         presenter_mock. \
-            get_next_stages_random_assignees_of_a_task_response.\
+            get_next_stages_random_assignees_of_a_task_response. \
             assert_called_once_with(
             stage_with_user_details_dtos)

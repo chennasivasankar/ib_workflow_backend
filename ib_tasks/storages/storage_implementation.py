@@ -238,7 +238,7 @@ class StagesStorageImplementation(StageStorageInterface):
     def get_task_id_with_stage_details_dtos_based_on_stage_value(
             self, stage_values: List[int],
             task_ids_group_by_stage_value_dtos: List[
-                StageValueWithTaskIdsDTO], user_id: str
+                StageValueWithTaskIdsDTO]
     ) -> List[TaskIdWithStageDetailsDTO]:
         # ToDo: Need to optimize the storage calls which are in for loop
         all_task_id_with_stage_details_dtos = []
@@ -292,7 +292,8 @@ class StagesStorageImplementation(StageStorageInterface):
             TaskStageHistory(
                 task_id=each_task_id_with_stage_assignee_dto.task_id,
                 stage_id=each_task_id_with_stage_assignee_dto.db_stage_id,
-                assignee_id=each_task_id_with_stage_assignee_dto.assignee_id)
+                assignee_id=each_task_id_with_stage_assignee_dto.assignee_id,
+            team_id=each_task_id_with_stage_assignee_dto.team_id)
             for each_task_id_with_stage_assignee_dto in
             task_id_with_stage_assignee_dtos
         ]
@@ -334,7 +335,7 @@ class StagesStorageImplementation(StageStorageInterface):
             task_stage_obj in task_stage_objs]
         return stages_having_assignee_dtos
 
-    def update_task_stages_with_left_at_status(
+    def update_task_stages_other_than_matched_stages_with_left_at_status(
             self, task_id: int, db_stage_ids: List[int]):
         task_stage_objs = TaskStageHistory.objects \
             .filter(task_id=task_id, left_at__isnull=True) \
@@ -345,16 +346,16 @@ class StagesStorageImplementation(StageStorageInterface):
             task_stage_objs, ['left_at']
         )
 
-    def get_task_stages_having_assignees_without_having_left_at_status(
+    def get_task_stages_assignees_without_having_left_at_status(
             self, task_id: int, db_stage_ids: List[int]) -> List[
         StageAssigneeDTO]:
         task_stage_objs = list(TaskStageHistory.objects.filter(
             task_id=task_id,
-            stage_id__in=db_stage_ids, left_at__isnull=True).exclude(
-            assignee_id__isnull=True).values('stage_id', 'assignee_id'))
+            stage_id__in=db_stage_ids, left_at__isnull=True)
+                               .values('stage_id', 'assignee_id', 'team_id'))
         stages_having_assignee_dtos = [StageAssigneeDTO(
             assignee_id=task_stage_obj['assignee_id'],
-            db_stage_id=task_stage_obj['stage_id']) for
+            db_stage_id=task_stage_obj['stage_id'], team_id=task_stage_obj['team_id']) for
             task_stage_obj in task_stage_objs]
         return stages_having_assignee_dtos
 

@@ -243,7 +243,8 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         stage_assignees = [
             StageAssigneeDTO(
                 db_stage_id=task_dto.stage_assignee.stage_id,
-                assignee_id=task_dto.stage_assignee.assignee_id
+                assignee_id=task_dto.stage_assignee.assignee_id,
+                team_id=task_dto.stage_assignee.team_id
             )
         ]
         task_stage_assignee_dto = TaskIdWithStageAssigneesDTO(

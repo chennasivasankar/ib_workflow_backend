@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from ib_iam.adapters.dtos import UserProfileDTO
+from ib_iam.interactors.dtos.dtos import CompleteTeamMemberLevelsDetailsDTO
 from ib_iam.interactors.storage_interfaces.dtos import \
     TeamMemberLevelDetailsDTO, MemberDTO
 
@@ -43,4 +44,14 @@ class AddMembersToSuperiorsPresenterInterface(ABC):
 
     @abstractmethod
     def prepare_success_response_for_add_members_superiors(self):
+        pass
+
+
+class GetTeamMemberLevelsWithMembersPresenterInterface(ABC):
+
+    @abstractmethod
+    def prepare_success_response_for_team_member_levels_with_members(
+            self,
+            complete_team_member_levels_details_dto: CompleteTeamMemberLevelsDetailsDTO
+    ):
         pass

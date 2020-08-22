@@ -93,3 +93,11 @@ class FieldsStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_field_type_dtos(self, field_ids: List[str]) -> List[FieldTypeDTO]:
         pass
+
+    @abc.abstractmethod
+    def get_field_ids_for_given_gofs(self, gof_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_field_dtos(self, field_ids: List[str]) -> List[FieldDTO]:
+        pass

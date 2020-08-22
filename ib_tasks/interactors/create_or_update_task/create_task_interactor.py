@@ -4,7 +4,8 @@ from ib_tasks.constants.config import TIME_FORMAT
 from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.documents.elastic_task import ElasticFieldDTO
 from ib_tasks.exceptions.action_custom_exceptions import \
-    InvalidActionException, InvalidKeyError, InvalidCustomLogicException
+    InvalidActionException, InvalidKeyError, InvalidCustomLogicException, \
+    InvalidPresentStageAction
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueTimeHasExpiredForToday, InvalidDueTimeFormat, \
     StartDateIsAheadOfDueDate, \
@@ -29,7 +30,7 @@ from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId
-from ib_tasks.interactors\
+from ib_tasks.interactors \
     .call_action_logic_function_and_update_task_status_variables_interactor \
     import \
     InvalidMethodFound
@@ -106,7 +107,7 @@ class CreateTaskInteractor:
             return self._prepare_create_task_response(
                 task_dto, presenter)
         except InvalidTaskTemplateDBId as err:
-            return presenter.raise_invalid_task_template_ids(err)
+            return presenter.raise_invalid_task_template_id(err)
         except InvalidActionException as err:
             return presenter.raise_invalid_action_id(err)
         except DuplicateSameGoFOrderForAGoF as err:
@@ -185,6 +186,9 @@ class CreateTaskInteractor:
         except UserActionPermissionDenied as err:
             return presenter.raise_exception_for_user_action_permission_denied(
                 error_obj=err)
+        except InvalidPresentStageAction as err:
+            return presenter.raise_exception_for_invalid_present_stage_actions(
+                err)
         except InvalidKeyError:
             return presenter.raise_invalid_key_error()
         except InvalidCustomLogicException:
@@ -379,7 +383,7 @@ class CreateTaskInteractor:
                                         ActionTypes.NO_VALIDATIONS.value
         if action_type_is_no_validations:
             empty_values_given = (
-                not start_date or not due_date or not due_time)
+                    not start_date or not due_date or not due_time)
             if empty_values_given:
                 dates_validation_is_not_required = True
         if dates_validation_is_not_required:
