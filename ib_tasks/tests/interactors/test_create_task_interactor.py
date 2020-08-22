@@ -1958,6 +1958,52 @@ class TestCreateTaskInteractor:
         invalid_action_id = error_object.action_id
         assert invalid_action_id == task_dto.action_id
 
+    def test_with_invalid_present_stage_action(
+            self, task_storage_mock, gof_storage_mock,
+            task_template_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock, action_storage_mock,
+            elastic_storage_mock, presenter_mock, mock_object,
+            task_stage_storage_mock,
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            user_action_on_task_mock
+    ):
+        # Arrange
+        given_action_id = 1
+        task_dto = CreateTaskDTOFactory(action_id=given_action_id)
+        task_template_storage_mock.check_is_template_exists.return_value = \
+            True
+        storage_mock.validate_action.return_value = True
+        interactor = CreateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            task_stage_storage=task_stage_storage_mock
+        )
+        from ib_tasks.exceptions.action_custom_exceptions import \
+            InvalidPresentStageAction
+        user_action_on_task_mock.side_effect = InvalidPresentStageAction(
+            given_action_id)
+        presenter_mock.raise_exception_for_invalid_present_stage_actions \
+            .return_value = mock_object
+
+        # Act
+        response = interactor.create_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock \
+            .raise_exception_for_invalid_present_stage_actions \
+            .assert_called_once()
+        call_args = \
+            presenter_mock.raise_exception_for_invalid_present_stage_actions \
+            .call_args
+        error_object = call_args[0][0]
+        invalid_action_id = error_object.action_id
+        assert invalid_action_id == given_action_id
+
     def test_with_invalid_key_error(
             self, task_storage_mock, gof_storage_mock,
             task_template_storage_mock, create_task_storage_mock, storage_mock,
@@ -2104,7 +2150,7 @@ class TestCreateTaskInteractor:
         )
         given_method_name = "invalid method"
 
-        from ib_tasks.interactors\
+        from ib_tasks.interactors \
             .call_action_logic_function_and_update_task_status_variables_interactor import \
             InvalidMethodFound
         user_action_on_task_mock.side_effect = InvalidMethodFound(
