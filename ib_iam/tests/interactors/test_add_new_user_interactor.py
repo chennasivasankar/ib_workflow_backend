@@ -48,7 +48,7 @@ class TestAddNewUserIneractor:
             is_email_verify=None)
         add_user_details_dto = AddUserDetailsDTOFactory(
             name=name, email=email, team_ids=user_teams_ids,
-            role_ids=user_role_ids,
+            # role_ids=user_role_ids,
             company_id=user_company_id
         )
         return user_profile_dto, email, user_teams_ids, user_role_ids, \
