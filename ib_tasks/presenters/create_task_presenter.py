@@ -33,6 +33,17 @@ class CreateTaskPresenterImplementation(
     CreateTaskPresenterInterface, HTTPResponseMixin
 ):
 
+    def raise_exception_for_invalid_present_stage_actions(self, err):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_PRESENT_STAGE_ACTION
+        message = INVALID_PRESENT_STAGE_ACTION[0].format(err.action_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_PRESENT_STAGE_ACTION[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
     def raise_due_date_has_expired(self, err: DueDateHasExpired):
         from ib_tasks.constants.exception_messages import \
             DUE_DATE_HAS_EXPIRED
@@ -198,15 +209,15 @@ class CreateTaskPresenterImplementation(
             data['stages'].append(stage)
         return self.prepare_201_created_response(response_dict=data)
 
-    def raise_invalid_task_template_ids(self, err: InvalidTaskTemplateDBId):
+    def raise_invalid_task_template_id(self, err: InvalidTaskTemplateDBId):
         from ib_tasks.constants.exception_messages import \
-            INVALID_TASK_TEMPLATE_IDS
-        response_message = INVALID_TASK_TEMPLATE_IDS[0].format(
+            INVALID_TASK_TEMPLATE_DB_ID
+        response_message = INVALID_TASK_TEMPLATE_DB_ID[0].format(
             err.task_template_id)
         data = {
             "response": response_message,
             "http_status_code": 400,
-            "res_status": INVALID_TASK_TEMPLATE_IDS[1]
+            "res_status": INVALID_TASK_TEMPLATE_DB_ID[1]
         }
         return self.prepare_400_bad_request_response(data)
 

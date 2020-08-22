@@ -13,7 +13,7 @@ class CreateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_task_template_ids(self, err):
+    def raise_invalid_task_template_id(self, err):
         pass
 
     @abc.abstractmethod
@@ -184,4 +184,8 @@ class CreateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_due_date_has_expired(self, err: DueDateHasExpired):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_present_stage_actions(self, err):
         pass

@@ -7,7 +7,7 @@ from .validator_class import ValidatorClass
 from ...interactors.create_or_update_task.update_task_interactor import \
     UpdateTaskInteractor
 from ...interactors.task_dtos import UpdateTaskDTO, FieldValuesDTO, \
-    StageIdWithAssigneeIdDTO, UpdateTaskWithTaskDisplayIdDTO
+    StageIdWithAssigneeDTO, UpdateTaskWithTaskDisplayIdDTO
 from ...presenters.update_task_presenter import \
     UpdateTaskPresenterImplementation
 from ...storages.elasticsearch_storage_implementation \
@@ -33,6 +33,7 @@ def api_wrapper(*args, **kwargs):
     task_gofs = request_data['task_gofs']
     stage_assignee_stage_id = request_data['stage_assignee']['stage_id']
     stage_assignee_assignee_id = request_data['stage_assignee']['assignee_id']
+    assignee_team_id = request_data['stage_assignee']['team_id']
 
     from ib_tasks.interactors.task_dtos import GoFFieldsDTO
 
@@ -46,9 +47,10 @@ def api_wrapper(*args, **kwargs):
         )
         task_gofs_dtos.append(gof_field_dto)
 
-    stage_assignee = StageIdWithAssigneeIdDTO(
+    stage_assignee = StageIdWithAssigneeDTO(
         stage_id=stage_assignee_stage_id,
-        assignee_id=stage_assignee_assignee_id
+        assignee_id=stage_assignee_assignee_id,
+        team_id=assignee_team_id
     )
 
     task_dto = UpdateTaskWithTaskDisplayIdDTO(
