@@ -3,9 +3,10 @@ from dataclasses import dataclass
 from typing import List
 
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
-    InvalidStageIdsForTask, InvalidTaskDisplayId, InvalidCityIdsException, \
-    InvalidStateIdsException, InvalidCountryIdsException, \
-    InvalidUserIdsException
+    InvalidStageIdsForTask, InvalidTaskDisplayId
+from ib_tasks.adapters.searchable_details_service import \
+    InvalidUserIdsException, InvalidStateIdsException, \
+    InvalidCountryIdsException, InvalidCityIdsException
 from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
     import TaskDetailsDTO

@@ -1,9 +1,12 @@
 from unittest.mock import create_autospec, patch
 
+import factory
 import pytest
 
 from ib_tasks.adapters.searchable_details_service import \
-    SearchableDetailsService
+    SearchableDetailsService, InvalidUserIdsException, \
+    InvalidStateIdsException, InvalidCountryIdsException, \
+    InvalidCityIdsException
 from ib_tasks.constants.enum import ValidationType, Searchable
 from ib_tasks.interactors.get_stages_assignees_details_interactor import \
     GetStagesAssigneesDetailsInteractor
@@ -649,9 +652,11 @@ class TestGetTaskInteractor:
             import TaskGoFFieldDTOFactory
         permission_task_gof_field_dtos = [
             TaskGoFFieldDTOFactory(task_gof_id=0, field_id="field0",
-                                   field_response='{"id": 1, "value": "Hyderabad"}'),
+                                   field_response='{"id": 1, "value": '
+                                                  '"Hyderabad"}'),
             TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field2",
-                                   field_response='{"id": "123e4567-e89b-12d3-a456-426614174000", "value": "User1"}'),
+                                   field_response='{"id": '
+                                                  '"123e4567-e89b-12d3-a456-426614174000", "value": "User1"}'),
             TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field3",
                                    field_response="response3")
         ]
@@ -684,7 +689,8 @@ class TestGetTaskInteractor:
         task_details_dto = TaskDetailsDTO(
             task_base_details_dto=task_base_details_dto,
             task_gof_dtos=permission_task_gof_dtos,
-            task_gof_field_dtos=permission_task_gof_field_dtos_with_field_type_searchable
+            task_gof_field_dtos
+            =permission_task_gof_field_dtos_with_field_type_searchable
         )
         return task_details_dto
 
@@ -725,10 +731,11 @@ class TestGetTaskInteractor:
         # Arrange
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import get_user_role_ids
-        from ib_tasks.tests.common_fixtures.adapters\
+        from ib_tasks.tests.common_fixtures.adapters \
             .searchable_details_service import \
             searchable_details_dtos_mock
-        searchable_details_dtos_mock_method = searchable_details_dtos_mock(mocker)
+        searchable_details_dtos_mock_method = searchable_details_dtos_mock(
+            mocker)
         get_user_role_ids_mock_method = get_user_role_ids(mocker)
         user_id = "user1"
         task_id = 1
@@ -778,68 +785,287 @@ class TestGetTaskInteractor:
         presenter_mock.get_task_response.assert_called_once_with(
             task_complete_details_dto_with_field_type_searchable)
 
-    # @patch.object(SearchableDetailsService, 'get_searchable_details_dtos')
-    # @patch.object(GetTaskBaseInteractor, 'get_task')
-    # def test_given_valid_task_and_some_of_fields_are_searchable_with_invalid_city_ids_raise_exception(
-    #         self, get_task_mock, mocker,
-    #         task_details_dto_with_some_fields_searchable_type,
-    #         stage_assignee_details_dtos, stages_and_actions_details_dtos,
-    #         user_roles, storage_mock, presenter_mock, stages_storage_mock,
-    #         task_storage_mock, task_crud_storage_mock, action_storage_mock,
-    #         task_stage_storage_mock, gof_ids,
-    #         permission_task_gof_dtos, field_ids, permission_field_ids,
-    #         mock_object, permission_gof_ids, reset_sequence,
-    #         permission_task_gof_field_dtos_with_field_type_searchable,
-    #         field_searchable_dtos_with_invalid_city_ids,
-    #         task_complete_details_dto_with_field_type_searchable
-    # ):
-    #     # Arrange
-    #     from ib_tasks.exceptions.task_custom_exceptions import \
-    #         InvalidCityIdsException
-    #     from ib_tasks.tests.common_fixtures.adapters.roles_service \
-    #         import get_user_role_ids
-    #     from ib_tasks.tests.common_fixtures.adapters\
-    #         .searchable_details_service import \
-    #         searchable_details_dtos_invalid_city_ids_mock
-    #     searchable_details_dtos_invalid_city_ids_mock(mocker)
-    #     get_user_role_ids_mock_method = get_user_role_ids(mocker)
-    #     user_id = "user1"
-    #     task_id = 1
-    #     task_display_id = "IBWF-1"
-    #     get_task_mock.return_value = \
-    #         task_details_dto_with_some_fields_searchable_type
-    #     task_storage_mock.check_is_valid_task_display_id.return_value = True
-    #     task_storage_mock.get_task_id_for_task_display_id.return_value = \
-    #         task_id
-    #     task_stage_storage_mock \
-    #         .is_user_has_permission_for_at_least_one_stage.return_value = True
-    #     interactor = GetTaskInteractor(
-    #         storage=storage_mock, stages_storage=stages_storage_mock,
-    #         task_storage=task_storage_mock, action_storage=action_storage_mock,
-    #         task_stage_storage=task_stage_storage_mock,
-    #         task_crud_storage=task_crud_storage_mock
-    #     )
-    #     task_crud_storage_mock.get_gof_ids_having_permission.return_value = \
-    #         permission_gof_ids
-    #     task_crud_storage_mock.get_field_ids_having_permission.return_value = \
-    #         permission_field_ids
-    #     task_crud_storage_mock.get_field_searchable_dtos.return_value = \
-    #         field_searchable_dtos_with_invalid_city_ids
-    #     presenter_mock.raise_invalid_city_ids.return_value = mock_object
-    #
-    #     # Act
-    #     with pytest.raises(InvalidCityIdsException) as err:
-    #         interactor.get_task_details_wrapper(
-    #             user_id=user_id, task_display_id=task_display_id,
-    #             presenter=presenter_mock
-    #         )
-    #
-    #     # Assert
-    #     get_user_role_ids_mock_method.assert_called_once()
-    #     task_crud_storage_mock.get_gof_ids_having_permission \
-    #         .assert_called_once_with(
-    #             gof_ids, user_roles)
-    #     task_crud_storage_mock.get_field_ids_having_permission \
-    #         .assert_called_once_with(
-    #             field_ids, user_roles)
-    #     presenter_mock.raise_invalid_city_ids.assert_called_once()
+    @patch.object(SearchableDetailsService, 'get_searchable_details_dtos')
+    @patch.object(GetTaskBaseInteractor, 'get_task')
+    def test_given_valid_task_and_some_of_fields_are_searchable_with_invalid_city_ids_raise_exception(
+            self, get_task_mock, get_searchable_details_dtos_mock, mocker,
+            task_details_dto_with_some_fields_searchable_type,
+            stage_assignee_details_dtos, stages_and_actions_details_dtos,
+            user_roles, storage_mock, presenter_mock, stages_storage_mock,
+            task_storage_mock, task_crud_storage_mock, action_storage_mock,
+            task_stage_storage_mock, gof_ids,
+            permission_task_gof_dtos, field_ids, permission_field_ids,
+            mock_object, permission_gof_ids, reset_sequence,
+            permission_task_gof_field_dtos_with_field_type_searchable,
+            field_searchable_dtos_with_invalid_city_ids,
+            task_complete_details_dto_with_field_type_searchable
+    ):
+        # Arrange
+        from ib_tasks.tests.common_fixtures.adapters.roles_service \
+            import get_user_role_ids
+        get_user_role_ids_mock_method = get_user_role_ids(mocker)
+        invalid_city_ids = [100, 110]
+        exception_object = InvalidCityIdsException(invalid_city_ids)
+        get_searchable_details_dtos_mock.side_effect = exception_object
+        user_id = "user1"
+        task_id = 1
+        task_display_id = "IBWF-1"
+        get_task_mock.return_value = \
+            task_details_dto_with_some_fields_searchable_type
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        task_stage_storage_mock \
+            .is_user_has_permission_for_at_least_one_stage.return_value = True
+        interactor = GetTaskInteractor(
+            storage=storage_mock, stages_storage=stages_storage_mock,
+            task_storage=task_storage_mock, action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock,
+            task_crud_storage=task_crud_storage_mock
+        )
+        task_crud_storage_mock.get_gof_ids_having_permission.return_value = \
+            permission_gof_ids
+        task_crud_storage_mock.get_field_ids_having_permission.return_value = \
+            permission_field_ids
+        task_crud_storage_mock.get_field_searchable_dtos.return_value = \
+            field_searchable_dtos_with_invalid_city_ids
+        presenter_mock.raise_invalid_searchable_records_found.return_value = \
+            mock_object
+
+        # Act
+        response = interactor.get_task_details_wrapper(
+            user_id=user_id, task_display_id=task_display_id,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == mock_object
+        get_user_role_ids_mock_method.assert_called_once()
+        task_crud_storage_mock.get_gof_ids_having_permission \
+            .assert_called_once_with(
+                gof_ids, user_roles)
+        task_crud_storage_mock.get_field_ids_having_permission \
+            .assert_called_once_with(
+                field_ids, user_roles)
+        presenter_mock.raise_invalid_searchable_records_found \
+            .assert_called_once()
+        task_crud_storage_mock.get_field_searchable_dtos.assert_called_once()
+
+    @patch.object(SearchableDetailsService, 'get_searchable_details_dtos')
+    @patch.object(GetTaskBaseInteractor, 'get_task')
+    def test_given_valid_task_and_some_of_fields_are_searchable_with_invalid_state_ids_raise_exception(
+            self, get_task_mock, get_searchable_details_dtos_mock, mocker,
+            task_details_dto_with_some_fields_searchable_type,
+            stage_assignee_details_dtos, stages_and_actions_details_dtos,
+            user_roles, storage_mock, presenter_mock, stages_storage_mock,
+            task_storage_mock, task_crud_storage_mock, action_storage_mock,
+            task_stage_storage_mock, gof_ids,
+            permission_task_gof_dtos, field_ids, permission_field_ids,
+            mock_object, permission_gof_ids, reset_sequence,
+            permission_task_gof_field_dtos_with_field_type_searchable,
+            task_complete_details_dto_with_field_type_searchable
+    ):
+        # Arrange
+        from ib_tasks.tests.common_fixtures.adapters.roles_service \
+            import get_user_role_ids
+        get_user_role_ids_mock_method = get_user_role_ids(mocker)
+        searchable_field_ids = ["field0", "field2"]
+        field_response = ["200", "300"]
+        invalid_state_ids = [200]
+        field_searchable_dtos = FieldSearchableDTOFactory.create_batch(
+            field_id=factory.Iterator(searchable_field_ids),
+            field_value=Searchable.STATE.value,
+            field_response=factory.Iterator(field_response),
+            size=2
+        )
+        exception_object = InvalidStateIdsException(invalid_state_ids)
+        get_searchable_details_dtos_mock.side_effect = exception_object
+        user_id = "user1"
+        task_id = 1
+        task_display_id = "IBWF-1"
+        get_task_mock.return_value = \
+            task_details_dto_with_some_fields_searchable_type
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        task_stage_storage_mock \
+            .is_user_has_permission_for_at_least_one_stage.return_value = True
+        interactor = GetTaskInteractor(
+            storage=storage_mock, stages_storage=stages_storage_mock,
+            task_storage=task_storage_mock, action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock,
+            task_crud_storage=task_crud_storage_mock
+        )
+        task_crud_storage_mock.get_gof_ids_having_permission.return_value = \
+            permission_gof_ids
+        task_crud_storage_mock.get_field_ids_having_permission.return_value = \
+            permission_field_ids
+        task_crud_storage_mock.get_field_searchable_dtos.return_value = \
+            field_searchable_dtos
+        presenter_mock.raise_invalid_searchable_records_found.return_value = \
+            mock_object
+
+        # Act
+        response = interactor.get_task_details_wrapper(
+            user_id=user_id, task_display_id=task_display_id,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == mock_object
+        get_user_role_ids_mock_method.assert_called_once()
+        task_crud_storage_mock.get_gof_ids_having_permission \
+            .assert_called_once_with(
+                gof_ids, user_roles)
+        task_crud_storage_mock.get_field_ids_having_permission \
+            .assert_called_once_with(field_ids, user_roles)
+        presenter_mock.raise_invalid_searchable_records_found \
+            .assert_called_once()
+        task_crud_storage_mock.get_field_searchable_dtos.assert_called_once()
+
+    @patch.object(SearchableDetailsService, 'get_searchable_details_dtos')
+    @patch.object(GetTaskBaseInteractor, 'get_task')
+    def test_given_valid_task_and_some_of_fields_are_searchable_with_invalid_country_ids_raise_exception(
+            self, get_task_mock, get_searchable_details_dtos_mock, mocker,
+            task_details_dto_with_some_fields_searchable_type,
+            stage_assignee_details_dtos, stages_and_actions_details_dtos,
+            user_roles, storage_mock, presenter_mock, stages_storage_mock,
+            task_storage_mock, task_crud_storage_mock, action_storage_mock,
+            task_stage_storage_mock, gof_ids,
+            permission_task_gof_dtos, field_ids, permission_field_ids,
+            mock_object, permission_gof_ids, reset_sequence,
+            permission_task_gof_field_dtos_with_field_type_searchable,
+            task_complete_details_dto_with_field_type_searchable
+    ):
+        # Arrange
+        from ib_tasks.tests.common_fixtures.adapters.roles_service \
+            import get_user_role_ids
+        get_user_role_ids_mock_method = get_user_role_ids(mocker)
+        searchable_field_ids = ["field0", "field2"]
+        field_response = ["200", "300"]
+        invalid_country_ids = [200]
+        field_searchable_dtos = FieldSearchableDTOFactory.create_batch(
+            field_id=factory.Iterator(searchable_field_ids),
+            field_value=Searchable.COUNTRY.value,
+            field_response=factory.Iterator(field_response),
+            size=2
+        )
+        exception_object = InvalidCountryIdsException(invalid_country_ids)
+        get_searchable_details_dtos_mock.side_effect = exception_object
+        user_id = "user1"
+        task_id = 1
+        task_display_id = "IBWF-1"
+        get_task_mock.return_value = \
+            task_details_dto_with_some_fields_searchable_type
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        task_stage_storage_mock \
+            .is_user_has_permission_for_at_least_one_stage.return_value = True
+        interactor = GetTaskInteractor(
+            storage=storage_mock, stages_storage=stages_storage_mock,
+            task_storage=task_storage_mock, action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock,
+            task_crud_storage=task_crud_storage_mock
+        )
+        task_crud_storage_mock.get_gof_ids_having_permission.return_value = \
+            permission_gof_ids
+        task_crud_storage_mock.get_field_ids_having_permission.return_value = \
+            permission_field_ids
+        task_crud_storage_mock.get_field_searchable_dtos.return_value = \
+            field_searchable_dtos
+        presenter_mock.raise_invalid_searchable_records_found.return_value = \
+            mock_object
+
+        # Act
+        response = interactor.get_task_details_wrapper(
+            user_id=user_id, task_display_id=task_display_id,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == mock_object
+        get_user_role_ids_mock_method.assert_called_once()
+        task_crud_storage_mock.get_gof_ids_having_permission \
+            .assert_called_once_with(
+            gof_ids, user_roles)
+        task_crud_storage_mock.get_field_ids_having_permission \
+            .assert_called_once_with(field_ids, user_roles)
+        presenter_mock.raise_invalid_searchable_records_found \
+            .assert_called_once()
+        task_crud_storage_mock.get_field_searchable_dtos.assert_called_once()
+
+    @patch.object(SearchableDetailsService, 'get_searchable_details_dtos')
+    @patch.object(GetTaskBaseInteractor, 'get_task')
+    def test_given_valid_task_and_some_of_fields_are_searchable_with_invalid_user_ids_raise_exception(
+            self, get_task_mock, get_searchable_details_dtos_mock, mocker,
+            task_details_dto_with_some_fields_searchable_type,
+            stage_assignee_details_dtos, stages_and_actions_details_dtos,
+            user_roles, storage_mock, presenter_mock, stages_storage_mock,
+            task_storage_mock, task_crud_storage_mock, action_storage_mock,
+            task_stage_storage_mock, gof_ids,
+            permission_task_gof_dtos, field_ids, permission_field_ids,
+            mock_object, permission_gof_ids, reset_sequence,
+            permission_task_gof_field_dtos_with_field_type_searchable,
+            task_complete_details_dto_with_field_type_searchable
+    ):
+        # Arrange
+        from ib_tasks.tests.common_fixtures.adapters.roles_service \
+            import get_user_role_ids
+        get_user_role_ids_mock_method = get_user_role_ids(mocker)
+        searchable_field_ids = ["field0", "field2"]
+        field_response = [
+            "123e4567-e89b-12d3-a456-426614174000",
+            "123e4567-e89b-12d3-a456-426614174001"
+        ]
+        invalid_user_ids = ["123e4567-e89b-12d3-a456-426614174000"]
+        field_searchable_dtos = FieldSearchableDTOFactory.create_batch(
+            field_id=factory.Iterator(searchable_field_ids),
+            field_value=Searchable.USER.value,
+            field_response=factory.Iterator(field_response),
+            size=2
+        )
+        exception_object = InvalidUserIdsException(invalid_user_ids)
+        get_searchable_details_dtos_mock.side_effect = exception_object
+        user_id = "user1"
+        task_id = 1
+        task_display_id = "IBWF-1"
+        get_task_mock.return_value = \
+            task_details_dto_with_some_fields_searchable_type
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        task_stage_storage_mock \
+            .is_user_has_permission_for_at_least_one_stage.return_value = True
+        interactor = GetTaskInteractor(
+            storage=storage_mock, stages_storage=stages_storage_mock,
+            task_storage=task_storage_mock, action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock,
+            task_crud_storage=task_crud_storage_mock
+        )
+        task_crud_storage_mock.get_gof_ids_having_permission.return_value = \
+            permission_gof_ids
+        task_crud_storage_mock.get_field_ids_having_permission.return_value = \
+            permission_field_ids
+        task_crud_storage_mock.get_field_searchable_dtos.return_value = \
+            field_searchable_dtos
+        presenter_mock.raise_invalid_searchable_records_found.return_value = \
+            mock_object
+
+        # Act
+        response = interactor.get_task_details_wrapper(
+            user_id=user_id, task_display_id=task_display_id,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == mock_object
+        get_user_role_ids_mock_method.assert_called_once()
+        task_crud_storage_mock.get_gof_ids_having_permission \
+            .assert_called_once_with(
+            gof_ids, user_roles)
+        task_crud_storage_mock.get_field_ids_having_permission \
+            .assert_called_once_with(field_ids, user_roles)
+        presenter_mock.raise_invalid_searchable_records_found \
+            .assert_called_once()
+        task_crud_storage_mock.get_field_searchable_dtos.assert_called_once()

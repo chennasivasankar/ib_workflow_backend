@@ -4,6 +4,26 @@ from ib_tasks.adapters.dtos import SearchableDetailsDTO
 from ib_tasks.interactors.task_dtos import SearchableDTO
 
 
+class InvalidUserIdsException(Exception):
+    def __init__(self, user_ids: List[str]):
+        self.user_ids = user_ids
+
+
+class InvalidStateIdsException(Exception):
+    def __init__(self, state_ids: List[int]):
+        self.state_ids = state_ids
+
+
+class InvalidCountryIdsException(Exception):
+    def __init__(self, country_ids: List[int]):
+        self.country_ids = country_ids
+
+
+class InvalidCityIdsException(Exception):
+    def __init__(self, city_ids: List[int]):
+        self.city_ids = city_ids
+
+
 class SearchableDetailsService:
 
     @property
@@ -20,20 +40,12 @@ class SearchableDetailsService:
         try:
             return self._get_searchable_details_dtos(searchable_dtos)
         except InvalidCityIds as err:
-            from ib_tasks.exceptions.task_custom_exceptions import \
-                InvalidCityIdsException
             raise InvalidCityIdsException(err.city_ids)
         except InvalidStateIds as err:
-            from ib_tasks.exceptions.task_custom_exceptions import \
-                InvalidStateIdsException
             raise InvalidStateIdsException(err.state_ids)
         except InvalidCountryIds as err:
-            from ib_tasks.exceptions.task_custom_exceptions import \
-                InvalidCountryIdsException
             raise InvalidCountryIdsException(err.country_ids)
         except InvalidUserIds as err:
-            from ib_tasks.exceptions.task_custom_exceptions import \
-                InvalidUserIdsException
             raise InvalidUserIdsException(err.user_ids)
 
     def _get_searchable_details_dtos(
@@ -52,3 +64,5 @@ class SearchableDetailsService:
             for searchable_dto in searchable_dtos
         ]
         return searchable_details_dtos
+
+

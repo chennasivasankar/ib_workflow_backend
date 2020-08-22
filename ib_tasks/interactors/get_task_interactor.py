@@ -4,9 +4,10 @@ from ib_tasks.adapters.dtos import SearchableDetailsDTO
 from ib_tasks.constants.enum import Searchable
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException, InvalidStageIdsForTask, \
-    InvalidTaskDisplayId, UserPermissionDenied, InvalidCityIdsException, \
-    InvalidStateIdsException, InvalidCountryIdsException, \
-    InvalidUserIdsException
+    InvalidTaskDisplayId, UserPermissionDenied
+from ib_tasks.adapters.searchable_details_service import \
+    InvalidUserIdsException, InvalidStateIdsException, \
+    InvalidCountryIdsException, InvalidCityIdsException
 from ib_tasks.interactors.get_task_base_interactor \
     import GetTaskBaseInteractor
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
