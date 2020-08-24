@@ -73,7 +73,6 @@ class StageAssigneeDTO:
     assignee_id: str
     team_id: str
 
-
 @dataclass
 class TaskIdWithStageAssigneesDTO:
     task_id: int
@@ -87,11 +86,8 @@ class TaskDisplayIdWithStageAssigneesDTO:
 
 
 @dataclass
-class TaskIdWithStageAssigneeDTO:
+class TaskIdWithStageAssigneeDTO(StageAssigneeDTO):
     task_id: int
-    db_stage_id: int
-    assignee_id: str
-
 
 @dataclass
 class StageAssigneeDetailsDTO:

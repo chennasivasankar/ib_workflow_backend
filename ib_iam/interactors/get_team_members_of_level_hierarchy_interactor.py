@@ -1,6 +1,6 @@
 from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
     GetTeamMembersOfLevelHierarchyPresenterInterface
-from ib_iam.interactors.storage_interfaces.level_storage_interface import \
+from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface import \
     TeamMemberLevelStorageInterface
 
 

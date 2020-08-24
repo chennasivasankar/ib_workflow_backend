@@ -357,3 +357,7 @@ USER_NOT_IN_PROJECT = (
     "User Not a part of the Project",
     "USER_NOT_IN_PROJECT"
 )
+INVALID_USER_ID = (
+    "User with id {} doesn't exist",
+    "INVALID_USER_ID"
+)

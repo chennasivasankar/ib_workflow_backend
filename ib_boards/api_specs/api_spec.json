@@ -53,6 +53,29 @@
         "res_status"
       ]
     },
+    "AccessUnauthorizedForProject": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "USER_IS_NOT_IN_PROJECT",
+            "USER_DONOT_HAVE_ACCESS"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
     "AccessUnauthorized": {
       "type": "object",
       "properties": {
@@ -206,6 +229,28 @@
         "action_id",
         "button_text",
         "button_color"
+      ]
+    },
+    "InvalidProjectId": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_PROJECT_ID"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
       ]
     },
     "TaskOverviewWithStageAndActions": {
@@ -459,6 +504,13 @@
       "type": "string",
       "required": true
     },
+    "ProjectIdParameter": {
+      "name": "project_id",
+      "in": "query",
+      "description": "project id value",
+      "type": "string",
+      "required": true
+    },
     "ColumnIdParameter": {
       "name": "column_id",
       "in": "path",
@@ -513,6 +565,18 @@
       "description": "unauthorized access",
       "schema": {
         "$ref": "#/definitions/AccessUnauthorized"
+      }
+    },
+    "UserNotInProjectResponse": {
+      "description": "unauthorized access",
+      "schema": {
+        "$ref": "#/definitions/AccessUnauthorizedForProject"
+      }
+    },
+    "InvalidProjectIdResponse": {
+      "description": "invalid project id",
+      "schema": {
+        "$ref": "#/definitions/InvalidProjectId"
       }
     },
     "InvalidColumnsResponse": {
@@ -607,14 +671,20 @@
           },
           {
             "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/ProjectIdParameter"
           }
         ],
         "responses": {
           "403": {
-            "$ref": "#/responses/InvalidAccessResponse"
+            "$ref": "#/responses/UserNotInProjectResponse"
           },
           "400": {
             "$ref": "#/responses/InvalidPaginationResponse"
+          },
+          "404": {
+            "$ref": "#/responses/InvalidProjectIdResponse"
           },
           "200": {
             "$ref": "#/responses/GetBoardsResponse"

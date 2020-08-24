@@ -7,8 +7,7 @@ from ib_tasks.constants.enum import Searchable, Priority
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
 from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
-    import \
-    SearchQueryWithPaginationDTO
+    import SearchQueryWithPaginationDTO
 from ib_tasks.interactors.get_tasks_to_relevant_search_query import \
     SearchQueryDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
@@ -25,7 +24,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    CurrentStageDetailsDTO
+    CurrentStageDetailsDTO, StageIdWithValueDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     TaskDueParametersDTO, \
@@ -270,6 +269,7 @@ class TaskIdWithStageAssigneeDTOFactory(factory.Factory):
     task_id = factory.sequence(lambda n: n + 1)
     db_stage_id = factory.Sequence(lambda n: n + 1)
     assignee_id = factory.sequence(lambda n: "user_{}".format(n))
+    team_id = factory.sequence(lambda n: "team_{}".format(n + 1))
 
 
 class StageAssigneeDetailsDTOFactory(factory.Factory):
@@ -532,3 +532,11 @@ class SearchableDTOFactory(factory.Factory):
 
     search_type = Searchable.TEAM.value
     id = "team1"
+
+
+class StageIdWithValueDTOFactory(factory.Factory):
+    class Meta:
+        model = StageIdWithValueDTO
+
+    db_stage_id = factory.Sequence(lambda n: n + 1)
+    stage_value = factory.Sequence(lambda n: n)

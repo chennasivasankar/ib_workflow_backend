@@ -179,8 +179,23 @@ class MemberDTO:
     member_id: str
     immediate_superior_team_user_id: str = None
 
+
+@dataclass
+class ProjectDTO:
+    project_id: str
+    name: str
+    description: Optional[str] = None
+    logo_url: Optional[str] = None
+
+
 @dataclass
 class SearchableDetailsDTO:
     search_type: Searchable
     id: Union[int, str]
     value: str
+
+
+@dataclass
+class MemberIdWithSubordinateMemberIdsDTO:
+    member_id: str
+    subordinate_member_ids: List[str]

@@ -1,7 +1,8 @@
+import factory
 import pytest
 
 from ib_tasks.tests.factories.models import TaskTemplateFactory, \
-    TaskTemplateWith2GoFsFactory
+    TaskTemplateWith2GoFsFactory, ProjectTaskTemplateFactory
 
 
 @pytest.mark.django_db
@@ -26,6 +27,7 @@ class TestTaskTemplateStorageImplementation:
         GlobalConstantsDTOFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
         GoFToTaskTemplateFactory.enable_add_another_gof.reset()
+        ProjectTaskTemplateFactory.reset_sequence(1)
 
     def test_get_valid_template_ids_in_given_template_ids(self, storage):
         # Arrange
@@ -412,3 +414,64 @@ class TestTaskTemplateStorageImplementation:
 
         # Assert
         assert result == expected_gof_to_task_templates_dtos
+
+    def test_get_gof_ids_of_template_when_exists_returns_gof_ids(
+            self, storage):
+        # Arrange
+        import factory
+        from ib_tasks.tests.factories.models import \
+            GoFToTaskTemplateFactory, GoFFactory
+
+        template_id = "template_1"
+        expected_gof_ids = ['gof_1', 'gof_2']
+        gof_objs = GoFFactory.create_batch(
+            size=2, gof_id=factory.Iterator(expected_gof_ids),
+        )
+        GoFToTaskTemplateFactory.create_batch(
+            size=2, gof_id=factory.Iterator(gof_objs),
+            task_template_id=template_id
+        )
+
+        # Act
+        result = storage.get_gof_ids_of_template(template_id=template_id)
+
+        # Assert
+        assert result == expected_gof_ids
+
+    def test_get_gof_ids_of_template_when_not_exists_returns_empty_list(
+            self, storage):
+        # Arrange
+        template_id = "template_1"
+        expected_gof_ids = []
+        # Act
+        result = storage.get_gof_ids_of_template(template_id=template_id)
+
+        # Assert
+        assert result == expected_gof_ids
+
+    def test_get_project_id_with_task_template_id_dtos(self, storage):
+        # Arrange
+        template_ids = ["template_1", "template_2"]
+        task_templates = TaskTemplateFactory.create_batch(
+            size=2, template_id=factory.Iterator(template_ids))
+        ProjectTaskTemplateFactory.create_batch(
+            size=2, task_template=factory.Iterator(task_templates))
+
+        from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
+            ProjectIdWithTaskTemplateIdDTO
+        expected_project_id_with_task_template_id_dtos = \
+            [
+                ProjectIdWithTaskTemplateIdDTO(
+                    project_id="project_1",
+                    task_template_id=template_ids[0]
+                ),
+                ProjectIdWithTaskTemplateIdDTO(
+                    project_id="project_2",
+                    task_template_id=template_ids[1]
+                )
+            ]
+        # Act
+        result = storage.get_project_id_with_task_template_id_dtos()
+
+        # Assert
+        assert result == expected_project_id_with_task_template_id_dtos

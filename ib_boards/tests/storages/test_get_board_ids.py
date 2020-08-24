@@ -28,15 +28,17 @@ class TestGetBoardIds:
             self, storage, reset_sequence):
         # Arrange
         user_id = 'user_id_1'
+        project_id = "PROJECT_ID_1"
         expected_board_ids = ['BOARD_ID_3', 'BOARD_ID_4', 'BOARD_ID_5']
         expected_starred_board_ids = ['BOARD_ID_1', 'BOARD_ID_2']
         from ib_boards.tests.factories.models import BoardFactory
-        boards = BoardFactory.create_batch(5)
+        boards = BoardFactory.create_batch(5, project_id="PROJECT_ID_1")
         UserStarredBoardFactory(board=boards[0], user_id="user_id_1")
         UserStarredBoardFactory(board=boards[1], user_id="user_id_1")
 
         # Act
-        other_board_ids, starred_board_ids = storage.get_board_ids(user_id=user_id)
+        other_board_ids, starred_board_ids = storage.get_board_ids(user_id=user_id,
+                                                                   project_id=project_id)
 
         # Assert
         assert other_board_ids == expected_board_ids
@@ -46,13 +48,15 @@ class TestGetBoardIds:
             self, storage, reset_sequence):
         # Arrange
         user_id = 'user_id_1'
+        project_id = "PROJECT_ID_1"
         expected_board_ids = ['BOARD_ID_1', 'BOARD_ID_2', 'BOARD_ID_3']
         expected_starred_board_ids = []
         from ib_boards.tests.factories.models import BoardFactory
-        BoardFactory.create_batch(3)
+        BoardFactory.create_batch(size=3, project_id="PROJECT_ID_1")
 
         # Act
-        other_board_ids, starred_board_ids = storage.get_board_ids(user_id=user_id)
+        other_board_ids, starred_board_ids = storage.get_board_ids(user_id=user_id,
+                                                                   project_id=project_id)
 
         # Assert
         assert other_board_ids == expected_board_ids

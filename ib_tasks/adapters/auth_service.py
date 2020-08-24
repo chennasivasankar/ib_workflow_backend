@@ -54,6 +54,7 @@ class AuthService:
 
         return user_details_dtos
 
+    # ToDo Add Project id as an argument
     def get_permitted_user_details(self, role_ids: List[str], project_id: str) \
             -> List[UserDetailsDTO]:
         user_profile_details_dtos = self.interface.get_user_details_for_given_role_ids(
