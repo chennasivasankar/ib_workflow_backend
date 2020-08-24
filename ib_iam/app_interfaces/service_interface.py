@@ -235,6 +235,20 @@ class ServiceInterface:
         return project_ids
 
     @staticmethod
+    def get_valid_team_ids(team_ids: List[str]) -> List[str]:
+        from ib_iam.storages.team_storage_implementation import \
+            TeamStorageImplementation
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        team_storage = TeamStorageImplementation()
+        user_storage = UserStorageImplementation()
+        from ib_iam.interactors.team_interactor import TeamInteractor
+        interactor = TeamInteractor(team_storage=team_storage,
+                                    user_storage=user_storage)
+        team_ids = interactor.get_valid_team_ids(team_ids=team_ids)
+        return team_ids
+
+    @staticmethod
     def get_team_details_bulk(team_ids: List[str]) -> List[TeamIdAndNameDTO]:
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
