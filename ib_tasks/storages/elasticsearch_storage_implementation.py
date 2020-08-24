@@ -3,7 +3,7 @@ Created on: 07/08/20
 Author: Pavankumar Pamuru
 
 """
-from typing import Tuple
+from typing import Tuple, Dict
 
 from elasticsearch_dsl import Q, Search
 
@@ -25,45 +25,61 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def create_task(self, elastic_task_dto: ElasticTaskDTO) -> str:
         from elasticsearch_dsl import connections
         from django.conf import settings
-        connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+        es = connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
                                       timeout=20)
-
-        task_obj = Task(
-            project_id=elastic_task_dto.project_id,
-            template_id=elastic_task_dto.template_id,
-            task_id=elastic_task_dto.task_id,
-            title=elastic_task_dto.title
-        )
-        field_dtos = elastic_task_dto.fields
-        stages = elastic_task_dto.stages
-        task_obj.add_fields(field_dtos=field_dtos)
-        task_obj.add_stages(stages=stages)
-        task_obj.save()
-        elastic_task_id = task_obj.meta.id
-        return elastic_task_id
+        task_dict = self._get_task_dict(elastic_task_dto)
+        import json
+        task_dict = json.dumps(task_dict)
+        doc = es.index(
+            index=TASK_INDEX_NAME,
+            ignore=400,
+            doc_type='_doc',
+            body=json.loads(task_dict))
+        return doc['_id']
 
     def update_task(self, task_dto: ElasticTaskDTO):
         from elasticsearch_dsl import connections
         from django.conf import settings
-        connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+        es = connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
                                       timeout=20)
 
         from ib_tasks.models import ElasticSearchTask
         task_id = task_dto.task_id
-        fields = task_dto.fields
-        stage_ids = task_dto.stages
-        field_objects = self._get_field_objects(field_dtos=fields)
-        stage_objects = self.get_stage_objects(stages_ids=stage_ids)
         elastic_search_task_id = ElasticSearchTask.objects.get(
             task_id=task_id
         ).elasticsearch_id
-        from ib_tasks.documents.elastic_task import Task
-        task = Task.get(id=elastic_search_task_id)
-        task.template_id = task_dto.template_id
-        task.title = task_dto.title
-        task.fields = field_objects
-        task.stages = stage_objects
-        task.save()
+        task_dict = self._get_task_dict(task_dto)
+        import json
+        task_dict = json.dumps(task_dict)
+        es.update(
+            index=TASK_INDEX_NAME,
+            ignore=400,
+            id=elastic_search_task_id,
+            doc_type='_doc',
+            body=json.loads(task_dict))
+
+    def _get_task_dict(self, elastic_task_dto: ElasticTaskDTO):
+        task_dict = {
+            "project_id": elastic_task_dto.project_id,
+            "template_id": elastic_task_dto.template_id,
+            "task_id": elastic_task_dto.task_id,
+            "title": elastic_task_dto.title
+        }
+        fields_dict = {}
+        for field in elastic_task_dto.fields:
+            field_dict = {field.field_id: field.value}
+            fields_dict.update(field_dict)
+        task_dict.update(fields_dict)
+        stages = self._get_stages_dict(elastic_task_dto.stages)
+        task_dict['stages'] = stages
+        return task_dict
+
+    @staticmethod
+    def _get_stages_dict(stages_ids: List[str]) -> List[Dict[str, Any]]:
+        return [
+            {"stage_id": stage_id}
+            for stage_id in stages_ids
+        ]
 
     def filter_tasks(
             self, filter_dtos: List[ApplyFilterDTO], offset: int,
@@ -89,9 +105,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         for counter, item in enumerate(filter_dtos):
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', fields__field_id__keyword=item.field_id) \
-                            & Q('term', fields__value__keyword=item.value)
-
+                            & Q('term', **{item.field_id: item.value})
             if counter == 0:
                 query = current_queue
             else:
