@@ -22,10 +22,10 @@ class UtilityToolsService:
             ) for entity_dto in entity_dtos
         ]
 
-        entity_with_timer_dtos = self.interface\
+        entity_with_timer_dtos = self.interface \
             .get_bulk_timer_details_for_given_entities(
-                timer_entity_dtos=timer_entity_dtos
-            )
+            timer_entity_dtos=timer_entity_dtos
+        )
         from datetime import timedelta
         return [
             LogDurationDTO(

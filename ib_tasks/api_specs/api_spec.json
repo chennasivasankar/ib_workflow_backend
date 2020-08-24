@@ -564,7 +564,9 @@
           "type": "string"
         },
         "team_info": {
-          "$ref": "#/definitions/TeamInfo"
+
+            "$ref": "#/definitions/TeamInfo"
+
         }
       },
       "required": [
@@ -1471,7 +1473,9 @@
             }
           }
         },
-        "required": ["project_id"]
+        "required": [
+          "project_id"
+        ]
       }
     },
     "CreateTaskBodyParameter": {
@@ -1702,6 +1706,21 @@
       "required": true,
       "description": "stage id",
       "type": "integer"
+    },
+    "ProjectIdParameter": {
+      "name": "project_id",
+      "in": "body",
+      "required": true,
+      "description": "project_id",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          }
+        },
+        "required":["project_id"]
+      }
     },
     "GetNextStageAssigneesRequestBodyParameter": {
       "in": "body",
@@ -2494,7 +2513,10 @@
               "type": "string"
             },
             "team_info": {
-              "$ref": "#/definitions/TeamInfo"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TeamInfo"
+              }
             }
           },
           "required": [
@@ -2805,9 +2827,6 @@
           },
           {
             "$ref": "#/parameters/OffsetParameter"
-          },
-          {
-            "$ref": "#/parameters/ProjectIDParameter"
           }
         ],
         "responses": {
@@ -3210,6 +3229,9 @@
           }
         ],
         "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdParameter"
+          },
           {
             "$ref": "#/parameters/StageIdParameter"
           },
