@@ -323,3 +323,8 @@ class InvalidModulePathFound(Exception):
 class InvalidMethodFound(Exception):
     def __init__(self, method_name: str):
         self.method_name = method_name
+
+
+class InvalidProjectId(Exception):
+    def __init__(self, project_id: str):
+        self.project_id = project_id
