@@ -53,3 +53,8 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         except UserTeam.DoesNotExist:
             return False
         return True
+
+    def get_team_name(self, team_id: str) -> str:
+        from ib_iam.models import Team
+        team_object = Team.objects.get(team_id=team_id)
+        return team_object.name

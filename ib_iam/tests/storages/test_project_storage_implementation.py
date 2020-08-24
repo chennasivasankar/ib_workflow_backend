@@ -109,3 +109,15 @@ class TestProjectStorageImplementation:
             team_id=team_id, user_id=user_id)
 
         assert actual_response == expected_response
+
+    @pytest.mark.django_db
+    def test_get_team_name_returns_team_name(self):
+        from ib_iam.tests.factories.models import TeamFactory
+        team_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+        expected_name = "team1"
+        TeamFactory.create(team_id=team_id, name=expected_name)
+        project_storage = ProjectStorageImplementation()
+
+        actual_name = project_storage.get_team_name(team_id=team_id)
+
+        assert actual_name == expected_name
