@@ -134,8 +134,16 @@ class PopulateFields:
             read_permission_roles = []
         if write_permissions_is_empty:
             write_permission_roles = []
+
+        read_permission_roles = [
+            role.strip() for role in read_permission_roles
+        ]
+        write_permission_roles = [
+            role.strip() for role in write_permission_roles
+        ]
+
         field_roles_dto = FieldRolesDTO(
             field_id=field_record["Field ID*"].strip(),
-            write_permission_roles=write_permission_roles,
-            read_permission_roles=read_permission_roles)
+            write_permission_roles=read_permission_roles,
+            read_permission_roles=write_permission_roles)
         return field_roles_dto
