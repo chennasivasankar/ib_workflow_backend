@@ -1,12 +1,15 @@
 from typing import List, Optional
 
-from ib_iam.app_interfaces.dtos import UserTeamsDTO
+from ib_iam.exceptions.custom_exceptions import InvalidTeamId
 from ib_iam.interactors.storage_interfaces.dtos import \
+    TeamNameAndDescriptionDTO, PaginationDTO, TeamUserIdsDTO, \
+    TeamsWithTotalTeamsCountDTO, TeamWithTeamIdAndUserIdsDTO, TeamDTO, \
     TeamNameAndDescriptionDTO, TeamIdAndNameDTO
+from ib_iam.app_interfaces.dtos import UserTeamsDTO
+
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
     TeamStorageInterface
-from ib_iam.models import UserDetails, Team, UserTeam
-from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, InvalidTeamId
+from ib_iam.models import Team, UserTeam
 from ib_iam.interactors.storage_interfaces.dtos import (
     PaginationDTO, TeamUserIdsDTO,
     TeamsWithTotalTeamsCountDTO, TeamWithUserIdsDTO,
@@ -102,6 +105,12 @@ class TeamStorageImplementation(TeamStorageInterface):
 
     def delete_team(self, team_id: str):
         Team.objects.filter(team_id=team_id).delete()
+
+    def get_valid_team_ids(self, team_ids: List[str]) -> List[str]:
+        team_ids = Team.objects.filter(team_id__in=team_ids) \
+            .values_list("team_id", flat=True)
+        team_ids = list(map(str, team_ids))
+        return team_ids
 
     @staticmethod
     def _get_team_dtos(team_objects):
