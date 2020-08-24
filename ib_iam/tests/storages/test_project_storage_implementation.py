@@ -88,3 +88,24 @@ class TestProjectStorageImplementation:
             project_id=project_id, team_id=team_id)
 
         assert actual_response == expected_response
+
+    @pytest.mark.django_db
+    @pytest.mark.parametrize("user_id_to_create, expected_response",
+                             [("641bfcc5-e1ea-4231-b482-f7f34fb5c7c5", True),
+                              ("641bfcc5-e1ea-4231-b482-f7f34fb5c7c6", False)])
+    def test_is_user_exists_in_team(
+            self, user_id_to_create, expected_response):
+        from ib_iam.tests.factories.models import \
+            UserDetailsFactory, TeamFactory, UserTeamFactory
+        team_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+        user_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c5"
+        UserDetailsFactory.create(user_id=user_id_to_create)
+        TeamFactory.create(team_id=team_id)
+        UserTeamFactory.create(team_id=team_id,
+                               user_id=user_id_to_create)
+        project_storage = ProjectStorageImplementation()
+
+        actual_response = project_storage.is_user_exists_in_team(
+            team_id=team_id, user_id=user_id)
+
+        assert actual_response == expected_response
