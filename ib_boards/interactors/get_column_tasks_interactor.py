@@ -5,7 +5,6 @@ Author: Pavankumar Pamuru
 """
 from typing import List, Tuple
 
-from ib_boards.adapters.iam_service import UserIsNotInProjectException, InvalidProjectIdsException
 from ib_boards.constants.enum import ViewType
 from ib_boards.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue, OffsetValueExceedsTotalTasksCount, \
@@ -46,10 +45,6 @@ class GetColumnTasksInteractor(ValidationMixin):
             return presenter.get_response_for_user_have_no_access_for_column()
         except InvalidStageIds as error:
             return presenter.get_response_for_invalid_stage_ids(error=error)
-        except InvalidProjectIdsException as err:
-            return presenter.get_response_for_invalid_project_id(error=err)
-        except UserIsNotInProjectException:
-            return presenter.get_response_for_user_is_not_in_project()
         return presenter.get_response_for_column_tasks(
             task_actions_dtos=tasks_action_dtos,
             task_fields_dtos=task_fields_dtos,
@@ -61,18 +56,13 @@ class GetColumnTasksInteractor(ValidationMixin):
 
     def get_column_tasks(self,
                          column_tasks_parameters: ColumnTasksParametersDTO):
-        project_id = column_tasks_parameters.project_id
-        project_ids = [project_id]
-        user_id = column_tasks_parameters.user_id
-        self.validate_given_project_ids(project_ids=project_ids)
-
-        self.validate_if_user_is_in_project(project_id=project_id,
-                                            user_id=user_id)
         self._validate_given_data(
             column_tasks_parameters=column_tasks_parameters)
         column_id = column_tasks_parameters.column_id
         user_id = column_tasks_parameters.user_id
         view_type = column_tasks_parameters.view_type
+        project_id = self.storage.get_project_id_for_given_column_id(column_id)
+
         column_tasks = ColumnsTasksParametersDTO(
             column_ids=[column_id],
             limit=column_tasks_parameters.limit,

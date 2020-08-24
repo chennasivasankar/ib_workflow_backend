@@ -538,8 +538,8 @@
         ]
       }
     },
-    "ColumnParameters": {
-      "name": "column_parameters",
+    "ViewTypeParameter": {
+      "name": "view_type",
       "in": "body",
       "required": true,
       "description": "view type",
@@ -552,13 +552,10 @@
               "LIST",
               "KANBAN"
             ]
-          },
-          "project_id": {
-            "type": "string"
           }
         },
         "required": [
-          "view_type", "project_id"
+          "view_type"
         ]
       }
     }
@@ -753,7 +750,7 @@
             "$ref": "#/parameters/LimitParameter"
           },
           {
-            "$ref": "#/parameters/ColumnParameters"
+            "$ref": "#/parameters/ViewTypeParameter"
           },
           {
             "$ref": "#/parameters/SearchQueryParameter"
@@ -761,7 +758,7 @@
         ],
         "responses": {
           "403": {
-            "$ref": "#/responses/UserNotInProjectResponse"
+            "$ref": "#/responses/InvalidAccessResponse"
           },
           "404": {
             "$ref": "#/responses/InvalidColumnsResponse"
@@ -799,7 +796,7 @@
             "$ref": "#/parameters/ColumnIdParameter"
           },
           {
-            "$ref": "#/parameters/ColumnParameters"
+            "$ref": "#/parameters/ViewTypeParameter"
           },
           {
             "$ref": "#/parameters/SearchQueryParameter"
@@ -807,7 +804,7 @@
         ],
         "responses": {
           "403": {
-            "$ref": "#/responses/UserNotInProjectResponse"
+            "$ref": "#/responses/InvalidAccessResponse"
           },
           "400": {
             "$ref": "#/responses/InvalidPaginationResponse"

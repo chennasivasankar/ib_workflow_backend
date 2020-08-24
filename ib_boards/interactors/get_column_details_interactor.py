@@ -39,10 +39,6 @@ class GetColumnDetailsInteractor(ValidationMixin):
             return presenter.response_for_invalid_limit_value()
         except UserDonotHaveAccess:
             return presenter.response_for_user_donot_have_access_for_board()
-        except InvalidProjectIdsException as err:
-            return presenter.get_response_for_invalid_project_id(error=err)
-        except UserIsNotInProjectException:
-            return presenter.get_response_for_user_is_not_in_project()
         return presenter.get_response_for_column_details(
             column_tasks=column_tasks, task_actions_dtos=task_actions_dtos,
             task_fields_dtos=task_fields_dtos, column_details=column_details,
@@ -50,13 +46,6 @@ class GetColumnDetailsInteractor(ValidationMixin):
 
     def get_column_details(self, columns_parameters: ColumnParametersDTO,
                            pagination_parameters: PaginationParametersDTO):
-        project_id = columns_parameters.project_id
-        project_ids = [project_id]
-        user_id = columns_parameters.user_id
-        self.validate_given_project_ids(project_ids=project_ids)
-
-        self.validate_if_user_is_in_project(project_id=project_id,
-                                            user_id=user_id)
         board_id = columns_parameters.board_id
         offset = pagination_parameters.offset
         limit = pagination_parameters.limit
@@ -64,6 +53,7 @@ class GetColumnDetailsInteractor(ValidationMixin):
         view_type = columns_parameters.view_type
         self._validate_board_id(board_id=board_id)
 
+        project_id = self.storage.get_project_id_for_board(board_id)
         column_dtos = self._get_column_details_dto(board_id, user_id)
         column_ids = [column_dto.column_id for column_dto in column_dtos]
         column_tasks_parameters = ColumnsTasksParametersDTO(

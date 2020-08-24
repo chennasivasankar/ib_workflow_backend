@@ -18,7 +18,6 @@ def api_wrapper(*args, **kwargs):
     limit = params['limit']
     search_query = params.search_query
     request_body = kwargs['request_data']
-    project_id = request_body['project_id']
 
     from ib_boards.constants.enum import ViewType
     view_type = request_body.get('view_type', ViewType.KANBAN.value)
@@ -34,7 +33,6 @@ def api_wrapper(*args, **kwargs):
         offset=offset,
         limit=limit,
         view_type=view_type,
-        project_id=project_id,
         search_query=search_query
     )
     response = interactor.get_column_tasks_wrapper(

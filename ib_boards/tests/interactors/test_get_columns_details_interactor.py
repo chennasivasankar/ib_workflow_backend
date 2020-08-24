@@ -167,10 +167,9 @@ class TestGetColumnDetailsInteractor:
     def test_with_invalid_board_id_raises_exception(self, mocker):
         # Arrange
 
-        project_id = "project_id_1"
+        project_id = "project_id_1",
         board_id = "board_id_1"
         columns_parameters = ColumnParametersDTO(
-            project_id=project_id,
             board_id=board_id,
             user_id="user_id_1",
             view_type=ViewType.LIST.value,
@@ -181,14 +180,6 @@ class TestGetColumnDetailsInteractor:
             limit=10
         )
 
-        project_ids = [project_id]
-        from ib_boards.tests.common_fixtures.adapters.iam_service import \
-            mock_validate_project_ids
-        project_adapter_mock = mock_validate_project_ids(mocker, project_ids)
-        from ib_boards.tests.common_fixtures.adapters.iam_service import \
-            mock_for_validate_if_user_is_in_project
-        user_in_project_mock = mock_for_validate_if_user_is_in_project(mocker)
-        user_in_project_mock.return_value = True
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
 
@@ -204,11 +195,6 @@ class TestGetColumnDetailsInteractor:
             pagination_parameters=pagination_parameters)
 
         # Assert
-        project_adapter_mock.assert_called_once_with(
-            project_ids
-        )
-        user_in_project_mock.assert_called_once_with(
-            project_id=project_id, user_id=columns_parameters.user_id)
         storage.validate_board_id.assert_called_once_with(board_id=board_id)
         presenter.response_for_invalid_board_id.assert_called_once()
 
@@ -225,7 +211,6 @@ class TestGetColumnDetailsInteractor:
                       "FIN_PAYMENTS_LEVEL2_VERIFIER",
                       "FIN_PAYMENTS_LEVEL3_VERIFIER"]
         columns_parameters = ColumnParametersDTO(
-            project_id=project_id,
             board_id=board_id,
             user_id="user_id_1",
             view_type=ViewType.LIST.value,
@@ -235,14 +220,6 @@ class TestGetColumnDetailsInteractor:
             offset=-1,
             limit=10
         )
-        project_ids = [project_id]
-        from ib_boards.tests.common_fixtures.adapters.iam_service import \
-            mock_validate_project_ids
-        project_adapter_mock = mock_validate_project_ids(mocker, project_ids)
-        from ib_boards.tests.common_fixtures.adapters.iam_service import \
-            mock_for_validate_if_user_is_in_project
-        user_in_project_mock = mock_for_validate_if_user_is_in_project(mocker)
-        user_in_project_mock.return_value = True
 
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
@@ -261,11 +238,6 @@ class TestGetColumnDetailsInteractor:
             pagination_parameters=pagination_parameters)
 
         # Assert
-        project_adapter_mock.assert_called_once_with(
-            project_ids
-        )
-        user_in_project_mock.assert_called_once_with(
-            project_id=project_id, user_id=columns_parameters.user_id)
 
         presenter.response_for_invalid_offset_value.assert_called_once()
 
@@ -280,7 +252,7 @@ class TestGetColumnDetailsInteractor:
                       "FIN_PAYMENTS_LEVEL2_VERIFIER",
                       "FIN_PAYMENTS_LEVEL3_VERIFIER"]
         columns_parameters = ColumnParametersDTO(
-            project_id="project_id_1",
+
             board_id=board_id,
             user_id="user_id_1",
             view_type=ViewType.LIST.value,
@@ -319,7 +291,7 @@ class TestGetColumnDetailsInteractor:
         board_id = "board_id_1"
         user_id = "user_id_1"
         columns_parameters = ColumnParametersDTO(
-            project_id="project_id_1",
+
             board_id=board_id,
             user_id=user_id,
             view_type=ViewType.LIST.value,
@@ -375,7 +347,7 @@ class TestGetColumnDetailsInteractor:
         task_fields_dto = get_task_fields_dtos
         task_actions_dto = get_task_actions_dtos
         columns_parameters = ColumnParametersDTO(
-            project_id="project_id_1",
+
             board_id=board_id,
             user_id=user_id,
             view_type=ViewType.LIST.value,
@@ -467,7 +439,7 @@ class TestGetColumnDetailsInteractor:
         task_fields_dto = get_task_fields_dtos
         task_actions_dto = get_task_actions_dtos
         columns_parameters = ColumnParametersDTO(
-            project_id="project_id_1",
+
             board_id=board_id,
             user_id=user_id,
             view_type=ViewType.LIST.value,
