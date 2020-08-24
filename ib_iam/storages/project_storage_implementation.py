@@ -24,7 +24,7 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             .values_list("project_id", flat=True)
         return list(project_ids)
 
-    def get_project_dtos(self):
+    def get_project_dtos(self) -> List[ProjectDTO]:
         project_objects = Project.objects.all()
         project_dtos = [
             self._convert_to_project_dto(project_object=project_object)

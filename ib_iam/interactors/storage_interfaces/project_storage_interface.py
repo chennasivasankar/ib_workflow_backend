@@ -16,7 +16,7 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_project_dtos(self):
+    def get_project_dtos(self) -> List[ProjectDTO]:
         pass
 
     @abc.abstractmethod
@@ -24,7 +24,7 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def is_user_exists_in_team(self, team_id: str, user_id: str):
+    def is_user_exists_in_team(self, team_id: str, user_id: str) -> bool:
         pass
 
     @abc.abstractmethod
