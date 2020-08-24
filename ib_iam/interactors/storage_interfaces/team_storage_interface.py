@@ -63,8 +63,3 @@ class TeamStorageInterface(ABC):
     def get_team_id_and_name_dtos(
             self, team_ids: List[str]) -> List[TeamIdAndNameDTO]:
         pass
-
-    @abstractmethod
-    def get_user_teams_for_each_user(
-            self, user_ids: List[str]) -> List[UserTeamsDTO]:
-        pass
