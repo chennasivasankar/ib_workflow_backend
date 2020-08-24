@@ -363,3 +363,4 @@ INVALID_USER_ID = (
     "User with id {} doesn't exist",
     "INVALID_USER_ID"
 )
+USER_NOT_IN_ANY_TEAM_OF_PROJECT=("user id with {} is not in any team of project", "USER_NOT_IN_ANY_TEAM_OF_PROJECT")

@@ -2,7 +2,9 @@ from dataclasses import dataclass
 from datetime import time, datetime, timedelta
 from typing import Optional, List
 
-from ib_tasks.adapters.dtos import AssigneeDetailsDTO
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO, \
+    UserIdWIthTeamDetailsDTOs, UserDetailsDTO, UserIdWIthTeamDetailsDTO, \
+    AssigneeWithTeamDetailsDTO
 
 
 @dataclass
@@ -73,6 +75,7 @@ class StageAssigneeDTO:
     assignee_id: str
     team_id: str
 
+
 @dataclass
 class TaskIdWithStageAssigneesDTO:
     task_id: int
@@ -89,11 +92,6 @@ class TaskDisplayIdWithStageAssigneesDTO:
 class TaskIdWithStageAssigneeDTO(StageAssigneeDTO):
     task_id: int
 
-@dataclass
-class StageAssigneeDetailsDTO:
-    task_stage_id: int
-    stage_id: int
-    assignee_details_dto: Optional[AssigneeDetailsDTO]
 
 
 @dataclass
@@ -103,7 +101,13 @@ class StageWithUserDetailsDTO:
     assignee_details_dto: Optional[AssigneeDetailsDTO]
 
 
-@dataclass()
+@dataclass
+class StageWithUserDetailsAndTeamDetailsDTO:
+    stages_with_user_details_dtos: List[StageWithUserDetailsDTO]
+    user_with_team_details_dtos: List[UserIdWIthTeamDetailsDTO]
+
+
+@dataclass
 class StageRolesDTO:
     stage_id: str
     role_ids: List[str]
@@ -154,3 +158,17 @@ class StageActionLogicDTO:
     action_logic: str
     action_name: str
     py_function_import_path: str
+
+
+@dataclass()
+class StageAssigneeWithTeamDetailsDTO:
+    task_stage_id: int
+    stage_id: int
+    assignee_details_dto: Optional[AssigneeWithTeamDetailsDTO]
+
+
+
+@dataclass
+class UserDetailsWithTeamDetailsDTO:
+    user_details_dtos: List[UserDetailsDTO]
+    user_id_with_team_details_dtos: List[UserIdWIthTeamDetailsDTOs]

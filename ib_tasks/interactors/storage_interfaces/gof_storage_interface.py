@@ -48,6 +48,12 @@ class GoFStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_user_permitted_template_gof_dtos(
+            self, user_roles: List[str], template_ids: List[str]
+    ):
+        pass
+
+    @abc.abstractmethod
     def get_valid_gof_ids_in_given_gof_ids(
             self, gof_ids: List[str]) -> List[str]:
         pass
