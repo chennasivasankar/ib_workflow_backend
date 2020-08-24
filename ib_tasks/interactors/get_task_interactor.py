@@ -1,13 +1,13 @@
 from typing import List
 
 from ib_tasks.adapters.dtos import SearchableDetailsDTO
+from ib_tasks.adapters.searchable_details_service import \
+    InvalidUserIdsException, InvalidStateIdsException, \
+    InvalidCountryIdsException, InvalidCityIdsException
 from ib_tasks.constants.enum import Searchable
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException, InvalidStageIdsForTask, \
     InvalidTaskDisplayId, UserPermissionDenied
-from ib_tasks.adapters.searchable_details_service import \
-    InvalidUserIdsException, InvalidStateIdsException, \
-    InvalidCountryIdsException, InvalidCityIdsException
 from ib_tasks.interactors.get_task_base_interactor \
     import GetTaskBaseInteractor
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
@@ -16,8 +16,7 @@ from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import GetTaskPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import TaskCompleteDetailsDTO
-from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO, \
-    StageAssigneeWithTeamDetailsDTO
+from ib_tasks.interactors.stages_dtos import StageAssigneeWithTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces \

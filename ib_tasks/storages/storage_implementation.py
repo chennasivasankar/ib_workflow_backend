@@ -31,6 +31,9 @@ from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
 from ib_tasks.models import GlobalConstant, \
     StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskTemplateStatusVariable, ProjectTaskTemplate
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
+    ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
+    GlobalConstant, StagePermittedRoles, TaskTemplateInitialStage, Stage, \
+    TaskTemplateStatusVariable, ProjectTaskTemplate,\
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole
 from ib_tasks.models import \
     TaskStageHistory
@@ -415,15 +418,15 @@ class StagesStorageImplementation(StageStorageInterface):
         return permitted_user_role_ids_list
 
     def get_stage_ids_having_actions(self, user_roles: List[str]) -> List[str]:
-        stage_ids = ActionPermittedRoles.objects \
+        stage_ids = ActionPermittedRoles.objects\
             .filter(
-            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
-        ) \
+                Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+            )\
             .values_list('action__stage_id', flat=True)
-        stage_ids = StagePermittedRoles.objects.filter(stage_id__in=stage_ids) \
+        stage_ids = StagePermittedRoles.objects.filter(stage_id__in=stage_ids)\
             .filter(
-            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
-        ).values_list('stage__stage_id', flat=True)
+                Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+            ).values_list('stage__stage_id', flat=True)
         return sorted(list(set(stage_ids)))
 
     def get_task_current_stages(self, task_id: int) -> List[str]:

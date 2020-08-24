@@ -16,7 +16,7 @@ class TestGetStageSearchablePossibleAssigneesInteractor:
 
     @pytest.fixture
     def interactor(self, stage_storage):
-        from ib_tasks.interactors.\
+        from ib_tasks.interactors. \
             get_stage_searchable_possible_assignees_interactor \
             import GetStageSearchablePossibleAssigneesInteractor
         interactor = GetStageSearchablePossibleAssigneesInteractor(
@@ -26,7 +26,7 @@ class TestGetStageSearchablePossibleAssigneesInteractor:
 
     @pytest.fixture
     def presenter_mock(self):
-        from ib_tasks.interactors.presenter_interfaces.\
+        from ib_tasks.interactors.presenter_interfaces. \
             get_stage_searchable_possible_assignees_presenter_interface \
             import GetStageSearchablePossibleAssigneesPresenterInterface
         presenter_mock = create_autospec(
@@ -45,18 +45,19 @@ class TestGetStageSearchablePossibleAssigneesInteractor:
     ):
         # Arrange
         stage_id = 1
+        project_id = "project_1"
         search_query_with_pagination_dto = SearchQueryWithPaginationDTO(
             limit=limit, offset=0, search_query='iB'
         )
 
         # Act
-        interactor.\
+        interactor. \
             get_stage_searchable_possible_assignees_of_a_task_wrapper(
-                stage_id=stage_id,
-                search_query_with_pagination_dto=
-                search_query_with_pagination_dto,
-                presenter=presenter_mock
-            )
+            stage_id=stage_id,
+            search_query_with_pagination_dto=
+            search_query_with_pagination_dto,
+            presenter=presenter_mock, project_id=project_id
+        )
 
         # Assert
         presenter_mock.raise_invalid_limit_exception.assert_called_once()
@@ -67,18 +68,19 @@ class TestGetStageSearchablePossibleAssigneesInteractor:
     ):
         # Arrange
         stage_id = 1
+        project_id = "project_1"
         search_query_with_pagination_dto = SearchQueryWithPaginationDTO(
             limit=1, offset=offset, search_query='iB'
         )
 
         # Act
-        interactor.\
+        interactor. \
             get_stage_searchable_possible_assignees_of_a_task_wrapper(
-                stage_id=stage_id,
-                search_query_with_pagination_dto=
-                search_query_with_pagination_dto,
-                presenter=presenter_mock
-            )
+            stage_id=stage_id,
+            search_query_with_pagination_dto=
+            search_query_with_pagination_dto,
+            presenter=presenter_mock, project_id=project_id
+        )
 
         # Assert
         presenter_mock.raise_invalid_offset_exception.assert_called_once()
@@ -88,6 +90,7 @@ class TestGetStageSearchablePossibleAssigneesInteractor:
     ):
         # Arrange
         stage_id = 1
+        project_id = "project_1"
         search_query_with_pagination_dto = SearchQueryWithPaginationDTO(
             limit=1, offset=0, search_query='iB'
         )
@@ -100,18 +103,18 @@ class TestGetStageSearchablePossibleAssigneesInteractor:
             mock_method.return_value
 
         # Act
-        result = interactor.\
+        result = interactor. \
             get_stage_searchable_possible_assignees_of_a_task_wrapper(
-                stage_id=stage_id,
-                search_query_with_pagination_dto=
-                search_query_with_pagination_dto,
-                presenter=presenter_mock
-            )
+            stage_id=stage_id, project_id=project_id,
+            search_query_with_pagination_dto=
+            search_query_with_pagination_dto,
+            presenter=presenter_mock
+        )
 
         # Assert
         assert result == mock_method.return_value
         stage_storage.check_is_stage_exists.assert_called_once_with(
             stage_id=stage_id)
         mock_method.assert_called_once()
-        presenter_mock.get_stage_assignee_details_response.\
+        presenter_mock.get_stage_assignee_details_response. \
             assert_called_once_with(user_details_dtos=mock_method.return_value)
