@@ -93,19 +93,19 @@ class AuthService:
 
     def validate_project_ids(self, project_ids: List[str]) -> \
             List[str]:
-        return project_ids
+        raise NotImplementedError
 
     def get_team_details(self, team_ids: List[str]) -> List[TeamDetailsDTO]:
         raise NotImplementedError
 
     def get_projects_info_for_given_ids(self, project_ids: List[str]) -> List[
         ProjectDetailsDTO]:
-        pass
+        raise NotImplementedError
 
     def get_team_info_for_given_user_ids(self, user_ids: List[str],
                                          project_id: str) -> List[
         UserIdWIthTeamDetailsDTOs]:
-        return
+        raise NotImplementedError
 
     def get_team_details_for_given_team_project_details_dto(
             self, team_project_details_dto) -> \
