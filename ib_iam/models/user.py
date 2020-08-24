@@ -30,4 +30,4 @@ class UserRole(models.Model):
     project_role = models.ForeignKey('ProjectRole', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.user_id} have {self.role.role_id}"
+        return f"{self.user_id} have {self.project_role.role_id}"

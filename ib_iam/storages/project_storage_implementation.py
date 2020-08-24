@@ -45,3 +45,10 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             self._convert_to_project_dto(project_object=project_object)
             for project_object in project_objects]
         return project_dtos
+
+    def get_user_role_ids(self, user_id: str, project_id: str):
+        from ib_iam.models import UserRole
+        role_ids = UserRole.objects.filter(
+            user_id=user_id, project_role__project_id=project_id
+        ).values_list("project_role__role_id", flat=True)
+        return list(role_ids)

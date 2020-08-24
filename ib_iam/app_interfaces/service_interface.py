@@ -223,9 +223,21 @@ class ServiceInterface:
         return searchable_details_dtos
 
     # todo: implement this interface
+    @staticmethod
     def get_user_role_ids_based_on_project(
-            self, user_id, project_id) -> List[str]:
-        pass
+            user_id, project_id) -> List[str]:
+        from ib_iam.storages.project_storage_implementation import \
+            ProjectStorageImplementation
+        project_storage = ProjectStorageImplementation()
+
+        from ib_iam.interactors.project_role_interactor import \
+            ProjectRoleInteractor
+        interactor = ProjectRoleInteractor(project_storage=project_storage)
+
+        role_ids = interactor.get_user_role_ids_based_on_project(
+            user_id=user_id, project_id=project_id
+        )
+        return role_ids
 
     @staticmethod
     def get_valid_project_ids(project_ids: List[str]) -> List[str]:
