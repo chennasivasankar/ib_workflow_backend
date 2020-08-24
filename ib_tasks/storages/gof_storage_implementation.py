@@ -98,7 +98,7 @@ class GoFStorageImplementation(GoFStorageInterface):
             (Q(role__in=user_roles) | Q(role=ALL_ROLES_ID))
         ).values_list('gof_id', flat=True)
         task_template_gofs = TaskTemplateGoFs.objects\
-            .filter(gof_id__in=gof_ids, template_id__in=template_ids)
+            .filter(gof_id__in=gof_ids, task_template_id__in=template_ids)
 
         template_gofs_dict = defaultdict(list)
         for task_template_gof in task_template_gofs:

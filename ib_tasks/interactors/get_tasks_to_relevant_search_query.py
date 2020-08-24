@@ -3,6 +3,7 @@ from typing import Any, List
 
 from ib_tasks.adapters.auth_service import InvalidProjectIdsException, UserIsNotInProject
 from ib_tasks.constants.enum import ViewType
+from ib_tasks.documents.elastic_task import QueryTasksDTO
 from ib_tasks.exceptions.fields_custom_exceptions import LimitShouldBeGreaterThanZeroException, \
     OffsetShouldBeGreaterThanZeroException
 from ib_tasks.exceptions.stage_custom_exceptions import StageIdsListEmptyException
@@ -88,7 +89,7 @@ class GetTasksToRelevantSearchQuery(ValidationMixin):
             apply_filter_dtos=apply_filters_dto
         )
         return self._get_all_tasks_overview_details(
-            query_tasks_dto, view_type, user_id
+            query_tasks_dto, view_type, user_id, project_id
         )
 
     def _validate_project_data(self, project_id: str, user_id: str):
@@ -98,7 +99,10 @@ class GetTasksToRelevantSearchQuery(ValidationMixin):
             project_id=project_id, user_id=user_id
         )
 
-    def _get_all_tasks_overview_details(self, query_tasks_dto, view_type, user_id):
+    def _get_all_tasks_overview_details(self, query_tasks_dto: QueryTasksDTO,
+                                        view_type: ViewType,
+                                        user_id: str,
+                                        project_id: str):
         from ib_tasks.interactors.get_all_task_overview_with_filters_and_searches_for_user import \
             GetTasksOverviewForUserInteractor
         task_details_interactor = GetTasksOverviewForUserInteractor(
@@ -111,7 +115,8 @@ class GetTasksToRelevantSearchQuery(ValidationMixin):
         all_tasks_overview_details_dto = task_details_interactor. \
             get_filtered_tasks_overview_for_user(
             user_id=user_id, task_ids=query_tasks_dto.task_ids,
-            view_type=view_type
+            view_type=view_type,
+            project_id=project_id
         )
         return all_tasks_overview_details_dto, query_tasks_dto.total_tasks_count
 
