@@ -25,8 +25,9 @@ def append_project_board_dto(project_dict: Dict[str, Any]):
     return project_board_dto
 
 
-def validation_for_list_of_project_boards_dict(status_dict: List[Dict]):
+def validation_for_list_of_project_boards_dict(list_of_project_boards: List[Dict]):
     from schema import Schema, SchemaError, And
+
     schema = Schema(
         [{
             "project_id": And(str, len),
@@ -36,7 +37,7 @@ def validation_for_list_of_project_boards_dict(status_dict: List[Dict]):
     )
 
     try:
-        schema.validate(status_dict)
+        schema.validate(list_of_project_boards)
     except SchemaError:
         raise_exception_for_invalid_format()
 
