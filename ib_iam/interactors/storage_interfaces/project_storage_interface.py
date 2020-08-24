@@ -35,3 +35,8 @@ class ProjectStorageInterface(abc.ABC):
     def get_project_dtos_for_given_project_ids(
             self, project_ids: List[str]) -> List[ProjectDTO]:
         pass
+
+    @abc.abstractmethod
+    def is_user_exist_given_project(
+            self, user_id: str, project_id: str) -> bool:
+        pass

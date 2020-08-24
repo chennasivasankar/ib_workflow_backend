@@ -65,3 +65,10 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         from ib_iam.models import Team
         team_object = Team.objects.get(team_id=team_id)
         return team_object.name
+
+    def is_user_exist_given_project(
+            self, user_id: str, project_id: str) -> bool:
+        return ProjectTeam.objects.filter(
+            project__project_id=project_id,
+            team__users__user_id=user_id
+        ).exists()
