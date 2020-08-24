@@ -69,7 +69,7 @@ class GetUsersListPresenterImplementation(GetUsersListPresenterInterface,
             # user_role_dtos = self._get_user_roles(role_dtos, user_id)
             user_company_dto = self._get_company(company_dtos, user_id)
             user_response_dict = self._convert_user_response_dict(
-                user_profile_dto, user_team_dtos, user_role_dtos,
+                user_profile_dto, user_team_dtos,
                 user_company_dto)
             users.append(user_response_dict)
         return users
@@ -77,7 +77,6 @@ class GetUsersListPresenterImplementation(GetUsersListPresenterInterface,
     def _convert_user_response_dict(
             self, user_profile_dto: UserProfileDTO,
             user_team_dtos: List[UserTeamDTO],
-            user_role_dtos: List[UserRoleDTO],
             user_company_dto: UserCompanyDTO):
         user_response_dict = {
             "user_id": user_profile_dto.user_id,

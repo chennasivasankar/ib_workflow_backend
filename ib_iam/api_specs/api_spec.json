@@ -185,9 +185,6 @@
           "$ref": "#/definitions/ListOfTeams"
         },
         {
-          "$ref": "#/definitions/ListOfRoles"
-        },
-        {
           "type": "object",
           "properties": {
             "company": {
