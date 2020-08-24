@@ -164,12 +164,13 @@ class TestGetColumnDetailsInteractor:
         GetTaskDetailsDTOFactory.reset_sequence()
         return GetTaskDetailsDTOFactory.create_batch(9)
 
-    def test_with_invalid_board_id_raises_exception(self):
+    def test_with_invalid_board_id_raises_exception(self, mocker):
         # Arrange
 
+        project_id = "project_id_1"
         board_id = "board_id_1"
         columns_parameters = ColumnParametersDTO(
-            project_id="project_id_1",
+            project_id=project_id,
             board_id=board_id,
             user_id="user_id_1",
             view_type=ViewType.LIST.value,
@@ -180,6 +181,14 @@ class TestGetColumnDetailsInteractor:
             limit=10
         )
 
+        project_ids = [project_id]
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_validate_project_ids
+        project_adapter_mock = mock_validate_project_ids(mocker, project_ids)
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_for_validate_if_user_is_in_project
+        user_in_project_mock = mock_for_validate_if_user_is_in_project(mocker)
+        user_in_project_mock.return_value = True
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
 
@@ -195,13 +204,19 @@ class TestGetColumnDetailsInteractor:
             pagination_parameters=pagination_parameters)
 
         # Assert
+        project_adapter_mock.assert_called_once_with(
+            project_ids
+        )
+        user_in_project_mock.assert_called_once_with(
+            project_id=project_id, user_id=columns_parameters.user_id)
         storage.validate_board_id.assert_called_once_with(board_id=board_id)
         presenter.response_for_invalid_board_id.assert_called_once()
 
     @patch("ib_boards.adapters.service_adapter.ServiceAdapter.iam_service")
-    def test_with_invalid_offset_raises_exception(self, user_roles_service):
+    def test_with_invalid_offset_raises_exception(self, user_roles_service,
+                                                  mocker):
         # Arrange
-
+        project_id = "project_id_1"
         board_id = "board_id_1"
         user_roles = ["FIN_PAYMENT_REQUESTER",
                       "FIN_PAYMENT_POC",
@@ -210,7 +225,7 @@ class TestGetColumnDetailsInteractor:
                       "FIN_PAYMENTS_LEVEL2_VERIFIER",
                       "FIN_PAYMENTS_LEVEL3_VERIFIER"]
         columns_parameters = ColumnParametersDTO(
-            project_id="project_id_1",
+            project_id=project_id,
             board_id=board_id,
             user_id="user_id_1",
             view_type=ViewType.LIST.value,
@@ -220,6 +235,14 @@ class TestGetColumnDetailsInteractor:
             offset=-1,
             limit=10
         )
+        project_ids = [project_id]
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_validate_project_ids
+        project_adapter_mock = mock_validate_project_ids(mocker, project_ids)
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_for_validate_if_user_is_in_project
+        user_in_project_mock = mock_for_validate_if_user_is_in_project(mocker)
+        user_in_project_mock.return_value = True
 
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
@@ -238,6 +261,12 @@ class TestGetColumnDetailsInteractor:
             pagination_parameters=pagination_parameters)
 
         # Assert
+        project_adapter_mock.assert_called_once_with(
+            project_ids
+        )
+        user_in_project_mock.assert_called_once_with(
+            project_id=project_id, user_id=columns_parameters.user_id)
+
         presenter.response_for_invalid_offset_value.assert_called_once()
 
     @patch("ib_boards.adapters.service_adapter.ServiceAdapter.iam_service")
@@ -448,6 +477,8 @@ class TestGetColumnDetailsInteractor:
             offset=0,
             limit=10
         )
+        project_id = columns_parameters.project_id
+        project_ids = [project_id]
         column_ids = ["COLUMN_ID_4", "COLUMN_ID_5", "COLUMN_ID_6"]
         user_roles = ["FIN_PAYMENT_REQUESTER",
                       "FIN_PAYMENT_POC",
@@ -468,6 +499,14 @@ class TestGetColumnDetailsInteractor:
             get_task_ids_mock
 
         task_ids_mock = get_task_ids_mock(mocker, column_tasks_ids_no_duplicates)
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_validate_project_ids
+        project_adapter_mock = mock_validate_project_ids(mocker, project_ids)
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_for_validate_if_user_is_in_project
+        user_in_project_mock = mock_for_validate_if_user_is_in_project(mocker)
+        user_in_project_mock.return_value = True
+
         task_details_dto.return_value = task_fields_dto, task_actions_dto, task_stage_color_dtos
         user_roles_service.get_user_roles.return_value = user_roles
         board_permitted_user_roles = ["FIN_PAYMENT_POC"]
@@ -496,6 +535,11 @@ class TestGetColumnDetailsInteractor:
             column_ids=column_ids)
         task_ids_mock.assert_called_once_with(
             task_config_dtos=task_ids_config
+        )
+        user_in_project_mock.assert_called_once_with(
+            project_id=project_id, user_id=user_id)
+        project_adapter_mock.assert_called_once_with(
+            project_ids
         )
         task_details_dto.assert_called_once_with(
             task_ids_stage_id_no_duplicates, user_id=user_id,

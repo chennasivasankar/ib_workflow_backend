@@ -1,5 +1,6 @@
 from typing import List
 
+from ib_boards.adapters.iam_service import UserIsNotInProjectException, InvalidProjectIdsException
 from ib_boards.adapters.service_adapter import get_service_adapter
 from ib_boards.exceptions.custom_exceptions import (
     InvalidBoardId, InvalidOffsetValue, InvalidLimitValue, UserDonotHaveAccess)
@@ -38,6 +39,10 @@ class GetColumnDetailsInteractor(ValidationMixin):
             return presenter.response_for_invalid_limit_value()
         except UserDonotHaveAccess:
             return presenter.response_for_user_donot_have_access_for_board()
+        except InvalidProjectIdsException as err:
+            return presenter.get_response_for_invalid_project_id(error=err)
+        except UserIsNotInProjectException:
+            return presenter.get_response_for_user_is_not_in_project()
         return presenter.get_response_for_column_details(
             column_tasks=column_tasks, task_actions_dtos=task_actions_dtos,
             task_fields_dtos=task_fields_dtos, column_details=column_details,

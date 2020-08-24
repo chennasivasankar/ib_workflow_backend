@@ -5,6 +5,7 @@ Author: Pavankumar Pamuru
 """
 from typing import List, Tuple
 
+from ib_boards.adapters.iam_service import UserIsNotInProjectException, InvalidProjectIdsException
 from ib_boards.constants.enum import ViewType
 from ib_boards.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue, OffsetValueExceedsTotalTasksCount, \
@@ -45,6 +46,10 @@ class GetColumnTasksInteractor(ValidationMixin):
             return presenter.get_response_for_user_have_no_access_for_column()
         except InvalidStageIds as error:
             return presenter.get_response_for_invalid_stage_ids(error=error)
+        except InvalidProjectIdsException as err:
+            return presenter.get_response_for_invalid_project_id(error=err)
+        except UserIsNotInProjectException:
+            return presenter.get_response_for_user_is_not_in_project()
         return presenter.get_response_for_column_tasks(
             task_actions_dtos=tasks_action_dtos,
             task_fields_dtos=task_fields_dtos,
