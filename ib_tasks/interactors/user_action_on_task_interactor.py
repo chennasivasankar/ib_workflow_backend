@@ -21,8 +21,6 @@ from ib_tasks.interactors \
 from ib_tasks.interactors \
     .get_random_assignees_of_next_stages_and_update_in_db_interactor import \
     GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor
-from ib_tasks.interactors.get_stages_assignees_details_interactor import \
-    TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
@@ -30,7 +28,8 @@ from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
-from ib_tasks.interactors.stage_dtos import TaskStageDTO
+from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
+    TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \

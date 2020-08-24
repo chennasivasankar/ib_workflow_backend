@@ -33,7 +33,7 @@ class TestCreateStatusInteractor:
 
         storage = create_autospec(TaskStorageInterface)
         template_storage = create_autospec(TaskTemplateStorageInterface)
-        template_storage.get_valid_template_ids_in_given_template_ids.return_value = []
+        template_storage.get_valid_task_template_ids_in_given_task_template_ids.return_value = []
         interactor = CreateTaskStatusInteractor(
             status_storage=storage,
             template_storage=template_storage
@@ -44,14 +44,14 @@ class TestCreateStatusInteractor:
             interactor.create_task_status(task_status_dtos)
 
         # Assert
-        template_storage.get_valid_template_ids_in_given_template_ids.assert_called_once()
+        template_storage.get_valid_task_template_ids_in_given_task_template_ids.assert_called_once()
 
     def test_create_status_for_task_given_valid_details(
             self, task_status_dtos):
         # Arrange
         storage = create_autospec(TaskStorageInterface)
         template_storage = create_autospec(TaskTemplateStorageInterface)
-        template_storage.get_valid_template_ids_in_given_template_ids\
+        template_storage.get_valid_task_template_ids_in_given_task_template_ids\
             .return_value = \
             ["task_template_id_1", "task_template_id_2"]
         interactor = CreateTaskStatusInteractor(
@@ -70,7 +70,7 @@ class TestCreateStatusInteractor:
         # Arrange
         storage = create_autospec(TaskStorageInterface)
         template_storage = create_autospec(TaskTemplateStorageInterface)
-        template_storage.get_valid_template_ids_in_given_template_ids.return_value = \
+        template_storage.get_valid_task_template_ids_in_given_task_template_ids.return_value = \
             ["task_template_id_1"]
         interactor = CreateTaskStatusInteractor(
             status_storage=storage, template_storage=template_storage
@@ -81,4 +81,4 @@ class TestCreateStatusInteractor:
             interactor.create_task_status(duplicate_status_dtos)
 
         # Assert
-        template_storage.get_valid_template_ids_in_given_template_ids.assert_called_once()
+        template_storage.get_valid_task_template_ids_in_given_task_template_ids.assert_called_once()

@@ -2,15 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 
 from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO, \
-    TeamUserIdsDTO, TeamsWithTotalTeamsCountDTO, TeamDTO, \
-    TeamNameAndDescriptionDTO
-
-from ib_iam.app_interfaces.dtos import UserTeamsDTO
-from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, TeamUserIdsDTO, TeamsWithTotalTeamsCountDTO,
-    TeamIdAndNameDTO)
-from ib_iam.interactors.storage_interfaces.dtos import TeamDTO
-from ib_iam.interactors.storage_interfaces.dtos import \
+    TeamUserIdsDTO, TeamsWithTotalTeamsCountDTO, TeamIdAndNameDTO, TeamDTO, \
     TeamNameAndDescriptionDTO
 
 
@@ -55,7 +47,7 @@ class TeamStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def delete_all_members_of_team(self, team_id: str):
+    def delete_members_from_team(self, team_id: str, user_ids: List[str]):
         pass
 
     @abstractmethod

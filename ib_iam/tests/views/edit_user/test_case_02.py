@@ -22,11 +22,11 @@ class TestCase02EditUserAPITestCase(TestUtils):
         from ib_iam.tests.factories.models import UserDetailsFactory
         UserDetailsFactory.create(user_id=user_id, is_admin=True, company=None)
         from ib_iam.tests.factories.models \
-            import CompanyFactory, TeamFactory, RoleFactory
+            import CompanyFactory, TeamFactory, ProjectRoleFactory
         CompanyFactory.create(company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331')
         TeamFactory.create(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8344')
         TeamFactory.create(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8343')
-        RoleFactory.create(id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331', role_id='ROLE_1')
+        ProjectRoleFactory.create(id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331', role_id='ROLE_1')
 
     @pytest.mark.django_db
     def test_case(self, user_set_up, snapshot):

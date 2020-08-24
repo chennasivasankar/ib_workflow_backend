@@ -14,9 +14,9 @@ class TestGetValidRoleIds:
             import UserStorageImplementation
         storage = UserStorageImplementation()
         reset_sequence_role_factory()
-        from ib_iam.tests.factories.models import RoleFactory
+        from ib_iam.tests.factories.models import ProjectRoleFactory
         for role_id in expected_valid_role_ids:
-            RoleFactory.create(role_id=role_id)
+            ProjectRoleFactory.create(role_id=role_id)
 
         # Act
         valid_role_ids = storage.get_valid_role_ids(role_ids=role_ids)

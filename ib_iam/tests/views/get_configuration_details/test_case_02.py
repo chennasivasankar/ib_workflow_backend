@@ -36,7 +36,7 @@ class TestCase02GetConfigurationDetailsAPITestCase(TestUtils):
     @pytest.fixture
     def set_up(self):
         from ib_iam.tests.factories.models \
-            import TeamFactory, CompanyFactory, RoleFactory, \
+            import TeamFactory, CompanyFactory, ProjectRoleFactory, \
             UserTeamFactory, \
             UserRoleFactory
         from ib_iam.tests.common_fixtures.reset_fixture \
@@ -44,7 +44,7 @@ class TestCase02GetConfigurationDetailsAPITestCase(TestUtils):
         reset_sequence_for_model_factories()
         company = CompanyFactory.create(company_id=COMPANY_ID)
         teams = [TeamFactory.create(team_id=team_id) for team_id in TEAM_IDS]
-        roles = [RoleFactory.create(id=role_id) for role_id in ROLE_IDS]
+        roles = [ProjectRoleFactory.create(id=role_id) for role_id in ROLE_IDS]
         for count, user_id in enumerate(USER_IDS):
             from ib_iam.tests.factories.models import UserDetailsFactory
             UserDetailsFactory.create(user_id=user_id, company=company)

@@ -185,9 +185,6 @@
           "$ref": "#/definitions/ListOfTeams"
         },
         {
-          "$ref": "#/definitions/ListOfRoles"
-        },
-        {
           "type": "object",
           "properties": {
             "company": {
@@ -230,7 +227,7 @@
         }
       ]
     },
-    "UserWithCompanyWithTeamsAndRoles": {
+    "UserWithCompanyWithTeams": {
       "allOf": [
         {
           "$ref": "#/definitions/UserNameAndEmail"
@@ -248,16 +245,9 @@
                 "type": "string",
                 "format": "uuid"
               }
-            },
-            "role_ids": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
             }
           },
           "required": [
-            "role_ids",
             "team_ids"
           ]
         }
@@ -640,7 +630,7 @@
       "description": "Details of User to add",
       "in": "body",
       "schema": {
-        "$ref": "#/definitions/UserWithCompanyWithTeamsAndRoles"
+        "$ref": "#/definitions/UserWithCompanyWithTeams"
       }
     },
     "UpdateUserParameter": {
@@ -648,7 +638,7 @@
       "description": "Update the User details",
       "in": "body",
       "schema": {
-        "$ref": "#/definitions/UserWithCompanyWithTeamsAndRoles"
+        "$ref": "#/definitions/UserWithCompanyWithTeams"
       }
     },
     "UpdateUserProfileParameter": {

@@ -42,7 +42,8 @@ class GetTaskIdsBasedOnUserFilters:
             filter_dtos=filter_dtos,
             offset=filter_tasks_parameter.offset,
             limit=filter_tasks_parameter.limit,
-            stage_ids=filter_tasks_parameter.stage_ids
+            stage_ids=filter_tasks_parameter.stage_ids,
+            project_id=filter_tasks_parameter.project_id
         )
         return filtered_task_ids, total_tasks
 

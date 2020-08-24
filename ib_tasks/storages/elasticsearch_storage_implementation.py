@@ -3,7 +3,7 @@ Created on: 07/08/20
 Author: Pavankumar Pamuru
 
 """
-from typing import Tuple
+from typing import Tuple, Dict
 
 from elasticsearch_dsl import Q, Search
 
@@ -25,58 +25,78 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def create_task(self, elastic_task_dto: ElasticTaskDTO) -> str:
         from elasticsearch_dsl import connections
         from django.conf import settings
-        connections.create_connection(
+        es = connections.create_connection(
             hosts=[settings.ELASTICSEARCH_ENDPOINT],
             timeout=20)
-
-        task_obj = Task(
-            project_id=elastic_task_dto.project_id,
-            template_id=elastic_task_dto.template_id,
-            task_id=elastic_task_dto.task_id,
-            title=elastic_task_dto.title
-        )
-        field_dtos = elastic_task_dto.fields
-        stages = elastic_task_dto.stages
-        task_obj.add_fields(field_dtos=field_dtos)
-        task_obj.add_stages(stages=stages)
-        task_obj.save()
-        elastic_task_id = task_obj.meta.id
-        return elastic_task_id
+        task_dict = self._get_task_dict(elastic_task_dto)
+        import json
+        task_dict = json.dumps(task_dict)
+        doc = es.index(
+            index=TASK_INDEX_NAME,
+            ignore=400,
+            doc_type='_doc',
+            body=json.loads(task_dict))
+        return doc['_id']
 
     def update_task(self, task_dto: ElasticTaskDTO):
         from elasticsearch_dsl import connections
         from django.conf import settings
-        connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
-                                      timeout=20)
+        es = connections.create_connection(
+            hosts=[settings.ELASTICSEARCH_ENDPOINT],
+            timeout=20)
 
         from ib_tasks.models import ElasticSearchTask
         task_id = task_dto.task_id
-        fields = task_dto.fields
-        stage_ids = task_dto.stages
-        field_objects = self._get_field_objects(field_dtos=fields)
-        stage_objects = self.get_stage_objects(stages_ids=stage_ids)
         elastic_search_task_id = ElasticSearchTask.objects.get(
             task_id=task_id
         ).elasticsearch_id
-        from ib_tasks.documents.elastic_task import Task
-        task = Task.get(id=elastic_search_task_id)
-        task.template_id = task_dto.template_id
-        task.title = task_dto.title
-        task.fields = field_objects
-        task.stages = stage_objects
-        task.save()
+        task_dict = self._get_task_dict(task_dto)
+        import json
+        task_dict = json.dumps(task_dict)
+        es.update(
+            index=TASK_INDEX_NAME,
+            ignore=400,
+            id=elastic_search_task_id,
+            doc_type='_doc',
+            body=json.loads(task_dict))
+
+    def _get_task_dict(self, elastic_task_dto: ElasticTaskDTO):
+        task_dict = {
+            "project_id": elastic_task_dto.project_id,
+            "template_id": elastic_task_dto.template_id,
+            "task_id": elastic_task_dto.task_id,
+            "title": elastic_task_dto.title
+        }
+        fields_dict = {}
+        for field in elastic_task_dto.fields:
+            field_dict = {field.field_id: field.value}
+            fields_dict.update(field_dict)
+        task_dict.update(fields_dict)
+        stages = self._get_stages_dict(elastic_task_dto.stages)
+        task_dict['stages'] = stages
+        return task_dict
+
+    @staticmethod
+    def _get_stages_dict(stages_ids: List[str]) -> List[Dict[str, Any]]:
+        return [
+            {"stage_id": stage_id}
+            for stage_id in stages_ids
+        ]
 
     def filter_tasks(
             self, filter_dtos: List[ApplyFilterDTO], offset: int,
-            stage_ids: List[str], limit: int) -> Tuple[List[int], int]:
+            stage_ids: List[str], limit: int, project_id: str) -> Tuple[
+        List[int], int]:
         from elasticsearch_dsl import connections
         from django.conf import settings
         connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
                                       timeout=20)
-        search = self._get_search_task_objects(filter_dtos)
+        search = self._get_filter_task_objects(filter_dtos)
 
-        task_objects = search.filter('terms',
-                                     stages__stage_id__keyword=stage_ids)
+        query = Q('terms', stages__stage_id__keyword=stage_ids) \
+                & Q('term', project_id__keyword=project_id)
+
+        task_objects = search.filter(query)
 
         total_tasks = task_objects.count()
         return [
@@ -89,11 +109,10 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
         query = None
         for counter, item in enumerate(filter_dtos):
+            attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', fields__field_id__keyword=item.field_id) \
-                            & Q('term', fields__value__keyword=item.value)
-
+                            & Q('term', **{attribute: item.value})
             if counter == 0:
                 query = current_queue
             else:
@@ -108,7 +127,8 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
     def search_tasks(
             self, offset: int, limit: int, search_query: str,
-            apply_filter_dtos: List[ApplyFilterDTO]
+            apply_filter_dtos: List[ApplyFilterDTO], project_id: str,
+            stage_ids: List[str]
     ) -> QueryTasksDTO:
         from elasticsearch_dsl import connections
         from django.conf import settings
@@ -117,17 +137,11 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
         from elasticsearch_dsl import Q
         search = self._get_search_task_objects(apply_filter_dtos)
-
+        query = Q('term', project_id__keyword=project_id) \
+                & Q('terms', stages__stage_id__keyword=stage_ids)
         if search_query:
-            search = search.query(
-                Q(
-                    "match",
-                    title={
-                        "query": search_query,
-                        "fuzziness": "5"
-                    }
-                )
-            )
+            query = query & Q("match", title={"query": search_query, "fuzziness": "5"})
+        search = search.query(query)
         total_tasks_count = search.count()
         task_ids = [
             hit.task_id
@@ -265,11 +279,10 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def _prepare_q_objects_for_eq_operation(filter_dtos: List[ApplyFilterDTO]):
         query = None
         for counter, item in enumerate(filter_dtos):
+            attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term',
-                                fields__field_id__keyword=item.field_id) \
-                            & Q('term', fields__value__keyword=item.value)
+                            & Q('term', **{attribute: item.value})
             if counter == 0:
                 query = current_queue
             else:
@@ -280,11 +293,10 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def _prepare_q_objects_for_neq_operation(filter_dtos: List[ApplyFilterDTO]):
         query = None
         for counter, item in enumerate(filter_dtos):
+            attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
-                            & ~Q('term', template_id__keyword=item.template_id) \
-                            & ~Q('term',
-                                 fields__field_id__keyword=item.field_id) \
-                            & ~Q('term', fields__value__keyword=item.value)
+                            & Q('term', template_id__keyword=item.template_id) \
+                            & ~Q('term', **{attribute: item.value})
             if counter == 0:
                 query = current_queue
             else:
@@ -295,10 +307,10 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def _prepare_q_objects_for_gte_operation(filter_dtos: List[ApplyFilterDTO]):
         query = None
         for counter, item in enumerate(filter_dtos):
+            attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', fields__field_id__keyword=item.field_id) \
-                            & Q('range', fields__value={"gte": item.value})
+                            & Q('term', **{attribute: {"gte": item.value}})
             if counter == 0:
                 query = current_queue
             else:
@@ -309,10 +321,10 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def _prepare_q_objects_for_gt_operation(filter_dtos: List[ApplyFilterDTO]):
         query = None
         for counter, item in enumerate(filter_dtos):
+            attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', fields__field_id__keyword=item.field_id) \
-                            & Q('range', fields__value={"gt": item.value})
+                            & Q('term', **{attribute: {"gt": item.value}})
             if counter == 0:
                 query = current_queue
             else:
@@ -323,10 +335,10 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def _prepare_q_objects_for_lte_operation(filter_dtos: List[ApplyFilterDTO]):
         query = None
         for counter, item in enumerate(filter_dtos):
+            attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', fields__field_id__keyword=item.field_id) \
-                            & Q('range', fields__value={"lte": int(item.value)})
+                            & Q('term', **{attribute: {"lte": item.value}})
             if counter == 0:
                 query = current_queue
             else:
@@ -337,10 +349,10 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def _prepare_q_objects_for_lt_operation(filter_dtos: List[ApplyFilterDTO]):
         query = None
         for counter, item in enumerate(filter_dtos):
+            attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', fields__field_id__keyword=item.field_id) \
-                            & Q('range', fields__value={"lt": item.value})
+                            & Q('term', **{attribute: {"lt": item.value}})
             if counter == 0:
                 query = current_queue
             else:
