@@ -37,7 +37,7 @@ class TestGetUserRoleIds:
         # Todo if below line uncomment we will get tear down error
         # UserRoleFactory.create_batch(3)
         for role_object in role_objects:
-            UserRoleFactory.create(user_id=user_id, role=role_object)
+            UserRoleFactory.create(user_id=user_id, project_role=role_object)
 
         # Act
         response = storage.get_user_role_ids(user_id=user_id)

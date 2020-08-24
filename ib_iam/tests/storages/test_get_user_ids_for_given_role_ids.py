@@ -22,7 +22,7 @@ class TestGetUserIdsForGivenRoleIds:
         for user_role in user_roles:
             role_object = ProjectRoleFactory.create(role_id=user_role["role_id"])
             UserRoleFactory.create(
-                role=role_object, user_id=user_role["user_id"])
+                project_role=role_object, user_id=user_role["user_id"])
 
         # Act
         expected_user_ids = storage.get_user_ids(role_ids=role_ids)

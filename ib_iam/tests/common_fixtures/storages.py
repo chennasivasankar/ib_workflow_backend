@@ -72,7 +72,7 @@ def users_role():
     for role_id in roles:
         role = ProjectRoleFactory.create(id=role_id)
         for i in range(1, 4):
-            user = UserRoleFactory.create(user_id=f"user{i}", role=role)
+            user = UserRoleFactory.create(user_id=f"user{i}", project_role=role)
             users.append(user)
     return users
 

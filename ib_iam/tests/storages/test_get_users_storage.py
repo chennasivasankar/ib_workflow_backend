@@ -331,7 +331,7 @@ class TestGetUsers:
             uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057ba'),
             uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057bb')
         ]
-        [UserRoleFactory.create(role=ProjectRoleFactory.create(id=_id))
+        [UserRoleFactory.create(project_role=ProjectRoleFactory.create(id=_id))
          for _id in expected_user_role_ids]
 
         storage = UserStorageImplementation()
@@ -374,7 +374,7 @@ class TestGetUsers:
             }
         ]
         [UserRoleFactory.create(
-            role=ProjectRoleFactory.create(id=user_role["db_role_id"]),
+            project_role=ProjectRoleFactory.create(id=user_role["db_role_id"]),
             user_id=user_role["user_id"]
         ) for user_role in user_roles]
         expected_user_ids = [

@@ -72,7 +72,7 @@ class RolesStorageImplementation(RolesStorageInterface):
         from ib_iam.models import UserRole
         role_ids = UserRole.objects.filter(
             user_id=user_id
-        ).values_list("role__role_id", flat=True)
+        ).values_list("project_role__role_id", flat=True)
         return list(role_ids)
 
     def validate_user_ids(self, user_ids: List[str]):
