@@ -37,7 +37,6 @@ STAGE_ID_AND_VALUES_SUB_SHEET = "StageID and Values"
 STATUS_VARIABLES_SUB_SHEET = "Status Variables"
 ROLES_SUB_SHEET = "Roles"
 TRANSITION_TEMPLATES_SUB_SHEET = "Transition Templates"
-PROJECT_BOARDS_SUB_SHEET = "Project Boards"
 
 PRIORITY_TYPES = [(item.value, item.value) for item in Priority]
 

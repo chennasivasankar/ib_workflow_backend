@@ -12,7 +12,7 @@ class GetSheetDataForProjectBoards:
         return GetDataFromSheet()
 
     def get_data_from_project_boards_sub_sheet(self, spread_sheet_name: str):
-        from ib_tasks.constants.constants import PROJECT_BOARDS_SUB_SHEET
+        from ib_boards.constants.constants import PROJECT_BOARDS_SUB_SHEET
         field_records = self.data_sheet.get_data_from_sub_sheet(
             spread_sheet_name=spread_sheet_name,
             sub_sheet_name=PROJECT_BOARDS_SUB_SHEET
