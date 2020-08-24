@@ -94,8 +94,12 @@ class PopulateFields:
             field_values = None
         if field_type in MULTI_VALUES_INPUT_FIELDS and field_values is not \
                 None:
-            field_values = field_values.split("\r\n")
-            field_values = field_values[0].split("\n")
+            field_values = field_values.split("\n")
+            field_values_without_space = []
+            for field_value in field_values:
+                field_value = field_value.strip()
+                field_values_without_space.append(field_value)
+            field_values = field_values_without_space
         if field_type in MULTI_VALUES_INPUT_FIELDS and field_values is None:
             field_values = []
         return field_values
