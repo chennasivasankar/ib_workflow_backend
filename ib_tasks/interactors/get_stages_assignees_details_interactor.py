@@ -28,14 +28,13 @@ class GetStagesAssigneesDetailsInteractor:
         self.task_stage_storage = task_stage_storage
 
     def get_stages_assignee_details_dtos(
-            self, task_id: int, stage_ids: List[int]
+            self, task_id: int, stage_ids: List[int], project_id: str
     ) -> List[StageAssigneeWithTeamDetailsDTO]:
 
         self._validate_stage_ids_of_task(task_id, stage_ids)
         stage_assignee_dtos = self.task_stage_storage.get_stage_assignee_dtos(
             task_id, stage_ids
         )
-        project_id = self.task_stage_storage.get_project_id(task_id)
         user_id_with_team_id_dtos = self._get_user_id_with_team_id_dtos(
             stage_assignee_dtos
         )
@@ -198,8 +197,8 @@ class GetStagesAssigneesDetailsInteractor:
         return
 
     def get_stages_assignee_details_by_given_task_ids(
-            self, task_stage_dtos: List[GetTaskDetailsDTO]) -> List[
-        TaskStageAssigneeDetailsDTO]:
+            self, task_stage_dtos: List[GetTaskDetailsDTO]
+    ) -> List[TaskStageAssigneeDetailsDTO]:
         stage_assignee_dtos = \
             self.task_stage_storage.get_stage_assignee_id_dtos(
                 task_stage_dtos=task_stage_dtos
@@ -222,8 +221,8 @@ class GetStagesAssigneesDetailsInteractor:
     @staticmethod
     def _get_task_stage_assignee_details_dtos(
             stage_assignee_dtos: List[TaskStageAssigneeIdDTO],
-            assignee_details_dtos: List[AssigneeDetailsDTO]) -> List[
-        TaskStageAssigneeDetailsDTO]:
+            assignee_details_dtos: List[AssigneeDetailsDTO]
+    ) -> List[TaskStageAssigneeDetailsDTO]:
         assignees_dict = {}
         for assignee_details_dto in assignee_details_dtos:
             assignees_dict[

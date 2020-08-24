@@ -15,7 +15,8 @@ from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 class TaskCompleteDetailsDTO:
     task_details_dto: TaskDetailsDTO
     stages_and_actions_details_dtos: List[StageAndActionsDetailsDTO]
-    stage_assignee_with_team_details_dtos: List[StageAssigneeWithTeamDetailsDTO]
+    stage_assignee_with_team_details_dtos: List[
+        StageAssigneeWithTeamDetailsDTO]
 
 
 class GetTaskPresenterInterface(abc.ABC):

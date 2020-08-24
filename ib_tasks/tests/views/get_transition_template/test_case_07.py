@@ -1,5 +1,5 @@
 """
-test when user has only read permissions to fields returns is field writable false
+test when user has only read permissions to fields returns empty fields
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils

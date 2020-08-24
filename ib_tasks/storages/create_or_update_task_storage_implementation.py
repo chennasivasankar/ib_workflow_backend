@@ -278,6 +278,7 @@ class CreateOrUpdateTaskStorageImplementation(
         )
         task_object = Task.objects.create(
             task_display_id=None,
+            project_id=task_dto.project_id,
             template_id=task_dto.task_template_id,
             created_by=task_dto.created_by_id,
             title=task_dto.title, description=task_dto.description,
@@ -368,3 +369,6 @@ class CreateOrUpdateTaskStorageImplementation(
             for field_searchable_value in field_searchable_values
         ]
         return field_searchable_dtos
+
+    def get_task_ids(self) -> List[int]:
+        return list(Task.objects.values_list('id', flat=True))

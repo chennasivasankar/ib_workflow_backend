@@ -164,7 +164,3 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
             for stage_id in stage_ids]
         TaskStageHistory.objects.bulk_create(task_stage_history_objs)
 
-    def get_project_id(self, task_id: str) -> str:
-        task_obj = Task.objects.get(id=task_id)
-        return task_obj.project_id
-

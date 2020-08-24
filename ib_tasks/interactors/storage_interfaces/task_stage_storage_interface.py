@@ -76,6 +76,4 @@ class TaskStageStorageInterface(abc.ABC):
             self, stage_ids: List[int], task_id: int):
         pass
 
-    @abc.abstractmethod
-    def get_project_id(self, task_id: str) -> str:
-        pass
+

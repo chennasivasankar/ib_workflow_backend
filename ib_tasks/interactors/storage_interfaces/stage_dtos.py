@@ -128,7 +128,6 @@ class StageDetailsDTO:
     stage_id: str
     color: str
     name: str
-    color: str
 
 
 @dataclass()

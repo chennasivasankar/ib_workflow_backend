@@ -29,3 +29,7 @@ class UpdateTaskStageAssigneesPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_virtual_stage_ids_exception(self, virtual_stage_ids: List[int]):
         pass
+
+    @abc.abstractmethod
+    def raise_invalid_user_id_exception(self, user_id: str):
+        pass

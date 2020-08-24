@@ -224,10 +224,13 @@ class StorageImplementation(StorageInterface):
     def validate_user_role_with_boards_roles(self, user_role: str):
         pass
 
-    def get_board_ids(self, user_id: str) -> List[str]:
-        starred_board_ids = list(UserStarredBoard.objects.filter(user_id=user_id)
+    def get_board_ids(self, user_id: str, project_id: str) -> \
+            Tuple[List[str], List[str]]:
+        starred_board_ids = list(UserStarredBoard.objects.filter(user_id=user_id,
+                                                                 board__project_id=project_id)
                                  .values_list('board_id', flat=True))
-        board_ids = list(Board.objects.exclude(board_id__in=starred_board_ids) \
+        board_ids = list(Board.objects.filter(project_id=project_id)
+                         .exclude(board_id__in=starred_board_ids)
                          .values_list('board_id', flat=True))
         return board_ids, starred_board_ids
 
@@ -413,7 +416,7 @@ class StorageImplementation(StorageInterface):
         board_id = parameters.board_id
 
         UserStarredBoard.objects.filter(
-                board_id=board_id, user_id=user_id).delete()
+            board_id=board_id, user_id=user_id).delete()
 
     def star_given_board(self,
                          parameters: StarOrUnstarParametersDTO):
@@ -421,4 +424,4 @@ class StorageImplementation(StorageInterface):
         board_id = parameters.board_id
 
         UserStarredBoard.objects.get_or_create(
-                board_id=board_id, user_id=user_id)
+            board_id=board_id, user_id=user_id)

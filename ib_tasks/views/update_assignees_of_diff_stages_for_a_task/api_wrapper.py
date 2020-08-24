@@ -19,7 +19,8 @@ def api_wrapper(*args, **kwargs):
     stage_assignees = request_data['stage_assignees']
     stage_assignee_dtos = \
         [StageAssigneeDTO(db_stage_id=each_stage_assignee_item['stage_id'],
-                          assignee_id=each_stage_assignee_item['assignee_id'])
+                          assignee_id=each_stage_assignee_item['assignee_id'],
+                          team_id=each_stage_assignee_item['team_id'])
          for
          each_stage_assignee_item in stage_assignees]
 

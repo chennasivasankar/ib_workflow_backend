@@ -7,10 +7,10 @@ from ib_tasks.constants.enum import Status
 from ib_tasks.interactors.filter_dtos import FilterCompleteDetailsDTO, \
     ConditionDTO, FilterDTO
 from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
-    import FilterPresenterInterface, TaskTemplateFieldsDto
+    import FilterPresenterInterface, TaskTemplateFieldsDto, ProjectTemplateFieldsDto
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
-    GoFToTaskTemplateDTO
+    GoFToTaskTemplateDTO, TaskTemplateGofsDTO
 
 
 class FilterPresenterImplementation(FilterPresenterInterface,
@@ -212,10 +212,10 @@ class FilterPresenterImplementation(FilterPresenterInterface,
         return response_object
 
     def get_response_for_get_task_templates_fields(
-            self, task_template_fields: TaskTemplateFieldsDto):
+            self, task_template_fields: ProjectTemplateFieldsDto):
         task_template_dtos = task_template_fields.task_template_dtos
         fields_dto = task_template_fields.fields_dto
-        task_template_gofs = task_template_fields.gofs_of_task_templates_dtos
+        task_template_gofs = task_template_fields.task_template_gofs_dtos
         gof_fields_dict = self._get_gof_fields_dict(fields_dto)
         task_template_gofs_dict = \
             self._get_task_template_gof_dict(task_template_gofs)
@@ -266,13 +266,12 @@ class FilterPresenterImplementation(FilterPresenterInterface,
 
     @staticmethod
     def _get_task_template_gof_dict(
-            task_template_gofs: List[GoFToTaskTemplateDTO]):
+            task_template_gofs: List[TaskTemplateGofsDTO]):
         from collections import defaultdict
         template_gof_dict = defaultdict(list)
         for task_template_gof in task_template_gofs:
             template_id = task_template_gof.template_id
-            gof_id = task_template_gof.gof_id
-            template_gof_dict[template_id].append(gof_id)
+            template_gof_dict[template_id] = task_template_gof.gof_ids
         return template_gof_dict
 
     @staticmethod

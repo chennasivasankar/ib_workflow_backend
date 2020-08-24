@@ -55,6 +55,7 @@ class AuthService:
 
         return user_details_dtos
 
+    # ToDo Add Project id as an argument
     def get_permitted_user_details(self, role_ids: List[str], project_id:
     str) \
             -> List[UserDetailsDTO]:
@@ -65,14 +66,16 @@ class AuthService:
             user_profile_details_dtos)
         return user_details_dtos
 
+    # todo: add project id related implementation
     def get_user_details_for_the_given_role_ids_based_on_query(
             self, role_ids: List[str],
             search_query_with_pagination_dto:
-            SearchQueryWithPaginationDTO) -> List[UserDetailsDTO]:
+            SearchQueryWithPaginationDTO, project_id: str) -> List[
+        UserDetailsDTO]:
         user_profile_details_dtos = self.interface. \
             get_user_details_for_the_given_role_ids_based_on_query(
             role_ids=role_ids, search_query_with_pagination_dto=
-            search_query_with_pagination_dto)
+            search_query_with_pagination_dto, project_id=project_id)
 
         user_details_dtos = self._get_user_details_dtos(
             user_profile_details_dtos)
@@ -99,15 +102,16 @@ class AuthService:
         raise NotImplementedError
 
     def get_projects_info_for_given_ids(
-            self, project_ids: List[str]
-    ) -> ProjectDetailsDTO:
+            self, project_ids: List[str]) -> List[ProjectDetailsDTO]:
         raise NotImplementedError
 
+    # todo: added project id in argument
     def get_team_info_for_given_user_ids(
-            self, user_ids: List[str]
+            self, user_ids: List[str], project_id: str
     ) -> List[UserIdWIthTeamDetailsDTOs]:
         raise NotImplementedError
 
+    # todo: changed arguments in input dto in function head
     def get_team_details_for_given_project_team_user_ids_dto(
             self, team_project_details_dto: ProjectTeamUserIdsDTO) -> \
             List[TeamDetailsWithUserIdDTO]:
