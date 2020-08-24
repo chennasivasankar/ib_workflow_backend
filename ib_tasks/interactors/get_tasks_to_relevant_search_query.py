@@ -1,22 +1,32 @@
 from dataclasses import dataclass
 from typing import Any, List
 
-from ib_tasks.adapters.auth_service import InvalidProjectIdsException, UserIsNotInProject
+from ib_tasks.adapters.auth_service import InvalidProjectIdsException, \
+    UserIsNotInProject
 from ib_tasks.constants.enum import ViewType
-from ib_tasks.exceptions.fields_custom_exceptions import LimitShouldBeGreaterThanZeroException, \
+from ib_tasks.exceptions.fields_custom_exceptions import \
+    LimitShouldBeGreaterThanZeroException, \
     OffsetShouldBeGreaterThanZeroException
-from ib_tasks.exceptions.stage_custom_exceptions import StageIdsListEmptyException
+from ib_tasks.exceptions.stage_custom_exceptions import \
+    StageIdsListEmptyException
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.presenter_interfaces.get_all_tasks_overview_for_user_presenter_interface import \
     GetFilteredTasksOverviewForUserPresenterInterface
-from ib_tasks.interactors.storage_interfaces.action_storage_interface import ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import ElasticSearchStorageInterface, \
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
+    ActionStorageInterface
+from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
+    ElasticSearchStorageInterface, \
     ApplyFilterDTO
-from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
-from ib_tasks.interactors.storage_interfaces.filter_storage_interface import FilterStorageInterface
-from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import TaskStageStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+    FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.filter_storage_interface import \
+    FilterStorageInterface
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
+    StageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+    TaskStageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+    TaskStorageInterface
 
 
 @dataclass
@@ -98,7 +108,8 @@ class GetTasksToRelevantSearchQuery(ValidationMixin):
             project_id=project_id, user_id=user_id
         )
 
-    def _get_all_tasks_overview_details(self, query_tasks_dto, view_type, user_id):
+    def _get_all_tasks_overview_details(self, query_tasks_dto, view_type,
+                                        user_id):
         from ib_tasks.interactors.get_all_task_overview_with_filters_and_searches_for_user import \
             GetTasksOverviewForUserInteractor
         task_details_interactor = GetTasksOverviewForUserInteractor(
