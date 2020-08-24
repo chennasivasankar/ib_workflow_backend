@@ -3,6 +3,7 @@ from datetime import time, datetime, timedelta
 from typing import Optional, List
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
+from ib_tasks.interactors.task_dtos import AssigneeWithTeamDetailsDTO
 
 
 @dataclass
@@ -157,3 +158,10 @@ class StageActionLogicDTO:
     action_logic: str
     action_name: str
     py_function_import_path: str
+
+
+@dataclass()
+class StageAssigneeWithTeamDetailsDTO:
+    task_stage_id: int
+    stage_id: int
+    assignee_details_dto: Optional[AssigneeWithTeamDetailsDTO]

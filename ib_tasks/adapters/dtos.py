@@ -89,9 +89,9 @@ class UserIdWithTeamIdDTO:
 
 
 @dataclass
-class TeamProjectDetailsDTO:
+class ProjectTeamUserIdsDTO:
     project_id: str
-    team_user_dtos: List[UserIdWithTeamIdDTO]
+    user_id_with_team_id_dtos: List[UserIdWithTeamIdDTO]
 
 
 @dataclass

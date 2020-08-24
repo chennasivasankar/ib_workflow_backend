@@ -2,6 +2,7 @@ import datetime
 from dataclasses import dataclass
 from typing import Union, List, Any, Optional
 
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 from ib_tasks.constants.enum import Priority, Searchable
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionDetailsDTO, TaskStageIdsDTO, StageDetailsDTO, \
@@ -173,3 +174,14 @@ class TaskDelayParametersDTO(TaskDueParametersDTO):
 class SearchableDTO:
     search_type: Searchable
     id: Union[int, str]
+
+
+@dataclass
+class TeamInfoDTO:
+    team_id: str
+    team_name: str
+
+
+@dataclass
+class AssigneeWithTeamDetailsDTO(AssigneeDetailsDTO):
+    team_info_dto: TeamInfoDTO
