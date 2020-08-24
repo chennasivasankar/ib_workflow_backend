@@ -5,12 +5,22 @@ from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
 from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
+from ib_iam.interactors.storage_interfaces.team_storage_interface import \
+    TeamStorageInterface
+from ib_iam.interactors.storage_interfaces.user_storage_interface import \
+    UserStorageInterface
 
 
 class ProjectInteractor:
 
-    def __init__(self, project_storage: ProjectStorageInterface):
+    def __init__(
+            self, project_storage: ProjectStorageInterface,
+            team_storage: TeamStorageInterface,
+            user_storage: UserStorageInterface
+    ):
         self.project_storage = project_storage
+        self.team_storage = team_storage
+        self.user_storage = user_storage
 
     def add_projects(self, project_dtos: List[ProjectDTO]):
         # todo check for duplicate project_ids in dtos
@@ -51,6 +61,19 @@ class ProjectInteractor:
             team_id=project_team_user_dto.team_id,
             name=name)
         return user_id_with_team_id_and_name_dto
+
+    def is_valid_user_id_for_given_project(
+            self, user_id: str, project_id: str) -> bool:
+        self._validate_user_id(user_id=user_id)
+        self._validate_project(project_id=project_id)
+        return self.project_storage.is_user_exist_given_project(
+            user_id=user_id, project_id=project_id)
+
+    def _validate_user_id(self, user_id: str):
+        is_valid_user_id = self.user_storage.is_user_exist(user_id=user_id)
+        if not is_valid_user_id:
+            from ib_iam.exceptions.custom_exceptions import InvalidUserId
+            raise InvalidUserId
 
     def _validate_project(self, project_id: str):
         valid_project_ids = self.project_storage \
