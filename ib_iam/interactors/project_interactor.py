@@ -1,6 +1,7 @@
 from typing import List
 
-from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO
+from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
+    UserIdWithTeamIDAndNameDTO
 from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
@@ -34,7 +35,8 @@ class ProjectInteractor:
         return project_dtos
 
     def get_team_details_for_given_project_team_user_details_dto(
-            self, project_team_user_dto: ProjectTeamUserDTO):
+            self, project_team_user_dto: ProjectTeamUserDTO
+    ) -> List[UserIdWithTeamIDAndNameDTO]:
         # todo confirm and add invalid team and user exceptions
         self._validate_project(project_id=project_team_user_dto.project_id)
         self._validate_team_existence_in_project(
