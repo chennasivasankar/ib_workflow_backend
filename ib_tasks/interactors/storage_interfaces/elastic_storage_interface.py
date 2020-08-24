@@ -40,13 +40,13 @@ class ElasticSearchStorageInterface(abc.ABC):
     @abc.abstractmethod
     def filter_tasks(
             self, filter_dtos: List[ApplyFilterDTO], offset: int, limit:
-            int, stage_ids: List[str]) -> Tuple[List[int], int]:
+            int, stage_ids: List[str], project_id: str) -> Tuple[List[int], int]:
         pass
 
     @abc.abstractmethod
     def search_tasks(
-            self, offset: int, limit: int, search_query: str,
-            apply_filter_dtos: List[ApplyFilterDTO]
+            self, offset: int, limit: int, search_query: str, project_id: str,
+            apply_filter_dtos: List[ApplyFilterDTO], stage_ids: List[str]
     ) -> QueryTasksDTO:
         pass
 

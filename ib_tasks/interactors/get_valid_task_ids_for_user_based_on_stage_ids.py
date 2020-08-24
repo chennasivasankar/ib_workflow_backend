@@ -25,7 +25,8 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
         self.task_stage_storage = task_stage_storage
 
     def get_task_ids_of_user_based_on_stage_ids(
-            self, user_id: str, stage_ids: List[str], task_ids: List[int], project_id: str) \
+            self, user_id: str, stage_ids: List[str], task_ids: List[int],
+            project_id: str) \
             -> List[TaskWithCompleteStageDetailsDTO]:
         given_stage_ids = stage_ids
 
@@ -37,7 +38,7 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
         self._validate_stage_ids(valid_stage_ids, given_unique_stage_ids)
         task_id_with_max_stage_value_dtos = self.task_storage. \
             get_user_task_ids_and_max_stage_value_dto_based_on_given_stage_ids(
-                 stage_ids=valid_stage_ids, task_ids=task_ids)
+            stage_ids=valid_stage_ids, task_ids=task_ids)
         stage_values = [
             task_id_with_max_stage_value_dto.stage_value
             for task_id_with_max_stage_value_dto in
@@ -51,9 +52,9 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
         task_id_with_stage_details_dtos = self. \
             stage_storage. \
             get_task_id_with_stage_details_dtos_based_on_stage_value(
-                stage_values=stage_values,
-                task_ids_group_by_stage_value_dtos=
-                task_ids_group_by_stage_value_dtos)
+            stage_values=stage_values,
+            task_ids_group_by_stage_value_dtos=
+            task_ids_group_by_stage_value_dtos)
         task_ids = []
         task_id_with_single_stage_details_dto = []
         for task_id_with_stage_details_dto in task_id_with_stage_details_dtos:
@@ -74,21 +75,36 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
     ) -> List[TaskWithCompleteStageDetailsDTO]:
         from ib_tasks.interactors.get_stages_assignees_details_interactor \
             import GetStagesAssigneesDetailsInteractor
-        get_stage_assignees_details_interactor = \
-            GetStagesAssigneesDetailsInteractor(
+        get_stage_assignees_interactor = GetStagesAssigneesDetailsInteractor(
                 task_stage_storage=self.task_stage_storage
             )
         task_with_complete_stage_details_dtos = []
+        task_stage_dtos = []
         for task_id_with_stage_details_dto in task_id_with_stage_details_dtos:
-            stage_assignee_details_dtos = \
-                get_stage_assignees_details_interactor. \
-                    get_stages_assignee_details_dtos(
-                        task_id=task_id_with_stage_details_dto.task_id,
-                        stage_ids=[task_id_with_stage_details_dto.db_stage_id], project_id=project_id)
+            from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+            task_stage_dto = GetTaskDetailsDTO(
+                task_id=task_id_with_stage_details_dto.task_id,
+                stage_id=task_id_with_stage_details_dto.stage_id
+            )
+            task_stage_dtos.append(task_stage_dto)
+        stage_assignee_dtos = get_stage_assignees_interactor. \
+            get_stages_assignee_details_by_given_task_ids(
+                task_stage_dtos=task_stage_dtos
+            )
+
+        stage_assignee_map = {}
+        for stage_assignee_dto in stage_assignee_dtos:
+            stage_assignee_map[stage_assignee_dto.stage_id + str(stage_assignee_dto.task_id)] = stage_assignee_dto
+
+        for task_id_with_stage_details_dto in task_id_with_stage_details_dtos:
             task_with_complete_stage_details_dto = \
                 TaskWithCompleteStageDetailsDTO(
                     task_with_stage_details_dto=task_id_with_stage_details_dto,
-                    stage_assignee_dto=stage_assignee_details_dtos)
+                    stage_assignee_dto=[
+                        stage_assignee_map[
+                            task_id_with_stage_details_dto.stage_id + str(task_id_with_stage_details_dto.task_id)]
+                ]
+            )
             task_with_complete_stage_details_dtos.append(
                 task_with_complete_stage_details_dto)
         return task_with_complete_stage_details_dtos
