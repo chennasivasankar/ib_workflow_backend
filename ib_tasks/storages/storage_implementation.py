@@ -422,6 +422,11 @@ class StagesStorageImplementation(StageStorageInterface):
         return sorted(list(set(stage_ids)))
 
 
+    def get_task_current_stages(self, task_id: int) -> List[str]:
+        return list(CurrentTaskStage.objects.filter(
+            task_id=task_id
+        ).values_list('stage__stage_id', flat=True))
+
 
 class StorageImplementation(StorageInterface):
 
