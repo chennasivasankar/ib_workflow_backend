@@ -12,8 +12,18 @@ class Project:
         from ib_iam.storages.project_storage_implementation import \
             ProjectStorageImplementation
         project_storage = ProjectStorageImplementation()
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        user_storage = UserStorageImplementation()
+        from ib_iam.storages.team_storage_implementation import \
+            TeamStorageImplementation
+        team_storage = TeamStorageImplementation()
         from ib_iam.interactors.project_interactor import ProjectInteractor
-        interactor = ProjectInteractor(project_storage=project_storage)
+        interactor = ProjectInteractor(
+            project_storage=project_storage,
+            user_storage=user_storage,
+            team_storage=team_storage
+        )
         project_dtos = self._convert_to_project_dtos(projects=projects)
         interactor.add_projects(project_dtos=project_dtos)
 

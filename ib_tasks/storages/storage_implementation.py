@@ -28,10 +28,13 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
     TaskDelayParametersDTO
+from ib_tasks.models import GlobalConstant, \
+    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskTemplateStatusVariable, ProjectTaskTemplate
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
     GlobalConstant, StagePermittedRoles, TaskTemplateInitialStage, Stage, \
-    TaskTemplateStatusVariable, ProjectTaskTemplate
+    TaskTemplateStatusVariable, ProjectTaskTemplate,\
+    ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole
 from ib_tasks.models import \
     TaskStageHistory
 from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
@@ -303,7 +306,7 @@ class StagesStorageImplementation(StageStorageInterface):
                 task_id=each_task_id_with_stage_assignee_dto.task_id,
                 stage_id=each_task_id_with_stage_assignee_dto.db_stage_id,
                 assignee_id=each_task_id_with_stage_assignee_dto.assignee_id,
-            team_id=each_task_id_with_stage_assignee_dto.team_id)
+                team_id=each_task_id_with_stage_assignee_dto.team_id)
             for each_task_id_with_stage_assignee_dto in
             task_id_with_stage_assignee_dtos
         ]
@@ -431,7 +434,6 @@ class StagesStorageImplementation(StageStorageInterface):
             task_id=task_id
         ).values_list('stage__stage_id', flat=True))
 
-
 class StorageImplementation(StorageInterface):
 
     def get_write_permission_roles_for_given_gof_ids(
@@ -470,7 +472,7 @@ class StorageImplementation(StorageInterface):
         for gof_role_obj in gof_role_objects:
             gof_id_matched = gof_id == gof_role_obj.gof_id
             if gof_id_matched:
-                gof_roles.append(gof_role_obj.role)
+                gof_roles.append(gof_role_obj.project_role)
         return gof_roles
 
     def get_write_permission_roles_for_given_field_ids(
@@ -509,7 +511,7 @@ class StorageImplementation(StorageInterface):
         for field_role_obj in field_role_objects:
             field_id_matched = field_id == field_role_obj.field_id
             if field_id_matched:
-                field_roles.append(field_role_obj.role)
+                field_roles.append(field_role_obj.project_role)
         return field_roles
 
     def validate_task_id(self, task_id: int) -> bool:

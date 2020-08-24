@@ -38,9 +38,9 @@ class TestGetUserIdWIthRoleIdsDTOS:
             (UUID('22832ab6-100e-4d8e-b3a3-f3e0c6aa65f6'), "f3e0c6aa65f6"),
             (UUID('66040b6e-c8e5-46ab-a313-5e3fc083776b'), "5e3fc083776b")
         ]
-        from ib_iam.tests.factories.models import RoleFactory
+        from ib_iam.tests.factories.models import ProjectRoleFactory
         role_objects = [
-            RoleFactory(id=id, role_id=role_id)
+            ProjectRoleFactory(id=id, role_id=role_id)
             for id, role_id in ids_and_role_ids
         ]
 
@@ -48,11 +48,11 @@ class TestGetUserIdWIthRoleIdsDTOS:
         user_id2 = "abc1a0c1-b9ef-4e59-b415-60a28ef17b10"
         user_id3 = "1231a0c1-b9ef-4e59-b415-60a28ef17b10"
         from ib_iam.tests.factories.models import UserRoleFactory
-        UserRoleFactory.create(user_id=user_id1, role=role_objects[0])
-        UserRoleFactory.create(user_id=user_id1, role=role_objects[1])
-        UserRoleFactory.create(user_id=user_id2, role=role_objects[2])
-        UserRoleFactory.create(user_id=user_id2, role=role_objects[3])
-        UserRoleFactory.create(user_id=user_id2, role=role_objects[4])
+        UserRoleFactory.create(user_id=user_id1, project_role=role_objects[0])
+        UserRoleFactory.create(user_id=user_id1, project_role=role_objects[1])
+        UserRoleFactory.create(user_id=user_id2, project_role=role_objects[2])
+        UserRoleFactory.create(user_id=user_id2, project_role=role_objects[3])
+        UserRoleFactory.create(user_id=user_id2, project_role=role_objects[4])
 
         from ib_iam.storages.roles_storage_implementation import \
             RolesStorageImplementation

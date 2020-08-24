@@ -26,9 +26,9 @@ class TestGetUserDetailsForGivenRoleIdsBasedOnQuery:
         reset_sequence_role_factory()
 
         import factory
-        from ib_iam.tests.factories.models import RoleFactory, \
+        from ib_iam.tests.factories.models import ProjectRoleFactory, \
             UserRoleFactory, UserDetailsFactory
-        roles = RoleFactory.create_batch(
+        roles = ProjectRoleFactory.create_batch(
             size=2, id=factory.Iterator(role_ids))
         UserRoleFactory.create_batch(
             size=2, user_id=factory.Iterator(user_ids),

@@ -4,3 +4,5 @@ Author: Pavankumar Pamuru
 
 """
 BOARDS_AND_COLUMN_SUB_SHEET = "Boards and Columns"
+
+PROJECT_BOARDS_SUB_SHEET = "Project Boards"

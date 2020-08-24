@@ -102,9 +102,11 @@ class AuthService:
         ProjectDetailsDTO]:
         pass
 
-    def get_team_info_for_given_user_ids(self, user_ids: List[str], project_id:str) -> List[
+    def get_team_info_for_given_user_ids(self, user_ids: List[str],
+                                         project_id: str) -> List[
         UserIdWIthTeamDetailsDTOs]:
         raise NotImplementedError
+
     def get_team_details_for_given_team_project_details_dto(
             self, team_project_details_dto) -> \
             List[TeamDetailsWithUserIdDTO]:

@@ -5,19 +5,13 @@ RESPONSE_200_JSON = """
 {
     "users": [
         {
-            "user_id": "f38b6655-d5ff-4cf3-ba72-b4b93437a602",
+            "user_id": "47ac1443-856d-4d55-8629-24bd457d73c8",
             "name": "string",
             "email": "string",
             "teams": [
                 {
-                    "team_id": "0d05bfbc-13f3-43aa-bd00-0a5757c4627a",
+                    "team_id": "bf771cb4-80af-4d09-846e-39085a9fd1ed",
                     "team_name": "string"
-                }
-            ],
-            "roles": [
-                {
-                    "role_id": "string",
-                    "role_name": "string"
                 }
             ],
             "company": {

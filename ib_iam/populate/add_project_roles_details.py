@@ -1,6 +1,6 @@
-class RoleDetails:
+class ProjectRoleDetails:
 
-    def add_roles_details_to_database(
+    def add_project_roles_details_to_database(
             self, spread_sheet_name: str, sub_sheet_name: str):
         from ib_iam.populate.spreedsheet_utils import SpreadSheetUtil
         spreadsheet_utils = SpreadSheetUtil()
@@ -14,8 +14,9 @@ class RoleDetails:
         storage = RolesStorageImplementation()
         from ib_iam.interactors.roles_interactor import RolesInteractor
         interactor = RolesInteractor(storage=storage)
+        project_id = roles_details[0]["project_id"]
         role_dtos = self._convert_to_role_dtos(roles_details=roles_details)
-        interactor.add_roles(role_dtos=role_dtos)
+        interactor.add_project_roles(role_dtos=role_dtos, project_id=project_id)
 
     @staticmethod
     def _convert_to_role_dtos(roles_details):
