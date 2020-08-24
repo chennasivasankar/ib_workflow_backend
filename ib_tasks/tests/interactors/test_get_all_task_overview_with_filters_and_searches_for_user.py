@@ -8,12 +8,13 @@ import pytest
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.interactors.presenter_interfaces.dtos import AllTasksOverviewDetailsDTO
-from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
+
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO, TaskIdWithStageDetailsDTO, TaskWithCompleteStageDetailsDTO
+    GetTaskStageCompleteDetailsDTO, TaskIdWithStageDetailsDTO, \
+    TaskWithCompleteStageDetailsDTO, StageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import TaskStageStorageInterface
 from ib_tasks.tests.common_fixtures.interactors import prepare_get_stage_ids_for_user
 from ib_tasks.tests.factories.presenter_dtos import TaskWithCompleteStageDetailsDTOFactory

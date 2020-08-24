@@ -2,7 +2,7 @@ import factory
 
 from ib_iam.adapters.auth_service import UserTokensDTO
 from ib_iam.adapters.dtos import UserProfileDTO
-from ib_iam.app_interfaces.dtos import SearchableDTO
+from ib_iam.app_interfaces.dtos import SearchableDTO, ProjectTeamUserDTO
 from ib_iam.constants.enums import Searchable
 
 
@@ -40,3 +40,12 @@ class SearchableDTOFactory(factory.Factory):
         ]
     )
     id = factory.sequence(lambda counter: counter)
+
+
+class ProjectTeamUserDTOFactory(factory.Factory):
+    class Meta:
+        model = ProjectTeamUserDTO
+
+    project_id = factory.Sequence(lambda n: 'project %s' % n)
+    team_id = factory.sequence(lambda number: "team %s" % number)
+    user_id = factory.sequence(lambda number: "user %s" % number)

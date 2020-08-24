@@ -175,3 +175,7 @@ class TaskDelayParametersDTO(TaskDueParametersDTO):
 class SearchableDTO:
     search_type: Searchable
     id: Union[int, str]
+
+
+
+

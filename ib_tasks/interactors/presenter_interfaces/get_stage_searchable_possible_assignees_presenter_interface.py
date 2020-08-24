@@ -8,6 +8,7 @@ from ib_tasks.exceptions.fields_custom_exceptions import \
     LimitShouldBeGreaterThanZeroException, \
     OffsetShouldBeGreaterThanZeroException
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId
+from ib_tasks.interactors.stages_dtos import UserDetailsWithTeamDetailsDTO
 
 
 class GetStageSearchablePossibleAssigneesPresenterInterface(abc.ABC):
@@ -26,6 +27,7 @@ class GetStageSearchablePossibleAssigneesPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_stage_assignee_details_response(
-            self, user_details_dtos: List[UserDetailsDTO]
+            self, user_details_with_team_details_dto:
+            UserDetailsWithTeamDetailsDTO
     ) -> response.HttpResponse:
         pass
