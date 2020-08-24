@@ -164,10 +164,8 @@ class TestGetColumnDetailsInteractor:
         GetTaskDetailsDTOFactory.reset_sequence()
         return GetTaskDetailsDTOFactory.create_batch(9)
 
-    def test_with_invalid_board_id_raises_exception(self, mocker):
+    def test_with_invalid_board_id_raises_exception(self):
         # Arrange
-
-        project_id = "project_id_1",
         board_id = "board_id_1"
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
@@ -199,10 +197,8 @@ class TestGetColumnDetailsInteractor:
         presenter.response_for_invalid_board_id.assert_called_once()
 
     @patch("ib_boards.adapters.service_adapter.ServiceAdapter.iam_service")
-    def test_with_invalid_offset_raises_exception(self, user_roles_service,
-                                                  mocker):
+    def test_with_invalid_offset_raises_exception(self, user_roles_service):
         # Arrange
-        project_id = "project_id_1"
         board_id = "board_id_1"
         user_roles = ["FIN_PAYMENT_REQUESTER",
                       "FIN_PAYMENT_POC",
