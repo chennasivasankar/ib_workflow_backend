@@ -2,7 +2,8 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO, UserIdWithTeamIdDTO, \
-    ProjectTeamUserIdsDTO, TeamDetailsWithUserIdDTO
+    ProjectTeamUserIdsDTO, TeamDetailsWithUserIdDTO, \
+    AssigneeWithTeamDetailsDTO, TeamInfoDTO
 from ib_tasks.adapters.service_adapter import get_service_adapter
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidStageIdsForTask
@@ -12,8 +13,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
     TaskStageStorageInterface, TaskStageAssigneeIdDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
-    AssigneeWithTeamDetailsDTO, TeamInfoDTO
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
 @dataclass
