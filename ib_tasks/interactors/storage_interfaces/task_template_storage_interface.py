@@ -50,6 +50,10 @@ class TaskTemplateStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_task_templates_to_project_ids(self, project_ids: List[str]):
+        pass
+
+    @abc.abstractmethod
     def get_gofs_to_templates_from_permitted_gofs(
             self, gof_ids: List[str]) -> List[GoFToTaskTemplateDTO]:
         pass

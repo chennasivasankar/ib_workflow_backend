@@ -10,7 +10,7 @@ from ib_tasks.constants.enum import ViewType
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldCompleteDetailsDTO, FieldDTO, UserFieldPermissionDTO, \
     FieldIdWithGoFIdDTO, StageTaskFieldsDTO, \
-    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId
+    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId, FieldNameDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface, FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
@@ -48,6 +48,26 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         field_dtos = self._convert_field_objs_to_field_dtos(
             field_objs=field_objs)
         return field_dtos
+
+    def get_user_permitted_gof_field_dtos(
+            self, user_roles: List[str], gof_ids: List[str]
+    ) -> List[FieldNameDTO]:
+
+        field_ids = FieldRole.objects.filter(
+            Q(field__gof_id__in=gof_ids),
+            (Q(role__in=user_roles) | Q(role=ALL_ROLES_ID))
+        ).values_list('field_id', flat=True)
+
+        field_objs = Field.objects.filter(field_id__in=field_ids)
+
+        return [
+            FieldNameDTO(
+                field_id=field_obj.field_id,
+                gof_id=field_obj.gof_id,
+                field_display_name=field_obj.display_name
+            )
+            for field_obj in field_objs
+        ]
 
     def get_field_details_for_given_field_ids(self, field_ids: List[str]) -> \
             List[FieldCompleteDetailsDTO]:
