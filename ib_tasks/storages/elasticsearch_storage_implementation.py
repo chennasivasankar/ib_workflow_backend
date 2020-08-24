@@ -17,7 +17,7 @@ from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
-from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
+from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, SearchQueryDTO
 
 
 class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
@@ -126,15 +126,18 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         return task_objects
 
     def search_tasks(
-            self, offset: int, limit: int, search_query: str,
-            apply_filter_dtos: List[ApplyFilterDTO], project_id: str,
+            self, search_query_dto: SearchQueryDTO,
+            apply_filter_dtos: List[ApplyFilterDTO],
             stage_ids: List[str]
     ) -> QueryTasksDTO:
         from elasticsearch_dsl import connections
         from django.conf import settings
         connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
                                       timeout=20)
-
+        offset = search_query_dto.offset
+        limit = search_query_dto.limit
+        project_id = search_query_dto.project_id
+        search_query = search_query_dto.query_value
         from elasticsearch_dsl import Q
         search = self._get_search_task_objects(apply_filter_dtos)
         query = Q('term', project_id__keyword=project_id) \

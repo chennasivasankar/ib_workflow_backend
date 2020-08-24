@@ -2,7 +2,7 @@ import datetime
 from dataclasses import dataclass
 from typing import Union, List, Any, Optional
 
-from ib_tasks.constants.enum import Priority, Searchable
+from ib_tasks.constants.enum import Priority, Searchable, ViewType
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionDetailsDTO, TaskStageIdsDTO, StageDetailsDTO, \
     CurrentStageDetailsDTO
@@ -177,5 +177,11 @@ class SearchableDTO:
     id: Union[int, str]
 
 
-
-
+@dataclass
+class SearchQueryDTO:
+    offset: int
+    limit: int
+    query_value: Any
+    project_id: str
+    user_id: str = None
+    view_type: ViewType = None
