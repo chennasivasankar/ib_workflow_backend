@@ -1,7 +1,8 @@
+from collections import defaultdict
 from typing import List, Dict, Optional
 
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
-    GoFToTaskTemplateDTO, GoFDTO, GoFRoleDTO
+    GoFToTaskTemplateDTO, GoFDTO, GoFRoleDTO, TaskTemplateGofsDTO
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
 from ib_tasks.models import GoFRole, GoF, TaskTemplateGoFs, FieldRole
@@ -87,6 +88,31 @@ class GoFStorageImplementation(GoFStorageInterface):
 
         gof_ids_list = list(gof_ids_queryset)
         return gof_ids_list
+
+    def get_user_permitted_template_gof_dtos(
+            self, user_roles: List[str], template_ids: List[str]
+    ):
+        from django.db.models import Q
+        from ib_tasks.constants.constants import ALL_ROLES_ID
+        gof_ids = GoFRole.objects.filter().filter(
+            (Q(role__in=user_roles) | Q(role=ALL_ROLES_ID))
+        ).values_list('gof_id', flat=True)
+        task_template_gofs = TaskTemplateGoFs.objects\
+            .filter(gof_id__in=gof_ids, template_id__in=template_ids)
+
+        template_gofs_dict = defaultdict(list)
+        for task_template_gof in task_template_gofs:
+            template_id = task_template_gof.task_template_id
+            gof_id = task_template_gof.gof_id
+            template_gofs_dict[template_id].append(gof_id)
+
+        return [
+            TaskTemplateGofsDTO(
+                template_id=task_template_gof.task_template_id,
+                gof_ids=template_gofs_dict[task_template_gof.task_template_id]
+            )
+            for task_template_gof in task_template_gofs
+        ]
 
     def get_valid_gof_ids_in_given_gof_ids(self, gof_ids: List[str]) -> List[
         str]:

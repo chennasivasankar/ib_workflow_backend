@@ -15,7 +15,7 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageIdWithTemplateIdDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TemplateDTO
+    TemplateDTO, ProjectIdWithTaskTemplateIdDTO
 
 
 class GetTaskTemplatesPresenterImplementation(
@@ -35,22 +35,21 @@ class GetTaskTemplatesPresenterImplementation(
     def get_task_templates_response(
             self, complete_task_templates_dto: CompleteTaskTemplatesDTO):
         task_templates_dicts = self._get_task_templates_in_dicts(
-            task_templates_dtos=complete_task_templates_dto.task_template_dtos
-        )
+            task_templates_dtos=complete_task_templates_dto.task_template_dtos)
         actions_of_templates_dict = self._get_actions_of_templates_dict(
-            action_with_stage_id_dtos=complete_task_templates_dto.action_with_stage_id_dtos,
-            stage_id_with_template_id_dtos=complete_task_templates_dto.stage_id_with_template_id_dtos
-        )
+            action_with_stage_id_dtos=
+            complete_task_templates_dto.action_with_stage_id_dtos,
+            stage_id_with_template_id_dtos=
+            complete_task_templates_dto.stage_id_with_template_id_dtos)
         gofs_of_templates_dict = self._get_gofs_of_templates_dict(
-            gofs_of_task_templates_dtos=complete_task_templates_dto.gofs_of_task_templates_dtos,
-            gof_dtos=complete_task_templates_dto.gof_dtos
-        )
+            gofs_of_task_templates_dtos=
+            complete_task_templates_dto.gofs_of_task_templates_dtos,
+            gof_dtos=complete_task_templates_dto.gof_dtos)
         fields_of_gofs_dict = self._get_fields_of_gofs_dict(
-            field_with_permissions_dtos=complete_task_templates_dto.field_with_permissions_dtos
-        )
+            field_with_permissions_dtos=
+            complete_task_templates_dto.field_with_permissions_dtos)
         complete_gof_details_dicts = self._merge_gofs_with_fields(
-            gofs_of_templates_dict, fields_of_gofs_dict
-        )
+            gofs_of_templates_dict, fields_of_gofs_dict)
         for task_template in task_templates_dicts:
             task_template_id = task_template['template_id']
             task_template['actions'] = actions_of_templates_dict[
@@ -58,8 +57,57 @@ class GetTaskTemplatesPresenterImplementation(
             task_template['group_of_fields'] = complete_gof_details_dicts[
                 task_template_id]
 
-        complete_task_templates_dict = {"task_templates": task_templates_dicts}
-        return self.prepare_200_success_response(complete_task_templates_dict)
+        # ToDo optimize project id in task templates logic
+        project_id_with_task_template_id_dtos = \
+            complete_task_templates_dto.project_id_with_task_template_id_dtos
+        task_templates_with_project_id_details_list = \
+            self._merge_task_templates_with_project_ids(
+                task_templates_dicts=task_templates_dicts,
+                project_id_with_task_template_id_dtos=
+                project_id_with_task_template_id_dtos)
+
+        return self.prepare_200_success_response(
+            task_templates_with_project_id_details_list
+        )
+
+    def _merge_task_templates_with_project_ids(
+            self, task_templates_dicts: List[Dict],
+            project_id_with_task_template_id_dtos:
+            List[ProjectIdWithTaskTemplateIdDTO]) -> List[Dict]:
+
+        task_templates_details_dict = self._make_task_templates_details_dict(
+            task_templates_dicts=task_templates_dicts)
+        task_templates_with_project_id_details_list = []
+        for project_id_with_task_template_id_dto in \
+                project_id_with_task_template_id_dtos:
+            task_template_id_of_project = \
+                project_id_with_task_template_id_dto.task_template_id
+            task_template_of_project = \
+                task_templates_details_dict[task_template_id_of_project]
+            task_template_of_project['project_id'] = \
+                project_id_with_task_template_id_dto.project_id
+            task_templates_with_project_id_details_list.append(
+                task_template_of_project)
+        task_template_ids = self._get_task_templates_ids(
+            task_templates_dicts=task_templates_dicts
+        )
+        task_template_ids_of_projects = \
+            self._get_task_template_ids_of_projects(
+                project_id_with_task_template_id_dtos=
+                project_id_with_task_template_id_dtos)
+        independent_task_template_ids = [
+            task_template_id
+            for task_template_id in task_template_ids
+            if task_template_id not in task_template_ids_of_projects
+        ]
+        for task_template_id in independent_task_template_ids:
+            task_template_details = \
+                task_templates_details_dict[task_template_id]
+            task_template_details['project_id'] = None
+            task_templates_with_project_id_details_list.append(
+                task_template_details
+            )
+        return task_templates_with_project_id_details_list
 
     def _get_actions_of_templates_dict(
             self, action_with_stage_id_dtos: List[ActionWithStageIdDTO],
@@ -103,7 +151,8 @@ class GetTaskTemplatesPresenterImplementation(
                 gof_details_dict['template_id']]. \
                 append(gof_details_dict)
         gofs_details_of_templates_dict = collections.defaultdict(list)
-        for template_id, gof_details_dicts in gofs_details_group_by_template_id_dict.items():
+        for template_id, gof_details_dicts in \
+                gofs_details_group_by_template_id_dict.items():
             gofs_details_dicts_without_template_id = \
                 self._get_gof_details_dicts_without_template_id(
                     gof_details_dicts=gof_details_dicts
@@ -169,7 +218,8 @@ class GetTaskTemplatesPresenterImplementation(
                 'gof_id': gof_id,
                 'template_id': gofs_to_task_templates_dto.template_id,
                 'order': gofs_to_task_templates_dto.order,
-                'enable_add_another': gofs_to_task_templates_dto.enable_add_another,
+                'enable_add_another':
+                    gofs_to_task_templates_dto.enable_add_another,
                 'gof_display_name': gof_details_dto_dict[
                     gof_id].gof_display_name,
                 'max_columns': gof_details_dto_dict[gof_id].max_columns
@@ -188,7 +238,8 @@ class GetTaskTemplatesPresenterImplementation(
                 "button_text": action_with_stage_id_dto.button_text,
                 "button_color": action_with_stage_id_dto.button_color,
                 "action_type": action_with_stage_id_dto.action_type,
-                "transition_template_id": action_with_stage_id_dto.transition_template_id
+                "transition_template_id":
+                    action_with_stage_id_dto.transition_template_id
             }
             action_dicts_list.append(action_dict)
         return action_dicts_list
@@ -246,3 +297,33 @@ class GetTaskTemplatesPresenterImplementation(
                 action_with_stage_id_dto.stage_id].append(
                 action_with_stage_id_dto)
         return actions_with_stage_id_dict
+
+    @staticmethod
+    def _make_task_templates_details_dict(
+            task_templates_dicts: List[Dict]) -> Dict:
+        task_templates_details_dict = {
+            task_templates_dict['template_id']: task_templates_dict
+            for task_templates_dict in task_templates_dicts
+        }
+
+        return task_templates_details_dict
+
+    @staticmethod
+    def _get_task_templates_ids(
+            task_templates_dicts: List[Dict]) -> List[str]:
+        task_template_ids = [
+            task_templates_dict['template_id']
+            for task_templates_dict in task_templates_dicts
+        ]
+        return task_template_ids
+
+    @staticmethod
+    def _get_task_template_ids_of_projects(
+            project_id_with_task_template_id_dtos:
+            List[ProjectIdWithTaskTemplateIdDTO]) -> List[str]:
+        task_template_ids = [
+            project_id_with_task_template_id_dto.task_template_id
+            for project_id_with_task_template_id_dto in
+            project_id_with_task_template_id_dtos
+        ]
+        return task_template_ids

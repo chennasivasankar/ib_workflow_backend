@@ -1,4 +1,6 @@
-from typing import List, Optional
+from typing import List, Optional, Dict
+
+from django.db.models import Q, F
 
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTransitionChecklistTemplateId
@@ -10,8 +12,9 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TemplateDTO
-from ib_tasks.models import TaskTemplate, TaskTemplateGoFs
+    TemplateDTO, ProjectTemplateDTO, ProjectIdWithTaskTemplateIdDTO
+
+from ib_tasks.models import TaskTemplate, TaskTemplateGoFs, ProjectTaskTemplate
 
 
 class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
@@ -95,8 +98,35 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
             task_template_objs=task_template_objs)
         return task_template_dtos
 
+    def get_task_templates_to_project_ids(self, project_ids: List[str]):
+
+        task_template_objs = ProjectTaskTemplate.objects.filter(
+            (
+                    Q(project_id__in=project_ids) &
+                    Q(task_template__is_tansition_template=False)
+            ) | (Q(project_id=None) & Q(
+                task_template__is_tansition_template=False))
+        ).annotate(template_name=F('task_template__name'))
+        task_template_dtos = self._convert_project_templates_objs_to_dtos(
+            task_template_objs=task_template_objs)
+        return task_template_dtos
+
+    @staticmethod
+    def _convert_project_templates_objs_to_dtos(
+            task_template_objs: List[ProjectTaskTemplate]
+    ) -> List[ProjectTemplateDTO]:
+        task_template_dtos = [
+            ProjectTemplateDTO(
+                template_id=task_template_obj.task_template_id,
+                template_name=task_template_obj.template_name,
+                project_id=task_template_obj.project_id
+            )
+            for task_template_obj in task_template_objs
+        ]
+        return task_template_dtos
+
     def get_gofs_to_templates_from_permitted_gofs(
-                self, gof_ids: List[str]) -> List[GoFToTaskTemplateDTO]:
+            self, gof_ids: List[str]) -> List[GoFToTaskTemplateDTO]:
         task_template_gofs = \
             TaskTemplateGoFs.objects.filter(gof_id__in=gof_ids)
         gof_to_task_template_dtos = self._convert_task_template_gofs_to_dtos(
@@ -251,3 +281,31 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
         gof_ids_list = list(gof_ids_queryset)
         return gof_ids_list
+
+    def get_project_id_with_task_template_id_dtos(
+            self) -> List[ProjectIdWithTaskTemplateIdDTO]:
+        project_id_with_task_template_id_dicts = \
+            ProjectTaskTemplate.objects.all().values(
+                'task_template_id', 'project_id')
+        project_id_with_template_id_dtos = \
+            self._convert_project_id_with_template_id_dicts_to_dtos(
+                project_id_with_task_template_id_dicts=
+                project_id_with_task_template_id_dicts)
+
+        return project_id_with_template_id_dtos
+
+    @staticmethod
+    def _convert_project_id_with_template_id_dicts_to_dtos(
+            project_id_with_task_template_id_dicts: List[Dict]
+    ) -> List[ProjectIdWithTaskTemplateIdDTO]:
+        project_id_with_template_id_dtos = [
+            ProjectIdWithTaskTemplateIdDTO(
+                project_id=project_id_with_template_id['project_id'],
+                task_template_id=
+                project_id_with_template_id['task_template_id']
+            )
+            for project_id_with_template_id in
+            project_id_with_task_template_id_dicts
+        ]
+
+        return project_id_with_template_id_dtos
