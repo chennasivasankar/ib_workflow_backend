@@ -14,12 +14,11 @@ from ib_boards.interactors.dtos import ColumnTasksParametersDTO, \
     TaskCompleteDetailsDTO
 from ib_boards.interactors.get_column_tasks_interactor import \
     GetColumnTasksInteractor
-from ib_boards.tests.factories.interactor_dtos import  \
+from ib_boards.tests.factories.interactor_dtos import \
     FieldDetailsDTOFactory, GetTaskDetailsDTOFactory, \
     ColumnTaskIdsDTOFactory, TaskStageIdDTOFactory, ColumnStageIdsDTOFactory, \
     StageAssigneesDTOFactory
-from ib_boards.tests.factories.storage_dtos import TaskDTOFactory, \
-    TaskStageDTOFactory, TaskActionsDTOFactory
+from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory
 from ib_boards.tests.factories.storage_dtos import TaskDTOFactory, TaskStageDTOFactory
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
 
@@ -50,6 +49,7 @@ class TestGetColumnTasksInteractor:
     @pytest.fixture
     def get_column_tasks_dto(self):
         return ColumnTasksParametersDTO(
+            project_id="project_id_1",
             user_id='user_id_1',
             view_type=ViewType.LIST.value,
             column_id='COLUMN_ID_1',
@@ -61,7 +61,8 @@ class TestGetColumnTasksInteractor:
     @pytest.fixture
     def get_column_tasks_dto_with_invalid_offset(self):
         return ColumnTasksParametersDTO(
-            user_id=1,
+            project_id="project_id_1",
+            user_id="user_id_1",
             view_type=ViewType.LIST.value,
             column_id='COLUMN_ID_1',
             offset=-1,
@@ -72,7 +73,8 @@ class TestGetColumnTasksInteractor:
     @pytest.fixture
     def get_column_tasks_dto_with_invalid_limit(self):
         return ColumnTasksParametersDTO(
-            user_id=1,
+            project_id="project_id_1",
+            user_id="user_id_1",
             view_type=ViewType.LIST.value,
             column_id='COLUMN_ID_1',
             offset=1,
@@ -151,8 +153,10 @@ class TestGetColumnTasksInteractor:
         return StageAssigneesDTOFactory.create_batch(3)
 
     def test_with_invalid_column_id_return_error_message(
-            self, presenter_mock, storage_mock, get_column_tasks_dto):
+            self, presenter_mock, storage_mock, get_column_tasks_dto, mocker):
         # Arrange
+        project_id = get_column_tasks_dto.project_id
+        project_ids = [project_id]
         expected_response = Mock()
         column_id = 'COLUMN_ID_1'
         from ib_boards.exceptions.custom_exceptions import InvalidColumnId
@@ -163,6 +167,14 @@ class TestGetColumnTasksInteractor:
         interactor = GetColumnTasksInteractor(
             storage=storage_mock
         )
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_validate_project_ids
+        project_adapter_mock = mock_validate_project_ids(mocker, project_ids)
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_for_validate_if_user_is_in_project
+        user_in_project_mock = mock_for_validate_if_user_is_in_project(mocker)
+        user_in_project_mock.return_value = True
+
         # Act
         actual_response = interactor.get_column_tasks_wrapper(
             column_tasks_parameters=get_column_tasks_dto,
@@ -173,17 +185,32 @@ class TestGetColumnTasksInteractor:
         storage_mock.validate_column_id.assert_called_once_with(
             column_id=column_id
         )
+        user_in_project_mock.assert_called_once_with(
+            project_id=project_id, user_id=get_column_tasks_dto.user_id)
+        project_adapter_mock.assert_called_once_with(
+            project_ids
+        )
         presenter_mock.get_response_for_the_invalid_column_id.assert_called_once_with()
         assert actual_response == expected_response
 
     def test_with_invalid_offset_value_return_error_message(
-            self, storage_mock, presenter_mock,
+            self, storage_mock, presenter_mock, mocker,
             get_column_tasks_dto_with_invalid_offset):
         # Arrange
         expected_response = Mock()
+        project_id = get_column_tasks_dto_with_invalid_offset.project_id
+        project_ids = [project_id]
         interactor = GetColumnTasksInteractor(
             storage=storage_mock
         )
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_validate_project_ids
+        project_adapter_mock = mock_validate_project_ids(mocker, project_ids)
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_for_validate_if_user_is_in_project
+        user_in_project_mock = mock_for_validate_if_user_is_in_project(mocker)
+        user_in_project_mock.return_value = True
+
         presenter_mock.get_response_for_invalid_offset. \
             return_value = expected_response
 
@@ -194,17 +221,32 @@ class TestGetColumnTasksInteractor:
         )
 
         # Assert
+        user_in_project_mock.assert_called_once_with(
+            project_id=project_id, user_id=get_column_tasks_dto_with_invalid_offset.user_id)
+        project_adapter_mock.assert_called_once_with(
+            project_ids
+        )
         presenter_mock.get_response_for_invalid_offset.assert_called_once_with()
         assert actual_response == expected_response
 
     def test_with_invalid_limit_value_return_error_message(
-            self, storage_mock, presenter_mock,
+            self, storage_mock, presenter_mock, mocker,
             get_column_tasks_dto_with_invalid_limit):
         # Arrange
         expected_response = Mock()
+        project_id = get_column_tasks_dto_with_invalid_limit.project_id
+        project_ids = [project_id]
         interactor = GetColumnTasksInteractor(
             storage=storage_mock
         )
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_validate_project_ids
+        project_adapter_mock = mock_validate_project_ids(mocker, project_ids)
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_for_validate_if_user_is_in_project
+        user_in_project_mock = mock_for_validate_if_user_is_in_project(mocker)
+        user_in_project_mock.return_value = True
+
         presenter_mock.get_response_for_invalid_limit. \
             return_value = expected_response
 
@@ -215,6 +257,11 @@ class TestGetColumnTasksInteractor:
         )
 
         # Assert
+        user_in_project_mock.assert_called_once_with(
+            project_id=project_id, user_id=get_column_tasks_dto_with_invalid_limit.user_id)
+        project_adapter_mock.assert_called_once_with(
+            project_ids
+        )
         presenter_mock.get_response_for_invalid_limit.assert_called_once_with()
         assert actual_response == expected_response
 
@@ -224,9 +271,19 @@ class TestGetColumnTasksInteractor:
         user_role = 'User'
         column_id = 'COLUMN_ID_1'
         expected_response = Mock()
+        project_id = get_column_tasks_dto.project_id
+        project_ids = [project_id]
         interactor = GetColumnTasksInteractor(
             storage=storage_mock
         )
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_validate_project_ids
+        project_adapter_mock = mock_validate_project_ids(mocker, project_ids)
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_for_validate_if_user_is_in_project
+        user_in_project_mock = mock_for_validate_if_user_is_in_project(mocker)
+        user_in_project_mock.return_value = True
+
         from ib_boards.exceptions.custom_exceptions import \
             UserDoNotHaveAccessToColumn
         storage_mock.validate_user_role_with_column_roles. \
@@ -253,6 +310,11 @@ class TestGetColumnTasksInteractor:
         storage_mock.validate_user_role_with_column_roles.assert_called_once_with(
             user_role=user_role, column_id=column_id
         )
+        user_in_project_mock.assert_called_once_with(
+            project_id=project_id, user_id=get_column_tasks_dto.user_id)
+        project_adapter_mock.assert_called_once_with(
+            project_ids
+        )
         presenter_mock.get_response_for_user_have_no_access_for_column. \
             assert_called_once_with()
         assert actual_response == expected_response
@@ -267,12 +329,22 @@ class TestGetColumnTasksInteractor:
         stage_ids = ['STAGE_ID_1', 'STAGE_ID_2']
         task_ids = ['TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3']
         expected_response = Mock()
+        project_id = get_column_tasks_dto.project_id
+        project_ids = [project_id]
         storage_mock.get_columns_stage_ids.return_value = column_stage_dtos
         presenter_mock.get_response_for_column_tasks. \
             return_value = expected_response
         interactor = GetColumnTasksInteractor(
             storage=storage_mock
         )
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_validate_project_ids
+        project_adapter_mock = mock_validate_project_ids(mocker, project_ids)
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_for_validate_if_user_is_in_project
+        user_in_project_mock = mock_for_validate_if_user_is_in_project(mocker)
+        user_in_project_mock.return_value = True
+
         user_id = 'user_id_1'
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             task_details_mock
@@ -287,6 +359,7 @@ class TestGetColumnTasksInteractor:
                 stage_ids=stage_ids,
                 offset=get_column_tasks_dto.offset,
                 limit=get_column_tasks_dto.limit,
+                project_id=get_column_tasks_dto.project_id,
                 user_id='user_id_1',
                 search_query="hello"
             )
@@ -316,6 +389,11 @@ class TestGetColumnTasksInteractor:
         task_details_mock.assert_called_once_with(
             get_task_details_dto, user_id=user_id, view_type=view_type
         )
+        user_in_project_mock.assert_called_once_with(
+            project_id=project_id, user_id=user_id)
+        project_adapter_mock.assert_called_once_with(
+            project_ids
+        )
         presenter_mock.get_response_for_column_tasks.assert_called_once_with(
             task_actions_dtos=task_complete_details_dto[0].action_dtos,
             task_fields_dtos=task_complete_details_dto[0].field_dtos,
@@ -330,17 +408,25 @@ class TestGetColumnTasksInteractor:
             task_complete_details_dto, task_dtos, assignee_dtos,
             column_tasks_ids_no_duplicates, task_stage_color_dtos,
             action_dtos, column_tasks_ids, task_stage_dtos, column_stage_dtos):
-
         # Arrange
         stage_ids = ['STAGE_ID_3', 'STAGE_ID_4']
         task_ids = ['TASK_ID_7', 'TASK_ID_8', 'TASK_ID_9']
         expected_response = Mock()
+        project_id = get_column_tasks_dto.project_id
+        project_ids = [project_id]
         storage_mock.get_columns_stage_ids.return_value = column_stage_dtos
         presenter_mock.get_response_for_column_tasks. \
             return_value = expected_response
         interactor = GetColumnTasksInteractor(
             storage=storage_mock
         )
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_validate_project_ids
+        project_adapter_mock = mock_validate_project_ids(mocker, project_ids)
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_for_validate_if_user_is_in_project
+        user_in_project_mock = mock_for_validate_if_user_is_in_project(mocker)
+        user_in_project_mock.return_value = True
 
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             task_details_mock
@@ -356,6 +442,7 @@ class TestGetColumnTasksInteractor:
                 stage_ids=stage_ids,
                 offset=get_column_tasks_dto.offset,
                 limit=get_column_tasks_dto.limit,
+                project_id=get_column_tasks_dto.project_id,
                 user_id='user_id_1',
                 search_query="hello"
             )
@@ -381,6 +468,11 @@ class TestGetColumnTasksInteractor:
         assert actual_response == expected_response
         task_ids_mock.assert_called_once_with(
             task_config_dtos=task_config_dto
+        )
+        user_in_project_mock.assert_called_once_with(
+            project_id=project_id, user_id=get_column_tasks_dto.user_id)
+        project_adapter_mock.assert_called_once_with(
+            project_ids
         )
         presenter_mock.get_response_for_column_tasks.assert_called_once_with(
             task_actions_dtos=task_complete_details_dto[0].action_dtos,
