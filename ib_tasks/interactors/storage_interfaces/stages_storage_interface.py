@@ -45,7 +45,8 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_permitted_stage_ids(self, user_role_ids: List[str]) -> List[str]:
+    def get_permitted_stage_ids(
+            self, user_role_ids: List[str], project_id: str) -> List[str]:
         pass
 
     @abc.abstractmethod

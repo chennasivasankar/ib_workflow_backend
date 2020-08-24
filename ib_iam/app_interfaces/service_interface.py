@@ -103,10 +103,9 @@ class ServiceInterface:
             search_query=search_query)
         return user_details_dtos
 
-    # ToDo Add Project id as an argument
     @staticmethod
     def get_user_details_for_given_role_ids(
-            role_ids: List[str], project_id: str) -> List[UserProfileDTO]:
+            role_ids: List[str]) -> List[UserProfileDTO]:
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
         user_storage = UserStorageImplementation()
@@ -119,12 +118,10 @@ class ServiceInterface:
             role_ids=role_ids)
         return user_details_dtos
 
-    # todo: add project id related implementation
     @staticmethod
     def get_user_details_for_the_given_role_ids_based_on_query(
             role_ids: List[str],
-            search_query_with_pagination_dto:
-            SearchQueryWithPaginationDTO, project_id: str
+            search_query_with_pagination_dto: SearchQueryWithPaginationDTO
     ) -> List[UserProfileDTO]:
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
