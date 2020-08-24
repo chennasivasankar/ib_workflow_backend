@@ -136,8 +136,7 @@ class ServiceInterface:
         user_details_dtos = \
             interactor.get_user_details_for_given_role_ids_based_on_query(
                 role_ids=role_ids,
-                search_query_with_pagination_dto=
-                search_query_with_pagination_dto)
+                search_query_with_pagination_dto=search_query_with_pagination_dto)
         return user_details_dtos
 
     @staticmethod
@@ -225,9 +224,21 @@ class ServiceInterface:
         return searchable_details_dtos
 
     # todo: implement this interface
+    @staticmethod
     def get_user_role_ids_based_on_project(
-            self, user_id, project_id) -> List[str]:
-        pass
+            user_id, project_id) -> List[str]:
+        from ib_iam.storages.project_storage_implementation import \
+            ProjectStorageImplementation
+        project_storage = ProjectStorageImplementation()
+
+        from ib_iam.interactors.project_role_interactor import \
+            ProjectRoleInteractor
+        interactor = ProjectRoleInteractor(project_storage=project_storage)
+
+        role_ids = interactor.get_user_role_ids_based_on_project(
+            user_id=user_id, project_id=project_id
+        )
+        return role_ids
 
     @staticmethod
     def get_valid_project_ids(project_ids: List[str]) -> List[str]:
@@ -235,7 +246,17 @@ class ServiceInterface:
         from ib_iam.storages.project_storage_implementation import \
             ProjectStorageImplementation
         project_storage = ProjectStorageImplementation()
-        interactor = ProjectInteractor(project_storage=project_storage)
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        user_storage = UserStorageImplementation()
+        from ib_iam.storages.team_storage_implementation import \
+            TeamStorageImplementation
+        team_storage = TeamStorageImplementation()
+        interactor = ProjectInteractor(
+            project_storage=project_storage,
+            user_storage=user_storage,
+            team_storage=team_storage
+        )
         project_ids = interactor.get_valid_project_ids(project_ids=project_ids)
         return project_ids
 
@@ -272,7 +293,17 @@ class ServiceInterface:
         from ib_iam.storages.project_storage_implementation import \
             ProjectStorageImplementation
         project_storage = ProjectStorageImplementation()
-        interactor = ProjectInteractor(project_storage=project_storage)
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        user_storage = UserStorageImplementation()
+        from ib_iam.storages.team_storage_implementation import \
+            TeamStorageImplementation
+        team_storage = TeamStorageImplementation()
+        interactor = ProjectInteractor(
+            project_storage=project_storage,
+            user_storage=user_storage,
+            team_storage=team_storage
+        )
         return interactor.get_project_dtos_bulk(project_ids=project_ids)
 
     @staticmethod
@@ -297,8 +328,39 @@ class ServiceInterface:
         from ib_iam.storages.project_storage_implementation import \
             ProjectStorageImplementation
         project_storage = ProjectStorageImplementation()
-        interactor = ProjectInteractor(project_storage=project_storage)
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        user_storage = UserStorageImplementation()
+        from ib_iam.storages.team_storage_implementation import \
+            TeamStorageImplementation
+        team_storage = TeamStorageImplementation()
+        interactor = ProjectInteractor(
+            project_storage=project_storage,
+            user_storage=user_storage,
+            team_storage=team_storage
+        )
         user_id_with_team_id_and_name_dto = interactor \
             .get_team_details_for_given_project_team_user_details_dto(
             project_team_user_dto=project_team_user_dto)
         return user_id_with_team_id_and_name_dto
+
+    @staticmethod
+    def is_valid_user_id_for_given_project(
+            user_id: str, project_id: str) -> bool:
+        from ib_iam.interactors.project_interactor import ProjectInteractor
+        from ib_iam.storages.project_storage_implementation import \
+            ProjectStorageImplementation
+        project_storage = ProjectStorageImplementation()
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        user_storage = UserStorageImplementation()
+        from ib_iam.storages.team_storage_implementation import \
+            TeamStorageImplementation
+        team_storage = TeamStorageImplementation()
+        interactor = ProjectInteractor(
+            project_storage=project_storage,
+            user_storage=user_storage,
+            team_storage=team_storage
+        )
+        return interactor.is_valid_user_id_for_given_project(
+            user_id=user_id, project_id=project_id)

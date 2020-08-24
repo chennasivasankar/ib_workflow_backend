@@ -18,11 +18,11 @@ class TestGetUserIdsForGivenRoleIds:
             import UserStorageImplementation
         storage = UserStorageImplementation()
         reset_sequence_role_factory()
-        from ib_iam.tests.factories.models import UserRoleFactory, RoleFactory
+        from ib_iam.tests.factories.models import UserRoleFactory, ProjectRoleFactory
         for user_role in user_roles:
-            role_object = RoleFactory.create(role_id=user_role["role_id"])
+            role_object = ProjectRoleFactory.create(role_id=user_role["role_id"])
             UserRoleFactory.create(
-                role=role_object, user_id=user_role["user_id"])
+                project_role=role_object, user_id=user_role["user_id"])
 
         # Act
         expected_user_ids = storage.get_user_ids(role_ids=role_ids)

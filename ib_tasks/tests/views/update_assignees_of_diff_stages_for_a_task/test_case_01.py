@@ -4,7 +4,7 @@
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from ib_iam.tests.factories.models import UserRoleFactory, RoleFactory
+from ib_iam.tests.factories.models import UserRoleFactory, ProjectRoleFactory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import TaskFactory, StageModelFactory, \
     StagePermittedRolesFactory, \
@@ -30,7 +30,7 @@ class TestCase01UpdateAssigneesOfDiffStagesForATaskAPITestCase(TestUtils):
         StageModelFactory.reset_sequence()
         TaskStageHistoryModelFactory.reset_sequence()
         UserDetailsFactory.create(user_id=user_id, is_admin=True)
-        role_obj = RoleFactory(role_id="FIN_PAYMENT_REQUESTER")
+        role_obj = ProjectRoleFactory(role_id="FIN_PAYMENT_REQUESTER")
         UserRoleFactory(user_id=user_id, role=role_obj)
         task_obj = TaskFactory(template_id="task_template_id_1")
         stage_objs = StageModelFactory.create_batch(2,

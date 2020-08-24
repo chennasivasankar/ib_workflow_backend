@@ -26,16 +26,16 @@ class TestGetUserRoleIds:
         from ib_iam.models import UserDetails
         UserDetails.objects.create(user_id=user_id)
 
-        from ib_iam.tests.factories.models import UserRoleFactory, RoleFactory
+        from ib_iam.tests.factories.models import UserRoleFactory, ProjectRoleFactory
         role_objects = [
-            RoleFactory(id=id, role_id=role_id)
+            ProjectRoleFactory(id=id, role_id=role_id)
             for id, role_id in ids_and_role_ids
         ]
 
-        RoleFactory.create_batch(3)
+        ProjectRoleFactory.create_batch(3)
         UserRoleFactory.create_batch(3)
         for role_object in role_objects:
-            UserRoleFactory.create(user_id=user_id, role=role_object)
+            UserRoleFactory.create(user_id=user_id, project_role=role_object)
 
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         service_interface = ServiceInterface()

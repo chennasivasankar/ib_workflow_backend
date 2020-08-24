@@ -40,7 +40,7 @@ class TaskTemplateStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_template_ids_in_given_template_ids(
+    def get_valid_task_template_ids_in_given_task_template_ids(
             self, template_ids: List[str]
     ) -> List[str]:
         pass
@@ -115,4 +115,14 @@ class TaskTemplateStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_project_id_with_task_template_id_dtos(
             self) -> List[ProjectIdWithTaskTemplateIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def add_project_to_task_templates(
+            self, project_id: str, task_template_ids: List[str]):
+        pass
+
+    @abc.abstractmethod
+    def get_existing_task_template_ids_of_project_task_templates(
+            self, project_id: str, task_template_ids: List[str]) -> List[str]:
         pass
