@@ -32,3 +32,7 @@ class RolesService:
     def get_user_role_ids(self, user_id) -> List[str]:
         user_role_ids = self.interface.get_user_role_ids(user_id=user_id)
         return user_role_ids
+
+    def get_user_role_ids_based_on_project(
+            self, user_id, project_id: str) -> List[str]:
+        raise NotImplementedError

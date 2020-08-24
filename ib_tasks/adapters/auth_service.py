@@ -65,11 +65,11 @@ class AuthService:
     def get_user_details_for_the_given_role_ids_based_on_query(
             self, role_ids: List[str],
             search_query_with_pagination_dto:
-            SearchQueryWithPaginationDTO) -> List[UserDetailsDTO]:
+            SearchQueryWithPaginationDTO, project_id: str) -> List[UserDetailsDTO]:
         user_profile_details_dtos = self.interface. \
             get_user_details_for_the_given_role_ids_based_on_query(
             role_ids=role_ids, search_query_with_pagination_dto=
-            search_query_with_pagination_dto)
+            search_query_with_pagination_dto, project_id=project_id)
 
         user_details_dtos = self._get_user_details_dtos(
             user_profile_details_dtos)
@@ -102,7 +102,7 @@ class AuthService:
         UserIdWIthTeamDetailsDTOs]:
         raise NotImplementedError
 
-    def  get_team_details_for_given_team_project_details_dto(
+    def get_team_details_for_given_team_project_details_dto(
             self, team_project_details_dto: TeamProjectDetailsDTO) -> \
             List[TeamDetailsWithUserIdDTO]:
         raise NotImplementedError
