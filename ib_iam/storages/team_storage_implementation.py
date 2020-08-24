@@ -1,5 +1,6 @@
 from typing import List, Optional
 
+from ib_iam.app_interfaces.dtos import UserTeamsDTO
 from ib_iam.interactors.storage_interfaces.dtos import \
     TeamNameAndDescriptionDTO, TeamIdAndNameDTO
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \

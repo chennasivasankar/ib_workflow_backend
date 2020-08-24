@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from ib_iam.adapters.dtos import UserProfileDTO, SearchQueryWithPaginationDTO
-from ib_iam.app_interfaces.dtos import SearchableDTO
+from ib_iam.app_interfaces.dtos import SearchableDTO, UserTeamsDTO
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserIdAndNameDTO, \
     TeamIdAndNameDTO, ProjectDTO
@@ -255,3 +255,8 @@ class ServiceInterface:
         project_storage = ProjectStorageImplementation()
         interactor = ProjectInteractor(project_storage=project_storage)
         return interactor.get_project_dtos_bulk(project_ids=project_ids)
+
+    @staticmethod
+    def get_user_teams_for_each_user(
+            user_ids: List[str]) -> List[UserTeamsDTO]:
+        pass
