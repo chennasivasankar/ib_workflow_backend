@@ -25,8 +25,9 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def create_task(self, elastic_task_dto: ElasticTaskDTO) -> str:
         from elasticsearch_dsl import connections
         from django.conf import settings
-        connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
-                                      timeout=20)
+        connections.create_connection(
+            hosts=[settings.ELASTICSEARCH_ENDPOINT],
+            timeout=20)
 
         task_obj = Task(
             project_id=elastic_task_dto.project_id,
@@ -74,7 +75,8 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
                                       timeout=20)
         search = self._get_search_task_objects(filter_dtos)
 
-        task_objects = search.filter('terms', stages__stage_id__keyword=stage_ids)
+        task_objects = search.filter('terms',
+                                     stages__stage_id__keyword=stage_ids)
 
         total_tasks = task_objects.count()
         return [
@@ -148,7 +150,8 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
     def filter_tasks_with_stage_ids(
             self, filter_dtos: List[ApplyFilterDTO],
-            task_details_config: TaskDetailsConfigDTO) -> Tuple[List[TaskStageIdsDTO], int]:
+            task_details_config: TaskDetailsConfigDTO) -> Tuple[
+        List[TaskStageIdsDTO], int]:
         from elasticsearch_dsl import connections
         from django.conf import settings
         connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
@@ -179,7 +182,8 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         return task_stage_dtos_list, total_tasks
 
     @staticmethod
-    def _get_task_stage_dtos(task_object: Task, stage_ids: List[str]) -> List[TaskStageIdsDTO]:
+    def _get_task_stage_dtos(task_object: Task, stage_ids: List[str]) -> List[
+        TaskStageIdsDTO]:
         stages = task_object.stages
         stage_id = stages[0].stage_id
         return [

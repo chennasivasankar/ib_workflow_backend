@@ -102,6 +102,7 @@ class TaskStageAssigneeDTO:
     task_stage_id: int
     stage_id: int
     assignee_id: Optional[str]
+    team_id: Optional[str]
 
 
 @dataclass
