@@ -296,7 +296,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', **{attribute: item.value})
+                            & ~Q('term', **{attribute: item.value})
             if counter == 0:
                 query = current_queue
             else:
@@ -310,7 +310,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', **{attribute: item.value})
+                            & Q('term', **{attribute: {"gte": item.value}})
             if counter == 0:
                 query = current_queue
             else:
@@ -324,7 +324,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', **{attribute: item.value})
+                            & Q('term', **{attribute: {"gt": item.value}})
             if counter == 0:
                 query = current_queue
             else:
@@ -338,7 +338,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', **{attribute: item.value})
+                            & Q('term', **{attribute: {"lte": item.value}})
             if counter == 0:
                 query = current_queue
             else:
@@ -352,7 +352,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', **{attribute: item.value})
+                            & Q('term', **{attribute: {"lt": item.value}})
             if counter == 0:
                 query = current_queue
             else:
