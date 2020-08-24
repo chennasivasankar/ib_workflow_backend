@@ -141,6 +141,18 @@ class InvalidCountryIds(Exception):
         self.country_ids = country_ids
 
 
+class InvalidProjectId(Exception):
+    pass
+
+
+class TeamNotExistsInGivenProject(Exception):
+    pass
+
+
+class UserNotExistsInGivenTeam(Exception):
+    pass
+
+
 class InvalidTeamIds(Exception):
     pass
 
