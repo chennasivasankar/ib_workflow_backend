@@ -9,7 +9,6 @@ class ColumnParametersDTO:
     board_id: str
     user_id: str
     view_type: ViewType
-    project_id: str
     search_query: Optional[str]
 
 
@@ -98,7 +97,6 @@ class ColumnTasksParametersDTO:
     column_id: str
     offset: int
     limit: int
-    project_id: str
     view_type: ViewType
     search_query: Optional[str]
 
