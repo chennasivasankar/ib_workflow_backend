@@ -1,5 +1,3 @@
-from typing import List
-
 from django.db import transaction
 
 from ib_iam.populate.add_roles_details import RoleDetails
@@ -22,13 +20,25 @@ from ib_tasks.populate.populate_gofs_to_transition_templates import \
     PopulateGoFsToTransitionTemplate
 from ib_tasks.populate.task_templates import PopulateTaskTemplates
 from ib_tasks.populate.transition_template import PopulateTransitionTemplates
+from ib_tasks.populate.populate_projects_for_task_templates import \
+    PopulateProjectsForTaskTemplates
+
+
+@transaction.atomic()
+def populate_task_templates(spread_sheet_name: str):
+    task_template = PopulateTaskTemplates()
+    task_template.populate_task_templates(spread_sheet_name=spread_sheet_name)
+
+
+@transaction.atomic()
+def populate_projects_for_task_templates(spread_sheet_name: str):
+    projects_for_task_templates = PopulateProjectsForTaskTemplates()
+    projects_for_task_templates.populate_projects_for_task_template(
+        spread_sheet_name=spread_sheet_name)
 
 
 @transaction.atomic()
 def populate_data(spread_sheet_name: str):
-    task_template = PopulateTaskTemplates()
-    task_template.populate_task_templates(spread_sheet_name=spread_sheet_name)
-
     roles = RoleDetails()
     roles.add_roles_details_to_database(
         spread_sheet_name=spread_sheet_name, sub_sheet_name=ROLES_SUB_SHEET)

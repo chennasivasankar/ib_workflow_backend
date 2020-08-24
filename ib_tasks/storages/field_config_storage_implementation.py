@@ -67,7 +67,7 @@ class FieldConfigStorageImplementation(FieldConfigStorageInterface):
         fields_roles = [
             FieldRole(
                 field_id=field_role_dto.field_id,
-                role=field_role_dto.project_role,
+                role=field_role_dto.role,
                 permission_type=field_role_dto.permission_type
             )
             for field_role_dto in field_role_dtos

@@ -12,7 +12,8 @@ class RolesStorageImplementation(RolesStorageInterface):
         from ib_iam.models import ProjectRole
         role_objects = [
             ProjectRole(role_id=role_dto.role_id, name=role_dto.name,
-                        description=role_dto.description)
+                        description=role_dto.description,
+                        project_id="FIN_MAN")
             for role_dto in role_dtos]
         ProjectRole.objects.bulk_create(role_objects)
 
