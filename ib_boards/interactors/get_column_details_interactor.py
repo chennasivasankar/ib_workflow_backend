@@ -17,7 +17,7 @@ from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
 
-class GetColumnDetailsInteractor(ValidationMixin):
+class GetColumnDetailsInteractor:
 
     def __init__(self, storage: StorageInterface):
         self.storage = storage

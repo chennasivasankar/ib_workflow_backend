@@ -20,7 +20,7 @@ from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
 
-class GetColumnTasksInteractor(ValidationMixin):
+class GetColumnTasksInteractor:
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
