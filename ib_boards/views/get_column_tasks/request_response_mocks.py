@@ -2,7 +2,8 @@
 
 REQUEST_BODY_JSON = """
 {
-    "view_type": "LIST"
+    "view_type": "LIST",
+    "project_id": "string"
 }
 """
 
@@ -11,7 +12,7 @@ RESPONSE_403_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "USER_DONOT_HAVE_ACCESS"
+    "res_status": "USER_IS_NOT_IN_PROJECT"
 }
 """
 

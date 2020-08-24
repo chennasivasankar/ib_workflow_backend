@@ -44,7 +44,8 @@ class GetTaskIdsInteractor:
             return []
         self._validate_given_data(task_details_configs=task_details_configs)
         filter_dtos = self.filter_storage.get_enabled_filters_dto_to_user(
-            user_id=task_details_configs[0].user_id
+            user_id=task_details_configs[0].user_id,
+            project_id=task_details_configs[0].project_id
         )
         # TODO need optimize db hits
         total_task_ids_dtos = []
