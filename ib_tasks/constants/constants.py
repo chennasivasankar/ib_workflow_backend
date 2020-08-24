@@ -45,3 +45,8 @@ DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 STAGE_TASK = "STAGE_TASK"
 
 TASK_DISPLAY_ID = "IBWF-{}"
+
+INTEGER_FIELD_TYPES = [
+    FieldTypes.NUMBER.value,
+    FieldTypes.PHONE_NUMBER.value,
+]

@@ -22,6 +22,7 @@ def api_wrapper(*args, **kwargs):
     params = kwargs['query_params']
     offset = params['offset']
     limit = params['limit']
+    project_id = params['project_id']
 
     presenter = GetFilteredTasksOverviewForUserPresenterImplementation()
     stage_storage = StagesStorageImplementation()
@@ -47,11 +48,17 @@ def api_wrapper(*args, **kwargs):
         filter_storage=filter_storage,
         task_stage_storage=task_stage_storage
     )
-    response = interactor.get_filtered_tasks_overview_for_user_wrapper(
-        presenter=presenter,
+    from ib_tasks.interactors.get_filtered_tasks_details_interactor import \
+        ProjectTasksParameterDTO
+    project_tasks_parameter = ProjectTasksParameterDTO(
         user_id=user_id,
         limit=limit,
         offset=offset,
-        view_type=ViewType.KANBAN.value
+        view_type=ViewType.KANBAN.value,
+        project_id=project_id
+    )
+    response = interactor.get_filtered_tasks_overview_for_user_wrapper(
+        presenter=presenter,
+        project_tasks_parameter=project_tasks_parameter
     )
     return response

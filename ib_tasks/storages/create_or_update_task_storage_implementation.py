@@ -368,3 +368,6 @@ class CreateOrUpdateTaskStorageImplementation(
             for field_searchable_value in field_searchable_values
         ]
         return field_searchable_dtos
+
+    def get_task_ids(self) -> List[int]:
+        return list(Task.objects.values_list('id', flat=True))
