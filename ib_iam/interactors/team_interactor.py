@@ -69,10 +69,9 @@ class TeamInteractor(ValidationMixin):
             team_with_team_id_and_user_ids_dto: TeamWithTeamIdAndUserIdsDTO,
             presenter: UpdateTeamPresenterInterface):
         try:
-            self.update_team_details(
-                user_id=user_id,
-                team_with_team_id_and_user_ids_dto=team_with_team_id_and_user_ids_dto
-            )
+            self.update_team_details(user_id=user_id,
+                                     team_with_team_id_and_user_ids_dto=
+                                     team_with_team_id_and_user_ids_dto)
             response = presenter.get_success_response_for_update_team()
         except UserIsNotAdmin:
             response = \
@@ -120,7 +119,8 @@ class TeamInteractor(ValidationMixin):
             self.delete_team(user_id=user_id, team_id=team_id)
             response = presenter.get_success_response_for_delete_team()
         except UserIsNotAdmin:
-            response = presenter.get_user_has_no_access_response_for_delete_team()
+            response = presenter \
+                .get_user_has_no_access_response_for_delete_team()
         except InvalidTeamId:
             response = presenter.get_invalid_team_response_for_delete_team()
         return response
