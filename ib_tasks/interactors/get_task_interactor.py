@@ -16,7 +16,8 @@ from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import GetTaskPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import TaskCompleteDetailsDTO
-from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
+from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO, \
+    StageAssigneeWithTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces \
@@ -90,6 +91,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         except InvalidUserIdsException:
             response = presenter.raise_invalid_searchable_records_found()
             return response
+        # TODO : Need to handle exception raised by interface
 
     def get_task_details_response(
             self, user_id: str, task_display_id: str,
@@ -107,7 +109,9 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         get_task_base_interactor = GetTaskBaseInteractor(
             storage=self.task_crud_storage)
         task_details_dto = get_task_base_interactor.get_task(task_id)
-        user_roles = self._get_user_roles(user_id)
+        project_details_dto = task_details_dto.project_details_dto
+        project_id = project_details_dto.project_id
+        user_roles = self._get_user_roles(user_id, project_id)
         task_details_dto = self._get_task_details_dto(
             task_details_dto, user_roles
         )
@@ -116,13 +120,13 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         stage_ids = self._get_stage_ids(stages_and_actions_details_dtos)
         self._validate_user_have_permission_for_at_least_one_stage(stage_ids,
                                                                    user_roles)
-        stage_assignee_details_dtos = self._stage_assignee_details_dtos(
-            task_id, stage_ids
+        stage_assignee_details_dtos = self._stage_assignee_with_team_details_dtos(
+            task_id, stage_ids, project_id
         )
         task_complete_details_dto = TaskCompleteDetailsDTO(
             task_details_dto=task_details_dto,
             stages_and_actions_details_dtos=stages_and_actions_details_dtos,
-            stage_assignee_details_dtos=stage_assignee_details_dtos
+            stage_assignee_with_team_details_dtos=stage_assignee_details_dtos
         )
         return task_complete_details_dto
 
@@ -138,21 +142,22 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         if is_user_permission_denied:
             raise UserPermissionDenied()
 
-    def _stage_assignee_details_dtos(
-            self, task_id: int, stage_ids: List[int]
-    ) -> List[StageAssigneeDetailsDTO]:
+    def _stage_assignee_with_team_details_dtos(
+            self, task_id: int, stage_ids: List[int], project_id: str
+    ) -> List[StageAssigneeWithTeamDetailsDTO]:
         from ib_tasks.interactors.get_stages_assignees_details_interactor \
             import \
             GetStagesAssigneesDetailsInteractor
         interactor = GetStagesAssigneesDetailsInteractor(
             task_stage_storage=self.task_stage_storage
         )
-        stage_assignee_details_dtos = \
+        stage_assignee_with_details_dtos = \
             interactor.get_stages_assignee_details_dtos(
                 task_id=task_id,
-                stage_ids=stage_ids
+                stage_ids=stage_ids,
+                project_id=project_id
             )
-        return stage_assignee_details_dtos
+        return stage_assignee_with_details_dtos
 
     @staticmethod
     def _get_stage_ids(stages_and_actions_details_dtos) -> List[int]:
@@ -400,11 +405,13 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         return permission_task_gof_dtos
 
     @staticmethod
-    def _get_user_roles(user_id: str) -> List[str]:
+    def _get_user_roles(user_id: str, project_id: str) -> List[str]:
 
         from ib_tasks.adapters.roles_service_adapter \
             import get_roles_service_adapter
         roles_service_adapter = get_roles_service_adapter()
         roles_service = roles_service_adapter.roles_service
-        user_roles = roles_service.get_user_role_ids(user_id)
+        user_roles = roles_service.get_user_role_ids_based_on_project(
+            user_id=user_id, project_id=project_id
+        )
         return user_roles

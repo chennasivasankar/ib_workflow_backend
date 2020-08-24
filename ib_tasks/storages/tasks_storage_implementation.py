@@ -508,3 +508,7 @@ class TasksStorageImplementation(TaskStorageInterface):
             )
             for task_id in task_ids
         ]
+
+    def get_project_id_for_the_task_id(self, task_id) -> str:
+        return Task.objects.get(id=task_id).project_id
+

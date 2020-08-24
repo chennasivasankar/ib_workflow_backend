@@ -18,3 +18,8 @@ class ProjectStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_project_dtos(self):
         pass
+
+    @abc.abstractmethod
+    def get_project_dtos_for_given_project_ids(
+            self, project_ids: List[str]) -> List[ProjectDTO]:
+        pass

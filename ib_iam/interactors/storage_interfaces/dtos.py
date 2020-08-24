@@ -187,11 +187,13 @@ class ProjectDTO:
     description: Optional[str] = None
     logo_url: Optional[str] = None
 
+
 @dataclass
 class SearchableDetailsDTO:
     search_type: Searchable
     id: Union[int, str]
     value: str
+
 
 @dataclass
 class MemberIdWithSubordinateMemberIdsDTO:

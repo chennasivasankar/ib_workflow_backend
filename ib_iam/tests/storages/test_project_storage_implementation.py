@@ -67,3 +67,29 @@ class TestProjectStorageImplementation:
         actual_project_dtos = project_storage.get_project_dtos()
 
         assert actual_project_dtos == expected_project_dtos
+
+    @pytest.mark.django_db
+    def test_get_project_dtos_for_given_project_ids(self):
+        from ib_iam.tests.factories.models import ProjectFactory
+        project_ids = [
+            "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4",
+            "641bfcc5-e1ea-4231-b482-f7f34fb5c7c5",
+            "641bfcc5-e1ea-4231-b482-f7f34fb5c7c6"
+        ]
+        input_project_ids = [
+            "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4",
+            "641bfcc5-e1ea-4231-b482-f7f34fb5c7c5"
+        ]
+        ProjectFactory.reset_sequence(1)
+        ProjectDTOFactory.reset_sequence(1)
+        for project_id in project_ids:
+            ProjectFactory.create(project_id=project_id)
+        expected_project_dtos = [ProjectDTOFactory(project_id=project_id)
+                                 for project_id in input_project_ids]
+        project_storage = ProjectStorageImplementation()
+
+        actual_project_dtos = \
+            project_storage.get_project_dtos_for_given_project_ids(
+                project_ids=input_project_ids)
+
+        assert actual_project_dtos == expected_project_dtos

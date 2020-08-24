@@ -29,7 +29,7 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
     TaskDelayParametersDTO
 from ib_tasks.models import GlobalConstant, \
-    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskTemplateStatusVariable
+    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskTemplateStatusVariable, ProjectTaskTemplate
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole
 from ib_tasks.models import \
@@ -88,10 +88,18 @@ class StagesStorageImplementation(StageStorageInterface):
                                         role_id=role))
         return list_of_permitted_roles
 
-    def get_permitted_stage_ids(self, user_role_ids: List[str]) -> List[str]:
+    def get_permitted_stage_ids(
+            self, user_role_ids: List[str], project_id: str) -> List[str]:
 
+        project_template_ids = ProjectTaskTemplate.objects.filter(
+            (
+                    Q(project_id=project_id) &
+                    Q(task_template__is_transition_template=False)
+            ) | (Q(project_id=None) & Q(task_template__is_transition_template=False))
+        ).values_list('task_template_id', flat=True)
         stage_ids = StagePermittedRoles.objects.filter(
-            (Q(role_id__in=user_role_ids) | Q(role_id=ALL_ROLES_ID))
+            (Q(role_id__in=user_role_ids) | Q(role_id=ALL_ROLES_ID)) &
+            Q(stage__task_template_id__in=project_template_ids)
         ).values_list('stage__stage_id', flat=True)
 
         return list(stage_ids)
@@ -418,6 +426,10 @@ class StagesStorageImplementation(StageStorageInterface):
         ).values_list('stage__stage_id', flat=True)
         return sorted(list(set(stage_ids)))
 
+    def get_task_current_stages(self, task_id: int) -> List[str]:
+        return list(CurrentTaskStage.objects.filter(
+            task_id=task_id
+        ).values_list('stage__stage_id', flat=True))
 
 class StorageImplementation(StorageInterface):
 

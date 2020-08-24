@@ -15,6 +15,7 @@ from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
 
 @dataclass
 class ApplyFilterDTO:
+    project_id: str
     template_id: str
     field_id: str
     operator: Operators
