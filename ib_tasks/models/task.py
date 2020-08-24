@@ -18,6 +18,10 @@ class Task(AbstractDateTimeModel):
     priority = models.CharField(max_length=20, choices=PRIORITY_TYPES,
                                 default=PRIORITY_TYPES[0][0])
 
+    def __str__(self):
+        return "{}".format(
+            self.task_display_id)
+
 
 class ElasticSearchTask(models.Model):
     elasticsearch_id = models.CharField(max_length=200, unique=True)

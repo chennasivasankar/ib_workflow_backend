@@ -105,7 +105,7 @@ class ServiceInterface:
     # ToDo Add Project id as an argument
     @staticmethod
     def get_user_details_for_given_role_ids(
-            role_ids: List[str]) -> List[UserProfileDTO]:
+            role_ids: List[str], project_id: str) -> List[UserProfileDTO]:
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
         user_storage = UserStorageImplementation()
@@ -228,3 +228,13 @@ class ServiceInterface:
     def get_user_role_ids_based_on_project(
             self, user_id, project_id) -> List[str]:
         pass
+
+    @staticmethod
+    def get_valid_project_ids(project_ids: List[str]) -> List[str]:
+        from ib_iam.interactors.project_interactor import ProjectInteractor
+        from ib_iam.storages.project_storage_implementation import \
+            ProjectStorageImplementation
+        project_storage = ProjectStorageImplementation()
+        interactor = ProjectInteractor(project_storage=project_storage)
+        project_ids = interactor.get_valid_project_ids(project_ids=project_ids)
+        return project_ids

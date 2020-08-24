@@ -111,7 +111,7 @@ class GetTaskFieldsAndActionsInteractor:
 
         return StageTaskFieldsDTO(task_id=task.task_id,
                                   stage_id=stage.stage_id,
-                                  field_ids=list(valid_field_ids))
+                                  field_ids=valid_field_ids)
 
     @staticmethod
     def _validate_stage_ids(stage_ids, valid_stage_ids):

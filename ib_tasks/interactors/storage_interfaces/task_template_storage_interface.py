@@ -50,6 +50,10 @@ class TaskTemplateStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_task_templates_to_project_ids(self, project_ids: List[str]):
+        pass
+
+    @abc.abstractmethod
     def get_gofs_to_templates_from_permitted_gofs(
             self, gof_ids: List[str]) -> List[GoFToTaskTemplateDTO]:
         pass
@@ -102,4 +106,8 @@ class TaskTemplateStorageInterface(abc.ABC):
     def validate_transition_template_id(
             self, transition_checklist_template_id
     ) -> Optional[InvalidTransitionChecklistTemplateId]:
+        pass
+
+    @abc.abstractmethod
+    def get_gof_ids_of_template(self, template_id: str) -> List[str]:
         pass

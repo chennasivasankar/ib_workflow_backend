@@ -3,7 +3,7 @@ from typing import List
 from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
     GetTeamMemberLevelsPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import TeamMemberLevelDetailsDTO
-from ib_iam.interactors.storage_interfaces.level_storage_interface import \
+from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface import \
     TeamMemberLevelStorageInterface
 
 
@@ -35,8 +35,8 @@ class GetTeamMemberLevelsInteractor:
 
     def get_team_member_levels(self, team_id: str) \
             -> List[TeamMemberLevelDetailsDTO]:
-        level_details_dtos = \
+        team_member_level_details_dtos = \
             self.team_member_level_storage.get_team_member_level_details_dtos(
                 team_id=team_id
             )
-        return level_details_dtos
+        return team_member_level_details_dtos

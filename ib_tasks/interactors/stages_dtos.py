@@ -71,7 +71,7 @@ class UserStagesWithPaginationDTO:
 class StageAssigneeDTO:
     db_stage_id: int
     assignee_id: str
-
+    team_id: str
 
 @dataclass
 class TaskIdWithStageAssigneesDTO:
@@ -86,11 +86,8 @@ class TaskDisplayIdWithStageAssigneesDTO:
 
 
 @dataclass
-class TaskIdWithStageAssigneeDTO:
+class TaskIdWithStageAssigneeDTO(StageAssigneeDTO):
     task_id: int
-    db_stage_id: int
-    assignee_id: str
-
 
 @dataclass
 class StageAssigneeDetailsDTO:

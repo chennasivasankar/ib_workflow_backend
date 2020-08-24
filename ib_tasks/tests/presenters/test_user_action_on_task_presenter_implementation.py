@@ -11,6 +11,7 @@ from ib_tasks.tests.factories.adapter_dtos import (
 )
 from ib_tasks.tests.factories.interactor_dtos import FieldDisplayDTOFactory, \
     TaskCurrentStageDetailsDTOFactory
+from ib_tasks.tests.factories.interactor_dtos import TaskStageDTOFactory
 from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory
 
 

@@ -11,7 +11,7 @@ from ib_tasks.interactors.stages_dtos import StageAssigneeDTO, \
     TaskIdWithStageAssigneesDTO
 from ib_tasks.tests.factories.interactor_dtos import FieldValuesDTOFactory, \
     GoFFieldsDTOFactory, UpdateTaskWithTaskDisplayIdDTOFactory, \
-    UpdateTaskDTOFactory
+    UpdateTaskDTOFactory, StageAssigneeDTOFactory
 from ib_tasks.tests.factories.storage_dtos import \
     GoFIdWithSameGoFOrderDTOFactory, FieldIdWithTaskGoFIdDTOFactory, \
     TaskGoFDetailsDTOFactory, TaskGoFFieldDTOFactory, \
@@ -30,6 +30,7 @@ class TestUpdateTaskInteractor:
         TaskGoFDetailsDTOFactory.reset_sequence()
         TaskGoFFieldDTOFactory.reset_sequence()
         TaskGoFWithTaskIdDTOFactory.reset_sequence()
+        StageAssigneeDTOFactory.reset_sequence()
 
     @pytest.fixture
     def task_storage_mock(self):
@@ -2048,9 +2049,10 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
         stage_assignees = [
-            StageAssigneeDTO(
+            StageAssigneeDTOFactory(
                 db_stage_id=task_dto.stage_assignee.stage_id,
-                assignee_id=task_dto.stage_assignee.assignee_id
+                assignee_id=task_dto.stage_assignee.assignee_id,
+                team_id=task_dto.stage_assignee.team_id
             )
         ]
         expected_task_stage_assignee_dto = TaskIdWithStageAssigneesDTO(

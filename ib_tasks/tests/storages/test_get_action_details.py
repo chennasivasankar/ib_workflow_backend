@@ -71,6 +71,19 @@ class TestGetActionDetails:
         # Assert
         snapshot.assert_match(response, "response")
 
+    def test_get_action_details_when_no_actions(self,
+                                populate_data,
+                                snapshot):
+        # Arrange
+        action_ids = []
+        storage = ActionsStorageImplementation()
+
+        # Act
+        response = storage.get_actions_details(action_ids=action_ids)
+
+        # Assert
+        snapshot.assert_match(response, "response")
+
     def test_get_permitted_action_ids_given_stage_ids(self,
                                                       populate_data,
                                                       snapshot):

@@ -767,7 +767,7 @@ class TestSaveAndActOnATaskPresenterImplementation:
         snapshot.assert_match(json_response['res_status'], 'res_status')
         snapshot.assert_match(json_response['response'], 'response')
 
-    def test_raise_exception_for_invalid_present_actions(
+    def test_raise_exception_for_invalid_present_stage_actions(
             self, snapshot, presenter):
         # Arrange
         expected_action_id = 1
@@ -778,7 +778,7 @@ class TestSaveAndActOnATaskPresenterImplementation:
 
         # Act
         response = \
-            presenter.raise_exception_for_invalid_present_actions(err)
+            presenter.raise_exception_for_invalid_present_stage_actions(err)
 
         # Assert
         json_response = json.loads(response.content)

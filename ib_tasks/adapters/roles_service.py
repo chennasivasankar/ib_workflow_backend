@@ -1,5 +1,8 @@
 from typing import List
 
+from ib_tasks.exceptions.permission_custom_exceptions import \
+    InvalidUserIdException
+
 
 class RolesService:
 
@@ -25,12 +28,15 @@ class RolesService:
     def get_valid_role_ids_in_given_role_ids(
             self, role_ids: List[str]
     ) -> List[str]:
-        valid_roles = \
-            self.interface.get_valid_role_ids(role_ids)
+        valid_roles = self.interface.get_valid_role_ids(role_ids)
         return valid_roles
 
-    def get_user_role_ids(self, user_id) -> List[str]:
-        user_role_ids = self.interface.get_user_role_ids(user_id=user_id)
+    def get_user_role_ids(self, user_id: str) -> List[str]:
+        from ib_iam.exceptions.custom_exceptions import InvalidUserId
+        try:
+            user_role_ids = self.interface.get_user_role_ids(user_id=user_id)
+        except InvalidUserId:
+            raise InvalidUserIdException(user_id)
         return user_role_ids
 
     def get_user_role_ids_based_on_project(

@@ -8,15 +8,22 @@ from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO, \
     FilterCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
-    GoFToTaskTemplateDTO
+    GoFToTaskTemplateDTO, TaskTemplateGofsDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TemplateDTO
+    TemplateDTO, ProjectTemplateDTO
 
 
 @dataclass()
 class TaskTemplateFieldsDto:
     task_template_dtos: List[TemplateDTO]
     gofs_of_task_templates_dtos: List[GoFToTaskTemplateDTO]
+    fields_dto: List[FieldNameDTO]
+
+
+@dataclass()
+class ProjectTemplateFieldsDto:
+    task_template_dtos: List[ProjectTemplateDTO]
+    task_template_gofs_dtos: List[TaskTemplateGofsDTO]
     fields_dto: List[FieldNameDTO]
 
 
@@ -71,7 +78,7 @@ class FilterPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_get_task_templates_fields(
-            self, task_template_fields: TaskTemplateFieldsDto):
+            self, task_template_fields: ProjectTemplateFieldsDto):
         pass
 
     @abc.abstractmethod
