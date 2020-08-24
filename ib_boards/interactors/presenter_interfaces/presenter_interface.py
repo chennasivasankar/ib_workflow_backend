@@ -96,15 +96,6 @@ class PresenterInterface(abc.ABC):
     def get_response_for_offset_exceeds_total_tasks(self):
         pass
 
-    @abc.abstractmethod
-    def get_response_for_invalid_project_id(self, error: InvalidProjectIdsException) \
-            -> response.HttpResponse:
-        pass
-
-    @abc.abstractmethod
-    def get_response_for_user_is_not_in_project(self) \
-            -> response.HttpResponse:
-        pass
 
 class GetColumnTasksPresenterInterface(abc.ABC):
 
@@ -146,14 +137,4 @@ class GetColumnTasksPresenterInterface(abc.ABC):
             task_id_dtos: List[TaskDisplayIdDTO],
             task_stage_dtos: List[TaskStageDTO],
             assignees_dtos: List[StageAssigneesDTO]):
-        pass
-
-    @abc.abstractmethod
-    def get_response_for_invalid_project_id(self, error: InvalidProjectIdsException) \
-            -> response.HttpResponse:
-        pass
-
-    @abc.abstractmethod
-    def get_response_for_user_is_not_in_project(self) \
-            -> response.HttpResponse:
         pass

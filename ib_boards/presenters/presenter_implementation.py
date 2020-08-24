@@ -312,29 +312,6 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
                 action_ids.append(action_dto.action_id)
         return task_actions_list
 
-    def get_response_for_invalid_project_id(self, error: InvalidProjectIdsException)\
-            -> response.HttpResponse:
-        invalid_project_id = error.invalid_project_ids[0]
-        response_dict = {
-            "response": INVALID_PROJECT_ID[0].format(invalid_project_id),
-            "http_status_code": 404,
-            "res_status": INVALID_PROJECT_ID[1]
-        }
-        return self.prepare_404_not_found_response(
-            response_dict=response_dict
-        )
-
-    def get_response_for_user_is_not_in_project(self) \
-            -> response.HttpResponse:
-        response_dict = {
-            "response": USER_IS_NOT_IN_PROJECT[0],
-            "http_status_code": 403,
-            "res_status": USER_IS_NOT_IN_PROJECT[1]
-        }
-        return self.prepare_403_forbidden_response(
-            response_dict=response_dict
-        )
-
 
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
 
@@ -474,26 +451,3 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             "total_tasks": column_dto.total_tasks,
             "tasks": task_details_list
         }
-
-    def get_response_for_invalid_project_id(self, error: InvalidProjectIdsException)\
-            -> response.HttpResponse:
-        invalid_project_id = error.invalid_project_ids[0]
-        response_dict = {
-            "response": INVALID_PROJECT_ID[0].format(invalid_project_id),
-            "http_status_code": 404,
-            "res_status": INVALID_PROJECT_ID[1]
-        }
-        return self.prepare_404_not_found_response(
-            response_dict=response_dict
-        )
-
-    def get_response_for_user_is_not_in_project(self) \
-            -> response.HttpResponse:
-        response_dict = {
-            "response": USER_IS_NOT_IN_PROJECT[0],
-            "http_status_code": 403,
-            "res_status": USER_IS_NOT_IN_PROJECT[1]
-        }
-        return self.prepare_403_forbidden_response(
-            response_dict=response_dict
-        )
