@@ -15,8 +15,7 @@ from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.stage_dtos import TaskStageDTO
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
-    StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
-    StageAssigneeDetailsDTO, UserStagesWithPaginationDTO, StageAssigneeDTO
+    StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO,  UserStagesWithPaginationDTO, StageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -24,7 +23,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    CurrentStageDetailsDTO, StageIdWithValueDTO
+    CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     TaskDueParametersDTO, \
