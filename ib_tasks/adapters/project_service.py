@@ -10,6 +10,5 @@ class ProjectService:
 
     @staticmethod
     def check_is_project_id_exists(project_id: str) -> bool:
-        return True
         # TODO: call service interface
         return True

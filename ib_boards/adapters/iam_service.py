@@ -38,5 +38,5 @@ class IamService:
 
     def validate_project_ids(self, project_ids: List[str]) -> \
             List[str]:
-        return "FIN_MAN"
+        #TODO validate project ids
         raise NotImplementedError

@@ -92,7 +92,7 @@ def populate_user_roles_for_admin_user(admin_user_id: str):
         user_id=admin_user_id, role_ids=db_role_ids)
 
 
-def populate_user_roles_for_normal_user(user_id: str, roles: List[str]):
+def populate_user_roles_for_noraml_user(user_id: str, roles: List[str]):
     """
     Normal User have All roles
     """
