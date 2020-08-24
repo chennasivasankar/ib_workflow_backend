@@ -8,12 +8,13 @@ import pytest
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.interactors.presenter_interfaces.dtos import AllTasksOverviewDetailsDTO
-from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
+
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO, TaskIdWithStageDetailsDTO, TaskWithCompleteStageDetailsDTO
+    GetTaskStageCompleteDetailsDTO, TaskIdWithStageDetailsDTO, \
+    TaskWithCompleteStageDetailsDTO, StageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import TaskStageStorageInterface
 from ib_tasks.tests.common_fixtures.interactors import prepare_get_stage_ids_for_user
 from ib_tasks.tests.factories.presenter_dtos import TaskWithCompleteStageDetailsDTOFactory
@@ -25,7 +26,10 @@ class TestGetTasksOverviewForUserInteractor:
     def task_actions_fields(self):
         return [GetTaskStageCompleteDetailsDTO(
             task_id=1,
+            db_stage_id=1,
             stage_id='stage_id_1',
+
+            display_name="stage_1",
             stage_color="blue",
             field_dtos=[
                 FieldDetailsDTO(
@@ -67,18 +71,20 @@ class TestGetTasksOverviewForUserInteractor:
                 task_with_stage_details_dto=TaskIdWithStageDetailsDTO(
                     db_stage_id=1, task_id=1, stage_id='stage_1',
                     stage_display_name='stage_display_1',
-                    stage_color='color_1'),
-                stage_assignee_dto=StageAssigneeDetailsDTO(
+                    stage_color='color_1', task_display_id="task_1"),
+                stage_assignee_dto=[StageAssigneeDetailsDTO(
                     task_stage_id=1, stage_id=0,
                     assignee_details_dto=AssigneeDetailsDTO(
                         assignee_id='123e4567-e89b-12d3-a456-426614174000',
                         name='name_0',
                         profile_pic_url=
-                        'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM')))],
+                        'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM'))])],
             task_fields_and_action_details_dtos=[
                 GetTaskStageCompleteDetailsDTO(
                     task_id=1,
+                    db_stage_id=1,
                     stage_id='stage_id_1',
+                    display_name='stage_display_1',
                     stage_color='blue',
                     field_dtos=[FieldDetailsDTO(
                         field_type='Drop down',

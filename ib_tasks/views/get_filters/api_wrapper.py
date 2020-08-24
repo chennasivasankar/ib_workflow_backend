@@ -8,6 +8,8 @@ from .validator_class import ValidatorClass
 def api_wrapper(*args, **kwargs):
     user = kwargs['user']
     user_id = user.user_id
+    params = kwargs['query_params']
+    project_id = params['project_id']
 
     from ib_tasks.interactors.filter_interactor \
         import FilterInteractor
@@ -24,7 +26,7 @@ def api_wrapper(*args, **kwargs):
         presenter=presenter,
         field_storage=FieldsStorageImplementation()
     )
-
-    response = interactor.get_filters_details(user_id=user_id)
-
+    response = interactor.get_filters_details_wrapper(
+        user_id=user_id, project_id=project_id
+    )
     return response

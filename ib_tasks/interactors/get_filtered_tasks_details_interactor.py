@@ -3,6 +3,8 @@ Created on: 07/08/20
 Author: Pavankumar Pamuru
 
 """
+from dataclasses import dataclass
+
 from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.fields_custom_exceptions import \
     LimitShouldBeGreaterThanZeroException, \
@@ -27,6 +29,15 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 
 
+@dataclass
+class ProjectTasksParameterDTO:
+    project_id: str
+    user_id: str
+    limit: int
+    offset: int
+    view_type: ViewType
+
+
 class GetTaskDetailsByFilterInteractor:
     def __init__(self, stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,
@@ -44,13 +55,13 @@ class GetTaskDetailsByFilterInteractor:
         self.elasticsearch_storage = elasticsearch_storage
 
     def get_filtered_tasks_overview_for_user_wrapper(
-            self, user_id: str, limit: int, offset: int, view_type: ViewType,
+            self, project_tasks_parameter: ProjectTasksParameterDTO,
             presenter: GetFilteredTasksOverviewForUserPresenterInterface):
         try:
             filtered_tasks_overview_details_dto, total_tasks = \
                 self.get_filtered_tasks_overview_for_user(
-                    user_id=user_id, limit=limit, offset=offset,
-                    view_type=view_type)
+                    project_tasks_parameter=project_tasks_parameter
+                )
         except StageIdsListEmptyException:
             return presenter.raise_stage_ids_empty_exception()
 
@@ -67,11 +78,11 @@ class GetTaskDetailsByFilterInteractor:
         )
 
     def get_filtered_tasks_overview_for_user(
-            self, user_id: str, limit: int, offset: int, view_type: ViewType):
-
+            self, project_tasks_parameter: ProjectTasksParameterDTO):
+        self.validate_project_id(project_id=project_tasks_parameter.project_id)
         from ib_tasks.adapters.service_adapter import get_service_adapter
         roles_service = get_service_adapter().roles_service
-        user_roles = roles_service.get_user_role_ids(user_id=user_id)
+        user_roles = roles_service.get_user_role_ids(user_id=project_tasks_parameter.user_id)
         stage_ids_having_actions = self.stage_storage\
             .get_stage_ids_having_actions(user_roles=user_roles)
 
@@ -90,11 +101,27 @@ class GetTaskDetailsByFilterInteractor:
             action_storage=self.action_storage,
             task_stage_storage=self.task_stage_storage
         )
-        task_ids, total_tasks = filtered_task_ids_interactor.get_task_ids_by_applying_filters(
-            user_id=user_id, limit=limit, offset=offset,
+        from ib_tasks.interactors.get_task_ids_by_applying_filters_interactor import \
+            FilterTasksParameter
+        filter_tasks_parameter = FilterTasksParameter(
+            project_id=project_tasks_parameter.project_id,
+            user_id=project_tasks_parameter.user_id,
+            limit=project_tasks_parameter.limit,
+            offset=project_tasks_parameter.offset,
             stage_ids=stage_ids_having_actions
         )
+        task_ids, total_tasks = filtered_task_ids_interactor.get_task_ids_by_applying_filters(
+            filter_tasks_parameter=filter_tasks_parameter
+        )
+        project_id = project_tasks_parameter.project_id
         all_tasks_overview_details_dto = task_details_interactor. \
             get_filtered_tasks_overview_for_user(
-                user_id=user_id, task_ids=task_ids, view_type=view_type)
+                user_id=project_tasks_parameter.user_id,
+                task_ids=task_ids,
+                view_type=project_tasks_parameter.view_type,
+                project_id=project_id
+            )
         return all_tasks_overview_details_dto, total_tasks
+
+    def validate_project_id(self, project_id):
+        pass

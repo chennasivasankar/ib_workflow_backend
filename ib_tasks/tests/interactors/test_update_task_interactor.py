@@ -11,7 +11,7 @@ from ib_tasks.interactors.stages_dtos import StageAssigneeDTO, \
     TaskIdWithStageAssigneesDTO
 from ib_tasks.tests.factories.interactor_dtos import FieldValuesDTOFactory, \
     GoFFieldsDTOFactory, UpdateTaskWithTaskDisplayIdDTOFactory, \
-    UpdateTaskDTOFactory
+    UpdateTaskDTOFactory, StageAssigneeDTOFactory
 from ib_tasks.tests.factories.storage_dtos import \
     GoFIdWithSameGoFOrderDTOFactory, FieldIdWithTaskGoFIdDTOFactory, \
     TaskGoFDetailsDTOFactory, TaskGoFFieldDTOFactory, \
@@ -30,6 +30,7 @@ class TestUpdateTaskInteractor:
         TaskGoFDetailsDTOFactory.reset_sequence()
         TaskGoFFieldDTOFactory.reset_sequence()
         TaskGoFWithTaskIdDTOFactory.reset_sequence()
+        StageAssigneeDTOFactory.reset_sequence()
 
     @pytest.fixture
     def task_storage_mock(self):
@@ -171,6 +172,45 @@ class TestUpdateTaskInteractor:
         error_object = call_args[0][0]
         invalid_task_id = error_object.task_id
         assert invalid_task_id == task_id
+
+    def test_with_invalid_stage_id(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock, presenter_mock, mock_object
+    ):
+        # Arrange
+        given_task_display_id = "task_1"
+        given_stage_id = 2
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            task_display_id=given_task_display_id,
+            stage_assignee__stage_id=given_stage_id)
+        task_id = 1
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        create_task_storage_mock.is_valid_task_id.return_value = True
+        stage_storage_mock.check_is_stage_exists.return_value = False
+        interactor = UpdateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock,
+            storage=storage_mock, field_storage=field_storage_mock,
+            stage_storage=stage_storage_mock,
+            elastic_storage=elastic_storage_mock)
+        presenter_mock.raise_invalid_stage_id.return_value = mock_object
+
+        # Act
+        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+        stage_storage_mock.check_is_stage_exists.assert_called_once_with(
+            given_stage_id)
+        presenter_mock.raise_invalid_stage_id.assert_called_once()
+        call_args = presenter_mock.raise_invalid_stage_id.call_args
+        error_object = call_args[0][0]
+        invalid_stage_id = error_object.stage_id
+        assert invalid_stage_id == given_stage_id
 
     def test_with_invalid_due_time_format(
             self, task_storage_mock, gof_storage_mock,
@@ -2009,9 +2049,10 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
         stage_assignees = [
-            StageAssigneeDTO(
+            StageAssigneeDTOFactory(
                 db_stage_id=task_dto.stage_assignee.stage_id,
-                assignee_id=task_dto.stage_assignee.assignee_id
+                assignee_id=task_dto.stage_assignee.assignee_id,
+                team_id=task_dto.stage_assignee.team_id
             )
         ]
         expected_task_stage_assignee_dto = TaskIdWithStageAssigneesDTO(

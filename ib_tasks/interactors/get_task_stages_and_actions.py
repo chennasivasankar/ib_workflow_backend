@@ -1,7 +1,6 @@
 from collections import defaultdict
 from typing import List
 
-from ib_tasks.adapters.roles_service_adapter import get_roles_service_adapter
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
@@ -10,7 +9,8 @@ from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
-from ib_tasks.interactors.user_role_validation_interactor import UserRoleValidationInteractor
+from ib_tasks.interactors.user_role_validation_interactor import \
+    UserRoleValidationInteractor
 
 
 class GetTaskStagesAndActions:
@@ -24,9 +24,6 @@ class GetTaskStagesAndActions:
     def get_task_stages_and_actions(self, task_id: int, user_id: str) -> \
             List[StageAndActionsDetailsDTO]:
 
-        roles_service = get_roles_service_adapter().roles_service
-        user_roles = roles_service.get_user_role_ids(user_id)
-
         is_valid = self.task_storage.validate_task_id(task_id)
         is_invalid = not is_valid
         if is_invalid:
@@ -38,7 +35,7 @@ class GetTaskStagesAndActions:
         user_roles_interactor = UserRoleValidationInteractor()
         permitted_action_ids = user_roles_interactor. \
             get_permitted_action_ids_for_given_user_id(
-                action_storage=self.action_storage, user_id=user_id, stage_ids=stage_ids)
+            action_storage=self.action_storage, user_id=user_id, stage_ids=stage_ids)
 
         stage_actions_dtos = self.action_storage.get_actions_details(permitted_action_ids)
 

@@ -6,8 +6,6 @@ Author: Pavankumar Pamuru
 import pytest
 
 
-
-
 class TestGetTaskIdsOfUserBasedOnStagesInteractor:
     @pytest.fixture()
     def task_storage_mock(self):
@@ -35,9 +33,9 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
         storage = create_autospec(TaskStageStorageInterface)
         return storage
 
-
     def test_given_valid_stage_ids_get_tasks_with_max_stage_value_dtos(
-            self, task_storage_mock, stage_storage_mock, task_stage_storage_mock):
+            self, task_storage_mock, stage_storage_mock,
+            task_stage_storage_mock):
         # Arrange
         valid_stage_ids = ["stage_id_1", "stage_id_2"]
         from ib_tasks.tests.factories.interactor_dtos import \
@@ -65,7 +63,8 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             GetTaskIdsOfUserBasedOnStagesInteractor
         # Act
         interactor = GetTaskIdsOfUserBasedOnStagesInteractor(
-            task_storage=task_storage_mock, stage_storage=stage_storage_mock,task_stage_storage=task_stage_storage_mock)
+            task_storage=task_storage_mock, stage_storage=stage_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
         interactor.get_task_ids_of_user_based_on_stage_ids(
             user_id=user_id,
             stage_ids=valid_stage_ids
@@ -77,9 +76,7 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             assert_called_once_with(user_stages_with_pagination_dto.stage_ids)
         task_storage_mock. \
             get_user_task_ids_and_max_stage_value_dto_based_on_given_stage_ids. \
-            assert_called_once_with(
-            user_id=user_id,
-            stage_ids=valid_stage_ids)
+            assert_called_once_with(stage_ids=valid_stage_ids)
         stage_storage_mock. \
             get_task_id_with_stage_details_dtos_based_on_stage_value(
             stage_values=[2],

@@ -2,7 +2,7 @@ import datetime
 from dataclasses import dataclass
 from typing import Union, List, Any, Optional
 
-from ib_tasks.constants.enum import Priority
+from ib_tasks.constants.enum import Priority, Searchable
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionDetailsDTO, TaskStageIdsDTO, StageDetailsDTO, \
     CurrentStageDetailsDTO
@@ -23,6 +23,7 @@ class GoFFieldsDTO:
 
 @dataclass
 class CreateTaskDTO:
+    project_id: str
     task_template_id: str
     created_by_id: str
     action_id: int
@@ -36,9 +37,10 @@ class CreateTaskDTO:
 
 
 @dataclass
-class StageIdWithAssigneeIdDTO:
+class StageIdWithAssigneeDTO:
     stage_id: int
     assignee_id: str
+    team_id: str
 
 
 @dataclass
@@ -51,7 +53,7 @@ class UpdateTaskDTO:
     due_date: datetime.date
     due_time: str
     priority: Priority
-    stage_assignee: StageIdWithAssigneeIdDTO
+    stage_assignee: StageIdWithAssigneeDTO
     gof_fields_dtos: List[GoFFieldsDTO]
 
 
@@ -65,7 +67,7 @@ class UpdateTaskWithTaskDisplayIdDTO:
     due_date: datetime.date
     due_time: str
     priority: Priority
-    stage_assignee: StageIdWithAssigneeIdDTO
+    stage_assignee: StageIdWithAssigneeDTO
     gof_fields_dtos: List[GoFFieldsDTO]
 
 
@@ -80,7 +82,7 @@ class SaveAndActOnTaskDTO:
     due_date: datetime.date
     due_time: str
     priority: Priority
-    stage_assignee: StageIdWithAssigneeIdDTO
+    stage_assignee: StageIdWithAssigneeDTO
     gof_fields_dtos: List[GoFFieldsDTO]
 
 
@@ -95,7 +97,7 @@ class SaveAndActOnTaskWithTaskDisplayIdDTO:
     due_date: datetime.date
     due_time: str
     priority: Priority
-    stage_assignee: StageIdWithAssigneeIdDTO
+    stage_assignee: StageIdWithAssigneeDTO
     gof_fields_dtos: List[GoFFieldsDTO]
 
 
@@ -167,3 +169,13 @@ class TaskDueParametersDTO:
 @dataclass
 class TaskDelayParametersDTO(TaskDueParametersDTO):
     task_id: int
+
+
+@dataclass
+class SearchableDTO:
+    search_type: Searchable
+    id: Union[int, str]
+
+
+
+

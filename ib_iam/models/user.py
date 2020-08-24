@@ -19,7 +19,7 @@ class UserTeam(models.Model):
     )
     immediate_superior_team_user = models.ForeignKey(
         "self", on_delete=models.SET_NULL,
-        null=True, blank=True
+        null=True, blank=True, related_name="subordinate_members"
     )
     team = models.ForeignKey('Team', on_delete=models.CASCADE,
                              related_name="users")
@@ -27,7 +27,7 @@ class UserTeam(models.Model):
 
 class UserRole(models.Model):
     user_id = models.CharField(max_length=1000)
-    role = models.ForeignKey('Role', on_delete=models.CASCADE)
+    project_role = models.ForeignKey('ProjectRole', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.user_id} have {self.role.role_id}"
+        return f"{self.user_id} have {self.project_role.role_id}"

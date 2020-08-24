@@ -28,11 +28,16 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
     TaskDelayParametersDTO
+from ib_tasks.models import GlobalConstant, \
+    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskTemplateStatusVariable, ProjectTaskTemplate
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
     GlobalConstant, StagePermittedRoles, TaskTemplateInitialStage, Stage, \
-    TaskLog, TaskTemplateStatusVariable, TaskStageHistory
-from ib_tasks.models.task_due_details import UserTaskDelayReason
+    TaskTemplateStatusVariable, ProjectTaskTemplate,\
+    ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole
+from ib_tasks.models import \
+    TaskStageHistory
+from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
 
 
 class StagesStorageImplementation(StageStorageInterface):
@@ -86,10 +91,18 @@ class StagesStorageImplementation(StageStorageInterface):
                                         role_id=role))
         return list_of_permitted_roles
 
-    def get_permitted_stage_ids(self, user_role_ids: List[str]) -> List[str]:
+    def get_permitted_stage_ids(
+            self, user_role_ids: List[str], project_id: str) -> List[str]:
 
+        project_template_ids = ProjectTaskTemplate.objects.filter(
+            (
+                    Q(project_id=project_id) &
+                    Q(task_template__is_transition_template=False)
+            ) | (Q(project_id=None) & Q(task_template__is_transition_template=False))
+        ).values_list('task_template_id', flat=True)
         stage_ids = StagePermittedRoles.objects.filter(
-            (Q(role_id__in=user_role_ids) | Q(role_id=ALL_ROLES_ID))
+            (Q(role_id__in=user_role_ids) | Q(role_id=ALL_ROLES_ID)) &
+            Q(stage__task_template_id__in=project_template_ids)
         ).values_list('stage__stage_id', flat=True)
 
         return list(stage_ids)
@@ -238,7 +251,7 @@ class StagesStorageImplementation(StageStorageInterface):
     def get_task_id_with_stage_details_dtos_based_on_stage_value(
             self, stage_values: List[int],
             task_ids_group_by_stage_value_dtos: List[
-                StageValueWithTaskIdsDTO], user_id: str
+                StageValueWithTaskIdsDTO]
     ) -> List[TaskIdWithStageDetailsDTO]:
         # ToDo: Need to optimize the storage calls which are in for loop
         all_task_id_with_stage_details_dtos = []
@@ -292,7 +305,8 @@ class StagesStorageImplementation(StageStorageInterface):
             TaskStageHistory(
                 task_id=each_task_id_with_stage_assignee_dto.task_id,
                 stage_id=each_task_id_with_stage_assignee_dto.db_stage_id,
-                assignee_id=each_task_id_with_stage_assignee_dto.assignee_id)
+                assignee_id=each_task_id_with_stage_assignee_dto.assignee_id,
+                team_id=each_task_id_with_stage_assignee_dto.team_id)
             for each_task_id_with_stage_assignee_dto in
             task_id_with_stage_assignee_dtos
         ]
@@ -334,7 +348,7 @@ class StagesStorageImplementation(StageStorageInterface):
             task_stage_obj in task_stage_objs]
         return stages_having_assignee_dtos
 
-    def update_task_stages_with_left_at_status(
+    def update_task_stages_other_than_matched_stages_with_left_at_status(
             self, task_id: int, db_stage_ids: List[int]):
         task_stage_objs = TaskStageHistory.objects \
             .filter(task_id=task_id, left_at__isnull=True) \
@@ -345,16 +359,16 @@ class StagesStorageImplementation(StageStorageInterface):
             task_stage_objs, ['left_at']
         )
 
-    def get_task_stages_having_assignees_without_having_left_at_status(
+    def get_task_stages_assignees_without_having_left_at_status(
             self, task_id: int, db_stage_ids: List[int]) -> List[
         StageAssigneeDTO]:
         task_stage_objs = list(TaskStageHistory.objects.filter(
             task_id=task_id,
-            stage_id__in=db_stage_ids, left_at__isnull=True).exclude(
-            assignee_id__isnull=True).values('stage_id', 'assignee_id'))
+            stage_id__in=db_stage_ids, left_at__isnull=True)
+                               .values('stage_id', 'assignee_id', 'team_id'))
         stages_having_assignee_dtos = [StageAssigneeDTO(
             assignee_id=task_stage_obj['assignee_id'],
-            db_stage_id=task_stage_obj['stage_id']) for
+            db_stage_id=task_stage_obj['stage_id'], team_id=task_stage_obj['team_id']) for
             task_stage_obj in task_stage_objs]
         return stages_having_assignee_dtos
 
@@ -415,7 +429,10 @@ class StagesStorageImplementation(StageStorageInterface):
             ).values_list('stage__stage_id', flat=True)
         return sorted(list(set(stage_ids)))
 
-
+    def get_task_current_stages(self, task_id: int) -> List[str]:
+        return list(CurrentTaskStage.objects.filter(
+            task_id=task_id
+        ).values_list('stage__stage_id', flat=True))
 
 class StorageImplementation(StorageInterface):
 
@@ -682,8 +699,8 @@ class StorageImplementation(StorageInterface):
     def validate_if_task_is_assigned_to_user(self,
                                              task_id: int,
                                              user_id: str) -> bool:
-        is_assigned = TaskLog.objects.filter(
-            task_id=task_id, user_id=user_id).exists()
+        is_assigned = TaskStageHistory.objects.filter(
+            task_id=task_id, assignee_id=user_id).exists()
         return is_assigned
 
     def get_task_due_details(self, task_id: int) -> \
@@ -724,5 +741,5 @@ class StorageImplementation(StorageInterface):
                                            count=count + 1,
                                            reason_id=reason_id,
                                            reason=due_details.reason)
-        Task.objects.filter(pk=task_id, tasklog__user_id=user_id
+        Task.objects.filter(pk=task_id, taskstagehistory__assignee_id=user_id
                             ).update(due_date=updated_due_datetime)

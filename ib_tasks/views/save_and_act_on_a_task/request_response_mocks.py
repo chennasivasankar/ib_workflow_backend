@@ -14,7 +14,8 @@ REQUEST_BODY_JSON = """
     "priority": "HIGH",
     "stage_assignee": {
         "stage_id": 1,
-        "assignee_id": "string"
+        "assignee_id": "string",
+        "team_id": "string"
     },
     "task_gofs": [
         {

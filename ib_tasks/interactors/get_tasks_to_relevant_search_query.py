@@ -1,10 +1,13 @@
 from dataclasses import dataclass
 from typing import Any, List
 
+from ib_tasks.adapters.auth_service import InvalidProjectIdsException, UserIsNotInProject
 from ib_tasks.constants.enum import ViewType
+from ib_tasks.documents.elastic_task import QueryTasksDTO
 from ib_tasks.exceptions.fields_custom_exceptions import LimitShouldBeGreaterThanZeroException, \
     OffsetShouldBeGreaterThanZeroException
 from ib_tasks.exceptions.stage_custom_exceptions import StageIdsListEmptyException
+from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.presenter_interfaces.get_all_tasks_overview_for_user_presenter_interface import \
     GetFilteredTasksOverviewForUserPresenterInterface
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import ActionStorageInterface
@@ -26,7 +29,7 @@ class SearchQueryDTO:
     view_type: ViewType
 
 
-class GetTasksToRelevantSearchQuery:
+class GetTasksToRelevantSearchQuery(ValidationMixin):
 
     def __init__(self, stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,
@@ -44,14 +47,19 @@ class GetTasksToRelevantSearchQuery:
         self.elasticsearch_storage = elasticsearch_storage
 
     def get_all_tasks_overview_for_user_wrapper(
-            self, search_query_dto: SearchQueryDTO,
+            self, project_id: str, search_query_dto: SearchQueryDTO,
             presenter: GetFilteredTasksOverviewForUserPresenterInterface,
             apply_filters_dto: List[ApplyFilterDTO]):
         try:
             filtered_tasks_overview_details_dto, total_tasks = \
-                self.get_tasks_for_search_query(search_query_dto, apply_filters_dto)
+                self.get_tasks_for_search_query(project_id, search_query_dto,
+                                                apply_filters_dto)
         except StageIdsListEmptyException:
             return presenter.raise_stage_ids_empty_exception()
+        except InvalidProjectIdsException as err:
+            return presenter.get_response_for_invalid_project_id(err=err)
+        except UserIsNotInProject:
+            return presenter.get_response_for_user_not_in_project()
         except LimitShouldBeGreaterThanZeroException:
             return presenter.raise_limit_should_be_greater_than_zero_exception()
         except OffsetShouldBeGreaterThanZeroException:
@@ -63,15 +71,16 @@ class GetTasksToRelevantSearchQuery:
         )
 
     def get_tasks_for_search_query(
-            self, search_query_dto: SearchQueryDTO,
+            self, project_id: str, search_query_dto: SearchQueryDTO,
             apply_filters_dto: List[ApplyFilterDTO]):
         offset = search_query_dto.offset
         user_id = search_query_dto.user_id
         limit = search_query_dto.limit
         query_value = search_query_dto.query_value
         view_type = search_query_dto.view_type
+        self._validate_project_data(project_id=project_id, user_id=user_id)
         filter_dtos = self.filter_storage.get_enabled_filters_dto_to_user(
-            user_id=user_id
+            user_id=user_id, project_id=project_id
         )
         apply_filters_dto = apply_filters_dto + filter_dtos
         self._validations_of_limit_and_offset(offset=offset, limit=limit)
@@ -80,10 +89,20 @@ class GetTasksToRelevantSearchQuery:
             apply_filter_dtos=apply_filters_dto
         )
         return self._get_all_tasks_overview_details(
-            query_tasks_dto, view_type, user_id
+            query_tasks_dto, view_type, user_id, project_id
         )
 
-    def _get_all_tasks_overview_details(self, query_tasks_dto, view_type, user_id):
+    def _validate_project_data(self, project_id: str, user_id: str):
+
+        self.validate_given_project_ids(project_ids=[project_id])
+        self.validate_if_user_is_in_project(
+            project_id=project_id, user_id=user_id
+        )
+
+    def _get_all_tasks_overview_details(self, query_tasks_dto: QueryTasksDTO,
+                                        view_type: ViewType,
+                                        user_id: str,
+                                        project_id: str):
         from ib_tasks.interactors.get_all_task_overview_with_filters_and_searches_for_user import \
             GetTasksOverviewForUserInteractor
         task_details_interactor = GetTasksOverviewForUserInteractor(
@@ -96,7 +115,8 @@ class GetTasksToRelevantSearchQuery:
         all_tasks_overview_details_dto = task_details_interactor. \
             get_filtered_tasks_overview_for_user(
             user_id=user_id, task_ids=query_tasks_dto.task_ids,
-            view_type=view_type
+            view_type=view_type,
+            project_id=project_id
         )
         return all_tasks_overview_details_dto, query_tasks_dto.total_tasks_count
 

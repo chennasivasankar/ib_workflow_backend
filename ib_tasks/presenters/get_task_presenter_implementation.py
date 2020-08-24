@@ -3,24 +3,39 @@ from typing import List, Dict
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 from ib_tasks.constants.constants import DATETIME_FORMAT
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidTaskIdException, \
     InvalidStageIdsForTask, InvalidTaskDisplayId
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import GetTaskPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import TaskCompleteDetailsDTO
-from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
+from ib_tasks.interactors.stages_dtos import StageAssigneeWithTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
     import TaskGoFFieldDTO, TaskGoFDTO, TaskDetailsDTO
-from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
+from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO, \
+    AssigneeWithTeamDetailsDTO
 
 
 class GetTaskPresenterImplementation(GetTaskPresenterInterface,
                                      HTTPResponseMixin):
+
+    def raise_invalid_searchable_records_found(self):
+        from ib_tasks.constants.exception_messages import \
+            SEARCHABLE_RECORDS_NOT_FOUND
+        response_message = SEARCHABLE_RECORDS_NOT_FOUND[0]
+        data = {
+            "response": response_message,
+            "http_status_code": 404,
+            "res_status": SEARCHABLE_RECORDS_NOT_FOUND[1]
+        }
+        response_object = self.prepare_404_not_found_response(
+            response_dict=data
+        )
+        return response_object
 
     def raise_user_permission_denied(self):
         from ib_tasks.constants.exception_messages import \
@@ -83,13 +98,15 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
     ):
         task_details_dto = task_complete_details_dto.task_details_dto
         task_base_details_dto = task_details_dto.task_base_details_dto
+        project_info = self._get_project_details(task_details_dto)
         gofs = self._get_task_gofs(task_details_dto)
         task_stage_complete_details_dtos = \
             task_complete_details_dto.stages_and_actions_details_dtos
-        stage_assignee_details_dtos = \
-            task_complete_details_dto.stage_assignee_details_dtos
+        stage_assignee_with_team_details_dtos = \
+            task_complete_details_dto.stage_assignee_with_team_details_dtos
         stages_with_actions = self._get_task_stages_with_actions_details(
-            task_stage_complete_details_dtos, stage_assignee_details_dtos
+            task_stage_complete_details_dtos,
+            stage_assignee_with_team_details_dtos
         )
         start_date = self._convert_datetime_object_to_string(
             task_base_details_dto.start_date
@@ -99,6 +116,7 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
         )
         task_details_dict = {
             "task_id": task_base_details_dto.task_display_id,
+            "project_info": project_info,
             "template_id": task_base_details_dto.template_id,
             "title": task_base_details_dto.title,
             "description": task_base_details_dto.description,
@@ -114,6 +132,18 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
         return response_object
 
     @staticmethod
+    def _get_project_details(
+            task_details_dto: TaskDetailsDTO
+    ) -> Dict:
+        project_details_dto = task_details_dto.project_details_dto
+        project_info = {
+            "project_id": project_details_dto.project_id,
+            "project_name": project_details_dto.name,
+            "project_logo_url": project_details_dto.logo_url
+        }
+        return project_info
+
+    @staticmethod
     def _convert_datetime_object_to_string(
             datetime_obj: datetime
     ):
@@ -123,28 +153,33 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
     def _get_task_stages_with_actions_details(
             self,
             task_stage_complete_details_dtos: List[StageAndActionsDetailsDTO],
-            stage_assignee_details_dtos: List[StageAssigneeDetailsDTO]
+            stage_assignee_with_team_details_dtos: List[
+                StageAssigneeWithTeamDetailsDTO]
     ):
         stages_with_actions = []
         for task_stage_complete_details_dto in \
                 task_stage_complete_details_dtos:
             stage_details_dict = self._prepare_stage_details_dict(
-                task_stage_complete_details_dto, stage_assignee_details_dtos
+                task_stage_complete_details_dto,
+                stage_assignee_with_team_details_dtos
             )
             stages_with_actions.append(stage_details_dict)
         return stages_with_actions
 
     def _prepare_stage_details_dict(
             self, task_stage_complete_details_dto: StageAndActionsDetailsDTO,
-            stage_assignee_details_dtos: List[StageAssigneeDetailsDTO]
+            stage_assignee_with_team_details_dtos: List[
+                StageAssigneeWithTeamDetailsDTO]
     ):
         actions_dtos = task_stage_complete_details_dto.actions_dtos
         actions = self._get_action_details(actions_dtos)
         task_stage_id = self._get_task_stage_id(
-            task_stage_complete_details_dto, stage_assignee_details_dtos
+            task_stage_complete_details_dto,
+            stage_assignee_with_team_details_dtos
         )
-        assignee_details = self._get_task_stage_id_and_assignee_details_dto(
-            task_stage_complete_details_dto, stage_assignee_details_dtos
+        assignee_details = self._get_assignee_with_team_details_dto(
+            task_stage_complete_details_dto,
+            stage_assignee_with_team_details_dtos
         )
         stage_details_dict = {
             "stage_id": task_stage_complete_details_dto.db_stage_id,
@@ -158,42 +193,54 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
 
     @staticmethod
     def _get_task_stage_id(
-            task_stage_complete_details_dto, stage_assignee_details_dtos
+            task_stage_complete_details_dto,
+            stage_assignee_with_team_details_dtos
     ) -> int:
         db_stage_id = task_stage_complete_details_dto.db_stage_id
-        for stage_assignee_details_dto in stage_assignee_details_dtos:
-            stage_id = stage_assignee_details_dto.stage_id
+        for stage_assignee_with_team_details_dto in \
+                stage_assignee_with_team_details_dtos:
+            stage_id = stage_assignee_with_team_details_dto.stage_id
             if db_stage_id == stage_id:
-                task_stage_id = stage_assignee_details_dto.task_stage_id
+                task_stage_id = \
+                    stage_assignee_with_team_details_dto.task_stage_id
                 return task_stage_id
 
-    def _get_task_stage_id_and_assignee_details_dto(
+    def _get_assignee_with_team_details_dto(
             self, task_stage_complete_details_dto: StageAndActionsDetailsDTO,
-            stage_assignee_details_dtos: List[StageAssigneeDetailsDTO]
+            stage_assignee_with_team_details_dtos: List[
+                StageAssigneeWithTeamDetailsDTO]
     ):
         db_stage_id = task_stage_complete_details_dto.db_stage_id
-        for stage_assignee_details_dto in stage_assignee_details_dtos:
-            stage_id = stage_assignee_details_dto.stage_id
+        for stage_assignee_with_team_details_dto in \
+                stage_assignee_with_team_details_dtos:
+            stage_id = stage_assignee_with_team_details_dto.stage_id
             if db_stage_id == stage_id:
-                assignee_details_dto = \
-                    stage_assignee_details_dto.assignee_details_dto
-                if assignee_details_dto:
+                assignee_with_team_details_dto = \
+                    stage_assignee_with_team_details_dto.assignee_details_dto
+                if assignee_with_team_details_dto:
                     assignee_details_dict = \
-                        self._get_assignee_details_dict(assignee_details_dto)
+                        self._get_assignee_details_dict(
+                            assignee_with_team_details_dto)
                 else:
                     assignee_details_dict = None
                 return assignee_details_dict
 
     @staticmethod
     def _get_assignee_details_dict(
-            assignee_details_dto: AssigneeDetailsDTO
+            assignee_with_team_details_dto: AssigneeWithTeamDetailsDTO
     ) -> Dict:
-        assignee_details_dict = {
-            "assignee_id": assignee_details_dto.assignee_id,
-            "name": assignee_details_dto.name,
-            "profile_pic_url": assignee_details_dto.profile_pic_url
+        team_info_dto = assignee_with_team_details_dto.team_info_dto
+        team_info = {
+            "team_id": team_info_dto.team_id,
+            "team_name": team_info_dto.team_name
         }
-        return assignee_details_dict
+        assignee_with_team_details_dict = {
+            "assignee_id": assignee_with_team_details_dto.assignee_id,
+            "name": assignee_with_team_details_dto.name,
+            "profile_pic_url": assignee_with_team_details_dto.profile_pic_url,
+            "team_info": team_info
+        }
+        return assignee_with_team_details_dict
 
     def _get_action_details(self, actions_dtos: List[StageActionDetailsDTO]):
         actions = []

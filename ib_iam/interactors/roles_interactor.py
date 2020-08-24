@@ -16,11 +16,11 @@ class RolesInteractor:
     def __init__(self, storage: RolesStorageInterface):
         self.storage = storage
 
-    def add_roles_wrapper(self, role_dtos: List[RoleDTO],
-                          presenter: AddRolesPresenterInterface):
+    def add_project_roles_wrapper(self, role_dtos: List[RoleDTO], project_id: str,
+                                  presenter: AddRolesPresenterInterface):
         response = None
         try:
-            self.add_roles(role_dtos=role_dtos)
+            self.add_project_roles(role_dtos=role_dtos, project_id=project_id)
         except DuplicateRoleIds as err:
             response = presenter.raise_duplicate_role_ids_exception(err)
         except RoleIdFormatIsInvalid:
@@ -31,12 +31,13 @@ class RolesInteractor:
             response = presenter.raise_role_description_should_not_be_empty_exception()
         return response
 
-    def add_roles(self, role_dtos: List[RoleDTO]):
+    def add_project_roles(self, role_dtos: List[RoleDTO], project_id: str):
+        # TODO project id is valid or not
         role_ids = [role_dto.role_id for role_dto in role_dtos]
         self._validate_role_ids(role_ids=role_ids)
         for role_dto in role_dtos:
             self._validate_role_details(role_dto=role_dto)
-        self.storage.create_roles(role_dtos)
+        self.storage.create_roles(role_dtos, project_id=project_id)
 
     def _validate_role_details(self, role_dto: RoleDTO):
         self._validate_role_id_format(role_id=role_dto.role_id)

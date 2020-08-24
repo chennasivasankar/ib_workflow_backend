@@ -4,10 +4,12 @@ import pytest
 
 from ib_tasks.interactors.get_task_due_missing_reasons import \
     GetTaskDueMissingReasonsInteractor
-from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presenter import \
-    TaskDueDetailsPresenterInterface
-from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
-from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
+from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presenter \
+    import TaskDueDetailsPresenterInterface
+from ib_tasks.interactors.storage_interfaces.storage_interface import \
+    StorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+    TaskStorageInterface
 from ib_tasks.tests.common_fixtures.adapters.assignees_details_service import \
     assignee_details_dtos_mock
 from ib_tasks.tests.factories.storage_dtos import TaskDueMissingDTOFactory
@@ -75,6 +77,7 @@ class TestGetTaskReasons:
         task_display_id = "iBWF-1"
         task_id = 1
         user_id = "user_id_1"
+        user_ids = ['123e4567-e89b-12d3-a456-426614174001', '123e4567-e89b-12d3-a456-426614174002']
         expected_response = Mock()
         storage = create_autospec(StorageInterface)
         task_storage = create_autospec(TaskStorageInterface)
@@ -91,11 +94,13 @@ class TestGetTaskReasons:
         assignee_details_dtos = assignee_details_dtos_mock(mocker)
 
         # Act
-        interactor.get_task_due_missing_reasons_wrapper(
+        result = interactor.get_task_due_missing_reasons_wrapper(
             presenter=presenter, task_display_id=task_display_id, user_id=user_id
         )
 
         # Assert
+        assert result == expected_response
         storage.get_task_due_details.assert_called_once_with(
             task_id)
+        assignee_details_dtos.assert_called_once_with(user_ids)
         presenter.get_response_for_get_task_due_details.assert_called_once()

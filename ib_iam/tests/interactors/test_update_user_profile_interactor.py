@@ -231,8 +231,8 @@ class TestUpdateUserProfileInteractor:
         storage_mock.check_are_valid_role_ids.assert_called_once_with(role_ids)
         storage_mock.remove_roles_for_user.assert_called_once_with(user_id)
         storage_mock.get_role_objs_ids.assert_called_once_with(role_ids)
-        storage_mock.add_roles_to_the_user.assert_called_once_with(
-            user_id=user_id, role_ids=ids_of_role_objects)
+        # storage_mock.add_roles_to_the_user.assert_called_once_with(
+        #     user_id=user_id, role_ids=ids_of_role_objects)
         storage_mock.update_user_name_and_cover_page_url.assert_called_once_with(
             name=name, user_id=user_id,
             cover_page_url=user_profile_dto.cover_page_url)

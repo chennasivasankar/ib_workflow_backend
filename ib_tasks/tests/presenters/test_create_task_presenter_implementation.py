@@ -1,5 +1,6 @@
-import json
 import datetime
+import json
+
 import pytest
 
 
@@ -110,7 +111,7 @@ class TestCreateTaskPresenterImplementation:
 
         # Act
         response_object = presenter.raise_invalid_path_not_found_exception(
-                expected_path_name)
+            expected_path_name)
 
         # Assert
         response = json.loads(response_object.content)
@@ -139,7 +140,7 @@ class TestCreateTaskPresenterImplementation:
 
         # Act
         response_object = presenter.raise_duplicate_stage_ids_not_valid(
-                expected_duplicate_stage_ids)
+            expected_duplicate_stage_ids)
 
         # Assert
         response = json.loads(response_object.content)
@@ -153,7 +154,7 @@ class TestCreateTaskPresenterImplementation:
 
         # Act
         response_object = presenter.raise_invalid_stage_ids_exception(
-                expected_invalid_stage_ids)
+            expected_invalid_stage_ids)
 
         # Assert
         response = json.loads(response_object.content)
@@ -167,9 +168,9 @@ class TestCreateTaskPresenterImplementation:
         expected_stage_ids_without_assignee_permissions = [1, 2]
 
         # Act
-        response_object = presenter.\
+        response_object = presenter. \
             raise_stage_ids_with_invalid_permission_for_assignee_exception(
-                expected_stage_ids_without_assignee_permissions)
+            expected_stage_ids_without_assignee_permissions)
 
         # Assert
         response = json.loads(response_object.content)
@@ -198,16 +199,16 @@ class TestCreateTaskPresenterImplementation:
         snapshot.assert_match(response['res_status'], 'res_status')
         snapshot.assert_match(response['response'], 'response')
 
-    def test_raise_invalid_task_template_ids(self, snapshot, presenter):
+    def test_raise_invalid_task_template_id(self, snapshot, presenter):
         # Arrange
-        expected_invalid_task_template_ids = ["template_1", "template_2"]
+        invalid_template_id = "template_1"
 
         from ib_tasks.exceptions.task_custom_exceptions import \
-            InvalidTaskTemplateIds
-        err = InvalidTaskTemplateIds(expected_invalid_task_template_ids)
+            InvalidTaskTemplateDBId
+        err = InvalidTaskTemplateDBId(invalid_template_id)
 
         # Act
-        response_object = presenter.raise_invalid_task_template_ids(err)
+        response_object = presenter.raise_invalid_task_template_id(err)
 
         # Assert
         response = json.loads(response_object.content)
@@ -540,7 +541,7 @@ class TestCreateTaskPresenterImplementation:
             expected_field_id, expected_gof_name_value, expected_valid_values)
 
         # Act
-        response_object = presenter.\
+        response_object = presenter. \
             raise_exception_for_invalid_name_in_gof_selector_field_value(err)
 
         # Assert
@@ -562,7 +563,7 @@ class TestCreateTaskPresenterImplementation:
             expected_field_id, expected_radio_choice, expected_valid_values)
 
         # Act
-        response_object = presenter.\
+        response_object = presenter. \
             raise_exception_for_invalid_choice_in_radio_group_field(err)
 
         # Assert
@@ -585,7 +586,7 @@ class TestCreateTaskPresenterImplementation:
             expected_valid_values)
 
         # Act
-        response_object = presenter.\
+        response_object = presenter. \
             raise_exception_for_invalid_checkbox_group_options_selected(err)
 
         # Assert
@@ -608,7 +609,7 @@ class TestCreateTaskPresenterImplementation:
             expected_valid_values)
 
         # Act
-        response_object = presenter.\
+        response_object = presenter. \
             raise_exception_for_invalid_multi_select_options_selected(err)
 
         # Assert
@@ -631,7 +632,7 @@ class TestCreateTaskPresenterImplementation:
             expected_valid_values)
 
         # Act
-        response_object = presenter.\
+        response_object = presenter. \
             raise_exception_for_invalid_multi_select_labels_selected(err)
 
         # Assert
@@ -811,6 +812,9 @@ class TestCreateTaskPresenterImplementation:
         # Arrange
         from ib_tasks.tests.factories.interactor_dtos import \
             TaskCurrentStageDetailsDTOFactory
+        from ib_tasks.tests.factories.interactor_dtos import \
+            CurrentStageDetailsDTOFactory
+        CurrentStageDetailsDTOFactory.reset_sequence()
         TaskCurrentStageDetailsDTOFactory.reset_sequence()
 
         task_current_stage_details_dto = TaskCurrentStageDetailsDTOFactory()

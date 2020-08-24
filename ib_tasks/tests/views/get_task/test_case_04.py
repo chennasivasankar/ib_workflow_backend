@@ -12,7 +12,7 @@ from ib_tasks.tests.factories.models import (
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase05GetTaskAPITestCase(TestUtils):
+class TestCase04GetTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD

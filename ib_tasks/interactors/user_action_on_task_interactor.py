@@ -2,9 +2,8 @@ from typing import List, Optional
 
 from ib_tasks.adapters.dtos import ColumnFieldDTO, ColumnStageDTO
 from ib_tasks.exceptions.action_custom_exceptions import InvalidKeyError, \
-    InvalidCustomLogicException, InvalidActionException
-from ib_tasks.exceptions.action_custom_exceptions \
-    import InvalidPresentStageAction
+    InvalidCustomLogicException, InvalidActionException, \
+    InvalidPresentStageAction
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied, UserBoardPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
@@ -13,18 +12,17 @@ from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidTaskDisplayId
 from ib_tasks.interactors \
     .call_action_logic_function_and_update_task_status_variables_interactor \
-    import CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor
+    import CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor, \
+    InvalidMethodFound
 from ib_tasks.interactors.get_field_details import GetFieldsDetails
 from ib_tasks.interactors \
     .get_next_stages_random_assignees_of_a_task_interactor import \
-    InvalidModulePathFound, InvalidMethodFound
+    InvalidModulePathFound
 from ib_tasks.interactors \
     .get_random_assignees_of_next_stages_and_update_in_db_interactor import \
     GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor
 from ib_tasks.interactors.get_stages_assignees_details_interactor import \
     TaskStageAssigneeDetailsDTO
-from ib_tasks.interactors.get_user_permitted_stage_actions \
-    import GetUserPermittedStageActions
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
@@ -35,9 +33,7 @@ from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
 from ib_tasks.interactors.stage_dtos import TaskStageDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionDTO
-from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces \
     .create_or_update_task_storage_interface import \
@@ -113,8 +109,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             )
         except InvalidPresentStageAction as err:
             return presenter.raise_exception_for_invalid_present_actions(
-                error_obj=err
-            )
+                error_obj=err)
         except UserBoardPermissionDenied as err:
             return presenter.raise_exception_for_user_board_permission_denied(
                 error_obj=err
@@ -159,7 +154,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_boards_details = self._get_task_boards_details(stage_ids)
         else:
             task_boards_details = None
-        self._create_or_update_task_in_elasticsearch_dto(
+        self._create_or_update_task_in_elasticsearch(
             task_dto=updated_task_dto, stage_ids=stage_ids, task_id=task_id
         )
         actions_dto, fields_dto, task_stage_details = \
@@ -220,7 +215,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_dtos=task_stage_dtos, user_id=self.user_id,
             view_type=ViewType.KANBAN.value
         )
-        actions_dto, fields_dto, task_stage_details = self._get_field_dtos_and_actions_dtos(
+        actions_dto, fields_dto, task_stage_details = \
+            self._get_field_dtos_and_actions_dtos(
             task_stage_details_dtos=task_stage_details_dtos)
         return actions_dto, fields_dto, task_stage_details
 
@@ -285,7 +281,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         )
 
     def _get_task_stage_display_satisfied_stage_ids(self, task_id: int) -> \
-    List[str]:
+            List[str]:
         from ib_tasks.interactors.get_task_stage_logic_satisfied_stages \
             import GetTaskStageLogicSatisfiedStages
         interactor = GetTaskStageLogicSatisfiedStages(
@@ -410,45 +406,17 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         if is_permission_denied:
             raise UserActionPermissionDenied(action_id=action_id)
 
-    def _create_or_update_task_in_elasticsearch_dto(
-            self, task_dto: TaskDetailsDTO, stage_ids: List[str],
-            task_id: int
-    ):
-
-        is_task_id_exists = \
-            self.elasticsearch_storage.validate_task_id_in_elasticsearch(
-                task_id=task_id
-            )
-        elastic_task_dto = self._get_elastic_task_dto(
-            task_dto=task_dto, stage_ids=stage_ids, task_id=task_id)
-        if is_task_id_exists:
-            self.elasticsearch_storage.update_task(task_dto=elastic_task_dto)
-        else:
-            elastic_task_id = self.elasticsearch_storage.create_task(
-                elastic_task_dto=elastic_task_dto
-            )
-            self.task_storage.create_elastic_task(
-                task_id=task_id, elastic_task_id=elastic_task_id
-            )
-
-    @staticmethod
-    def _get_elastic_task_dto(task_dto: TaskDetailsDTO,
-                              stage_ids: List[str], task_id: int):
-        from ib_tasks.documents.elastic_task import ElasticFieldDTO
-        fields = [
-            ElasticFieldDTO(
-                field_id=field.field_id,
-                value=field.field_response
-            )
-            for field in task_dto.task_gof_field_dtos
-        ]
-        from ib_tasks.documents.elastic_task import ElasticTaskDTO
-        return ElasticTaskDTO(
-            template_id=task_dto.task_base_details_dto.template_id,
-            task_id=task_id,
-            title=task_dto.task_base_details_dto.title,
-            fields=fields,
-            stages=stage_ids
+    def _create_or_update_task_in_elasticsearch(
+            self, task_dto: TaskDetailsDTO, stage_ids: List[str], task_id: int):
+        from ib_tasks.interactors.create_or_update_data_in_elasticsearch_interactor import \
+            CreateOrUpdateDataInElasticSearchInteractor
+        elasticsearch_interactor = CreateOrUpdateDataInElasticSearchInteractor(
+            elasticsearch_storage=self.elasticsearch_storage,
+            field_storage=self.field_storage,
+            task_storage=self.task_storage
+        )
+        elasticsearch_interactor.create_or_update_task_in_elasticsearch(
+            task_dto=task_dto, stage_ids=stage_ids, task_id=task_id
         )
 
     def _get_stage_assignees_details(
@@ -456,7 +424,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         TaskStageAssigneeDetailsDTO]:
         if self.task_stage_storage is None:
             return []
-        from ib_tasks.interactors.get_stages_assignees_details_interactor import \
+        from ib_tasks.interactors.get_stages_assignees_details_interactor \
+            import \
             GetStagesAssigneesDetailsInteractor
         assignees_interactor = GetStagesAssigneesDetailsInteractor(
             task_stage_storage=self.task_stage_storage
@@ -469,6 +438,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             )
             for stage_id in stage_ids
         ]
-        return assignees_interactor.get_stages_assignee_details_by_given_task_ids(
+        return \
+            assignees_interactor.get_stages_assignee_details_by_given_task_ids(
             task_stage_dtos=task_stage_dtos
         )

@@ -6,7 +6,8 @@ REQUEST_BODY_JSON = """
     "stage_assignees": [
         {
             "stage_id": 1,
-            "assignee_id": "string"
+            "assignee_id": "string",
+            "team_id": "string"
         }
     ]
 }

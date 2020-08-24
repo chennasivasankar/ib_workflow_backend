@@ -8,6 +8,7 @@ class BoardFactory(factory.django.DjangoModelFactory):
         model = Board
 
     board_id = factory.Sequence(lambda n: f'BOARD_ID_{n + 1}')
+    project_id = factory.Sequence(lambda n: f'PROJECT_ID_{n + 1}')
     name = factory.Sequence(lambda n: f'BOARD_DISPLAY_NAME')
 
 
