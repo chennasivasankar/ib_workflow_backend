@@ -4,6 +4,7 @@ from typing import List
 
 from django.http import response
 
+from ib_boards.adapters.iam_service import InvalidProjectIdsException
 from ib_boards.interactors.dtos import ActionDTO, \
     TaskCompleteDetailsDTO, FieldDTO, StarredAndOtherBoardsDTO, TaskStageDTO, \
     StageAssigneesDTO
@@ -43,6 +44,16 @@ class GetBoardsPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_offset_exceeds_total_tasks(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_project_id(self, error: InvalidProjectIdsException)\
+            -> response.HttpResponse:
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_user_is_not_in_project(self) \
+            -> response.HttpResponse:
         pass
 
 

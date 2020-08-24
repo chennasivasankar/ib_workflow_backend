@@ -1,14 +1,21 @@
 import abc
+from dataclasses import dataclass
 from typing import List
 
-from ib_tasks.constants.enum import ViewType
+from ib_tasks.constants.enum import ViewType, FieldTypes
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldCompleteDetailsDTO, UserFieldPermissionDTO, FieldIdWithGoFIdDTO, \
-    TaskTemplateStageFieldsDTO, StageTaskFieldsDTO, FieldDetailsDTOWithTaskId
+    TaskTemplateStageFieldsDTO, StageTaskFieldsDTO, FieldDetailsDTOWithTaskId, FieldNameDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskTemplateStageDTO, StageDetailsDTO
+
+
+@dataclass
+class FieldTypeDTO:
+    field_id: str
+    field_type: FieldTypes
 
 
 class FieldsStorageInterface(abc.ABC):
@@ -36,6 +43,12 @@ class FieldsStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_fields_of_gofs_in_dtos(
             self, gof_ids: List[str]) -> List[FieldDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_user_permitted_gof_field_dtos(
+            self, user_roles: List[str], gof_ids: List[str]
+    ) -> List[FieldNameDTO]:
         pass
 
     @abc.abstractmethod
@@ -81,6 +94,10 @@ class FieldsStorageInterface(abc.ABC):
     @abc.abstractmethod
     def check_is_user_has_write_permission_for_field(
             self, field_id: str, user_roles: List[str]) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def get_field_type_dtos(self, field_ids: List[str]) -> List[FieldTypeDTO]:
         pass
 
     @abc.abstractmethod

@@ -119,3 +119,7 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
     ) -> List[FieldSearchableDTO]:
         pass
 
+    @abc.abstractmethod
+    def get_task_ids(self) -> List[int]:
+        pass
+

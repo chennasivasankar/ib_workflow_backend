@@ -7,15 +7,15 @@ from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
     .delete_team_presenter_interface import DeleteTeamPresenterInterface
-from ib_iam.interactors.presenter_interfaces \
-    .update_team_presenter_interface import UpdateTeamPresenterInterface
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
     TeamPresenterInterface)
-from ib_iam.interactors.storage_interfaces.team_storage_interface import (
-    TeamStorageInterface)
+from ib_iam.interactors.presenter_interfaces \
+    .update_team_presenter_interface import UpdateTeamPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import (
     TeamWithUserIdsDTO, TeamWithTeamIdAndUserIdsDTO, TeamNameAndDescriptionDTO,
     TeamIdAndNameDTO, UserTeamDTO)
+from ib_iam.interactors.storage_interfaces.team_storage_interface import (
+    TeamStorageInterface)
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 
@@ -163,6 +163,12 @@ class TeamInteractor(ValidationMixin):
                 team_id_from_db != team_id
             if is_team_requested_name_already_assigned_to_other:
                 raise TeamNameAlreadyExists(team_name=name)
+
+    def get_valid_team_ids(self, team_ids: List[str]) -> List[str]:
+        # todo check for duplicate team_ids and raise exception
+        valid_team_ids = self.team_storage.get_valid_team_ids(
+            team_ids=team_ids)
+        return valid_team_ids
 
     def get_teams(self, team_ids: List[str]) -> List[TeamIdAndNameDTO]:
         team_id_and_name_dtos = self.team_storage.get_team_id_and_name_dtos(

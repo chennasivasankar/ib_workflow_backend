@@ -106,7 +106,7 @@ class ServiceInterface:
     # ToDo Add Project id as an argument
     @staticmethod
     def get_user_details_for_given_role_ids(
-            role_ids: List[str]) -> List[UserProfileDTO]:
+            role_ids: List[str], project_id: str) -> List[UserProfileDTO]:
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
         user_storage = UserStorageImplementation()
@@ -119,11 +119,12 @@ class ServiceInterface:
             role_ids=role_ids)
         return user_details_dtos
 
+    # todo: add project id related implementation
     @staticmethod
     def get_user_details_for_the_given_role_ids_based_on_query(
             role_ids: List[str],
             search_query_with_pagination_dto:
-            SearchQueryWithPaginationDTO
+            SearchQueryWithPaginationDTO, project_id: str
     ) -> List[UserProfileDTO]:
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
@@ -224,6 +225,11 @@ class ServiceInterface:
         )
         return searchable_details_dtos
 
+    # todo: implement this interface
+    def get_user_role_ids_based_on_project(
+            self, user_id, project_id) -> List[str]:
+        pass
+
     @staticmethod
     def get_valid_project_ids(project_ids: List[str]) -> List[str]:
         from ib_iam.interactors.project_interactor import ProjectInteractor
@@ -233,6 +239,20 @@ class ServiceInterface:
         interactor = ProjectInteractor(project_storage=project_storage)
         project_ids = interactor.get_valid_project_ids(project_ids=project_ids)
         return project_ids
+
+    @staticmethod
+    def get_valid_team_ids(team_ids: List[str]) -> List[str]:
+        from ib_iam.storages.team_storage_implementation import \
+            TeamStorageImplementation
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        team_storage = TeamStorageImplementation()
+        user_storage = UserStorageImplementation()
+        from ib_iam.interactors.team_interactor import TeamInteractor
+        interactor = TeamInteractor(team_storage=team_storage,
+                                    user_storage=user_storage)
+        team_ids = interactor.get_valid_team_ids(team_ids=team_ids)
+        return team_ids
 
     @staticmethod
     def get_team_details_bulk(team_ids: List[str]) -> List[TeamIdAndNameDTO]:

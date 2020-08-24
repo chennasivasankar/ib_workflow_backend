@@ -32,7 +32,9 @@ from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
     GlobalConstant, StagePermittedRoles, TaskTemplateInitialStage, Stage, \
     TaskLog, TaskTemplateStatusVariable, TaskStageHistory
-from ib_tasks.models.task_due_details import UserTaskDelayReason
+from ib_tasks.models import \
+    TaskStageHistory
+from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
 
 
 class StagesStorageImplementation(StageStorageInterface):
@@ -416,6 +418,10 @@ class StagesStorageImplementation(StageStorageInterface):
             ).values_list('stage__stage_id', flat=True)
         return sorted(list(set(stage_ids)))
 
+    def get_task_current_stages(self, task_id: int) -> List[str]:
+        return list(CurrentTaskStage.objects.filter(
+            task_id=task_id
+        ).values_list('stage__stage_id', flat=True))
 
 
 class StorageImplementation(StorageInterface):
@@ -683,8 +689,8 @@ class StorageImplementation(StorageInterface):
     def validate_if_task_is_assigned_to_user(self,
                                              task_id: int,
                                              user_id: str) -> bool:
-        is_assigned = TaskLog.objects.filter(
-            task_id=task_id, user_id=user_id).exists()
+        is_assigned = TaskStageHistory.objects.filter(
+            task_id=task_id, assignee_id=user_id).exists()
         return is_assigned
 
     def get_task_due_details(self, task_id: int) -> \
@@ -725,5 +731,5 @@ class StorageImplementation(StorageInterface):
                                            count=count + 1,
                                            reason_id=reason_id,
                                            reason=due_details.reason)
-        Task.objects.filter(pk=task_id, tasklog__user_id=user_id
+        Task.objects.filter(pk=task_id, taskstagehistory__assignee_id=user_id
                             ).update(due_date=updated_due_datetime)

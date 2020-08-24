@@ -7,6 +7,7 @@ from typing import Tuple
 
 from elasticsearch_dsl import Q, Search
 
+from ib_tasks.constants.enum import Operators
 from ib_tasks.documents.elastic_task import *
 from ib_tasks.documents.elastic_task import ElasticFieldDTO, \
     Field
@@ -28,16 +29,15 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
                                       timeout=20)
 
         task_obj = Task(
+            project_id=elastic_task_dto.project_id,
             template_id=elastic_task_dto.template_id,
             task_id=elastic_task_dto.task_id,
             title=elastic_task_dto.title
         )
         field_dtos = elastic_task_dto.fields
         stages = elastic_task_dto.stages
-        field_objects = self._get_field_objects(field_dtos=field_dtos)
-        stage_objects = self.get_stage_objects(stages_ids=stages)
-        task_obj.fields = field_objects
-        task_obj.stages = stage_objects
+        task_obj.add_fields(field_dtos=field_dtos)
+        task_obj.add_stages(stages=stages)
         task_obj.save()
         elastic_task_id = task_obj.meta.id
         return elastic_task_id
@@ -87,10 +87,11 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
         query = None
         for counter, item in enumerate(filter_dtos):
-            current_queue = Q('term', template_id__keyword=item.template_id) \
-                            & Q('term',
-                                fields__field_id__keyword=item.field_id) \
+            current_queue = Q('term', project_id__keyword=item.project_id) \
+                            & Q('term', template_id__keyword=item.template_id) \
+                            & Q('term', fields__field_id__keyword=item.field_id) \
                             & Q('term', fields__value__keyword=item.value)
+
             if counter == 0:
                 query = current_queue
             else:
@@ -203,3 +204,141 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         return ElasticSearchTask.objects.filter(
             task_id=task_id
         ).exists()
+
+    def _get_filter_task_objects(self, filter_dtos: List[ApplyFilterDTO]):
+
+        from collections import defaultdict
+        filter_operations_map = defaultdict(lambda: [])
+        for filter_dto in filter_dtos:
+            filter_operations_map[filter_dto.operator].append(filter_dto)
+
+        query = None
+        for key, value in filter_operations_map.items():
+            current_queue = self._get_q_object_based_on_operation(
+                operation=key, filter_dtos=value
+            )
+            if query is None:
+                query = current_queue
+            query = query & current_queue
+
+        search = Search(index=TASK_INDEX_NAME)
+        if query is None:
+            task_objects = search
+        else:
+            task_objects = search.filter(query)
+        return task_objects
+
+    def _get_q_object_based_on_operation(
+            self, operation: Operators, filter_dtos: List[ApplyFilterDTO]):
+        q_object = None
+        if operation == Operators.EQ.value:
+            q_object = self._prepare_q_objects_for_eq_operation(
+                filter_dtos=filter_dtos
+            )
+        elif operation == Operators.NE.value:
+            q_object = self._prepare_q_objects_for_neq_operation(
+                filter_dtos=filter_dtos
+            )
+        elif operation == Operators.GTE.value:
+            q_object = self._prepare_q_objects_for_gte_operation(
+                filter_dtos=filter_dtos
+            )
+        elif operation == Operators.GT.value:
+            q_object = self._prepare_q_objects_for_gt_operation(
+                filter_dtos=filter_dtos
+            )
+        elif operation == Operators.LTE.value:
+            q_object = self._prepare_q_objects_for_lte_operation(
+                filter_dtos=filter_dtos
+            )
+        elif operation == Operators.LT.value:
+            q_object = self._prepare_q_objects_for_lt_operation(
+                filter_dtos=filter_dtos
+            )
+        return q_object
+
+    @staticmethod
+    def _prepare_q_objects_for_eq_operation(filter_dtos: List[ApplyFilterDTO]):
+        query = None
+        for counter, item in enumerate(filter_dtos):
+            current_queue = Q('term', project_id__keyword=item.project_id) \
+                            & Q('term', template_id__keyword=item.template_id) \
+                            & Q('term',
+                                fields__field_id__keyword=item.field_id) \
+                            & Q('term', fields__value__keyword=item.value)
+            if counter == 0:
+                query = current_queue
+            else:
+                query = query & current_queue
+        return query
+
+    @staticmethod
+    def _prepare_q_objects_for_neq_operation(filter_dtos: List[ApplyFilterDTO]):
+        query = None
+        for counter, item in enumerate(filter_dtos):
+            current_queue = Q('term', project_id__keyword=item.project_id) \
+                            & ~Q('term', template_id__keyword=item.template_id) \
+                            & ~Q('term',
+                                 fields__field_id__keyword=item.field_id) \
+                            & ~Q('term', fields__value__keyword=item.value)
+            if counter == 0:
+                query = current_queue
+            else:
+                query = query & current_queue
+        return query
+
+    @staticmethod
+    def _prepare_q_objects_for_gte_operation(filter_dtos: List[ApplyFilterDTO]):
+        query = None
+        for counter, item in enumerate(filter_dtos):
+            current_queue = Q('term', project_id__keyword=item.project_id) \
+                            & Q('term', template_id__keyword=item.template_id) \
+                            & Q('term', fields__field_id__keyword=item.field_id) \
+                            & Q('range', fields__value={"gte": item.value})
+            if counter == 0:
+                query = current_queue
+            else:
+                query = query & current_queue
+        return query
+
+    @staticmethod
+    def _prepare_q_objects_for_gt_operation(filter_dtos: List[ApplyFilterDTO]):
+        query = None
+        for counter, item in enumerate(filter_dtos):
+            current_queue = Q('term', project_id__keyword=item.project_id) \
+                            & Q('term', template_id__keyword=item.template_id) \
+                            & Q('term', fields__field_id__keyword=item.field_id) \
+                            & Q('range', fields__value={"gt": item.value})
+            if counter == 0:
+                query = current_queue
+            else:
+                query = query & current_queue
+        return query
+
+    @staticmethod
+    def _prepare_q_objects_for_lte_operation(filter_dtos: List[ApplyFilterDTO]):
+        query = None
+        for counter, item in enumerate(filter_dtos):
+            current_queue = Q('term', project_id__keyword=item.project_id) \
+                            & Q('term', template_id__keyword=item.template_id) \
+                            & Q('term', fields__field_id__keyword=item.field_id) \
+                            & Q('range', fields__value={"lte": int(item.value)})
+            if counter == 0:
+                query = current_queue
+            else:
+                query = query & current_queue
+        return query
+
+    @staticmethod
+    def _prepare_q_objects_for_lt_operation(filter_dtos: List[ApplyFilterDTO]):
+        query = None
+        for counter, item in enumerate(filter_dtos):
+            current_queue = Q('term', project_id__keyword=item.project_id) \
+                            & Q('term', template_id__keyword=item.template_id) \
+                            & Q('term', fields__field_id__keyword=item.field_id) \
+                            & Q('range', fields__value={"lt": item.value})
+            if counter == 0:
+                query = current_queue
+            else:
+                query = query & current_queue
+        return query
