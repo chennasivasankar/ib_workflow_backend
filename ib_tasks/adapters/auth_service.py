@@ -2,7 +2,7 @@ from typing import List
 
 from ib_tasks.adapters.dtos import UserDetailsDTO, TeamDetailsDTO, \
     UserIdWIthTeamDetailsDTOs, TeamDetailsWithUserIdDTO, \
-    ProjectDetailsDTO
+    ProjectDetailsDTO, ProjectTeamUserIdsDTO
 from ib_tasks.interactors.field_dtos import SearchableFieldDetailDTO
 from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
     import SearchQueryWithPaginationDTO
@@ -59,7 +59,7 @@ class AuthService:
             -> List[UserDetailsDTO]:
         user_profile_details_dtos = \
             self.interface.get_user_details_for_given_role_ids(
-            role_ids=role_ids)
+                role_ids=role_ids)
         user_details_dtos = self._get_user_details_dtos(
             user_profile_details_dtos)
         return user_details_dtos
@@ -127,10 +127,26 @@ class AuthService:
                     user_id=user_team_dto.user_id, team_details=team_details))
         return user_id_with_team_details_dtos
 
-    def get_team_details_for_given_team_project_details_dto(
-            self, team_project_details_dto) -> \
-            List[TeamDetailsWithUserIdDTO]:
-        raise NotImplementedError
+    def get_team_details_for_given_project_team_user_ids_dto(
+            self, team_project_details_dto: ProjectTeamUserIdsDTO
+    ) -> List[TeamDetailsWithUserIdDTO]:
+        from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO
+        project_id = team_project_details_dto.project_id
+        team_details_with_user_id_dtos = []
+        for user_team_dto in \
+                team_project_details_dto.user_id_with_team_id_dtos:
+            project_team_user_dto = ProjectTeamUserDTO(
+                user_id=user_team_dto.user_id, team_id=user_team_dto.team_id,
+                project_id=project_id)
+            user_team = \
+                self.interface.get_team_details_for_given_project_team_user_details_dto(
+                    project_team_user_dto)
+            team_details_with_user_id_dtos.append(
+                TeamDetailsWithUserIdDTO(
+                    user_id=user_team.user_id, team_id=user_team_dto.team_id,
+                    name=user_team.name)
+            )
+        return team_details_with_user_id_dtos
 
     def validate_team_ids(self, team_ids: List[str]) -> \
             List[str]:
