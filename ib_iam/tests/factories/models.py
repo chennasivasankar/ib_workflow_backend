@@ -53,7 +53,7 @@ class UserRoleFactory(factory.django.DjangoModelFactory):
         model = UserRole
 
     user_id = factory.sequence(lambda number: "user%s" % number)
-    role = factory.Iterator(ProjectRole.objects.all())
+    project_role = factory.Iterator(ProjectRole.objects.all())
 
 
 class UserFactory(factory.django.DjangoModelFactory):

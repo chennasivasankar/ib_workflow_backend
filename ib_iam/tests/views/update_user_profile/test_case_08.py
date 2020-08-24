@@ -38,7 +38,7 @@ class TestCase01UpdateUserProfileAPITestCase(TestUtils):
         user_object = UserDetails.objects.get(user_id=user_id)
         snapshot.assert_match(user_object.name, "updated_user_name")
         user_role = UserRole.objects.get(user_id=user_id)
-        snapshot.assert_match(user_role.role.name, "updated_user_role_id")
+        snapshot.assert_match(user_role.project_role.name, "updated_user_role_id")
 
 
     @pytest.fixture

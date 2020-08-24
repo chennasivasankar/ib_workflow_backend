@@ -163,7 +163,7 @@ class UserStorageImplementation(UserStorageInterface):
 
     @staticmethod
     def _convert_to_user_role_dto(user_role):
-        role = user_role.role
+        role = user_role.project_role
         return UserRoleDTO(
             user_id=user_role.user_id, role_id=role.role_id,
             name=role.name, description=role.description)

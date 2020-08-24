@@ -40,7 +40,7 @@ class RolesStorageImplementation(RolesStorageInterface):
         from ib_iam.models import UserRole
         user_id_and_role_ids = UserRole.objects.filter(
             user_id__in=user_ids
-        ).values_list("user_id", "role__role_id")
+        ).values_list("user_id", "project_role__role_id")
 
         for user_id, role_id in user_id_and_role_ids:
             user_id_and_role_ids_dict[user_id].append(str(role_id))

@@ -141,9 +141,9 @@ class TestCreateOrUpdateTaskStorageImplementation:
             gof_role_obj.gof_id
         ]
         user_roles = [
-            gof_role_objs[3].role,
-            gof_role_objs[9].role,
-            gof_role_objs[1].role
+            gof_role_objs[3].project_role,
+            gof_role_objs[9].project_role,
+            gof_role_objs[1].project_role
         ]
 
         # Act
@@ -198,7 +198,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
             field_role_obj.field_id
         ]
         user_roles = [
-            field_role_objs[0].role
+            field_role_objs[0].project_role
         ]
 
         # Act

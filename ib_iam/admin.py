@@ -40,7 +40,7 @@ class UserRoleAdmin(admin.ModelAdmin):
 
     @staticmethod
     def _role_id(obj):
-        return obj.role.role_id
+        return obj.project_role.role_id
 
 
 class UserTeamAdmin(admin.ModelAdmin):

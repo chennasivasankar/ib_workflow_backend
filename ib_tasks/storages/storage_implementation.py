@@ -462,7 +462,7 @@ class StorageImplementation(StorageInterface):
         for gof_role_obj in gof_role_objects:
             gof_id_matched = gof_id == gof_role_obj.gof_id
             if gof_id_matched:
-                gof_roles.append(gof_role_obj.role)
+                gof_roles.append(gof_role_obj.project_role)
         return gof_roles
 
     def get_write_permission_roles_for_given_field_ids(
@@ -501,7 +501,7 @@ class StorageImplementation(StorageInterface):
         for field_role_obj in field_role_objects:
             field_id_matched = field_id == field_role_obj.field_id
             if field_id_matched:
-                field_roles.append(field_role_obj.role)
+                field_roles.append(field_role_obj.project_role)
         return field_roles
 
     def validate_task_id(self, task_id: int) -> bool:
