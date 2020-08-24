@@ -1,6 +1,5 @@
 from typing import List
 
-from ib_boards.adapters.iam_service import UserIsNotInProjectException, InvalidProjectIdsException
 from ib_boards.adapters.service_adapter import get_service_adapter
 from ib_boards.exceptions.custom_exceptions import (
     InvalidBoardId, InvalidOffsetValue, InvalidLimitValue, UserDonotHaveAccess)
@@ -8,7 +7,6 @@ from ib_boards.interactors.dtos import ColumnParametersDTO, \
     PaginationParametersDTO, ColumnTaskIdsDTO, ColumnTasksDTO
 from ib_boards.interactors.get_tasks_details_for_the_column_ids import \
     ColumnsTasksParametersDTO
-from ib_boards.interactors.mixins.validation_mixins import ValidationMixin
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_boards.interactors.storage_interfaces.dtos import ColumnDetailsDTO, \
@@ -86,8 +84,8 @@ class GetColumnDetailsInteractor:
             storage=self.storage
         )
         return interactor.get_column_tasks_with_column_ids(
-                column_tasks_parameters=column_tasks
-            )
+            column_tasks_parameters=column_tasks
+        )
 
     def _get_column_details_dto(self, board_id, user_id):
         user_service = get_service_adapter().iam_service

@@ -3,17 +3,13 @@ Created on: 16/07/20
 Author: Pavankumar Pamuru
 
 """
-from typing import List, Tuple
 
-from ib_boards.constants.enum import ViewType
 from ib_boards.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue, OffsetValueExceedsTotalTasksCount, \
     UserDoNotHaveAccessToColumn, InvalidStageIds
-from ib_boards.interactors.dtos import ColumnTasksParametersDTO, \
-    ColumnTaskIdsDTO, FieldDTO, ActionDTO
+from ib_boards.interactors.dtos import ColumnTasksParametersDTO
 from ib_boards.interactors.get_tasks_details_for_the_column_ids import \
     ColumnsTasksParametersDTO
-from ib_boards.interactors.mixins.validation_mixins import ValidationMixin
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetColumnTasksPresenterInterface, TaskDisplayIdDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
