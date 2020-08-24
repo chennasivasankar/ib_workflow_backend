@@ -2,7 +2,7 @@ from typing import List
 
 from ib_tasks.adapters.dtos import UserDetailsDTO, TeamDetailsDTO, \
     UserIdWIthTeamDetailsDTOs, TeamDetailsWithUserIdDTO, \
-    ProjectDetailsDTO, ProjectTeamUserIdsDTO
+    ProjectDetailsDTO
 from ib_tasks.interactors.field_dtos import SearchableFieldDetailDTO
 from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
     import SearchQueryWithPaginationDTO
@@ -15,6 +15,8 @@ class InvalidProjectIdsException(Exception):
 
 class UserIsNotInProject(Exception):
     pass
+
+
 
 
 class AuthService:
@@ -57,9 +59,8 @@ class AuthService:
 
     def get_permitted_user_details(self, role_ids: List[str]) \
             -> List[UserDetailsDTO]:
-        user_profile_details_dtos = \
-            self.interface.get_user_details_for_given_role_ids(
-                role_ids=role_ids)
+        user_profile_details_dtos = self.interface.get_user_details_for_given_role_ids(
+            role_ids=role_ids)
         user_details_dtos = self._get_user_details_dtos(
             user_profile_details_dtos)
         return user_details_dtos
@@ -97,19 +98,17 @@ class AuthService:
     def get_team_details(self, team_ids: List[str]) -> List[TeamDetailsDTO]:
         raise NotImplementedError
 
-    def get_projects_info_for_given_ids(
-            self, project_ids: List[str]) -> List[ProjectDetailsDTO]:
+    def get_projects_info_for_given_ids(self, project_ids: List[str]) -> List[
+        ProjectDetailsDTO]:
         raise NotImplementedError
 
-    # todo: added project id in argument
-    def get_team_info_for_given_user_ids(
-            self, user_ids: List[str], project_id: str
-    ) -> List[UserIdWIthTeamDetailsDTOs]:
+    def get_team_info_for_given_user_ids(self, user_ids: List[str],
+                                         project_id: str) -> List[
+        UserIdWIthTeamDetailsDTOs]:
         raise NotImplementedError
 
-    # todo: changed arguments in input dto in function head
-    def get_team_details_for_given_project_team_user_ids_dto(
-            self, team_project_details_dto: ProjectTeamUserIdsDTO) -> \
+    def get_team_details_for_given_team_project_details_dto(
+            self, team_project_details_dto) -> \
             List[TeamDetailsWithUserIdDTO]:
         raise NotImplementedError
 

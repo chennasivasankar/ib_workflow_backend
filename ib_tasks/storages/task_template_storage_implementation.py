@@ -82,12 +82,13 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
         GlobalConstant.objects.bulk_update(global_constants_objs, ['value'])
 
-    def get_valid_template_ids_in_given_template_ids(self, template_ids: List[
-        str]) -> List[str]:
+    def get_valid_task_template_ids_in_given_task_template_ids(
+            self, template_ids: List[str]) -> List[str]:
         from ib_tasks.models.task_template import TaskTemplate
         valid_template_ids = list(
-            TaskTemplate.objects.filter(pk__in=template_ids).values_list(
-                "template_id", flat=True))
+            TaskTemplate.objects.filter(
+                pk__in=template_ids, is_transition_template=False
+            ).values_list("template_id", flat=True))
         return valid_template_ids
 
     def get_task_templates_dtos(self) -> List[TemplateDTO]:
@@ -280,6 +281,25 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
         gof_ids_list = list(gof_ids_queryset)
         return gof_ids_list
+
+    def add_project_to_task_templates(
+            self, project_id: str, task_template_ids: List[str]):
+        project_task_templates = []
+        for task_template_id in task_template_ids:
+            project_task_template = ProjectTaskTemplate(
+                task_template_id=task_template_id, project_id=project_id)
+            project_task_templates.append(project_task_template)
+
+        ProjectTaskTemplate.objects.bulk_create(project_task_templates)
+
+    def get_existing_task_template_ids_of_project_task_templates(
+            self, project_id: str, task_template_ids: List[str]) -> List[str]:
+        task_template_ids_queryset = \
+            ProjectTaskTemplate.objects.filter(
+                project_id=project_id, task_template_id__in=task_template_ids
+            ).values_list('task_template_id', flat=True)
+        task_template_ids_list = list(task_template_ids_queryset)
+        return task_template_ids_list
 
     def get_project_id_with_task_template_id_dtos(
             self) -> List[ProjectIdWithTaskTemplateIdDTO]:

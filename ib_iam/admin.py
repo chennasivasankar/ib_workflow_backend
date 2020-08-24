@@ -3,7 +3,7 @@ from django.contrib import admin
 
 from ib_iam.models import (
     UserDetails, UserTeam, UserRole, Company,
-    Role, Team, ElasticUserIntermediary, TeamMemberLevel, City, State, Country,
+    ProjectRole, Team, ElasticUserIntermediary, TeamMemberLevel, City, State, Country,
     Project, ProjectTeam
 )
 
@@ -36,11 +36,11 @@ class UserRoleAdmin(admin.ModelAdmin):
     list_display = ("user_id", "_role_id")
     search_fields = ["user_id"]
     list_filter = ["user_id"]
-    raw_id_fields = ("role",)
+    raw_id_fields = ("project_role",)
 
     @staticmethod
     def _role_id(obj):
-        return obj.role.role_id
+        return obj.project_role.role_id
 
 
 class UserTeamAdmin(admin.ModelAdmin):
@@ -76,7 +76,7 @@ class ProjectTeamAdmin(admin.ModelAdmin):
 
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(Team, TeamAdmin)
-admin.site.register(Role, RoleAdmin)
+admin.site.register(ProjectRole, RoleAdmin)
 admin.site.register(UserDetails, IAMUserAdmin)
 admin.site.register(UserRole, UserRoleAdmin)
 admin.site.register(UserTeam, UserTeamAdmin)

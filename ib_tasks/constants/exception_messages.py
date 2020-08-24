@@ -343,6 +343,8 @@ INVALID_TASK_TEMPLATE_DB_ID = (
     "INVALID_TASK_TEMPLATE_DB_ID"
 )
 
+INVALID_PROJECT_ID = ("given invalid project id: {}", "INVALID_PROJECT_ID")
+
 SEARCHABLE_RECORDS_NOT_FOUND = (
     "Something went wrong contact Admin",
     "SEARCHABLE_RECORDS_NOT_FOUND"
@@ -361,3 +363,4 @@ INVALID_USER_ID = (
     "User with id {} doesn't exist",
     "INVALID_USER_ID"
 )
+USER_NOT_IN_ANY_TEAM_OF_PROJECT=("user id with {} is not in any team of project", "USER_NOT_IN_ANY_TEAM_OF_PROJECT")

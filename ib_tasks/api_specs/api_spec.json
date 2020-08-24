@@ -2005,7 +2005,8 @@
             "type": "string",
             "enum": [
               "INVALID_TASK_ID",
-              "INVALID_ACTION_ID"
+              "INVALID_ACTION_ID",
+              "USER_NOT_IN_ANY_TEAM_OF_PROJECT"
             ]
           }
         },

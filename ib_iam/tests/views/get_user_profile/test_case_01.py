@@ -135,8 +135,8 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
             }
         ]
         from ib_iam.tests.factories.models import UserRoleFactory
-        from ib_iam.tests.factories.models import RoleFactory
-        RoleFactory.reset_sequence(0)
+        from ib_iam.tests.factories.models import ProjectRoleFactory
+        ProjectRoleFactory.reset_sequence(0)
         user_role_objects = [UserRoleFactory.create(
             user_id=user_role["user_id"],
             role=self._get_or_create_role(role_id=user_role["role_id"])
@@ -145,12 +145,12 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
 
     @staticmethod
     def _get_or_create_role(role_id: Optional[str]):
-        from ib_iam.models import Role
+        from ib_iam.models import ProjectRole
         try:
-            return Role.objects.get(role_id=role_id)
-        except Role.DoesNotExist:
-            from ib_iam.tests.factories.models import RoleFactory
-            return RoleFactory.create(role_id=role_id)
+            return ProjectRole.objects.get(role_id=role_id)
+        except ProjectRole.DoesNotExist:
+            from ib_iam.tests.factories.models import ProjectRoleFactory
+            return ProjectRoleFactory.create(role_id=role_id)
 
     @staticmethod
     def _get_or_create_company(company_id: Optional[str]):

@@ -15,3 +15,17 @@ class SearchableDTO:
 class UserTeamsDTO:
     user_id: str
     user_teams: List[TeamIdAndNameDTO]
+
+
+@dataclass
+class ProjectTeamUserDTO:
+    project_id: str
+    team_id: str
+    user_id: str
+
+
+@dataclass
+class UserIdWithTeamIDAndNameDTO:
+    team_id: str
+    user_id: str
+    name: str

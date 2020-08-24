@@ -2,12 +2,17 @@ import abc
 from typing import List
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
-    StarOrUnstarParametersDTO
+    StarOrUnstarParametersDTO, ProjectBoardDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
     ColumnStageIdsDTO, ColumnDetailsDTO, TaskBoardsDetailsDTO
 
 
 class StorageInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def add_project_id_for_boards(
+            self, project_boards_dtos: List[ProjectBoardDTO]):
+        pass
 
     @abc.abstractmethod
     def validate_board_id(self, board_id) -> bool:
@@ -21,7 +26,7 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_board_ids_for_column_ids(self, column_ids: List[str]) -> List[
-            BoardColumnDTO]:
+        BoardColumnDTO]:
         pass
 
     @abc.abstractmethod
