@@ -445,8 +445,6 @@ class TestGetColumnDetailsInteractor:
             offset=0,
             limit=10
         )
-        project_id = columns_parameters.project_id
-        project_ids = [project_id]
         column_ids = ["COLUMN_ID_4", "COLUMN_ID_5", "COLUMN_ID_6"]
         user_roles = ["FIN_PAYMENT_REQUESTER",
                       "FIN_PAYMENT_POC",
@@ -467,13 +465,6 @@ class TestGetColumnDetailsInteractor:
             get_task_ids_mock
 
         task_ids_mock = get_task_ids_mock(mocker, column_tasks_ids_no_duplicates)
-        from ib_boards.tests.common_fixtures.adapters.iam_service import \
-            mock_validate_project_ids
-        project_adapter_mock = mock_validate_project_ids(mocker, project_ids)
-        from ib_boards.tests.common_fixtures.adapters.iam_service import \
-            mock_for_validate_if_user_is_in_project
-        user_in_project_mock = mock_for_validate_if_user_is_in_project(mocker)
-        user_in_project_mock.return_value = True
 
         task_details_dto.return_value = task_fields_dto, task_actions_dto, task_stage_color_dtos
         user_roles_service.get_user_roles.return_value = user_roles
@@ -503,11 +494,6 @@ class TestGetColumnDetailsInteractor:
             column_ids=column_ids)
         task_ids_mock.assert_called_once_with(
             task_config_dtos=task_ids_config
-        )
-        user_in_project_mock.assert_called_once_with(
-            project_id=project_id, user_id=user_id)
-        project_adapter_mock.assert_called_once_with(
-            project_ids
         )
         task_details_dto.assert_called_once_with(
             task_ids_stage_id_no_duplicates, user_id=user_id,
