@@ -143,7 +143,7 @@ class TaskDetailsConfigDTOFactory(factory.Factory):
     offset = 0
     limit = 10
     user_id = 'user_id_1'
-    project_id = "project_id_1"
+    project_id = factory.Sequence(lambda n: f'project_id_{n + 1}')
     search_query = "hello"
 
 
