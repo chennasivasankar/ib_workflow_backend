@@ -1,12 +1,17 @@
 from dataclasses import dataclass
 from typing import List, Any, Optional
 
-from ib_tasks.constants.enum import ActionTypes
-from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionDetailsDTO, StageActionDetailsDTO
+    StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 
+
+@dataclass
+class StageAssigneeDetailsDTO:
+    task_stage_id: int
+    stage_id: int
+    assignee_details_dto: Optional[AssigneeDetailsDTO]
 
 @dataclass
 class StageActionNamesDTO:

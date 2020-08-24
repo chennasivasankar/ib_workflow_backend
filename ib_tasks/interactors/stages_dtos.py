@@ -92,11 +92,6 @@ class TaskDisplayIdWithStageAssigneesDTO:
 class TaskIdWithStageAssigneeDTO(StageAssigneeDTO):
     task_id: int
 
-@dataclass
-class StageAssigneeDetailsDTO:
-    task_stage_id: int
-    stage_id: int
-    assignee_details_dto: Optional[AssigneeDetailsDTO]
 
 
 @dataclass
