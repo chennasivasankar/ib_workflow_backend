@@ -43,17 +43,17 @@ class UserStorageInterface(ABC):
     def remove_teams_for_user(self, user_id: str):
         pass
 
-    # # TODO: remove if it is unnecessary
-    # @abstractmethod
-    # def add_roles_to_the_user(self, user_id: str, role_ids: List[str]):
-    #     pass
+    @abstractmethod
+    def add_roles_to_the_user(self, user_id: str, role_ids: List[str]):
+        pass
 
     @abstractmethod
     def add_user_to_the_teams(self, user_id: str, team_ids: List[str]):
         pass
 
     @abstractmethod
-    def update_user_details(self, company_id: Optional[str], user_id: str, name: str):
+    def update_user_details(self, company_id: Optional[str], user_id: str,
+                            name: str):
         pass
 
     @abstractmethod
