@@ -55,6 +55,7 @@ class GetListOfUsersInteractor(ValidationMixin):
         user_ids = [user_dto.user_id for user_dto in user_dtos]
         return self._get_complete_user_details_dto(user_ids, total_count)
 
+    # TODO: It is not valid place to write this method remove this
     def get_user_details_for_given_role_ids_based_on_query(
             self, role_ids: List[str],
             search_query_with_pagination_dto: SearchQueryWithPaginationDTO
@@ -87,13 +88,13 @@ class GetListOfUsersInteractor(ValidationMixin):
     def _get_complete_user_details_dto(self, user_ids, total_count):
         user_team_dtos = self.user_storage.get_team_details_of_users_bulk(
             user_ids=user_ids)
-        user_role_dtos = self.user_storage.get_role_details_of_users_bulk(
-            user_ids=user_ids)
+        # user_role_dtos = self.user_storage.get_role_details_of_users_bulk(
+        #     user_ids=user_ids)
         user_company_dtos = self.user_storage.get_company_details_of_users_bulk(
             user_ids=user_ids)
         user_profile_dtos = self._get_user_profile_dtos(user_ids)
         return self._convert_complete_user_details_dtos(
-            user_team_dtos, user_role_dtos, user_company_dtos,
+            user_team_dtos, user_company_dtos,
             user_profile_dtos, total_count)
 
     @staticmethod
@@ -120,12 +121,11 @@ class GetListOfUsersInteractor(ValidationMixin):
 
     @staticmethod
     def _convert_complete_user_details_dtos(
-            user_team_dtos, user_role_dtos,
+            user_team_dtos,
             user_company_dtos, user_profile_dtos, total_no_of_users):
         complete_user_details_dto = ListOfCompleteUsersDTO(
             users=user_profile_dtos,
             teams=user_team_dtos,
-            roles=user_role_dtos,
             companies=user_company_dtos,
             total_no_of_users=total_no_of_users
         )

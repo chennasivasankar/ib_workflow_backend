@@ -196,7 +196,7 @@ class TestFilterStorageImplementation:
         # Arrange
         fields = FieldRoleFactory.create_batch(3)
         field_ids = [field.field_id for field in fields]
-        user_roles = [field.role for field in fields]
+        user_roles = [field.project_role for field in fields]
 
         # Act
         storage.validate_user_roles_with_field_ids_roles(

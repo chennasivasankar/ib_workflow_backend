@@ -27,17 +27,17 @@ class TestGetUserRoleIds:
         from ib_iam.storages.roles_storage_implementation import \
             RolesStorageImplementation
         storage = RolesStorageImplementation()
-        from ib_iam.tests.factories.models import UserRoleFactory, RoleFactory
+        from ib_iam.tests.factories.models import UserRoleFactory, ProjectRoleFactory
         role_objects = [
-            RoleFactory(id=id, role_id=role_id)
+            ProjectRoleFactory(id=id, role_id=role_id)
             for id, role_id in ids_and_role_ids
         ]
 
-        RoleFactory.create_batch(3)
+        ProjectRoleFactory.create_batch(3)
         # Todo if below line uncomment we will get tear down error
         # UserRoleFactory.create_batch(3)
         for role_object in role_objects:
-            UserRoleFactory.create(user_id=user_id, role=role_object)
+            UserRoleFactory.create(user_id=user_id, project_role=role_object)
 
         # Act
         response = storage.get_user_role_ids(user_id=user_id)

@@ -8,9 +8,9 @@ class TestGetValidRoleIds:
         # Arrange
         role_ids = ["12233442", "12312323", "4141264557", "12312323"]
         expected_valid_role_ids = ["12233442", "12312323"]
-        from ib_iam.tests.factories.models import RoleFactory
-        RoleFactory.create(role_id=expected_valid_role_ids[0])
-        RoleFactory.create(role_id=expected_valid_role_ids[1])
+        from ib_iam.tests.factories.models import ProjectRoleFactory
+        ProjectRoleFactory.create(role_id=expected_valid_role_ids[0])
+        ProjectRoleFactory.create(role_id=expected_valid_role_ids[1])
 
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         service_interface = ServiceInterface()

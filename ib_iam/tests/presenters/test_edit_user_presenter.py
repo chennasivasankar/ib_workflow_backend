@@ -79,21 +79,21 @@ class TestEditUserPresenter:
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
-    def test_raise_invalid_role_ids_exception(self):
-        # Arrange
-        presenter = EditUserPresenterImplementation()
-        from ib_iam.constants.exception_messages import INVALID_ROLE_IDS
-        expected_response = INVALID_ROLE_IDS[0]
-        response_status_code = INVALID_ROLE_IDS[1]
-
-        # Act
-        response_object = presenter.raise_role_ids_are_invalid()
-
-        # Assert
-        response = json.loads(response_object.content)
-        assert response['http_status_code'] == StatusCode.NOT_FOUND.value
-        assert response['res_status'] == response_status_code
-        assert response['response'] == expected_response
+    # def test_raise_invalid_role_ids_exception(self):
+    #     # Arrange
+    #     presenter = EditUserPresenterImplementation()
+    #     from ib_iam.constants.exception_messages import INVALID_ROLE_IDS
+    #     expected_response = INVALID_ROLE_IDS[0]
+    #     response_status_code = INVALID_ROLE_IDS[1]
+    #
+    #     # Act
+    #     response_object = presenter.raise_role_ids_are_invalid()
+    #
+    #     # Assert
+    #     response = json.loads(response_object.content)
+    #     assert response['http_status_code'] == StatusCode.NOT_FOUND.value
+    #     assert response['res_status'] == response_status_code
+    #     assert response['response'] == expected_response
 
     def test_raise_invalid_company_id_exception(self):
         # Arrange

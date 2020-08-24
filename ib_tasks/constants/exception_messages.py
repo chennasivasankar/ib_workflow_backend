@@ -343,6 +343,8 @@ INVALID_TASK_TEMPLATE_DB_ID = (
     "INVALID_TASK_TEMPLATE_DB_ID"
 )
 
+INVALID_PROJECT_ID = ("given invalid project id: {}", "INVALID_PROJECT_ID")
+
 SEARCHABLE_RECORDS_NOT_FOUND = (
     "Something went wrong contact Admin",
     "SEARCHABLE_RECORDS_NOT_FOUND"
