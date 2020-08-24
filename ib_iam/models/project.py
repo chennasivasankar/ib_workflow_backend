@@ -17,3 +17,8 @@ class ProjectTeam(models.Model):
 
     class Meta:
         unique_together = ("team", "project")
+
+
+class ProjectRole(models.Model):
+    project = models.ForeignKey('Project', on_delete=models.CASCADE)
+    role = models.ForeignKey('Role', on_delete=models.CASCADE)
