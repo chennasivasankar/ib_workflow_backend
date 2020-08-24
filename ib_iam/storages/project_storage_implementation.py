@@ -3,7 +3,7 @@ from typing import List
 from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
-from ib_iam.models import Project
+from ib_iam.models import Project, ProjectTeam
 
 
 class ProjectStorageImplementation(ProjectStorageInterface):
@@ -38,3 +38,10 @@ class ProjectStorageImplementation(ProjectStorageInterface):
                                  description=project_object.description,
                                  logo_url=project_object.logo_url)
         return project_dto
+
+    def is_team_exists_in_project(self, project_id: str, team_id: str) -> bool:
+        try:
+            ProjectTeam.objects.get(project_id=project_id, team_id=team_id)
+            return True
+        except ProjectTeam.DoesNotExist:
+            return False

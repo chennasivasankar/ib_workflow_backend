@@ -67,3 +67,24 @@ class TestProjectStorageImplementation:
         actual_project_dtos = project_storage.get_project_dtos()
 
         assert actual_project_dtos == expected_project_dtos
+
+    @pytest.mark.django_db
+    @pytest.mark.parametrize("team_id_to_create, expected_response",
+                             [("641bfcc5-e1ea-4231-b482-f7f34fb5c7c5", True),
+                              ("641bfcc5-e1ea-4231-b482-f7f34fb5c7c6", False)])
+    def test_is_team_exists_in_project(
+            self, team_id_to_create, expected_response):
+        from ib_iam.tests.factories.models import \
+            ProjectFactory, TeamFactory, ProjectTeamFactory
+        project_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+        team_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c5"
+        ProjectFactory.create(project_id=project_id)
+        TeamFactory.create(team_id=team_id_to_create)
+        ProjectTeamFactory.create(project_id=project_id,
+                                  team_id=team_id_to_create)
+        project_storage = ProjectStorageImplementation()
+
+        actual_response = project_storage.is_team_exists_in_project(
+            project_id=project_id, team_id=team_id)
+
+        assert actual_response == expected_response
