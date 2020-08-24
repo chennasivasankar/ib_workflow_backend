@@ -2,7 +2,6 @@ import datetime
 from typing import List, Optional
 
 from django.db.models import Q
-
 from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
@@ -31,10 +30,7 @@ from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
     GlobalConstant, StagePermittedRoles, TaskTemplateInitialStage, Stage, \
-    TaskLog, TaskTemplateStatusVariable, TaskStageHistory
-from ib_tasks.models.task_due_details import UserTaskDelayReason,\
-    GlobalConstant, \
-    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskTemplateStatusVariable
+    TaskTemplateStatusVariable
 from ib_tasks.models import \
     TaskStageHistory
 from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
@@ -421,6 +417,11 @@ class StagesStorageImplementation(StageStorageInterface):
             ).values_list('stage__stage_id', flat=True)
         return sorted(list(set(stage_ids)))
 
+
+    def get_task_current_stages(self, task_id: int) -> List[str]:
+        return list(CurrentTaskStage.objects.filter(
+            task_id=task_id
+        ).values_list('stage__stage_id', flat=True))
 
 
 class StorageImplementation(StorageInterface):

@@ -6,7 +6,7 @@ from ib_tasks.exceptions.action_custom_exceptions \
 from ib_tasks.exceptions.custom_exceptions import InvalidModulePathFound, \
     InvalidMethodFound
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
-    InvalidTaskDisplayId
+    InvalidTaskDisplayId, UserNotInAnyTeamForGivenProjectException
 from ib_tasks.interactors.get_users_with_less_tasks_for_stages import \
     GetUsersWithLessTasksInGivenStagesInteractor
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
@@ -63,6 +63,9 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
         except InvalidActionException as exception:
             return presenter.raise_exception_for_invalid_action(
                 action_id=exception.action_id)
+        except UserNotInAnyTeamForGivenProjectException as exception:
+            return presenter.raise_user_not_in_any_given_team_of_project(user_id=exception.user_id)
+
         except InvalidKeyError:
             return presenter.raise_invalid_key_error()
         except InvalidModulePathFound as exception:

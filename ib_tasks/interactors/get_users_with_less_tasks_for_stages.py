@@ -1,6 +1,9 @@
 from typing import List, Tuple
 
-from ib_tasks.adapters.dtos import UserDetailsDTO, AssigneeDetailsDTO
+from ib_tasks.adapters.dtos import UserDetailsDTO, AssigneeDetailsDTO, \
+    UserIdWIthTeamDetailsDTO
+from ib_tasks.exceptions.task_custom_exceptions import \
+    UserNotInAnyTeamForGivenProjectException
 from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO, \
     StageWithUserDetailsAndTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -12,6 +15,8 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
     TaskStageStorageInterface
+
+
 
 
 class GetUsersWithLessTasksInGivenStagesInteractor:
@@ -36,17 +41,28 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
         for stages_having_user_details_dto in stages_having_user_details_dtos:
             if stages_having_user_details_dto.assignee_details_dto is None:
                 continue
-            assignee_id = stages_having_user_details_dto.assignee_details_dto.assignee_id
+            assignee_id = stages_having_user_details_dto.assignee_details_dto. \
+                assignee_id
             assignee_ids.append(assignee_id)
 
         from ib_tasks.adapters.auth_service import AuthService
         auth_service_adapter = AuthService()
         user_id_with_team_details_dtos = auth_service_adapter. \
             get_team_info_for_given_user_ids(user_ids=assignee_ids)
+        user_with_first_team_details_dtos=[]
+        for user_id_with_team_details_dto in user_id_with_team_details_dtos:
+            if not user_id_with_team_details_dto.team_details:
+                raise UserNotInAnyTeamForGivenProjectException(
+                    user_id=user_id_with_team_details_dto.user_id)
+
+            user_with_first_team_details_dtos.append(UserIdWIthTeamDetailsDTO(
+            user_id=user_id_with_team_details_dto.user_id, team_details=
+                user_id_with_team_details_dto.team_details[0]))
+
         stage_with_user_details_and_team_details_dto = \
             StageWithUserDetailsAndTeamDetailsDTO(
                 stages_with_user_details_dtos=stages_having_user_details_dtos,
-                user_with_team_details_dtos=user_id_with_team_details_dtos)
+                user_with_team_details_dtos=user_with_first_team_details_dtos)
 
         return stage_with_user_details_and_team_details_dto
 
@@ -126,8 +142,7 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
         updated_task_count_dtos_for_assignee_having_less_tasks = []
         for each_dto in role_ids_group_by_stage_id_dtos:
             permitted_user_details_dtos = auth_service_adapter. \
-                get_permitted_user_details(role_ids=each_dto.role_ids,
-                                           project_id=project_id)
+                get_permitted_user_details(role_ids=each_dto.role_ids)
 
             permitted_user_ids = [
                 each_permitted_user_details_dto.user_id

@@ -74,6 +74,11 @@ class UserIdWIthTeamDetailsDTOs:
     user_id: str
     team_details: List[TeamDetailsDTO]
 
+@dataclass
+class UserIdWIthTeamDetailsDTO:
+    user_id: str
+    team_details: TeamDetailsDTO
+
 
 @dataclass
 class ProjectDetailsDTO:

@@ -38,3 +38,7 @@ class GetNextStagesRandomAssigneesOfATaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_invalid_task_display_id(self, err):
         pass
+
+    @abc.abstractmethod
+    def raise_user_not_in_any_given_team_of_project(self, user_id: str):
+        pass

@@ -2,11 +2,12 @@ from typing import List
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_tasks.adapters.dtos import UserIdWIthTeamDetailsDTOs, TeamDetailsDTO
+from ib_tasks.adapters.dtos import TeamDetailsDTO, \
+    UserIdWIthTeamDetailsDTO
 from ib_tasks.interactors.presenter_interfaces \
     .get_next_stages_random_assignees_of_a_task_presenter import \
     GetNextStagesRandomAssigneesOfATaskPresenterInterface
-from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO, \
+from ib_tasks.interactors.stages_dtos import \
     StageWithUserDetailsAndTeamDetailsDTO
 
 
@@ -40,6 +41,16 @@ class GetNextStagesRandomAssigneesOfATaskPresenterImpl(
             "response": response_message,
             "http_status_code": 404,
             "res_status": INVALID_ACTION_ID[1]
+        }
+        return self.prepare_404_not_found_response(data)
+
+    def raise_user_not_in_any_given_team_of_project(self, user_id: str):
+        from ib_tasks.constants.exception_messages import USER_NOT_IN_ANY_TEAM_OF_PROJECT
+        response_message = USER_NOT_IN_ANY_TEAM_OF_PROJECT[0].format(user_id)
+        data = {
+            "response": response_message,
+            "http_status_code": 404,
+            "res_status": USER_NOT_IN_ANY_TEAM_OF_PROJECT[1]
         }
         return self.prepare_404_not_found_response(data)
 
@@ -83,27 +94,29 @@ class GetNextStagesRandomAssigneesOfATaskPresenterImpl(
         }
         return self.prepare_400_bad_request_response(data)
 
+
+
+
     def get_next_stages_random_assignees_of_a_task_response(
             self,
             stage_with_user_details_and_team_details_dto:
             StageWithUserDetailsAndTeamDetailsDTO):
         user_with_team_details_dtos = \
-            stage_with_user_details_and_team_details_dto.\
+            stage_with_user_details_and_team_details_dto. \
                 user_with_team_details_dtos
         all_stage_assignees_details = []
         for each_stage_with_user_details_dto in \
-                stage_with_user_details_and_team_details_dto.\
+                stage_with_user_details_and_team_details_dto. \
                         stages_with_user_details_dtos:
-            assignee_details_dto = each_stage_with_user_details_dto.\
+            assignee_details_dto = each_stage_with_user_details_dto. \
                 assignee_details_dto
             assignee_details_dto_dict = None
             if assignee_details_dto:
                 assignee_id = assignee_details_dto.assignee_id
-                team_details_dtos = self._get_team_info_of_user_id(
+                team_details_dto = self._get_team_info_of_user_id(
                     assignee_id, user_with_team_details_dtos)
-                team_info = [{"team_id": team_details_dto.team_id,
-                              "team_name": team_details_dto.name} for
-                             team_details_dto in team_details_dtos]
+                team_info = {"team_id": team_details_dto.team_id,
+                             "team_name": team_details_dto.name}
                 assignee_details_dto_dict = {
                     "assignee_id": assignee_id,
                     "name": assignee_details_dto.name,
@@ -127,8 +140,8 @@ class GetNextStagesRandomAssigneesOfATaskPresenterImpl(
     @staticmethod
     def _get_team_info_of_user_id(assignee_id: str,
                                   user_with_team_details_dtos:
-                                  List[UserIdWIthTeamDetailsDTOs]) -> List[
-        TeamDetailsDTO]:
+                                  List[UserIdWIthTeamDetailsDTO]) -> \
+            TeamDetailsDTO:
 
         for user_with_team_details_dto in user_with_team_details_dtos:
             if assignee_id == user_with_team_details_dto.user_id:

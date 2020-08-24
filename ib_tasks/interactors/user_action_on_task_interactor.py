@@ -154,7 +154,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_boards_details = self._get_task_boards_details(stage_ids)
         else:
             task_boards_details = None
-        self._create_or_update_task_in_elasticsearch_dto(
+        self._create_or_update_task_in_elasticsearch(
             task_dto=updated_task_dto, stage_ids=stage_ids, task_id=task_id
         )
         actions_dto, fields_dto, task_stage_details = \
@@ -406,45 +406,17 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         if is_permission_denied:
             raise UserActionPermissionDenied(action_id=action_id)
 
-    def _create_or_update_task_in_elasticsearch_dto(
-            self, task_dto: TaskDetailsDTO, stage_ids: List[str],
-            task_id: int
-    ):
-
-        is_task_id_exists = \
-            self.elasticsearch_storage.validate_task_id_in_elasticsearch(
-                task_id=task_id
-            )
-        elastic_task_dto = self._get_elastic_task_dto(
-            task_dto=task_dto, stage_ids=stage_ids, task_id=task_id)
-        if is_task_id_exists:
-            self.elasticsearch_storage.update_task(task_dto=elastic_task_dto)
-        else:
-            elastic_task_id = self.elasticsearch_storage.create_task(
-                elastic_task_dto=elastic_task_dto
-            )
-            self.task_storage.create_elastic_task(
-                task_id=task_id, elastic_task_id=elastic_task_id
-            )
-
-    @staticmethod
-    def _get_elastic_task_dto(task_dto: TaskDetailsDTO,
-                              stage_ids: List[str], task_id: int):
-        from ib_tasks.documents.elastic_task import ElasticFieldDTO
-        fields = [
-            ElasticFieldDTO(
-                field_id=field.field_id,
-                value=field.field_response
-            )
-            for field in task_dto.task_gof_field_dtos
-        ]
-        from ib_tasks.documents.elastic_task import ElasticTaskDTO
-        return ElasticTaskDTO(
-            template_id=task_dto.task_base_details_dto.template_id,
-            task_id=task_id,
-            title=task_dto.task_base_details_dto.title,
-            fields=fields,
-            stages=stage_ids
+    def _create_or_update_task_in_elasticsearch(
+            self, task_dto: TaskDetailsDTO, stage_ids: List[str], task_id: int):
+        from ib_tasks.interactors.create_or_update_data_in_elasticsearch_interactor import \
+            CreateOrUpdateDataInElasticSearchInteractor
+        elasticsearch_interactor = CreateOrUpdateDataInElasticSearchInteractor(
+            elasticsearch_storage=self.elasticsearch_storage,
+            field_storage=self.field_storage,
+            task_storage=self.task_storage
+        )
+        elasticsearch_interactor.create_or_update_task_in_elasticsearch(
+            task_dto=task_dto, stage_ids=stage_ids, task_id=task_id
         )
 
     def _get_stage_assignees_details(

@@ -3,7 +3,7 @@ from datetime import time, datetime, timedelta
 from typing import Optional, List
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO, \
-    UserIdWIthTeamDetailsDTOs, UserDetailsDTO
+    UserIdWIthTeamDetailsDTOs, UserDetailsDTO, UserIdWIthTeamDetailsDTO
 
 
 @dataclass
@@ -109,7 +109,7 @@ class StageWithUserDetailsDTO:
 @dataclass
 class StageWithUserDetailsAndTeamDetailsDTO:
     stages_with_user_details_dtos: List[StageWithUserDetailsDTO]
-    user_with_team_details_dtos: List[UserIdWIthTeamDetailsDTOs]
+    user_with_team_details_dtos: List[UserIdWIthTeamDetailsDTO]
 
 
 @dataclass()

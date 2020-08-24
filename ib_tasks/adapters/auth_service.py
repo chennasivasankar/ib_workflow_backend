@@ -55,11 +55,10 @@ class AuthService:
 
         return user_details_dtos
 
-    # ToDo Add Project id as an argument
-    def get_permitted_user_details(self, role_ids: List[str], project_id: str) \
+    def get_permitted_user_details(self, role_ids: List[str]) \
             -> List[UserDetailsDTO]:
         user_profile_details_dtos = self.interface.get_user_details_for_given_role_ids(
-            role_ids=role_ids, project_id=project_id)
+            role_ids=role_ids)
         user_details_dtos = self._get_user_details_dtos(
             user_profile_details_dtos)
         return user_details_dtos
@@ -103,8 +102,8 @@ class AuthService:
 
     def get_team_info_for_given_user_ids(self, user_ids: List[str]) -> List[
         UserIdWIthTeamDetailsDTOs]:
-        raise NotImplementedError
-
+        # raise NotImplementedError
+        return [UserIdWIthTeamDetailsDTOs(user_id=user_id, team_details=[]) for user_id in user_ids]
 
     def get_team_details_for_given_team_project_details_dto(
             self, team_project_details_dto: TeamProjectDetailsDTO) -> \

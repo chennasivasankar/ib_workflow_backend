@@ -132,3 +132,7 @@ class TaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_project_id_of_task(self, task_id: int) -> str:
         pass
+
+    @abc.abstractmethod
+    def get_project_id_for_the_task_id(self, task_id) -> str:
+        pass
