@@ -1,3 +1,5 @@
+from typing import List
+
 from django.db import transaction
 
 
@@ -33,7 +35,7 @@ def populate_projects(spread_sheet_name: str):
 
 @transaction.atomic()
 def populate(spread_sheet_name: str):
-    # from ib_iam.populate.add_roles_details import ProjectRoleDetails
+    # from ib_iam.populate.add_project_roles_details import ProjectRoleDetails
     # project_role = ProjectRoleDetails()
     # from ib_iam.constants.config import ROLES_SUBSHEET_NAME
     # project_role.add_project_roles_details_to_database(
@@ -88,6 +90,18 @@ def populate_user_roles_for_admin_user(admin_user_id: str):
     user_storage = UserStorageImplementation()
     user_storage.add_roles_to_the_user(
         user_id=admin_user_id, role_ids=db_role_ids)
+
+
+def populate_user_roles_for_normal_user(user_id: str, roles: List[str]):
+    """
+    Normal User have All roles
+    """
+    from ib_iam.storages.user_storage_implementation import \
+        UserStorageImplementation
+    user_storage = UserStorageImplementation()
+    db_role_ids = user_storage.get_role_objs_ids(role_ids=roles)
+    user_storage.add_roles_to_the_user(
+        user_id=user_id, role_ids=db_role_ids)
 
 
 def populate_companies():
@@ -277,4 +291,9 @@ def populate_test_users():
         interactor.add_new_user(
             user_id=admin_user_id,
             add_user_details_dto=complete_user_details_dto
+        )
+        user_id = UserAccount.objects.get(email=user["email"]).user_id
+        populate_user_roles_for_noraml_user(
+            user_id=user_id,
+            roles=user["roles"]
         )

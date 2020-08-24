@@ -6,17 +6,17 @@ class Project:
         spreadsheet_utils = SpreadSheetUtil()
         projects = spreadsheet_utils \
             .read_spread_sheet_data_and_get_row_wise_dicts(
-                spread_sheet_name=spread_sheet_name,
-                sub_sheet_name=sub_sheet_name
-            )
+            spread_sheet_name=spread_sheet_name,
+            sub_sheet_name=sub_sheet_name
+        )
         from ib_iam.storages.project_storage_implementation import \
             ProjectStorageImplementation
-        from ib_iam.storages.team_storage_implementation import \
-            TeamStorageImplementation
+        project_storage = ProjectStorageImplementation()
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
-        project_storage = ProjectStorageImplementation()
         user_storage = UserStorageImplementation()
+        from ib_iam.storages.team_storage_implementation import \
+            TeamStorageImplementation
         team_storage = TeamStorageImplementation()
         from ib_iam.interactors.project_interactor import ProjectInteractor
         interactor = ProjectInteractor(
