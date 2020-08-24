@@ -47,9 +47,13 @@ class GetTasksOverviewForUserInteractor:
         self.action_storage = action_storage
 
     def get_filtered_tasks_overview_for_user(
-            self, user_id: str, task_ids: List[int], view_type: ViewType) -> \
+            self, user_id: str, task_ids: List[int],
+            view_type: ViewType, project_id: str
+    ) -> \
             AllTasksOverviewDetailsDTO:
-        stage_ids = self._get_allowed_stage_ids_of_user(user_id=user_id)
+        stage_ids = self._get_allowed_stage_ids_of_user(
+            user_id=user_id, project_id=project_id
+        )
         task_with_complete_stage_details_dtos = \
             self._get_task_with_complete_stage_details_dtos(
                 user_id=user_id,
@@ -93,11 +97,13 @@ class GetTasksOverviewForUserInteractor:
         )
         return all_tasks_overview_details_dto
 
-    def _get_allowed_stage_ids_of_user(self, user_id: str) -> List[str]:
+    def _get_allowed_stage_ids_of_user(self, user_id: str,
+                                       project_id: str) -> List[str]:
         user_interactor = UserRoleValidationInteractor()
         stage_ids = user_interactor. \
             get_permitted_stage_ids_given_user_id(user_id=user_id,
-                                                  stage_storage=self.stage_storage)
+                                                  stage_storage=self.stage_storage,
+                                                  project_id=project_id)
         return stage_ids
 
     def _get_task_with_complete_stage_details_dtos(

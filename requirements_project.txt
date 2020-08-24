@@ -40,5 +40,5 @@ elasticsearch-dsl==7.2.1
 schema==0.7.2
 
 # always last
-django-swagger-utils==2.2.1
+django-swagger-utils==2.2.2
 

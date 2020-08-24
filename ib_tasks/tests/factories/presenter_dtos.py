@@ -11,7 +11,7 @@ class TaskIdWithStageDetailsDTOFactory(factory.Factory):
     class Meta:
         model = TaskIdWithStageDetailsDTO
 
-    task_id = factory.Sequence(lambda n: 'task_%d' % (n + 1))
+    task_id = factory.Sequence(lambda n: (n + 1))
     task_display_id = factory.sequence(
         lambda counter: "iBWF-{}".format(counter+1))
     stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))

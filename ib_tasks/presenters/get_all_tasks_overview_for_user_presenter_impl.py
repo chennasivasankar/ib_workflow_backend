@@ -1,23 +1,20 @@
-from typing import List, Dict, Optional
-import abc
+from typing import Dict, Optional
 from typing import List
+
+from django.http import response
+from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.adapters.auth_service import InvalidProjectIdsException
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
-from ib_tasks.interactors.presenter_interfaces.get_all_tasks_overview_for_user_presenter_interface import \
-    GetAllTasksOverviewForUserPresenterInterface, \
-    GetFilteredTasksOverviewForUserPresenterInterface
 from ib_tasks.interactors.presenter_interfaces. \
     get_all_tasks_overview_for_user_presenter_interface import \
     GetAllTasksOverviewForUserPresenterInterface
-from django.http import response
-
-from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
-
-from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
+from ib_tasks.interactors.presenter_interfaces.\
+    get_all_tasks_overview_for_user_presenter_interface import \
+    GetFilteredTasksOverviewForUserPresenterInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO
+    GetTaskStageCompleteDetailsDTO, StageAssigneeDetailsDTO
 
 
 class GetAllTasksOverviewForUserPresenterImpl(

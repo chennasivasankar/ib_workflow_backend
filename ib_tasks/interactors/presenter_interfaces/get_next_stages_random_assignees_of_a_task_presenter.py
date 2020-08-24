@@ -1,7 +1,8 @@
 import abc
 from typing import List
 
-from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO
+from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO, \
+    StageWithUserDetailsAndTeamDetailsDTO
 
 
 class GetNextStagesRandomAssigneesOfATaskPresenterInterface(abc.ABC):
@@ -31,9 +32,13 @@ class GetNextStagesRandomAssigneesOfATaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_next_stages_random_assignees_of_a_task_response(
-            self, stage_with_user_details_dtos: List[StageWithUserDetailsDTO]):
+            self, stage_with_user_details_and_team_details_dto: StageWithUserDetailsAndTeamDetailsDTO):
         pass
 
     @abc.abstractmethod
     def raise_invalid_task_display_id(self, err):
+        pass
+
+    @abc.abstractmethod
+    def raise_user_not_in_any_given_team_of_project(self, user_id: str):
         pass

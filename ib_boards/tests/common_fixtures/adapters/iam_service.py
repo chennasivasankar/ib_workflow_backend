@@ -36,3 +36,10 @@ def mock_validate_project_ids(mocker, project_ids: List[str]):
     )
     mock.return_value = project_ids
     return mock
+
+
+def mock_for_validate_if_user_is_in_project(mocker):
+    mock = mocker.patch(
+        'ib_boards.adapters.iam_service.IamService.validate_if_user_is_in_project'
+    )
+    return mock

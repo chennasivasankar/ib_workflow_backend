@@ -129,3 +129,9 @@ class InvalidTaskDisplayId(Exception):
 
 class UserPermissionDenied(Exception):
     pass
+
+
+class UserNotInAnyTeamForGivenProjectException(Exception):
+    def __init__(self, user_id: str):
+        self.user_id = user_id
+    pass

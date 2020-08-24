@@ -71,7 +71,7 @@ class CreateTaskStatusInteractor:
     def _validate_task_template_ids(self, task_template_ids):
         invalid_task_template_ids = []
         valid_task_template_ids = self.template_storage. \
-            get_valid_template_ids_in_given_template_ids(task_template_ids)
+            get_valid_task_template_ids_in_given_task_template_ids(task_template_ids)
         for task_template_id in task_template_ids:
             if task_template_id not in valid_task_template_ids:
                 invalid_task_template_ids.append(task_template_id)
