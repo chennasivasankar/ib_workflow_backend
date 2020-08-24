@@ -113,11 +113,13 @@ class GetTaskDetailsByFilterInteractor:
         task_ids, total_tasks = filtered_task_ids_interactor.get_task_ids_by_applying_filters(
             filter_tasks_parameter=filter_tasks_parameter
         )
+        project_id = project_tasks_parameter.project_id
         all_tasks_overview_details_dto = task_details_interactor. \
             get_filtered_tasks_overview_for_user(
                 user_id=project_tasks_parameter.user_id,
                 task_ids=task_ids,
-                view_type=project_tasks_parameter.view_type
+                view_type=project_tasks_parameter.view_type,
+                project_id=project_id
             )
         return all_tasks_overview_details_dto, total_tasks
 
