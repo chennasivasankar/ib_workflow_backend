@@ -28,10 +28,13 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
     TaskDelayParametersDTO
+from ib_tasks.models import GlobalConstant, \
+    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskTemplateStatusVariable, ProjectTaskTemplate
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
     GlobalConstant, StagePermittedRoles, TaskTemplateInitialStage, Stage, \
-    TaskTemplateStatusVariable, ProjectTaskTemplate
+    TaskTemplateStatusVariable, ProjectTaskTemplate,\
+    ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole
 from ib_tasks.models import \
     TaskStageHistory
 from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
@@ -303,7 +306,7 @@ class StagesStorageImplementation(StageStorageInterface):
                 task_id=each_task_id_with_stage_assignee_dto.task_id,
                 stage_id=each_task_id_with_stage_assignee_dto.db_stage_id,
                 assignee_id=each_task_id_with_stage_assignee_dto.assignee_id,
-            team_id=each_task_id_with_stage_assignee_dto.team_id)
+                team_id=each_task_id_with_stage_assignee_dto.team_id)
             for each_task_id_with_stage_assignee_dto in
             task_id_with_stage_assignee_dtos
         ]
@@ -430,7 +433,6 @@ class StagesStorageImplementation(StageStorageInterface):
         return list(CurrentTaskStage.objects.filter(
             task_id=task_id
         ).values_list('stage__stage_id', flat=True))
-
 
 class StorageImplementation(StorageInterface):
 

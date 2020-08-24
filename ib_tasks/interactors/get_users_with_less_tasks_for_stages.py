@@ -31,12 +31,13 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
     def get_users_with_less_tasks_in_given_stages(
             self, stage_ids: List[str],
             project_id: str) -> StageWithUserDetailsAndTeamDetailsDTO:
+
         stage_detail_dtos = self.stage_storage. \
             get_stage_detail_dtos_given_stage_ids(stage_ids)
         db_stage_ids = self._get_db_stage_ids(stage_detail_dtos)
         stages_having_user_details_dtos = self. \
             _all_stages_assigned_with_random_user_details_dtos(
-            db_stage_ids, stage_detail_dtos, project_id)
+            db_stage_ids=db_stage_ids, stage_detail_dtos=stage_detail_dtos)
         assignee_ids = []
         for stages_having_user_details_dto in stages_having_user_details_dtos:
             if stages_having_user_details_dto.assignee_details_dto is None:
@@ -48,7 +49,8 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
         from ib_tasks.adapters.auth_service import AuthService
         auth_service_adapter = AuthService()
         user_id_with_team_details_dtos = auth_service_adapter. \
-            get_team_info_for_given_user_ids(user_ids=assignee_ids, project_id=project_id)
+            get_team_info_for_given_user_ids(user_ids=assignee_ids,
+                                             project_id=project_id)
         user_with_first_team_details_dtos=[]
         for user_id_with_team_details_dto in user_id_with_team_details_dtos:
             if not user_id_with_team_details_dto.team_details:
@@ -68,7 +70,7 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
 
     def _all_stages_assigned_with_random_user_details_dtos(
             self, db_stage_ids: List[int],
-            stage_detail_dtos: List[StageDetailsDTO], project_id: str) -> \
+            stage_detail_dtos: List[StageDetailsDTO]) -> \
             List[StageWithUserDetailsDTO]:
         stage_role_dtos = \
             self.stage_storage.get_stage_role_dtos_given_db_stage_ids(
@@ -79,7 +81,8 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
                 stage_role_dtos=stage_role_dtos)
         stage_with_random_user_details_dtos = self. \
             _get_random_permitted_user_details_dto_of_stage_id(
-            role_ids_group_by_stage_id_dtos, stage_detail_dtos, project_id)
+            role_ids_group_by_stage_id_dtos=role_ids_group_by_stage_id_dtos,
+            stage_detail_dtos=stage_detail_dtos)
         return stage_with_random_user_details_dtos
 
     def _get_assignee_with_current_tasks_count_dtos(self) -> List[
@@ -132,8 +135,8 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
 
     def _get_random_permitted_user_details_dto_of_stage_id(
             self, role_ids_group_by_stage_id_dtos: List[StageIdWithRoleIdsDTO],
-            stage_detail_dtos: List[StageDetailsDTO], project_id: str
-    ) -> List[StageWithUserDetailsDTO]:
+            stage_detail_dtos: List[StageDetailsDTO]) -> \
+            List[StageWithUserDetailsDTO]:
         assignee_with_current_tasks_count_dtos = self. \
             _get_assignee_with_current_tasks_count_dtos()
         stage_with_user_details_dtos = []

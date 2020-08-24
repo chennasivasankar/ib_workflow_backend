@@ -1,6 +1,6 @@
 from django.db import transaction
 
-from ib_iam.populate.add_roles_details import RoleDetails
+from ib_iam.populate.add_roles_details import ProjectRoleDetails
 from ib_tasks.constants.constants import ROLES_SUB_SHEET
 from ib_tasks.populate.get_sheet_data_for_creating_or_updating_stages import \
     GetSheetDataForStages
@@ -25,12 +25,6 @@ from ib_tasks.populate.populate_projects_for_task_templates import \
 
 
 @transaction.atomic()
-def populate_task_templates(spread_sheet_name: str):
-    task_template = PopulateTaskTemplates()
-    task_template.populate_task_templates(spread_sheet_name=spread_sheet_name)
-
-
-@transaction.atomic()
 def populate_projects_for_task_templates(spread_sheet_name: str):
     projects_for_task_templates = PopulateProjectsForTaskTemplates()
     projects_for_task_templates.populate_projects_for_task_template(
@@ -39,9 +33,12 @@ def populate_projects_for_task_templates(spread_sheet_name: str):
 
 @transaction.atomic()
 def populate_data(spread_sheet_name: str):
-    roles = RoleDetails()
-    roles.add_roles_details_to_database(
+    project_roles = ProjectRoleDetails()
+    project_roles.add_project_roles_details_to_database(
         spread_sheet_name=spread_sheet_name, sub_sheet_name=ROLES_SUB_SHEET)
+
+    task_template = PopulateTaskTemplates()
+    task_template.populate_task_templates(spread_sheet_name=spread_sheet_name)
 
     gofs = PopulateGoFs()
     gofs.create_or_update_gofs(spread_sheet_name=spread_sheet_name)

@@ -221,3 +221,9 @@ class StageAssigneesDTO:
     task_id: int
     stage_id: str
     assignees_details: AssigneesDTO
+
+
+@dataclass
+class ProjectBoardDTO:
+    project_id: str
+    board_id: str

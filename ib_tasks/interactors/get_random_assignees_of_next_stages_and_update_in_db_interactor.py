@@ -34,6 +34,7 @@ class GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
 
     def get_random_assignees_of_next_stages_and_update_in_db(
             self, task_id: int, stage_ids: List[str]):
+        project_id = self.task_storage.get_project_id_of_task(task_id)
         get_users_with_less_tasks_interactor = \
             GetUsersWithLessTasksInGivenStagesInteractor(
                 action_storage=self.action_storage,
@@ -44,27 +45,36 @@ class GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
         self._create_task_stage_history_records_for_virtua_stages(
             task_id=task_id, stage_ids_excluding_virtual_stages=
             stage_ids_excluding_virtual_stages, stage_ids=stage_ids)
-        stages_having_user_details_dtos = \
+        stage_with_user_details_and_team_details_dto = \
             get_users_with_less_tasks_interactor. \
                 get_users_with_less_tasks_in_given_stages(
-                stage_ids=stage_ids_excluding_virtual_stages)
+                stage_ids=stage_ids_excluding_virtual_stages,
+                project_id=project_id)
+        stages_with_user_details_dtos = \
+            stage_with_user_details_and_team_details_dto.\
+                stages_with_user_details_dtos
+        user_with_team_details_dtos = \
+            stage_with_user_details_and_team_details_dto.\
+                user_with_team_details_dtos
+        stage_assignee_dtos = []
+        for stage_with_user_details_dto in stages_with_user_details_dtos:
+            assignee_id = stage_with_user_details_dto.assignee_details_dto.\
+                assignee_id
+            for user_with_team_details_dto in user_with_team_details_dtos:
+                if assignee_id == user_with_team_details_dto.user_id:
+                    stage_assignee_dto = StageAssigneeDTO(
+                        assignee_id=assignee_id,
+                        db_stage_id=stage_with_user_details_dto.db_stage_id,
+                        team_id=user_with_team_details_dto.team_details.team_id)
 
-        stage_assignee_dtos = [
-            StageAssigneeDTO(
-                db_stage_id=stage_with_user_details_dto.db_stage_id,
-                assignee_id=stage_with_user_details_dto.
-                    assignee_details_dto.assignee_id
-            )
-            for stage_with_user_details_dto in
-            stages_having_user_details_dtos
-        ]
+                    stage_assignee_dtos.append(stage_assignee_dto)
         task_id_with_stage_assignees_dto = TaskIdWithStageAssigneesDTO(
             task_id=task_id, stage_assignees=stage_assignee_dtos)
         update_task_stage_assignees_interactor = \
             UpdateTaskStageAssigneesInteractor(
                 stage_storage=self.stage_storage,
                 task_storage=self.task_storage)
-        update_task_stage_assignees_interactor.\
+        update_task_stage_assignees_interactor. \
             validate_and_update_task_stage_assignees(
             task_id_with_stage_assignees_dto=task_id_with_stage_assignees_dto)
         return

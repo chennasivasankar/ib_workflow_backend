@@ -8,12 +8,17 @@ from ib_iam.interactors.storage_interfaces.roles_storage_interface import \
 
 class RolesStorageImplementation(RolesStorageInterface):
 
-    def create_roles(self, role_dtos: List[RoleDTO]):
+    def create_roles(self, role_dtos: List[RoleDTO], project_id: str):
         from ib_iam.models import ProjectRole
+        from ib_iam.models import Project
+        # TODO optimize the db hits
+        project = Project.objects.get(project_id=project_id)
         role_objects = [
-            ProjectRole(role_id=role_dto.role_id, name=role_dto.name,
-                        description=role_dto.description,
-                        project_id="FIN_MAN")
+            ProjectRole(
+                role_id=role_dto.role_id, name=role_dto.name,
+                description=role_dto.description,
+                project=project
+            )
             for role_dto in role_dtos]
         ProjectRole.objects.bulk_create(role_objects)
 
