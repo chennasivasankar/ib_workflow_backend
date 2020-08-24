@@ -31,7 +31,7 @@ from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
     GlobalConstant, StagePermittedRoles, TaskTemplateInitialStage, Stage, \
-    TaskLog, TaskTemplateStatusVariable, TaskStageHistory, ProjectTaskTemplate
+    TaskTemplateStatusVariable, ProjectTaskTemplate
 from ib_tasks.models import \
     TaskStageHistory
 from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
