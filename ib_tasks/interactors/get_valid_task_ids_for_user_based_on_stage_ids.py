@@ -25,7 +25,7 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
         self.task_stage_storage = task_stage_storage
 
     def get_task_ids_of_user_based_on_stage_ids(
-            self, user_id: str, stage_ids: List[str], task_ids: List[int]) \
+            self, user_id: str, stage_ids: List[str], task_ids: List[int], project_id: str) \
             -> List[TaskWithCompleteStageDetailsDTO]:
         given_stage_ids = stage_ids
 
@@ -63,11 +63,13 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
                     task_id_with_stage_details_dto)
         task_with_complete_stage_details_dtos = \
             self._get_task_with_complete_stage_details_dtos(
-                task_id_with_stage_details_dtos=task_id_with_stage_details_dtos)
+                task_id_with_stage_details_dtos=task_id_with_stage_details_dtos,
+                project_id=project_id
+            )
         return task_with_complete_stage_details_dtos
 
     def _get_task_with_complete_stage_details_dtos(
-            self,
+            self, project_id: str,
             task_id_with_stage_details_dtos: List[TaskIdWithStageDetailsDTO]
     ) -> List[TaskWithCompleteStageDetailsDTO]:
         from ib_tasks.interactors.get_stages_assignees_details_interactor \
@@ -82,7 +84,7 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
                 get_stage_assignees_details_interactor. \
                     get_stages_assignee_details_dtos(
                         task_id=task_id_with_stage_details_dto.task_id,
-                        stage_ids=[task_id_with_stage_details_dto.db_stage_id])
+                        stage_ids=[task_id_with_stage_details_dto.db_stage_id], project_id=project_id)
             task_with_complete_stage_details_dto = \
                 TaskWithCompleteStageDetailsDTO(
                     task_with_stage_details_dto=task_id_with_stage_details_dto,

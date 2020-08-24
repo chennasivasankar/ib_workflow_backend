@@ -58,7 +58,8 @@ class GetTasksOverviewForUserInteractor:
             self._get_task_with_complete_stage_details_dtos(
                 user_id=user_id,
                 stage_ids=stage_ids,
-                task_ids=task_ids
+                task_ids=task_ids,
+                project_id=project_id
             )
         task_id_with_stage_details_dtos = [
             task_with_complete_stage_details_dto.task_with_stage_details_dto
@@ -103,7 +104,7 @@ class GetTasksOverviewForUserInteractor:
         return stage_ids
 
     def _get_task_with_complete_stage_details_dtos(
-            self, user_id: str, stage_ids: List[str], task_ids: List[int],
+            self, user_id: str, stage_ids: List[str], task_ids: List[int], project_id: str
     ) -> List[TaskWithCompleteStageDetailsDTO]:
         from ib_tasks.interactors. \
             get_valid_task_ids_for_user_based_on_stage_ids import \
@@ -116,7 +117,7 @@ class GetTasksOverviewForUserInteractor:
             )
         task_id_with_stage_ids_dtos = task_ids_of_user_based_on_stage_ids_interactor. \
             get_task_ids_of_user_based_on_stage_ids(
-                user_id=user_id, stage_ids=stage_ids, task_ids=task_ids
+                user_id=user_id, stage_ids=stage_ids, task_ids=task_ids, project_id=project_id
             )
         return task_id_with_stage_ids_dtos
 
