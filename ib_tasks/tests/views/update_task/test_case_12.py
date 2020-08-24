@@ -9,7 +9,8 @@ from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
-    TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, GoFRoleFactory
+    TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, \
+    GoFRoleFactory, StageFactory
 from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
@@ -28,17 +29,21 @@ class TestCase12UpdateTaskAPITestCase(TestUtils):
         FieldFactory.reset_sequence()
         TaskTemplateFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
+        StageFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
         task_id = "IBWF-1"
         template_id = "TEMPLATE-1"
+        stage_id = 1
         gof_ids = ["GOF-1", "GOF-2"]
         field_ids = ["FIELD-1", "FIELD-2", "FIELD-3", "FIELD-4"]
         gof_write_permission_roles = ["FIN_GOF_CREATOR"]
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
         user_roles_mock_method = get_user_role_ids(mocker)
+
+        StageFactory.create(id=stage_id)
         gofs = GoFFactory.create_batch(size=len(gof_ids),
                                        gof_id=factory.Iterator(gof_ids))
         gof_roles = GoFRoleFactory.create_batch(
