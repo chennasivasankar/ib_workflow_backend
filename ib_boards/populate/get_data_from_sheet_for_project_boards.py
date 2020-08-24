@@ -8,7 +8,7 @@ class GetSheetDataForProjectBoards:
 
     @property
     def data_sheet(self):
-        from ib_tasks.populate.get_data_from_sheet import GetDataFromSheet
+        from ib_boards.populate.get_data_from_sheet import GetDataFromSheet
         return GetDataFromSheet()
 
     def get_data_from_project_boards_sub_sheet(self, spread_sheet_name: str):
