@@ -1537,7 +1537,7 @@
       "name": "project_id",
       "description": "Project Query Parameter",
       "in": "query",
-      "type": "integer",
+      "type": "string",
       "required": true
     },
     "OffsetParameter": {
