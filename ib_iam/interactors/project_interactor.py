@@ -22,3 +22,12 @@ class ProjectInteractor:
             self.project_storage.get_valid_project_ids_from_given_project_ids(
                 project_ids=project_ids)
         return valid_project_ids
+
+    def get_project_dtos_bulk(
+            self, project_ids: List[str]) -> List[ProjectDTO]:
+        project_dtos = self.project_storage.get_project_dtos_for_given_project_ids(
+            project_ids=project_ids)
+        if len(project_ids) != len(project_dtos):
+            from ib_iam.exceptions.custom_exceptions import InvalidProjectIds
+            raise InvalidProjectIds
+        return project_dtos

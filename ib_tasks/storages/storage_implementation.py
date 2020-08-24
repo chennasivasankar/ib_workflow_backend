@@ -32,9 +32,6 @@ from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
     GlobalConstant, StagePermittedRoles, TaskTemplateInitialStage, Stage, \
     TaskLog, TaskTemplateStatusVariable, TaskStageHistory
-from ib_tasks.models.task_due_details import UserTaskDelayReason,\
-    GlobalConstant, \
-    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskTemplateStatusVariable
 from ib_tasks.models import \
     TaskStageHistory
 from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
@@ -420,7 +417,6 @@ class StagesStorageImplementation(StageStorageInterface):
                 Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
             ).values_list('stage__stage_id', flat=True)
         return sorted(list(set(stage_ids)))
-
 
     def get_task_current_stages(self, task_id: int) -> List[str]:
         return list(CurrentTaskStage.objects.filter(
