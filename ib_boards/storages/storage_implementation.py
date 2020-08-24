@@ -20,7 +20,8 @@ class StorageImplementation(StorageInterface):
         return board_obj.project_id
 
     def get_project_id_for_given_column_id(self, column_id: str) -> str:
-        column = Column.objects.filter(column_id=column_id).values('board__project_id')
+        column = Column.objects.filter(column_id=column_id).values(
+            'board__project_id')
         return column[0]['board__project_id']
 
     def add_project_id_for_boards(
