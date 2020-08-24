@@ -2,7 +2,8 @@ import json
 from typing import List, Tuple
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
-    BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO, StarOrUnstarParametersDTO, ProjectBoardDTO
+    TaskTemplateStagesDTO, TaskSummaryFieldsDTO, StarOrUnstarParametersDTO,\
+    ProjectBoardDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
     ColumnDetailsDTO, TaskBoardsDetailsDTO, ColumnStageIdsDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnBoardDTO, \
