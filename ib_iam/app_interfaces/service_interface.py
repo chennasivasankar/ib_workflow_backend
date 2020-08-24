@@ -289,7 +289,7 @@ class ServiceInterface:
     @staticmethod
     def get_team_details_for_given_project_team_user_details_dto(
             project_team_user_dto: ProjectTeamUserDTO) -> \
-            List[UserIdWithTeamIDAndNameDTO]:
+            UserIdWithTeamIDAndNameDTO:
         from ib_iam.interactors.project_interactor import ProjectInteractor
         from ib_iam.storages.project_storage_implementation import \
             ProjectStorageImplementation

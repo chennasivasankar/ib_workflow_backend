@@ -36,7 +36,7 @@ class ProjectInteractor:
 
     def get_team_details_for_given_project_team_user_details_dto(
             self, project_team_user_dto: ProjectTeamUserDTO
-    ) -> List[UserIdWithTeamIDAndNameDTO]:
+    ) -> UserIdWithTeamIDAndNameDTO:
         # todo confirm and add invalid team and user exceptions
         self._validate_project(project_id=project_team_user_dto.project_id)
         self._validate_team_existence_in_project(
