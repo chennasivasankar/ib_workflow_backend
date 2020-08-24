@@ -13,13 +13,14 @@ from ib_boards.interactors.dtos import ColumnTasksParametersDTO, \
     ColumnTaskIdsDTO, FieldDTO, ActionDTO
 from ib_boards.interactors.get_tasks_details_for_the_column_ids import \
     ColumnsTasksParametersDTO
+from ib_boards.interactors.mixins.validation_mixins import ValidationMixin
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetColumnTasksPresenterInterface, TaskDisplayIdDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
 
-class GetColumnTasksInteractor:
+class GetColumnTasksInteractor(ValidationMixin):
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
@@ -55,6 +56,13 @@ class GetColumnTasksInteractor:
 
     def get_column_tasks(self,
                          column_tasks_parameters: ColumnTasksParametersDTO):
+        project_id = column_tasks_parameters.project_id
+        project_ids = [project_id]
+        user_id = column_tasks_parameters.user_id
+        self.validate_given_project_ids(project_ids=project_ids)
+
+        self.validate_if_user_is_in_project(project_id=project_id,
+                                            user_id=user_id)
         self._validate_given_data(
             column_tasks_parameters=column_tasks_parameters)
         column_id = column_tasks_parameters.column_id
@@ -65,6 +73,7 @@ class GetColumnTasksInteractor:
             limit=column_tasks_parameters.limit,
             offset=column_tasks_parameters.offset,
             user_id=user_id,
+            project_id=project_id,
             view_type=view_type,
             search_query=column_tasks_parameters.search_query
         )

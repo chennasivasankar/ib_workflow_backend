@@ -18,6 +18,7 @@ def api_wrapper(*args, **kwargs):
     search_query = params.search_query
     offset = params['offset']
     limit = params['limit']
+    project_id = request_body['project_id']
 
     from ib_boards.constants.enum import ViewType
     view_type = request_body.get('view_type', ViewType.KANBAN.value)
@@ -26,7 +27,8 @@ def api_wrapper(*args, **kwargs):
         board_id=board_id,
         user_id=user.user_id,
         view_type=view_type,
-        search_query=search_query
+        search_query=search_query,
+        project_id=project_id
     )
     pagination_params = PaginationParametersDTO(
         offset=offset,

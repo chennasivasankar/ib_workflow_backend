@@ -169,6 +169,7 @@ class TestGetColumnDetailsInteractor:
 
         board_id = "board_id_1"
         columns_parameters = ColumnParametersDTO(
+            project_id="project_id_1",
             board_id=board_id,
             user_id="user_id_1",
             view_type=ViewType.LIST.value,
@@ -209,6 +210,7 @@ class TestGetColumnDetailsInteractor:
                       "FIN_PAYMENTS_LEVEL2_VERIFIER",
                       "FIN_PAYMENTS_LEVEL3_VERIFIER"]
         columns_parameters = ColumnParametersDTO(
+            project_id="project_id_1",
             board_id=board_id,
             user_id="user_id_1",
             view_type=ViewType.LIST.value,
@@ -249,6 +251,7 @@ class TestGetColumnDetailsInteractor:
                       "FIN_PAYMENTS_LEVEL2_VERIFIER",
                       "FIN_PAYMENTS_LEVEL3_VERIFIER"]
         columns_parameters = ColumnParametersDTO(
+            project_id="project_id_1",
             board_id=board_id,
             user_id="user_id_1",
             view_type=ViewType.LIST.value,
@@ -287,6 +290,7 @@ class TestGetColumnDetailsInteractor:
         board_id = "board_id_1"
         user_id = "user_id_1"
         columns_parameters = ColumnParametersDTO(
+            project_id="project_id_1",
             board_id=board_id,
             user_id=user_id,
             view_type=ViewType.LIST.value,
@@ -342,6 +346,7 @@ class TestGetColumnDetailsInteractor:
         task_fields_dto = get_task_fields_dtos
         task_actions_dto = get_task_actions_dtos
         columns_parameters = ColumnParametersDTO(
+            project_id="project_id_1",
             board_id=board_id,
             user_id=user_id,
             view_type=ViewType.LIST.value,
@@ -433,6 +438,7 @@ class TestGetColumnDetailsInteractor:
         task_fields_dto = get_task_fields_dtos
         task_actions_dto = get_task_actions_dtos
         columns_parameters = ColumnParametersDTO(
+            project_id="project_id_1",
             board_id=board_id,
             user_id=user_id,
             view_type=ViewType.LIST.value,

@@ -174,17 +174,20 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         search_query = task_details_config.search_query
         search = self._get_search_task_objects(filter_dtos)
         search = search.filter('terms', stages__stage_id__keyword=stage_ids)
+        query = Q('terms', stages__stage_id__keyword=stage_ids) \
+                & Q('term', project_id__keyword=task_details_config.project_id)
 
         if search_query:
-            search = search.query(
-                Q(
+            query = query & Q(
                     "match",
                     title={
                         "query": search_query,
                         "fuzziness": "5"
                     }
                 )
-            )
+        search = search.query(
+           query
+        )
         limit = task_details_config.limit
         offset = task_details_config.offset
         total_tasks = search.count()

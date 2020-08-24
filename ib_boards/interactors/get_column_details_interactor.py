@@ -7,6 +7,7 @@ from ib_boards.interactors.dtos import ColumnParametersDTO, \
     PaginationParametersDTO, ColumnTaskIdsDTO, ColumnTasksDTO
 from ib_boards.interactors.get_tasks_details_for_the_column_ids import \
     ColumnsTasksParametersDTO
+from ib_boards.interactors.mixins.validation_mixins import ValidationMixin
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_boards.interactors.storage_interfaces.dtos import ColumnDetailsDTO, \
@@ -15,7 +16,7 @@ from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
 
-class GetColumnDetailsInteractor:
+class GetColumnDetailsInteractor(ValidationMixin):
 
     def __init__(self, storage: StorageInterface):
         self.storage = storage
@@ -44,6 +45,13 @@ class GetColumnDetailsInteractor:
 
     def get_column_details(self, columns_parameters: ColumnParametersDTO,
                            pagination_parameters: PaginationParametersDTO):
+        project_id = columns_parameters.project_id
+        project_ids = [project_id]
+        user_id = columns_parameters.user_id
+        self.validate_given_project_ids(project_ids=project_ids)
+
+        self.validate_if_user_is_in_project(project_id=project_id,
+                                            user_id=user_id)
         board_id = columns_parameters.board_id
         offset = pagination_parameters.offset
         limit = pagination_parameters.limit
@@ -58,6 +66,7 @@ class GetColumnDetailsInteractor:
             limit=limit,
             offset=offset,
             user_id=user_id,
+            project_id=project_id,
             view_type=view_type,
             search_query=columns_parameters.search_query
         )
