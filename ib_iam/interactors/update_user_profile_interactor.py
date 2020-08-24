@@ -82,8 +82,8 @@ class UpdateUserProfileInteractor(ValidationMixin):
     def _update_user_roles(self, role_ids: List[str], user_id: str):
         self.user_storage.remove_roles_for_user(user_id)
         ids_of_role_objects = self.user_storage.get_role_objs_ids(role_ids)
-        self.user_storage.add_roles_to_the_user(user_id=user_id,
-                                                role_ids=ids_of_role_objects)
+        # self.user_storage.add_roles_to_the_user(user_id=user_id,
+        #                                         role_ids=ids_of_role_objects)
 
     def _validate_roles(self, role_ids: List[str]):
         self._validate_duplicate_role_ids(role_ids=role_ids)

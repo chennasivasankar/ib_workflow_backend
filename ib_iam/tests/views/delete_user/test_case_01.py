@@ -29,9 +29,9 @@ class TestCase01DeleteUserAPITestCase(TestUtils):
 
         company = CompanyFactory.create()
         UserDetailsFactory.create(user_id=delete_user_id, company=company)
-        from ib_iam.tests.factories.models import RoleFactory
+        from ib_iam.tests.factories.models import ProjectRoleFactory
         [UserRoleFactory.create(
-            user_id=delete_user_id, role=RoleFactory.create()
+            user_id=delete_user_id, role=ProjectRoleFactory.create()
         ) for _ in range(4)]
         from ib_iam.tests.factories.models import TeamFactory
         [UserTeamFactory.create(

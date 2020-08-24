@@ -35,7 +35,6 @@ def complete_user_details_dto():
     complete_user_details_dto = ListOfCompleteUsersDTO(
         users=user_profile_dtos,
         teams=user_teams,
-        roles=user_roles,
         companies=user_company_dtos,
         total_no_of_users=len(user_ids)
     )

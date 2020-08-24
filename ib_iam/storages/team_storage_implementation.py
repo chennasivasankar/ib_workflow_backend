@@ -2,19 +2,11 @@ from typing import List, Optional
 
 from ib_iam.exceptions.custom_exceptions import InvalidTeamId
 from ib_iam.interactors.storage_interfaces.dtos import \
-    TeamNameAndDescriptionDTO, PaginationDTO, TeamUserIdsDTO, \
-    TeamsWithTotalTeamsCountDTO, TeamWithTeamIdAndUserIdsDTO, TeamDTO, \
-    TeamNameAndDescriptionDTO, TeamIdAndNameDTO
-from ib_iam.app_interfaces.dtos import UserTeamsDTO
-
+    TeamNameAndDescriptionDTO, TeamIdAndNameDTO, PaginationDTO, TeamUserIdsDTO, \
+    TeamsWithTotalTeamsCountDTO, TeamWithTeamIdAndUserIdsDTO, TeamDTO
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
     TeamStorageInterface
 from ib_iam.models import Team, UserTeam
-from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, TeamUserIdsDTO,
-    TeamsWithTotalTeamsCountDTO, TeamWithUserIdsDTO,
-    TeamWithTeamIdAndUserIdsDTO,
-    TeamDTO)
 
 
 class TeamStorageImplementation(TeamStorageInterface):
@@ -100,8 +92,9 @@ class TeamStorageImplementation(TeamStorageInterface):
             .values_list("user_id", flat=True)
         return list(member_ids)
 
-    def delete_all_members_of_team(self, team_id: str):
-        UserTeam.objects.filter(team_id=team_id).delete()
+    def delete_members_from_team(self, team_id: str, user_ids: List[str]):
+        UserTeam.objects.filter(team_id=team_id, user_id__in=user_ids) \
+            .delete()
 
     def delete_team(self, team_id: str):
         Team.objects.filter(team_id=team_id).delete()

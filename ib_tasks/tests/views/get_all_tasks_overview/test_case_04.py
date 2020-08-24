@@ -6,7 +6,7 @@ import json
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from ib_iam.tests.factories.models import UserRoleFactory, RoleFactory
+from ib_iam.tests.factories.models import UserRoleFactory, ProjectRoleFactory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import TaskFactory, StageModelFactory, \
     CurrentTaskStageModelFactory, StageActionFactory, TaskGoFFieldFactory, \
@@ -48,9 +48,9 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
         FieldRoleFactory.reset_sequence()
         ActionPermittedRolesFactory.reset_sequence()
         UserRoleFactory.reset_sequence()
-        RoleFactory.reset_sequence()
-        role_obj_1 = RoleFactory(role_id="FIN_PAYMENT_REQUESTER")
-        role_obj_2 = RoleFactory(role_id="FIN_PAYMENT_APPROVER")
+        ProjectRoleFactory.reset_sequence()
+        role_obj_1 = ProjectRoleFactory(role_id="FIN_PAYMENT_REQUESTER")
+        role_obj_2 = ProjectRoleFactory(role_id="FIN_PAYMENT_APPROVER")
         UserRoleFactory(user_id=user_id, role=role_obj_1)
         UserRoleFactory(user_id=user_id, role=role_obj_2)
         task_objs = TaskFactory.create_batch(3,

@@ -15,8 +15,8 @@ def get_company_id(company_name):
 
 
 def get_role_ids_bulk():
-    from ib_iam.models import Role
-    db_role_ids = list(Role.objects.values_list('id', flat=True))
+    from ib_iam.models import ProjectRole
+    db_role_ids = list(ProjectRole.objects.values_list('id', flat=True))
     return db_role_ids
 
 
