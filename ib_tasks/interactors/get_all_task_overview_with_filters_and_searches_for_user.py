@@ -57,7 +57,9 @@ class GetTasksOverviewForUserInteractor:
         task_with_complete_stage_details_dtos = \
             self._get_task_with_complete_stage_details_dtos(
                 user_id=user_id,
-                stage_ids=stage_ids)
+                stage_ids=stage_ids,
+                task_ids=task_ids
+            )
         task_id_with_stage_details_dtos = [
             task_with_complete_stage_details_dto.task_with_stage_details_dto
             for task_with_complete_stage_details_dto in
@@ -82,16 +84,10 @@ class GetTasksOverviewForUserInteractor:
                 task_fields_and_action_details_dtos
             )
 
-        filtered_tasks_details = [
-            task_with_stage_details_having_actions_dto
-            for task_with_stage_details_having_actions_dto in task_with_stage_details_having_actions_dtos
-            if task_with_stage_details_having_actions_dto.task_with_stage_details_dto.task_id in task_ids
-        ]
-
         from ib_tasks.interactors.presenter_interfaces.dtos import \
             AllTasksOverviewDetailsDTO
         all_tasks_overview_details_dto = AllTasksOverviewDetailsDTO(
-            task_with_complete_stage_details_dtos=filtered_tasks_details,
+            task_with_complete_stage_details_dtos=task_with_stage_details_having_actions_dtos,
             task_fields_and_action_details_dtos=
             task_fields_and_action_details_dtos,
         )
@@ -107,7 +103,7 @@ class GetTasksOverviewForUserInteractor:
         return stage_ids
 
     def _get_task_with_complete_stage_details_dtos(
-            self, user_id: str, stage_ids: List[str]
+            self, user_id: str, stage_ids: List[str], task_ids: List[int],
     ) -> List[TaskWithCompleteStageDetailsDTO]:
         from ib_tasks.interactors. \
             get_valid_task_ids_for_user_based_on_stage_ids import \
@@ -120,8 +116,8 @@ class GetTasksOverviewForUserInteractor:
             )
         task_id_with_stage_ids_dtos = task_ids_of_user_based_on_stage_ids_interactor. \
             get_task_ids_of_user_based_on_stage_ids(
-            user_id=user_id, stage_ids=stage_ids
-        )
+                user_id=user_id, stage_ids=stage_ids, task_ids=task_ids
+            )
         return task_id_with_stage_ids_dtos
 
     def _get_task_fields_and_action(

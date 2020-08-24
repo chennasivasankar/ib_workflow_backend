@@ -25,7 +25,7 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
         self.task_stage_storage = task_stage_storage
 
     def get_task_ids_of_user_based_on_stage_ids(
-            self, user_id: str, stage_ids: List[str]) \
+            self, user_id: str, stage_ids: List[str], task_ids: List[int]) \
             -> List[TaskWithCompleteStageDetailsDTO]:
         given_stage_ids = stage_ids
 
@@ -37,7 +37,7 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
         self._validate_stage_ids(valid_stage_ids, given_unique_stage_ids)
         task_id_with_max_stage_value_dtos = self.task_storage. \
             get_user_task_ids_and_max_stage_value_dto_based_on_given_stage_ids(
-                 stage_ids=valid_stage_ids)
+                 stage_ids=valid_stage_ids, task_ids=task_ids)
         stage_values = [
             task_id_with_max_stage_value_dto.stage_value
             for task_id_with_max_stage_value_dto in

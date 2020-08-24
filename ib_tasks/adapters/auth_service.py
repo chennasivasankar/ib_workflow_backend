@@ -100,7 +100,7 @@ class AuthService:
 
     def get_projects_info_for_given_ids(self, project_ids: List[str]) -> List[
         ProjectDetailsDTO]:
-        raise NotImplementedError
+        pass
 
     def get_team_info_for_given_user_ids(self, user_ids: List[str], project_id:str) -> List[
         UserIdWIthTeamDetailsDTOs]:
