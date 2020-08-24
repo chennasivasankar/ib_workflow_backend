@@ -28,13 +28,10 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
     TaskDelayParametersDTO
-from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
-    ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
-    GlobalConstant, StagePermittedRoles, TaskTemplateInitialStage, Stage, \
-    TaskLog, TaskTemplateStatusVariable, TaskStageHistory
-from ib_tasks.models.task_due_details import UserTaskDelayReason,\
-    GlobalConstant, \
+from ib_tasks.models import GlobalConstant, \
     StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskTemplateStatusVariable
+from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
+    ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole
 from ib_tasks.models import \
     TaskStageHistory
 from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
@@ -298,7 +295,7 @@ class StagesStorageImplementation(StageStorageInterface):
                 task_id=each_task_id_with_stage_assignee_dto.task_id,
                 stage_id=each_task_id_with_stage_assignee_dto.db_stage_id,
                 assignee_id=each_task_id_with_stage_assignee_dto.assignee_id,
-            team_id=each_task_id_with_stage_assignee_dto.team_id)
+                team_id=each_task_id_with_stage_assignee_dto.team_id)
             for each_task_id_with_stage_assignee_dto in
             task_id_with_stage_assignee_dtos
         ]
@@ -410,17 +407,16 @@ class StagesStorageImplementation(StageStorageInterface):
         return permitted_user_role_ids_list
 
     def get_stage_ids_having_actions(self, user_roles: List[str]) -> List[str]:
-        stage_ids = ActionPermittedRoles.objects\
+        stage_ids = ActionPermittedRoles.objects \
             .filter(
-                Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
-            )\
+            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+        ) \
             .values_list('action__stage_id', flat=True)
-        stage_ids = StagePermittedRoles.objects.filter(stage_id__in=stage_ids)\
+        stage_ids = StagePermittedRoles.objects.filter(stage_id__in=stage_ids) \
             .filter(
-                Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
-            ).values_list('stage__stage_id', flat=True)
+            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+        ).values_list('stage__stage_id', flat=True)
         return sorted(list(set(stage_ids)))
-
 
 
 class StorageImplementation(StorageInterface):

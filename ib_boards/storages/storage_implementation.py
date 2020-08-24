@@ -2,7 +2,7 @@ import json
 from typing import List, Tuple
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
-    BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO, StarOrUnstarParametersDTO
+    BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO, StarOrUnstarParametersDTO, ProjectBoardDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
     ColumnDetailsDTO, TaskBoardsDetailsDTO, ColumnStageIdsDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnBoardDTO, \
@@ -13,6 +13,19 @@ from ib_boards.models import Board, ColumnPermission, Column, UserStarredBoard
 
 
 class StorageImplementation(StorageInterface):
+
+    def add_project_id_for_boards(
+            self, project_boards_dtos: List[ProjectBoardDTO]):
+        board_ids = [item.board_id for item in project_boards_dtos]
+        board_objs = Board.objects.filter(board_id__in=board_ids)
+        project_board_dict = {}
+        for item in project_boards_dtos:
+            project_board_dict[item.board_id] = item.project_id
+
+        for obj in board_objs:
+            obj.project_id = project_board_dict[obj.board_id]
+
+        Board.objects.bulk_update(board_objs, ["project_id"])
 
     def validate_board_id(self, board_id):
         boards = Board.objects.all().values('board_id')
