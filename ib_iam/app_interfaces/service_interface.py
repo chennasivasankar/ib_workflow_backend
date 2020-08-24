@@ -259,4 +259,13 @@ class ServiceInterface:
     @staticmethod
     def get_user_teams_for_each_user(
             user_ids: List[str]) -> List[UserTeamsDTO]:
-        pass
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        user_storage = UserStorageImplementation()
+        from ib_iam.storages.team_storage_implementation import \
+            TeamStorageImplementation
+        team_storage = TeamStorageImplementation()
+        from ib_iam.interactors.team_interactor import TeamInteractor
+        interactor = TeamInteractor(
+            user_storage=user_storage, team_storage=team_storage)
+        return interactor.get_user_teams_for_each_user(user_ids=user_ids)
