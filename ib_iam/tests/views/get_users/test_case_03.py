@@ -5,7 +5,7 @@ from ib_iam.tests.common_fixtures.reset_fixture import \
     reset_sequence_for_user_profile_dto_factory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import UserDetailsFactory, CompanyFactory, \
-    UserTeamFactory, TeamFactory, UserRoleFactory, RoleFactory
+    UserTeamFactory, TeamFactory, UserRoleFactory, ProjectRoleFactory
 
 
 class TestCase03GetUsersAPITestCase(TestUtils):
@@ -82,7 +82,7 @@ class TestCase03GetUsersAPITestCase(TestUtils):
         reset_sequence_role_factory()
         user_role_objects = [UserRoleFactory.create(
             user_id=user_role["user_id"],
-            role=RoleFactory.create(role_id=user_role["role_id"])
+            role=ProjectRoleFactory.create(role_id=user_role["role_id"])
         ) for user_role in user_roles]
         return user_role_objects
 

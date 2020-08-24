@@ -20,6 +20,7 @@ class ServiceInterface:
         valid_role_ids = interactor.get_valid_role_ids(role_ids=role_ids)
         return valid_role_ids
 
+    # TODO: to get role ids independent of project id
     @staticmethod
     def get_user_role_ids(user_id: str) -> List[str]:
         from ib_iam.storages.roles_storage_implementation import \

@@ -14,7 +14,7 @@ from ib_iam.tests.common_fixtures.reset_fixture import \
     reset_sequence_for_user_profile_dto_factory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import UserDetailsFactory, UserRoleFactory, \
-    RoleFactory, CompanyFactory, UserTeamFactory, TeamFactory
+    ProjectRoleFactory, CompanyFactory, UserTeamFactory, TeamFactory
 
 
 class TestCase04GetUsersAPITestCase(TestUtils):
@@ -66,11 +66,11 @@ class TestCase04GetUsersAPITestCase(TestUtils):
 
     @staticmethod
     def _get_or_create_role(role_id: Optional[str]):
-        from ib_iam.models import Role
+        from ib_iam.models import ProjectRole
         try:
-            return Role.objects.get(role_id=role_id)
-        except Role.DoesNotExist:
-            return RoleFactory.create(role_id=role_id)
+            return ProjectRole.objects.get(role_id=role_id)
+        except ProjectRole.DoesNotExist:
+            return ProjectRoleFactory.create(role_id=role_id)
 
     @staticmethod
     def _get_or_create_team(team_id: Optional[str]):

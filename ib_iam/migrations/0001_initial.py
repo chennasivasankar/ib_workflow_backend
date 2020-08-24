@@ -3,7 +3,7 @@
 from django.db import migrations, models
 import django.db.models.deletion
 import ib_iam.models.company
-import ib_iam.models.role
+import ib_iam.models.project_role
 import ib_iam.models.team
 
 
@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('creation_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_update_datetime', models.DateTimeField(auto_now=True)),
-                ('id', models.UUIDField(default=ib_iam.models.role.generate_uuid4, editable=False, primary_key=True, serialize=False)),
+                ('id', models.UUIDField(default=ib_iam.models.project_role.generate_uuid4, editable=False, primary_key=True, serialize=False)),
                 ('role_id', models.CharField(max_length=100, unique=True)),
                 ('name', models.CharField(max_length=100)),
                 ('description', models.TextField(max_length=120)),

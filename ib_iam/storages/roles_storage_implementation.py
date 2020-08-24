@@ -9,16 +9,16 @@ from ib_iam.interactors.storage_interfaces.roles_storage_interface import \
 class RolesStorageImplementation(RolesStorageInterface):
 
     def create_roles(self, role_dtos: List[RoleDTO]):
-        from ib_iam.models import Role
+        from ib_iam.models import ProjectRole
         role_objects = [
-            Role(role_id=role_dto.role_id, name=role_dto.name,
-                 description=role_dto.description)
+            ProjectRole(role_id=role_dto.role_id, name=role_dto.name,
+                        description=role_dto.description)
             for role_dto in role_dtos]
-        Role.objects.bulk_create(role_objects)
+        ProjectRole.objects.bulk_create(role_objects)
 
     def get_valid_role_ids(self, role_ids: List[str]):
-        from ib_iam.models import Role
-        valid_role_ids = Role.objects.filter(role_id__in=role_ids). \
+        from ib_iam.models import ProjectRole
+        valid_role_ids = ProjectRole.objects.filter(role_id__in=role_ids). \
             values_list("role_id", flat=True)
         return list(valid_role_ids)
 

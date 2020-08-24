@@ -22,8 +22,8 @@ class UserStorageImplementation(UserStorageInterface):
             role__role_id__in=role_ids).values_list('user_id', flat=True))
 
     def get_valid_role_ids(self, role_ids: List[str]) -> List[str]:
-        from ib_iam.models import Role
-        return list(Role.objects.filter(
+        from ib_iam.models import ProjectRole
+        return list(ProjectRole.objects.filter(
             role_id__in=role_ids).values_list('role_id', flat=True))
 
     def is_user_admin(self, user_id: str) -> bool:
@@ -37,14 +37,14 @@ class UserStorageImplementation(UserStorageInterface):
         return is_exists
 
     def get_role_objs_ids(self, role_ids: List[str]) -> List[str]:
-        from ib_iam.models import Role
-        role_obj_ids = Role.objects.filter(role_id__in=role_ids) \
+        from ib_iam.models import ProjectRole
+        role_obj_ids = ProjectRole.objects.filter(role_id__in=role_ids) \
             .values_list('id', flat=True)
         return role_obj_ids
 
     def check_are_valid_role_ids(self, role_ids):
-        from ib_iam.models import Role
-        role_objs_count = Role.objects.filter(
+        from ib_iam.models import ProjectRole
+        role_objs_count = ProjectRole.objects.filter(
             role_id__in=role_ids).count()
         are_exists = role_objs_count == len(role_ids)
         return are_exists
@@ -205,8 +205,8 @@ class UserStorageImplementation(UserStorageInterface):
         return team_dtos
 
     def get_roles(self) -> List[RoleIdAndNameDTO]:
-        from ib_iam.models import Role
-        role_query_set = Role.objects.values('role_id', 'name')
+        from ib_iam.models import ProjectRole
+        role_query_set = ProjectRole.objects.values('role_id', 'name')
         role_dtos = [RoleIdAndNameDTO(
             role_id=str(role_object['role_id']),
             name=role_object['name']) for role_object in role_query_set]
@@ -313,9 +313,9 @@ class UserStorageImplementation(UserStorageInterface):
         return user_ids_list
 
     def get_db_role_ids(self, role_ids: List[str]) -> List[str]:
-        from ib_iam.models import Role
+        from ib_iam.models import ProjectRole
         db_role_ids_queryset = \
-            Role.objects.filter(
+            ProjectRole.objects.filter(
                 role_id__in=role_ids).values_list('id', flat=True)
         db_role_ids_list = list(db_role_ids_queryset)
         return db_role_ids_list
