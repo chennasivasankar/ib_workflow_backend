@@ -332,4 +332,20 @@ class ServiceInterface:
     @staticmethod
     def is_valid_user_id_for_given_project(
             user_id: str, project_id: str) -> bool:
-        pass
+        from ib_iam.interactors.project_interactor import ProjectInteractor
+        from ib_iam.storages.project_storage_implementation import \
+            ProjectStorageImplementation
+        project_storage = ProjectStorageImplementation()
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        user_storage = UserStorageImplementation()
+        from ib_iam.storages.team_storage_implementation import \
+            TeamStorageImplementation
+        team_storage = TeamStorageImplementation()
+        interactor = ProjectInteractor(
+            project_storage=project_storage,
+            user_storage=user_storage,
+            team_storage=team_storage
+        )
+        return interactor.is_valid_user_id_for_given_project(
+            user_id=user_id, project_id=project_id)
