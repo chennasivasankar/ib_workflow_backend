@@ -137,11 +137,11 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
         from elasticsearch_dsl import Q
         search = self._get_search_task_objects(apply_filter_dtos)
-        query = Q("match", title={"query": search_query, "fuzziness": "5"}) \
-                & Q('term', project_id__keyword=project_id) \
+        query = Q('term', project_id__keyword=project_id) \
                 & Q('terms', stages__stage_id__keyword=stage_ids)
         if search_query:
-            search = search.query(query)
+            query = query & Q("match", title={"query": search_query, "fuzziness": "5"})
+        search = search.query(query)
         total_tasks_count = search.count()
         task_ids = [
             hit.task_id
