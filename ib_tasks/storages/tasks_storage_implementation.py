@@ -443,7 +443,7 @@ class TasksStorageImplementation(TaskStorageInterface):
         if q is None:
             return []
         task_objs = CurrentTaskStage.objects.filter(q).values('task_id',
-                                                       'stage__stage_id')
+                                                              'stage__stage_id')
 
         task_stage_dtos = self._convert_task_objs_to_dtos(task_objs)
         return task_stage_dtos
@@ -493,7 +493,6 @@ class TasksStorageImplementation(TaskStorageInterface):
         task_id = task_id_queryset.first()
         return task_id
 
-
     def get_task_display_ids_dtos(self, task_ids: List[int]) -> List[
         TaskDisplayIdDTO]:
         task_ids = Task.objects.filter(
@@ -510,7 +509,6 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     def get_project_id_for_the_task_id(self, task_id) -> str:
         return Task.objects.get(id=task_id).project_id
-
 
     def get_project_id_of_task(self, task_id: int) -> str:
         task_obj = Task.objects.get(id=task_id)

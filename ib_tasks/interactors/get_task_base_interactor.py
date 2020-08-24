@@ -37,8 +37,8 @@ class GetTaskBaseInteractor:
     def _get_task_project_details_dto(project_id: str) -> ProjectDetailsDTO:
         from ib_tasks.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
-        task_project_details_dto = service_adapter.auth_service. \
+        task_project_details_dtos = service_adapter.auth_service. \
             get_projects_info_for_given_ids(project_ids=[project_id])
-        return task_project_details_dto
+        return task_project_details_dtos[0]
 
 
