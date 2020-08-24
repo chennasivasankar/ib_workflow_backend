@@ -8,11 +8,11 @@ from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO, \
     StageWithUserDetailsAndTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
+    StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
     StageIdWithRoleIdsDTO, StageDetailsDTO, TaskWithDbStageIdDTO, \
     AssigneeCurrentTasksCountDTO
-from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
-    StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
     TaskStageStorageInterface
 
@@ -48,7 +48,7 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
         from ib_tasks.adapters.auth_service import AuthService
         auth_service_adapter = AuthService()
         user_id_with_team_details_dtos = auth_service_adapter. \
-            get_team_info_for_given_user_ids(user_ids=assignee_ids)
+            get_team_info_for_given_user_ids(user_ids=assignee_ids, project_id=project_id)
         user_with_first_team_details_dtos=[]
         for user_id_with_team_details_dto in user_id_with_team_details_dtos:
             if not user_id_with_team_details_dto.team_details:

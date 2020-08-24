@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_tasks.adapters.dtos import UserDetailsDTO, TeamDetailsDTO, \
-    UserIdWIthTeamDetailsDTOs, TeamProjectDetailsDTO, TeamDetailsWithUserIdDTO, \
+    UserIdWIthTeamDetailsDTOs, TeamDetailsWithUserIdDTO, \
     ProjectDetailsDTO
 from ib_tasks.interactors.field_dtos import SearchableFieldDetailDTO
 from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
@@ -15,6 +15,8 @@ class InvalidProjectIdsException(Exception):
 
 class UserIsNotInProject(Exception):
     pass
+
+
 
 
 class AuthService:
@@ -64,25 +66,25 @@ class AuthService:
         return user_details_dtos
 
     def get_user_details_for_the_given_role_ids_based_on_query(
-            self, role_ids: List[str], project_id: str,
+            self, role_ids: List[str],
             search_query_with_pagination_dto:
             SearchQueryWithPaginationDTO) -> List[UserDetailsDTO]:
         user_profile_details_dtos = self.interface. \
             get_user_details_for_the_given_role_ids_based_on_query(
-            role_ids=role_ids, search_query_with_pagination_dto=
-            search_query_with_pagination_dto, project_id=project_id)
+                role_ids=role_ids, search_query_with_pagination_dto=
+                search_query_with_pagination_dto)
 
         user_details_dtos = self._get_user_details_dtos(
             user_profile_details_dtos)
         return user_details_dtos
-
 
     @staticmethod
     def _get_user_details_dtos(user_profile_details_dtos):
         user_details_dtos = [
             UserDetailsDTO(user_id=each_user_profile_detail_dto.user_id,
                            user_name=each_user_profile_detail_dto.name,
-                           profile_pic_url=each_user_profile_detail_dto.profile_pic_url)
+                           profile_pic_url=each_user_profile_detail_dto
+                           .profile_pic_url)
             for each_user_profile_detail_dto in user_profile_details_dtos]
         return user_details_dtos
 
@@ -100,13 +102,11 @@ class AuthService:
         ProjectDetailsDTO]:
         raise NotImplementedError
 
-    def get_team_info_for_given_user_ids(self, user_ids: List[str]) -> List[
+    def get_team_info_for_given_user_ids(self, user_ids: List[str], project_id:str) -> List[
         UserIdWIthTeamDetailsDTOs]:
-        # raise NotImplementedError
-        return [UserIdWIthTeamDetailsDTOs(user_id=user_id, team_details=[]) for user_id in user_ids]
-
+        raise NotImplementedError
     def get_team_details_for_given_team_project_details_dto(
-            self, team_project_details_dto: TeamProjectDetailsDTO) -> \
+            self, team_project_details_dto) -> \
             List[TeamDetailsWithUserIdDTO]:
         raise NotImplementedError
 

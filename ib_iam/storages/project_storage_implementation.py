@@ -38,3 +38,10 @@ class ProjectStorageImplementation(ProjectStorageInterface):
                                  description=project_object.description,
                                  logo_url=project_object.logo_url)
         return project_dto
+
+    def get_project_dtos_for_given_project_ids(self, project_ids: List[str]):
+        project_objects = Project.objects.filter(project_id__in=project_ids)
+        project_dtos = [
+            self._convert_to_project_dto(project_object=project_object)
+            for project_object in project_objects]
+        return project_dtos

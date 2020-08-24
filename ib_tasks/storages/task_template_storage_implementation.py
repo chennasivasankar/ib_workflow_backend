@@ -102,10 +102,9 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
         task_template_objs = ProjectTaskTemplate.objects.filter(
             (
-                    Q(project_id__in=project_ids) &
-                    Q(task_template__is_tansition_template=False)
-            ) | (Q(project_id=None) & Q(
-                task_template__is_tansition_template=False))
+                Q(project_id__in=project_ids) &
+                Q(task_template__is_transition_template=False)
+            ) | (Q(project_id=None) & Q(task_template__is_transition_template=False))
         ).annotate(template_name=F('task_template__name'))
         task_template_dtos = self._convert_project_templates_objs_to_dtos(
             task_template_objs=task_template_objs)

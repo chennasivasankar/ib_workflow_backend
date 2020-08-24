@@ -15,7 +15,7 @@ from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.presenter_interfaces. \
     get_next_stages_random_assignees_of_a_task_presenter import \
     GetNextStagesRandomAssigneesOfATaskPresenterInterface
-from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO, \
+from ib_tasks.interactors.stages_dtos import \
     StageWithUserDetailsAndTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface

@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 from typing import List, Any, Optional
 
+from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    StageActionDetailsDTO
+    ActionDetailsDTO, StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 
 
@@ -51,6 +52,7 @@ class TaskStageIdsDTO:
 class TaskWithDbStageIdDTO:
     task_id: int
     db_stage_id: int
+
 
 
 @dataclass
@@ -102,6 +104,7 @@ class TaskStageAssigneeDTO:
     task_stage_id: int
     stage_id: int
     assignee_id: Optional[str]
+    team_id: Optional[str]
 
 
 @dataclass
@@ -184,3 +187,4 @@ class AssigneeCurrentTasksCountDTO:
 class StageIdWithValueDTO:
     db_stage_id: int
     stage_value: int
+
