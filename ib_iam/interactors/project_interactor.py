@@ -53,10 +53,13 @@ class ProjectInteractor:
         return user_id_with_team_id_and_name_dto
 
     def _validate_project(self, project_id: str):
-        valid_project_id = self.project_storage \
+        valid_project_ids = self.project_storage \
             .get_valid_project_ids_from_given_project_ids(
-            project_ids=[project_id])[0]
-        is_not_valid_project = not (valid_project_id == project_id)
+            project_ids=[project_id])
+        is_not_valid_project = not (
+                len(valid_project_ids) == 1 and
+                valid_project_ids[0] == project_id
+        )
         if is_not_valid_project:
             from ib_iam.exceptions.custom_exceptions import InvalidProjectId
             raise InvalidProjectId
