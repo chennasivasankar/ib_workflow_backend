@@ -82,11 +82,18 @@ class GetTasksToRelevantSearchQuery(ValidationMixin):
         filter_dtos = self.filter_storage.get_enabled_filters_dto_to_user(
             user_id=user_id, project_id=project_id
         )
+        from ib_tasks.adapters.service_adapter import get_service_adapter
+        roles_service = get_service_adapter().roles_service
+        user_roles = roles_service.get_user_role_ids(
+            user_id=user_id)
+        stage_ids_having_actions = self.stage_storage \
+            .get_stage_ids_having_actions(user_roles=user_roles)
         apply_filters_dto = apply_filters_dto + filter_dtos
         self._validations_of_limit_and_offset(offset=offset, limit=limit)
         query_tasks_dto = self.elasticsearch_storage.search_tasks(
             offset=offset, limit=limit, search_query=query_value,
-            apply_filter_dtos=apply_filters_dto
+            apply_filter_dtos=apply_filters_dto, project_id=project_id,
+            stage_ids=stage_ids_having_actions
         )
         return self._get_all_tasks_overview_details(
             query_tasks_dto, view_type, user_id, project_id

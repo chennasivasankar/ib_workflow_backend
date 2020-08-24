@@ -99,4 +99,8 @@ class CreateOrUpdateDataInElasticSearchInteractor:
     @staticmethod
     def _get_field_response_with_exact_data_type(
             field_response: str, field_type: FieldTypes):
+        if field_type == FieldTypes.FLOAT.value:
+            return float(field_response)
+        elif field_type == FieldTypes.NUMBER.value:
+            return int(field_response)
         return field_response

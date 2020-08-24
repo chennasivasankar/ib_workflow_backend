@@ -30,8 +30,8 @@ def validation_for_list_of_project_boards_dict(list_of_project_boards: List[Dict
 
     schema = Schema(
         [{
-            "project_id": str,
-            "board_id": str
+            "project_id": And(str, len),
+            "board_id": And(str, len)
         }],
         ignore_extra_keys=True
     )

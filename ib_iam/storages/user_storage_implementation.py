@@ -70,11 +70,11 @@ class UserStorageImplementation(UserStorageInterface):
         from ib_iam.models import UserTeam
         UserTeam.objects.filter(user_id=user_id).delete()
 
-    # def add_roles_to_the_user(self, user_id: str, role_ids: List[str]):
-    #     from ib_iam.models import UserRole
-    #     user_roles = [UserRole(user_id=user_id, role_id=str(role_id))
-    #                   for role_id in role_ids]
-    #     UserRole.objects.bulk_create(user_roles)
+    def add_roles_to_the_user(self, user_id: str, role_ids: List[str]):
+        from ib_iam.models import UserRole
+        user_roles = [UserRole(user_id=user_id, project_role_id=str(role_id))
+                      for role_id in role_ids]
+        UserRole.objects.bulk_create(user_roles)
 
     def add_user_to_the_teams(self, user_id: str, team_ids: List[str]):
         from ib_iam.models import UserTeam

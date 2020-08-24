@@ -1,8 +1,7 @@
 from typing import List
 
 from ib_tasks.constants.enum import ViewType
-from ib_tasks.interactors.get_stages_assignees_details_interactor import \
-    TaskStageAssigneeDetailsDTO
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \

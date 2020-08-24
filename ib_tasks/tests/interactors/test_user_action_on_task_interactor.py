@@ -157,9 +157,7 @@ class TestUserActionOnTaskInteractor:
 
     @pytest.fixture
     def assignees(self):
-        from ib_tasks.interactors.get_stages_assignees_details_interactor \
-            import \
-            TaskStageAssigneeDetailsDTO
+        from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
         from ib_tasks.adapters.dtos import AssigneeDetailsDTO
         return TaskStageAssigneeDetailsDTO(
             task_id=1,
