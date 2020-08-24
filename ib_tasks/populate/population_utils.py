@@ -2,7 +2,7 @@ from typing import List
 
 from django.db import transaction
 
-from ib_iam.populate.add_roles_details import RoleDetails
+from ib_iam.populate.add_roles_details import ProjectRoleDetails
 from ib_tasks.constants.constants import ROLES_SUB_SHEET
 from ib_tasks.populate.get_sheet_data_for_creating_or_updating_stages import \
     GetSheetDataForStages
@@ -29,8 +29,8 @@ def populate_data(spread_sheet_name: str):
     task_template = PopulateTaskTemplates()
     task_template.populate_task_templates(spread_sheet_name=spread_sheet_name)
 
-    roles = RoleDetails()
-    roles.add_roles_details_to_database(
+    project_roles = ProjectRoleDetails()
+    project_roles.add_project_roles_details_to_database(
         spread_sheet_name=spread_sheet_name, sub_sheet_name=ROLES_SUB_SHEET)
 
     gofs = PopulateGoFs()
