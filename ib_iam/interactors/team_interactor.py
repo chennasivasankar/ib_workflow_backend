@@ -96,9 +96,8 @@ class TeamInteractor(ValidationMixin):
             self, user_id: str,
             team_with_team_id_and_user_ids_dto: TeamWithTeamIdAndUserIdsDTO):
         self._validate_is_user_admin(user_id=user_id)
-        self._validate_update_team_details(
-            team_with_team_id_and_user_ids_dto=team_with_team_id_and_user_ids_dto
-        )
+        self._validate_update_team_details(team_with_team_id_and_user_ids_dto=
+                                           team_with_team_id_and_user_ids_dto)
         user_ids = team_with_team_id_and_user_ids_dto.user_ids
         team_id = team_with_team_id_and_user_ids_dto.team_id
         from ib_iam.interactors.storage_interfaces.dtos import TeamDTO
@@ -107,8 +106,12 @@ class TeamInteractor(ValidationMixin):
             name=team_with_team_id_and_user_ids_dto.name,
             description=team_with_team_id_and_user_ids_dto.description)
         self.team_storage.update_team_details(team_dto=team_dto)
-        self.team_storage.delete_all_members_of_team(team_id=team_id)
-        self.team_storage.add_users_to_team(team_id=team_id, user_ids=user_ids)
+        team_user_ids = self.team_storage.get_member_ids_of_team(
+            team_id=team_id)
+        self._add_members_to_team(
+            user_ids=user_ids, team_user_ids=team_user_ids, team_id=team_id)
+        self._delete_members_of_team(
+            user_ids=user_ids, team_user_ids=team_user_ids, team_id=team_id)
 
     def delete_team_wrapper(
             self, user_id: str, team_id: str,
@@ -144,6 +147,16 @@ class TeamInteractor(ValidationMixin):
             user_ids=team_with_team_id_and_user_ids_dto.user_ids)
         self._validate_is_team_name_exists_for_update_team(
             name=name, team_id=team_id)
+
+    def _add_members_to_team(self, user_ids, team_user_ids, team_id):
+        user_ids_to_add = list(set(user_ids) - set(team_user_ids))
+        self.team_storage.add_users_to_team(
+            team_id=team_id, user_ids=user_ids_to_add)
+
+    def _delete_members_of_team(self, user_ids, team_user_ids, team_id):
+        member_ids_to_delete = list(set(team_user_ids) - set(user_ids))
+        self.team_storage.delete_members_from_team(
+            team_id=team_id, user_ids=member_ids_to_delete)
 
     def _validate_is_team_name_already_exists(self, name: str):
         team_id = \
