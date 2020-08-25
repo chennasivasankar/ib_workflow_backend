@@ -2,7 +2,8 @@ from typing import List, Tuple
 
 from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
     UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, UserTeamDTO
+from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, UserTeamDTO, \
+    TeamIdAndNameDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
@@ -134,3 +135,11 @@ class ProjectInteractor:
             from ib_iam.exceptions.custom_exceptions import \
                 UserNotExistsInGivenTeam
             raise UserNotExistsInGivenTeam
+
+    def get_team_dtos(
+            self, team_ids: List[str], project_id: str
+    ) -> List[TeamIdAndNameDTO]:
+        valid_team_ids = self.project_storage.get_valid_team_ids_for_given_project(
+            project_id=project_id, team_ids=team_ids)
+        return self.team_storage.get_team_id_and_name_dtos(
+            team_ids=valid_team_ids)
