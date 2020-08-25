@@ -323,15 +323,15 @@ class TestGetUsers:
     @pytest.mark.django_db
     def test_get_all_distinct_roles(self):
         # Arrange
-        from ib_iam.tests.factories.models import RoleFactory, UserRoleFactory
-        RoleFactory.reset_sequence(0)
+        from ib_iam.tests.factories.models import ProjectRoleFactory, UserRoleFactory
+        ProjectRoleFactory.reset_sequence(0)
         UserRoleFactory.reset_sequence(0)
 
         expected_user_role_ids = [
             uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057ba'),
             uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057bb')
         ]
-        [UserRoleFactory.create(role=RoleFactory.create(id=_id))
+        [UserRoleFactory.create(project_role=ProjectRoleFactory.create(id=_id))
          for _id in expected_user_role_ids]
 
         storage = UserStorageImplementation()
@@ -359,8 +359,8 @@ class TestGetUsers:
     def test_get_user_ids_for_given_role_ids_when_exists_returns_user_ids(
             self):
         # Arrange
-        from ib_iam.tests.factories.models import RoleFactory, UserRoleFactory
-        RoleFactory.reset_sequence(0)
+        from ib_iam.tests.factories.models import ProjectRoleFactory, UserRoleFactory
+        ProjectRoleFactory.reset_sequence(0)
         UserRoleFactory.reset_sequence(0)
 
         user_roles = [
@@ -374,7 +374,7 @@ class TestGetUsers:
             }
         ]
         [UserRoleFactory.create(
-            role=RoleFactory.create(id=user_role["db_role_id"]),
+            project_role=ProjectRoleFactory.create(id=user_role["db_role_id"]),
             user_id=user_role["user_id"]
         ) for user_role in user_roles]
         expected_user_ids = [
@@ -493,15 +493,15 @@ class TestGetUsers:
     @pytest.mark.django_db
     def test_get_db_role_ids(self):
         # Arrange
-        from ib_iam.tests.factories.models import RoleFactory
-        RoleFactory.reset_sequence(1)
+        from ib_iam.tests.factories.models import ProjectRoleFactory
+        ProjectRoleFactory.reset_sequence(1)
 
         role_ids = ["ROLE_1", "ROLE_2"]
         expected_db_role_ids = [
             uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057ba'),
             uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057bb')
         ]
-        RoleFactory.create_batch(
+        ProjectRoleFactory.create_batch(
             size=2, id=factory.Iterator(expected_db_role_ids)
         )
 

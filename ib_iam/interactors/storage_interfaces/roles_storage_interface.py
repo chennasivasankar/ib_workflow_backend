@@ -9,7 +9,7 @@ from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
 class RolesStorageInterface(ABC):
 
     @abstractmethod
-    def create_roles(self, role_dtos: List[RoleDTO]):
+    def create_roles(self, role_dtos: List[RoleDTO], project_id: str):
         pass
 
     @abstractmethod

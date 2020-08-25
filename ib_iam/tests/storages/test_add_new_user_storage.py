@@ -2,13 +2,13 @@ import pytest
 
 from ib_iam.storages.user_storage_implementation \
     import UserStorageImplementation
-from ib_iam.tests.factories.models import CompanyFactory, TeamFactory, RoleFactory
+from ib_iam.tests.factories.models import CompanyFactory, TeamFactory, ProjectRoleFactory
 
 
 @pytest.fixture()
 def reset_sequence_for_model_factories():
     CompanyFactory.reset_sequence(0)
-    RoleFactory.reset_sequence(0)
+    ProjectRoleFactory.reset_sequence(0)
     TeamFactory.reset_sequence(0)
 
 
@@ -34,7 +34,7 @@ def teams():
 def roles():
     role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                 "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
-    roles = [RoleFactory.create(id=role_id) for role_id in role_ids]
+    roles = [ProjectRoleFactory.create(id=role_id) for role_id in role_ids]
     return roles
 
 

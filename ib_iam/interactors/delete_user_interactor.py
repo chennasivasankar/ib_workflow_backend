@@ -36,7 +36,7 @@ class DeleteUserInteractor(ValidationMixin):
         self._validate_delete_user_details(user_id=user_id,
                                            delete_user_id=delete_user_id)
         self.storage.delete_user(user_id=delete_user_id)
-        self.storage.delete_user_roles(user_id=delete_user_id)
+        # self.storage.delete_user_roles(user_id=delete_user_id)
         self.storage.delete_user_teams(user_id=delete_user_id)
         self._deactivate_delete_user_id_in_ib_users(
             delete_user_id=delete_user_id)

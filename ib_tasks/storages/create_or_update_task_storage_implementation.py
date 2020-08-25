@@ -257,6 +257,7 @@ class CreateOrUpdateTaskStorageImplementation(
     def _get_task_base_details_dto(task_obj: Task):
         task_base_details_dto = TaskBaseDetailsDTO(
             template_id=task_obj.template_id,
+            project_id=task_obj.project_id,
             task_display_id=task_obj.task_display_id,
             title=task_obj.title,
             description=task_obj.description,
@@ -368,3 +369,7 @@ class CreateOrUpdateTaskStorageImplementation(
             for field_searchable_value in field_searchable_values
         ]
         return field_searchable_dtos
+
+    @staticmethod
+    def get_task_ids() -> List[int]:
+        return list(Task.objects.values_list('id', flat=True))

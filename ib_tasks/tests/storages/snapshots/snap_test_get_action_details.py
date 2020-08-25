@@ -25,3 +25,6 @@ snapshots['TestGetActionDetails.test_get_permitted_action_ids_given_stage_ids re
     8,
     9
 ]
+
+snapshots['TestGetActionDetails.test_get_action_details_when_no_actions response'] = [
+]

@@ -5,7 +5,8 @@ test with invalid gof ids
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from ib_tasks.tests.factories.models import TaskFactory, GoFFactory
+from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
+    StageActionFactory, StageFactory
 from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
@@ -21,13 +22,16 @@ class TestCase07UpdateTaskAPITestCase(TestUtils):
     def reset_sequence(self):
         TaskFactory.reset_sequence()
         GoFFactory.reset_sequence()
+        StageFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
         task_id = "IBWF-1"
+        stage_id = 1
         gof_ids = ["GOF-1", "GOF-2"]
 
         import factory
+        StageFactory.create(id=stage_id)
         gofs = GoFFactory.create_batch(size=len(gof_ids),
                                        gof_id=factory.Iterator(gof_ids))
         task = TaskFactory.create(task_display_id=task_id)
@@ -46,7 +50,8 @@ class TestCase07UpdateTaskAPITestCase(TestUtils):
             "priority": "HIGH",
             "stage_assignee": {
                 "stage_id": 1,
-                "assignee_id": "assignee_id_1"
+                "assignee_id": "assignee_id_1",
+                "team_id": "team_1"
             },
             "task_gofs": [
                 {

@@ -28,6 +28,7 @@ class TestAddDueDelayDetails:
                                            user_id="123e4567-e89b-12d3-a456-426614174000")
 
     @pytest.fixture()
+    @freeze_time("2020-08-10 12:30:00")
     def populate_data(self):
         tasks = TaskModelFactory.create_batch(size=4, due_date="2020-08-10 12:30:00")
         TaskLogFactory.reset_sequence()

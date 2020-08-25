@@ -9,7 +9,7 @@ import factory
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
     TaskTemplateStagesDTO, TaskSummaryFieldsDTO, \
     TaskStatusDTO, FieldDetailsDTO, ActionDetailsDTO, TaskIdStageDTO, \
-    ColumnTaskIdsDTO, StageAssigneesDTO, AssigneesDTO
+    ColumnTaskIdsDTO, StageAssigneesDTO, AssigneesDTO, ProjectBoardDTO
 from ib_boards.interactors.dtos import ColumnTasksDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnStageIdsDTO
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, \
@@ -21,7 +21,8 @@ class TaskColumnDTOFactory(factory.Factory):
         model = ColumnTasksDTO
 
     column_id = factory.Sequence(lambda n: f"COLUMN_ID_{n + 1}")
-    task_id = factory.Sequence(lambda n: "task_id_%d" % n)
+    task_display_id = factory.Sequence(lambda n: "task_id_%d" % n)
+    task_id = factory.Sequence(lambda n: n)
     stage_id = factory.Sequence(lambda n: f'stage_id_{n}')
 
 
@@ -142,6 +143,7 @@ class TaskDetailsConfigDTOFactory(factory.Factory):
     offset = 0
     limit = 10
     user_id = 'user_id_1'
+    project_id = factory.Sequence(lambda n: f'project_id_{n + 1}')
     search_query = "hello"
 
 
@@ -170,3 +172,10 @@ class StageAssigneesDTOFactory(factory.Factory):
     task_id = factory.Sequence(lambda n: f'task_id_{n}')
     assignees_details = factory.SubFactory(AssigneeDetailsDTOFactory)
 
+
+class ProjectBoardDTOFactory(factory.Factory):
+    class Meta:
+        model = ProjectBoardDTO
+
+    project_id = factory.Sequence(lambda n: f'PROJECT_ID_{n}')
+    board_id = factory.Sequence(lambda n: f'BOARD_ID_{n}')

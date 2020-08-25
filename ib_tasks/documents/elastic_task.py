@@ -20,6 +20,7 @@ class ElasticFieldDTO:
 
 @dataclass
 class ElasticTaskDTO:
+    project_id: Optional[str]
     template_id: Optional[str]
     task_id: int
     title: str
@@ -33,10 +34,11 @@ class Field(InnerDoc):
 
 
 class Stage(InnerDoc):
-    stage_id: Text()
+    stage_id = Text()
 
 
 class Task(Document):
+    project_id = Text()
     template_id = Text()
     task_id = Integer()
     title = Text()

@@ -24,11 +24,11 @@ class TestCase03AddUserAPITestCase(TestUtils):
         from ib_iam.tests.factories.models import UserDetailsFactory
         UserDetailsFactory.create(user_id=user_id, is_admin=True)
         from ib_iam.tests.factories.models \
-            import CompanyFactory, TeamFactory, RoleFactory
+            import CompanyFactory, TeamFactory, ProjectRoleFactory
         CompanyFactory.create(
             company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331')
         TeamFactory.create(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331')
-        RoleFactory.create(id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331')
+        ProjectRoleFactory.create(id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331')
 
     @staticmethod
     def elastic_storage_create_elastic_user_mock(mocker):

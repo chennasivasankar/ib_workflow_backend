@@ -45,7 +45,7 @@ class TestAddRolesInteractor:
             Mock()
 
         # Act
-        response = interactor.add_roles_wrapper(
+        response = interactor.add_project_roles_wrapper(
             role_dtos=role_dtos, presenter=presenter
         )
 
@@ -78,7 +78,7 @@ class TestAddRolesInteractor:
             Mock()
 
         # Act
-        interactor.add_roles_wrapper(
+        interactor.add_project_roles_wrapper(
             role_dtos=role_dtos, presenter=presenter)
 
         # Assert
@@ -107,7 +107,7 @@ class TestAddRolesInteractor:
             Mock()
 
         # Act
-        interactor.add_roles_wrapper(role_dtos=role_dtos, presenter=presenter)
+        interactor.add_project_roles_wrapper(role_dtos=role_dtos, presenter=presenter)
 
         # Assert
         presenter.raise_role_description_should_not_be_empty_exception.assert_called_once()
@@ -134,7 +134,7 @@ class TestAddRolesInteractor:
         presenter.raise_role_id_format_is_invalid_exception.return_value = Mock()
 
         # Act
-        interactor.add_roles_wrapper(role_dtos=role_dtos, presenter=presenter)
+        interactor.add_project_roles_wrapper(role_dtos=role_dtos, presenter=presenter)
 
         # Assert
         presenter.raise_role_id_format_is_invalid_exception.assert_called_once()
@@ -160,7 +160,7 @@ class TestAddRolesInteractor:
         interactor = RolesInteractor(storage=storage)
 
         # Act
-        interactor.add_roles_wrapper(role_dtos=role_dtos, presenter=presenter)
+        interactor.add_project_roles_wrapper(role_dtos=role_dtos, presenter=presenter)
 
         # Assert
         storage.create_roles.assert_called_once_with(role_dtos=role_dtos)

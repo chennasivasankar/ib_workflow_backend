@@ -3,9 +3,11 @@
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...factories.models import TeamFactory, UserTeamFactory, \
-    UserDetailsFactory
+
+from ib_iam.tests.factories.models import \
+    TeamFactory, UserTeamFactory, UserDetailsFactory
+from ib_iam.tests.views.update_team_details import \
+    APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
 class TestCase01UpdateTeamDetailsAPITestCase(TestUtils):
@@ -24,15 +26,17 @@ class TestCase01UpdateTeamDetailsAPITestCase(TestUtils):
         UserDetailsFactory(user_id=user_id, is_admin=True)
         team_id = "f2c02d98-f311-4ab2-8673-3daa00757002"
         team = TeamFactory.create(team_id=team_id)
-        for user_id in ["2", "3"]:
+        for user_id in ["2", "3", "4"]:
             UserTeamFactory.create(team=team, user_id=user_id)
+        for user_id in ["1", "2", "3", "4"]:
             UserDetailsFactory.create(user_id=user_id)
         return team_id
 
     @pytest.mark.django_db
     def test_case(self, setup, snapshot):
         team_id = setup
-        body = {'name': 'team1', 'description': '', 'user_ids': ["2", "3"]}
+        body = {'name': 'team1', 'description': '',
+                'user_ids': ["1", "2", "3"]}
         path_params = {"team_id": team_id}
         query_params = {}
         headers = {}

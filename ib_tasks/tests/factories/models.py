@@ -4,13 +4,13 @@ from datetime import datetime, timedelta
 import factory
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
-    Priority, ActionTypes, DelayReasons
+    Priority, ActionTypes, DELAY_REASONS
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     UserTaskDelayReason, Task, TaskGoF, TaskGoFField,
     TaskTemplateGlobalConstants,
     TaskStatusVariable, Filter, FilterCondition, TaskLog,
-    StagePermittedRoles, ElasticSearchTask)
+    StagePermittedRoles, ElasticSearchTask, ProjectTaskTemplate)
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -30,8 +30,12 @@ class TaskFactory(factory.django.DjangoModelFactory):
 
     task_display_id = factory.sequence(
         lambda counter: "IBWF-{}".format(counter + 1))
+    project_id = factory.Sequence(
+        lambda n: "project_id_%d" % (n + 1)
+    )
     template_id = factory.Sequence(
         lambda counter: "template_{}".format(counter))
+    project_id = factory.Sequence(lambda c: "project_{}".format(c))
     created_by = "123e4567-e89b-12d3-a456-426614174000"
     title = factory.sequence(lambda counter: "title_{}".format(counter))
     description = factory.sequence(
@@ -94,11 +98,12 @@ class TaskDueDetailsFactory(factory.django.DjangoModelFactory):
 
     task = factory.SubFactory(TaskFactory)
     due_datetime = datetime.now() + timedelta(days=2)
+    stage = factory.SubFactory(StageModelFactory)
     count = factory.Sequence(lambda n: (n + 1))
     user_id = factory.Sequence(
         lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
-    reason_id = DelayReasons[0]['id']
-    reason = DelayReasons[0]['reason']
+    reason_id = DELAY_REASONS[0]['id']
+    reason = DELAY_REASONS[0]['reason']
 
 
 class StageActionFactory(factory.django.DjangoModelFactory):
@@ -133,7 +138,7 @@ class TaskTemplateStatusVariableFactory(factory.django.DjangoModelFactory):
         model = TaskTemplateStatusVariable
 
     task_template_id = factory.Sequence(lambda n: n)
-    variable = factory.Sequence(lambda n: "variable%d" % n)
+    variable = factory.Sequence(lambda n: "status_id_%d" % n)
     value = factory.Sequence(lambda n: n)
 
 
@@ -340,3 +345,11 @@ class StageFactory(factory.django.DjangoModelFactory):
     task_template_id = factory.Sequence(lambda c: "template_{}".format(c))
     display_name = factory.Sequence(lambda c: "display_name_{}".format(c))
     value = factory.Sequence(lambda c: c)
+
+
+class ProjectTaskTemplateFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProjectTaskTemplate
+
+    task_template = factory.SubFactory(TaskTemplateFactory)
+    project_id = factory.sequence(lambda counter: "project_{}".format(counter))

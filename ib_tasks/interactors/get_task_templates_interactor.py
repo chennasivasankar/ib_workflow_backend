@@ -70,6 +70,9 @@ class GetTaskTemplatesInteractor:
             self.task_template_storage.get_task_templates_dtos()
         self._validate_task_templates_are_exists(
             task_templates_dtos=task_templates_dtos)
+        project_id_with_task_template_id_dtos = \
+            self.task_template_storage.\
+            get_project_id_with_task_template_id_dtos()
         stage_id_with_template_id_dtos = \
             self.task_storage.get_initial_stage_id_with_template_id_dtos()
         stage_ids = self._get_stage_ids(
@@ -92,6 +95,8 @@ class GetTaskTemplatesInteractor:
 
         return CompleteTaskTemplatesDTO(
             task_template_dtos=task_templates_dtos,
+            project_id_with_task_template_id_dtos=
+            project_id_with_task_template_id_dtos,
             stage_id_with_template_id_dtos=stage_id_with_template_id_dtos,
             action_with_stage_id_dtos=action_with_stage_id_dtos,
             gof_dtos=gofs_details_dtos,

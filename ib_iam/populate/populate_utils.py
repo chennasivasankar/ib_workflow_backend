@@ -15,9 +15,21 @@ def get_company_id(company_name):
 
 
 def get_role_ids_bulk():
-    from ib_iam.models import Role
-    db_role_ids = list(Role.objects.values_list('id', flat=True))
+    from ib_iam.models import ProjectRole
+    db_role_ids = list(ProjectRole.objects.values_list('id', flat=True))
     return db_role_ids
+
+
+def populate_project_teams():
+    from ib_iam.models import Team
+    teams_ids = list(Team.objects.all().values_list('team_id', flat=True))
+    from ib_iam.models import Project
+    project_id = Project.objects.all().first().project_id
+    from ib_iam.models import ProjectTeam
+    project_team_objects = [ProjectTeam(
+        project_id=project_id, team_id=team_id
+    ) for team_id in teams_ids]
+    ProjectTeam.objects.bulk_create(project_team_objects)
 
 
 @transaction.atomic()
@@ -33,29 +45,43 @@ def populate_projects(spread_sheet_name: str):
 
 @transaction.atomic()
 def populate(spread_sheet_name: str):
-    from ib_iam.populate.add_roles_details import RoleDetails
-    role = RoleDetails()
+    from ib_iam.populate.add_project_roles_details import ProjectRoleDetails
+    project_role = ProjectRoleDetails()
     from ib_iam.constants.config import ROLES_SUBSHEET_NAME
-    role.add_roles_details_to_database(spread_sheet_name, ROLES_SUBSHEET_NAME)
-    populate_admin_users_with_roles()
+    project_role.add_project_roles_details_to_database(
+        spread_sheet_name, ROLES_SUBSHEET_NAME)
     populate_companies()
     populate_teams()
+    populate_admin_users_with_project_roles_and_teams()
+    populate_project_teams()
     populate_test_users()
 
 
-def populate_admin_users_with_roles():
+def populate_admin_users_with_project_roles_and_teams():
     admin_users = [
         {
             "name": "Pavan",
             "email": "ibadmin@ibhubs.co",
             "password": "Admin123@",
-            "is_admin": True
+            "is_admin": True,
+            "teams": [
+                "Tech Team",
+                "Discovery Team",
+                "iB Studio Team",
+                "Assert Management Team"
+            ]
         },
         {
             "name": "Rajesh",
             "email": "cybereyeadmin@ibhubs.co",
             "password": "Admin123@",
-            "is_admin": True
+            "is_admin": True,
+            "teams": [
+                "Tech Team",
+                "Discovery Team",
+                "iB Studio Team",
+                "Assert Management Team"
+            ]
         }
     ]
     from ib_iam.adapters.dtos import UserProfileDTO
@@ -74,6 +100,8 @@ def populate_admin_users_with_roles():
         user_storage = UserStorageImplementation()
         user_storage.create_user(is_admin=admin_user["is_admin"],
                                  name=admin_user["name"], user_id=user_id)
+        team_ids = get_team_ids(team_names=admin_user["teams"])
+        user_storage.add_user_to_the_teams(user_id=user_id, team_ids=team_ids)
         populate_user_roles_for_admin_user(admin_user_id=user_id)
 
 
@@ -87,6 +115,18 @@ def populate_user_roles_for_admin_user(admin_user_id: str):
     user_storage = UserStorageImplementation()
     user_storage.add_roles_to_the_user(
         user_id=admin_user_id, role_ids=db_role_ids)
+
+
+def populate_user_roles_for_normal_user(user_id: str):
+    """
+    Normal User have All roles
+    """
+    from ib_iam.storages.user_storage_implementation import \
+        UserStorageImplementation
+    user_storage = UserStorageImplementation()
+    db_role_ids = get_role_ids_bulk()
+    user_storage.add_roles_to_the_user(
+        user_id=user_id, role_ids=db_role_ids)
 
 
 def populate_companies():
@@ -167,9 +207,6 @@ def populate_test_users():
             "company_name": "iBHubs",
             "teams": [
                 "Tech Team"
-            ],
-            "roles": [
-                "FIN_INVOICE_APPROVER"
             ]
         },
         {
@@ -180,9 +217,6 @@ def populate_test_users():
             "company_name": "Proyuga",
             "teams": [
                 "Tech Team"
-            ],
-            "roles": [
-                "FIN_INVOICE_APPROVER"
             ]
         },
         {
@@ -193,9 +227,6 @@ def populate_test_users():
             "company_name": "CyberEye",
             "teams": [
                 "Tech Team", "Discovery Team"
-            ],
-            "roles": [
-                "FIN_INVOICE_APPROVER", "FIN_FINANCE_RP"
             ]
         },
         {
@@ -206,9 +237,6 @@ def populate_test_users():
             "company_name": "CyberEye",
             "teams": [
                 "Tech Team"
-            ],
-            "roles": [
-                "FIN_FINANCE_RP"
             ]
         },
         {
@@ -219,9 +247,6 @@ def populate_test_users():
             "company_name": "iBHubs",
             "teams": [
                 "iB Studio Team", "Tech Team"
-            ],
-            "roles": [
-                "FIN_ADMIN", "FIN_PAYMENT_REQUESTER"
             ]
         },
         {
@@ -232,9 +257,6 @@ def populate_test_users():
             "company_name": "Proyuga",
             "teams": [
                 "Discovery Team"
-            ],
-            "roles": [
-                "FIN_PAYMENT_REQUESTER"
             ]
         },
         {
@@ -246,9 +268,6 @@ def populate_test_users():
             "teams": [
                 "iB Studio Team"
             ],
-            "roles": [
-                "FIN_ADMIN"
-            ]
         },
     ]
     from ib_iam.interactors.add_new_user_interactor import \
@@ -271,10 +290,13 @@ def populate_test_users():
 
         complete_user_details_dto = AddUserDetailsDTO(
             name=user["name"], email=user["email"], team_ids=team_ids,
-            role_ids=user["roles"],
             company_id=company_id
         )
         interactor.add_new_user(
             user_id=admin_user_id,
             add_user_details_dto=complete_user_details_dto
+        )
+        user_id = UserAccount.objects.get(email=user["email"]).user_id
+        populate_user_roles_for_normal_user(
+            user_id=user_id
         )

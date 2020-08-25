@@ -45,7 +45,8 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_permitted_stage_ids(self, user_role_ids: List[str]) -> List[str]:
+    def get_permitted_stage_ids(
+            self, user_role_ids: List[str], project_id: str) -> List[str]:
         pass
 
     @abc.abstractmethod
@@ -146,4 +147,13 @@ class StageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_stage_ids_having_actions(self, user_roles: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_task_current_stages(self, task_id) -> List[str]:
+        pass
+
+    #ToDo move this method to task storage
+    @abc.abstractmethod
+    def get_project_id_for_task_display_id(self, task_display_id: str):
         pass

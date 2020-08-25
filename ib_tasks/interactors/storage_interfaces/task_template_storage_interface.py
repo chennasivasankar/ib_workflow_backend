@@ -8,7 +8,7 @@ from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TemplateDTO
+    TemplateDTO, ProjectIdWithTaskTemplateIdDTO
 
 
 class TaskTemplateStorageInterface(abc.ABC):
@@ -40,13 +40,17 @@ class TaskTemplateStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_template_ids_in_given_template_ids(
+    def get_valid_task_template_ids_in_given_task_template_ids(
             self, template_ids: List[str]
     ) -> List[str]:
         pass
 
     @abc.abstractmethod
     def get_task_templates_dtos(self) -> List[TemplateDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_task_templates_to_project_ids(self, project_ids: List[str]):
         pass
 
     @abc.abstractmethod
@@ -106,4 +110,23 @@ class TaskTemplateStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_gof_ids_of_template(self, template_id: str) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_project_id_with_task_template_id_dtos(
+            self) -> List[ProjectIdWithTaskTemplateIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def add_project_to_task_templates(
+            self, project_id: str, task_template_ids: List[str]):
+        pass
+
+    @abc.abstractmethod
+    def get_existing_task_template_ids_of_project_task_templates(
+            self, project_id: str, task_template_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_project_templates(self, project_id: str) -> List[str]:
         pass

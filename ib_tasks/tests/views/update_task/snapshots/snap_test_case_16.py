@@ -11,6 +11,6 @@ snapshots['TestCase16UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase16UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'INVALID_STAGE_ID',
-    'response': 'please give a valid stage id, 1 is invalid stage id'
+    'res_status': 'EMPTY_VALUE_FOR_REQUIRED_FIELD',
+    'response': 'Given Empty value for the required field of field_id: FIELD-1! Required field should not be empty'
 }

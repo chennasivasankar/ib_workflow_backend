@@ -26,12 +26,12 @@ def api_wrapper(*args, **kwargs):
     email = request_object['email']
     company_id = request_object['company_id']
     team_ids = request_object['team_ids']
-    role_ids = request_object['role_ids']
+    # role_ids = request_object['role_ids']
 
     from ib_iam.interactors.dtos.dtos import \
         AddUserDetailsDTO
     add_user_details_dto = AddUserDetailsDTO(
-        name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+        name=name, email=email, team_ids=team_ids,
         company_id=company_id
     )
 

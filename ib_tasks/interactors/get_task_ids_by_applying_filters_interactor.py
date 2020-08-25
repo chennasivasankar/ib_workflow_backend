@@ -3,12 +3,22 @@ Created on: 07/08/20
 Author: Pavankumar Pamuru
 
 """
+from dataclasses import dataclass
 from typing import List, Tuple
 
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.filter_storage_interface import \
     FilterStorageInterface
+
+
+@dataclass
+class FilterTasksParameter:
+    project_id: str
+    user_id: str
+    limit: int
+    offset: int
+    stage_ids: List[str]
 
 
 class GetTaskIdsBasedOnUserFilters:
@@ -19,13 +29,21 @@ class GetTaskIdsBasedOnUserFilters:
         self.filter_storage = filter_storage
 
     def get_task_ids_by_applying_filters(
-            self, user_id: str, limit: int, offset: int, stage_ids: List[str]) -> Tuple[List[int], int]:
-        self._validations_of_limit_and_offset(offset=offset, limit=limit)
+            self, filter_tasks_parameter: FilterTasksParameter) -> Tuple[List[int], int]:
+        self._validations_of_limit_and_offset(
+            offset=filter_tasks_parameter.offset,
+            limit=filter_tasks_parameter.limit
+        )
         filter_dtos = self.filter_storage.get_enabled_filters_dto_to_user(
-            user_id=user_id
+            user_id=filter_tasks_parameter.user_id,
+            project_id=filter_tasks_parameter.project_id
         )
         filtered_task_ids, total_tasks = self.elasticsearch_storage.filter_tasks(
-            filter_dtos=filter_dtos, offset=offset, limit=limit, stage_ids=stage_ids
+            filter_dtos=filter_dtos,
+            offset=filter_tasks_parameter.offset,
+            limit=filter_tasks_parameter.limit,
+            stage_ids=filter_tasks_parameter.stage_ids,
+            project_id=filter_tasks_parameter.project_id
         )
         return filtered_task_ids, total_tasks
 

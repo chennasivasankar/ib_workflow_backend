@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from ib_tasks.adapters.dtos import ColumnFieldDTO, ColumnStageDTO
+from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.action_custom_exceptions import InvalidKeyError, \
     InvalidCustomLogicException, InvalidActionException, \
     InvalidPresentStageAction
@@ -21,8 +22,6 @@ from ib_tasks.interactors \
 from ib_tasks.interactors \
     .get_random_assignees_of_next_stages_and_update_in_db_interactor import \
     GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor
-from ib_tasks.interactors.get_stages_assignees_details_interactor import \
-    TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
@@ -30,7 +29,8 @@ from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
-from ib_tasks.interactors.stage_dtos import TaskStageDTO
+from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
+    TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
@@ -74,7 +74,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
                  task_storage: TaskStorageInterface,
                  action_storage: ActionStorageInterface,
                  elasticsearch_storage: ElasticSearchStorageInterface,
-                 task_stage_storage: Optional[TaskStageStorageInterface]):
+                 task_stage_storage: Optional[TaskStageStorageInterface],
+                 view_type: ViewType = None):
         self.task_stage_storage = task_stage_storage
         self.elasticsearch_storage = elasticsearch_storage
         self.user_id = user_id
@@ -86,6 +87,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         self.stage_storage = stage_storage
         self.task_storage = task_storage
         self.action_storage = action_storage
+        self.view_type = view_type
 
     def user_action_on_task_wrapper(
             self, presenter: PresenterInterface, task_display_id: str
@@ -154,8 +156,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_boards_details = self._get_task_boards_details(stage_ids)
         else:
             task_boards_details = None
-        self._create_or_update_task_in_elasticsearch_dto(
-            task_dto=updated_task_dto, stage_ids=stage_ids, task_id=task_id
+        self._create_or_update_task_in_elasticsearch(
+            task_dto=updated_task_dto, task_id=task_id, stage_ids=stage_ids
         )
         actions_dto, fields_dto, task_stage_details = \
             self._get_task_fields_and_actions_dto(stage_ids, task_id)
@@ -211,13 +213,16 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             stage_storage=self.stage_storage
         )
         from ib_boards.constants.enum import ViewType
+        is_view_type_none = not self.view_type
+        if is_view_type_none:
+            self.view_type = ViewType.KANBAN.value
         task_stage_details_dtos = interactor.get_task_fields_and_action(
             task_dtos=task_stage_dtos, user_id=self.user_id,
-            view_type=ViewType.KANBAN.value
+            view_type=self.view_type
         )
         actions_dto, fields_dto, task_stage_details = \
             self._get_field_dtos_and_actions_dtos(
-            task_stage_details_dtos=task_stage_details_dtos)
+                task_stage_details_dtos=task_stage_details_dtos)
         return actions_dto, fields_dto, task_stage_details
 
     def _get_field_dtos_and_actions_dtos(
@@ -406,55 +411,28 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         if is_permission_denied:
             raise UserActionPermissionDenied(action_id=action_id)
 
-    def _create_or_update_task_in_elasticsearch_dto(
+    def _create_or_update_task_in_elasticsearch(
             self, task_dto: TaskDetailsDTO, stage_ids: List[str],
-            task_id: int
-    ):
-
-        is_task_id_exists = \
-            self.elasticsearch_storage.validate_task_id_in_elasticsearch(
-                task_id=task_id
-            )
-        elastic_task_dto = self._get_elastic_task_dto(
-            task_dto=task_dto, stage_ids=stage_ids, task_id=task_id)
-        if is_task_id_exists:
-            self.elasticsearch_storage.update_task(task_dto=elastic_task_dto)
-        else:
-            elastic_task_id = self.elasticsearch_storage.create_task(
-                elastic_task_dto=elastic_task_dto
-            )
-            self.task_storage.create_elastic_task(
-                task_id=task_id, elastic_task_id=elastic_task_id
-            )
-
-    @staticmethod
-    def _get_elastic_task_dto(task_dto: TaskDetailsDTO,
-                              stage_ids: List[str], task_id: int):
-        from ib_tasks.documents.elastic_task import ElasticFieldDTO
-        fields = [
-            ElasticFieldDTO(
-                field_id=field.field_id,
-                value=field.field_response
-            )
-            for field in task_dto.task_gof_field_dtos
-        ]
-        from ib_tasks.documents.elastic_task import ElasticTaskDTO
-        return ElasticTaskDTO(
-            template_id=task_dto.task_base_details_dto.template_id,
-            task_id=task_id,
-            title=task_dto.task_base_details_dto.title,
-            fields=fields,
-            stages=stage_ids
+            task_id: int):
+        from ib_tasks.interactors\
+            .create_or_update_data_in_elasticsearch_interactor import \
+            CreateOrUpdateDataInElasticSearchInteractor
+        elasticsearch_interactor = CreateOrUpdateDataInElasticSearchInteractor(
+            elasticsearch_storage=self.elasticsearch_storage,
+            field_storage=self.field_storage,
+            task_storage=self.task_storage
+        )
+        elasticsearch_interactor.create_or_update_task_in_elasticsearch(
+            task_dto=task_dto, stage_ids=stage_ids, task_id=task_id
         )
 
     def _get_stage_assignees_details(
-            self, stage_ids: List[str], task_id) -> List[
-        TaskStageAssigneeDetailsDTO]:
+            self, stage_ids: List[str], task_id
+    ) -> List[TaskStageAssigneeDetailsDTO]:
         if self.task_stage_storage is None:
             return []
         from ib_tasks.interactors.get_stages_assignees_details_interactor \
-            import \
-            GetStagesAssigneesDetailsInteractor
+            import GetStagesAssigneesDetailsInteractor
         assignees_interactor = GetStagesAssigneesDetailsInteractor(
             task_stage_storage=self.task_stage_storage
         )
@@ -468,5 +446,5 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         ]
         return \
             assignees_interactor.get_stages_assignee_details_by_given_task_ids(
-            task_stage_dtos=task_stage_dtos
-        )
+                task_stage_dtos=task_stage_dtos
+            )

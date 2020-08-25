@@ -6,17 +6,13 @@ from ib_tasks.adapters.dtos import UserDTO
 from ib_tasks.constants.enum import Searchable, Priority
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
-from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
-    import SearchQueryWithPaginationDTO
-from ib_tasks.interactors.get_tasks_to_relevant_search_query import \
-    SearchQueryDTO
+from ib_tasks.interactors.filter_dtos import SearchQueryWithPaginationDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.stage_dtos import TaskStageDTO
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
-    StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
-    StageAssigneeDetailsDTO, UserStagesWithPaginationDTO, StageAssigneeDTO
+    StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO,  UserStagesWithPaginationDTO, StageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -24,7 +20,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    CurrentStageDetailsDTO, StageIdWithValueDTO
+    CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     TaskDueParametersDTO, \
@@ -33,7 +29,7 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeDTO, \
     SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
     TaskDelayParametersDTO, UpdateTaskWithTaskDisplayIdDTO, \
-    SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO
+    SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO, SearchQueryDTO
 from ib_tasks.interactors.task_template_dtos import \
     CreateTransitionChecklistTemplateDTO, \
     CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
@@ -313,6 +309,7 @@ class TaskDueParametersDTOFactory(factory.Factory):
     user_id = factory.Sequence(lambda n: "user_id_%d" % n)
     due_date_time = datetime.now() + timedelta(days=2)
     reason_id = factory.Iterator([1, 2, 3, 4, -1])
+    stage_id = factory.Sequence(lambda n: "stage_id_%d" % (n + 1))
     reason = "reason"
 
 
@@ -532,6 +529,7 @@ class SearchableDTOFactory(factory.Factory):
 
     search_type = Searchable.TEAM.value
     id = "team1"
+
 
 class StageIdWithValueDTOFactory(factory.Factory):
     class Meta:
