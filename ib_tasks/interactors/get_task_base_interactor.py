@@ -14,8 +14,9 @@ class GetTaskBaseInteractor:
     def get_task(self, task_id: int) -> TaskDetailsDTO:
         task_base_details_dto = self.storage.validate_task_id(task_id)
         project_id = task_base_details_dto.project_id
-        # task_project_details_dto = self._get_task_project_details_dto(project_id)
-        task_project_details_dto = None
+        task_project_details_dto = self._get_task_project_details_dto(
+            project_id
+        )
         task_gof_dtos = self.storage.get_task_gof_dtos(task_id)
         task_gof_ids = [
             task_gof_dto.task_gof_id
