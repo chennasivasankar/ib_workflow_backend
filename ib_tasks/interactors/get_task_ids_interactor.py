@@ -7,6 +7,8 @@ from typing import List, Tuple
 
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface, ApplyFilterDTO
+from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+    FieldsStorageInterface, FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.filter_storage_interface import \
     FilterStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
@@ -31,8 +33,10 @@ class GetTaskIdsInteractor:
     def __init__(
             self, stage_storage: StageStorageInterface,
             task_storage: TaskStorageInterface,
+            field_storage: FieldsStorageInterface,
             filter_storage: FilterStorageInterface,
             elasticsearch_storage: ElasticSearchStorageInterface):
+        self.field_storage = field_storage
         self.elasticsearch_storage = elasticsearch_storage
         self.filter_storage = filter_storage
         self.stage_storage = stage_storage
@@ -47,11 +51,14 @@ class GetTaskIdsInteractor:
             user_id=task_details_configs[0].user_id,
             project_id=task_details_configs[0].project_id
         )
+        field_ids = [filter_dto.field_id for filter_dto in filter_dtos]
+        field_type_dtos = self.field_storage.get_field_type_dtos(
+            field_ids=field_ids)
         # TODO need optimize db hits
         total_task_ids_dtos = []
         for task_details_config in task_details_configs:
             task_ids_dto = self._get_task_ids_dto(
-                task_details_config, filter_dtos
+                task_details_config, filter_dtos, field_type_dtos
             )
             total_task_ids_dtos.append(task_ids_dto)
         task_ids = []
@@ -115,10 +122,11 @@ class GetTaskIdsInteractor:
 
     def _get_task_ids_dto(
             self, task_details_config: TaskDetailsConfigDTO,
-            filter_dtos: List[ApplyFilterDTO]) -> TaskIdsDTO:
+            filter_dtos: List[ApplyFilterDTO], field_type_dtos: List[FieldTypeDTO]) -> TaskIdsDTO:
         # TODO: need to verify total tasks count
         task_stage_dtos, total_count = self._get_task_ids_by_applying_filters(
-            task_details_config=task_details_config, filter_dtos=filter_dtos
+            task_details_config=task_details_config, filter_dtos=filter_dtos,
+            field_type_dtos=field_type_dtos
         )
 
         return TaskIdsDTO(
@@ -129,9 +137,10 @@ class GetTaskIdsInteractor:
 
     def _get_task_ids_by_applying_filters(
             self, task_details_config: TaskDetailsConfigDTO,
-            filter_dtos: List[ApplyFilterDTO]) -> Tuple[List[TaskStageIdsDTO], int]:
+            filter_dtos: List[ApplyFilterDTO], field_type_dtos: List[FieldTypeDTO]) -> Tuple[List[TaskStageIdsDTO], int]:
         filtered_task_ids, total_tasks = self.elasticsearch_storage.filter_tasks_with_stage_ids(
-            filter_dtos=filter_dtos, task_details_config=task_details_config
+            filter_dtos=filter_dtos, task_details_config=task_details_config,
+            field_type_dtos=field_type_dtos
         )
         return filtered_task_ids, total_tasks
 

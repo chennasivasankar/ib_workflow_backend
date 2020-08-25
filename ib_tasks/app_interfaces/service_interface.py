@@ -38,12 +38,16 @@ class ServiceInterface:
         elasticsearch_storage = ElasticSearchStorageImplementation()
         from ib_tasks.storages.filter_storage_implementation import \
             FilterStorageImplementation
+        from ib_tasks.storages.fields_storage_implementation import \
+            FieldsStorageImplementation
+        field_storage = FieldsStorageImplementation()
         filter_storage = FilterStorageImplementation()
         interactor = GetTaskIdsInteractor(
             task_storage=TasksStorageImplementation(),
             stage_storage=StagesStorageImplementation(),
             filter_storage=filter_storage,
-            elasticsearch_storage=elasticsearch_storage
+            elasticsearch_storage=elasticsearch_storage,
+            field_storage=field_storage
         )
 
         task_ids_dtos = interactor.get_task_ids(
