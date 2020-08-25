@@ -5,12 +5,15 @@ Author: Pavankumar Pamuru
 """
 from dataclasses import dataclass
 
+from ib_tasks.adapters.auth_service import InvalidProjectIdsException, \
+    UserIsNotInProjectException
 from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.fields_custom_exceptions import \
     LimitShouldBeGreaterThanZeroException, \
     OffsetShouldBeGreaterThanZeroException
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException
+from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.presenter_interfaces.get_all_tasks_overview_for_user_presenter_interface import \
     GetFilteredTasksOverviewForUserPresenterInterface
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -38,7 +41,7 @@ class ProjectTasksParameterDTO:
     view_type: ViewType
 
 
-class GetTaskDetailsByFilterInteractor:
+class GetTaskDetailsByFilterInteractor(ValidationMixin):
     def __init__(self, stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,
                  field_storage: FieldsStorageInterface,
@@ -68,7 +71,10 @@ class GetTaskDetailsByFilterInteractor:
         except LimitShouldBeGreaterThanZeroException:
             return presenter.raise_limit_should_be_greater_than_zero_exception(
             )
-
+        except InvalidProjectIdsException as err:
+            return presenter.get_response_for_invalid_project_id(err=err)
+        except UserIsNotInProjectException:
+            return presenter.get_response_for_user_not_in_project()
         except OffsetShouldBeGreaterThanZeroException:
             return presenter. \
                 raise_offset_should_be_greater_than_zero_exception()
@@ -79,18 +85,23 @@ class GetTaskDetailsByFilterInteractor:
 
     def get_filtered_tasks_overview_for_user(
             self, project_tasks_parameter: ProjectTasksParameterDTO):
-        self.validate_project_id(project_id=project_tasks_parameter.project_id)
+        self._validate_project_data(
+            project_id=project_tasks_parameter.project_id,
+            user_id=project_tasks_parameter.user_id
+        )
         from ib_tasks.adapters.service_adapter import get_service_adapter
         roles_service = get_service_adapter().roles_service
-        user_roles = roles_service.get_user_role_ids(user_id=project_tasks_parameter.user_id)
-        stage_ids_having_actions = self.stage_storage\
+        user_roles = roles_service.get_user_role_ids(
+            user_id=project_tasks_parameter.user_id)
+        stage_ids_having_actions = self.stage_storage \
             .get_stage_ids_having_actions(user_roles=user_roles)
 
         from ib_tasks.interactors.get_task_ids_by_applying_filters_interactor import \
             GetTaskIdsBasedOnUserFilters
         filtered_task_ids_interactor = GetTaskIdsBasedOnUserFilters(
             filter_storage=self.filter_storage,
-            elasticsearch_storage=self.elasticsearch_storage
+            elasticsearch_storage=self.elasticsearch_storage,
+            field_storage=self.field_storage
         )
 
         from ib_tasks.interactors.get_all_task_overview_with_filters_and_searches_for_user import \
@@ -124,5 +135,9 @@ class GetTaskDetailsByFilterInteractor:
             )
         return all_tasks_overview_details_dto, total_tasks
 
-    def validate_project_id(self, project_id):
-        pass
+    def _validate_project_data(self, project_id: str, user_id: str):
+
+        self.validate_given_project_ids(project_ids=[project_id])
+        self.validate_if_user_is_in_project(
+            project_id=project_id, user_id=user_id
+        )
