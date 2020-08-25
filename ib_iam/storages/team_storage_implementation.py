@@ -130,11 +130,12 @@ class TeamStorageImplementation(TeamStorageInterface):
     ) -> List[UserTeamDTO]:
         user_team_objects = UserTeam.objects.filter(
             team_id__in=team_ids, user_id__in=user_ids
-        ).selete_related('team')
+        ).select_related('team')
+        print(user_team_objects)
         user_team_dtos = [
             UserTeamDTO(
-                user_id=user_team_object.user_id,
-                team_id=user_team_object.team.team_id,
+                user_id=str(user_team_object.user_id),
+                team_id=str(user_team_object.team.team_id),
                 team_name=user_team_object.team.name
             ) for user_team_object in user_team_objects
         ]
