@@ -2261,7 +2261,7 @@
                 "GTE",
                 "LTE",
                 "GT",
-                "LE",
+                "LT",
                 "NE",
                 "EQ",
                 "CONTAINS"

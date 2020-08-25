@@ -222,7 +222,7 @@ class FilterPresenterImplementation(FilterPresenterInterface,
         task_template_fields_dict = self._get_template_fields_dict(
             task_template_gofs_dict, gof_fields_dict
         )
-        from ib_tasks.constants.constants import OPERATOR_TYPES
+        from ib_tasks.constants.constants import OPERATORS
         response_dict = {
             "task_template_fields_details": [
                 {
@@ -234,7 +234,7 @@ class FilterPresenterImplementation(FilterPresenterInterface,
                 }
                 for template_dto in task_template_dtos
             ],
-            "operators": OPERATOR_TYPES
+            "operators": OPERATORS
 
         }
         response_object = self.prepare_200_success_response(response_dict)

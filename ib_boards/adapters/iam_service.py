@@ -34,7 +34,7 @@ class IamService:
         return valid_role_ids
 
     def validate_if_user_is_in_project(self, user_id: str, project_id: str):
-        raise NotImplementedError
+       raise NotImplementedError
 
     def validate_project_ids(self, project_ids: List[str]) -> \
             List[str]:
