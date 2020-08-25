@@ -49,12 +49,12 @@ class ElasticSearchStorageInterface(abc.ABC):
     def search_tasks(
             self, search_query_dto: SearchQueryDTO,
             apply_filter_dtos: List[ApplyFilterDTO],
-            stage_ids: List[str]
+            stage_ids: List[str], field_type_dtos: List[FieldTypeDTO]
     ) -> QueryTasksDTO:
         pass
 
     def validate_task_id_in_elasticsearch(self, task_id):
         pass
 
-    def filter_tasks_with_stage_ids(self, filter_dtos, task_details_config):
+    def filter_tasks_with_stage_ids(self, filter_dtos, task_details_config, field_type_dtos: List[FieldTypeDTO]):
         pass

@@ -130,7 +130,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def search_tasks(
             self, search_query_dto: SearchQueryDTO,
             apply_filter_dtos: List[ApplyFilterDTO],
-            stage_ids: List[str]
+            stage_ids: List[str], field_type_dtos: List[FieldTypeDTO]
     ) -> QueryTasksDTO:
         from elasticsearch_dsl import connections
         from django.conf import settings
@@ -141,7 +141,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         project_id = search_query_dto.project_id
         search_query = search_query_dto.query_value
         from elasticsearch_dsl import Q
-        search = self._get_filter_task_objects(apply_filter_dtos)
+        search = self._get_filter_task_objects(apply_filter_dtos, field_type_dtos)
         query = Q('term', project_id__keyword=project_id) \
                 & Q('terms', stages__stage_id__keyword=stage_ids)
         if search_query:
@@ -168,7 +168,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         ]
 
     def filter_tasks_with_stage_ids(
-            self, filter_dtos: List[ApplyFilterDTO],
+            self, filter_dtos: List[ApplyFilterDTO], field_type_dtos: List[FieldTypeDTO],
             task_details_config: TaskDetailsConfigDTO) -> Tuple[
         List[TaskStageIdsDTO], int]:
         from elasticsearch_dsl import connections
@@ -177,7 +177,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
                                       timeout=20)
         stage_ids = task_details_config.stage_ids
         search_query = task_details_config.search_query
-        search = self._get_filter_task_objects(filter_dtos)
+        search = self._get_filter_task_objects(filter_dtos, field_type_dtos)
         search = search.filter('terms', stages__stage_id__keyword=stage_ids)
         query = Q('terms', stages__stage_id__keyword=stage_ids) \
                 & Q('term', project_id__keyword=task_details_config.project_id)
@@ -261,7 +261,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
     def _get_q_object_based_on_operation(
             self, operation: Operators, filter_dtos: List[ApplyFilterDTO],
-            field_types_map: Dict[str, str]):
+            field_types_map: Dict[str, FieldTypes]):
         q_object = None
         if operation == Operators.EQ.value:
             q_object = self._prepare_q_objects_for_eq_operation(
