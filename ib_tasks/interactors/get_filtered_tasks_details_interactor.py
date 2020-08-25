@@ -82,7 +82,10 @@ class GetTaskDetailsByFilterInteractor:
         self.validate_project_id(project_id=project_tasks_parameter.project_id)
         from ib_tasks.adapters.service_adapter import get_service_adapter
         roles_service = get_service_adapter().roles_service
-        user_roles = roles_service.get_user_role_ids(user_id=project_tasks_parameter.user_id)
+        user_roles = roles_service.get_user_role_ids_based_on_project(
+            user_id=project_tasks_parameter.user_id,
+            project_id=project_tasks_parameter.project_id
+        )
         stage_ids_having_actions = self.stage_storage\
             .get_stage_ids_having_actions(user_roles=user_roles)
 

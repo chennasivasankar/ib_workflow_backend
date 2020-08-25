@@ -90,14 +90,14 @@ class AuthService:
         return user_details_dtos
 
     def validate_if_user_is_in_project(self, user_id: str, project_id: str):
-        raise NotImplementedError
+        return
 
     def validate_project_ids(self, project_ids: List[str]) -> \
             List[str]:
-        raise NotImplementedError
+        return project_ids
 
     def get_team_details(self, team_ids: List[str]) -> List[TeamDetailsDTO]:
-        raise NotImplementedError
+        return []
 
     def get_projects_info_for_given_ids(
             self, project_ids: List[str]) -> List[ProjectDetailsDTO]:
