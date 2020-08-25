@@ -181,4 +181,4 @@ class SearchableDTO:
 class GetTaskRPsParametersDTO:
     task_id: str
     user_id: str
-    stage_id: int
+    stage_id: str
