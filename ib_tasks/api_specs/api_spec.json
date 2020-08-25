@@ -2593,7 +2593,8 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "INVALID_STAGE_ID"
+              "INVALID_STAGE_ID",
+              "INVALID_TASK_ID"
             ]
           }
         },
