@@ -162,7 +162,7 @@ class TaskCurrentStageDetailsDTO:
 @dataclass
 class TaskDueParametersDTO:
     user_id: str
-    stage_id: int
+    stage_id: str
     due_date_time: datetime
     reason_id: int
     reason: str

@@ -27,7 +27,7 @@ class TestGetTaskReasons:
         # Arrange
         task_id = "iBWF-1"
         user_id = "user_id_1"
-        stage_id = 1
+        stage_id = "stage_id_1"
         storage = create_autospec(StorageInterface)
         task_storage = create_autospec(TaskStorageInterface)
         presenter = create_autospec(TaskDueDetailsPresenterInterface)
@@ -54,7 +54,7 @@ class TestGetTaskReasons:
         task_display_id = "iBWF-1"
         task_id = 1
         user_id = "user_id_1"
-        stage_id = 1
+        stage_id = "stage_id_1"
         storage = create_autospec(StorageInterface)
         task_storage = create_autospec(TaskStorageInterface)
         presenter = create_autospec(TaskDueDetailsPresenterInterface)
@@ -81,7 +81,7 @@ class TestGetTaskReasons:
         task_display_id = "iBWF-1"
         task_id = 1
         user_id = "user_id_1"
-        stage_id = 1
+        stage_id = "stage_id_1"
         storage = create_autospec(StorageInterface)
         task_storage = create_autospec(TaskStorageInterface)
         presenter = create_autospec(TaskDueDetailsPresenterInterface)
@@ -108,7 +108,7 @@ class TestGetTaskReasons:
         task_display_id = "iBWF-1"
         task_id = 1
         user_id = "user_id_1"
-        stage_id = 1
+        stage_id = "stage_id_1"
         user_ids = ['123e4567-e89b-12d3-a456-426614174001', '123e4567-e89b-12d3-a456-426614174002']
         expected_response = Mock()
         storage = create_autospec(StorageInterface)
@@ -143,7 +143,7 @@ class TestGetTaskReasons:
         task_display_id = "iBWF-1"
         task_id = 1
         user_id = "user_id_1"
-        stage_id = 1
+        stage_id = "stage_id_1"
         user_ids = ['123e4567-e89b-12d3-a456-426614174001', '123e4567-e89b-12d3-a456-426614174002']
         expected_response = Mock()
         storage = create_autospec(StorageInterface)
