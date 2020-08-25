@@ -36,18 +36,15 @@ def api_wrapper(*args, **kwargs):
 
 def _convert_to_project_with_team_ids_and_roles_dto(kwargs):
     request_data = kwargs["request_data"]
-    name = request_data["name"]
-    description = request_data.get("description", None)
-    logo_url = request_data.get("logo_url", None)
-    team_ids = request_data["team_ids"]
     roles = request_data["roles"]
     role_dtos = [_convert_to_role_dtos(role) for role in roles]
     from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
     project_with_team_ids_and_roles_dto = ProjectWithTeamIdsAndRolesDTO(
-        name=name,
-        description=description,
-        logo_url=logo_url,
-        team_ids=team_ids,
+        project_id=request_data["project_id"],
+        name=request_data["name"],
+        description=request_data.get("description", None),
+        logo_url=request_data.get("logo_url", None),
+        team_ids=request_data["team_ids"],
         roles=role_dtos)
     return project_with_team_ids_and_roles_dto
 

@@ -670,7 +670,7 @@
     "ProjectWithTeamIdsAndRoles": {
       "allOf": [
         {
-          "$ref": "#/definitions/ProjectDetails"
+          "$ref": "#/definitions/Project"
         },
         {
           "type": "object",
@@ -2181,12 +2181,6 @@
       "schema": {
         "$ref": "#/definitions/ProjectsWithTotalProjectsCount"
       }
-    },
-    "SuccessfullyCreatedForAddProjectResponse": {
-      "description": "Project Created successfully",
-      "schema": {
-        "$ref": "#/definitions/ProjectId"
-      }
     }
   },
   "paths": {
@@ -3071,7 +3065,7 @@
         ],
         "responses": {
           "201": {
-            "$ref": "#/responses/SuccessfullyCreatedForAddProjectResponse"
+            "description": "Project created Successfully"
           }
         }
       }
