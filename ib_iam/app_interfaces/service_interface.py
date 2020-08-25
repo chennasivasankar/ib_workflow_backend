@@ -276,17 +276,24 @@ class ServiceInterface:
         return team_ids
 
     @staticmethod
-    def get_team_details_bulk(team_ids: List[str]) -> List[TeamIdAndNameDTO]:
+    def get_team_details_bulk(
+            team_ids: List[str], project_id: str
+    ) -> List[TeamIdAndNameDTO]:
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
         user_storage = UserStorageImplementation()
         from ib_iam.storages.team_storage_implementation import \
             TeamStorageImplementation
         team_storage = TeamStorageImplementation()
-        from ib_iam.interactors.team_interactor import TeamInteractor
-        interactor = TeamInteractor(
-            user_storage=user_storage, team_storage=team_storage)
-        return interactor.get_teams(team_ids=team_ids)
+        from ib_iam.storages.project_storage_implementation import \
+            ProjectStorageImplementation
+        project_storage = ProjectStorageImplementation()
+        from ib_iam.interactors.project_interactor import ProjectInteractor
+        interactor = ProjectInteractor(
+            user_storage=user_storage, team_storage=team_storage,
+            project_storage=project_storage)
+        return interactor.get_team_dtos(
+            team_ids=team_ids, project_id=project_id)
 
     @staticmethod
     def get_project_dtos_bulk(project_ids: List[str]) -> List[ProjectDTO]:
