@@ -1438,7 +1438,7 @@
         "action_id"
       ]
     },
-    "TaskIdRequestBody": {
+    "TaskandStageIdRequestBody": {
       "type": "object",
       "properties": {
         "task_id": {
@@ -1580,20 +1580,23 @@
         "$ref": "#/definitions/UpdateTaskRequestBody"
       }
     },
-    "TaskIdRequestBody": {
+    "TaskandStageIdRequestBody": {
       "in": "body",
-      "name": "TaskId",
-      "description": "task id",
+      "name": "RequestBody",
+      "description": "task id and stage id",
       "required": true,
       "schema": {
         "type": "object",
         "properties": {
           "task_id": {
             "type": "string"
+          },
+          "stage_id": {
+            "type": "string"
           }
         },
         "required": [
-          "task_id"
+          "task_id", "stage_id"
         ]
       }
     },
@@ -1610,7 +1613,7 @@
       "name": "TaskBodyParameter",
       "required": true,
       "schema": {
-        "$ref": "#/definitions/TaskIdRequestBody"
+        "$ref": "#/definitions/TaskandStageIdRequestBody"
       }
     },
     "TaskStageAssigneesParameter": {
@@ -1846,7 +1849,8 @@
             "type": "string",
             "enum": [
               "INVALID_TASK_ID",
-              "SEARCHABLE_RECORDS_NOT_FOUND"
+              "SEARCHABLE_RECORDS_NOT_FOUND",
+              "INVALID_STAGE_ID"
             ]
           }
         }
@@ -1981,6 +1985,35 @@
               "DUPLICATE_STAGE_IDS",
               "VIRTUAL_STAGE_IDS",
               "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+    "GetTaskRPsFailureResponse": {
+      "description": "Task Stage Assignees Failure Response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "enum": [
+              404
+            ]
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "INVALID_STAGE_ID",
+              "INVALID_TASK_ID"
             ]
           }
         },
@@ -2529,6 +2562,15 @@
             "name",
             "team_info"
           ]
+        }
+      }
+    },
+    "GetTaskRpsResponse": {
+      "description": "Task Stage Rps",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/UserResponseBody"
         }
       }
     },
@@ -3175,7 +3217,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/TaskIdRequestBody"
+            "$ref": "#/parameters/TaskandStageIdRequestBody"
           }
         ],
         "responses": {
