@@ -588,7 +588,8 @@
       "type": "object",
       "properties": {
         "project_id": {
-          "type": "string"
+          "type": "string",
+          "format": "uuid"
         },
         "name": {
           "type": "string"
@@ -614,10 +615,7 @@
           "type": "object",
           "properties": {
             "teams": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Teams"
-              }
+              "$ref": "#/definitions/Teams"
             }
           }
         }
