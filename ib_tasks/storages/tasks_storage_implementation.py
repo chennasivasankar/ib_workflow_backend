@@ -26,7 +26,7 @@ from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO
 from ib_tasks.models import Stage, TaskTemplate, CurrentTaskStage, \
-    TaskTemplateStatusVariable
+    TaskTemplateStatusVariable, TaskStageHistory
 from ib_tasks.models.field import Field
 from ib_tasks.models.stage_actions import StageAction
 from ib_tasks.models.task import Task, ElasticSearchTask
@@ -519,4 +519,7 @@ class TasksStorageImplementation(TaskStorageInterface):
         return task_obj.project_id
 
     def get_user_team_id(self, user_id: str, task_id: int) -> str:
-        pass
+        task = TaskStageHistory.objects.filter(
+            assignee_id=user_id, task_id=task_id
+        )
+        return task.team_id

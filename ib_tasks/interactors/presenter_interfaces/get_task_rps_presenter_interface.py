@@ -1,5 +1,7 @@
 import abc
+from typing import List
 
+from ib_tasks.adapters.dtos import UserDetailsDTO
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskDisplayId
 
@@ -15,4 +17,8 @@ class GetTaskRpsPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def response_for_invalid_stage_id(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_get_rps_details(self, rps_dtos: List[UserDetailsDTO]):
         pass

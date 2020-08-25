@@ -28,12 +28,14 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter.response_for_user_is_not_assignee_for_task()
         except InvalidStageIdException:
             return presenter.response_for_invalid_stage_id()
+        return presenter.response_for_get_rps_details(rps_dtos)
 
     def get_task_rps(self, paramters: GetTaskRPsParametersDTO):
         task_display_id = paramters.task_id
         user_id = paramters.user_id
         stage_id = paramters.stage_id
         task_id = self.get_task_id_for_task_display_id(task_display_id)
+
         self._validate_stage_id(stage_id)
         self._validate_if_task_is_assigned_to_user(
             task_id=task_id, user_id=user_id, stage_id=stage_id)
@@ -44,6 +46,19 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
                          task_id: int):
         user_id = parameters.user_id
         user_team_id = self.task_storage.get_user_team_id(user_id, task_id)
+        from ib_tasks.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        superior_id = service_adapter.auth_service.get_immediate_superior_user_id(
+            user_id=user_id, team_id=user_team_id)
+
+        rp_ids = [superior_id]
+        if superior_id:
+            rp_id = service_adapter.auth_service.get_immediate_superior_user_id(
+                user_id=superior_id, team_id=user_team_id)
+            rp_ids.append(rp_id)
+
+        rp_details_dtos = service_adapter.auth_service.get_user_details(rp_ids)
+        return rp_details_dtos
 
     def _validate_stage_id(self, stage_id: str):
         is_valid = self.storage.validate_stage_id(stage_id)

@@ -23,7 +23,6 @@ def search_users_mock(mocker):
 
 
 def assignees_details_mock(mocker):
-
     path = 'ib_tasks.adapters.assignees_details_service.AssigneeDetailsService.get_assignees_details_dtos'
     mock_obj = mocker.patch(path)
     return mock_obj
@@ -75,4 +74,11 @@ def get_user_details_for_the_given_role_ids_based_on_query(mocker):
     )
     user_details_dtos = UserDetailsDTOFactory.create_batch(size=4)
     mock.return_value = user_details_dtos
+    return mock
+
+
+def get_immediate_superior_user_id_mock(mocker):
+    mock = mocker.patch(
+        "ib_tasks.adapters.auth_service.AuthService.get_immediate_superior_user_id"
+    )
     return mock
