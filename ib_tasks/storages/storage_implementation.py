@@ -28,11 +28,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
     TaskDelayParametersDTO
-from ib_tasks.models import GlobalConstant, \
-    StagePermittedRoles, TaskTemplateInitialStage, Stage, \
-    TaskTemplateStatusVariable, ProjectTaskTemplate
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
-    ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
     GlobalConstant, StagePermittedRoles, TaskTemplateInitialStage, Stage, \
     TaskTemplateStatusVariable, ProjectTaskTemplate, \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole
@@ -264,7 +260,8 @@ class StagesStorageImplementation(StageStorageInterface):
                 query = current_queue
             else:
                 query = query | current_queue
-
+        if query is None:
+            return []
         current_stage_objects = CurrentTaskStage.objects.filter(
             query
         ).values(
@@ -358,8 +355,7 @@ class StagesStorageImplementation(StageStorageInterface):
         )
 
     def get_task_stages_assignees_without_having_left_at_status(
-            self, task_id: int, db_stage_ids: List[int]) -> List[
-        StageAssigneeDTO]:
+            self, task_id: int, db_stage_ids: List[int]) -> List[StageAssigneeDTO]:
         task_stage_objs = list(TaskStageHistory.objects.filter(
             task_id=task_id,
             stage_id__in=db_stage_ids, left_at__isnull=True)

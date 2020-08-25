@@ -310,7 +310,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', **{attribute: {"gte": item.value}})
+                            & Q('range', **{item.field_id: {"gte": int(item.value)}})
             if counter == 0:
                 query = current_queue
             else:
@@ -324,7 +324,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', **{attribute: {"gt": item.value}})
+                            & Q('range', **{item.field_id: {"gt": int(item.value)}})
             if counter == 0:
                 query = current_queue
             else:
@@ -338,7 +338,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', **{attribute: {"lte": item.value}})
+                            & Q('range', **{item.field_id: {"lte": int(item.value)}})
             if counter == 0:
                 query = current_queue
             else:
@@ -352,7 +352,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', **{attribute: {"lt": item.value}})
+                            & Q('range', **{item.field_id: {"lt": int(item.value)}})
             if counter == 0:
                 query = current_queue
             else:
