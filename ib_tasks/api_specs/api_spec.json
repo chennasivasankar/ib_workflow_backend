@@ -2225,7 +2225,7 @@
                 "GTE",
                 "LTE",
                 "GT",
-                "LT",
+                "LE",
                 "NE",
                 "EQ",
                 "CONTAINS"
