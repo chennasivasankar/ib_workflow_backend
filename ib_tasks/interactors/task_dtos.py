@@ -113,6 +113,7 @@ class TaskDetailsConfigDTO:
     unique_key: str
     stage_ids: List[str]
     offset: int
+    project_id: str
     limit: int
     user_id: str
     search_query: Optional[str]

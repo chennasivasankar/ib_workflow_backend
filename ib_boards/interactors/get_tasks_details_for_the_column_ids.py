@@ -20,6 +20,7 @@ class ColumnsTasksParametersDTO:
     user_id: str
     limit: int
     offset: int
+    project_id: str
     view_type: ViewType
     search_query: Optional[str]
 
@@ -38,6 +39,7 @@ class GetColumnsTasksDetailsInteractor:
         user_id = column_tasks_parameters.user_id
         column_ids = column_tasks_parameters.column_ids
         view_type = column_tasks_parameters.view_type
+        project_id = column_tasks_parameters.project_id
         search_query = column_tasks_parameters.search_query
         self._validate_offset_value(offset=offset)
         self._validate_limit_value(limit=limit)
@@ -49,6 +51,7 @@ class GetColumnsTasksDetailsInteractor:
             limit=limit,
             offset=offset,
             user_id=user_id,
+            project_id=project_id,
             search_query=search_query
         )
         task_field_dtos, task_action_dtos, task_stage_color_dtos, assignees_dtos = \
@@ -104,7 +107,8 @@ class GetColumnsTasksDetailsInteractor:
     @staticmethod
     def _get_task_ids_for_given_stages(
             column_stage_dtos: List[ColumnStageIdsDTO],
-            limit: int, offset: int, user_id: str, search_query: str) -> List[ColumnTaskIdsDTO]:
+            limit: int, offset: int, user_id: str, search_query: str,
+            project_id: str) -> List[ColumnTaskIdsDTO]:
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
@@ -115,6 +119,7 @@ class GetColumnsTasksDetailsInteractor:
                 limit=limit,
                 offset=offset,
                 user_id=user_id,
+                project_id=project_id,
                 search_query=search_query
             )
             for column_stage_dto in column_stage_dtos
