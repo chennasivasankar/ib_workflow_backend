@@ -108,23 +108,25 @@ class ServiceInterface:
 
     @staticmethod
     def get_user_details_for_given_role_ids(
-            role_ids: List[str]) -> List[UserProfileDTO]:
+            role_ids: List[str], project_id: str) -> List[UserProfileDTO]:
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
         user_storage = UserStorageImplementation()
 
         from ib_iam.interactors.get_users_list_interactor import \
             GetListOfUsersInteractor
-        interactor = GetListOfUsersInteractor(user_storage=user_storage)
+        interactor = GetListOfUsersInteractor(
+            user_storage=user_storage)
 
         user_details_dtos = interactor.get_user_details_for_given_role_ids(
-            role_ids=role_ids)
+            role_ids=role_ids, project_id=project_id)
         return user_details_dtos
 
     @staticmethod
     def get_user_details_for_the_given_role_ids_based_on_query(
             role_ids: List[str],
-            search_query_with_pagination_dto: SearchQueryWithPaginationDTO
+            search_query_with_pagination_dto: SearchQueryWithPaginationDTO,
+            project_id: str
     ) -> List[UserProfileDTO]:
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
@@ -137,7 +139,9 @@ class ServiceInterface:
         user_details_dtos = \
             interactor.get_user_details_for_given_role_ids_based_on_query(
                 role_ids=role_ids,
-                search_query_with_pagination_dto=search_query_with_pagination_dto)
+                search_query_with_pagination_dto=search_query_with_pagination_dto,
+                project_id=project_id
+            )
         return user_details_dtos
 
     @staticmethod

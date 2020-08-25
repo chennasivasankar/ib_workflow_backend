@@ -1,5 +1,3 @@
-from typing import List
-
 from django.db import transaction
 
 
@@ -22,6 +20,18 @@ def get_role_ids_bulk():
     return db_role_ids
 
 
+def populate_project_teams():
+    from ib_iam.models import Team
+    teams_ids = list(Team.objects.all().values_list('team_id', flat=True))
+    from ib_iam.models import Project
+    project_id = Project.objects.all().first().project_id
+    from ib_iam.models import ProjectTeam
+    project_team_objects = [ProjectTeam(
+        project_id=project_id, team_id=team_id
+    ) for team_id in teams_ids]
+    ProjectTeam.objects.bulk_create(project_team_objects)
+
+
 @transaction.atomic()
 def populate_projects(spread_sheet_name: str):
     from ib_iam.populate.add_projects import Project
@@ -35,30 +45,43 @@ def populate_projects(spread_sheet_name: str):
 
 @transaction.atomic()
 def populate(spread_sheet_name: str):
-    # from ib_iam.populate.add_project_roles_details import ProjectRoleDetails
-    # project_role = ProjectRoleDetails()
-    # from ib_iam.constants.config import ROLES_SUBSHEET_NAME
-    # project_role.add_project_roles_details_to_database(
-    #     spread_sheet_name, ROLES_SUBSHEET_NAME)
-    populate_admin_users_with_roles()
+    from ib_iam.populate.add_project_roles_details import ProjectRoleDetails
+    project_role = ProjectRoleDetails()
+    from ib_iam.constants.config import ROLES_SUBSHEET_NAME
+    project_role.add_project_roles_details_to_database(
+        spread_sheet_name, ROLES_SUBSHEET_NAME)
     populate_companies()
     populate_teams()
+    populate_admin_users_with_project_roles_and_teams()
+    populate_project_teams()
     populate_test_users()
 
 
-def populate_admin_users_with_roles():
+def populate_admin_users_with_project_roles_and_teams():
     admin_users = [
         {
             "name": "Pavan",
             "email": "ibadmin@ibhubs.co",
             "password": "Admin123@",
-            "is_admin": True
+            "is_admin": True,
+            "teams": [
+                "Tech Team",
+                "Discovery Team",
+                "iB Studio Team",
+                "Assert Management Team"
+            ]
         },
         {
             "name": "Rajesh",
             "email": "cybereyeadmin@ibhubs.co",
             "password": "Admin123@",
-            "is_admin": True
+            "is_admin": True,
+            "teams": [
+                "Tech Team",
+                "Discovery Team",
+                "iB Studio Team",
+                "Assert Management Team"
+            ]
         }
     ]
     from ib_iam.adapters.dtos import UserProfileDTO
@@ -77,6 +100,8 @@ def populate_admin_users_with_roles():
         user_storage = UserStorageImplementation()
         user_storage.create_user(is_admin=admin_user["is_admin"],
                                  name=admin_user["name"], user_id=user_id)
+        team_ids = get_team_ids(team_names=admin_user["teams"])
+        user_storage.add_user_to_the_teams(user_id=user_id, team_ids=team_ids)
         populate_user_roles_for_admin_user(admin_user_id=user_id)
 
 

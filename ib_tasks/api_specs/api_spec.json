@@ -1602,10 +1602,10 @@
     },
     "TaskIDParameter": {
       "description": "task id",
-      "in": "path",
+      "in": "query",
       "name": "task_id",
-      "required": true,
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "TaskBodyParamaeter": {
       "description": "Task Body Parameter",
@@ -3279,7 +3279,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/ProjectIdParameter"
+            "$ref": "#/parameters/TaskIDParameter"
           },
           {
             "$ref": "#/parameters/StageIdParameter"

@@ -1,8 +1,8 @@
 from typing import List, Optional
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO, UserIdWithTeamIdDTO, \
-    ProjectTeamUserIdsDTO, TeamDetailsWithUserIdDTO, AssigneeWithTeamDetailsDTO, \
-    TeamInfoDTO
+    ProjectTeamUserIdsDTO, TeamDetailsWithUserIdDTO, \
+    AssigneeWithTeamDetailsDTO, TeamInfoDTO
 from ib_tasks.adapters.service_adapter import get_service_adapter
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidStageIdsForTask
@@ -29,8 +29,7 @@ class GetStagesAssigneesDetailsInteractor:
             task_id, stage_ids
         )
         user_id_with_team_id_dtos = self._get_user_id_with_team_id_dtos(
-            stage_assignee_dtos
-        )
+            stage_assignee_dtos)
         project_team_user_ids_dto = ProjectTeamUserIdsDTO(
             project_id=project_id,
             user_id_with_team_id_dtos=user_id_with_team_id_dtos
@@ -114,12 +113,11 @@ class GetStagesAssigneesDetailsInteractor:
     ) -> List[UserIdWithTeamIdDTO]:
         user_id_with_team_id_dtos = []
         for stage_assignee_dto in stage_assignee_dtos:
-            is_assignee_id = not stage_assignee_dto.assignee_id
+            is_assignee_id = stage_assignee_dto.assignee_id
             if is_assignee_id:
                 user_id_with_team_id_dto = UserIdWithTeamIdDTO(
                     user_id=stage_assignee_dto.assignee_id,
-                    team_id=stage_assignee_dto.team_id
-                )
+                    team_id=stage_assignee_dto.team_id)
                 user_id_with_team_id_dtos.append(user_id_with_team_id_dto)
         return user_id_with_team_id_dtos
 

@@ -6,7 +6,7 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
-    FieldFactory
+    FieldFactory, StageFactory
 from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
@@ -23,14 +23,17 @@ class TestCase08UpdateTaskAPITestCase(TestUtils):
         TaskFactory.reset_sequence()
         GoFFactory.reset_sequence()
         FieldFactory.reset_sequence()
+        StageFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
         task_id = "IBWF-1"
+        stage_id = 1
         gof_ids = ["GOF-1", "GOF-2"]
         field_ids = ["FIELD-1", "FIELD-2", "FIELD-3", "FIELD-4"]
 
         import factory
+        StageFactory.create(id=stage_id)
         gofs = GoFFactory.create_batch(size=len(gof_ids),
                                        gof_id=factory.Iterator(gof_ids))
 
@@ -52,7 +55,8 @@ class TestCase08UpdateTaskAPITestCase(TestUtils):
             "priority": "HIGH",
             "stage_assignee": {
                 "stage_id": 1,
-                "assignee_id": "assignee_id_1"
+                "assignee_id": "assignee_id_1",
+                "team_id": "team_1"
             },
             "task_gofs": [
                 {

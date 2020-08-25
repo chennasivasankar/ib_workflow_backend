@@ -17,7 +17,7 @@ from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
-from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
+from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, SearchQueryDTO
 
 
 class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
@@ -56,9 +56,9 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         es.update(
             index=TASK_INDEX_NAME,
             ignore=400,
-            id=elastic_search_task_id,
             doc_type='_doc',
-            body=json.loads(task_dict))
+            id=elastic_search_task_id,
+            body={"doc": json.loads(task_dict)})
 
     def _get_task_dict(self, elastic_task_dto: ElasticTaskDTO):
         task_dict = {
@@ -126,17 +126,20 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         return task_objects
 
     def search_tasks(
-            self, offset: int, limit: int, search_query: str,
-            apply_filter_dtos: List[ApplyFilterDTO], project_id: str,
+            self, search_query_dto: SearchQueryDTO,
+            apply_filter_dtos: List[ApplyFilterDTO],
             stage_ids: List[str]
     ) -> QueryTasksDTO:
         from elasticsearch_dsl import connections
         from django.conf import settings
         connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
                                       timeout=20)
-
+        offset = search_query_dto.offset
+        limit = search_query_dto.limit
+        project_id = search_query_dto.project_id
+        search_query = search_query_dto.query_value
         from elasticsearch_dsl import Q
-        search = self._get_search_task_objects(apply_filter_dtos)
+        search = self._get_filter_task_objects(apply_filter_dtos)
         query = Q('term', project_id__keyword=project_id) \
                 & Q('terms', stages__stage_id__keyword=stage_ids)
         if search_query:
@@ -172,7 +175,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
                                       timeout=20)
         stage_ids = task_details_config.stage_ids
         search_query = task_details_config.search_query
-        search = self._get_search_task_objects(filter_dtos)
+        search = self._get_filter_task_objects(filter_dtos)
         search = search.filter('terms', stages__stage_id__keyword=stage_ids)
         query = Q('terms', stages__stage_id__keyword=stage_ids) \
                 & Q('term', project_id__keyword=task_details_config.project_id)
@@ -285,7 +288,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', **{attribute: item.value})
+                            & (Q('term', **{attribute: item.value}))
             if counter == 0:
                 query = current_queue
             else:
@@ -310,10 +313,9 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def _prepare_q_objects_for_gte_operation(filter_dtos: List[ApplyFilterDTO]):
         query = None
         for counter, item in enumerate(filter_dtos):
-            attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', **{attribute: {"gte": item.value}})
+                            & Q('range', **{item.field_id: {"gte": int(item.value)}})
             if counter == 0:
                 query = current_queue
             else:
@@ -324,10 +326,9 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def _prepare_q_objects_for_gt_operation(filter_dtos: List[ApplyFilterDTO]):
         query = None
         for counter, item in enumerate(filter_dtos):
-            attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', **{attribute: {"gt": item.value}})
+                            & Q('range', **{item.field_id: {"gt": int(item.value)}})
             if counter == 0:
                 query = current_queue
             else:
@@ -338,10 +339,9 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def _prepare_q_objects_for_lte_operation(filter_dtos: List[ApplyFilterDTO]):
         query = None
         for counter, item in enumerate(filter_dtos):
-            attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', **{attribute: {"lte": item.value}})
+                            & Q('range', **{item.field_id: {"lte": int(item.value)}})
             if counter == 0:
                 query = current_queue
             else:
@@ -352,10 +352,9 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def _prepare_q_objects_for_lt_operation(filter_dtos: List[ApplyFilterDTO]):
         query = None
         for counter, item in enumerate(filter_dtos):
-            attribute = item.field_id + '.keyword'
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', **{attribute: {"lt": item.value}})
+                            & Q('range', **{item.field_id: {"lt": int(item.value)}})
             if counter == 0:
                 query = current_queue
             else:
