@@ -712,7 +712,7 @@ class StorageImplementation(StorageInterface):
     def get_task_due_details(self, task_id: int, stage_id: str) -> \
             List[TaskDueMissingDTO]:
         task_due_objs = (UserTaskDelayReason.objects.filter(task_id=task_id,
-                                                            stage_stage_id=stage_id)
+                                                            stage__stage_id=stage_id)
                          .values('due_datetime', 'count', 'reason', 'user_id',
                                  'task__task_display_id'))
 

@@ -1,8 +1,7 @@
 from typing import Tuple, List
 
-from ib_tasks.adapters.auth_service import InvalidProjectIdsException, \
-    UserIsNotInProjectException
 from ib_tasks.constants.enum import Status
+from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException, UserIsNotInProjectException
 from ib_tasks.exceptions.filter_exceptions import \
     FieldIdsNotBelongsToTemplateId, UserNotHaveAccessToFields, \
     InvalidFilterId, \

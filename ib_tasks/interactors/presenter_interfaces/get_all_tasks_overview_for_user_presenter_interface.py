@@ -1,6 +1,6 @@
 import abc
 
-from ib_tasks.adapters.auth_service import InvalidProjectIdsException
+from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 
