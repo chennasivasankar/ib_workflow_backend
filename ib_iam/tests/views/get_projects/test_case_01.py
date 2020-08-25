@@ -36,5 +36,5 @@ class TestCase01GetProjectsAPITestCase(TestUtils):
         team_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c5"
         project_object = ProjectFactory(project_id=project_id)
         team_object = TeamFactory(team_id=team_id)
-        project_teams = [ProjectTeamFactory(project=project_object,
-                                            team=team_object)]
+        project_teams = [ProjectTeamFactory(project_id=project_id,
+                                            team_id=team_id)]
