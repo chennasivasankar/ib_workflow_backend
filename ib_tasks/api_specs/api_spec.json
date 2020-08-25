@@ -220,16 +220,12 @@
         },
         "reason": {
           "type": "string"
-        },
-        "stage_id": {
-          "type": "string"
         }
       },
       "required": [
         "updated_due_date_time",
         "reason_id",
-        "task_id",
-        "stage_id"
+        "task_id"
       ]
     },
     "CreateTaskRequestBody": {
@@ -1849,8 +1845,7 @@
             "type": "string",
             "enum": [
               "INVALID_TASK_ID",
-              "SEARCHABLE_RECORDS_NOT_FOUND",
-              "INVALID_STAGE_ID"
+              "SEARCHABLE_RECORDS_NOT_FOUND"
             ]
           }
         }
@@ -3217,7 +3212,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/TaskandStageIdRequestBody"
+            "$ref": "#/parameters/TaskIdRequestBody"
           }
         ],
         "responses": {
