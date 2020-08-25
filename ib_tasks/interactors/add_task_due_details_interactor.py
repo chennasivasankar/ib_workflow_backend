@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from ib_tasks.exceptions.custom_exceptions import InvalidDueDateTimeException
+from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageIdException
 from ib_tasks.exceptions.task_custom_exceptions import UserIsNotAssigneeToTask, \
     InvalidReasonIdException, InvalidTaskDisplayId
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
@@ -33,6 +34,8 @@ class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter.response_for_user_is_not_assignee_for_task()
         except InvalidReasonIdException:
             return presenter.response_for_invalid_reason_id()
+        except InvalidStageIdException:
+            return presenter.response_for_invalid_stage_id()
 
     def add_task_due_details(self, parameters: TaskDueParametersDTO,
                              task_display_id: str):
@@ -40,9 +43,12 @@ class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
         due_details = self._get_parameters_dto(parameters, task_id)
         user_id = due_details.user_id
         reason_id = due_details.reason_id
+        stage_id = due_details.stage_id
         updated_due_datetime = due_details.due_date_time
         task_id = due_details.task_id
-        self._validate_if_task_is_assigned_to_user(task_id=task_id, user_id=user_id)
+        self._validate_stage_id(stage_id=stage_id)
+        self._validate_if_task_is_assigned_to_user(task_id=task_id,
+                                                   user_id=user_id, stage_id=stage_id)
         self._validate_updated_due_datetime(updated_due_datetime)
         self._validate_reason_id(reason_id)
 
@@ -55,6 +61,7 @@ class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_id=task_id,
             user_id=due_details.user_id,
             reason=due_details.reason,
+            stage_id=due_details.stage_id,
             reason_id=due_details.reason_id,
             due_date_time=due_details.due_date_time
         )
@@ -68,6 +75,11 @@ class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
 
         self.storage.add_due_delay_details(due_details)
 
+    def _validate_stage_id(self, stage_id: int):
+        is_valid = self.storage.validate_stage_id(stage_id)
+        if not is_valid:
+            raise InvalidStageIdException
+
     @staticmethod
     def _validate_reason_id(reason_id):
         from ib_tasks.constants.enum import DELAY_REASONS
@@ -80,9 +92,10 @@ class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
         if updated_due_datetime < datetime.now():
             raise InvalidDueDateTimeException()
 
-    def _validate_if_task_is_assigned_to_user(self, task_id: int, user_id: str):
-        is_assigned = self.storage.validate_if_task_is_assigned_to_user(
-            task_id, user_id
+    def _validate_if_task_is_assigned_to_user(self, task_id: int, user_id: str,
+                                              stage_id: int):
+        is_assigned = self.storage.validate_if_task_is_assigned_to_user_in_given_stage(
+            task_id, user_id, stage_id
         )
         is_not_assigned = not is_assigned
         if is_not_assigned:

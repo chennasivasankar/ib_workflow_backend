@@ -1849,7 +1849,8 @@
             "type": "string",
             "enum": [
               "INVALID_TASK_ID",
-              "SEARCHABLE_RECORDS_NOT_FOUND"
+              "SEARCHABLE_RECORDS_NOT_FOUND",
+              "INVALID_STAGE_ID"
             ]
           }
         }
