@@ -58,7 +58,7 @@ class UserRoleDTO:
     user_id: uuid.uuid4
     role_id: str
     name: str
-    description: str
+    description: str = None
 
 
 @dataclass
@@ -113,7 +113,7 @@ class TeamsWithTotalTeamsCountDTO:
 class BasicUserDetailsDTO:
     user_id: str
     name: str
-    profile_pic_url: str
+    profile_pic_url: str = None
 
 
 @dataclass

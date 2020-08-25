@@ -6,7 +6,7 @@ from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidUserIds
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, TeamIdAndNameDTO, \
     RoleIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, CompanyDTO, \
-    CompanyIdWithEmployeeIdsDTO
+    CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO
 
 
 class UserStorageInterface(ABC):
@@ -185,4 +185,14 @@ class UserStorageInterface(ABC):
 
     @abstractmethod
     def get_user_details(self, user_id: str) -> UserDTO:
+        pass
+
+    @abstractmethod
+    def get_team_basic_user_dtos(self, team_id: str) -> \
+            List[BasicUserDetailsDTO]:
+        pass
+
+    @abstractmethod
+    def get_user_role_dtos_of_a_team(
+            self, user_ids: List[str], team_id: str) -> List[UserRoleDTO]:
         pass

@@ -11,6 +11,7 @@ class UserDetails(models.Model):
                                 blank=True, related_name="users")
 
 
+# TODO: Link to UserDetails to have flexibility to get user details
 class UserTeam(models.Model):
     user_id = models.CharField(max_length=1000)
     team_member_level = models.ForeignKey(

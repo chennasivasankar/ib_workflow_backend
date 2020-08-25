@@ -201,24 +201,24 @@
           "type": "array",
           "items": {
             "allOf": [
-        {
-          "$ref": "#/definitions/UserDetails"
-        },
-        {
-          "$ref": "#/definitions/ListOfRoles"
-        },
-        {
-          "$ref": "#/definitions/ListOfTeams"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "company": {
-              "$ref": "#/definitions/CompanyDetails"
-            }
-          }
-        }
-      ]
+              {
+                "$ref": "#/definitions/UserDetails"
+              },
+              {
+                "$ref": "#/definitions/ListOfRoles"
+              },
+              {
+                "$ref": "#/definitions/ListOfTeams"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "company": {
+                    "$ref": "#/definitions/CompanyDetails"
+                  }
+                }
+              }
+            ]
           }
         }
       },
@@ -2065,6 +2065,40 @@
           "$ref": "#/definitions/Project"
         }
       }
+    },
+    "GetSpecificTeamDetailsSuccessResponse": {
+      "description": "Get specific team details success response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": "array",
+            "items": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "user_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "user_id",
+                    "name"
+                  ]
+                },
+                {
+                  "$ref": "#/definitions/ListOfRoles"
+                }
+              ]
+            }
+          }
+        }
+      }
     }
   },
   "paths": {
@@ -2920,6 +2954,30 @@
         "responses": {
           "200": {
             "$ref": "#/responses/GetTeamMembersSuccessResponse"
+          }
+        }
+      }
+    },
+    "/team/{team_id}/specific_team_details/v1/": {
+      "get": {
+        "operationId": "get_specific_team_details",
+        "summary": "Get Specific Team Details",
+        "description": "Get specific team details of given team id in path",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TeamIdPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetSpecificTeamDetailsSuccessResponse"
           }
         }
       }

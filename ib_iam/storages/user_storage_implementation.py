@@ -4,7 +4,7 @@ from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, CompanyDTO, \
-    CompanyIdWithEmployeeIdsDTO
+    CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface \
     import UserStorageInterface
 
@@ -384,6 +384,45 @@ class UserStorageImplementation(UserStorageInterface):
                            is_admin=user_object.is_admin,
                            cover_page_url=user_object.cover_page_url)
         return user_dto
+
+    def get_team_basic_user_dtos(self, team_id: str) -> \
+            List[BasicUserDetailsDTO]:
+        from ib_iam.models import UserTeam
+        from ib_iam.models import UserDetails
+
+        user_ids = UserTeam.objects.filter(team_id=team_id).values_list(
+            "user_id", flat=True)
+        user_details_objects = UserDetails.objects.filter(
+            user_id__in=user_ids
+        )
+        basic_user_details_dtos = [
+            BasicUserDetailsDTO(
+                user_id=user_details_object.user_id,
+                name=user_details_object.name
+            )
+            for user_details_object in user_details_objects
+        ]
+        return basic_user_details_dtos
+
+    def get_user_role_dtos_of_a_team(
+            self, user_ids: List[str], team_id: str) -> List[UserRoleDTO]:
+        from ib_iam.models import UserRole, ProjectTeam
+        project_id = ProjectTeam.objects.get(team_id=team_id).project_id
+
+        user_role_list = UserRole.objects.filter(
+            user_id__in=user_ids, project_role__project_id=project_id
+        ).values(
+            "user_id", "project_role__role_id", "project_role__name"
+        )
+        user_role_dtos = [
+            UserRoleDTO(
+                user_id=user_role_dict["user_id"],
+                role_id=user_role_dict["project_role__role_id"],
+                name=user_role_dict["project_role__name"]
+            )
+            for user_role_dict in user_role_list
+        ]
+        return user_role_dtos
 
     @staticmethod
     def _convert_company_object_to_company_dto(company_object) -> CompanyDTO:
