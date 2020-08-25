@@ -222,7 +222,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         )
         actions_dto, fields_dto, task_stage_details = \
             self._get_field_dtos_and_actions_dtos(
-            task_stage_details_dtos=task_stage_details_dtos)
+                task_stage_details_dtos=task_stage_details_dtos)
         return actions_dto, fields_dto, task_stage_details
 
     def _get_field_dtos_and_actions_dtos(
@@ -412,8 +412,10 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             raise UserActionPermissionDenied(action_id=action_id)
 
     def _create_or_update_task_in_elasticsearch(
-            self, task_dto: TaskDetailsDTO, stage_ids: List[str], task_id: int):
-        from ib_tasks.interactors.create_or_update_data_in_elasticsearch_interactor import \
+            self, task_dto: TaskDetailsDTO, stage_ids: List[str],
+            task_id: int):
+        from ib_tasks.interactors\
+            .create_or_update_data_in_elasticsearch_interactor import \
             CreateOrUpdateDataInElasticSearchInteractor
         elasticsearch_interactor = CreateOrUpdateDataInElasticSearchInteractor(
             elasticsearch_storage=self.elasticsearch_storage,
@@ -425,13 +427,12 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         )
 
     def _get_stage_assignees_details(
-            self, stage_ids: List[str], task_id) -> List[
-        TaskStageAssigneeDetailsDTO]:
+            self, stage_ids: List[str], task_id
+    ) -> List[TaskStageAssigneeDetailsDTO]:
         if self.task_stage_storage is None:
             return []
         from ib_tasks.interactors.get_stages_assignees_details_interactor \
-            import \
-            GetStagesAssigneesDetailsInteractor
+            import GetStagesAssigneesDetailsInteractor
         assignees_interactor = GetStagesAssigneesDetailsInteractor(
             task_stage_storage=self.task_stage_storage
         )
@@ -445,5 +446,5 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         ]
         return \
             assignees_interactor.get_stages_assignee_details_by_given_task_ids(
-            task_stage_dtos=task_stage_dtos
-        )
+                task_stage_dtos=task_stage_dtos
+            )

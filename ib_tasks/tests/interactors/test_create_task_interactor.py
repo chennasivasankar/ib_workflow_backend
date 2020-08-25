@@ -139,7 +139,7 @@ class TestCreateTaskInteractor:
             elastic_storage=elastic_storage_mock,
             task_stage_storage=task_stage_storage_mock
         )
-        presenter_mock.raise_invalid_task_template_ids \
+        presenter_mock.raise_invalid_task_template_id \
             .return_value = mock_object
 
         # Act
@@ -149,8 +149,8 @@ class TestCreateTaskInteractor:
         assert response == mock_object
         task_template_storage_mock.check_is_template_exists \
             .assert_called_once_with(template_id=given_template_id)
-        presenter_mock.raise_invalid_task_template_ids.assert_called_once()
-        call_args = presenter_mock.raise_invalid_task_template_ids.call_args
+        presenter_mock.raise_invalid_task_template_id.assert_called_once()
+        call_args = presenter_mock.raise_invalid_task_template_id.call_args
         error_object = call_args[0][0]
         invalid_template_id = error_object.task_template_id
         assert invalid_template_id == given_template_id

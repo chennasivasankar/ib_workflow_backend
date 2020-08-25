@@ -2,7 +2,7 @@ from typing import List
 
 from ib_tasks.adapters.dtos import UserDetailsDTO, TeamDetailsDTO, \
     UserIdWIthTeamDetailsDTOs, TeamDetailsWithUserIdDTO, \
-    ProjectDetailsDTO
+    ProjectDetailsDTO, ProjectTeamUserIdsDTO
 from ib_tasks.interactors.field_dtos import SearchableFieldDetailDTO
 from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
     import SearchQueryWithPaginationDTO
@@ -15,8 +15,6 @@ class InvalidProjectIdsException(Exception):
 
 class UserIsNotInProject(Exception):
     pass
-
-
 
 
 class AuthService:
@@ -57,10 +55,12 @@ class AuthService:
 
         return user_details_dtos
 
-    def get_permitted_user_details(self, role_ids: List[str]) \
+    def get_permitted_user_details(self, role_ids: List[str], project_id:
+    str) \
             -> List[UserDetailsDTO]:
-        user_profile_details_dtos = self.interface.get_user_details_for_given_role_ids(
-            role_ids=role_ids)
+        user_profile_details_dtos = \
+            self.interface.get_user_details_for_given_role_ids(
+                role_ids=role_ids, project_id=project_id)
         user_details_dtos = self._get_user_details_dtos(
             user_profile_details_dtos)
         return user_details_dtos
@@ -68,11 +68,12 @@ class AuthService:
     def get_user_details_for_the_given_role_ids_based_on_query(
             self, role_ids: List[str],
             search_query_with_pagination_dto:
-            SearchQueryWithPaginationDTO) -> List[UserDetailsDTO]:
+            SearchQueryWithPaginationDTO, project_id: str
+    ) -> List[UserDetailsDTO]:
         user_profile_details_dtos = self.interface. \
             get_user_details_for_the_given_role_ids_based_on_query(
-                role_ids=role_ids, search_query_with_pagination_dto=
-                search_query_with_pagination_dto)
+            role_ids=role_ids, search_query_with_pagination_dto=
+            search_query_with_pagination_dto, project_id=project_id)
 
         user_details_dtos = self._get_user_details_dtos(
             user_profile_details_dtos)
@@ -98,19 +99,58 @@ class AuthService:
     def get_team_details(self, team_ids: List[str]) -> List[TeamDetailsDTO]:
         raise NotImplementedError
 
-    def get_projects_info_for_given_ids(self, project_ids: List[str]) -> List[
-        ProjectDetailsDTO]:
-        raise NotImplementedError
+    def get_projects_info_for_given_ids(
+            self, project_ids: List[str]) -> List[ProjectDetailsDTO]:
+        iam_project_dtos = \
+            self.interface.get_project_dtos_bulk(project_ids=project_ids)
+        project_dtos = [
+            ProjectDetailsDTO(
+                project_id=project_dto.project_id,
+                name=project_dto.project_id,
+                logo_url=project_dto.logo_url
+            )
+            for project_dto in iam_project_dtos
+        ]
+        return project_dtos
 
-    def get_team_info_for_given_user_ids(self, user_ids: List[str],
-                                         project_id: str) -> List[
-        UserIdWIthTeamDetailsDTOs]:
-        raise NotImplementedError
+    def get_team_info_for_given_user_ids(
+            self, user_ids: List[str], project_id: str
+    ) -> List[UserIdWIthTeamDetailsDTOs]:
+        user_ids = list(sorted(set(user_ids)))
+        user_team_dtos = self.interface.get_user_teams_for_each_project_user(
+            user_ids=user_ids, project_id=project_id)
+        user_id_with_team_details_dtos = []
+        for user_team_dto in user_team_dtos:
+            team_details = [
+                TeamDetailsDTO(team_id=user_team.team_id,
+                               name=user_team.team_name)
+                for user_team in user_team_dto.user_teams
+            ]
+            user_id_with_team_details_dtos.append(
+                UserIdWIthTeamDetailsDTOs(
+                    user_id=user_team_dto.user_id, team_details=team_details))
+        return user_id_with_team_details_dtos
 
-    def get_team_details_for_given_team_project_details_dto(
-            self, team_project_details_dto) -> \
-            List[TeamDetailsWithUserIdDTO]:
-        raise NotImplementedError
+    def get_team_details_for_given_project_team_user_ids_dto(
+            self, team_project_details_dto: ProjectTeamUserIdsDTO
+    ) -> List[TeamDetailsWithUserIdDTO]:
+        from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO
+        project_id = team_project_details_dto.project_id
+        team_details_with_user_id_dtos = []
+        for user_team_dto in \
+                team_project_details_dto.user_id_with_team_id_dtos:
+            project_team_user_dto = ProjectTeamUserDTO(
+                user_id=user_team_dto.user_id, team_id=user_team_dto.team_id,
+                project_id=project_id)
+            user_team = \
+                self.interface.get_team_details_for_given_project_team_user_details_dto(
+                    project_team_user_dto)
+            team_details_with_user_id_dtos.append(
+                TeamDetailsWithUserIdDTO(
+                    user_id=user_team.user_id, team_id=user_team_dto.team_id,
+                    name=user_team.name)
+            )
+        return team_details_with_user_id_dtos
 
     def validate_team_ids(self, team_ids: List[str]) -> \
             List[str]:

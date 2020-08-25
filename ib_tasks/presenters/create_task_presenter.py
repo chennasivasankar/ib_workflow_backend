@@ -22,7 +22,6 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserBoardPermissionDenied, UserActionPermissionDenied
 from ib_tasks.exceptions.task_custom_exceptions import \
-    InvalidTaskTemplateIds, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
@@ -32,6 +31,18 @@ from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 class CreateTaskPresenterImplementation(
     CreateTaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_invalid_task_template_of_project(self, err):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_PROJECT_TEMPLATE
+        message = INVALID_PROJECT_TEMPLATE[0].format(err.template_id,
+                                                     err.project_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_PROJECT_TEMPLATE[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_exception_for_invalid_present_stage_actions(self, err):
         from ib_tasks.constants.exception_messages import \

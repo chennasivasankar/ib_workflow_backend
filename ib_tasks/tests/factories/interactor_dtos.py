@@ -530,6 +530,7 @@ class SearchableDTOFactory(factory.Factory):
     search_type = Searchable.TEAM.value
     id = "team1"
 
+
 class StageIdWithValueDTOFactory(factory.Factory):
     class Meta:
         model = StageIdWithValueDTO
