@@ -1,8 +1,10 @@
-from typing import List
+from typing import List, Tuple
 
 from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
-    UserIdWithTeamIDAndNameDTO
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
+    UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO, UserTeamsDTO
+from ib_iam.exceptions.custom_exceptions import InvalidUserIds
+from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, UserTeamDTO, \
+    TeamIdAndNameDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
@@ -62,6 +64,31 @@ class ProjectInteractor:
             name=name)
         return user_id_with_team_id_and_name_dto
 
+    def get_user_team_dtos_for_given_project_teams_and_users_details_dto(
+            self, project_teams_and_users_dto: ProjectTeamsAndUsersDTO
+    ) -> List[UserTeamDTO]:
+        project_id = project_teams_and_users_dto.project_id
+        user_ids, valid_team_ids = self._fetch_user_ids_and_team_ids(
+            project_teams_and_users_dto=project_teams_and_users_dto)
+
+        valid_team_ids = self.project_storage.get_valid_team_ids_for_given_project(
+            project_id=project_id, team_ids=valid_team_ids)
+        team_user_dtos = self.team_storage.get_team_user_dtos(
+            team_ids=valid_team_ids, user_ids=user_ids)
+        return team_user_dtos
+
+    @staticmethod
+    def _fetch_user_ids_and_team_ids(
+            project_teams_and_users_dto: ProjectTeamsAndUsersDTO
+    ) -> Tuple[List[str], List[str]]:
+        user_ids = []
+        team_ids = []
+        user_and_team_id_dtos = project_teams_and_users_dto.user_id_with_team_id_dtos
+        for user_and_team_id_dto in user_and_team_id_dtos:
+            user_ids.append(user_and_team_id_dto.user_id)
+            team_ids.append(user_and_team_id_dto.team_id)
+        return user_ids, team_ids
+
     def is_valid_user_id_for_given_project(
             self, user_id: str, project_id: str) -> bool:
         self._validate_user_id(user_id=user_id)
@@ -109,3 +136,53 @@ class ProjectInteractor:
             from ib_iam.exceptions.custom_exceptions import \
                 UserNotExistsInGivenTeam
             raise UserNotExistsInGivenTeam
+
+    def get_team_dtos(
+            self, team_ids: List[str], project_id: str
+    ) -> List[TeamIdAndNameDTO]:
+        valid_team_ids = self.project_storage.get_valid_team_ids_for_given_project(
+            project_id=project_id, team_ids=team_ids)
+        return self.team_storage.get_team_id_and_name_dtos(
+            team_ids=valid_team_ids)
+
+    def get_user_teams_for_each_project_user(
+            self, user_ids: List[str], project_id: str
+    ) -> List[UserTeamsDTO]:
+        valid_user_ids = self.user_storage.get_valid_user_ids(
+            user_ids=user_ids)
+        if len(valid_user_ids) != len(user_ids):
+            invalid_user_ids = set(user_ids) - set(valid_user_ids)
+            raise InvalidUserIds(invalid_user_ids)
+        team_ids = self.project_storage.get_valid_team_ids(
+            project_id=project_id)
+        user_team_dtos = self.team_storage.get_team_user_dtos(
+            user_ids=user_ids, team_ids=team_ids)
+        return self._fetch_user_teams_for_each_user(
+            user_team_dtos=user_team_dtos)
+
+    def _fetch_user_teams_for_each_user(
+            self, user_team_dtos: List[UserTeamDTO]
+    ) -> List[UserTeamsDTO]:
+        user_teams_dict = {}
+        for user_team_dto in user_team_dtos:
+            try:
+                user_teams_dict[
+                    user_team_dto.user_id
+                ].user_teams.append(
+                    self._convert_to_team_id_and_name_dto(
+                        user_team_dto=user_team_dto)
+                )
+            except KeyError:
+                user_teams_dict[user_team_dto.user_id] = UserTeamsDTO(
+                    user_id=user_team_dto.user_id, user_teams=[
+                        self._convert_to_team_id_and_name_dto(
+                            user_team_dto=user_team_dto)
+                    ]
+                )
+        return list(user_teams_dict.values())
+
+    @staticmethod
+    def _convert_to_team_id_and_name_dto(
+            user_team_dto: UserTeamDTO) -> TeamIdAndNameDTO:
+        return TeamIdAndNameDTO(
+            team_id=user_team_dto.team_id, team_name=user_team_dto.team_name)

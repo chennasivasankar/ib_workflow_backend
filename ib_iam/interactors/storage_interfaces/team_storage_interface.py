@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO, \
     TeamUserIdsDTO, TeamsWithTotalTeamsCountDTO, TeamIdAndNameDTO, TeamDTO, \
-    TeamNameAndDescriptionDTO
+    TeamNameAndDescriptionDTO, UserTeamDTO
 
 
 class TeamStorageInterface(ABC):
@@ -61,4 +61,10 @@ class TeamStorageInterface(ABC):
     @abstractmethod
     def get_team_id_and_name_dtos(
             self, team_ids: List[str]) -> List[TeamIdAndNameDTO]:
+        pass
+
+    @abstractmethod
+    def get_team_user_dtos(
+            self, user_ids: List[str], team_ids: List[str]
+    ) -> List[UserTeamDTO]:
         pass
