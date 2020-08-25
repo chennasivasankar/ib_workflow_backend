@@ -25,6 +25,18 @@ class ProjectTeamUserDTO:
 
 
 @dataclass
+class UserIdWithTeamIdDTO:
+    user_id: str
+    team_id: str
+
+
+@dataclass
+class ProjectTeamsAndUsersDTO:
+    project_id: str
+    user_id_with_team_id_dtos: List[UserIdWithTeamIdDTO]
+
+
+@dataclass
 class UserIdWithTeamIDAndNameDTO:
     team_id: str
     user_id: str
