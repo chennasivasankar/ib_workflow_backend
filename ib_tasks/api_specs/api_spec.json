@@ -1582,7 +1582,7 @@
     },
     "TaskandStageIdRequestBody": {
       "in": "body",
-      "name": "TaskId and StageId",
+      "name": "TaskIdAndStageId",
       "description": "task id and stage id",
       "required": true,
       "schema": {
