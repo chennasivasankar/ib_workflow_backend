@@ -3336,7 +3336,7 @@
       }
     },
     "/task/rps/v1/": {
-      "get": {
+      "post": {
         "operationId": "get_task_rps_in_given_stage",
         "summary": "get task rps in given stage",
         "description": "get task rps in given stage",
