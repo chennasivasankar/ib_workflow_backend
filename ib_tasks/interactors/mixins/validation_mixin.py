@@ -34,7 +34,7 @@ class ValidationMixin:
         @raise: InvalidProjectIdsException:
         @rtype:
         """
-        return project_ids
+        raise NotImplementedError
 
     def validate_if_user_is_in_project(self, user_id: str,
                                        project_id: str):
@@ -47,4 +47,4 @@ class ValidationMixin:
         @raise: UserIsNotInProjectException
         @rtype:
         """
-        return True
+        raise NotImplementedError
