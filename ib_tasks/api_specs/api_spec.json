@@ -1582,7 +1582,7 @@
     },
     "TaskandStageIdRequestBody": {
       "in": "body",
-      "name": "RequestBody",
+      "name": "TaskId and StageId",
       "description": "task id and stage id",
       "required": true,
       "schema": {
@@ -1849,8 +1849,7 @@
             "type": "string",
             "enum": [
               "INVALID_TASK_ID",
-              "SEARCHABLE_RECORDS_NOT_FOUND",
-              "INVALID_STAGE_ID"
+              "SEARCHABLE_RECORDS_NOT_FOUND"
             ]
           }
         }
@@ -3331,6 +3330,36 @@
           },
           "404": {
             "$ref": "#/responses/GetTaskFailureResponse"
+          }
+        }
+      }
+    },
+    "/task/rps/v1/": {
+      "get": {
+        "operationId": "get_task_rps_in_given_stage",
+        "summary": "get task rps in given stage",
+        "description": "get task rps in given stage",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TaskandStageIdRequestBody"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTaskRpsResponse"
+          },
+          "404": {
+            "$ref": "#/responses/GetTaskRPsFailureResponse"
+          },
+          "403": {
+            "$ref": "#/responses/TaskIsNotAssignedToUserResponse"
           }
         }
       }
