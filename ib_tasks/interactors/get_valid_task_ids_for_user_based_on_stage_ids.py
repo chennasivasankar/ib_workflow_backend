@@ -78,7 +78,6 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
         get_stage_assignees_interactor = GetStagesAssigneesDetailsInteractor(
             task_stage_storage=self.task_stage_storage
         )
-        task_with_complete_stage_details_dtos = []
         task_stage_dtos = []
         for task_id_with_stage_details_dto in task_id_with_stage_details_dtos:
             from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
@@ -89,27 +88,33 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
             task_stage_dtos.append(task_stage_dto)
         stage_assignee_dtos = get_stage_assignees_interactor. \
             get_stages_assignee_details_by_given_task_ids(
-            task_stage_dtos=task_stage_dtos
-        )
+                task_stage_dtos=task_stage_dtos
+            )
 
-        stage_assignee_map = {}
+        from collections import defaultdict
+        stage_assignee_map = defaultdict(lambda: [])
         for stage_assignee_dto in stage_assignee_dtos:
             stage_assignee_map[stage_assignee_dto.stage_id + str(
-                stage_assignee_dto.task_id)] = stage_assignee_dto
+                stage_assignee_dto.task_id)].append(stage_assignee_dto)
 
-        for task_id_with_stage_details_dto in task_id_with_stage_details_dtos:
-            task_with_complete_stage_details_dto = \
-                TaskWithCompleteStageDetailsDTO(
-                    task_with_stage_details_dto=task_id_with_stage_details_dto,
-                    stage_assignee_dto=[
-                        stage_assignee_map[
-                            task_id_with_stage_details_dto.stage_id + str(
-                                task_id_with_stage_details_dto.task_id)]
-                    ]
-                )
-            task_with_complete_stage_details_dtos.append(
-                task_with_complete_stage_details_dto)
+        task_with_complete_stage_details_dtos = \
+            self._get_assignee_details_for_stages(
+                stage_assignee_map, task_id_with_stage_details_dtos,
+            )
         return task_with_complete_stage_details_dtos
+
+    @staticmethod
+    def _get_assignee_details_for_stages(stage_assignee_map, task_stage_dtos):
+        task_stage_details_dtos = []
+        for task_stage_dto in task_stage_dtos:
+            key = task_stage_dto.stage_id + str(task_stage_dto.task_id)
+            task_stage_details_dto = \
+                TaskWithCompleteStageDetailsDTO(
+                    task_with_stage_details_dto=task_stage_dto,
+                    stage_assignee_dto=stage_assignee_map.get(key, [])
+                )
+            task_stage_details_dtos.append(task_stage_details_dto)
+        return task_stage_details_dtos
 
     @staticmethod
     def get_task_ids_group_by_stage_value_dtos(

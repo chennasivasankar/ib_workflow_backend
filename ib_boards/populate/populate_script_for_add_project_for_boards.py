@@ -25,8 +25,9 @@ def append_project_board_dto(project_dict: Dict[str, Any]):
     return project_board_dto
 
 
-def validation_for_list_of_project_boards_dict(list_of_project_boards: List[Dict]):
-    from schema import Schema, SchemaError
+def validation_for_list_of_project_boards_dict(
+        list_of_project_boards: List[Dict]):
+    from schema import Schema, SchemaError, And
 
     schema = Schema(
         [{
