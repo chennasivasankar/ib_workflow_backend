@@ -312,6 +312,7 @@ class TaskDueParametersDTOFactory(factory.Factory):
     user_id = factory.Sequence(lambda n: "user_id_%d" % n)
     due_date_time = datetime.now() + timedelta(days=2)
     reason_id = factory.Iterator([1, 2, 3, 4, -1])
+    stage_id = factory.Sequence(lambda n: n + 1)
     reason = "reason"
 
 

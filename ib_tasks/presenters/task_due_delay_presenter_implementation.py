@@ -88,3 +88,6 @@ class TaskDueDetailsPresenterImplementation(TaskDueDetailsPresenterInterface,
             response_dict=data
         )
         return response_object
+
+    def response_for_invalid_stage_id(self):
+        pass
