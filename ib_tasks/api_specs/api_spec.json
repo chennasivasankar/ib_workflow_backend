@@ -1582,7 +1582,7 @@
     },
     "TaskandStageIdRequestBody": {
       "in": "body",
-      "name": "TaskIdAndStageId",
+      "name": "TaskId and StageId",
       "description": "task id and stage id",
       "required": true,
       "schema": {
@@ -1984,6 +1984,35 @@
               "DUPLICATE_STAGE_IDS",
               "VIRTUAL_STAGE_IDS",
               "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+    "GetTaskRPsFailureResponse": {
+      "description": "Task Stage Assignees Failure Response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "enum": [
+              404
+            ]
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "INVALID_STAGE_ID",
+              "INVALID_TASK_ID"
             ]
           }
         },
@@ -2532,6 +2561,15 @@
             "name",
             "team_info"
           ]
+        }
+      }
+    },
+    "GetTaskRpsResponse": {
+      "description": "Task Stage Rps",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/UserResponseBody"
         }
       }
     },
@@ -3292,6 +3330,36 @@
           },
           "404": {
             "$ref": "#/responses/GetTaskFailureResponse"
+          }
+        }
+      }
+    },
+    "/task/rps/v1/": {
+      "get": {
+        "operationId": "get_task_rps_in_given_stage",
+        "summary": "get task rps in given stage",
+        "description": "get task rps in given stage",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TaskandStageIdRequestBody"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTaskRpsResponse"
+          },
+          "404": {
+            "$ref": "#/responses/GetTaskRPsFailureResponse"
+          },
+          "403": {
+            "$ref": "#/responses/TaskIsNotAssignedToUserResponse"
           }
         }
       }
