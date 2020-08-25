@@ -517,9 +517,3 @@ class TasksStorageImplementation(TaskStorageInterface):
     def get_project_id_of_task(self, task_id: int) -> str:
         task_obj = Task.objects.get(id=task_id)
         return task_obj.project_id
-
-    def get_task_current_stage_ids(self, task_id: int) -> List[str]:
-        stage_ids = CurrentTaskStage.objects.filter(
-            task_id=task_id
-        ).values_list('stage__stage_id', flat=True)
-        return list(stage_ids)

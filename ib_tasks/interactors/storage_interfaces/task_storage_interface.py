@@ -136,7 +136,3 @@ class TaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_project_id_for_the_task_id(self, task_id) -> str:
         pass
-
-    @abc.abstractmethod
-    def get_task_current_stage_ids(self, task_id: int) -> List[str]:
-        pass
