@@ -653,7 +653,7 @@
         "projects"
       ]
     },
-    "ProjectWithTeamIds": {
+    "ProjectWithTeamIdsAndRoleIds": {
       "allOf": [
         {
           "$ref": "#/definitions/ProjectDetails"
@@ -662,6 +662,12 @@
           "type": "object",
           "properties": {
             "team_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "role_ids": {
               "type": "array",
               "items": {
                 "type": "string"
@@ -1070,7 +1076,7 @@
       "required": true,
       "description": "parameters or details to create/add a project",
       "schema": {
-        "$ref": "#/definitions/ProjectWithTeamIds"
+        "$ref": "#/definitions/ProjectWithTeamIdsAndRoleIds"
       }
     },
     "UpdateProjectParameter": {
@@ -1078,7 +1084,7 @@
       "in": "body",
       "description": "details that are to be updated of a project",
       "schema": {
-        "$ref": "#/definitions/ProjectWithTeamIds"
+        "$ref": "#/definitions/ProjectWithTeamIdsAndRoleIds"
       }
     }
   },

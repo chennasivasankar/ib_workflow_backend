@@ -9,10 +9,10 @@ RESPONSE_200_JSON = """
             "name": "string",
             "description": "string",
             "logo_url": "string",
-            "project_id": "d9a95e7e-6f22-4249-8a37-a35f1340c8c8",
+            "project_id": "cf66b3e2-e08e-43d6-90dd-1a4721064721",
             "teams": [
                 {
-                    "team_id": "57366663-fb76-4668-a48c-2808dcf71f5b",
+                    "team_id": "60da3254-e6ff-407f-bbc2-9c084f8ff237",
                     "team_name": "string"
                 }
             ],
