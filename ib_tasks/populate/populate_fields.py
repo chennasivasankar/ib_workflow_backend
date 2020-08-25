@@ -6,7 +6,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
 
 
 class PopulateFields:
-    def create_fields(self, spread_sheet_name: str):
+    def create_or_update_fields(self, spread_sheet_name: str):
         from ib_tasks.constants.constants import FIELD_SUB_SHEET_TITLE
 
         from ib_tasks.interactors.create_or_update_fields_interactor \

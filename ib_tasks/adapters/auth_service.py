@@ -17,8 +17,6 @@ class UserIsNotInProject(Exception):
     pass
 
 
-
-
 class AuthService:
     @property
     def interface(self):

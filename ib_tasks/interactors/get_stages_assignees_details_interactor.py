@@ -1,10 +1,9 @@
 from typing import List, Optional
 
-from ib_tasks.adapters.dtos import AssigneeDetailsDTO, UserIdWithTeamIdDTO, \
-    ProjectTeamUserIdsDTO, TeamDetailsWithUserIdDTO, \
-    AssigneeWithTeamDetailsDTO, TeamInfoDTO
-    ProjectTeamUserIdsDTO, TeamDetailsWithUserIdDTO, AssigneeWithTeamDetailsDTO, \
-    TeamInfoDTO
+from ib_tasks.adapters.dtos import (
+    AssigneeDetailsDTO, UserIdWithTeamIdDTO, TeamInfoDTO,
+    ProjectTeamUserIdsDTO, TeamDetailsWithUserIdDTO, AssigneeWithTeamDetailsDTO
+)
 from ib_tasks.adapters.service_adapter import get_service_adapter
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidStageIdsForTask
