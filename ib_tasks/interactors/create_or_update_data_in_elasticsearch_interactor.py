@@ -28,7 +28,7 @@ class CreateOrUpdateDataInElasticSearchInteractor:
         self.task_storage = task_storage
 
     def create_or_update_task_in_elasticsearch(
-            self, task_dto: TaskDetailsDTO, stage_ids: List[str], task_id: int):
+            self, task_dto: TaskDetailsDTO, task_id: int):
 
         is_task_id_exists = \
             self.elasticsearch_storage.validate_task_id_in_elasticsearch(
@@ -37,6 +37,7 @@ class CreateOrUpdateDataInElasticSearchInteractor:
         project_id = self.task_storage.get_project_id_for_the_task_id(
             task_id=task_id
         )
+        stage_ids = self.task_storage.get_task_current_stage_ids(task_id=task_id)
         elastic_task_dto = self._get_elastic_task_dto(
             task_dto=task_dto, stage_ids=stage_ids, task_id=task_id, project_id=project_id)
         if is_task_id_exists:
