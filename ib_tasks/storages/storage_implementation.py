@@ -37,11 +37,6 @@ from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
 
 
 class StagesStorageImplementation(StageStorageInterface):
-    def get_project_id_for_task_display_id(self, task_display_id: str):
-        from ib_tasks.models.task import Task
-        project_id = Task.objects.filter(task_display_id=task_display_id). \
-            values_list('project_id', flat=True)
-        return project_id.first()
 
     def create_stages(self, stage_information: List[StageDTO]):
         list_of_stages = []
