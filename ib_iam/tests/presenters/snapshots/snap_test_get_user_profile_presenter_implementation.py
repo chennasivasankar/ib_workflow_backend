@@ -31,16 +31,6 @@ snapshots['TestGetUserProfilePresenterImplementation.test_prepare_response_for_u
     'is_admin': False,
     'name': 'name1',
     'profile_pic_url': 'url1',
-    'roles': [
-        {
-            'role_id': 'PAYMENT1',
-            'role_name': 'payment 1'
-        },
-        {
-            'role_id': 'PAYMENT2',
-            'role_name': 'payment 2'
-        }
-    ],
     'teams': [
         {
             'description': 'team_description 1',
