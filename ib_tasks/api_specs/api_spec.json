@@ -3334,6 +3334,36 @@
           }
         }
       }
+    },
+    "/task/rps/v1/": {
+      "get": {
+        "operationId": "get_task_rps_in_given_stage",
+        "summary": "get task rps in given stage",
+        "description": "get task rps in given stage",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TaskandStageIdRequestBody"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTaskRpsResponse"
+          },
+          "404": {
+            "$ref": "#/responses/GetTaskRPsFailureResponse"
+          },
+          "403": {
+            "$ref": "#/responses/TaskIsNotAssignedToUserResponse"
+          }
+        }
+      }
     }
   }
 }
