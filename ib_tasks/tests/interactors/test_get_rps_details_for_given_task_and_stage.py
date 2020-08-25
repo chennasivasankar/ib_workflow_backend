@@ -30,7 +30,7 @@ class TestGetTaskRelatedRps:
 
     @pytest.fixture
     def presenter_mock(self):
-        from ib_tasks.interactors.presenter_interfaces.get_task_rps_presenter \
+        from ib_tasks.interactors.presenter_interfaces.get_task_rps_presenter_interface \
             import GetTaskRpsPresenterInterface
         return create_autospec(GetTaskRpsPresenterInterface)
 
@@ -61,7 +61,8 @@ class TestGetTaskRelatedRps:
         storage.validate_stage_id.return_value = True
         task_storage.check_is_valid_task_display_id.return_value = True
         task_storage.get_task_id_for_task_display_id.return_value = 1
-        storage.validate_if_task_is_assigned_to_user.return_value = False
+        storage.validate_if_task_is_assigned_to_user_in_given_stage. \
+            return_value = False
 
         interactor = GetTaskRPsInteractor(storage=storage, task_storage=task_storage)
 
@@ -71,7 +72,25 @@ class TestGetTaskRelatedRps:
         # Assert
         task_storage.check_is_valid_task_display_id.assert_called_once_with(
             task_display_id)
-        storage.validate_if_task_is_assigned_to_user.assert_called_once_with(
-            task_id, user_id
+        storage.validate_if_task_is_assigned_to_user_in_given_stage.assert_called_once_with(
+            task_id, user_id, stage_id
         )
         presenter_mock.response_for_user_is_not_assignee_for_task.assert_called_once()
+
+    def test_given_invalid_stage_id_raises_exception(self, storage, task_storage,
+                                                     parameters, presenter_mock):
+        # Arrange
+        task_display_id = parameters.task_id
+        task_storage.get_task_id_for_task_display_id.return_value = 1
+        task_storage.check_is_valid_task_display_id.return_value = True
+        storage.validate_stage_id.return_value = False
+
+        interactor = GetTaskRPsInteractor(storage=storage, task_storage=task_storage)
+
+        # Act
+        response = interactor.get_task_rps_wrapper(presenter_mock, parameters)
+
+        # Assert
+        task_storage.check_is_valid_task_display_id.assert_called_once_with(
+            task_display_id)
+        presenter_mock.response_for_invalid_stage_id.assert_called_once()

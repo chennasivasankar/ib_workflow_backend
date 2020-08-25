@@ -1,6 +1,7 @@
 import abc
 
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidTaskDisplayId
 
 
 class GetTaskRpsPresenterInterface(abc.ABC):

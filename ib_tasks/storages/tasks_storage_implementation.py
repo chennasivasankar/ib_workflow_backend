@@ -517,3 +517,6 @@ class TasksStorageImplementation(TaskStorageInterface):
     def get_project_id_of_task(self, task_id: int) -> str:
         task_obj = Task.objects.get(id=task_id)
         return task_obj.project_id
+
+    def get_user_team_id(self, user_id: str, task_id: int) -> str:
+        pass
