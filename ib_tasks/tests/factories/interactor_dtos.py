@@ -8,8 +8,6 @@ from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
 from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
     import SearchQueryWithPaginationDTO
-from ib_tasks.interactors.get_tasks_to_relevant_search_query import \
-    SearchQueryDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
@@ -32,7 +30,7 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeDTO, \
     SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
     TaskDelayParametersDTO, UpdateTaskWithTaskDisplayIdDTO, \
-    SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO
+    SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO, SearchQueryDTO
 from ib_tasks.interactors.task_template_dtos import \
     CreateTransitionChecklistTemplateDTO, \
     CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
