@@ -107,7 +107,7 @@ class AuthService:
     ) -> List[UserIdWIthTeamDetailsDTOs]:
         raise NotImplementedError
 
-    def get_user_id_team_details_dtos_for_given_team_project_user_ids_dto(
+    def get_user_id_team_details_dtos(
             self, project_team_user_ids_dto: ProjectTeamUserIdsDTO) -> \
             List[TeamDetailsWithUserIdDTO]:
         raise NotImplementedError

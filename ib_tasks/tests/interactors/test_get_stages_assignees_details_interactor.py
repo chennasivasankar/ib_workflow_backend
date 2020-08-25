@@ -28,63 +28,39 @@ class TestGetStagesAssigneesDetailsInteractor:
         from ib_tasks.tests.factories.storage_dtos import \
             TaskStageAssigneeDTOFactory
         TaskStageAssigneeDTOFactory.reset_sequence()
-        from ib_tasks.tests.factories.adapter_dtos import \
-            AssigneeDetailsDTOFactory
-        AssigneeDetailsDTOFactory.reset_sequence()
-
-    @pytest.fixture
-    def assignee_details_dtos(self, reset_sequence):
-        from ib_tasks.tests.factories.adapter_dtos import \
-            AssigneeDetailsDTOFactory
-        assignee_details_dtos = [
-            AssigneeDetailsDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174001"),
-            AssigneeDetailsDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174002"),
-            AssigneeDetailsDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174003")
-        ]
-        return assignee_details_dtos
+        from ib_tasks.tests.factories.interactor_dtos import \
+            AssigneeWithTeamDetailsDTOFactory
+        AssigneeWithTeamDetailsDTOFactory.reset_sequence()
+        from ib_tasks.tests.factories.adapter_dtos import TeamInfoDTOFactory
+        TeamInfoDTOFactory.reset_sequence()
 
     @pytest.fixture
     def stage_assignee_dtos(self, reset_sequence):
         from ib_tasks.tests.factories.storage_dtos import \
             TaskStageAssigneeDTOFactory
         stage_assignee_dtos = [
-            TaskStageAssigneeDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174001"),
-            TaskStageAssigneeDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174002"),
-            TaskStageAssigneeDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174003"),
-            TaskStageAssigneeDTOFactory(assignee_id=None)
+            TaskStageAssigneeDTOFactory(),
+            TaskStageAssigneeDTOFactory(),
+            TaskStageAssigneeDTOFactory(),
+            TaskStageAssigneeDTOFactory(assignee_id=None, team_id=None)
         ]
         return stage_assignee_dtos
 
     @pytest.fixture
     def stage_assignee_details_dtos(
-            self, assignee_details_dtos, stage_assignee_dtos, reset_sequence
+            self, reset_sequence
     ):
         from ib_tasks.tests.factories.interactor_dtos import \
-            StageAssigneeDetailsDTOFactory
-        stage_assignee_details_dtos = [
-            StageAssigneeDetailsDTOFactory(
-                task_stage_id=stage_assignee_dtos[0].task_stage_id,
-                stage_id=stage_assignee_dtos[0].stage_id,
-                assignee_details_dto=assignee_details_dtos[0]),
-            StageAssigneeDetailsDTOFactory(
-                task_stage_id=stage_assignee_dtos[1].task_stage_id,
-                stage_id=stage_assignee_dtos[1].stage_id,
-                assignee_details_dto=assignee_details_dtos[1]),
-            StageAssigneeDetailsDTOFactory(
-                task_stage_id=stage_assignee_dtos[2].task_stage_id,
-                stage_id=stage_assignee_dtos[2].stage_id,
-                assignee_details_dto=assignee_details_dtos[2]),
-            StageAssigneeDetailsDTOFactory(
-                task_stage_id=stage_assignee_dtos[3].task_stage_id,
-                stage_id=stage_assignee_dtos[3].stage_id,
-                assignee_details_dto=None)
-        ]
+            StageAssigneeWithTeamDetailsDTOFactory
+        stage_assignee_details_dtos = \
+            StageAssigneeWithTeamDetailsDTOFactory.create_batch(
+                size=3,
+            )
+        stage_assignee_details_dto = [StageAssigneeWithTeamDetailsDTOFactory(
+            assignee_details_dto=None
+        )]
+        stage_assignee_details_dtos = stage_assignee_details_dtos + \
+                                    stage_assignee_details_dto
         return stage_assignee_details_dtos
 
     def test_given_task_id_and_stage_ids_invalid_stages_for_task_raise_exception(
@@ -99,6 +75,7 @@ class TestGetStagesAssigneesDetailsInteractor:
         stage_ids = [3, 5, 7, 8]
         valid_stage_ids = [3, 5]
         invalid_stage_ids = [7, 8]
+        project_id = "FIN MAN"
         exception_message = INVALID_STAGE_IDS_FOR_TASK.format(
             invalid_stage_ids, task_id
         )
@@ -108,7 +85,7 @@ class TestGetStagesAssigneesDetailsInteractor:
         # Act
         with pytest.raises(InvalidStageIdsForTask) as err:
             interactor.get_stages_assignee_details_dtos(
-                task_id=task_id, stage_ids=stage_ids
+                task_id=task_id, stage_ids=stage_ids, project_id=project_id
             )
         exception_objects = err.value
         # Assert
@@ -118,36 +95,6 @@ class TestGetStagesAssigneesDetailsInteractor:
 
     def test_given_task_id_and_stage_ids_returns_stage_assignee_dtos(
             self, task_stage_storage, interactor, stage_assignee_dtos,
-            mocker, reset_sequence
-    ):
-        # Arrange
-        task_id = 1
-        stage_ids = [
-            stage_assignee_dto.stage_id
-            for stage_assignee_dto in stage_assignee_dtos
-        ]
-        from ib_tasks.tests.common_fixtures.adapters \
-            .assignees_details_service import \
-            assignee_details_dtos_mock
-        assignee_details_dtos_mock_method = assignee_details_dtos_mock(mocker)
-        valid_stage_ids = stage_ids
-        task_stage_storage.get_valid_stage_ids_of_task.return_value = \
-            valid_stage_ids
-        task_stage_storage.get_stage_assignee_dtos.return_value = \
-            stage_assignee_dtos
-
-        # Act
-        interactor.get_stages_assignee_details_dtos(
-            task_id=task_id, stage_ids=stage_ids
-        )
-
-        # Assert
-        task_stage_storage.get_stage_assignee_dtos.assert_called_once_with(
-            task_id, stage_ids)
-        assignee_details_dtos_mock_method.assert_called_once()
-
-    def test_given_task_id_and_stage_ids_returns_stage_assignee_details_dtos(
-            self, task_stage_storage, interactor, stage_assignee_dtos,
             mocker, reset_sequence, stage_assignee_details_dtos
     ):
         # Arrange
@@ -156,27 +103,31 @@ class TestGetStagesAssigneesDetailsInteractor:
             stage_assignee_dto.stage_id
             for stage_assignee_dto in stage_assignee_dtos
         ]
-        valid_stage_ids = stage_ids
-
+        project_id = "FIN MAN"
         from ib_tasks.tests.common_fixtures.adapters \
             .assignees_details_service import \
             assignee_details_dtos_mock
-
         assignee_details_dtos_mock_method = assignee_details_dtos_mock(mocker)
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_user_id_team_details_dtos_mock
 
+        get_user_id_team_details_dtos_mock_method = \
+            get_user_id_team_details_dtos_mock(
+                mocker)
+        valid_stage_ids = stage_ids
         task_stage_storage.get_valid_stage_ids_of_task.return_value = \
             valid_stage_ids
         task_stage_storage.get_stage_assignee_dtos.return_value = \
             stage_assignee_dtos
 
         # Act
-        actual_stage_assignee_details_dtos = \
-            interactor.get_stages_assignee_details_dtos(
-            task_id=task_id, stage_ids=stage_ids
+        response = interactor.get_stages_assignee_details_dtos(
+            task_id=task_id, stage_ids=stage_ids, project_id=project_id
         )
 
         # Assert
+        assert response == stage_assignee_details_dtos
         task_stage_storage.get_stage_assignee_dtos.assert_called_once_with(
             task_id, stage_ids)
         assignee_details_dtos_mock_method.assert_called_once()
-        assert actual_stage_assignee_details_dtos == stage_assignee_details_dtos
+        get_user_id_team_details_dtos_mock_method.assert_called_once()

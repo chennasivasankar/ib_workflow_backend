@@ -2,13 +2,14 @@ from typing import List, Optional
 
 from ib_tasks.adapters.dtos import (
     AssigneeDetailsDTO, UserIdWithTeamIdDTO, TeamInfoDTO,
-    ProjectTeamUserIdsDTO, TeamDetailsWithUserIdDTO, AssigneeWithTeamDetailsDTO
+    ProjectTeamUserIdsDTO, TeamDetailsWithUserIdDTO
 )
 from ib_tasks.adapters.service_adapter import get_service_adapter
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidStageIdsForTask
 from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
-from ib_tasks.interactors.stages_dtos import StageAssigneeWithTeamDetailsDTO
+from ib_tasks.interactors.stages_dtos import StageAssigneeWithTeamDetailsDTO, \
+    AssigneeWithTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
@@ -95,7 +96,7 @@ class GetStagesAssigneesDetailsInteractor:
         service_interface = get_service_adapter()
         auth_service = service_interface.auth_service
         team_details_with_user_id_dtos = \
-            auth_service.get_user_id_team_details_dtos_for_given_team_project_user_ids_dto(
+            auth_service.get_user_id_team_details_dtos(
                 project_team_user_ids_dto)
         return team_details_with_user_id_dtos
 

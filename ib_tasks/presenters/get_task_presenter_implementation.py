@@ -11,13 +11,13 @@ from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import GetTaskPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import TaskCompleteDetailsDTO
-from ib_tasks.interactors.stages_dtos import StageAssigneeWithTeamDetailsDTO
+from ib_tasks.interactors.stages_dtos import StageAssigneeWithTeamDetailsDTO, \
+    AssigneeWithTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
     import TaskGoFFieldDTO, TaskGoFDTO, TaskDetailsDTO
-from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO, \
-    AssigneeWithTeamDetailsDTO
+from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 
 
 class GetTaskPresenterImplementation(GetTaskPresenterInterface,
