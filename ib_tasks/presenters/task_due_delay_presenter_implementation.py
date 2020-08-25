@@ -11,6 +11,9 @@ from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presente
     TaskDueDetailsPresenterInterface
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 
+INVALID_STAGE_ID = ("please give a valid stage id",
+                    "INVALID_STAGE_ID")
+
 
 class TaskDueDetailsPresenterImplementation(TaskDueDetailsPresenterInterface,
                                             HTTPResponseMixin):
@@ -90,4 +93,13 @@ class TaskDueDetailsPresenterImplementation(TaskDueDetailsPresenterInterface,
         return response_object
 
     def response_for_invalid_stage_id(self):
-        pass
+        response_message = INVALID_STAGE_ID[0]
+        data = {
+            "response": response_message,
+            "http_status_code": 404,
+            "res_status": INVALID_STAGE_ID[1]
+        }
+        response_object = self.prepare_404_not_found_response(
+            response_dict=data
+        )
+        return response_object
