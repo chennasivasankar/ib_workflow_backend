@@ -154,7 +154,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         else:
             task_boards_details = None
         self._create_or_update_task_in_elasticsearch(
-            task_dto=updated_task_dto, task_id=task_id
+            task_dto=updated_task_dto, task_id=task_id, stage_ids=stage_ids
         )
         actions_dto, fields_dto, task_stage_details = \
             self._get_task_fields_and_actions_dto(stage_ids, task_id)
@@ -406,7 +406,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             raise UserActionPermissionDenied(action_id=action_id)
 
     def _create_or_update_task_in_elasticsearch(
-            self, task_dto: TaskDetailsDTO, task_id: int):
+            self, task_dto: TaskDetailsDTO, stage_ids: List[str], task_id: int):
         from ib_tasks.interactors.create_or_update_data_in_elasticsearch_interactor import \
             CreateOrUpdateDataInElasticSearchInteractor
         elasticsearch_interactor = CreateOrUpdateDataInElasticSearchInteractor(
@@ -415,7 +415,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_storage=self.task_storage
         )
         elasticsearch_interactor.create_or_update_task_in_elasticsearch(
-            task_dto=task_dto, task_id=task_id
+            task_dto=task_dto, stage_ids=stage_ids, task_id=task_id
         )
 
     def _get_stage_assignees_details(
