@@ -145,22 +145,6 @@ class AuthService:
     def get_user_id_team_details_dtos(
             self, project_team_user_ids_dto: ProjectTeamUserIdsDTO
     ) -> List[TeamDetailsWithUserIdDTO]:
-        # from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO
-        # project_id = team_project_details_dto.project_id
-        # team_details_with_user_id_dtos = []
-        # for user_team_dto in \
-        #         team_project_details_dto.user_id_with_team_id_dtos:
-        #     project_team_user_dto = ProjectTeamUserDTO(
-        #         user_id=user_team_dto.user_id, team_id=user_team_dto.team_id,
-        #         project_id=project_id)
-        #     user_team = \
-        #         self.interface.get_team_details_for_given_project_team_user_details_dto(
-        #             project_team_user_dto)
-        #     team_details_with_user_id_dtos.append(
-        #         TeamDetailsWithUserIdDTO(
-        #             user_id=user_team.user_id, team_id=user_team_dto.team_id,
-        #             name=user_team.name)
-        #     )
         user_team_details_dtos = \
             self.interface.get_user_team_dtos_for_given_project_teams_and_users_details_dto(
                 project_team_user_ids_dto
