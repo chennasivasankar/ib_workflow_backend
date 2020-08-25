@@ -58,6 +58,7 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
                 user_id=user_id, team_id=user_team_id)
             if superior_id is None:
                 break
+            user_id = superior_id
             rp_ids.append(superior_id)
 
         if rp_ids:
