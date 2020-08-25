@@ -55,11 +55,12 @@ class AuthService:
 
         return user_details_dtos
 
-    def get_permitted_user_details(self, role_ids: List[str]) \
+    def get_permitted_user_details(self, role_ids: List[str], project_id:
+    str) \
             -> List[UserDetailsDTO]:
         user_profile_details_dtos = \
             self.interface.get_user_details_for_given_role_ids(
-                role_ids=role_ids)
+                role_ids=role_ids, project_id=project_id)
         user_details_dtos = self._get_user_details_dtos(
             user_profile_details_dtos)
         return user_details_dtos
@@ -67,11 +68,12 @@ class AuthService:
     def get_user_details_for_the_given_role_ids_based_on_query(
             self, role_ids: List[str],
             search_query_with_pagination_dto:
-            SearchQueryWithPaginationDTO) -> List[UserDetailsDTO]:
+            SearchQueryWithPaginationDTO, project_id: str
+    ) -> List[UserDetailsDTO]:
         user_profile_details_dtos = self.interface. \
             get_user_details_for_the_given_role_ids_based_on_query(
             role_ids=role_ids, search_query_with_pagination_dto=
-            search_query_with_pagination_dto)
+            search_query_with_pagination_dto, project_id=project_id)
 
         user_details_dtos = self._get_user_details_dtos(
             user_profile_details_dtos)
@@ -114,6 +116,7 @@ class AuthService:
     def get_team_info_for_given_user_ids(
             self, user_ids: List[str], project_id: str
     ) -> List[UserIdWIthTeamDetailsDTOs]:
+        user_ids = list(sorted(set(user_ids)))
         user_team_dtos = self.interface.get_user_teams_for_each_user(user_ids)
         user_id_with_team_details_dtos = []
         for user_team_dto in user_team_dtos:
