@@ -4,8 +4,7 @@ from ib_tasks.adapters.dtos import UserDetailsDTO, TeamDetailsDTO, \
     UserIdWIthTeamDetailsDTOs, TeamDetailsWithUserIdDTO, \
     ProjectDetailsDTO, ProjectTeamUserIdsDTO
 from ib_tasks.interactors.field_dtos import SearchableFieldDetailDTO
-from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
-    import SearchQueryWithPaginationDTO
+from ib_tasks.interactors.filter_dtos import SearchQueryWithPaginationDTO
 
 
 class InvalidProjectIdsException(Exception):
@@ -13,7 +12,7 @@ class InvalidProjectIdsException(Exception):
         self.invalid_project_ids = invalid_project_ids
 
 
-class UserIsNotInProject(Exception):
+class UserIsNotInProjectException(Exception):
     pass
 
 
@@ -90,11 +89,14 @@ class AuthService:
         return user_details_dtos
 
     def validate_if_user_is_in_project(self, user_id: str, project_id: str):
-        raise NotImplementedError
+        is_in_project = self.interface.is_valid_user_id_for_given_project(
+            user_id=user_id, project_id=project_id)
+        return is_in_project
 
     def validate_project_ids(self, project_ids: List[str]) -> \
             List[str]:
-        raise NotImplementedError
+        valid_project_ids = self.interface.get_valid_project_ids(project_ids)
+        return valid_project_ids
 
     def get_team_details(self, team_ids: List[str]) -> List[TeamDetailsDTO]:
         raise NotImplementedError
