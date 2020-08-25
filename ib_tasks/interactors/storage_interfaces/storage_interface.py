@@ -104,3 +104,8 @@ class StorageInterface(abc.ABC):
     @abc.abstractmethod
     def validate_stage_id(self, stage_id: str) -> bool:
         pass
+
+    @abc.abstractmethod
+    def get_due_missed_count(self, task_id: int, user_id: str,
+                             stage_id: str) -> int:
+        pass

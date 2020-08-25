@@ -757,3 +757,10 @@ class StorageImplementation(StorageInterface):
     def validate_stage_id(self, stage_id: str) -> bool:
         does_exists = Stage.objects.filter(stage_id=stage_id).exists()
         return does_exists
+
+    def get_due_missed_count(self, task_id: int, user_id: str,
+                             stage_id: str) -> int:
+        count = UserTaskDelayReason.objects.filter(
+            task_id=task_id, stage__stage_id=stage_id, user_id=user_id
+        ).count()
+        return count

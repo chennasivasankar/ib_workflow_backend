@@ -45,21 +45,24 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
     def _get_rps_details(self, parameters: GetTaskRPsParametersDTO,
                          task_id: int):
         user_id = parameters.user_id
+        rp_ids = []
+        rp_details_dtos = []
+        stage_id = parameters.stage_id
         user_team_id = self.task_storage.get_user_team_id(user_id, task_id)
+        due_missed_count = self.storage.get_due_missed_count(task_id, user_id, stage_id)
         from ib_tasks.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
-        superior_id = service_adapter.auth_service.get_immediate_superior_user_id(
-            user_id=user_id, team_id=user_team_id)
 
-        rp_ids = [superior_id]
-        rp_details_dtos = []
-        if superior_id:
-            rp_id = service_adapter.auth_service.get_immediate_superior_user_id(
-                user_id=superior_id, team_id=user_team_id)
-            if rp_id:
-                rp_ids.append(rp_id)
-        if None not in rp_ids:
+        for _ in range(due_missed_count):
+            superior_id = service_adapter.auth_service.get_immediate_superior_user_id(
+                user_id=user_id, team_id=user_team_id)
+            if superior_id is None:
+                break
+            rp_ids.append(superior_id)
+
+        if rp_ids:
             rp_details_dtos = service_adapter.auth_service.get_user_details(rp_ids)
+
         return rp_details_dtos
 
     def _validate_stage_id(self, stage_id: str):
