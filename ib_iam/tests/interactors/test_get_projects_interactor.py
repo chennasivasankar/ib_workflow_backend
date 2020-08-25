@@ -12,6 +12,13 @@ class TestAddProjectsInteractor:
         return storage
 
     @pytest.fixture
+    def team_storage(self):
+        from ib_iam.interactors.storage_interfaces \
+            .team_storage_interface import TeamStorageInterface
+        storage = mock.create_autospec(TeamStorageInterface)
+        return storage
+
+    @pytest.fixture
     def presenter(self):
         from ib_iam.interactors.presenter_interfaces \
             .get_projects_presenter_interface import \
@@ -20,24 +27,70 @@ class TestAddProjectsInteractor:
         return presenter
 
     @pytest.fixture
-    def interactor(self, storage):
+    def interactor(self, storage, team_storage):
         from ib_iam.interactors.get_projects_interactor import \
             GetProjectsInteractor
-        interactor = GetProjectsInteractor(project_storage=storage)
+        interactor = GetProjectsInteractor(project_storage=storage,
+                                           team_storage=team_storage)
         return interactor
 
-    def test_get_projects_returns_projects_response(
-            self, storage, interactor, presenter):
-        # Arrange
+    @pytest.fixture
+    def expected_list_of_project_dtos(self):
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
-        project_dtos = ProjectDTOFactory.create_batch(size=2)
-        storage.get_project_dtos.return_value = project_dtos
+        ProjectDTOFactory.reset_sequence(1)
+        project_dtos = [ProjectDTOFactory(project_id="1")]
+        return project_dtos
+
+    @pytest.fixture()
+    def expected_project_team_ids_dtos(self):
+        from ib_iam.interactors.storage_interfaces.dtos import \
+            ProjectTeamIdsDTO
+        project_team_ids_dtos = [
+            ProjectTeamIdsDTO(project_id="1", team_ids=["2", "3"])]
+        return project_team_ids_dtos
+
+    @pytest.fixture
+    def expected_list_of_team_dtos(self):
+        from ib_iam.tests.factories.storage_dtos import TeamDTOFactory
+        TeamDTOFactory.reset_sequence(2)
+        team_dtos = [TeamDTOFactory() for _ in range(2)]
+        return team_dtos
+
+    def test_get_projects_returns_projects_response(
+            self, storage, interactor, presenter, team_storage,
+            expected_list_of_project_dtos, expected_project_team_ids_dtos,
+            expected_list_of_team_dtos):
+        # Arrange
+        from ib_iam.tests.factories.storage_dtos import PaginationDTOFactory
+        pagination_dto = PaginationDTOFactory()
+        project_ids = ["1"]
+        team_ids = ["2", "3"]
+        total_projects_count = 1
+        from ib_iam.interactors.storage_interfaces.dtos import \
+            ProjectsWithTotalCountDTO
+        storage.get_projects_with_total_count_dto.return_value = \
+            ProjectsWithTotalCountDTO(projects=expected_list_of_project_dtos,
+                                      total_projects_count=total_projects_count)
+        storage.get_project_team_ids_dtos \
+            .return_value = expected_project_team_ids_dtos
+        team_storage.get_team_dtos.return_value = expected_list_of_team_dtos
+        from ib_iam.interactors.presenter_interfaces.dtos import \
+            ProjectWithTeamsDTO
+        project_with_teams_dto = ProjectWithTeamsDTO(
+            total_projects_count=total_projects_count,
+            project_dtos=expected_list_of_project_dtos,
+            project_team_ids_dtos=expected_project_team_ids_dtos,
+            team_dtos=expected_list_of_team_dtos)
         presenter.get_response_for_get_projects.return_value = mock.Mock()
 
         # Act
-        interactor.get_projects_wrapper(presenter=presenter)
+        interactor.get_projects_wrapper(presenter=presenter,
+                                        pagination_dto=pagination_dto)
 
         # Assert
-        storage.get_project_dtos.assert_called_once()
+        storage.get_projects_with_total_count_dto.assert_called_once_with(
+            pagination_dto=pagination_dto)
+        storage.get_project_team_ids_dtos.assert_called_once_with(project_ids)
+        team_storage.get_team_dtos.assert_called_once_with(team_ids)
         presenter.get_response_for_get_projects.assert_called_once_with(
-            project_dtos=project_dtos)
+            project_with_teams_dto=project_with_teams_dto)

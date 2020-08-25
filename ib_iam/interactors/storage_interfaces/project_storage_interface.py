@@ -1,7 +1,8 @@
 import abc
 from typing import List
 
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
+from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, \
+    ProjectTeamIdsDTO, ProjectsWithTotalCountDTO, PaginationDTO
 
 
 class ProjectStorageInterface(abc.ABC):
@@ -16,5 +17,11 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_project_dtos(self):
+    def get_projects_with_total_count_dto(
+            self, pagination_dto: PaginationDTO) -> ProjectsWithTotalCountDTO:
+        pass
+
+    @abc.abstractmethod
+    def get_project_team_ids_dtos(
+            self, project_ids: List[str]) -> List[ProjectTeamIdsDTO]:
         pass

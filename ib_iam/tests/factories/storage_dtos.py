@@ -4,7 +4,8 @@ from ib_iam.constants.enums import Searchable
 from ib_iam.interactors.storage_interfaces.dtos \
     import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, \
-    UserProfileDTO, TeamMemberLevelDetailsDTO, MemberDTO, SearchableDetailsDTO, ProjectDTO
+    UserProfileDTO, TeamMemberLevelDetailsDTO, MemberDTO, SearchableDetailsDTO, \
+    ProjectDTO
 
 
 class UserDTOFactory(factory.Factory):
