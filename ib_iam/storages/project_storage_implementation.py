@@ -1,10 +1,10 @@
 from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, \
-    ProjectsWithTotalCountDTO, PaginationDTO, ProjectTeamIdsDTO
+    ProjectsWithTotalCountDTO, PaginationDTO, ProjectTeamIdsDTO, ProjectRoleDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
-from ib_iam.models import Project, ProjectTeam
+from ib_iam.models import Project, ProjectTeam, ProjectRole
 
 
 class ProjectStorageImplementation(ProjectStorageInterface):
@@ -108,3 +108,17 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             user_id=user_id, project_role__project_id=project_id
         ).values_list("project_role__role_id", flat=True)
         return list(role_ids)
+
+    def get_all_project_roles(self) -> List[ProjectRoleDTO]:
+        project_role_objects = ProjectRole.objects.all()
+        project_role_dtos = [self._get_project_role_dto(project_role_object)
+                             for project_role_object in project_role_objects]
+        return project_role_dtos
+
+    @staticmethod
+    def _get_project_role_dto(project_role_object):
+        project_role_dto = ProjectRoleDTO(
+            project_id=project_role_object.project_id,
+            role_id=project_role_object.role_id,
+            name=project_role_object.name)
+        return project_role_dto

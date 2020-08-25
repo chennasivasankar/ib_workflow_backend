@@ -39,13 +39,15 @@ class GetProjectsInteractor:
         team_ids = self._get_all_team_ids_ids_from_project_team_ids_dtos(
             project_team_ids_dtos=project_team_ids_dtos)
         team_dtos = self.team_storage.get_team_dtos(team_ids=team_ids)
+        project_role_dtos = self.project_storage.get_all_project_roles()
         from ib_iam.interactors.presenter_interfaces.dtos import \
             ProjectWithTeamsDTO
         project_with_teams_dto = ProjectWithTeamsDTO(
             total_projects_count=projects_with_total_count.total_projects_count,
             project_dtos=projects_with_total_count.projects,
             project_team_ids_dtos=project_team_ids_dtos,
-            team_dtos=team_dtos)
+            team_dtos=team_dtos,
+            project_role_dtos=project_role_dtos)
         return project_with_teams_dto
 
     @staticmethod

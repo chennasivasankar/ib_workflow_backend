@@ -2,7 +2,8 @@ import pytest
 
 from ib_iam.storages.project_storage_implementation import \
     ProjectStorageImplementation
-from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
+from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory, \
+    ProjectRoleDTOFactory
 
 
 class TestProjectStorageImplementation:
@@ -211,3 +212,20 @@ class TestProjectStorageImplementation:
             project_role=project_role_objects[2]
         )
         return project_objects
+
+    @pytest.mark.django_db
+    def test_get_all_project_roles_gives_project_role_dtos(self):
+        from ib_iam.tests.factories.models import ProjectRoleFactory
+        ProjectRoleFactory.reset_sequence(1)
+        project_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+        project_role_object = ProjectRoleFactory(
+            project__project_id=project_id)
+        ProjectRoleDTOFactory.reset_sequence(1)
+        expected_project_role_dtos = [ProjectRoleDTOFactory(
+            project_id=project_role_object.project_id,
+            role_id=project_role_object.role_id)]
+        project_storage = ProjectStorageImplementation()
+
+        project_role_dtos = project_storage.get_all_project_roles()
+
+        assert project_role_dtos == expected_project_role_dtos

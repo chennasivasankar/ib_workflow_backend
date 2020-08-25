@@ -5,7 +5,7 @@ from ib_iam.interactors.storage_interfaces.dtos import (
     UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO,
     CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, MemberDTO,
     TeamMemberLevelDetailsDTO, UserProfileDTO, SearchableDetailsDTO,
-    ProjectDTO, MemberIdWithSubordinateMemberIdsDTO)
+    ProjectDTO, MemberIdWithSubordinateMemberIdsDTO, ProjectRoleDTO)
 
 
 class UserDTOFactory(factory.Factory):
@@ -304,5 +304,15 @@ class MemberIdWithSubordinateMemberIdsDTOFactory(factory.Factory):
 
     member_id = factory.Faker("uuid4")
     subordinate_member_ids = factory.Iterator(
-        [factory.Faker("uuid4"), factory.Faker("uuid4"), factory.Faker("uuid4")]
+        [factory.Faker("uuid4"), factory.Faker("uuid4"),
+         factory.Faker("uuid4")]
     )
+
+
+class ProjectRoleDTOFactory(factory.Factory):
+    class Meta:
+        model = ProjectRoleDTO
+
+    project_id = factory.Sequence(lambda n: 'project %s' % n)
+    role_id = factory.Sequence(lambda n: 'role %s' % n)
+    name = factory.Sequence(lambda n: 'role %s' % n)

@@ -211,3 +211,10 @@ class ProjectsWithTotalCountDTO:
 class MemberIdWithSubordinateMemberIdsDTO:
     member_id: str
     subordinate_member_ids: List[str]
+
+
+@dataclass
+class ProjectRoleDTO:
+    project_id: str
+    role_id: str
+    name: str

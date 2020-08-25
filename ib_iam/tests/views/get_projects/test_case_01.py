@@ -29,12 +29,16 @@ class TestCase01GetProjectsAPITestCase(TestUtils):
     @pytest.fixture
     def setup(self):
         from ib_iam.tests.factories.models import \
-            ProjectFactory, TeamFactory, ProjectTeamFactory
+            ProjectFactory, TeamFactory, ProjectTeamFactory, ProjectRoleFactory
         ProjectFactory.reset_sequence(1)
         TeamFactory.reset_sequence(1)
+        ProjectRoleFactory.reset_sequence(1)
         project_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
         team_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c5"
+        role_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c6"
         project_object = ProjectFactory(project_id=project_id)
         team_object = TeamFactory(team_id=team_id)
         project_teams = [ProjectTeamFactory(project_id=project_id,
                                             team_id=team_id)]
+        project_roles = [ProjectRoleFactory(role_id=role_id,
+                                            project=project_object)]

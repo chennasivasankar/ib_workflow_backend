@@ -2,7 +2,7 @@ import abc
 from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, \
-    ProjectTeamIdsDTO, ProjectsWithTotalCountDTO, PaginationDTO
+    ProjectTeamIdsDTO, ProjectsWithTotalCountDTO, PaginationDTO, ProjectRoleDTO
 
 
 class ProjectStorageInterface(abc.ABC):
@@ -50,4 +50,8 @@ class ProjectStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_user_role_ids(self, user_id: str, project_id: str) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_all_project_roles(self) -> List[ProjectRoleDTO]:
         pass
