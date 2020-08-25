@@ -14,8 +14,7 @@ class ProjectRole(AbstractDateTimeModel):
     project = models.ForeignKey("Project", on_delete=models.CASCADE)
     role_id = models.CharField(unique=True, max_length=100)
     name = models.CharField(max_length=100)
-    description = models.TextField(max_length=120)
-    # todo check whether it can be none or not
+    description = models.TextField(max_length=120, null=True, blank=True)
 
     def __str__(self):
         return f"{self.role_id}"

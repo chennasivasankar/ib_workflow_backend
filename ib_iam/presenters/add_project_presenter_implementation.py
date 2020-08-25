@@ -7,6 +7,5 @@ from ib_iam.interactors.presenter_interfaces \
 class AddProjectPresenterImplementation(AddProjectPresenterInterface,
                                         HTTPResponseMixin):
 
-    def get_success_response_for_add_project(self, project_id: str):
-        return self.prepare_201_created_response(
-            response_dict={"project_id": project_id})
+    def get_success_response_for_add_project(self):
+        return self.prepare_201_created_response(response_dict={})

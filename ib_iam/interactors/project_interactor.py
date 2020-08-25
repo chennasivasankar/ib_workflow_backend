@@ -5,8 +5,7 @@ from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
 from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
 from ib_iam.interactors.presenter_interfaces.add_project_presenter_interface import \
     AddProjectPresenterInterface
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, \
-    ProjectWithoutIdDTO
+from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
@@ -118,28 +117,27 @@ class ProjectInteractor:
             self,
             project_with_team_ids_and_roles_dto: ProjectWithTeamIdsAndRolesDTO,
             presenter: AddProjectPresenterInterface):
-        project_id = self.add_project(project_with_team_ids_and_roles_dto=
-                                      project_with_team_ids_and_roles_dto)
-        response = presenter.get_success_response_for_add_project(
-            project_id=project_id)
+        self.add_project(project_with_team_ids_and_roles_dto=
+                         project_with_team_ids_and_roles_dto)
+        response = presenter.get_success_response_for_add_project()
         return response
 
     def add_project(
             self,
             project_with_team_ids_and_roles_dto: ProjectWithTeamIdsAndRolesDTO
-    ) -> str:
+    ):
         # todo confirm and write user permissions
         # todo validate given team_ids
-        project_without_id_dto = ProjectWithoutIdDTO(
+        project_id = project_with_team_ids_and_roles_dto.project_id
+        project_dto = ProjectDTO(
+            project_id=project_with_team_ids_and_roles_dto.project_id,
             name=project_with_team_ids_and_roles_dto.name,
             description=project_with_team_ids_and_roles_dto.description,
             logo_url=project_with_team_ids_and_roles_dto.logo_url)
-        project_id = self.project_storage.add_project(
-            project_without_id_dto=project_without_id_dto)
+        self.project_storage.add_project(project_dto=project_dto)
         self.project_storage.assign_teams_to_projects(
             project_id=project_id,
             team_ids=project_with_team_ids_and_roles_dto.team_ids)
         self.project_storage.add_project_roles(
             project_id=project_id,
             roles=project_with_team_ids_and_roles_dto.roles)
-        return project_id

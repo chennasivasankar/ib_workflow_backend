@@ -20,6 +20,7 @@ class TestCase01AddProjectAPITestCase(TestUtils):
         # mock = prepare_uuid_mock(mocker)
         # mock.return_value = "f2c02d98-f311-4ab2-8673-3daa00757002"
         body = {
+            'project_id': 'proj_1',
             'name': 'project_1',
             'description': 'project_description',
             'logo_url': 'https://logo.com',

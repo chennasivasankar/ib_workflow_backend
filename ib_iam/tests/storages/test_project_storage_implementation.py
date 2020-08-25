@@ -2,8 +2,8 @@ import pytest
 
 from ib_iam.storages.project_storage_implementation import \
     ProjectStorageImplementation
-from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory, \
-    ProjectRoleDTOFactory, ProjectWithoutIdDTOFactory
+from ib_iam.tests.factories.storage_dtos import \
+    ProjectDTOFactory, ProjectRoleDTOFactory
 
 
 class TestProjectStorageImplementation:
@@ -232,18 +232,18 @@ class TestProjectStorageImplementation:
 
     @pytest.mark.django_db
     def test_add_project_returns_project_id(self):
-        ProjectWithoutIdDTOFactory.reset_sequence(1)
-        project_without_id_dto = ProjectWithoutIdDTOFactory()
+        project_id = "proj_1"
+        project_dto = ProjectDTOFactory(project_id=project_id)
         project_storage = ProjectStorageImplementation()
 
-        project_id = project_storage.add_project(
-            project_without_id_dto=project_without_id_dto)
+        project_storage.add_project(project_dto=project_dto)
 
         from ib_iam.models import Project
         project_object = Project.objects.get(project_id=project_id)
-        assert project_object.name == project_without_id_dto.name
-        assert project_object.description == project_without_id_dto.description
-        assert project_object.logo_url == project_without_id_dto.logo_url
+        assert project_object.project_id == project_dto.project_id
+        assert project_object.name == project_dto.name
+        assert project_object.description == project_dto.description
+        assert project_object.logo_url == project_dto.logo_url
 
     @pytest.mark.django_db
     def test_assign_teams_to_projects_adds_teams_to_project(self):
