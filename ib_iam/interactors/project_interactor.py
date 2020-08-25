@@ -1,7 +1,8 @@
 from typing import List, Tuple
 
 from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
-    UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO
+    UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO, UserTeamsDTO
+from ib_iam.exceptions.custom_exceptions import InvalidUserIds
 from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, UserTeamDTO, \
     TeamIdAndNameDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \

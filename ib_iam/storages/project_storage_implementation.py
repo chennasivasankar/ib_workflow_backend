@@ -87,3 +87,9 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             project_id=project_id, team_id__in=team_ids
         ).values_list('team__team_id', flat=True))
         return list(map(str, team_ids))
+
+    def get_valid_team_ids(self, project_id) -> List[str]:
+        team_ids = list(ProjectTeam.objects.filter(
+            project_id=project_id
+        ).values_list('team__team_id', flat=True))
+        return list(map(str, team_ids))
