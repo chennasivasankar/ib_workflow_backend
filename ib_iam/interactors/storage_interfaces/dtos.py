@@ -65,7 +65,7 @@ class UserRoleDTO:
 class RoleDTO:
     role_id: str
     name: str
-    description: str
+    description: Optional[str]
 
 
 @dataclass
