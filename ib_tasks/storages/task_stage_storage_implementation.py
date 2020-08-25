@@ -149,7 +149,7 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
         task_stage_objects = TaskStageHistory.objects.filter(q).values(
             'task_id', 'stage__stage_id', 'assignee_id'
         )
-        return [
+        task_stage_assignee_id_dto = [
             TaskStageAssigneeIdDTO(
                 task_id=task_stage_object['task_id'],
                 stage_id=task_stage_object['stage__stage_id'],
@@ -157,6 +157,7 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
             )
             for task_stage_object in task_stage_objects
         ]
+        return task_stage_assignee_id_dto
 
     def create_task_stage_history_records_for_virtual_stages(
             self, stage_ids: List[int], task_id: int):

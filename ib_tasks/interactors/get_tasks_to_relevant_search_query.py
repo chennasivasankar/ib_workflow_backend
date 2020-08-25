@@ -1,6 +1,8 @@
 from typing import List
 
 from ib_tasks.adapters.auth_service import InvalidProjectIdsException, UserIsNotInProjectException
+from ib_tasks.adapters.auth_service import InvalidProjectIdsException, \
+    UserIsNotInProjectException
 from ib_tasks.constants.enum import ViewType
 from ib_tasks.documents.elastic_task import QueryTasksDTO
 from ib_tasks.exceptions.fields_custom_exceptions import LimitShouldBeGreaterThanZeroException, \
@@ -74,6 +76,9 @@ class GetTasksToRelevantSearchQuery(ValidationMixin):
             user_id=user_id, project_id=project_id
         )
         apply_filters_dto = apply_filters_dto + filter_dtos
+        field_ids = [filter_dto.field_id for filter_dto in apply_filters_dto]
+        field_type_dtos = self.field_storage.get_field_type_dtos(
+            field_ids=field_ids)
         from ib_tasks.adapters.service_adapter import get_service_adapter
         roles_service = get_service_adapter().roles_service
         user_roles = roles_service.get_user_role_ids_based_on_project(
@@ -84,7 +89,8 @@ class GetTasksToRelevantSearchQuery(ValidationMixin):
         query_tasks_dto = self.elasticsearch_storage.search_tasks(
             search_query_dto=search_query_dto,
             apply_filter_dtos=apply_filters_dto,
-            stage_ids=stage_ids_having_actions
+            stage_ids=stage_ids_having_actions,
+            field_type_dtos=field_type_dtos
         )
         return self._get_all_tasks_overview_details(
             query_tasks_dto, view_type, user_id, project_id
