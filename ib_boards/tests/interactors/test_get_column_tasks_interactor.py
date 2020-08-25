@@ -287,6 +287,7 @@ class TestGetColumnTasksInteractor:
                 stage_ids=stage_ids,
                 offset=get_column_tasks_dto.offset,
                 limit=get_column_tasks_dto.limit,
+                project_id = "project_id_1",
                 user_id='user_id_1',
                 search_query="hello"
             )
@@ -354,6 +355,7 @@ class TestGetColumnTasksInteractor:
             TaskDetailsConfigDTO(
                 unique_key=get_column_tasks_dto.column_id,
                 stage_ids=stage_ids,
+                project_id="project_id_1",
                 offset=get_column_tasks_dto.offset,
                 limit=get_column_tasks_dto.limit,
                 user_id='user_id_1',

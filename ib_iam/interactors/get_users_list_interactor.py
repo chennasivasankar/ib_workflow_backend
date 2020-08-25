@@ -58,7 +58,8 @@ class GetListOfUsersInteractor(ValidationMixin):
     # TODO: It is not valid place to write this method remove this
     def get_user_details_for_given_role_ids_based_on_query(
             self, role_ids: List[str],
-            search_query_with_pagination_dto: SearchQueryWithPaginationDTO
+            search_query_with_pagination_dto: SearchQueryWithPaginationDTO,
+            project_id: str
     ) -> List[UserProfileDTO]:
         self._validate_pagination_details(
             offset=search_query_with_pagination_dto.offset,
@@ -68,7 +69,7 @@ class GetListOfUsersInteractor(ValidationMixin):
 
         if ALL_ROLES_ID in role_ids:
             db_role_ids = \
-                self.user_storage.get_all_distinct_user_db_role_ids()
+                self.user_storage.get_all_distinct_user_db_role_ids(project_id)
         else:
             db_role_ids = self.user_storage.get_db_role_ids(role_ids=role_ids)
 
@@ -166,22 +167,26 @@ class GetListOfUsersInteractor(ValidationMixin):
             self, limit: int, offset: int, search_query: str
     ):
         self._validate_pagination_details(offset=offset, limit=limit)
-        user_details_dtos = self.user_storage.get_user_details_dtos_based_on_limit_offset_and_search_query(
+        user_details_dtos = \
+            self.user_storage.get_user_details_dtos_based_on_limit_offset_and_search_query(
             limit=limit, offset=offset, search_query=search_query
         )
         return user_details_dtos
 
     def get_all_user_dtos_based_on_query(self, search_query: str):
-        user_details_dtos = self.user_storage.get_user_details_dtos_based_on_search_query(
+        user_details_dtos = \
+            self.user_storage.get_user_details_dtos_based_on_search_query(
             search_query=search_query
         )
         return user_details_dtos
 
     def get_user_details_for_given_role_ids(
-            self, role_ids: List[str]) -> List[UserProfileDTO]:
+            self, role_ids: List[str], project_id: str
+    ) -> List[UserProfileDTO]:
         from ib_iam.constants.config import ALL_ROLES_ID
         if ALL_ROLES_ID in role_ids:
-            user_ids = self.user_storage.get_user_ids_who_are_not_admin()
+            user_ids = self.user_storage.get_user_ids_for_given_project(
+                project_id=project_id)
         else:
             self._validate_role_ids(role_ids=role_ids)
             user_ids = self.user_storage.get_user_ids(role_ids=role_ids)

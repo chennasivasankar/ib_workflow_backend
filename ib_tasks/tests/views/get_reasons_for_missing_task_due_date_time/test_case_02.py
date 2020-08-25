@@ -30,18 +30,19 @@ class TestCase02GetReasonsForMissingTaskDueDateTimeAPITestCase(TestUtils):
 
         TaskFactory.reset_sequence()
         tasks = TaskFactory.create_batch(size=2)
-        from ib_tasks.tests.factories.models import TaskLogFactory
-        TaskLogFactory.reset_sequence()
-        TaskLogFactory(task=tasks[0], user_id=api_user.user_id)
+        from ib_tasks.tests.factories.models import TaskStageHistoryModelFactory
+        TaskStageHistoryModelFactory.reset_sequence()
+        TaskStageHistoryModelFactory(task=tasks[0],
+                                     assignee_id=api_user.user_id, stage_id=1)
         from ib_tasks.tests.factories.models import TaskDueDetailsFactory
         TaskDueDetailsFactory.reset_sequence()
         TaskDueDetailsFactory(user_id=api_user.user_id, task=tasks[0],
-                              reason="Missed reiterating objective")
-        TaskDueDetailsFactory.create_batch(size=3, task=tasks[0])
+                              reason="Missed reiterating objective", stage_id=1)
+        TaskDueDetailsFactory.create_batch(size=3, task=tasks[0], stage_id=1)
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):
-        body = {"task_id": "IBWF-1"}
+        body = {"task_id": "IBWF-1", 'stage_id': 1}
         path_params = {}
         query_params = {}
         headers = {}

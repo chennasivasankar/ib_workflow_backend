@@ -11,6 +11,6 @@ snapshots['TestCase21UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase21UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'INVALID_STAGE_ID',
-    'response': 'please give a valid stage id, 1 is invalid stage id'
+    'res_status': 'NOT_A_STRONG_PASSWORD',
+    'response': 'Given a weak password: strong_password for field: FIELD-1! Try with atleast 8 characters including special characters'
 }

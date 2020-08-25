@@ -1761,6 +1761,49 @@ class TestSaveAndActOnATaskInteractor:
 
         assert action_id == given_action_id
 
+    def test_with_invalid_present_stage_action(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock,
+            action_storage_mock, task_stage_storage_mock,
+            presenter_mock, mock_object, update_task_mock,
+            user_action_on_task_mock
+    ):
+        # Arrange
+        given_action_id = 1
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            action_id=given_action_id)
+        from ib_tasks.exceptions.action_custom_exceptions import \
+            InvalidPresentStageAction
+        user_action_on_task_mock.side_effect = InvalidPresentStageAction(
+            given_action_id)
+        interactor = SaveAndActOnATaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
+        presenter_mock \
+            .raise_exception_for_invalid_present_stage_actions \
+            .return_value = mock_object
+
+        # Act
+        response = interactor.save_and_act_on_task_wrapper(presenter_mock,
+                                                           task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock \
+            .raise_exception_for_invalid_present_stage_actions \
+            .assert_called_once()
+        call_args = presenter_mock. \
+            raise_exception_for_invalid_present_stage_actions.call_args
+        error_object = call_args[0][0]
+        action_id = error_object.action_id
+        assert action_id == given_action_id
+
     def test_with_invalid_assignee_permission_for_given_stage_ids(
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,

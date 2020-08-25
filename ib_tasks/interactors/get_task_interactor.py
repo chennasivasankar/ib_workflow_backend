@@ -188,6 +188,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             )
         task_details_dto = TaskDetailsDTO(
             task_base_details_dto=task_details_dto.task_base_details_dto,
+            project_details_dto=task_details_dto.project_details_dto,
             task_gof_dtos=permission_task_gof_dtos,
             task_gof_field_dtos=permission_task_gof_field_dtos
         )

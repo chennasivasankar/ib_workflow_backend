@@ -273,3 +273,9 @@ snapshots['TestCreateTaskPresenterImplementation.test_get_create_task_response c
     'task_id': 'task_display_0',
     'user_has_permission': True
 }
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_present_stage_actions http_status_code'] = 400
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_present_stage_actions res_status'] = 'INVALID_PRESENT_STAGE_ACTION'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_present_stage_actions response'] = '1 is invalid present stage action'
