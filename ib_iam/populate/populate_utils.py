@@ -92,14 +92,14 @@ def populate_user_roles_for_admin_user(admin_user_id: str):
         user_id=admin_user_id, role_ids=db_role_ids)
 
 
-def populate_user_roles_for_noraml_user(user_id: str, roles: List[str]):
+def populate_user_roles_for_normal_user(user_id: str):
     """
     Normal User have All roles
     """
     from ib_iam.storages.user_storage_implementation import \
         UserStorageImplementation
     user_storage = UserStorageImplementation()
-    db_role_ids = user_storage.get_role_objs_ids(role_ids=roles)
+    db_role_ids = get_role_ids_bulk()
     user_storage.add_roles_to_the_user(
         user_id=user_id, role_ids=db_role_ids)
 
@@ -182,9 +182,6 @@ def populate_test_users():
             "company_name": "iBHubs",
             "teams": [
                 "Tech Team"
-            ],
-            "roles": [
-                "FIN_INVOICE_APPROVER"
             ]
         },
         {
@@ -195,9 +192,6 @@ def populate_test_users():
             "company_name": "Proyuga",
             "teams": [
                 "Tech Team"
-            ],
-            "roles": [
-                "FIN_INVOICE_APPROVER"
             ]
         },
         {
@@ -208,9 +202,6 @@ def populate_test_users():
             "company_name": "CyberEye",
             "teams": [
                 "Tech Team", "Discovery Team"
-            ],
-            "roles": [
-                "FIN_INVOICE_APPROVER", "FIN_FINANCE_RP"
             ]
         },
         {
@@ -221,9 +212,6 @@ def populate_test_users():
             "company_name": "CyberEye",
             "teams": [
                 "Tech Team"
-            ],
-            "roles": [
-                "FIN_FINANCE_RP"
             ]
         },
         {
@@ -234,9 +222,6 @@ def populate_test_users():
             "company_name": "iBHubs",
             "teams": [
                 "iB Studio Team", "Tech Team"
-            ],
-            "roles": [
-                "FIN_ADMIN", "FIN_PAYMENT_REQUESTER"
             ]
         },
         {
@@ -247,9 +232,6 @@ def populate_test_users():
             "company_name": "Proyuga",
             "teams": [
                 "Discovery Team"
-            ],
-            "roles": [
-                "FIN_PAYMENT_REQUESTER"
             ]
         },
         {
@@ -261,9 +243,6 @@ def populate_test_users():
             "teams": [
                 "iB Studio Team"
             ],
-            "roles": [
-                "FIN_ADMIN"
-            ]
         },
     ]
     from ib_iam.interactors.add_new_user_interactor import \
@@ -293,7 +272,6 @@ def populate_test_users():
             add_user_details_dto=complete_user_details_dto
         )
         user_id = UserAccount.objects.get(email=user["email"]).user_id
-        populate_user_roles_for_noraml_user(
-            user_id=user_id,
-            roles=user["roles"]
+        populate_user_roles_for_normal_user(
+            user_id=user_id
         )
