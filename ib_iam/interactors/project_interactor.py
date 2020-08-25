@@ -1,8 +1,8 @@
-from typing import List
+from typing import List, Tuple
 
 from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
-    UserIdWithTeamIDAndNameDTO
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
+    UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO
+from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, UserTeamDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
@@ -61,6 +61,31 @@ class ProjectInteractor:
             team_id=project_team_user_dto.team_id,
             name=name)
         return user_id_with_team_id_and_name_dto
+
+    def get_user_team_dtos_for_given_project_teams_and_users_details_dto(
+            self, project_teams_and_users_dto: ProjectTeamsAndUsersDTO
+    ) -> List[UserTeamDTO]:
+        project_id = project_teams_and_users_dto.project_id
+        user_ids, valid_team_ids = self._fetch_user_ids_and_team_ids(
+            project_teams_and_users_dto=project_teams_and_users_dto)
+
+        valid_team_ids = self.project_storage.get_valid_team_ids_for_given_project(
+            project_id=project_id, team_ids=valid_team_ids)
+        team_user_dtos = self.team_storage.get_team_user_dtos(
+            team_ids=valid_team_ids, user_ids=user_ids)
+        return team_user_dtos
+
+    @staticmethod
+    def _fetch_user_ids_and_team_ids(
+            project_teams_and_users_dto: ProjectTeamsAndUsersDTO
+    ) -> Tuple[List[str], List[str]]:
+        user_ids = []
+        team_ids = []
+        user_and_team_id_dtos = project_teams_and_users_dto.user_id_with_team_id_dtos
+        for user_and_team_id_dto in user_and_team_id_dtos:
+            user_ids.append(user_and_team_id_dto.user_id)
+            team_ids.append(user_and_team_id_dto.team_id)
+        return user_ids, team_ids
 
     def is_valid_user_id_for_given_project(
             self, user_id: str, project_id: str) -> bool:
