@@ -147,6 +147,21 @@
         "company_name"
       ]
     },
+    "Role": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/RoleDetails"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
     "RoleDetails": {
       "type": "object",
       "properties": {
@@ -653,7 +668,7 @@
         "projects"
       ]
     },
-    "ProjectWithTeamIdsAndRoleIds": {
+    "ProjectWithTeamIdsAndRoles": {
       "allOf": [
         {
           "$ref": "#/definitions/ProjectDetails"
@@ -667,10 +682,10 @@
                 "type": "string"
               }
             },
-            "role_ids": {
+            "roles": {
               "type": "array",
               "items": {
-                "type": "string"
+                "$ref": "#/definitions/Role"
               }
             }
           }
@@ -1076,7 +1091,7 @@
       "required": true,
       "description": "parameters or details to create/add a project",
       "schema": {
-        "$ref": "#/definitions/ProjectWithTeamIdsAndRoleIds"
+        "$ref": "#/definitions/ProjectWithTeamIdsAndRoles"
       }
     },
     "UpdateProjectParameter": {
@@ -1084,7 +1099,7 @@
       "in": "body",
       "description": "details that are to be updated of a project",
       "schema": {
-        "$ref": "#/definitions/ProjectWithTeamIdsAndRoleIds"
+        "$ref": "#/definitions/ProjectWithTeamIdsAndRoles"
       }
     }
   },
