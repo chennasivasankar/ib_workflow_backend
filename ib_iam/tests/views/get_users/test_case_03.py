@@ -82,7 +82,7 @@ class TestCase03GetUsersAPITestCase(TestUtils):
         reset_sequence_role_factory()
         user_role_objects = [UserRoleFactory.create(
             user_id=user_role["user_id"],
-            role=ProjectRoleFactory.create(role_id=user_role["role_id"])
+            project_role=ProjectRoleFactory.create(role_id=user_role["role_id"])
         ) for user_role in user_roles]
         return user_role_objects
 

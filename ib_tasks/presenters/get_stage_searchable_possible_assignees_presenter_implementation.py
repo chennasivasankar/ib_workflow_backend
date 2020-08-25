@@ -6,6 +6,7 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 from ib_tasks.adapters.dtos import UserDetailsDTO, UserIdWIthTeamDetailsDTOs, \
     TeamDetailsDTO
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId
 from ib_tasks.interactors.presenter_interfaces. \
     get_stage_searchable_possible_assignees_presenter_interface import \
     GetStageSearchablePossibleAssigneesPresenterInterface
@@ -13,8 +14,23 @@ from ib_tasks.interactors.stages_dtos import UserDetailsWithTeamDetailsDTO
 
 
 class GetStageSearchablePossibleAssigneesPresenterImplementation(
-    GetStageSearchablePossibleAssigneesPresenterInterface,
-    HTTPResponseMixin):
+        GetStageSearchablePossibleAssigneesPresenterInterface,
+        HTTPResponseMixin):
+
+    def raise_invalid_task_display_id_exception(
+            self, err: InvalidTaskDisplayId) -> response.HttpResponse:
+        from ib_tasks.constants.exception_messages import \
+            INVALID_TASK_DISPLAY_ID
+        response_dict = {
+            "response": INVALID_TASK_DISPLAY_ID[0].format(err.task_display_id),
+            "http_status_code": 404,
+            "res_status": INVALID_TASK_DISPLAY_ID[1]
+        }
+
+        return self.prepare_404_not_found_response(
+            response_dict=response_dict
+        )
+
     def raise_invalid_limit_exception(self) -> response.HttpResponse:
         from ib_tasks.constants.exception_messages import \
             LIMIT_SHOULD_BE_GREATER_THAN_ZERO
@@ -70,7 +86,7 @@ class GetStageSearchablePossibleAssigneesPresenterImplementation(
 
     @staticmethod
     def _get_team_info(user_id: str, user_id_with_team_details_dtos: List[
-        UserIdWIthTeamDetailsDTOs]) -> List[TeamDetailsDTO]:
+            UserIdWIthTeamDetailsDTOs]) -> List[TeamDetailsDTO]:
         for user_id_with_team_details_dto in user_id_with_team_details_dtos:
             if user_id_with_team_details_dto.user_id == user_id:
                 team_details_dtos = user_id_with_team_details_dto.team_details

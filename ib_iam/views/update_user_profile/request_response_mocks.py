@@ -5,10 +5,7 @@ REQUEST_BODY_JSON = """
     "name": "string",
     "email": "string",
     "profile_pic_url": "string",
-    "cover_page_url": "string",
-    "role_ids": [
-        "string"
-    ]
+    "cover_page_url": "string"
 }
 """
 

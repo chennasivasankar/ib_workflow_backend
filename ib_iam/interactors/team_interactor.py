@@ -178,17 +178,30 @@ class TeamInteractor(ValidationMixin):
                 raise TeamNameAlreadyExists(team_name=name)
 
     def get_valid_team_ids(self, team_ids: List[str]) -> List[str]:
-        # todo check for duplicate team_ids and raise exception
         valid_team_ids = self.team_storage.get_valid_team_ids(
             team_ids=team_ids)
         return valid_team_ids
 
-    def get_teams(self, team_ids: List[str]) -> List[TeamIdAndNameDTO]:
+    def get_team_id_and_name_dtos(
+            self, team_ids: List[str]
+    ) -> List[TeamIdAndNameDTO]:
         team_id_and_name_dtos = self.team_storage.get_team_id_and_name_dtos(
             team_ids=team_ids)
-        if len(team_ids) != len(team_id_and_name_dtos):
-            raise InvalidTeamIds
+        invalid_team_ids = self._get_invalid_team_ids(
+            team_ids=team_ids, team_id_and_name_dtos=team_id_and_name_dtos)
+        if invalid_team_ids:
+            raise InvalidTeamIds(team_ids=invalid_team_ids)
         return team_id_and_name_dtos
+
+    @staticmethod
+    def _get_invalid_team_ids(
+            team_id_and_name_dtos: List[TeamIdAndNameDTO],
+            team_ids: List[str]
+    ) -> List[str]:
+        for team_id_and_name_dto in team_id_and_name_dtos:
+            if team_id_and_name_dto.team_id in team_ids:
+                team_ids.remove(team_id_and_name_dto.team_id)
+        return team_ids
 
     def get_user_teams_for_each_user(
             self, user_ids: List[str]) -> List[UserTeamsDTO]:
