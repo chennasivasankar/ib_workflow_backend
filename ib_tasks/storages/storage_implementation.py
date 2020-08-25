@@ -28,12 +28,9 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
     TaskDelayParametersDTO
-from ib_tasks.models import GlobalConstant, \
-    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskTemplateStatusVariable, ProjectTaskTemplate
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
-    ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
     GlobalConstant, StagePermittedRoles, TaskTemplateInitialStage, Stage, \
-    TaskTemplateStatusVariable, ProjectTaskTemplate,\
+    TaskTemplateStatusVariable, ProjectTaskTemplate, \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole
 from ib_tasks.models import \
     TaskStageHistory
@@ -98,7 +95,8 @@ class StagesStorageImplementation(StageStorageInterface):
             (
                     Q(project_id=project_id) &
                     Q(task_template__is_transition_template=False)
-            ) | (Q(project_id=None) & Q(task_template__is_transition_template=False))
+            ) | (Q(project_id=None) & Q(
+                task_template__is_transition_template=False))
         ).values_list('task_template_id', flat=True)
         stage_ids = StagePermittedRoles.objects.filter(
             (Q(role_id__in=user_role_ids) | Q(role_id=ALL_ROLES_ID)) &
@@ -253,49 +251,46 @@ class StagesStorageImplementation(StageStorageInterface):
             task_ids_group_by_stage_value_dtos: List[
                 StageValueWithTaskIdsDTO]
     ) -> List[TaskIdWithStageDetailsDTO]:
-        # ToDo: Need to optimize the storage calls which are in for loop
-        all_task_id_with_stage_details_dtos = []
-        for each_stage_value in stage_values:
-            for each_task_ids_group_by_stage_value_dto in \
-                    task_ids_group_by_stage_value_dtos:
-                if each_task_ids_group_by_stage_value_dto.stage_value \
-                        == each_stage_value:
-                    task_id_with_stage_details = list(
-                        CurrentTaskStage.objects.filter(
-                            stage__value=each_stage_value,
-                            task_id__in=each_task_ids_group_by_stage_value_dto.
-                                task_ids).values("task_id",
-                                                 "task__task_display_id",
-                                                 "stage__stage_id",
-                                                 "stage__display_name",
-                                                 "stage__stage_color",
-                                                 "stage__id"))
 
-                    task_id_with_stage_details_dtos = self. \
-                        _get_task_id_with_stage_details_dtos(
-                        task_id_with_stage_details)
-
-                    all_task_id_with_stage_details_dtos.extend(
-                        task_id_with_stage_details_dtos)
+        query = None
+        for item in task_ids_group_by_stage_value_dtos:
+            current_queue = Q(stage__value=item.stage_value,
+                              task_id__in=item.task_ids)
+            if query is None:
+                query = current_queue
+            else:
+                query = query | current_queue
+        if query is None:
+            return []
+        current_stage_objects = CurrentTaskStage.objects.filter(
+            query
+        ).values(
+            "task_id", "task__task_display_id",
+            "stage__stage_id", "stage__display_name",
+            "stage__stage_color", "stage__id"
+        )
+        all_task_id_with_stage_details_dtos = [
+            self._get_task_id_with_stage_details_dtos(
+                task_id_with_stage_details=current_stage_object
+            )
+            for current_stage_object in current_stage_objects
+        ]
         return all_task_id_with_stage_details_dtos
 
     @staticmethod
     def _get_task_id_with_stage_details_dtos(
-            task_id_with_stage_details: List[dict]
-    ) -> List[TaskIdWithStageDetailsDTO]:
-        task_id_with_stage_details_dtos = [
-            TaskIdWithStageDetailsDTO(
-                task_id=task_id_with_stage_detail["task_id"],
-                task_display_id=task_id_with_stage_detail[
-                    "task__task_display_id"],
-                stage_id=task_id_with_stage_detail["stage__stage_id"],
-                stage_display_name=task_id_with_stage_detail[
-                    "stage__display_name"],
-                stage_color=task_id_with_stage_detail["stage__stage_color"],
-                db_stage_id=task_id_with_stage_detail["stage__id"]
-            )
-            for task_id_with_stage_detail in task_id_with_stage_details
-        ]
+            task_id_with_stage_details: dict
+    ) -> TaskIdWithStageDetailsDTO:
+        task_id_with_stage_details_dtos = TaskIdWithStageDetailsDTO(
+            task_id=task_id_with_stage_details["task_id"],
+            task_display_id=task_id_with_stage_details[
+                "task__task_display_id"],
+            stage_id=task_id_with_stage_details["stage__stage_id"],
+            stage_display_name=task_id_with_stage_details[
+                "stage__display_name"],
+            stage_color=task_id_with_stage_details["stage__stage_color"],
+            db_stage_id=task_id_with_stage_details["stage__id"]
+        )
         return task_id_with_stage_details_dtos
 
     def create_task_stage_assignees(
@@ -360,15 +355,15 @@ class StagesStorageImplementation(StageStorageInterface):
         )
 
     def get_task_stages_assignees_without_having_left_at_status(
-            self, task_id: int, db_stage_ids: List[int]) -> List[
-        StageAssigneeDTO]:
+            self, task_id: int, db_stage_ids: List[int]) -> List[StageAssigneeDTO]:
         task_stage_objs = list(TaskStageHistory.objects.filter(
             task_id=task_id,
             stage_id__in=db_stage_ids, left_at__isnull=True)
                                .values('stage_id', 'assignee_id', 'team_id'))
         stages_having_assignee_dtos = [StageAssigneeDTO(
             assignee_id=task_stage_obj['assignee_id'],
-            db_stage_id=task_stage_obj['stage_id'], team_id=task_stage_obj['team_id']) for
+            db_stage_id=task_stage_obj['stage_id'],
+            team_id=task_stage_obj['team_id']) for
             task_stage_obj in task_stage_objs]
         return stages_having_assignee_dtos
 
@@ -418,21 +413,22 @@ class StagesStorageImplementation(StageStorageInterface):
         return permitted_user_role_ids_list
 
     def get_stage_ids_having_actions(self, user_roles: List[str]) -> List[str]:
-        stage_ids = ActionPermittedRoles.objects\
+        stage_ids = ActionPermittedRoles.objects \
             .filter(
-                Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
-            )\
+            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+        ) \
             .values_list('action__stage_id', flat=True)
-        stage_ids = StagePermittedRoles.objects.filter(stage_id__in=stage_ids)\
+        stage_ids = StagePermittedRoles.objects.filter(stage_id__in=stage_ids) \
             .filter(
-                Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
-            ).values_list('stage__stage_id', flat=True)
+            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+        ).values_list('stage__stage_id', flat=True)
         return sorted(list(set(stage_ids)))
 
     def get_task_current_stages(self, task_id: int) -> List[str]:
         return list(CurrentTaskStage.objects.filter(
             task_id=task_id
         ).values_list('stage__stage_id', flat=True))
+
 
 class StorageImplementation(StorageInterface):
 

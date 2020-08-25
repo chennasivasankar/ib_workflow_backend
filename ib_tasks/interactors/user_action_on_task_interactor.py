@@ -154,7 +154,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         else:
             task_boards_details = None
         self._create_or_update_task_in_elasticsearch(
-            task_dto=updated_task_dto, stage_ids=stage_ids, task_id=task_id
+            task_dto=updated_task_dto, task_id=task_id, stage_ids=stage_ids
         )
         actions_dto, fields_dto, task_stage_details = \
             self._get_task_fields_and_actions_dto(stage_ids, task_id)
