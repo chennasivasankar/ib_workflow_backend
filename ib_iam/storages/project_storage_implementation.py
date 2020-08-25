@@ -49,9 +49,6 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         from collections import defaultdict
         project_team_ids_dictionary = defaultdict(list)
         for project_team in project_teams:
-            print(project_team)
-            print("hello")
-            print(str(project_team[1]))
             project_id = str(project_team[0])
             project_team_ids_dictionary[project_id].extend(
                 [str(project_team[1])])
@@ -61,7 +58,6 @@ class ProjectStorageImplementation(ProjectStorageInterface):
                 team_ids=project_team_ids_dictionary[project_id],
             ) for project_id in project_ids
         ]
-        print("hey")
         return project_teams_ids_dtos
 
     @staticmethod

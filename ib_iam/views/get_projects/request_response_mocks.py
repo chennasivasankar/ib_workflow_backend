@@ -6,13 +6,13 @@ RESPONSE_200_JSON = """
     "total_projects_count": 1,
     "projects": [
         {
-            "project_id": "cf80ab1c-9cec-4e49-9f23-d02b0b1d003f",
+            "project_id": "8118fd09-0a7b-4e11-a41a-1852980618b7",
             "name": "string",
             "description": "string",
             "logo_url": "string",
             "teams": [
                 {
-                    "team_id": "74d07d39-78b3-4da1-ba47-56f987730a38",
+                    "team_id": "ca2ccb62-83c7-4d63-b266-2c085fe35be6",
                     "team_name": "string"
                 }
             ]
