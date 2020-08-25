@@ -200,7 +200,25 @@
         "users": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/CompleteUserDetails"
+            "allOf": [
+        {
+          "$ref": "#/definitions/UserDetails"
+        },
+        {
+          "$ref": "#/definitions/ListOfRoles"
+        },
+        {
+          "$ref": "#/definitions/ListOfTeams"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "company": {
+              "$ref": "#/definitions/CompanyDetails"
+            }
+          }
+        }
+      ]
           }
         }
       },
@@ -654,12 +672,6 @@
               },
               "cover_page_url": {
                 "type": "string"
-              },
-              "role_ids": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
               }
             }
           }
