@@ -1,5 +1,5 @@
 """
-get specific team details
+Get Project Specific Details
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -7,7 +7,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01GetSpecificTeamDetailsAPITestCase(TestUtils):
+class TestCase01GetSpecificProjectDetailsAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -15,13 +15,13 @@ class TestCase01GetSpecificTeamDetailsAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['read']}}
 
     @pytest.mark.django_db
-    def test_with_valid_team_id_return_response(
+    def test_with_valid_project_id_return_response(
             self, snapshot, create_project_teams, create_user_roles,
             create_user_teams, create_user_details
     ):
-        team_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
+        project_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         body = {}
-        path_params = {"team_id": team_id}
+        path_params = {"project_id": project_id}
         query_params = {}
         headers = {}
         response = self.make_api_call(body=body,

@@ -23,9 +23,10 @@ class TestGetSpecificTeamDetailsInteractor:
 
     @pytest.fixture()
     def interactor(self, storage_mock):
-        from ib_iam.interactors.get_specific_team_details_interactor import \
-            GetSpecificTeamDetailsInteractor
-        interactor = GetSpecificTeamDetailsInteractor(user_storage=storage_mock)
+        from ib_iam.interactors.get_specific_project_details_interactor import \
+            GetSpecificProjectDetailsInteractor
+        interactor = GetSpecificProjectDetailsInteractor(
+            user_storage=storage_mock)
         return interactor
 
     def test_with_valid_details_return_response(
@@ -33,7 +34,7 @@ class TestGetSpecificTeamDetailsInteractor:
             prepare_basic_user_details_dtos, prepare_user_role_dtos
     ):
         # Arrange
-        team_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
+        project_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
 
         expected_presenter_prepare_success_response_for_get_specific_team_details = \
             Mock()
@@ -52,8 +53,8 @@ class TestGetSpecificTeamDetailsInteractor:
             return_value = expected_presenter_prepare_success_response_for_get_specific_team_details
 
         # Act
-        response = interactor.get_specific_team_details_wrapper(
-            team_id=team_id, presenter=presenter_mock
+        response = interactor.get_specific_project_details_wrapper(
+            project_id=project_id, presenter=presenter_mock
         )
 
         # Assert
@@ -61,9 +62,9 @@ class TestGetSpecificTeamDetailsInteractor:
                expected_presenter_prepare_success_response_for_get_specific_team_details
 
         storage_mock.get_team_basic_user_dtos.assert_called_once_with(
-            team_id=team_id)
+            project_id=project_id)
         storage_mock.get_user_role_dtos_of_a_team.assert_called_once_with(
-            team_id=team_id, user_ids=expected_user_ids)
+            project_id=project_id, user_ids=expected_user_ids)
         presenter_mock.prepare_success_response_for_get_specific_team_details. \
             assert_called_once_with(
             basic_user_details_dtos=prepare_basic_user_details_dtos,

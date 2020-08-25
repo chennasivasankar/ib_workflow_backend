@@ -785,6 +785,14 @@
       "type": "string",
       "format": "uuid"
     },
+    "ProjectIdPathParameter": {
+      "name": "project_id",
+      "in": "path",
+      "required": true,
+      "description": "team_id to identify a team",
+      "type": "string",
+      "format": "uuid"
+    },
     "LevelHierarchyPathParameter": {
       "name": "level_hierarchy",
       "in": "path",
@@ -2066,8 +2074,8 @@
         }
       }
     },
-    "GetSpecificTeamDetailsSuccessResponse": {
-      "description": "Get specific team details success response",
+    "GetSpecificProjectDetailsSuccessResponse": {
+      "description": "Get specific project details success response",
       "schema": {
         "type": "object",
         "properties": {
@@ -2958,11 +2966,11 @@
         }
       }
     },
-    "/team/{team_id}/specific_team_details/v1/": {
+    "/project/{project_id}/specific_project_details/v1/": {
       "get": {
-        "operationId": "get_specific_team_details",
-        "summary": "Get Specific Team Details",
-        "description": "Get specific team details of given team id in path",
+        "operationId": "get_specific_project_details",
+        "summary": "Get Specific Project Details",
+        "description": "Get specific project details of given project id in path",
         "security": [
           {
             "oauth": [
@@ -2972,12 +2980,12 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/TeamIdPathParameter"
+            "$ref": "#/parameters/ProjectIdPathParameter"
           }
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/GetSpecificTeamDetailsSuccessResponse"
+            "$ref": "#/responses/GetSpecificProjectDetailsSuccessResponse"
           }
         }
       }

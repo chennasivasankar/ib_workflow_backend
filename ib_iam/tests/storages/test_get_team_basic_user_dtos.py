@@ -11,21 +11,57 @@ class TestGetTeamBasicUserDTOS:
         return user_storage
 
     @pytest.fixture()
-    def create_team(self):
-        from ib_iam.tests.factories.models import TeamFactory
-        team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
-        user_id = "21be920b-7b4c-49e7-8adb-41a0c18da848"
-        team_object = TeamFactory(
-            team_id=team_id,
-            name="name",
-            description="description",
-            created_by=user_id
-        )
-        return team_object
+    def create_project(self):
+        project_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        from ib_iam.tests.factories.models import ProjectFactory
+        ProjectFactory.reset_sequence(1)
+        project_object = ProjectFactory(project_id=project_id)
+        return project_object
 
     @pytest.fixture()
-    def create_user_teams(self, create_team):
-        team_object = create_team
+    def create_project_teams(self, create_teams, create_project):
+        project_object = create_project
+        team_objects = create_teams
+        from ib_iam.models import ProjectTeam
+        # TODO:  user factory for project team
+        project_teams = [
+            ProjectTeam(
+                project=project_object,
+                team_id=team_objects[0].team_id
+            ),
+            ProjectTeam(
+                project=project_object,
+                team_id=team_objects[1].team_id
+            )
+        ]
+        ProjectTeam.objects.bulk_create(project_teams)
+        return project_teams
+
+    @pytest.fixture()
+    def create_teams(self):
+        from ib_iam.tests.factories.models import TeamFactory
+        team1_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
+        team2_id = "90ae920b-7b4c-49e7-8adb-41a0c18da848"
+        user_id = "21be920b-7b4c-49e7-8adb-41a0c18da848"
+        team_objects = [
+            TeamFactory(
+                team_id=team1_id,
+                name="name",
+                description="description",
+                created_by=user_id
+            ),
+            TeamFactory(
+                team_id=team2_id,
+                name="Tech Team",
+                description="description",
+                created_by=user_id
+            )
+        ]
+        return team_objects
+
+    @pytest.fixture()
+    def create_user_teams(self, create_teams):
+        team_objects = create_teams
         user_ids = [
             "31be920b-7b4c-49e7-8adb-41a0c18da848",
             "01be920b-7b4c-49e7-8adb-41a0c18da848",
@@ -34,10 +70,17 @@ class TestGetTeamBasicUserDTOS:
         from ib_iam.tests.factories.models import UserTeamFactory
         user_team_objects = [
             UserTeamFactory(
-                user_id=user_id,
-                team=team_object
+                user_id=user_ids[0],
+                team=team_objects[0]
+            ),
+            UserTeamFactory(
+                user_id=user_ids[1],
+                team=team_objects[0]
+            ),
+            UserTeamFactory(
+                user_id=user_ids[2],
+                team=team_objects[1]
             )
-            for user_id in user_ids
         ]
         return user_team_objects
 
@@ -69,9 +112,11 @@ class TestGetTeamBasicUserDTOS:
 
     @pytest.mark.django_db
     def test_with_valid_team_id_return_response(
-            self, user_storage, create_user_details, create_user_teams):
+            self, user_storage, create_user_details, create_user_teams,
+            create_project_teams
+    ):
         # Arrange
-        team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        project_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         basic_user_details_list = [{
             'user_id': '31be920b-7b4c-49e7-8adb-41a0c18da848',
             'name': 'user_1',
@@ -98,7 +143,7 @@ class TestGetTeamBasicUserDTOS:
 
         # Act
         response = user_storage.get_team_basic_user_dtos(
-            team_id=team_id
+            project_id=project_id
         )
 
         # Assert

@@ -387,13 +387,22 @@ class UserStorageImplementation(UserStorageInterface):
                            cover_page_url=user_object.cover_page_url)
         return user_dto
 
-    def get_team_basic_user_dtos(self, team_id: str) -> \
+    def get_team_basic_user_dtos(self, project_id: str) -> \
             List[BasicUserDetailsDTO]:
         from ib_iam.models import UserTeam
         from ib_iam.models import UserDetails
 
-        user_ids = UserTeam.objects.filter(team_id=team_id).values_list(
-            "user_id", flat=True)
+        from ib_iam.models import ProjectTeam
+        team_ids = ProjectTeam.objects.filter(
+            project_id=project_id
+        ).values_list(
+            "team_id", flat=True
+        )
+        user_ids = UserTeam.objects.filter(
+            team_id__in=team_ids
+        ).values_list(
+            "user_id", flat=True
+        )
         user_details_objects = UserDetails.objects.filter(
             user_id__in=user_ids
         )
@@ -407,10 +416,8 @@ class UserStorageImplementation(UserStorageInterface):
         return basic_user_details_dtos
 
     def get_user_role_dtos_of_a_team(
-            self, user_ids: List[str], team_id: str) -> List[UserRoleDTO]:
-        from ib_iam.models import UserRole, ProjectTeam
-        project_id = ProjectTeam.objects.get(team_id=team_id).project_id
-
+            self, user_ids: List[str], project_id: str) -> List[UserRoleDTO]:
+        from ib_iam.models import UserRole
         user_role_list = UserRole.objects.filter(
             user_id__in=user_ids, project_role__project_id=project_id
         ).values(

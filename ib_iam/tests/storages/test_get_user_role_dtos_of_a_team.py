@@ -15,7 +15,7 @@ class TestGetUserRoleDTOSOfATeam:
             self, create_project_teams, create_user_roles, user_storage
     ):
         # Arrange
-        team_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
+        project_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         user_ids = [
             "31be920b-7b4c-49e7-8adb-41a0c18da848",
             "01be920b-7b4c-49e7-8adb-41a0c18da848"
@@ -49,7 +49,7 @@ class TestGetUserRoleDTOSOfATeam:
 
         # Act
         response = user_storage.get_user_role_dtos_of_a_team(
-            user_ids=user_ids, team_id=team_id
+            user_ids=user_ids, project_id=project_id
         )
 
         # Assert
