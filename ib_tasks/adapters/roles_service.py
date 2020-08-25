@@ -41,4 +41,6 @@ class RolesService:
 
     def get_user_role_ids_based_on_project(
             self, user_id, project_id: str) -> List[str]:
-        raise NotImplementedError
+        role_ids = self.interface.get_user_role_ids_based_on_project(
+            user_id=user_id, project_id=project_id)
+        return role_ids

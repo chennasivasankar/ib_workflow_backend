@@ -19,6 +19,12 @@ from ib_tasks.models import TaskTemplate, TaskTemplateGoFs, ProjectTaskTemplate
 
 class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
+    def get_project_templates(self, project_id: str) -> List[str]:
+        project_templates = \
+            ProjectTaskTemplate.objects.filter(project_id=project_id).\
+            values_list('task_template_id', flat=True)
+        return project_templates
+
     def validate_transition_template_id(
             self, transition_checklist_template_id
     ) -> Optional[InvalidTransitionChecklistTemplateId]:

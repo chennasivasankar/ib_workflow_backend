@@ -127,10 +127,10 @@ class SaveAndActOnATaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_present_stage_actions(self, error_obj):
+    def raise_exception_for_invalid_present_stage_actions(self, err):
         from ib_tasks.constants.exception_messages import \
             INVALID_PRESENT_STAGE_ACTION
-        message = INVALID_PRESENT_STAGE_ACTION[0].format(error_obj.action_id)
+        message = INVALID_PRESENT_STAGE_ACTION[0].format(err.action_id)
         data = {
             "response": message,
             "http_status_code": 400,
