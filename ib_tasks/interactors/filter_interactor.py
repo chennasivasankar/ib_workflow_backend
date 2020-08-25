@@ -1,6 +1,6 @@
 from typing import Tuple, List
 
-from ib_tasks.adapters.auth_service import InvalidProjectIdsException, UserIsNotInProject
+from ib_tasks.adapters.auth_service import InvalidProjectIdsException, UserIsNotInProjectException
 from ib_tasks.constants.enum import Status
 from ib_tasks.exceptions.filter_exceptions import \
     FieldIdsNotBelongsToTemplateId, UserNotHaveAccessToFields, \
@@ -43,7 +43,7 @@ class FilterInteractor(ValidationMixin):
             return self.presenter.get_response_for_invalid_field_ids(error=error)
         except InvalidProjectIdsException as err:
             return self.presenter.get_response_for_invalid_project_id(err=err)
-        except UserIsNotInProject:
+        except UserIsNotInProjectException:
             return self.presenter.get_response_for_user_not_in_project()
         except UserNotHaveAccessToFields:
             return self.presenter.get_response_for_user_not_have_access_to_fields()
