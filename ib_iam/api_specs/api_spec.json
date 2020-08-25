@@ -846,6 +846,14 @@
       "type": "string",
       "format": "uuid"
     },
+    "ProjectIdPathParameter": {
+      "name": "project_id",
+      "in": "path",
+      "required": true,
+      "description": "project_id to identify a project",
+      "type": "string",
+      "format": "uuid"
+    },
     "LevelHierarchyPathParameter": {
       "name": "level_hierarchy",
       "in": "path",
@@ -1054,6 +1062,14 @@
       "in": "body",
       "required": true,
       "description": "parameters or details to create/add a project",
+      "schema": {
+        "$ref": "#/definitions/ProjectWithTeamIds"
+      }
+    },
+    "UpdateProjectParameter": {
+      "name": "update_project",
+      "in": "body",
+      "description": "details that are to be updated of a project",
       "schema": {
         "$ref": "#/definitions/ProjectWithTeamIds"
       }
@@ -3030,6 +3046,33 @@
         "responses": {
           "201": {
             "$ref": "#/responses/SuccessfullyCreatedForAddProjectResponse"
+          }
+        }
+      }
+    },
+    "/project/{project_id}/v1/": {
+      "put": {
+        "summary": "Update Project",
+        "description": "Updates project details",
+        "operationId": "update_project_details",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/UpdateProjectParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project details updated Successfully"
           }
         }
       }
