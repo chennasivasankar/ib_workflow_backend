@@ -60,6 +60,10 @@ class InvalidOffsetValue(Exception):
     pass
 
 
+class InvalidProjectId(Exception):
+    pass
+
+
 class InvalidLimitValue(Exception):
     pass
 
