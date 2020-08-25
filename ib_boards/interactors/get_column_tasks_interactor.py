@@ -3,14 +3,11 @@ Created on: 16/07/20
 Author: Pavankumar Pamuru
 
 """
-from typing import List, Tuple
 
-from ib_boards.constants.enum import ViewType
 from ib_boards.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue, OffsetValueExceedsTotalTasksCount, \
     UserDoNotHaveAccessToColumn, InvalidStageIds
-from ib_boards.interactors.dtos import ColumnTasksParametersDTO, \
-    ColumnTaskIdsDTO, FieldDTO, ActionDTO
+from ib_boards.interactors.dtos import ColumnTasksParametersDTO
 from ib_boards.interactors.get_tasks_details_for_the_column_ids import \
     ColumnsTasksParametersDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
@@ -60,11 +57,14 @@ class GetColumnTasksInteractor:
         column_id = column_tasks_parameters.column_id
         user_id = column_tasks_parameters.user_id
         view_type = column_tasks_parameters.view_type
+        project_id = self.storage.get_project_id_for_given_column_id(column_id)
+
         column_tasks = ColumnsTasksParametersDTO(
             column_ids=[column_id],
             limit=column_tasks_parameters.limit,
             offset=column_tasks_parameters.offset,
             user_id=user_id,
+            project_id=project_id,
             view_type=view_type,
             search_query=column_tasks_parameters.search_query
         )

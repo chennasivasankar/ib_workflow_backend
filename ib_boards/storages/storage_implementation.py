@@ -15,6 +15,15 @@ from ib_boards.models import Board, ColumnPermission, Column, UserStarredBoard
 
 class StorageImplementation(StorageInterface):
 
+    def get_project_id_for_board(self, board_id: str) -> str:
+        board_obj = Board.objects.get(board_id=board_id)
+        return board_obj.project_id
+
+    def get_project_id_for_given_column_id(self, column_id: str) -> str:
+        column = Column.objects.filter(column_id=column_id).values(
+            'board__project_id')
+        return column[0]['board__project_id']
+
     def add_project_id_for_boards(
             self, project_boards_dtos: List[ProjectBoardDTO]):
         board_ids = [item.board_id for item in project_boards_dtos]
