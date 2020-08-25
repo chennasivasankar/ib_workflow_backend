@@ -120,7 +120,7 @@ class TestGetTaskRelatedRps:
         from ib_tasks.tests.common_fixtures.adapters.auth_service import \
             get_user_dtos_given_user_ids
         user_details_mock = get_user_dtos_given_user_ids(mocker)
-        storage.get_due_missed_count.return_value = 3
+        storage.get_due_missed_count.return_value = 2
         presenter_mock.response_for_get_rps_details.return_value = expected_response
 
         interactor = GetTaskRPsInteractor(storage=storage, task_storage=task_storage)
