@@ -2,7 +2,7 @@
 
 REQUEST_BODY_JSON = """
 {
-    "project_id": "string"
+    "task_id": "string"
 }
 """
 

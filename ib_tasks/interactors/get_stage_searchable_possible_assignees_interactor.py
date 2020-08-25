@@ -30,7 +30,7 @@ class GetStageSearchablePossibleAssigneesInteractor(
         self.stage_storage = stage_storage
 
     def get_stage_searchable_possible_assignees_of_a_task_wrapper(
-            self, stage_id: int, project_id: str,
+            self, stage_id: int, task_id: str,
             search_query_with_pagination_dto:
             SearchQueryWithPaginationDTO,
             presenter: GetStageSearchablePossibleAssigneesPresenterInterface):
@@ -39,7 +39,7 @@ class GetStageSearchablePossibleAssigneesInteractor(
                 self.get_stage_searchable_possible_assignees_of_a_task(
                     search_query_with_pagination_dto=
                     search_query_with_pagination_dto,
-                    stage_id=stage_id, project_id=project_id)
+                    stage_id=stage_id, task_id=task_id)
         except InvalidStageId as err:
             return presenter.raise_invalid_stage_id_exception(err)
         except LimitShouldBeGreaterThanZeroException:
@@ -51,10 +51,10 @@ class GetStageSearchablePossibleAssigneesInteractor(
             user_details_with_team_details_dto=user_details_with_team_details_dto)
 
     def get_stage_searchable_possible_assignees_of_a_task(
-            self, stage_id: int, project_id: str,
+            self, stage_id: int, task_id: str,
             search_query_with_pagination_dto: SearchQueryWithPaginationDTO
     ) -> UserDetailsWithTeamDetailsDTO:
-
+        #ToDo make task id validations
         self._make_validations(
             stage_id=stage_id,
             search_query_with_pagination_dto=search_query_with_pagination_dto)
@@ -70,6 +70,9 @@ class GetStageSearchablePossibleAssigneesInteractor(
                 user_id_with_team_details_dtos=user_id_with_team_details_dtos,
                 user_details_dtos=permitted_user_details_dtos)
             return user_details_with_team_details_dto
+
+        project_id = self.stage_storage.get_project_id_for_task_display_id(
+            task_display_id=task_id)
 
         from ib_tasks.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
