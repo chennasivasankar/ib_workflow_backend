@@ -220,16 +220,12 @@
         },
         "reason": {
           "type": "string"
-        },
-        "stage_id": {
-          "type": "string"
         }
       },
       "required": [
         "updated_due_date_time",
         "reason_id",
-        "task_id",
-        "stage_id"
+        "task_id"
       ]
     },
     "CreateTaskRequestBody": {
@@ -1704,26 +1700,6 @@
         "$ref": "#/definitions/CreateTransitionChecklistRequestBody"
       }
     },
-    "TaskandStageIdRequestBody": {
-      "in": "body",
-      "name": "TaskId and StageId",
-      "description": "task id and stage id",
-      "required": true,
-      "schema": {
-        "type": "object",
-        "properties": {
-          "task_id": {
-            "type": "string"
-          },
-          "stage_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "task_id", "stage_id"
-        ]
-      }
-    },
     "StageIdParameter": {
       "name": "stage_id",
       "in": "path",
@@ -1866,8 +1842,7 @@
             "type": "string",
             "enum": [
               "INVALID_TASK_ID",
-              "SEARCHABLE_RECORDS_NOT_FOUND",
-              "INVALID_STAGE_ID"
+              "SEARCHABLE_RECORDS_NOT_FOUND"
             ]
           }
         }
@@ -3196,7 +3171,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/TaskandStageIdRequestBody"
+            "$ref": "#/parameters/TaskIdRequestBody"
           }
         ],
         "responses": {
