@@ -152,3 +152,8 @@ class StageStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_task_current_stages(self, task_id) -> List[str]:
         pass
+
+    #ToDo move this method to task storage
+    @abc.abstractmethod
+    def get_project_id_for_task_display_id(self, task_display_id: str):
+        pass

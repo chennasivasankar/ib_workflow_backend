@@ -189,3 +189,7 @@ class CreateTaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_exception_for_invalid_present_stage_actions(self, err):
         pass
+
+    @abc.abstractmethod
+    def raise_invalid_task_template_of_project(self, err):
+        pass
