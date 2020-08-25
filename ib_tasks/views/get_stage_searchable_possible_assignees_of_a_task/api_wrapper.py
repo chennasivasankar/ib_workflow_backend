@@ -10,7 +10,7 @@ def api_wrapper(*args, **kwargs):
     query_params = kwargs['query_params']
     request_data = kwargs['request_data']
     stage_id = path_params['stage_id']
-    task_id = request_data['task_id']
+    task_id = query_params['task_id']
     search_query = query_params['search_query']
     offset = query_params['offset']
     limit = query_params['limit']

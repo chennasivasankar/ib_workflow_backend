@@ -86,7 +86,8 @@ class GetStageSearchablePossibleAssigneesInteractor(
                               for permitted_user_details_dto in
                               permitted_user_details_dtos]
         user_id_with_team_details_dtos = service_adapter.auth_service. \
-            get_team_info_for_given_user_ids(user_ids=permitted_user_ids)
+            get_team_info_for_given_user_ids(
+            user_ids=permitted_user_ids, project_id=project_id)
         user_details_with_team_details_dto = UserDetailsWithTeamDetailsDTO(
             user_id_with_team_details_dtos=user_id_with_team_details_dtos,
             user_details_dtos=permitted_user_details_dtos)

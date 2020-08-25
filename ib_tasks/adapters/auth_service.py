@@ -117,7 +117,8 @@ class AuthService:
             self, user_ids: List[str], project_id: str
     ) -> List[UserIdWIthTeamDetailsDTOs]:
         user_ids = list(sorted(set(user_ids)))
-        user_team_dtos = self.interface.get_user_teams_for_each_user(user_ids)
+        user_team_dtos = self.interface.get_user_teams_for_each_project_user(
+            user_ids=user_ids, project_id=project_id)
         user_id_with_team_details_dtos = []
         for user_team_dto in user_team_dtos:
             team_details = [
