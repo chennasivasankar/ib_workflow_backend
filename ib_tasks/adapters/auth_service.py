@@ -2,7 +2,7 @@ from typing import List
 
 from ib_tasks.adapters.dtos import UserDetailsDTO, TeamDetailsDTO, \
     UserIdWIthTeamDetailsDTOs, TeamDetailsWithUserIdDTO, \
-    ProjectDetailsDTO
+    ProjectDetailsDTO, ProjectTeamUserIdsDTO
 from ib_tasks.interactors.field_dtos import SearchableFieldDetailDTO
 from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
     import SearchQueryWithPaginationDTO
@@ -98,17 +98,19 @@ class AuthService:
     def get_team_details(self, team_ids: List[str]) -> List[TeamDetailsDTO]:
         raise NotImplementedError
 
-    def get_projects_info_for_given_ids(self, project_ids: List[str]) -> List[
-        ProjectDetailsDTO]:
+    def get_projects_info_for_given_ids(
+            self, project_ids: List[str]
+    ) -> List[ProjectDetailsDTO]:
         raise NotImplementedError
 
-    def get_team_info_for_given_user_ids(self, user_ids: List[str],
-                                         project_id: str) -> List[
-        UserIdWIthTeamDetailsDTOs]:
+    def get_team_info_for_given_user_ids(
+            self, user_ids: List[str],
+            project_id: str
+    ) -> List[UserIdWIthTeamDetailsDTOs]:
         raise NotImplementedError
 
-    def get_team_details_for_given_team_project_details_dto(
-            self, team_project_details_dto) -> \
+    def get_user_id_team_details_dtos_for_given_team_project_user_ids_dto(
+            self, project_team_user_ids_dto: ProjectTeamUserIdsDTO) -> \
             List[TeamDetailsWithUserIdDTO]:
         raise NotImplementedError
 

@@ -101,7 +101,7 @@ class GetStagesAssigneesDetailsInteractor:
         service_interface = get_service_adapter()
         auth_service = service_interface.auth_service
         team_details_with_user_id_dtos = \
-            auth_service.get_team_details_for_given_project_team_user_ids_dto(
+            auth_service.get_user_id_team_details_dtos_for_given_team_project_user_ids_dto(
                 project_team_user_ids_dto)
         return team_details_with_user_id_dtos
 
@@ -121,7 +121,7 @@ class GetStagesAssigneesDetailsInteractor:
     ) -> List[UserIdWithTeamIdDTO]:
         user_id_with_team_id_dtos = []
         for stage_assignee_dto in stage_assignee_dtos:
-            is_assignee_id = not stage_assignee_dto.assignee_id
+            is_assignee_id = stage_assignee_dto.assignee_id
             if is_assignee_id:
                 user_id_with_team_id_dto = UserIdWithTeamIdDTO(
                     user_id=stage_assignee_dto.assignee_id,
