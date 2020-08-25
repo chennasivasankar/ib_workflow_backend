@@ -63,5 +63,5 @@ class GetTaskRpsPresenterImplementation(GetTaskRpsPresenterInterface,
         return {
             "user_id": rp_dto.user_id,
             "name": rp_dto.user_name,
-            "profile_pic": rp_dto.profile_pic_url
+            "profile_pic_url": rp_dto.profile_pic_url
         }
