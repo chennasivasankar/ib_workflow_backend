@@ -1438,7 +1438,7 @@
         "action_id"
       ]
     },
-    "TaskandStageIdRequestBody": {
+    "TaskIdRequestBody": {
       "type": "object",
       "properties": {
         "task_id": {
@@ -1580,23 +1580,20 @@
         "$ref": "#/definitions/UpdateTaskRequestBody"
       }
     },
-    "TaskandStageIdRequestBody": {
+    "TaskIdRequestBody": {
       "in": "body",
-      "name": "RequestBody",
-      "description": "task id and stage id",
+      "name": "TaskId",
+      "description": "task id",
       "required": true,
       "schema": {
         "type": "object",
         "properties": {
           "task_id": {
             "type": "string"
-          },
-          "stage_id": {
-            "type": "string"
           }
         },
         "required": [
-          "task_id", "stage_id"
+          "task_id"
         ]
       }
     },
@@ -1613,7 +1610,7 @@
       "name": "TaskBodyParameter",
       "required": true,
       "schema": {
-        "$ref": "#/definitions/TaskandStageIdRequestBody"
+        "$ref": "#/definitions/TaskIdRequestBody"
       }
     },
     "TaskStageAssigneesParameter": {
@@ -1705,6 +1702,26 @@
       "required": true,
       "schema": {
         "$ref": "#/definitions/CreateTransitionChecklistRequestBody"
+      }
+    },
+    "TaskandStageIdRequestBody": {
+      "in": "body",
+      "name": "TaskId and StageId",
+      "description": "task id and stage id",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string"
+          },
+          "stage_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id", "stage_id"
+        ]
       }
     },
     "StageIdParameter": {
@@ -1985,35 +2002,6 @@
               "DUPLICATE_STAGE_IDS",
               "VIRTUAL_STAGE_IDS",
               "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE"
-            ]
-          }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
-        ]
-      }
-    },
-    "GetTaskRPsFailureResponse": {
-      "description": "Task Stage Assignees Failure Response",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer",
-            "enum": [
-              404
-            ]
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "INVALID_STAGE_ID",
-              "INVALID_TASK_ID"
             ]
           }
         },
@@ -2562,15 +2550,6 @@
             "name",
             "team_info"
           ]
-        }
-      }
-    },
-    "GetTaskRpsResponse": {
-      "description": "Task Stage Rps",
-      "schema": {
-        "type": "array",
-        "items": {
-          "$ref": "#/definitions/UserResponseBody"
         }
       }
     },
