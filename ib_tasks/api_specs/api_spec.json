@@ -220,12 +220,16 @@
         },
         "reason": {
           "type": "string"
+        },
+        "stage_id": {
+          "type": "string"
         }
       },
       "required": [
         "updated_due_date_time",
         "reason_id",
-        "task_id"
+        "task_id",
+        "stage_id"
       ]
     },
     "CreateTaskRequestBody": {
