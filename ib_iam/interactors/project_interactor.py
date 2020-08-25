@@ -194,7 +194,7 @@ class ProjectInteractor:
         valid_user_ids = self.user_storage.get_valid_user_ids(
             user_ids=user_ids)
         if len(valid_user_ids) != len(user_ids):
-            invalid_user_ids = set(user_ids) - set(valid_user_ids)
+            invalid_user_ids = list(set(user_ids) - set(valid_user_ids))
             raise InvalidUserIds(invalid_user_ids)
         user_team_dtos = \
             self._validate_user_ids_and_get_user_team_dtos_for_given_project(
@@ -209,10 +209,10 @@ class ProjectInteractor:
             project_id=project_id)
         user_team_dtos = self.team_storage.get_team_user_dtos(
             user_ids=user_ids, team_ids=team_ids)
-        not_exists_users_in_given_project = []
         for user_team_dto in user_team_dtos:
-            if user_team_dto.user_id not in user_ids:
-                not_exists_users_in_given_project.append(user_team_dto.user_id)
+            if user_team_dto.user_id in user_ids:
+                user_ids.remove(user_team_dto.user_id)
+        not_exists_users_in_given_project = user_ids
         if not_exists_users_in_given_project:
             raise UsersNotExistsForGivenProject(
                 user_ids=not_exists_users_in_given_project)
