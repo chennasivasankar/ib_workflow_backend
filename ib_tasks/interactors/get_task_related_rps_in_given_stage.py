@@ -52,12 +52,14 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
             user_id=user_id, team_id=user_team_id)
 
         rp_ids = [superior_id]
+        rp_details_dtos = []
         if superior_id:
             rp_id = service_adapter.auth_service.get_immediate_superior_user_id(
                 user_id=superior_id, team_id=user_team_id)
-            rp_ids.append(rp_id)
-
-        rp_details_dtos = service_adapter.auth_service.get_user_details(rp_ids)
+            if rp_id:
+                rp_ids.append(rp_id)
+        if None not in rp_ids:
+            rp_details_dtos = service_adapter.auth_service.get_user_details(rp_ids)
         return rp_details_dtos
 
     def _validate_stage_id(self, stage_id: str):
