@@ -1,6 +1,7 @@
 from typing import List
 
-from ib_tasks.adapters.auth_service import InvalidProjectIdsException, UserIsNotInProject
+from ib_tasks.adapters.auth_service import InvalidProjectIdsException, \
+    UserIsNotInProjectException
 from ib_tasks.constants.enum import ViewType
 from ib_tasks.documents.elastic_task import QueryTasksDTO
 from ib_tasks.exceptions.fields_custom_exceptions import LimitShouldBeGreaterThanZeroException, \
@@ -49,7 +50,7 @@ class GetTasksToRelevantSearchQuery(ValidationMixin):
             return presenter.raise_stage_ids_empty_exception()
         except InvalidProjectIdsException as err:
             return presenter.get_response_for_invalid_project_id(err=err)
-        except UserIsNotInProject:
+        except UserIsNotInProjectException:
             return presenter.get_response_for_user_not_in_project()
         except LimitShouldBeGreaterThanZeroException:
             return presenter.raise_limit_should_be_greater_than_zero_exception()
