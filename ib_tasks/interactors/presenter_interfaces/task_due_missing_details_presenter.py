@@ -27,3 +27,7 @@ class TaskDueDetailsPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def response_for_invalid_reason_id(self):
         pass
+
+    @abc.abstractmethod
+    def response_for_invalid_stage_id(self):
+        pass

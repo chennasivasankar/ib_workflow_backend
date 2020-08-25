@@ -146,7 +146,7 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_all_distinct_user_db_role_ids(self) -> List[str]:
+    def get_all_distinct_user_db_role_ids(self, project_id: str) -> List[str]:
         pass
 
     @abstractmethod
@@ -187,6 +187,10 @@ class UserStorageInterface(ABC):
     def get_user_details(self, user_id: str) -> UserDTO:
         pass
 
+    #TODO move to project storage interface
+    @abstractmethod
+    def get_user_ids_for_given_project(self, project_id: str) -> List[str]:
+        pass
     @abstractmethod
     def get_team_basic_user_dtos(self, team_id: str) -> \
             List[BasicUserDetailsDTO]:

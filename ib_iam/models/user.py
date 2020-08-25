@@ -28,7 +28,7 @@ class UserTeam(models.Model):
 
 class UserRole(models.Model):
     user_id = models.CharField(max_length=1000)
-    project_role = models.ForeignKey('ProjectRole', on_delete=models.CASCADE)
+    project_role = models.ForeignKey('ProjectRole', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return f"{self.user_id} have {self.project_role.role_id}"

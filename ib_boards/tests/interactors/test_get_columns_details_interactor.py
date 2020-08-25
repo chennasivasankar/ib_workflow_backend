@@ -166,7 +166,6 @@ class TestGetColumnDetailsInteractor:
 
     def test_with_invalid_board_id_raises_exception(self):
         # Arrange
-
         board_id = "board_id_1"
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
@@ -200,7 +199,6 @@ class TestGetColumnDetailsInteractor:
     @patch("ib_boards.adapters.service_adapter.ServiceAdapter.iam_service")
     def test_with_invalid_offset_raises_exception(self, user_roles_service):
         # Arrange
-
         board_id = "board_id_1"
         user_roles = ["FIN_PAYMENT_REQUESTER",
                       "FIN_PAYMENT_POC",
@@ -236,6 +234,7 @@ class TestGetColumnDetailsInteractor:
             pagination_parameters=pagination_parameters)
 
         # Assert
+
         presenter.response_for_invalid_offset_value.assert_called_once()
 
     @patch("ib_boards.adapters.service_adapter.ServiceAdapter.iam_service")
@@ -249,6 +248,7 @@ class TestGetColumnDetailsInteractor:
                       "FIN_PAYMENTS_LEVEL2_VERIFIER",
                       "FIN_PAYMENTS_LEVEL3_VERIFIER"]
         columns_parameters = ColumnParametersDTO(
+
             board_id=board_id,
             user_id="user_id_1",
             view_type=ViewType.LIST.value,
@@ -287,6 +287,7 @@ class TestGetColumnDetailsInteractor:
         board_id = "board_id_1"
         user_id = "user_id_1"
         columns_parameters = ColumnParametersDTO(
+
             board_id=board_id,
             user_id=user_id,
             view_type=ViewType.LIST.value,
@@ -342,6 +343,7 @@ class TestGetColumnDetailsInteractor:
         task_fields_dto = get_task_fields_dtos
         task_actions_dto = get_task_actions_dtos
         columns_parameters = ColumnParametersDTO(
+
             board_id=board_id,
             user_id=user_id,
             view_type=ViewType.LIST.value,
@@ -433,6 +435,7 @@ class TestGetColumnDetailsInteractor:
         task_fields_dto = get_task_fields_dtos
         task_actions_dto = get_task_actions_dtos
         columns_parameters = ColumnParametersDTO(
+
             board_id=board_id,
             user_id=user_id,
             view_type=ViewType.LIST.value,
@@ -462,6 +465,7 @@ class TestGetColumnDetailsInteractor:
             get_task_ids_mock
 
         task_ids_mock = get_task_ids_mock(mocker, column_tasks_ids_no_duplicates)
+
         task_details_dto.return_value = task_fields_dto, task_actions_dto, task_stage_color_dtos
         user_roles_service.get_user_roles.return_value = user_roles
         board_permitted_user_roles = ["FIN_PAYMENT_POC"]
