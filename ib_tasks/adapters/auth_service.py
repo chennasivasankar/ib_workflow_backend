@@ -4,8 +4,7 @@ from ib_tasks.adapters.dtos import UserDetailsDTO, TeamDetailsDTO, \
     UserIdWIthTeamDetailsDTOs, TeamDetailsWithUserIdDTO, \
     ProjectDetailsDTO, ProjectTeamUserIdsDTO
 from ib_tasks.interactors.field_dtos import SearchableFieldDetailDTO
-from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
-    import SearchQueryWithPaginationDTO
+from ib_tasks.interactors.filter_dtos import SearchQueryWithPaginationDTO
 
 
 class AuthService:
