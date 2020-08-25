@@ -90,7 +90,8 @@ class GetTaskDetailsByFilterInteractor:
             GetTaskIdsBasedOnUserFilters
         filtered_task_ids_interactor = GetTaskIdsBasedOnUserFilters(
             filter_storage=self.filter_storage,
-            elasticsearch_storage=self.elasticsearch_storage
+            elasticsearch_storage=self.elasticsearch_storage,
+            field_storage=self.field_storage
         )
 
         from ib_tasks.interactors.get_all_task_overview_with_filters_and_searches_for_user import \
