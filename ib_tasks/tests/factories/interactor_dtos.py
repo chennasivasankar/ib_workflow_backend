@@ -6,8 +6,7 @@ from ib_tasks.adapters.dtos import UserDTO
 from ib_tasks.constants.enum import Searchable, Priority
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
-from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
-    import SearchQueryWithPaginationDTO
+from ib_tasks.interactors.filter_dtos import SearchQueryWithPaginationDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO

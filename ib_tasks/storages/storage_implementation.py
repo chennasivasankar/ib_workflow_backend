@@ -29,11 +29,10 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
     TaskDelayParametersDTO
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
-    GlobalConstant, StagePermittedRoles, TaskTemplateInitialStage, Stage, \
-    TaskTemplateStatusVariable, ProjectTaskTemplate, \
-    ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole
-from ib_tasks.models import \
-    TaskStageHistory
+    GlobalConstant, \
+    StagePermittedRoles, TaskTemplateInitialStage, Stage, \
+    TaskTemplateStatusVariable, ProjectTaskTemplate, ActionPermittedRoles, \
+    StageAction, CurrentTaskStage, FieldRole, TaskStageHistory
 from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
 
 
@@ -361,7 +360,8 @@ class StagesStorageImplementation(StageStorageInterface):
         )
 
     def get_task_stages_assignees_without_having_left_at_status(
-            self, task_id: int, db_stage_ids: List[int]) -> List[StageAssigneeDTO]:
+            self, task_id: int, db_stage_ids: List[int]) -> List[
+        StageAssigneeDTO]:
         task_stage_objs = list(TaskStageHistory.objects.filter(
             task_id=task_id,
             stage_id__in=db_stage_ids, left_at__isnull=True)
@@ -424,7 +424,8 @@ class StagesStorageImplementation(StageStorageInterface):
             Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
         ) \
             .values_list('action__stage_id', flat=True)
-        stage_ids = StagePermittedRoles.objects.filter(stage_id__in=stage_ids) \
+        stage_ids = StagePermittedRoles.objects.filter(
+            stage_id__in=stage_ids) \
             .filter(
             Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
         ).values_list('stage__stage_id', flat=True)
@@ -701,7 +702,8 @@ class StorageImplementation(StorageInterface):
     def validate_if_task_is_assigned_to_user_in_given_stage(self,
                                                             task_id: int,
                                                             user_id: str,
-                                                            stage_id: str) -> bool:
+                                                            stage_id: str) \
+            -> bool:
         is_assigned = TaskStageHistory.objects.filter(
             task_id=task_id, assignee_id=user_id, stage__stage_id=stage_id
         ).exists()
@@ -751,7 +753,6 @@ class StorageImplementation(StorageInterface):
                                            reason=due_details.reason)
         Task.objects.filter(pk=task_id, taskstagehistory__assignee_id=user_id
                             ).update(due_date=updated_due_datetime)
-
 
     def validate_stage_id(self, stage_id: str) -> bool:
         does_exists = Stage.objects.filter(stage_id=stage_id).exists()
