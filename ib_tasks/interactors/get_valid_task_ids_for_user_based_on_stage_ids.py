@@ -76,8 +76,8 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
         from ib_tasks.interactors.get_stages_assignees_details_interactor \
             import GetStagesAssigneesDetailsInteractor
         get_stage_assignees_interactor = GetStagesAssigneesDetailsInteractor(
-                task_stage_storage=self.task_stage_storage
-            )
+            task_stage_storage=self.task_stage_storage
+        )
         task_with_complete_stage_details_dtos = []
         task_stage_dtos = []
         for task_id_with_stage_details_dto in task_id_with_stage_details_dtos:
@@ -89,12 +89,13 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
             task_stage_dtos.append(task_stage_dto)
         stage_assignee_dtos = get_stage_assignees_interactor. \
             get_stages_assignee_details_by_given_task_ids(
-                task_stage_dtos=task_stage_dtos
-            )
+            task_stage_dtos=task_stage_dtos
+        )
 
         stage_assignee_map = {}
         for stage_assignee_dto in stage_assignee_dtos:
-            stage_assignee_map[stage_assignee_dto.stage_id + str(stage_assignee_dto.task_id)] = stage_assignee_dto
+            stage_assignee_map[stage_assignee_dto.stage_id + str(
+                stage_assignee_dto.task_id)] = stage_assignee_dto
 
         for task_id_with_stage_details_dto in task_id_with_stage_details_dtos:
             task_with_complete_stage_details_dto = \
@@ -102,9 +103,10 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
                     task_with_stage_details_dto=task_id_with_stage_details_dto,
                     stage_assignee_dto=[
                         stage_assignee_map[
-                            task_id_with_stage_details_dto.stage_id + str(task_id_with_stage_details_dto.task_id)]
-                ]
-            )
+                            task_id_with_stage_details_dto.stage_id + str(
+                                task_id_with_stage_details_dto.task_id)]
+                    ]
+                )
             task_with_complete_stage_details_dtos.append(
                 task_with_complete_stage_details_dto)
         return task_with_complete_stage_details_dtos

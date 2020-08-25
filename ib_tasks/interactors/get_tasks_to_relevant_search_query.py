@@ -1,5 +1,4 @@
-from dataclasses import dataclass
-from typing import Any, List
+from typing import List
 
 from ib_tasks.adapters.auth_service import InvalidProjectIdsException, UserIsNotInProject
 from ib_tasks.constants.enum import ViewType
@@ -18,15 +17,7 @@ from ib_tasks.interactors.storage_interfaces.filter_storage_interface import Fil
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
-
-
-@dataclass
-class SearchQueryDTO:
-    user_id: str
-    offset: int
-    limit: int
-    query_value: Any
-    view_type: ViewType
+from ib_tasks.interactors.task_dtos import SearchQueryDTO
 
 
 class GetTasksToRelevantSearchQuery(ValidationMixin):
@@ -47,12 +38,12 @@ class GetTasksToRelevantSearchQuery(ValidationMixin):
         self.elasticsearch_storage = elasticsearch_storage
 
     def get_all_tasks_overview_for_user_wrapper(
-            self, project_id: str, search_query_dto: SearchQueryDTO,
+            self, search_query_dto: SearchQueryDTO,
             presenter: GetFilteredTasksOverviewForUserPresenterInterface,
             apply_filters_dto: List[ApplyFilterDTO]):
         try:
             filtered_tasks_overview_details_dto, total_tasks = \
-                self.get_tasks_for_search_query(project_id, search_query_dto,
+                self.get_tasks_for_search_query(search_query_dto,
                                                 apply_filters_dto)
         except StageIdsListEmptyException:
             return presenter.raise_stage_ids_empty_exception()
@@ -71,28 +62,28 @@ class GetTasksToRelevantSearchQuery(ValidationMixin):
         )
 
     def get_tasks_for_search_query(
-            self, project_id: str, search_query_dto: SearchQueryDTO,
+            self, search_query_dto: SearchQueryDTO,
             apply_filters_dto: List[ApplyFilterDTO]):
         offset = search_query_dto.offset
         user_id = search_query_dto.user_id
         limit = search_query_dto.limit
-        query_value = search_query_dto.query_value
         view_type = search_query_dto.view_type
+        project_id = search_query_dto.project_id
         self._validate_project_data(project_id=project_id, user_id=user_id)
         filter_dtos = self.filter_storage.get_enabled_filters_dto_to_user(
             user_id=user_id, project_id=project_id
         )
+        apply_filters_dto = apply_filters_dto + filter_dtos
         from ib_tasks.adapters.service_adapter import get_service_adapter
         roles_service = get_service_adapter().roles_service
         user_roles = roles_service.get_user_role_ids(
             user_id=user_id)
         stage_ids_having_actions = self.stage_storage \
             .get_stage_ids_having_actions(user_roles=user_roles)
-        apply_filters_dto = apply_filters_dto + filter_dtos
         self._validations_of_limit_and_offset(offset=offset, limit=limit)
         query_tasks_dto = self.elasticsearch_storage.search_tasks(
-            offset=offset, limit=limit, search_query=query_value,
-            apply_filter_dtos=apply_filters_dto, project_id=project_id,
+            search_query_dto=search_query_dto,
+            apply_filter_dtos=apply_filters_dto,
             stage_ids=stage_ids_having_actions
         )
         return self._get_all_tasks_overview_details(

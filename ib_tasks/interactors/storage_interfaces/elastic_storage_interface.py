@@ -10,7 +10,7 @@ from typing import Union
 
 from ib_tasks.constants.enum import Operators
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
-from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
+from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, SearchQueryDTO
 
 
 @dataclass
@@ -45,8 +45,9 @@ class ElasticSearchStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def search_tasks(
-            self, offset: int, limit: int, search_query: str, project_id: str,
-            apply_filter_dtos: List[ApplyFilterDTO], stage_ids: List[str]
+            self, search_query_dto: SearchQueryDTO,
+            apply_filter_dtos: List[ApplyFilterDTO],
+            stage_ids: List[str]
     ) -> QueryTasksDTO:
         pass
 
