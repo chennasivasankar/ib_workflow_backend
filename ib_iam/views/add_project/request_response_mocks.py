@@ -21,7 +21,7 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_201_JSON = """
 {
-    "project_id": "86cd253f-5a25-4fde-bc5f-cab5bb1f9056"
+    "project_id": "string"
 }
 """
 

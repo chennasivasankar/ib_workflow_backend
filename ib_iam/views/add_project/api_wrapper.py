@@ -1,48 +1,62 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
+
 from .validator_class import ValidatorClass
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
+    project_with_team_ids_and_roles_dto = \
+        _convert_to_project_with_team_ids_and_roles_dto(kwargs)
 
-    try:
-        from ib_iam.views.add_project.request_response_mocks \
-            import REQUEST_BODY_JSON
-        body = REQUEST_BODY_JSON
-    except ImportError:
-        body = {}
+    from ib_iam.storages.project_storage_implementation import \
+        ProjectStorageImplementation
+    project_storage = ProjectStorageImplementation()
+    from ib_iam.storages.user_storage_implementation import \
+        UserStorageImplementation
+    user_storage = UserStorageImplementation()
+    from ib_iam.storages.team_storage_implementation import \
+        TeamStorageImplementation
+    team_storage = TeamStorageImplementation()
+    from ib_iam.presenters.add_project_presenter_implementation import \
+        AddProjectPresenterImplementation
+    presenter = AddProjectPresenterImplementation()
+    from ib_iam.interactors.project_interactor import ProjectInteractor
+    interactor = ProjectInteractor(project_storage=project_storage,
+                                   team_storage=team_storage,
+                                   user_storage=user_storage)
 
-    test_case = {
-        "path_params": {},
-        "query_params": {},
-        "header_params": {},
-        "body": body,
-        "securities": [{'oauth': ['write']}]
-    }
+    response_data = interactor.add_project_wrapper(
+        presenter=presenter,
+        project_with_team_ids_and_roles_dto=project_with_team_ids_and_roles_dto
+    )
 
-    from django_swagger_utils.drf_server.utils.server_gen.mock_response \
-        import mock_response
-    try:
-        response = ''
-        status_code = 200
-        if '200' in ['201']:
-            from ib_iam.views.add_project.request_response_mocks \
-                import RESPONSE_200_JSON
-            response = RESPONSE_200_JSON
-            status_code = 200
-        elif '201' in ['201']:
-            from ib_iam.views.add_project.request_response_mocks \
-                import RESPONSE_201_JSON
-            response = RESPONSE_201_JSON
-            status_code = 201
-    except ImportError:
-        response = ''
-        status_code = 200
-    response_tuple = mock_response(
-        app_name="ib_iam", test_case=test_case,
-        operation_name="add_project",
-        kwargs=kwargs, default_response_body=response,
-        group_name="", status_code=status_code)
-    return response_tuple
+    return response_data
+
+
+def _convert_to_project_with_team_ids_and_roles_dto(kwargs):
+    request_data = kwargs["request_data"]
+    name = request_data["name"]
+    description = request_data.get("description", None)
+    logo_url = request_data.get("logo_url", None)
+    team_ids = request_data["team_ids"]
+    roles = request_data["roles"]
+    role_dtos = [_convert_to_role_dtos(role) for role in roles]
+    from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
+    project_with_team_ids_and_roles_dto = ProjectWithTeamIdsAndRolesDTO(
+        name=name,
+        description=description,
+        logo_url=logo_url,
+        team_ids=team_ids,
+        roles=role_dtos)
+    return project_with_team_ids_and_roles_dto
+
+
+def _convert_to_role_dtos(role):
+    from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
+    role_dto = RoleDTO(
+        role_id=role["role_id"],
+        name=role["role_name"],
+        description=role["description"]
+    )
+    return role_dto

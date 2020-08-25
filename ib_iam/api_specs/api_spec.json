@@ -593,8 +593,7 @@
       "type": "object",
       "properties": {
         "project_id": {
-          "type": "string",
-          "format": "uuid"
+          "type": "string"
         }
       },
       "required": [
@@ -879,8 +878,7 @@
       "in": "path",
       "required": true,
       "description": "project_id to identify a project",
-      "type": "string",
-      "format": "uuid"
+      "type": "string"
     },
     "LevelHierarchyPathParameter": {
       "name": "level_hierarchy",
