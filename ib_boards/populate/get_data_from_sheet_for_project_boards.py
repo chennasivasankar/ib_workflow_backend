@@ -36,12 +36,11 @@ class GetSheetDataForProjectBoards:
         }
 
     def _validation_for_project_boards_dict(self, project_dict: List[Dict]):
-        from schema import Schema, SchemaError
+        from schema import Schema, SchemaError, And
         schema = Schema(
             [{
-                "Project ID": str,
-                "Board ID": str
-
+                "Project ID": And(str, len),
+                "Board ID": And(str, len)
             }],
             ignore_extra_keys=True
         )

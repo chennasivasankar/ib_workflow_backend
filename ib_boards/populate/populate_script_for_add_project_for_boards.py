@@ -26,12 +26,11 @@ def append_project_board_dto(project_dict: Dict[str, Any]):
 
 
 def validation_for_list_of_project_boards_dict(status_dict: List[Dict]):
-    from schema import Schema, SchemaError
-
+    from schema import Schema, SchemaError, And
     schema = Schema(
         [{
-            "project_id": str,
-            "board_id": str
+            "project_id": And(str, len),
+            "board_id": And(str, len)
         }],
         ignore_extra_keys=True
     )

@@ -35,11 +35,11 @@ def populate_projects(spread_sheet_name: str):
 
 @transaction.atomic()
 def populate(spread_sheet_name: str):
-    from ib_iam.populate.add_project_roles_details import ProjectRoleDetails
-    project_role = ProjectRoleDetails()
-    from ib_iam.constants.config import ROLES_SUBSHEET_NAME
-    project_role.add_project_roles_details_to_database(
-        spread_sheet_name, ROLES_SUBSHEET_NAME)
+    # from ib_iam.populate.add_project_roles_details import ProjectRoleDetails
+    # project_role = ProjectRoleDetails()
+    # from ib_iam.constants.config import ROLES_SUBSHEET_NAME
+    # project_role.add_project_roles_details_to_database(
+    #     spread_sheet_name, ROLES_SUBSHEET_NAME)
     populate_admin_users_with_roles()
     populate_companies()
     populate_teams()
