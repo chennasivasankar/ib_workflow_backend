@@ -50,3 +50,7 @@ class ProjectStorageInterface(abc.ABC):
     def get_valid_team_ids_for_given_project(
             self, project_id: str, team_ids: List[str]) -> List[str]:
         pass
+
+    @abc.abstractmethod
+    def get_valid_team_ids(self, project_id) -> List[str]:
+        pass
