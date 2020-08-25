@@ -1,8 +1,7 @@
 import pytest
 from mock import create_autospec
 
-from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
-    import SearchQueryWithPaginationDTO
+from ib_tasks.interactors.filter_dtos import SearchQueryWithPaginationDTO
 
 
 class TestGetStageSearchablePossibleAssigneesInteractor:
