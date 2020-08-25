@@ -14,7 +14,7 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_201_JSON = """
 {
-    "company_id": "4f188557-bb8a-41e9-bc8e-daf274535159"
+    "company_id": "1a7591d2-549c-4e09-8c52-4713c6b2cc72"
 }
 """
 

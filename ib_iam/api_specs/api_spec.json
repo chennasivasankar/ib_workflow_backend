@@ -623,8 +623,15 @@
           "properties": {
             "teams": {
               "$ref": "#/definitions/Teams"
+            },
+            "roles": {
+              "$ref": "#/definitions/Roles"
             }
-          }
+          },
+          "required": [
+            "teams",
+            "roles"
+          ]
         }
       ]
     },

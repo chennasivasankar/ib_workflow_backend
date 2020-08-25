@@ -14,7 +14,7 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_201_JSON = """
 {
-    "project_id": "f16488a2-56ac-4f4e-9eeb-aa4e940a1b9a"
+    "project_id": "4c1552ab-6138-4bdf-8d2b-4798344b82c2"
 }
 """
 
