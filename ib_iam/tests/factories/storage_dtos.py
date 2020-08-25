@@ -5,7 +5,8 @@ from ib_iam.interactors.storage_interfaces.dtos import (
     UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO,
     CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, MemberDTO,
     TeamMemberLevelDetailsDTO, UserProfileDTO, SearchableDetailsDTO,
-    ProjectDTO, MemberIdWithSubordinateMemberIdsDTO, ProjectRoleDTO)
+    ProjectDTO, MemberIdWithSubordinateMemberIdsDTO, ProjectRoleDTO,
+    ProjectWithoutIdDTO)
 
 
 class UserDTOFactory(factory.Factory):
@@ -277,6 +278,15 @@ class ProjectDTOFactory(factory.Factory):
         model = ProjectDTO
 
     project_id = factory.Sequence(lambda n: 'project %s' % n)
+    name = factory.Sequence(lambda n: 'name %s' % n)
+    description = factory.Sequence(lambda n: 'description %s' % n)
+    logo_url = factory.Sequence(lambda n: 'logo %s' % n)
+
+
+class ProjectWithoutIdDTOFactory(factory.Factory):
+    class Meta:
+        model = ProjectWithoutIdDTO
+
     name = factory.Sequence(lambda n: 'name %s' % n)
     description = factory.Sequence(lambda n: 'description %s' % n)
     logo_url = factory.Sequence(lambda n: 'logo %s' % n)

@@ -8,8 +8,12 @@ REQUEST_BODY_JSON = """
     "team_ids": [
         "string"
     ],
-    "role_ids": [
-        "string"
+    "roles": [
+        {
+            "role_id": "string",
+            "role_name": "string",
+            "description": "string"
+        }
     ]
 }
 """

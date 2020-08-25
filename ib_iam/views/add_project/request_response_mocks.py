@@ -8,8 +8,12 @@ REQUEST_BODY_JSON = """
     "team_ids": [
         "string"
     ],
-    "role_ids": [
-        "string"
+    "roles": [
+        {
+            "role_id": "string",
+            "role_name": "string",
+            "description": "string"
+        }
     ]
 }
 """
@@ -17,7 +21,7 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_201_JSON = """
 {
-    "project_id": "e25ca900-b847-4dab-8543-565e66ae49e7"
+    "project_id": "86cd253f-5a25-4fde-bc5f-cab5bb1f9056"
 }
 """
 
