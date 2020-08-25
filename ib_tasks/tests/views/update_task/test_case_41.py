@@ -13,7 +13,7 @@ from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase42UpdateTaskAPITestCase(TestUtils):
+class TestCase41UpdateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -34,6 +34,7 @@ class TestCase42UpdateTaskAPITestCase(TestUtils):
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
         task_id = "IBWF-1"
+        stage_id = 1
         template_id = "TEMPLATE-1"
         gof_id = "GOF-1"
         field_id = "FIELD-1"
@@ -77,7 +78,8 @@ class TestCase42UpdateTaskAPITestCase(TestUtils):
             "priority": "HIGH",
             "stage_assignee": {
                 "stage_id": 1,
-                "assignee_id": "assignee_id_1"
+                "assignee_id": "assignee_id_1",
+                "team_id": "team_1"
             },
             "task_gofs": [
                 {

@@ -2,9 +2,7 @@ import factory
 
 from ib_iam import models
 from ib_iam.models import ProjectRole, Team, Company, Country, State, City, \
-    Project
-from ib_iam.models import Role, Team, Company, Country, State, City, Project, \
-    ProjectTeam
+    Project, ProjectTeam
 from ib_iam.models.team_member_level import TeamMemberLevel
 from ib_iam.models.user import UserDetails, UserTeam, UserRole
 
