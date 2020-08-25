@@ -323,7 +323,7 @@ class ServiceInterface:
         interactor = ProjectInteractor(
             user_storage=user_storage, team_storage=team_storage,
             project_storage=project_storage)
-        return interactor.get_user_teams_for_each_user(
+        return interactor.get_user_teams_for_each_project_user(
             user_ids=user_ids, project_id=project_id)
 
     @staticmethod
