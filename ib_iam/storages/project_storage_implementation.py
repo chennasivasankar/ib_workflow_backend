@@ -79,3 +79,15 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             user_id=user_id, project_role__project_id=project_id
         ).values_list("project_role__role_id", flat=True)
         return list(role_ids)
+
+    def is_user_in_a_project(
+            self, user_id: str, project_id: str) -> bool:
+        from ib_iam.models import UserRole
+        user_role_objects = UserRole.objects.filter(
+            user_id=user_id, project_role__project_id=project_id
+        )
+        return user_role_objects.exists()
+
+    def is_valid_project_id(self, project_id: str) -> bool:
+        project_objects = Project.objects.filter(project_id=project_id)
+        return project_objects.exists()

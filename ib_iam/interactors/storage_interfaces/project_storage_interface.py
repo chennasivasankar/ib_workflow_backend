@@ -41,7 +41,15 @@ class ProjectStorageInterface(abc.ABC):
             self, user_id: str, project_id: str) -> bool:
         pass
 
-
     @abc.abstractmethod
     def get_user_role_ids(self, user_id: str, project_id: str) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def is_user_in_a_project(
+            self, user_id: str, project_id: str) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def is_valid_project_id(self, project_id: str) -> bool:
         pass

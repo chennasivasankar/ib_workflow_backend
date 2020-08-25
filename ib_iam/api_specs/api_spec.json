@@ -290,16 +290,12 @@
         "companies": {
           "$ref": "#/definitions/Companies"
         },
-        "roles": {
-          "$ref": "#/definitions/Roles"
-        },
         "teams": {
           "$ref": "#/definitions/Teams"
         }
       },
       "required": [
         "companies",
-        "roles",
         "teams"
       ]
     },
@@ -1397,12 +1393,6 @@
               "is_admin": {
                 "type": "boolean"
               },
-              "roles": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/RoleDetails"
-                }
-              },
               "company": {
                 "type": "object",
                 "properties": {
@@ -1435,7 +1425,6 @@
             },
             "required": [
               "is_admin",
-              "roles",
               "teams"
             ]
           }
