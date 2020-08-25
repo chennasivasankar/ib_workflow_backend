@@ -56,8 +56,8 @@ class TestCase01UpdateUserProfileAPITestCase(TestUtils):
     @pytest.fixture
     def setup(self, api_user):
         user_id = str(api_user.user_id)
-        from ib_iam.tests.factories.models import UserDetailsFactory, RoleFactory
+        from ib_iam.tests.factories.models import UserDetailsFactory, ProjectRoleFactory
         UserDetailsFactory.create(user_id=user_id, is_admin=True)
-        RoleFactory.create(id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
-                           role_id='1')
+        ProjectRoleFactory.create(id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
+                                  role_id='1')
         return user_id

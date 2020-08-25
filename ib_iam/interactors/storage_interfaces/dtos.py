@@ -205,3 +205,9 @@ class ProjectTeamIdsDTO:
 class ProjectsWithTotalCountDTO:
     total_projects_count: int
     projects: List[ProjectDTO]
+
+
+@dataclass
+class MemberIdWithSubordinateMemberIdsDTO:
+    member_id: str
+    subordinate_member_ids: List[str]

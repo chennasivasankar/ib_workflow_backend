@@ -64,8 +64,8 @@ def reset_sequence_company_factory():
 
 
 def reset_sequence_role_factory():
-    from ib_iam.tests.factories.models import RoleFactory
-    RoleFactory.reset_sequence(0)
+    from ib_iam.tests.factories.models import ProjectRoleFactory
+    ProjectRoleFactory.reset_sequence(0)
 
 
 def reset_sequence_team_factory():

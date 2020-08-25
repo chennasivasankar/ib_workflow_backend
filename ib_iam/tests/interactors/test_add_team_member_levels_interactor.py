@@ -8,7 +8,7 @@ class TestAddTeamMemberLevelsInteractor:
     @pytest.fixture()
     def storage_mock(self):
         from unittest.mock import create_autospec
-        from ib_iam.interactors.storage_interfaces.level_storage_interface import \
+        from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface import \
             TeamMemberLevelStorageInterface
         storage = create_autospec(TeamMemberLevelStorageInterface)
         return storage

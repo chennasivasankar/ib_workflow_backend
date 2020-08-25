@@ -17,3 +17,4 @@ class ProjectTeam(models.Model):
 
     class Meta:
         unique_together = ("team", "project")
+

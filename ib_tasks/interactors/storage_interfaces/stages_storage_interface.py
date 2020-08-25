@@ -45,7 +45,8 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_permitted_stage_ids(self, user_role_ids: List[str]) -> List[str]:
+    def get_permitted_stage_ids(
+            self, user_role_ids: List[str], project_id: str) -> List[str]:
         pass
 
     @abc.abstractmethod
@@ -68,7 +69,7 @@ class StageStorageInterface(abc.ABC):
     def get_task_id_with_stage_details_dtos_based_on_stage_value(
             self, stage_values: List[int],
             task_ids_group_by_stage_value_dtos: List[
-                StageValueWithTaskIdsDTO], user_id: str) \
+                StageValueWithTaskIdsDTO]) \
             -> List[TaskIdWithStageDetailsDTO]:
         pass
 
@@ -107,7 +108,7 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def update_task_stages_with_left_at_status(
+    def update_task_stages_other_than_matched_stages_with_left_at_status(
             self, task_id: int, db_stage_ids: List[int]):
         pass
 
@@ -124,7 +125,7 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_stages_having_assignees_without_having_left_at_status(
+    def get_task_stages_assignees_without_having_left_at_status(
             self, task_id: int, db_stage_ids: List[int]) \
             -> List[StageAssigneeDTO]:
         pass
@@ -146,4 +147,8 @@ class StageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_stage_ids_having_actions(self, user_roles: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_task_current_stages(self, task_id) -> List[str]:
         pass

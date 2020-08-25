@@ -3,16 +3,18 @@ from typing import List
 from django.http import response
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_tasks.adapters.dtos import UserDetailsDTO
+from ib_tasks.adapters.dtos import UserDetailsDTO, UserIdWIthTeamDetailsDTOs, \
+    TeamDetailsDTO
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId
 from ib_tasks.interactors.presenter_interfaces. \
     get_stage_searchable_possible_assignees_presenter_interface import \
     GetStageSearchablePossibleAssigneesPresenterInterface
+from ib_tasks.interactors.stages_dtos import UserDetailsWithTeamDetailsDTO
 
 
 class GetStageSearchablePossibleAssigneesPresenterImplementation(
-        GetStageSearchablePossibleAssigneesPresenterInterface,
-        HTTPResponseMixin):
+    GetStageSearchablePossibleAssigneesPresenterInterface,
+    HTTPResponseMixin):
     def raise_invalid_limit_exception(self) -> response.HttpResponse:
         from ib_tasks.constants.exception_messages import \
             LIMIT_SHOULD_BE_GREATER_THAN_ZERO
@@ -39,20 +41,40 @@ class GetStageSearchablePossibleAssigneesPresenterImplementation(
         )
 
     def get_stage_assignee_details_response(
-            self, user_details_dtos: List[UserDetailsDTO]
+            self, user_details_with_team_details_dto:
+            UserDetailsWithTeamDetailsDTO
     ) -> response.HttpResponse:
-
+        user_id_with_team_details_dtos = user_details_with_team_details_dto.\
+            user_id_with_team_details_dtos
         user_details_dicts = []
-        for user_details_dto in user_details_dtos:
+        for user_details_dto in user_details_with_team_details_dto.\
+                user_details_dtos:
+            if not user_details_dto:
+                continue
+            user_id = user_details_dto.user_id
+            team_details_dtos = self._get_team_info(
+                user_id, user_id_with_team_details_dtos)
+            team_info_dict = [{"team_id": team_details_dto.team_id,
+                               "team_name": team_details_dto.name} for
+                              team_details_dto in team_details_dtos]
             user_details_dict = {
-                'id': user_details_dto.user_id,
+                'id': user_id,
                 'name': user_details_dto.user_name,
-                'profile_pic_url': user_details_dto.profile_pic_url
+                'profile_pic_url': user_details_dto.profile_pic_url,
+                "team_info": team_info_dict
             }
             user_details_dicts.append(user_details_dict)
 
         return self.prepare_200_success_response(
             response_dict=user_details_dicts)
+
+    @staticmethod
+    def _get_team_info(user_id: str, user_id_with_team_details_dtos: List[
+        UserIdWIthTeamDetailsDTOs]) -> List[TeamDetailsDTO]:
+        for user_id_with_team_details_dto in user_id_with_team_details_dtos:
+            if user_id_with_team_details_dto.user_id == user_id:
+                team_details_dtos = user_id_with_team_details_dto.team_details
+                return team_details_dtos
 
     def raise_invalid_stage_id_exception(
             self, err: InvalidStageId) -> response.HttpResponse:

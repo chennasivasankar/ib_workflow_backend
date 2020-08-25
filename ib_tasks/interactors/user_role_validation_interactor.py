@@ -86,9 +86,12 @@ class UserRoleValidationInteractor:
         return is_user_has_write_permission
 
     def get_permitted_stage_ids_given_user_id(self, user_id: str,
+                                              project_id: str,
                                               stage_storage: StageStorageInterface) -> List[str]:
         user_role_ids = self._get_user_role_ids(user_id)
-        permitted_stage_ids = stage_storage.get_permitted_stage_ids(user_role_ids)
+        permitted_stage_ids = stage_storage.get_permitted_stage_ids(
+            user_role_ids, project_id
+        )
         return permitted_stage_ids
 
     def get_permitted_action_ids_for_given_user_id(

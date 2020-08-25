@@ -38,7 +38,7 @@ class TestCase01UpdateUserProfileAPITestCase(TestUtils):
         user_object = UserDetails.objects.get(user_id=user_id)
         snapshot.assert_match(user_object.name, "updated_user_name")
         user_role = UserRole.objects.get(user_id=user_id)
-        snapshot.assert_match(user_role.role.name, "updated_user_role_id")
+        snapshot.assert_match(user_role.project_role.name, "updated_user_role_id")
 
 
     @pytest.fixture
@@ -46,8 +46,8 @@ class TestCase01UpdateUserProfileAPITestCase(TestUtils):
         user_id = str(api_user.user_id)
         from ib_iam.tests.factories.models import UserDetailsFactory
         UserDetailsFactory.create(user_id=user_id, is_admin=True)
-        from ib_iam.tests.factories.models import RoleFactory, UserRoleFactory
-        role_object = RoleFactory.create(
+        from ib_iam.tests.factories.models import ProjectRoleFactory, UserRoleFactory
+        role_object = ProjectRoleFactory.create(
             id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331', role_id='1',
             name="role_1")
         UserRoleFactory(user_id=user_id, role=role_object)

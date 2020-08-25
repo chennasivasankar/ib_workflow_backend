@@ -55,3 +55,11 @@ USER_DONOT_HAVE_ACCESS = (
     "user donot have permissions to access this board",
     "USER_DONOT_HAVE_ACCESS"
 )
+
+INVALID_PROJECT_ID = [
+    "invalid project_id is: {}, please send valid project id", "INVALID_PROJECT_ID"
+]
+
+USER_IS_NOT_IN_PROJECT = (
+    "user is not in given project", "USER_IS_NOT_IN_PROJECT"
+)

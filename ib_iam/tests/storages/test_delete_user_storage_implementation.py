@@ -27,10 +27,10 @@ class TestDeleteUSerStorageImplementation:
         is_admin = False
         UserDetailsFactory.create(user_id=user_id, is_admin=is_admin)
         from ib_iam.tests.factories.models import UserRoleFactory
-        from ib_iam.tests.factories.models import RoleFactory
+        from ib_iam.tests.factories.models import ProjectRoleFactory
         for _ in range(4):
-            role = RoleFactory.create()
-            UserRoleFactory.create(user_id=user_id, role=role)
+            role = ProjectRoleFactory.create()
+            UserRoleFactory.create(user_id=user_id, project_role=role)
         storage = DeleteUserStorageImplementation()
 
         storage.delete_user_roles(user_id=user_id)

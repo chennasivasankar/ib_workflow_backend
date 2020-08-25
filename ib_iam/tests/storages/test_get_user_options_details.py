@@ -34,8 +34,8 @@ class TestGetUserOptionsDetailsStorage:
             import reset_sequence_role_factory
         reset_sequence_role_factory()
         role_ids = ["1", "2"]
-        from ib_iam.tests.factories.models import RoleFactory
-        roles = [RoleFactory.create(role_id=role_id) for role_id in role_ids]
+        from ib_iam.tests.factories.models import ProjectRoleFactory
+        roles = [ProjectRoleFactory.create(role_id=role_id) for role_id in role_ids]
         return roles
 
     @pytest.mark.django_db

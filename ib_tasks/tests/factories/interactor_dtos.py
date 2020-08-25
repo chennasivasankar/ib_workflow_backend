@@ -15,8 +15,7 @@ from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.stage_dtos import TaskStageDTO
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
-    StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
-    StageAssigneeDetailsDTO, UserStagesWithPaginationDTO, StageAssigneeDTO
+    StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO,  UserStagesWithPaginationDTO, StageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -24,7 +23,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    CurrentStageDetailsDTO
+    CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     TaskDueParametersDTO, \
@@ -269,6 +268,7 @@ class TaskIdWithStageAssigneeDTOFactory(factory.Factory):
     task_id = factory.sequence(lambda n: n + 1)
     db_stage_id = factory.Sequence(lambda n: n + 1)
     assignee_id = factory.sequence(lambda n: "user_{}".format(n))
+    team_id = factory.sequence(lambda n: "team_{}".format(n + 1))
 
 
 class StageAssigneeDetailsDTOFactory(factory.Factory):
@@ -531,3 +531,10 @@ class SearchableDTOFactory(factory.Factory):
 
     search_type = Searchable.TEAM.value
     id = "team1"
+
+class StageIdWithValueDTOFactory(factory.Factory):
+    class Meta:
+        model = StageIdWithValueDTO
+
+    db_stage_id = factory.Sequence(lambda n: n + 1)
+    stage_value = factory.Sequence(lambda n: n)

@@ -1,6 +1,10 @@
 from dataclasses import dataclass
 from typing import List, Optional
 
+from ib_iam.adapters.dtos import UserProfileDTO
+from ib_iam.interactors.storage_interfaces.dtos import MemberDTO, \
+    TeamMemberLevelDetailsDTO, MemberIdWithSubordinateMemberIdsDTO
+
 
 @dataclass
 class UserIdWithRoleIdsDTO:
@@ -13,7 +17,7 @@ class AddUserDetailsDTO:
     name: str
     email: str
     team_ids: List[str]
-    role_ids: List[str]
+    # role_ids: List[str]
     company_id: str
 
 
@@ -43,3 +47,14 @@ class TeamMemberLevelIdWithMemberIdsDTO:
 class ImmediateSuperiorUserIdWithUserIdsDTO:
     immediate_superior_user_id: str
     member_ids: List[str]
+
+
+@dataclass
+class CompleteTeamMemberLevelsDetailsDTO:
+    member_dtos: List[MemberDTO]
+    user_profile_dtos: List[UserProfileDTO]
+    team_member_level_details_dtos: List[TeamMemberLevelDetailsDTO]
+    team_member_level_id_with_member_ids_dtos: List[
+        TeamMemberLevelIdWithMemberIdsDTO]
+    member_id_with_subordinate_member_ids_dtos: List[
+        MemberIdWithSubordinateMemberIdsDTO]

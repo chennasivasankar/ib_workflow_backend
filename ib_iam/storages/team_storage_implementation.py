@@ -1,15 +1,12 @@
 from typing import List, Optional
 
-from ib_iam.interactors.storage_interfaces.dtos import TeamNameAndDescriptionDTO
+from ib_iam.exceptions.custom_exceptions import InvalidTeamId
+from ib_iam.interactors.storage_interfaces.dtos import \
+    TeamNameAndDescriptionDTO, TeamIdAndNameDTO, PaginationDTO, TeamUserIdsDTO, \
+    TeamsWithTotalTeamsCountDTO, TeamWithTeamIdAndUserIdsDTO, TeamDTO
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
     TeamStorageInterface
-from ib_iam.models import UserDetails, Team, UserTeam
-from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, InvalidTeamId
-from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, TeamUserIdsDTO,
-    TeamsWithTotalTeamsCountDTO, TeamWithUserIdsDTO,
-    TeamWithTeamIdAndUserIdsDTO,
-    TeamDTO)
+from ib_iam.models import Team, UserTeam
 
 
 class TeamStorageImplementation(TeamStorageInterface):
@@ -95,11 +92,18 @@ class TeamStorageImplementation(TeamStorageInterface):
             .values_list("user_id", flat=True)
         return list(member_ids)
 
-    def delete_all_members_of_team(self, team_id: str):
-        UserTeam.objects.filter(team_id=team_id).delete()
+    def delete_members_from_team(self, team_id: str, user_ids: List[str]):
+        UserTeam.objects.filter(team_id=team_id, user_id__in=user_ids) \
+            .delete()
 
     def delete_team(self, team_id: str):
         Team.objects.filter(team_id=team_id).delete()
+
+    def get_valid_team_ids(self, team_ids: List[str]) -> List[str]:
+        team_ids = Team.objects.filter(team_id__in=team_ids) \
+            .values_list("team_id", flat=True)
+        team_ids = list(map(str, team_ids))
+        return team_ids
 
     def get_team_dtos(self, team_ids: List[str]) -> List[TeamDTO]:
         #todo write tests for this method
@@ -118,3 +122,10 @@ class TeamStorageImplementation(TeamStorageInterface):
             for team_object in team_objects
         ]
         return team_dtos
+
+    def get_team_id_and_name_dtos(
+            self, team_ids: List[str]) -> List[TeamIdAndNameDTO]:
+        team_objects = Team.objects.filter(team_id__in=team_ids)
+        return [TeamIdAndNameDTO(
+            team_id=team_object.team_id, team_name=team_object.name
+        ) for team_object in team_objects]

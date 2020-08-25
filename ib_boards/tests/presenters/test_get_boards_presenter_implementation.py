@@ -120,3 +120,46 @@ class TestGetBoardsPresenterImplementation:
         actual_response_content = json.loads(actual_response.content)
 
         snapshot.assert_match(actual_response_content, 'boards')
+
+    def test_get_response_for_invalid_project_id(self):
+        # Arrange
+        from ib_boards.adapters.iam_service import InvalidProjectIdsException
+        error = InvalidProjectIdsException(['project_id_1'])
+        from ib_boards.constants.exception_messages import \
+            INVALID_PROJECT_ID
+        expected_response = INVALID_PROJECT_ID[0].format(error.invalid_project_ids[0])
+        expected_http_status_code = 404
+        expected_res_status = INVALID_PROJECT_ID[1]
+        presenter = GetBoardsPresenterImplementation()
+
+        # Act
+        actual_response = presenter.get_response_for_invalid_project_id(error)
+
+        # Assert
+        actual_response_content = json.loads(actual_response.content)
+
+        assert actual_response_content['response'] == expected_response
+        assert actual_response_content[
+                   'http_status_code'] == expected_http_status_code
+        assert actual_response_content['res_status'] == expected_res_status
+
+    def test_get_response_for_user_is_not_in_project(self):
+        # Arrange
+        from ib_boards.constants.exception_messages import \
+            USER_IS_NOT_IN_PROJECT
+        expected_response = USER_IS_NOT_IN_PROJECT[0]
+        expected_http_status_code = 403
+        expected_res_status = USER_IS_NOT_IN_PROJECT[1]
+        presenter = GetBoardsPresenterImplementation()
+
+        # Act
+        actual_response = presenter.get_response_for_user_is_not_in_project()
+
+        # Assert
+        actual_response_content = json.loads(actual_response.content)
+
+        assert actual_response_content['response'] == expected_response
+        assert actual_response_content[
+                   'http_status_code'] == expected_http_status_code
+        assert actual_response_content['res_status'] == expected_res_status
+

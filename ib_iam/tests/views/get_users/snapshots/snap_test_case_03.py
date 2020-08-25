@@ -19,12 +19,6 @@ snapshots['TestCase03GetUsersAPITestCase.test_case body'] = {
             },
             'email': 'durga@gmail.com',
             'name': 'durga',
-            'roles': [
-                {
-                    'role_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb211',
-                    'role_name': 'role 0'
-                }
-            ],
             'teams': [
                 {
                     'team_id': '6ce31e92-f188-4019-b295-2e5ddc9c7a11',
@@ -40,12 +34,6 @@ snapshots['TestCase03GetUsersAPITestCase.test_case body'] = {
             },
             'email': 'devi@gmail.com',
             'name': 'devi',
-            'roles': [
-                {
-                    'role_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb222',
-                    'role_name': 'role 1'
-                }
-            ],
             'teams': [
                 {
                     'team_id': '6ce31e92-f188-4019-b295-2e5ddc9c7a22',
