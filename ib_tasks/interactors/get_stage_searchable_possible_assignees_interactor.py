@@ -1,11 +1,8 @@
-from dataclasses import dataclass
-from typing import List
-
-from ib_tasks.adapters.dtos import UserDetailsDTO
 from ib_tasks.exceptions.fields_custom_exceptions import \
     LimitShouldBeGreaterThanZeroException, \
     OffsetShouldBeGreaterThanOrEqualToZeroException
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId
+from ib_tasks.interactors.filter_dtos import SearchQueryWithPaginationDTO
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
@@ -17,15 +14,9 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 
 
-@dataclass
-class SearchQueryWithPaginationDTO:
-    limit: int
-    offset: int
-    search_query: str
-
-
 class GetStageSearchablePossibleAssigneesInteractor(
-    ValidationMixin, GetTaskIdForTaskDisplayIdMixin):
+    ValidationMixin, GetTaskIdForTaskDisplayIdMixin
+):
     def __init__(self, stage_storage: StageStorageInterface):
         self.stage_storage = stage_storage
 
@@ -48,13 +39,14 @@ class GetStageSearchablePossibleAssigneesInteractor(
             return presenter.raise_invalid_offset_exception()
 
         return presenter.get_stage_assignee_details_response(
-            user_details_with_team_details_dto=user_details_with_team_details_dto)
+            user_details_with_team_details_dto
+            =user_details_with_team_details_dto)
 
     def get_stage_searchable_possible_assignees_of_a_task(
             self, stage_id: int, task_id: str,
             search_query_with_pagination_dto: SearchQueryWithPaginationDTO
     ) -> UserDetailsWithTeamDetailsDTO:
-        #ToDo make task id validations
+        # ToDo make task id validations
         self._make_validations(
             stage_id=stage_id,
             search_query_with_pagination_dto=search_query_with_pagination_dto)
