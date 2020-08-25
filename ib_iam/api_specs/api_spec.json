@@ -574,13 +574,21 @@
         "company_id"
       ]
     },
-    "Project": {
+    "ProjectId": {
       "type": "object",
       "properties": {
         "project_id": {
           "type": "string",
           "format": "uuid"
-        },
+        }
+      },
+      "required": [
+        "project_id"
+      ]
+    },
+    "ProjectDetails": {
+      "type": "object",
+      "properties": {
         "name": {
           "type": "string"
         },
@@ -592,8 +600,17 @@
         }
       },
       "required": [
-        "project_id",
         "name"
+      ]
+    },
+    "Project": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProjectDetails"
+        },
+        {
+          "$ref": "#/definitions/ProjectId"
+        }
       ]
     },
     "ProjectWithExtraFields": {
@@ -627,6 +644,24 @@
       "required": [
         "total_projects_count",
         "projects"
+      ]
+    },
+    "ProjectWithTeamIds": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProjectDetails"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "team_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
       ]
     },
     "LevelDetails": {
@@ -1012,6 +1047,15 @@
             }
           }
         }
+      }
+    },
+    "AddProjectParameter": {
+      "name": "add_project",
+      "in": "body",
+      "required": true,
+      "description": "parameters or details to create/add a project",
+      "schema": {
+        "$ref": "#/definitions/ProjectWithTeamIds"
       }
     }
   },
@@ -2095,6 +2139,12 @@
       "schema": {
         "$ref": "#/definitions/ProjectsWithTotalProjectsCount"
       }
+    },
+    "SuccessfullyCreatedForAddProjectResponse": {
+      "description": "Project Created successfully",
+      "schema": {
+        "$ref": "#/definitions/ProjectId"
+      }
     }
   },
   "paths": {
@@ -2956,6 +3006,30 @@
         "responses": {
           "200": {
             "$ref": "#/responses/GetTeamMembersSuccessResponse"
+          }
+        }
+      }
+    },
+    "/project/add/v1/": {
+      "post": {
+        "summary": "Add Project",
+        "description": "Adds a project",
+        "operationId": "add_project",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/AddProjectParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/SuccessfullyCreatedForAddProjectResponse"
           }
         }
       }
