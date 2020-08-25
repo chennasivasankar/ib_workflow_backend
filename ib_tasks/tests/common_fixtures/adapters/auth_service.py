@@ -68,6 +68,18 @@ def get_user_dtos_given_user_ids(mocker):
     return mock
 
 
+def get_user_dtos_given_user_ids_mock(mocker):
+    from ib_tasks.tests.factories.storage_dtos import UserDetailsDTOFactory
+    mock = mocker.patch(
+        "ib_tasks.adapters.auth_service.AuthService."
+        "get_user_details"
+    )
+    UserDetailsDTOFactory.reset_sequence()
+    user_dtos = UserDetailsDTOFactory.create_batch(size=2)
+    mock.return_value = user_dtos
+    return mock
+
+
 def get_user_details_for_the_given_role_ids_based_on_query(mocker):
     mock = mocker.patch(
         "ib_tasks.adapters.auth_service.AuthService.get_user_details_for_the_given_role_ids_based_on_query"

@@ -522,4 +522,4 @@ class TasksStorageImplementation(TaskStorageInterface):
         task = TaskStageHistory.objects.filter(
             assignee_id=user_id, task_id=task_id
         )
-        return task.team_id
+        return task[0].team_id
