@@ -228,7 +228,6 @@ class ServiceInterface:
         )
         return searchable_details_dtos
 
-    # todo: implement this interface
     @staticmethod
     def get_user_role_ids_based_on_project(
             user_id, project_id) -> List[str]:
