@@ -133,8 +133,8 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
         return assignee_with_current_tasks_count_dtos
 
     def get_stage_assignee_id_dtos(
-            self, task_stage_dtos: List[GetTaskDetailsDTO]) -> List[
-        TaskStageAssigneeIdDTO]:
+            self, task_stage_dtos: List[GetTaskDetailsDTO]
+    ) -> List[TaskStageAssigneeIdDTO]:
         q = None
         for counter, item in enumerate(task_stage_dtos):
             current_queue = Q(
