@@ -127,7 +127,7 @@
         "res_status": {
           "type": "string",
           "enum": [
-            "USER_DONOT_HAVE_ACCESS"
+            "USER_DO_NOT_HAVE_ACCESS", "INVALID_PRESENT_STAGE_ACTION"
           ]
         }
       },
@@ -2356,7 +2356,8 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "VALUE_SHOULD_NOT_BE_EMPTY"
+              "VALUE_SHOULD_NOT_BE_EMPTY",
+              "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
             ]
           }
         },
@@ -2433,7 +2434,8 @@
             "type": "string",
             "enum": [
               "FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE",
-              "USER_NOT_HAVE_PERMISSIONS_TO_FIELDS"
+              "USER_NOT_HAVE_PERMISSIONS_TO_FIELDS",
+              "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
             ]
           }
         },
@@ -2510,7 +2512,8 @@
             "enum": [
               "FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE",
               "USER_NOT_HAVE_PERMISSIONS_TO_FIELDS",
-              "USER_NOT_HAVE_PERMISSIONS_TO_UPDATE"
+              "USER_NOT_HAVE_PERMISSIONS_TO_UPDATE",
+              "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
             ]
           }
         },

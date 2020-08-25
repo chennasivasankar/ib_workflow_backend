@@ -81,7 +81,7 @@ RESPONSE_403_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "USER_DONOT_HAVE_ACCESS"
+    "res_status": "USER_DO_NOT_HAVE_ACCESS"
 }
 """
 

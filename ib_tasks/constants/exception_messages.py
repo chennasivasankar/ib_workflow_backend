@@ -373,3 +373,7 @@ INVALID_PROJECT_TEMPLATE = (
     "{} is not valid template for given project {}",
     "INVALID_PROJECT_TEMPLATE"
 )
+FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE = (
+    "filter '{}' not valid for the given value",
+    "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
+)

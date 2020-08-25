@@ -53,3 +53,8 @@ INTEGER_FIELD_TYPES = [
     FieldTypes.NUMBER.value,
     FieldTypes.PHONE_NUMBER.value,
 ]
+
+NUMERIC_OPERATORS = [
+    Operators.GTE.value, Operators.GT.value,
+    Operators.LTE.value, Operators.LT.value
+]
