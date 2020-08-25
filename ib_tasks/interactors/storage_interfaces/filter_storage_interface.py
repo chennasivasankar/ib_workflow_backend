@@ -68,3 +68,7 @@ class FilterStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_enabled_filters_dto_to_user(self, user_id: str, project_id: str) -> List[ApplyFilterDTO]:
         pass
+
+    @abc.abstractmethod
+    def get_project_id_to_filter(self, filter_id: int) -> str:
+        pass
