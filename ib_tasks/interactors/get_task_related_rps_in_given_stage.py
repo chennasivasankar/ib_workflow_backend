@@ -37,12 +37,12 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
         self._validate_stage_id(stage_id)
         self._validate_if_task_is_assigned_to_user(
             task_id=task_id, user_id=user_id, stage_id=stage_id)
-        rps_details_dtos = self._get_rps_details(paramters)
+        rps_details_dtos = self._get_rps_details(paramters, task_id)
         return rps_details_dtos
 
-    def _get_rps_details(self, parameters: GetTaskRPsParametersDTO):
+    def _get_rps_details(self, parameters: GetTaskRPsParametersDTO,
+                         task_id: int):
         user_id = parameters.user_id
-        task_id = parameters.task_id
         user_team_id = self.task_storage.get_user_team_id(user_id, task_id)
 
     def _validate_stage_id(self, stage_id: str):
