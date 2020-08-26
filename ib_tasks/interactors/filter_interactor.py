@@ -1,8 +1,7 @@
 from typing import Tuple, List
-
 from ib_tasks.adapters.auth_service import InvalidProjectIdsException, \
     UserIsNotInProjectException
-from ib_tasks.constants.enum import Status
+from ib_tasks.constants.enum import Status, FieldTypes, Operators
 from ib_tasks.exceptions.filter_exceptions import \
     FieldIdsNotBelongsToTemplateId, UserNotHaveAccessToFields, \
     InvalidFilterId, \
@@ -18,6 +17,14 @@ from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.filter_storage_interface \
     import FilterStorageInterface
+
+
+class InvalidFilterCondition(Exception):
+    def __init__(self, condition: Operators):
+        self.condition = condition
+
+    def __str__(self):
+        return self.condition
 
 
 class FilterInteractor(ValidationMixin):
@@ -48,6 +55,8 @@ class FilterInteractor(ValidationMixin):
             return self.presenter.get_response_for_invalid_project_id(err=err)
         except UserIsNotInProjectException:
             return self.presenter.get_response_for_user_not_in_project()
+        except InvalidFilterCondition as error:
+            return self.presenter.get_response_for_invalid_filter_condition(error=error)
         except UserNotHaveAccessToFields:
             return \
                 self.presenter.get_response_for_user_not_have_access_to_fields()
@@ -66,6 +75,11 @@ class FilterInteractor(ValidationMixin):
         self._validate_filter_data(
             filter_dto=filter_dto,
             condition_dtos=condition_dtos
+        )
+        field_ids = [condition_dto.field_id for condition_dto in
+                     condition_dtos]
+        self._validate_user_fields_permission(
+            user_id=user_id, project_id=project_id, field_ids=field_ids
         )
         filter_dto, condition_dtos = self.filter_storage.create_filter(
             filter_dto=filter_dto, condition_dtos=condition_dtos
@@ -98,6 +112,8 @@ class FilterInteractor(ValidationMixin):
         except FieldIdsNotBelongsToTemplateId as error:
             return self.presenter.get_response_for_invalid_field_ids(
                 error=error)
+        except InvalidFilterCondition as error:
+            return self.presenter.get_response_for_invalid_filter_condition(error=error)
         except UserNotHaveAccessToFields:
             return \
                 self.presenter.get_response_for_user_not_have_access_to_fields()
@@ -120,6 +136,14 @@ class FilterInteractor(ValidationMixin):
         self._validate_filter_data(
             filter_dto=filter_dto,
             condition_dtos=condition_dtos
+        )
+        project_id = self.filter_storage.get_project_id_to_filter(
+            filter_id=filter_id
+        )
+        field_ids = [condition_dto.field_id for condition_dto in
+                     condition_dtos]
+        self._validate_user_fields_permission(
+            user_id=user_id, project_id=project_id, field_ids=field_ids
         )
         filter_dto, condition_dtos = self.filter_storage.update_filter(
             filter_dto=filter_dto, condition_dtos=condition_dtos
@@ -213,9 +237,11 @@ class FilterInteractor(ValidationMixin):
         template_id = filter_dto.template_id
         field_ids = [condition_dto.field_id for condition_dto in
                      condition_dtos]
+
         self.filter_storage.validate_template_id(
             template_id=filter_dto.template_id
         )
+        self._validate_conditions_for_values(condition_dtos=condition_dtos)
         valid_field_ids = self.filter_storage.get_field_ids_for_task_template(
             template_id=template_id, field_ids=field_ids
         )
@@ -225,10 +251,14 @@ class FilterInteractor(ValidationMixin):
         ]
         if invalid_field_ids:
             raise FieldIdsNotBelongsToTemplateId(field_ids=field_ids)
+
+    def _validate_user_fields_permission(self, user_id: str,
+                                         field_ids: List[str],
+                                         project_id: str):
         from ib_tasks.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
-        user_roles = service_adapter.roles_service.get_user_role_ids(
-            user_id=filter_dto.user_id
+        user_roles = service_adapter.roles_service.get_user_role_ids_based_on_project(
+            user_id=user_id, project_id=project_id
         )
         self.filter_storage.validate_user_roles_with_field_ids_roles(
             user_roles=user_roles, field_ids=field_ids
@@ -251,3 +281,22 @@ class FilterInteractor(ValidationMixin):
         self.filter_storage.validate_user_with_filter_id(
             user_id=user_id, filter_id=filter_id
         )
+
+    def _validate_conditions_for_values(self, condition_dtos: List[
+        CreateConditionDTO]):
+        field_ids = [condition_dto.field_id for condition_dto in
+                     condition_dtos]
+        field_type_dtos = self.field_storage.get_field_type_dtos(
+            field_ids=field_ids)
+
+        field_types_map = {}
+        for field_type_dto in field_type_dtos:
+            field_types_map[field_type_dto.field_id] = field_type_dto.field_type
+        from ib_tasks.constants.constants import NUMERIC_OPERATORS
+        for condition_dto in condition_dtos:
+            field_type = field_types_map[condition_dto.field_id]
+            is_invalid_filter = field_type != FieldTypes.NUMBER.value \
+                                and field_type != FieldTypes.FLOAT.value \
+                                and condition_dto.operator in NUMERIC_OPERATORS
+            if is_invalid_filter:
+                raise InvalidFilterCondition(condition=condition_dto.operator)

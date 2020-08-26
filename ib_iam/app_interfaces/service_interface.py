@@ -228,7 +228,6 @@ class ServiceInterface:
         )
         return searchable_details_dtos
 
-    # todo: implement this interface
     @staticmethod
     def get_user_role_ids_based_on_project(
             user_id, project_id) -> List[str]:
@@ -290,7 +289,7 @@ class ServiceInterface:
         from ib_iam.interactors.team_interactor import TeamInteractor
         interactor = TeamInteractor(
             user_storage=user_storage, team_storage=team_storage)
-        return interactor.get_teams(team_ids=team_ids)
+        return interactor.get_team_id_and_name_dtos(team_ids=team_ids)
 
     @staticmethod
     def get_project_dtos_bulk(project_ids: List[str]) -> List[ProjectDTO]:

@@ -16,6 +16,10 @@ from ib_tasks.interactors.get_task_interactor \
     import GetTaskInteractor
 from ib_tasks.interactors.get_task_stages_and_actions \
     import GetTaskStagesAndActions
+from ib_tasks.tests.factories.adapter_dtos import ProjectDetailsDTOFactory, \
+    TeamInfoDTOFactory
+from ib_tasks.tests.factories.interactor_dtos import \
+    StageAssigneeWithTeamDetailsDTOFactory
 from ib_tasks.tests.factories.storage_dtos import \
     StageActionDetailsDTOFactory, \
     FieldSearchableDTOFactory
@@ -77,6 +81,8 @@ class TestGetTaskInteractor:
         from ib_tasks.tests.factories.adapter_dtos import \
             AssigneeDetailsDTOFactory
         AssigneeDetailsDTOFactory.reset_sequence()
+        TeamInfoDTOFactory.reset_sequence()
+        StageAssigneeWithTeamDetailsDTOFactory.reset_sequence()
 
     @pytest.fixture
     def presenter_mock(self):
@@ -178,8 +184,11 @@ class TestGetTaskInteractor:
     ):
         from ib_tasks.interactors.storage_interfaces.get_task_dtos \
             import TaskDetailsDTO
+        ProjectDetailsDTOFactory.reset_sequence()
+        project_details_dto = ProjectDetailsDTOFactory()
         task_details_dto = TaskDetailsDTO(
             task_base_details_dto=task_base_details_dto,
+            project_details_dto=project_details_dto,
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=task_gof_field_dtos
         )
@@ -192,8 +201,11 @@ class TestGetTaskInteractor:
     ):
         from ib_tasks.interactors.storage_interfaces.get_task_dtos \
             import TaskDetailsDTO
+        ProjectDetailsDTOFactory.reset_sequence()
+        project_details_dto = ProjectDetailsDTOFactory()
         task_details_dto = TaskDetailsDTO(
             task_base_details_dto=task_base_details_dto,
+            project_details_dto=project_details_dto,
             task_gof_dtos=permission_task_gof_dtos,
             task_gof_field_dtos=permission_task_gof_field_dtos
         )
@@ -258,15 +270,12 @@ class TestGetTaskInteractor:
 
     @pytest.fixture
     def assignee_details_dtos(self):
-        from ib_tasks.tests.factories.adapter_dtos import \
-            AssigneeDetailsDTOFactory
+        from ib_tasks.tests.factories.interactor_dtos import \
+            AssigneeWithTeamDetailsDTOFactory
         assignee_details_dtos = [
-            AssigneeDetailsDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174001"),
-            AssigneeDetailsDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174002"),
-            AssigneeDetailsDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174003")
+            AssigneeWithTeamDetailsDTOFactory(),
+            AssigneeWithTeamDetailsDTOFactory(),
+            AssigneeWithTeamDetailsDTOFactory()
         ]
         return assignee_details_dtos
 
@@ -275,12 +284,9 @@ class TestGetTaskInteractor:
         from ib_tasks.tests.factories.storage_dtos import \
             TaskStageAssigneeDTOFactory
         stage_assignee_dtos = [
-            TaskStageAssigneeDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174001"),
-            TaskStageAssigneeDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174002"),
-            TaskStageAssigneeDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174003"),
+            TaskStageAssigneeDTOFactory(),
+            TaskStageAssigneeDTOFactory(),
+            TaskStageAssigneeDTOFactory(),
             TaskStageAssigneeDTOFactory(assignee_id=None)
         ]
         return stage_assignee_dtos
@@ -289,22 +295,20 @@ class TestGetTaskInteractor:
     def stage_assignee_details_dtos(
             self, assignee_details_dtos, stage_assignee_dtos
     ):
-        from ib_tasks.tests.factories.interactor_dtos import \
-            StageAssigneeDetailsDTOFactory
         stage_assignee_details_dtos = [
-            StageAssigneeDetailsDTOFactory(
+            StageAssigneeWithTeamDetailsDTOFactory(
                 task_stage_id=stage_assignee_dtos[0].task_stage_id,
                 stage_id=stage_assignee_dtos[0].stage_id,
                 assignee_details_dto=assignee_details_dtos[0]),
-            StageAssigneeDetailsDTOFactory(
+            StageAssigneeWithTeamDetailsDTOFactory(
                 task_stage_id=stage_assignee_dtos[1].task_stage_id,
                 stage_id=stage_assignee_dtos[1].stage_id,
                 assignee_details_dto=assignee_details_dtos[1]),
-            StageAssigneeDetailsDTOFactory(
+            StageAssigneeWithTeamDetailsDTOFactory(
                 task_stage_id=stage_assignee_dtos[2].task_stage_id,
                 stage_id=stage_assignee_dtos[2].stage_id,
                 assignee_details_dto=assignee_details_dtos[2]),
-            StageAssigneeDetailsDTOFactory(
+            StageAssigneeWithTeamDetailsDTOFactory(
                 task_stage_id=stage_assignee_dtos[3].task_stage_id,
                 stage_id=stage_assignee_dtos[3].stage_id,
                 assignee_details_dto=None)
@@ -323,7 +327,7 @@ class TestGetTaskInteractor:
         task_complete_details_dto = TaskCompleteDetailsDTO(
             task_details_dto=permission_task_details_dto,
             stages_and_actions_details_dtos=stages_and_actions_details_dtos,
-            stage_assignee_details_dtos=stage_assignee_details_dtos
+            stage_assignee_with_team_details_dtos=stage_assignee_details_dtos
         )
         return task_complete_details_dto
 
@@ -670,8 +674,11 @@ class TestGetTaskInteractor:
     ):
         from ib_tasks.interactors.storage_interfaces.get_task_dtos \
             import TaskDetailsDTO
+        ProjectDetailsDTOFactory.reset_sequence()
+        project_details_dto = ProjectDetailsDTOFactory()
         task_details_dto = TaskDetailsDTO(
             task_base_details_dto=task_base_details_dto,
+            project_details_dto=project_details_dto,
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos
             =task_gof_field_dtos_with_searchable_field_type
@@ -686,8 +693,11 @@ class TestGetTaskInteractor:
     ):
         from ib_tasks.interactors.storage_interfaces.get_task_dtos \
             import TaskDetailsDTO
+        ProjectDetailsDTOFactory.reset_sequence()
+        project_details_dto = ProjectDetailsDTOFactory()
         task_details_dto = TaskDetailsDTO(
             task_base_details_dto=task_base_details_dto,
+            project_details_dto=project_details_dto,
             task_gof_dtos=permission_task_gof_dtos,
             task_gof_field_dtos
             =permission_task_gof_field_dtos_with_field_type_searchable
@@ -706,7 +716,7 @@ class TestGetTaskInteractor:
         task_complete_details_dto = TaskCompleteDetailsDTO(
             task_details_dto=permission_task_details_dto_with_fields_searchable_type,
             stages_and_actions_details_dtos=stages_and_actions_details_dtos,
-            stage_assignee_details_dtos=stage_assignee_details_dtos
+            stage_assignee_with_team_details_dtos=stage_assignee_details_dtos
         )
         return task_complete_details_dto
 
@@ -843,10 +853,10 @@ class TestGetTaskInteractor:
         get_user_role_ids_mock_method.assert_called_once()
         task_crud_storage_mock.get_gof_ids_having_permission \
             .assert_called_once_with(
-                gof_ids, user_roles)
+            gof_ids, user_roles)
         task_crud_storage_mock.get_field_ids_having_permission \
             .assert_called_once_with(
-                field_ids, user_roles)
+            field_ids, user_roles)
         presenter_mock.raise_invalid_searchable_records_found \
             .assert_called_once()
         task_crud_storage_mock.get_field_searchable_dtos.assert_called_once()
@@ -916,7 +926,7 @@ class TestGetTaskInteractor:
         get_user_role_ids_mock_method.assert_called_once()
         task_crud_storage_mock.get_gof_ids_having_permission \
             .assert_called_once_with(
-                gof_ids, user_roles)
+            gof_ids, user_roles)
         task_crud_storage_mock.get_field_ids_having_permission \
             .assert_called_once_with(field_ids, user_roles)
         presenter_mock.raise_invalid_searchable_records_found \
