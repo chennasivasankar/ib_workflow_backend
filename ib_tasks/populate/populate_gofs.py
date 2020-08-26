@@ -71,6 +71,14 @@ class PopulateGoFs:
         if write_permissions_is_not_empty:
             write_permission_roles = \
                 gof_record['Write permission Roles*'].split('\n')
+
+        read_permission_roles = [
+            role.strip() for role in read_permission_roles
+        ]
+        write_permission_roles = [
+            role.strip() for role in write_permission_roles
+        ]
+
         gof_roles_dto = GoFRolesDTO(
             gof_id=gof_record['GOF ID*'],
             read_permission_roles=read_permission_roles,

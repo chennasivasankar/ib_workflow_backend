@@ -36,8 +36,8 @@ class GetUserProfileInteractor:
         team_dtos = self.user_storage.get_user_related_team_dtos(user_id)
         team_ids = self._get_team_ids_from_team_dtos(team_dtos=team_dtos)
         team_user_ids_dtos = self.user_storage.get_team_user_ids_dtos(team_ids)
-        role_dtos = self.user_storage.get_role_details_of_users_bulk(
-            user_ids=[user_id])
+        # role_dtos = self.user_storage.get_role_details_of_users_bulk(
+        #     user_ids=[user_id])
         company_dto = self.user_storage.get_user_related_company_dto(user_id)
         company_id_with_employee_ids_dto = \
             self._get_company_id_with_employee_ids_dto(company_dto)
@@ -45,7 +45,7 @@ class GetUserProfileInteractor:
             team_user_ids_dtos=team_user_ids_dtos,
             company_id_with_employee_ids_dto=company_id_with_employee_ids_dto)
         user_with_extra_details_dto = self._prepare_complete_user_profile_dto(
-            company_dto=company_dto, role_dtos=role_dtos,
+            company_dto=company_dto,
             team_dtos=team_dtos, team_user_ids_dtos=team_user_ids_dtos,
             user_dtos=user_dtos, user_profile_dto=user_profile_dto,
             company_id_with_employee_ids_dto=company_id_with_employee_ids_dto)
@@ -61,12 +61,11 @@ class GetUserProfileInteractor:
 
     @staticmethod
     def _prepare_complete_user_profile_dto(
-            company_dto, role_dtos, team_dtos, team_user_ids_dtos,
+            company_dto, team_dtos, team_user_ids_dtos,
             user_dtos, user_profile_dto, company_id_with_employee_ids_dto) \
             -> UserWithExtraDetailsDTO:
         user_with_extra_details_dto = UserWithExtraDetailsDTO(
             user_profile_dto=user_profile_dto,
-            role_dtos=role_dtos,
             company_dto=company_dto,
             team_dtos=team_dtos,
             team_user_ids_dto=team_user_ids_dtos,

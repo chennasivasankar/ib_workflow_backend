@@ -31,12 +31,14 @@ def complete_user_details_dto():
     from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
     user_profile_dtos = [UserProfileDTOFactory.create(user_id=user_id) \
                          for user_id in user_ids]
-    from ib_iam.interactors.presenter_interfaces.dtos import ListOfCompleteUsersDTO
-    complete_user_details_dto = ListOfCompleteUsersDTO(
+    from ib_iam.interactors.presenter_interfaces.dtos import \
+        ListOfCompleteUsersWithRolesDTO
+    complete_user_details_dto = ListOfCompleteUsersWithRolesDTO(
         users=user_profile_dtos,
         teams=user_teams,
         companies=user_company_dtos,
-        total_no_of_users=len(user_ids)
+        total_no_of_users=len(user_ids),
+        roles=user_roles
     )
     return complete_user_details_dto
 
