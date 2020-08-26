@@ -16,5 +16,8 @@ class ProjectRole(AbstractDateTimeModel):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=120)
 
+    class Meta:
+        unique_together = ('role_id', 'project')
+
     def __str__(self):
         return f"{self.role_id}"
