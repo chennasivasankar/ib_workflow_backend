@@ -49,7 +49,7 @@ class TestGetSpecificTeamDetailsInteractor:
         storage_mock.get_user_role_dtos_of_a_team.return_value = \
             prepare_user_role_dtos
 
-        presenter_mock.prepare_success_response_for_get_specific_team_details. \
+        presenter_mock.prepare_success_response_for_get_specific_project_details. \
             return_value = expected_presenter_prepare_success_response_for_get_specific_team_details
 
         # Act
@@ -65,7 +65,7 @@ class TestGetSpecificTeamDetailsInteractor:
             project_id=project_id)
         storage_mock.get_user_role_dtos_of_a_team.assert_called_once_with(
             project_id=project_id, user_ids=expected_user_ids)
-        presenter_mock.prepare_success_response_for_get_specific_team_details. \
+        presenter_mock.prepare_success_response_for_get_specific_project_details. \
             assert_called_once_with(
             basic_user_details_dtos=prepare_basic_user_details_dtos,
             user_role_dtos=prepare_user_role_dtos)

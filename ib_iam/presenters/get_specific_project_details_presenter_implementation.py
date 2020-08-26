@@ -18,7 +18,7 @@ class GetSpecificProjectDetailsPresenterImplementation(
     GetSpecificProjectDetailsPresenterInterface, HTTPResponseMixin
 ):
 
-    def prepare_success_response_for_get_specific_team_details(
+    def prepare_success_response_for_get_specific_project_details(
             self, basic_user_details_dtos: List[BasicUserDetailsDTO],
             user_role_dtos: List[UserRoleDTO]
     ):

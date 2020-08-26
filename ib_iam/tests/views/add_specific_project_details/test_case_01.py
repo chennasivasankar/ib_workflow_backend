@@ -17,7 +17,7 @@ class TestCase01AddSpecificProjectDetailsAPITestCase(TestUtils):
     def test_with_valid_details_add_project_specific_details(
             self, snapshot, create_user_roles
     ):
-        project_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        project_id = "project_id"
         user_id_with_role_ids_list = [
             {
                 "user_id": "31be920b-7b4c-49e7-8adb-41a0c18da848",
@@ -58,7 +58,7 @@ class TestCase01AddSpecificProjectDetailsAPITestCase(TestUtils):
 
     @pytest.fixture()
     def create_project(self):
-        project_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        project_id = "project_id"
         from ib_iam.tests.factories.models import ProjectFactory
         ProjectFactory.reset_sequence(1)
         project_object = ProjectFactory(project_id=project_id)
@@ -66,7 +66,7 @@ class TestCase01AddSpecificProjectDetailsAPITestCase(TestUtils):
 
     @pytest.fixture()
     def create_project_roles(self, create_project):
-        project_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        project_id = "project_id"
         project_role_list = [
             {
                 "project_id": project_id,

@@ -21,7 +21,7 @@ class TestGetSpecificProjectDetailsPresenterImplementation:
         user_role_dtos = prepare_user_role_dtos
 
         # Act
-        response = presenter.prepare_success_response_for_get_specific_team_details(
+        response = presenter.prepare_success_response_for_get_specific_project_details(
             user_role_dtos=user_role_dtos,
             basic_user_details_dtos=basic_user_details_dtos
         )

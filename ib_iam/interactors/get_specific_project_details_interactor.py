@@ -29,7 +29,7 @@ class GetSpecificProjectDetailsInteractor:
                 project_id=project_id
             )
         response = \
-            presenter.prepare_success_response_for_get_specific_team_details(
+            presenter.prepare_success_response_for_get_specific_project_details(
                 basic_user_details_dtos=basic_user_details_dtos,
                 user_role_dtos=user_role_dtos
             )
@@ -40,7 +40,7 @@ class GetSpecificProjectDetailsInteractor:
         TODO: write test case for validate project id
         '''
         from ib_iam.exceptions.custom_exceptions import InvalidProjectId
-        is_invalid_project_id = self.user_storage.is_valid_project_id(
+        is_invalid_project_id = not self.user_storage.is_valid_project_id(
             project_id=project_id)
         if is_invalid_project_id:
             raise InvalidProjectId
