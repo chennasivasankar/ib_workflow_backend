@@ -68,13 +68,11 @@ class GetListOfUsersInteractor(ValidationMixin):
         from ib_iam.constants.config import ALL_ROLES_ID
 
         if ALL_ROLES_ID in role_ids:
-            db_role_ids = \
+            role_ids = \
                 self.user_storage.get_all_distinct_user_db_role_ids(project_id)
-        else:
-            db_role_ids = self.user_storage.get_db_role_ids(role_ids=role_ids)
 
         user_ids = self.user_storage.get_user_ids_for_given_role_ids(
-            role_ids=db_role_ids)
+            role_ids=role_ids)
 
         user_ids_based_on_query = \
             self.user_storage.get_user_ids_based_on_given_query(
