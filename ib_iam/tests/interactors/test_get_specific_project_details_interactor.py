@@ -8,9 +8,9 @@ class TestGetSpecificTeamDetailsInteractor:
     @pytest.fixture()
     def presenter_mock(self):
         from unittest.mock import create_autospec
-        from ib_iam.interactors.presenter_interfaces.get_specific_team_details_presenter_interface import \
-            GetSpecificTeamDetailsPresenterInterface
-        presenter = create_autospec(GetSpecificTeamDetailsPresenterInterface)
+        from ib_iam.interactors.presenter_interfaces.get_specific_project_details_presenter_interface import \
+            GetSpecificProjectDetailsPresenterInterface
+        presenter = create_autospec(GetSpecificProjectDetailsPresenterInterface)
         return presenter
 
     @pytest.fixture()

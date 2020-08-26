@@ -3,13 +3,13 @@ import json
 import pytest
 
 
-class TestGetSpecificTeamDetailsPresenterImplementation:
+class TestGetSpecificProjectDetailsPresenterImplementation:
 
     @pytest.fixture()
     def presenter(self):
-        from ib_iam.presenters.get_specific_team_details_presenter_implementation import \
-            GetSpecificTeamDetailsPresenterImplementation
-        presenter = GetSpecificTeamDetailsPresenterImplementation()
+        from ib_iam.presenters.get_specific_project_details_presenter_implementation import \
+            GetSpecificProjectDetailsPresenterImplementation
+        presenter = GetSpecificProjectDetailsPresenterImplementation()
         return presenter
 
     def test_prepare_success_response_for_get_specific_team_details(

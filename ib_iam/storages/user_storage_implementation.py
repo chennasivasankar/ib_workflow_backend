@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
+from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, \
@@ -455,11 +456,46 @@ class UserStorageImplementation(UserStorageInterface):
         return team_dtos
 
     def get_user_ids_for_given_project(self, project_id: str) -> List[str]:
-        #TODO need to optimize the storage calls
+        # TODO need to optimize the storage calls
         from ib_iam.models import ProjectTeam
         team_ids = list(
             ProjectTeam.objects.filter(project_id=project_id).values_list(
                 'team_id', flat=True))
         from ib_iam.models import UserTeam
-        user_ids = list(UserTeam.objects.filter(team_id__in=team_ids).values_list('user_id', flat=True))
+        user_ids = list(
+            UserTeam.objects.filter(team_id__in=team_ids).values_list('user_id',
+                                                                      flat=True))
         return user_ids
+
+    def add_project_specific_details(
+            self, user_id_with_role_ids_dtos: List[
+                UserIdWithRoleIdsDTO],
+            project_id: str
+    ):
+        from ib_iam.models import UserRole
+        UserRole.objects.filter(project_role__project_id=project_id).delete()
+
+        total_user_role_objects_of_a_project = []
+
+        for user_id_with_role_ids_dto in user_id_with_role_ids_dtos:
+            user_role_objects = self._get_user_role_objects(
+                user_id_with_role_ids_dto)
+            total_user_role_objects_of_a_project.extend(user_role_objects)
+
+        UserRole.objects.bulk_create(total_user_role_objects_of_a_project)
+        return
+
+    @staticmethod
+    def _get_user_role_objects(
+            user_id_with_role_ids_dto: UserIdWithRoleIdsDTO):
+        role_ids = user_id_with_role_ids_dto.role_ids
+        user_id = user_id_with_role_ids_dto.user_id
+        from ib_iam.models import UserRole
+        user_role_objects = [
+            UserRole(
+                user_id=user_id,
+                project_role_id=role_id
+            )
+            for role_id in role_ids
+        ]
+        return user_role_objects

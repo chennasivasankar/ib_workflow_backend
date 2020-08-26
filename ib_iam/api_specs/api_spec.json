@@ -995,6 +995,42 @@
           }
         }
       }
+    },
+    "AddSpecificProjectDetailsParameter": {
+      "name": "AddSpecificProjectDetailsParameter",
+      "in": "body",
+      "required": true,
+      "description": "Add specific project details parameter",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "role_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "user_id",
+                "role_ids"
+              ]
+            }
+          }
+        },
+        "required": [
+          "users"
+        ]
+      }
     }
   },
   "responses": {
@@ -2986,6 +3022,31 @@
         "responses": {
           "200": {
             "$ref": "#/responses/GetSpecificProjectDetailsSuccessResponse"
+          }
+        }
+      },
+      "post": {
+        "operationId": "add_specific_project_details",
+        "summary": "Add Specific Project Details",
+        "description": "Add specific project details of given project id in path",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/AddSpecificProjectDetailsParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully added the specific project details"
           }
         }
       }

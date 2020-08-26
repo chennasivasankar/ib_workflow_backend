@@ -2,14 +2,14 @@ from typing import List
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_iam.interactors.presenter_interfaces.get_specific_team_details_presenter_interface import \
-    GetSpecificTeamDetailsPresenterInterface
+from ib_iam.interactors.presenter_interfaces.get_specific_project_details_presenter_interface import \
+    GetSpecificProjectDetailsPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import BasicUserDetailsDTO, \
     UserRoleDTO
 
 
-class GetSpecificTeamDetailsPresenterImplementation(
-    GetSpecificTeamDetailsPresenterInterface, HTTPResponseMixin
+class GetSpecificProjectDetailsPresenterImplementation(
+    GetSpecificProjectDetailsPresenterInterface, HTTPResponseMixin
 ):
 
     def prepare_success_response_for_get_specific_team_details(

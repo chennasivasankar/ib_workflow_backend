@@ -13,9 +13,9 @@ def api_wrapper(*args, **kwargs):
         UserStorageImplementation
     user_storage = UserStorageImplementation()
 
-    from ib_iam.presenters.get_specific_team_details_presenter_implementation import \
-        GetSpecificTeamDetailsPresenterImplementation
-    presenter = GetSpecificTeamDetailsPresenterImplementation()
+    from ib_iam.presenters.get_specific_project_details_presenter_implementation import \
+        GetSpecificProjectDetailsPresenterImplementation
+    presenter = GetSpecificProjectDetailsPresenterImplementation()
 
     from ib_iam.interactors.get_specific_project_details_interactor import \
         GetSpecificProjectDetailsInteractor

@@ -5,7 +5,7 @@ from ib_iam.interactors.storage_interfaces.dtos import BasicUserDetailsDTO, \
     UserRoleDTO
 
 
-class GetSpecificTeamDetailsPresenterInterface(ABC):
+class GetSpecificProjectDetailsPresenterInterface(ABC):
 
     def prepare_success_response_for_get_specific_team_details(
             self, basic_user_details_dtos: List[BasicUserDetailsDTO],
