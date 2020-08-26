@@ -188,10 +188,11 @@ class UserStorageInterface(ABC):
     def get_user_details(self, user_id: str) -> UserDTO:
         pass
 
-    #TODO move to project storage interface
+    # TODO move to project storage interface
     @abstractmethod
     def get_user_ids_for_given_project(self, project_id: str) -> List[str]:
         pass
+
     @abstractmethod
     def get_team_basic_user_dtos(self, project_id: str) -> \
             List[BasicUserDetailsDTO]:
@@ -207,4 +208,9 @@ class UserStorageInterface(ABC):
             self, user_id_with_role_ids_dtos: List[UserIdWithRoleIdsDTO],
             project_id: str
     ):
+        pass
+
+    # TODO: write test case for this
+    @abstractmethod
+    def is_valid_project_id(self, project_id: str) -> bool:
         pass

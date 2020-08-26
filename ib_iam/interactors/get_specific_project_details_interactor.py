@@ -12,9 +12,13 @@ class GetSpecificProjectDetailsInteractor:
     def get_specific_project_details_wrapper(
             self, project_id: str,
             presenter: GetSpecificProjectDetailsPresenterInterface):
-        response = self._get_specific_project_details_response(
-            project_id=project_id,
-            presenter=presenter)
+        from ib_iam.exceptions.custom_exceptions import InvalidProjectId
+        try:
+            response = self._get_specific_project_details_response(
+                project_id=project_id,
+                presenter=presenter)
+        except InvalidProjectId:
+            response = presenter.response_for_invalid_project_id()
         return response
 
     def _get_specific_project_details_response(
@@ -33,8 +37,14 @@ class GetSpecificProjectDetailsInteractor:
 
     def get_specific_project_details(self, project_id: str):
         '''
-        TODO: validate team_id
+        TODO: write test case for validate project id
         '''
+        from ib_iam.exceptions.custom_exceptions import InvalidProjectId
+        is_invalid_project_id = self.user_storage.is_valid_project_id(
+            project_id=project_id)
+        if is_invalid_project_id:
+            raise InvalidProjectId
+
         basic_user_details_dtos = self.user_storage.get_team_basic_user_dtos(
             project_id=project_id)
         user_ids = [

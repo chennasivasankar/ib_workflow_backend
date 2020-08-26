@@ -2176,6 +2176,30 @@
           }
         }
       }
+    },
+    "GetSpecificProjectDetailsBadRequestResponse": {
+      "description": "Bad request Response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_PROJECT_ID"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
     }
   },
   "paths": {
@@ -3061,6 +3085,9 @@
         "responses": {
           "200": {
             "$ref": "#/responses/GetSpecificProjectDetailsSuccessResponse"
+          },
+          "400": {
+            "$ref": "#/responses/GetSpecificProjectDetailsBadRequestResponse"
           }
         }
       },

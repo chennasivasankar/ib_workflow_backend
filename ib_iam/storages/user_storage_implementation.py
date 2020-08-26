@@ -499,3 +499,8 @@ class UserStorageImplementation(UserStorageInterface):
             for role_id in role_ids
         ]
         return user_role_objects
+
+    def is_valid_project_id(self, project_id: str) -> bool:
+        from ib_iam.models import Project
+        project_objects = Project.objects.filter(project_id=project_id)
+        return project_objects.exists()
