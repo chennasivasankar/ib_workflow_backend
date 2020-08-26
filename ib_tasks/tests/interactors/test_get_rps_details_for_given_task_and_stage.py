@@ -1,4 +1,4 @@
-from unittest.mock import create_autospec, Mock
+from unittest.mock import create_autospec, Mock, call
 
 import pytest
 
@@ -129,12 +129,16 @@ class TestGetTaskRelatedRps:
         response = interactor.get_task_rps_wrapper(presenter_mock, parameters)
 
         # Assert
+        mock_calls = [call(user_id=user_id, team_id=team_id),
+                      call(user_id=superior_id, team_id=team_id)]
         assert response == expected_response
         task_storage.check_is_valid_task_display_id.assert_called_once_with(
             task_display_id)
         storage.validate_if_task_is_assigned_to_user_in_given_stage.assert_called_once_with(
             task_id, user_id, stage_id
         )
+
         user_details_mock.assert_called_once_with(user_ids)
-        superior_mock.assert_called()
+        assert superior_mock.call_count == 2
+        superior_mock.assert_has_calls(mock_calls)
         presenter_mock.response_for_get_rps_details.assert_called_once()
