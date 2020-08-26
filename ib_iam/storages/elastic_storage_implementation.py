@@ -181,18 +181,16 @@ class ElasticStorageImplementation(ElasticSearchStorageInterface):
             timeout=20
         )
         from elasticsearch_dsl import Q, Search
+        from elasticsearch_dsl.query import MultiMatch, Match
 
         search = Search(index=CITY_INDEX_NAME)
         if search_query:
             search = search.query(
-                Q(
-                    "match",
-                    city_name={
-                        "query": search_query,
-                        "fuzziness": "5"
-                    }
-                )
-            )
+                Q("multi_match", query=search_query, type='bool_prefix',
+                  fields=["city_name",
+                          "city_name._2gram",
+                          "city_name._3gram",
+                          "city_name._index_prefix"]))
         city_dtos = [
             ElasticCityDTO(
                 city_id=hit.city_id,
