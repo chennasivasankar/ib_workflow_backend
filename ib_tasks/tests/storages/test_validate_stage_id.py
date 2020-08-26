@@ -12,7 +12,7 @@ class TestValidateStageId:
 
     def test_given_invalid_stage_id(self):
         # Arrange
-        stage_id = "stage_id_1"
+        stage_id = 1
         expected_output = False
         from ib_tasks.storages.storage_implementation import \
             StorageImplementation
@@ -26,7 +26,7 @@ class TestValidateStageId:
 
     def test_given_valid_stage_id(self, populate_data):
         # Arrange
-        stage_id = "stage_id_1"
+        stage_id = 1
         expected_output = True
         from ib_tasks.storages.storage_implementation import \
             StorageImplementation
