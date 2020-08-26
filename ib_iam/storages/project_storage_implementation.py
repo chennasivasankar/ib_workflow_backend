@@ -83,11 +83,15 @@ class ProjectStorageImplementation(ProjectStorageInterface):
 
     def is_user_in_a_project(
             self, user_id: str, project_id: str) -> bool:
-        from ib_iam.models import UserRole
-        user_role_objects = UserRole.objects.filter(
-            user_id=user_id, project_role__project_id=project_id
+        team_ids = ProjectTeam.objects.filter(
+            project_id=project_id
+        ).values_list(
+            "team_id", flat=True
         )
-        return user_role_objects.exists()
+        user_team_objects = UserTeam.objects.filter(
+            team_id__in=team_ids, user_id=user_id
+        )
+        return user_team_objects.exists()
 
     def is_valid_project_id(self, project_id: str) -> bool:
         project_objects = Project.objects.filter(project_id=project_id)
@@ -105,15 +109,3 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             project_id=project_id
         ).values_list('team__team_id', flat=True))
         return list(map(str, team_ids))
-
-    def is_user_in_a_project(
-            self, user_id: str, project_id: str) -> bool:
-        from ib_iam.models import UserRole
-        user_role_objects = UserRole.objects.filter(
-            user_id=user_id, project_role__project_id=project_id
-        )
-        return user_role_objects.exists()
-
-    def is_valid_project_id(self, project_id: str) -> bool:
-        project_objects = Project.objects.filter(project_id=project_id)
-        return project_objects.exists()
