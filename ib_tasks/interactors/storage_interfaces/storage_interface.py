@@ -111,16 +111,21 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_rp_id_if_exists(self, task_id: int, user_id: str,
-                            stage_id: int) -> Optional[str]:
+    def get_latest_rp_id_if_exists(self, task_id: int,
+                                   stage_id: int) -> Optional[str]:
         pass
 
     @abc.abstractmethod
-    def get_rp_ids(self, task_id: int, stage_id: int, user_id: str) -> \
+    def get_rp_ids(self, task_id: int, stage_id: int) -> \
             List[str]:
         pass
 
     @abc.abstractmethod
     def add_superior_to_db(
-            self, task_id: int, stage_id: int, superior_id: str, user_id: str):
+            self, task_id: int, stage_id: int, superior_id: str):
+        pass
+
+    @abc.abstractmethod
+    def get_latest_rp_added_datetime(self,
+                                     task_id: int, stage_id: int):
         pass

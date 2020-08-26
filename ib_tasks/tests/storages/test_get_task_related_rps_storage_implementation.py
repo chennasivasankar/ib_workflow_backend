@@ -27,8 +27,7 @@ class TestGetTaskRPs:
                                            user_id="123e4567-e89b-12d3-a456-426614174000")
         from ib_tasks.tests.factories.models import UserRpInTaskStageFactory
         UserRpInTaskStageFactory.reset_sequence()
-        UserRpInTaskStageFactory.create_batch(size=4, task=task, stage=stage,
-                                              user_id="123e4567-e89b-12d3-a456-426614174000")
+        UserRpInTaskStageFactory.create_batch(size=4, task=task, stage=stage)
 
     def test_get_task_due_missed_count(self, populate_data):
         # Arrange
@@ -96,8 +95,8 @@ class TestGetTaskRPs:
         storage = StorageImplementation()
 
         # Act
-        result = storage.get_rp_id_if_exists(task_id=task_id,
-                                             stage_id=stage_id, user_id=user_id)
+        result = storage.get_latest_rp_id_if_exists(task_id=task_id,
+                                                    stage_id=stage_id)
 
         # Assert
         assert result == expected_output
@@ -116,7 +115,7 @@ class TestGetTaskRPs:
 
         # Act
         result = storage.get_rp_ids(task_id=task_id,
-                                    stage_id=stage_id, user_id=user_id)
+                                    stage_id=stage_id)
 
         # Assert
         assert result == expected_output
@@ -133,11 +132,27 @@ class TestGetTaskRPs:
 
         # Act
         result = storage.add_superior_to_db(task_id=task_id, superior_id=superior_id,
-                                            stage_id=stage_id, user_id=user_id)
+                                            stage_id=stage_id)
 
         # Assert
         does_exist = UserRpInTaskStage.objects.filter(
-            task_id=task_id, stage_id=stage_id, user_id=user_id,
+            task_id=task_id, stage_id=stage_id,
             rp_id=superior_id
         ).exists()
         assert does_exist == expected_output
+
+    def test_get_latest_rp_added_datetime(self, populate_data):
+        # Arrange
+        expected_output = datetime.datetime(2020, 10, 12, 4, 40)
+        task_id = 1
+        stage_id = 1
+        from ib_tasks.storages.storage_implementation import StorageImplementation
+        storage = StorageImplementation()
+
+        # Act
+        result = storage.get_latest_rp_added_datetime(task_id=task_id,
+                                            stage_id=stage_id)
+
+        # Assert
+        assert result == expected_output
+

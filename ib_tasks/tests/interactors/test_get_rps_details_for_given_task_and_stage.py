@@ -25,7 +25,7 @@ class TestGetTaskRelatedRps:
         from ib_tasks.interactors.task_dtos import GetTaskRPsParametersDTO
         return GetTaskRPsParametersDTO(
             task_id="IBWF-1",
-            stage_id="stage_id_1",
+            stage_id=1,
             user_id="123e4567-e89b-12d3-a456-426614174001"
         )
 
@@ -96,7 +96,7 @@ class TestGetTaskRelatedRps:
             task_display_id)
         presenter_mock.response_for_invalid_stage_id.assert_called_once()
 
-    def test_given_valid_details_get_rps_details_when_there_are_no_rps_in_db(
+    def test_when_due_datetime_is_not_changed_and_rp_is_already_added(
             self, storage, task_storage, mocker,
             parameters, presenter_mock):
         # Arrange
@@ -122,8 +122,9 @@ class TestGetTaskRelatedRps:
             get_user_dtos_given_user_ids
         user_details_mock = get_user_dtos_given_user_ids(mocker)
         storage.get_rp_ids.return_value = user_ids
-        storage.get_rp_id_if_exists.return_value = None
-        task_storage.get_user_missed_the_task_due_time.return_value = datetime.datetime.now()
+        storage.get_latest_rp_id_if_exists.return_value = None
+        task_storage.get_user_missed_the_task_due_time.return_value = datetime.datetime.now() - datetime.timedelta(days=2)
+        storage.get_latest_rp_added_datetime.return_value = datetime.datetime.now()
         presenter_mock.response_for_get_rps_details.return_value = expected_response
 
         interactor = GetTaskRPsInteractor(storage=storage, task_storage=task_storage)
@@ -138,9 +139,7 @@ class TestGetTaskRelatedRps:
         storage.validate_if_task_is_assigned_to_user_in_given_stage.assert_called_once_with(
             task_id, user_id, stage_id
         )
-
-        user_details_mock.assert_called_once_with(user_ids)
-        superior_mock.assert_called_once_with(user_id=user_id, team_id=team_id)
+        storage.get_latest_rp_added_datetime.assert_called_once_with(task_id, stage_id)
         presenter_mock.response_for_get_rps_details.assert_called_once()
 
     def test_given_valid_details_get_rps_details_when_already_rp_in_db(
@@ -169,7 +168,8 @@ class TestGetTaskRelatedRps:
             get_user_dtos_given_user_ids
         user_details_mock = get_user_dtos_given_user_ids(mocker)
         storage.get_rp_ids.return_value = user_ids
-        storage.get_rp_id_if_exists.return_value = superior_id
+        storage.get_latest_rp_id_if_exists.return_value = superior_id
+        storage.get_latest_rp_added_datetime.return_value = datetime.datetime.now() - datetime.timedelta(days=3)
         task_storage.get_user_missed_the_task_due_time.return_value = datetime.datetime.now()
         presenter_mock.response_for_get_rps_details.return_value = expected_response
 

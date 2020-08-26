@@ -56,39 +56,44 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
         service_adapter = get_service_adapter()
 
         if due_date > datetime.datetime.now():
-            rp_ids = self.storage.get_rp_ids(task_id, stage_id, user_id)
+            rp_ids = self.storage.get_rp_ids(task_id, stage_id)
 
             if rp_ids:
                 return service_adapter.auth_service.get_user_details(rp_ids)
             return []
 
         return self._get_rp_details_if_due_date_is_missed(
-            stage_id, task_id, user_id)
+            stage_id, due_date, task_id, user_id)
 
-    def _get_rp_details_if_due_date_is_missed(self, stage_id: int,
+    def _get_rp_details_if_due_date_is_missed(self, stage_id: int, due_date,
                                               task_id: int, user_id: str):
-
-        user_team_id = self.task_storage.get_user_team_id(user_id, task_id)
 
         from ib_tasks.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
 
-        assignee_id = user_id
-        rp_id = self.storage.get_rp_id_if_exists(task_id, user_id, stage_id)
-        if rp_id:
-            assignee_id = rp_id
+        user_team_id = self.task_storage.get_user_team_id(user_id, task_id)
+        rp_added_datetime = self.storage.get_latest_rp_added_datetime(task_id, stage_id)
+        if rp_added_datetime < due_date:
+            self.add_rp_when_due_date_is_missed(stage_id, task_id, user_id, user_team_id)
 
-        superior_id = service_adapter.auth_service.get_immediate_superior_user_id(
-            user_id=assignee_id, team_id=user_team_id)
-
-        if superior_id:
-            self.storage.add_superior_to_db(
-                superior_id=superior_id, user_id=user_id,
-                task_id=task_id, stage_id=stage_id)
-
-        rp_ids = self.storage.get_rp_ids(task_id, stage_id, user_id)
+        rp_ids = self.storage.get_rp_ids(task_id, stage_id)
         rp_details_dtos = service_adapter.auth_service.get_user_details(rp_ids)
         return rp_details_dtos
+
+    def add_rp_when_due_date_is_missed(self, stage_id, task_id, user_id, user_team_id):
+        from ib_tasks.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+
+        assignee_id = user_id
+        rp_id = self.storage.get_latest_rp_id_if_exists(task_id, stage_id)
+        if rp_id:
+            assignee_id = rp_id
+        superior_id = service_adapter.auth_service.get_immediate_superior_user_id(
+            user_id=assignee_id, team_id=user_team_id)
+        if superior_id:
+            self.storage.add_superior_to_db(
+                superior_id=superior_id,
+                task_id=task_id, stage_id=stage_id)
 
     def _validate_stage_id(self, stage_id: int):
         is_valid = self.storage.validate_stage_id(stage_id)
