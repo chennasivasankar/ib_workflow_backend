@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO, \
-    TeamUserIdsDTO, TeamsWithTotalTeamsCountDTO, TeamIdAndNameDTO, TeamDTO, \
-    TeamNameAndDescriptionDTO, UserTeamDTO
+from ib_iam.interactors.storage_interfaces.dtos import (
+    PaginationDTO, TeamUserIdsDTO, TeamsWithTotalTeamsCountDTO, TeamDTO,
+    TeamNameAndDescriptionDTO, TeamIdAndNameDTO, UserTeamDTO)
 
 
 class TeamStorageInterface(ABC):
