@@ -2,8 +2,8 @@ import pytest
 
 from ib_iam.storages.project_storage_implementation import \
     ProjectStorageImplementation
-from ib_iam.tests.factories.storage_dtos import \
-    ProjectDTOFactory, ProjectRoleDTOFactory
+from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory, \
+    ProjectRoleDTOFactory, ProjectWithoutIdDTOFactory
 
 
 class TestProjectStorageImplementation:
@@ -232,18 +232,18 @@ class TestProjectStorageImplementation:
 
     @pytest.mark.django_db
     def test_add_project_returns_project_id(self):
-        project_id = "proj_1"
-        project_dto = ProjectDTOFactory(project_id=project_id)
+        ProjectWithoutIdDTOFactory.reset_sequence(1)
+        project_without_id_dto = ProjectWithoutIdDTOFactory()
         project_storage = ProjectStorageImplementation()
 
-        project_storage.add_project(project_dto=project_dto)
+        project_id = project_storage.add_project(
+            project_without_id_dto=project_without_id_dto)
 
         from ib_iam.models import Project
         project_object = Project.objects.get(project_id=project_id)
-        assert project_object.project_id == project_dto.project_id
-        assert project_object.name == project_dto.name
-        assert project_object.description == project_dto.description
-        assert project_object.logo_url == project_dto.logo_url
+        assert project_object.name == project_without_id_dto.name
+        assert project_object.description == project_without_id_dto.description
+        assert project_object.logo_url == project_without_id_dto.logo_url
 
     @pytest.mark.django_db
     def test_assign_teams_to_projects_adds_teams_to_project(self):
@@ -267,11 +267,13 @@ class TestProjectStorageImplementation:
     @pytest.mark.django_db
     def test_add_project_roles_adds_project_roles(self):
         from ib_iam.tests.factories.models import ProjectFactory
-        from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
-        project_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
-        role_id = "ROLE_1"
+        from ib_iam.interactors.storage_interfaces.dtos import \
+            RoleNameAndDescriptionDTO
+        project_id = "project_641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+        description = None
         role_name = "role1"
-        roles = [RoleDTO(role_id=role_id, name=role_name, description="desc")]
+        roles = [RoleNameAndDescriptionDTO(name=role_name,
+                                           description=description)]
         ProjectFactory.reset_sequence(1)
         ProjectFactory(project_id=project_id)
         project_storage = ProjectStorageImplementation()
@@ -280,6 +282,6 @@ class TestProjectStorageImplementation:
 
         from ib_iam.models import ProjectRole
         project_roles = ProjectRole.objects.filter(project_id=project_id) \
-            .values_list("role_id", "name")
-        assert project_roles[0][0] == role_id
-        assert project_roles[0][1] == role_name
+            .values_list("name", "description")
+        assert project_roles[0][0] == role_name
+        assert project_roles[0][1] == description

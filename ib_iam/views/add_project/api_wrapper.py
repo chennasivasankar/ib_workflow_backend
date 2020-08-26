@@ -40,7 +40,6 @@ def _convert_to_project_with_team_ids_and_roles_dto(kwargs):
     role_dtos = [_convert_to_role_dtos(role) for role in roles]
     from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
     project_with_team_ids_and_roles_dto = ProjectWithTeamIdsAndRolesDTO(
-        project_id=request_data["project_id"],
         name=request_data["name"],
         description=request_data.get("description", None),
         logo_url=request_data.get("logo_url", None),
@@ -50,9 +49,9 @@ def _convert_to_project_with_team_ids_and_roles_dto(kwargs):
 
 
 def _convert_to_role_dtos(role):
-    from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
-    role_dto = RoleDTO(
-        role_id=role["role_id"],
+    from ib_iam.interactors.storage_interfaces.dtos import \
+        RoleNameAndDescriptionDTO
+    role_dto = RoleNameAndDescriptionDTO(
         name=role["role_name"],
         description=role["description"]
     )

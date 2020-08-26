@@ -62,7 +62,6 @@ class CompleteTeamMemberLevelsDetailsDTO:
 
 @dataclass
 class ProjectWithTeamIdsAndRolesDTO:
-    project_id: str
     name: str
     description: str
     logo_url: str

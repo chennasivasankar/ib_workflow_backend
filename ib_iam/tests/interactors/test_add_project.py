@@ -45,16 +45,16 @@ class TestAddProjectIneractor:
             self, project_storage, interactor, presenter):
         from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
         from ib_iam.tests.factories.storage_dtos import \
-            ProjectDTOFactory, RoleDTOFactory
-        ProjectDTOFactory.reset_sequence(1)
+            ProjectWithoutIdDTOFactory, RoleDTOFactory
+        ProjectWithoutIdDTOFactory.reset_sequence(1)
+        project_details = ProjectWithoutIdDTOFactory()
         project_id = "1"
-        project_details = ProjectDTOFactory(project_id=project_id)
         team_ids = ["1"]
         roles = [RoleDTOFactory()]
+        project_storage.add_project.return_value = project_id
         presenter.get_success_response_for_add_project \
             .return_value = mock.Mock()
         project_with_team_ids_and_roles_dto = ProjectWithTeamIdsAndRolesDTO(
-            project_id=project_id,
             name=project_details.name,
             description=project_details.description,
             logo_url=project_details.logo_url,
@@ -66,7 +66,7 @@ class TestAddProjectIneractor:
                                        project_with_team_ids_and_roles_dto)
 
         project_storage.add_project.assert_called_once_with(
-            project_dto=project_details)
+            project_without_id_dto=project_details)
         project_storage.assign_teams_to_projects.assert_called_once_with(
             project_id=project_id, team_ids=team_ids)
         project_storage.add_project_roles.assert_called_once_with(

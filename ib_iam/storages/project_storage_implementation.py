@@ -2,7 +2,7 @@ from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, \
     ProjectsWithTotalCountDTO, PaginationDTO, ProjectTeamIdsDTO, \
-    ProjectRoleDTO, RoleDTO
+    ProjectRoleDTO, ProjectWithoutIdDTO, RoleDTO, RoleNameAndDescriptionDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.models import Project, ProjectTeam, ProjectRole
@@ -124,21 +124,21 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             name=project_role_object.name)
         return project_role_dto
 
-    def add_project(self, project_dto: ProjectDTO):
-        Project.objects.create(
-            project_id=project_dto.project_id,
-            name=project_dto.name,
-            description=project_dto.description,
-            logo_url=project_dto.logo_url)
+    def add_project(self, project_without_id_dto: ProjectWithoutIdDTO) -> str:
+        project_object = Project.objects.create(
+            name=project_without_id_dto.name,
+            description=project_without_id_dto.description,
+            logo_url=project_without_id_dto.logo_url)
+        return project_object.project_id
 
     def assign_teams_to_projects(self, project_id: str, team_ids: List[str]):
         project_teams = [ProjectTeam(project_id=project_id, team_id=team_id)
                          for team_id in team_ids]
         ProjectTeam.objects.bulk_create(project_teams)
 
-    def add_project_roles(self, project_id: str, roles: List[RoleDTO]):
+    def add_project_roles(self, project_id: str,
+                          roles: List[RoleNameAndDescriptionDTO]):
         project_roles = [ProjectRole(project_id=project_id,
-                                     role_id=role.role_id,
                                      name=role.name,
                                      description=role.description)
                          for role in roles]

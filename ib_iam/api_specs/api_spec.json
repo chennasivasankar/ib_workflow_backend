@@ -147,19 +147,18 @@
         "company_name"
       ]
     },
-    "Role": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/RoleDetails"
+    "RoleNameAndDescription": {
+      "type": "object",
+      "properties": {
+        "role_name": {
+          "type": "string"
         },
-        {
-          "type": "object",
-          "properties": {
-            "description": {
-              "type": "string"
-            }
-          }
+        "description": {
+          "type": "string"
         }
+      },
+      "required": [
+        "role_name"
       ]
     },
     "RoleDetails": {
@@ -670,7 +669,7 @@
     "ProjectWithTeamIdsAndRoles": {
       "allOf": [
         {
-          "$ref": "#/definitions/Project"
+          "$ref": "#/definitions/ProjectDetails"
         },
         {
           "type": "object",
@@ -684,10 +683,14 @@
             "roles": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/Role"
+                "$ref": "#/definitions/RoleNameAndDescription"
               }
             }
-          }
+          },
+          "required": [
+            "team_ids",
+            "roles"
+          ]
         }
       ]
     },

@@ -5,7 +5,8 @@ from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
 from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
 from ib_iam.interactors.presenter_interfaces.add_project_presenter_interface import \
     AddProjectPresenterInterface
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
+from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, \
+    ProjectWithoutIdDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
@@ -132,13 +133,12 @@ class ProjectInteractor:
         # todo validate is duplicate role_ids send
         # todo validate given role_ids is not exists already for
         #  any of the roles of any project
-        project_id = project_with_team_ids_and_roles_dto.project_id
-        project_dto = ProjectDTO(
-            project_id=project_with_team_ids_and_roles_dto.project_id,
+        project_without_id_dto = ProjectWithoutIdDTO(
             name=project_with_team_ids_and_roles_dto.name,
             description=project_with_team_ids_and_roles_dto.description,
             logo_url=project_with_team_ids_and_roles_dto.logo_url)
-        self.project_storage.add_project(project_dto=project_dto)
+        project_id = self.project_storage.add_project(
+            project_without_id_dto=project_without_id_dto)
         self.project_storage.assign_teams_to_projects(
             project_id=project_id,
             team_ids=project_with_team_ids_and_roles_dto.team_ids)

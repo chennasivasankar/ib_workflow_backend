@@ -58,7 +58,7 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def add_project(self, project_dto: ProjectDTO):
+    def add_project(self, project_without_id_dto: ProjectWithoutIdDTO) -> str:
         pass
 
     @abc.abstractmethod
