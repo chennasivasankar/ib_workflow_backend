@@ -55,6 +55,10 @@ class TeamStorageInterface(ABC):
         pass
 
     @abstractmethod
+    def get_team_dtos(self, team_ids: List[str]) -> List[TeamDTO]:
+        pass
+
+    @abstractmethod
     def get_valid_team_ids(self, team_ids: List[str]) -> List[str]:
         pass
 

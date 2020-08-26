@@ -1,11 +1,11 @@
 import factory
 
 from ib_iam.constants.enums import Searchable
-from ib_iam.interactors.storage_interfaces.dtos \
-    import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO, \
-    CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, \
-    UserProfileDTO, TeamMemberLevelDetailsDTO, MemberDTO, SearchableDetailsDTO, ProjectDTO, TeamMemberLevelDetailsDTO, MemberDTO, \
-    MemberIdWithSubordinateMemberIdsDTO
+from ib_iam.interactors.storage_interfaces.dtos import (
+    UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO,
+    CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, MemberDTO,
+    TeamMemberLevelDetailsDTO, UserProfileDTO, SearchableDetailsDTO,
+    ProjectDTO, MemberIdWithSubordinateMemberIdsDTO)
 
 
 class UserDTOFactory(factory.Factory):

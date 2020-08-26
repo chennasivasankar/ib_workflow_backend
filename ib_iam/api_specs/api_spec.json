@@ -609,6 +609,42 @@
         "name"
       ]
     },
+    "ProjectWithExtraFields": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Project"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "teams": {
+              "$ref": "#/definitions/Teams"
+            }
+          },
+          "required": [
+            "teams"
+          ]
+        }
+      ]
+    },
+    "ProjectsWithTotalProjectsCount": {
+      "type": "object",
+      "properties": {
+        "total_projects_count": {
+          "type": "integer"
+        },
+        "projects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ProjectWithExtraFields"
+          }
+        }
+      },
+      "required": [
+        "total_projects_count",
+        "projects"
+      ]
+    },
     "LevelDetails": {
       "type": "object",
       "properties": {
@@ -2104,10 +2140,7 @@
     "SuccessForGetProjectsResponse": {
       "description": "returns all Projects",
       "schema": {
-        "type": "array",
-        "items": {
-          "$ref": "#/definitions/Project"
-        }
+        "$ref": "#/definitions/ProjectsWithTotalProjectsCount"
       }
     },
     "GetSpecificProjectDetailsSuccessResponse": {
@@ -2970,6 +3003,12 @@
           }
         ],
         "parameters": [
+          {
+            "$ref": "#/parameters/OffsetQueryParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitQueryParameter"
+          }
         ],
         "responses": {
           "200": {

@@ -9,6 +9,12 @@ RESPONSE_200_JSON = """
     "profile_pic_url": "string",
     "cover_page_url": "string",
     "is_admin": true,
+    "roles": [
+        {
+            "role_id": "string",
+            "role_name": "string"
+        }
+    ],
     "company": {
         "company_id": "string",
         "name": "string",
