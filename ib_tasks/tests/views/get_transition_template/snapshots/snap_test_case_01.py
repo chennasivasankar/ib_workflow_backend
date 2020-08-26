@@ -33,6 +33,7 @@ snapshots['TestCase01GetTransitionTemplateAPITestCase.test_case body'] = {
                     'help_text': None,
                     'is_field_required': True,
                     'is_field_writable': True,
+                    'order': 1,
                     'placeholder_text': None,
                     'tooltip': None,
                     'validation_regex': None
@@ -47,6 +48,7 @@ snapshots['TestCase01GetTransitionTemplateAPITestCase.test_case body'] = {
                     'help_text': None,
                     'is_field_required': True,
                     'is_field_writable': True,
+                    'order': 5,
                     'placeholder_text': None,
                     'tooltip': None,
                     'validation_regex': None
