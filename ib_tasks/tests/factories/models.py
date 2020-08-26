@@ -196,6 +196,7 @@ class FieldFactory(factory.django.DjangoModelFactory):
     )
     field_type = FieldTypes.PLAIN_TEXT.value
     required = True
+    order = factory.sequence(lambda counter: counter)
 
     class Params:
         optional = factory.Trait(

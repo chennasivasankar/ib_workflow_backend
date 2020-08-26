@@ -4,7 +4,7 @@ from typing import Optional, List
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO, \
     UserIdWIthTeamDetailsDTOs, UserDetailsDTO, UserIdWIthTeamDetailsDTO, \
-    AssigneeWithTeamDetailsDTO
+    TeamInfoDTO
 
 
 @dataclass
@@ -93,7 +93,6 @@ class TaskIdWithStageAssigneeDTO(StageAssigneeDTO):
     task_id: int
 
 
-
 @dataclass
 class StageWithUserDetailsDTO:
     db_stage_id: int
@@ -160,15 +159,19 @@ class StageActionLogicDTO:
     py_function_import_path: str
 
 
+@dataclass
+class UserDetailsWithTeamDetailsDTO:
+    user_details_dtos: List[UserDetailsDTO]
+    user_id_with_team_details_dtos: List[UserIdWIthTeamDetailsDTOs]
+
+
+@dataclass
+class AssigneeWithTeamDetailsDTO(AssigneeDetailsDTO):
+    team_info_dto: TeamInfoDTO
+
+
 @dataclass()
 class StageAssigneeWithTeamDetailsDTO:
     task_stage_id: int
     stage_id: int
     assignee_details_dto: Optional[AssigneeWithTeamDetailsDTO]
-
-
-
-@dataclass
-class UserDetailsWithTeamDetailsDTO:
-    user_details_dtos: List[UserDetailsDTO]
-    user_id_with_team_details_dtos: List[UserIdWIthTeamDetailsDTOs]

@@ -265,8 +265,8 @@ class TestGetUsersDetailsInteractor:
 
         # Assert
         storage_mock.get_users_who_are_not_admins.assert_called_once()
-        # storage_mock.get_role_details_of_users_bulk.assert_called_once_with(
-        #     user_ids)
+        storage_mock.get_role_details_of_users_bulk.assert_called_once_with(
+            user_ids)
 
     def test_get_users_company_details_returns_team_details_of_users(
             self, user_dtos, user_company_dtos, storage_mock, presenter_mock,

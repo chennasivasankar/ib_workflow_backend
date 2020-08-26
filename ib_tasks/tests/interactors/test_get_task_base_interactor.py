@@ -8,7 +8,7 @@ class TestGetTaskBaseInteractor:
 
     @pytest.fixture
     def storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces\
+        from ib_tasks.interactors.storage_interfaces \
             .create_or_update_task_storage_interface \
             import CreateOrUpdateTaskStorageInterface
         from unittest.mock import create_autospec
@@ -72,20 +72,29 @@ class TestGetTaskBaseInteractor:
 
     def test_given_valid_task_id_returns_task_details_dto(
             self, storage_mock, task_gof_dtos, task_gof_field_dtos,
-            task_base_details_dto
+            task_base_details_dto, mocker
     ):
         # Arrange
         task_id = "task0"
-        template_id = "template0"
         task_gof_ids = [0, 1, 2]
+        from ib_tasks.tests.factories.adapter_dtos import \
+            ProjectDetailsDTOFactory
+        ProjectDetailsDTOFactory.reset_sequence()
+        project_details_dto = ProjectDetailsDTOFactory()
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_projects_info_for_given_ids_mock
+        get_projects_info_for_given_ids_mock_method = \
+            get_projects_info_for_given_ids_mock(
+                mocker)
         from ib_tasks.tests.factories.storage_dtos import TaskDetailsDTOFactory
         task_details_dto = TaskDetailsDTOFactory(
             task_base_details_dto=task_base_details_dto,
+            project_details_dto=project_details_dto,
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=task_gof_field_dtos
         )
         interactor = GetTaskBaseInteractor(storage=storage_mock)
-        storage_mock.validate_task_id.return_value = template_id
+        storage_mock.validate_task_id.return_value = task_base_details_dto
         storage_mock.get_task_gof_dtos.return_value = task_gof_dtos
         storage_mock.get_task_gof_field_dtos.return_value = task_gof_field_dtos
 
@@ -98,3 +107,4 @@ class TestGetTaskBaseInteractor:
         storage_mock.get_task_gof_dtos.assert_called_once_with(task_id=task_id)
         storage_mock.get_task_gof_field_dtos.assert_called_once_with(
             task_gof_ids=task_gof_ids)
+        get_projects_info_for_given_ids_mock_method.assert_called_once()

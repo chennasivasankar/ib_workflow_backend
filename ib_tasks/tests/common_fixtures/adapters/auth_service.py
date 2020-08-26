@@ -1,4 +1,5 @@
-from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTOFactory
+from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTOFactory, \
+    TeamDetailsWithUserIdDTOFactory
 
 from ib_tasks.tests.factories.interactor_dtos import \
     UserDetailsDTOFactory, \
@@ -86,6 +87,30 @@ def get_user_details_for_the_given_role_ids_based_on_query(mocker):
     )
     user_details_dtos = UserDetailsDTOFactory.create_batch(size=4)
     mock.return_value = user_details_dtos
+    return mock
+
+
+def get_projects_info_for_given_ids_mock(mocker):
+    mock = mocker.patch(
+        "ib_tasks.adapters.auth_service.AuthService.get_projects_info_for_given_ids"
+    )
+    from ib_tasks.tests.factories.adapter_dtos import \
+        ProjectDetailsDTOFactory
+    ProjectDetailsDTOFactory.reset_sequence()
+    project_details_dtos = ProjectDetailsDTOFactory.create_batch(size=3)
+    mock.return_value = project_details_dtos
+    return mock
+
+
+def get_user_id_team_details_dtos_mock(
+        mocker
+):
+    mock = mocker.patch(
+        "ib_tasks.adapters.auth_service.AuthService.get_user_id_team_details_dtos"
+    )
+    team_details_with_user_id_dtos = \
+        TeamDetailsWithUserIdDTOFactory.create_batch(size=3)
+    mock.return_value = team_details_with_user_id_dtos
     return mock
 
 

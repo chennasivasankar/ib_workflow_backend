@@ -199,3 +199,9 @@ class FilterStorageImplementation(FilterStorageInterface):
             for filter_object in filter_objects
         ]
         return filter_dtos
+
+    def get_project_id_to_filter(self, filter_id: int) -> str:
+
+        filter_obj = Filter.objects.get(id=filter_id)
+        project_id = filter_obj.project_id
+        return project_id

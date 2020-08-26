@@ -35,8 +35,15 @@ from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 
 class TasksStorageImplementation(TaskStorageInterface):
+
+    def get_project_id_for_task_display_id(self, task_display_id: str):
+        from ib_tasks.models.task import Task
+        project_id = Task.objects.filter(task_display_id=task_display_id). \
+            values_list('project_id', flat=True)
+        return project_id.first()
+
     def get_tasks_with_max_stage_value_dto(self) -> List[
-        TaskIdWithStageValueDTO]:
+            TaskIdWithStageValueDTO]:
         pass
 
     def create_elastic_task(self, task_id: int, elastic_task_id: str):

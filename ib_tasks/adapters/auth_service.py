@@ -94,6 +94,15 @@ class AuthService:
 
     def get_projects_info_for_given_ids(
             self, project_ids: List[str]) -> List[ProjectDetailsDTO]:
+        from ib_iam.exceptions.custom_exceptions import InvalidProjectIds
+        try:
+            return self._get_project_dtos(project_ids)
+        except InvalidProjectIds:
+            pass
+
+    def _get_project_dtos(
+            self, project_ids: List[str]
+    ) -> List[ProjectDetailsDTO]:
         iam_project_dtos = \
             self.interface.get_project_dtos_bulk(project_ids=project_ids)
         project_dtos = [
@@ -124,25 +133,21 @@ class AuthService:
                     user_id=user_team_dto.user_id, team_details=team_details))
         return user_id_with_team_details_dtos
 
-    def get_team_details_for_given_project_team_user_ids_dto(
-            self, team_project_details_dto: ProjectTeamUserIdsDTO
+    def get_user_id_team_details_dtos(
+            self, project_team_user_ids_dto: ProjectTeamUserIdsDTO
     ) -> List[TeamDetailsWithUserIdDTO]:
-        from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO
-        project_id = team_project_details_dto.project_id
-        team_details_with_user_id_dtos = []
-        for user_team_dto in \
-                team_project_details_dto.user_id_with_team_id_dtos:
-            project_team_user_dto = ProjectTeamUserDTO(
-                user_id=user_team_dto.user_id, team_id=user_team_dto.team_id,
-                project_id=project_id)
-            user_team = \
-                self.interface.get_team_details_for_given_project_team_user_details_dto(
-                    project_team_user_dto)
-            team_details_with_user_id_dtos.append(
-                TeamDetailsWithUserIdDTO(
-                    user_id=user_team.user_id, team_id=user_team_dto.team_id,
-                    name=user_team.name)
+        user_team_details_dtos = \
+            self.interface.get_user_team_dtos_for_given_project_teams_and_users_details_dto(
+                project_team_user_ids_dto
             )
+        team_details_with_user_id_dtos = [
+            TeamDetailsWithUserIdDTO(
+                user_id=user_team_details_dto.user_id,
+                team_id=user_team_details_dto.team_id,
+                name=user_team_details_dto.team_name
+            )
+            for user_team_details_dto in user_team_details_dtos
+        ]
         return team_details_with_user_id_dtos
 
     def validate_team_ids(self, team_ids: List[str]) -> \

@@ -12,7 +12,9 @@ from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.stage_dtos import TaskStageDTO
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
-    StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO,  UserStagesWithPaginationDTO, StageAssigneeDTO
+    StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
+    UserStagesWithPaginationDTO, StageAssigneeDTO, \
+    StageAssigneeWithTeamDetailsDTO, AssigneeWithTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -34,7 +36,7 @@ from ib_tasks.interactors.task_template_dtos import \
     CreateTransitionChecklistTemplateDTO, \
     CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
 from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, \
-    UserDetailsDTO
+    UserDetailsDTO, TeamInfoDTOFactory
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -538,3 +540,33 @@ class StageIdWithValueDTOFactory(factory.Factory):
 
     db_stage_id = factory.Sequence(lambda n: n + 1)
     stage_value = factory.Sequence(lambda n: n)
+
+
+class StageAssigneeWithTeamDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = StageAssigneeWithTeamDetailsDTO
+
+    task_stage_id = factory.sequence(lambda counter: counter + 1)
+    stage_id = factory.sequence(lambda counter: counter + 1)
+
+    @factory.lazy_attribute
+    def assignee_details_dto(self):
+        return AssigneeWithTeamDetailsDTOFactory()
+
+
+class AssigneeWithTeamDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = AssigneeWithTeamDetailsDTO
+
+    assignee_id = factory.sequence(
+        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+            counter))
+    name = factory.sequence(lambda counter: "name_{}".format(counter))
+    profile_pic_url = "https://www.google.com/search?q=ibhubs&client=ubuntu" \
+                      "&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved" \
+                      "=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw" \
+                      "=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
+
+    @factory.lazy_attribute
+    def team_info_dto(self):
+        return TeamInfoDTOFactory()

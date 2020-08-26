@@ -138,6 +138,11 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_project_id_for_task_display_id(self, task_display_id: str):
+        pass
+
+
+    @abc.abstractmethod
     def get_user_team_id(self, user_id: str, task_id: int) -> str:
         pass
 
