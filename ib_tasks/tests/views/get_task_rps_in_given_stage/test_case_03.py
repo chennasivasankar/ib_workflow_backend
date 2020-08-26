@@ -32,7 +32,7 @@ class TestCase03GetTaskRpsInGivenStageAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):
-        body = {'task_id': 'IBWF-1', 'stage_id': 'stage_id_100'}
+        body = {'task_id': 'IBWF-1', 'stage_id': 100}
         path_params = {}
         query_params = {}
         headers = {}

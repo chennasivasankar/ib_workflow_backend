@@ -96,7 +96,54 @@ class TestGetTaskRelatedRps:
             task_display_id)
         presenter_mock.response_for_invalid_stage_id.assert_called_once()
 
-    def test_given_valid_details_get_rps_details(
+    def test_given_valid_details_get_rps_details_when_there_are_no_rps_in_db(
+            self, storage, task_storage, mocker,
+            parameters, presenter_mock):
+        # Arrange
+        task_display_id = parameters.task_id
+        task_id = 1
+        team_id = "TEAM_ID_1"
+        superior_id = "123e4567-e89b-12d3-a456-426614174002"
+        user_ids = [superior_id]
+        stage_id = parameters.stage_id
+        user_id = parameters.user_id
+        expected_response = Mock()
+        storage.validate_stage_id.return_value = True
+        task_storage.check_is_valid_task_display_id.return_value = True
+        task_storage.get_user_team_id.return_value = team_id
+        task_storage.get_task_id_for_task_display_id.return_value = 1
+        storage.validate_if_task_is_assigned_to_user_in_given_stage. \
+            return_value = True
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_immediate_superior_user_id_mock
+        superior_mock = get_immediate_superior_user_id_mock(mocker)
+        superior_mock.return_value = superior_id
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_user_dtos_given_user_ids
+        user_details_mock = get_user_dtos_given_user_ids(mocker)
+        storage.get_rp_ids.return_value = user_ids
+        storage.get_rp_id_if_exists.return_value = None
+        task_storage.get_user_missed_the_task_due_time.return_value = datetime.datetime.now()
+        presenter_mock.response_for_get_rps_details.return_value = expected_response
+
+        interactor = GetTaskRPsInteractor(storage=storage, task_storage=task_storage)
+
+        # Act
+        response = interactor.get_task_rps_wrapper(presenter_mock, parameters)
+
+        # Assert
+        assert response == expected_response
+        task_storage.check_is_valid_task_display_id.assert_called_once_with(
+            task_display_id)
+        storage.validate_if_task_is_assigned_to_user_in_given_stage.assert_called_once_with(
+            task_id, user_id, stage_id
+        )
+
+        user_details_mock.assert_called_once_with(user_ids)
+        superior_mock.assert_called_once_with(user_id=user_id, team_id=team_id)
+        presenter_mock.response_for_get_rps_details.assert_called_once()
+
+    def test_given_valid_details_get_rps_details_when_already_rp_in_db(
             self, storage, task_storage, mocker,
             parameters, presenter_mock):
         # Arrange
@@ -117,10 +164,12 @@ class TestGetTaskRelatedRps:
         from ib_tasks.tests.common_fixtures.adapters.auth_service import \
             get_immediate_superior_user_id_mock
         superior_mock = get_immediate_superior_user_id_mock(mocker)
-        superior_mock.side_effect = [superior_id, "123e4567-e89b-12d3-a456-426614174003"]
+        superior_mock.return_value = superior_id
         from ib_tasks.tests.common_fixtures.adapters.auth_service import \
             get_user_dtos_given_user_ids
         user_details_mock = get_user_dtos_given_user_ids(mocker)
+        storage.get_rp_ids.return_value = user_ids
+        storage.get_rp_id_if_exists.return_value = superior_id
         task_storage.get_user_missed_the_task_due_time.return_value = datetime.datetime.now()
         presenter_mock.response_for_get_rps_details.return_value = expected_response
 
@@ -130,8 +179,6 @@ class TestGetTaskRelatedRps:
         response = interactor.get_task_rps_wrapper(presenter_mock, parameters)
 
         # Assert
-        mock_calls = [call(user_id=user_id, team_id=team_id),
-                      call(user_id=superior_id, team_id=team_id)]
         assert response == expected_response
         task_storage.check_is_valid_task_display_id.assert_called_once_with(
             task_display_id)
@@ -140,6 +187,5 @@ class TestGetTaskRelatedRps:
         )
 
         user_details_mock.assert_called_once_with(user_ids)
-        assert superior_mock.call_count == 2
-        superior_mock.assert_has_calls(mock_calls)
+        superior_mock.assert_called_once_with(user_id=superior_id, team_id=team_id)
         presenter_mock.response_for_get_rps_details.assert_called_once()

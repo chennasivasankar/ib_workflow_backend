@@ -1,5 +1,5 @@
 import abc
-from typing import List
+from typing import List, Optional
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos \
     import ActionRolesDTO, ActionDTO
@@ -108,4 +108,19 @@ class StorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_due_missed_count(self, task_id: int, user_id: str,
                              stage_id: str) -> int:
+        pass
+
+    @abc.abstractmethod
+    def get_rp_id_if_exists(self, task_id: int, user_id: str,
+                            stage_id: int) -> Optional[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_rp_ids(self, task_id: int, stage_id: int, user_id: str) -> \
+            List[str]:
+        pass
+
+    @abc.abstractmethod
+    def add_superior_to_db(
+            self, task_id: int, stage_id: int, superior_id: str, user_id: str):
         pass
