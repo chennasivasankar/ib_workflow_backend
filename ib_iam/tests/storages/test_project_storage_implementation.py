@@ -17,6 +17,11 @@ class TestProjectStorageImplementation:
                         for project_id in project_ids]
         return [project_dtos, project_ids]
 
+    @pytest.fixture()
+    def project_storage(self):
+        project_storage = ProjectStorageImplementation()
+        return project_storage
+
     @pytest.mark.django_db
     def test_add_projects_adds_projects_successfully(self, project_dtos):
         # Arrange
@@ -167,6 +172,58 @@ class TestProjectStorageImplementation:
 
         # Assert
         assert response == expected_role_ids
+
+    @pytest.mark.django_db
+    def test_is_user_not_in_a_project_return_false(
+            self, project_storage, prepare_create_project_with_user_roles):
+        # Arrange
+        project_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+        user_id = "901bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+
+        # Act
+        response = project_storage.is_user_in_a_project(
+            user_id=user_id, project_id=project_id)
+
+        # Assert
+        assert response is False
+
+    @pytest.mark.django_db
+    def test_is_user_in_a_project_return_true(
+            self, project_storage, prepare_create_project_with_user_roles):
+        # Arrange
+        project_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+        user_id = "001bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+
+        # Act
+        response = project_storage.is_user_in_a_project(
+            user_id=user_id, project_id=project_id)
+
+        # Assert
+        assert response is True
+
+    @pytest.mark.django_db
+    def test_is_invalid_project_id_return_false(
+            self, project_storage, prepare_create_project_with_user_roles):
+        # Arrange
+        project_id = "041bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+
+        # Act
+        response = project_storage.is_valid_project_id(project_id=project_id)
+
+        # Assert
+        assert response is False
+
+    @pytest.mark.django_db
+    def test_is_valid_project_id_return_true(
+            self, project_storage, prepare_create_project_with_user_roles):
+        # Arrange
+        project_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+
+        # Act
+        response = project_storage.is_valid_project_id(project_id=project_id)
+
+        # Assert
+        assert response is True
 
     @pytest.fixture()
     def prepare_create_project_with_user_roles(self):

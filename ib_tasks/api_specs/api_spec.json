@@ -127,7 +127,7 @@
         "res_status": {
           "type": "string",
           "enum": [
-            "USER_DONOT_HAVE_ACCESS"
+            "USER_DO_NOT_HAVE_ACCESS", "INVALID_PRESENT_STAGE_ACTION"
           ]
         }
       },
@@ -220,12 +220,16 @@
         },
         "reason": {
           "type": "string"
+        },
+        "stage_id": {
+          "type": "string"
         }
       },
       "required": [
         "updated_due_date_time",
         "reason_id",
-        "task_id"
+        "task_id",
+        "stage_id"
       ]
     },
     "CreateTaskRequestBody": {
@@ -471,13 +475,17 @@
             },
             "is_field_writable": {
               "type": "boolean"
+            },
+            "field_order": {
+              "type": "integer"
             }
           },
           "required": [
             "field_id",
             "display_name",
             "is_field_required",
-            "is_field_writable"
+            "is_field_writable",
+            "field_order"
           ]
         }
       ]
@@ -1434,7 +1442,7 @@
         "action_id"
       ]
     },
-    "TaskIdRequestBody": {
+    "TaskandStageIdRequestBody": {
       "type": "object",
       "properties": {
         "task_id": {
@@ -1576,29 +1584,32 @@
         "$ref": "#/definitions/UpdateTaskRequestBody"
       }
     },
-    "TaskIdRequestBody": {
+    "TaskandStageIdRequestBody": {
       "in": "body",
-      "name": "TaskId",
-      "description": "task id",
+      "name": "TaskIdAndStageId",
+      "description": "task id and stage id",
       "required": true,
       "schema": {
         "type": "object",
         "properties": {
           "task_id": {
             "type": "string"
+          },
+          "stage_id": {
+            "type": "string"
           }
         },
         "required": [
-          "task_id"
+          "task_id", "stage_id"
         ]
       }
     },
     "TaskIDParameter": {
       "description": "task id",
-      "in": "path",
+      "in": "query",
       "name": "task_id",
-      "required": true,
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "TaskBodyParamaeter": {
       "description": "Task Body Parameter",
@@ -1606,7 +1617,7 @@
       "name": "TaskBodyParameter",
       "required": true,
       "schema": {
-        "$ref": "#/definitions/TaskIdRequestBody"
+        "$ref": "#/definitions/TaskandStageIdRequestBody"
       }
     },
     "TaskStageAssigneesParameter": {
@@ -1987,6 +1998,35 @@
         ]
       }
     },
+    "GetTaskRPsFailureResponse": {
+      "description": "Task Stage Assignees Failure Response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "enum": [
+              404
+            ]
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "INVALID_STAGE_ID",
+              "INVALID_TASK_ID"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
     "TaskStageAssigneesNotFoundResponse": {
       "description": "Task Stage Assignees Not Found Response",
       "schema": {
@@ -2113,7 +2153,8 @@
             "enum": [
               "LIMIT_SHOULD_BE_GREATER_THAN_ZERO",
               "OFFSET_SHOULD_BE_GREATER_THAN_ZERO",
-              "EMPTY_STAGE_IDS_ARE_INVALID"
+              "EMPTY_STAGE_IDS_ARE_INVALID",
+              "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
             ]
           }
         },
@@ -2225,7 +2266,7 @@
                 "GTE",
                 "LTE",
                 "GT",
-                "LE",
+                "LT",
                 "NE",
                 "EQ",
                 "CONTAINS"
@@ -2320,7 +2361,8 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "VALUE_SHOULD_NOT_BE_EMPTY"
+              "VALUE_SHOULD_NOT_BE_EMPTY",
+              "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
             ]
           }
         },
@@ -2397,7 +2439,8 @@
             "type": "string",
             "enum": [
               "FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE",
-              "USER_NOT_HAVE_PERMISSIONS_TO_FIELDS"
+              "USER_NOT_HAVE_PERMISSIONS_TO_FIELDS",
+              "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
             ]
           }
         },
@@ -2474,7 +2517,8 @@
             "enum": [
               "FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE",
               "USER_NOT_HAVE_PERMISSIONS_TO_FIELDS",
-              "USER_NOT_HAVE_PERMISSIONS_TO_UPDATE"
+              "USER_NOT_HAVE_PERMISSIONS_TO_UPDATE",
+              "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
             ]
           }
         },
@@ -2528,6 +2572,15 @@
         }
       }
     },
+    "GetTaskRpsResponse": {
+      "description": "Task Stage Rps",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/UserResponseBody"
+        }
+      }
+    },
     "TaskStagePossibleAssigneesNotFoundResponse": {
       "description": "Task Stage Assignees Not Found Response",
       "schema": {
@@ -2545,7 +2598,8 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "INVALID_STAGE_ID"
+              "INVALID_STAGE_ID",
+              "INVALID_TASK_ID"
             ]
           }
         },
@@ -3171,7 +3225,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/TaskIdRequestBody"
+            "$ref": "#/parameters/TaskandStageIdRequestBody"
           }
         ],
         "responses": {
@@ -3234,7 +3288,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/ProjectIdParameter"
+            "$ref": "#/parameters/TaskIDParameter"
           },
           {
             "$ref": "#/parameters/StageIdParameter"
@@ -3285,6 +3339,36 @@
           },
           "404": {
             "$ref": "#/responses/GetTaskFailureResponse"
+          }
+        }
+      }
+    },
+    "/task/rps/v1/": {
+      "get": {
+        "operationId": "get_task_rps_in_given_stage",
+        "summary": "get task rps in given stage",
+        "description": "get task rps in given stage",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TaskandStageIdRequestBody"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTaskRpsResponse"
+          },
+          "404": {
+            "$ref": "#/responses/GetTaskRPsFailureResponse"
+          },
+          "403": {
+            "$ref": "#/responses/TaskIsNotAssignedToUserResponse"
           }
         }
       }

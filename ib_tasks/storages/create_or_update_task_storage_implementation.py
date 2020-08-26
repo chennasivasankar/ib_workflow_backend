@@ -117,7 +117,7 @@ class CreateOrUpdateTaskStorageImplementation(
 
         task_gof_field_objs = TaskGoFField.objects.filter(
             task_gof_id__in=task_gof_ids
-        )
+        ).exclude(field_response='')
         task_gof_field_dtos = []
         for task_gof_field_obj in task_gof_field_objs:
             task_gof_field_dto = TaskGoFFieldDTO(
@@ -370,5 +370,6 @@ class CreateOrUpdateTaskStorageImplementation(
         ]
         return field_searchable_dtos
 
-    def get_task_ids(self) -> List[int]:
+    @staticmethod
+    def get_task_ids() -> List[int]:
         return list(Task.objects.values_list('id', flat=True))

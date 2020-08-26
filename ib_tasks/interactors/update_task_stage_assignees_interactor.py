@@ -100,8 +100,6 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
                 task_id_with_stage_assignees_dto=
                 task_id_with_stage_assignees_dto
             )
-        print("role_ids_and_assignee_id_group_by_stage_id_dtos",
-              role_ids_and_assignee_id_group_by_stage_id_dtos)
         self._validate_does_given_assignee_of_stage_ids_have_valid_permission(
             role_ids_and_assignee_id_group_by_stage_id_dtos)
         return

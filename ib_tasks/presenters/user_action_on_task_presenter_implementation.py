@@ -7,8 +7,6 @@ from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied, UserBoardPermissionDenied
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException
-from ib_tasks.interactors.get_stages_assignees_details_interactor import \
-    TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO
@@ -18,7 +16,8 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 from ib_tasks.interactors.user_action_on_task_interactor import \
     InvalidBoardIdException
-from ib_tasks.interactors.stage_dtos import TaskStageDTO
+from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
+    TaskStageAssigneeDetailsDTO
 
 
 class UserActionOnTaskPresenterImplementation(PresenterInterface,
@@ -30,10 +29,10 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         message = INVALID_TASK_DISPLAY_ID[0].format(err.task_display_id)
         data = {
             "response": message,
-            "http_status_code": 400,
+            "http_status_code": 404,
             "res_status": INVALID_TASK_DISPLAY_ID[1]
         }
-        return self.prepare_400_bad_request_response(data)
+        return self.prepare_404_not_found_response(data)
 
     def raise_exception_for_invalid_task(
             self, error_obj: InvalidTaskException):
@@ -106,13 +105,13 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
     def raise_exception_for_invalid_present_actions(self, error_obj):
         from ib_tasks.constants.exception_messages import \
             INVALID_PRESENT_STAGE_ACTION
-        message = INVALID_PRESENT_STAGE_ACTION[0].format(error_obj.action_id)
+        message = INVALID_PRESENT_STAGE_ACTION[0].format(str(error_obj.action_id))
         data = {
             "response": message,
-            "http_status_code": 400,
+            "http_status_code": 403,
             "res_status": INVALID_PRESENT_STAGE_ACTION[1]
         }
-        return self.prepare_400_bad_request_response(data)
+        return self.prepare_403_forbidden_response(data)
 
     def raise_exception_for_user_board_permission_denied(
             self, error_obj: UserBoardPermissionDenied):

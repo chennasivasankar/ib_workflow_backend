@@ -35,8 +35,15 @@ from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 
 class TasksStorageImplementation(TaskStorageInterface):
+
+    def get_project_id_for_task_display_id(self, task_display_id: str):
+        from ib_tasks.models.task import Task
+        project_id = Task.objects.filter(task_display_id=task_display_id). \
+            values_list('project_id', flat=True)
+        return project_id.first()
+
     def get_tasks_with_max_stage_value_dto(self) -> List[
-        TaskIdWithStageValueDTO]:
+            TaskIdWithStageValueDTO]:
         pass
 
     def create_elastic_task(self, task_id: int, elastic_task_id: str):
@@ -443,7 +450,7 @@ class TasksStorageImplementation(TaskStorageInterface):
         if q is None:
             return []
         task_objs = CurrentTaskStage.objects.filter(q).values('task_id',
-                                                       'stage__stage_id')
+                                                              'stage__stage_id')
 
         task_stage_dtos = self._convert_task_objs_to_dtos(task_objs)
         return task_stage_dtos
@@ -458,13 +465,17 @@ class TasksStorageImplementation(TaskStorageInterface):
         return valid_task_stages_dtos
 
     def get_user_task_ids_and_max_stage_value_dto_based_on_given_stage_ids(
-            self, stage_ids: List[str]) -> List[
+            self, stage_ids: List[str], task_ids: List[int]) -> List[
         TaskIdWithStageValueDTO]:
         from django.db.models import Max
         task_objs_with_max_stage_value = list(
             CurrentTaskStage.objects.filter(
-                stage__stage_id__in=stage_ids).values("task_id").annotate(
-                stage_value=Max("stage__value")))
+                stage__stage_id__in=stage_ids,
+                task_id__in=task_ids
+            ).values("task_id").annotate(
+                stage_value=Max("stage__value")
+            )
+        )
         task_id_with_max_stage_value_dtos = self. \
             _prepare_task_id_with_max_stage_value_dtos(
             task_objs_with_max_stage_value)
@@ -493,7 +504,6 @@ class TasksStorageImplementation(TaskStorageInterface):
         task_id = task_id_queryset.first()
         return task_id
 
-
     def get_task_display_ids_dtos(self, task_ids: List[int]) -> List[
         TaskDisplayIdDTO]:
         task_ids = Task.objects.filter(
@@ -510,7 +520,6 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     def get_project_id_for_the_task_id(self, task_id) -> str:
         return Task.objects.get(id=task_id).project_id
-
 
     def get_project_id_of_task(self, task_id: int) -> str:
         task_obj = Task.objects.get(id=task_id)

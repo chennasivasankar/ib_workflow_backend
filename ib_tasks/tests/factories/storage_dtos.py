@@ -38,7 +38,7 @@ from ib_tasks.interactors.storage_interfaces.status_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO, TaskDueMissingDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TemplateDTO
+    TemplateDTO, ProjectIdWithTaskTemplateIdDTO
 from ib_tasks.interactors.task_dtos import TaskStatusVariableDTO
 from ib_tasks.models import StageAction
 
@@ -309,6 +309,7 @@ class FieldDTOFactory(factory.Factory):
     error_message = None
     allowed_formats = None
     validation_regex = None
+    order = factory.sequence(lambda counter: counter)
 
 
 class FieldRolesDTOFactory(factory.Factory):
@@ -476,7 +477,7 @@ class TaskStageIdsDTOFactory(factory.Factory):
 
     task_id = factory.Sequence(lambda n: (n + 1))
     stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
-    task_display_id= factory.Sequence(lambda n: f'TASK_ID_{n + 1}')
+    task_display_id = factory.Sequence(lambda n: f'TASK_ID_{n + 1}')
 
 
 class StageDisplayValueDTOFactory(factory.Factory):
@@ -539,6 +540,7 @@ class TaskBaseDetailsDTOFactory(factory.Factory):
 
     template_id = factory.sequence(
         lambda counter: "template_{}".format(counter))
+    project_id = factory.sequence(lambda counter: "project_id{}".format(counter))
     task_display_id = factory.sequence(
         lambda counter: "IBWF-{}".format(counter + 1))
     title = factory.sequence(lambda counter: "title_{}".format(counter))
@@ -583,7 +585,9 @@ class TaskDueMissingDTOFactory(factory.Factory):
     task_id = factory.Sequence(lambda n: "task_id_%d" % n)
     due_missed_count = factory.Sequence(lambda n: n)
     due_date_time = datetime.today().date() + timedelta(days=2)
-    user_id = factory.Sequence(lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(counter))
+    user_id = factory.Sequence(
+        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+            counter))
     reason = "reason"
 
 
@@ -602,6 +606,7 @@ class TaskStageAssigneeDTOFactory(factory.Factory):
 
     task_stage_id = factory.sequence(lambda counter: counter + 1)
     stage_id = factory.Sequence(lambda counter: counter + 1)
+    team_id = factory.Sequence(lambda counter: "team{}".format(counter))
     assignee_id = factory.sequence(
         lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
             counter))
@@ -683,3 +688,12 @@ class FieldSearchableDTOFactory(factory.Factory):
     field_id = factory.sequence(lambda counter: "field{}".format(counter))
     field_value = Searchable.CITY.value
     field_response = "1"
+
+
+class ProjectIdWithTaskTemplateIdDTOFactory(factory.Factory):
+    class Meta:
+        model = ProjectIdWithTaskTemplateIdDTO
+
+    project_id = factory.sequence(lambda counter: "project_{}".format(counter))
+    task_template_id = factory.sequence(
+        lambda counter: "template_{}".format(counter))

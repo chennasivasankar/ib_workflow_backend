@@ -69,7 +69,6 @@ class TestGetUserProfilePresenterImplementation:
         user_with_extra_details_dto = \
             UserWithExtraDetailsDTO(
                 user_profile_dto=user_profile_dto,
-                role_dtos=user_role_dtos,
                 company_dto=company_dto,
                 team_dtos=team_dtos,
                 team_user_ids_dto=team_user_ids_dtos,

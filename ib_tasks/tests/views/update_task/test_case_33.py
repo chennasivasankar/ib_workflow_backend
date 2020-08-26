@@ -9,7 +9,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
     TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, \
-    GoFRoleFactory, FieldRoleFactory
+    GoFRoleFactory, FieldRoleFactory, StageFactory
 from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
@@ -30,10 +30,12 @@ class TestCase33UpdateTaskAPITestCase(TestUtils):
         GoFToTaskTemplateFactory.reset_sequence()
         GoFRoleFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
+        StageFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
         task_id = "IBWF-1"
+        stage_id = 1
         template_id = "TEMPLATE-1"
         gof_id = "GOF-1"
         field_id = "FIELD-1"
@@ -41,6 +43,8 @@ class TestCase33UpdateTaskAPITestCase(TestUtils):
             get_user_role_ids
         user_roles_mock_method = get_user_role_ids(mocker)
         user_roles = user_roles_mock_method.return_value
+
+        StageFactory.create(id=stage_id)
         gof = GoFFactory.create(gof_id=gof_id)
         gof_role = GoFRoleFactory.create(
             role=user_roles[0], gof=gof,
@@ -74,7 +78,8 @@ class TestCase33UpdateTaskAPITestCase(TestUtils):
             "priority": "HIGH",
             "stage_assignee": {
                 "stage_id": 1,
-                "assignee_id": "assignee_id_1"
+                "assignee_id": "assignee_id_1",
+                "team_id": "team_1"
             },
             "task_gofs": [
                 {

@@ -214,7 +214,25 @@
         "users": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/CompleteUserDetails"
+            "allOf": [
+              {
+                "$ref": "#/definitions/UserDetails"
+              },
+              {
+                "$ref": "#/definitions/ListOfRoles"
+              },
+              {
+                "$ref": "#/definitions/ListOfTeams"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "company": {
+                    "$ref": "#/definitions/CompanyDetails"
+                  }
+                }
+              }
+            ]
           }
         }
       },
@@ -757,12 +775,6 @@
               },
               "cover_page_url": {
                 "type": "string"
-              },
-              "role_ids": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
               }
             }
           }
@@ -1520,12 +1532,6 @@
               "is_admin": {
                 "type": "boolean"
               },
-              "roles": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/RoleDetails"
-                }
-              },
               "company": {
                 "type": "object",
                 "properties": {
@@ -1558,7 +1564,6 @@
             },
             "required": [
               "is_admin",
-              "roles",
               "teams"
             ]
           }
@@ -2183,6 +2188,40 @@
       "description": "returns all Projects",
       "schema": {
         "$ref": "#/definitions/ProjectsWithTotalProjectsCount"
+      }
+    },
+    "GetSpecificProjectDetailsSuccessResponse": {
+      "description": "Get specific project details success response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": "array",
+            "items": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "user_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "user_id",
+                    "name"
+                  ]
+                },
+                {
+                  "$ref": "#/definitions/ListOfRoles"
+                }
+              ]
+            }
+          }
+        }
       }
     }
   },
@@ -3096,6 +3135,30 @@
         "responses": {
           "200": {
             "description": "Project details updated Successfully"
+          }
+        }
+      }
+    },
+    "/project/{project_id}/specific_project_details/v1/": {
+      "get": {
+        "operationId": "get_specific_project_details",
+        "summary": "Get Specific Project Details",
+        "description": "Get specific project details of given project id in path",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetSpecificProjectDetailsSuccessResponse"
           }
         }
       }

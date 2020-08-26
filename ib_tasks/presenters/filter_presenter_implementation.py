@@ -41,6 +41,17 @@ class FilterPresenterImplementation(FilterPresenterInterface,
         response_object = self.prepare_403_forbidden_response(response_dict)
         return response_object
 
+    def get_response_for_invalid_filter_condition(self, error):
+        from ib_tasks.constants.exception_messages import FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE
+        response_dict = {
+            "response": FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE[0].format(error.condition),
+            "http_status_code": 404,
+            "res_status": FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE[1]
+        }
+
+        response_object = self.prepare_417_expectation_mismatch_response(response_dict)
+        return response_object
+
     def get_response_for_invalid_filter_id(self):
         from ib_tasks.constants.exception_messages import INVALID_FILTER_ID
         response_dict = {
@@ -222,6 +233,7 @@ class FilterPresenterImplementation(FilterPresenterInterface,
         task_template_fields_dict = self._get_template_fields_dict(
             task_template_gofs_dict, gof_fields_dict
         )
+        from ib_tasks.constants.constants import OPERATORS
         response_dict = {
             "task_template_fields_details": [
                 {
@@ -233,9 +245,8 @@ class FilterPresenterImplementation(FilterPresenterInterface,
                 }
                 for template_dto in task_template_dtos
             ],
-            "operators": [
-                "GTE", "LTE", "GT", "LE", "NE", "EQ", "CONTAINS"
-            ]
+            "operators": OPERATORS
+
         }
         response_object = self.prepare_200_success_response(response_dict)
         return response_object

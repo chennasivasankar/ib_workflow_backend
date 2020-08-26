@@ -25,8 +25,7 @@ class TaskLogInteractor:
             task_json=create_task_log_dto.task_json
         )
         is_task_exists = self.task_storage.check_is_task_exists(
-            task_id=create_task_log_dto.task_id
-        )
+            task_id=create_task_log_dto.task_id)
         is_task_not_exists = not is_task_exists
         if is_task_not_exists:
             from ib_tasks.exceptions.task_custom_exceptions import \

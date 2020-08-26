@@ -6,7 +6,7 @@ from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidUserIds
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, TeamIdAndNameDTO, \
     RoleIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, CompanyDTO, \
-    CompanyIdWithEmployeeIdsDTO
+    CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO
 
 
 class UserStorageInterface(ABC):
@@ -146,7 +146,7 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_all_distinct_user_db_role_ids(self) -> List[str]:
+    def get_all_distinct_user_db_role_ids(self, project_id: str) -> List[str]:
         pass
 
     @abstractmethod
@@ -185,4 +185,19 @@ class UserStorageInterface(ABC):
 
     @abstractmethod
     def get_user_details(self, user_id: str) -> UserDTO:
+        pass
+
+    # TODO move to project storage interface
+    @abstractmethod
+    def get_user_ids_for_given_project(self, project_id: str) -> List[str]:
+        pass
+
+    @abstractmethod
+    def get_basic_user_dtos_for_given_project(self, project_id: str) -> \
+            List[BasicUserDetailsDTO]:
+        pass
+
+    @abstractmethod
+    def get_user_role_dtos_of_a_project(
+            self, user_ids: List[str], project_id: str) -> List[UserRoleDTO]:
         pass

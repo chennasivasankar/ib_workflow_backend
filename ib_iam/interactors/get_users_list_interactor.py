@@ -5,7 +5,7 @@ from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
     InvalidOffsetValue, InvalidLimitValue, InvalidUserId, RoleIdsAreInvalid
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.dtos \
-    import ListOfCompleteUsersDTO
+    import ListOfCompleteUsersDTO, ListOfCompleteUsersWithRolesDTO
 from ib_iam.interactors.presenter_interfaces.get_users_list_presenter_interface \
     import GetUsersListPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
@@ -42,7 +42,7 @@ class GetListOfUsersInteractor(ValidationMixin):
     def get_users(
             self, user_id: str, offset: int, limit: int,
             name_search_query: str
-    ) -> ListOfCompleteUsersDTO:
+    ) -> ListOfCompleteUsersWithRolesDTO:
         self._validate_is_user_admin(user_id=user_id)
         self._validate_pagination_details(offset=offset, limit=limit)
         user_dtos = self.user_storage.get_users_who_are_not_admins(
@@ -58,7 +58,8 @@ class GetListOfUsersInteractor(ValidationMixin):
     # TODO: It is not valid place to write this method remove this
     def get_user_details_for_given_role_ids_based_on_query(
             self, role_ids: List[str],
-            search_query_with_pagination_dto: SearchQueryWithPaginationDTO
+            search_query_with_pagination_dto: SearchQueryWithPaginationDTO,
+            project_id: str
     ) -> List[UserProfileDTO]:
         self._validate_pagination_details(
             offset=search_query_with_pagination_dto.offset,
@@ -67,13 +68,11 @@ class GetListOfUsersInteractor(ValidationMixin):
         from ib_iam.constants.config import ALL_ROLES_ID
 
         if ALL_ROLES_ID in role_ids:
-            db_role_ids = \
-                self.user_storage.get_all_distinct_user_db_role_ids()
-        else:
-            db_role_ids = self.user_storage.get_db_role_ids(role_ids=role_ids)
+            role_ids = \
+                self.user_storage.get_all_distinct_user_db_role_ids(project_id)
 
         user_ids = self.user_storage.get_user_ids_for_given_role_ids(
-            role_ids=db_role_ids)
+            role_ids=role_ids)
 
         user_ids_based_on_query = \
             self.user_storage.get_user_ids_based_on_given_query(
@@ -88,14 +87,16 @@ class GetListOfUsersInteractor(ValidationMixin):
     def _get_complete_user_details_dto(self, user_ids, total_count):
         user_team_dtos = self.user_storage.get_team_details_of_users_bulk(
             user_ids=user_ids)
-        # user_role_dtos = self.user_storage.get_role_details_of_users_bulk(
-        #     user_ids=user_ids)
+        user_role_dtos = self.user_storage.get_role_details_of_users_bulk(
+            user_ids=user_ids)
         user_company_dtos = self.user_storage.get_company_details_of_users_bulk(
             user_ids=user_ids)
         user_profile_dtos = self._get_user_profile_dtos(user_ids)
         return self._convert_complete_user_details_dtos(
-            user_team_dtos, user_company_dtos,
-            user_profile_dtos, total_count)
+            user_team_dtos=user_team_dtos, role_dtos=user_role_dtos,
+            user_company_dtos=user_company_dtos,
+            user_profile_dtos=user_profile_dtos,
+            total_no_of_users=total_count)
 
     @staticmethod
     def _get_user_profile_dtos(user_ids):
@@ -121,11 +122,12 @@ class GetListOfUsersInteractor(ValidationMixin):
 
     @staticmethod
     def _convert_complete_user_details_dtos(
-            user_team_dtos,
+            user_team_dtos, role_dtos,
             user_company_dtos, user_profile_dtos, total_no_of_users):
-        complete_user_details_dto = ListOfCompleteUsersDTO(
+        complete_user_details_dto = ListOfCompleteUsersWithRolesDTO(
             users=user_profile_dtos,
             teams=user_team_dtos,
+            roles=role_dtos,
             companies=user_company_dtos,
             total_no_of_users=total_no_of_users
         )
@@ -163,22 +165,26 @@ class GetListOfUsersInteractor(ValidationMixin):
             self, limit: int, offset: int, search_query: str
     ):
         self._validate_pagination_details(offset=offset, limit=limit)
-        user_details_dtos = self.user_storage.get_user_details_dtos_based_on_limit_offset_and_search_query(
+        user_details_dtos = \
+            self.user_storage.get_user_details_dtos_based_on_limit_offset_and_search_query(
             limit=limit, offset=offset, search_query=search_query
         )
         return user_details_dtos
 
     def get_all_user_dtos_based_on_query(self, search_query: str):
-        user_details_dtos = self.user_storage.get_user_details_dtos_based_on_search_query(
+        user_details_dtos = \
+            self.user_storage.get_user_details_dtos_based_on_search_query(
             search_query=search_query
         )
         return user_details_dtos
 
     def get_user_details_for_given_role_ids(
-            self, role_ids: List[str]) -> List[UserProfileDTO]:
+            self, role_ids: List[str], project_id: str
+    ) -> List[UserProfileDTO]:
         from ib_iam.constants.config import ALL_ROLES_ID
         if ALL_ROLES_ID in role_ids:
-            user_ids = self.user_storage.get_user_ids_who_are_not_admin()
+            user_ids = self.user_storage.get_user_ids_for_given_project(
+                project_id=project_id)
         else:
             self._validate_role_ids(role_ids=role_ids)
             user_ids = self.user_storage.get_user_ids(role_ids=role_ids)

@@ -49,7 +49,7 @@ class TestCase02GetConfigurationDetailsAPITestCase(TestUtils):
             from ib_iam.tests.factories.models import UserDetailsFactory
             UserDetailsFactory.create(user_id=user_id, company=company)
             UserTeamFactory.create(user_id=user_id, team=teams[count])
-            UserRoleFactory.create(user_id=user_id, role=roles[count])
+            UserRoleFactory.create(user_id=user_id, project_role=roles[count])
 
     @pytest.mark.django_db
     def test_case(self, set_up, user_set_up, snapshot):

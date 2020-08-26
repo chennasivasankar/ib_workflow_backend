@@ -1,6 +1,8 @@
 from typing import List
 
-from ib_boards.adapters.iam_service import InvalidProjectIdsException
+from ib_boards.adapters.iam_service import InvalidProjectIdsException, \
+    UserIsNotInProjectException
+from ib_boards.exceptions.custom_exceptions import InvalidProjectId
 
 
 class ValidationMixin:
@@ -19,7 +21,6 @@ class ValidationMixin:
                                if project_id not in valid_project_ids]
         if invalid_project_ids:
             raise InvalidProjectIdsException(invalid_project_ids)
-        return
 
     def validate_if_user_is_in_project(self, user_id: str,
                                        project_id: str):
@@ -32,9 +33,14 @@ class ValidationMixin:
         @rtype:
         """
         adapter = self.get_service_adapter()
-        adapter.iam_service.validate_if_user_is_in_project(
-            user_id=user_id, project_id=project_id
-        )
+        try:
+            is_in_project = adapter.iam_service.validate_if_user_is_in_project(
+                user_id=user_id, project_id=project_id)
+        except InvalidProjectId:
+            raise InvalidProjectIdsException([project_id])
+
+        if not is_in_project:
+            raise UserIsNotInProjectException
 
     @staticmethod
     def get_service_adapter():

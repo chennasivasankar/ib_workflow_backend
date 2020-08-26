@@ -30,8 +30,12 @@ class TaskFactory(factory.django.DjangoModelFactory):
 
     task_display_id = factory.sequence(
         lambda counter: "IBWF-{}".format(counter + 1))
+    project_id = factory.Sequence(
+        lambda n: "project_id_%d" % (n + 1)
+    )
     template_id = factory.Sequence(
         lambda counter: "template_{}".format(counter))
+    project_id = factory.Sequence(lambda c: "project_{}".format(c))
     created_by = "123e4567-e89b-12d3-a456-426614174000"
     title = factory.sequence(lambda counter: "title_{}".format(counter))
     description = factory.sequence(
@@ -94,6 +98,7 @@ class TaskDueDetailsFactory(factory.django.DjangoModelFactory):
 
     task = factory.SubFactory(TaskFactory)
     due_datetime = datetime.now() + timedelta(days=2)
+    stage = factory.SubFactory(StageModelFactory)
     count = factory.Sequence(lambda n: (n + 1))
     user_id = factory.Sequence(
         lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
@@ -178,6 +183,7 @@ class FieldFactory(factory.django.DjangoModelFactory):
     )
     field_type = FieldTypes.PLAIN_TEXT.value
     required = True
+    order = factory.sequence(lambda counter: counter)
 
     class Params:
         optional = factory.Trait(

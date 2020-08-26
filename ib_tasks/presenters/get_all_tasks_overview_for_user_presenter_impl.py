@@ -14,7 +14,7 @@ from ib_tasks.interactors.presenter_interfaces.\
     get_all_tasks_overview_for_user_presenter_interface import \
     GetFilteredTasksOverviewForUserPresenterInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO, StageAssigneeDetailsDTO
+    GetTaskStageCompleteDetailsDTO, TaskWithCompleteStageDetailsDTO
 
 
 class GetAllTasksOverviewForUserPresenterImpl(
@@ -149,9 +149,9 @@ class GetAllTasksOverviewForUserPresenterImpl(
 
     @staticmethod
     def _get_assignee_details(
-            stage_assignee_dto: List[StageAssigneeDetailsDTO]) -> Optional[Dict]:
+            stage_assignee_dto: List[TaskWithCompleteStageDetailsDTO]) -> Optional[Dict]:
         if stage_assignee_dto:
-            assignee_details_dto = stage_assignee_dto[0].assignee_details_dto
+            assignee_details_dto = stage_assignee_dto[0].assignee_details
         else:
             return None
         if assignee_details_dto:
@@ -209,4 +209,15 @@ class GetFilteredTasksOverviewForUserPresenterImplementation(
         }
 
         response_object = self.prepare_403_forbidden_response(response_dict)
+        return response_object
+
+    def get_response_for_invalid_filter_condition(self, error):
+        from ib_tasks.constants.exception_messages import FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE
+        response_dict = {
+            "response": FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE[0].format(error.condition),
+            "http_status_code": 400,
+            "res_status": FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE[1]
+        }
+
+        response_object = self.prepare_400_bad_request_response(response_dict)
         return response_object
