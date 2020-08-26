@@ -41,6 +41,8 @@ class TestAddProjectIneractor:
                                        team_storage=team_storage)
         return interactor
 
+    #todo remove it while removing transaction tag on add_project interactor
+    @pytest.mark.django_db
     def test_add_project_returns_project_id_in_success_response(
             self, project_storage, interactor, presenter):
         from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO

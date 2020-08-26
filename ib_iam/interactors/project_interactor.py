@@ -260,6 +260,7 @@ class ProjectInteractor:
         response = presenter.get_success_response_for_add_project()
         return response
 
+    # todo remove the tag after writing validations properly
     @transaction.atomic
     def add_project(
             self,
