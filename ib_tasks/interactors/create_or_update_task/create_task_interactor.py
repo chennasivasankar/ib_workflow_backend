@@ -232,7 +232,6 @@ class CreateTaskInteractor:
         action_type = self.action_storage.get_action_type_for_given_action_id(
             action_id=task_dto.action_id)
         self._validate_task_details(task_dto, action_type)
-        self._validate_same_gof_order(task_dto.gof_fields_dtos)
         base_validations_interactor = \
             TemplateGoFsFieldsBaseValidationsInteractor(
                 self.task_storage, self.gof_storage,
@@ -346,35 +345,6 @@ class CreateTaskInteractor:
             if gof_matched:
                 return task_gof_details_dto.task_gof_id
         return
-
-    def _validate_same_gof_order(
-            self, gof_fields_dtos: List[GoFFieldsDTO]
-    ) -> Optional[DuplicateSameGoFOrderForAGoF]:
-        from collections import defaultdict
-        gof_with_order_dict = defaultdict(list)
-        for gof_fields_dto in gof_fields_dtos:
-            gof_with_order_dict[
-                gof_fields_dto.gof_id].append(gof_fields_dto.same_gof_order)
-        for gof_id, same_gof_orders in gof_with_order_dict.items():
-            duplicate_same_gof_orders = self._get_duplicates_in_given_list(
-                same_gof_orders)
-            if duplicate_same_gof_orders:
-                raise DuplicateSameGoFOrderForAGoF(gof_id,
-                                                   duplicate_same_gof_orders)
-        return
-
-    @staticmethod
-    def _get_duplicates_in_given_list(values: List) -> List:
-        duplicate_values = list(
-            set(
-                [
-                    value
-                    for value in values if values.count(value) > 1
-                ]
-            )
-        )
-        duplicate_values.sort()
-        return duplicate_values
 
     def _validate_task_details(
             self, task_dto: Union[CreateTaskDTO, UpdateTaskDTO],

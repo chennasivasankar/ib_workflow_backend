@@ -154,4 +154,8 @@ class UpdateTaskPresenterInterface(abc.ABC):
     def raise_invalid_stage_id(self, err: InvalidStageId):
         pass
 
+    @abc.abstractmethod
+    def raise_duplicate_same_gof_orders_for_a_gof(self, err):
+        pass
+
 

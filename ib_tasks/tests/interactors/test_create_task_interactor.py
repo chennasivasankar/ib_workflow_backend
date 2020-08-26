@@ -5,6 +5,8 @@ import freezegun
 import mock
 import pytest
 
+from ib_tasks.exceptions.gofs_custom_exceptions import \
+    DuplicateSameGoFOrderForAGoF
 from ib_tasks.interactors.create_or_update_task.create_task_interactor import \
     CreateTaskInteractor
 from ib_tasks.tests.factories.interactor_dtos import GoFFieldsDTOFactory, \
@@ -407,21 +409,23 @@ class TestCreateTaskInteractor:
             task_template_storage_mock, create_task_storage_mock, storage_mock,
             field_storage_mock, stage_storage_mock, action_storage_mock,
             elastic_storage_mock, presenter_mock, mock_object,
-            task_stage_storage_mock
+            task_stage_storage_mock,
+            perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
         given_gof_id = "gof_0"
         given_same_gof_order = 1
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
-            size=3, gof_id=given_gof_id, same_gof_order=given_same_gof_order
-        )
-
+            size=3, gof_id=given_gof_id, same_gof_order=given_same_gof_order)
+        perform_base_validations_for_template_gofs_and_fields_mock.side_effect = \
+            DuplicateSameGoFOrderForAGoF(given_gof_id, [given_same_gof_order])
         task_dto = CreateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
         task_template_storage_mock.check_is_template_exists.return_value = \
             True
         task_template_storage_mock.get_project_templates.return_value = [
             task_dto.task_template_id]
         storage_mock.validate_action.return_value = True
+
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,

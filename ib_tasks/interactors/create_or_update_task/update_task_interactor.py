@@ -17,7 +17,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidFileFormat
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
     DuplicateFieldIdsToGoF
-from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
+from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
+    DuplicateSameGoFOrderForAGoF
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.stage_custom_exceptions import \
@@ -99,6 +100,8 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter.raise_start_date_is_ahead_of_due_date(err)
         except DueTimeHasExpiredForToday as err:
             return presenter.raise_due_time_has_expired_for_today(err)
+        except DuplicateSameGoFOrderForAGoF as err:
+            return presenter.raise_duplicate_same_gof_orders_for_a_gof(err)
         except InvalidGoFIds as err:
             return presenter.raise_invalid_gof_ids(err)
         except InvalidFieldIds as err:

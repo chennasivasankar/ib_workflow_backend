@@ -35,6 +35,19 @@ class SaveAndActOnATaskPresenterImplementation(
     SaveAndActOnATaskPresenterInterface, HTTPResponseMixin
 ):
 
+    def raise_duplicate_same_gof_orders_for_a_gof(self, err):
+        from ib_tasks.constants.exception_messages import \
+            DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF
+        response_message = DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF[0].format(
+            err.gof_id, err.same_gof_orders
+        )
+        data = {
+            "response": response_message,
+            "http_status_code": 400,
+            "res_status": DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
     def raise_invalid_stage_id(self, err: InvalidStageId):
         from ib_tasks.constants.exception_messages import INVALID_STAGE_ID
         message = INVALID_STAGE_ID[0].format(err.stage_id)
