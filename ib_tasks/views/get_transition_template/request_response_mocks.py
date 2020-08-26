@@ -25,7 +25,8 @@ RESPONSE_200_JSON = """
                     "tooltip": "string",
                     "help_text": "string",
                     "placeholder_text": "string",
-                    "is_field_writable": true
+                    "is_field_writable": true,
+                    "order": 1
                 }
             ]
         }

@@ -261,7 +261,8 @@ class GetTaskTemplatesPresenterImplementation(
             "tooltip": field_dto.tooltip,
             "help_text": field_dto.help_text,
             "placeholder_text": field_dto.placeholder_text,
-            "is_field_writable": field_with_permissions_dto.is_field_writable
+            "is_field_writable": field_with_permissions_dto.is_field_writable,
+            "order": field_dto.order
         }
         return field_dict
 

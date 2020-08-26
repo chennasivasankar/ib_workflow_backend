@@ -56,7 +56,7 @@ def populate_data(spread_sheet_name: str):
         spread_sheet_name=spread_sheet_name)
 
     fields = PopulateFields()
-    fields.create_fields(spread_sheet_name=spread_sheet_name)
+    fields.create_or_update_fields(spread_sheet_name=spread_sheet_name)
 
     global_constants = PopulateGlobalConstantsToTemplate()
     global_constants.populate_global_constants_to_template(

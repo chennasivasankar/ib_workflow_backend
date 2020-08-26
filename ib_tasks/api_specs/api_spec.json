@@ -475,13 +475,17 @@
             },
             "is_field_writable": {
               "type": "boolean"
+            },
+            "order": {
+              "type": "integer"
             }
           },
           "required": [
             "field_id",
             "display_name",
             "is_field_required",
-            "is_field_writable"
+            "is_field_writable",
+            "order"
           ]
         }
       ]
