@@ -48,7 +48,7 @@ class TestGetUserRoleDTOSOfATeam:
         ]
 
         # Act
-        response = user_storage.get_user_role_dtos_of_a_team(
+        response = user_storage.get_user_role_dtos_of_a_project(
             user_ids=user_ids, project_id=project_id
         )
 

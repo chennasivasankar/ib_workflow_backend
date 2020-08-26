@@ -790,8 +790,7 @@
       "in": "path",
       "required": true,
       "description": "team_id to identify a team",
-      "type": "string",
-      "format": "uuid"
+      "type": "string"
     },
     "LevelHierarchyPathParameter": {
       "name": "level_hierarchy",

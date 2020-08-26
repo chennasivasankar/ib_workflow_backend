@@ -33,15 +33,15 @@ class GetSpecificProjectDetailsInteractor:
 
     def get_specific_project_details(self, project_id: str):
         '''
-        TODO: validate team_id
+        TODO: validate project id
         '''
-        basic_user_details_dtos = self.user_storage.get_team_basic_user_dtos(
+        basic_user_details_dtos = self.user_storage.get_basic_user_dtos_for_given_project(
             project_id=project_id)
         user_ids = [
             basic_user_details_dto.user_id
             for basic_user_details_dto in basic_user_details_dtos
         ]
-        user_role_dtos = self.user_storage.get_user_role_dtos_of_a_team(
+        user_role_dtos = self.user_storage.get_user_role_dtos_of_a_project(
             user_ids=user_ids, project_id=project_id
         )
         return basic_user_details_dtos, user_role_dtos
