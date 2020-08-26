@@ -114,7 +114,6 @@ class ProjectRoleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ProjectRole
 
-    id = factory.Faker("uuid4")
     role_id = factory.sequence(lambda number: "ROLE_%s" % number)
     name = factory.sequence(lambda number: "role %s" % number)
     description = factory.Sequence(lambda n: 'payment_description%s' % n)

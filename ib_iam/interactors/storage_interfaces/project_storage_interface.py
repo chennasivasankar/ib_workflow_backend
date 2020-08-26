@@ -1,8 +1,8 @@
 import abc
 from typing import List
 
-from ib_iam.app_interfaces.dtos import UserIdWithTeamIDAndNameDTO
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
+from ib_iam.interactors.storage_interfaces.dtos import ProjectTeamIdsDTO, \
+    ProjectsWithTotalCountDTO, PaginationDTO, ProjectRoleDTO, ProjectDTO
 
 
 class ProjectStorageInterface(abc.ABC):
@@ -17,7 +17,13 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_project_dtos(self) -> List[ProjectDTO]:
+    def get_projects_with_total_count_dto(
+            self, pagination_dto: PaginationDTO) -> ProjectsWithTotalCountDTO:
+        pass
+
+    @abc.abstractmethod
+    def get_project_team_ids_dtos(
+            self, project_ids: List[str]) -> List[ProjectTeamIdsDTO]:
         pass
 
     @abc.abstractmethod
@@ -48,6 +54,10 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_all_project_roles(self) -> List[ProjectRoleDTO]:
+        pass
+
+    @abc.abstractmethod
     def is_user_in_a_project(
             self, user_id: str, project_id: str) -> bool:
         pass
@@ -65,7 +75,6 @@ class ProjectStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_valid_team_ids(self, project_id) -> List[str]:
         pass
-
 
     @abc.abstractmethod
     def is_user_in_a_project(

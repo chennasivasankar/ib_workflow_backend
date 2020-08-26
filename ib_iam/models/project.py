@@ -1,8 +1,17 @@
+import uuid
+
 from django.db import models
+
+
+def generate_project_id():
+    from ib_iam.constants.config import PROJECT_ID_PREFIX
+    project_id = PROJECT_ID_PREFIX.format(str(uuid.uuid4()))
+    return project_id
 
 
 class Project(models.Model):
     project_id = models.CharField(
+        default=generate_project_id,
         primary_key=True,
         max_length=100
     )
@@ -17,4 +26,3 @@ class ProjectTeam(models.Model):
 
     class Meta:
         unique_together = ("team", "project")
-

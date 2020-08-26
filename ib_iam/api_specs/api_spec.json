@@ -308,12 +308,16 @@
         "companies": {
           "$ref": "#/definitions/Companies"
         },
+        "roles": {
+          "$ref": "#/definitions/Roles"
+        },
         "teams": {
           "$ref": "#/definitions/Teams"
         }
       },
       "required": [
         "companies",
+        "roles",
         "teams"
       ]
     },
@@ -588,12 +592,20 @@
         "company_id"
       ]
     },
-    "Project": {
+    "ProjectId": {
       "type": "object",
       "properties": {
         "project_id": {
           "type": "string"
-        },
+        }
+      },
+      "required": [
+        "project_id"
+      ]
+    },
+    "ProjectDetails": {
+      "type": "object",
+      "properties": {
         "name": {
           "type": "string"
         },
@@ -605,8 +617,75 @@
         }
       },
       "required": [
-        "project_id",
         "name"
+      ]
+    },
+    "Project": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProjectDetails"
+        },
+        {
+          "$ref": "#/definitions/ProjectId"
+        }
+      ]
+    },
+    "ProjectWithExtraFields": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Project"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "teams": {
+              "$ref": "#/definitions/Teams"
+            },
+            "roles": {
+              "$ref": "#/definitions/Roles"
+            }
+          },
+          "required": [
+            "teams",
+            "roles"
+          ]
+        }
+      ]
+    },
+    "ProjectsWithTotalProjectsCount": {
+      "type": "object",
+      "properties": {
+        "total_projects_count": {
+          "type": "integer"
+        },
+        "projects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ProjectWithExtraFields"
+          }
+        }
+      },
+      "required": [
+        "total_projects_count",
+        "projects"
+      ]
+    },
+    "ProjectWithTeamIds": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProjectDetails"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "team_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
       ]
     },
     "LevelDetails": {
@@ -993,6 +1072,23 @@
             }
           }
         }
+      }
+    },
+    "AddProjectParameter": {
+      "name": "add_project",
+      "in": "body",
+      "required": true,
+      "description": "parameters or details to create/add a project",
+      "schema": {
+        "$ref": "#/definitions/ProjectWithTeamIds"
+      }
+    },
+    "UpdateProjectParameter": {
+      "name": "update_project",
+      "in": "body",
+      "description": "details that are to be updated of a project",
+      "schema": {
+        "$ref": "#/definitions/ProjectWithTeamIds"
       }
     }
   },
@@ -2067,10 +2163,13 @@
     "SuccessForGetProjectsResponse": {
       "description": "returns all Projects",
       "schema": {
-        "type": "array",
-        "items": {
-          "$ref": "#/definitions/Project"
-        }
+        "$ref": "#/definitions/ProjectsWithTotalProjectsCount"
+      }
+    },
+    "SuccessfullyCreatedForAddProjectResponse": {
+      "description": "Project Created successfully",
+      "schema": {
+        "$ref": "#/definitions/ProjectId"
       }
     },
     "GetSpecificProjectDetailsSuccessResponse": {
@@ -2933,6 +3032,12 @@
           }
         ],
         "parameters": [
+          {
+            "$ref": "#/parameters/OffsetQueryParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitQueryParameter"
+          }
         ],
         "responses": {
           "200": {
@@ -2961,6 +3066,57 @@
         "responses": {
           "200": {
             "$ref": "#/responses/GetTeamMembersSuccessResponse"
+          }
+        }
+      }
+    },
+    "/project/add/v1/": {
+      "post": {
+        "summary": "Add Project",
+        "description": "Adds a project",
+        "operationId": "add_project",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/AddProjectParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/SuccessfullyCreatedForAddProjectResponse"
+          }
+        }
+      }
+    },
+    "/project/{project_id}/v1/": {
+      "put": {
+        "summary": "Update Project",
+        "description": "Updates project details",
+        "operationId": "update_project_details",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/UpdateProjectParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project details updated Successfully"
           }
         }
       }

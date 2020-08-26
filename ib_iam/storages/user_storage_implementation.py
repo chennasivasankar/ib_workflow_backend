@@ -287,7 +287,7 @@ class UserStorageImplementation(UserStorageInterface):
         # todo: refactor names
         user_roles_queryset = \
             ProjectRole.objects.filter(project_id=project_id).values_list(
-                'id', flat=True)
+                'role_id', flat=True)
         user_roles_list = list(user_roles_queryset)
         return user_roles_list
 

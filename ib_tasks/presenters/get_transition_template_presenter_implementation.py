@@ -119,7 +119,8 @@ class GetTransitionTemplatePresenterImplementation(
 
     @staticmethod
     def _get_field_details_as_dict(field_dto: FieldDTO) -> Dict:
-        #ToDo Remove is_field_readable in fields details
+        # ToDo Remove is_field_readable in fields details
+        # TODO change order attribute to gof_order
         field_dict = {
             "field_id": field_dto.field_id,
             'gof_id': field_dto.gof_id,
@@ -133,7 +134,8 @@ class GetTransitionTemplatePresenterImplementation(
             "tooltip": field_dto.tooltip,
             "help_text": field_dto.help_text,
             "placeholder_text": field_dto.placeholder_text,
-            "is_field_writable": True
+            "is_field_writable": True,
+            "field_order": field_dto.order
         }
         return field_dict
 

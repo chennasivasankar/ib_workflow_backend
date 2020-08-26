@@ -187,13 +187,34 @@ class ProjectDTO:
     description: Optional[str] = None
     logo_url: Optional[str] = None
 
+
 @dataclass
 class SearchableDetailsDTO:
     search_type: Searchable
     id: Union[int, str]
     value: str
 
+
+@dataclass
+class ProjectTeamIdsDTO:
+    project_id: str
+    team_ids: List[str]
+
+
+@dataclass
+class ProjectsWithTotalCountDTO:
+    total_projects_count: int
+    projects: List[ProjectDTO]
+
+
 @dataclass
 class MemberIdWithSubordinateMemberIdsDTO:
     member_id: str
     subordinate_member_ids: List[str]
+
+
+@dataclass
+class ProjectRoleDTO:
+    project_id: str
+    role_id: str
+    name: str

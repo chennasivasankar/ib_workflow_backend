@@ -1,10 +1,10 @@
 from typing import List
 
-from ib_iam.app_interfaces.dtos import UserIdWithTeamIDAndNameDTO
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
+from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, \
+    ProjectsWithTotalCountDTO, PaginationDTO, ProjectTeamIdsDTO, ProjectRoleDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
-from ib_iam.models import Project, ProjectTeam, UserTeam
+from ib_iam.models import Project, ProjectTeam, ProjectRole
 
 
 class ProjectStorageImplementation(ProjectStorageInterface):
@@ -25,12 +25,40 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             .values_list("project_id", flat=True)
         return list(project_ids)
 
-    def get_project_dtos(self) -> List[ProjectDTO]:
+    def get_projects_with_total_count_dto(
+            self, pagination_dto: PaginationDTO) -> ProjectsWithTotalCountDTO:
+        # todo update its test method with new things
         project_objects = Project.objects.all()
+        total_projects_count = len(project_objects)
+        offset = pagination_dto.offset
+        project_objects = project_objects[offset:offset + pagination_dto.limit]
         project_dtos = [
             self._convert_to_project_dto(project_object=project_object)
             for project_object in project_objects]
-        return project_dtos
+        projects_with_total_count = ProjectsWithTotalCountDTO(
+            projects=project_dtos,
+            total_projects_count=total_projects_count)
+        return projects_with_total_count
+
+    def get_project_team_ids_dtos(
+            self, project_ids: List[str]) -> List[ProjectTeamIdsDTO]:
+        # todo write tests for this method
+        project_teams = ProjectTeam.objects.filter(
+            project__project_id__in=project_ids
+        ).values_list('project__project_id', 'team__team_id')
+        from collections import defaultdict
+        project_team_ids_dictionary = defaultdict(list)
+        for project_team in project_teams:
+            project_id = str(project_team[0])
+            project_team_ids_dictionary[project_id].extend(
+                [str(project_team[1])])
+        project_teams_ids_dtos = [
+            ProjectTeamIdsDTO(
+                project_id=project_id,
+                team_ids=project_team_ids_dictionary[project_id],
+            ) for project_id in project_ids
+        ]
+        return project_teams_ids_dtos
 
     @staticmethod
     def _convert_to_project_dto(project_object):
@@ -109,3 +137,29 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             project_id=project_id
         ).values_list('team__team_id', flat=True))
         return list(map(str, team_ids))
+
+    def is_user_in_a_project(
+            self, user_id: str, project_id: str) -> bool:
+        from ib_iam.models import UserRole
+        user_role_objects = UserRole.objects.filter(
+            user_id=user_id, project_role__project_id=project_id
+        )
+        return user_role_objects.exists()
+
+    def is_valid_project_id(self, project_id: str) -> bool:
+        project_objects = Project.objects.filter(project_id=project_id)
+        return project_objects.exists()
+
+    def get_all_project_roles(self) -> List[ProjectRoleDTO]:
+        project_role_objects = ProjectRole.objects.all()
+        project_role_dtos = [self._get_project_role_dto(project_role_object)
+                             for project_role_object in project_role_objects]
+        return project_role_dtos
+
+    @staticmethod
+    def _get_project_role_dto(project_role_object):
+        project_role_dto = ProjectRoleDTO(
+            project_id=project_role_object.project_id,
+            role_id=project_role_object.role_id,
+            name=project_role_object.name)
+        return project_role_dto

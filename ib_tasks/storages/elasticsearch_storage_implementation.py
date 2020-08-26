@@ -157,16 +157,6 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             task_ids=task_ids
         )
 
-    @staticmethod
-    def _get_field_objects(field_dtos: List[ElasticFieldDTO]) -> List[Field]:
-        return [
-            Field(
-                field_id=field_dto.field_id,
-                value=field_dto.value
-            )
-            for field_dto in field_dtos
-        ]
-
     def filter_tasks_with_stage_ids(
             self, filter_dtos: List[ApplyFilterDTO], field_type_dtos: List[FieldTypeDTO],
             task_details_config: TaskDetailsConfigDTO) -> Tuple[
@@ -204,10 +194,8 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         return task_stage_dtos_list, total_tasks
 
     @staticmethod
-    def _get_task_stage_dtos(task_object: Task, stage_ids: List[str]) -> List[
-        TaskStageIdsDTO]:
-        stages = task_object.stages
-        stage_id = stages[0].stage_id
+    def _get_task_stage_dtos(task_object: Task, stage_ids: List[str]) \
+            -> List[TaskStageIdsDTO]:
         return [
             TaskStageIdsDTO(
                 task_id=task_object.task_id,
@@ -216,13 +204,6 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             )
             for stage in task_object.stages
             if stage.stage_id in stage_ids
-        ]
-
-    @staticmethod
-    def get_stage_objects(stages_ids: List[str]) -> List[Stage]:
-        return [
-            Stage(stage_id=stage_id)
-            for stage_id in stages_ids
         ]
 
     def validate_task_id_in_elasticsearch(self, task_id: int) -> bool:
@@ -250,7 +231,8 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             )
             if query is None:
                 query = current_queue
-            query = query & current_queue
+            else:
+                query = query & current_queue
 
         search = Search(index=TASK_INDEX_NAME)
         if query is None:
@@ -285,6 +267,10 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             )
         elif operation == Operators.LT.value:
             q_object = self._prepare_q_objects_for_lt_operation(
+                filter_dtos=filter_dtos
+            )
+        elif operation == Operators.CONTAINS.value:
+            q_object = self._prepare_q_objects_for_contains_operation(
                 filter_dtos=filter_dtos
             )
         return q_object
@@ -378,6 +364,20 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             current_queue = Q('term', project_id__keyword=item.project_id) \
                             & Q('term', template_id__keyword=item.template_id) \
                             & Q('range', **{item.field_id: {"lt": int(item.value)}})
+            if counter == 0:
+                query = current_queue
+            else:
+                query = query & current_queue
+        return query
+
+    @staticmethod
+    def _prepare_q_objects_for_contains_operation(filter_dtos: List[ApplyFilterDTO]):
+        query = None
+        for counter, item in enumerate(filter_dtos):
+            value = "*" + item.value + "*"
+            current_queue = Q('term', project_id__keyword=item.project_id) \
+                            & Q('term', template_id__keyword=item.template_id) \
+                            & Q('wildcard', **{item.field_id: {"value": value}})
             if counter == 0:
                 query = current_queue
             else:

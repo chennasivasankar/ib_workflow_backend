@@ -106,6 +106,12 @@ class TeamStorageImplementation(TeamStorageInterface):
         team_ids = list(map(str, team_ids))
         return team_ids
 
+    def get_team_dtos(self, team_ids: List[str]) -> List[TeamDTO]:
+        #todo write tests for this method
+        team_objects = Team.objects.filter(team_id__in=team_ids)
+        team_dtos = self._get_team_dtos(team_objects)
+        return team_dtos
+
     @staticmethod
     def _get_team_dtos(team_objects):
         team_dtos = [

@@ -18,7 +18,7 @@ class TestCase01GetProjectsAPITestCase(TestUtils):
     def test_case(self, setup, snapshot):
         body = {}
         path_params = {}
-        query_params = {}
+        query_params = {'offset': 0, 'limit': 5}
         headers = {}
         self.make_api_call(body=body,
                            path_params=path_params,
@@ -28,10 +28,17 @@ class TestCase01GetProjectsAPITestCase(TestUtils):
 
     @pytest.fixture
     def setup(self):
-        from ib_iam.tests.factories.models import ProjectFactory
+        from ib_iam.tests.factories.models import \
+            ProjectFactory, TeamFactory, ProjectTeamFactory, ProjectRoleFactory
         ProjectFactory.reset_sequence(1)
-        project_ids = ["641bfcc5-e1ea-4231-b482-f7f34fb5c7c4",
-                       "641bfcc5-e1ea-4231-b482-f7f34fb5c7c5"]
-        project_objects = [ProjectFactory(project_id=project_id)
-                           for project_id in project_ids]
-        return project_objects
+        TeamFactory.reset_sequence(1)
+        ProjectRoleFactory.reset_sequence(1)
+        project_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+        team_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c5"
+        role_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c6"
+        project_object = ProjectFactory(project_id=project_id)
+        team_object = TeamFactory(team_id=team_id)
+        project_teams = [ProjectTeamFactory(project_id=project_id,
+                                            team_id=team_id)]
+        project_roles = [ProjectRoleFactory(role_id=role_id,
+                                            project=project_object)]
