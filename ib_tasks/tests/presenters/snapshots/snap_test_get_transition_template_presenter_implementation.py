@@ -23,6 +23,7 @@ snapshots['TestGetTransitionTemplatePresenterImplementation.test_when_complete_t
                     'display_name': 'field name',
                     'error_msg': None,
                     'field_id': 'field_1',
+                    'field_order': 1,
                     'field_type': 'DROPDOWN',
                     'field_values': [
                         'Mr',
@@ -32,7 +33,6 @@ snapshots['TestGetTransitionTemplatePresenterImplementation.test_when_complete_t
                     'help_text': None,
                     'is_field_required': True,
                     'is_field_writable': True,
-                    'order': 1,
                     'placeholder_text': None,
                     'tooltip': None,
                     'validation_regex': None
@@ -42,6 +42,7 @@ snapshots['TestGetTransitionTemplatePresenterImplementation.test_when_complete_t
                     'display_name': 'field name',
                     'error_msg': None,
                     'field_id': 'field_3',
+                    'field_order': 3,
                     'field_type': 'DROPDOWN',
                     'field_values': [
                         'Mr',
@@ -51,7 +52,6 @@ snapshots['TestGetTransitionTemplatePresenterImplementation.test_when_complete_t
                     'help_text': None,
                     'is_field_required': True,
                     'is_field_writable': True,
-                    'order': 3,
                     'placeholder_text': None,
                     'tooltip': None,
                     'validation_regex': None
@@ -70,6 +70,7 @@ snapshots['TestGetTransitionTemplatePresenterImplementation.test_when_complete_t
                     'display_name': 'field name',
                     'error_msg': None,
                     'field_id': 'field_2',
+                    'field_order': 2,
                     'field_type': 'DROPDOWN',
                     'field_values': [
                         'Mr',
@@ -79,7 +80,6 @@ snapshots['TestGetTransitionTemplatePresenterImplementation.test_when_complete_t
                     'help_text': None,
                     'is_field_required': True,
                     'is_field_writable': True,
-                    'order': 2,
                     'placeholder_text': None,
                     'tooltip': None,
                     'validation_regex': None
@@ -89,6 +89,7 @@ snapshots['TestGetTransitionTemplatePresenterImplementation.test_when_complete_t
                     'display_name': 'field name',
                     'error_msg': None,
                     'field_id': 'field_4',
+                    'field_order': 4,
                     'field_type': 'DROPDOWN',
                     'field_values': [
                         'Mr',
@@ -98,7 +99,6 @@ snapshots['TestGetTransitionTemplatePresenterImplementation.test_when_complete_t
                     'help_text': None,
                     'is_field_required': True,
                     'is_field_writable': True,
-                    'order': 4,
                     'placeholder_text': None,
                     'tooltip': None,
                     'validation_regex': None

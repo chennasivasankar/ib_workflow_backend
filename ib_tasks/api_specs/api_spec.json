@@ -476,7 +476,7 @@
             "is_field_writable": {
               "type": "boolean"
             },
-            "order": {
+            "field_order": {
               "type": "integer"
             }
           },
@@ -485,7 +485,7 @@
             "display_name",
             "is_field_required",
             "is_field_writable",
-            "order"
+            "field_order"
           ]
         }
       ]
