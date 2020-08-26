@@ -61,5 +61,4 @@ class GetProjectsInteractor:
         for project_team_ids_dto in project_team_ids_dtos:
             team_ids.extend(project_team_ids_dto.team_ids)
         unique_team_ids = list(set(team_ids))
-        unique_team_ids
         return unique_team_ids
