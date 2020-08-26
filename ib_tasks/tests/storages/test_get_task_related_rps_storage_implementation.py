@@ -88,7 +88,7 @@ class TestGetTaskRPs:
 
     def test_get_rp_id_if_exists(self, populate_data):
         # Arrange
-        expected_output = '123e4567-e89b-12d3-a456-426614174103'
+        expected_output = '123e4567-e89b-12d3-a456-426614174053'
         task_id = 1
         stage_id = 1
         user_id = "123e4567-e89b-12d3-a456-426614174000"
@@ -104,10 +104,10 @@ class TestGetTaskRPs:
 
     def test_get_rp_ids(self, populate_data):
         # Arrange
-        expected_output = ['123e4567-e89b-12d3-a456-426614174100',
-                           '123e4567-e89b-12d3-a456-426614174101',
-                           '123e4567-e89b-12d3-a456-426614174102',
-                           '123e4567-e89b-12d3-a456-426614174103']
+        expected_output = ['123e4567-e89b-12d3-a456-426614174050',
+                           '123e4567-e89b-12d3-a456-426614174051',
+                           '123e4567-e89b-12d3-a456-426614174052',
+                           '123e4567-e89b-12d3-a456-426614174053']
         task_id = 1
         stage_id = 1
         user_id = "123e4567-e89b-12d3-a456-426614174000"
