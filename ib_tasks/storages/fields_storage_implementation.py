@@ -23,6 +23,11 @@ from ib_tasks.models import CurrentTaskStage, Stage, TaskGoFField, FieldRole, \
 
 class FieldsStorageImplementation(FieldsStorageInterface):
 
+    def get_virtual_stage_ids_in_given_stage_ids(self, db_stage_ids):
+        virtual_stage_ids = Stage.objects.filter(
+            id__in=db_stage_ids, value=-1).values_list('id', flat=True)
+        return virtual_stage_ids
+
     def get_field_ids_related_to_given_gof_ids(self, gof_ids: List[str]) -> \
             List[FieldIdWithGoFIdDTO]:
         field_objects = Field.objects.filter(gof_id__in=gof_ids)
@@ -222,7 +227,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                 placeholder_text=field_obj.placeholder_text,
                 error_message=field_obj.error_messages,
                 allowed_formats=field_obj.allowed_formats,
-                validation_regex=field_obj.validation_regex
+                validation_regex=field_obj.validation_regex,
+                order=field_obj.order
             )
             for field_obj in field_objs
         ]
