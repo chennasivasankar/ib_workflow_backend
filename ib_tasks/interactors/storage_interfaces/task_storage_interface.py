@@ -140,3 +140,7 @@ class TaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_user_team_id(self, user_id: str, task_id: int) -> str:
         pass
+
+    @abc.abstractmethod
+    def get_user_missed_the_task_due_time(self, task_id: int, user_id: str, stage_id: int):
+        pass

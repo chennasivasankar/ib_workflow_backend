@@ -222,7 +222,8 @@
           "type": "string"
         },
         "stage_id": {
-          "type": "string"
+          "type": "integer",
+          "format": "int64"
         }
       },
       "required": [
@@ -1592,7 +1593,8 @@
             "type": "string"
           },
           "stage_id": {
-            "type": "string"
+            "type": "integer",
+            "format": "int64"
           }
         },
         "required": [

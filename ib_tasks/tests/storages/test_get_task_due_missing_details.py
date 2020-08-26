@@ -54,7 +54,7 @@ class TestGetTaskDueMissingDetails:
         # Arrange
         task_id = 1
         user_id = "123e4567-e89b-12d3-a456-426614174000"
-        stage_id = "stage_id_0"
+        stage_id = 1
         storage = StorageImplementation()
         expected_response = True
 
@@ -70,7 +70,7 @@ class TestGetTaskDueMissingDetails:
         # Arrange
         task_id = 1
         user_id = "user_id_1"
-        stage_id = "stage_id_1"
+        stage_id = 1
         storage = StorageImplementation()
         expected_response = False
 
@@ -85,7 +85,7 @@ class TestGetTaskDueMissingDetails:
     def test_get_due_details_of_task_given_task_id(self, populate_data, snapshot):
         # Arrange
         task_id = 1
-        stage_id = "stage_id_0"
+        stage_id = 1
         storage = StorageImplementation()
 
         # Act
@@ -99,7 +99,7 @@ class TestGetTaskDueMissingDetails:
         # Arrange
         TaskFactory.reset_sequence()
         tasks = TaskFactory.create_batch(size=3)
-        stage_id = "stage_id_1"
+        stage_id = 1
         TaskStageHistoryModelFactory.reset_sequence()
         TaskStageHistoryModelFactory(task=tasks[0])
         task_id = 1

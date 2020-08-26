@@ -1,3 +1,5 @@
+import datetime
+
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageIdException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId, \
     UserIsNotAssigneeToTask
@@ -48,6 +50,10 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
         rp_ids = []
         rp_details_dtos = []
         stage_id = parameters.stage_id
+        due_date = self.task_storage.get_user_missed_the_task_due_time(
+            task_id, user_id, stage_id)
+        if due_date > datetime.datetime.now():
+            return []
         user_team_id = self.task_storage.get_user_team_id(user_id, task_id)
         due_missed_count = self.storage.get_due_missed_count(task_id, user_id, stage_id)
         from ib_tasks.adapters.service_adapter import get_service_adapter
@@ -66,13 +72,13 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
 
         return rp_details_dtos
 
-    def _validate_stage_id(self, stage_id: str):
+    def _validate_stage_id(self, stage_id: int):
         is_valid = self.storage.validate_stage_id(stage_id)
         if not is_valid:
             raise InvalidStageIdException
 
     def _validate_if_task_is_assigned_to_user(self, task_id: int, user_id: str,
-                                              stage_id: str):
+                                              stage_id: int):
         is_assigned = self.storage.validate_if_task_is_assigned_to_user_in_given_stage(
             task_id, user_id, stage_id
         )

@@ -89,11 +89,11 @@ class StorageInterface(abc.ABC):
     @abc.abstractmethod
     def validate_if_task_is_assigned_to_user_in_given_stage(self,
                                                             task_id: int, user_id: str,
-                                                            stage_id: str) -> bool:
+                                                            stage_id: int) -> bool:
         pass
 
     @abc.abstractmethod
-    def get_task_due_details(self, task_id: int, stage_id: str) -> \
+    def get_task_due_details(self, task_id: int, stage_id: int) -> \
             List[TaskDueMissingDTO]:
         pass
 
@@ -102,7 +102,7 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def validate_stage_id(self, stage_id: str) -> bool:
+    def validate_stage_id(self, stage_id: int) -> bool:
         pass
 
     @abc.abstractmethod

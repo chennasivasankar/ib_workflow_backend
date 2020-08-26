@@ -702,17 +702,17 @@ class StorageImplementation(StorageInterface):
     def validate_if_task_is_assigned_to_user_in_given_stage(self,
                                                             task_id: int,
                                                             user_id: str,
-                                                            stage_id: str) \
+                                                            stage_id: int) \
             -> bool:
         is_assigned = TaskStageHistory.objects.filter(
-            task_id=task_id, assignee_id=user_id, stage__stage_id=stage_id
+            task_id=task_id, assignee_id=user_id, stage_id=stage_id
         ).exists()
         return is_assigned
 
-    def get_task_due_details(self, task_id: int, stage_id: str) -> \
+    def get_task_due_details(self, task_id: int, stage_id: int) -> \
             List[TaskDueMissingDTO]:
         task_due_objs = (UserTaskDelayReason.objects.filter(task_id=task_id,
-                                                            stage__stage_id=stage_id)
+                                                            stage_id=stage_id)
                          .values('due_datetime', 'count', 'reason', 'user_id',
                                  'task__task_display_id'))
 
@@ -743,19 +743,18 @@ class StorageImplementation(StorageInterface):
         updated_due_datetime = due_details.due_date_time
         count = UserTaskDelayReason.objects.filter(
             task_id=task_id, user_id=user_id).count()
-        stage = Stage.objects.get(stage_id=stage_id)
 
         UserTaskDelayReason.objects.create(user_id=user_id, task_id=task_id,
                                            due_datetime=updated_due_datetime,
                                            count=count + 1,
                                            reason_id=reason_id,
-                                           stage=stage,
+                                           stage_id=stage_id,
                                            reason=due_details.reason)
         Task.objects.filter(pk=task_id, taskstagehistory__assignee_id=user_id
                             ).update(due_date=updated_due_datetime)
 
-    def validate_stage_id(self, stage_id: str) -> bool:
-        does_exists = Stage.objects.filter(stage_id=stage_id).exists()
+    def validate_stage_id(self, stage_id: int) -> bool:
+        does_exists = Stage.objects.filter(id=stage_id).exists()
         return does_exists
 
     def get_due_missed_count(self, task_id: int, user_id: str,

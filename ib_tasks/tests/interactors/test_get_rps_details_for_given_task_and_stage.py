@@ -1,3 +1,4 @@
+import datetime
 from unittest.mock import create_autospec, Mock, call
 
 import pytest
@@ -120,7 +121,7 @@ class TestGetTaskRelatedRps:
         from ib_tasks.tests.common_fixtures.adapters.auth_service import \
             get_user_dtos_given_user_ids
         user_details_mock = get_user_dtos_given_user_ids(mocker)
-        storage.get_due_missed_count.return_value = 2
+        task_storage.get_user_missed_the_task_due_time.return_value = datetime.datetime.now()
         presenter_mock.response_for_get_rps_details.return_value = expected_response
 
         interactor = GetTaskRPsInteractor(storage=storage, task_storage=task_storage)
