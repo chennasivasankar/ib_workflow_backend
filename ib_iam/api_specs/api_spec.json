@@ -868,7 +868,7 @@
       "name": "project_id",
       "in": "path",
       "required": true,
-      "description": "team_id to identify a team",
+      "description": "project_id to identify a project",
       "type": "string"
     },
     "LevelHierarchyPathParameter": {
