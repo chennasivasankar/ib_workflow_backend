@@ -353,3 +353,16 @@ class ProjectTaskTemplateFactory(factory.django.DjangoModelFactory):
 
     task_template = factory.SubFactory(TaskTemplateFactory)
     project_id = factory.sequence(lambda counter: "project_{}".format(counter))
+
+
+class TaskStageHistoryFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskStageHistory
+
+    task = factory.SubFactory(TaskFactory)
+    stage = factory.SubFactory(StageModelFactory)
+    team_id = factory.Sequence(lambda n: "TEAM_ID_%d" % n)
+    assignee_id = factory.sequence(
+        lambda n: "123e4567-e89b-12d3-a456-42661417400{}".format(n))
+    joined_at = datetime(2012, 10, 10)
+    left_at = datetime(2012, 10, 11)
