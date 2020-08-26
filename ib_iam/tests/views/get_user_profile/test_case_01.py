@@ -139,7 +139,7 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
         ProjectRoleFactory.reset_sequence(0)
         user_role_objects = [UserRoleFactory.create(
             user_id=user_role["user_id"],
-            role=self._get_or_create_role(role_id=user_role["role_id"])
+            project_role=self._get_or_create_role(role_id=user_role["role_id"])
         ) for user_role in user_roles]
         return user_role_objects
 

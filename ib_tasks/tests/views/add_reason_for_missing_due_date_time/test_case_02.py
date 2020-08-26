@@ -28,6 +28,7 @@ class TestCase02AddReasonForMissingDueDateTimeAPITestCase(TestUtils):
             'updated_due_date_time': '2020-09-10T11:30:45.34523',
             'reason_id': 1,
             'reason': 'string',
+            'stage_id': 1,
             "task_id": "iBWF-3"
         }
         path_params = {}

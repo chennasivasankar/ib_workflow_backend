@@ -20,38 +20,38 @@ class TestCase01UpdateUserProfileAPITestCase(TestUtils):
     #     user = UserAccount.objects.create(user_id=user_id)
     #     return user
 
-    @pytest.mark.django_db
-    def test_duplicate_role_ids(self, setup, snapshot):
-        body = {'name': 'username',
-                'email': 'jaswanthmamidipudi@gmail.com',
-                'profile_pic_url': 'https://sample.com',
-                'role_ids': ["1", "1"],
-                "cover_page_url": ""}
-        path_params = {}
-        query_params = {}
-        headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
-
-    @pytest.mark.django_db
-    def test_invalid_role_ids(self, setup, snapshot):
-        user_id = setup
-        body = {'name': 'username',
-                'email': 'jaswanthmamidipudi@gmail.com',
-                'profile_pic_url': 'https://sample.com',
-                'role_ids': ["2"],
-                "cover_page_url": ""}
-        path_params = {}
-        query_params = {}
-        headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+    # @pytest.mark.django_db
+    # def test_duplicate_role_ids(self, setup, snapshot):
+    #     body = {'name': 'username',
+    #             'email': 'jaswanthmamidipudi@gmail.com',
+    #             'profile_pic_url': 'https://sample.com',
+    #             'role_ids': ["1", "1"],
+    #             "cover_page_url": ""}
+    #     path_params = {}
+    #     query_params = {}
+    #     headers = {}
+    #     response = self.make_api_call(body=body,
+    #                                   path_params=path_params,
+    #                                   query_params=query_params,
+    #                                   headers=headers,
+    #                                   snapshot=snapshot)
+    #
+    # @pytest.mark.django_db
+    # def test_invalid_role_ids(self, setup, snapshot):
+    #     user_id = setup
+    #     body = {'name': 'username',
+    #             'email': 'jaswanthmamidipudi@gmail.com',
+    #             'profile_pic_url': 'https://sample.com',
+    #             'role_ids': ["2"],
+    #             "cover_page_url": ""}
+    #     path_params = {}
+    #     query_params = {}
+    #     headers = {}
+    #     response = self.make_api_call(body=body,
+    #                                   path_params=path_params,
+    #                                   query_params=query_params,
+    #                                   headers=headers,
+    #                                   snapshot=snapshot)
 
     @pytest.fixture
     def setup(self, api_user):

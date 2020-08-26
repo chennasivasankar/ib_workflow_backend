@@ -8,7 +8,7 @@ class ProjectService:
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         return ServiceInterface()
 
-    @staticmethod
-    def check_is_project_id_exists(project_id: str) -> bool:
-        # TODO: call service interface
-        return True
+    def get_valid_project_ids(self, project_ids: List[str]) -> List[str]:
+        valid_project_ids = \
+            self.interface.get_valid_project_ids(project_ids=project_ids)
+        return valid_project_ids

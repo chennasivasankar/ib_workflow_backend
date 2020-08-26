@@ -46,5 +46,5 @@ class CreateDataIntoElasticsearchInteractor:
             task_storage=self.task_storage
         )
         elasticsearch_interactor.create_or_update_task_in_elasticsearch(
-            task_dto=task_dto, stage_ids=stage_ids, task_id=task_id
+            task_dto=task_dto, task_id=task_id, stage_ids=stage_ids
         )

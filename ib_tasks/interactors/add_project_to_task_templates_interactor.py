@@ -44,10 +44,11 @@ class AddProjectToTaskTemplatesInteractor:
 
         from ib_tasks.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
-        is_valid_project = \
-            service_adapter.project_service.check_is_project_id_exists(
-                project_id=project_id)
-        is_invalid_project = not is_valid_project
+        project_id_list = [project_id]
+        valid_project_ids = \
+            service_adapter.project_service.get_valid_project_ids(
+                project_ids=project_id_list)
+        is_invalid_project = not valid_project_ids
         if is_invalid_project:
             from ib_tasks.exceptions.custom_exceptions import \
                 InvalidProjectId

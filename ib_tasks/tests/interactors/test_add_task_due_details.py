@@ -72,6 +72,9 @@ class TestAddTaskDueDetails:
             self, due_details):
         # Arrange
         task_display_id = "iBWF-1"
+        task_id = 1
+        user_id = due_details.user_id
+        stage_id = due_details.stage_id
         due_details.due_date_time = datetime(2020, 8, 10)
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(TaskDueDetailsPresenterInterface)
@@ -79,7 +82,7 @@ class TestAddTaskDueDetails:
         interactor = AddTaskDueDetailsInteractor(storage=storage,
                                                  task_storage=task_storage)
         task_storage.get_task_id_for_task_display_id.return_value = 1
-        storage.validate_if_task_is_assigned_to_user.return_value = False
+        storage.validate_if_task_is_assigned_to_user_in_given_stage.return_value = False
 
         # Act
         response = interactor.add_task_due_details_wrapper(
@@ -88,7 +91,8 @@ class TestAddTaskDueDetails:
             task_display_id=task_display_id)
 
         # Assert
-        storage.validate_if_task_is_assigned_to_user.assert_called_once()
+        storage.validate_if_task_is_assigned_to_user_in_given_stage.\
+            assert_called_once_with(task_id, user_id, stage_id)
         presenter.response_for_user_is_not_assignee_for_task.assert_called_once()
 
     def test_given_invalid_reason_id_raises_exception(
@@ -102,7 +106,7 @@ class TestAddTaskDueDetails:
         interactor = AddTaskDueDetailsInteractor(storage=storage,
                                                  task_storage=task_storage)
         task_storage.get_task_id_for_task_display_id.return_value = 1
-        storage.validate_if_task_is_assigned_to_user.return_value = True
+        storage.validate_if_task_is_assigned_to_user_in_given_stage.return_value = True
 
         # Act
         response = interactor.add_task_due_details_wrapper(
@@ -124,12 +128,13 @@ class TestAddTaskDueDetails:
             user_id=due_details.user_id,
             reason_id=due_details.reason_id,
             reason=due_details.reason,
+            stage_id=due_details.stage_id,
             due_date_time=due_details.due_date_time
         )
         interactor = AddTaskDueDetailsInteractor(storage=storage,
                                                  task_storage=task_storage)
         task_storage.get_task_id_for_task_display_id.return_value = 1
-        storage.validate_if_task_is_assigned_to_user.return_value = True
+        storage.validate_if_task_is_assigned_to_user_in_given_stage.return_value = True
 
         # Act
         response = interactor.add_task_due_details_wrapper(

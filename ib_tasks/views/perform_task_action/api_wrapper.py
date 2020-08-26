@@ -19,6 +19,7 @@ def api_wrapper(*args, **kwargs):
     task_id = request_dict['task_id']
     action_id = int(request_dict['action_id'])
     board_id = request_dict['board_id']
+    view_type = request_dict.get('view_type', None)
     from ib_tasks.storages.create_or_update_task_storage_implementation \
         import CreateOrUpdateTaskStorageImplementation
     from ib_tasks.storages.fields_storage_implementation \
@@ -43,7 +44,7 @@ def api_wrapper(*args, **kwargs):
         board_id=board_id, storage=storage, gof_storage=gof_storage,
         stage_storage=stage_storage, field_storage=field_storage,
         task_storage=task_storage, action_storage=action_storage,
-        task_stage_storage=task_stage_storage,
+        task_stage_storage=task_stage_storage, view_type=view_type,
         elasticsearch_storage=elastic_search_storage
     )
 
