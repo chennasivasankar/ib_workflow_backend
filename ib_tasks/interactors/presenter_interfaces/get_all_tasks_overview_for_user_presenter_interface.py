@@ -45,3 +45,7 @@ class GetFilteredTasksOverviewForUserPresenterInterface(GetAllTasksOverviewForUs
     @abc.abstractmethod
     def get_response_for_user_not_in_project(self):
         pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_filter_condition(self, error):
+        pass
