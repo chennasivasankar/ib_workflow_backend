@@ -10,6 +10,14 @@ from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
 class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
+    def get_project_id_for_board(self, board_id: str) -> str:
+        pass
+
+    @abc.abstractmethod
+    def get_project_id_for_given_column_id(self, column_id: str) -> str:
+        pass
+
+    @abc.abstractmethod
     def add_project_id_for_boards(
             self, project_boards_dtos: List[ProjectBoardDTO]):
         pass

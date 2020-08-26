@@ -11,6 +11,7 @@ from ib_tasks.tests.factories.models import TaskStageModelFactory
 class TestGetTaskDueMissingDetails:
 
     @pytest.fixture()
+    @freeze_time("2020-08-10 12:30:56")
     def populate_data(self):
         TaskFactory.reset_sequence()
         tasks = TaskFactory.create_batch(size=3)
@@ -19,7 +20,7 @@ class TestGetTaskDueMissingDetails:
         TaskDueDetailsFactory.reset_sequence()
         TaskStageHistoryModelFactory.reset_sequence()
         TaskStageHistoryModelFactory.create_batch(size=5, task=tasks[0])
-        TaskDueDetailsFactory.create_batch(task=tasks[0], size=2, count=1)
+        TaskDueDetailsFactory.create_batch(task=tasks[0], size=2, count=1, stage_id=1)
         TaskDueDetailsFactory.create_batch(task=tasks[0], size=2, reason_id=-1, count=1)
 
     def test_validate_task_id_given_valid_task_id(self, populate_data):
@@ -51,11 +52,13 @@ class TestGetTaskDueMissingDetails:
         # Arrange
         task_id = 1
         user_id = "123e4567-e89b-12d3-a456-426614174000"
+        stage_id = "stage_id_1"
         storage = StorageImplementation()
         expected_response = True
 
         # Act
-        response = storage.validate_if_task_is_assigned_to_user(task_id, user_id)
+        response = storage.validate_if_task_is_assigned_to_user_in_given_stage(
+            task_id, user_id, stage_id)
 
         # Assert
         assert response == expected_response
@@ -65,11 +68,13 @@ class TestGetTaskDueMissingDetails:
         # Arrange
         task_id = 1
         user_id = "user_id_1"
+        stage_id = "stage_id_1"
         storage = StorageImplementation()
         expected_response = False
 
         # Act
-        response = storage.validate_if_task_is_assigned_to_user(task_id, user_id)
+        response = storage.validate_if_task_is_assigned_to_user_in_given_stage(
+            task_id, user_id, stage_id)
 
         # Assert
         assert response == expected_response
@@ -78,10 +83,11 @@ class TestGetTaskDueMissingDetails:
     def test_get_due_details_of_task_given_task_id(self, populate_data, snapshot):
         # Arrange
         task_id = 1
+        stage_id = "stage_id_1"
         storage = StorageImplementation()
 
         # Act
-        response = storage.get_task_due_details(task_id)
+        response = storage.get_task_due_details(task_id, stage_id)
 
         # Assert
         snapshot.assert_match(response, "due_details")
@@ -91,13 +97,14 @@ class TestGetTaskDueMissingDetails:
         # Arrange
         TaskFactory.reset_sequence()
         tasks = TaskFactory.create_batch(size=3)
+        stage_id = "stage_id_1"
         TaskStageHistoryModelFactory.reset_sequence()
         TaskStageHistoryModelFactory(task=tasks[0])
         task_id = 1
         storage = StorageImplementation()
 
         # Act
-        response = storage.get_task_due_details(task_id)
+        response = storage.get_task_due_details(task_id, stage_id)
 
         # Assert
         snapshot.assert_match(response, "due_details")

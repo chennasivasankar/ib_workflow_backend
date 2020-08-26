@@ -11,6 +11,6 @@ snapshots['TestCase27UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase27UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'INVALID_STAGE_ID',
-    'response': 'please give a valid stage id, 1 is invalid stage id'
+    'res_status': 'INCORRECT_CHECK_BOX_OPTIONS_SELECTED',
+    'response': "Invalid check box options selected: ['views'] for field: FIELD-1! Try with these valid options: ['interactors', 'storages']"
 }

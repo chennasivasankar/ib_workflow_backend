@@ -7,8 +7,6 @@ from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied, UserBoardPermissionDenied
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException
-from ib_tasks.interactors.get_stages_assignees_details_interactor import \
-    TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO
@@ -18,7 +16,8 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 from ib_tasks.interactors.user_action_on_task_interactor import \
     InvalidBoardIdException
-from ib_tasks.interactors.stage_dtos import TaskStageDTO
+from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
+    TaskStageAssigneeDetailsDTO
 
 
 class UserActionOnTaskPresenterImplementation(PresenterInterface,

@@ -3,10 +3,12 @@ from typing import List, Optional
 from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
-    CompanyIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, CompanyDTO, \
+    CompanyIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, \
+    CompanyDTO, \
     CompanyIdWithEmployeeIdsDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface \
     import UserStorageInterface
+from ib_iam.models import ProjectRole
 
 
 class UserStorageImplementation(UserStorageInterface):
@@ -164,10 +166,10 @@ class UserStorageImplementation(UserStorageInterface):
 
     @staticmethod
     def _convert_to_user_role_dto(user_role):
-        role = user_role.project_role
+        project_role = user_role.project_role
         return UserRoleDTO(
-            user_id=user_role.user_id, role_id=role.role_id,
-            name=role.name, description=role.description)
+            user_id=user_role.user_id, role_id=project_role.role_id,
+            name=project_role.name, description=project_role.description)
 
     def get_company_details_of_users_bulk(
             self, user_ids: List[str]) -> List[UserCompanyDTO]:
@@ -281,11 +283,11 @@ class UserStorageImplementation(UserStorageInterface):
         ]
         return user_details_dtos
 
-    def get_all_distinct_user_db_role_ids(self) -> List[str]:
-        from ib_iam.models import UserRole
+    def get_all_distinct_user_db_role_ids(self, project_id: str) -> List[str]:
+        # todo: refactor names
         user_roles_queryset = \
-            UserRole.objects.all().distinct().values_list(
-                'project_role_id', flat=True)
+            ProjectRole.objects.filter(project_id=project_id).values_list(
+                'role_id', flat=True)
         user_roles_list = list(user_roles_queryset)
         return user_roles_list
 
@@ -405,3 +407,13 @@ class UserStorageImplementation(UserStorageInterface):
             for team_object in team_objects
         ]
         return team_dtos
+
+    def get_user_ids_for_given_project(self, project_id: str) -> List[str]:
+        #TODO need to optimize the storage calls
+        from ib_iam.models import ProjectTeam
+        team_ids = list(
+            ProjectTeam.objects.filter(project_id=project_id).values_list(
+                'team_id', flat=True))
+        from ib_iam.models import UserTeam
+        user_ids = list(UserTeam.objects.filter(team_id__in=team_ids).values_list('user_id', flat=True))
+        return user_ids

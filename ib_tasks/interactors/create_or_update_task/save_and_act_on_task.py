@@ -172,7 +172,7 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
                 error_obj=err)
         except InvalidPresentStageAction as err:
             return presenter.raise_exception_for_invalid_present_stage_actions(
-                error_obj=err)
+                err)
         except InvalidKeyError:
             return presenter.raise_invalid_key_error()
         except InvalidCustomLogicException:
