@@ -42,6 +42,7 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_complete_task_t
                     'help_text': None,
                     'is_field_required': True,
                     'is_field_writable': False,
+                    'order': 1,
                     'placeholder_text': None,
                     'tooltip': None,
                     'validation_regex': None
@@ -79,6 +80,7 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_complete_task_t
                     'help_text': None,
                     'is_field_required': True,
                     'is_field_writable': True,
+                    'order': 2,
                     'placeholder_text': None,
                     'tooltip': None,
                     'validation_regex': None
@@ -153,6 +155,7 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_actions_for_
                     'help_text': None,
                     'is_field_required': True,
                     'is_field_writable': False,
+                    'order': 1,
                     'placeholder_text': None,
                     'tooltip': None,
                     'validation_regex': None
@@ -190,6 +193,7 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_actions_for_
                     'help_text': None,
                     'is_field_required': True,
                     'is_field_writable': True,
+                    'order': 2,
                     'placeholder_text': None,
                     'tooltip': None,
                     'validation_regex': None

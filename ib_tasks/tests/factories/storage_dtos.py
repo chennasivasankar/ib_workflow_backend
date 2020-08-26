@@ -309,6 +309,7 @@ class FieldDTOFactory(factory.Factory):
     error_message = None
     allowed_formats = None
     validation_regex = None
+    order = factory.sequence(lambda counter: counter)
 
 
 class FieldRolesDTOFactory(factory.Factory):
