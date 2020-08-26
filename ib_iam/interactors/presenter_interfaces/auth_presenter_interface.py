@@ -15,7 +15,6 @@ from ib_iam.interactors.storage_interfaces.dtos import \
 @dataclasses.dataclass
 class UserWithExtraDetailsDTO:
     user_profile_dto: CompleteUserProfileDTO
-    role_dtos: List[UserRoleDTO]
     company_dto: Optional[CompanyDTO]
     team_dtos: List[TeamDTO]
     team_user_ids_dto: List[TeamUserIdsDTO]

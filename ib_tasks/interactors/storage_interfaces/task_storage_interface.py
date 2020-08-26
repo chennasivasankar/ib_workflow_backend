@@ -108,7 +108,7 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_user_task_ids_and_max_stage_value_dto_based_on_given_stage_ids(
-            self, stage_ids: List[str]
+            self, stage_ids: List[str], task_ids: List[int]
     ) -> List[TaskIdWithStageValueDTO]:
         pass
 

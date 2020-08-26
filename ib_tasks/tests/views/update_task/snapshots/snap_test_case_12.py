@@ -11,6 +11,6 @@ snapshots['TestCase12UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase12UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'INVALID_STAGE_ID',
-    'response': 'please give a valid stage id, 1 is invalid stage id'
+    'res_status': 'USER_NEEDS_GOF_WRITABLE_PERMISSION',
+    'response': "user needs write access on gof GOF-1, because user does not have at least one role in ['FIN_GOF_CREATOR'] roles"
 }

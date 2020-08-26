@@ -84,7 +84,7 @@ class TestGetUserOptionsInteractor:
     def test_get_teams_details(
             self, team_dtos, storage_mock, presenter_mock):
         # Arrange
-        storage_mock.get_teams.return_value = team_dtos
+        storage_mock.get_team_id_and_name_dtos.return_value = team_dtos
         interactor = GetUserOptionsDetails(user_storage=storage_mock)
 
         # Act
@@ -92,7 +92,7 @@ class TestGetUserOptionsInteractor:
                                                      user_id="user0")
 
         # Assert
-        storage_mock.get_teams.assert_called_once()
+        storage_mock.get_team_id_and_name_dtos.assert_called_once()
 
     def test_get_roles_details(
             self, role_dtos, storage_mock, presenter_mock):
@@ -112,7 +112,7 @@ class TestGetUserOptionsInteractor:
             presenter_mock):
         # Arrange
         storage_mock.get_companies.return_value = company_dtos
-        storage_mock.get_teams.return_value = team_dtos
+        storage_mock.get_team_id_and_name_dtos.return_value = team_dtos
         storage_mock.get_roles.return_value = role_dtos
         interactor = GetUserOptionsDetails(user_storage=storage_mock)
         presenter_mock.return_value = Mock()

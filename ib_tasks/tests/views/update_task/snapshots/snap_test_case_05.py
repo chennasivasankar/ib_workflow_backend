@@ -11,6 +11,6 @@ snapshots['TestCase05UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase05UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'INVALID_STAGE_ID',
-    'response': 'please give a valid stage id, 1 is invalid stage id'
+    'res_status': 'START_DATE_IS_AHEAD_OF_DUE_DATE',
+    'response': 'given start date 2020-09-20 is ahead of given due date 2020-09-10 '
 }

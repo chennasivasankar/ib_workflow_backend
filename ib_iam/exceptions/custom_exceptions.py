@@ -154,8 +154,10 @@ class UserNotExistsInGivenTeam(Exception):
 
 
 class InvalidTeamIds(Exception):
-    pass
+    def __init__(self, team_ids):
+        self.team_ids = team_ids
 
 
 class InvalidProjectIds(Exception):
-    pass
+    def __init__(self, project_ids):
+        self.project_ids = project_ids
