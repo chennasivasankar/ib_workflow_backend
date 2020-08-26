@@ -24,8 +24,6 @@ snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id body'] = {
     'is_admin': False,
     'name': 'name1',
     'profile_pic_url': 'url1',
-    'roles': [
-    ],
     'teams': [
     ],
     'user_id': '217abeb3-6466-4440-96e7-bf02ee941bf8'

@@ -29,7 +29,8 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
 from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId, \
+    InvalidTaskTemplateOfProject
 from ib_tasks.interactors \
     .call_action_logic_function_and_update_task_status_variables_interactor \
     import \
@@ -108,6 +109,8 @@ class CreateTaskInteractor:
                 task_dto, presenter)
         except InvalidTaskTemplateDBId as err:
             return presenter.raise_invalid_task_template_id(err)
+        except InvalidTaskTemplateOfProject as err:
+            return presenter.raise_invalid_task_template_of_project(err)
         except InvalidActionException as err:
             return presenter.raise_invalid_action_id(err)
         except DuplicateSameGoFOrderForAGoF as err:
@@ -220,6 +223,8 @@ class CreateTaskInteractor:
 
     def create_task(self, task_dto: CreateTaskDTO):
         self._validate_task_template_id(task_dto.task_template_id)
+        self._validate_task_template_project_id(
+            task_dto.project_id, task_dto.task_template_id)
         is_valid_action_id = self.storage.validate_action(
             action_id=task_dto.action_id)
         if not is_valid_action_id:
@@ -417,3 +422,14 @@ class CreateTaskInteractor:
         start_date_is_ahead_of_due_date = start_date > due_date
         if start_date_is_ahead_of_due_date:
             raise StartDateIsAheadOfDueDate(start_date, due_date)
+
+    def _validate_task_template_project_id(
+            self, project_id: str, task_template_id: str
+    ) -> Optional[InvalidTaskTemplateOfProject]:
+        project_task_templates = \
+            self.task_template_storage.get_project_templates(project_id)
+        invalid_template_of_project = \
+            task_template_id not in project_task_templates
+        if invalid_template_of_project:
+            raise InvalidTaskTemplateOfProject(project_id, task_template_id)
+        return

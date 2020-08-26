@@ -16,20 +16,6 @@ snapshots['TestCase02GetConfigurationDetailsAPITestCase.test_case body'] = {
             'company_name': 'company 0'
         }
     ],
-    'roles': [
-        {
-            'role_id': 'ROLE_0',
-            'role_name': 'role 0'
-        },
-        {
-            'role_id': 'ROLE_1',
-            'role_name': 'role 1'
-        },
-        {
-            'role_id': 'ROLE_2',
-            'role_name': 'role 2'
-        }
-    ],
     'teams': [
         {
             'team_id': '6ce31e92-f188-4019-b295-2e5ddc9c7a11',

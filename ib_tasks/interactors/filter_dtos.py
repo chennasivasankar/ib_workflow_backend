@@ -64,3 +64,10 @@ class CreateConditionDTO:
 @dataclass
 class UpdateConditionDTO(CreateConditionDTO):
     condition_id: int
+
+
+@dataclass
+class SearchQueryWithPaginationDTO:
+    limit: int
+    offset: int
+    search_query: str

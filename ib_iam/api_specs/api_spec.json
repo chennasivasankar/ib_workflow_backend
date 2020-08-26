@@ -200,7 +200,25 @@
         "users": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/CompleteUserDetails"
+            "allOf": [
+        {
+          "$ref": "#/definitions/UserDetails"
+        },
+        {
+          "$ref": "#/definitions/ListOfRoles"
+        },
+        {
+          "$ref": "#/definitions/ListOfTeams"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "company": {
+              "$ref": "#/definitions/CompanyDetails"
+            }
+          }
+        }
+      ]
           }
         }
       },
@@ -290,16 +308,12 @@
         "companies": {
           "$ref": "#/definitions/Companies"
         },
-        "roles": {
-          "$ref": "#/definitions/Roles"
-        },
         "teams": {
           "$ref": "#/definitions/Teams"
         }
       },
       "required": [
         "companies",
-        "roles",
         "teams"
       ]
     },
@@ -692,12 +706,6 @@
               },
               "cover_page_url": {
                 "type": "string"
-              },
-              "role_ids": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
               }
             }
           }
@@ -1431,12 +1439,6 @@
               "is_admin": {
                 "type": "boolean"
               },
-              "roles": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/RoleDetails"
-                }
-              },
               "company": {
                 "type": "object",
                 "properties": {
@@ -1469,7 +1471,6 @@
             },
             "required": [
               "is_admin",
-              "roles",
               "teams"
             ]
           }

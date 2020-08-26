@@ -11,6 +11,6 @@ snapshots['TestCase10UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase10UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'INVALID_STAGE_ID',
-    'response': 'please give a valid stage id, 1 is invalid stage id'
+    'res_status': 'DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF',
+    'response': "gof id GOF-1 has duplicate field ids ['FIELD-1']"
 }

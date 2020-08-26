@@ -18,6 +18,15 @@ class ListOfCompleteUsersDTO:
 
 
 @dataclass
+class ListOfCompleteUsersWithRolesDTO:
+    users: List[UserProfileDTO]
+    teams: List[UserTeamDTO]
+    roles: List[UserRoleDTO]
+    companies: List[UserCompanyDTO]
+    total_no_of_users: int
+
+
+@dataclass
 class UserOptionsDetailsDTO:
     companies: List[CompanyIdAndNameDTO]
     teams: List[TeamIdAndNameDTO]
