@@ -6,7 +6,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
 
 
 class PopulateFields:
-    def create_fields(self, spread_sheet_name: str):
+    def create_or_update_fields(self, spread_sheet_name: str):
         from ib_tasks.constants.constants import FIELD_SUB_SHEET_TITLE
 
         from ib_tasks.interactors.create_or_update_fields_interactor \
@@ -94,8 +94,12 @@ class PopulateFields:
             field_values = None
         if field_type in MULTI_VALUES_INPUT_FIELDS and field_values is not \
                 None:
-            field_values = field_values.split("\r\n")
-            field_values = field_values[0].split("\n")
+            field_values = field_values.split("\n")
+            field_values_without_space = []
+            for field_value in field_values:
+                field_value = field_value.strip()
+                field_values_without_space.append(field_value)
+            field_values = field_values_without_space
         if field_type in MULTI_VALUES_INPUT_FIELDS and field_values is None:
             field_values = []
         return field_values
@@ -130,8 +134,16 @@ class PopulateFields:
             read_permission_roles = []
         if write_permissions_is_empty:
             write_permission_roles = []
+
+        read_permission_roles = [
+            role.strip() for role in read_permission_roles
+        ]
+        write_permission_roles = [
+            role.strip() for role in write_permission_roles
+        ]
+
         field_roles_dto = FieldRolesDTO(
             field_id=field_record["Field ID*"].strip(),
-            write_permission_roles=write_permission_roles,
-            read_permission_roles=read_permission_roles)
+            write_permission_roles=read_permission_roles,
+            read_permission_roles=write_permission_roles)
         return field_roles_dto

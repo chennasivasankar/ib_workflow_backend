@@ -9,3 +9,6 @@ class FieldRole(models.Model):
     role = models.CharField(max_length=50)
     permission_type = models.CharField(max_length=100,
                                        choices=Permission_Types)
+
+    def __str__(self):
+        return "{} with {}".format(self.field_id, self.role)
