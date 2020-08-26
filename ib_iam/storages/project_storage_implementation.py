@@ -1,15 +1,10 @@
 from typing import List
 
-from ib_iam.app_interfaces.dtos import UserIdWithTeamIDAndNameDTO
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
-from ib_iam.app_interfaces.dtos import UserIdWithTeamIDAndNameDTO
 from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, \
     ProjectsWithTotalCountDTO, PaginationDTO, ProjectTeamIdsDTO, ProjectRoleDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.models import Project, ProjectTeam, ProjectRole
-from ib_iam.models import Project, ProjectTeam, UserTeam
-from ib_iam.models import Project, ProjectTeam, UserTeam, ProjectRole
 
 
 class ProjectStorageImplementation(ProjectStorageInterface):
