@@ -26,6 +26,7 @@ class FieldDTO:
     error_message: Optional[str]
     allowed_formats: Optional[List[str]]
     validation_regex: Optional[str]
+    order: int
 
 
 @dataclass()

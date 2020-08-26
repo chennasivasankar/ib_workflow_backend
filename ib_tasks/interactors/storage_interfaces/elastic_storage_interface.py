@@ -22,7 +22,6 @@ class ApplyFilterDTO:
     field_id: str
     operator: Operators
     value: str
-    project_id: str
 
 
 from ib_tasks.documents.elastic_task import ElasticTaskDTO, Task, QueryTasksDTO
