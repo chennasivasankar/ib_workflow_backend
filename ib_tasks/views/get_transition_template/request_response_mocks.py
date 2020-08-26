@@ -26,7 +26,7 @@ RESPONSE_200_JSON = """
                     "help_text": "string",
                     "placeholder_text": "string",
                     "is_field_writable": true,
-                    "order": 1
+                    "field_order": 1
                 }
             ]
         }

@@ -476,7 +476,7 @@
             "is_field_writable": {
               "type": "boolean"
             },
-            "order": {
+            "field_order": {
               "type": "integer"
             }
           },
@@ -485,7 +485,7 @@
             "display_name",
             "is_field_required",
             "is_field_writable",
-            "order"
+            "field_order"
           ]
         }
       ]
@@ -2153,7 +2153,8 @@
             "enum": [
               "LIMIT_SHOULD_BE_GREATER_THAN_ZERO",
               "OFFSET_SHOULD_BE_GREATER_THAN_ZERO",
-              "EMPTY_STAGE_IDS_ARE_INVALID"
+              "EMPTY_STAGE_IDS_ARE_INVALID",
+              "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
             ]
           }
         },

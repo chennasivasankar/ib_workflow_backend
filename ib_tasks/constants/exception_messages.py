@@ -377,3 +377,11 @@ FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE = (
     "filter '{}' not valid for the given value",
     "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
 )
+
+DUPLICATE_ORDER_FOR_FIELDS_OF_SAME_GOF = \
+    "Given duplicate orders: {} for fields of gof: {}, " \
+    "please send unique orders for fields of same gof"
+
+ORDER_FOR_FIELD_SHOULD_NOT_BE_NEGATIVE = \
+    "Order for Field should not be negative, " \
+    "got negative orders for fields: {}"

@@ -248,6 +248,7 @@ class GetTaskTemplatesPresenterImplementation(
     def _get_field_details_as_dict(
             field_with_permissions_dto: FieldPermissionDTO) -> Dict:
         field_dto = field_with_permissions_dto.field_dto
+        # TODO change order attribute to gof_order
         field_dict = {
             "field_id": field_dto.field_id,
             'gof_id': field_dto.gof_id,
@@ -262,7 +263,7 @@ class GetTaskTemplatesPresenterImplementation(
             "help_text": field_dto.help_text,
             "placeholder_text": field_dto.placeholder_text,
             "is_field_writable": field_with_permissions_dto.is_field_writable,
-            "order": field_dto.order
+            "field_order": field_dto.order
         }
         return field_dict
 
