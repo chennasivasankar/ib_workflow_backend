@@ -2,7 +2,7 @@ from ib_tasks.presenters.get_task_rps_presenter_implementation import \
     GetTaskRpsPresenterImplementation
 
 
-class TestGetRps:
+class TestGetTaskRelatedRps:
     def test_response_invalid_task_id(self, snapshot):
         # Arrange
         presenter = GetTaskRpsPresenterImplementation()
