@@ -24,10 +24,14 @@ class UserTeam(models.Model):
     team = models.ForeignKey('Team', on_delete=models.CASCADE,
                              related_name="users")
 
+    class Meta:
+        unique_together = ('user_id', 'team')
+
 
 class UserRole(models.Model):
     user_id = models.CharField(max_length=1000)
-    project_role = models.ForeignKey('ProjectRole', on_delete=models.CASCADE, null=True)
+    project_role = models.ForeignKey('ProjectRole', on_delete=models.CASCADE,
+                                     null=True)
 
     def __str__(self):
         return f"{self.user_id} have {self.project_role.role_id}"
