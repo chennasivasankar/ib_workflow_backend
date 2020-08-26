@@ -5,7 +5,8 @@ from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.interactors.storage_interfaces.dtos \
     import UserTeamDTO, UserRoleDTO, UserCompanyDTO, \
     CompanyIdAndNameDTO, RoleIdAndNameDTO, BasicUserDetailsDTO, \
-    TeamIdAndNameDTO, TeamUserIdsDTO, TeamDTO, ProjectDTO, ProjectTeamIdsDTO
+    TeamIdAndNameDTO, TeamUserIdsDTO, TeamDTO, ProjectDTO, ProjectTeamIdsDTO, \
+    ProjectRoleDTO
 
 
 @dataclass
@@ -47,3 +48,4 @@ class ProjectWithTeamsDTO:
     project_dtos: List[ProjectDTO]
     project_team_ids_dtos: List[ProjectTeamIdsDTO]
     team_dtos: List[TeamDTO]
+    project_role_dtos: List[ProjectRoleDTO]

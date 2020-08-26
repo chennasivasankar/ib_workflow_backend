@@ -56,10 +56,17 @@ class TestAddProjectsInteractor:
         team_dtos = [TeamDTOFactory() for _ in range(1)]
         return team_dtos
 
+    @pytest.fixture
+    def expected_project_role_dtos(self):
+        from ib_iam.tests.factories.storage_dtos import ProjectRoleDTOFactory
+        ProjectRoleDTOFactory.reset_sequence(1)
+        project_role_dtos = [ProjectRoleDTOFactory() for _ in range(2)]
+        return project_role_dtos
+
     def test_get_projects_returns_projects_response(
             self, project_storage, interactor, presenter, team_storage,
             expected_list_of_project_dtos, expected_project_team_ids_dtos,
-            expected_list_of_team_dtos):
+            expected_list_of_team_dtos, expected_project_role_dtos):
         # Arrange
         from ib_iam.tests.factories.storage_dtos import PaginationDTOFactory
         pagination_dto = PaginationDTOFactory()
@@ -74,13 +81,15 @@ class TestAddProjectsInteractor:
         project_storage.get_project_team_ids_dtos \
             .return_value = expected_project_team_ids_dtos
         team_storage.get_team_dtos.return_value = expected_list_of_team_dtos
+        project_storage.get_all_project_roles.return_value = expected_project_role_dtos
         from ib_iam.interactors.presenter_interfaces.dtos import \
             ProjectWithTeamsDTO
         project_with_teams_dto = ProjectWithTeamsDTO(
             total_projects_count=total_projects_count,
             project_dtos=expected_list_of_project_dtos,
             project_team_ids_dtos=expected_project_team_ids_dtos,
-            team_dtos=expected_list_of_team_dtos)
+            team_dtos=expected_list_of_team_dtos,
+            project_role_dtos=expected_project_role_dtos)
         presenter.get_response_for_get_projects.return_value = mock.Mock()
 
         # Act
@@ -93,5 +102,6 @@ class TestAddProjectsInteractor:
         project_storage.get_project_team_ids_dtos.assert_called_once_with(
             project_ids)
         team_storage.get_team_dtos.assert_called_once_with(team_ids)
+        project_storage.get_all_project_roles.assert_called_once()
         presenter.get_response_for_get_projects.assert_called_once_with(
             project_with_teams_dto=project_with_teams_dto)

@@ -308,12 +308,16 @@
         "companies": {
           "$ref": "#/definitions/Companies"
         },
+        "roles": {
+          "$ref": "#/definitions/Roles"
+        },
         "teams": {
           "$ref": "#/definitions/Teams"
         }
       },
       "required": [
         "companies",
+        "roles",
         "teams"
       ]
     },
@@ -588,12 +592,20 @@
         "company_id"
       ]
     },
-    "Project": {
+    "ProjectId": {
       "type": "object",
       "properties": {
         "project_id": {
           "type": "string"
-        },
+        }
+      },
+      "required": [
+        "project_id"
+      ]
+    },
+    "ProjectDetails": {
+      "type": "object",
+      "properties": {
         "name": {
           "type": "string"
         },
@@ -605,8 +617,17 @@
         }
       },
       "required": [
-        "project_id",
         "name"
+      ]
+    },
+    "Project": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProjectDetails"
+        },
+        {
+          "$ref": "#/definitions/ProjectId"
+        }
       ]
     },
     "ProjectWithExtraFields": {
@@ -619,10 +640,14 @@
           "properties": {
             "teams": {
               "$ref": "#/definitions/Teams"
+            },
+            "roles": {
+              "$ref": "#/definitions/Roles"
             }
           },
           "required": [
-            "teams"
+            "teams",
+            "roles"
           ]
         }
       ]
@@ -643,6 +668,24 @@
       "required": [
         "total_projects_count",
         "projects"
+      ]
+    },
+    "ProjectWithTeamIds": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProjectDetails"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "team_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
       ]
     },
     "LevelDetails": {
@@ -825,9 +868,8 @@
       "name": "project_id",
       "in": "path",
       "required": true,
-      "description": "team_id to identify a team",
-      "type": "string",
-      "format": "uuid"
+      "description": "project_id to identify a project",
+      "type": "string"
     },
     "LevelHierarchyPathParameter": {
       "name": "level_hierarchy",
@@ -1066,6 +1108,23 @@
         "required": [
           "users"
         ]
+      }
+    },
+    "AddProjectParameter": {
+      "name": "add_project",
+      "in": "body",
+      "required": true,
+      "description": "parameters or details to create/add a project",
+      "schema": {
+        "$ref": "#/definitions/ProjectWithTeamIds"
+      }
+    },
+    "UpdateProjectParameter": {
+      "name": "update_project",
+      "in": "body",
+      "description": "details that are to be updated of a project",
+      "schema": {
+        "$ref": "#/definitions/ProjectWithTeamIds"
       }
     }
   },
@@ -2143,6 +2202,12 @@
         "$ref": "#/definitions/ProjectsWithTotalProjectsCount"
       }
     },
+    "SuccessfullyCreatedForAddProjectResponse": {
+      "description": "Project Created successfully",
+      "schema": {
+        "$ref": "#/definitions/ProjectId"
+      }
+    },
     "GetSpecificProjectDetailsSuccessResponse": {
       "description": "Get specific project details success response",
       "schema": {
@@ -3113,6 +3178,57 @@
         "responses": {
           "201": {
             "description": "Successfully added the specific project details"
+          }
+        }
+      }
+    },
+    "/project/add/v1/": {
+      "post": {
+        "summary": "Add Project",
+        "description": "Adds a project",
+        "operationId": "add_project",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/AddProjectParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/SuccessfullyCreatedForAddProjectResponse"
+          }
+        }
+      }
+    },
+    "/project/{project_id}/v1/": {
+      "put": {
+        "summary": "Update Project",
+        "description": "Updates project details",
+        "operationId": "update_project_details",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/UpdateProjectParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project details updated Successfully"
           }
         }
       }

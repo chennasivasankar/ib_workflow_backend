@@ -26,6 +26,16 @@ class TestGetProjectsPresenterImplementation:
         return project_team_ids_dtos
 
     @pytest.fixture
+    def project_roles_setup(self):
+        role_ids = ["f2c02d98-f311-4ab2-8673-3daa00757002"]
+        from ib_iam.tests.factories.storage_dtos import ProjectRoleDTOFactory
+        ProjectRoleDTOFactory.reset_sequence(1)
+        project_role_dtos = [ProjectRoleDTOFactory(
+            project_id="f2c02d98-f311-4ab2-8673-3daa00757002",
+            role_id=role_id) for role_id in role_ids]
+        return project_role_dtos
+
+    @pytest.fixture
     def teams_set_up(self):
         team_ids = ['f2c02d98-f311-4ab2-8673-3daa00757002']
         from ib_iam.tests.factories.storage_dtos import TeamDTOFactory
@@ -35,7 +45,7 @@ class TestGetProjectsPresenterImplementation:
 
     def test_get_response_for_get_projects_returns_projects(
             self, snapshot, projects_set_up, teams_set_up,
-            project_teams_set_up):
+            project_teams_set_up, project_roles_setup):
         from ib_iam.presenters.get_projects_presenter_implementation import \
             GetProjectsPresenterImplementation
         json_presenter = GetProjectsPresenterImplementation()
@@ -46,7 +56,8 @@ class TestGetProjectsPresenterImplementation:
             total_projects_count=total_projects_count,
             project_dtos=projects_set_up,
             project_team_ids_dtos=project_teams_set_up,
-            team_dtos=teams_set_up)
+            team_dtos=teams_set_up,
+            project_role_dtos=project_roles_setup)
 
         http_response = json_presenter.get_response_for_get_projects(
             project_with_teams_dto=project_with_teams_dto)

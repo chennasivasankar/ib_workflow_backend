@@ -16,6 +16,12 @@ snapshots['TestCase01GetProjectsAPITestCase.test_case body'] = {
             'logo_url': 'logo 1',
             'name': 'name 1',
             'project_id': '641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
+            'roles': [
+                {
+                    'role_id': '641bfcc5-e1ea-4231-b482-f7f34fb5c7c6',
+                    'role_name': 'role 1'
+                }
+            ],
             'teams': [
                 {
                     'team_id': '641bfcc5-e1ea-4231-b482-f7f34fb5c7c5',

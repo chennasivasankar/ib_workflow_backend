@@ -107,3 +107,7 @@ class FieldsStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_field_dtos(self, field_ids: List[str]) -> List[FieldDTO]:
         pass
+
+    @abc.abstractmethod
+    def get_virtual_stage_ids_in_given_stage_ids(self, db_stage_ids):
+        pass
