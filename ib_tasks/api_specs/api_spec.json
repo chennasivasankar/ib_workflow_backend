@@ -2149,7 +2149,8 @@
             "enum": [
               "LIMIT_SHOULD_BE_GREATER_THAN_ZERO",
               "OFFSET_SHOULD_BE_GREATER_THAN_ZERO",
-              "EMPTY_STAGE_IDS_ARE_INVALID"
+              "EMPTY_STAGE_IDS_ARE_INVALID",
+              "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
             ]
           }
         },
