@@ -3,15 +3,16 @@ from typing import List, Dict
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_tasks.adapters.dtos import AssigneeWithTeamDetailsDTO
 from ib_tasks.constants.constants import DATETIME_FORMAT
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskIdException, \
     InvalidStageIdsForTask, InvalidTaskDisplayId
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
-    import \
-    GetTaskPresenterInterface, TaskCompleteDetailsDTO
-from ib_tasks.interactors.stages_dtos import StageAssigneeWithTeamDetailsDTO
+    import GetTaskPresenterInterface
+from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
+    import TaskCompleteDetailsDTO
+from ib_tasks.interactors.stages_dtos import StageAssigneeWithTeamDetailsDTO, \
+    AssigneeWithTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \

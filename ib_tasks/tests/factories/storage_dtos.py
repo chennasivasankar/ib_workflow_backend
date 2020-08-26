@@ -539,6 +539,7 @@ class TaskBaseDetailsDTOFactory(factory.Factory):
 
     template_id = factory.sequence(
         lambda counter: "template_{}".format(counter))
+    project_id = factory.sequence(lambda counter: "project_id{}".format(counter))
     task_display_id = factory.sequence(
         lambda counter: "IBWF-{}".format(counter + 1))
     title = factory.sequence(lambda counter: "title_{}".format(counter))
@@ -604,6 +605,7 @@ class TaskStageAssigneeDTOFactory(factory.Factory):
 
     task_stage_id = factory.sequence(lambda counter: counter + 1)
     stage_id = factory.Sequence(lambda counter: counter + 1)
+    team_id = factory.Sequence(lambda counter: "team{}".format(counter))
     assignee_id = factory.sequence(
         lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
             counter))
