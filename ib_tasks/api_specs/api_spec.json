@@ -593,8 +593,7 @@
         }
       },
       "required": [
-        "stage_id",
-        "team_id"
+        "stage_id"
       ]
     },
     "StagesWithActions": {

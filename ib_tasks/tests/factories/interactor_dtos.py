@@ -264,7 +264,7 @@ class TaskIdWithStageAssigneeDTOFactory(factory.Factory):
 
     task_id = factory.sequence(lambda n: n + 1)
     db_stage_id = factory.Sequence(lambda n: n + 1)
-    assignee_id = factory.sequence(lambda n: "user_{}".format(n))
+    assignee_id = factory.sequence(lambda n: "user_{}".format(n+1))
     team_id = factory.sequence(lambda n: "team_{}".format(n + 1))
 
 
