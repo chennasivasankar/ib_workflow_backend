@@ -691,8 +691,6 @@ class TestCreateOrUpdateFields:
     ):
         # Arrange
         from ib_tasks.exceptions.fields_custom_exceptions import InvalidGOFIds
-        from ib_tasks.constants.exception_messages \
-            import INVALID_GOF_IDS_EXCEPTION_MESSAGE
         field_values = [
             {
                 "name": "Individual",
@@ -1277,3 +1275,54 @@ class TestCreateOrUpdateFields:
                 snapshot
             )
             counter += 1
+
+    def test_given_negative_order_for_fields_raises_exception(
+            self, storage, reset_factories, snapshot, gof_storage
+    ):
+        # Arrange
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import OrderForFieldShouldNotBeNegativeException
+
+        field_dtos = [
+            FieldDTOFactory(field_id="FIN_SALUTATION", order=-1),
+            FieldDTOFactory(field_id="FIN_PR", order=-2)
+        ]
+        field_roles_dtos = []
+
+        interactor = CreateOrUpdateFieldsInteractor(storage=storage,
+                                                    gof_storage=gof_storage)
+
+        # Act
+        with pytest.raises(OrderForFieldShouldNotBeNegativeException) as err:
+            interactor.create_or_update_fields(
+                field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
+
+        # Assert
+        snapshot.assert_match(name="exception_message = ",
+                              value=str(err.value))
+
+    def test_given_duplicate_order_for_fields_of_same_gof_raises_exception(
+            self, storage, reset_factories, snapshot, gof_storage
+    ):
+        # Arrange
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import DuplicateOrdersForFieldsOfGoFException
+
+        GoFFactory(gof_id="FIN_GOF")
+        field_dtos = [
+            FieldDTOFactory(gof_id="FIN_GOF", order=1),
+            FieldDTOFactory(gof_id="FIN_GOF", order=1)
+        ]
+        field_roles_dtos = []
+
+        interactor = CreateOrUpdateFieldsInteractor(storage=storage,
+                                                    gof_storage=gof_storage)
+
+        # Act
+        with pytest.raises(DuplicateOrdersForFieldsOfGoFException) as err:
+            interactor.create_or_update_fields(
+                field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
+
+        # Assert
+        snapshot.assert_match(name="exception_message = ",
+                              value=str(err.value))

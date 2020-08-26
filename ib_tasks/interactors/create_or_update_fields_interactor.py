@@ -54,7 +54,6 @@ class CreateOrUpdateFieldsInteractor:
         self.storage.create_fields_roles(field_role_dtos)
 
     def _check_for_base_validations(self, field_dtos: List[FieldDTO]):
-        # TODO validate order
         from ib_tasks.interactors.\
             create_or_update_fields_base_validations_interactor \
             import CreateOrUpdateFieldsBaseValidationInteractor
