@@ -2,7 +2,7 @@ from django.db import models
 
 
 class UserDetails(models.Model):
-    user_id = models.CharField(max_length=1000)
+    user_id = models.CharField(max_length=100)
     name = models.CharField(max_length=1000, null=True)
     is_admin = models.BooleanField(default=False)
     cover_page_url = models.URLField(max_length=1000, null=True, blank=True)
@@ -12,7 +12,7 @@ class UserDetails(models.Model):
 
 
 class UserTeam(models.Model):
-    user_id = models.CharField(max_length=1000)
+    user_id = models.CharField(max_length=100)
     team_member_level = models.ForeignKey(
         "TeamMemberLevel", on_delete=models.SET_NULL,
         null=True, blank=True
@@ -29,7 +29,7 @@ class UserTeam(models.Model):
 
 
 class UserRole(models.Model):
-    user_id = models.CharField(max_length=1000)
+    user_id = models.CharField(max_length=100)
     project_role = models.ForeignKey('ProjectRole', on_delete=models.CASCADE,
                                      null=True)
 
