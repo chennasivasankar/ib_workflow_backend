@@ -40,6 +40,7 @@ class PopulateFields:
             error_message = field_record["Error Message"].strip()
             allowed_formats = field_record["Allowed Formats"].strip()
             validation_regex = field_record["Validation - RegEx"].strip()
+            order = field_record["Order"]
 
             required = self.get_required_bool_value_based_on_given_input(
                 required)
@@ -71,6 +72,7 @@ class PopulateFields:
                 error_message=error_message,
                 allowed_formats=allowed_formats,
                 validation_regex=validation_regex,
+                order=int(order)
             )
             field_dtos.append(field_dto)
         return field_dtos
