@@ -2,22 +2,32 @@ from typing import List
 
 from ib_tasks.adapters.auth_service import InvalidProjectIdsException, \
     UserIsNotInProjectException
-from ib_tasks.constants.enum import ViewType
+from ib_tasks.constants.enum import ViewType, FieldTypes
 from ib_tasks.documents.elastic_task import QueryTasksDTO
-from ib_tasks.exceptions.fields_custom_exceptions import LimitShouldBeGreaterThanZeroException, \
+from ib_tasks.exceptions.fields_custom_exceptions import \
+    LimitShouldBeGreaterThanZeroException, \
     OffsetShouldBeGreaterThanZeroException
-from ib_tasks.exceptions.stage_custom_exceptions import StageIdsListEmptyException
+from ib_tasks.exceptions.stage_custom_exceptions import \
+    StageIdsListEmptyException
+from ib_tasks.interactors.filter_interactor import InvalidFilterCondition
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.presenter_interfaces.get_all_tasks_overview_for_user_presenter_interface import \
     GetFilteredTasksOverviewForUserPresenterInterface
-from ib_tasks.interactors.storage_interfaces.action_storage_interface import ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import ElasticSearchStorageInterface, \
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
+    ActionStorageInterface
+from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
+    ElasticSearchStorageInterface, \
     ApplyFilterDTO
-from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
-from ib_tasks.interactors.storage_interfaces.filter_storage_interface import FilterStorageInterface
-from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import TaskStageStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+    FieldsStorageInterface, FieldTypeDTO
+from ib_tasks.interactors.storage_interfaces.filter_storage_interface import \
+    FilterStorageInterface
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
+    StageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+    TaskStageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+    TaskStorageInterface
 from ib_tasks.interactors.task_dtos import SearchQueryDTO
 
 
@@ -57,6 +67,8 @@ class GetTasksToRelevantSearchQuery(ValidationMixin):
         except OffsetShouldBeGreaterThanZeroException:
             return presenter. \
                 raise_offset_should_be_greater_than_zero_exception()
+        except InvalidFilterCondition as error:
+            return presenter.get_response_for_invalid_filter_condition(error=error)
         return presenter.get_response_for_filtered_tasks_overview_details_response(
             filtered_tasks_overview_details_dto=filtered_tasks_overview_details_dto,
             total_tasks=total_tasks
@@ -74,10 +86,15 @@ class GetTasksToRelevantSearchQuery(ValidationMixin):
         filter_dtos = self.filter_storage.get_enabled_filters_dto_to_user(
             user_id=user_id, project_id=project_id
         )
+        advanced_filter_dtos = apply_filters_dto
         apply_filters_dto = apply_filters_dto + filter_dtos
         field_ids = [filter_dto.field_id for filter_dto in apply_filters_dto]
         field_type_dtos = self.field_storage.get_field_type_dtos(
             field_ids=field_ids)
+        self._validate_conditions_for_values(
+            field_type_dtos=field_type_dtos,
+            filter_dtos=advanced_filter_dtos
+        )
         from ib_tasks.adapters.service_adapter import get_service_adapter
         roles_service = get_service_adapter().roles_service
         user_roles = roles_service.get_user_role_ids_based_on_project(
@@ -117,10 +134,10 @@ class GetTasksToRelevantSearchQuery(ValidationMixin):
         )
         all_tasks_overview_details_dto = task_details_interactor. \
             get_filtered_tasks_overview_for_user(
-            user_id=user_id, task_ids=query_tasks_dto.task_ids,
-            view_type=view_type,
-            project_id=project_id
-        )
+                user_id=user_id, task_ids=query_tasks_dto.task_ids,
+                view_type=view_type,
+                project_id=project_id
+            )
         return all_tasks_overview_details_dto, query_tasks_dto.total_tasks_count
 
     @staticmethod
@@ -134,3 +151,20 @@ class GetTasksToRelevantSearchQuery(ValidationMixin):
             from ib_tasks.exceptions.fields_custom_exceptions import \
                 OffsetShouldBeGreaterThanZeroException
             raise OffsetShouldBeGreaterThanZeroException
+
+    @staticmethod
+    def _validate_conditions_for_values(
+            field_type_dtos: List[FieldTypeDTO], filter_dtos: List[ApplyFilterDTO]):
+        field_types_map = {}
+        for field_type_dto in field_type_dtos:
+            field_types_map[field_type_dto.field_id] = field_type_dto.field_type
+        from ib_tasks.constants.constants import NUMERIC_OPERATORS
+        for filter_dto in filter_dtos:
+            field_type = field_types_map[filter_dto.field_id]
+            is_invalid_filter = field_type != FieldTypes.NUMBER.value \
+                                and field_type != FieldTypes.FLOAT.value \
+                                and filter_dto.operator in NUMERIC_OPERATORS
+            if is_invalid_filter:
+                from ib_tasks.interactors.filter_interactor import \
+                    InvalidFilterCondition
+                raise InvalidFilterCondition(condition=filter_dto.operator)
