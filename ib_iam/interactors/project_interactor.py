@@ -1,16 +1,16 @@
 from typing import List, Tuple, Optional
 
-from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
-    UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO, UserTeamsDTO
+from django.db import transaction
+
+from ib_iam.app_interfaces.dtos import (
+    ProjectTeamUserDTO, UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO,
+    UserTeamsDTO)
 from ib_iam.exceptions.custom_exceptions import InvalidUserIds
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, UserTeamDTO, \
-    TeamIdAndNameDTO
-    UserIdWithTeamIDAndNameDTO
 from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
-from ib_iam.interactors.presenter_interfaces.add_project_presenter_interface import \
-    AddProjectPresenterInterface
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, \
-    ProjectWithoutIdDTO
+from ib_iam.interactors.presenter_interfaces \
+    .add_project_presenter_interface import AddProjectPresenterInterface
+from ib_iam.interactors.storage_interfaces.dtos import (
+    ProjectDTO, ProjectWithoutIdDTO, UserTeamDTO, TeamIdAndNameDTO)
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
@@ -260,6 +260,7 @@ class ProjectInteractor:
         response = presenter.get_success_response_for_add_project()
         return response
 
+    @transaction.atomic
     def add_project(
             self,
             project_with_team_ids_and_roles_dto: ProjectWithTeamIdsAndRolesDTO
@@ -267,6 +268,7 @@ class ProjectInteractor:
         # todo confirm and write user permissions
         # todo validate given team_ids
         # todo validate given project_id is not exists already
+        # todo validate is name already exists for any other project
         # todo validate is duplicate role_ids send
         # todo validate given role_ids is not exists already for
         #  any of the roles of any project

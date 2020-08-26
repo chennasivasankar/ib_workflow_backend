@@ -53,6 +53,6 @@ def _convert_to_role_dtos(role):
         RoleNameAndDescriptionDTO
     role_dto = RoleNameAndDescriptionDTO(
         name=role["role_name"],
-        description=role["description"]
+        description=role.get("description", None)
     )
     return role_dto
