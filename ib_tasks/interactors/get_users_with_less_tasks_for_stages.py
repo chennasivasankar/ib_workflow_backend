@@ -108,6 +108,8 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
     def _get_permitted_assignee_with_current_tasks_count_dtos(
             permitted_user_ids: List[str],
             assignee_with_current_tasks_count_dtos: List[
+                AssigneeCurrentTasksCountDTO],
+            updated_task_count_dtos_for_assignee_having_less_tasks: List[
                 AssigneeCurrentTasksCountDTO]) -> List[
         AssigneeCurrentTasksCountDTO]:
         assignee_ids_with_current_task_count = []
@@ -133,6 +135,20 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
             assignee_with_all_current_tasks_count_dtos if
             assignee_with_current_tasks_count_dto.assignee_id in
             permitted_user_ids]
+        for permitted_assignee_with_current_tasks_count_dto in \
+                permitted_assignee_with_current_tasks_count_dtos:
+            for updated_task_count_dto_for_assignee_having_less_tasks in \
+                    updated_task_count_dtos_for_assignee_having_less_tasks:
+                if permitted_assignee_with_current_tasks_count_dto\
+                        .assignee_id \
+                        == \
+                        updated_task_count_dto_for_assignee_having_less_tasks.assignee_id:
+                    permitted_assignee_with_current_tasks_count_dto\
+                        .tasks_count \
+                        = permitted_assignee_with_current_tasks_count_dto. \
+                              tasks_count + \
+                          updated_task_count_dto_for_assignee_having_less_tasks. \
+                              tasks_count
         return permitted_assignee_with_current_tasks_count_dtos
 
     def _get_random_permitted_user_details_dto_of_stage_id(
@@ -158,7 +174,8 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
 
             permitted_assignee_with_current_tasks_count_dtos = self. \
                 _get_permitted_assignee_with_current_tasks_count_dtos(
-                permitted_user_ids, assignee_with_current_tasks_count_dtos)
+                permitted_user_ids, assignee_with_current_tasks_count_dtos,
+                updated_task_count_dtos_for_assignee_having_less_tasks)
             if not permitted_assignee_with_current_tasks_count_dtos:
                 permitted_user_details_dto_having_less_tasks = []
 

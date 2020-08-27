@@ -21,6 +21,7 @@ class CreateOrUpdateFieldsBaseValidationInteractor:
         self.gof_storage = gof_storage
 
     def fields_base_validations(self, field_dtos: List[FieldDTO]):
+        self._validate_field_orders(field_dtos=field_dtos)
         self._validate_field_ids(field_dtos)
         self._check_for_duplication_of_filed_ids(field_dtos)
         self._validate_field_display_name(field_dtos)
@@ -45,6 +46,30 @@ class CreateOrUpdateFieldsBaseValidationInteractor:
                 INVALID_GOF_IDS_EXCEPTION_MESSAGE.format(invalid_gof_ids)
             )
         return
+
+    def _validate_field_orders(self, field_dtos: List[FieldDTO]):
+        negative_ordered_fields = []
+        for field_dto in field_dtos:
+            is_negative_order = field_dto.order < 0
+            if is_negative_order:
+                negative_ordered_fields.append(field_dto.field_id)
+        if negative_ordered_fields:
+            from ib_tasks.exceptions.fields_custom_exceptions import \
+                OrderForFieldShouldNotBeNegativeException
+            from ib_tasks.constants.exception_messages import \
+                ORDER_FOR_FIELD_SHOULD_NOT_BE_NEGATIVE
+            raise OrderForFieldShouldNotBeNegativeException(
+                ORDER_FOR_FIELD_SHOULD_NOT_BE_NEGATIVE.format(
+                    negative_ordered_fields))
+
+        field_dtos_group_by_gof_id_dict = collections.defaultdict(list)
+        for field_dto in field_dtos:
+            field_dtos_group_by_gof_id_dict[field_dto.gof_id].append(field_dto)
+
+        for gof_id, field_dtos_of_gof in \
+                field_dtos_group_by_gof_id_dict.items():
+            self._validate_duplicate_orders_for_fields_of_same_gof(
+                gof_id=gof_id, field_dtos=field_dtos_of_gof)
 
     @staticmethod
     def _validate_field_ids(
@@ -126,3 +151,26 @@ class CreateOrUpdateFieldsBaseValidationInteractor:
                 )
             )
         return
+
+    @staticmethod
+    def _validate_duplicate_orders_for_fields_of_same_gof(
+            gof_id: str, field_dtos: List[FieldDTO]):
+        field_orders_of_gof = [
+            field_dto.order
+            for field_dto in field_dtos
+        ]
+        counter = collections.Counter(field_orders_of_gof)
+        duplicate_orders = []
+        for order, count in counter.items():
+            is_duplicate_order = count >= 2
+            if is_duplicate_order:
+                duplicate_orders.append(order)
+        if duplicate_orders:
+            from ib_tasks.exceptions.fields_custom_exceptions import \
+                DuplicateOrdersForFieldsOfGoFException
+            from ib_tasks.constants.exception_messages import \
+                DUPLICATE_ORDER_FOR_FIELDS_OF_SAME_GOF
+            raise DuplicateOrdersForFieldsOfGoFException(
+                DUPLICATE_ORDER_FOR_FIELDS_OF_SAME_GOF.format(
+                    duplicate_orders, gof_id)
+            )

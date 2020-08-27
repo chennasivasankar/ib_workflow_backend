@@ -24,7 +24,7 @@ class GetTaskDueMissingReasonsInteractor(GetTaskIdForTaskDisplayIdMixin):
     def get_task_due_missing_reasons_wrapper(
             self,
             presenter: TaskDueDetailsPresenterInterface,
-            task_display_id: str, user_id: str, stage_id: str) \
+            task_display_id: str, user_id: str, stage_id: int) \
             -> List[TaskDueDetailsDTO]:
         try:
             task_dtos = self.get_task_due_missing_reasons(
@@ -39,7 +39,7 @@ class GetTaskDueMissingReasonsInteractor(GetTaskIdForTaskDisplayIdMixin):
         return presenter.get_response_for_get_task_due_details(task_dtos)
 
     def get_task_due_missing_reasons(self, task_display_id: str,
-                                     user_id: str, stage_id: str) -> \
+                                     user_id: str, stage_id: int) -> \
             List[TaskDueDetailsDTO]:
         task_id = self.get_task_id_for_task_display_id(
             task_display_id=task_display_id)
@@ -49,13 +49,13 @@ class GetTaskDueMissingReasonsInteractor(GetTaskIdForTaskDisplayIdMixin):
         task_dtos = self._get_task_reasons(task_id=task_id, stage_id=stage_id)
         return task_dtos
 
-    def _validate_stage_id(self, stage_id: str):
+    def _validate_stage_id(self, stage_id: int):
         is_valid = self.storage.validate_stage_id(stage_id)
         if not is_valid:
             raise InvalidStageIdException
 
     def _validate_if_task_is_assigned_to_user(self, task_id: int,
-                                              user_id: str, stage_id: str):
+                                              user_id: str, stage_id: int):
         is_assigned = self.storage.validate_if_task_is_assigned_to_user_in_given_stage(
             task_id=task_id, user_id=user_id, stage_id=stage_id
         )
@@ -63,7 +63,7 @@ class GetTaskDueMissingReasonsInteractor(GetTaskIdForTaskDisplayIdMixin):
         if is_not_assigned:
             raise UserIsNotAssigneeToTask
 
-    def _get_task_reasons(self, task_id: int, stage_id: str)\
+    def _get_task_reasons(self, task_id: int, stage_id: int)\
             -> List[TaskDueDetailsDTO]:
         task_details = self.storage.get_task_due_details(task_id=task_id,
                                                          stage_id=stage_id)

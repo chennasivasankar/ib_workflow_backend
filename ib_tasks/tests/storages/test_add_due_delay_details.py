@@ -24,8 +24,8 @@ class TestAddDueDelayDetails:
     @pytest.fixture()
     def due_details(self):
         return TaskDelayParametersDTOFactory(task_id=1,
-                                           due_date_time="2020-08-10 12:30:00",
-                                           user_id="123e4567-e89b-12d3-a456-426614174000")
+                                             due_date_time="2020-08-10 12:30:00",
+                                             user_id="123e4567-e89b-12d3-a456-426614174000")
 
     @pytest.fixture()
     @freeze_time("2020-08-10 12:30:00")

@@ -148,13 +148,15 @@ class TestCreateOrUpdateFieldsInteractor:
         new_field_dtos = [
             FieldDTOFactory(
                 field_id="FIN_SALUATION",
-                field_values='["Mr", "Mrs", "Ms"]'
+                field_values='["Mr", "Mrs", "Ms"]',
+                order=2
             )
         ]
         existing_field_dtos = [
             FieldDTOFactory(
                 field_id="field1",
-                field_values='["Mr", "Mrs", "Ms"]'
+                field_values='["Mr", "Mrs", "Ms"]',
+                order=1
             )
         ]
 
