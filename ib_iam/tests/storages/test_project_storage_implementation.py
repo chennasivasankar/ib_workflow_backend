@@ -342,3 +342,48 @@ class TestProjectStorageImplementation:
             .values_list("name", "description")
         assert project_roles[0][0] == role_name
         assert project_roles[0][1] == description
+
+    @pytest.mark.django_db
+    def test_update_project_updates_project_details(self):
+        project_id = "project_1"
+        from ib_iam.tests.factories.models import ProjectFactory
+        ProjectFactory.create(project_id=project_id)
+        from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
+        project_dto = ProjectDTO(project_id=project_id,
+                                 name="project_name1",
+                                 logo_url=None,
+                                 description=None)
+        project_storage = ProjectStorageImplementation()
+
+        project_storage.update_project(project_dto=project_dto)
+
+        from ib_iam.models import Project
+        project_object = Project.objects.get(project_id=project_id)
+        assert project_object.name == project_dto.name
+        assert project_object.description == project_dto.description
+        assert project_object.logo_url == project_dto.logo_url
+
+    @pytest.mark.django_db
+    def test_delete_teams_from_project_deletes_given_teams(self):
+        project_id = "project_1"
+        team_ids = ["641bfcc5-e1ea-4231-b482-f7f34fb5c7c4",
+                    "641bfcc5-e1ea-4231-b482-f7f34fb5c7c5"]
+        team_ids_to_be_removed = ["641bfcc5-e1ea-4231-b482-f7f34fb5c7c5"]
+        expected_project_team_ids = ["641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"]
+        from ib_iam.tests.factories.models import \
+            ProjectFactory, TeamFactory, ProjectTeamFactory
+        project_object = ProjectFactory.create(project_id=project_id)
+        team_objects = [TeamFactory.create(team_id=team_id)
+                        for team_id in team_ids]
+        _ = [ProjectTeamFactory(project=project_object, team=team_object)
+             for team_object in team_objects]
+        project_storage = ProjectStorageImplementation()
+
+        project_storage.delete_teams_from_project(
+            project_id=project_id, team_ids=team_ids_to_be_removed)
+
+        from ib_iam.models import ProjectTeam
+        project_team_ids = ProjectTeam.objects.filter(project_id=project_id) \
+            .values_list("team_id", flat=True)
+        project_team_ids = list(map(str, project_team_ids))
+        assert list(project_team_ids) == expected_project_team_ids

@@ -2,7 +2,7 @@ from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, \
     ProjectsWithTotalCountDTO, PaginationDTO, ProjectTeamIdsDTO, \
-    ProjectRoleDTO, ProjectWithoutIdDTO, RoleDTO, RoleNameAndDescriptionDTO
+    ProjectRoleDTO, ProjectWithoutIdDTO, RoleNameAndDescriptionDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.models import Project, ProjectTeam, ProjectRole
@@ -186,3 +186,13 @@ class ProjectStorageImplementation(ProjectStorageInterface):
                                      description=role.description)
                          for role in roles]
         ProjectRole.objects.bulk_create(project_roles)
+
+    def update_project(self, project_dto: ProjectDTO):
+        Project.objects.filter(project_id=project_dto.project_id) \
+            .update(name=project_dto.name,
+                    description=project_dto.description,
+                    logo_url=project_dto.logo_url)
+
+    def delete_teams_from_project(self, project_id: str, team_ids: List[str]):
+        ProjectTeam.objects.filter(project_id=project_id,
+                                   team_id__in=team_ids).delete()
