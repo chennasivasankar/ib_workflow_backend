@@ -1,5 +1,6 @@
 import datetime
 
+from ib_tasks.adapters.service_adapter import get_service_adapter
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageIdException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId, \
     UserIsNotAssigneeToTask
@@ -52,7 +53,6 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
         due_date = self.task_storage.get_user_missed_the_task_due_time(
             task_id, user_id, stage_id)
 
-        from ib_tasks.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
 
         if due_date > datetime.datetime.now():
@@ -67,8 +67,6 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def _get_rp_details_if_due_date_is_missed(self, stage_id: int, due_date,
                                               task_id: int, user_id: str):
-
-        from ib_tasks.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
 
         user_team_id = self.task_storage.get_user_team_id(user_id, task_id)
@@ -81,7 +79,7 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
         return rp_details_dtos
 
     def add_rp_when_due_date_is_missed(self, stage_id, task_id, user_id, user_team_id):
-        from ib_tasks.adapters.service_adapter import get_service_adapter
+
         service_adapter = get_service_adapter()
 
         assignee_id = user_id
