@@ -117,7 +117,7 @@ class ProjectRoleFactory(factory.django.DjangoModelFactory):
 
     role_id = factory.sequence(lambda number: "ROLE_%s" % number)
     name = factory.sequence(lambda number: "role %s" % number)
-    description = factory.Sequence(lambda n: 'payment_description%s' % n)
+    description = factory.Sequence(lambda n: 'role description %s' % n)
     project = factory.SubFactory(ProjectFactory)
 
 

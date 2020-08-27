@@ -476,7 +476,7 @@ class TestGetUsersDetailsInteractor:
             offset=1, limit=0, search_query="iB"
         )
 
-        storage_mock.get_all_distinct_user_db_role_ids.return_value = \
+        storage_mock.get_all_distinct_project_role_ids.return_value = \
             expected_user_role_ids
         storage_mock.get_user_ids_for_given_role_ids.return_value = \
             expected_user_ids
@@ -501,7 +501,7 @@ class TestGetUsersDetailsInteractor:
 
         # Assert
         assert response == user_profile_dtos
-        storage_mock.get_all_distinct_user_db_role_ids.assert_called_once()
+        storage_mock.get_all_distinct_project_role_ids.assert_called_once()
         storage_mock.get_user_ids_for_given_role_ids.assert_called_once_with(
             role_ids=expected_user_role_ids
         )

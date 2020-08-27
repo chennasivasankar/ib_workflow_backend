@@ -285,13 +285,12 @@ class UserStorageImplementation(UserStorageInterface):
         ]
         return user_details_dtos
 
-    def get_all_distinct_user_db_role_ids(self, project_id: str) -> List[str]:
-        # todo: refactor names
-        user_roles_queryset = \
+    def get_all_distinct_project_role_ids(self, project_id: str) -> List[str]:
+        project_role_ids = \
             ProjectRole.objects.filter(project_id=project_id).values_list(
                 'role_id', flat=True)
-        user_roles_list = list(user_roles_queryset)
-        return user_roles_list
+        project_role_ids = list(project_role_ids)
+        return project_role_ids
 
     def get_user_ids_for_given_role_ids(self,
                                         role_ids: List[str]) -> List[str]:
@@ -319,13 +318,13 @@ class UserStorageImplementation(UserStorageInterface):
         user_ids_list = list(user_ids_queryset)
         return user_ids_list
 
-    def get_db_role_ids(self, role_ids: List[str]) -> List[str]:
-        from ib_iam.models import ProjectRole
-        db_role_ids_queryset = \
-            ProjectRole.objects.filter(
-                role_id__in=role_ids).values_list('id', flat=True)
-        db_role_ids_list = list(db_role_ids_queryset)
-        return db_role_ids_list
+    # def get_db_role_ids(self, role_ids: List[str]) -> List[str]:
+    #     from ib_iam.models import ProjectRole
+    #     db_role_ids_queryset = \
+    #         ProjectRole.objects.filter(
+    #             role_id__in=role_ids).values_list('id', flat=True)
+    #     db_role_ids_list = list(db_role_ids_queryset)
+    #     return db_role_ids_list
 
     @staticmethod
     def _convert_to_user_details_dto(user_details_object):

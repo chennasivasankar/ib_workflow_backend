@@ -6,7 +6,8 @@ from ib_iam.tests.factories.models import UserDetailsFactory, CompanyFactory, \
 from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
 from ib_iam.tests.factories.storage_dtos \
     import UserDTOFactory, UserTeamDTOFactory, UserCompanyDTOFactory, \
-    UserRoleDTOFactory, CompanyIdAndNameDTOFactory, TeamDTOFactory, RoleDTOFactory
+    UserRoleDTOFactory, CompanyIdAndNameDTOFactory, TeamDTOFactory, \
+    RoleDTOFactory
 
 
 def reset_sequence():
@@ -52,18 +53,7 @@ def users_company():
 
 
 
-@pytest.fixture()
-def users_role():
-    reset_sequence()
-    users = []
-    roles = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
-             "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
-    for role_id in roles:
-        role = ProjectRoleFactory.create(id=role_id)
-        for i in range(1, 4):
-            user = UserRoleFactory.create(user_id=f"user{i}", project_role=role)
-            users.append(user)
-    return users
+
 
 
 @pytest.fixture()
