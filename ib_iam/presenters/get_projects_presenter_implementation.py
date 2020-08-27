@@ -19,6 +19,8 @@ class GetProjectsPresenterImplementation(GetProjectsPresenterInterface,
         response_dict = {"total_projects_count":
                              project_with_teams_dto.total_projects_count,
                          "projects": projects}
+        print("pollard3")
+        print(projects)
         return self.prepare_200_success_response(response_dict=response_dict)
 
     def _convert_project_with_teams_dto_to_projects_list(
@@ -39,6 +41,8 @@ class GetProjectsPresenterImplementation(GetProjectsPresenterInterface,
                 project_role_dtos=project_role_dtos
             ) for project_dto in project_dtos
         ]
+        print("pollard2")
+        print(projects)
         return projects
 
     @staticmethod
@@ -65,6 +69,8 @@ class GetProjectsPresenterImplementation(GetProjectsPresenterInterface,
             project_dto=project_dto)
         project_dictionary["teams"] = project_teams
         project_dictionary["roles"] = project_roles
+        print("pollard")
+        print(project_dictionary)
         return project_dictionary
 
     @staticmethod
@@ -101,5 +107,6 @@ class GetProjectsPresenterImplementation(GetProjectsPresenterInterface,
     @staticmethod
     def _convert_to_project_role_dictionary(project_role_dto: ProjectRoleDTO):
         project_role_dictionary = {"role_id": project_role_dto.role_id,
-                                   "role_name": project_role_dto.name}
+                                   "role_name": project_role_dto.name,
+                                   "description": project_role_dto.description}
         return project_role_dictionary

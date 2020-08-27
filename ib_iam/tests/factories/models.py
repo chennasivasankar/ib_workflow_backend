@@ -124,5 +124,5 @@ class ProjectTeamFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ProjectTeam
 
-    project_id = factory.Sequence(lambda n: 'project %s' % n)
-    team_id = factory.Faker("uuid4")
+    project = factory.SubFactory(ProjectFactory)
+    team = factory.SubFactory(ProjectFactory)

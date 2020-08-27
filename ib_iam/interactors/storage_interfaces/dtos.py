@@ -225,6 +225,7 @@ class ProjectRoleDTO:
     project_id: str
     role_id: str
     name: str
+    description: Optional[str] = None
 
 
 @dataclass

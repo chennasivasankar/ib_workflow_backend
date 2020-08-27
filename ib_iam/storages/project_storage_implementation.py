@@ -162,7 +162,8 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         project_role_dto = ProjectRoleDTO(
             project_id=project_role_object.project_id,
             role_id=project_role_object.role_id,
-            name=project_role_object.name)
+            name=project_role_object.name,
+            description=project_role_object.description)
         return project_role_dto
 
     def add_project(self, project_without_id_dto: ProjectWithoutIdDTO) -> str:
