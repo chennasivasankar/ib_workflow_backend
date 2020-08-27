@@ -6,7 +6,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01UpdateProjectDetailsAPITestCase(TestUtils):
+class TestCase01AddProjectAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -21,7 +21,7 @@ class TestCase01UpdateProjectDetailsAPITestCase(TestUtils):
             'logo_url': 'string',
             'team_ids': ['string']
         }
-        path_params = {"project_id": "FA"}
+        path_params = {}
         query_params = {}
         headers = {}
         self.make_api_call(

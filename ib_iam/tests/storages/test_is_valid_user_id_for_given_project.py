@@ -5,13 +5,13 @@ class TestIsValidUserIdForGivenProject:
     @pytest.fixture
     def set_up(self):
         from ib_iam.tests.factories.models import \
-            ProjectFactory, TeamFactory, ProjectTeamFactory, UserTeamFactory
+            ProjectFactory, TeamFactory, ProjectTeamFactory, TeamUserFactory
         project_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
         team_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c5"
         user_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c6"
         project = ProjectFactory.create(project_id=project_id)
         team = TeamFactory.create(team_id=team_id)
-        user_team = UserTeamFactory.create(team_id=team_id, user_id=user_id)
+        user_team = TeamUserFactory.create(team_id=team_id, user_id=user_id)
         project_team = ProjectTeamFactory.create(
             project_id=project_id,
             team_id=team_id

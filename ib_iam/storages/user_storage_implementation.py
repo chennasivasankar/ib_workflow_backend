@@ -69,20 +69,22 @@ class UserStorageImplementation(UserStorageInterface):
         UserRole.objects.filter(user_id=user_id).delete()
 
     def remove_teams_for_user(self, user_id: str):
-        from ib_iam.models import UserTeam
-        UserTeam.objects.filter(user_id=user_id).delete()
+        from ib_iam.models import TeamUser
+        TeamUser.objects.filter(user_id=user_id).delete()
 
     def add_roles_to_the_user(self, user_id: str, role_ids: List[str]):
         from ib_iam.models import UserRole
-        user_roles = [UserRole(user_id=user_id, project_role_id=str(role_id))
-                      for role_id in role_ids]
+        user_roles = [
+            UserRole(user_id=user_id, project_role_role_id=role_id)
+            for role_id in role_ids]
+        print(user_roles)
         UserRole.objects.bulk_create(user_roles)
 
     def add_user_to_the_teams(self, user_id: str, team_ids: List[str]):
-        from ib_iam.models import UserTeam
-        user_teams = [UserTeam(user_id=user_id, team_id=team_id)
+        from ib_iam.models import TeamUser
+        user_teams = [TeamUser(user_id=user_id, team_id=team_id)
                       for team_id in team_ids]
-        UserTeam.objects.bulk_create(user_teams)
+        TeamUser.objects.bulk_create(user_teams)
 
     def update_user_details(
             self, company_id: Optional[str], user_id: str, name: str):
@@ -141,8 +143,8 @@ class UserStorageImplementation(UserStorageInterface):
 
     def get_team_details_of_users_bulk(
             self, user_ids: List[str]) -> List[UserTeamDTO]:
-        from ib_iam.models import UserTeam
-        user_teams = UserTeam.objects.filter(user_id__in=user_ids) \
+        from ib_iam.models import TeamUser
+        user_teams = TeamUser.objects.filter(user_id__in=user_ids) \
             .select_related('team')
         team_dtos = []
         for user_team in user_teams:
@@ -341,8 +343,8 @@ class UserStorageImplementation(UserStorageInterface):
 
     def get_team_user_ids_dtos(self, team_ids: List[str]) -> \
             List[TeamUserIdsDTO]:
-        from ib_iam.models import UserTeam
-        team_users = UserTeam.objects.filter(
+        from ib_iam.models import TeamUser
+        team_users = TeamUser.objects.filter(
             team__team_id__in=team_ids
         ).values_list('team__team_id', 'user_id')
         from collections import defaultdict
@@ -389,7 +391,7 @@ class UserStorageImplementation(UserStorageInterface):
 
     def get_basic_user_dtos_for_given_project(self, project_id: str) -> \
             List[BasicUserDetailsDTO]:
-        from ib_iam.models import UserTeam
+        from ib_iam.models import TeamUser
         from ib_iam.models import UserDetails
 
         from ib_iam.models import ProjectTeam
@@ -398,7 +400,7 @@ class UserStorageImplementation(UserStorageInterface):
         ).values_list(
             "team_id", flat=True
         )
-        user_ids = UserTeam.objects.filter(
+        user_ids = TeamUser.objects.filter(
             team_id__in=team_ids
         ).values_list(
             "user_id", flat=True
@@ -456,11 +458,13 @@ class UserStorageImplementation(UserStorageInterface):
         return team_dtos
 
     def get_user_ids_for_given_project(self, project_id: str) -> List[str]:
-        #TODO need to optimize the storage calls
+        # TODO need to optimize the storage calls
         from ib_iam.models import ProjectTeam
         team_ids = list(
             ProjectTeam.objects.filter(project_id=project_id).values_list(
                 'team_id', flat=True))
-        from ib_iam.models import UserTeam
-        user_ids = list(UserTeam.objects.filter(team_id__in=team_ids).values_list('user_id', flat=True))
+        from ib_iam.models import TeamUser
+        user_ids = list(
+            TeamUser.objects.filter(team_id__in=team_ids).values_list(
+                'user_id', flat=True))
         return user_ids

@@ -250,15 +250,15 @@ class TestGetUsers:
     def users_with_teams(self):
         from ib_iam.tests.factories.models import TeamFactory
         TeamFactory.reset_sequence(0)
-        from ib_iam.tests.factories.models import UserTeamFactory
-        UserTeamFactory.reset_sequence(0)
+        from ib_iam.tests.factories.models import TeamUserFactory
+        TeamUserFactory.reset_sequence(0)
         users = []
         teams = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                  "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
         for team_id in teams:
             team = TeamFactory.create(team_id=team_id)
             for i in range(1, 4):
-                user = UserTeamFactory.create(user_id=f"user{i}", team=team)
+                user = TeamUserFactory.create(user_id=f"user{i}", team=team)
                 users.append(user)
         return users
 
@@ -536,7 +536,7 @@ class TestGetUsers:
 
     @pytest.mark.django_db
     def test_get_user_related_team_dtos(self):
-        from ib_iam.tests.factories.models import TeamFactory, UserTeamFactory
+        from ib_iam.tests.factories.models import TeamFactory, TeamUserFactory
         from ib_iam.tests.factories.storage_dtos import TeamDTOFactory
         TeamFactory.reset_sequence(1)
         TeamDTOFactory.reset_sequence(1)
@@ -546,7 +546,7 @@ class TestGetUsers:
         team_objects = [TeamFactory.create(team_id=team_id)
                         for team_id in team_ids]
         for team_object in team_objects:
-            UserTeamFactory.create(team=team_object, user_id=user_id)
+            TeamUserFactory.create(team=team_object, user_id=user_id)
         expected_team_dtos = [TeamDTOFactory.create(team_id=team_id)
                               for team_id in team_ids]
         expected_team_dtos = sorted(
@@ -605,10 +605,10 @@ class TestGetUsers:
         user_ids = ['2bdb417e-4632-419a-8ddd-085ea272c6eb',
                     '4b8fb6eb-fa7d-47c1-8726-cd917901104e']
         from ib_iam.tests.factories.models import TeamFactory
-        from ib_iam.tests.factories.models import UserTeamFactory
+        from ib_iam.tests.factories.models import TeamUserFactory
         team_object = TeamFactory.create(team_id=team_id)
         for user_id in user_ids:
-            UserTeamFactory.create(team=team_object, user_id=user_id)
+            TeamUserFactory.create(team=team_object, user_id=user_id)
         expected_dto = [TeamUserIdsDTOFactory(team_id=team_id,
                                               user_ids=user_ids)]
 
