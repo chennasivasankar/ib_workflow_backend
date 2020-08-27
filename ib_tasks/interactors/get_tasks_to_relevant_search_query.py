@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_tasks.adapters.auth_service import InvalidProjectIdsException, \
+from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException, \
     UserIsNotInProjectException
 from ib_tasks.constants.enum import ViewType, FieldTypes
 from ib_tasks.documents.elastic_task import QueryTasksDTO
