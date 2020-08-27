@@ -127,7 +127,7 @@
         "res_status": {
           "type": "string",
           "enum": [
-            "USER_DONOT_HAVE_ACCESS"
+            "USER_DO_NOT_HAVE_ACCESS", "INVALID_PRESENT_STAGE_ACTION"
           ]
         }
       },
@@ -222,7 +222,8 @@
           "type": "string"
         },
         "stage_id": {
-          "type": "string"
+          "type": "integer",
+          "format": "int64"
         }
       },
       "required": [
@@ -475,13 +476,17 @@
             },
             "is_field_writable": {
               "type": "boolean"
+            },
+            "field_order": {
+              "type": "integer"
             }
           },
           "required": [
             "field_id",
             "display_name",
             "is_field_required",
-            "is_field_writable"
+            "is_field_writable",
+            "field_order"
           ]
         }
       ]
@@ -1448,6 +1453,21 @@
       "required": [
         "task_id"
       ]
+    },
+    "CreateTaskSuccessResponseBody": {
+      "type": "object",
+      "properties": {
+        "task_current_stage_details": {
+          "$ref": "#/definitions/TaskWithCurrentStages"
+        },
+        "task_details": {
+          "$ref": "#/definitions/TaskOverviewWithStageAndActions"
+        }
+      },
+      "required": [
+        "task_current_stage_details",
+        "task_details"
+      ]
     }
   },
   "parameters": {
@@ -1592,7 +1612,8 @@
             "type": "string"
           },
           "stage_id": {
-            "type": "string"
+            "type": "integer",
+            "format": "int64"
           }
         },
         "required": [
@@ -1741,7 +1762,10 @@
   },
   "responses": {
     "CreateTaskSuccessResponse": {
-      "description": "task created successfully"
+      "description": "task created successfully",
+      "schema": {
+        "$ref": "#/definitions/CreateTaskSuccessResponseBody"
+      }
     },
     "TaskTemplatesDoesNotExistsResponse": {
       "description": "No task templates exists",
@@ -1849,7 +1873,11 @@
             "type": "string",
             "enum": [
               "INVALID_TASK_ID",
-              "SEARCHABLE_RECORDS_NOT_FOUND"
+              "SEARCHABLE_RECORDS_NOT_FOUND",
+              "INVALID_STAGE_ID",
+              "INVALID_PROJECT_ID",
+              "TEAMS_NOT_EXISTS_FOR_PROJECT",
+              "USERS_NOT_EXISTS_FOR_TEAMS"
             ]
           }
         }
@@ -2149,7 +2177,8 @@
             "enum": [
               "LIMIT_SHOULD_BE_GREATER_THAN_ZERO",
               "OFFSET_SHOULD_BE_GREATER_THAN_ZERO",
-              "EMPTY_STAGE_IDS_ARE_INVALID"
+              "EMPTY_STAGE_IDS_ARE_INVALID",
+              "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
             ]
           }
         },
@@ -2356,7 +2385,8 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "VALUE_SHOULD_NOT_BE_EMPTY"
+              "VALUE_SHOULD_NOT_BE_EMPTY",
+              "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
             ]
           }
         },
@@ -2433,7 +2463,8 @@
             "type": "string",
             "enum": [
               "FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE",
-              "USER_NOT_HAVE_PERMISSIONS_TO_FIELDS"
+              "USER_NOT_HAVE_PERMISSIONS_TO_FIELDS",
+              "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
             ]
           }
         },
@@ -2510,7 +2541,8 @@
             "enum": [
               "FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE",
               "USER_NOT_HAVE_PERMISSIONS_TO_FIELDS",
-              "USER_NOT_HAVE_PERMISSIONS_TO_UPDATE"
+              "USER_NOT_HAVE_PERMISSIONS_TO_UPDATE",
+              "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
             ]
           }
         },
@@ -2590,7 +2622,8 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "INVALID_STAGE_ID"
+              "INVALID_STAGE_ID",
+              "INVALID_TASK_ID"
             ]
           }
         },
@@ -2718,7 +2751,7 @@
         ],
         "responses": {
           "201": {
-            "$ref": "#/responses/TaskWithCurrentStagesResponse"
+            "$ref": "#/responses/CreateTaskSuccessResponse"
           },
           "400": {
             "$ref": "#/responses/CreateTaskFailureResponse"
@@ -3335,7 +3368,7 @@
       }
     },
     "/task/rps/v1/": {
-      "get": {
+      "post": {
         "operationId": "get_task_rps_in_given_stage",
         "summary": "get task rps in given stage",
         "description": "get task rps in given stage",

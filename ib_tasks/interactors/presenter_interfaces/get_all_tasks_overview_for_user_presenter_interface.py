@@ -1,6 +1,6 @@
 import abc
 
-from ib_tasks.adapters.auth_service import InvalidProjectIdsException
+from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 
@@ -44,4 +44,8 @@ class GetFilteredTasksOverviewForUserPresenterInterface(GetAllTasksOverviewForUs
 
     @abc.abstractmethod
     def get_response_for_user_not_in_project(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_filter_condition(self, error):
         pass

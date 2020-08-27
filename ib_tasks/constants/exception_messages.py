@@ -345,8 +345,6 @@ INVALID_TASK_TEMPLATE_DB_ID = (
     "INVALID_TASK_TEMPLATE_DB_ID"
 )
 
-INVALID_PROJECT_ID = ("given invalid project id: {}", "INVALID_PROJECT_ID")
-
 SEARCHABLE_RECORDS_NOT_FOUND = (
     "Something went wrong contact Admin",
     "SEARCHABLE_RECORDS_NOT_FOUND"
@@ -373,3 +371,25 @@ INVALID_PROJECT_TEMPLATE = (
     "{} is not valid template for given project {}",
     "INVALID_PROJECT_TEMPLATE"
 )
+FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE = (
+    "filter '{}' not valid for the given value",
+    "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
+)
+
+DUPLICATE_ORDER_FOR_FIELDS_OF_SAME_GOF = \
+    "Given duplicate orders: {} for fields of gof: {}, " \
+    "please send unique orders for fields of same gof"
+
+ORDER_FOR_FIELD_SHOULD_NOT_BE_NEGATIVE = \
+    "Order for Field should not be negative, " \
+    "got negative orders for fields: {}"
+
+TEAMS_NOT_EXISTS_FOR_PROJECT = (
+    "invalid teams = {} for project",
+    "TEAMS_NOT_EXISTS_FOR_PROJECT"
+)
+USERS_NOT_EXISTS_FOR_TEAMS = (
+    "users = {} not exists for teams",
+    "USERS_NOT_EXISTS_FOR_TEAMS"
+)
+

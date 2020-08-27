@@ -3,8 +3,8 @@ from django.contrib import admin
 
 from ib_iam.models import (
     UserDetails, UserTeam, UserRole, Company,
-    Team, ElasticUserIntermediary, TeamMemberLevel, City, State, Country,
-    Project, ProjectTeam, ProjectRole
+    ProjectRole, Team, ElasticUserIntermediary, TeamMemberLevel, City, State, Country,
+    Project, ProjectTeam
 )
 
 
@@ -76,6 +76,7 @@ class ProjectTeamAdmin(admin.ModelAdmin):
 
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(Team, TeamAdmin)
+admin.site.register(ProjectRole, RoleAdmin)
 admin.site.register(UserDetails, IAMUserAdmin)
 admin.site.register(UserRole, UserRoleAdmin)
 admin.site.register(UserTeam, UserTeamAdmin)
@@ -86,4 +87,3 @@ admin.site.register(ProjectTeam, ProjectTeamAdmin)
 admin.site.register(City)
 admin.site.register(State)
 admin.site.register(Country)
-admin.site.register(ProjectRole)

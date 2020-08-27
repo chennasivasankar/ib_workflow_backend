@@ -5,8 +5,9 @@ Author: Pavankumar Pamuru
 """
 from dataclasses import dataclass
 
-from ib_tasks.adapters.auth_service import InvalidProjectIdsException, \
+from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException, \
     UserIsNotInProjectException
+
 from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.fields_custom_exceptions import \
     LimitShouldBeGreaterThanZeroException, \
@@ -91,9 +92,11 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
         )
         from ib_tasks.adapters.service_adapter import get_service_adapter
         roles_service = get_service_adapter().roles_service
-        user_roles = roles_service.get_user_role_ids(
-            user_id=project_tasks_parameter.user_id)
-        stage_ids_having_actions = self.stage_storage \
+        user_roles = roles_service.get_user_role_ids_based_on_project(
+            user_id=project_tasks_parameter.user_id,
+            project_id=project_tasks_parameter.project_id
+        )
+        stage_ids_having_actions = self.stage_storage\
             .get_stage_ids_having_actions(user_roles=user_roles)
 
         from ib_tasks.interactors.get_task_ids_by_applying_filters_interactor import \

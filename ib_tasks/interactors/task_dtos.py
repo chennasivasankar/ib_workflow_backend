@@ -162,7 +162,7 @@ class TaskCurrentStageDetailsDTO:
 @dataclass
 class TaskDueParametersDTO:
     user_id: str
-    stage_id: str
+    stage_id: int
     due_date_time: datetime
     reason_id: int
     reason: str
@@ -187,3 +187,10 @@ class SearchQueryDTO:
     project_id: str
     user_id: str = None
     view_type: ViewType = None
+
+
+@dataclass
+class GetTaskRPsParametersDTO:
+    task_id: str
+    user_id: str
+    stage_id: int

@@ -2,6 +2,8 @@ import abc
 from dataclasses import dataclass
 from typing import List
 
+from ib_tasks.adapters.auth_service import InvalidProjectIdsException, \
+    TeamsNotExistForGivenProjectException, UsersNotExistsForGivenTeamsException
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskIdException, \
     InvalidStageIdsForTask, InvalidTaskDisplayId
@@ -44,4 +46,20 @@ class GetTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_invalid_searchable_records_found(self):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_project_id(self, err: InvalidProjectIdsException):
+        pass
+
+    @abc.abstractmethod
+    def raise_teams_does_not_exists_for_project(
+            self, err: TeamsNotExistForGivenProjectException
+    ):
+        pass
+
+    @abc.abstractmethod
+    def raise_users_not_exist_for_given_teams(
+            self, err: UsersNotExistsForGivenTeamsException
+    ):
         pass

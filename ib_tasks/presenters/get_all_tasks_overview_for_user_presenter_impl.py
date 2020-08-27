@@ -4,7 +4,7 @@ from typing import List
 from django.http import response
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_tasks.adapters.auth_service import InvalidProjectIdsException
+from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.presenter_interfaces. \
@@ -209,4 +209,15 @@ class GetFilteredTasksOverviewForUserPresenterImplementation(
         }
 
         response_object = self.prepare_403_forbidden_response(response_dict)
+        return response_object
+
+    def get_response_for_invalid_filter_condition(self, error):
+        from ib_tasks.constants.exception_messages import FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE
+        response_dict = {
+            "response": FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE[0].format(error.condition),
+            "http_status_code": 400,
+            "res_status": FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE[1]
+        }
+
+        response_object = self.prepare_400_bad_request_response(response_dict)
         return response_object

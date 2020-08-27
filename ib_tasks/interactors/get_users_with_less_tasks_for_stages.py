@@ -110,8 +110,8 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
             assignee_with_current_tasks_count_dtos: List[
                 AssigneeCurrentTasksCountDTO],
             updated_task_count_dtos_for_assignee_having_less_tasks: List[
-                AssigneeCurrentTasksCountDTO]
-    ) -> List[AssigneeCurrentTasksCountDTO]:
+                AssigneeCurrentTasksCountDTO]) -> List[
+        AssigneeCurrentTasksCountDTO]:
         assignee_ids_with_current_task_count = []
         if assignee_with_current_tasks_count_dtos:
             assignee_ids_with_current_task_count = [
@@ -139,11 +139,11 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
                 permitted_assignee_with_current_tasks_count_dtos:
             for updated_task_count_dto_for_assignee_having_less_tasks in \
                     updated_task_count_dtos_for_assignee_having_less_tasks:
-                if permitted_assignee_with_current_tasks_count_dto \
+                if permitted_assignee_with_current_tasks_count_dto\
                         .assignee_id \
                         == \
                         updated_task_count_dto_for_assignee_having_less_tasks.assignee_id:
-                    permitted_assignee_with_current_tasks_count_dto \
+                    permitted_assignee_with_current_tasks_count_dto\
                         .tasks_count \
                         = permitted_assignee_with_current_tasks_count_dto. \
                               tasks_count + \

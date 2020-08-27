@@ -1,7 +1,10 @@
+from typing import List
+
 from ib_tasks.exceptions.fields_custom_exceptions import \
     LimitShouldBeGreaterThanZeroException, \
     OffsetShouldBeGreaterThanOrEqualToZeroException
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId
 from ib_tasks.interactors.filter_dtos import SearchQueryWithPaginationDTO
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
@@ -12,13 +15,17 @@ from ib_tasks.interactors.presenter_interfaces. \
 from ib_tasks.interactors.stages_dtos import UserDetailsWithTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+    TaskStorageInterface
 
 
 class GetStageSearchablePossibleAssigneesInteractor(
-    ValidationMixin, GetTaskIdForTaskDisplayIdMixin
-):
-    def __init__(self, stage_storage: StageStorageInterface):
+        ValidationMixin, GetTaskIdForTaskDisplayIdMixin):
+    def __init__(self,
+                 stage_storage: StageStorageInterface,
+                 task_storage: TaskStorageInterface):
         self.stage_storage = stage_storage
+        self.task_storage = task_storage
 
     def get_stage_searchable_possible_assignees_of_a_task_wrapper(
             self, stage_id: int, task_id: str,
@@ -33,22 +40,23 @@ class GetStageSearchablePossibleAssigneesInteractor(
                     stage_id=stage_id, task_id=task_id)
         except InvalidStageId as err:
             return presenter.raise_invalid_stage_id_exception(err)
+        except InvalidTaskDisplayId as err:
+            return presenter.raise_invalid_task_display_id_exception(err)
         except LimitShouldBeGreaterThanZeroException:
             return presenter.raise_invalid_limit_exception()
         except OffsetShouldBeGreaterThanOrEqualToZeroException:
             return presenter.raise_invalid_offset_exception()
 
         return presenter.get_stage_assignee_details_response(
-            user_details_with_team_details_dto
-            =user_details_with_team_details_dto)
+            user_details_with_team_details_dto=
+            user_details_with_team_details_dto)
 
     def get_stage_searchable_possible_assignees_of_a_task(
             self, stage_id: int, task_id: str,
             search_query_with_pagination_dto: SearchQueryWithPaginationDTO
     ) -> UserDetailsWithTeamDetailsDTO:
-        # ToDo make task id validations
         self._make_validations(
-            stage_id=stage_id,
+            stage_id=stage_id, task_id=task_id,
             search_query_with_pagination_dto=search_query_with_pagination_dto)
 
         stage_permitted_user_roles = \
@@ -63,7 +71,20 @@ class GetStageSearchablePossibleAssigneesInteractor(
                 user_details_dtos=permitted_user_details_dtos)
             return user_details_with_team_details_dto
 
-        project_id = self.stage_storage.get_project_id_for_task_display_id(
+        user_details_with_team_details_dto = \
+            self._get_user_details_with_team_details_dto_for_user_roles(
+                user_roles=stage_permitted_user_roles, task_id=task_id,
+                search_query_with_pagination_dto=
+                search_query_with_pagination_dto
+            )
+        return user_details_with_team_details_dto
+
+    def _get_user_details_with_team_details_dto_for_user_roles(
+            self, user_roles: List[str], task_id: str,
+            search_query_with_pagination_dto: SearchQueryWithPaginationDTO
+    ) -> UserDetailsWithTeamDetailsDTO:
+
+        project_id = self.task_storage.get_project_id_for_task_display_id(
             task_display_id=task_id)
 
         from ib_tasks.adapters.service_adapter import get_service_adapter
@@ -71,24 +92,32 @@ class GetStageSearchablePossibleAssigneesInteractor(
 
         permitted_user_details_dtos = service_adapter.auth_service. \
             get_user_details_for_the_given_role_ids_based_on_query(
-            role_ids=stage_permitted_user_roles, project_id=project_id,
-            search_query_with_pagination_dto=
-            search_query_with_pagination_dto)
+                role_ids=user_roles, project_id=project_id,
+                search_query_with_pagination_dto=
+                search_query_with_pagination_dto)
         permitted_user_ids = [permitted_user_details_dto.user_id
                               for permitted_user_details_dto in
                               permitted_user_details_dtos]
+
         user_id_with_team_details_dtos = service_adapter.auth_service. \
             get_team_info_for_given_user_ids(
-            user_ids=permitted_user_ids, project_id=project_id)
+                user_ids=permitted_user_ids, project_id=project_id)
         user_details_with_team_details_dto = UserDetailsWithTeamDetailsDTO(
             user_id_with_team_details_dtos=user_id_with_team_details_dtos,
             user_details_dtos=permitted_user_details_dtos)
-
         return user_details_with_team_details_dto
 
     def _make_validations(
-            self, stage_id: int,
+            self, stage_id: int, task_id: str,
             search_query_with_pagination_dto: SearchQueryWithPaginationDTO):
+
+        is_valid_task_display_id = \
+            self.task_storage.check_is_valid_task_display_id(
+                task_display_id=task_id)
+        is_invalid_task_display_id = not is_valid_task_display_id
+        if is_invalid_task_display_id:
+            raise InvalidTaskDisplayId(task_display_id=task_id)
+
         self._validations_of_limit_and_offset(
             limit=search_query_with_pagination_dto.limit,
             offset=search_query_with_pagination_dto.offset)

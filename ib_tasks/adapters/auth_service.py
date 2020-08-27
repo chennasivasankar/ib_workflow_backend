@@ -7,13 +7,19 @@ from ib_tasks.interactors.field_dtos import SearchableFieldDetailDTO
 from ib_tasks.interactors.filter_dtos import SearchQueryWithPaginationDTO
 
 
+class TeamsNotExistForGivenProjectException(Exception):
+    def __init__(self, team_ids: List[int]):
+        self.team_ids = team_ids
+
+
+class UsersNotExistsForGivenTeamsException(Exception):
+    def __init__(self, user_ids: List[str]):
+        self.user_ids = user_ids
+
+
 class InvalidProjectIdsException(Exception):
-    def __init__(self, invalid_project_ids: List[str]):
-        self.invalid_project_ids = invalid_project_ids
-
-
-class UserIsNotInProjectException(Exception):
-    pass
+    def __init__(self, project_ids: List[str]):
+        self.project_ids = project_ids
 
 
 class AuthService:
@@ -106,8 +112,8 @@ class AuthService:
         from ib_iam.exceptions.custom_exceptions import InvalidProjectIds
         try:
             return self._get_project_dtos(project_ids)
-        except InvalidProjectIds:
-            pass
+        except InvalidProjectIds as err:
+            raise InvalidProjectIdsException(err.project_ids)
 
     def _get_project_dtos(
             self, project_ids: List[str]
@@ -145,6 +151,21 @@ class AuthService:
     def get_user_id_team_details_dtos(
             self, project_team_user_ids_dto: ProjectTeamUserIdsDTO
     ) -> List[TeamDetailsWithUserIdDTO]:
+        from ib_iam.interactors.project_interactor import \
+            TeamsNotExistForGivenProject
+        from ib_iam.interactors.project_interactor import \
+            UsersNotExistsForGivenTeams
+        try:
+            return self._get_user_id_team_details_dtos(
+                project_team_user_ids_dto)
+        except TeamsNotExistForGivenProject as err:
+            raise TeamsNotExistForGivenProjectException(err.team_ids)
+        except UsersNotExistsForGivenTeams as err:
+            raise UsersNotExistsForGivenTeamsException(err.user_ids)
+
+    def _get_user_id_team_details_dtos(
+            self, project_team_user_ids_dto: ProjectTeamUserIdsDTO
+    ) -> List[TeamDetailsWithUserIdDTO]:
         user_team_details_dtos = \
             self.interface.get_user_team_dtos_for_given_project_teams_and_users_details_dto(
                 project_team_user_ids_dto
@@ -162,3 +183,9 @@ class AuthService:
     def validate_team_ids(self, team_ids: List[str]) -> \
             List[str]:
         raise NotImplementedError
+
+    def get_immediate_superior_user_id(self, user_id: str, team_id: str):
+        superior_id = self.interface.get_immediate_superior_user_id(
+            user_id=user_id, team_id=team_id
+        )
+        return superior_id
