@@ -222,7 +222,8 @@
           "type": "string"
         },
         "stage_id": {
-          "type": "string"
+          "type": "integer",
+          "format": "int64"
         }
       },
       "required": [
@@ -1611,7 +1612,8 @@
             "type": "string"
           },
           "stage_id": {
-            "type": "string"
+            "type": "integer",
+            "format": "int64"
           }
         },
         "required": [
@@ -1871,7 +1873,8 @@
             "type": "string",
             "enum": [
               "INVALID_TASK_ID",
-              "SEARCHABLE_RECORDS_NOT_FOUND"
+              "SEARCHABLE_RECORDS_NOT_FOUND",
+              "INVALID_STAGE_ID"
             ]
           }
         }
@@ -3362,7 +3365,7 @@
       }
     },
     "/task/rps/v1/": {
-      "get": {
+      "post": {
         "operationId": "get_task_rps_in_given_stage",
         "summary": "get task rps in given stage",
         "description": "get task rps in given stage",

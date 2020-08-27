@@ -3,7 +3,7 @@ from typing import Dict, Optional, List
 from django.http import response
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_tasks.adapters.auth_service import InvalidProjectIdsException
+from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.presenter_interfaces \
