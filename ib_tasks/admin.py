@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from ib_tasks.models import Stage, TaskTemplateStatusVariable, StageAction, \
     TaskTemplateInitialStage, TaskStatusVariable, StagePermittedRoles, \
-    TaskStageHistory, UserTaskDelayReason, ProjectTaskTemplate
+    TaskStageHistory, UserTaskDelayReason, ProjectTaskTemplate, TaskStageRp
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.gof import GoF
@@ -39,6 +39,7 @@ admin.site.register(TaskTemplateGoFs)
 admin.site.register(TaskStageHistory)
 admin.site.register(UserTaskDelayReason)
 admin.site.register(ProjectTaskTemplate)
+admin.site.register(TaskStageRp)
 
 
 class TaskStageInline(admin.StackedInline):
