@@ -19,7 +19,7 @@ class ElasticUserDTO:
 
 class ElasticUser(Document):
     user_id = Text()
-    name = Text()
+    name = SearchAsYouType()
 
     class Index:
         name = USER_INDEX_NAME
@@ -33,7 +33,7 @@ class ElasticCountryDTO:
 
 class Country(Document):
     country_id = Integer()
-    country_name = Text()
+    country_name = SearchAsYouType()
 
     class Index:
         name = COUNTRY_INDEX_NAME
@@ -47,7 +47,7 @@ class ElasticStateDTO:
 
 class State(Document):
     state_id = Integer()
-    state_name = Text()
+    state_name = SearchAsYouType()
 
     class Index:
         name = STATE_INDEX_NAME

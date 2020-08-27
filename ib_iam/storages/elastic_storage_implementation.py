@@ -63,11 +63,13 @@ class ElasticStorageImplementation(ElasticSearchStorageInterface):
         if search_query:
             search = search.query(
                 Q(
-                    "match",
-                    name={
-                        "query": search_query,
-                        "fuzziness": "5"
-                    }
+                    "multi_match", query=search_query, type='bool_prefix',
+                    fields=[
+                        "name",
+                        "name._2gram",
+                        "name._3gram",
+                        "name._index_prefix"
+                    ]
                 )
             )
         user_ids = [
@@ -102,11 +104,13 @@ class ElasticStorageImplementation(ElasticSearchStorageInterface):
         if search_query:
             search = search.query(
                 Q(
-                    "match",
-                    country_name={
-                        "query": search_query,
-                        "fuzziness": "5"
-                    }
+                    "multi_match", query=search_query, type='bool_prefix',
+                    fields=[
+                        "country_name",
+                        "country_name._2gram",
+                        "country_name._3gram",
+                        "country_name._index_prefix"
+                    ]
                 )
             )
         country_dtos = [
@@ -143,11 +147,13 @@ class ElasticStorageImplementation(ElasticSearchStorageInterface):
         if search_query:
             search = search.query(
                 Q(
-                    "match",
-                    state_name={
-                        "query": search_query,
-                        "fuzziness": "5"
-                    }
+                    "multi_match", query=search_query, type='bool_prefix',
+                    fields=[
+                        "state_name",
+                        "state_name._2gram",
+                        "state_name._3gram",
+                        "state_name._index_prefix"
+                    ]
                 )
             )
         state_dtos = [
@@ -181,16 +187,20 @@ class ElasticStorageImplementation(ElasticSearchStorageInterface):
             timeout=20
         )
         from elasticsearch_dsl import Q, Search
-        from elasticsearch_dsl.query import MultiMatch, Match
 
         search = Search(index=CITY_INDEX_NAME)
         if search_query:
             search = search.query(
-                Q("multi_match", query=search_query, type='bool_prefix',
-                  fields=["city_name",
-                          "city_name._2gram",
-                          "city_name._3gram",
-                          "city_name._index_prefix"]))
+                Q(
+                    "multi_match", query=search_query, type='bool_prefix',
+                    fields=[
+                        "city_name",
+                        "city_name._2gram",
+                        "city_name._3gram",
+                        "city_name._index_prefix"
+                    ]
+                )
+            )
         city_dtos = [
             ElasticCityDTO(
                 city_id=hit.city_id,
