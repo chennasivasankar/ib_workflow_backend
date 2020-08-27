@@ -1,4 +1,5 @@
 import abc
+from datetime import datetime
 from typing import List, Optional
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos \
@@ -127,5 +128,5 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_latest_rp_added_datetime(self,
-                                     task_id: int, stage_id: int):
+                                     task_id: int, stage_id: int) -> datetime:
         pass

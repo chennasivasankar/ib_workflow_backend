@@ -532,7 +532,7 @@ class TasksStorageImplementation(TaskStorageInterface):
         return task[0].team_id
 
     def get_user_missed_the_task_due_time(
-            self, task_id: int, user_id: str, stage_id: int) -> str:
+            self, task_id: int, user_id: str, stage_id: int) -> datetime:
         task_due_time = TaskStageHistory.objects.filter(
             task_id=task_id, assignee_id=user_id, stage_id=stage_id
                                                ).values_list('task__due_date', flat=True)
