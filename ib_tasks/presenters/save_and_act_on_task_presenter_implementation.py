@@ -214,7 +214,7 @@ class SaveAndActOnATaskPresenterImplementation(
             all_tasks_overview_dto: AllTasksOverviewDetailsDTO
     ):
         data = {
-            "task_current_stage_details": {
+            "task_current_stages_details": {
                 "task_id": task_current_stage_details_dto.task_display_id,
                 "stages": [],
                 "user_has_permission":
@@ -227,7 +227,7 @@ class SaveAndActOnATaskPresenterImplementation(
                 "stage_id": stage_dto.stage_id,
                 "stage_display_name": stage_dto.stage_display_name
             }
-            data['task_current_stage_details']['stages'].append(stage)
+            data['task_current_stages_details']['stages'].append(stage)
         task_overview_details_dict = \
             self._prepare_task_overview_details_dict(all_tasks_overview_dto)
         data['task_details'] = task_overview_details_dict
@@ -236,6 +236,10 @@ class SaveAndActOnATaskPresenterImplementation(
     def _prepare_task_overview_details_dict(
             self, all_tasks_overview_dto: AllTasksOverviewDetailsDTO
     ):
+        task_stages_has_no_actions = \
+            not all_tasks_overview_dto.task_with_complete_stage_details_dtos
+        if task_stages_has_no_actions:
+            return None
         complete_task_stage_details_dto = \
             all_tasks_overview_dto.task_with_complete_stage_details_dtos[0]
         task_fields_action_details_dtos = \
