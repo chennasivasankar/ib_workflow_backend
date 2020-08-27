@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 
 from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
-from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidUserIds
+from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidUserIds, \
+    InvalidUserIdsForProject, InvalidRoleIdsForProject
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, TeamIdAndNameDTO, \
@@ -210,7 +211,18 @@ class UserStorageInterface(ABC):
     ):
         pass
 
-    # TODO: write test case for this
     @abstractmethod
     def is_valid_project_id(self, project_id: str) -> bool:
+        pass
+
+    @abstractmethod
+    def validate_users_for_project(
+            self, user_ids: List[str], project_id: str
+    ) -> Optional[InvalidUserIdsForProject]:
+        pass
+
+    @abstractmethod
+    def validate_role_ids_for_project(
+            self, role_ids: List[str], project_id: str
+    ) -> Optional[InvalidRoleIdsForProject]:
         pass

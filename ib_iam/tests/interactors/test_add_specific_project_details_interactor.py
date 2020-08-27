@@ -29,6 +29,91 @@ class TestAddSpecificProjectDetailsInteractor:
             user_storage=storage_mock)
         return interactor
 
+    def test_with_invalid_user_ids_for_project_return_response(
+            self, storage_mock, presenter_mock, interactor,
+            prepare_user_id_with_role_ids_dtos
+    ):
+        # Arrange
+        project_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
+        user_id_with_role_ids_dtos = prepare_user_id_with_role_ids_dtos
+        expected_user_ids = [
+            "31be920b-7b4c-49e7-8adb-41a0c18da848",
+            "01be920b-7b4c-49e7-8adb-41a0c18da848",
+            "77be920b-7b4c-49e7-8adb-41a0c18da848"
+        ]
+        invalid_user_ids = [
+            "01be920b-7b4c-49e7-8adb-41a0c18da848",
+            "77be920b-7b4c-49e7-8adb-41a0c18da848"
+        ]
+
+        expected_presenter_response_for_invalid_user_ids_for_project_mock = \
+            Mock()
+
+        presenter_mock.response_for_invalid_user_ids_for_project.return_value = \
+            expected_presenter_response_for_invalid_user_ids_for_project_mock
+
+        from ib_iam.exceptions.custom_exceptions import InvalidUserIdsForProject
+        storage_mock.validate_users_for_project.side_effect = \
+            InvalidUserIdsForProject(user_ids=invalid_user_ids)
+
+        # Act
+        response = interactor.add_specific_project_details_wrapper(
+            user_id_with_role_ids_dtos=user_id_with_role_ids_dtos,
+            project_id=project_id, presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == \
+               expected_presenter_response_for_invalid_user_ids_for_project_mock
+
+        storage_mock.validate_users_for_project.assert_called_with(
+            user_ids=expected_user_ids, project_id=project_id
+        )
+        call_obj = \
+            presenter_mock.response_for_invalid_user_ids_for_project.call_args
+        assert call_obj[0][0].user_ids == invalid_user_ids
+
+    def test_with_invalid_role_ids_for_project_return_response(
+            self, storage_mock, presenter_mock, interactor,
+            prepare_user_id_with_role_ids_dtos
+    ):
+        # Arrange
+        project_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
+        user_id_with_role_ids_dtos = prepare_user_id_with_role_ids_dtos
+        expected_role_ids = [
+            "ROLE_1", "ROLE_2", "ROLE_3"
+        ]
+        invalid_role_ids = [
+            "ROLE_3"
+        ]
+
+        expected_presenter_response_for_invalid_role_ids_for_project_mock = \
+            Mock()
+
+        presenter_mock.response_for_invalid_role_ids_for_project.return_value = \
+            expected_presenter_response_for_invalid_role_ids_for_project_mock
+
+        from ib_iam.exceptions.custom_exceptions import InvalidRoleIdsForProject
+        storage_mock.validate_role_ids_for_project.side_effect = \
+            InvalidRoleIdsForProject(role_ids=invalid_role_ids)
+
+        # Act
+        response = interactor.add_specific_project_details_wrapper(
+            user_id_with_role_ids_dtos=user_id_with_role_ids_dtos,
+            project_id=project_id, presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == \
+               expected_presenter_response_for_invalid_role_ids_for_project_mock
+
+        storage_mock.validate_role_ids_for_project.assert_called_with(
+            role_ids=expected_role_ids, project_id=project_id
+        )
+        call_obj = \
+            presenter_mock.response_for_invalid_role_ids_for_project.call_args
+        assert call_obj[0][0].role_ids == invalid_role_ids
+
     def test_with_valid_details_return_response(
             self, storage_mock, presenter_mock, interactor,
             prepare_user_id_with_role_ids_dtos

@@ -29,12 +29,37 @@ class TestGetSpecificTeamDetailsInteractor:
             user_storage=storage_mock)
         return interactor
 
+    def test_with_invalid_project_id_return_response(
+            self, storage_mock, presenter_mock, interactor
+    ):
+        # Arrange
+        project_id = "project_1"
+
+        expected_presenter_response_for_invalid_project_id = Mock()
+
+        storage_mock.is_valid_project_id.return_value = False
+
+        presenter_mock.response_for_invalid_project_id.return_value = \
+            expected_presenter_response_for_invalid_project_id
+
+        # Act
+        response = interactor.get_specific_project_details_wrapper(
+            project_id=project_id, presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == expected_presenter_response_for_invalid_project_id
+
+        storage_mock.is_valid_project_id.assert_called_with(
+            project_id=project_id)
+        presenter_mock.response_for_invalid_project_id.assert_called_once()
+
     def test_with_valid_details_return_response(
             self, storage_mock, presenter_mock, interactor,
             prepare_basic_user_details_dtos, prepare_user_role_dtos
     ):
         # Arrange
-        project_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
+        project_id = "project_1"
 
         expected_presenter_prepare_success_response_for_get_specific_team_details = \
             Mock()

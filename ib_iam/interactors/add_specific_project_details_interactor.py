@@ -1,5 +1,7 @@
 from typing import List
 
+from ib_iam.exceptions.custom_exceptions import InvalidUserIdsForProject, \
+    InvalidRoleIdsForProject
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.presenter_interfaces.add_specific_project_details_presenter_interface import \
     AddSpecificProjectDetailsPresenterInterface
@@ -17,10 +19,20 @@ class AddSpecificProjectDetailsInteractor:
             user_id_with_role_ids_dtos: List[UserIdWithRoleIdsDTO],
             presenter: AddSpecificProjectDetailsPresenterInterface
     ):
-        response = self._add_specific_project_details_response(
-            user_id_with_role_ids_dtos=user_id_with_role_ids_dtos,
-            project_id=project_id, presenter=presenter
-        )
+        '''
+        Validation:
+        InvalidUserIdsForProject
+        InvalidRoleIdsForProject
+        '''
+        try:
+            response = self._add_specific_project_details_response(
+                user_id_with_role_ids_dtos=user_id_with_role_ids_dtos,
+                project_id=project_id, presenter=presenter
+            )
+        except InvalidUserIdsForProject as err:
+            response = presenter.response_for_invalid_user_ids_for_project(err)
+        except InvalidRoleIdsForProject as err:
+            response = presenter.response_for_invalid_role_ids_for_project(err)
         return response
 
     def _add_specific_project_details_response(
@@ -40,6 +52,20 @@ class AddSpecificProjectDetailsInteractor:
             self, project_id: str,
             user_id_with_role_ids_dtos: List[UserIdWithRoleIdsDTO]
     ):
+        user_ids = [
+            user_id_with_role_ids_dto.user_id
+            for user_id_with_role_ids_dto in user_id_with_role_ids_dtos
+        ]
+        role_ids = []
+        for user_id_with_role_ids_dto in user_id_with_role_ids_dtos:
+            role_ids.extend(user_id_with_role_ids_dto.role_ids)
+
+        self.user_storage.validate_users_for_project(
+            user_ids=user_ids, project_id=project_id
+        )
+        self.user_storage.validate_role_ids_for_project(
+            role_ids=role_ids, project_id=project_id
+        )
         self.user_storage.add_project_specific_details(
             user_id_with_role_ids_dtos=user_id_with_role_ids_dtos,
             project_id=project_id

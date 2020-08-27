@@ -2265,6 +2265,31 @@
           }
         ]
       }
+    },
+    "AddSpecificProjectDetailsBadRequestResponse": {
+      "description": "Add specific project details bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_ROLE_IDS_FOR_PROJECT",
+                  "INVALID_USER_IDS_FOR_PROJECT"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
     }
   },
   "paths": {
@@ -3178,6 +3203,9 @@
         "responses": {
           "201": {
             "description": "Successfully added the specific project details"
+          },
+          "400": {
+            "$ref": "#/responses/AddSpecificProjectDetailsBadRequestResponse"
           }
         }
       }

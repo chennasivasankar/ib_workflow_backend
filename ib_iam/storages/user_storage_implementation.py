@@ -1,6 +1,8 @@
 from typing import List, Optional
 
 from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
+from ib_iam.exceptions.custom_exceptions import InvalidUserIdsForProject, \
+    InvalidRoleIdsForProject
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
@@ -504,3 +506,47 @@ class UserStorageImplementation(UserStorageInterface):
         from ib_iam.models import Project
         project_objects = Project.objects.filter(project_id=project_id)
         return project_objects.exists()
+
+    # TODO: write test cases
+    def validate_users_for_project(
+            self, user_ids: List[str], project_id: str
+    ) -> Optional[InvalidUserIdsForProject]:
+        from ib_iam.models import ProjectTeam
+        team_ids = ProjectTeam.objects.filter(
+            project_id=project_id
+        ).values_list(
+            "team_id", flat=True)
+
+        from ib_iam.models import UserTeam
+        user_ids_in_project = UserTeam.objects.filter(
+            team_id__in=team_ids
+        ).values_list(
+            "user_id", flat=True
+        )
+
+        invalid_user_ids = [
+            user_id
+            for user_id in user_ids if user_id not in user_ids_in_project
+        ]
+        if invalid_user_ids:
+            raise InvalidUserIdsForProject(user_ids=invalid_user_ids)
+        return
+
+    # TODO: write test cases
+    def validate_role_ids_for_project(
+            self, role_ids: List[str], project_id: str
+    ) -> Optional[InvalidRoleIdsForProject]:
+        role_ids_in_project = ProjectRole.objects.filter(
+            project_id=project_id
+        ).values_list(
+            "role_id", flat=True
+        )
+
+        invalid_role_ids = [
+            role_id
+            for role_id in role_ids if role_id not in role_ids_in_project
+        ]
+
+        if invalid_role_ids:
+            raise InvalidRoleIdsForProject(role_ids=invalid_role_ids)
+        return

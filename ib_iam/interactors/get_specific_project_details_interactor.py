@@ -36,9 +36,6 @@ class GetSpecificProjectDetailsInteractor:
         return response
 
     def get_specific_project_details(self, project_id: str):
-        '''
-        TODO: write test case for validate project id
-        '''
         from ib_iam.exceptions.custom_exceptions import InvalidProjectId
         is_invalid_project_id = not self.user_storage.is_valid_project_id(
             project_id=project_id)

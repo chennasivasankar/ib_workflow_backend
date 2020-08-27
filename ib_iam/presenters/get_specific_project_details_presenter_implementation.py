@@ -57,7 +57,6 @@ class GetSpecificProjectDetailsPresenterImplementation(
         }
         return role_dict
 
-    # TODO: write test case for this
     def response_for_invalid_project_id(self):
         response_dict = {
             "response": INVALID_PROJECT_ID[0],
