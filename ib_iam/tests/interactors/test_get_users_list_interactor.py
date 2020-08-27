@@ -421,9 +421,9 @@ class TestGetUsersDetailsInteractor:
     def test_get_user_details_for_given_role_ids_based_on_query(
             self, storage_mock, mocker):
         # Arrange
+        project_id = "FA"
         user_role_ids = ["role1", "role2", "role3"]
         expected_user_ids = ['user_1', 'user_2']
-        expected_db_role_ids = ['8738f416-b32c-4c95-99ba-48056ec10e30']
 
         from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
         search_query_with_pagination_dto = SearchQueryWithPaginationDTO(
@@ -434,7 +434,6 @@ class TestGetUsersDetailsInteractor:
             expected_user_ids
         storage_mock.get_user_ids_based_on_given_query.return_value = \
             expected_user_ids
-        storage_mock.get_db_role_ids.return_value = expected_db_role_ids
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import get_users_adapter_mock
         get_users_adapter_mock_method = get_users_adapter_mock(
@@ -448,15 +447,14 @@ class TestGetUsersDetailsInteractor:
         response = \
             interactor.get_user_details_for_given_role_ids_based_on_query(
                 role_ids=user_role_ids,
-                search_query_with_pagination_dto=
-                search_query_with_pagination_dto)
+                search_query_with_pagination_dto=search_query_with_pagination_dto,
+                project_id=project_id
+            )
 
         # Assert
         assert response == user_profile_dtos
-        storage_mock.get_db_role_ids.assert_called_once_with(
-            role_ids=user_role_ids)
         storage_mock.get_user_ids_for_given_role_ids.assert_called_once_with(
-            role_ids=expected_db_role_ids
+            role_ids=user_role_ids
         )
         storage_mock.get_user_ids_based_on_given_query.assert_called_once_with(
             user_ids=expected_user_ids,
@@ -467,6 +465,7 @@ class TestGetUsersDetailsInteractor:
     def test_get_user_details_for_given_role_ids_based_on_query_when_given_all_roles(
             self, storage_mock, mocker):
         # Arrange
+        project_id = "FA"
         from ib_iam.constants.config import ALL_ROLES_ID
         user_role_ids = [ALL_ROLES_ID]
         expected_user_role_ids = ["role_1", "role_2"]
@@ -496,8 +495,9 @@ class TestGetUsersDetailsInteractor:
         response = \
             interactor.get_user_details_for_given_role_ids_based_on_query(
                 role_ids=user_role_ids,
-                search_query_with_pagination_dto=
-                search_query_with_pagination_dto)
+                search_query_with_pagination_dto=search_query_with_pagination_dto,
+                project_id=project_id
+            )
 
         # Assert
         assert response == user_profile_dtos
@@ -510,3 +510,5 @@ class TestGetUsersDetailsInteractor:
             search_query_with_pagination_dto=search_query_with_pagination_dto
         )
         get_users_adapter_mock_method.assert_called_once()
+
+    # TODO need to check the project id is invalid or not test case

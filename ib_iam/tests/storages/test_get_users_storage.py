@@ -80,15 +80,16 @@ class TestGetUsers:
                 user_id='user1',
                 team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
                 team_name='team 0'
-            ), UserTeamDTO(
-                user_id='user2',
-                team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
-                team_name='team 0'
             ),
             UserTeamDTO(
                 user_id='user1',
                 team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332',
                 team_name='team 1'
+            ),
+            UserTeamDTO(
+                user_id='user2',
+                team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
+                team_name='team 0'
             ),
             UserTeamDTO(
                 user_id='user2',
@@ -245,9 +246,28 @@ class TestGetUsers:
             name_search_query=name_search_query)
         assert output == expected_output
 
+    @pytest.fixture()
+    def users_with_teams(self):
+        from ib_iam.tests.factories.models import TeamFactory
+        TeamFactory.reset_sequence(0)
+        from ib_iam.tests.factories.models import UserTeamFactory
+        UserTeamFactory.reset_sequence(0)
+        users = []
+        teams = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+                 "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+        for team_id in teams:
+            team = TeamFactory.create(team_id=team_id)
+            for i in range(1, 4):
+                user = UserTeamFactory.create(user_id=f"user{i}", team=team)
+                users.append(user)
+        return users
+
     @pytest.mark.django_db
-    def test_get_team_details_of_users_bulk(self, users_team, user_team_dtos):
+    def test_get_team_details_of_users_bulk(self, users_with_teams,
+                                            user_team_dtos):
         # Arrange
+        print(users_with_teams)
+        print(user_team_dtos)
         user_ids = ['user1', 'user2']
         expected_output = user_team_dtos
         storage = UserStorageImplementation()
@@ -268,6 +288,7 @@ class TestGetUsers:
 
         # Act
         output = storage.get_role_details_of_users_bulk(user_ids=user_ids)
+        print(output, len(output))
 
         # Assert
         assert output == expected_output
@@ -528,9 +549,13 @@ class TestGetUsers:
             UserTeamFactory.create(team=team_object, user_id=user_id)
         expected_team_dtos = [TeamDTOFactory.create(team_id=team_id)
                               for team_id in team_ids]
+        expected_team_dtos = sorted(
+            expected_team_dtos, key=lambda x: x.team_id)
         storage = UserStorageImplementation()
 
         actual_team_dtos = storage.get_user_related_team_dtos(user_id=user_id)
+        actual_team_dtos = sorted(
+            actual_team_dtos, key=lambda x: x.team_id)
 
         assert actual_team_dtos == expected_team_dtos
 

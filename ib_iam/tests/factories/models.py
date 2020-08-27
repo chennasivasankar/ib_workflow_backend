@@ -113,6 +113,7 @@ class ProjectFactory(factory.django.DjangoModelFactory):
 class ProjectRoleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ProjectRole
+        django_get_or_create = ('role_id', 'name', 'description', 'project')
 
     role_id = factory.sequence(lambda number: "ROLE_%s" % number)
     name = factory.sequence(lambda number: "role %s" % number)

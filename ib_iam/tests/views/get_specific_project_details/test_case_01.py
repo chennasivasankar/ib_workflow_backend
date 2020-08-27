@@ -24,11 +24,13 @@ class TestCase01GetSpecificProjectDetailsAPITestCase(TestUtils):
         path_params = {"project_id": project_id}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(
+            body=body,
+            path_params=path_params,
+            query_params=query_params,
+            headers=headers,
+            snapshot=snapshot
+        )
 
     @pytest.fixture()
     def create_teams(self):

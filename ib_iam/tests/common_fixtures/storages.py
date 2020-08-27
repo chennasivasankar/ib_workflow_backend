@@ -49,18 +49,7 @@ def users_company():
     return users
 
 
-@pytest.fixture()
-def users_team():
-    reset_sequence()
-    users = []
-    teams = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
-             "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
-    for team_id in teams:
-        team = TeamFactory.create(team_id=team_id)
-        for i in range(1, 4):
-            user = UserTeamFactory.create(user_id=f"user{i}", team=team)
-            users.append(user)
-    return users
+
 
 
 @pytest.fixture()

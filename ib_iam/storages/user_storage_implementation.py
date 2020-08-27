@@ -199,7 +199,7 @@ class UserStorageImplementation(UserStorageInterface):
             company_query_set]
         return company_dtos
 
-    def get_teams(self) -> List[TeamIdAndNameDTO]:
+    def get_team_id_and_name_dtos(self) -> List[TeamIdAndNameDTO]:
         from ib_iam.models import Team
         team_query_set = Team.objects.values('team_id', 'name')
         team_dtos = [TeamIdAndNameDTO(
