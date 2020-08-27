@@ -299,23 +299,6 @@ class CreateTaskInteractor:
             view_type=ViewType.KANBAN.value, project_id=task_dto.project_id)
         return task_current_stage_details_dto, all_tasks_overview_details_dto
 
-    def _get_fields_dto(
-            self, task_dto: CreateTaskDTO) -> List[ElasticFieldDTO]:
-
-        fields_dto = []
-        gof_fields_dtos = task_dto.gof_fields_dtos
-        for gof_fields_dto in gof_fields_dtos:
-            for field_value_dto in gof_fields_dto.field_values_dtos:
-                fields_dto.append(self._get_elastic_field_dto(field_value_dto))
-        return fields_dto
-
-    @staticmethod
-    def _get_elastic_field_dto(field_dto: FieldValuesDTO) -> ElasticFieldDTO:
-        return ElasticFieldDTO(
-            field_id=field_dto.field_id,
-            value=field_dto.field_response
-        )
-
     def _validate_task_template_id(
             self, task_template_id: str
     ) -> Optional[InvalidTaskTemplateDBId]:
