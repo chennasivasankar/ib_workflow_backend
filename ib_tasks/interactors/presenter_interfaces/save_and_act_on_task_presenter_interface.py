@@ -3,15 +3,18 @@ import abc
 from ib_tasks.exceptions.datetime_custom_exceptions import DueDateHasExpired
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee, InvalidStageId
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 
 
 class SaveAndActOnATaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_save_and_act_on_task_response(self,
-                                          task_current_stage_details_dto:
-                                          TaskCurrentStageDetailsDTO):
+    def get_save_and_act_on_task_response(
+            self, task_current_stage_details_dto: TaskCurrentStageDetailsDTO,
+            all_tasks_overview_details_dto: AllTasksOverviewDetailsDTO
+    ):
         pass
 
     @abc.abstractmethod
@@ -147,10 +150,6 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_start_date_is_ahead_of_due_date(self, err):
-        pass
-
-    @abc.abstractmethod
-    def raise_due_date_is_behind_start_date(self, err):
         pass
 
     @abc.abstractmethod
