@@ -89,10 +89,9 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def is_user_in_a_project(
-            self, user_id: str, project_id: str) -> bool:
+    def update_project(self, project_dto: ProjectDTO):
         pass
 
     @abc.abstractmethod
-    def is_valid_project_id(self, project_id: str) -> bool:
+    def delete_teams_from_project(self, project_id: str, team_ids: List[str]):
         pass

@@ -6,9 +6,12 @@ from ib_iam.app_interfaces.dtos import (
     ProjectTeamUserDTO, UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO,
     UserTeamsDTO)
 from ib_iam.exceptions.custom_exceptions import InvalidUserIds
-from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
+from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO, \
+    CompleteProjectDetailsDTO
 from ib_iam.interactors.presenter_interfaces \
     .add_project_presenter_interface import AddProjectPresenterInterface
+from ib_iam.interactors.presenter_interfaces.update_project_presenter_interface import \
+    UpdateProjectPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import (
     ProjectDTO, ProjectWithoutIdDTO, UserTeamDTO, TeamIdAndNameDTO)
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
@@ -281,3 +284,52 @@ class ProjectInteractor:
         self.project_storage.add_project_roles(
             project_id=project_id,
             roles=project_with_team_ids_and_roles_dto.roles)
+
+    def update_project_wrapper(
+            self,
+            complete_project_details_dto: CompleteProjectDetailsDTO,
+            presenter: UpdateProjectPresenterInterface):
+        self.update_project(
+            complete_project_details_dto=complete_project_details_dto)
+        response = presenter.get_success_response_for_update_project()
+        return response
+
+    # todo remove the tag after writing validations properly
+    @transaction.atomic
+    def update_project(
+            self, complete_project_details_dto: CompleteProjectDetailsDTO):
+        # todo confirm and write user permissions
+        # todo validate given invalid team_ids or duplicate team_ids
+        # todo validate is project name already exists for any other project
+        # todo validate role_ids
+        project_id = complete_project_details_dto.project_id
+        team_ids = complete_project_details_dto.team_ids
+        project_dto = ProjectDTO(
+            project_id=project_id,
+            name=complete_project_details_dto.name,
+            description=complete_project_details_dto.description,
+            logo_url=complete_project_details_dto.logo_url)
+        self.project_storage.update_project(
+            project_dto=project_dto)
+        project_team_ids = self.project_storage.get_valid_team_ids(
+            project_id=project_id)
+        self._add_teams_to_project(
+            project_id=project_id, project_team_ids=project_team_ids,
+            team_ids=team_ids)
+        self._delete_teams_from_project(
+            project_id=project_id, project_team_ids=project_team_ids,
+            team_ids=team_ids)
+
+    def _add_teams_to_project(self, project_id: str,
+                              project_team_ids: List[str],
+                              team_ids: List[str]):
+        team_ids_to_add = list(set(team_ids) - set(project_team_ids))
+        self.project_storage.assign_teams_to_projects(
+            project_id=project_id, team_ids=team_ids_to_add)
+
+    def _delete_teams_from_project(self, project_id: str,
+                                   project_team_ids: List[str],
+                                   team_ids: List[str]):
+        team_ids_to_be_removed = list(set(project_team_ids) - set(team_ids))
+        self.project_storage.delete_teams_from_project(
+            project_id=project_id, team_ids=team_ids_to_be_removed)
