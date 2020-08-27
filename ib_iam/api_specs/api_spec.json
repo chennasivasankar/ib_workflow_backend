@@ -705,7 +705,7 @@
         "projects"
       ]
     },
-    "ProjectWithTeamIdsAndRoles": {
+    "ProjectWithTeamIds": {
       "allOf": [
         {
           "$ref": "#/definitions/ProjectDetails"
@@ -716,9 +716,25 @@
             "team_ids": {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "format": "uuid"
               }
-            },
+            }
+          },
+          "required": [
+            "team_ids"
+          ]
+        }
+      ]
+    },
+    "ProjectWithTeamIdsAndRolesForAddProject": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProjectWithTeamIds"
+        },
+        {
+          "type": "object",
+          "properties": {
             "roles": {
               "type": "array",
               "items": {
@@ -727,7 +743,39 @@
             }
           },
           "required": [
-            "team_ids",
+            "roles"
+          ]
+        }
+      ]
+    },
+    "ProjectWithTeamIdsAndRolesForUpdateProject": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProjectWithTeamIds"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "roles": {
+              "type": "array",
+              "items": {
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/RoleNameAndDescription"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "role_id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "required": [
             "roles"
           ]
         }
@@ -1125,7 +1173,7 @@
       "required": true,
       "description": "parameters or details to create/add a project",
       "schema": {
-        "$ref": "#/definitions/ProjectWithTeamIdsAndRoles"
+        "$ref": "#/definitions/ProjectWithTeamIdsAndRolesForAddProject"
       }
     },
     "UpdateProjectParameter": {
@@ -1133,7 +1181,7 @@
       "in": "body",
       "description": "details that are to be updated of a project",
       "schema": {
-        "$ref": "#/definitions/ProjectWithTeamIdsAndRoles"
+        "$ref": "#/definitions/ProjectWithTeamIdsAndRolesForUpdateProject"
       }
     }
   },
