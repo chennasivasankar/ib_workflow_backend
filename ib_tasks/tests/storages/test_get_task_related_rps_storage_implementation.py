@@ -3,7 +3,7 @@ import datetime
 import pytest
 from freezegun import freeze_time
 
-from ib_tasks.models import UserRpInTaskStage
+from ib_tasks.models import TaskStageRp
 
 
 @pytest.mark.django_db
@@ -135,7 +135,7 @@ class TestGetTaskRPs:
                                             stage_id=stage_id)
 
         # Assert
-        does_exist = UserRpInTaskStage.objects.filter(
+        does_exist = TaskStageRp.objects.filter(
             task_id=task_id, stage_id=stage_id,
             rp_id=superior_id
         ).exists()

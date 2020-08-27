@@ -16,7 +16,7 @@ from .stage import Stage
 from .stage_actions import StageAction
 from .stage_permitted_roles import StagePermittedRoles
 from .task import Task
-from .user_rp_in_task_stage import UserRpInTaskStage
+from .task_stage_rp import TaskStageRp
 from .user_task_delay_reason import UserTaskDelayReason
 from .task_gof import TaskGoF
 from .task_gof_field import TaskGoFField
@@ -54,5 +54,5 @@ __all__ = [
     "TaskTemplateInitialStage",
     "StagePermittedRoles",
     "UserTaskDelayReason", "ProjectTaskTemplate",
-    "UserRpInTaskStage"
+    "TaskStageRp"
 ]

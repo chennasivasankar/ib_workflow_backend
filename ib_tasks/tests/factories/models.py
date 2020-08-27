@@ -10,7 +10,7 @@ from ib_tasks.models import (
     UserTaskDelayReason, Task, TaskGoF, TaskGoFField,
     TaskTemplateGlobalConstants,
     TaskStatusVariable, Filter, FilterCondition, TaskLog,
-    StagePermittedRoles, ElasticSearchTask, ProjectTaskTemplate, UserRpInTaskStage)
+    StagePermittedRoles, ElasticSearchTask, ProjectTaskTemplate, TaskStageRp)
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -61,7 +61,7 @@ class StageModelFactory(factory.django.DjangoModelFactory):
 
 class UserRpInTaskStageFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = UserRpInTaskStage
+        model = TaskStageRp
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
