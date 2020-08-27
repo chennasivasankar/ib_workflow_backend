@@ -507,7 +507,6 @@ class UserStorageImplementation(UserStorageInterface):
         project_objects = Project.objects.filter(project_id=project_id)
         return project_objects.exists()
 
-    # TODO: write test cases
     def validate_users_for_project(
             self, user_ids: List[str], project_id: str
     ) -> Optional[InvalidUserIdsForProject]:
@@ -523,7 +522,6 @@ class UserStorageImplementation(UserStorageInterface):
         ).values_list(
             "user_id", flat=True
         )
-
         invalid_user_ids = [
             user_id
             for user_id in user_ids if user_id not in user_ids_in_project

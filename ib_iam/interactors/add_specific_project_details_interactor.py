@@ -20,9 +20,7 @@ class AddSpecificProjectDetailsInteractor:
             presenter: AddSpecificProjectDetailsPresenterInterface
     ):
         '''
-        Validation:
-        InvalidUserIdsForProject
-        InvalidRoleIdsForProject
+        validate project id
         '''
         try:
             response = self._add_specific_project_details_response(

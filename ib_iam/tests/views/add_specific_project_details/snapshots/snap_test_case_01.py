@@ -15,14 +15,14 @@ snapshots['TestCase01AddSpecificProjectDetailsAPITestCase.test_with_valid_detail
 snapshots['TestCase01AddSpecificProjectDetailsAPITestCase.test_with_valid_details_add_project_specific_details project_user_roles'] = [
     {
         'project_role_id': 'ROLE_1',
-        'user_id': '77be920b-7b4c-49e7-8adb-41a0c18da848'
+        'user_id': '60be920b-7b4c-49e7-8adb-41a0c18da848'
     },
     {
         'project_role_id': 'ROLE_3',
-        'user_id': '31be920b-7b4c-49e7-8adb-41a0c18da848'
+        'user_id': '40be920b-7b4c-49e7-8adb-41a0c18da848'
     },
     {
         'project_role_id': 'ROLE_4',
-        'user_id': '31be920b-7b4c-49e7-8adb-41a0c18da848'
+        'user_id': '40be920b-7b4c-49e7-8adb-41a0c18da848'
     }
 ]

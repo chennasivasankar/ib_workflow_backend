@@ -16,7 +16,7 @@ def api_wrapper(*args, **kwargs):
         UserIdWithRoleIdsDTOFactory
     user_id_with_role_ids_dtos = [
         UserIdWithRoleIdsDTOFactory(
-            user_id=user_dict["user_id"],
+            user_id=str(user_dict["user_id"]),
             role_ids=user_dict["role_ids"]
         )
         for user_dict in users
