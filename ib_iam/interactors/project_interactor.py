@@ -267,12 +267,8 @@ class ProjectInteractor:
             project_with_team_ids_and_roles_dto: ProjectWithTeamIdsAndRolesDTO
     ):
         # todo confirm and write user permissions
-        # todo validate given team_ids
-        # todo validate given project_id is not exists already
-        # todo validate is name already exists for any other project
-        # todo validate is duplicate role_ids send
-        # todo validate given role_ids is not exists already for
-        #  any of the roles of any project
+        # todo validate duplicate or invalid team_ids
+        # todo validate is project name already exists for any other project
         project_without_id_dto = ProjectWithoutIdDTO(
             name=project_with_team_ids_and_roles_dto.name,
             description=project_with_team_ids_and_roles_dto.description,
