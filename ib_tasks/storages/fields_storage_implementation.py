@@ -227,7 +227,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                 placeholder_text=field_obj.placeholder_text,
                 error_message=field_obj.error_messages,
                 allowed_formats=field_obj.allowed_formats,
-                validation_regex=field_obj.validation_regex
+                validation_regex=field_obj.validation_regex,
+                order=field_obj.order
             )
             for field_obj in field_objs
         ]

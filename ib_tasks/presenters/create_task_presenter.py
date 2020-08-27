@@ -25,6 +25,8 @@ from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 
 
@@ -205,7 +207,9 @@ class CreateTaskPresenterImplementation(
         return self.prepare_400_bad_request_response(data)
 
     def get_create_task_response(
-            self, task_current_stage_details_dto: TaskCurrentStageDetailsDTO):
+            self, task_current_stage_details_dto: TaskCurrentStageDetailsDTO,
+            all_tasks_overview_dto: AllTasksOverviewDetailsDTO
+    ):
         data = {
             "task_id": task_current_stage_details_dto.task_display_id,
             "stages": [],

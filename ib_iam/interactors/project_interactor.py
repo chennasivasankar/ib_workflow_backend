@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
     UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO, UserTeamsDTO
@@ -11,6 +11,21 @@ from ib_iam.interactors.storage_interfaces.team_storage_interface import \
     TeamStorageInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
+
+
+class UsersNotExistsForGivenProject(Exception):
+    def __init__(self, user_ids):
+        self.user_ids = user_ids
+
+
+class TeamsNotExistForGivenProject(Exception):
+    def __init__(self, team_ids: List[str]):
+        self.team_ids = team_ids
+
+
+class UsersNotExistsForGivenTeams(Exception):
+    def __init__(self, user_ids: List[str]):
+        self.user_ids = user_ids
 
 
 class ProjectInteractor:
@@ -41,10 +56,21 @@ class ProjectInteractor:
             self, project_ids: List[str]) -> List[ProjectDTO]:
         project_dtos = self.project_storage.get_project_dtos_for_given_project_ids(
             project_ids=project_ids)
-        if len(project_ids) != len(project_dtos):
+        invalid_project_ids = self._get_invalid_project_ids(
+            project_dtos=project_dtos, project_ids=project_ids)
+        if invalid_project_ids:
             from ib_iam.exceptions.custom_exceptions import InvalidProjectIds
-            raise InvalidProjectIds
+            raise InvalidProjectIds(project_ids=project_ids)
         return project_dtos
+
+    @staticmethod
+    def _get_invalid_project_ids(
+            project_dtos: List[ProjectDTO], project_ids: List[str]
+    ) -> List[str]:
+        for project_dto in project_dtos:
+            if project_dto.project_id in project_ids:
+                project_ids.remove(project_dto.project_id)
+        return project_ids
 
     def get_team_details_for_given_project_team_user_details_dto(
             self, project_team_user_dto: ProjectTeamUserDTO
@@ -68,14 +94,32 @@ class ProjectInteractor:
             self, project_teams_and_users_dto: ProjectTeamsAndUsersDTO
     ) -> List[UserTeamDTO]:
         project_id = project_teams_and_users_dto.project_id
-        user_ids, valid_team_ids = self._fetch_user_ids_and_team_ids(
+        user_ids, team_ids = self._fetch_user_ids_and_team_ids(
             project_teams_and_users_dto=project_teams_and_users_dto)
-
+        user_ids = list(set(user_ids))
+        team_ids = list(set(team_ids))
+        self._validate_project(project_id=project_id)
         valid_team_ids = self.project_storage.get_valid_team_ids_for_given_project(
-            project_id=project_id, team_ids=valid_team_ids)
+            project_id=project_id, team_ids=team_ids)
+        invalid_team_ids = list(set(team_ids) - set(valid_team_ids))
+        if invalid_team_ids:
+            raise TeamsNotExistForGivenProject(team_ids=invalid_team_ids)
         team_user_dtos = self.team_storage.get_team_user_dtos(
             team_ids=valid_team_ids, user_ids=user_ids)
+        invalid_user_ids = self._get_invalid_user_ids_for_given_team_ids(
+            user_ids=user_ids, team_user_dtos=team_user_dtos)
+        if invalid_user_ids:
+            raise UsersNotExistsForGivenTeams(user_ids=invalid_user_ids)
         return team_user_dtos
+
+    @staticmethod
+    def _get_invalid_user_ids_for_given_team_ids(
+            user_ids: List[str], team_user_dtos: List[UserTeamDTO]
+    ) -> List[str]:
+        for team_user_dto in team_user_dtos:
+            if team_user_dto.user_id in user_ids:
+                user_ids.remove(team_user_dto.user_id)
+        return user_ids
 
     @staticmethod
     def _fetch_user_ids_and_team_ids(
@@ -148,17 +192,33 @@ class ProjectInteractor:
     def get_user_teams_for_each_project_user(
             self, user_ids: List[str], project_id: str
     ) -> List[UserTeamsDTO]:
+        self._validate_project(project_id=project_id)
         valid_user_ids = self.user_storage.get_valid_user_ids(
             user_ids=user_ids)
         if len(valid_user_ids) != len(user_ids):
-            invalid_user_ids = set(user_ids) - set(valid_user_ids)
+            invalid_user_ids = list(set(user_ids) - set(valid_user_ids))
             raise InvalidUserIds(invalid_user_ids)
+        user_team_dtos = \
+            self._validate_user_ids_and_get_user_team_dtos_for_given_project(
+                project_id=project_id, user_ids=valid_user_ids)
+        return self._fetch_user_teams_for_each_user(
+            user_team_dtos=user_team_dtos)
+
+    def _validate_user_ids_and_get_user_team_dtos_for_given_project(
+            self, project_id: str, user_ids: List[str]
+    ) -> Optional[List[UserTeamDTO]]:
         team_ids = self.project_storage.get_valid_team_ids(
             project_id=project_id)
         user_team_dtos = self.team_storage.get_team_user_dtos(
             user_ids=user_ids, team_ids=team_ids)
-        return self._fetch_user_teams_for_each_user(
-            user_team_dtos=user_team_dtos)
+        for user_team_dto in user_team_dtos:
+            if user_team_dto.user_id in user_ids:
+                user_ids.remove(user_team_dto.user_id)
+        not_exists_users_in_given_project = user_ids
+        if not_exists_users_in_given_project:
+            raise UsersNotExistsForGivenProject(
+                user_ids=not_exists_users_in_given_project)
+        return user_team_dtos
 
     def _fetch_user_teams_for_each_user(
             self, user_team_dtos: List[UserTeamDTO]

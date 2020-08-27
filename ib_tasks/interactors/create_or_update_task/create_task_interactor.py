@@ -1,7 +1,7 @@
 from typing import List, Optional, Union
 
 from ib_tasks.constants.config import TIME_FORMAT
-from ib_tasks.constants.enum import ActionTypes
+from ib_tasks.constants.enum import ActionTypes, ViewType
 from ib_tasks.documents.elastic_task import ElasticFieldDTO
 from ib_tasks.exceptions.action_custom_exceptions import \
     InvalidActionException, InvalidKeyError, InvalidCustomLogicException, \
@@ -70,8 +70,8 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
-from ib_tasks.interactors.task_dtos import CreateTaskDTO, GoFFieldsDTO, \
-    UpdateTaskDTO, FieldValuesDTO
+from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO, \
+    FieldValuesDTO
 from ib_tasks.interactors.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
 
@@ -217,9 +217,10 @@ class CreateTaskInteractor:
             self, task_dto: CreateTaskDTO,
             presenter: CreateTaskPresenterInterface
     ):
-        task_current_stage_details_dto = self.create_task(task_dto)
+        task_current_stage_details_dto, all_tasks_overview_dto = \
+            self.create_task(task_dto)
         return presenter.get_create_task_response(
-            task_current_stage_details_dto)
+            task_current_stage_details_dto, all_tasks_overview_dto)
 
     def create_task(self, task_dto: CreateTaskDTO):
         self._validate_task_template_id(task_dto.task_template_id)
@@ -283,7 +284,20 @@ class CreateTaskInteractor:
         task_current_stage_details_dto = \
             get_task_current_stages_interactor.get_task_current_stages_details(
                 task_id=created_task_id, user_id=task_dto.created_by_id)
-        return task_current_stage_details_dto
+        from ib_tasks.interactors \
+            .get_all_task_overview_with_filters_and_searches_for_user import \
+            GetTasksOverviewForUserInteractor
+        task_overview_interactor = GetTasksOverviewForUserInteractor(
+            stage_storage=self.stage_storage, task_storage=self.task_storage,
+            field_storage=self.field_storage,
+            action_storage=self.action_storage,
+            task_stage_storage=self.task_stage_storage
+        )
+        all_tasks_overview_details_dto = \
+            task_overview_interactor.get_filtered_tasks_overview_for_user(
+            user_id=task_dto.created_by_id, task_ids=[created_task_id],
+            view_type=ViewType.KANBAN.value, project_id=task_dto.project_id)
+        return task_current_stage_details_dto, all_tasks_overview_details_dto
 
     def _get_fields_dto(
             self, task_dto: CreateTaskDTO) -> List[ElasticFieldDTO]:

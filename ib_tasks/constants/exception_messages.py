@@ -53,7 +53,6 @@ EMPTY_VALUE_FOR_READ_PERMISSIONS = "Read Permission roles shouldn't be empty " \
                                    "" \
                                    "" \
                                    "" \
-                                   "" \
                                    "for these fields ids {}"
 DUPLICATED_VALUES_FOR_READ_PERMISSIONS = "Repeated roles for read " \
                                          "permissions for these fields {}"
@@ -378,7 +377,10 @@ FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE = (
     "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
 )
 
-INVALID_SAME_GOF_ORDER_FOR_A_GOF = (
-    "invalid same gof order for a gof",
-    "INVALID_SAME_GOF_ORDER_FOR_A_GOF"
-)
+DUPLICATE_ORDER_FOR_FIELDS_OF_SAME_GOF = \
+    "Given duplicate orders: {} for fields of gof: {}, " \
+    "please send unique orders for fields of same gof"
+
+ORDER_FOR_FIELD_SHOULD_NOT_BE_NEGATIVE = \
+    "Order for Field should not be negative, " \
+    "got negative orders for fields: {}"

@@ -119,7 +119,7 @@ class CreateOrUpdateTaskStorageImplementation(
 
         task_gof_field_objs = TaskGoFField.objects.filter(
             task_gof_id__in=task_gof_ids
-        )
+        ).exclude(field_response='')
         task_gof_field_dtos = []
         for task_gof_field_obj in task_gof_field_objs:
             task_gof_field_dto = TaskGoFFieldDTO(

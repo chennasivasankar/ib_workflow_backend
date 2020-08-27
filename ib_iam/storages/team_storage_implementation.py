@@ -131,7 +131,6 @@ class TeamStorageImplementation(TeamStorageInterface):
         user_team_objects = UserTeam.objects.filter(
             team_id__in=team_ids, user_id__in=user_ids
         ).select_related('team')
-        print(user_team_objects)
         user_team_dtos = [
             UserTeamDTO(
                 user_id=str(user_team_object.user_id),

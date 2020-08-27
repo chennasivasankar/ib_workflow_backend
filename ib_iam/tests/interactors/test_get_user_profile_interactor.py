@@ -68,7 +68,6 @@ class TestGetUserProfileInteractor:
             user_id=user_id, is_admin=True, cover_page_url="url1")
         expected_response_dto = UserWithExtraDetailsDTO(
             user_profile_dto=user_profile_dto,
-            role_dtos=expected_role_dtos,
             company_dto=expected_company_dto,
             team_dtos=expected_team_dtos,
             team_user_ids_dto=expected_team_user_ids_dtos,
@@ -204,8 +203,8 @@ class TestGetUserProfileInteractor:
             .assert_called_once_with(user_id=user_id)
         storage_mock.get_team_user_ids_dtos \
             .assert_called_once_with(team_ids=["1"])
-        storage_mock.get_role_details_of_users_bulk \
-            .assert_called_once_with(user_ids=[user_id])
+        # storage_mock.get_role_details_of_users_bulk \
+        #     .assert_called_once_with(user_ids=[user_id])
         storage_mock.get_user_related_company_dto \
             .assert_called_once_with(user_id=user_id)
         storage_mock.get_company_employee_ids_dto \

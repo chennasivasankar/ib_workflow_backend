@@ -21,7 +21,7 @@ class TestFieldsStorageImplementation:
     def reset_sequence(self):
         from ib_tasks.tests.factories.models import GoFFactory, FieldFactory
         GoFFactory.reset_sequence()
-        FieldFactory.reset_sequence()
+        FieldFactory.reset_sequence(1)
 
     def test_get_fields_of_gofs_in_dtos(self, storage):
         from ib_tasks.tests.factories.models import GoFFactory, FieldFactory
@@ -29,16 +29,7 @@ class TestFieldsStorageImplementation:
             import FieldDTO
         from ib_tasks.constants.enum import FieldTypes
         expected_gof_ids = ['gof_1', 'gof_2']
-        expected_field_dtos = [FieldDTO(gof_id='gof_1', field_id='FIELD_ID-0',
-                                        field_display_name='DISPLAY_NAME-0',
-                                        field_type=FieldTypes.PLAIN_TEXT.value,
-                                        field_values=None, required=True,
-                                        help_text=None, tooltip=None,
-                                        placeholder_text=None,
-                                        error_message=None,
-                                        allowed_formats=None,
-                                        validation_regex=None),
-                               FieldDTO(gof_id='gof_2', field_id='FIELD_ID-1',
+        expected_field_dtos = [FieldDTO(gof_id='gof_1', field_id='FIELD_ID-1',
                                         field_display_name='DISPLAY_NAME-1',
                                         field_type=FieldTypes.PLAIN_TEXT.value,
                                         field_values=None, required=True,
@@ -46,7 +37,18 @@ class TestFieldsStorageImplementation:
                                         placeholder_text=None,
                                         error_message=None,
                                         allowed_formats=None,
-                                        validation_regex=None)]
+                                        validation_regex=None,
+                                        order=1),
+                               FieldDTO(gof_id='gof_2', field_id='FIELD_ID-2',
+                                        field_display_name='DISPLAY_NAME-2',
+                                        field_type=FieldTypes.PLAIN_TEXT.value,
+                                        field_values=None, required=True,
+                                        help_text=None, tooltip=None,
+                                        placeholder_text=None,
+                                        error_message=None,
+                                        allowed_formats=None,
+                                        validation_regex=None,
+                                        order=2)]
 
         import factory
         gof_objs = GoFFactory.create_batch(
@@ -293,21 +295,22 @@ class TestFieldsStorageImplementation:
         field_ids = [field.field_id for field in fields]
         expected_field_dtos = [
             FieldDTO(
-                gof_id='gof_1', field_id='FIELD_ID-0',
-                field_display_name='DISPLAY_NAME-0',
+                gof_id='gof_1', field_id='FIELD_ID-1',
+                field_display_name='DISPLAY_NAME-1',
                 field_type=FieldTypes.PLAIN_TEXT.value,
                 field_values=None, required=True,
                 help_text=None, tooltip=None, placeholder_text=None,
                 error_message=None, allowed_formats=None,
-                validation_regex=None
+                validation_regex=None, order=1
             ),
             FieldDTO(
-                gof_id='gof_2', field_id='FIELD_ID-1',
-                field_display_name='DISPLAY_NAME-1',
+                gof_id='gof_2', field_id='FIELD_ID-2',
+                field_display_name='DISPLAY_NAME-2',
                 field_type=FieldTypes.PLAIN_TEXT.value,
                 field_values=None, required=True, help_text=None, tooltip=None,
                 placeholder_text=None, error_message=None,
-                allowed_formats=None, validation_regex=None)]
+                allowed_formats=None, validation_regex=None, order=2
+            )]
 
         # Act
         field_dtos = storage.get_field_dtos(field_ids=field_ids)

@@ -171,7 +171,8 @@ class GetAllTasksOverviewForUserPresenterImpl(
 
 class GetFilteredTasksOverviewForUserPresenterImplementation(
     GetAllTasksOverviewForUserPresenterImpl,
-    GetFilteredTasksOverviewForUserPresenterInterface):
+    GetFilteredTasksOverviewForUserPresenterInterface
+):
 
     def get_response_for_filtered_tasks_overview_details_response(
             self,
@@ -209,4 +210,15 @@ class GetFilteredTasksOverviewForUserPresenterImplementation(
         }
 
         response_object = self.prepare_403_forbidden_response(response_dict)
+        return response_object
+
+    def get_response_for_invalid_filter_condition(self, error):
+        from ib_tasks.constants.exception_messages import FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE
+        response_dict = {
+            "response": FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE[0].format(error.condition),
+            "http_status_code": 400,
+            "res_status": FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE[1]
+        }
+
+        response_object = self.prepare_400_bad_request_response(response_dict)
         return response_object
