@@ -1,7 +1,7 @@
 from typing import Optional, List, Union
 
 from ib_tasks.constants.config import TIME_FORMAT
-from ib_tasks.constants.enum import ActionTypes
+from ib_tasks.constants.enum import ActionTypes, ViewType
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueTimeHasExpiredForToday, InvalidDueTimeFormat, \
     StartDateIsAheadOfDueDate, \
@@ -36,6 +36,8 @@ from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
     UpdateTaskPresenterInterface
 from ib_tasks.interactors.stages_dtos import StageAssigneeDTO, \
     TaskIdWithStageAssigneesDTO
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
+    ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces. \
     create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
@@ -53,6 +55,9 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
+    import \
+    TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO, CreateTaskDTO, \
@@ -69,8 +74,12 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             create_task_storage: CreateOrUpdateTaskStorageInterface,
             storage: StorageInterface, field_storage: FieldsStorageInterface,
             stage_storage: StageStorageInterface,
-            elastic_storage: ElasticSearchStorageInterface
+            elastic_storage: ElasticSearchStorageInterface,
+            action_storage: ActionStorageInterface,
+            task_stage_storage: TaskStageStorageInterface,
     ):
+        self.task_stage_storage = task_stage_storage
+        self.action_storage = action_storage
         self.gof_storage = gof_storage
         self.task_storage = task_storage
         self.create_task_storage = create_task_storage
@@ -174,8 +183,10 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             self, task_dto: UpdateTaskWithTaskDisplayIdDTO,
             presenter: UpdateTaskPresenterInterface
     ):
-        self.update_task_with_task_display_id(task_dto)
-        return presenter.get_update_task_response()
+        all_tasks_overview_details_dto = \
+            self.update_task_with_task_display_id(task_dto)
+        return presenter.get_update_task_response(
+            all_tasks_overview_details_dto)
 
     def update_task_with_task_display_id(
             self, task_dto: UpdateTaskWithTaskDisplayIdDTO):
@@ -189,7 +200,9 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             stage_assignee=task_dto.stage_assignee,
             gof_fields_dtos=task_dto.gof_fields_dtos
         )
-        self.update_task(task_dto_with_db_task_id)
+        all_tasks_overview_details_dto = \
+            self.update_task(task_dto_with_db_task_id)
+        return all_tasks_overview_details_dto
 
     def update_task(self, task_dto: UpdateTaskDTO, action_type=None):
         task_id = task_dto.task_id
@@ -254,6 +267,22 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_id=task_dto.task_id, stage_assignees=stage_assignees)
         update_stage_assignee_interactor.update_task_stage_assignees(
             task_stage_assignee_dto)
+        from ib_tasks.interactors \
+            .get_all_task_overview_with_filters_and_searches_for_user import \
+            GetTasksOverviewForUserInteractor
+        task_overview_interactor = GetTasksOverviewForUserInteractor(
+            stage_storage=self.stage_storage, task_storage=self.task_storage,
+            field_storage=self.field_storage,
+            action_storage=self.action_storage,
+            task_stage_storage=self.task_stage_storage
+        )
+        project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
+        all_tasks_overview_details_dto = \
+            task_overview_interactor.get_filtered_tasks_overview_for_user(
+                user_id=task_dto.created_by_id, task_ids=[task_id],
+                view_type=ViewType.KANBAN.value,
+                project_id=project_id)
+        return all_tasks_overview_details_dto
 
     def _validate_task_id(
             self, task_id: int) -> Optional[InvalidTaskException]:

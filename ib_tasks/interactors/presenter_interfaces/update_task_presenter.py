@@ -4,12 +4,15 @@ from ib_tasks.exceptions.datetime_custom_exceptions import DueDateHasExpired
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee, InvalidStageId
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    AllTasksOverviewDetailsDTO
 
 
 class UpdateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_update_task_response(self):
+    def get_update_task_response(
+            self, all_tasks_overview_details_dto: AllTasksOverviewDetailsDTO):
         pass
 
     @abc.abstractmethod
