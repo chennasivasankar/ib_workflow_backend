@@ -49,7 +49,7 @@ class TestGetListOfTeamIdAndName:
             user_storage=user_storage_mock, team_storage=team_storage_mock)
         from ib_iam.exceptions.custom_exceptions import InvalidTeamIds
         team_storage_mock.get_team_id_and_name_dtos.side_effect = \
-            InvalidTeamIds
+            InvalidTeamIds(team_ids=team_ids)
 
         with pytest.raises(InvalidTeamIds):
             interactor.get_team_id_and_name_dtos(team_ids=team_ids)

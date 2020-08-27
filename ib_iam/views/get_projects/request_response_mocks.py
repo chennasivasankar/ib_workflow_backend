@@ -18,8 +18,9 @@ RESPONSE_200_JSON = """
             ],
             "roles": [
                 {
-                    "role_id": "string",
-                    "role_name": "string"
+                    "role_name": "string",
+                    "description": "string",
+                    "role_id": "string"
                 }
             ]
         }

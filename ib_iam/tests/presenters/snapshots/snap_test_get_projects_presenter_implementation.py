@@ -16,6 +16,7 @@ snapshots['TestGetProjectsPresenterImplementation.test_get_response_for_get_proj
             'project_id': 'f2c02d98-f311-4ab2-8673-3daa00757002',
             'roles': [
                 {
+                    'description': 'payment_description1',
                     'role_id': 'f2c02d98-f311-4ab2-8673-3daa00757002',
                     'role_name': 'role 1'
                 }

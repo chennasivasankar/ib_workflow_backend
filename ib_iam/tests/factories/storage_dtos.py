@@ -324,5 +324,6 @@ class ProjectRoleDTOFactory(factory.Factory):
         model = ProjectRoleDTO
 
     project_id = factory.Sequence(lambda n: 'project %s' % n)
-    role_id = factory.Sequence(lambda n: 'role %s' % n)
-    name = factory.Sequence(lambda n: 'role %s' % n)
+    role_id = factory.sequence(lambda number: "ROLE_%s" % number)
+    name = factory.sequence(lambda number: "role %s" % number)
+    description = factory.Sequence(lambda n: 'payment_description%s' % n)

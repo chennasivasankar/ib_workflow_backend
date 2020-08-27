@@ -18,6 +18,7 @@ snapshots['TestCase01GetProjectsAPITestCase.test_case body'] = {
             'project_id': '641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
             'roles': [
                 {
+                    'description': 'payment_description1',
                     'role_id': '641bfcc5-e1ea-4231-b482-f7f34fb5c7c6',
                     'role_name': 'role 1'
                 }

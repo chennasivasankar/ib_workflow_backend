@@ -161,6 +161,24 @@
         "role_name"
       ]
     },
+    "Role": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/RoleNameAndDescription"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "role_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "role_id"
+          ]
+        }
+      ]
+    },
     "RoleDetails": {
       "type": "object",
       "properties": {
@@ -656,7 +674,10 @@
               "$ref": "#/definitions/Teams"
             },
             "roles": {
-              "$ref": "#/definitions/Roles"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Role"
+              }
             }
           },
           "required": [
