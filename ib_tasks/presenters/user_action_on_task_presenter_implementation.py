@@ -12,14 +12,14 @@ from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO, AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
+from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
+    TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 from ib_tasks.interactors.user_action_on_task_interactor import \
     InvalidBoardIdException
-from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
-    TaskStageAssigneeDetailsDTO
 
 
 class UserActionOnTaskPresenterImplementation(PresenterInterface,
@@ -107,7 +107,8 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
     def raise_exception_for_invalid_present_actions(self, error_obj):
         from ib_tasks.constants.exception_messages import \
             INVALID_PRESENT_STAGE_ACTION
-        message = INVALID_PRESENT_STAGE_ACTION[0].format(str(error_obj.action_id))
+        message = INVALID_PRESENT_STAGE_ACTION[0].format(
+            str(error_obj.action_id))
         data = {
             "response": message,
             "http_status_code": 403,
@@ -287,7 +288,8 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
                 column_stage_dtos, stage_actions_dict, stage_fields_dict
             )
 
-        assignees_dict, task_stages_dict = self._get_stage_details_and_assignees_details_dict(
+        assignees_dict, task_stages_dict = \
+            self._get_stage_details_and_assignees_details_dict(
             column_stage_dtos, assignee_dtos, task_stage_dtos
         )
 
