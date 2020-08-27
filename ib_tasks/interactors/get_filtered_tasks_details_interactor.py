@@ -5,9 +5,9 @@ Author: Pavankumar Pamuru
 """
 from dataclasses import dataclass
 
-from ib_tasks.exceptions.adapter_exceptions  import UserIsNotInProjectException
+from ib_tasks.adapters.auth_service import InvalidProjectIdsException, \
+    UserIsNotInProjectException
 from ib_tasks.constants.enum import ViewType
-from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException
 from ib_tasks.exceptions.fields_custom_exceptions import \
     LimitShouldBeGreaterThanZeroException, \
     OffsetShouldBeGreaterThanZeroException

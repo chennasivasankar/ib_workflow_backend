@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException
+from ib_tasks.adapters.auth_service import InvalidProjectIdsException
 from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
     import FilterPresenterInterface, TaskTemplateFieldsDto
 from ib_tasks.interactors.storage_interfaces.fields_dtos \
