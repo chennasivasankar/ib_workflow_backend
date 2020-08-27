@@ -2,8 +2,8 @@ from typing import List, Dict
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_tasks.adapters.auth_service import InvalidProjectIdsException
 from ib_tasks.constants.enum import Status
+from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException
 from ib_tasks.interactors.filter_dtos import FilterCompleteDetailsDTO, \
     ConditionDTO, FilterDTO
 from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \

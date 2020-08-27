@@ -222,7 +222,8 @@
           "type": "string"
         },
         "stage_id": {
-          "type": "string"
+          "type": "integer",
+          "format": "int64"
         }
       },
       "required": [
@@ -1452,6 +1453,21 @@
       "required": [
         "task_id"
       ]
+    },
+    "CreateTaskSuccessResponseBody": {
+      "type": "object",
+      "properties": {
+        "task_current_stage_details": {
+          "$ref": "#/definitions/TaskWithCurrentStages"
+        },
+        "task_details": {
+          "$ref": "#/definitions/TaskOverviewWithStageAndActions"
+        }
+      },
+      "required": [
+        "task_current_stage_details",
+        "task_details"
+      ]
     }
   },
   "parameters": {
@@ -1596,7 +1612,8 @@
             "type": "string"
           },
           "stage_id": {
-            "type": "string"
+            "type": "integer",
+            "format": "int64"
           }
         },
         "required": [
@@ -1745,7 +1762,10 @@
   },
   "responses": {
     "CreateTaskSuccessResponse": {
-      "description": "task created successfully"
+      "description": "task created successfully",
+      "schema": {
+        "$ref": "#/definitions/CreateTaskSuccessResponseBody"
+      }
     },
     "TaskTemplatesDoesNotExistsResponse": {
       "description": "No task templates exists",
@@ -1853,7 +1873,8 @@
             "type": "string",
             "enum": [
               "INVALID_TASK_ID",
-              "SEARCHABLE_RECORDS_NOT_FOUND"
+              "SEARCHABLE_RECORDS_NOT_FOUND",
+              "INVALID_STAGE_ID"
             ]
           }
         }
@@ -2727,7 +2748,7 @@
         ],
         "responses": {
           "201": {
-            "$ref": "#/responses/TaskWithCurrentStagesResponse"
+            "$ref": "#/responses/CreateTaskSuccessResponse"
           },
           "400": {
             "$ref": "#/responses/CreateTaskFailureResponse"
@@ -3344,7 +3365,7 @@
       }
     },
     "/task/rps/v1/": {
-      "get": {
+      "post": {
         "operationId": "get_task_rps_in_given_stage",
         "summary": "get task rps in given stage",
         "description": "get task rps in given stage",
