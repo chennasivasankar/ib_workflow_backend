@@ -128,5 +128,5 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_latest_rp_added_datetime(self,
-                                     task_id: int, stage_id: int) -> datetime:
+                                     task_id: int, stage_id: int) -> Optional[str]:
         pass

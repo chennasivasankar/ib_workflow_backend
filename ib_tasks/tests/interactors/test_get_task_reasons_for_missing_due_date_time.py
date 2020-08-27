@@ -49,32 +49,32 @@ class TestGetTaskReasons:
         invalid_task_id = error_object.task_display_id
         assert invalid_task_id == task_id
 
-    def test_given_task_is_not_assigned_to_user_raises_exception(self):
-        # Arrange
-        task_display_id = "iBWF-1"
-        task_id = 1
-        user_id = "user_id_1"
-        stage_id = 1
-        storage = create_autospec(StorageInterface)
-        task_storage = create_autospec(TaskStorageInterface)
-        presenter = create_autospec(TaskDueDetailsPresenterInterface)
-        interactor = GetTaskDueMissingReasonsInteractor(
-            storage=storage, task_storage=task_storage
-        )
-        task_storage.check_is_valid_task_display_id.return_value = True
-        task_storage.get_task_id_for_task_display_id.return_value = 1
-        storage.validate_if_task_is_assigned_to_user_in_given_stage.return_value = False
-
-        # Act
-        interactor.get_task_due_missing_reasons_wrapper(
-            presenter=presenter, task_display_id=task_display_id, user_id=user_id,
-            stage_id=stage_id
-        )
-
-        # Assert
-        storage.validate_if_task_is_assigned_to_user_in_given_stage.assert_called_once_with(
-            task_id, user_id, stage_id)
-        presenter.response_for_user_is_not_assignee_for_task.assert_called_once()
+    # def test_given_task_is_not_assigned_to_user_raises_exception(self):
+    #     # Arrange
+    #     task_display_id = "iBWF-1"
+    #     task_id = 1
+    #     user_id = "user_id_1"
+    #     stage_id = 1
+    #     storage = create_autospec(StorageInterface)
+    #     task_storage = create_autospec(TaskStorageInterface)
+    #     presenter = create_autospec(TaskDueDetailsPresenterInterface)
+    #     interactor = GetTaskDueMissingReasonsInteractor(
+    #         storage=storage, task_storage=task_storage
+    #     )
+    #     task_storage.check_is_valid_task_display_id.return_value = True
+    #     task_storage.get_task_id_for_task_display_id.return_value = 1
+    #     storage.validate_if_task_is_assigned_to_user_in_given_stage.return_value = False
+    #
+    #     # Act
+    #     interactor.get_task_due_missing_reasons_wrapper(
+    #         presenter=presenter, task_display_id=task_display_id, user_id=user_id,
+    #         stage_id=stage_id
+    #     )
+    #
+    #     # Assert
+    #     storage.validate_if_task_is_assigned_to_user_in_given_stage.assert_called_once_with(
+    #         task_id, user_id, stage_id)
+    #     presenter.response_for_user_is_not_assignee_for_task.assert_called_once()
 
     def test_given_invalid_stage_id_raises_exception(self):
         # Arrange

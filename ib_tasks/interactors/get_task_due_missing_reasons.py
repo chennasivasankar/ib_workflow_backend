@@ -56,12 +56,14 @@ class GetTaskDueMissingReasonsInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def _validate_if_task_is_assigned_to_user(self, task_id: int,
                                               user_id: str, stage_id: int):
-        is_assigned = self.storage.validate_if_task_is_assigned_to_user_in_given_stage(
-            task_id=task_id, user_id=user_id, stage_id=stage_id
-        )
-        is_not_assigned = not is_assigned
-        if is_not_assigned:
-            raise UserIsNotAssigneeToTask
+        # TODO: Remove logic from comments when validation is to be done
+        # is_assigned = self.storage.validate_if_task_is_assigned_to_user_in_given_stage(
+        #     task_id=task_id, user_id=user_id, stage_id=stage_id
+        # )
+        # is_not_assigned = not is_assigned
+        # if is_not_assigned:
+        #     raise UserIsNotAssigneeToTask
+        pass
 
     def _get_task_reasons(self, task_id: int, stage_id: int)\
             -> List[TaskDueDetailsDTO]:
