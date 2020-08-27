@@ -112,6 +112,10 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
             user_id)
         for gof_roles_dto in gof_write_permission_roles_dtos:
             required_roles = gof_roles_dto.write_permission_roles
+            from ib_tasks.constants.constants import ALL_ROLES_ID
+            required_roles_has_all_roles = ALL_ROLES_ID in required_roles
+            if required_roles_has_all_roles:
+                continue
             user_permitted = self.any_in(user_roles, required_roles)
             required_roles_are_empty = not required_roles
             if not user_permitted or required_roles_are_empty:
@@ -123,6 +127,10 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
                 field_ids)
         for field_roles_dto in field_write_permission_roles_dtos:
             required_roles = field_roles_dto.write_permission_roles
+            from ib_tasks.constants.constants import ALL_ROLES_ID
+            required_roles_has_all_roles = ALL_ROLES_ID in required_roles
+            if required_roles_has_all_roles:
+                continue
             user_permitted = self.any_in(user_roles, required_roles)
             required_roles_are_empty = not required_roles
             if not user_permitted or required_roles_are_empty:

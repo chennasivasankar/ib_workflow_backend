@@ -176,7 +176,6 @@ class GetTasksOverviewForUserInteractor:
                 task_with_stage_details_having_actions_dtos.append(
                     task_with_complete_stage_details_dto
                 )
-
         return task_with_stage_details_having_actions_dtos
 
     @staticmethod
