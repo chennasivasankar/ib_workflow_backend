@@ -31,7 +31,7 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_201_JSON = """
 {
-    "task_current_stage_details": {
+    "task_current_stages_details": {
         "task_id": "string",
         "stages": [
             {

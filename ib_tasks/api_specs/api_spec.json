@@ -1457,7 +1457,7 @@
     "CreateTaskSuccessResponseBody": {
       "type": "object",
       "properties": {
-        "task_current_stage_details": {
+        "task_current_stages_details": {
           "$ref": "#/definitions/TaskWithCurrentStages"
         },
         "task_details": {
@@ -1465,7 +1465,7 @@
         }
       },
       "required": [
-        "task_current_stage_details",
+        "task_current_stages_details",
         "task_details"
       ]
     }
