@@ -130,6 +130,14 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
         stage_ids_that_are_not_matched = [stage_id for stage_id in stage_ids
                                           if stage_id not in
                                           matched_stage_ids_in_stage_assignee_dtos]
+        current_task_stage_ids = self.stage_storage. \
+            get_current_stage_db_ids_of_task(
+            task_id=task_id)
+        current_task_stage_ids_that_are_not_in_given_stage_ids = list(
+            set(current_task_stage_ids) - set(stage_ids))
+        matched_stage_ids_in_stage_assignee_dtos = \
+            matched_stage_ids_in_stage_assignee_dtos + \
+            current_task_stage_ids_that_are_not_in_given_stage_ids
 
         self.stage_storage. \
             update_task_stages_other_than_matched_stages_with_left_at_status(
@@ -201,7 +209,6 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
     ) -> List[StageIdWithRoleIdsAndAssigneeIdDTO]:
         role_ids_and_assignee_id_group_by_stage_id_dtos = []
         for each_stage_id in stage_ids:
-
             list_of_role_ids = []
             for each_stage_role_dto in \
                     stage_role_dtos:

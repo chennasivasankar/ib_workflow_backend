@@ -9,10 +9,6 @@ class UpdateTaskStageAssigneesPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_task_id_exception(self, task_id: int):
-        pass
-
-    @abc.abstractmethod
     def raise_invalid_stage_ids_exception(self,
                                           invalid_stage_ids: List[int]):
         pass
