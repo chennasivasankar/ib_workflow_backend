@@ -3,7 +3,7 @@ import pytest
 from ib_iam.storages.project_storage_implementation import \
     ProjectStorageImplementation
 from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory, \
-    ProjectRoleDTOFactory, ProjectWithoutIdDTOFactory
+    ProjectRoleDTOFactory, ProjectWithoutIdDTOFactory, RoleDTOFactory
 
 
 class TestProjectStorageImplementation:
@@ -387,3 +387,57 @@ class TestProjectStorageImplementation:
             .values_list("team_id", flat=True)
         project_team_ids = list(map(str, project_team_ids))
         assert list(project_team_ids) == expected_project_team_ids
+
+    @pytest.mark.django_db
+    def test_get_project_role_ids_gives_project_related_role_ids(self):
+        from ib_iam.tests.factories.models import \
+            ProjectFactory, ProjectRoleFactory
+        project_id = "project_1"
+        role_id = "role_1"
+        expected_role_ids = ["role_1"]
+        project_object = ProjectFactory(project_id=project_id)
+        ProjectRoleFactory(role_id=role_id, project=project_object)
+        project_storage = ProjectStorageImplementation()
+
+        role_ids = project_storage.get_project_role_ids(project_id=project_id)
+
+        assert role_ids == expected_role_ids
+
+    @pytest.mark.django_db
+    def test_update_project_roles_will_update_project_roles(self):
+        from ib_iam.tests.factories.models import \
+            ProjectFactory, ProjectRoleFactory
+        role_id = "role_1"
+        project_object = ProjectFactory(project_id="project_1")
+        ProjectRoleFactory(role_id=role_id, project=project_object)
+        expected_name = "role_name1"
+        expected_description = "desc"
+        roles = [RoleDTOFactory(role_id=role_id,
+                                name=expected_name,
+                                description=expected_description)]
+        project_storage = ProjectStorageImplementation()
+
+        project_storage.update_project_roles(roles=roles)
+
+        from ib_iam.models import ProjectRole
+        role_object = ProjectRole.objects.get(role_id=role_id)
+        assert role_object.name == expected_name
+        assert role_object.description == expected_description
+
+    @pytest.mark.django_db
+    def test_delete_project_roles_deletes_given_roles(self):
+        from ib_iam.tests.factories.models import \
+            ProjectFactory, ProjectRoleFactory
+        role_ids = ["role_1", "role_2"]
+        expected_role_ids = ["role_2"]
+        project_object = ProjectFactory(project_id="project_1")
+        _ = [ProjectRoleFactory(role_id=role_id, project=project_object)
+             for role_id in role_ids]
+        project_storage = ProjectStorageImplementation()
+
+        project_storage.delete_project_roles(role_ids=["role_1"])
+
+        from ib_iam.models import ProjectRole
+        role_ids = ProjectRole.objects.filter(role_id__in=role_ids) \
+            .values_list("role_id", flat=True)
+        assert list(role_ids) == expected_role_ids

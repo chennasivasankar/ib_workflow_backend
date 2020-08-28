@@ -2,7 +2,7 @@ from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, \
     ProjectsWithTotalCountDTO, PaginationDTO, ProjectTeamIdsDTO, \
-    ProjectRoleDTO, ProjectWithoutIdDTO, RoleNameAndDescriptionDTO
+    ProjectRoleDTO, ProjectWithoutIdDTO, RoleNameAndDescriptionDTO, RoleDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.models import Project, ProjectTeam, ProjectRole
@@ -196,3 +196,21 @@ class ProjectStorageImplementation(ProjectStorageInterface):
     def delete_teams_from_project(self, project_id: str, team_ids: List[str]):
         ProjectTeam.objects.filter(project_id=project_id,
                                    team_id__in=team_ids).delete()
+
+    def get_project_role_ids(self, project_id: str) -> List[str]:
+        project_role_ids = ProjectRole.objects.filter(project_id=project_id) \
+            .values_list("role_id", flat=True)
+        return list(project_role_ids)
+
+    def update_project_roles(self, roles: List[RoleDTO]):
+        role_ids = [role_dto.role_id for role_dto in roles]
+        role_objects = ProjectRole.objects.filter(role_id__in=role_ids)
+        for role_object in role_objects:
+            for role_dto in roles:
+                if role_dto.role_id == role_object.role_id:
+                    role_object.name = role_dto.name
+                    role_object.description = role_dto.description
+        ProjectRole.objects.bulk_update(role_objects, ["name", "description"])
+
+    def delete_project_roles(self, role_ids: List[str]):
+        ProjectRole.objects.filter(role_id__in=role_ids).delete()
