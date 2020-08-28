@@ -4,7 +4,6 @@ success case of add project
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...common_fixtures.adapters.uuid_mock import prepare_uuid_mock
 
 
 class TestCase01AddProjectAPITestCase(TestUtils):

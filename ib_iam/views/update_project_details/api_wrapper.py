@@ -47,7 +47,7 @@ def _convert_to_complete_project_details_dto(kwargs) \
     roles = request_data["roles"]
     role_dtos = [_convert_to_role_dtos(role) for role in roles]
     project_with_team_ids_and_roles_dto = CompleteProjectDetailsDTO(
-        project_id=kwargs["query_params"]["project_id"],
+        project_id=kwargs["path_params"]["project_id"],
         name=request_data["name"],
         description=request_data.get("description", None),
         logo_url=request_data.get("logo_url", None),

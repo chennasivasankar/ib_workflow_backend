@@ -716,8 +716,7 @@
             "team_ids": {
               "type": "array",
               "items": {
-                "type": "string",
-                "format": "uuid"
+                "type": "string"
               }
             }
           },
