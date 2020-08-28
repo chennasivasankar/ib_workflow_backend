@@ -53,12 +53,13 @@ class TaskGoFInline(admin.StackedInline):
 
 class StagesAdmin(admin.ModelAdmin):
     list_display_links = ('display_name',)
-    list_display = ('id', 'stage_id', 'display_name')
-    list_editable = ('stage_id',)
+    list_display = ('id', 'stage_id', 'display_name', 'stage_color')
+    list_editable = ('stage_id', 'stage_color')
 
 
 class StagesActionsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'stage_name', 'name')
+    list_display = ('id', 'stage_name', 'name', 'button_text', 'button_color')
+    list_editable = ('button_text', 'button_color')
 
     def stage_name(self, obj):
         return "%s" % obj.stage.stage_id
