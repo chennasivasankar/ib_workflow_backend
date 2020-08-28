@@ -68,7 +68,8 @@ def get_required_user_role_ids(mocker, user_role_ids: List[str]):
 
 def get_assignees_details_dtos(mocker):
     mock = mocker.patch(
-        "ib_tasks.adapters.assignees_details_service.AssigneeDetailsService.get_assignees_details_dtos"
+        "ib_tasks.adapters.assignees_details_service.AssigneeDetailsService"
+        ".get_assignees_details_dtos"
     )
     assignees_details_dtos = [AssigneeDetailsDTO(
         assignee_id='assignee_id_1',
@@ -87,5 +88,21 @@ def get_some_user_role_ids(mocker):
         'FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC'
     ]
 
+    mock.return_value = user_role_ids
+    return mock
+
+
+def get_user_role_ids_based_on_project_mock(mocker):
+    mock = mocker.patch(
+        "ib_tasks.adapters.roles_service.RolesService"
+        ".get_user_role_ids_based_on_project")
+    user_role_ids = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC',
+                     'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
+                     'FIN_COMPLIANCE_APPROVER', 'FIN_PAYMENTS_LEVEL1_VERIFIER',
+                     'FIN_PAYMENTS_LEVEL2_VERIFIER',
+                     'FIN_PAYMENTS_LEVEL3_VERIFIER',
+                     'FIN_PAYMENTS_RP', 'FIN_FINANCE_RP',
+                     'FIN_ACCOUNTS_LEVEL1_VERIFIER',
+                     'FIN_ACCOUNTS_LEVEL2_VERIFIER']
     mock.return_value = user_role_ids
     return mock
