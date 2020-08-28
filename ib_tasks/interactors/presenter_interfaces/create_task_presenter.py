@@ -1,15 +1,18 @@
 import abc
 
 from ib_tasks.exceptions.datetime_custom_exceptions import DueDateHasExpired
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 
 
 class CreateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_create_task_response(self,
-                                 task_current_stage_details_dto:
-                                     TaskCurrentStageDetailsDTO):
+    def get_create_task_response(
+            self, task_current_stage_details_dto: TaskCurrentStageDetailsDTO,
+            all_tasks_overview_dto: AllTasksOverviewDetailsDTO
+    ):
         pass
 
     @abc.abstractmethod

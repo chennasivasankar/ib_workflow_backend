@@ -1,4 +1,5 @@
 from collections import defaultdict
+from datetime import datetime
 from typing import List, Optional, Dict, Tuple
 
 from django.db.models import Q, Count
@@ -26,7 +27,7 @@ from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO
 from ib_tasks.models import Stage, TaskTemplate, CurrentTaskStage, \
-    TaskTemplateStatusVariable
+    TaskTemplateStatusVariable, TaskStageHistory
 from ib_tasks.models.field import Field
 from ib_tasks.models.stage_actions import StageAction
 from ib_tasks.models.task import Task, ElasticSearchTask
@@ -524,3 +525,16 @@ class TasksStorageImplementation(TaskStorageInterface):
     def get_project_id_of_task(self, task_id: int) -> str:
         task_obj = Task.objects.get(id=task_id)
         return task_obj.project_id
+
+    def get_user_team_id(self, user_id: str, task_id: int) -> str:
+        task = TaskStageHistory.objects.filter(
+            assignee_id=user_id, task_id=task_id
+        )
+        return task[0].team_id
+
+    def get_user_missed_the_task_due_time(
+            self, task_id: int, user_id: str, stage_id: int) -> datetime:
+        task_due_time = TaskStageHistory.objects.filter(
+            task_id=task_id, assignee_id=user_id, stage_id=stage_id
+                                               ).values_list('task__due_date', flat=True)
+        return task_due_time[0]

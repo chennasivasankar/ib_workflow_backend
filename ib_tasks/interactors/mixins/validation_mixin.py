@@ -1,7 +1,6 @@
 from typing import List
 
-
-from ib_tasks.adapters.auth_service import InvalidProjectIdsException, \
+from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException, \
     UserIsNotInProjectException
 from ib_tasks.exceptions.custom_exceptions import InvalidProjectId
 
@@ -39,7 +38,7 @@ class ValidationMixin:
         @rtype:
         """
         adapter = self.get_service_adapter()
-        valid_project_ids = adapter.iam_service.validate_project_ids(
+        valid_project_ids = adapter.auth_service.validate_project_ids(
             project_ids)
         invalid_project_ids = [project_id for project_id in project_ids
                                if project_id not in valid_project_ids]
@@ -58,7 +57,7 @@ class ValidationMixin:
         """
         adapter = self.get_service_adapter()
         try:
-            is_in_project = adapter.iam_service.validate_if_user_is_in_project(
+            is_in_project = adapter.auth_service.validate_if_user_is_in_project(
                 user_id=user_id, project_id=project_id)
         except InvalidProjectId:
             raise InvalidProjectIdsException([project_id])
@@ -68,7 +67,7 @@ class ValidationMixin:
 
     @staticmethod
     def get_service_adapter():
-        from ib_boards.adapters.service_adapter import get_service_adapter
+        from ib_tasks.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         return service_adapter
 

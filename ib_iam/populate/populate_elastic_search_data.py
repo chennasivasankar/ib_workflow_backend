@@ -59,6 +59,14 @@ def populate_elastic_search_country_data():
         ElasticCountryDTO(
             country_id=1,
             country_name="Pakistan"   
+        ),
+        ElasticCountryDTO(
+            country_id=1,
+            country_name="United States of America"
+        ),
+        ElasticCountryDTO(
+            country_id=1,
+            country_name="Saint Vincent Grenadines Country"
         )
     ]
     Country.objects.all().delete()
@@ -156,6 +164,10 @@ def populate_elastic_search_city_data():
         ElasticCityDTO(
             city_id=6,
             city_name="Visakapatnam"
+        ),
+        ElasticCityDTO(
+            city_id=6,
+            city_name="Sri Potti Sriramula Nellore"
         )
     ]
     City.objects.all().delete()
