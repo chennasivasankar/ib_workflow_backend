@@ -41,9 +41,9 @@ class UserRoleDTOFactory(factory.Factory):
         model = UserRoleDTO
 
     user_id = factory.sequence(lambda number: "team%s" % number)
-    role_id = factory.Sequence(lambda n: 'PAYMENT%s' % n)
-    name = factory.Sequence(lambda n: 'payment %s' % n)
-    description = factory.Sequence(lambda n: 'payment_description%s' % n)
+    role_id = factory.Sequence(lambda n: 'ROLE_%s' % n)
+    name = factory.Sequence(lambda n: 'role %s' % n)
+    description = factory.Sequence(lambda n: 'role description %s' % n)
 
 
 class CompanyIdAndNameDTOFactory(factory.Factory):

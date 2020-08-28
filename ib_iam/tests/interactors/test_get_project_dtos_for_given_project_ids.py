@@ -65,7 +65,7 @@ class TestGetProjectDTOs:
         interactor = init_interactor
         from ib_iam.exceptions.custom_exceptions import InvalidProjectIds
         project_storage_mock.get_project_dtos_for_given_project_ids.side_effect = \
-            InvalidProjectIds
+            InvalidProjectIds(project_ids=project_ids)
 
         with pytest.raises(InvalidProjectIds):
             interactor.get_project_dtos_bulk(project_ids=project_ids)

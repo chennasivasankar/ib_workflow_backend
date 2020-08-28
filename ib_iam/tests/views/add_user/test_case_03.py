@@ -28,7 +28,8 @@ class TestCase03AddUserAPITestCase(TestUtils):
         CompanyFactory.create(
             company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331')
         TeamFactory.create(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331')
-        ProjectRoleFactory.create(id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331')
+        ProjectRoleFactory.create(
+            role_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331')
 
     @staticmethod
     def elastic_storage_create_elastic_user_mock(mocker):
