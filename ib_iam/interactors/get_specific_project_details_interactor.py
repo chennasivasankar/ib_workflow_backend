@@ -42,8 +42,9 @@ class GetSpecificProjectDetailsInteractor:
         if is_invalid_project_id:
             raise InvalidProjectId
 
-        basic_user_details_dtos = self.user_storage.get_team_basic_user_dtos(
-            project_id=project_id)
+        basic_user_details_dtos = \
+            self.user_storage.get_basic_user_dtos_for_given_project(
+                project_id=project_id)
         user_ids = [
             basic_user_details_dto.user_id
             for basic_user_details_dto in basic_user_details_dtos

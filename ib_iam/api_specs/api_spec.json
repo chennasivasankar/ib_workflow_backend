@@ -3261,30 +3261,6 @@
           }
         }
       }
-    },
-    "/project/{project_id}/specific_project_details/v1/": {
-      "get": {
-        "operationId": "get_specific_project_details",
-        "summary": "Get Specific Project Details",
-        "description": "Get specific project details of given project id in path",
-        "security": [
-          {
-            "oauth": [
-              "read"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/parameters/ProjectIdPathParameter"
-          }
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/GetSpecificProjectDetailsSuccessResponse"
-          }
-        }
-      }
     }
   }
 }
