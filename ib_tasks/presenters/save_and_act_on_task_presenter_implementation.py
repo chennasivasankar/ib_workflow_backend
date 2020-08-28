@@ -231,7 +231,7 @@ class SaveAndActOnATaskPresenterImplementation(
         task_overview_details_dict = \
             self._prepare_task_overview_details_dict(all_tasks_overview_dto)
         data['task_details'] = task_overview_details_dict
-        return self.prepare_201_created_response(response_dict=data)
+        return self.prepare_200_success_response(response_dict=data)
 
     def _prepare_task_overview_details_dict(
             self, all_tasks_overview_dto: AllTasksOverviewDetailsDTO

@@ -230,7 +230,9 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             create_task_storage=self.create_task_storage,
             storage=self.storage, field_storage=self.field_storage,
             stage_storage=self.stage_storage,
-            elastic_storage=self.elastic_storage
+            elastic_storage=self.elastic_storage,
+            action_storage=self.action_storage,
+            task_stage_storage=self.task_stage_storage
         )
         update_task_dto = UpdateTaskDTO(
             task_id=task_dto.task_id, created_by_id=task_dto.created_by_id,
