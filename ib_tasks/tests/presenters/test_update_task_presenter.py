@@ -651,6 +651,27 @@ class TestUpdateTaskPresenterImplementation:
         snapshot.assert_match(json_response['res_status'], 'res_status')
         snapshot.assert_match(json_response['response'], 'json_response')
 
+    def test_raise_duplicate_same_gof_orders_for_a_gof(
+            self, snapshot, presenter):
+        # Arrange
+        expected_duplicate_same_gof_order = [1, 2]
+        expected_gof_id = "gof_1"
+
+        from ib_tasks.exceptions.gofs_custom_exceptions import \
+            DuplicateSameGoFOrderForAGoF
+        err = DuplicateSameGoFOrderForAGoF(
+            expected_gof_id, expected_duplicate_same_gof_order)
+
+        # Act
+        response_object = \
+            presenter.raise_duplicate_same_gof_orders_for_a_gof(err)
+
+        # Assert
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
+
     def test_raise_exception_for_not_acceptable_image_format(
             self, snapshot, presenter):
         # Arrange

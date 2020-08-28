@@ -291,3 +291,9 @@ snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_invalid_present_stage_actions res_status'] = 'INVALID_PRESENT_STAGE_ACTION'
 
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_invalid_present_stage_actions response'] = '1 is invalid present stage action'
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_duplicate_same_gof_orders_for_a_gof http_status_code'] = 400
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_duplicate_same_gof_orders_for_a_gof res_status'] = 'DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF'
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_duplicate_same_gof_orders_for_a_gof response'] = 'duplicate same gof orders given for gof gof_1, duplicates are [1, 2]'

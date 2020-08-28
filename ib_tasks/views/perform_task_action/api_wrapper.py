@@ -49,6 +49,5 @@ def api_wrapper(*args, **kwargs):
     )
 
     response = interactor.user_action_on_task_wrapper(
-        presenter=presenter, task_display_id=task_id
-    )
+        presenter=presenter, task_display_id=task_id)
     return response
