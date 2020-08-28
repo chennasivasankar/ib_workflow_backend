@@ -3,7 +3,7 @@ from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos import (
     ProjectDTO, ProjectTeamIdsDTO, ProjectsWithTotalCountDTO, PaginationDTO,
-    ProjectRoleDTO, ProjectWithoutIdDTO, RoleNameAndDescriptionDTO)
+    ProjectRoleDTO, ProjectWithoutIdDTO, RoleNameAndDescriptionDTO, RoleDTO)
 
 
 class ProjectStorageInterface(abc.ABC):
@@ -94,4 +94,16 @@ class ProjectStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def delete_teams_from_project(self, project_id: str, team_ids: List[str]):
+        pass
+
+    @abc.abstractmethod
+    def get_project_role_ids(self, project_id: str) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def update_project_roles(self, roles: List[RoleDTO]):
+        pass
+
+    @abc.abstractmethod
+    def delete_project_roles(self, role_ids: List[str]):
         pass

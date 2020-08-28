@@ -13,7 +13,8 @@ from ib_iam.interactors.presenter_interfaces \
 from ib_iam.interactors.presenter_interfaces.update_project_presenter_interface import \
     UpdateProjectPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import (
-    ProjectDTO, ProjectWithoutIdDTO, UserTeamDTO, TeamIdAndNameDTO)
+    ProjectDTO, ProjectWithoutIdDTO, UserTeamDTO, TeamIdAndNameDTO, RoleDTO,
+    RoleNameAndDescriptionDTO)
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
@@ -319,6 +320,14 @@ class ProjectInteractor:
         self._delete_teams_from_project(
             project_id=project_id, project_team_ids=project_team_ids,
             team_ids=team_ids)
+        project_role_ids = self.project_storage.get_project_role_ids(
+            project_id=project_id)
+        self._create_new_roles_and_assign_to_project(
+            project_id=project_id, roles=complete_project_details_dto.roles)
+        self._update_project_roles(project_role_ids=project_role_ids,
+                                   roles=complete_project_details_dto.roles)
+        self._delete_project_roles(project_role_ids=project_role_ids,
+                                   roles=complete_project_details_dto.roles)
 
     def _add_teams_to_project(self, project_id: str,
                               project_team_ids: List[str],
@@ -333,3 +342,26 @@ class ProjectInteractor:
         team_ids_to_be_removed = list(set(project_team_ids) - set(team_ids))
         self.project_storage.delete_teams_from_project(
             project_id=project_id, team_ids=team_ids_to_be_removed)
+
+    def _create_new_roles_and_assign_to_project(self, project_id: str,
+                                                roles: List[RoleDTO]):
+        role_name_and_description_dtos = [
+            RoleNameAndDescriptionDTO(name=role_dto.name,
+                                      description=role_dto.description)
+            for role_dto in roles
+            if role_dto.role_id is None]
+        self.project_storage.add_project_roles(
+            project_id=project_id,
+            roles=role_name_and_description_dtos)
+
+    def _update_project_roles(self, project_role_ids, roles):
+        roles_to_be_updated = [role_dto
+                               for role_dto in roles
+                               if role_dto.role_id in project_role_ids]
+        self.project_storage.update_project_roles(roles=roles_to_be_updated)
+
+    def _delete_project_roles(self, project_role_ids, roles):
+        role_ids = [role_dto.role_id for role_dto in roles]
+        role_ids_to_be_deleted = list(set(project_role_ids) - set(role_ids))
+        self.project_storage.delete_project_roles(
+            role_ids=role_ids_to_be_deleted)
