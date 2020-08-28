@@ -5,6 +5,7 @@ Author: Pavankumar Pamuru
 """
 
 import abc
+from datetime import datetime
 from typing import List, Optional
 
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
@@ -139,4 +140,14 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_project_id_for_task_display_id(self, task_display_id: str):
+        pass
+
+
+    @abc.abstractmethod
+    def get_user_team_id(self, user_id: str, task_id: int) -> str:
+        pass
+
+    @abc.abstractmethod
+    def get_user_missed_the_task_due_time(self, task_id: int,
+                                          user_id: str, stage_id: int) -> datetime:
         pass

@@ -32,6 +32,44 @@ REQUEST_BODY_JSON = """
 """
 
 
+RESPONSE_200_JSON = """
+{
+    "task_details": {
+        "task_id": "string",
+        "task_overview_fields": [
+            {
+                "field_type": "PLAIN_TEXT",
+                "field_display_name": "string",
+                "field_response": "string"
+            }
+        ],
+        "stage_with_actions": {
+            "stage_id": 1,
+            "stage_display_name": "string",
+            "stage_color": "string",
+            "assignee": {
+                "assignee_id": "string",
+                "name": "string",
+                "profile_pic_url": "string",
+                "team_info": {
+                    "team_id": "string",
+                    "team_name": "string"
+                }
+            },
+            "actions": [
+                {
+                    "action_id": 1,
+                    "action_type": "NO_VALIDATIONS",
+                    "transition_template_id": "string",
+                    "button_text": "string",
+                    "button_color": "string"
+                }
+            ]
+        }
+    }
+}
+"""
+
 RESPONSE_400_JSON = """
 {
     "response": "string",

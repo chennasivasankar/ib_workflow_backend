@@ -55,12 +55,12 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         task_dict = self._get_task_dict(task_dto)
         import json
         task_dict = json.dumps(task_dict)
-        es.update(
+        es.index(
             index=TASK_INDEX_NAME,
             ignore=400,
             doc_type='_doc',
             id=elastic_search_task_id,
-            body={"doc": json.loads(task_dict)})
+            body=json.loads(task_dict))
 
     def _get_task_dict(self, elastic_task_dto: ElasticTaskDTO):
         task_dict = {

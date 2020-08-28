@@ -7,15 +7,6 @@ from ib_tasks.interactors.field_dtos import SearchableFieldDetailDTO
 from ib_tasks.interactors.filter_dtos import SearchQueryWithPaginationDTO
 
 
-class InvalidProjectIdsException(Exception):
-    def __init__(self, invalid_project_ids: List[str]):
-        self.invalid_project_ids = invalid_project_ids
-
-
-class UserIsNotInProjectException(Exception):
-    pass
-
-
 class AuthService:
     @property
     def interface(self):
@@ -162,3 +153,9 @@ class AuthService:
     def validate_team_ids(self, team_ids: List[str]) -> \
             List[str]:
         raise NotImplementedError
+
+    def get_immediate_superior_user_id(self, user_id: str, team_id: str):
+        superior_id = self.interface.get_immediate_superior_user_id(
+            user_id=user_id, team_id=team_id
+        )
+        return superior_id
