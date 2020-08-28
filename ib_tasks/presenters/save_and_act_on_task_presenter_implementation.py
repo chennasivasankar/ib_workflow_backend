@@ -211,8 +211,7 @@ class SaveAndActOnATaskPresenterImplementation(
 
     def get_save_and_act_on_task_response(
             self, task_current_stage_details_dto: TaskCurrentStageDetailsDTO,
-            all_tasks_overview_dto: AllTasksOverviewDetailsDTO
-    ):
+            all_tasks_overview_dto: AllTasksOverviewDetailsDTO):
         data = {
             "task_current_stages_details": {
                 "task_id": task_current_stage_details_dto.task_display_id,
