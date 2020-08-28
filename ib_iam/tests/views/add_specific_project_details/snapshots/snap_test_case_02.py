@@ -12,5 +12,21 @@ snapshots['TestCase02AddSpecificProjectDetailsAPITestCase.test_with_invalid_user
 snapshots['TestCase02AddSpecificProjectDetailsAPITestCase.test_with_invalid_user_ids_for_project body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_USER_IDS_FOR_PROJECT',
-    'response': "Please send valid user ids for project, invalid user ids are [UUID('11be920b-7b4c-49e7-8adb-41a0c18da848'), UUID('01be920b-7b4c-49e7-8adb-41a0c18da848'), UUID('77be920b-7b4c-49e7-8adb-41a0c18da848')]"
+    'response': "Please send valid user ids for project, invalid user ids are ['11be920b-7b4c-49e7-8adb-41a0c18da848', '01be920b-7b4c-49e7-8adb-41a0c18da848', '77be920b-7b4c-49e7-8adb-41a0c18da848']"
+}
+
+snapshots['TestCase02AddSpecificProjectDetailsAPITestCase.test_with_invalid_project_id_return_response status_code'] = '400'
+
+snapshots['TestCase02AddSpecificProjectDetailsAPITestCase.test_with_invalid_project_id_return_response body'] = {
+    'http_status_code': 400,
+    'res_status': 'INVALID_PROJECT_ID',
+    'response': 'Please send valid project id'
+}
+
+snapshots['TestCase02AddSpecificProjectDetailsAPITestCase.test_with_invalid_role_ids_for_project status_code'] = '400'
+
+snapshots['TestCase02AddSpecificProjectDetailsAPITestCase.test_with_invalid_role_ids_for_project body'] = {
+    'http_status_code': 400,
+    'res_status': 'INVALID_ROLE_IDS_FOR_PROJECT',
+    'response': "Please send valid role ids for project, invalid role ids are ['ROLE_10']"
 }

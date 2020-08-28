@@ -29,12 +29,42 @@ class TestAddSpecificProjectDetailsInteractor:
             user_storage=storage_mock)
         return interactor
 
+    def test_with_invalid_project_id_return_response(
+            self, storage_mock, presenter_mock, interactor,
+            prepare_user_id_with_role_ids_dtos
+    ):
+        # Arrange
+        project_id = "project_1"
+        user_id_with_role_ids_dtos = prepare_user_id_with_role_ids_dtos
+
+        expected_presenter_response_for_invalid_project_id_mock = Mock()
+
+        presenter_mock.response_for_invalid_project_id.return_value = \
+            expected_presenter_response_for_invalid_project_id_mock
+
+        from ib_iam.exceptions.custom_exceptions import InvalidProjectId
+        storage_mock.validate_project_id.side_effect = InvalidProjectId
+
+        # Act
+        response = interactor.add_specific_project_details_wrapper(
+            project_id=project_id, presenter=presenter_mock,
+            user_id_with_role_ids_dtos=user_id_with_role_ids_dtos
+        )
+
+        # Assert
+        assert response == \
+               expected_presenter_response_for_invalid_project_id_mock
+
+        presenter_mock.response_for_invalid_project_id.assert_called_once()
+        storage_mock.validate_project_id.assert_called_once_with(
+            project_id=project_id)
+
     def test_with_invalid_user_ids_for_project_return_response(
             self, storage_mock, presenter_mock, interactor,
             prepare_user_id_with_role_ids_dtos
     ):
         # Arrange
-        project_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
+        project_id = "project_1"
         user_id_with_role_ids_dtos = prepare_user_id_with_role_ids_dtos
         expected_user_ids = [
             "31be920b-7b4c-49e7-8adb-41a0c18da848",
@@ -78,7 +108,7 @@ class TestAddSpecificProjectDetailsInteractor:
             prepare_user_id_with_role_ids_dtos
     ):
         # Arrange
-        project_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
+        project_id = "project_1"
         user_id_with_role_ids_dtos = prepare_user_id_with_role_ids_dtos
         expected_role_ids = [
             "ROLE_1", "ROLE_2", "ROLE_3"
@@ -119,7 +149,7 @@ class TestAddSpecificProjectDetailsInteractor:
             prepare_user_id_with_role_ids_dtos
     ):
         # Arrange
-        project_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
+        project_id = "project_1"
         user_id_with_role_ids_dtos = prepare_user_id_with_role_ids_dtos
 
         expected_presenter_prepare_success_response_for_add_specific_project_details = \

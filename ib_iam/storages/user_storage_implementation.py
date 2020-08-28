@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
 from ib_iam.exceptions.custom_exceptions import InvalidUserIdsForProject, \
-    InvalidRoleIdsForProject
+    InvalidRoleIdsForProject, InvalidProjectId
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
@@ -530,7 +530,6 @@ class UserStorageImplementation(UserStorageInterface):
             raise InvalidUserIdsForProject(user_ids=invalid_user_ids)
         return
 
-    # TODO: write test cases
     def validate_role_ids_for_project(
             self, role_ids: List[str], project_id: str
     ) -> Optional[InvalidRoleIdsForProject]:
@@ -547,4 +546,14 @@ class UserStorageImplementation(UserStorageInterface):
 
         if invalid_role_ids:
             raise InvalidRoleIdsForProject(role_ids=invalid_role_ids)
+        return
+
+    def validate_project_id(
+            self, project_id: str
+    ) -> Optional[InvalidProjectId]:
+        from ib_iam.models import Project
+        project_objects = Project.objects.filter(project_id=project_id)
+        is_project_not_exists = not project_objects.exists()
+        if is_project_not_exists:
+            raise InvalidProjectId
         return

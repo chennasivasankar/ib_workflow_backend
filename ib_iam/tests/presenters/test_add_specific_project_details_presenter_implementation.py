@@ -77,3 +77,20 @@ class TestAddSpecificProjectDetailsPresenterImplementation:
         assert response['http_status_code'] == StatusCode.BAD_REQUEST.value
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
+
+    def test_response_for_invalid_project_id(self, presenter):
+        # Arrange
+        from ib_iam.presenters.add_specific_project_details_presenter_implementation import \
+            INVALID_PROJECT_ID
+        expected_response = INVALID_PROJECT_ID[0]
+        response_status_code = INVALID_PROJECT_ID[1]
+
+        # Act
+        response_object = presenter.response_for_invalid_project_id()
+
+        # Assert
+        response = json.loads(response_object.content)
+
+        assert response['http_status_code'] == StatusCode.BAD_REQUEST.value
+        assert response['res_status'] == response_status_code
+        assert response['response'] == expected_response

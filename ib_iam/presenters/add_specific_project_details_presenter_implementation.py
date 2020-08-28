@@ -14,6 +14,11 @@ INVALID_ROLE_IDS_FOR_PROJECT = (
     "INVALID_ROLE_IDS_FOR_PROJECT"
 )
 
+INVALID_PROJECT_ID = (
+    "Please send valid project id",
+    "INVALID_PROJECT_ID"
+)
+
 
 class AddSpecificProjectDetailsPresenterImplementation(
     AddSpecificProjectDetailsPresenterInterface, HTTPResponseMixin
@@ -39,6 +44,15 @@ class AddSpecificProjectDetailsPresenterImplementation(
             ),
             "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": INVALID_ROLE_IDS_FOR_PROJECT[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict)
+
+    def response_for_invalid_project_id(self):
+        response_dict = {
+            "response": INVALID_PROJECT_ID[0],
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": INVALID_PROJECT_ID[1]
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)

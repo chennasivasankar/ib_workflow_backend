@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
 from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidUserIds, \
-    InvalidUserIdsForProject, InvalidRoleIdsForProject
+    InvalidUserIdsForProject, InvalidRoleIdsForProject, InvalidProjectId
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, TeamIdAndNameDTO, \
@@ -225,4 +225,10 @@ class UserStorageInterface(ABC):
     def validate_role_ids_for_project(
             self, role_ids: List[str], project_id: str
     ) -> Optional[InvalidRoleIdsForProject]:
+        pass
+
+    @abstractmethod
+    def validate_project_id(
+            self, project_id: str
+    ) -> Optional[InvalidProjectId]:
         pass

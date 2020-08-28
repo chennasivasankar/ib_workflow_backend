@@ -15,7 +15,7 @@ class TestCase02GetSpecificProjectDetailsAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['read']}}
 
     @pytest.mark.django_db
-    def test_with_invalid_users_for_project_return_response(
+    def test_with_invalid_project_id_return_response(
             self, snapshot
     ):
         project_id = "project_1"

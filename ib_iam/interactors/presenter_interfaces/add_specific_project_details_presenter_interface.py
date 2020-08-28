@@ -14,3 +14,7 @@ class AddSpecificProjectDetailsPresenterInterface(ABC):
     @abstractmethod
     def response_for_invalid_role_ids_for_project(self, err):
         pass
+
+    @abstractmethod
+    def response_for_invalid_project_id(self):
+        pass
