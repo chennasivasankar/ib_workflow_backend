@@ -69,9 +69,9 @@ class TestGetSpecificTeamDetailsInteractor:
             "77be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
 
-        storage_mock.get_team_basic_user_dtos.return_value = \
+        storage_mock.get_basic_user_dtos_for_given_project.return_value = \
             prepare_basic_user_details_dtos
-        storage_mock.get_user_role_dtos_of_a_team.return_value = \
+        storage_mock.get_user_role_dtos_of_a_project.return_value = \
             prepare_user_role_dtos
 
         presenter_mock.prepare_success_response_for_get_specific_project_details. \
@@ -86,9 +86,9 @@ class TestGetSpecificTeamDetailsInteractor:
         assert response == \
                expected_presenter_prepare_success_response_for_get_specific_team_details
 
-        storage_mock.get_team_basic_user_dtos.assert_called_once_with(
+        storage_mock.get_basic_user_dtos_for_given_project.assert_called_once_with(
             project_id=project_id)
-        storage_mock.get_user_role_dtos_of_a_team.assert_called_once_with(
+        storage_mock.get_user_role_dtos_of_a_project.assert_called_once_with(
             project_id=project_id, user_ids=expected_user_ids)
         presenter_mock.prepare_success_response_for_get_specific_project_details. \
             assert_called_once_with(

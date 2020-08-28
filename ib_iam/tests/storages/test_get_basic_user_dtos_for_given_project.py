@@ -142,7 +142,7 @@ class TestGetTeamBasicUserDTOS:
         ]
 
         # Act
-        response = user_storage.get_team_basic_user_dtos(
+        response = user_storage.get_basic_user_dtos_for_given_project(
             project_id=project_id
         )
 
