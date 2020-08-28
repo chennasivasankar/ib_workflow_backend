@@ -1,5 +1,6 @@
 from typing import List
 
+from ib_tasks.adapters.assignees_details_service import InvalidUserIdException
 from ib_tasks.adapters.auth_service import InvalidProjectIdsException, \
     TeamsNotExistForGivenProjectException, UsersNotExistsForGivenTeamsException
 from ib_tasks.adapters.dtos import SearchableDetailsDTO
@@ -100,8 +101,9 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         except UsersNotExistsForGivenTeamsException as err:
             response = presenter.raise_users_not_exist_for_given_teams(err)
             return response
-
-        # TODO : Need to handle exception raised by interface
+        except InvalidUserIdException:
+            response = presenter.raise_invalid_user()
+            return response
 
     def get_task_details_response(
             self, user_id: str, task_display_id: str,

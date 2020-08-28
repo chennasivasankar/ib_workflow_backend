@@ -63,3 +63,7 @@ class GetTaskPresenterInterface(abc.ABC):
             self, err: UsersNotExistsForGivenTeamsException
     ):
         pass
+
+    @abc.abstractmethod
+    def raise_invalid_user(self):
+        pass

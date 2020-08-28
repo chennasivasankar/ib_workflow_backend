@@ -1877,7 +1877,8 @@
               "INVALID_STAGE_ID",
               "INVALID_PROJECT_ID",
               "TEAMS_NOT_EXISTS_FOR_PROJECT",
-              "USERS_NOT_EXISTS_FOR_TEAMS"
+              "USERS_NOT_EXISTS_FOR_TEAMS",
+              "INVALID_USER"
             ]
           }
         }

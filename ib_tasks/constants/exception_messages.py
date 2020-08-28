@@ -393,3 +393,8 @@ USERS_NOT_EXISTS_FOR_TEAMS = (
     "USERS_NOT_EXISTS_FOR_TEAMS"
 )
 
+INVALID_USER = (
+    "invalid user",
+    "INVALID_USER"
+)
+
