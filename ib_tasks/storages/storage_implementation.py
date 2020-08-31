@@ -745,8 +745,9 @@ class StorageImplementation(StorageInterface):
                                            reason_id=reason_id,
                                            stage_id=stage_id,
                                            reason=due_details.reason)
-        Task.objects.filter(pk=task_id, taskstagehistory__assignee_id=user_id
-                            ).update(due_date=updated_due_datetime)
+        # Task.objects.filter(pk=task_id, taskstagehistory__assignee_id=user_id
+        #                     ).update(due_date=updated_due_datetime)
+        Task.objects.filter(pk=task_id).update(due_date=updated_due_datetime)
 
     def validate_stage_id(self, stage_id: int) -> bool:
         does_exists = Stage.objects.filter(id=stage_id).exists()
