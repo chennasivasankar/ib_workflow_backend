@@ -344,8 +344,6 @@ INVALID_TASK_TEMPLATE_DB_ID = (
     "INVALID_TASK_TEMPLATE_DB_ID"
 )
 
-INVALID_PROJECT_ID = ("given invalid project id: {}", "INVALID_PROJECT_ID")
-
 SEARCHABLE_RECORDS_NOT_FOUND = (
     "Something went wrong contact Admin",
     "SEARCHABLE_RECORDS_NOT_FOUND"
@@ -384,3 +382,23 @@ DUPLICATE_ORDER_FOR_FIELDS_OF_SAME_GOF = \
 ORDER_FOR_FIELD_SHOULD_NOT_BE_NEGATIVE = \
     "Order for Field should not be negative, " \
     "got negative orders for fields: {}"
+
+TEAMS_NOT_EXISTS_FOR_PROJECT = (
+    "invalid teams = {} for project",
+    "TEAMS_NOT_EXISTS_FOR_PROJECT"
+)
+USERS_NOT_EXISTS_FOR_TEAMS = (
+    "users = {} not exists for teams",
+    "USERS_NOT_EXISTS_FOR_TEAMS"
+)
+
+INVALID_USER = (
+    "invalid user",
+    "INVALID_USER"
+)
+
+USER_NOT_A_MEMBER_OF_PROJECT = (
+    "user not a member of the project",
+    "USER_NOT_A_MEMBER_OF_PROJECT"
+)
+

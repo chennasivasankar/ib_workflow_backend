@@ -16,9 +16,9 @@ class TaskCompleteDetailsDTO:
     task_id: int
     task_display_id: str
     task_boards_details: Optional[TaskBoardsDetailsDTO]
-    actions_dto: List[ActionDTO]
-    field_dtos: List[FieldDisplayDTO]
-    task_stage_details: List[TaskStageDTO]
+    actions_dto: Optional[List[ActionDTO]]
+    field_dtos: Optional[List[FieldDisplayDTO]]
+    task_stage_details: Optional[List[TaskStageDTO]]
     assignees_details: List[TaskStageAssigneeDetailsDTO]
 
 

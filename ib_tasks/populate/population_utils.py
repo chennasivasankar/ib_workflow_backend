@@ -1,3 +1,5 @@
+from typing import List
+
 from django.db import transaction
 
 from ib_iam.populate.add_project_roles_details import ProjectRoleDetails
@@ -125,3 +127,10 @@ def create_tasks_in_elasticsearch_data(task_ids=None):
         interactor.create_task_in_elasticsearch_storage(
             task_id=task_id
         )
+
+
+def delete_task_template_gofs_with_gof_fields(template_ids: List[str]):
+    from ib_tasks.models.task_template_gofs import TaskTemplateGoFs, GoF
+    gof_ids = TaskTemplateGoFs.objects.filter(
+        task_template_id__in=template_ids).values_list('gof_id', flat=True)
+    GoF.objects.filter(gof_id__in=gof_ids).delete()

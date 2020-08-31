@@ -2,6 +2,10 @@ from typing import List
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 
 
+class InvalidUserIdException(Exception):
+    pass
+
+
 class AssigneeDetailsService:
 
     @property
@@ -13,6 +17,15 @@ class AssigneeDetailsService:
             self, assignee_ids: List[str]
     ) -> List[AssigneeDetailsDTO]:
 
+        from ib_iam.exceptions.custom_exceptions import InvalidUserId
+        try:
+            return self._get_assignees_details_dtos(assignee_ids)
+        except InvalidUserId:
+            raise InvalidUserIdException()
+
+    def _get_assignees_details_dtos(
+            self, assignee_ids: List[str]
+    ) -> List[AssigneeDetailsDTO]:
         user_details_dtos = self.interface.get_user_details_bulk(assignee_ids)
         assignee_details_dtos = [
             AssigneeDetailsDTO(
