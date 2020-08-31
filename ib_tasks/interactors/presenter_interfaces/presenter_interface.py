@@ -28,6 +28,10 @@ class PresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_response_for_user_not_in_project(self):
+        pass
+
+    @abc.abstractmethod
     def get_response_for_user_action_on_task(
             self, task_complete_details_dto: TaskCompleteDetailsDTO,
             task_current_stage_details_dto: TaskCurrentStageDetailsDTO,

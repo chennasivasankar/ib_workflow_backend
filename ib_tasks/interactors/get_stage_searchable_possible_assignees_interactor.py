@@ -111,16 +111,16 @@ class GetStageSearchablePossibleAssigneesInteractor(
             self, stage_id: int, task_id: str,
             search_query_with_pagination_dto: SearchQueryWithPaginationDTO):
 
+        self._validations_of_limit_and_offset(
+            limit=search_query_with_pagination_dto.limit,
+            offset=search_query_with_pagination_dto.offset)
+
         is_valid_task_display_id = \
             self.task_storage.check_is_valid_task_display_id(
                 task_display_id=task_id)
         is_invalid_task_display_id = not is_valid_task_display_id
         if is_invalid_task_display_id:
             raise InvalidTaskDisplayId(task_display_id=task_id)
-
-        self._validations_of_limit_and_offset(
-            limit=search_query_with_pagination_dto.limit,
-            offset=search_query_with_pagination_dto.offset)
 
         is_valid_stage_id = self.check_is_valid_stage_id(stage_id=stage_id)
         is_invalid_stage_id = not is_valid_stage_id

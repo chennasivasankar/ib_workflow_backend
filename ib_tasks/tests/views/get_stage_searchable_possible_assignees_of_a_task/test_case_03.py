@@ -21,7 +21,10 @@ class TestCase03GetStageSearchablePossibleAssigneesOfATaskAPITestCase(
     def test_case(self, snapshot, limit):
         body = {}
         path_params = {"stage_id": 1}
-        query_params = {'limit': limit, 'offset': 0, 'search_query': 'string'}
+        query_params = {
+            'limit': limit, 'offset': 0, 'search_query': 'string',
+            'task_id': 'IBWF-1'
+        }
         headers = {}
         response = self.make_api_call(body=body,
                                       path_params=path_params,
