@@ -1,5 +1,5 @@
 """
-test with invalid stage id raises exception
+test with invalid task id raises exception
 """
 
 import pytest
@@ -8,20 +8,13 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase04GetStageSearchablePossibleAssigneesOfATaskAPITestCase(
+class TestCase06GetStageSearchablePossibleAssigneesOfATaskAPITestCase(
         TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['read']}}
-
-    @pytest.fixture(autouse=True)
-    def setup(self, api_user):
-        from ib_tasks.tests.factories.models import TaskFactory
-        TaskFactory.reset_sequence()
-
-        TaskFactory.create()
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
