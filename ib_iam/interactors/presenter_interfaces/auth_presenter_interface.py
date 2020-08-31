@@ -20,6 +20,7 @@ class UserWithExtraDetailsDTO:
     team_user_ids_dto: List[TeamUserIdsDTO]
     company_id_with_employee_ids_dto: Optional[CompanyIdWithEmployeeIdsDTO]
     user_dtos: List[UserProfileDTO]
+    role_dtos: List[UserRoleDTO]
 
 
 class AuthPresenterInterface(ABC):
