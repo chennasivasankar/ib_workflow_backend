@@ -176,7 +176,7 @@ class TestProjectStorageImplementation:
         assert response == expected_role_ids
 
     @pytest.mark.django_db
-    def est_is_user_not_in_a_project_return_false(
+    def test_is_user_not_in_a_project_return_false(
             self, project_storage, prepare_create_project_with_user_roles):
         # Arrange
         project_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
@@ -190,7 +190,7 @@ class TestProjectStorageImplementation:
         assert response is False
 
     @pytest.mark.django_db
-    def est_is_user_in_a_project_return_true(
+    def test_is_user_in_a_project_return_true(
             self, project_storage, prepare_create_project_with_user_roles):
         # Arrange
         project_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
