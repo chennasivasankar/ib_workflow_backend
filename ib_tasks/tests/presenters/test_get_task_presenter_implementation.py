@@ -1,5 +1,3 @@
-import json
-
 import pytest
 
 from ib_tasks.tests.factories.adapter_dtos import \
@@ -283,6 +281,17 @@ class TestGetTaskPresenterImplementation:
 
         # Act
         response_object = presenter.raise_invalid_task_display_id(err)
+
+        # Assert
+        snapshot.assert_match(name="exception_object",
+                              value=response_object.content)
+
+    def test_user_not_a_member_of_project_raise_exception(self, presenter,
+                                                          snapshot):
+        # Arrange
+
+        # Act
+        response_object = presenter.raise_user_not_a_member_of_project()
 
         # Assert
         snapshot.assert_match(name="exception_object",

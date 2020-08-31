@@ -786,8 +786,10 @@ class StorageImplementation(StorageInterface):
             task_id=task_id, stage_id=stage_id, rp_id=superior_id)
 
     def get_latest_rp_added_datetime(self,
-                                     task_id: int, stage_id: int) -> datetime:
+                                     task_id: int, stage_id: int) -> Optional[str]:
         objs = TaskStageRp.objects.filter(
             task_id=task_id, stage_id=stage_id
         ).values_list('added_at', flat=True).order_by('-added_at')
-        return objs[0]
+        if objs:
+            return objs[0]
+        return None

@@ -1,7 +1,7 @@
 import abc
 
 from ib_tasks.interactors.presenter_interfaces.dtos import \
-    TaskCompleteDetailsDTO
+    TaskCompleteDetailsDTO, AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 
 
@@ -30,7 +30,8 @@ class PresenterInterface(abc.ABC):
     @abc.abstractmethod
     def get_response_for_user_action_on_task(
             self, task_complete_details_dto: TaskCompleteDetailsDTO,
-            task_current_stage_details_dto: TaskCurrentStageDetailsDTO
+            task_current_stage_details_dto: TaskCurrentStageDetailsDTO,
+            all_tasks_overview_dto: AllTasksOverviewDetailsDTO
     ):
         pass
 

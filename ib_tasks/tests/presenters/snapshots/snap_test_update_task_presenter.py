@@ -220,3 +220,9 @@ snapshots['TestUpdateTaskPresenterImplementation.test_raise_invalid_stage_id htt
 snapshots['TestUpdateTaskPresenterImplementation.test_raise_invalid_stage_id res_status'] = 'INVALID_STAGE_ID'
 
 snapshots['TestUpdateTaskPresenterImplementation.test_raise_invalid_stage_id json_response'] = 'please give a valid stage id, 1 is invalid stage id'
+
+snapshots['TestUpdateTaskPresenterImplementation.test_raise_duplicate_same_gof_orders_for_a_gof http_status_code'] = 400
+
+snapshots['TestUpdateTaskPresenterImplementation.test_raise_duplicate_same_gof_orders_for_a_gof res_status'] = 'DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF'
+
+snapshots['TestUpdateTaskPresenterImplementation.test_raise_duplicate_same_gof_orders_for_a_gof response'] = 'duplicate same gof orders given for gof gof_1, duplicates are [1, 2]'

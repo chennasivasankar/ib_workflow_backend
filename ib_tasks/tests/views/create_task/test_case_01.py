@@ -4,8 +4,10 @@ create task success test case
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
+from ib_tasks.constants.enum import PermissionTypes
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...factories.models import GoFFactory, GoFToTaskTemplateFactory
+from ...factories.models import GoFFactory, GoFToTaskTemplateFactory, \
+    ProjectTaskTemplateFactory, GoFRoleFactory, FieldRoleFactory
 
 
 class TestCase01CreateTaskAPITestCase(TestUtils):
@@ -30,35 +32,44 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         FieldFactory.reset_sequence()
         StageActionFactory.reset_sequence(1)
         TaskTemplateInitialStageFactory.reset_sequence()
+        ProjectTaskTemplateFactory.reset_sequence()
+        GoFFactory.reset_sequence()
+        FieldRoleFactory.reset_sequence()
 
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
-        get_user_role_ids(mocker)
-
+        user_roles_mock = get_user_role_ids(mocker)
+        user_roles = user_roles_mock()
         import json
         template_id = 'template_1'
+        project_id = "project_1"
         gof = GoFFactory.create()
-        GoFToTaskTemplateFactory.create(task_template_id=template_id,gof=gof)
-
+        GoFToTaskTemplateFactory.create(
+            task_template_id=template_id, gof=gof)
+        GoFRoleFactory.create(
+            gof=gof, role=user_roles[0],
+            permission_type=PermissionTypes.WRITE.value)
         TaskTemplateStatusVariableFactory.create_batch(
-            4, task_template_id=template_id
-        )
-        FieldFactory.create_batch(3, gof=gof)
-
+            4, task_template_id=template_id)
+        fields = FieldFactory.create_batch(3, gof=gof)
+        FieldRoleFactory.create_batch(
+            size=len(fields), role=user_roles[0],
+            field=factory.Iterator(fields),
+            permission_type=PermissionTypes.WRITE.value)
         stage = StageModelFactory(
             task_template_id='template_1',
             display_logic="variable0==stage_id_0",
             card_info_kanban=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]),
-            card_info_list=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]),
-        )
+            card_info_list=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]))
         path = \
             'ib_tasks.tests.populate.stage_actions_logic.stage_1_action_name_3'
         action = StageActionFactory(stage=stage, py_function_import_path=path)
         TaskTemplateInitialStageFactory.create_batch(
-            1, task_template_id=template_id, stage=stage
-        )
+            1, task_template_id=template_id, stage=stage)
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
+        ProjectTaskTemplateFactory.create(
+            task_template_id=template_id, project_id=project_id)
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
@@ -112,7 +123,8 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
             snapshot.assert_match(
                 task_gof.same_gof_order, f'same_gof_order_{counter}')
             snapshot.assert_match(task_gof.gof_id, f'gof_id_{counter}')
-            snapshot.assert_match(task_gof.task_display_id, f'gof_task_id_{counter}')
+            snapshot.assert_match(task_gof.task_display_id,
+                                  f'gof_task_id_{counter}')
             counter = counter + 1
 
         from ib_tasks.models.task_gof_field import TaskGoFField

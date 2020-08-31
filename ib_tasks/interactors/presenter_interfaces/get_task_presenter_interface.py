@@ -67,3 +67,7 @@ class GetTaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_invalid_user(self):
         pass
+
+    @abc.abstractmethod
+    def raise_user_not_a_member_of_project(self):
+        pass

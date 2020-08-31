@@ -26,6 +26,20 @@ from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 class GetTaskPresenterImplementation(GetTaskPresenterInterface,
                                      HTTPResponseMixin):
 
+    def raise_user_not_a_member_of_project(self):
+        from ib_tasks.constants.exception_messages import \
+            USER_NOT_A_MEMBER_OF_PROJECT
+        response_message = USER_NOT_A_MEMBER_OF_PROJECT[0]
+        data = {
+            "response": response_message,
+            "http_status_code": 404,
+            "res_status": USER_NOT_A_MEMBER_OF_PROJECT[1]
+        }
+        response_object = self.prepare_404_not_found_response(
+            response_dict=data
+        )
+        return response_object
+
     def raise_invalid_user(self):
         from ib_tasks.constants.exception_messages import INVALID_USER
         response_message = INVALID_USER[0]

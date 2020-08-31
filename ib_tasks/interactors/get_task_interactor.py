@@ -4,6 +4,7 @@ from ib_tasks.adapters.assignees_details_service import InvalidUserIdException
 from ib_tasks.adapters.auth_service import InvalidProjectIdsException, \
     TeamsNotExistForGivenProjectException, UsersNotExistsForGivenTeamsException
 from ib_tasks.adapters.dtos import SearchableDetailsDTO
+from ib_tasks.adapters.roles_service import UserNotAMemberOfAProjectException
 from ib_tasks.adapters.searchable_details_service import \
     InvalidUserIdsException, InvalidStateIdsException, \
     InvalidCountryIdsException, InvalidCityIdsException
@@ -103,6 +104,9 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return response
         except InvalidUserIdException:
             response = presenter.raise_invalid_user()
+            return response
+        except UserNotAMemberOfAProjectException:
+            response = presenter.raise_user_not_a_member_of_project()
             return response
 
     def get_task_details_response(
