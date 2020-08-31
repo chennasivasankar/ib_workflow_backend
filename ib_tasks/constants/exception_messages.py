@@ -293,7 +293,6 @@ INVALID_DUE_DATE_TIME = (
 
 INVALID_REASON_ID = ("given reason id is not in options", "INVALID_REASON_ID")
 
-
 INVALID_DUE_TIME_FORMAT = (
     "{} has invalid due time format, time format should be HH:MM:SS",
     "INVALID_DUE_TIME_FORMAT"
@@ -366,8 +365,8 @@ INVALID_USER_ID = (
     "INVALID_USER_ID"
 )
 USER_NOT_IN_ANY_TEAM_OF_PROJECT = (
-"user id with {} is not in any team of project",
-"USER_NOT_IN_ANY_TEAM_OF_PROJECT")
+    "user id with {} is not in any team of project",
+    "USER_NOT_IN_ANY_TEAM_OF_PROJECT")
 
 INVALID_PROJECT_TEMPLATE = (
     "{} is not valid template for given project {}",

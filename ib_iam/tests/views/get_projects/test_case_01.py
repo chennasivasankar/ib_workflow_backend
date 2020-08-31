@@ -42,3 +42,4 @@ class TestCase01GetProjectsAPITestCase(TestUtils):
                                             team_id=team_id)]
         project_roles = [ProjectRoleFactory(role_id=role_id,
                                             project=project_object)]
+        return team_object, project_teams, project_roles

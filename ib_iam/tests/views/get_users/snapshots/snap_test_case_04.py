@@ -65,12 +65,12 @@ snapshots['TestCase04GetUsersAPITestCase.test_case body'] = {
             ],
             'teams': [
                 {
-                    'team_id': '6ce31e92-f188-4019-b295-2e5ddc9c7a22',
-                    'team_name': 'team 1'
-                },
-                {
                     'team_id': '6ce31e92-f188-4019-b295-2e5ddc9c7a11',
                     'team_name': 'team 0'
+                },
+                {
+                    'team_id': '6ce31e92-f188-4019-b295-2e5ddc9c7a22',
+                    'team_name': 'team 1'
                 }
             ],
             'user_id': '7e39bf1c-f9a5-4e76-8451-b962ddd52033'
@@ -85,8 +85,8 @@ snapshots['TestCase04GetUsersAPITestCase.test_case body'] = {
                     'role_name': 'role 0'
                 },
                 {
-                    'role_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb222s',
-                    'role_name': 'role 2'
+                    'role_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb222',
+                    'role_name': 'role 1'
                 }
             ],
             'teams': [

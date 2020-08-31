@@ -10,7 +10,7 @@ from ib_tasks.models import (
     UserTaskDelayReason, Task, TaskGoF, TaskGoFField,
     TaskTemplateGlobalConstants,
     TaskStatusVariable, Filter, FilterCondition, TaskLog,
-    StagePermittedRoles, ElasticSearchTask, ProjectTaskTemplate)
+    StagePermittedRoles, ElasticSearchTask, ProjectTaskTemplate, TaskStageRp)
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -57,6 +57,16 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
     card_info_kanban = json.dumps(['field_id_1', "field_id_2"])
     card_info_list = json.dumps(['field_id_1', "field_id_2"])
+
+
+class UserRpInTaskStageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskStageRp
+
+    task = factory.SubFactory(TaskFactory)
+    stage = factory.SubFactory(StageModelFactory)
+    rp_id = factory.Sequence(
+        lambda n: "123e4567-e89b-12d3-a456-42661417405%d" % n)
 
 
 class TaskStageModelFactory(factory.django.DjangoModelFactory):
@@ -354,3 +364,16 @@ class ProjectTaskTemplateFactory(factory.django.DjangoModelFactory):
 
     task_template = factory.SubFactory(TaskTemplateFactory)
     project_id = factory.sequence(lambda counter: "project_{}".format(counter))
+
+
+class TaskStageHistoryFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskStageHistory
+
+    task = factory.SubFactory(TaskFactory)
+    stage = factory.SubFactory(StageModelFactory)
+    team_id = factory.Sequence(lambda n: "TEAM_ID_%d" % n)
+    assignee_id = factory.sequence(
+        lambda n: "123e4567-e89b-12d3-a456-42661417400{}".format(n))
+    joined_at = datetime(2012, 10, 10)
+    left_at = datetime(2012, 10, 11)
