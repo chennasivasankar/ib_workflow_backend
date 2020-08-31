@@ -23,7 +23,7 @@ def api_wrapper(*args, **kwargs):
         user_storage=user_storage
     )
 
-    response = interactor.get_specific_project_details_wrapper(
+    response = interactor.get_list_of_user_roles_for_given_project_wrapper(
         project_id=project_id, presenter=presenter
     )
     return response

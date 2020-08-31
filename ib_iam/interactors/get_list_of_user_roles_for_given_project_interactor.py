@@ -9,23 +9,23 @@ class GetListOfUserRolesForGivenProjectInteractor:
     def __init__(self, user_storage: UserStorageInterface):
         self.user_storage = user_storage
 
-    def get_specific_project_details_wrapper(
+    def get_list_of_user_roles_for_given_project_wrapper(
             self, project_id: str,
             presenter: GetListOfUserRolesForGivenProjectPresenterInterface):
         from ib_iam.exceptions.custom_exceptions import InvalidProjectId
         try:
-            response = self._get_specific_project_details_response(
+            response = self._get_list_of_user_roles_for_given_project(
                 project_id=project_id,
                 presenter=presenter)
         except InvalidProjectId:
             response = presenter.response_for_invalid_project_id()
         return response
 
-    def _get_specific_project_details_response(
+    def _get_list_of_user_roles_for_given_project(
             self, project_id: str,
             presenter: GetListOfUserRolesForGivenProjectPresenterInterface):
         basic_user_details_dtos, user_role_dtos = \
-            self.get_specific_project_details(
+            self.get_list_of_user_roles_for_given_project(
                 project_id=project_id
             )
         response = \
@@ -35,7 +35,7 @@ class GetListOfUserRolesForGivenProjectInteractor:
             )
         return response
 
-    def get_specific_project_details(self, project_id: str):
+    def get_list_of_user_roles_for_given_project(self, project_id: str):
         from ib_iam.exceptions.custom_exceptions import InvalidProjectId
         is_invalid_project_id = not self.user_storage.is_valid_project_id(
             project_id=project_id)

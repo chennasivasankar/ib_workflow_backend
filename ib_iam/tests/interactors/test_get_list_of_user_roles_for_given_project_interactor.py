@@ -43,7 +43,7 @@ class TestGetListOfUserRolesForGivenProjectInteractor:
             expected_presenter_response_for_invalid_project_id
 
         # Act
-        response = interactor.get_specific_project_details_wrapper(
+        response = interactor.get_list_of_user_roles_for_given_project_wrapper(
             project_id=project_id, presenter=presenter_mock
         )
 
@@ -78,7 +78,7 @@ class TestGetListOfUserRolesForGivenProjectInteractor:
             return_value = expected_presenter_prepare_success_response_for_get_specific_team_details
 
         # Act
-        response = interactor.get_specific_project_details_wrapper(
+        response = interactor.get_list_of_user_roles_for_given_project_wrapper(
             project_id=project_id, presenter=presenter_mock
         )
 
