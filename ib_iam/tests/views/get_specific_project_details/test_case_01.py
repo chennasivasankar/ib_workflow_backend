@@ -19,16 +19,18 @@ class TestCase01GetSpecificProjectDetailsAPITestCase(TestUtils):
             self, snapshot, create_project_teams, create_user_roles,
             create_user_teams, create_user_details
     ):
-        project_id = "project_1"
+        project_id = "FA"
         body = {}
         path_params = {"project_id": project_id}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(
+            body=body,
+            path_params=path_params,
+            query_params=query_params,
+            headers=headers,
+            snapshot=snapshot
+        )
 
     @pytest.fixture()
     def create_teams(self):
@@ -60,9 +62,9 @@ class TestCase01GetSpecificProjectDetailsAPITestCase(TestUtils):
             "01be920b-7b4c-49e7-8adb-41a0c18da848",
             "77be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
-        from ib_iam.tests.factories.models import UserTeamFactory
+        from ib_iam.tests.factories.models import TeamUserFactory
         user_team_objects = [
-            UserTeamFactory(
+            TeamUserFactory(
                 user_id=user_id,
                 team=team_object
             )
@@ -98,7 +100,7 @@ class TestCase01GetSpecificProjectDetailsAPITestCase(TestUtils):
 
     @pytest.fixture()
     def create_project(self):
-        project_id = "project_1"
+        project_id = "FA"
         from ib_iam.tests.factories.models import ProjectFactory
         ProjectFactory.reset_sequence(1)
         project_object = ProjectFactory(project_id=project_id)
@@ -125,7 +127,7 @@ class TestCase01GetSpecificProjectDetailsAPITestCase(TestUtils):
 
     @pytest.fixture()
     def create_project_roles(self):
-        project_id = "project_1"
+        project_id = "FA"
         project_role_list = [
             {
                 "project_id": project_id,

@@ -19,9 +19,9 @@ class TestGetUserTeamDTOSForGivenProjectAndUserTeams:
         ProjectTeamFactory.reset_sequence(0)
         project_team_object = ProjectTeamFactory.create(
             team_id=team_id, project_id=project_id)
-        from ib_iam.tests.factories.models import UserTeamFactory
-        UserTeamFactory.reset_sequence(0)
-        user_team_object = UserTeamFactory.create(team=team_object,
+        from ib_iam.tests.factories.models import TeamUserFactory
+        TeamUserFactory.reset_sequence(0)
+        user_team_object = TeamUserFactory.create(team=team_object,
                                                   user_id=user_id)
         return project_object, team_object, user_team_object, project_team_object
 

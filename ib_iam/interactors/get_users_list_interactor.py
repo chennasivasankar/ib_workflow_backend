@@ -69,7 +69,7 @@ class GetListOfUsersInteractor(ValidationMixin):
 
         if ALL_ROLES_ID in role_ids:
             role_ids = \
-                self.user_storage.get_all_distinct_user_db_role_ids(project_id)
+                self.user_storage.get_all_distinct_project_role_ids(project_id)
 
         user_ids = self.user_storage.get_user_ids_for_given_role_ids(
             role_ids=role_ids)

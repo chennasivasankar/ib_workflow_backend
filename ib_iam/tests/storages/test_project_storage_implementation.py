@@ -129,12 +129,12 @@ class TestProjectStorageImplementation:
     def test_is_user_exists_in_team(
             self, user_id_to_create, expected_response):
         from ib_iam.tests.factories.models import \
-            UserDetailsFactory, TeamFactory, UserTeamFactory
+            UserDetailsFactory, TeamFactory, TeamUserFactory
         team_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
         user_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c5"
         UserDetailsFactory.create(user_id=user_id_to_create)
         TeamFactory.create(team_id=team_id)
-        UserTeamFactory.create(team_id=team_id,
+        TeamUserFactory.create(team_id=team_id,
                                user_id=user_id_to_create)
         project_storage = ProjectStorageImplementation()
 

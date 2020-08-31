@@ -7,7 +7,7 @@ from ib_iam.storages.user_storage_implementation \
     import UserStorageImplementation
 
 from ib_iam.tests.common_fixtures.storages import \
-    user_not_admin, users_company, users_team, users_role
+    user_not_admin, users_company
 
 
 class TestGetUsers:
@@ -46,31 +46,26 @@ class TestGetUsers:
         ]
         return users_company_dtos
 
-    @pytest.fixture()
-    def user_role_dtos(self):
-        from ib_iam.interactors.storage_interfaces.dtos import UserRoleDTO
-        users_role_dtos = [
-            UserRoleDTO(
-                user_id='user1',
-                role_id='ROLE_0',
-                name='role 0',
-                description='payment_description0'),
-            UserRoleDTO(
-                user_id='user2',
-                role_id='ROLE_0',
-                name='role 0',
-                description='payment_description0'),
-            UserRoleDTO(
-                user_id='user1',
-                role_id='ROLE_1',
-                name='role 1',
-                description='payment_description1'),
-            UserRoleDTO(
-                user_id='user2',
-                role_id='ROLE_1',
-                name='role 1',
-                description='payment_description1')]
-        return users_role_dtos
+    @pytest.fixture
+    def user_with_roles_dtos(self):
+        user_with_role_ids = [
+            {"user_id": "user1", "role_id": "ROLE_0", "name": "role 0",
+             "description": "role description 0"},
+            {"user_id": "user1", "role_id": "ROLE_1", "name": "role 1",
+             "description": "role description 1"},
+            {"user_id": "user2", "role_id": "ROLE_0", "name": "role 0",
+             "description": "role description 0"},
+            {"user_id": "user2", "role_id": "ROLE_1", "name": "role 1",
+             "description": "role description 1"}
+        ]
+        from ib_iam.tests.factories.storage_dtos import UserRoleDTOFactory
+        UserRoleDTOFactory.reset_sequence(0)
+        user_roles_dtos = [
+            UserRoleDTOFactory.create(
+                user_id=user_role["user_id"], role_id=user_role["role_id"],
+                name=user_role["name"], description=user_role["description"]
+            ) for user_role in user_with_role_ids]
+        return user_roles_dtos
 
     @pytest.fixture()
     def user_team_dtos(self):
@@ -80,15 +75,16 @@ class TestGetUsers:
                 user_id='user1',
                 team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
                 team_name='team 0'
-            ), UserTeamDTO(
-                user_id='user2',
-                team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
-                team_name='team 0'
             ),
             UserTeamDTO(
                 user_id='user1',
                 team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332',
                 team_name='team 1'
+            ),
+            UserTeamDTO(
+                user_id='user2',
+                team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
+                team_name='team 0'
             ),
             UserTeamDTO(
                 user_id='user2',
@@ -245,9 +241,28 @@ class TestGetUsers:
             name_search_query=name_search_query)
         assert output == expected_output
 
+    @pytest.fixture()
+    def users_with_teams(self):
+        from ib_iam.tests.factories.models import TeamFactory
+        TeamFactory.reset_sequence(0)
+        from ib_iam.tests.factories.models import TeamUserFactory
+        TeamUserFactory.reset_sequence(0)
+        users = []
+        teams = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+                 "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+        for team_id in teams:
+            team = TeamFactory.create(team_id=team_id)
+            for i in range(1, 4):
+                user = TeamUserFactory.create(user_id=f"user{i}", team=team)
+                users.append(user)
+        return users
+
     @pytest.mark.django_db
-    def test_get_team_details_of_users_bulk(self, users_team, user_team_dtos):
+    def test_get_team_details_of_users_bulk(self, users_with_teams,
+                                            user_team_dtos):
         # Arrange
+        print(users_with_teams)
+        print(user_team_dtos)
         user_ids = ['user1', 'user2']
         expected_output = user_team_dtos
         storage = UserStorageImplementation()
@@ -258,16 +273,39 @@ class TestGetUsers:
         # Assert
         assert output == expected_output
 
+    @pytest.fixture
+    def users_with_roles_set_up(self):
+        from ib_iam.tests.factories.models import ProjectRoleFactory
+        ProjectRoleFactory.reset_sequence(0)
+        from ib_iam.tests.factories.models import UserRoleFactory
+        UserRoleFactory.reset_sequence(0)
+        users = []
+        user_with_role_ids = [
+            {"user_id": "user1", "role_id": "ROLE_0"},
+            {"user_id": "user1", "role_id": "ROLE_1"},
+            {"user_id": "user2", "role_id": "ROLE_0"},
+            {"user_id": "user2", "role_id": "ROLE_1"}
+        ]
+        for user_role in user_with_role_ids:
+            role = ProjectRoleFactory.create(role_id=user_role["role_id"])
+            user = UserRoleFactory.create(
+                user_id=user_role["user_id"], project_role=role)
+            users.append(user)
+        return users
+
     @pytest.mark.django_db
     def test_get_role_details_of_users_bulk(
-            self, users_role, user_role_dtos):
+            self, users_with_roles_set_up, user_with_roles_dtos):
         # Arrange
         user_ids = ['user1', 'user2']
-        expected_output = user_role_dtos
+
+        expected_output = user_with_roles_dtos
+        print(expected_output)
         storage = UserStorageImplementation()
 
         # Act
         output = storage.get_role_details_of_users_bulk(user_ids=user_ids)
+        print(output, len(output))
 
         # Assert
         assert output == expected_output
@@ -323,34 +361,47 @@ class TestGetUsers:
     @pytest.mark.django_db
     def test_get_all_distinct_roles(self):
         # Arrange
-        from ib_iam.tests.factories.models import ProjectRoleFactory, UserRoleFactory
+        project_id = "1"
+        from ib_iam.tests.factories.models import ProjectRoleFactory, \
+            UserRoleFactory
         ProjectRoleFactory.reset_sequence(0)
         UserRoleFactory.reset_sequence(0)
 
-        expected_user_role_ids = [
-            uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057ba'),
-            uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057bb')
+        expected_project_role_ids = [
+            'b8cb1520-279a-44bb-95bf-bbca3aa057ba',
+            'b8cb1520-279a-44bb-95bf-bbca3aa057bb'
         ]
-        [UserRoleFactory.create(project_role=ProjectRoleFactory.create(id=_id))
-         for _id in expected_user_role_ids]
+        from ib_iam.tests.factories.models import ProjectFactory
+        ProjectFactory.reset_sequence(0)
+        ProjectFactory.create(project_id=project_id)
+        [UserRoleFactory.create(
+            project_role=ProjectRoleFactory.create(
+                role_id=role_id, project_id=project_id)
+        ) for role_id in expected_project_role_ids]
 
         storage = UserStorageImplementation()
 
         # Act
-        output = storage.get_all_distinct_user_db_role_ids()
+        output = storage.get_all_distinct_project_role_ids(
+            project_id=project_id)
 
         # Assert
-        assert output == expected_user_role_ids
+        assert output == expected_project_role_ids
 
     @pytest.mark.django_db
     def test_get_all_distinct_roles_when_no_roles_exists_returns_empty_list(
             self):
         # Arrange
+        project_id = "1"
+        from ib_iam.tests.factories.models import ProjectFactory
+        ProjectFactory.reset_sequence(0)
+        ProjectFactory.create(project_id=project_id)
         expected_user_role_ids = []
         storage = UserStorageImplementation()
 
         # Act
-        output = storage.get_all_distinct_user_db_role_ids()
+        output = storage.get_all_distinct_project_role_ids(
+            project_id=project_id)
 
         # Assert
         assert output == expected_user_role_ids
@@ -359,28 +410,30 @@ class TestGetUsers:
     def test_get_user_ids_for_given_role_ids_when_exists_returns_user_ids(
             self):
         # Arrange
-        from ib_iam.tests.factories.models import ProjectRoleFactory, UserRoleFactory
+        from ib_iam.tests.factories.models import ProjectRoleFactory, \
+            UserRoleFactory
         ProjectRoleFactory.reset_sequence(0)
         UserRoleFactory.reset_sequence(0)
 
         user_roles = [
             {
                 "user_id": "b8cb1520-279a-44bb-95bf-bbca3aa05123",
-                "db_role_id": "b8cb1520-279a-44bb-95bf-bbca3aa057ba"
+                "role_id": "b8cb1520-279a-44bb-95bf-bbca3aa057ba"
             },
             {
                 "user_id": "b8cb1520-279a-44bb-95bf-bbca3aa05124",
-                "db_role_id": "b8cb1520-279a-44bb-95bf-bbca3aa057bb"
+                "role_id": "b8cb1520-279a-44bb-95bf-bbca3aa057bb"
             }
         ]
         [UserRoleFactory.create(
-            project_role=ProjectRoleFactory.create(id=user_role["db_role_id"]),
+            project_role=ProjectRoleFactory.create(
+                role_id=user_role["role_id"]),
             user_id=user_role["user_id"]
         ) for user_role in user_roles]
         expected_user_ids = [
             "b8cb1520-279a-44bb-95bf-bbca3aa05123",
             "b8cb1520-279a-44bb-95bf-bbca3aa05124"]
-        db_role_ids = [
+        role_ids = [
             "b8cb1520-279a-44bb-95bf-bbca3aa057ba",
             "b8cb1520-279a-44bb-95bf-bbca3aa057bb"
         ]
@@ -389,7 +442,7 @@ class TestGetUsers:
 
         # Act
         output = \
-            storage.get_user_ids_for_given_role_ids(role_ids=db_role_ids)
+            storage.get_user_ids_for_given_role_ids(role_ids=role_ids)
 
         # Assert
         assert output == expected_user_ids
@@ -490,32 +543,32 @@ class TestGetUsers:
         # Assert
         assert output == expected_user_ids
 
-    @pytest.mark.django_db
-    def test_get_db_role_ids(self):
-        # Arrange
-        from ib_iam.tests.factories.models import ProjectRoleFactory
-        ProjectRoleFactory.reset_sequence(1)
-
-        role_ids = ["ROLE_1", "ROLE_2"]
-        expected_db_role_ids = [
-            uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057ba'),
-            uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057bb')
-        ]
-        ProjectRoleFactory.create_batch(
-            size=2, id=factory.Iterator(expected_db_role_ids)
-        )
-
-        storage = UserStorageImplementation()
-
-        # Act
-        output = storage.get_db_role_ids(role_ids=role_ids)
-
-        # Assert
-        assert output == expected_db_role_ids
+    # @pytest.mark.django_db
+    # def test_get_db_role_ids(self):
+    #     # Arrange
+    #     from ib_iam.tests.factories.models import ProjectRoleFactory
+    #     ProjectRoleFactory.reset_sequence(1)
+    #
+    #     role_ids = ["ROLE_1", "ROLE_2"]
+    #     expected_db_role_ids = [
+    #         uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057ba'),
+    #         uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057bb')
+    #     ]
+    #     ProjectRoleFactory.create_batch(
+    #         size=2, id=factory.Iterator(expected_db_role_ids)
+    #     )
+    #
+    #     storage = UserStorageImplementation()
+    #
+    #     # Act
+    #     output = storage.get_db_role_ids(role_ids=role_ids)
+    #
+    #     # Assert
+    #     assert output == expected_db_role_ids
 
     @pytest.mark.django_db
     def test_get_user_related_team_dtos(self):
-        from ib_iam.tests.factories.models import TeamFactory, UserTeamFactory
+        from ib_iam.tests.factories.models import TeamFactory, TeamUserFactory
         from ib_iam.tests.factories.storage_dtos import TeamDTOFactory
         TeamFactory.reset_sequence(1)
         TeamDTOFactory.reset_sequence(1)
@@ -525,12 +578,16 @@ class TestGetUsers:
         team_objects = [TeamFactory.create(team_id=team_id)
                         for team_id in team_ids]
         for team_object in team_objects:
-            UserTeamFactory.create(team=team_object, user_id=user_id)
+            TeamUserFactory.create(team=team_object, user_id=user_id)
         expected_team_dtos = [TeamDTOFactory.create(team_id=team_id)
                               for team_id in team_ids]
+        expected_team_dtos = sorted(
+            expected_team_dtos, key=lambda x: x.team_id)
         storage = UserStorageImplementation()
 
         actual_team_dtos = storage.get_user_related_team_dtos(user_id=user_id)
+        actual_team_dtos = sorted(
+            actual_team_dtos, key=lambda x: x.team_id)
 
         assert actual_team_dtos == expected_team_dtos
 
@@ -580,10 +637,10 @@ class TestGetUsers:
         user_ids = ['2bdb417e-4632-419a-8ddd-085ea272c6eb',
                     '4b8fb6eb-fa7d-47c1-8726-cd917901104e']
         from ib_iam.tests.factories.models import TeamFactory
-        from ib_iam.tests.factories.models import UserTeamFactory
+        from ib_iam.tests.factories.models import TeamUserFactory
         team_object = TeamFactory.create(team_id=team_id)
         for user_id in user_ids:
-            UserTeamFactory.create(team=team_object, user_id=user_id)
+            TeamUserFactory.create(team=team_object, user_id=user_id)
         expected_dto = [TeamUserIdsDTOFactory(team_id=team_id,
                                               user_ids=user_ids)]
 

@@ -79,9 +79,9 @@ class TestCase01GetTeamMemberLevelsWithMembersAPITestCase(TestUtils):
             "20be920b-7b4c-49e7-8adb-41a0c18da848",
             "30be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
-        from ib_iam.tests.factories.models import UserTeamFactory
+        from ib_iam.tests.factories.models import TeamUserFactory
         user_team_objects_of_level_one = [
-            UserTeamFactory(
+            TeamUserFactory(
                 user_id=user_id,
                 team=team_object,
                 team_member_level=team_member_level_object
@@ -100,9 +100,9 @@ class TestCase01GetTeamMemberLevelsWithMembersAPITestCase(TestUtils):
             "50be920b-7b4c-49e7-8adb-41a0c18da848",
             "60be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
-        from ib_iam.tests.factories.models import UserTeamFactory
+        from ib_iam.tests.factories.models import TeamUserFactory
         user_team_objects = [
-            UserTeamFactory(
+            TeamUserFactory(
                 user_id=user_id,
                 team=team_object,
                 team_member_level=team_member_level_object
@@ -114,7 +114,7 @@ class TestCase01GetTeamMemberLevelsWithMembersAPITestCase(TestUtils):
     @pytest.fixture()
     def prepare_user_teams_subordinate_members_setup(
             self, prepare_user_teams_setup):
-        from ib_iam.models import UserTeam
+        from ib_iam.models import TeamUser
 
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         member_id_with_immediate_superior_team_user_id_list = [{
@@ -137,7 +137,7 @@ class TestCase01GetTeamMemberLevelsWithMembersAPITestCase(TestUtils):
             'immediate_superior_team_user_id': None
         }]
         for member_details_dict in member_id_with_immediate_superior_team_user_id_list:
-            UserTeam.objects.filter(
+            TeamUser.objects.filter(
                 user_id=member_details_dict["user_id"],
                 team_id=team_id
             ).update(

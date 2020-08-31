@@ -21,11 +21,13 @@ class TestCase01UpdateProjectDetailsAPITestCase(TestUtils):
             'logo_url': 'string',
             'team_ids': ['string']
         }
-        path_params = {"project_id": "413642ff-1272-4990-b878-6607a5e02bc1"}
+        path_params = {"project_id": "FA"}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(
+            body=body,
+            path_params=path_params,
+            query_params=query_params,
+            headers=headers,
+            snapshot=snapshot
+        )
