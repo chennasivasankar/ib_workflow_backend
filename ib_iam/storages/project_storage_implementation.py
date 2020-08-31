@@ -11,9 +11,10 @@ from ib_iam.models import Project, ProjectTeam, ProjectRole
 
 class ProjectStorageImplementation(ProjectStorageInterface):
 
-    def add_projects(self, project_dtos: List[ProjectDTO]):
+    def add_projects(self, project_dtos: List[ProjectWithDisplayIdDTO]):
         projects = [
             Project(project_id=project_dto.project_id,
+                    display_id=project_dto.display_id,
                     name=project_dto.name,
                     description=project_dto.description,
                     logo_url=project_dto.logo_url)

@@ -14,7 +14,7 @@ from ib_iam.interactors.presenter_interfaces.update_project_presenter_interface 
     UpdateProjectPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import (
     ProjectDTO, ProjectWithoutIdDTO, UserTeamDTO, TeamIdAndNameDTO, RoleDTO,
-    RoleNameAndDescriptionDTO)
+    RoleNameAndDescriptionDTO, ProjectWithDisplayIdDTO)
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
@@ -49,7 +49,7 @@ class ProjectInteractor:
         self.team_storage = team_storage
         self.user_storage = user_storage
 
-    def add_projects(self, project_dtos: List[ProjectDTO]):
+    def add_projects(self, project_dtos: List[ProjectWithDisplayIdDTO]):
         # todo check for duplicate project_ids in dtos
         # todo get to know if any permissions has to apply
         # todo check if name or project_id is empty in any project dto
