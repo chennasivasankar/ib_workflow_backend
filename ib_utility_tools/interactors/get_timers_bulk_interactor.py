@@ -66,15 +66,13 @@ class GetTimersBulkInteractor:
             timer_entity_dtos: List[TimerEntityDTO]) -> \
             List[EntityWithTimerDTO]:
         entity_with_timer_dtos = []
-        is_invalid_entities_exist = \
-            len(timer_entity_dtos) != len(complete_timer_details_dtos)
-        if is_invalid_entities_exist:
-            for timer_dto in complete_timer_details_dtos:
-                for entity_dto in timer_entity_dtos:
-                    if entity_dto.entity_id != timer_dto.entity_id:
-                        entity_with_timer_dtos.append(
-                            self._get_default_entity_with_timer_dto(
-                                timer_entity_dto=entity_dto))
+        entity_ids_from_timer_dtos = [
+            timer_dto.entity_id for timer_dto in complete_timer_details_dtos]
+        for entity_dto in timer_entity_dtos:
+            if entity_dto.entity_id not in entity_ids_from_timer_dtos:
+                entity_with_timer_dtos.append(
+                    self._get_default_entity_with_timer_dto(
+                        timer_entity_dto=entity_dto))
         return entity_with_timer_dtos
 
     @staticmethod

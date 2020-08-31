@@ -129,9 +129,6 @@ class TestStopTimerInteractor:
             self, interactor, storage_mock, timer_entity_dtos,
             complete_timer_details_when_no_timers_in_running_state,
             entity_with_timer_dtos_when_no_timers_in_running_state):
-        from ib_utility_tools.tests.factories.storage_dtos import \
-            TimerEntityDTOFactory
-        timer_entity_dtos = TimerEntityDTOFactory.create_batch(size=2)
         storage_mock.get_timer_details_dtos_for_given_entities.return_value = \
             complete_timer_details_when_no_timers_in_running_state
         expected_entity_with_timer_dtos = \
