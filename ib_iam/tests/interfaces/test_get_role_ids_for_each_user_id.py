@@ -94,3 +94,4 @@ class TestGetUserIdWithRoleIdsDTO:
 
         # Assert
         assert response == expected_response
+

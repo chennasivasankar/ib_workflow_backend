@@ -20,7 +20,15 @@ RESPONSE_200_JSON = """
                 "name": "string",
                 "profile_pic_url": "string"
             }
-        ]
+        ],
+        "roles": {
+            "roles": [
+                {
+                    "role_id": "string",
+                    "role_name": "string"
+                }
+            ]
+        }
     },
     "teams": [
         {

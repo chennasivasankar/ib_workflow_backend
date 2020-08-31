@@ -57,7 +57,7 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_users_who_are_not_admins(
+    def get_all_user_dtos(
             self, offset: int, limit: int,
             name_search_query: str) -> List[UserDTO]:
         pass
