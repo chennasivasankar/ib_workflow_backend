@@ -137,7 +137,7 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         from ib_tasks.constants.exception_messages import USER_NOT_IN_PROJECT
         response_dict = {
             "response": USER_NOT_IN_PROJECT[0],
-            "http_status_code": 404,
+            "http_status_code": 403,
             "res_status": USER_NOT_IN_PROJECT[1]
         }
 
