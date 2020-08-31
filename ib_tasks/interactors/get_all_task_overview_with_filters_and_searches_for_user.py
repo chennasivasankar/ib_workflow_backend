@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from typing import List
 
 from ib_tasks.constants.enum import ViewType
+from ib_tasks.exceptions.task_custom_exceptions import TaskIdsNotInProject
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
@@ -16,7 +17,7 @@ from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskIdWithStageDetailsDTO, GetTaskStageCompleteDetailsDTO, \
+    GetTaskStageCompleteDetailsDTO, \
     TaskWithCompleteStageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
@@ -37,14 +38,6 @@ class UserIdPaginationDTO:
     offset: int
 
 
-class TaskIdsNotInProject(Exception):
-    def __init__(self, invalid_task_ids: List[int]):
-        self.invalid_task_ids = invalid_task_ids
-
-    def __str__(self):
-        return self.invalid_task_ids
-
-
 class GetTasksOverviewForUserInteractor(ValidationMixin):
     def __init__(self, stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,
@@ -62,9 +55,7 @@ class GetTasksOverviewForUserInteractor(ValidationMixin):
             view_type: ViewType, project_id: str
     ) -> AllTasksOverviewDetailsDTO:
         self._validate_project_data(
-            project_id=project_id,
-            user_id=user_id,
-            task_ids=task_ids
+            project_id=project_id, user_id=user_id, task_ids=task_ids
         )
         stage_ids = self._get_allowed_stage_ids_of_user(
             user_id=user_id, project_id=project_id

@@ -239,7 +239,9 @@ class TestGetTasksOverviewForUserInteractor:
         )
         task_storage.get_valid_task_ids_from_the_project.return_value = valid_task_ids
         from ib_tasks.interactors.get_all_task_overview_with_filters_and_searches_for_user \
-            import GetTasksOverviewForUserInteractor, TaskIdsNotInProject
+            import GetTasksOverviewForUserInteractor
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            TaskIdsNotInProject
 
         interactor = GetTasksOverviewForUserInteractor(
             stage_storage=stage_storage,
