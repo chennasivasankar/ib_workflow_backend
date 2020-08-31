@@ -2,7 +2,8 @@ import abc
 
 from ib_tasks.exceptions.datetime_custom_exceptions import DueDateHasExpired
 from ib_tasks.exceptions.stage_custom_exceptions import \
-    StageIdsWithInvalidPermissionForAssignee, InvalidStageId
+    StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
+    StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
@@ -161,4 +162,12 @@ class UpdateTaskPresenterInterface(abc.ABC):
     def raise_duplicate_same_gof_orders_for_a_gof(self, err):
         pass
 
+    @abc.abstractmethod
+    def raise_stage_ids_list_empty_exception(
+            self, err: StageIdsListEmptyException):
+        pass
 
+    @abc.abstractmethod
+    def raise_invalid_stage_ids_list_exception(
+            self, err: InvalidStageIdsListException):
+        pass

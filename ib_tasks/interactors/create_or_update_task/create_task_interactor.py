@@ -2,7 +2,6 @@ from typing import List, Optional, Union
 
 from ib_tasks.constants.config import TIME_FORMAT
 from ib_tasks.constants.enum import ActionTypes, ViewType
-from ib_tasks.documents.elastic_task import ElasticFieldDTO
 from ib_tasks.exceptions.action_custom_exceptions import \
     InvalidActionException, InvalidKeyError, InvalidCustomLogicException, \
     InvalidPresentStageAction
@@ -27,7 +26,8 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserActionPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
-    InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee
+    InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee, \
+    StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId, \
     InvalidTaskTemplateOfProject
@@ -70,8 +70,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
-from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO, \
-    FieldValuesDTO
+from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO
 from ib_tasks.interactors.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
 
@@ -212,6 +211,10 @@ class CreateTaskInteractor:
             return presenter. \
                 raise_stage_ids_with_invalid_permission_for_assignee_exception(
                 invalid_stage_ids=err.invalid_stage_ids)
+        except StageIdsListEmptyException as err:
+            return presenter.raise_stage_ids_list_empty_exception(err)
+        except InvalidStageIdsListException as err:
+            return presenter.raise_invalid_stage_ids_list_exception(err)
 
     def _prepare_create_task_response(
             self, task_dto: CreateTaskDTO,
@@ -295,8 +298,9 @@ class CreateTaskInteractor:
         )
         all_tasks_overview_details_dto = \
             task_overview_interactor.get_filtered_tasks_overview_for_user(
-            user_id=task_dto.created_by_id, task_ids=[created_task_id],
-            view_type=ViewType.KANBAN.value, project_id=task_dto.project_id)
+                user_id=task_dto.created_by_id, task_ids=[created_task_id],
+                view_type=ViewType.KANBAN.value,
+                project_id=task_dto.project_id)
         return task_current_stage_details_dto, all_tasks_overview_details_dto
 
     def _validate_task_template_id(

@@ -23,6 +23,8 @@ from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserBoardPermissionDenied, UserActionPermissionDenied
+from ib_tasks.exceptions.stage_custom_exceptions import \
+    InvalidStageIdsListException, StageIdsListEmptyException
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
@@ -38,6 +40,29 @@ from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 class CreateTaskPresenterImplementation(
     CreateTaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_stage_ids_list_empty_exception(self,
+                                             err: StageIdsListEmptyException):
+        from ib_tasks.constants.exception_messages import \
+            EMPTY_STAGE_IDS_ARE_INVALID
+        data = {
+            "response": EMPTY_STAGE_IDS_ARE_INVALID[0],
+            "http_status_code": 400,
+            "res_status": EMPTY_STAGE_IDS_ARE_INVALID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_stage_ids_list_exception(self,
+                                               err:
+                                               InvalidStageIdsListException):
+        from ib_tasks.constants.exception_messages import INVALID_STAGE_IDS
+        message = INVALID_STAGE_IDS[0].format(err.invalid_stage_ids)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_STAGE_IDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_invalid_task_template_of_project(self, err):
         from ib_tasks.constants.exception_messages import \

@@ -6,6 +6,8 @@ from ib_tasks.adapters.dtos import ColumnStageDTO, AssigneeDetailsDTO
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied, UserBoardPermissionDenied
+from ib_tasks.exceptions.stage_custom_exceptions import \
+    InvalidStageIdsListException, StageIdsListEmptyException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import \
@@ -24,6 +26,29 @@ from ib_tasks.interactors.user_action_on_task_interactor import \
 
 class UserActionOnTaskPresenterImplementation(PresenterInterface,
                                               HTTPResponseMixin):
+
+    def raise_stage_ids_list_empty_exception(self,
+                                             err: StageIdsListEmptyException):
+        from ib_tasks.constants.exception_messages import \
+            EMPTY_STAGE_IDS_ARE_INVALID
+        data = {
+            "response": EMPTY_STAGE_IDS_ARE_INVALID[0],
+            "http_status_code": 400,
+            "res_status": EMPTY_STAGE_IDS_ARE_INVALID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_stage_ids_list_exception(self,
+                                               err:
+                                               InvalidStageIdsListException):
+        from ib_tasks.constants.exception_messages import INVALID_STAGE_IDS
+        message = INVALID_STAGE_IDS[0].format(err.invalid_stage_ids)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_STAGE_IDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_invalid_task_display_id(self, err):
         from ib_tasks.constants.exception_messages import \
@@ -294,8 +319,8 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
 
         assignees_dict, task_stages_dict = \
             self._get_stage_details_and_assignees_details_dict(
-            column_stage_dtos, assignee_dtos, task_stage_dtos
-        )
+                column_stage_dtos, assignee_dtos, task_stage_dtos
+            )
 
         column_dtos = task_board_details.columns_dtos
         return [

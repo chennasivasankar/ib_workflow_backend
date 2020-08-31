@@ -8,7 +8,8 @@ from ib_tasks.exceptions.action_custom_exceptions import InvalidKeyError, \
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied, UserBoardPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
-    InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee
+    InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee, \
+    StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidTaskDisplayId
 from ib_tasks.interactors \
@@ -136,6 +137,10 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter. \
                 raise_stage_ids_with_invalid_permission_for_assignee_exception(
                 invalid_stage_ids=exception.invalid_stage_ids)
+        except StageIdsListEmptyException as err:
+            return presenter.raise_stage_ids_list_empty_exception(err)
+        except InvalidStageIdsListException as err:
+            return presenter.raise_invalid_stage_ids_list_exception(err)
         return presenter.get_response_for_user_action_on_task(
             task_complete_details_dto=task_complete_details_dto,
             task_current_stage_details_dto=task_current_stage_details_dto,

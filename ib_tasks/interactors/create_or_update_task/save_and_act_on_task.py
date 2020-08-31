@@ -25,7 +25,8 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee, DuplicateStageIds, \
-    InvalidDbStageIdsListException, InvalidStageId
+    InvalidDbStageIdsListException, InvalidStageId, StageIdsListEmptyException, \
+    InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId
 from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
@@ -197,6 +198,10 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter. \
                 raise_stage_ids_with_invalid_permission_for_assignee_exception(
                 err)
+        except StageIdsListEmptyException as err:
+            return presenter.raise_stage_ids_list_empty_exception(err)
+        except InvalidStageIdsListException as err:
+            return presenter.raise_invalid_stage_ids_list_exception(err)
 
     def _prepare_save_and_act_response(
             self, presenter, task_dto: SaveAndActOnTaskWithTaskDisplayIdDTO):

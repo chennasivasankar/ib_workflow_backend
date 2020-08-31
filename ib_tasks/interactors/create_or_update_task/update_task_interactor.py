@@ -22,7 +22,8 @@ from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.stage_custom_exceptions import \
-    StageIdsWithInvalidPermissionForAssignee, InvalidStageId
+    StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
+    StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId
 from ib_tasks.interactors.create_or_update_task. \
@@ -178,6 +179,10 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter. \
                 raise_stage_ids_with_invalid_permission_for_assignee_exception(
                 err)
+        except StageIdsListEmptyException as err:
+            return presenter.raise_stage_ids_list_empty_exception(err)
+        except InvalidStageIdsListException as err:
+            return presenter.raise_invalid_stage_ids_list_exception(err)
 
     def _prepare_update_task_response(
             self, task_dto: UpdateTaskWithTaskDisplayIdDTO,
