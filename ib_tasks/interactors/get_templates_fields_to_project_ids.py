@@ -31,6 +31,9 @@ class GetProjectsTemplatesFieldsInteractor(ValidationMixin):
     ) -> ProjectTemplateFieldsDto:
 
         self.validate_given_project_ids(project_ids=project_ids)
+        self.validate_if_user_is_in_projects(
+            user_id=user_id, project_ids=project_ids
+        )
         from ib_tasks.adapters.roles_service_adapter import \
             get_roles_service_adapter
         service_adapter = get_roles_service_adapter()
