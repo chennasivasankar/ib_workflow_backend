@@ -74,6 +74,7 @@ class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
                 due_details.reason = reason_dict['reason']
 
         self.storage.add_due_delay_details(due_details)
+        self.storage.update_task_due_datetime(due_details)
 
     def _validate_stage_id(self, stage_id: int):
         is_valid = self.storage.validate_stage_id(stage_id)
