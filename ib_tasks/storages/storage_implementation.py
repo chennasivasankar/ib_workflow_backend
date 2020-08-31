@@ -797,7 +797,4 @@ class StorageImplementation(StorageInterface):
         task_id = due_details.task_id
         updated_due_datetime = due_details.due_date_time
 
-        # Task.objects.filter(pk=task_id, taskstagehistory__assignee_id=user_id
-        #                     ).update(due_date=updated_due_datetime)
-
         Task.objects.filter(pk=task_id).update(due_date=updated_due_datetime)
