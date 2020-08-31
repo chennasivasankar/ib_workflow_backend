@@ -180,10 +180,6 @@ class CreateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_due_date_is_behind_start_date(self, err):
-        pass
-
-    @abc.abstractmethod
     def raise_due_time_has_expired_for_today(self, err):
         pass
 

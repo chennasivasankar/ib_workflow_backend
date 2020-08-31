@@ -279,8 +279,7 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             stage_storage=self.stage_storage, task_storage=self.task_storage,
             field_storage=self.field_storage,
             action_storage=self.action_storage,
-            task_stage_storage=self.task_stage_storage
-        )
+            task_stage_storage=self.task_stage_storage)
         project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
         all_tasks_overview_details_dto = \
             task_overview_interactor.get_filtered_tasks_overview_for_user(

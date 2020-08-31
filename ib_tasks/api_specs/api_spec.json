@@ -1477,10 +1477,7 @@
             "task_details":{
                "$ref":"#/definitions/TaskOverviewWithStageAndActions"
             }
-         },
-         "required": [
-           "task_details"
-         ]
+         }
       },
       "SaveAndActOnTaskSuccessResponseBody":{
          "type":"object",
