@@ -289,6 +289,7 @@ class ProjectWithoutIdDTOFactory(factory.Factory):
         model = ProjectWithoutIdDTO
 
     name = factory.Sequence(lambda n: 'name %s' % n)
+    display_id = factory.Sequence(lambda n: 'display_id %s' % n)
     description = factory.Sequence(lambda n: 'description %s' % n)
     logo_url = factory.Sequence(lambda n: 'logo %s' % n)
 

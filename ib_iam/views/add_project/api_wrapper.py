@@ -41,6 +41,7 @@ def _convert_to_project_with_team_ids_and_roles_dto(kwargs):
     from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
     project_with_team_ids_and_roles_dto = ProjectWithTeamIdsAndRolesDTO(
         name=request_data["name"],
+        display_id=request_data["project_display_id"],
         description=request_data.get("description", None),
         logo_url=request_data.get("logo_url", None),
         team_ids=request_data["team_ids"],

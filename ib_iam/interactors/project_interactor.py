@@ -277,6 +277,7 @@ class ProjectInteractor:
         # todo validate is project name already exists for any other project
         project_without_id_dto = ProjectWithoutIdDTO(
             name=project_with_team_ids_and_roles_dto.name,
+            display_id=project_with_team_ids_and_roles_dto.display_id,
             description=project_with_team_ids_and_roles_dto.description,
             logo_url=project_with_team_ids_and_roles_dto.logo_url)
         project_id = self.project_storage.add_project(

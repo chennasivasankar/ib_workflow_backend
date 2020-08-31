@@ -171,6 +171,7 @@ class ProjectStorageImplementation(ProjectStorageInterface):
     def add_project(self, project_without_id_dto: ProjectWithoutIdDTO) -> str:
         project_object = Project.objects.create(
             name=project_without_id_dto.name,
+            display_id=project_without_id_dto.display_id,
             description=project_without_id_dto.description,
             logo_url=project_without_id_dto.logo_url)
         return project_object.project_id

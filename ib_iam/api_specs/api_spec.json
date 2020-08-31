@@ -737,6 +737,9 @@
         {
           "type": "object",
           "properties": {
+            "project_display_id": {
+              "type": "string"
+            },
             "roles": {
               "type": "array",
               "items": {
@@ -745,6 +748,7 @@
             }
           },
           "required": [
+            "project_display_id",
             "roles"
           ]
         }

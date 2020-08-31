@@ -192,6 +192,7 @@ class ProjectDTO:
 @dataclass
 class ProjectWithoutIdDTO:
     name: str
+    display_id: str
     description: Optional[str] = None
     logo_url: Optional[str] = None
 

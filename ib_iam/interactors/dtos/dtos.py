@@ -64,6 +64,7 @@ class CompleteTeamMemberLevelsDetailsDTO:
 @dataclass
 class ProjectWithTeamIdsAndRolesDTO:
     name: str
+    display_id: str
     team_ids: List[str]
     roles: List[RoleNameAndDescriptionDTO]
     description: Optional[str] = None

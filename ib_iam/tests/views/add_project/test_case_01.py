@@ -1,8 +1,11 @@
 """
 success case of add project
 """
+from uuid import UUID
+
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -15,11 +18,16 @@ class TestCase01AddProjectAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, setup, mocker, snapshot):
+        from ib_iam.tests.common_fixtures.adapters.uuid_mock import \
+            prepare_uuid_mock
+        mock = prepare_uuid_mock(mocker)
+        mock.return_value = UUID("7eb737be-810f-4580-83ea-ff4fa67edd22")
         body = {
             'name': 'project_1',
             'description': 'project_description',
             'logo_url': 'https://logo.com',
             'team_ids': setup,
+            "project_display_id": "display_id 1",
             'roles': [{
                 'role_name': 'role1',
                 'description': 'description1'
@@ -33,6 +41,18 @@ class TestCase01AddProjectAPITestCase(TestUtils):
                                       query_params=query_params,
                                       headers=headers,
                                       snapshot=snapshot)
+        from ib_iam.models import Project, ProjectTeam, ProjectRole
+        project_id = "project_7eb737be-810f-4580-83ea-ff4fa67edd22"
+        project_details = Project.objects.filter(
+            project_id=project_id).values()
+        snapshot.assert_match(list(project_details), "project_details")
+        project_team_ids = ProjectTeam.objects.filter(project=project_id) \
+            .values_list("team_id", flat=True)
+        project_team_ids = list(map(str, project_team_ids))
+        snapshot.assert_match(project_team_ids, "project_team_ids")
+        project_roles = ProjectRole.objects.filter(project_id=project_id) \
+            .values("role_id", "name", "description")
+        snapshot.assert_match(list(project_roles), "project_roles")
 
     @pytest.fixture
     def setup(self):

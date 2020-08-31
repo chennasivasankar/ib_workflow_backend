@@ -299,6 +299,7 @@ class TestProjectStorageImplementation:
         from ib_iam.models import Project
         project_object = Project.objects.get(project_id=project_id)
         assert project_object.name == project_without_id_dto.name
+        assert project_object.display_id == project_without_id_dto.display_id
         assert project_object.description == project_without_id_dto.description
         assert project_object.logo_url == project_without_id_dto.logo_url
 
