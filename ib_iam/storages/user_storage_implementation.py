@@ -4,7 +4,7 @@ from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
 from ib_iam.exceptions.custom_exceptions import InvalidUserIdsForProject, \
     InvalidRoleIdsForProject, InvalidProjectId
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
-from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
+from ib_iam.interactors.storage_interfaces.dtos import UserDTO, TeamWithUserIdDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, \
     CompanyDTO, \
@@ -145,14 +145,14 @@ class UserStorageImplementation(UserStorageInterface):
         return total_count_of_users
 
     def get_team_details_of_users_bulk(
-            self, user_ids: List[str]) -> List[UserTeamDTO]:
+            self, user_ids: List[str]) -> List[TeamWithUserIdDTO]:
         from ib_iam.models import TeamUser
         user_teams = TeamUser.objects.filter(user_id__in=user_ids) \
             .select_related('team')
         team_dtos = []
         for user_team in user_teams:
             team = user_team.team
-            team_dto = UserTeamDTO(
+            team_dto = TeamWithUserIdDTO(
                 user_id=user_team.user_id,
                 team_id=str(team.team_id),
                 team_name=team.name
@@ -518,8 +518,8 @@ class UserStorageImplementation(UserStorageInterface):
         ).values_list(
             "team_id", flat=True)
 
-        from ib_iam.models import UserTeam
-        user_ids_in_project = UserTeam.objects.filter(
+        from ib_iam.models import TeamUser
+        user_ids_in_project = TeamUser.objects.filter(
             team_id__in=team_ids
         ).values_list(
             "user_id", flat=True

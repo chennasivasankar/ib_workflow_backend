@@ -1,5 +1,3 @@
-from uuid import UUID
-
 import pytest
 
 
@@ -21,8 +19,8 @@ class TestGetUserIdWIthRoleIdsDTOS:
                 user_id='abc1a0c1-b9ef-4e59-b415-60a28ef17b10',
                 role_ids=[
                     '1af3f6458df3',
-                    'f3e0c6aa65f6',
-                    '5e3fc083776b'
+                    '5e3fc083776b',
+                    'f3e0c6aa65f6'
                 ]
             ),
             UserIdWithRoleIdsDTO(

@@ -116,8 +116,8 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         ).values_list(
             "team_id", flat=True
         )
-        from ib_iam.models import UserTeam
-        user_team_objects = UserTeam.objects.filter(
+        from ib_iam.models import TeamUser
+        user_team_objects = TeamUser.objects.filter(
             team_id__in=team_ids, user_id=user_id
         )
         return user_team_objects.exists()

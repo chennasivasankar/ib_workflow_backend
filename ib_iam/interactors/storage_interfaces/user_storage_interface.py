@@ -5,7 +5,7 @@ from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
 from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidUserIds, \
     InvalidUserIdsForProject, InvalidRoleIdsForProject, InvalidProjectId
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
-from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
+from ib_iam.interactors.storage_interfaces.dtos import UserDTO, TeamWithUserIdDTO, \
     UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, TeamIdAndNameDTO, \
     RoleIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, CompanyDTO, \
     CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO
@@ -66,7 +66,7 @@ class UserStorageInterface(ABC):
 
     @abstractmethod
     def get_team_details_of_users_bulk(
-            self, user_ids: List[str]) -> List[UserTeamDTO]:
+            self, user_ids: List[str]) -> List[TeamWithUserIdDTO]:
         pass
 
     @abstractmethod
