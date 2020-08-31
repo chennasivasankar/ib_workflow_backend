@@ -15,6 +15,7 @@ snapshots['TestCase01UpdateProjectDetailsAPITestCase.test_case body'] = {
 snapshots['TestCase01UpdateProjectDetailsAPITestCase.test_case project_details'] = [
     {
         'description': None,
+        'display_id': 'display_id 1',
         'logo_url': None,
         'name': 'payment_project',
         'project_id': 'project_1'

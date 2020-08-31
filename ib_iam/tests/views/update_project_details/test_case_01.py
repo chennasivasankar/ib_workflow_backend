@@ -72,6 +72,7 @@ class TestCase01UpdateProjectDetailsAPITestCase(TestUtils):
         from ib_iam.tests.factories.models import (
             ProjectFactory, TeamFactory, ProjectTeamFactory, ProjectRoleFactory
         )
+        ProjectFactory.reset_sequence(1)
         project_object = ProjectFactory(project_id=project_id)
         team_objects = [TeamFactory(team_id=team_id) for team_id in team_ids]
         team_objects_for_project = team_objects[0:2]
