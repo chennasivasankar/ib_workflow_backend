@@ -1,7 +1,10 @@
 from typing import List, Optional
 
 from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
-from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
+from ib_iam.exceptions.custom_exceptions import InvalidUserIdsForProject, \
+    InvalidRoleIdsForProject, InvalidProjectId
+from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
+from ib_iam.interactors.storage_interfaces.dtos import UserDTO, TeamWithUserIdDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, \
     CompanyDTO, \
@@ -141,14 +144,14 @@ class UserStorageImplementation(UserStorageInterface):
         return total_count_of_users
 
     def get_team_details_of_users_bulk(
-            self, user_ids: List[str]) -> List[UserTeamDTO]:
+            self, user_ids: List[str]) -> List[TeamWithUserIdDTO]:
         from ib_iam.models import TeamUser
         user_teams = TeamUser.objects.filter(user_id__in=user_ids) \
             .select_related('team')
         team_dtos = []
         for user_team in user_teams:
             team = user_team.team
-            team_dto = UserTeamDTO(
+            team_dto = TeamWithUserIdDTO(
                 user_id=user_team.user_id,
                 team_id=str(team.team_id),
                 team_name=team.name
@@ -466,3 +469,92 @@ class UserStorageImplementation(UserStorageInterface):
             TeamUser.objects.filter(team_id__in=team_ids).values_list(
                 'user_id', flat=True))
         return user_ids
+
+    def assign_user_roles_for_given_project(
+            self, user_id_with_role_ids_dtos: List[
+                UserIdWithRoleIdsDTO],
+            project_id: str
+    ):
+        from ib_iam.models import UserRole
+        UserRole.objects.filter(project_role__project_id=project_id).delete()
+
+        total_user_role_objects_of_a_project = []
+
+        for user_id_with_role_ids_dto in user_id_with_role_ids_dtos:
+            user_role_objects = self._get_user_role_objects(
+                user_id_with_role_ids_dto)
+            total_user_role_objects_of_a_project.extend(user_role_objects)
+
+        UserRole.objects.bulk_create(total_user_role_objects_of_a_project)
+        return
+
+    @staticmethod
+    def _get_user_role_objects(
+            user_id_with_role_ids_dto: UserIdWithRoleIdsDTO):
+        role_ids = user_id_with_role_ids_dto.role_ids
+        user_id = user_id_with_role_ids_dto.user_id
+        from ib_iam.models import UserRole
+        user_role_objects = [
+            UserRole(
+                user_id=user_id,
+                project_role_id=role_id
+            )
+            for role_id in role_ids
+        ]
+        return user_role_objects
+
+    def is_valid_project_id(self, project_id: str) -> bool:
+        from ib_iam.models import Project
+        project_objects = Project.objects.filter(project_id=project_id)
+        return project_objects.exists()
+
+    def validate_users_for_project(
+            self, user_ids: List[str], project_id: str
+    ) -> Optional[InvalidUserIdsForProject]:
+        from ib_iam.models import ProjectTeam
+        team_ids = ProjectTeam.objects.filter(
+            project_id=project_id
+        ).values_list(
+            "team_id", flat=True)
+
+        from ib_iam.models import TeamUser
+        user_ids_in_project = TeamUser.objects.filter(
+            team_id__in=team_ids
+        ).values_list(
+            "user_id", flat=True
+        )
+        invalid_user_ids = [
+            user_id
+            for user_id in user_ids if user_id not in user_ids_in_project
+        ]
+        if invalid_user_ids:
+            raise InvalidUserIdsForProject(user_ids=invalid_user_ids)
+        return
+
+    def validate_role_ids_for_project(
+            self, role_ids: List[str], project_id: str
+    ) -> Optional[InvalidRoleIdsForProject]:
+        role_ids_in_project = ProjectRole.objects.filter(
+            project_id=project_id
+        ).values_list(
+            "role_id", flat=True
+        )
+
+        invalid_role_ids = [
+            role_id
+            for role_id in role_ids if role_id not in role_ids_in_project
+        ]
+
+        if invalid_role_ids:
+            raise InvalidRoleIdsForProject(role_ids=invalid_role_ids)
+        return
+
+    def validate_project_id(
+            self, project_id: str
+    ) -> Optional[InvalidProjectId]:
+        from ib_iam.models import Project
+        project_objects = Project.objects.filter(project_id=project_id)
+        is_project_not_exists = not project_objects.exists()
+        if is_project_not_exists:
+            raise InvalidProjectId
+        return

@@ -13,7 +13,7 @@ from ib_iam.interactors.presenter_interfaces \
     .update_team_presenter_interface import UpdateTeamPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import (
     TeamWithUserIdsDTO, TeamWithTeamIdAndUserIdsDTO, TeamNameAndDescriptionDTO,
-    TeamIdAndNameDTO, UserTeamDTO)
+    TeamIdAndNameDTO, TeamWithUserIdDTO)
 from ib_iam.interactors.storage_interfaces.team_storage_interface import (
     TeamStorageInterface)
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
@@ -216,7 +216,7 @@ class TeamInteractor(ValidationMixin):
             user_team_dtos=user_team_dtos)
 
     def _fetch_user_teams_for_each_user(
-            self, user_team_dtos: List[UserTeamDTO]
+            self, user_team_dtos: List[TeamWithUserIdDTO]
     ) -> List[UserTeamsDTO]:
         user_teams_dict = {}
         for user_team_dto in user_team_dtos:
@@ -238,6 +238,6 @@ class TeamInteractor(ValidationMixin):
 
     @staticmethod
     def _convert_to_team_id_and_name_dto(
-            user_team_dto: UserTeamDTO) -> TeamIdAndNameDTO:
+            user_team_dto: TeamWithUserIdDTO) -> TeamIdAndNameDTO:
         return TeamIdAndNameDTO(
             team_id=user_team_dto.team_id, team_name=user_team_dto.team_name)

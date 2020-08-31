@@ -2,17 +2,35 @@ import json
 
 import pytest
 
+from ib_iam.constants.enums import StatusCode
 
-class TestGetSpecificTeamDetailsPresenterImplementation:
+
+class TestGetListOfUserRolesForGivenProjectPresenterImplementation:
 
     @pytest.fixture()
     def presenter(self):
-        from ib_iam.presenters.get_specific_team_details_presenter_implementation import \
-            GetSpecificTeamDetailsPresenterImplementation
-        presenter = GetSpecificTeamDetailsPresenterImplementation()
+        from ib_iam.presenters.get_list_of_user_roles_for_given_project_presenter_implementation import \
+            GetListOfUserRolesForGivenProjectPresenterImplementation
+        presenter = GetListOfUserRolesForGivenProjectPresenterImplementation()
         return presenter
 
-    def test_prepare_success_response_for_get_specific_team_details(
+    def test_response_for_invalid_project_id(self, presenter):
+        # Arrange
+        from ib_iam.presenters.get_list_of_user_roles_for_given_project_presenter_implementation import \
+            INVALID_PROJECT_ID
+        expected_response = INVALID_PROJECT_ID[0]
+        response_status_code = INVALID_PROJECT_ID[1]
+
+        # Act
+        response_object = presenter.response_for_invalid_project_id()
+
+        # Assert
+        response = json.loads(response_object.content)
+        assert response['http_status_code'] == StatusCode.BAD_REQUEST.value
+        assert response['res_status'] == response_status_code
+        assert response['response'] == expected_response
+
+    def test_prepare_success_response_for_get_list_of_user_roles_to_given_project_id(
             self, presenter, prepare_basic_user_details_dtos,
             prepare_user_role_dtos, snapshot
     ):
@@ -21,7 +39,7 @@ class TestGetSpecificTeamDetailsPresenterImplementation:
         user_role_dtos = prepare_user_role_dtos
 
         # Act
-        response = presenter.prepare_success_response_for_get_specific_team_details(
+        response = presenter.prepare_success_response_for_get_specific_project_details(
             user_role_dtos=user_role_dtos,
             basic_user_details_dtos=basic_user_details_dtos
         )

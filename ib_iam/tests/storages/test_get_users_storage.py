@@ -69,24 +69,24 @@ class TestGetUsers:
 
     @pytest.fixture()
     def user_team_dtos(self):
-        from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO
+        from ib_iam.interactors.storage_interfaces.dtos import TeamWithUserIdDTO
         user_team_dtos = [
-            UserTeamDTO(
+            TeamWithUserIdDTO(
                 user_id='user1',
                 team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
                 team_name='team 0'
             ),
-            UserTeamDTO(
+            TeamWithUserIdDTO(
                 user_id='user1',
                 team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332',
                 team_name='team 1'
             ),
-            UserTeamDTO(
+            TeamWithUserIdDTO(
                 user_id='user2',
                 team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
                 team_name='team 0'
             ),
-            UserTeamDTO(
+            TeamWithUserIdDTO(
                 user_id='user2',
                 team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332',
                 team_name='team 1'

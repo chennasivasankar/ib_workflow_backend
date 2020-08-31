@@ -189,10 +189,23 @@ class TestProjectStorageImplementation:
 
     @pytest.mark.django_db
     def test_is_user_in_a_project_return_true(
-            self, project_storage, prepare_create_project_with_user_roles):
+            self, project_storage):
         # Arrange
         project_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
         user_id = "001bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+        team_id = "111bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+        from ib_iam.tests.factories.models import ProjectFactory
+        ProjectFactory.reset_sequence(0)
+        ProjectFactory.create(project_id=project_id)
+        from ib_iam.tests.factories.models import TeamFactory
+        TeamFactory.reset_sequence(0)
+        team_object = TeamFactory.create(team_id=team_id)
+        from ib_iam.tests.factories.models import ProjectTeamFactory
+        ProjectTeamFactory.reset_sequence(0)
+        ProjectTeamFactory.create(team_id=team_id, project_id=project_id)
+        from ib_iam.tests.factories.models import TeamUserFactory
+        TeamUserFactory.reset_sequence(0)
+        TeamUserFactory.create(user_id=user_id, team=team_object)
 
         # Act
         response = project_storage.is_user_in_a_project(
