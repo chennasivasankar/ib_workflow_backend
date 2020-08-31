@@ -58,6 +58,7 @@ class TestAddProjectIneractor:
             .return_value = mock.Mock()
         project_with_team_ids_and_roles_dto = ProjectWithTeamIdsAndRolesDTO(
             name=project_details.name,
+            display_id=project_details.display_id,
             description=project_details.description,
             logo_url=project_details.logo_url,
             team_ids=team_ids,
