@@ -51,7 +51,7 @@ class TestAddProjectSpecificDetails:
         user_id_with_role_ids_dtos = prepare_user_id_with_role_ids_dtos
 
         # Act
-        user_storage.add_project_specific_details(
+        user_storage.assign_user_roles_for_given_project(
             user_id_with_role_ids_dtos=user_id_with_role_ids_dtos,
             project_id=project_id
         )

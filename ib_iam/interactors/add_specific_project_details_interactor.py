@@ -64,7 +64,7 @@ class AddSpecificProjectDetailsInteractor:
         self.user_storage.validate_role_ids_for_project(
             role_ids=role_ids, project_id=project_id
         )
-        self.user_storage.add_project_specific_details(
+        self.user_storage.assign_user_roles_for_given_project(
             user_id_with_role_ids_dtos=user_id_with_role_ids_dtos,
             project_id=project_id
         )

@@ -471,7 +471,7 @@ class UserStorageImplementation(UserStorageInterface):
                 'user_id', flat=True))
         return user_ids
 
-    def add_project_specific_details(
+    def assign_user_roles_for_given_project(
             self, user_id_with_role_ids_dtos: List[
                 UserIdWithRoleIdsDTO],
             project_id: str

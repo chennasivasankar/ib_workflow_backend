@@ -167,7 +167,7 @@ class TestAddSpecificProjectDetailsInteractor:
         assert response == \
                expected_presenter_prepare_success_response_for_add_specific_project_details
 
-        storage_mock.add_project_specific_details.assert_called_once_with(
+        storage_mock.assign_user_roles_for_given_project.assert_called_once_with(
             user_id_with_role_ids_dtos=user_id_with_role_ids_dtos,
             project_id=project_id
         )
