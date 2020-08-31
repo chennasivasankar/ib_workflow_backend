@@ -71,7 +71,7 @@ class GetTimersBulkInteractor:
         if is_invalid_entities_exist:
             for timer_dto in complete_timer_details_dtos:
                 for entity_dto in timer_entity_dtos:
-                    if (entity_dto.entity_id != timer_dto.entity_id):
+                    if entity_dto.entity_id != timer_dto.entity_id:
                         entity_with_timer_dtos.append(
                             self._get_default_entity_with_timer_dto(
                                 timer_entity_dto=entity_dto))
