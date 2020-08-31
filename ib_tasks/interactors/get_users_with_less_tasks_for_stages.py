@@ -144,9 +144,9 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
                 if permitted_assignee_with_current_tasks_count_dto.assignee_id \
                         == updated_task_count_dto_for_assignee_having_less_tasks.assignee_id:
                     permitted_assignee_with_current_tasks_count_dto.tasks_count \
-                        = permitted_assignee_with_current_tasks_count_dto.\
+                        = permitted_assignee_with_current_tasks_count_dto. \
                               tasks_count + \
-                          updated_task_count_dto_for_assignee_having_less_tasks.\
+                          updated_task_count_dto_for_assignee_having_less_tasks. \
                               tasks_count
                     print("permitted_assignee_with_current_tasks_count_dto",
                           permitted_assignee_with_current_tasks_count_dto)
@@ -176,12 +176,12 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
             permitted_user_ids = [
                 each_permitted_user_details_dto.user_id
                 for each_permitted_user_details_dto in
-                permitted_user_details_dtos
-            ]
+                permitted_user_details_dtos]
 
             permitted_assignee_with_current_tasks_count_dtos = self. \
                 _get_permitted_assignee_with_current_tasks_count_dtos(
-                permitted_user_ids, assignee_with_current_tasks_count_dtos, updated_task_count_dtos_for_assignee_having_less_tasks)
+                permitted_user_ids, assignee_with_current_tasks_count_dtos,
+                updated_task_count_dtos_for_assignee_having_less_tasks)
             print("permitted_assignee_with_current_tasks_count_dtos",
                   permitted_assignee_with_current_tasks_count_dtos)
             if not permitted_assignee_with_current_tasks_count_dtos:

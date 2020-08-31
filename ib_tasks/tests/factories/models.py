@@ -314,6 +314,7 @@ class TaskStageHistoryModelFactory(factory.django.DjangoModelFactory):
         lambda n: "123e4567-e89b-12d3-a456-42661417400{}".format(n))
     joined_at = datetime(2012, 10, 10)
     left_at = datetime(2012, 10, 11)
+    team_id = factory.Sequence(lambda n: "team_{}".format(n + 1))
 
 
 class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):

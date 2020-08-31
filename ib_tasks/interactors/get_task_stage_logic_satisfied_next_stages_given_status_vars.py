@@ -2,6 +2,8 @@ from typing import List, Any, Dict
 
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDisplayValueDTO
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
+    StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 from ib_tasks.interactors.storage_interfaces.status_dtos \
@@ -10,12 +12,14 @@ from ib_tasks.interactors.task_dtos import StatusOperandStageDTO
 
 
 class GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
-    def __init__(self, storage: StorageInterface):
+    def __init__(self, storage: StorageInterface,
+                 stage_storage: StageStorageInterface):
         self.storage = storage
+        self.stage_storage = stage_storage
 
     def get_task_stage_logic_satisfied_next_stages(
             self, task_id: int,
-            status_variable_dtos: List[StatusVariableDTO]) ->\
+            status_variable_dtos: List[StatusVariableDTO]) -> \
             List[str]:
         self._validate_task_id(task_id=task_id)
         stage_display_value_dtos = self.storage \
@@ -30,7 +34,10 @@ class GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
             stage_display_value_dtos)
         logic_satisfied_stages = self._get_stage_logic_satisfied_stages(
             status_stage_dtos, status_variable_dict, stage_value_dict)
-        return logic_satisfied_stages
+        logic_satisfied_next_stages_removing_current_task_stages = self. \
+            _get_logic_satisfied_next_stages_removing_current_task_stages(
+            stage_ids=logic_satisfied_stages, task_id=task_id)
+        return logic_satisfied_next_stages_removing_current_task_stages
 
     def _validate_task_id(self, task_id: int):
 
@@ -153,3 +160,12 @@ class GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
             value = status_variable_dto.value
             status_variables_dict[variable] = value
         return status_variables_dict
+
+    def _get_logic_satisfied_next_stages_removing_current_task_stages(
+            self, task_id, stage_ids: List[str]) -> List[str]:
+        current_stages_of_task = self.stage_storage. \
+            get_current_stages_of_task_in_given_stages(
+            task_id=task_id, stage_ids=stage_ids)
+        logic_satisfied_next_stages = [stage_id for stage_id in stage_ids if
+                                       stage_id not in current_stages_of_task]
+        return logic_satisfied_next_stages
