@@ -57,9 +57,6 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
                 stage_with_user_details_and_team_details_dto)
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
-        except InvalidTaskIdException as exception:
-            return presenter.raise_invalid_task_id_exception(
-                task_id=exception.task_id)
         except InvalidActionException as exception:
             return presenter.raise_exception_for_invalid_action(
                 action_id=exception.action_id)
