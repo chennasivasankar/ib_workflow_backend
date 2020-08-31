@@ -1074,11 +1074,11 @@
         }
       }
     },
-    "AddSpecificProjectDetailsParameter": {
-      "name": "AddSpecificProjectDetailsParameter",
+    "AssignUserRolesForGivenProjectBulkParameter": {
+      "name": "AssignUserRolesForGivenProjectBulkParameter",
       "in": "body",
       "required": true,
-      "description": "Add specific project details parameter",
+      "description": "Assign user roles bulk for given project",
       "schema": {
         "type": "object",
         "properties": {
@@ -2208,7 +2208,7 @@
         "$ref": "#/definitions/ProjectId"
       }
     },
-    "GetSpecificProjectDetailsSuccessResponse": {
+    "GetListOfUserRolesForGivenProjectSuccessResponse": {
       "description": "Get specific project details success response",
       "schema": {
         "type": "object",
@@ -2242,7 +2242,7 @@
         }
       }
     },
-    "GetSpecificProjectDetailsBadRequestResponse": {
+    "GetListOfUserRolesForGivenProjectBadRequestResponse": {
       "description": "Bad request Response",
       "schema": {
         "allOf": [
@@ -2266,7 +2266,7 @@
         ]
       }
     },
-    "AddSpecificProjectDetailsBadRequestResponse": {
+    "AssignUserRolesForGivenProjectBulkBadRequestResponse": {
       "description": "Add specific project details bad request response",
       "schema": {
         "allOf": [
@@ -3156,11 +3156,11 @@
         }
       }
     },
-    "/project/{project_id}/specific_project_details/v1/": {
+    "/project/{project_id}/users/roles/v1/": {
       "get": {
-        "operationId": "get_specific_project_details",
-        "summary": "Get Specific Project Details",
-        "description": "Get specific project details of given project id in path",
+        "operationId": "get_list_of_user_roles_for_given_project",
+        "summary": "Get List Of User Roles For Given Project",
+        "description": "Get list of user roles for given project",
         "security": [
           {
             "oauth": [
@@ -3175,17 +3175,19 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/GetSpecificProjectDetailsSuccessResponse"
+            "$ref": "#/responses/GetListOfUserRolesForGivenProjectSuccessResponse"
           },
           "400": {
-            "$ref": "#/responses/GetSpecificProjectDetailsBadRequestResponse"
+            "$ref": "#/responses/GetListOfUserRolesForGivenProjectBadRequestResponse"
           }
         }
-      },
+      }
+    },
+    "/project/{project_id}/users/roles/assign/v1/": {
       "post": {
-        "operationId": "add_specific_project_details",
-        "summary": "Add Specific Project Details",
-        "description": "Add specific project details of given project id in path",
+        "operationId": "assign_user_roles_for_given_project_bulk",
+        "summary": "Assign User Roles For Given Project Bulk",
+        "description": "Assign user roles for given project bulk",
         "security": [
           {
             "oauth": [
@@ -3198,15 +3200,15 @@
             "$ref": "#/parameters/ProjectIdPathParameter"
           },
           {
-            "$ref": "#/parameters/AddSpecificProjectDetailsParameter"
+            "$ref": "#/parameters/AssignUserRolesForGivenProjectBulkParameter"
           }
         ],
         "responses": {
           "201": {
-            "description": "Successfully added the specific project details"
+            "description": "Successfully assign the user roles for given project bulk"
           },
           "400": {
-            "$ref": "#/responses/AddSpecificProjectDetailsBadRequestResponse"
+            "$ref": "#/responses/AssignUserRolesForGivenProjectBulkBadRequestResponse"
           }
         }
       }
