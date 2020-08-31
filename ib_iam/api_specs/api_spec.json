@@ -670,6 +670,9 @@
         {
           "type": "object",
           "properties": {
+            "display_id": {
+              "type": "string"
+            },
             "teams": {
               "$ref": "#/definitions/Teams"
             },
