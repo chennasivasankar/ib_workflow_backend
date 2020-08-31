@@ -1,8 +1,9 @@
 from typing import List
 
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, \
-    ProjectsWithTotalCountDTO, PaginationDTO, ProjectTeamIdsDTO, \
-    ProjectRoleDTO, ProjectWithoutIdDTO, RoleNameAndDescriptionDTO, RoleDTO
+from ib_iam.interactors.storage_interfaces.dtos import (
+    ProjectDTO, ProjectsWithTotalCountDTO, PaginationDTO, ProjectTeamIdsDTO,
+    ProjectRoleDTO, ProjectWithoutIdDTO, RoleNameAndDescriptionDTO, RoleDTO,
+    ProjectWithDisplayIdDTO)
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.models import Project, ProjectTeam, ProjectRole
@@ -33,8 +34,8 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         total_projects_count = len(project_objects)
         offset = pagination_dto.offset
         project_objects = project_objects[offset:offset + pagination_dto.limit]
-        project_dtos = [
-            self._convert_to_project_dto(project_object=project_object)
+        project_dtos = [self._convert_to_project_with_display_id_dto(
+            project_object=project_object)
             for project_object in project_objects]
         projects_with_total_count = ProjectsWithTotalCountDTO(
             projects=project_dtos,
@@ -62,9 +63,18 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         return project_teams_ids_dtos
 
     @staticmethod
+    def _convert_to_project_with_display_id_dto(project_object):
+        project_dto = ProjectWithDisplayIdDTO(
+            project_id=project_object.project_id,
+            display_id=project_object.display_id,
+            name=project_object.name,
+            description=project_object.description,
+            logo_url=project_object.logo_url)
+        return project_dto
+
+    @staticmethod
     def _convert_to_project_dto(project_object):
         project_dto = ProjectDTO(project_id=project_object.project_id,
-                                 display_id=project_object.display_id,
                                  name=project_object.name,
                                  description=project_object.description,
                                  logo_url=project_object.logo_url)

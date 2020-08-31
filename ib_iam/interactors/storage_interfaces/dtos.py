@@ -183,6 +183,14 @@ class MemberDTO:
 @dataclass
 class ProjectDTO:
     project_id: str
+    name: str
+    description: Optional[str] = None
+    logo_url: Optional[str] = None
+
+
+@dataclass
+class ProjectWithDisplayIdDTO:
+    project_id: str
     display_id: str
     name: str
     description: Optional[str] = None
@@ -213,7 +221,7 @@ class ProjectTeamIdsDTO:
 @dataclass
 class ProjectsWithTotalCountDTO:
     total_projects_count: int
-    projects: List[ProjectDTO]
+    projects: List[ProjectWithDisplayIdDTO]
 
 
 @dataclass
