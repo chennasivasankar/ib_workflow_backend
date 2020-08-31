@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 from ib_tasks.tests.factories.adapter_dtos import \
@@ -194,6 +196,71 @@ class TestGetTaskPresenterImplementation:
         # Assert
         snapshot.assert_match(name="exception_object",
                               value=response_object.content)
+
+    def test_raise_invalid_user(self, presenter, snapshot):
+        # Arrange
+
+        # Act
+        response_object = presenter.raise_invalid_user()
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response_object.content
+        )
+
+    def test_raise_invalid_project_id(self, presenter, snapshot):
+        # Arrange
+        from ib_tasks.adapters.auth_service import InvalidProjectIdsException
+        project_ids = ["project1"]
+        err = InvalidProjectIdsException(project_ids=project_ids)
+
+        # Act
+        response_object = presenter.raise_invalid_project_id(err)
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response_object.content
+        )
+
+    def test_raise_teams_does_not_exists_for_project(
+            self, presenter, snapshot
+    ):
+        # Arrange
+        team_ids = ["team1", "team2"]
+        from ib_tasks.adapters.auth_service import \
+            TeamsNotExistForGivenProjectException
+        err = TeamsNotExistForGivenProjectException(team_ids=team_ids)
+
+        # Act
+        response_object = presenter.raise_teams_does_not_exists_for_project(
+            err)
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response_object.content
+        )
+
+    def test_raise_users_not_exist_for_given_teams(
+            self, presenter, snapshot
+    ):
+        # Arrange
+        user_ids = ["user1", "user2"]
+        from ib_tasks.adapters.auth_service import \
+            UsersNotExistsForGivenTeamsException
+        err = UsersNotExistsForGivenTeamsException(user_ids=user_ids)
+
+        # Act
+        response_object = presenter.raise_users_not_exist_for_given_teams(
+            err)
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response_object.content
+        )
 
     def test_raise_user_permission_denied(self, presenter, snapshot):
         # Arrange
