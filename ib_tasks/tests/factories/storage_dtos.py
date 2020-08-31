@@ -19,14 +19,14 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldCompleteDetailsDTO, FieldRolesDTO, FieldRoleDTO, \
     UserFieldPermissionDTO, FieldDetailsDTOWithTaskId, FieldDetailsDTO, \
-    StageTaskFieldsDTO, FieldPermissionDTO, FieldValueDTO
+    StageTaskFieldsDTO, FieldPermissionDTO, FieldValueDTO, FieldNameDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
     TaskGoFFieldDTO,
     TaskGoFDTO, TaskDetailsDTO, TaskBaseDetailsDTO, FieldSearchableDTO
 )
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, GoFToTaskTemplateDTO, \
-    GroupOfFieldsDTO, GOFMultipleEnableDTO
+    GroupOfFieldsDTO, GOFMultipleEnableDTO, TaskTemplateGofsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO, ValidStageDTO, TaskStageIdsDTO, StageValueDTO, \
     StageDetailsDTO, StageDisplayValueDTO, StageIdWithTemplateIdDTO, \
@@ -366,6 +366,15 @@ class TaskTemplateDTOFactory(factory.Factory):
         factory.sequence(lambda n: 'Task Template {}'.format(n + 1))
 
 
+class ProjectTemplateDTOFactory(factory.Factory):
+    class Meta:
+        model = TemplateDTO
+
+    template_id = factory.Sequence(lambda n: 'template_{}'.format(n))
+    template_name = \
+        factory.sequence(lambda n: 'Task Template {}'.format(n))
+
+
 class ActionWithStageIdDTOFactory(factory.Factory):
     class Meta:
         model = ActionWithStageIdDTO
@@ -404,6 +413,21 @@ class GoFToTaskTemplateDTOFactory(factory.Factory):
     template_id = factory.Sequence(lambda n: 'template_{}'.format(n + 1))
     order = factory.Sequence(lambda n: n)
     enable_add_another = factory.Iterator([True, False])
+
+
+class TaskTemplateGofsDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskTemplateGofsDTO
+    template_id = factory.Sequence(lambda n: 'template_{}'.format(n))
+    gof_ids = factory.Sequence(lambda n: ['gof_{}'.format(n), 'gof_{}'.format(n+1)])
+
+
+class FieldNameDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldNameDTO
+    field_id = factory.Sequence(lambda n: 'field_{}'.format(n))
+    gof_id = factory.Sequence(lambda n: 'gof_{}'.format(n))
+    field_display_name = factory.Sequence(lambda n: 'display_name_{}'.format(n))
 
 
 class TaskGoFDTOFactory(factory.Factory):
