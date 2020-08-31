@@ -1,9 +1,10 @@
 import datetime
-from unittest.mock import create_autospec, Mock, call
+from unittest.mock import create_autospec, Mock
 
 import pytest
 
-from ib_tasks.interactors.get_task_related_rps_in_given_stage import GetTaskRPsInteractor
+from ib_tasks.interactors.get_task_related_rps_in_given_stage import \
+    GetTaskRPsInteractor
 
 
 class TestGetTaskRelatedRps:
@@ -123,7 +124,8 @@ class TestGetTaskRelatedRps:
         user_details_mock = get_user_dtos_given_user_ids(mocker)
         storage.get_rp_ids.return_value = user_ids
         storage.get_latest_rp_id_if_exists.return_value = None
-        task_storage.get_user_missed_the_task_due_time.return_value = datetime.datetime.now() - datetime.timedelta(days=2)
+        task_storage.get_user_missed_the_task_due_time.return_value = datetime.datetime.now() - datetime.timedelta(
+            days=2)
         storage.get_latest_rp_added_datetime.return_value = datetime.datetime.now()
         presenter_mock.response_for_get_rps_details.return_value = expected_response
 
@@ -217,7 +219,8 @@ class TestGetTaskRelatedRps:
         user_details_mock = get_user_dtos_given_user_ids(mocker)
         storage.get_rp_ids.return_value = []
         storage.get_latest_rp_id_if_exists.return_value = None
-        task_storage.get_user_missed_the_task_due_time.return_value = datetime.datetime.now() - datetime.timedelta(days=2)
+        task_storage.get_user_missed_the_task_due_time.return_value = datetime.datetime.now() - datetime.timedelta(
+            days=2)
         storage.get_latest_rp_added_datetime.return_value = datetime.datetime.now()
         presenter_mock.response_for_get_rps_details.return_value = expected_response
 
