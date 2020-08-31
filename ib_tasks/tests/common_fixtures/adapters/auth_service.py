@@ -1,3 +1,5 @@
+from typing import List
+
 from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTOFactory, \
     TeamDetailsWithUserIdDTOFactory
 
@@ -118,4 +120,20 @@ def get_immediate_superior_user_id_mock(mocker):
     mock = mocker.patch(
         "ib_tasks.adapters.auth_service.AuthService.get_immediate_superior_user_id"
     )
+    return mock
+
+
+def get_valid_project_ids_mock(mocker, project_ids: List[str]):
+    mock = mocker.patch(
+        "ib_tasks.adapters.auth_service.AuthService.validate_project_ids"
+    )
+    mock.return_value = project_ids
+    return mock
+
+
+def validate_if_user_is_in_project_mock(mocker, is_user_in_project: bool):
+    mock = mocker.patch(
+        "ib_tasks.adapters.auth_service.AuthService.validate_if_user_is_in_project"
+    )
+    mock.return_value = is_user_in_project
     return mock
