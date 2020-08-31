@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_utility_tools.interactors.storage_interfaces.dtos import \
-    TimerEntityDTO, CompleteTimerDetailsDTO, EntityWithTimerDTO
+    TimerEntityDTO, EntityWithTimerDTO
 
 
 class ServiceInterface:
