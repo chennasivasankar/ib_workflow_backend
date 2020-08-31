@@ -84,6 +84,7 @@ class GetProjectsPresenterImplementation(GetProjectsPresenterInterface,
     @staticmethod
     def _convert_to_project_dictionary(project_dto: ProjectDTO):
         project_dictionary = {"project_id": project_dto.project_id,
+                              "project_display_id": project_dto.display_id,
                               "name": project_dto.name,
                               "description": project_dto.description,
                               "logo_url": project_dto.logo_url}

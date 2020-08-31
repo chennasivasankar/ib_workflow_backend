@@ -670,7 +670,7 @@
         {
           "type": "object",
           "properties": {
-            "display_id": {
+            "project_display_id": {
               "type": "string"
             },
             "teams": {

@@ -64,6 +64,7 @@ class ProjectStorageImplementation(ProjectStorageInterface):
     @staticmethod
     def _convert_to_project_dto(project_object):
         project_dto = ProjectDTO(project_id=project_object.project_id,
+                                 display_id=project_object.display_id,
                                  name=project_object.name,
                                  description=project_object.description,
                                  logo_url=project_object.logo_url)
