@@ -42,3 +42,9 @@ class IamService:
             List[str]:
         valid_project_ids = self.interface.get_valid_project_ids(project_ids)
         return valid_project_ids
+
+    def get_user_role_ids_based_on_project(
+            self, user_id, project_id: str) -> List[str]:
+        role_ids = self.interface.get_user_role_ids_based_on_project(
+            user_id=user_id, project_id=project_id)
+        return role_ids

@@ -4,7 +4,8 @@ from freezegun import freeze_time
 from ib_tasks.models import UserTaskDelayReason
 from ib_tasks.storages.storage_implementation import StorageImplementation
 from ib_tasks.tests.factories.interactor_dtos import TaskDelayParametersDTOFactory
-from ib_tasks.tests.factories.models import TaskModelFactory, TaskLogFactory, TaskDueDetailsFactory
+from ib_tasks.tests.factories.models import TaskModelFactory, TaskLogFactory, TaskDueDetailsFactory, TaskFactory, \
+    StageModelFactory
 
 
 @pytest.mark.django_db
@@ -16,6 +17,7 @@ class TestAddDueDelayDetails:
         TaskModelFactory.reset_sequence()
         TaskLogFactory.reset_sequence()
         TaskDueDetailsFactory.reset_sequence()
+        StageModelFactory.reset_sequence()
 
     @classmethod
     def teardown(cls):
@@ -30,7 +32,7 @@ class TestAddDueDelayDetails:
     @pytest.fixture()
     @freeze_time("2020-08-10 12:30:00")
     def populate_data(self):
-        tasks = TaskModelFactory.create_batch(size=4, due_date="2020-08-10 12:30:00")
+        tasks = TaskFactory.create_batch(size=4, due_date="2020-08-10 12:30:00")
         TaskLogFactory.reset_sequence()
         TaskLogFactory.create_batch(size=3, task=tasks[0])
         TaskDueDetailsFactory.create_batch(task=tasks[0], size=3)
@@ -42,6 +44,7 @@ class TestAddDueDelayDetails:
         task_id = due_details.task_id
         user_id = due_details.user_id
         reason_id = due_details.reason_id
+        due_details.stage_id = 5
         storage = StorageImplementation()
 
         # Act
