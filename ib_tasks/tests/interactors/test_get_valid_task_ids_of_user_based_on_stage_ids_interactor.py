@@ -38,6 +38,8 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             task_stage_storage_mock):
         # Arrange
         valid_stage_ids = ["stage_id_1", "stage_id_2"]
+        task_ids = [1, 2]
+        project_id = '1'
         from ib_tasks.tests.factories.interactor_dtos import \
             UserStagesWithPaginationDTOFactory
         UserStagesWithPaginationDTOFactory.reset_sequence()
@@ -67,8 +69,9 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             task_stage_storage=task_stage_storage_mock)
         interactor.get_task_ids_of_user_based_on_stage_ids(
             user_id=user_id,
-            stage_ids=valid_stage_ids
-
+            stage_ids=valid_stage_ids,
+            task_ids=task_ids,
+            project_id=project_id
         )
 
         # Assert
@@ -76,9 +79,8 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             assert_called_once_with(user_stages_with_pagination_dto.stage_ids)
         task_storage_mock. \
             get_user_task_ids_and_max_stage_value_dto_based_on_given_stage_ids. \
-            assert_called_once_with(stage_ids=valid_stage_ids)
-        stage_storage_mock. \
-            get_task_id_with_stage_details_dtos_based_on_stage_value(
+            assert_called_once_with(stage_ids=valid_stage_ids, task_ids=task_ids)
+        stage_storage_mock.get_task_id_with_stage_details_dtos_based_on_stage_value(
             stage_values=[2],
-            task_ids_group_by_stage_value_dtos=
-            task_ids_group_by_stage_value_dtos)
+            task_ids_group_by_stage_value_dtos=task_ids_group_by_stage_value_dtos,
+        )
