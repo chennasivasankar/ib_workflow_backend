@@ -84,10 +84,10 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         return True
 
     def is_user_exists_in_team(self, team_id: str, user_id: str) -> bool:
-        from ib_iam.models import UserTeam
+        from ib_iam.models import TeamUser
         try:
-            UserTeam.objects.get(team_id=team_id, user_id=user_id)
-        except UserTeam.DoesNotExist:
+            TeamUser.objects.get(team_id=team_id, user_id=user_id)
+        except TeamUser.DoesNotExist:
             return False
         return True
 

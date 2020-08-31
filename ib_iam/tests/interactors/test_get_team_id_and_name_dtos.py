@@ -33,7 +33,8 @@ class TestGetListOfTeamIdAndName:
         team_storage_mock.get_team_id_and_name_dtos.return_value = \
             expected_result
 
-        team_id_and_name_dtos = interactor.get_team_id_and_name_dtos(team_ids=team_ids)
+        team_id_and_name_dtos = interactor.get_team_id_and_name_dtos(
+            team_ids=team_ids)
 
         assert len(team_id_and_name_dtos) == len(expected_result)
         for index, team_id_and_name_dto in enumerate(team_id_and_name_dtos):

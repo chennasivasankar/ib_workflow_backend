@@ -1,6 +1,8 @@
 import abc
 from typing import Union, List
 
+from ib_tasks.exceptions.gofs_custom_exceptions import \
+    InvalidSameGoFOrderForAGoF
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
@@ -77,7 +79,7 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def update_task_gofs(
             self, task_gof_dtos: List[TaskGoFWithTaskIdDTO]
-    ) -> List[TaskGoFDetailsDTO]:
+    ) -> Union[List[TaskGoFDetailsDTO], InvalidSameGoFOrderForAGoF]:
         pass
 
     @abc.abstractmethod

@@ -7,7 +7,7 @@ from ib_iam.interactors.storage_interfaces.dtos import \
     UserTeamDTO
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
     TeamStorageInterface
-from ib_iam.models import Team, UserTeam
+from ib_iam.models import Team, TeamUser
 
 
 class TeamStorageImplementation(TeamStorageInterface):
@@ -30,7 +30,7 @@ class TeamStorageImplementation(TeamStorageInterface):
     def get_team_user_ids_dtos(
             self, team_ids: List[str]
     ) -> List[TeamUserIdsDTO]:
-        team_users = UserTeam.objects.filter(
+        team_users = TeamUser.objects.filter(
             team__team_id__in=team_ids
         ).values_list('team__team_id', 'user_id')
         from collections import defaultdict
@@ -66,12 +66,12 @@ class TeamStorageImplementation(TeamStorageInterface):
 
     def add_users_to_team(self, team_id: str, user_ids: List[str]):
         team_members = [
-            UserTeam(
+            TeamUser(
                 team_id=team_id,
                 user_id=user_id
             ) for user_id in user_ids
         ]
-        UserTeam.objects.bulk_create(team_members)
+        TeamUser.objects.bulk_create(team_members)
 
     def raise_exception_if_team_not_exists(self, team_id: str):
         try:
@@ -89,12 +89,12 @@ class TeamStorageImplementation(TeamStorageInterface):
         )
 
     def get_member_ids_of_team(self, team_id: str):
-        member_ids = UserTeam.objects.filter(team_id=team_id) \
+        member_ids = TeamUser.objects.filter(team_id=team_id) \
             .values_list("user_id", flat=True)
         return list(member_ids)
 
     def delete_members_from_team(self, team_id: str, user_ids: List[str]):
-        UserTeam.objects.filter(team_id=team_id, user_id__in=user_ids) \
+        TeamUser.objects.filter(team_id=team_id, user_id__in=user_ids) \
             .delete()
 
     def delete_team(self, team_id: str):
@@ -134,7 +134,7 @@ class TeamStorageImplementation(TeamStorageInterface):
     def get_team_user_dtos(
             self, user_ids: List[str], team_ids: List[str]
     ) -> List[UserTeamDTO]:
-        user_team_objects = UserTeam.objects.filter(
+        user_team_objects = TeamUser.objects.filter(
             team_id__in=team_ids, user_id__in=user_ids
         ).select_related('team')
         user_team_dtos = [

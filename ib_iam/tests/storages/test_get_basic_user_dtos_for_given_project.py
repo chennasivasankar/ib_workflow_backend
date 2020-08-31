@@ -67,17 +67,17 @@ class TestGetTeamBasicUserDTOS:
             "01be920b-7b4c-49e7-8adb-41a0c18da848",
             "77be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
-        from ib_iam.tests.factories.models import UserTeamFactory
+        from ib_iam.tests.factories.models import TeamUserFactory
         user_team_objects = [
-            UserTeamFactory(
+            TeamUserFactory(
                 user_id=user_ids[0],
                 team=team_objects[0]
             ),
-            UserTeamFactory(
+            TeamUserFactory(
                 user_id=user_ids[1],
                 team=team_objects[0]
             ),
-            UserTeamFactory(
+            TeamUserFactory(
                 user_id=user_ids[2],
                 team=team_objects[1]
             )

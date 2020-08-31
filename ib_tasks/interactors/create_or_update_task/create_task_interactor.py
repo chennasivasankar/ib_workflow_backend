@@ -1,7 +1,7 @@
 from typing import List, Optional, Union
 
 from ib_tasks.constants.config import TIME_FORMAT
-from ib_tasks.constants.enum import ActionTypes
+from ib_tasks.constants.enum import ActionTypes, ViewType
 from ib_tasks.documents.elastic_task import ElasticFieldDTO
 from ib_tasks.exceptions.action_custom_exceptions import \
     InvalidActionException, InvalidKeyError, InvalidCustomLogicException, \
@@ -70,8 +70,8 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
-from ib_tasks.interactors.task_dtos import CreateTaskDTO, GoFFieldsDTO, \
-    UpdateTaskDTO, FieldValuesDTO
+from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO, \
+    FieldValuesDTO
 from ib_tasks.interactors.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
 
@@ -217,9 +217,10 @@ class CreateTaskInteractor:
             self, task_dto: CreateTaskDTO,
             presenter: CreateTaskPresenterInterface
     ):
-        task_current_stage_details_dto = self.create_task(task_dto)
+        task_current_stage_details_dto, all_tasks_overview_dto = \
+            self.create_task(task_dto)
         return presenter.get_create_task_response(
-            task_current_stage_details_dto)
+            task_current_stage_details_dto, all_tasks_overview_dto)
 
     def create_task(self, task_dto: CreateTaskDTO):
         self._validate_task_template_id(task_dto.task_template_id)
@@ -232,7 +233,6 @@ class CreateTaskInteractor:
         action_type = self.action_storage.get_action_type_for_given_action_id(
             action_id=task_dto.action_id)
         self._validate_task_details(task_dto, action_type)
-        self._validate_same_gof_order(task_dto.gof_fields_dtos)
         base_validations_interactor = \
             TemplateGoFsFieldsBaseValidationsInteractor(
                 self.task_storage, self.gof_storage,
@@ -284,24 +284,20 @@ class CreateTaskInteractor:
         task_current_stage_details_dto = \
             get_task_current_stages_interactor.get_task_current_stages_details(
                 task_id=created_task_id, user_id=task_dto.created_by_id)
-        return task_current_stage_details_dto
-
-    def _get_fields_dto(
-            self, task_dto: CreateTaskDTO) -> List[ElasticFieldDTO]:
-
-        fields_dto = []
-        gof_fields_dtos = task_dto.gof_fields_dtos
-        for gof_fields_dto in gof_fields_dtos:
-            for field_value_dto in gof_fields_dto.field_values_dtos:
-                fields_dto.append(self._get_elastic_field_dto(field_value_dto))
-        return fields_dto
-
-    @staticmethod
-    def _get_elastic_field_dto(field_dto: FieldValuesDTO) -> ElasticFieldDTO:
-        return ElasticFieldDTO(
-            field_id=field_dto.field_id,
-            value=field_dto.field_response
+        from ib_tasks.interactors \
+            .get_all_task_overview_with_filters_and_searches_for_user import \
+            GetTasksOverviewForUserInteractor
+        task_overview_interactor = GetTasksOverviewForUserInteractor(
+            stage_storage=self.stage_storage, task_storage=self.task_storage,
+            field_storage=self.field_storage,
+            action_storage=self.action_storage,
+            task_stage_storage=self.task_stage_storage
         )
+        all_tasks_overview_details_dto = \
+            task_overview_interactor.get_filtered_tasks_overview_for_user(
+            user_id=task_dto.created_by_id, task_ids=[created_task_id],
+            view_type=ViewType.KANBAN.value, project_id=task_dto.project_id)
+        return task_current_stage_details_dto, all_tasks_overview_details_dto
 
     def _validate_task_template_id(
             self, task_template_id: str
@@ -346,35 +342,6 @@ class CreateTaskInteractor:
             if gof_matched:
                 return task_gof_details_dto.task_gof_id
         return
-
-    def _validate_same_gof_order(
-            self, gof_fields_dtos: List[GoFFieldsDTO]
-    ) -> Optional[DuplicateSameGoFOrderForAGoF]:
-        from collections import defaultdict
-        gof_with_order_dict = defaultdict(list)
-        for gof_fields_dto in gof_fields_dtos:
-            gof_with_order_dict[
-                gof_fields_dto.gof_id].append(gof_fields_dto.same_gof_order)
-        for gof_id, same_gof_orders in gof_with_order_dict.items():
-            duplicate_same_gof_orders = self._get_duplicates_in_given_list(
-                same_gof_orders)
-            if duplicate_same_gof_orders:
-                raise DuplicateSameGoFOrderForAGoF(gof_id,
-                                                   duplicate_same_gof_orders)
-        return
-
-    @staticmethod
-    def _get_duplicates_in_given_list(values: List) -> List:
-        duplicate_values = list(
-            set(
-                [
-                    value
-                    for value in values if values.count(value) > 1
-                ]
-            )
-        )
-        duplicate_values.sort()
-        return duplicate_values
 
     def _validate_task_details(
             self, task_dto: Union[CreateTaskDTO, UpdateTaskDTO],

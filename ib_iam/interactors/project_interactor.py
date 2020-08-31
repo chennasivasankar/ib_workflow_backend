@@ -106,6 +106,8 @@ class ProjectInteractor:
         project_id = project_teams_and_users_dto.project_id
         user_ids, team_ids = self._fetch_user_ids_and_team_ids(
             project_teams_and_users_dto=project_teams_and_users_dto)
+        user_ids = list(set(user_ids))
+        team_ids = list(set(team_ids))
         self._validate_project(project_id=project_id)
         valid_team_ids = self.project_storage.get_valid_team_ids_for_given_project(
             project_id=project_id, team_ids=team_ids)
