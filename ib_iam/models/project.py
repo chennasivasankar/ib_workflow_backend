@@ -15,6 +15,7 @@ class Project(models.Model):
         primary_key=True,
         max_length=100
     )
+    display_id = models.CharField(max_length=100, unique=True)
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(null=True, blank=True)
     logo_url = models.TextField(null=True, blank=True)

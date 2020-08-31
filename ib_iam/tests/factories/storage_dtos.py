@@ -278,6 +278,7 @@ class ProjectDTOFactory(factory.Factory):
         model = ProjectDTO
 
     project_id = factory.Sequence(lambda n: 'project %s' % n)
+    display_id = factory.Sequence(lambda n: 'display_id %s' % n)
     name = factory.Sequence(lambda n: 'name %s' % n)
     description = factory.Sequence(lambda n: 'description %s' % n)
     logo_url = factory.Sequence(lambda n: 'logo %s' % n)

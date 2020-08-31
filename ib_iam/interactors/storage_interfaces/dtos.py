@@ -183,6 +183,7 @@ class MemberDTO:
 @dataclass
 class ProjectDTO:
     project_id: str
+    display_id: str
     name: str
     description: Optional[str] = None
     logo_url: Optional[str] = None
