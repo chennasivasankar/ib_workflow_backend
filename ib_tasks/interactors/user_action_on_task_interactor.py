@@ -5,6 +5,7 @@ from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.action_custom_exceptions import InvalidKeyError, \
     InvalidCustomLogicException, InvalidActionException, \
     InvalidPresentStageAction
+from ib_tasks.exceptions.adapter_exceptions import UserIsNotInProjectException
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied, UserBoardPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
@@ -15,6 +16,9 @@ from ib_tasks.interactors \
     .call_action_logic_function_and_update_task_status_variables_interactor \
     import CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor, \
     InvalidMethodFound
+from ib_tasks.interactors \
+    .get_all_task_overview_with_filters_and_searches_for_user import \
+    GetTasksOverviewForUserInteractor
 from ib_tasks.interactors.get_field_details import GetFieldsDetails
 from ib_tasks.interactors \
     .get_next_stages_random_assignees_of_a_task_interactor import \
@@ -52,10 +56,10 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
-    import \
-    TaskStageStorageInterface
+    import TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 
 
 class InvalidBoardIdException(Exception):
@@ -64,7 +68,8 @@ class InvalidBoardIdException(Exception):
         self.board_id = board_id
 
 
-class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
+class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
+                                 ValidationMixin):
 
     def __init__(self, user_id: str, action_id: int, storage: StorageInterface,
                  gof_storage: CreateOrUpdateTaskStorageInterface,
@@ -90,13 +95,12 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         self.view_type = view_type
 
     def user_action_on_task_wrapper(
-            self, presenter: PresenterInterface, task_display_id: str
-    ):
+            self, presenter: PresenterInterface, task_display_id: str):
 
         try:
             task_id = self.get_task_id_for_task_display_id(task_display_id)
-            task_complete_details_dto, task_current_stage_details_dto = \
-                self.user_action_on_task(task_id)
+            task_complete_details_dto, task_current_stage_details_dto, \
+            all_tasks_overview_dto = self.user_action_on_task(task_id)
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
         except InvalidTaskException as err:
@@ -107,15 +111,13 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter.raise_exception_for_invalid_action(error_obj=err)
         except UserActionPermissionDenied as err:
             return presenter.raise_exception_for_user_action_permission_denied(
-                error_obj=err
-            )
+                error_obj=err)
         except InvalidPresentStageAction as err:
             return presenter.raise_exception_for_invalid_present_actions(
                 error_obj=err)
         except UserBoardPermissionDenied as err:
             return presenter.raise_exception_for_user_board_permission_denied(
-                error_obj=err
-            )
+                error_obj=err)
         except InvalidKeyError:
             return presenter.raise_invalid_key_error()
         except InvalidCustomLogicException:
@@ -123,6 +125,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         except InvalidModulePathFound as exception:
             return presenter.raise_invalid_path_not_found_exception(
                 path_name=exception.path_name)
+        except UserIsNotInProjectException:
+            return presenter.get_response_for_user_not_in_project()
         except InvalidMethodFound as exception:
             return presenter.raise_invalid_method_not_found_exception(
                 method_name=exception.method_name)
@@ -138,11 +142,11 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
                 invalid_stage_ids=exception.invalid_stage_ids)
         return presenter.get_response_for_user_action_on_task(
             task_complete_details_dto=task_complete_details_dto,
-            task_current_stage_details_dto=task_current_stage_details_dto
+            task_current_stage_details_dto=task_current_stage_details_dto,
+            all_tasks_overview_dto=all_tasks_overview_dto
         )
 
     def user_action_on_task(self, task_id: int):
-
         self._validations_for_task_action(task_id)
         task_dto = self._get_task_dto(task_id)
         updated_task_dto = \
@@ -159,8 +163,13 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         self._create_or_update_task_in_elasticsearch(
             task_dto=updated_task_dto, task_id=task_id, stage_ids=stage_ids
         )
-        actions_dto, fields_dto, task_stage_details = \
-            self._get_task_fields_and_actions_dto(stage_ids, task_id)
+        if self.board_id:
+            column_stage_dtos = task_boards_details.column_stage_dtos
+            board_stage_ids = self._get_present_board_stages(column_stage_dtos)
+            actions_dto, fields_dto, task_stage_details = \
+                self._get_task_fields_and_actions_dto(board_stage_ids, task_id)
+        else:
+            actions_dto, fields_dto, task_stage_details = None, None, None
         set_stage_assignees_interactor = \
             GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor(
                 storage=self.storage, stage_storage=self.stage_storage,
@@ -191,7 +200,29 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         task_current_stage_details_dto = \
             get_task_current_stages_interactor.get_task_current_stages_details(
                 task_id=task_id, user_id=self.user_id)
-        return task_complete_details_dto, task_current_stage_details_dto
+        task_overview_interactor = GetTasksOverviewForUserInteractor(
+            stage_storage=self.stage_storage, task_storage=self.task_storage,
+            field_storage=self.field_storage,
+            action_storage=self.action_storage,
+            task_stage_storage=self.task_stage_storage
+        )
+        project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
+        all_tasks_overview_details_dto = \
+            task_overview_interactor.get_filtered_tasks_overview_for_user(
+                user_id=self.user_id, task_ids=[task_id],
+                view_type=ViewType.KANBAN.value,
+                project_id=project_id)
+        return (
+            task_complete_details_dto, task_current_stage_details_dto,
+            all_tasks_overview_details_dto)
+
+    @staticmethod
+    def _get_present_board_stages(column_stage_dtos: List[ColumnStageDTO]):
+
+        return [
+            column_stage_dto.stage_id
+            for column_stage_dto in column_stage_dtos
+        ]
 
     def _get_task_fields_and_actions_dto(self, stage_ids: List[str],
                                          task_id: int):
@@ -355,6 +386,10 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
     def _validations_for_task_action(self, task_id: int):
 
         self._validate_task_id(task_id)
+        project_id = self.task_storage.get_project_id_for_the_task_id(task_id=task_id)
+        self.validate_if_user_is_in_project(
+            project_id=project_id, user_id=self.user_id
+        )
         if self.board_id:
             self._validate_board_id()
         valid_action = self.storage.validate_action(action_id=self.action_id)
@@ -414,7 +449,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
     def _create_or_update_task_in_elasticsearch(
             self, task_dto: TaskDetailsDTO, stage_ids: List[str],
             task_id: int):
-        from ib_tasks.interactors\
+        from ib_tasks.interactors \
             .create_or_update_data_in_elasticsearch_interactor import \
             CreateOrUpdateDataInElasticSearchInteractor
         elasticsearch_interactor = CreateOrUpdateDataInElasticSearchInteractor(

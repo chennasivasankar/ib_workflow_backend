@@ -32,7 +32,7 @@ from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     GlobalConstant, \
     StagePermittedRoles, TaskTemplateInitialStage, Stage, \
     TaskTemplateStatusVariable, ProjectTaskTemplate, ActionPermittedRoles, \
-    StageAction, CurrentTaskStage, FieldRole, TaskStageHistory
+    StageAction, CurrentTaskStage, FieldRole, TaskStageHistory, TaskStageRp
 from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
 
 
@@ -709,17 +709,17 @@ class StorageImplementation(StorageInterface):
     def validate_if_task_is_assigned_to_user_in_given_stage(self,
                                                             task_id: int,
                                                             user_id: str,
-                                                            stage_id: str) \
+                                                            stage_id: int) \
             -> bool:
         is_assigned = TaskStageHistory.objects.filter(
-            task_id=task_id, assignee_id=user_id, stage__stage_id=stage_id
+            task_id=task_id, assignee_id=user_id, stage_id=stage_id
         ).exists()
         return is_assigned
 
-    def get_task_due_details(self, task_id: int, stage_id: str) -> \
+    def get_task_due_details(self, task_id: int, stage_id: int) -> \
             List[TaskDueMissingDTO]:
         task_due_objs = (UserTaskDelayReason.objects.filter(task_id=task_id,
-                                                            stage_stage_id=stage_id)
+                                                            stage_id=stage_id)
                          .values('due_datetime', 'count', 'reason', 'user_id',
                                  'task__task_display_id'))
 
@@ -750,17 +750,53 @@ class StorageImplementation(StorageInterface):
         updated_due_datetime = due_details.due_date_time
         count = UserTaskDelayReason.objects.filter(
             task_id=task_id, user_id=user_id).count()
-        stage = Stage.objects.get(stage_id=stage_id)
 
         UserTaskDelayReason.objects.create(user_id=user_id, task_id=task_id,
                                            due_datetime=updated_due_datetime,
                                            count=count + 1,
                                            reason_id=reason_id,
-                                           stage=stage,
+                                           stage_id=stage_id,
                                            reason=due_details.reason)
         Task.objects.filter(pk=task_id, taskstagehistory__assignee_id=user_id
                             ).update(due_date=updated_due_datetime)
 
-    def validate_stage_id(self, stage_id: str) -> bool:
-        does_exists = Stage.objects.filter(stage_id=stage_id).exists()
+    def validate_stage_id(self, stage_id: int) -> bool:
+        does_exists = Stage.objects.filter(id=stage_id).exists()
         return does_exists
+
+    def get_due_missed_count(self, task_id: int, user_id: str,
+                             stage_id: str) -> int:
+        count = UserTaskDelayReason.objects.filter(
+            task_id=task_id, stage__stage_id=stage_id, user_id=user_id
+        ).count()
+        return count
+
+    def get_latest_rp_id_if_exists(self, task_id: int,
+                                   stage_id: int) -> Optional[str]:
+        rp_ids = TaskStageRp.objects.filter(
+            task_id=task_id, stage_id=stage_id
+        ).values_list('rp_id', flat=True).order_by('-id')
+        if not rp_ids:
+            return None
+        return rp_ids[0]
+
+    def get_rp_ids(self, task_id: int, stage_id: int) -> \
+            List[str]:
+        rp_ids = list(TaskStageRp.objects.filter(
+            task_id=task_id, stage_id=stage_id
+        ).values_list('rp_id', flat=True))
+        return rp_ids
+
+    def add_superior_to_db(
+            self, task_id: int, stage_id: int, superior_id: str):
+        TaskStageRp.objects.create(
+            task_id=task_id, stage_id=stage_id, rp_id=superior_id)
+
+    def get_latest_rp_added_datetime(self,
+                                     task_id: int, stage_id: int) -> Optional[str]:
+        objs = TaskStageRp.objects.filter(
+            task_id=task_id, stage_id=stage_id
+        ).values_list('added_at', flat=True).order_by('-added_at')
+        if objs:
+            return objs[0]
+        return None

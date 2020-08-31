@@ -20,7 +20,7 @@ class FieldConfigStorageImplementation(FieldConfigStorageInterface):
             'field_values', 'allowed_formats',
             'help_text', 'tooltip',
             'placeholder_text', 'error_messages',
-            'validation_regex'
+            'validation_regex', 'order'
         ]
         fields = self._get_fields(field_dtos)
         Field.objects.bulk_update(fields, list_of_fields)
@@ -56,7 +56,8 @@ class FieldConfigStorageImplementation(FieldConfigStorageInterface):
                 placeholder_text=field_dto.placeholder_text,
                 error_messages=field_dto.error_message,
                 validation_regex=field_dto.validation_regex,
-                gof_id=field_dto.gof_id
+                gof_id=field_dto.gof_id,
+                order=field_dto.order
             )
             for field_dto in field_dtos
         ]

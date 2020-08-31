@@ -4,7 +4,8 @@ from ib_tasks.exceptions.action_custom_exceptions import \
 from ib_tasks.exceptions.custom_exceptions import InvalidModulePathFound, \
     InvalidMethodFound
 from ib_tasks.exceptions.datetime_custom_exceptions import \
-    InvalidDueTimeFormat, StartDateIsAheadOfDueDate, DueTimeHasExpiredForToday, \
+    InvalidDueTimeFormat, StartDateIsAheadOfDueDate, \
+    DueTimeHasExpiredForToday, \
     DueDateHasExpired
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField, InvalidPhoneNumberValue, \
@@ -17,7 +18,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidFileFormat
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
     DuplicateFieldIdsToGoF
-from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
+from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
+    DuplicateSameGoFOrderForAGoF
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserActionPermissionDenied
@@ -104,6 +106,8 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter.raise_due_date_has_expired(err)
         except DueTimeHasExpiredForToday as err:
             return presenter.raise_due_time_has_expired_for_today(err)
+        except DuplicateSameGoFOrderForAGoF as err:
+            return presenter.raise_duplicate_same_gof_orders_for_a_gof(err)
         except InvalidGoFIds as err:
             return presenter.raise_invalid_gof_ids(err)
         except InvalidFieldIds as err:
@@ -196,11 +200,10 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def _prepare_save_and_act_response(
             self, presenter, task_dto: SaveAndActOnTaskWithTaskDisplayIdDTO):
-        task_current_stage_details_dto = \
-            self.save_and_act_on_task_with_task_display_id(
-                task_dto)
+        task_current_stage_details_dto, all_tasks_overview_details_dto = \
+            self.save_and_act_on_task_with_task_display_id(task_dto)
         return presenter.get_save_and_act_on_task_response(
-            task_current_stage_details_dto)
+            task_current_stage_details_dto, all_tasks_overview_details_dto)
 
     def save_and_act_on_task_with_task_display_id(
             self, task_dto: SaveAndActOnTaskWithTaskDisplayIdDTO):
@@ -227,7 +230,9 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             create_task_storage=self.create_task_storage,
             storage=self.storage, field_storage=self.field_storage,
             stage_storage=self.stage_storage,
-            elastic_storage=self.elastic_storage
+            elastic_storage=self.elastic_storage,
+            action_storage=self.action_storage,
+            task_stage_storage=self.task_stage_storage
         )
         update_task_dto = UpdateTaskDTO(
             task_id=task_dto.task_id, created_by_id=task_dto.created_by_id,
@@ -237,7 +242,8 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             stage_assignee=task_dto.stage_assignee,
             gof_fields_dtos=task_dto.gof_fields_dtos
         )
-        update_task_interactor.update_task(update_task_dto, action_type)
+        all_tasks_overview_details_dto = \
+            update_task_interactor.update_task(update_task_dto, action_type)
         act_on_task_interactor = UserActionOnTaskInteractor(
             user_id=task_dto.created_by_id, board_id=None,
             task_storage=self.task_storage,
@@ -254,4 +260,4 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         task_current_stage_details_dto = \
             get_task_current_stages_interactor.get_task_current_stages_details(
                 task_id=task_dto.task_id, user_id=task_dto.created_by_id)
-        return task_current_stage_details_dto
+        return task_current_stage_details_dto, all_tasks_overview_details_dto

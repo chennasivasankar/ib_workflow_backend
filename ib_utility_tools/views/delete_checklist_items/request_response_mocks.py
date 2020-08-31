@@ -3,7 +3,7 @@
 REQUEST_BODY_JSON = """
 {
     "checklist_item_ids": [
-        "12f23eec-8a8e-444c-b3d2-0a202677d431"
+        "cf165175-2b80-461e-bf03-42e9e0d68e45"
     ]
 }
 """

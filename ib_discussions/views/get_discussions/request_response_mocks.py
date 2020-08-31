@@ -14,12 +14,12 @@ RESPONSE_200_JSON = """
 {
     "discussions": [
         {
-            "discussion_id": "cbc6212e-145f-4633-ac43-ac465bf0c470",
+            "discussion_id": "ee45babe-3624-48db-8884-38a03dc7870b",
             "description": "string",
             "title": "string",
             "created_at": "2099-12-31 00:00:00",
             "author": {
-                "user_id": "287cf45a-506c-4fa8-9d3d-801e39bf99a2",
+                "user_id": "e5a5276d-c1ed-4145-abed-c510b9823a45",
                 "name": "string",
                 "profile_pic_url": "string"
             },

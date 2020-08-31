@@ -5,10 +5,11 @@ import freezegun
 import mock
 import pytest
 
+from ib_tasks.exceptions.gofs_custom_exceptions import \
+    DuplicateSameGoFOrderForAGoF
 from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
     UpdateTaskInteractor
-from ib_tasks.interactors.stages_dtos import StageAssigneeDTO, \
-    TaskIdWithStageAssigneesDTO
+from ib_tasks.interactors.stages_dtos import TaskIdWithStageAssigneesDTO
 from ib_tasks.tests.factories.interactor_dtos import FieldValuesDTOFactory, \
     GoFFieldsDTOFactory, UpdateTaskWithTaskDisplayIdDTOFactory, \
     UpdateTaskDTOFactory, StageAssigneeDTOFactory
@@ -231,8 +232,7 @@ class TestUpdateTaskInteractor:
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
         create_task_storage_mock.get_template_id_for_given_task.return_value \
-            = \
-            "template_1"
+            = "template_1"
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock,
@@ -383,6 +383,53 @@ class TestUpdateTaskInteractor:
         invalid_due_time = error_object.due_time
         assert invalid_due_time == given_due_time
 
+    def test_with_duplicate_same_gof_orders(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock, presenter_mock, mock_object,
+            perform_base_validations_for_template_gofs_and_fields_mock
+    ):
+        # Arrange
+        given_gof_id = "gof_0"
+        given_same_gof_order = 1
+        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+            size=3, gof_id=given_gof_id, same_gof_order=given_same_gof_order)
+        perform_base_validations_for_template_gofs_and_fields_mock\
+            .side_effect = \
+            DuplicateSameGoFOrderForAGoF(given_gof_id, [given_same_gof_order])
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_id = 1
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        create_task_storage_mock.is_valid_task_id.return_value = True
+        create_task_storage_mock.get_template_id_for_given_task.return_value \
+            = "template_1"
+        perform_base_validations_for_template_gofs_and_fields_mock \
+            .side_effect = DuplicateSameGoFOrderForAGoF(
+            given_gof_id, [given_same_gof_order])
+        interactor = UpdateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock,
+            storage=storage_mock, field_storage=field_storage_mock,
+            stage_storage=stage_storage_mock,
+            elastic_storage=elastic_storage_mock
+        )
+        presenter_mock.raise_duplicate_same_gof_orders_for_a_gof.return_value = mock_object
+
+        # Act
+        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_duplicate_same_gof_orders_for_a_gof.assert_called_once()
+        call_args = presenter_mock.raise_duplicate_same_gof_orders_for_a_gof.call_args
+        error_object = call_args[0][0]
+        invalid_gof_id = error_object.gof_id
+        assert invalid_gof_id == given_gof_id
+
     def test_with_invalid_gof_ids(
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
@@ -406,7 +453,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
         from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
-        perform_base_validations_for_template_gofs_and_fields_mock.side_effect = \
+        perform_base_validations_for_template_gofs_and_fields_mock \
+            .side_effect = \
             InvalidGoFIds(given_gof_ids)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,

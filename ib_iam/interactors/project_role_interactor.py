@@ -23,7 +23,7 @@ class ProjectRoleInteractor:
             user_id=user_id, project_id=project_id
         )
         if is_user_not_in_a_project:
-            raise UserNotAMemberOfAProject
+            raise UserNotAMemberOfAProject()
 
         role_ids = self.project_storage.get_user_role_ids(
             user_id=user_id, project_id=project_id

@@ -309,6 +309,7 @@ class FieldDTOFactory(factory.Factory):
     error_message = None
     allowed_formats = None
     validation_regex = None
+    order = factory.sequence(lambda counter: counter)
 
 
 class FieldRolesDTOFactory(factory.Factory):
@@ -594,7 +595,7 @@ class UserDetailsDTOFactory(factory.Factory):
     class Meta:
         model = UserDetailsDTO
 
-    user_id = factory.Sequence(lambda n: "user_id_%d" % (n + 1))
+    user_id = factory.Sequence(lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % (n + 1))
     user_name = factory.Sequence(lambda n: "user_name_%d" % (n + 1))
     profile_pic_url = factory.Sequence(lambda n: "profile_pic_%d" % (n + 1))
 

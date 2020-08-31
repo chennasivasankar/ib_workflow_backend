@@ -16,11 +16,21 @@ class TestCase04GetStageSearchablePossibleAssigneesOfATaskAPITestCase(
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['read']}}
 
+    @pytest.fixture(autouse=True)
+    def setup(self, api_user):
+        from ib_tasks.tests.factories.models import TaskFactory
+        TaskFactory.reset_sequence()
+
+        TaskFactory.create()
+
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {}
         path_params = {"stage_id": 1}
-        query_params = {'limit': 10, 'offset': 0, 'search_query': 'string'}
+        query_params = {
+            'limit': 10, 'offset': 0, 'search_query': 'string',
+            'task_id': 'IBWF-1'
+        }
         headers = {}
         response = self.make_api_call(body=body,
                                       path_params=path_params,

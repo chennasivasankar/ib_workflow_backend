@@ -3,6 +3,8 @@ from typing import Union, List, Optional
 from django.db.models import Q
 
 from ib_tasks.constants.config import TIME_FORMAT, TASK_DISPLAY_ID_PREFIX
+from ib_tasks.exceptions.gofs_custom_exceptions import \
+    InvalidSameGoFOrderForAGoF
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
@@ -117,7 +119,7 @@ class CreateOrUpdateTaskStorageImplementation(
 
         task_gof_field_objs = TaskGoFField.objects.filter(
             task_gof_id__in=task_gof_ids
-        )
+        ).exclude(field_response='')
         task_gof_field_dtos = []
         for task_gof_field_obj in task_gof_field_objs:
             task_gof_field_dto = TaskGoFFieldDTO(
@@ -149,7 +151,7 @@ class CreateOrUpdateTaskStorageImplementation(
             self, task_id: int) -> List[GoFIdWithSameGoFOrderDTO]:
         gof_dicts = list(
             TaskGoF.objects.filter(task_id=task_id).values(
-                'gof_id', 'same_gof_order'))
+                'gof_id', 'same_gof_order', 'id'))
         gof_id_with_same_gof_order_dtos = [
             GoFIdWithSameGoFOrderDTO(
                 gof_id=gof_dict['gof_id'],
@@ -181,8 +183,7 @@ class CreateOrUpdateTaskStorageImplementation(
         task_gof_objects = TaskGoF.objects.filter(task_id=task_id)
         for task_gof_object in task_gof_objects:
             task_gof_dto = self._get_matching_task_gof_dto(
-                task_gof_object, task_gof_dtos
-            )
+                task_gof_object, task_gof_dtos)
             task_gof_object.same_gof_order = task_gof_dto.same_gof_order
         TaskGoF.objects.bulk_update(task_gof_objects, ['same_gof_order'])
         task_gof_ids = [
