@@ -8,9 +8,10 @@ class TestGetProjectsPresenterImplementation:
     @pytest.fixture
     def projects_set_up(self):
         project_ids = ["f2c02d98-f311-4ab2-8673-3daa00757002"]
-        from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
-        ProjectDTOFactory.reset_sequence(1)
-        project_dtos = [ProjectDTOFactory(project_id=project_id)
+        from ib_iam.tests.factories.storage_dtos import \
+            ProjectWithDisplayIdDTOFactory
+        ProjectWithDisplayIdDTOFactory.reset_sequence(1)
+        project_dtos = [ProjectWithDisplayIdDTOFactory(project_id=project_id)
                         for project_id in project_ids]
         return project_dtos
 
