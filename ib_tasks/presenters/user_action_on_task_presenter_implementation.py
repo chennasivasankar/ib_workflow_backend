@@ -133,6 +133,17 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         response_object = self.prepare_403_forbidden_response(response_dict)
         return response_object
 
+    def get_response_for_user_not_in_project(self):
+        from ib_tasks.constants.exception_messages import USER_NOT_IN_PROJECT
+        response_dict = {
+            "response": USER_NOT_IN_PROJECT[0],
+            "http_status_code": 404,
+            "res_status": USER_NOT_IN_PROJECT[1]
+        }
+
+        response_object = self.prepare_403_forbidden_response(response_dict)
+        return response_object
+
     def get_response_for_user_action_on_task(
             self, task_complete_details_dto: TaskCompleteDetailsDTO,
             task_current_stage_details_dto: TaskCurrentStageDetailsDTO,
