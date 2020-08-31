@@ -591,6 +591,12 @@ class TaskDetailsDTOFactory(factory.Factory):
     def task_gof_field_dtos(self):
         return [TaskGoFFieldDTOFactory()]
 
+    @factory.lazy_attribute
+    def project_details_dto(self):
+        from ib_tasks.tests.factories.adapter_dtos \
+            import ProjectDetailsDTOFactory
+        return ProjectDetailsDTOFactory()
+
 
 class StageRoleDTOFactory(factory.Factory):
     class Meta:
