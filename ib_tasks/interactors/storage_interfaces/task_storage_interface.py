@@ -151,3 +151,7 @@ class TaskStorageInterface(abc.ABC):
                                           user_id: str,
                                           stage_id: int) -> datetime:
         pass
+
+    @abc.abstractmethod
+    def get_valid_task_ids_from_the_project(self, task_ids: List[int], project_id: str):
+        pass

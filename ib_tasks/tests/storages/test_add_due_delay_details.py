@@ -57,5 +57,24 @@ class TestAddDueDelayDetails:
         task_due_datetime = Task.objects.filter(pk=task_id, tasklog__user_id=user_id).values(
             'id', 'tasklog__user_id', 'due_date'
         )
-        snapshot.assert_match(task_due_datetime, "task_due_datetime")
         snapshot.assert_match(reason, "reason")
+
+    @freeze_time("2020-08-10 12:30:00")
+    def test_update_task_due_datetime_given_details(self, snapshot,
+                                                    populate_data, due_details):
+        # Arrange
+        task_id = due_details.task_id
+        user_id = due_details.user_id
+        reason_id = due_details.reason_id
+        due_details.stage_id = 5
+        storage = StorageImplementation()
+
+        # Act
+        storage.update_task_due_datetime(due_details)
+
+        # Assert
+        from ib_tasks.models import Task
+        task_due_datetime = Task.objects.filter(pk=task_id, tasklog__user_id=user_id).values(
+            'id', 'tasklog__user_id', 'due_date'
+        )
+        snapshot.assert_match(task_due_datetime, "task_due_datetime")
