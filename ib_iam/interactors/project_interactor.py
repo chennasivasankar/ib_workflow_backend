@@ -5,7 +5,8 @@ from django.db import transaction
 from ib_iam.app_interfaces.dtos import (
     ProjectTeamUserDTO, UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO,
     UserTeamsDTO)
-from ib_iam.exceptions.custom_exceptions import InvalidUserIds
+from ib_iam.exceptions.custom_exceptions import InvalidUserIds, \
+    ProjectNameAlreadyExists
 from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO, \
     CompleteProjectDetailsDTO
 from ib_iam.interactors.presenter_interfaces \
@@ -264,9 +265,13 @@ class ProjectInteractor:
             self,
             project_with_team_ids_and_roles_dto: ProjectWithTeamIdsAndRolesDTO,
             presenter: AddProjectPresenterInterface):
-        self.add_project(project_with_team_ids_and_roles_dto=
-                         project_with_team_ids_and_roles_dto)
-        response = presenter.get_success_response_for_add_project()
+        try:
+            self.add_project(project_with_team_ids_and_roles_dto=
+                             project_with_team_ids_and_roles_dto)
+            response = presenter.get_success_response_for_add_project()
+        except ProjectNameAlreadyExists:
+            response = presenter.get_project_name_already_exists_response()
+            # todo write interactor test for it
         return response
 
     # todo remove the tag after writing validations properly
@@ -276,9 +281,13 @@ class ProjectInteractor:
             project_with_team_ids_and_roles_dto: ProjectWithTeamIdsAndRolesDTO
     ):
         # todo confirm and write user permissions
-        # todo validate is project name already exists for any other project
         # todo display_id uniqueness
         # todo validate duplicate or invalid team_ids
+        project_id = self.project_storage \
+            .get_project_id_if_project_name_already_exists(
+            name=project_with_team_ids_and_roles_dto.name)
+        if project_id:
+            raise ProjectNameAlreadyExists
         project_without_id_dto = ProjectWithoutIdDTO(
             name=project_with_team_ids_and_roles_dto.name,
             display_id=project_with_team_ids_and_roles_dto.display_id,

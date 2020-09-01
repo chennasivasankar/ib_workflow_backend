@@ -1,5 +1,5 @@
 import abc
-from typing import List
+from typing import List, Optional
 
 from ib_iam.interactors.storage_interfaces.dtos import (
     ProjectDTO, ProjectTeamIdsDTO, ProjectsWithTotalCountDTO, PaginationDTO,
@@ -107,4 +107,9 @@ class ProjectStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def delete_project_roles(self, role_ids: List[str]):
+        pass
+
+    @abc.abstractmethod
+    def get_project_id_if_project_name_already_exists(
+            self, name: str) -> Optional[str]:
         pass
