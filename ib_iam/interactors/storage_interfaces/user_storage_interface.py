@@ -2,8 +2,10 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 
 from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
-from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidUserIds
-from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
+from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidUserIds, \
+    InvalidUserIdsForProject, InvalidRoleIdsForProject, InvalidProjectId
+from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
+from ib_iam.interactors.storage_interfaces.dtos import UserDTO, TeamWithUserIdDTO, \
     UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, TeamIdAndNameDTO, \
     RoleIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, CompanyDTO, \
     CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO
@@ -64,7 +66,7 @@ class UserStorageInterface(ABC):
 
     @abstractmethod
     def get_team_details_of_users_bulk(
-            self, user_ids: List[str]) -> List[UserTeamDTO]:
+            self, user_ids: List[str]) -> List[TeamWithUserIdDTO]:
         pass
 
     @abstractmethod
@@ -200,4 +202,33 @@ class UserStorageInterface(ABC):
     @abstractmethod
     def get_user_role_dtos_of_a_project(
             self, user_ids: List[str], project_id: str) -> List[UserRoleDTO]:
+        pass
+
+    @abstractmethod
+    def assign_user_roles_for_given_project(
+            self, user_id_with_role_ids_dtos: List[UserIdWithRoleIdsDTO],
+            project_id: str
+    ):
+        pass
+
+    @abstractmethod
+    def is_valid_project_id(self, project_id: str) -> bool:
+        pass
+
+    @abstractmethod
+    def validate_users_for_project(
+            self, user_ids: List[str], project_id: str
+    ) -> Optional[InvalidUserIdsForProject]:
+        pass
+
+    @abstractmethod
+    def validate_role_ids_for_project(
+            self, role_ids: List[str], project_id: str
+    ) -> Optional[InvalidRoleIdsForProject]:
+        pass
+
+    @abstractmethod
+    def validate_project_id(
+            self, project_id: str
+    ) -> Optional[InvalidProjectId]:
         pass

@@ -1,5 +1,5 @@
 from functools import reduce
-def get_specific_project_details(*args, **kwargs):  # pylint: disable=invalid-name
+def get_list_of_user_roles_for_given_project(*args, **kwargs):  # pylint: disable=invalid-name
     """
     Note: replace below mock implementation with your actual implementation
 

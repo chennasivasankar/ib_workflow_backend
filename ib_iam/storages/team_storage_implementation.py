@@ -4,7 +4,7 @@ from ib_iam.exceptions.custom_exceptions import InvalidTeamId
 from ib_iam.interactors.storage_interfaces.dtos import \
     TeamNameAndDescriptionDTO, TeamIdAndNameDTO, PaginationDTO, TeamUserIdsDTO, \
     TeamsWithTotalTeamsCountDTO, TeamWithTeamIdAndUserIdsDTO, TeamDTO, \
-    UserTeamDTO
+    TeamWithUserIdDTO
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
     TeamStorageInterface
 from ib_iam.models import Team, TeamUser
@@ -133,12 +133,12 @@ class TeamStorageImplementation(TeamStorageInterface):
 
     def get_team_user_dtos(
             self, user_ids: List[str], team_ids: List[str]
-    ) -> List[UserTeamDTO]:
+    ) -> List[TeamWithUserIdDTO]:
         user_team_objects = TeamUser.objects.filter(
             team_id__in=team_ids, user_id__in=user_ids
         ).select_related('team')
         user_team_dtos = [
-            UserTeamDTO(
+            TeamWithUserIdDTO(
                 user_id=str(user_team_object.user_id),
                 team_id=str(user_team_object.team.team_id),
                 team_name=user_team_object.team.name

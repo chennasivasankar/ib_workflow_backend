@@ -3,14 +3,14 @@ from unittest.mock import Mock
 import pytest
 
 
-class TestGetSpecificTeamDetailsInteractor:
+class TestGetListOfUserRolesForGivenProjectInteractor:
 
     @pytest.fixture()
     def presenter_mock(self):
         from unittest.mock import create_autospec
-        from ib_iam.interactors.presenter_interfaces.get_specific_team_details_presenter_interface import \
-            GetSpecificTeamDetailsPresenterInterface
-        presenter = create_autospec(GetSpecificTeamDetailsPresenterInterface)
+        from ib_iam.interactors.presenter_interfaces.get_list_of_user_roles_for_given_project_presenter_interface import \
+            GetListOfUserRolesForGivenProjectPresenterInterface
+        presenter = create_autospec(GetListOfUserRolesForGivenProjectPresenterInterface)
         return presenter
 
     @pytest.fixture()
@@ -23,18 +23,43 @@ class TestGetSpecificTeamDetailsInteractor:
 
     @pytest.fixture()
     def interactor(self, storage_mock):
-        from ib_iam.interactors.get_specific_project_details_interactor import \
-            GetSpecificProjectDetailsInteractor
-        interactor = GetSpecificProjectDetailsInteractor(
+        from ib_iam.interactors.get_list_of_user_roles_for_given_project_interactor import \
+            GetListOfUserRolesForGivenProjectInteractor
+        interactor = GetListOfUserRolesForGivenProjectInteractor(
             user_storage=storage_mock)
         return interactor
+
+    def test_with_invalid_project_id_return_response(
+            self, storage_mock, presenter_mock, interactor
+    ):
+        # Arrange
+        project_id = "project_1"
+
+        expected_presenter_response_for_invalid_project_id = Mock()
+
+        storage_mock.is_valid_project_id.return_value = False
+
+        presenter_mock.response_for_invalid_project_id.return_value = \
+            expected_presenter_response_for_invalid_project_id
+
+        # Act
+        response = interactor.get_list_of_user_roles_for_given_project_wrapper(
+            project_id=project_id, presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == expected_presenter_response_for_invalid_project_id
+
+        storage_mock.is_valid_project_id.assert_called_with(
+            project_id=project_id)
+        presenter_mock.response_for_invalid_project_id.assert_called_once()
 
     def test_with_valid_details_return_response(
             self, storage_mock, presenter_mock, interactor,
             prepare_basic_user_details_dtos, prepare_user_role_dtos
     ):
         # Arrange
-        project_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
+        project_id = "project_1"
 
         expected_presenter_prepare_success_response_for_get_specific_team_details = \
             Mock()
@@ -49,11 +74,11 @@ class TestGetSpecificTeamDetailsInteractor:
         storage_mock.get_user_role_dtos_of_a_project.return_value = \
             prepare_user_role_dtos
 
-        presenter_mock.prepare_success_response_for_get_specific_team_details. \
+        presenter_mock.prepare_success_response_for_get_specific_project_details. \
             return_value = expected_presenter_prepare_success_response_for_get_specific_team_details
 
         # Act
-        response = interactor.get_specific_project_details_wrapper(
+        response = interactor.get_list_of_user_roles_for_given_project_wrapper(
             project_id=project_id, presenter=presenter_mock
         )
 
@@ -65,7 +90,7 @@ class TestGetSpecificTeamDetailsInteractor:
             project_id=project_id)
         storage_mock.get_user_role_dtos_of_a_project.assert_called_once_with(
             project_id=project_id, user_ids=expected_user_ids)
-        presenter_mock.prepare_success_response_for_get_specific_team_details. \
+        presenter_mock.prepare_success_response_for_get_specific_project_details. \
             assert_called_once_with(
             basic_user_details_dtos=prepare_basic_user_details_dtos,
             user_role_dtos=prepare_user_role_dtos)

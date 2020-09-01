@@ -39,9 +39,9 @@ class TestGetUserTeamDTOSForGivenProjectAndUserTeams:
             project_id=project_id,
             user_id_with_team_id_dtos=[user_team_ids_dto]
         )
-        from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO
+        from ib_iam.interactors.storage_interfaces.dtos import TeamWithUserIdDTO
         expected_result = [
-            UserTeamDTO(user_id=user_id, team_id=team_id, team_name="team 0")
+            TeamWithUserIdDTO(user_id=user_id, team_id=team_id, team_name="team 0")
         ]
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         service_interface = ServiceInterface()

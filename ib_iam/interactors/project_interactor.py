@@ -15,6 +15,8 @@ from ib_iam.interactors.presenter_interfaces.update_project_presenter_interface 
 from ib_iam.interactors.storage_interfaces.dtos import (
     ProjectDTO, ProjectWithoutIdDTO, UserTeamDTO, TeamIdAndNameDTO, RoleDTO,
     RoleNameAndDescriptionDTO, ProjectWithDisplayIdDTO)
+from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, TeamWithUserIdDTO, \
+    TeamIdAndNameDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
@@ -102,7 +104,7 @@ class ProjectInteractor:
 
     def get_user_team_dtos_for_given_project_teams_and_users_details_dto(
             self, project_teams_and_users_dto: ProjectTeamsAndUsersDTO
-    ) -> List[UserTeamDTO]:
+    ) -> List[TeamWithUserIdDTO]:
         project_id = project_teams_and_users_dto.project_id
         user_ids, team_ids = self._fetch_user_ids_and_team_ids(
             project_teams_and_users_dto=project_teams_and_users_dto)
@@ -124,7 +126,7 @@ class ProjectInteractor:
 
     @staticmethod
     def _get_invalid_user_ids_for_given_team_ids(
-            user_ids: List[str], team_user_dtos: List[UserTeamDTO]
+            user_ids: List[str], team_user_dtos: List[TeamWithUserIdDTO]
     ) -> List[str]:
         for team_user_dto in team_user_dtos:
             if team_user_dto.user_id in user_ids:
@@ -216,7 +218,7 @@ class ProjectInteractor:
 
     def _validate_user_ids_and_get_user_team_dtos_for_given_project(
             self, project_id: str, user_ids: List[str]
-    ) -> Optional[List[UserTeamDTO]]:
+    ) -> Optional[List[TeamWithUserIdDTO]]:
         team_ids = self.project_storage.get_valid_team_ids(
             project_id=project_id)
         user_team_dtos = self.team_storage.get_team_user_dtos(
@@ -231,7 +233,7 @@ class ProjectInteractor:
         return user_team_dtos
 
     def _fetch_user_teams_for_each_user(
-            self, user_team_dtos: List[UserTeamDTO]
+            self, user_team_dtos: List[TeamWithUserIdDTO]
     ) -> List[UserTeamsDTO]:
         user_teams_dict = {}
         for user_team_dto in user_team_dtos:
@@ -253,7 +255,7 @@ class ProjectInteractor:
 
     @staticmethod
     def _convert_to_team_id_and_name_dto(
-            user_team_dto: UserTeamDTO) -> TeamIdAndNameDTO:
+            user_team_dto: TeamWithUserIdDTO) -> TeamIdAndNameDTO:
         return TeamIdAndNameDTO(
             team_id=user_team_dto.team_id, team_name=user_team_dto.team_name)
 

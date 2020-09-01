@@ -6,11 +6,11 @@ class TestGetUserRoleIds:
     def test_get_user_role_ids(self):
         # Arrange
         expected_role_ids = [
+            '1af3f6458df3',
+            '5e3fc083776b',
             'e4ee6a9b8c3a',
             'eb39482315c0',
-            '1af3f6458df3',
-            'f3e0c6aa65f6',
-            '5e3fc083776b'
+            'f3e0c6aa65f6'
         ]
 
         role_ids = [
