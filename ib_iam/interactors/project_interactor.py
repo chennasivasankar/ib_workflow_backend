@@ -10,13 +10,11 @@ from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO, \
     CompleteProjectDetailsDTO
 from ib_iam.interactors.presenter_interfaces \
     .add_project_presenter_interface import AddProjectPresenterInterface
-from ib_iam.interactors.presenter_interfaces.update_project_presenter_interface import \
-    UpdateProjectPresenterInterface
+from ib_iam.interactors.presenter_interfaces \
+    .update_project_presenter_interface import UpdateProjectPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import (
-    ProjectDTO, ProjectWithoutIdDTO, UserTeamDTO, TeamIdAndNameDTO, RoleDTO,
-    RoleNameAndDescriptionDTO, ProjectWithDisplayIdDTO)
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, TeamWithUserIdDTO, \
-    TeamIdAndNameDTO
+    ProjectWithoutIdDTO, RoleDTO, RoleNameAndDescriptionDTO,
+    ProjectWithDisplayIdDTO, ProjectDTO, TeamWithUserIdDTO, TeamIdAndNameDTO)
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
@@ -66,8 +64,8 @@ class ProjectInteractor:
 
     def get_project_dtos_bulk(
             self, project_ids: List[str]) -> List[ProjectDTO]:
-        project_dtos = self.project_storage.get_project_dtos_for_given_project_ids(
-            project_ids=project_ids)
+        project_dtos = self.project_storage. \
+            get_project_dtos_for_given_project_ids(project_ids=project_ids)
         invalid_project_ids = self._get_invalid_project_ids(
             project_dtos=project_dtos, project_ids=project_ids)
         if invalid_project_ids:
@@ -111,8 +109,9 @@ class ProjectInteractor:
         user_ids = list(set(user_ids))
         team_ids = list(set(team_ids))
         self._validate_project(project_id=project_id)
-        valid_team_ids = self.project_storage.get_valid_team_ids_for_given_project(
-            project_id=project_id, team_ids=team_ids)
+        valid_team_ids = self.project_storage \
+            .get_valid_team_ids_for_given_project(project_id=project_id,
+                                                  team_ids=team_ids)
         invalid_team_ids = list(set(team_ids) - set(valid_team_ids))
         if invalid_team_ids:
             raise TeamsNotExistForGivenProject(team_ids=invalid_team_ids)
@@ -139,7 +138,8 @@ class ProjectInteractor:
     ) -> Tuple[List[str], List[str]]:
         user_ids = []
         team_ids = []
-        user_and_team_id_dtos = project_teams_and_users_dto.user_id_with_team_id_dtos
+        user_and_team_id_dtos = project_teams_and_users_dto \
+            .user_id_with_team_id_dtos
         for user_and_team_id_dto in user_and_team_id_dtos:
             user_ids.append(user_and_team_id_dto.user_id)
             team_ids.append(user_and_team_id_dto.team_id)
@@ -196,8 +196,9 @@ class ProjectInteractor:
     def get_team_dtos(
             self, team_ids: List[str], project_id: str
     ) -> List[TeamIdAndNameDTO]:
-        valid_team_ids = self.project_storage.get_valid_team_ids_for_given_project(
-            project_id=project_id, team_ids=team_ids)
+        valid_team_ids = self.project_storage \
+            .get_valid_team_ids_for_given_project(project_id=project_id,
+                                                  team_ids=team_ids)
         return self.team_storage.get_team_id_and_name_dtos(
             team_ids=valid_team_ids)
 
