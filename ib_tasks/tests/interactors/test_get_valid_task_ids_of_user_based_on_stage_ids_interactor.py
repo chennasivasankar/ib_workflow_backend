@@ -33,6 +33,13 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
         storage = create_autospec(TaskStageStorageInterface)
         return storage
 
+    @pytest.fixture
+    def assignees(self):
+        from ib_tasks.tests.factories.interactor_dtos import \
+            TaskStageAssigneeDetailsDTOFactory
+        TaskStageAssigneeDetailsDTOFactory.reset_sequence()
+        return TaskStageAssigneeDetailsDTOFactory.create_batch(2)
+
     def test_given_valid_stage_ids_get_tasks_with_invalid_project_id(
             self, task_storage_mock, stage_storage_mock, mocker,
             task_stage_storage_mock):
@@ -272,6 +279,9 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             StageValueWithTaskIdsDTO(stage_value=2,
                                      task_ids=[1, 2])
         ]
+        from ib_tasks.tests.common_fixtures.interactors import \
+            prepare_assignees_interactor_mock
+        prepare_assignees_interactor_mock(mocker=mocker, assignees=[])
 
         from ib_tasks.interactors. \
             get_valid_task_ids_for_user_based_on_stage_ids import \
@@ -305,7 +315,7 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
 
     def test_given_valid_stage_ids_get_tasks_with_max_stage_value_dtos(
             self, task_storage_mock, stage_storage_mock, mocker, snapshot,
-            task_stage_storage_mock):
+            task_stage_storage_mock, assignees):
         # Arrange
         valid_stage_ids = ["stage_id_1", "stage_id_2"]
         task_ids = [1, 2]
@@ -344,6 +354,9 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             StageValueWithTaskIdsDTO(stage_value=2,
                                      task_ids=[1, 2])
         ]
+        from ib_tasks.tests.common_fixtures.interactors import \
+            prepare_assignees_interactor_mock
+        prepare_assignees_interactor_mock(mocker=mocker, assignees=assignees)
 
         from ib_tasks.interactors. \
             get_valid_task_ids_for_user_based_on_stage_ids import \
