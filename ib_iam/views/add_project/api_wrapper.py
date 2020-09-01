@@ -7,7 +7,7 @@ from .validator_class import ValidatorClass
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     project_with_team_ids_and_roles_dto = \
-        _convert_to_project_with_team_ids_and_roles_dto(kwargs)
+        convert_to_project_with_team_ids_and_roles_dto(kwargs)
 
     from ib_iam.storages.project_storage_implementation import \
         ProjectStorageImplementation
@@ -34,10 +34,10 @@ def api_wrapper(*args, **kwargs):
     return response_data
 
 
-def _convert_to_project_with_team_ids_and_roles_dto(kwargs):
+def convert_to_project_with_team_ids_and_roles_dto(kwargs):
     request_data = kwargs["request_data"]
     roles = request_data["roles"]
-    role_dtos = [_convert_to_role_dtos(role) for role in roles]
+    role_dtos = [convert_to_role_dtos(role) for role in roles]
     from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
     project_with_team_ids_and_roles_dto = ProjectWithTeamIdsAndRolesDTO(
         name=request_data["name"],
@@ -49,7 +49,7 @@ def _convert_to_project_with_team_ids_and_roles_dto(kwargs):
     return project_with_team_ids_and_roles_dto
 
 
-def _convert_to_role_dtos(role):
+def convert_to_role_dtos(role):
     from ib_iam.interactors.storage_interfaces.dtos import \
         RoleNameAndDescriptionDTO
     role_dto = RoleNameAndDescriptionDTO(
