@@ -8,8 +8,8 @@ from ib_iam.adapters.auth_service import UserTokensDTO
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.interactors.dtos.dtos import CompleteUserProfileDTO
 from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDTO, TeamDTO, TeamUserIdsDTO, CompanyIdWithEmployeeIdsDTO
-)
+    CompanyDTO, TeamDTO, TeamUserIdsDTO, CompanyIdWithEmployeeIdsDTO,
+    UserRoleDTO)
 
 
 @dataclasses.dataclass
