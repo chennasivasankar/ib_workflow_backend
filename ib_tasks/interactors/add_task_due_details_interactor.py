@@ -51,7 +51,6 @@ class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
                                                    user_id=user_id, stage_id=stage_id)
         self._validate_updated_due_datetime(updated_due_datetime)
         self._validate_reason_id(reason_id)
-
         self._add_task_due_delay_details(due_details)
 
     @staticmethod

@@ -53,6 +53,7 @@ EMPTY_VALUE_FOR_READ_PERMISSIONS = "Read Permission roles shouldn't be empty " \
                                    "" \
                                    "" \
                                    "" \
+                                   "" \
                                    "for these fields ids {}"
 DUPLICATED_VALUES_FOR_READ_PERMISSIONS = "Repeated roles for read " \
                                          "permissions for these fields {}"
@@ -384,3 +385,9 @@ DUPLICATE_ORDER_FOR_FIELDS_OF_SAME_GOF = \
 ORDER_FOR_FIELD_SHOULD_NOT_BE_NEGATIVE = \
     "Order for Field should not be negative, " \
     "got negative orders for fields: {}"
+
+TASK_DELAY_REASON_NOT_UPDATED = (
+    "Task delay reason not updated for task {} in stage {} with missed due "
+    "date {}",
+    "TASK_DELAY_REASON_NOT_UPDATED"
+)

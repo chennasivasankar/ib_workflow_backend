@@ -1,3 +1,4 @@
+import datetime
 from typing import Optional, List, Union
 
 from ib_tasks.constants.config import TIME_FORMAT
@@ -25,7 +26,8 @@ from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
     StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId, \
+    TaskDelayReasonIsNotUpdated
 from ib_tasks.interactors.create_or_update_task. \
     template_gofs_fields_base_validations import \
     TemplateGoFsFieldsBaseValidationsInteractor
@@ -110,6 +112,8 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter.raise_start_date_is_ahead_of_due_date(err)
         except DueTimeHasExpiredForToday as err:
             return presenter.raise_due_time_has_expired_for_today(err)
+        except TaskDelayReasonIsNotUpdated as err:
+            return presenter.raise_task_delay_reason_not_updated(err)
         except DuplicateSameGoFOrderForAGoF as err:
             return presenter.raise_duplicate_same_gof_orders_for_a_gof(err)
         except InvalidGoFIds as err:
@@ -248,8 +252,7 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             gof_already_exists = \
                 self._is_gof_already_exists(
                     task_gof_dto.gof_id, task_gof_dto.same_gof_order,
-                    existing_gofs
-                )
+                    existing_gofs)
             if gof_already_exists:
                 task_gof_dtos_for_updation.append(task_gof_dto)
             else:
@@ -431,7 +434,6 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return
         self._validate_start_date_and_due_date_dependencies(
             start_date, due_date)
-        import datetime
         self._validate_due_time_format(due_time)
         due_date_is_expired = (due_date < datetime.datetime.today().date())
         if due_date_is_expired:
@@ -443,6 +445,40 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
                 due_time_obj < now_time)
         if due_time_is_expired_if_due_date_is_today:
             raise DueTimeHasExpiredForToday(due_time)
+        updated_due_date = datetime.datetime.combine(due_date, due_time_obj)
+        self._validate_task_delay_reason_is_added_if_due_date_is_changed(
+            updated_due_date=updated_due_date, task_id=task_dto.task_id,
+            stage_id=task_dto.stage_assignee.stage_id
+        )
+
+    def _validate_task_delay_reason_is_added_if_due_date_is_changed(
+            self, updated_due_date: datetime.datetime, task_id: int,
+            stage_id: int
+    ) -> Optional[TaskDelayReasonIsNotUpdated]:
+        existing_due_date = \
+            self.create_task_storage.get_existing_task_due_date(task_id)
+        due_date_has_changed = existing_due_date != updated_due_date
+        if due_date_has_changed:
+            self._validate_delay_reason_is_updated_or_not(
+                task_id, stage_id, updated_due_date)
+        return
+
+    def _validate_delay_reason_is_updated_or_not(
+            self, task_id: int, stage_id: int,
+            updated_due_date: datetime.datetime
+    ) -> Optional[TaskDelayReasonIsNotUpdated]:
+        is_task_delay_reason_updated = \
+            self.create_task_storage.check_task_delay_reason_updated_or_not(
+                task_id, stage_id, updated_due_date)
+        task_delay_reason_is_not_updated = not is_task_delay_reason_updated
+        task_display_id = \
+            self.create_task_storage.get_task_display_id_for_task_id(task_id)
+        stage_display_name = \
+            self.stage_storage.get_stage_display_name_for_stage_id(stage_id)
+        if task_delay_reason_is_not_updated:
+            raise TaskDelayReasonIsNotUpdated(
+                updated_due_date, task_display_id, stage_display_name)
+        return
 
     @staticmethod
     def _validate_due_time_format(due_time: str):

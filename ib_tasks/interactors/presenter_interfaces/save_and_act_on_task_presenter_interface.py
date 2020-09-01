@@ -4,6 +4,8 @@ from ib_tasks.exceptions.datetime_custom_exceptions import DueDateHasExpired
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
     StageIdsListEmptyException, InvalidStageIdsListException
+from ib_tasks.exceptions.task_custom_exceptions import \
+    TaskDelayReasonIsNotUpdated
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
@@ -209,4 +211,9 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_invalid_stage_ids_list_exception(
             self, err: InvalidStageIdsListException):
+        pass
+
+    @abc.abstractmethod
+    def raise_task_delay_reason_not_updated(self,
+                                            err: TaskDelayReasonIsNotUpdated):
         pass

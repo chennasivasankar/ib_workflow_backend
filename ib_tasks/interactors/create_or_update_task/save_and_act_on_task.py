@@ -28,7 +28,8 @@ from ib_tasks.exceptions.stage_custom_exceptions import \
     InvalidDbStageIdsListException, InvalidStageId, StageIdsListEmptyException, \
     InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId, \
+    TaskDelayReasonIsNotUpdated
 from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
     UpdateTaskInteractor
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
@@ -107,6 +108,8 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter.raise_due_date_has_expired(err)
         except DueTimeHasExpiredForToday as err:
             return presenter.raise_due_time_has_expired_for_today(err)
+        except TaskDelayReasonIsNotUpdated as err:
+            return presenter.raise_task_delay_reason_not_updated(err)
         except DuplicateSameGoFOrderForAGoF as err:
             return presenter.raise_duplicate_same_gof_orders_for_a_gof(err)
         except InvalidGoFIds as err:

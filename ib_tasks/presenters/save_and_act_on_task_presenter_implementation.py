@@ -26,7 +26,7 @@ from ib_tasks.exceptions.stage_custom_exceptions import \
     InvalidStageIdsListException, StageIdsListEmptyException
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, TaskDelayReasonIsNotUpdated
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.presenter_interfaces \
@@ -41,6 +41,19 @@ from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 class SaveAndActOnATaskPresenterImplementation(
     SaveAndActOnATaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_task_delay_reason_not_updated(self,
+                                            err: TaskDelayReasonIsNotUpdated):
+        from ib_tasks.constants.exception_messages import \
+            TASK_DELAY_REASON_NOT_UPDATED
+        message = TASK_DELAY_REASON_NOT_UPDATED[0].format(
+            err.task_display_id, err.stage_display_name, err.due_date)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": TASK_DELAY_REASON_NOT_UPDATED[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_stage_ids_list_empty_exception(self,
                                              err: StageIdsListEmptyException):
