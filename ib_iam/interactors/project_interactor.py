@@ -276,8 +276,9 @@ class ProjectInteractor:
             project_with_team_ids_and_roles_dto: ProjectWithTeamIdsAndRolesDTO
     ):
         # todo confirm and write user permissions
-        # todo validate duplicate or invalid team_ids
         # todo validate is project name already exists for any other project
+        # todo display_id uniqueness
+        # todo validate duplicate or invalid team_ids
         project_without_id_dto = ProjectWithoutIdDTO(
             name=project_with_team_ids_and_roles_dto.name,
             display_id=project_with_team_ids_and_roles_dto.display_id,
@@ -306,9 +307,10 @@ class ProjectInteractor:
     def update_project(
             self, complete_project_details_dto: CompleteProjectDetailsDTO):
         # todo confirm and write user permissions
-        # todo validate given invalid team_ids or duplicate team_ids
+        # todo validate project_id
         # todo validate is project name already exists for any other project
-        # todo validate role_ids
+        # todo validate given invalid team_ids or duplicate team_ids
+        # todo validate role_ids - duplicate role_ids or invalid_role_ids
         project_id = complete_project_details_dto.project_id
         team_ids = complete_project_details_dto.team_ids
         project_dto = ProjectDTO(
