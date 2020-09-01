@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Optional
 
+from ib_iam.exceptions.custom_exceptions import InvalidTeamId
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import \
@@ -49,4 +50,8 @@ class TeamMemberLevelStorageInterface(ABC):
     def get_member_id_with_subordinate_member_ids_dtos(
             self, team_id: str, member_ids: List[str]
     ) -> List[MemberIdWithSubordinateMemberIdsDTO]:
+        pass
+
+    @abstractmethod
+    def validate_team_id(self, team_id: str) -> Optional[InvalidTeamId]:
         pass

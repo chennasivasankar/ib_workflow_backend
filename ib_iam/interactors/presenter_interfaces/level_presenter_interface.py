@@ -13,6 +13,18 @@ class AddTeamMemberLevelsPresenterInterface(ABC):
     def prepare_success_response_for_add_team_member_levels_to_team(self):
         pass
 
+    @abstractmethod
+    def response_for_invalid_team_id(self):
+        pass
+
+    @abstractmethod
+    def response_for_duplicate_level_hierarchies(self, err):
+        pass
+
+    @abstractmethod
+    def response_for_negative_level_hierarchies(self, err):
+        pass
+
 
 class GetTeamMemberLevelsPresenterInterface(ABC):
 

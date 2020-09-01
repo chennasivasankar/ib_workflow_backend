@@ -62,6 +62,103 @@ class TestAddTeamMemberLevelsInteractor:
         ]
         return team_member_level_dtos
 
+    def test_with_invalid_team_id_return_response(
+            self, storage_mock, presenter_mock, interactor,
+            prepare_team_member_level_dtos
+    ):
+        # Arrange
+        team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        team_member_level_dtos = prepare_team_member_level_dtos
+        expected_presenter_response_for_invalid_team_id_mock = Mock()
+
+        from ib_iam.exceptions.custom_exceptions import InvalidTeamId
+        storage_mock.validate_team_id.side_effect = InvalidTeamId
+
+        presenter_mock.response_for_invalid_team_id.return_value \
+            = expected_presenter_response_for_invalid_team_id_mock
+
+        # Act
+        response = interactor.add_team_member_levels_wrapper(
+            team_id=team_id, team_member_level_dtos=team_member_level_dtos,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == \
+               expected_presenter_response_for_invalid_team_id_mock
+        storage_mock.validate_team_id.assert_called_with(team_id=team_id)
+        presenter_mock.response_for_invalid_team_id.assert_called_once()
+
+    def test_with_duplicate_level_hierarchies_return_response(
+            self, storage_mock, presenter_mock, interactor,
+            prepare_team_member_level_dtos
+    ):
+        # Arrange
+        team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        team_member_level_dtos = prepare_team_member_level_dtos
+        team_member_level_dtos[0].level_hierarchy = 2
+        team_member_level_dtos[3].level_hierarchy = 1
+        expected_duplicate_level_hierarchies = [1, 2]
+
+        expected_presenter_response_for_duplicate_level_hierarchies_mock = Mock()
+
+        presenter_mock.response_for_duplicate_level_hierarchies.return_value = \
+            expected_presenter_response_for_duplicate_level_hierarchies_mock
+
+        # Act
+        response = interactor.add_team_member_levels_wrapper(
+            team_id=team_id, team_member_level_dtos=team_member_level_dtos,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == \
+               expected_presenter_response_for_duplicate_level_hierarchies_mock
+
+        presenter_mock.response_for_duplicate_level_hierarchies. \
+            assert_called_once()
+        call_args = \
+            presenter_mock.response_for_duplicate_level_hierarchies.call_args
+        error_object = call_args[0][0]
+        duplicate_level_hierarchies = error_object.level_hierarchies
+        assert sorted(duplicate_level_hierarchies) == \
+               sorted(expected_duplicate_level_hierarchies)
+
+    def test_with_negative_level_hierarchies_return_response(
+            self, storage_mock, presenter_mock, interactor,
+            prepare_team_member_level_dtos
+    ):
+        # Arrange
+        team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        team_member_level_dtos = prepare_team_member_level_dtos
+        team_member_level_dtos[0].level_hierarchy = -2
+        team_member_level_dtos[3].level_hierarchy = -1
+        expected_negative_level_hierarchies = [-1, -2]
+
+        expected_presenter_response_for_negative_level_hierarchies_mock = Mock()
+
+        presenter_mock.response_for_negative_level_hierarchies.return_value = \
+            expected_presenter_response_for_negative_level_hierarchies_mock
+
+        # Act
+        response = interactor.add_team_member_levels_wrapper(
+            team_id=team_id, team_member_level_dtos=team_member_level_dtos,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == \
+               expected_presenter_response_for_negative_level_hierarchies_mock
+
+        presenter_mock.response_for_negative_level_hierarchies. \
+            assert_called_once()
+        call_args = \
+            presenter_mock.response_for_negative_level_hierarchies.call_args
+        error_object = call_args[0][0]
+        negative_level_hierarchies = error_object.level_hierarchies
+        assert sorted(negative_level_hierarchies) == \
+               sorted(expected_negative_level_hierarchies)
+
     def test_with_valid_details_return_response(
             self, storage_mock, presenter_mock, interactor,
             prepare_team_member_level_dtos):
