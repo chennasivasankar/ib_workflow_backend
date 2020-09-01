@@ -29,6 +29,7 @@ class GetTaskStagesAndActions:
         if is_invalid:
             raise InvalidTaskIdException(task_id)
 
+        project_id = self.task_storage.get_task_project_id(task_id)
         stage_ids = self.storage.get_task_stages(task_id)
         stage_details_dtos = self.storage.get_stage_complete_details(
             stage_ids)

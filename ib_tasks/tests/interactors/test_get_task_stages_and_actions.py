@@ -129,6 +129,7 @@ class TestGetTaskStagesAndActions:
             get_stage_actions_for_one_stage,
             get_stage_details_for_one_stage):
         # Arrange
+        project_id = "project_id_1"
         task_id = 1
         storage = create_autospec(FieldsStorageInterface)
         task_storage = create_autospec(StorageInterface)
@@ -138,6 +139,7 @@ class TestGetTaskStagesAndActions:
         user_roles_mock = get_user_role_ids(mocker)
         user_roles_mock.return_value = user_roles
         action_ids = [1, 2]
+        task_storage.get_task_project_id.return_value = project_id
         prepare_get_permitted_action_ids(mocker, action_ids=action_ids)
         storage.get_task_stages.return_value = ["stage_id_0"]
         action_storage.get_actions_details.return_value = get_stage_actions_for_one_stage
@@ -158,6 +160,7 @@ class TestGetTaskStagesAndActions:
             self, mocker, get_user_roles, snapshot, get_stage_details):
         # Arrange
         task_id = 1
+        project_id = "project_id_1"
         storage = create_autospec(FieldsStorageInterface)
         task_storage = create_autospec(StorageInterface)
         action_storage = create_autospec(ActionStorageInterface)
@@ -165,6 +168,7 @@ class TestGetTaskStagesAndActions:
         user_roles = get_user_roles
         user_roles_mock = get_user_role_ids(mocker)
         user_roles_mock.return_value = user_roles
+        task_storage.get_task_project_id.return_value = project_id
         storage.get_task_stages.return_value = ["stage_id_0", "stage_id_1",
                                                 "stage_id_2"]
         prepare_get_permitted_action_ids(mocker, action_ids=[])
@@ -182,12 +186,14 @@ class TestGetTaskStagesAndActions:
                                                           user_id="user_id_1")
 
         # Assert
+        task_storage.get_task_project_id.assert_called_once_with(task_id)
         snapshot.assert_match(response, "response")
 
     def test_given_task_id_with_one_stage_without_no_actions_returns_actions_as_empty_list(
             self, mocker, get_user_roles, snapshot, get_stage_details):
         # Arrange
         task_id = 1
+        project_id = "project_id_1"
         user_roles = get_user_roles
         user_roles_mock = get_user_role_ids(mocker)
         user_roles_mock.return_value = user_roles
@@ -195,6 +201,7 @@ class TestGetTaskStagesAndActions:
         action_storage = create_autospec(ActionStorageInterface)
         task_storage = create_autospec(StorageInterface)
         task_storage.validate_task_id.return_value = True
+        task_storage.get_task_project_id.return_value = project_id
         storage.get_task_stages.return_value = ["stage_id_0"]
         prepare_get_permitted_action_ids(mocker, action_ids=[])
         action_storage.get_actions_details.return_value = []
@@ -209,6 +216,8 @@ class TestGetTaskStagesAndActions:
             user_id="123e4567-e89b-12d3-a456-426614174000")
 
         # Assert
+        task_storage.validate_task_id.assert_called_once_with(task_id)
+        storage.get_task_stages.assert_called_once_with(task_id)
         snapshot.assert_match(response, "response")
 
     def test_validate_task_id_given_invalid_task_id_raises_exception(
