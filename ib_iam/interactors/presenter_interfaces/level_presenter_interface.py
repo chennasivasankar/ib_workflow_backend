@@ -25,6 +25,10 @@ class AddTeamMemberLevelsPresenterInterface(ABC):
     def response_for_negative_level_hierarchies(self, err):
         pass
 
+    @abstractmethod
+    def response_for_duplicate_team_member_levels(self, err):
+        pass
+
 
 class GetTeamMemberLevelsPresenterInterface(ABC):
 

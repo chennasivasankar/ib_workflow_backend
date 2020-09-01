@@ -18,6 +18,11 @@ class NegativeLevelHierarchy(Exception):
         self.level_hierarchies = level_hierarchies
 
 
+class DuplicateTeamMemberLevelNames(Exception):
+    def __init__(self, team_member_level_names: List[str]):
+        self.team_member_level_names = team_member_level_names
+
+
 class AddTeamMemberLevelsInteractor:
 
     def __init__(self,
@@ -50,6 +55,8 @@ class AddTeamMemberLevelsInteractor:
             response = presenter.response_for_duplicate_level_hierarchies(err)
         except NegativeLevelHierarchy as err:
             response = presenter.response_for_negative_level_hierarchies(err)
+        except DuplicateTeamMemberLevelNames as err:
+            response = presenter.response_for_duplicate_team_member_levels(err)
         return response
 
     def _add_team_member_levels_response(
@@ -57,8 +64,9 @@ class AddTeamMemberLevelsInteractor:
             team_member_level_dtos: List[TeamMemberLevelDTO],
             presenter: AddTeamMemberLevelsPresenterInterface
     ):
-        self.add_team_member_levels(team_id=team_id,
-                                    team_member_level_dtos=team_member_level_dtos)
+        self.add_team_member_levels(
+            team_id=team_id,
+            team_member_level_dtos=team_member_level_dtos)
         response = presenter. \
             prepare_success_response_for_add_team_member_levels_to_team()
         return response
@@ -72,6 +80,34 @@ class AddTeamMemberLevelsInteractor:
             team_member_level_dto.level_hierarchy
             for team_member_level_dto in team_member_level_dtos
         ]
+        team_member_level_names = [
+            team_member_level_dto.team_member_level_name
+            for team_member_level_dto in team_member_level_dtos
+        ]
+        self._validate_duplicate_level_hierarchies(
+            level_hierarchies=level_hierarchies)
+        self._validate_negative_level_hierarchies(
+            level_hierarchies=level_hierarchies)
+        self._validate_duplicate_team_member_level_names(
+            team_member_level_names=team_member_level_names
+        )
+        self.team_member_level_storage.add_team_member_levels(
+            team_id=team_id, team_member_level_dtos=team_member_level_dtos
+        )
+        return
+
+    @staticmethod
+    def _validate_negative_level_hierarchies(level_hierarchies: List[int]):
+        negative_level_hierarchies = [
+            level_hierarchy
+            for level_hierarchy in level_hierarchies if level_hierarchy < 0
+        ]
+        if negative_level_hierarchies:
+            raise NegativeLevelHierarchy(
+                level_hierarchies=negative_level_hierarchies)
+
+    @staticmethod
+    def _validate_duplicate_level_hierarchies(level_hierarchies: List[int]):
         duplicate_level_hierarchies = [
             level_hierarchy
             for level_hierarchy, count in
@@ -80,14 +116,17 @@ class AddTeamMemberLevelsInteractor:
         if duplicate_level_hierarchies:
             raise DuplicateLevelHierarchies(
                 level_hierarchies=duplicate_level_hierarchies)
-        negative_level_hierarchies = [
-            level_hierarchy
-            for level_hierarchy in level_hierarchies if level_hierarchy < 0
+        return
+
+    @staticmethod
+    def _validate_duplicate_team_member_level_names(
+            team_member_level_names: List[str]):
+        duplicate_team_member_level_names = [
+            team_member_level_name
+            for team_member_level_name, count in
+            collections.Counter(team_member_level_names).items() if count > 1
         ]
-        if negative_level_hierarchies:
-            raise NegativeLevelHierarchy(
-                level_hierarchies=negative_level_hierarchies)
-        self.team_member_level_storage.add_team_member_levels(
-            team_id=team_id, team_member_level_dtos=team_member_level_dtos
-        )
+        if duplicate_team_member_level_names:
+            raise DuplicateTeamMemberLevelNames(
+                team_member_level_names=duplicate_team_member_level_names)
         return

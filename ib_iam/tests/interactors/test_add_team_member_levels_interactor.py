@@ -159,6 +159,45 @@ class TestAddTeamMemberLevelsInteractor:
         assert sorted(negative_level_hierarchies) == \
                sorted(expected_negative_level_hierarchies)
 
+    def test_with_duplicate_team_member_level_names_return_response(
+            self, storage_mock, presenter_mock, interactor,
+            prepare_team_member_level_dtos
+    ):
+        # Arrange
+        team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        team_member_level_dtos = prepare_team_member_level_dtos
+        team_member_level_dtos[1].team_member_level_name = "Developer"
+        team_member_level_dtos[3].team_member_level_name = "Engineer Manager"
+        expected_duplicate_team_member_level_names = [
+            "Developer",
+            "Engineer Manager"
+        ]
+
+        expected_presenter_response_for_duplicate_team_member_levels_mock = \
+            Mock()
+
+        presenter_mock.response_for_duplicate_team_member_levels.return_value = \
+            expected_presenter_response_for_duplicate_team_member_levels_mock
+
+        # Act
+        response = interactor.add_team_member_levels_wrapper(
+            team_id=team_id, team_member_level_dtos=team_member_level_dtos,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == \
+               expected_presenter_response_for_duplicate_team_member_levels_mock
+
+        presenter_mock.response_for_duplicate_team_member_levels. \
+            assert_called_once()
+        call_args = \
+            presenter_mock.response_for_duplicate_team_member_levels.call_args
+        error_object = call_args[0][0]
+        duplicate_team_member_level_names = error_object.team_member_level_names
+        assert sorted(duplicate_team_member_level_names) == \
+               sorted(expected_duplicate_team_member_level_names)
+
     def test_with_valid_details_return_response(
             self, storage_mock, presenter_mock, interactor,
             prepare_team_member_level_dtos):
