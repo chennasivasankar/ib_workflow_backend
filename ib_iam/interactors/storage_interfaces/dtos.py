@@ -40,7 +40,7 @@ class RoleIdAndNameDTO:
 
 
 @dataclass
-class UserTeamDTO:
+class TeamWithUserIdDTO:
     user_id: str
     team_id: str
     team_name: str

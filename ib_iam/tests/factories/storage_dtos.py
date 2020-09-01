@@ -2,7 +2,7 @@ import factory
 
 from ib_iam.constants.enums import Searchable
 from ib_iam.interactors.storage_interfaces.dtos import (
-    UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO,
+    TeamWithUserIdDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO,
     CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, MemberDTO,
     TeamMemberLevelDetailsDTO, UserProfileDTO, SearchableDetailsDTO,
     ProjectDTO, MemberIdWithSubordinateMemberIdsDTO, ProjectRoleDTO)
@@ -20,7 +20,7 @@ class UserDTOFactory(factory.Factory):
 
 class UserTeamDTOFactory(factory.Factory):
     class Meta:
-        model = UserTeamDTO
+        model = TeamWithUserIdDTO
 
     user_id = factory.sequence(lambda number: "user%s" % number)
     team_id = factory.sequence(lambda number: "team%s" % number)

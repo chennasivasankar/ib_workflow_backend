@@ -13,17 +13,17 @@ def api_wrapper(*args, **kwargs):
         UserStorageImplementation
     user_storage = UserStorageImplementation()
 
-    from ib_iam.presenters.get_specific_team_details_presenter_implementation import \
-        GetSpecificTeamDetailsPresenterImplementation
-    presenter = GetSpecificTeamDetailsPresenterImplementation()
+    from ib_iam.presenters.get_list_of_user_roles_for_given_project_presenter_implementation import \
+        GetListOfUserRolesForGivenProjectPresenterImplementation
+    presenter = GetListOfUserRolesForGivenProjectPresenterImplementation()
 
-    from ib_iam.interactors.get_specific_project_details_interactor import \
-        GetSpecificProjectDetailsInteractor
-    interactor = GetSpecificProjectDetailsInteractor(
+    from ib_iam.interactors.get_list_of_user_roles_for_given_project_interactor import \
+        GetListOfUserRolesForGivenProjectInteractor
+    interactor = GetListOfUserRolesForGivenProjectInteractor(
         user_storage=user_storage
     )
 
-    response = interactor.get_specific_project_details_wrapper(
+    response = interactor.get_list_of_user_roles_for_given_project_wrapper(
         project_id=project_id, presenter=presenter
     )
     return response

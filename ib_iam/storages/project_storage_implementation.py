@@ -116,7 +116,8 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         ).values_list(
             "team_id", flat=True
         )
-        user_team_objects = UserTeam.objects.filter(
+        from ib_iam.models import TeamUser
+        user_team_objects = TeamUser.objects.filter(
             team_id__in=team_ids, user_id=user_id
         )
         return user_team_objects.exists()
@@ -138,18 +139,6 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         ).values_list('team__team_id', flat=True))
         return list(map(str, team_ids))
 
-    def is_user_in_a_project(
-            self, user_id: str, project_id: str) -> bool:
-        from ib_iam.models import UserRole
-        user_role_objects = UserRole.objects.filter(
-            user_id=user_id, project_role__project_id=project_id
-        )
-        return user_role_objects.exists()
-
-    def is_valid_project_id(self, project_id: str) -> bool:
-        project_objects = Project.objects.filter(project_id=project_id)
-        return project_objects.exists()
-
     def get_all_project_roles(self) -> List[ProjectRoleDTO]:
         project_role_objects = ProjectRole.objects.all()
         project_role_dtos = [self._get_project_role_dto(project_role_object)
@@ -163,3 +152,4 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             role_id=project_role_object.role_id,
             name=project_role_object.name)
         return project_role_dto
+

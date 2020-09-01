@@ -7,9 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01GetSpecificProjectDetailsAPITestCase.test_with_valid_project_id_return_response status_code'] = '200'
+snapshots['TestCase01GetListOfUserRolesForGivenProjectAPITestCase.test_with_valid_project_id_return_response status_code'] = '200'
 
-snapshots['TestCase01GetSpecificProjectDetailsAPITestCase.test_with_valid_project_id_return_response body'] = {
+snapshots['TestCase01GetListOfUserRolesForGivenProjectAPITestCase.test_with_valid_project_id_return_response body'] = {
     'users': [
         {
             'name': 'user_1',
