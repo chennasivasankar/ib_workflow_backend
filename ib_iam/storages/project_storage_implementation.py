@@ -30,7 +30,6 @@ class ProjectStorageImplementation(ProjectStorageInterface):
 
     def get_projects_with_total_count_dto(
             self, pagination_dto: PaginationDTO) -> ProjectsWithTotalCountDTO:
-        # todo update its test method with new things
         project_objects = Project.objects.all()
         total_projects_count = len(project_objects)
         offset = pagination_dto.offset
@@ -45,7 +44,6 @@ class ProjectStorageImplementation(ProjectStorageInterface):
 
     def get_project_team_ids_dtos(
             self, project_ids: List[str]) -> List[ProjectTeamIdsDTO]:
-        # todo write tests for this method
         project_teams = ProjectTeam.objects.filter(
             project__project_id__in=project_ids
         ).values_list('project__project_id', 'team__team_id')
