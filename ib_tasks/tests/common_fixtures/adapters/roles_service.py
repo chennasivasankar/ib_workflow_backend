@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_tasks.adapters.dtos import AssigneeDetailsDTO
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO, ProjectRolesDTO
 from ib_tasks.exceptions.permission_custom_exceptions import \
     InvalidUserIdException
 
@@ -105,4 +105,24 @@ def get_user_role_ids_based_on_project_mock(mocker):
                      'FIN_ACCOUNTS_LEVEL1_VERIFIER',
                      'FIN_ACCOUNTS_LEVEL2_VERIFIER']
     mock.return_value = user_role_ids
+    return mock
+
+
+def get_user_role_ids_based_on_projects_mock(mocker):
+    mock = mocker.patch(
+        "ib_tasks.adapters.roles_service.RolesService"
+        ".get_user_role_ids_based_on_given_project_ids")
+    project_roles = [ProjectRolesDTO(
+        project_id="project_id_1",
+        roles=['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC',
+               'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
+               'FIN_COMPLIANCE_APPROVER', 'FIN_PAYMENTS_LEVEL1_VERIFIER',
+               'FIN_PAYMENTS_LEVEL2_VERIFIER']),
+        ProjectRolesDTO(
+            project_id="project_id_1",
+            roles=['FIN_PAYMENTS_LEVEL3_VERIFIER',
+                   'FIN_PAYMENTS_RP', 'FIN_FINANCE_RP',
+                   'FIN_ACCOUNTS_LEVEL1_VERIFIER',
+                   'FIN_ACCOUNTS_LEVEL2_VERIFIER'])]
+    mock.return_value = project_roles
     return mock

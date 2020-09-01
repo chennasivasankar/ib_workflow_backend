@@ -7,6 +7,7 @@ import abc
 from abc import ABC
 from typing import List, Optional
 
+from ib_tasks.adapters.dtos import ProjectRolesDTO
 from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId, \
@@ -87,4 +88,11 @@ class ActionStorageInterface(ABC):
     @abc.abstractmethod
     def get_stage_ids_having_actions(self, db_stage_ids: List[int]) \
             -> List[int]:
+        pass
+
+    @abc.abstractmethod
+    def get_permitted_action_ids_for_given_task_stages(
+            self,
+            user_project_roles: List[ProjectRolesDTO],
+            stage_ids):
         pass

@@ -48,3 +48,9 @@ class TaskDueDetailsDTO:
 class TaskDisplayIdDTO:
     task_id: int
     display_id: str
+
+
+@dataclass
+class TaskProjectDTO:
+    task_id: int
+    project_id: str

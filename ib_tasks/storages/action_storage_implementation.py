@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from django.db.models import F, Q
 
+from ib_tasks.adapters.dtos import ProjectRolesDTO
 from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
@@ -273,3 +274,19 @@ class ActionsStorageImplementation(ActionStorageInterface):
             )
             for action_obj in action_objs
         ]
+
+    def get_permitted_action_ids_for_given_task_stages(
+            self, user_project_roles: List[ProjectRolesDTO],
+            stage_ids):
+
+        q = None
+        for counter, item in enumerate(user_project_roles):
+            current_queue = Q(action__stage__currenttaskstage__task__project_id=item.project_id) & Q(role_id__in=item.roles) | Q(role_id=ALL_ROLES_ID)
+            if counter == 0:
+                q = current_queue
+            else:
+                q = q | current_queue
+
+        action_ids = (ActionPermittedRoles.objects.filter(q, Q(action__stage__stage_id__in=stage_ids))
+                      .values_list('action_id', flat=True))
+        return sorted(list(set(action_ids)))

@@ -1,5 +1,6 @@
 from typing import List
 
+from ib_tasks.adapters.dtos import ProjectRolesDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
@@ -65,6 +66,19 @@ class UserRoleValidationInteractor:
 
         return field_ids_having_write_permission_for_user
 
+    def get_field_ids_having_permission_for_user(
+            self, user_id: str, field_ids: List[str],
+            project_ids: List[str],
+            field_storage: FieldsStorageInterface) -> List[str]:
+
+        user_role_ids = self._get_user_role_ids_for_project_ids(
+            user_id, project_ids)
+        field_ids_having_write_permission_for_user = \
+            field_storage.get_field_ids_having_write_permission_for_user(
+                user_roles=user_role_ids, field_ids=field_ids)
+
+        return field_ids_having_write_permission_for_user
+
     def check_is_user_has_read_permission_for_field(
             self, user_id: str, field_id: str,
             field_storage: FieldsStorageInterface) -> bool:
@@ -88,7 +102,8 @@ class UserRoleValidationInteractor:
     def get_permitted_stage_ids_given_user_id(self, user_id: str,
                                               project_id: str,
                                               stage_storage: StageStorageInterface) -> List[str]:
-        user_role_ids = self._get_user_role_ids(user_id)
+        user_role_ids = self._get_user_role_ids_for_project(user_id,
+                                                            project_id)
         permitted_stage_ids = stage_storage.get_permitted_stage_ids(
             user_role_ids, project_id
         )
@@ -96,11 +111,24 @@ class UserRoleValidationInteractor:
 
     def get_permitted_action_ids_for_given_user_id(
             self, stage_ids: List[str],
-            user_id: str,
+            user_id: str, project_id: str,
             action_storage: ActionStorageInterface) -> List[int]:
-        user_role_ids = self._get_user_role_ids(user_id)
-        permitted_action_ids = action_storage.get_permitted_action_ids_given_stage_ids(
+        user_role_ids = self._get_user_role_ids_for_project(
+            user_id, project_id)
+        permitted_action_ids = action_storage.\
+            get_permitted_action_ids_given_stage_ids(
             user_role_ids, stage_ids)
+        return permitted_action_ids
+
+    def get_permitted_action_ids_for_given_user_in_projects(
+            self, stage_ids: List[str],
+            user_id: str, project_ids: List[str],
+            action_storage: ActionStorageInterface) -> List[int]:
+        user_project_roles = self._get_user_role_ids_for_project_ids(
+            user_id, project_ids)
+        permitted_action_ids = action_storage. \
+            get_permitted_action_ids_for_given_task_stages(
+            user_project_roles, stage_ids)
         return permitted_action_ids
 
     @staticmethod
@@ -112,3 +140,29 @@ class UserRoleValidationInteractor:
         user_role_ids = \
             roles_service.get_user_role_ids(user_id=user_id)
         return user_role_ids
+
+    @staticmethod
+    def _get_user_role_ids_for_project(user_id: str, project_id: str) -> \
+            List[str]:
+        from ib_tasks.adapters.roles_service_adapter import \
+            get_roles_service_adapter
+        roles_service_adapter = get_roles_service_adapter()
+        roles_service = roles_service_adapter.roles_service
+        user_role_ids = \
+            roles_service.get_user_role_ids_based_on_project(
+                user_id=user_id,
+                project_id=project_id)
+        return user_role_ids
+
+    @staticmethod
+    def _get_user_role_ids_for_project_ids(user_id: str, project_ids: List[str]) -> \
+            List[ProjectRolesDTO]:
+        from ib_tasks.adapters.roles_service_adapter import \
+            get_roles_service_adapter
+        roles_service_adapter = get_roles_service_adapter()
+        roles_service = roles_service_adapter.roles_service
+        project_roles_dtos = \
+            roles_service.get_user_role_ids_based_on_given_project_ids(
+                user_id=user_id,
+                project_ids=project_ids)
+        return project_roles_dtos
