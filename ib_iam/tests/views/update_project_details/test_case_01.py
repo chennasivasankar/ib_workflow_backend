@@ -21,6 +21,7 @@ class TestCase01UpdateProjectDetailsAPITestCase(TestUtils):
         from ib_iam.tests.common_fixtures.adapters.uuid_mock import \
             prepare_uuid_mock
         mock = prepare_uuid_mock(mocker)
+        # below uuid is for role creation
         mock.return_value = UUID("7eb737be-810f-4580-83ea-ff4fa67edd22")
         body = {
             'name': 'payment_project',

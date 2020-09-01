@@ -42,7 +42,7 @@ class TestCase01AddProjectAPITestCase(TestUtils):
                                       headers=headers,
                                       snapshot=snapshot)
         from ib_iam.models import Project, ProjectTeam, ProjectRole
-        project_id = "project_7eb737be-810f-4580-83ea-ff4fa67edd22"
+        project_id = "project_7eb737be810f458083eaff4fa67edd22"
         project_details = Project.objects.filter(
             project_id=project_id).values()
         snapshot.assert_match(list(project_details), "project_details")

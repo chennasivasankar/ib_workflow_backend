@@ -5,7 +5,8 @@ from django.db import models
 
 def generate_project_id():
     from ib_iam.constants.config import PROJECT_ID_PREFIX
-    project_id = PROJECT_ID_PREFIX.format(str(uuid.uuid4()))
+    suffix = str(uuid.uuid4()).replace("-", "")
+    project_id = PROJECT_ID_PREFIX.format(suffix)
     return project_id
 
 

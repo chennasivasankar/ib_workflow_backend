@@ -18,7 +18,7 @@ snapshots['TestCase01AddProjectAPITestCase.test_case project_details'] = [
         'display_id': 'display_id 1',
         'logo_url': 'https://logo.com',
         'name': 'project_1',
-        'project_id': 'project_7eb737be-810f-4580-83ea-ff4fa67edd22'
+        'project_id': 'project_7eb737be810f458083eaff4fa67edd22'
     }
 ]
 
