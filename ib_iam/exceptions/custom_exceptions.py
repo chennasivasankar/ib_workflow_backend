@@ -175,3 +175,14 @@ class InvalidRoleIdsForProject(Exception):
 
 class InvalidLevelHierarchyOfTeam(Exception):
     pass
+
+
+class MemberIdsNotFoundInTeam(Exception):
+    def __init__(self, team_member_ids: List[str]):
+        self.team_member_ids = team_member_ids
+
+
+class UsersNotBelongToLevel(Exception):
+    def __init__(self, user_ids: List[str], level_hierarchy: int):
+        self.user_ids = user_ids
+        self.level_hierarchy = level_hierarchy

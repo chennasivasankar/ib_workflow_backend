@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from ib_iam.exceptions.custom_exceptions import InvalidTeamId
+from ib_iam.exceptions.custom_exceptions import InvalidTeamId, \
+    UsersNotBelongToLevel
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import \
@@ -67,4 +68,10 @@ class TeamMemberLevelStorageInterface(ABC):
     @abstractmethod
     def validate_level_hierarchy_of_team(
             self, team_id: str, level_hierarchy: int):
+        pass
+
+    @abstractmethod
+    def validate_users_belong_to_given_level_hierarchy_in_a_team(
+            self, team_id: str, user_ids: List[str], level_hierarchy: int
+    ) -> Optional[UsersNotBelongToLevel]:
         pass

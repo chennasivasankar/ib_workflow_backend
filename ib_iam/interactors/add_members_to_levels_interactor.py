@@ -1,5 +1,6 @@
 from typing import List
 
+from ib_iam.exceptions.custom_exceptions import MemberIdsNotFoundInTeam
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelIdWithMemberIdsDTO
 from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
     AddMembersToLevelPresenterInterface
@@ -10,11 +11,6 @@ from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface i
 class TeamMemberLevelIdsNotFound(Exception):
     def __init__(self, team_member_level_ids: List[str]):
         self.team_member_level_ids = team_member_level_ids
-
-
-class TeamMemberIdsNotFound(Exception):
-    def __init__(self, team_member_ids: List[str]):
-        self.team_member_ids = team_member_ids
 
 
 class AddMembersToLevelsInteractor:
@@ -28,11 +24,6 @@ class AddMembersToLevelsInteractor:
             team_member_level_id_with_member_ids_dtos: List[
                 TeamMemberLevelIdWithMemberIdsDTO]
     ):
-        '''
-        1. invalid team id
-        2. validate team member levels for team
-        3. validate members belong to team.
-        '''
         from ib_iam.exceptions.custom_exceptions import InvalidTeamId
         try:
             response = self._add_members_to_levels_response(
@@ -44,7 +35,7 @@ class AddMembersToLevelsInteractor:
         except TeamMemberLevelIdsNotFound as err:
             response = presenter.response_for_team_member_level_ids_not_found(
                 err)
-        except TeamMemberIdsNotFound as err:
+        except MemberIdsNotFoundInTeam as err:
             response = presenter.response_for_team_member_ids_not_found(err)
         return response
 
@@ -93,14 +84,14 @@ class AddMembersToLevelsInteractor:
         for team_member_level_id_with_member_ids_dto in team_member_level_id_with_member_ids_dtos:
             team_member_ids.extend(
                 team_member_level_id_with_member_ids_dto.member_ids)
-        team_member_ids_not_found = [
+        member_ids_not_found_in_team = [
             team_member_id
             for team_member_id in team_member_ids
             if team_member_id not in team_member_ids_in_database
         ]
-        if team_member_ids_not_found:
-            raise TeamMemberIdsNotFound(
-                team_member_ids=team_member_ids_not_found)
+        if member_ids_not_found_in_team:
+            raise MemberIdsNotFoundInTeam(
+                team_member_ids=member_ids_not_found_in_team)
 
     def _validate_team_member_level_ids(
             self, team_id: str,

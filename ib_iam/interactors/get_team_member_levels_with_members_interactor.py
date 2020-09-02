@@ -15,10 +15,13 @@ class GetTeamMemberLevelsWithMembersInteractor:
             self, team_id: str,
             presenter: GetTeamMemberLevelsWithMembersPresenterInterface
     ):
-        # TODO: Validate the team id
-        response = self._get_team_member_levels_with_members_response(
-            team_id=team_id, presenter=presenter
-        )
+        from ib_iam.exceptions.custom_exceptions import InvalidTeamId
+        try:
+            response = self._get_team_member_levels_with_members_response(
+                team_id=team_id, presenter=presenter
+            )
+        except InvalidTeamId:
+            response = presenter.response_for_invalid_team_id()
         return response
 
     def _get_team_member_levels_with_members_response(
@@ -35,6 +38,7 @@ class GetTeamMemberLevelsWithMembersInteractor:
     def get_team_member_levels_with_members(self, team_id: str) -> \
             CompleteTeamMemberLevelsDetailsDTO:
         # TODO: Optimisation should be done
+        self.team_member_level_storage.validate_team_id(team_id=team_id)
         from ib_iam.interactors.get_team_member_levels_interactor import \
             GetTeamMemberLevelsInteractor
         from ib_iam.interactors.get_team_members_of_level_hierarchy_interactor \
