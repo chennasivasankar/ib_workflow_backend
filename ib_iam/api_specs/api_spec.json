@@ -2390,6 +2390,56 @@
           }
         ]
       }
+    },
+    "BadRequestForAddProjectResponse": {
+      "description": "Bad Request for add project if given name, display_id already exists or duplicate team_ids sent",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "PROJECT_NAME_ALREADY_EXISTS",
+                  "PROJECT_DISPLAY_ID_ALREADY_EXISTS",
+                  "DUPLICATE_TEAM_IDS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "NotFoundForAddProjectResponse": {
+      "description": "Not Found Response for add project if given team ids not found",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_TEAM_IDS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
     }
   },
   "paths": {
@@ -3332,6 +3382,12 @@
         "responses": {
           "201": {
             "description": "Project created Successfully"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForAddProjectResponse"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundForAddProjectResponse"
           }
         }
       }
