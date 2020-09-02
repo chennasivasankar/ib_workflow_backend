@@ -10,3 +10,7 @@ class AddProjectPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def get_project_name_already_exists_response(self):
         pass
+
+    @abc.abstractmethod
+    def get_project_display_id_already_exists_response(self):
+        pass

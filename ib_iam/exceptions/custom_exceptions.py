@@ -175,3 +175,7 @@ class InvalidRoleIdsForProject(Exception):
 
 class ProjectNameAlreadyExists(Exception):
     pass
+
+
+class ProjectDisplayIdAlreadyExists(Exception):
+    pass

@@ -6,7 +6,7 @@ from ib_iam.app_interfaces.dtos import (
     ProjectTeamUserDTO, UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO,
     UserTeamsDTO)
 from ib_iam.exceptions.custom_exceptions import InvalidUserIds, \
-    ProjectNameAlreadyExists
+    ProjectNameAlreadyExists, ProjectDisplayIdAlreadyExists
 from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO, \
     CompleteProjectDetailsDTO
 from ib_iam.interactors.presenter_interfaces \
@@ -271,7 +271,9 @@ class ProjectInteractor:
             response = presenter.get_success_response_for_add_project()
         except ProjectNameAlreadyExists:
             response = presenter.get_project_name_already_exists_response()
-            # todo write interactor test for it
+        except ProjectDisplayIdAlreadyExists:
+            response = presenter \
+                .get_project_display_id_already_exists_response()
         return response
 
     # todo remove the tag after writing validations properly
@@ -281,12 +283,11 @@ class ProjectInteractor:
             project_with_team_ids_and_roles_dto: ProjectWithTeamIdsAndRolesDTO
     ):
         # todo confirm and write user permissions
-        # todo display_id uniqueness
         # todo validate duplicate or invalid team_ids
         self._validate_if_given_name_already_exists(
             name=project_with_team_ids_and_roles_dto.name)
-        if project_id:
-            raise ProjectNameAlreadyExists
+        self._validate_if_given_display_id_already_exists(
+            display_id=project_with_team_ids_and_roles_dto.display_id)
         project_without_id_dto = ProjectWithoutIdDTO(
             name=project_with_team_ids_and_roles_dto.name,
             display_id=project_with_team_ids_and_roles_dto.display_id,
@@ -306,6 +307,12 @@ class ProjectInteractor:
             .get_project_id_if_project_name_already_exists(name=name)
         if project_id:
             raise ProjectNameAlreadyExists
+
+    def _validate_if_given_display_id_already_exists(self, display_id: str):
+        project_id = self.project_storage \
+            .get_project_id_if_display_id_already_exists(display_id=display_id)
+        if project_id:
+            raise ProjectDisplayIdAlreadyExists
 
     def update_project_wrapper(
             self,

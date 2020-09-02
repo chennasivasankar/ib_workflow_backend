@@ -113,3 +113,8 @@ class ProjectStorageInterface(abc.ABC):
     def get_project_id_if_project_name_already_exists(
             self, name: str) -> Optional[str]:
         pass
+
+    @abc.abstractmethod
+    def get_project_id_if_display_id_already_exists(
+            self, display_id: str) -> Optional[str]:
+        pass
