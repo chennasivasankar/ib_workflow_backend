@@ -490,3 +490,35 @@ class TestProjectStorageImplementation:
         role_ids = ProjectRole.objects.filter(role_id__in=role_ids) \
             .values_list("role_id", flat=True)
         assert list(role_ids) == expected_role_ids
+
+    @pytest.mark.django_db
+    @pytest.mark.parametrize("name, expected_result", [("name 1", "project 1"),
+                                                       ("name 2", None)])
+    def test_get_project_id_if_project_name_already_exists(
+            self, name, expected_result):
+        from ib_iam.tests.factories.models import ProjectFactory
+        ProjectFactory.reset_sequence(1)
+        ProjectFactory.create()
+        project_storage = ProjectStorageImplementation()
+
+        actual_result = project_storage \
+            .get_project_id_if_project_name_already_exists(name=name)
+
+        assert actual_result == expected_result
+
+    @pytest.mark.django_db
+    @pytest.mark.parametrize("display_id, expected_result",
+                             [("display_id 1", "project 1"),
+                              ("display_id 2", None)])
+    def test_get_project_id_if_display_id_already_exists(
+            self, display_id, expected_result):
+        from ib_iam.tests.factories.models import ProjectFactory
+        ProjectFactory.reset_sequence(1)
+        ProjectFactory.create()
+        project_storage = ProjectStorageImplementation()
+
+        actual_result = \
+            project_storage.get_project_id_if_display_id_already_exists(
+                display_id=display_id)
+
+        assert actual_result == expected_result

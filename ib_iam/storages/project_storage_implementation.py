@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from ib_iam.interactors.storage_interfaces.dtos import (
     ProjectDTO, ProjectsWithTotalCountDTO, PaginationDTO, ProjectTeamIdsDTO,
@@ -214,3 +214,19 @@ class ProjectStorageImplementation(ProjectStorageInterface):
 
     def delete_project_roles(self, role_ids: List[str]):
         ProjectRole.objects.filter(role_id__in=role_ids).delete()
+
+    def get_project_id_if_project_name_already_exists(
+            self, name: str) -> Optional[str]:
+        try:
+            project_object = Project.objects.get(name=name)
+        except Project.DoesNotExist:
+            return None
+        return project_object.project_id
+
+    def get_project_id_if_display_id_already_exists(
+            self, display_id: str) -> Optional[str]:
+        try:
+            project_object = Project.objects.get(display_id=display_id)
+        except Project.DoesNotExist:
+            return None
+        return project_object.project_id
