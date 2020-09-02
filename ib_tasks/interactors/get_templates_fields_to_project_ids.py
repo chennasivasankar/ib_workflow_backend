@@ -2,7 +2,7 @@ from typing import List, Dict
 
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
-    import ProjectTemplateFieldsDto
+    import ProjectTemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
@@ -28,9 +28,12 @@ class GetProjectsTemplatesFieldsInteractor(ValidationMixin):
 
     def get_task_templates(
             self, user_id: str, project_ids: List[str]
-    ) -> ProjectTemplateFieldsDto:
+    ) -> ProjectTemplateFieldsDTO:
 
         self.validate_given_project_ids(project_ids=project_ids)
+        self.validate_if_user_is_in_projects(
+            user_id=user_id, project_ids=project_ids
+        )
         from ib_tasks.adapters.roles_service_adapter import \
             get_roles_service_adapter
         service_adapter = get_roles_service_adapter()
@@ -61,7 +64,7 @@ class GetProjectsTemplatesFieldsInteractor(ValidationMixin):
 
     def _get_complete_task_templates_dto(
             self, user_roles: List[str], project_ids: List[str]
-    ) -> ProjectTemplateFieldsDto:
+    ) -> ProjectTemplateFieldsDTO:
         template_dtos = self.task_template_storage.get_task_templates_to_project_ids(
             project_ids=project_ids
         )
@@ -74,7 +77,7 @@ class GetProjectsTemplatesFieldsInteractor(ValidationMixin):
         field_dtos = self.field_storage.get_user_permitted_gof_field_dtos(
             user_roles=user_roles, gof_ids=gof_ids
         )
-        return ProjectTemplateFieldsDto(
+        return ProjectTemplateFieldsDTO(
             task_template_dtos=template_dtos,
             task_template_gofs_dtos=template_gof_dtos,
             fields_dto=field_dtos

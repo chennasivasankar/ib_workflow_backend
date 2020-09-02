@@ -45,7 +45,7 @@ class GetListOfUsersInteractor(ValidationMixin):
     ) -> ListOfCompleteUsersWithRolesDTO:
         self._validate_is_user_admin(user_id=user_id)
         self._validate_pagination_details(offset=offset, limit=limit)
-        user_dtos = self.user_storage.get_users_who_are_not_admins(
+        user_dtos = self.user_storage.get_all_user_dtos(
             offset=offset, limit=limit,
             name_search_query=name_search_query
         )

@@ -112,12 +112,11 @@ class UserStorageImplementation(UserStorageInterface):
             name=name,
             cover_page_url=cover_page_url)
 
-    def get_users_who_are_not_admins(
+    def get_all_user_dtos(
             self, offset: int, limit: int,
             name_search_query: str) -> List[UserDTO]:
         from ib_iam.models import UserDetails
         users = UserDetails.objects.filter(
-            is_admin=False,
             name__icontains=name_search_query
         )[offset: offset + limit]
         user_dtos = [self._convert_to_user_dto(user_object=user_object) for
@@ -140,7 +139,7 @@ class UserStorageImplementation(UserStorageInterface):
         from ib_iam.models import UserDetails
         total_count_of_users = \
             UserDetails.objects.filter(
-                is_admin=False, name__icontains=name_search_query
+                name__icontains=name_search_query
             ).count()
         return total_count_of_users
 

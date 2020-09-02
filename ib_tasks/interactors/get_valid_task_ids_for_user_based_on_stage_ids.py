@@ -5,6 +5,7 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
+from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageValueWithTaskIdsDTO, TaskIdWithStageDetailsDTO, \
     TaskWithCompleteStageDetailsDTO
@@ -16,7 +17,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 
 
-class GetTaskIdsOfUserBasedOnStagesInteractor:
+class GetTaskIdsOfUserBasedOnStagesInteractor(ValidationMixin):
     def __init__(self, stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,
                  task_stage_storage: TaskStageStorageInterface):
@@ -29,7 +30,9 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
             project_id: str) \
             -> List[TaskWithCompleteStageDetailsDTO]:
         given_stage_ids = stage_ids
-
+        self._validate_project_data(
+            project_id=project_id, user_id=user_id, task_ids=task_ids
+        )
         self._validate_given_stage_ids_list_empty(given_stage_ids)
         given_unique_stage_ids = sorted(list(set(given_stage_ids)))
         valid_stage_ids = self.stage_storage. \
@@ -38,7 +41,8 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
         self._validate_stage_ids(valid_stage_ids, given_unique_stage_ids)
         task_id_with_max_stage_value_dtos = self.task_storage. \
             get_user_task_ids_and_max_stage_value_dto_based_on_given_stage_ids(
-            stage_ids=valid_stage_ids, task_ids=task_ids)
+                stage_ids=valid_stage_ids, task_ids=task_ids
+            )
         stage_values = [
             task_id_with_max_stage_value_dto.stage_value
             for task_id_with_max_stage_value_dto in
@@ -49,12 +53,11 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
             self.get_task_ids_group_by_stage_value_dtos(
                 stage_values, task_id_with_max_stage_value_dtos
             )
-        task_id_with_stage_details_dtos = self. \
-            stage_storage. \
+        task_id_with_stage_details_dtos = self.stage_storage. \
             get_task_id_with_stage_details_dtos_based_on_stage_value(
-            stage_values=stage_values,
-            task_ids_group_by_stage_value_dtos=
-            task_ids_group_by_stage_value_dtos)
+                stage_values=stage_values,
+                task_ids_group_by_stage_value_dtos=task_ids_group_by_stage_value_dtos
+            )
         task_ids = []
         task_id_with_single_stage_details_dto = []
         for task_id_with_stage_details_dto in task_id_with_stage_details_dtos:
@@ -156,3 +159,22 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
                 InvalidStageIdsListException
             raise InvalidStageIdsListException(
                 invalid_stage_ids=invalid_stage_ids)
+
+    def _validate_project_data(self, project_id: str, user_id: str,
+                               task_ids: List[int]):
+        self.validate_given_project_ids(project_ids=[project_id])
+        self.validate_if_user_is_in_project(
+            project_id=project_id, user_id=user_id
+        )
+        valid_task_ids = self.task_storage.get_valid_task_ids_from_the_project(
+            task_ids=task_ids, project_id=project_id
+        )
+        invalid_task_ids = [
+            invalid_task_id
+            for invalid_task_id in task_ids if
+            invalid_task_id not in valid_task_ids
+        ]
+        if invalid_task_ids:
+            from ib_tasks.exceptions.task_custom_exceptions import \
+                TaskIdsNotInProject
+            raise TaskIdsNotInProject(invalid_task_ids=invalid_task_ids)

@@ -171,7 +171,7 @@ class TestGetUsers:
         storage = UserStorageImplementation()
 
         # Act
-        output = storage.get_users_who_are_not_admins(
+        output = storage.get_all_user_dtos(
             offset=0, limit=10, name_search_query=name_search_query)
         assert output == expected_output
 
@@ -211,7 +211,7 @@ class TestGetUsers:
         storage = UserStorageImplementation()
 
         # Act
-        output = storage.get_users_who_are_not_admins(
+        output = storage.get_all_user_dtos(
             offset=0, limit=10, name_search_query=name_search_query)
         assert output == expected_output
 

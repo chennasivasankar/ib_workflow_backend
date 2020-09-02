@@ -79,3 +79,10 @@ class CompleteProjectDetailsDTO:
     roles: List[RoleDTO]
     description: Optional[str] = None
     logo_url: Optional[str] = None
+
+
+@dataclass
+class UserIdWithProjectIdAndStatusDTO:
+    user_id: str
+    project_id: str
+    is_exist: bool

@@ -115,6 +115,7 @@ class TestAddTaskDueDetails:
             task_display_id=task_display_id)
 
         # Assert
+        task_storage.get_task_id_for_task_display_id.assert_called_once_with(task_display_id)
         presenter.response_for_invalid_reason_id.assert_called_once()
 
     def test_given_valid_details_adds_due_delay_reasons(self, due_details):
@@ -144,3 +145,4 @@ class TestAddTaskDueDetails:
 
         # Assert
         storage.add_due_delay_details.assert_called_once_with(storage_due_details)
+        storage.update_task_due_datetime.assert_called_once_with(storage_due_details)

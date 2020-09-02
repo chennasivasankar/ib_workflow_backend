@@ -328,3 +328,9 @@ class InvalidMethodFound(Exception):
 class InvalidProjectId(Exception):
     def __init__(self, project_id: str):
         self.project_id = project_id
+
+
+class DuplicateTaskTemplateIdsGivenToAProject(Exception):
+    def __init__(self, task_template_ids: List[str]):
+        self.task_template_ids = task_template_ids
+

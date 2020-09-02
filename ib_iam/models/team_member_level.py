@@ -17,4 +17,3 @@ class TeamMemberLevel(models.Model):
 
     class Meta:
         unique_together = ('team', 'level_hierarchy', 'level_name')
-

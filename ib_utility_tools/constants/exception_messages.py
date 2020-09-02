@@ -31,3 +31,9 @@ DUPLICATE_CHECKLIST_ITEM_IDS = (
     "Given checklist item ids are duplicated",
     "DUPLICATE_CHECKLIST_ITEM_IDS"
 )
+
+INVALID_ENTITY_TYPE_MESSAGE = "Invalid Entity Type Message {}"
+
+INVALID_TIMER_ENTITY_TYPE_MESSAGE = "Invalid Timer Entity Type Message {}"
+
+INVALID_DISCUSSION_ENTITY_TYPE_MESSAGE = "Invalid Discussion Entity Type Message {}"

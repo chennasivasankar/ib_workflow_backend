@@ -4,6 +4,13 @@ def searchable_details_dtos_mock(mocker):
     mock = mocker.patch(path)
     from ib_tasks.adapters.dtos import SearchableDetailsDTO
     from ib_tasks.constants.enum import Searchable
+    import json
+    value = {
+        "name": "User1",
+        "profile_pic_url": "https://ib-workflows-web-alpha.apigateway.in"
+                           "/boards?board=FINB_AV4_VENDOR_VERIFICATION"
+    }
+    value = json.dumps(value)
     searchable_details_dtos = [
         SearchableDetailsDTO(
             search_type=Searchable.CITY.value,
@@ -12,9 +19,7 @@ def searchable_details_dtos_mock(mocker):
         SearchableDetailsDTO(
             search_type=Searchable.USER.value,
             id="123e4567-e89b-12d3-a456-426614174000",
-            value='{"name": "User1, "profile_pic_url: '
-                  '"https://ib-workflows-web-alpha.apigateway.in/boards'
-                  '?board=FINB_AV4_VENDOR_VERIFICATION"}'
+            value=value
         )
     ]
     mock.return_value = searchable_details_dtos
