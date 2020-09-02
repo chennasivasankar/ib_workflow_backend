@@ -1901,7 +1901,12 @@
                   "enum":[
                      "INVALID_TASK_ID",
                      "SEARCHABLE_RECORDS_NOT_FOUND",
-                     "INVALID_STAGE_ID"
+                     "INVALID_STAGE_ID",
+                     "TEAMS_NOT_EXISTS_FOR_PROJECT",
+                     "USERS_NOT_EXISTS_FOR_TEAMS",
+                     "INVALID_USER",
+                     "INVALID_PROJECT_ID",
+                     "USER_NOT_A_MEMBER_OF_PROJECT"
                   ]
                }
             }

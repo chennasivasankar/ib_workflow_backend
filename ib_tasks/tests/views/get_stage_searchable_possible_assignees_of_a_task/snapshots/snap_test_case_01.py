@@ -11,23 +11,33 @@ snapshots['TestCase01GetStageSearchablePossibleAssigneesOfATaskAPITestCase.test_
 
 snapshots['TestCase01GetStageSearchablePossibleAssigneesOfATaskAPITestCase.test_case body'] = [
     {
-        'id': 'user_id_0',
-        'name': 'name_0',
-        'profile_pic_url': 'pic_url'
+        'id': 'user_1',
+        'name': 'user_name_1',
+        'profile_pic_url': 'profile_pic_1',
+        'team_info': [
+            {
+                'team_id': 'team_1',
+                'team_name': 'team_name1'
+            },
+            {
+                'team_id': 'team_2',
+                'team_name': 'team_name2'
+            }
+        ]
     },
     {
-        'id': 'user_id_1',
-        'name': 'name_1',
-        'profile_pic_url': 'pic_url'
-    },
-    {
-        'id': 'user_id_2',
-        'name': 'name_2',
-        'profile_pic_url': 'pic_url'
-    },
-    {
-        'id': 'user_id_3',
-        'name': 'name_3',
-        'profile_pic_url': 'pic_url'
+        'id': 'user_2',
+        'name': 'user_name_2',
+        'profile_pic_url': 'profile_pic_2',
+        'team_info': [
+            {
+                'team_id': 'team_3',
+                'team_name': 'team_name3'
+            },
+            {
+                'team_id': 'team_4',
+                'team_name': 'team_name4'
+            }
+        ]
     }
 ]

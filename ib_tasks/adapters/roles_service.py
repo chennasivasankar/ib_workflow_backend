@@ -4,6 +4,10 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     InvalidUserIdException
 
 
+class UserNotAMemberOfAProjectException(Exception):
+    pass
+
+
 class RolesService:
 
     @property
@@ -41,6 +45,10 @@ class RolesService:
 
     def get_user_role_ids_based_on_project(
             self, user_id, project_id: str) -> List[str]:
-        role_ids = self.interface.get_user_role_ids_based_on_project(
-            user_id=user_id, project_id=project_id)
-        return role_ids
+        from ib_iam.interactors.project_role_interactor import \
+            UserNotAMemberOfAProject
+        try:
+            return self.interface.get_user_role_ids_based_on_project(
+                user_id=user_id, project_id=project_id)
+        except UserNotAMemberOfAProject:
+            raise UserNotAMemberOfAProjectException()

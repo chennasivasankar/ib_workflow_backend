@@ -2,7 +2,9 @@ from typing import List, Tuple, Optional
 
 from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
     UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO, UserTeamsDTO
-from ib_iam.exceptions.custom_exceptions import InvalidUserIds
+from ib_iam.exceptions.custom_exceptions import InvalidUserIds, InvalidUserId, \
+    InvalidProjectIds
+from ib_iam.interactors.dtos.dtos import UserIdWithProjectIdAndStatusDTO
 from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, UserTeamDTO, \
     TeamIdAndNameDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
@@ -246,3 +248,21 @@ class ProjectInteractor:
             user_team_dto: UserTeamDTO) -> TeamIdAndNameDTO:
         return TeamIdAndNameDTO(
             team_id=user_team_dto.team_id, team_name=user_team_dto.team_name)
+
+    def get_user_status_for_given_projects(
+            self, user_id: str, project_ids: List[str]
+    ) -> List[UserIdWithProjectIdAndStatusDTO]:
+        project_ids = list(set(project_ids))
+        is_user_exist = self.user_storage.is_user_exist(user_id=user_id)
+        if not is_user_exist:
+            raise InvalidUserId
+        self._validate_project_ids(project_ids=project_ids)
+        return self.project_storage.get_user_status_for_given_projects(
+            project_ids=project_ids, user_id=user_id)
+
+    def _validate_project_ids(self, project_ids: List[str]):
+        valid_project_ids = self.project_storage.get_valid_project_ids_from_given_project_ids(
+            project_ids=project_ids)
+        invalid_project_ids = list(set(project_ids) - set(valid_project_ids))
+        if invalid_project_ids:
+            raise InvalidProjectIds(project_ids=invalid_project_ids)

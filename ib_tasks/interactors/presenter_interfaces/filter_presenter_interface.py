@@ -21,7 +21,7 @@ class TaskTemplateFieldsDto:
 
 
 @dataclass()
-class ProjectTemplateFieldsDto:
+class ProjectTemplateFieldsDTO:
     task_template_dtos: List[ProjectTemplateDTO]
     task_template_gofs_dtos: List[TaskTemplateGofsDTO]
     fields_dto: List[FieldNameDTO]
@@ -78,7 +78,7 @@ class FilterPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_get_task_templates_fields(
-            self, task_template_fields: ProjectTemplateFieldsDto):
+            self, task_template_fields: ProjectTemplateFieldsDTO):
         pass
 
     @abc.abstractmethod

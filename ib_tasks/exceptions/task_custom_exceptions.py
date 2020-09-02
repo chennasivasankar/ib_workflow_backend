@@ -145,6 +145,13 @@ class InvalidTaskTemplateOfProject(Exception):
         self.project_id = project_id
 
 
+class TaskIdsNotInProject(Exception):
+    def __init__(self, invalid_task_ids: List[int]):
+        self.invalid_task_ids = invalid_task_ids
+
+    def __str__(self):
+        return self.invalid_task_ids
+
 class TaskDelayReasonIsNotUpdated(Exception):
     def __init__(
             self, due_date: datetime.datetime, task_display_id: str,
