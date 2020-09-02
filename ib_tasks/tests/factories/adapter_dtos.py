@@ -108,3 +108,20 @@ class TeamInfoDTOFactory(factory.Factory):
     team_name = factory.Sequence(lambda counter: "team_name{}".format(counter))
 
 
+class TeamDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TeamDetailsDTO
+
+    team_id = factory.Sequence(lambda counter: "team_{}".format(counter))
+    name = factory.Sequence(lambda counter: "team_name{}".format(counter))
+
+
+class UserIdWIthTeamDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = UserIdWIthTeamDetailsDTOs
+
+    user_id = factory.sequence(lambda counter: "user_{}".format(counter))
+
+    @factory.lazy_attribute
+    def team_details(self):
+        return TeamDetailsDTOFactory.create_batch(size=2)

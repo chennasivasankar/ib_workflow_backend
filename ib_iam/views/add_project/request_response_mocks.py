@@ -7,14 +7,15 @@ REQUEST_BODY_JSON = """
     "logo_url": "string",
     "team_ids": [
         "string"
+    ],
+    "project_display_id": "string",
+    "roles": [
+        {
+            "role_name": "string",
+            "description": "string"
+        }
     ]
 }
 """
 
-
-RESPONSE_201_JSON = """
-{
-    "project_id": "string"
-}
-"""
 

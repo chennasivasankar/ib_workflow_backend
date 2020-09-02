@@ -65,7 +65,7 @@ class UserRoleDTO:
 class RoleDTO:
     role_id: str
     name: str
-    description: str
+    description: Optional[str]
 
 
 @dataclass
@@ -189,6 +189,23 @@ class ProjectDTO:
 
 
 @dataclass
+class ProjectWithDisplayIdDTO:
+    project_id: str
+    display_id: str
+    name: str
+    description: Optional[str] = None
+    logo_url: Optional[str] = None
+
+
+@dataclass
+class ProjectWithoutIdDTO:
+    name: str
+    display_id: str
+    description: Optional[str] = None
+    logo_url: Optional[str] = None
+
+
+@dataclass
 class SearchableDetailsDTO:
     search_type: Searchable
     id: Union[int, str]
@@ -204,7 +221,7 @@ class ProjectTeamIdsDTO:
 @dataclass
 class ProjectsWithTotalCountDTO:
     total_projects_count: int
-    projects: List[ProjectDTO]
+    projects: List[ProjectWithDisplayIdDTO]
 
 
 @dataclass
@@ -218,3 +235,10 @@ class ProjectRoleDTO:
     project_id: str
     role_id: str
     name: str
+    description: Optional[str] = None
+
+
+@dataclass
+class RoleNameAndDescriptionDTO:
+    name: str
+    description: Optional[str] = None

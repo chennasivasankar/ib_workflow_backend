@@ -10,6 +10,7 @@ RESPONSE_200_JSON = """
             "description": "string",
             "logo_url": "string",
             "project_id": "string",
+            "project_display_id": "string",
             "teams": [
                 {
                     "team_id": "89d96f4b-c19d-4e69-8eae-e818f3123b09",
@@ -18,8 +19,9 @@ RESPONSE_200_JSON = """
             ],
             "roles": [
                 {
-                    "role_id": "string",
-                    "role_name": "string"
+                    "role_name": "string",
+                    "description": "string",
+                    "role_id": "string"
                 }
             ]
         }

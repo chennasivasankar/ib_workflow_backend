@@ -2,8 +2,8 @@ from typing import List
 
 from ib_iam.interactors.presenter_interfaces \
     .get_projects_presenter_interface import GetProjectsPresenterInterface
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, \
-    ProjectTeamIdsDTO, PaginationDTO
+from ib_iam.interactors.storage_interfaces.dtos import ProjectTeamIdsDTO, \
+    PaginationDTO, ProjectWithDisplayIdDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
@@ -52,7 +52,7 @@ class GetProjectsInteractor:
 
     @staticmethod
     def _get_project_ids_from_project_dtos(
-            project_dtos: List[ProjectDTO]) -> List[str]:
+            project_dtos: List[ProjectWithDisplayIdDTO]) -> List[str]:
         project_ids = [project_dto.project_id for project_dto in project_dtos]
         return project_ids
 

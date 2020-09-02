@@ -5,7 +5,8 @@ from ib_iam.interactors.storage_interfaces.dtos import (
     TeamWithUserIdDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO,
     CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, MemberDTO,
     TeamMemberLevelDetailsDTO, UserProfileDTO, SearchableDetailsDTO,
-    ProjectDTO, MemberIdWithSubordinateMemberIdsDTO, ProjectRoleDTO)
+    ProjectDTO, MemberIdWithSubordinateMemberIdsDTO, ProjectRoleDTO,
+    ProjectWithoutIdDTO, ProjectWithDisplayIdDTO)
 
 
 class UserDTOFactory(factory.Factory):
@@ -282,6 +283,27 @@ class ProjectDTOFactory(factory.Factory):
     logo_url = factory.Sequence(lambda n: 'logo %s' % n)
 
 
+class ProjectWithDisplayIdDTOFactory(factory.Factory):
+    class Meta:
+        model = ProjectWithDisplayIdDTO
+
+    project_id = factory.Sequence(lambda n: 'project %s' % n)
+    display_id = factory.Sequence(lambda n: 'display_id %s' % n)
+    name = factory.Sequence(lambda n: 'name %s' % n)
+    description = factory.Sequence(lambda n: 'description %s' % n)
+    logo_url = factory.Sequence(lambda n: 'logo %s' % n)
+
+
+class ProjectWithoutIdDTOFactory(factory.Factory):
+    class Meta:
+        model = ProjectWithoutIdDTO
+
+    name = factory.Sequence(lambda n: 'name %s' % n)
+    display_id = factory.Sequence(lambda n: 'display_id %s' % n)
+    description = factory.Sequence(lambda n: 'description %s' % n)
+    logo_url = factory.Sequence(lambda n: 'logo %s' % n)
+
+
 class SearchableDetailsDTOFactory(factory.Factory):
     class Meta:
         model = SearchableDetailsDTO
@@ -314,5 +336,6 @@ class ProjectRoleDTOFactory(factory.Factory):
         model = ProjectRoleDTO
 
     project_id = factory.Sequence(lambda n: 'project %s' % n)
-    role_id = factory.Sequence(lambda n: 'role %s' % n)
-    name = factory.Sequence(lambda n: 'role %s' % n)
+    role_id = factory.sequence(lambda number: "ROLE_%s" % number)
+    name = factory.sequence(lambda number: "role %s" % number)
+    description = factory.Sequence(lambda n: 'role description %s' % n)

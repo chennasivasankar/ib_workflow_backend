@@ -13,8 +13,8 @@ class TestIsValidUserIdForGivenProject:
         team = TeamFactory.create(team_id=team_id)
         user_team = TeamUserFactory.create(team_id=team_id, user_id=user_id)
         project_team = ProjectTeamFactory.create(
-            project_id=project_id,
-            team_id=team_id
+            project=project,
+            team=team
         )
         return project, team, user_team, project_team
 

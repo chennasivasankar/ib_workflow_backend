@@ -90,7 +90,7 @@ class TestGetUserRoleIdsBasedOnProject:
         from ib_iam.tests.factories.models import ProjectTeamFactory
         ProjectTeamFactory.reset_sequence(0)
         project_team_object = ProjectTeamFactory.create(
-            team_id=team_id, project_id=project_ids[0])
+            team=team_object, project=project_objects[0])
         from ib_iam.tests.factories.models import TeamUserFactory
         TeamUserFactory.reset_sequence(0)
         team_user_object = TeamUserFactory.create(
@@ -108,4 +108,6 @@ class TestGetUserRoleIdsBasedOnProject:
             user_id=user_ids[1],
             project_role=project_role_objects[2]
         )
-        return project_objects, team_object, project_team_object, team_user_object
+        return (
+            project_objects, team_object, project_team_object, team_user_object
+        )
