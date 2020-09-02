@@ -24,7 +24,7 @@ def api_wrapper(*args, **kwargs):
         TeamMemberLevelStorageImplementation
     team_member_level_storage = TeamMemberLevelStorageImplementation()
 
-    from ib_iam.presenters.add_levels_presenter_implementation import \
+    from ib_iam.presenters.add_team_member_levels_presenter_implementation import \
         AddTeamMemberLevelsPresenterImplementation
     presenter = AddTeamMemberLevelsPresenterImplementation()
 

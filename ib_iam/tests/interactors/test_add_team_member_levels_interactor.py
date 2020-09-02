@@ -176,7 +176,7 @@ class TestAddTeamMemberLevelsInteractor:
         expected_presenter_response_for_duplicate_team_member_levels_mock = \
             Mock()
 
-        presenter_mock.response_for_duplicate_team_member_levels.return_value = \
+        presenter_mock.response_for_duplicate_team_member_level_names.return_value = \
             expected_presenter_response_for_duplicate_team_member_levels_mock
 
         # Act
@@ -189,10 +189,10 @@ class TestAddTeamMemberLevelsInteractor:
         assert response == \
                expected_presenter_response_for_duplicate_team_member_levels_mock
 
-        presenter_mock.response_for_duplicate_team_member_levels. \
+        presenter_mock.response_for_duplicate_team_member_level_names. \
             assert_called_once()
         call_args = \
-            presenter_mock.response_for_duplicate_team_member_levels.call_args
+            presenter_mock.response_for_duplicate_team_member_level_names.call_args
         error_object = call_args[0][0]
         duplicate_team_member_level_names = error_object.team_member_level_names
         assert sorted(duplicate_team_member_level_names) == \

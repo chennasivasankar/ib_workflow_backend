@@ -2,6 +2,8 @@ import json
 
 import pytest
 
+from ib_iam.constants.enums import StatusCode
+
 
 class TestGetTeamMembersOfLevelHierarchyPresenterImplementation:
 
@@ -86,3 +88,39 @@ class TestGetTeamMembersOfLevelHierarchyPresenterImplementation:
         response_dict = json.loads(response_object.content)
 
         snapshot.assert_match(response_dict, "get_team_members")
+
+    def test_response_for_invalid_team_id(self, presenter):
+        # Arrange
+        from ib_iam.presenters.get_team_members_of_level_hierarchy_presenter_implementation import \
+            INVALID_TEAM_ID
+        expected_response = INVALID_TEAM_ID[0]
+        expected_http_status_code = StatusCode.BAD_REQUEST.value
+        expected_res_status = INVALID_TEAM_ID[1]
+
+        # Act
+        response_obj = presenter.response_for_invalid_team_id()
+
+        # Assert
+        response_data = json.loads(response_obj.content)
+
+        assert response_data["response"] == expected_response
+        assert response_data["http_status_code"] == expected_http_status_code
+        assert response_data["res_status"] == expected_res_status
+
+    def test_response_for_invalid_level_hierarchy_of_team(self, presenter):
+        # Arrange
+        from ib_iam.presenters.get_team_members_of_level_hierarchy_presenter_implementation import \
+            INVALID_LEVEL_HIERARCHY
+        expected_response = INVALID_LEVEL_HIERARCHY[0]
+        expected_http_status_code = StatusCode.BAD_REQUEST.value
+        expected_res_status = INVALID_LEVEL_HIERARCHY[1]
+
+        # Act
+        response_obj = presenter.response_for_invalid_level_hierarchy_of_team()
+
+        # Assert
+        response_data = json.loads(response_obj.content)
+
+        assert response_data["response"] == expected_response
+        assert response_data["http_status_code"] == expected_http_status_code
+        assert response_data["res_status"] == expected_res_status

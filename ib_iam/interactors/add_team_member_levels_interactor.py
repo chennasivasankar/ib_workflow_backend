@@ -48,7 +48,7 @@ class AddTeamMemberLevelsInteractor:
         except NegativeLevelHierarchy as err:
             response = presenter.response_for_negative_level_hierarchies(err)
         except DuplicateTeamMemberLevelNames as err:
-            response = presenter.response_for_duplicate_team_member_levels(err)
+            response = presenter.response_for_duplicate_team_member_level_names(err)
         return response
 
     def _add_team_member_levels_response(

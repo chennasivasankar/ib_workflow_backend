@@ -26,7 +26,7 @@ class AddTeamMemberLevelsPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def response_for_duplicate_team_member_levels(self, err):
+    def response_for_duplicate_team_member_level_names(self, err):
         pass
 
 
