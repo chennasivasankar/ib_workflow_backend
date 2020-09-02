@@ -1,5 +1,7 @@
 from typing import List, Optional
 
+from ib_iam.exceptions.custom_exceptions import UsersNotBelongToLevel, \
+    InvalidTeamId, InvalidLevelHierarchyOfTeam
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import \
@@ -168,3 +170,22 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
                 subordinate_member_ids=subordinate_member_ids
             )
         return member_id_with_subordinate_member_ids_dto
+
+    def validate_team_id(self, team_id: str) -> Optional[InvalidTeamId]:
+        pass
+
+    def get_team_member_level_ids(self, team_id: str) -> List[str]:
+        pass
+
+    def get_team_member_ids(self, team_id: str) -> List[str]:
+        pass
+
+    def validate_level_hierarchy_of_team(
+            self, team_id: str, level_hierarchy: int
+    ) -> Optional[InvalidLevelHierarchyOfTeam]:
+        pass
+
+    def validate_users_belong_to_given_level_hierarchy_in_a_team(
+            self, team_id: str, user_ids: List[str], level_hierarchy: int
+    ) -> Optional[UsersNotBelongToLevel]:
+        pass
