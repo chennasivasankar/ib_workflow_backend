@@ -7,7 +7,7 @@ from ib_iam.app_interfaces.dtos import (
     UserTeamsDTO)
 from ib_iam.exceptions.custom_exceptions import (
     InvalidUserIds, ProjectNameAlreadyExists, ProjectDisplayIdAlreadyExists,
-    InvalidTeamIds, DuplicateTeamIds)
+    DuplicateTeamIds, TeamIdsAreInvalid)
 from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO, \
     CompleteProjectDetailsDTO
 from ib_iam.interactors.presenter_interfaces \
@@ -275,14 +275,12 @@ class ProjectInteractor:
         except ProjectDisplayIdAlreadyExists:
             response = presenter \
                 .get_project_display_id_already_exists_response()
-        except InvalidTeamIds as exception:
-            response = presenter.get_invalid_team_ids_response(exception)
+        except TeamIdsAreInvalid:
+            response = presenter.get_invalid_team_ids_response()
         except DuplicateTeamIds:
             response = presenter.get_duplicate_team_ids_response()
         return response
 
-    # todo remove the tag after writing validations properly
-    @transaction.atomic
     def add_project(
             self,
             project_with_team_ids_and_roles_dto: ProjectWithTeamIdsAndRolesDTO
@@ -436,4 +434,4 @@ class ProjectInteractor:
             team_ids=team_ids)
         invalid_team_ids = list(set(team_ids) - set(valid_team_ids))
         if invalid_team_ids:
-            raise InvalidTeamIds(team_ids=invalid_team_ids)
+            raise TeamIdsAreInvalid

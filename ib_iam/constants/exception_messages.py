@@ -82,6 +82,11 @@ INVALID_TEAM_IDS = (
     "INVALID_TEAM_IDS"
 )
 
+DUPLICATE_TEAM_IDS = (
+    "Given team ids has duplicate entries",
+    "DUPLICATE_TEAM_IDS"
+)
+
 INVALID_COMPANY_ID = (
     "given company id is invalid",
     "INVALID_COMPANY_ID"
@@ -247,4 +252,14 @@ INVALID_CURRENT_PASSWORD = (
 CURRENT_PASSWORD_MISMATCH = (
     "Given current password is not matching with the current password",
     "CURRENT_PASSWORD_MISMATCH"
+)
+
+PROJECT_NAME_ALREADY_EXISTS = (
+    "Given project name already exists, choose another"
+    "PROJECT_NAME_ALREADY_EXISTS"
+)
+
+PROJECT_DISPLAY_ID_ALREADY_EXISTS = (
+    "Given project display id already exists, choose another"
+    "PROJECT_DISPLAY_ID_ALREADY_EXISTS"
 )

@@ -16,7 +16,7 @@ class AddProjectPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_invalid_team_ids_response(self, exception):
+    def get_invalid_team_ids_response(self):
         pass
 
     @abc.abstractmethod
