@@ -9,8 +9,9 @@ from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface i
 
 class AddMembersToSuperiorsInteractor:
 
-    def __init__(self,
-                 team_member_level_storage: TeamMemberLevelStorageInterface):
+    def __init__(
+            self,
+            team_member_level_storage: TeamMemberLevelStorageInterface):
         self.team_member_level_storage = team_member_level_storage
 
     def add_members_to_superiors_wrapper(
@@ -19,11 +20,24 @@ class AddMembersToSuperiorsInteractor:
             immediate_superior_user_id_with_member_ids_dtos: List[
                 ImmediateSuperiorUserIdWithUserIdsDTO]
     ):
-        response = self._add_members_to_superiors_response(
-            team_id=team_id, member_level_hierarchy=member_level_hierarchy,
-            presenter=presenter,
-            immediate_superior_user_id_with_member_ids_dtos=immediate_superior_user_id_with_member_ids_dtos
-        )
+        '''
+        1.  invalid team id
+        2. validate level hierarchy to team
+        3. validate members belong to team.
+        4. validate assingning to desired level members or not.
+        '''
+        from ib_iam.exceptions.custom_exceptions import \
+            InvalidTeamId, InvalidLevelHierarchyOfTeam
+        try:
+            response = self._add_members_to_superiors_response(
+                team_id=team_id, member_level_hierarchy=member_level_hierarchy,
+                presenter=presenter,
+                immediate_superior_user_id_with_member_ids_dtos=immediate_superior_user_id_with_member_ids_dtos
+            )
+        except InvalidTeamId:
+            response = presenter.response_for_invalid_team_id()
+        except InvalidLevelHierarchyOfTeam:
+            response = presenter.response_for_invalid_level_hierarchy_of_team()
         return response
 
     def _add_members_to_superiors_response(
@@ -45,6 +59,10 @@ class AddMembersToSuperiorsInteractor:
             immediate_superior_user_id_with_member_ids_dtos: List[
                 ImmediateSuperiorUserIdWithUserIdsDTO]
     ):
+        self.team_member_level_storage.validate_team_id(team_id=team_id)
+        self.team_member_level_storage.validate_level_hierarchy_of_team(
+            team_id=team_id, level_hierarchy=member_level_hierarchy
+        )
         self.team_member_level_storage.add_members_to_superiors(
             team_id=team_id, member_level_hierarchy=member_level_hierarchy,
             immediate_superior_user_id_with_member_ids_dtos=immediate_superior_user_id_with_member_ids_dtos

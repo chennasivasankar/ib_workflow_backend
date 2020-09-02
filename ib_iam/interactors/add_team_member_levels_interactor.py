@@ -4,8 +4,8 @@ from typing import List
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO
 from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
     AddTeamMemberLevelsPresenterInterface
-from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface import \
-    TeamMemberLevelStorageInterface
+from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface \
+    import TeamMemberLevelStorageInterface
 
 
 class DuplicateLevelHierarchies(Exception):
@@ -34,14 +34,6 @@ class AddTeamMemberLevelsInteractor:
             team_member_level_dtos: List[TeamMemberLevelDTO],
             presenter: AddTeamMemberLevelsPresenterInterface
     ):
-        '''
-        TODO:
-        Invalid TeamID
-        unique level order
-        unique level names
-        level_name should not be empty
-        level hierarchy is integer or string. It should be greater than zero.
-        '''
         from ib_iam.exceptions.custom_exceptions import InvalidTeamId
         try:
             response = self._add_team_member_levels_response(

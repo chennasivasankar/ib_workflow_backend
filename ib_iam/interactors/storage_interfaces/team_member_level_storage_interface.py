@@ -55,3 +55,16 @@ class TeamMemberLevelStorageInterface(ABC):
     @abstractmethod
     def validate_team_id(self, team_id: str) -> Optional[InvalidTeamId]:
         pass
+
+    @abstractmethod
+    def get_team_member_level_ids(self, team_id: str) -> List[str]:
+        pass
+
+    @abstractmethod
+    def get_team_member_ids(self, team_id: str) -> List[str]:
+        pass
+
+    @abstractmethod
+    def validate_level_hierarchy_of_team(
+            self, team_id: str, level_hierarchy: int):
+        pass

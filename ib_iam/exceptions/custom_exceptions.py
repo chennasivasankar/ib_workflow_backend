@@ -171,3 +171,7 @@ class InvalidUserIdsForProject(Exception):
 class InvalidRoleIdsForProject(Exception):
     def __init__(self, role_ids: List[str]):
         self.role_ids = role_ids
+
+
+class InvalidLevelHierarchyOfTeam(Exception):
+    pass

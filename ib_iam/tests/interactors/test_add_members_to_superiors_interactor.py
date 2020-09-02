@@ -31,6 +31,36 @@ class TestAddMembersToSuperiorsInteractor:
             team_member_level_storage=storage_mock)
         return interactor
 
+    def test_with_invalid_team_id_return_response(
+            self, storage_mock, presenter_mock, interactor,
+            prepare_immediate_superior_id_with_member_ids_dtos
+    ):
+        # Arrange
+        team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        member_level_hierarchy = 0
+        immediate_superior_id_with_member_ids_dtos = \
+            prepare_immediate_superior_id_with_member_ids_dtos
+        expected_presenter_response_for_invalid_team_id_mock = Mock()
+
+        from ib_iam.exceptions.custom_exceptions import InvalidTeamId
+        storage_mock.validate_team_id.side_effect = InvalidTeamId
+
+        presenter_mock.response_for_invalid_team_id.return_value \
+            = expected_presenter_response_for_invalid_team_id_mock
+
+        # Act
+        response = interactor.add_members_to_superiors_wrapper(
+            team_id=team_id, member_level_hierarchy=member_level_hierarchy,
+            presenter=presenter_mock,
+            immediate_superior_user_id_with_member_ids_dtos=immediate_superior_id_with_member_ids_dtos
+        )
+
+        # Assert
+        assert response == \
+               expected_presenter_response_for_invalid_team_id_mock
+        storage_mock.validate_team_id.assert_called_with(team_id=team_id)
+        presenter_mock.response_for_invalid_team_id.assert_called_once()
+
     def test_with_valid_details_return_response(
             self, storage_mock, presenter_mock, interactor,
             prepare_immediate_superior_id_with_member_ids_dtos
@@ -64,6 +94,42 @@ class TestAddMembersToSuperiorsInteractor:
             team_id=team_id, member_level_hierarchy=member_level_hierarchy,
             immediate_superior_user_id_with_member_ids_dtos=immediate_superior_id_with_member_ids_dtos
         )
+
+    def test_with_invalid_level_hierarchy_return_response(
+            self, storage_mock, presenter_mock, interactor,
+            prepare_immediate_superior_id_with_member_ids_dtos
+    ):
+        # Arrange
+        team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        member_level_hierarchy = -1
+        immediate_superior_id_with_member_ids_dtos = \
+            prepare_immediate_superior_id_with_member_ids_dtos
+        expected_presenter_response_for_invalid_level_hierarchy_of_team_mock = \
+            Mock()
+
+        from ib_iam.exceptions.custom_exceptions import \
+            InvalidLevelHierarchyOfTeam
+        storage_mock.validate_level_hierarchy_of_team.side_effect = \
+            InvalidLevelHierarchyOfTeam
+
+        presenter_mock.response_for_invalid_level_hierarchy_of_team.return_value \
+            = expected_presenter_response_for_invalid_level_hierarchy_of_team_mock
+
+        # Act
+        response = interactor.add_members_to_superiors_wrapper(
+            team_id=team_id, member_level_hierarchy=member_level_hierarchy,
+            presenter=presenter_mock,
+            immediate_superior_user_id_with_member_ids_dtos=immediate_superior_id_with_member_ids_dtos
+        )
+
+        # Assert
+        assert response == \
+               expected_presenter_response_for_invalid_level_hierarchy_of_team_mock
+        storage_mock.validate_level_hierarchy_of_team.assert_called_with(
+            team_id=team_id, level_hierarchy=member_level_hierarchy
+        )
+        presenter_mock.response_for_invalid_level_hierarchy_of_team.\
+            assert_called_once()
 
     @pytest.fixture()
     def prepare_immediate_superior_id_with_member_ids_dtos(self):
