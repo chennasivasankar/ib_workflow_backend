@@ -1,5 +1,5 @@
 """
-test when user has only read permissions to fields returns empty fields
+test when user has only read permissions to fields returns empty gofs
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
