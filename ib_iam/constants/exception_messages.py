@@ -254,6 +254,11 @@ CURRENT_PASSWORD_MISMATCH = (
     "CURRENT_PASSWORD_MISMATCH"
 )
 
+INVALID_PROJECT_ID = (
+    "Given project is not found",
+    "INVALID_PROJECT_ID"
+)
+
 PROJECT_NAME_ALREADY_EXISTS = (
     "Given project name already exists, choose another",
     "PROJECT_NAME_ALREADY_EXISTS"
@@ -267,4 +272,9 @@ PROJECT_DISPLAY_ID_ALREADY_EXISTS = (
 USER_HAS_NO_ACCESS_TO_ADD_PROJECT = (
     "User has no access to add project",
     "USER_HAS_NO_ACCESS"
+)
+
+DUPLICATE_ROLE_IDS_FOR_UPDATE_PROJECT = (
+    "Duplicate roles has been given",
+    "DUPLICATE_ROLE_IDS"
 )
