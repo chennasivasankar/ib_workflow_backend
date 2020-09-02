@@ -28,21 +28,19 @@ class TestIsValidUserIdForGivenProject:
 
     @pytest.fixture
     def project_team_set_up(self, project_set_up, team_set_up):
-        team_id = "89d96f4b-c19d-4e69-8eae-e818f3123b09"
-        project_id = "FA"
         from ib_iam.tests.factories.models import ProjectTeamFactory
         ProjectTeamFactory.reset_sequence(0)
         project_team_object = ProjectTeamFactory.create(
-            team_id=team_id, project_id=project_id)
+            team=team_set_up, project=project_set_up)
         return project_team_object
 
     @pytest.fixture
     def team_user_set_up(self, team_set_up, user_set_up):
         user_id = "123"
         team_id = "89d96f4b-c19d-4e69-8eae-e818f3123b09"
-        from ib_iam.tests.factories.models import UserTeamFactory
-        UserTeamFactory.reset_sequence(0)
-        team_user_object = UserTeamFactory.create(
+        from ib_iam.tests.factories.models import TeamUserFactory
+        TeamUserFactory.reset_sequence(0)
+        team_user_object = TeamUserFactory.create(
             user_id=user_id, team_id=team_id)
         return team_user_object
 

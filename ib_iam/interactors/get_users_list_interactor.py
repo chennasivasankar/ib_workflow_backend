@@ -45,7 +45,7 @@ class GetListOfUsersInteractor(ValidationMixin):
     ) -> ListOfCompleteUsersWithRolesDTO:
         self._validate_is_user_admin(user_id=user_id)
         self._validate_pagination_details(offset=offset, limit=limit)
-        user_dtos = self.user_storage.get_users_who_are_not_admins(
+        user_dtos = self.user_storage.get_all_user_dtos(
             offset=offset, limit=limit,
             name_search_query=name_search_query
         )
@@ -68,13 +68,11 @@ class GetListOfUsersInteractor(ValidationMixin):
         from ib_iam.constants.config import ALL_ROLES_ID
 
         if ALL_ROLES_ID in role_ids:
-            db_role_ids = \
-                self.user_storage.get_all_distinct_user_db_role_ids(project_id)
-        else:
-            db_role_ids = self.user_storage.get_db_role_ids(role_ids=role_ids)
+            role_ids = \
+                self.user_storage.get_all_distinct_project_role_ids(project_id)
 
         user_ids = self.user_storage.get_user_ids_for_given_role_ids(
-            role_ids=db_role_ids)
+            role_ids=role_ids)
 
         user_ids_based_on_query = \
             self.user_storage.get_user_ids_based_on_given_query(

@@ -11,7 +11,8 @@ class UserDetails(models.Model):
                                 blank=True, related_name="users")
 
 
-class UserTeam(models.Model):
+# TODO: Link to UserDetails to have flexibility to get user details
+class TeamUser(models.Model):
     user_id = models.CharField(max_length=100)
     team_member_level = models.ForeignKey(
         "TeamMemberLevel", on_delete=models.SET_NULL,
@@ -32,6 +33,9 @@ class UserRole(models.Model):
     user_id = models.CharField(max_length=100)
     project_role = models.ForeignKey('ProjectRole', on_delete=models.CASCADE,
                                      null=True)
+
+    class Meta:
+        unique_together = ('user_id', 'project_role')
 
     def __str__(self):
         return f"{self.user_id} have {self.project_role.role_id}"

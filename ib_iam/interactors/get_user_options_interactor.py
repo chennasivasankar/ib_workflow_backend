@@ -26,7 +26,7 @@ class GetUserOptionsDetails(ValidationMixin):
     def get_configuration_details(self, user_id: str):
         self._validate_is_user_admin(user_id=user_id)
         companies = self.user_storage.get_companies()
-        teams = self.user_storage.get_teams()
+        teams = self.user_storage.get_team_id_and_name_dtos()
         roles = self.user_storage.get_roles()
         return self._create_configuration_details_dto(
             companies=companies, teams=teams, roles=roles)

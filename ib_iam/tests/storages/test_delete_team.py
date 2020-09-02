@@ -1,6 +1,6 @@
 import pytest
 
-from ib_iam.models import UserTeam, Team
+from ib_iam.models import TeamUser, Team
 from ib_iam.storages.team_storage_implementation import (
     TeamStorageImplementation
 )

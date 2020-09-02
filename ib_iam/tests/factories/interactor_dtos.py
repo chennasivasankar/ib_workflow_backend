@@ -2,7 +2,8 @@ import factory
 
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, AddUserDetailsDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO, \
-    CompleteUserProfileDTO, CompleteTeamMemberLevelsDetailsDTO
+    CompleteUserProfileDTO, CompleteTeamMemberLevelsDetailsDTO, \
+    UserIdWithRoleIdsDTO
 from ib_iam.interactors.update_user_password_interactor import \
     CurrentAndNewPasswordDTO
 from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
@@ -92,3 +93,13 @@ class CompleteTeamMemberLevelsDetailsDTOFactory(factory.Factory):
         [factory.SubFactory(MemberIdWithSubordinateMemberIdsDTOFactory),
          factory.SubFactory(MemberIdWithSubordinateMemberIdsDTOFactory)]
     )
+
+
+class UserIdWithRoleIdsDTOFactory(factory.Factory):
+    class Meta:
+        model = UserIdWithRoleIdsDTO
+
+    user_id = factory.Faker("uuid4")
+    role_ids = factory.Iterator([
+        "ROLE_1", "ROLE_2", "ROLE_3"
+    ])

@@ -46,10 +46,13 @@ class TestGetUserStatusForGivenProjects:
         ]
         from ib_iam.tests.factories.models import ProjectTeamFactory
         ProjectTeamFactory.reset_sequence(0)
+        from ib_iam.models import Project
+        from ib_iam.models import Team
         project_team_objects = [
             ProjectTeamFactory.create(
-                project_id=project_team["project_id"],
-                team_id=project_team["team_id"]
+                project=Project.objects.get(
+                    project_id=project_team["project_id"]),
+                team=Team.objects.get(team_id=project_team["team_id"])
             ) for project_team in project_team_ids
         ]
         return project_team_objects
@@ -62,10 +65,10 @@ class TestGetUserStatusForGivenProjects:
                 "user_id": "1"
             }
         ]
-        from ib_iam.tests.factories.models import UserTeamFactory
+        from ib_iam.tests.factories.models import TeamUserFactory
         from ib_iam.models import Team
         team_user_objects = [
-            UserTeamFactory.create(
+            TeamUserFactory.create(
                 user_id=team_user["user_id"],
                 team=Team.objects.get(team_id=team_user["team_id"])
             ) for team_user in team_users
