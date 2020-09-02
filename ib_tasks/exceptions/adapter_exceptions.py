@@ -8,3 +8,7 @@ class InvalidProjectIdsException(Exception):
 
 class UserIsNotInProjectException(Exception):
     pass
+
+
+class UserIsNotInProjectsException(Exception):
+    pass

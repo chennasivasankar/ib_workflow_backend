@@ -130,3 +130,7 @@ class StorageInterface(abc.ABC):
     def get_latest_rp_added_datetime(self,
                                      task_id: int, stage_id: int) -> Optional[str]:
         pass
+
+    @abc.abstractmethod
+    def update_task_due_datetime(self, due_details: TaskDelayParametersDTO):
+        pass

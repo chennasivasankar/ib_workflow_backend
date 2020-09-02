@@ -1,5 +1,6 @@
 import factory
 
+from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface import ProjectTemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageDetailsDTO, GetTaskStageCompleteDetailsDTO, \
     TaskWithCompleteStageDetailsDTO
@@ -40,3 +41,25 @@ class GetTaskStageCompleteDetailsDTOFactory(factory.Factory):
     display_name = "stage"
     field_dtos = None
     action_dtos = None
+
+
+class ProjectTemplateFieldsDTOFactory(factory.Factory):
+    class Meta:
+        model = ProjectTemplateFieldsDTO
+
+    @factory.lazy_attribute
+    def task_template_dtos(self):
+        from ib_tasks.tests.factories.storage_dtos \
+            import ProjectTemplateDTOFactory
+        return [ProjectTemplateDTOFactory()]
+
+    @factory.lazy_attribute
+    def task_template_gofs_dtos(self):
+        from ib_tasks.tests.factories.storage_dtos \
+            import TaskTemplateGofsDTOFactory
+        return [TaskTemplateGofsDTOFactory()]
+
+    @factory.lazy_attribute
+    def fields_dto(self):
+        from ib_tasks.tests.factories.storage_dtos import FieldNameDTOFactory
+        return [FieldNameDTOFactory()]

@@ -7,10 +7,9 @@ from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException
 from ib_tasks.interactors.filter_dtos import FilterCompleteDetailsDTO, \
     ConditionDTO, FilterDTO
 from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
-    import FilterPresenterInterface, TaskTemplateFieldsDto, ProjectTemplateFieldsDto
+    import FilterPresenterInterface, ProjectTemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import \
-    GoFToTaskTemplateDTO, TaskTemplateGofsDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import TaskTemplateGofsDTO
 
 
 class FilterPresenterImplementation(FilterPresenterInterface,
@@ -223,7 +222,7 @@ class FilterPresenterImplementation(FilterPresenterInterface,
         return response_object
 
     def get_response_for_get_task_templates_fields(
-            self, task_template_fields: ProjectTemplateFieldsDto):
+            self, task_template_fields: ProjectTemplateFieldsDTO):
         task_template_dtos = task_template_fields.task_template_dtos
         fields_dto = task_template_fields.fields_dto
         task_template_gofs = task_template_fields.task_template_gofs_dtos

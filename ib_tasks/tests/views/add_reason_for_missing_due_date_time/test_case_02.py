@@ -1,5 +1,5 @@
 """
-# TODO: invalid task id raises exception
+# invalid task id raises exception
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils

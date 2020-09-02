@@ -4,8 +4,13 @@ from ib_iam.interactors.storage_interfaces.dtos import (
     ProjectDTO, ProjectsWithTotalCountDTO, PaginationDTO, ProjectTeamIdsDTO,
     ProjectRoleDTO, ProjectWithoutIdDTO, RoleNameAndDescriptionDTO, RoleDTO,
     ProjectWithDisplayIdDTO)
+from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, \
+    ProjectsWithTotalCountDTO, PaginationDTO, ProjectTeamIdsDTO, ProjectRoleDTO
+from ib_iam.interactors.dtos.dtos import UserIdWithProjectIdAndStatusDTO
+from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
+from ib_iam.models import Project, ProjectTeam
 from ib_iam.models import Project, ProjectTeam, ProjectRole
 
 
@@ -216,3 +221,17 @@ class ProjectStorageImplementation(ProjectStorageInterface):
 
     def delete_project_roles(self, role_ids: List[str]):
         ProjectRole.objects.filter(role_id__in=role_ids).delete()
+
+    def get_user_status_for_given_projects(
+            self, user_id: str, project_ids: List[str]
+    ) -> List[UserIdWithProjectIdAndStatusDTO]:
+        valid_project_ids = list(ProjectTeam.objects.filter(
+            project_id__in=project_ids, team__users__user_id=user_id
+        ).values_list('project_id', flat=True))
+        return [
+            UserIdWithProjectIdAndStatusDTO(
+                user_id=user_id,
+                project_id=project_id,
+                is_exist=project_id in valid_project_ids
+            ) for project_id in project_ids
+        ]

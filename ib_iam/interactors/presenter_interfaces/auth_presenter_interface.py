@@ -8,8 +8,8 @@ from ib_iam.adapters.auth_service import UserTokensDTO
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.interactors.dtos.dtos import CompleteUserProfileDTO
 from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDTO, TeamDTO, TeamUserIdsDTO, CompanyIdWithEmployeeIdsDTO
-)
+    CompanyDTO, TeamDTO, TeamUserIdsDTO, CompanyIdWithEmployeeIdsDTO,
+    UserRoleDTO)
 
 
 @dataclasses.dataclass
@@ -20,6 +20,7 @@ class UserWithExtraDetailsDTO:
     team_user_ids_dto: List[TeamUserIdsDTO]
     company_id_with_employee_ids_dto: Optional[CompanyIdWithEmployeeIdsDTO]
     user_dtos: List[UserProfileDTO]
+    role_dtos: List[UserRoleDTO]
 
 
 class AuthPresenterInterface(abc.ABC):

@@ -1,6 +1,10 @@
 from typing import List
 
+from ib_tasks.adapters.assignees_details_service import InvalidUserIdException
+from ib_tasks.adapters.auth_service import InvalidProjectIdsException, \
+    TeamsNotExistForGivenProjectException, UsersNotExistsForGivenTeamsException
 from ib_tasks.adapters.dtos import SearchableDetailsDTO
+from ib_tasks.adapters.roles_service import UserNotAMemberOfAProjectException
 from ib_tasks.adapters.searchable_details_service import \
     InvalidUserIdsException, InvalidStateIdsException, \
     InvalidCountryIdsException, InvalidCityIdsException
@@ -89,7 +93,21 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         except InvalidUserIdsException:
             response = presenter.raise_invalid_searchable_records_found()
             return response
-        # TODO : Need to handle exception raised by interface
+        except InvalidProjectIdsException as err:
+            response = presenter.raise_invalid_project_id(err)
+            return response
+        except TeamsNotExistForGivenProjectException as err:
+            response = presenter.raise_teams_does_not_exists_for_project(err)
+            return response
+        except UsersNotExistsForGivenTeamsException as err:
+            response = presenter.raise_users_not_exist_for_given_teams(err)
+            return response
+        except InvalidUserIdException:
+            response = presenter.raise_invalid_user()
+            return response
+        except UserNotAMemberOfAProjectException:
+            response = presenter.raise_user_not_a_member_of_project()
+            return response
 
     def get_task_details_response(
             self, user_id: str, task_display_id: str,
