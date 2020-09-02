@@ -114,6 +114,15 @@ class TestCreateTaskInteractor:
         return mocker.patch(path)
 
     @pytest.fixture
+    def get_filtered_tasks_overview_for_user_mock(self, mocker):
+        path = \
+            "ib_tasks.interactors" \
+            ".get_all_task_overview_with_filters_and_searches_for_user" \
+            ".GetTasksOverviewForUserInteractor" \
+            ".get_filtered_tasks_overview_for_user"
+        return mocker.patch(path)
+
+    @pytest.fixture
     def get_task_current_stages_mock(self, mocker):
         path = "ib_tasks.interactors.get_task_current_stages_interactor" \
                ".GetTaskCurrentStagesInteractor" \
@@ -417,7 +426,8 @@ class TestCreateTaskInteractor:
         given_same_gof_order = 1
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=3, gof_id=given_gof_id, same_gof_order=given_same_gof_order)
-        perform_base_validations_for_template_gofs_and_fields_mock.side_effect = \
+        perform_base_validations_for_template_gofs_and_fields_mock\
+            .side_effect = \
             DuplicateSameGoFOrderForAGoF(given_gof_id, [given_same_gof_order])
         task_dto = CreateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
         task_template_storage_mock.check_is_template_exists.return_value = \
@@ -1966,7 +1976,8 @@ class TestCreateTaskInteractor:
             elastic_storage_mock, presenter_mock, mock_object,
             task_stage_storage_mock,
             perform_base_validations_for_template_gofs_and_fields_mock,
-            user_action_on_task_mock, get_task_current_stages_mock
+            user_action_on_task_mock, get_task_current_stages_mock,
+            get_filtered_tasks_overview_for_user_mock
     ):
         # Arrange
         created_task_id = 1
