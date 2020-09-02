@@ -3,6 +3,8 @@ from unittest.mock import create_autospec, patch
 import factory
 import pytest
 
+from ib_tasks.adapters.roles_service import RolesService, \
+    UserNotAMemberOfAProjectException
 from ib_tasks.adapters.searchable_details_service import \
     SearchableDetailsService, InvalidUserIdsException, \
     InvalidStateIdsException, InvalidCountryIdsException, \
@@ -403,6 +405,40 @@ class TestGetTaskInteractor:
         presenter_mock.raise_exception_for_invalid_task_id. \
             assert_called_once_with(exception_object)
 
+    @patch.object(RolesService, "get_user_role_ids_based_on_project")
+    @patch.object(GetTaskBaseInteractor, 'get_task')
+    def test_given_user_is_not_a_member_of_the_project(
+            self, get_task_mock, user_roles_mock, presenter_mock,
+            mock_object, task_crud_storage_mock,
+            stages_storage_mock, storage_mock,
+            task_storage_mock, action_storage_mock,
+            task_stage_storage_mock, reset_sequence, task_details_dto
+    ):
+        # Arrange
+        user_id = "user1"
+        task_display_id = "IBWF-1"
+        get_task_mock.return_value = task_details_dto
+        exception_object = UserNotAMemberOfAProjectException()
+        user_roles_mock.side_effect = exception_object
+        interactor = GetTaskInteractor(
+            storage=storage_mock, stages_storage=stages_storage_mock,
+            task_storage=task_storage_mock, action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock,
+            task_crud_storage=task_crud_storage_mock
+        )
+        presenter_mock.raise_user_not_a_member_of_project.return_value = \
+            mock_object
+        # Act
+        interactor.get_task_details_wrapper(
+            user_id=user_id, task_display_id=task_display_id,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        presenter_mock.raise_user_not_a_member_of_project.assert_called_once()
+        user_roles_mock.assert_called_once()
+        get_task_mock.assert_called_once()
+
     @patch.object(GetTaskBaseInteractor, 'get_task')
     def test_given_valid_task_id_and_invalid_project_id_for_task_raise_exception(
             self, get_task_mock, presenter_mock,
@@ -414,7 +450,6 @@ class TestGetTaskInteractor:
         # Arrange
         user_id = "user1"
         task_display_id = "IBWF-1"
-        task_id = 1
         invalid_project_ids = ["project_id1"]
         from ib_tasks.adapters.auth_service import InvalidProjectIdsException
         exception_object = InvalidProjectIdsException(invalid_project_ids)
