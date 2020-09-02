@@ -147,6 +147,38 @@
         "company_name"
       ]
     },
+    "RoleNameAndDescription": {
+      "type": "object",
+      "properties": {
+        "role_name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "role_name"
+      ]
+    },
+    "Role": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/RoleNameAndDescription"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "role_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "role_id"
+          ]
+        }
+      ]
+    },
     "RoleDetails": {
       "type": "object",
       "properties": {
@@ -638,11 +670,17 @@
         {
           "type": "object",
           "properties": {
+            "project_display_id": {
+              "type": "string"
+            },
             "teams": {
               "$ref": "#/definitions/Teams"
             },
             "roles": {
-              "$ref": "#/definitions/Roles"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Role"
+              }
             }
           },
           "required": [
@@ -684,7 +722,68 @@
                 "type": "string"
               }
             }
-          }
+          },
+          "required": [
+            "team_ids"
+          ]
+        }
+      ]
+    },
+    "ProjectWithTeamIdsAndRolesForAddProject": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProjectWithTeamIds"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "project_display_id": {
+              "type": "string"
+            },
+            "roles": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RoleNameAndDescription"
+              }
+            }
+          },
+          "required": [
+            "project_display_id",
+            "roles"
+          ]
+        }
+      ]
+    },
+    "ProjectWithTeamIdsAndRolesForUpdateProject": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProjectWithTeamIds"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "roles": {
+              "type": "array",
+              "items": {
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/RoleNameAndDescription"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "role_id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "required": [
+            "roles"
+          ]
         }
       ]
     },
@@ -1117,7 +1216,7 @@
       "required": true,
       "description": "parameters or details to create/add a project",
       "schema": {
-        "$ref": "#/definitions/ProjectWithTeamIds"
+        "$ref": "#/definitions/ProjectWithTeamIdsAndRolesForAddProject"
       }
     },
     "UpdateProjectParameter": {
@@ -1125,7 +1224,7 @@
       "in": "body",
       "description": "details that are to be updated of a project",
       "schema": {
-        "$ref": "#/definitions/ProjectWithTeamIds"
+        "$ref": "#/definitions/ProjectWithTeamIdsAndRolesForUpdateProject"
       }
     }
   },
@@ -3236,7 +3335,7 @@
         ],
         "responses": {
           "201": {
-            "$ref": "#/responses/SuccessfullyCreatedForAddProjectResponse"
+            "description": "Project created Successfully"
           }
         }
       }

@@ -2,18 +2,19 @@ import pytest
 
 from ib_iam.storages.project_storage_implementation import \
     ProjectStorageImplementation
-from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory, \
-    ProjectRoleDTOFactory
+from ib_iam.tests.factories.storage_dtos import (
+    ProjectDTOFactory, ProjectRoleDTOFactory, ProjectWithoutIdDTOFactory,
+    RoleDTOFactory, ProjectWithDisplayIdDTOFactory)
 
 
 class TestProjectStorageImplementation:
 
     @pytest.fixture
-    def project_dtos(self):
+    def project_with_display_id_dtos(self):
         project_ids = ["641bfcc5-e1ea-4231-b482-f7f34fb5c7c4",
                        "641bfcc5-e1ea-4231-b482-f7f34fb5c7c5"]
-        ProjectDTOFactory.reset_sequence(1)
-        project_dtos = [ProjectDTOFactory(project_id=project_id)
+        ProjectWithDisplayIdDTOFactory.reset_sequence(1)
+        project_dtos = [ProjectWithDisplayIdDTOFactory(project_id=project_id)
                         for project_id in project_ids]
         return [project_dtos, project_ids]
 
@@ -23,10 +24,11 @@ class TestProjectStorageImplementation:
         return project_storage
 
     @pytest.mark.django_db
-    def test_add_projects_adds_projects_successfully(self, project_dtos):
+    def test_add_projects_adds_projects_successfully(
+            self, project_with_display_id_dtos):
         # Arrange
-        expected_project_ids = project_dtos[1]
-        expected_project_dtos = project_dtos[0]
+        expected_project_ids = project_with_display_id_dtos[1]
+        expected_project_dtos = project_with_display_id_dtos[0]
 
         # Act
         project_storage = ProjectStorageImplementation()
@@ -111,10 +113,10 @@ class TestProjectStorageImplementation:
             ProjectFactory, TeamFactory, ProjectTeamFactory
         project_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
         team_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c5"
-        ProjectFactory.create(project_id=project_id)
-        TeamFactory.create(team_id=team_id_to_create)
-        ProjectTeamFactory.create(project_id=project_id,
-                                  team_id=team_id_to_create)
+        project_object = ProjectFactory.create(project_id=project_id)
+        team_object = TeamFactory.create(team_id=team_id_to_create)
+        ProjectTeamFactory.create(project=project_object,
+                                  team=team_object)
         project_storage = ProjectStorageImplementation()
 
         actual_response = project_storage.is_team_exists_in_project(
@@ -196,13 +198,13 @@ class TestProjectStorageImplementation:
         team_id = "111bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
         from ib_iam.tests.factories.models import ProjectFactory
         ProjectFactory.reset_sequence(0)
-        ProjectFactory.create(project_id=project_id)
+        project_object = ProjectFactory.create(project_id=project_id)
         from ib_iam.tests.factories.models import TeamFactory
         TeamFactory.reset_sequence(0)
         team_object = TeamFactory.create(team_id=team_id)
         from ib_iam.tests.factories.models import ProjectTeamFactory
         ProjectTeamFactory.reset_sequence(0)
-        ProjectTeamFactory.create(team_id=team_id, project_id=project_id)
+        ProjectTeamFactory.create(team=team_object, project=project_object)
         from ib_iam.tests.factories.models import TeamUserFactory
         TeamUserFactory.reset_sequence(0)
         TeamUserFactory.create(user_id=user_id, team=team_object)
@@ -299,3 +301,159 @@ class TestProjectStorageImplementation:
         project_role_dtos = project_storage.get_all_project_roles()
 
         assert project_role_dtos == expected_project_role_dtos
+
+    @pytest.mark.django_db
+    def test_add_project_returns_project_id(self):
+        ProjectWithoutIdDTOFactory.reset_sequence(1)
+        project_without_id_dto = ProjectWithoutIdDTOFactory()
+        project_storage = ProjectStorageImplementation()
+
+        project_id = project_storage.add_project(
+            project_without_id_dto=project_without_id_dto)
+
+        from ib_iam.models import Project
+        project_object = Project.objects.get(project_id=project_id)
+        assert project_object.name == project_without_id_dto.name
+        assert project_object.display_id == project_without_id_dto.display_id
+        assert project_object.description == project_without_id_dto.description
+        assert project_object.logo_url == project_without_id_dto.logo_url
+
+    @pytest.mark.django_db
+    def test_assign_teams_to_projects_adds_teams_to_project(self):
+        project_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+        team_ids = ["641bfcc5-e1ea-4231-b482-f7f34fb5c7c5"]
+        from ib_iam.tests.factories.models import ProjectFactory, TeamFactory
+        ProjectFactory.reset_sequence(1)
+        ProjectFactory(project_id=project_id)
+        _ = [TeamFactory(team_id=team_id) for team_id in team_ids]
+        project_storage = ProjectStorageImplementation()
+
+        project_storage.assign_teams_to_projects(
+            project_id=project_id, team_ids=team_ids)
+
+        from ib_iam.models import ProjectTeam
+        project_team_ids = ProjectTeam.objects.filter(project_id=project_id) \
+            .values_list("team_id", flat=True)
+        project_team_ids = list(map(str, project_team_ids))
+        assert team_ids == project_team_ids
+
+    @pytest.mark.django_db
+    def test_add_project_roles_adds_project_roles(self):
+        from ib_iam.tests.factories.models import ProjectFactory
+        from ib_iam.interactors.storage_interfaces.dtos import \
+            RoleNameAndDescriptionDTO
+        project_id = "project_641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+        description = None
+        role_name = "role1"
+        roles = [RoleNameAndDescriptionDTO(name=role_name,
+                                           description=description)]
+        ProjectFactory.reset_sequence(1)
+        ProjectFactory(project_id=project_id)
+        project_storage = ProjectStorageImplementation()
+
+        project_storage.add_project_roles(project_id=project_id, roles=roles)
+
+        from ib_iam.models import ProjectRole
+        project_roles = ProjectRole.objects.filter(project_id=project_id) \
+            .values_list("name", "description")
+        assert project_roles[0][0] == role_name
+        assert project_roles[0][1] == description
+
+    @pytest.mark.django_db
+    def test_update_project_updates_project_details(self):
+        project_id = "project_1"
+        from ib_iam.tests.factories.models import ProjectFactory
+        ProjectFactory.create(project_id=project_id)
+        from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
+        project_dto = ProjectDTO(project_id=project_id,
+                                 name="project_name1",
+                                 logo_url=None,
+                                 description=None)
+        project_storage = ProjectStorageImplementation()
+
+        project_storage.update_project(project_dto=project_dto)
+
+        from ib_iam.models import Project
+        project_object = Project.objects.get(project_id=project_id)
+        assert project_object.name == project_dto.name
+        assert project_object.description == project_dto.description
+        assert project_object.logo_url == project_dto.logo_url
+
+    @pytest.mark.django_db
+    def test_delete_teams_from_project_deletes_given_teams(self):
+        project_id = "project_1"
+        team_ids = ["641bfcc5-e1ea-4231-b482-f7f34fb5c7c4",
+                    "641bfcc5-e1ea-4231-b482-f7f34fb5c7c5"]
+        team_ids_to_be_removed = ["641bfcc5-e1ea-4231-b482-f7f34fb5c7c5"]
+        expected_project_team_ids = ["641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"]
+        from ib_iam.tests.factories.models import \
+            ProjectFactory, TeamFactory, ProjectTeamFactory
+        project_object = ProjectFactory.create(project_id=project_id)
+        team_objects = [TeamFactory.create(team_id=team_id)
+                        for team_id in team_ids]
+        _ = [ProjectTeamFactory(project=project_object, team=team_object)
+             for team_object in team_objects]
+        project_storage = ProjectStorageImplementation()
+
+        project_storage.remove_teams_from_project(
+            project_id=project_id, team_ids=team_ids_to_be_removed)
+
+        from ib_iam.models import ProjectTeam
+        project_team_ids = ProjectTeam.objects.filter(project_id=project_id) \
+            .values_list("team_id", flat=True)
+        project_team_ids = list(map(str, project_team_ids))
+        assert list(project_team_ids) == expected_project_team_ids
+
+    @pytest.mark.django_db
+    def test_get_project_role_ids_gives_project_related_role_ids(self):
+        from ib_iam.tests.factories.models import \
+            ProjectFactory, ProjectRoleFactory
+        project_id = "project_1"
+        role_id = "role_1"
+        expected_role_ids = ["role_1"]
+        project_object = ProjectFactory(project_id=project_id)
+        ProjectRoleFactory(role_id=role_id, project=project_object)
+        project_storage = ProjectStorageImplementation()
+
+        role_ids = project_storage.get_project_role_ids(project_id=project_id)
+
+        assert role_ids == expected_role_ids
+
+    @pytest.mark.django_db
+    def test_update_project_roles_will_update_project_roles(self):
+        from ib_iam.tests.factories.models import \
+            ProjectFactory, ProjectRoleFactory
+        role_id = "role_1"
+        project_object = ProjectFactory(project_id="project_1")
+        ProjectRoleFactory(role_id=role_id, project=project_object)
+        expected_name = "role_name1"
+        expected_description = "desc"
+        roles = [RoleDTOFactory(role_id=role_id,
+                                name=expected_name,
+                                description=expected_description)]
+        project_storage = ProjectStorageImplementation()
+
+        project_storage.update_project_roles(roles=roles)
+
+        from ib_iam.models import ProjectRole
+        role_object = ProjectRole.objects.get(role_id=role_id)
+        assert role_object.name == expected_name
+        assert role_object.description == expected_description
+
+    @pytest.mark.django_db
+    def test_delete_project_roles_deletes_given_roles(self):
+        from ib_iam.tests.factories.models import \
+            ProjectFactory, ProjectRoleFactory
+        role_ids = ["role_1", "role_2"]
+        expected_role_ids = ["role_2"]
+        project_object = ProjectFactory(project_id="project_1")
+        _ = [ProjectRoleFactory(role_id=role_id, project=project_object)
+             for role_id in role_ids]
+        project_storage = ProjectStorageImplementation()
+
+        project_storage.delete_project_roles(role_ids=["role_1"])
+
+        from ib_iam.models import ProjectRole
+        role_ids = ProjectRole.objects.filter(role_id__in=role_ids) \
+            .values_list("role_id", flat=True)
+        assert list(role_ids) == expected_role_ids

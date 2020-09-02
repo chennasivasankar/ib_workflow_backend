@@ -152,3 +152,7 @@ class StageStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_task_current_stages(self, task_id) -> List[str]:
         pass
+
+    @abc.abstractmethod
+    def get_current_stage_db_ids_of_task(self, task_id: int) -> List[int]:
+        pass

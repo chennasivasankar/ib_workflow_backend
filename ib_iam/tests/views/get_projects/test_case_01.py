@@ -38,8 +38,8 @@ class TestCase01GetProjectsAPITestCase(TestUtils):
         role_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c6"
         project_object = ProjectFactory(project_id=project_id)
         team_object = TeamFactory(team_id=team_id)
-        project_teams = [ProjectTeamFactory(project_id=project_id,
-                                            team_id=team_id)]
+        project_teams = [ProjectTeamFactory(project=project_object,
+                                            team=team_object)]
         project_roles = [ProjectRoleFactory(role_id=role_id,
                                             project=project_object)]
         return team_object, project_teams, project_roles

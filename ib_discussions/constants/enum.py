@@ -1,7 +1,9 @@
 from enum import Enum
 
+from ib_common.constants import BaseEnumClass
 
-class EntityType(Enum):
+
+class EntityType(BaseEnumClass, Enum):
     TASK = "TASK"
     COLUMN = "COLUMN"
     BOARD = "BOARD"

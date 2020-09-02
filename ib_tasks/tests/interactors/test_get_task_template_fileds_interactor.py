@@ -1,22 +1,6 @@
 import pytest
-import factory
-
-from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface import TaskTemplateFieldsDto
-from ib_tasks.interactors.presenter_interfaces.get_task_templates_presenter_interface import CompleteTaskTemplatesDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
-from ib_tasks.tests.factories.storage_dtos import TaskTemplateDTOFactory, StageIdWithTemplateIdDTOFactory, \
-    ActionWithStageIdDTOFactory, GoFDTOFactory, FieldDTOFactory, FieldPermissionDTOFactory, GoFToTaskTemplateDTOFactory
-
-import factory
-import pytest
-
-from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
-    import \
-    TaskTemplateFieldsDto
-from ib_tasks.interactors.presenter_interfaces\
-    .get_task_templates_presenter_interface import \
-    CompleteTaskTemplatesDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
+from ib_tasks.tests.factories.storage_dtos import ProjectTemplateDTOFactory, \
+    TaskTemplateGofsDTOFactory, FieldNameDTOFactory
 from ib_tasks.tests.factories.storage_dtos import TaskTemplateDTOFactory, \
     StageIdWithTemplateIdDTOFactory, \
     ActionWithStageIdDTOFactory, GoFDTOFactory, FieldDTOFactory, \
@@ -32,21 +16,17 @@ class TestGetTaskTemplatesFieldsInteractor:
             import FieldsStorageInterface
         from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
             GoFStorageInterface
-        from ib_tasks.interactors.storage_interfaces.task_storage_interface \
-            import TaskStorageInterface
         from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
             import TaskTemplateStorageInterface
         from unittest.mock import create_autospec
         field_storage = create_autospec(FieldsStorageInterface)
         gof_storage = create_autospec(GoFStorageInterface)
-        task_storage = create_autospec(TaskStorageInterface)
         task_template_storage = create_autospec(TaskTemplateStorageInterface)
         from ib_tasks.interactors.get_task_templates_fields_interactor \
             import GetTaskTemplatesFieldsInteractor
         interactor = GetTaskTemplatesFieldsInteractor(
             field_storage=field_storage,
             gof_storage=gof_storage,
-            task_storage=task_storage,
             task_template_storage=task_template_storage
         )
         return interactor
@@ -64,65 +44,69 @@ class TestGetTaskTemplatesFieldsInteractor:
 
     @staticmethod
     @pytest.fixture()
-    def interactor_mock():
-
-        task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
-        stage_id_with_template_id_dtos = \
-            StageIdWithTemplateIdDTOFactory.create_batch(size=2)
-        action_with_stage_id_dtos = \
-            ActionWithStageIdDTOFactory.create_batch(size=2)
-        gof_dtos = GoFDTOFactory.create_batch(size=2)
-        field_dtos = FieldDTOFactory.create_batch(size=4)
-        field_with_permissions_dtos = \
-            FieldPermissionDTOFactory.create_batch(
-                size=2, field_dto=factory.Iterator(field_dtos),
-                is_field_writable=factory.Iterator([False, True])
-            )
-        gof_to_task_template_dtos = \
-            GoFToTaskTemplateDTOFactory.create_batch(size=2)
-
-        complete_task_templates_dto = CompleteTaskTemplatesDTO(
-            task_template_dtos=task_template_dtos,
-            stage_id_with_template_id_dtos=stage_id_with_template_id_dtos,
-            action_with_stage_id_dtos=action_with_stage_id_dtos,
-            gof_dtos=gof_dtos,
-            gofs_of_task_templates_dtos=gof_to_task_template_dtos,
-            field_with_permissions_dtos=field_with_permissions_dtos
+    def interactor_mock_response():
+        from ib_tasks.tests.factories.presenter_dtos \
+            import ProjectTemplateFieldsDTOFactory
+        ProjectTemplateFieldsDTOFactory.reset_sequence()
+        ProjectTemplateDTOFactory.reset_sequence(1)
+        TaskTemplateGofsDTOFactory.reset_sequence(1)
+        FieldNameDTOFactory.reset_sequence(1)
+        template_fields = ProjectTemplateFieldsDTOFactory(
+            task_template_dtos=[ProjectTemplateDTOFactory()],
+            task_template_gofs_dtos=[TaskTemplateGofsDTOFactory()],
+            fields_dto=FieldNameDTOFactory.create_batch(2)
         )
-        return complete_task_templates_dto
+        return template_fields
 
-    def response(self):
-        TaskTemplateDTOFactory.reset_sequence()
-        GoFToTaskTemplateDTOFactory.reset_sequence()
-        return TaskTemplateFieldsDto(
-            task_template_dtos=TaskTemplateDTOFactory.create_batch(size=2),
-            gofs_of_task_templates_dtos=GoFToTaskTemplateDTOFactory.create_batch(size=2),
-            fields_dto=[
-                FieldNameDTO(field_id='field0', gof_id='FIN_VENDOR_BASIC_DETAILS', field_display_name='field name'),
-                FieldNameDTO(field_id='field1', gof_id='FIN_VENDOR_BASIC_DETAILS', field_display_name='field name')]
-        )
-
-    def test_return_task_templates_fields_details(
-            self, interactor, mocker, interactor_mock):
-
-        # Arrange
-        path = 'ib_tasks.interactors.get_task_templates_interactor.GetTaskTemplatesInteractor' \
+    @pytest.fixture()
+    def template_path_mock(self, mocker):
+        path = 'ib_tasks.interactors.get_templates_fields_to_project_ids.GetProjectsTemplatesFieldsInteractor' \
                '.get_task_templates'
         mock_obj = mocker.patch(path)
-        mock_obj.return_value = interactor_mock
-        user_id = "user_1"
+        return mock_obj
+
+    def test_given_invalid_project_id_raises_exception(
+            self, interactor, template_path_mock):
+
+        # Arrange
+        from ib_tasks.exceptions.adapter_exceptions \
+            import InvalidProjectIdsException
+        project_id = 'FIN_MAN'
+        project_ids = [project_id]
+        template_path_mock.side_effect = \
+            InvalidProjectIdsException(invalid_project_ids=project_ids)
+        user_id = 'user_1'
         from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
             import FilterPresenterInterface
         from unittest.mock import create_autospec
         presenter = create_autospec(FilterPresenterInterface)
 
         # Act
-
         interactor.get_task_templates_fields_wrapper(
-            user_id=user_id, presenter=presenter
+            user_id=user_id, project_id=project_id, presenter=presenter
         )
 
         # Assert
-        presenter.get_response_for_get_task_templates_fields.assert_called_once_with(
-            task_template_fields=self.response()
+        obj = presenter.get_response_for_invalid_project_id.call_args.kwargs
+        assert obj['err'].invalid_project_ids == project_ids
+
+    def test_return_task_templates_fields_details(
+            self, interactor, interactor_mock_response, template_path_mock):
+
+        # Arrange
+        template_path_mock.return_value = interactor_mock_response
+        user_id = "user_1"
+        project_id = 'FIN_MAN'
+        from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
+            import FilterPresenterInterface
+        from unittest.mock import create_autospec
+        presenter = create_autospec(FilterPresenterInterface)
+
+        # Act
+        interactor.get_task_templates_fields_wrapper(
+            user_id=user_id, project_id=project_id, presenter=presenter
         )
+
+        # Assert
+        presenter.get_response_for_get_task_templates_fields\
+            .assert_called_once_with(task_template_fields=interactor_mock_response)

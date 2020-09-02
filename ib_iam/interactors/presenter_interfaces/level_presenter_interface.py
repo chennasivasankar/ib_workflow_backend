@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+import abc
 from typing import List
 
 from ib_iam.adapters.dtos import UserProfileDTO
@@ -7,9 +7,9 @@ from ib_iam.interactors.storage_interfaces.dtos import \
     TeamMemberLevelDetailsDTO, MemberDTO
 
 
-class AddTeamMemberLevelsPresenterInterface(ABC):
+class AddTeamMemberLevelsPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def prepare_success_response_for_add_team_member_levels_to_team(self):
         pass
 
@@ -30,9 +30,9 @@ class AddTeamMemberLevelsPresenterInterface(ABC):
         pass
 
 
-class GetTeamMemberLevelsPresenterInterface(ABC):
+class GetTeamMemberLevelsPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_team_member_level_details_dtos(
             self,
             team_member_level_details_dtos: List[TeamMemberLevelDetailsDTO]):
@@ -43,9 +43,9 @@ class GetTeamMemberLevelsPresenterInterface(ABC):
         pass
 
 
-class AddMembersToLevelPresenterInterface(ABC):
+class AddMembersToLevelPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def prepare_success_response_for_add_members_to_levels(self):
         pass
 
@@ -62,9 +62,9 @@ class AddMembersToLevelPresenterInterface(ABC):
         pass
 
 
-class GetTeamMembersOfLevelHierarchyPresenterInterface(ABC):
+class GetTeamMembersOfLevelHierarchyPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def prepare_success_response_for_get_team_members_of_level_hierarchy(
             self, member_dtos: List[MemberDTO],
             user_profile_dtos: List[UserProfileDTO]
@@ -80,9 +80,9 @@ class GetTeamMembersOfLevelHierarchyPresenterInterface(ABC):
         pass
 
 
-class AddMembersToSuperiorsPresenterInterface(ABC):
+class AddMembersToSuperiorsPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def prepare_success_response_for_add_members_superiors(self):
         pass
 
@@ -103,9 +103,9 @@ class AddMembersToSuperiorsPresenterInterface(ABC):
         pass
 
 
-class GetTeamMemberLevelsWithMembersPresenterInterface(ABC):
+class GetTeamMemberLevelsWithMembersPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def prepare_success_response_for_team_member_levels_with_members(
             self,
             complete_team_member_levels_details_dto: CompleteTeamMemberLevelsDetailsDTO

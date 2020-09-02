@@ -1,48 +1,65 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
+
+from ib_iam.interactors.dtos.dtos import CompleteProjectDetailsDTO
+from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
+from .validator_class import ValidatorClass
+from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
+    import validate_decorator
+
+from ib_iam.interactors.dtos.dtos import CompleteProjectDetailsDTO
+from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
 from .validator_class import ValidatorClass
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
+    complete_project_details_dto = \
+        convert_to_complete_project_details_dto(kwargs)
 
-    try:
-        from ib_iam.views.update_project_details.request_response_mocks \
-            import REQUEST_BODY_JSON
-        body = REQUEST_BODY_JSON
-    except ImportError:
-        body = {}
+    from ib_iam.storages.project_storage_implementation import \
+        ProjectStorageImplementation
+    project_storage = ProjectStorageImplementation()
+    from ib_iam.storages.user_storage_implementation import \
+        UserStorageImplementation
+    user_storage = UserStorageImplementation()
+    from ib_iam.storages.team_storage_implementation import \
+        TeamStorageImplementation
+    team_storage = TeamStorageImplementation()
+    from ib_iam.presenters.update_project_presenter_implementation import \
+        UpdateProjectPresenterImplementation
+    presenter = UpdateProjectPresenterImplementation()
+    from ib_iam.interactors.project_interactor import ProjectInteractor
+    interactor = ProjectInteractor(project_storage=project_storage,
+                                   team_storage=team_storage,
+                                   user_storage=user_storage)
 
-    test_case = {
-        "path_params": {'project_id': '2b1bfb00-53af-4231-a9d0-702f50a49a8c'},
-        "query_params": {},
-        "header_params": {},
-        "body": body,
-        "securities": [{'oauth': ['write']}]
-    }
+    response_data = interactor.update_project_wrapper(
+        presenter=presenter,
+        complete_project_details_dto=complete_project_details_dto)
 
-    from django_swagger_utils.drf_server.utils.server_gen.mock_response \
-        import mock_response
-    try:
-        response = ''
-        status_code = 200
-        if '200' in ['200']:
-            from ib_iam.views.update_project_details.request_response_mocks \
-                import RESPONSE_200_JSON
-            response = RESPONSE_200_JSON
-            status_code = 200
-        elif '201' in ['200']:
-            from ib_iam.views.update_project_details.request_response_mocks \
-                import RESPONSE_201_JSON
-            response = RESPONSE_201_JSON
-            status_code = 201
-    except ImportError:
-        response = ''
-        status_code = 200
-    response_tuple = mock_response(
-        app_name="ib_iam", test_case=test_case,
-        operation_name="update_project_details",
-        kwargs=kwargs, default_response_body=response,
-        group_name="", status_code=status_code)
-    return response_tuple
+    return response_data
+
+
+def convert_to_complete_project_details_dto(kwargs) \
+        -> CompleteProjectDetailsDTO:
+    request_data = kwargs["request_data"]
+    roles = request_data["roles"]
+    role_dtos = [convert_to_role_dtos(role) for role in roles]
+    project_with_team_ids_and_roles_dto = CompleteProjectDetailsDTO(
+        project_id=kwargs["path_params"]["project_id"],
+        name=request_data["name"],
+        description=request_data.get("description", None),
+        logo_url=request_data.get("logo_url", None),
+        team_ids=request_data["team_ids"],
+        roles=role_dtos)
+    return project_with_team_ids_and_roles_dto
+
+
+def convert_to_role_dtos(role) -> RoleDTO:
+    from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
+    role_dto = RoleDTO(
+        role_id=role.get("role_id", None),
+        name=role["role_name"],
+        description=role.get("description", None))
+    return role_dto

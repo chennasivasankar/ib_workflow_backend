@@ -7,6 +7,13 @@ REQUEST_BODY_JSON = """
     "logo_url": "string",
     "team_ids": [
         "string"
+    ],
+    "roles": [
+        {
+            "role_name": "string",
+            "description": "string",
+            "role_id": "string"
+        }
     ]
 }
 """
