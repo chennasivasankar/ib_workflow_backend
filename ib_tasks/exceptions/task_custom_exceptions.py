@@ -142,3 +142,11 @@ class InvalidTaskTemplateOfProject(Exception):
     def __init__(self, project_id: str, template_id: str):
         self.template_id = template_id
         self.project_id = project_id
+
+
+class TaskIdsNotInProject(Exception):
+    def __init__(self, invalid_task_ids: List[int]):
+        self.invalid_task_ids = invalid_task_ids
+
+    def __str__(self):
+        return self.invalid_task_ids

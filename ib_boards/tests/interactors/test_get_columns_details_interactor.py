@@ -145,7 +145,8 @@ class TestGetColumnDetailsInteractor:
     @pytest.fixture
     def task_ids_config(self):
         TaskDetailsConfigDTOFactory.reset_sequence()
-        return TaskDetailsConfigDTOFactory.create_batch(3)
+        return TaskDetailsConfigDTOFactory.create_batch(3,
+                                                        project_id="project_id_2")
 
     @pytest.fixture
     def task_ids_stage_id(self):
@@ -222,7 +223,7 @@ class TestGetColumnDetailsInteractor:
         interactor = GetColumnDetailsInteractor(
             storage=storage
         )
-        user_roles_service.get_user_roles.return_value = user_roles
+        user_roles_service.get_user_role_ids_based_on_project.return_value = user_roles
         board_permitted_user_roles = ["FIN_PAYMENT_POC"]
 
         storage.get_permitted_user_roles_for_board.return_value = board_permitted_user_roles
@@ -264,7 +265,7 @@ class TestGetColumnDetailsInteractor:
         interactor = GetColumnDetailsInteractor(
             storage=storage
         )
-        user_roles_service.get_user_roles.return_value = user_roles
+        user_roles_service.get_user_role_ids_based_on_project.return_value = user_roles
         board_permitted_user_roles = ["FIN_PAYMENT_POC"]
 
         storage.get_permitted_user_roles_for_board.return_value = board_permitted_user_roles
@@ -364,6 +365,7 @@ class TestGetColumnDetailsInteractor:
         tasks_dtos = [TaskStageIdDTO(task_id="task_id_1",
                                      stage_id="stage_id_1")]
 
+        storage.get_project_id_for_board.return_value = "project_id_2"
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             prepare_task_details_dtos
         task_details_dto = prepare_task_details_dtos(mocker, tasks_dtos,
@@ -374,7 +376,7 @@ class TestGetColumnDetailsInteractor:
 
         task_ids_mock = get_task_ids_mock(mocker, column_tasks_ids)
         task_details_dto.return_value = task_fields_dto, task_actions_dto, task_stage_color_dtos
-        user_roles_service.get_user_roles.return_value = user_roles
+        user_roles_service.get_user_role_ids_based_on_project.return_value = user_roles
         board_permitted_user_roles = ["FIN_PAYMENT_POC"]
 
         storage.get_column_ids_for_board.return_value = column_ids
@@ -441,6 +443,7 @@ class TestGetColumnDetailsInteractor:
             view_type=ViewType.LIST.value,
             search_query="hello"
         )
+        storage.get_project_id_for_board.return_value = "project_id_2"
         pagination_parameters = PaginationParametersDTO(
             offset=0,
             limit=10
@@ -467,7 +470,7 @@ class TestGetColumnDetailsInteractor:
         task_ids_mock = get_task_ids_mock(mocker, column_tasks_ids_no_duplicates)
 
         task_details_dto.return_value = task_fields_dto, task_actions_dto, task_stage_color_dtos
-        user_roles_service.get_user_roles.return_value = user_roles
+        user_roles_service.get_user_role_ids_based_on_project.return_value = user_roles
         board_permitted_user_roles = ["FIN_PAYMENT_POC"]
 
         storage.get_column_ids_for_board.return_value = column_ids

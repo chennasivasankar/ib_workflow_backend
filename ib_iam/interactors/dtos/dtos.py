@@ -58,3 +58,10 @@ class CompleteTeamMemberLevelsDetailsDTO:
         TeamMemberLevelIdWithMemberIdsDTO]
     member_id_with_subordinate_member_ids_dtos: List[
         MemberIdWithSubordinateMemberIdsDTO]
+
+
+@dataclass
+class UserIdWithProjectIdAndStatusDTO:
+    user_id: str
+    project_id: str
+    is_exist: bool
