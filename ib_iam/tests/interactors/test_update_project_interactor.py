@@ -1,6 +1,8 @@
 import mock
 import pytest
 
+from ib_iam.interactors.dtos.dtos import CompleteProjectDetailsDTO
+
 
 class TestUpdateProjectIneractor:
 
@@ -49,9 +51,31 @@ class TestUpdateProjectIneractor:
 
     # todo remove it while removing transaction tag update_project interactor
     @pytest.mark.django_db
+    def test_given_invalid_project_returns_invalid_project_response(
+            self, project_storage, user_storage, interactor, presenter):
+        from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
+        project_dto = ProjectDTOFactory()
+        user_storage.is_valid_project_id.return_value = False
+        presenter.get_invalid_project_response.return_value = mock.Mock()
+        complete_project_details_dto = CompleteProjectDetailsDTO(
+            project_id=project_dto.project_id,
+            name=project_dto.name,
+            description=project_dto.description,
+            logo_url=project_dto.logo_url,
+            team_ids=[],
+            roles=[])
+
+        interactor.update_project_wrapper(presenter=presenter,
+                                          complete_project_details_dto=
+                                          complete_project_details_dto)
+
+        user_storage.is_valid_project_id.assert_called_once()
+        presenter.get_invalid_project_response.assert_called_once()
+
+    # todo remove it while removing transaction tag update_project interactor
+    @pytest.mark.django_db
     def test_update_project_returns_success_response(
-            self, project_storage, interactor, presenter, roles):
-        from ib_iam.interactors.dtos.dtos import CompleteProjectDetailsDTO
+            self, project_storage, user_storage, interactor, presenter, roles):
         from ib_iam.tests.factories.storage_dtos import \
             ProjectDTOFactory
         project_id = "1"
@@ -61,6 +85,7 @@ class TestUpdateProjectIneractor:
         team_ids_from_db = ["1", "3"]
         team_ids_to_add = ["2"]
         team_ids_to_be_removed = ["3"]
+        user_storage.is_valid_project_id.return_value = True
         project_storage.get_valid_team_ids.return_value = team_ids_from_db
         role_ids_from_db = ["role1", "role2"]
         roles_to_be_updated = [roles[0]]

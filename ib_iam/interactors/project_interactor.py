@@ -7,7 +7,7 @@ from ib_iam.app_interfaces.dtos import (
     UserTeamsDTO)
 from ib_iam.exceptions.custom_exceptions import (
     InvalidUserIds, ProjectNameAlreadyExists, ProjectDisplayIdAlreadyExists,
-    DuplicateTeamIds, TeamIdsAreInvalid, UserIsNotAdmin)
+    DuplicateTeamIds, TeamIdsAreInvalid, UserIsNotAdmin, InvalidProjectId)
 from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO, \
     CompleteProjectDetailsDTO
 from ib_iam.interactors.mixins.validation import ValidationMixin
@@ -336,9 +336,12 @@ class ProjectInteractor(ValidationMixin):
             self,
             complete_project_details_dto: CompleteProjectDetailsDTO,
             presenter: UpdateProjectPresenterInterface):
-        self.update_project(
-            complete_project_details_dto=complete_project_details_dto)
-        response = presenter.get_success_response_for_update_project()
+        try:
+            self.update_project(
+                complete_project_details_dto=complete_project_details_dto)
+            response = presenter.get_success_response_for_update_project()
+        except InvalidProjectId:
+            response = presenter.get_invalid_project_response()
         return response
 
     # todo remove the tag after writing validations properly
@@ -346,13 +349,14 @@ class ProjectInteractor(ValidationMixin):
     def update_project(
             self, complete_project_details_dto: CompleteProjectDetailsDTO):
         # todo confirm and write user permissions
-        # todo validate project_id
         # todo validate is project name already exists for any other project
         # todo validate given invalid team_ids or duplicate team_ids
         # todo validate role_ids - duplicate role_ids or invalid_role_ids
-        project_id = complete_project_details_dto.project_id
-        team_ids = complete_project_details_dto.team_ids
         # todo validate role_ids
+        is_project_exist = self.user_storage.is_valid_project_id(
+            project_id=complete_project_details_dto.project_id)
+        if not is_project_exist:
+            raise InvalidProjectId
         project_dto = self._convert_to_project_dto(
             complete_project_details_dto=complete_project_details_dto,
             project_id=complete_project_details_dto.project_id)
