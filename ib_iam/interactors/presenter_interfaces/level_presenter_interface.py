@@ -13,19 +13,19 @@ class AddTeamMemberLevelsPresenterInterface(abc.ABC):
     def prepare_success_response_for_add_team_member_levels_to_team(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_invalid_team_id(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_duplicate_level_hierarchies(self, err):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_negative_level_hierarchies(self, err):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_duplicate_team_member_levels(self, err):
         pass
 
@@ -38,7 +38,7 @@ class GetTeamMemberLevelsPresenterInterface(abc.ABC):
             team_member_level_details_dtos: List[TeamMemberLevelDetailsDTO]):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_invalid_team_id(self):
         pass
 
@@ -49,15 +49,15 @@ class AddMembersToLevelPresenterInterface(abc.ABC):
     def prepare_success_response_for_add_members_to_levels(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_invalid_team_id(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_team_member_level_ids_not_found(self, err):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_team_member_ids_not_found(self, err):
         pass
 
@@ -71,11 +71,11 @@ class GetTeamMembersOfLevelHierarchyPresenterInterface(abc.ABC):
     ):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_invalid_team_id(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_invalid_level_hierarchy_of_team(self):
         pass
 
@@ -86,19 +86,19 @@ class AddMembersToSuperiorsPresenterInterface(abc.ABC):
     def prepare_success_response_for_add_members_superiors(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_invalid_team_id(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_invalid_level_hierarchy_of_team(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_team_member_ids_not_found(self, err):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_users_not_belong_to_team_member_level(self, err):
         pass
 
@@ -112,6 +112,6 @@ class GetTeamMemberLevelsWithMembersPresenterInterface(abc.ABC):
     ):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_invalid_team_id(self):
         pass
