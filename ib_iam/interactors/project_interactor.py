@@ -5,8 +5,9 @@ from django.db import transaction
 from ib_iam.app_interfaces.dtos import (
     ProjectTeamUserDTO, UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO,
     UserTeamsDTO)
-from ib_iam.exceptions.custom_exceptions import InvalidUserIds, \
-    ProjectNameAlreadyExists, ProjectDisplayIdAlreadyExists
+from ib_iam.exceptions.custom_exceptions import (
+    InvalidUserIds, ProjectNameAlreadyExists, ProjectDisplayIdAlreadyExists,
+    InvalidTeamIds)
 from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO, \
     CompleteProjectDetailsDTO
 from ib_iam.interactors.presenter_interfaces \
@@ -274,6 +275,8 @@ class ProjectInteractor:
         except ProjectDisplayIdAlreadyExists:
             response = presenter \
                 .get_project_display_id_already_exists_response()
+        except InvalidTeamIds as exception:
+            response = presenter.get_invalid_team_ids_response(exception)
         return response
 
     # todo remove the tag after writing validations properly
@@ -283,11 +286,8 @@ class ProjectInteractor:
             project_with_team_ids_and_roles_dto: ProjectWithTeamIdsAndRolesDTO
     ):
         # todo confirm and write user permissions
-        # todo validate duplicate or invalid team_ids
-        self._validate_if_given_name_already_exists(
-            name=project_with_team_ids_and_roles_dto.name)
-        self._validate_if_given_display_id_already_exists(
-            display_id=project_with_team_ids_and_roles_dto.display_id)
+        self._validate_add_project_details(project_with_team_ids_and_roles_dto=
+                                           project_with_team_ids_and_roles_dto)
         project_without_id_dto = ProjectWithoutIdDTO(
             name=project_with_team_ids_and_roles_dto.name,
             display_id=project_with_team_ids_and_roles_dto.display_id,
@@ -301,6 +301,17 @@ class ProjectInteractor:
         self.project_storage.add_project_roles(
             project_id=project_id,
             roles=project_with_team_ids_and_roles_dto.roles)
+
+    def _validate_add_project_details(
+            self,
+            project_with_team_ids_and_roles_dto: ProjectWithTeamIdsAndRolesDTO
+    ):
+        self._validate_if_given_name_already_exists(
+            name=project_with_team_ids_and_roles_dto.name)
+        self._validate_if_given_display_id_already_exists(
+            display_id=project_with_team_ids_and_roles_dto.display_id)
+        self._validate_invalid_team_ids(
+            team_ids=project_with_team_ids_and_roles_dto.team_ids)
 
     def _validate_if_given_name_already_exists(self, name: str):
         project_id = self.project_storage \
@@ -409,3 +420,10 @@ class ProjectInteractor:
         role_ids_to_be_deleted = list(set(project_role_ids) - set(role_ids))
         self.project_storage.delete_project_roles(
             role_ids=role_ids_to_be_deleted)
+
+    def _validate_invalid_team_ids(self, team_ids: List[str]):
+        valid_team_ids = self.team_storage.get_valid_team_ids(
+            team_ids=team_ids)
+        invalid_team_ids = list(set(team_ids) - set(valid_team_ids))
+        if invalid_team_ids:
+            raise InvalidTeamIds(team_ids=invalid_team_ids)

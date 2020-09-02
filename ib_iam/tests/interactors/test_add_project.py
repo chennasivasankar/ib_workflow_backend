@@ -108,8 +108,49 @@ class TestAddProjectIneractor:
 
     # todo remove it while removing transaction tag on add_project interactor
     @pytest.mark.django_db
+    def test_given_invalid_team_ids_returns_invalid_team_ids_response(
+            self, project_storage, team_storage, interactor, presenter):
+        from ib_iam.interactors.dtos.dtos import \
+            ProjectWithTeamIdsAndRolesDTO
+        from ib_iam.tests.factories.storage_dtos import \
+            ProjectWithoutIdDTOFactory
+        team_ids = ["1", "2"]
+        valid_team_ids = ["1"]
+        project_details = ProjectWithoutIdDTOFactory()
+        project_storage.get_project_id_if_project_name_already_exists \
+            .return_value = None
+        project_storage.get_project_id_if_display_id_already_exists \
+            .return_value = None
+        team_storage.get_valid_team_ids.return_value = valid_team_ids
+        presenter.get_invalid_team_ids_response.return_value = mock.Mock()
+        expected_invalid_team_ids = ["2"]
+        project_with_team_ids_and_roles_dto = ProjectWithTeamIdsAndRolesDTO(
+            name=project_details.name,
+            display_id=project_details.display_id,
+            description=project_details.description,
+            logo_url=project_details.logo_url,
+            team_ids=team_ids,
+            roles=[])
+
+        interactor.add_project_wrapper(presenter=presenter,
+                                       project_with_team_ids_and_roles_dto=
+                                       project_with_team_ids_and_roles_dto)
+
+        project_storage.get_project_id_if_project_name_already_exists \
+            .assert_called_once_with(name=project_details.name)
+        project_storage.get_project_id_if_display_id_already_exists \
+            .assert_called_once_with(display_id=project_details.display_id)
+        team_storage.get_valid_team_ids.assert_called_once_with(
+            team_ids=team_ids)
+        call_obj = presenter.get_invalid_team_ids_response.call_args
+        error_object_arguments = call_obj.args[0]
+        actual_team_ids_from_error = error_object_arguments.team_ids
+        assert actual_team_ids_from_error == expected_invalid_team_ids
+
+    # todo remove it while removing transaction tag on add_project interactor
+    @pytest.mark.django_db
     def test_add_project_returns_in_success_response(
-            self, project_storage, interactor, presenter):
+            self, project_storage, team_storage, interactor, presenter):
         from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
         from ib_iam.tests.factories.storage_dtos import \
             ProjectWithoutIdDTOFactory, RoleDTOFactory
@@ -122,6 +163,7 @@ class TestAddProjectIneractor:
             .return_value = None
         project_storage.get_project_id_if_display_id_already_exists \
             .return_value = None
+        team_storage.get_valid_team_ids.return_value = team_ids
         project_storage.add_project.return_value = project_id
         presenter.get_success_response_for_add_project \
             .return_value = mock.Mock()
@@ -141,6 +183,8 @@ class TestAddProjectIneractor:
             .assert_called_once_with(name=project_details.name)
         project_storage.get_project_id_if_display_id_already_exists \
             .assert_called_once_with(display_id=project_details.display_id)
+        team_storage.get_valid_team_ids.assert_called_once_with(
+            team_ids=team_ids)
         project_storage.add_project.assert_called_once_with(
             project_without_id_dto=project_details)
         project_storage.assign_teams_to_projects.assert_called_once_with(
