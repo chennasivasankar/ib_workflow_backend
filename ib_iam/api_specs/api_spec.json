@@ -2446,6 +2446,64 @@
       "schema": {
         "$ref": "#/definitions/UserHasNoAccessException"
       }
+    },
+    "BadRequestForUpdateProjectResponse": {
+      "description": "Bad Request for add project",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "PROJECT_NAME_ALREADY_EXISTS",
+                  "DUPLICATE_TEAM_IDS",
+                  "DUPLICATE_ROLE_IDS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "NotFoundForUpdateProjectResponse": {
+      "description": "Not Found Response for add project",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_PROJECT_ID",
+                  "INVALID_TEAM_IDS",
+                  "INVALID_ROLE_IDS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "UnauthorizedRequestForUpdateProjectResponse": {
+      "description": "user has no access to add project",
+      "schema": {
+        "$ref": "#/definitions/UserHasNoAccessException"
+      }
     }
   },
   "paths": {
@@ -3424,6 +3482,15 @@
         "responses": {
           "200": {
             "description": "Project details updated Successfully"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForUpdateProjectResponse"
+          },
+          "401": {
+            "$ref": "#/responses/UnauthorizedRequestForUpdateProjectResponse"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundForUpdateProjectResponse"
           }
         }
       }
