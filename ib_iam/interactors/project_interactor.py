@@ -320,18 +320,6 @@ class ProjectInteractor(ValidationMixin):
         self._validate_invalid_team_ids(
             team_ids=project_with_team_ids_and_roles_dto.team_ids)
 
-    def _validate_is_given_name_already_exists(self, name: str):
-        project_id = self.project_storage \
-            .get_project_id_if_project_name_already_exists(name=name)
-        if project_id:
-            raise ProjectNameAlreadyExists
-
-    def _validate_is_given_display_id_already_exists(self, display_id: str):
-        project_id = self.project_storage \
-            .get_project_id_if_display_id_already_exists(display_id=display_id)
-        if project_id:
-            raise ProjectDisplayIdAlreadyExists
-
     def update_project_wrapper(
             self,
             complete_project_details_dto: CompleteProjectDetailsDTO,
@@ -342,6 +330,8 @@ class ProjectInteractor(ValidationMixin):
             response = presenter.get_success_response_for_update_project()
         except InvalidProjectId:
             response = presenter.get_invalid_project_response()
+        except ProjectNameAlreadyExists:
+            response = presenter.get_project_name_already_exists_response()
         return response
 
     # todo remove the tag after writing validations properly
@@ -349,7 +339,6 @@ class ProjectInteractor(ValidationMixin):
     def update_project(
             self, complete_project_details_dto: CompleteProjectDetailsDTO):
         # todo confirm and write user permissions
-        # todo validate is project name already exists for any other project
         # todo validate given invalid team_ids or duplicate team_ids
         # todo validate role_ids - duplicate role_ids or invalid_role_ids
         # todo validate role_ids
@@ -357,6 +346,8 @@ class ProjectInteractor(ValidationMixin):
             project_id=complete_project_details_dto.project_id)
         if not is_project_exist:
             raise InvalidProjectId
+        self._validate_is_given_name_already_exists(
+            name=complete_project_details_dto.name)
         project_dto = self._convert_to_project_dto(
             complete_project_details_dto=complete_project_details_dto,
             project_id=complete_project_details_dto.project_id)
@@ -431,6 +422,18 @@ class ProjectInteractor(ValidationMixin):
         role_ids_to_be_deleted = list(set(project_role_ids) - set(role_ids))
         self.project_storage.delete_project_roles(
             role_ids=role_ids_to_be_deleted)
+
+    def _validate_is_given_name_already_exists(self, name: str):
+        project_id = self.project_storage \
+            .get_project_id_if_project_name_already_exists(name=name)
+        if project_id:
+            raise ProjectNameAlreadyExists
+
+    def _validate_is_given_display_id_already_exists(self, display_id: str):
+        project_id = self.project_storage \
+            .get_project_id_if_display_id_already_exists(display_id=display_id)
+        if project_id:
+            raise ProjectDisplayIdAlreadyExists
 
     @staticmethod
     def _validate_duplicate_team_ids(team_ids: List[str]):
