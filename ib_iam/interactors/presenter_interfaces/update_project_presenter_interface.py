@@ -22,3 +22,7 @@ class UpdateProjectPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def get_invalid_team_ids_response(self):
         pass
+
+    @abc.abstractmethod
+    def get_duplicate_role_ids_response(self):
+        pass
