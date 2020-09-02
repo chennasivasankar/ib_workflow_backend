@@ -322,46 +322,61 @@ class ProjectInteractor:
         # todo validate role_ids - duplicate role_ids or invalid_role_ids
         project_id = complete_project_details_dto.project_id
         team_ids = complete_project_details_dto.team_ids
+        # todo validate role_ids
+        project_dto = self._convert_to_project_dto(
+            complete_project_details_dto=complete_project_details_dto,
+            project_id=complete_project_details_dto.project_id)
+        self.project_storage.update_project(project_dto=project_dto)
+        project_team_ids = self.project_storage.get_valid_team_ids(
+            project_id=complete_project_details_dto.project_id)
+        self._assign_teams_to_project(
+            project_id=complete_project_details_dto.project_id,
+            project_team_ids=project_team_ids,
+            team_ids=complete_project_details_dto.team_ids)
+        self._remove_teams_from_project(
+            project_id=complete_project_details_dto.project_id,
+            project_team_ids=project_team_ids,
+            team_ids=complete_project_details_dto.team_ids)
+        self._project_roles_related_operations(
+            project_id=complete_project_details_dto.project_id,
+            roles=complete_project_details_dto.roles)
+
+    def _project_roles_related_operations(
+            self, project_id: str, roles: List[RoleDTO]):
+        project_role_ids = self.project_storage.get_project_role_ids(
+            project_id=project_id)
+        self._add_project_roles(project_id=project_id, roles=roles)
+        self._update_project_roles(
+            project_role_ids=project_role_ids, roles=roles)
+        self._delete_project_roles(
+            project_role_ids=project_role_ids, roles=roles)
+
+    @staticmethod
+    def _convert_to_project_dto(
+            project_id: str,
+            complete_project_details_dto: CompleteProjectDetailsDTO):
         project_dto = ProjectDTO(
             project_id=project_id,
             name=complete_project_details_dto.name,
             description=complete_project_details_dto.description,
             logo_url=complete_project_details_dto.logo_url)
-        self.project_storage.update_project(
-            project_dto=project_dto)
-        project_team_ids = self.project_storage.get_valid_team_ids(
-            project_id=project_id)
-        self._add_teams_to_project(
-            project_id=project_id, project_team_ids=project_team_ids,
-            team_ids=team_ids)
-        self._delete_teams_from_project(
-            project_id=project_id, project_team_ids=project_team_ids,
-            team_ids=team_ids)
-        project_role_ids = self.project_storage.get_project_role_ids(
-            project_id=project_id)
-        self._create_new_roles_and_assign_to_project(
-            project_id=project_id, roles=complete_project_details_dto.roles)
-        self._update_project_roles(project_role_ids=project_role_ids,
-                                   roles=complete_project_details_dto.roles)
-        self._delete_project_roles(project_role_ids=project_role_ids,
-                                   roles=complete_project_details_dto.roles)
+        return project_dto
 
-    def _add_teams_to_project(self, project_id: str,
-                              project_team_ids: List[str],
-                              team_ids: List[str]):
-        team_ids_to_add = list(set(team_ids) - set(project_team_ids))
+    def _assign_teams_to_project(self, project_id: str,
+                                 project_team_ids: List[str],
+                                 team_ids: List[str]):
+        team_ids_to_assign = list(set(team_ids) - set(project_team_ids))
         self.project_storage.assign_teams_to_projects(
-            project_id=project_id, team_ids=team_ids_to_add)
+            project_id=project_id, team_ids=team_ids_to_assign)
 
-    def _delete_teams_from_project(self, project_id: str,
+    def _remove_teams_from_project(self, project_id: str,
                                    project_team_ids: List[str],
                                    team_ids: List[str]):
         team_ids_to_be_removed = list(set(project_team_ids) - set(team_ids))
-        self.project_storage.delete_teams_from_project(
+        self.project_storage.remove_teams_from_project(
             project_id=project_id, team_ids=team_ids_to_be_removed)
 
-    def _create_new_roles_and_assign_to_project(self, project_id: str,
-                                                roles: List[RoleDTO]):
+    def _add_project_roles(self, project_id: str, roles: List[RoleDTO]):
         role_name_and_description_dtos = [
             RoleNameAndDescriptionDTO(name=role_dto.name,
                                       description=role_dto.description)

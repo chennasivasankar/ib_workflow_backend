@@ -192,7 +192,7 @@ class ProjectStorageImplementation(ProjectStorageInterface):
                     description=project_dto.description,
                     logo_url=project_dto.logo_url)
 
-    def delete_teams_from_project(self, project_id: str, team_ids: List[str]):
+    def remove_teams_from_project(self, project_id: str, team_ids: List[str]):
         ProjectTeam.objects.filter(project_id=project_id,
                                    team_id__in=team_ids).delete()
 
@@ -202,6 +202,7 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         return list(project_role_ids)
 
     def update_project_roles(self, roles: List[RoleDTO]):
+        # todo have to know whether there is any better way to update
         role_ids = [role_dto.role_id for role_dto in roles]
         role_objects = ProjectRole.objects.filter(role_id__in=role_ids)
         for role_object in role_objects:

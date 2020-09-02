@@ -90,7 +90,7 @@ class TestUpdateProjectIneractor:
             project_id=project_id)
         project_storage.assign_teams_to_projects.assert_called_once_with(
             project_id=project_id, team_ids=team_ids_to_add)
-        project_storage.delete_teams_from_project.assert_called_once_with(
+        project_storage.remove_teams_from_project.assert_called_once_with(
             project_id=project_id, team_ids=team_ids_to_be_removed)
         project_storage.add_project_roles.assert_called_once_with(
             project_id=project_id, roles=roles_to_be_created)

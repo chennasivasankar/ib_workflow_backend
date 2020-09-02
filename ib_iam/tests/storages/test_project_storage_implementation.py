@@ -428,7 +428,7 @@ class TestProjectStorageImplementation:
              for team_object in team_objects]
         project_storage = ProjectStorageImplementation()
 
-        project_storage.delete_teams_from_project(
+        project_storage.remove_teams_from_project(
             project_id=project_id, team_ids=team_ids_to_be_removed)
 
         from ib_iam.models import ProjectTeam

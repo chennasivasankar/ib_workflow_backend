@@ -94,7 +94,7 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def delete_teams_from_project(self, project_id: str, team_ids: List[str]):
+    def remove_teams_from_project(self, project_id: str, team_ids: List[str]):
         pass
 
     @abc.abstractmethod

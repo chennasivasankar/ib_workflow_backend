@@ -1,9 +1,9 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
-from .validator_class import ValidatorClass
 from ib_iam.interactors.dtos.dtos import CompleteProjectDetailsDTO
 from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
+from .validator_class import ValidatorClass
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
@@ -15,7 +15,7 @@ from .validator_class import ValidatorClass
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     complete_project_details_dto = \
-        _convert_to_complete_project_details_dto(kwargs)
+        convert_to_complete_project_details_dto(kwargs)
 
     from ib_iam.storages.project_storage_implementation import \
         ProjectStorageImplementation
@@ -41,11 +41,11 @@ def api_wrapper(*args, **kwargs):
     return response_data
 
 
-def _convert_to_complete_project_details_dto(kwargs) \
+def convert_to_complete_project_details_dto(kwargs) \
         -> CompleteProjectDetailsDTO:
     request_data = kwargs["request_data"]
     roles = request_data["roles"]
-    role_dtos = [_convert_to_role_dtos(role) for role in roles]
+    role_dtos = [convert_to_role_dtos(role) for role in roles]
     project_with_team_ids_and_roles_dto = CompleteProjectDetailsDTO(
         project_id=kwargs["path_params"]["project_id"],
         name=request_data["name"],
@@ -56,7 +56,7 @@ def _convert_to_complete_project_details_dto(kwargs) \
     return project_with_team_ids_and_roles_dto
 
 
-def _convert_to_role_dtos(role) -> RoleDTO:
+def convert_to_role_dtos(role) -> RoleDTO:
     from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
     role_dto = RoleDTO(
         role_id=role.get("role_id", None),
