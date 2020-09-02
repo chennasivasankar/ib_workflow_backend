@@ -390,8 +390,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
 
         action_id = self.action_id
         action_ids = self.storage.get_task_present_stage_actions(
-            task_id=task_id
-        )
+            task_id=task_id)
         is_not_present_stage_actions = int(action_id) not in action_ids
         if is_not_present_stage_actions:
             raise InvalidPresentStageAction(action_id=action_id)
