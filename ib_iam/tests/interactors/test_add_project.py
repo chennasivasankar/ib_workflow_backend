@@ -41,6 +41,33 @@ class TestAddProjectIneractor:
                                        team_storage=team_storage)
         return interactor
 
+    def test_given_user_is_not_admin_returns_user_has_no_access_response(
+            self, project_storage, user_storage, interactor, presenter):
+        from ib_iam.interactors.dtos.dtos import \
+            ProjectWithTeamIdsAndRolesDTO
+        from ib_iam.tests.factories.storage_dtos import \
+            ProjectWithoutIdDTOFactory
+        project_details = ProjectWithoutIdDTOFactory()
+        user_id = "1"
+        user_storage.is_user_admin.return_value = False
+        presenter.get_user_has_no_access_response \
+            .return_value = mock.Mock()
+        project_with_team_ids_and_roles_dto = ProjectWithTeamIdsAndRolesDTO(
+            name=project_details.name,
+            display_id=project_details.display_id,
+            description=project_details.description,
+            logo_url=project_details.logo_url,
+            team_ids=[],
+            roles=[])
+
+        interactor.add_project_wrapper(presenter=presenter,
+                                       user_id=user_id,
+                                       project_with_team_ids_and_roles_dto=
+                                       project_with_team_ids_and_roles_dto)
+
+        user_storage.is_user_admin.assert_called_once_with(user_id=user_id)
+        presenter.get_user_has_no_access_response.assert_called_once()
+
     def test_given_name_already_exists_returns_name_already_exists_response(
             self, project_storage, interactor, presenter):
         from ib_iam.interactors.dtos.dtos import \
@@ -62,6 +89,7 @@ class TestAddProjectIneractor:
             roles=[])
 
         interactor.add_project_wrapper(presenter=presenter,
+                                       user_id="1",
                                        project_with_team_ids_and_roles_dto=
                                        project_with_team_ids_and_roles_dto)
 
@@ -92,6 +120,7 @@ class TestAddProjectIneractor:
             roles=[])
 
         interactor.add_project_wrapper(presenter=presenter,
+                                       user_id="1",
                                        project_with_team_ids_and_roles_dto=
                                        project_with_team_ids_and_roles_dto)
 
@@ -124,6 +153,7 @@ class TestAddProjectIneractor:
             roles=[])
 
         interactor.add_project_wrapper(presenter=presenter,
+                                       user_id="1",
                                        project_with_team_ids_and_roles_dto=
                                        project_with_team_ids_and_roles_dto)
 
@@ -157,6 +187,7 @@ class TestAddProjectIneractor:
             roles=[])
 
         interactor.add_project_wrapper(presenter=presenter,
+                                       user_id="1",
                                        project_with_team_ids_and_roles_dto=
                                        project_with_team_ids_and_roles_dto)
 
@@ -195,6 +226,7 @@ class TestAddProjectIneractor:
             roles=roles)
 
         interactor.add_project_wrapper(presenter=presenter,
+                                       user_id="1",
                                        project_with_team_ids_and_roles_dto=
                                        project_with_team_ids_and_roles_dto)
 

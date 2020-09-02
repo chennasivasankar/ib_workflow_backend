@@ -7,9 +7,10 @@ from ib_iam.app_interfaces.dtos import (
     UserTeamsDTO)
 from ib_iam.exceptions.custom_exceptions import (
     InvalidUserIds, ProjectNameAlreadyExists, ProjectDisplayIdAlreadyExists,
-    DuplicateTeamIds, TeamIdsAreInvalid)
+    DuplicateTeamIds, TeamIdsAreInvalid, UserIsNotAdmin)
 from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO, \
     CompleteProjectDetailsDTO
+from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
     .add_project_presenter_interface import AddProjectPresenterInterface
 from ib_iam.interactors.presenter_interfaces \
@@ -40,7 +41,7 @@ class UsersNotExistsForGivenTeams(Exception):
         self.user_ids = user_ids
 
 
-class ProjectInteractor:
+class ProjectInteractor(ValidationMixin):
 
     def __init__(
             self, project_storage: ProjectStorageInterface,
@@ -264,12 +265,16 @@ class ProjectInteractor:
 
     def add_project_wrapper(
             self,
+            user_id: str,
             project_with_team_ids_and_roles_dto: ProjectWithTeamIdsAndRolesDTO,
             presenter: AddProjectPresenterInterface):
         try:
-            self.add_project(project_with_team_ids_and_roles_dto=
+            self.add_project(user_id=user_id,
+                             project_with_team_ids_and_roles_dto=
                              project_with_team_ids_and_roles_dto)
             response = presenter.get_success_response_for_add_project()
+        except UserIsNotAdmin:
+            response = presenter.get_user_has_no_access_response()
         except ProjectNameAlreadyExists:
             response = presenter.get_project_name_already_exists_response()
         except ProjectDisplayIdAlreadyExists:
@@ -282,10 +287,10 @@ class ProjectInteractor:
         return response
 
     def add_project(
-            self,
+            self, user_id: str,
             project_with_team_ids_and_roles_dto: ProjectWithTeamIdsAndRolesDTO
     ):
-        # todo confirm and write user permissions
+        self._validate_is_user_admin(user_id=user_id)
         self._validate_add_project_details(project_with_team_ids_and_roles_dto=
                                            project_with_team_ids_and_roles_dto)
         project_without_id_dto = ProjectWithoutIdDTO(

@@ -27,6 +27,14 @@ RESPONSE_400_JSON = """
 }
 """
 
+RESPONSE_401_JSON = """
+{
+    "response": "string",
+    "http_status_code": 1,
+    "res_status": "USER_HAS_NO_ACCESS"
+}
+"""
+
 RESPONSE_404_JSON = """
 {
     "response": "string",

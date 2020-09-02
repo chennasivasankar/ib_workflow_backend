@@ -263,3 +263,8 @@ PROJECT_DISPLAY_ID_ALREADY_EXISTS = (
     "Given project display id already exists, choose another",
     "PROJECT_DISPLAY_ID_ALREADY_EXISTS"
 )
+
+USER_HAS_NO_ACCESS_TO_ADD_PROJECT = (
+    "User has no access to add project",
+    "USER_HAS_NO_ACCESS"
+)

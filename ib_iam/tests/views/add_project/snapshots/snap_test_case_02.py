@@ -7,6 +7,14 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
+snapshots['TestCase02AddProjectAPITestCase.test_given_user_is_not_admin_returns_user_has_no_access_response status_code'] = '401'
+
+snapshots['TestCase02AddProjectAPITestCase.test_given_user_is_not_admin_returns_user_has_no_access_response body'] = {
+    'http_status_code': 401,
+    'res_status': 'USER_HAS_NO_ACCESS',
+    'response': 'User has no access to add project'
+}
+
 snapshots['TestCase02AddProjectAPITestCase.test_given_project_name_already_exists_returns_name_already_exists_response status_code'] = '400'
 
 snapshots['TestCase02AddProjectAPITestCase.test_given_project_name_already_exists_returns_name_already_exists_response body'] = {

@@ -5,7 +5,7 @@ test all exception cases of add_project
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from ib_iam.tests.factories.models import ProjectFactory
+from ib_iam.tests.factories.models import ProjectFactory, UserDetailsFactory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -17,8 +17,33 @@ class TestCase02AddProjectAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.mark.django_db
+    def test_given_user_is_not_admin_returns_user_has_no_access_response(
+            self, api_user, snapshot):
+        UserDetailsFactory(user_id=str(api_user.user_id))
+        body = {
+            'name': "project_1",
+            'description': 'project_description',
+            'logo_url': 'https://logo.com',
+            'team_ids': [],
+            "project_display_id": "display_id 1",
+            'roles': [{
+                'role_name': 'role1',
+                'description': 'description1'
+            }]
+        }
+        path_params = {}
+        query_params = {}
+        headers = {}
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
+
+    @pytest.mark.django_db
     def test_given_project_name_already_exists_returns_name_already_exists_response(
-            self, snapshot):
+            self, api_user, snapshot):
+        UserDetailsFactory(user_id=str(api_user.user_id), is_admin=True)
         name = "project_1"
         ProjectFactory.create(name=name)
         body = {
@@ -43,7 +68,8 @@ class TestCase02AddProjectAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_given_project_display_id_already_exists_returns_display_id_already_exists_response(
-            self, snapshot):
+            self, api_user, snapshot):
+        UserDetailsFactory(user_id=str(api_user.user_id), is_admin=True)
         display_id = "display_id 1"
         ProjectFactory.create(display_id=display_id)
         body = {
@@ -68,7 +94,8 @@ class TestCase02AddProjectAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_given_duplicate_team_ids_returns_duplicate_team_ids_response(
-            self, snapshot):
+            self, api_user, snapshot):
+        UserDetailsFactory(user_id=str(api_user.user_id), is_admin=True)
         body = {
             'name': "project_1",
             'description': 'project_description',
@@ -92,7 +119,8 @@ class TestCase02AddProjectAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_given_invalid_team_ids_returns_invalid_team_ids_response(
-            self, snapshot):
+            self, api_user, snapshot):
+        UserDetailsFactory(user_id=str(api_user.user_id), is_admin=True)
         body = {
             'name': "project_1",
             'description': 'project_description',

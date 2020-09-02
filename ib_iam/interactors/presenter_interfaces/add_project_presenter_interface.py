@@ -8,6 +8,10 @@ class AddProjectPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_user_has_no_access_response(self):
+        pass
+
+    @abc.abstractmethod
     def get_project_name_already_exists_response(self):
         pass
 

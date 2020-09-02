@@ -2440,6 +2440,12 @@
           }
         ]
       }
+    },
+    "UnauthorizedRequestForAddProjectResponse": {
+      "description": "user has no access to add project",
+      "schema": {
+        "$ref": "#/definitions/UserHasNoAccessException"
+      }
     }
   },
   "paths": {
@@ -3385,6 +3391,9 @@
           },
           "400": {
             "$ref": "#/responses/BadRequestForAddProjectResponse"
+          },
+          "401": {
+            "$ref": "#/responses/UnauthorizedRequestForAddProjectResponse"
           },
           "404": {
             "$ref": "#/responses/NotFoundForAddProjectResponse"

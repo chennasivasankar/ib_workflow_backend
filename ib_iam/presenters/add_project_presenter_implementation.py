@@ -11,6 +11,17 @@ class AddProjectPresenterImplementation(AddProjectPresenterInterface,
     def get_success_response_for_add_project(self):
         return self.prepare_201_created_response(response_dict={})
 
+    def get_user_has_no_access_response(self):
+        from ib_iam.constants.exception_messages import \
+            USER_HAS_NO_ACCESS_TO_ADD_PROJECT
+        response_dict = {
+            "response": USER_HAS_NO_ACCESS_TO_ADD_PROJECT[0],
+            "http_status_code": StatusCode.UNAUTHORIZED.value,
+            "res_status": USER_HAS_NO_ACCESS_TO_ADD_PROJECT[1]
+        }
+        return self.prepare_401_unauthorized_response(
+            response_dict=response_dict)
+
     def get_project_name_already_exists_response(self):
         from ib_iam.constants.exception_messages import \
             PROJECT_NAME_ALREADY_EXISTS
