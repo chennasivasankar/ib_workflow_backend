@@ -21,12 +21,6 @@ class AddMembersToSuperiorsInteractor:
             immediate_superior_user_id_with_member_ids_dtos: List[
                 ImmediateSuperiorUserIdWithUserIdsDTO]
     ):
-        '''
-        1. invalid team id
-        2. validate level hierarchy to team
-        3. validate members belong to team.
-        4. validate assingning to desired level members or not.
-        '''
         from ib_iam.exceptions.custom_exceptions import \
             InvalidTeamId, InvalidLevelHierarchyOfTeam, MemberIdsNotFoundInTeam
         try:
