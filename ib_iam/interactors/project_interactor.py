@@ -332,6 +332,8 @@ class ProjectInteractor(ValidationMixin):
             response = presenter.get_invalid_project_response()
         except ProjectNameAlreadyExists:
             response = presenter.get_project_name_already_exists_response()
+        except DuplicateTeamIds:
+            response = presenter.get_duplicate_team_ids_response()
         return response
 
     # todo remove the tag after writing validations properly
@@ -339,7 +341,7 @@ class ProjectInteractor(ValidationMixin):
     def update_project(
             self, complete_project_details_dto: CompleteProjectDetailsDTO):
         # todo confirm and write user permissions
-        # todo validate given invalid team_ids or duplicate team_ids
+        # todo validate given invalid team_ids
         # todo validate role_ids - duplicate role_ids or invalid_role_ids
         # todo validate role_ids
         is_project_exist = self.user_storage.is_valid_project_id(
@@ -348,6 +350,8 @@ class ProjectInteractor(ValidationMixin):
             raise InvalidProjectId
         self._validate_is_given_name_already_exists(
             name=complete_project_details_dto.name)
+        self._validate_duplicate_team_ids(
+            team_ids=complete_project_details_dto.team_ids)
         project_dto = self._convert_to_project_dto(
             complete_project_details_dto=complete_project_details_dto,
             project_id=complete_project_details_dto.project_id)

@@ -77,7 +77,7 @@ class TestUpdateProjectIneractor:
     def test_given_name_already_exists_returns_name_already_exists_response(
             self, project_storage, user_storage, interactor, presenter):
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
-        name ="name 1"
+        name = "name 1"
         project_dto = ProjectDTOFactory(name=name)
         project_storage.get_project_id_if_project_name_already_exists \
             .return_value = "project_2"
@@ -98,6 +98,29 @@ class TestUpdateProjectIneractor:
         project_storage.get_project_id_if_project_name_already_exists \
             .assert_called_once_with(name=name)
         presenter.get_project_name_already_exists_response.assert_called_once()
+
+    # todo remove it while removing transaction tag update_project interactor
+    @pytest.mark.django_db
+    def test_given_duplicate_team_ids_returns_duplicate_team_ids_response(
+            self, project_storage, user_storage, interactor, presenter):
+        from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
+        project_dto = ProjectDTOFactory()
+        project_storage.get_project_id_if_project_name_already_exists \
+            .return_value = None
+        presenter.get_duplicate_team_ids_response.return_value = mock.Mock()
+        complete_project_details_dto = CompleteProjectDetailsDTO(
+            project_id=project_dto.project_id,
+            name=project_dto.name,
+            description=project_dto.description,
+            logo_url=project_dto.logo_url,
+            team_ids=["1", "1"],
+            roles=[])
+
+        interactor.update_project_wrapper(presenter=presenter,
+                                          complete_project_details_dto=
+                                          complete_project_details_dto)
+
+        presenter.get_duplicate_team_ids_response.assert_called_once()
 
     # todo remove it while removing transaction tag update_project interactor
     @pytest.mark.django_db
