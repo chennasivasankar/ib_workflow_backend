@@ -9,7 +9,8 @@ from ib_tasks.exceptions.adapter_exceptions import UserIsNotInProjectException
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied, UserBoardPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
-    InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee
+    InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee, \
+    StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidTaskDisplayId
 from ib_tasks.interactors \
@@ -140,6 +141,10 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             return presenter. \
                 raise_stage_ids_with_invalid_permission_for_assignee_exception(
                 invalid_stage_ids=exception.invalid_stage_ids)
+        except StageIdsListEmptyException as err:
+            return presenter.raise_stage_ids_list_empty_exception(err)
+        except InvalidStageIdsListException as err:
+            return presenter.raise_invalid_stage_ids_list_exception(err)
         return presenter.get_response_for_user_action_on_task(
             task_complete_details_dto=task_complete_details_dto,
             task_current_stage_details_dto=task_current_stage_details_dto,
@@ -406,8 +411,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
 
         action_id = self.action_id
         action_ids = self.storage.get_task_present_stage_actions(
-            task_id=task_id
-        )
+            task_id=task_id)
         is_not_present_stage_actions = int(action_id) not in action_ids
         if is_not_present_stage_actions:
             raise InvalidPresentStageAction(action_id=action_id)

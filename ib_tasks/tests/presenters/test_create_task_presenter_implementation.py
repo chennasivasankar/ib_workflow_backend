@@ -835,8 +835,8 @@ class TestCreateTaskPresenterImplementation:
             CurrentStageDetailsDTOFactory
         CurrentStageDetailsDTOFactory.reset_sequence()
         TaskCurrentStageDetailsDTOFactory.reset_sequence()
-
         task_current_stage_details_dto = TaskCurrentStageDetailsDTOFactory()
+        # todo: write all_tasks_overview_dto factory
 
         # Act
         response_object = presenter.get_create_task_response(

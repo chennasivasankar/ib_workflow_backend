@@ -1,5 +1,7 @@
 import abc
 
+from ib_tasks.exceptions.stage_custom_exceptions import \
+    StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO, AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
@@ -74,4 +76,14 @@ class PresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_invalid_task_display_id(self, err):
+        pass
+
+    @abc.abstractmethod
+    def raise_stage_ids_list_empty_exception(
+            self, err: StageIdsListEmptyException):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_stage_ids_list_exception(
+            self, err: InvalidStageIdsListException):
         pass
