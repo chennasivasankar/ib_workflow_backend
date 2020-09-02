@@ -1,5 +1,5 @@
 """
-test with valid details creates task
+test with invalid custom logic exception raises exception
 """
 import factory
 import pytest
@@ -8,7 +8,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01CreateTaskAPITestCase(TestUtils):
+class TestCase38CreateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -87,7 +87,7 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
             card_info_kanban=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]),
             card_info_list=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]))
         path = 'ib_tasks.tests.populate.' \
-               'stage_actions_logic.stage_1_action_name_1_logic'
+               'stage_actions.stage_1_action_name_1'
         action = StageActionFactory(
             stage=stage, py_function_import_path=path
         )

@@ -1,5 +1,5 @@
 """
-test with valid details creates task
+test when user has no permission to make action raises exception
 """
 import factory
 import pytest
@@ -8,7 +8,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01CreateTaskAPITestCase(TestUtils):
+class TestCase36CreateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -20,8 +20,7 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         import json
         from ib_tasks.tests.factories.models import \
             ProjectTaskTemplateFactory, TaskTemplateFactory, \
-            StageModelFactory, ActionPermittedRolesFactory, \
-            StageActionFactory, GoFFactory, FieldFactory, \
+            StageModelFactory, StageActionFactory, GoFFactory, FieldFactory, \
             GoFToTaskTemplateFactory, GoFRoleFactory, FieldRoleFactory, \
             TaskTemplateStatusVariableFactory, \
             StagePermittedRolesFactory, TaskTemplateInitialStageFactory
@@ -31,7 +30,6 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         ProjectTaskTemplateFactory.reset_sequence()
         TaskTemplateFactory.reset_sequence()
         StageModelFactory.reset_sequence()
-        ActionPermittedRolesFactory.reset_sequence()
         StageActionFactory.reset_sequence()
         GoFFactory.reset_sequence()
         FieldFactory.reset_sequence()
@@ -88,11 +86,10 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
             card_info_list=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]))
         path = 'ib_tasks.tests.populate.' \
                'stage_actions_logic.stage_1_action_name_1_logic'
-        action = StageActionFactory(
+        StageActionFactory(
             stage=stage, py_function_import_path=path
         )
-        ActionPermittedRolesFactory.create(
-            action=action, role_id="FIN_PAYMENT_REQUESTER")
+
         gof_obj = GoFFactory.create()
 
         field_obj = FieldFactory.create(gof=gof_obj)

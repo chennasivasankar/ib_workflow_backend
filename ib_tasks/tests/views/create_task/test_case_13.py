@@ -1,13 +1,16 @@
 """
-test with invalid action raises exception
+test with fields of different gof raises exception
 """
+import datetime
+
+import freezegun
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase04CreateTaskAPITestCase(TestUtils):
+class TestCase13CreateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -16,20 +19,47 @@ class TestCase04CreateTaskAPITestCase(TestUtils):
 
     @pytest.fixture(autouse=True)
     def setup(self):
+        import json
         from ib_tasks.tests.factories.models import \
-            ProjectTaskTemplateFactory, TaskTemplateFactory
+            ProjectTaskTemplateFactory, TaskTemplateFactory, \
+            StageModelFactory, ActionPermittedRolesFactory, \
+            StageActionFactory, GoFFactory, FieldFactory, \
+            GoFToTaskTemplateFactory
 
         ProjectTaskTemplateFactory.reset_sequence()
         TaskTemplateFactory.reset_sequence()
+        StageModelFactory.reset_sequence()
+        ActionPermittedRolesFactory.reset_sequence()
+        StageActionFactory.reset_sequence()
+        GoFFactory.reset_sequence()
+        FieldFactory.reset_sequence()
+        GoFToTaskTemplateFactory.reset_sequence()
 
         template_id = 'template_1'
         project_id = "project_1"
+        stage_id = "stage_1"
 
-        TaskTemplateFactory.create(template_id=template_id)
+        task_template_obj = TaskTemplateFactory.create(template_id=template_id)
         ProjectTaskTemplateFactory.create(
             task_template_id=template_id, project_id=project_id)
+        stage = StageModelFactory(
+            stage_id=stage_id,
+            task_template_id='template_1',
+            display_logic="variable0==stage_1",
+            card_info_kanban=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]),
+            card_info_list=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]))
+        path = 'ib_tasks.tests.populate.' \
+               'stage_actions_logic.stage_1_action_name_1_logic'
+        action = StageActionFactory(stage=stage, py_function_import_path=path)
+        ActionPermittedRolesFactory.create(
+            action=action, role_id="FIN_PAYMENT_REQUESTER")
+        gof_objs = GoFFactory.create_batch(size=2)
+        FieldFactory.create(gof=gof_objs[1])
+        GoFToTaskTemplateFactory.create(
+            task_template=task_template_obj, gof=gof_objs[0])
 
     @pytest.mark.django_db
+    @freezegun.freeze_time(datetime.datetime(2020, 8, 31, 5, 4, 54))
     def test_case(self, snapshot):
         body = {
             "project_id": "project_1",

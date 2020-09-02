@@ -1,5 +1,5 @@
 """
-test with valid details creates task
+test with invalid present stage action raises exception
 """
 import factory
 import pytest
@@ -8,7 +8,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01CreateTaskAPITestCase(TestUtils):
+class TestCase37CreateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -88,9 +88,10 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
             card_info_list=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]))
         path = 'ib_tasks.tests.populate.' \
                'stage_actions_logic.stage_1_action_name_1_logic'
-        action = StageActionFactory(
+        action = StageActionFactory.create(
             stage=stage, py_function_import_path=path
         )
+        StageActionFactory.create()
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
         gof_obj = GoFFactory.create()
@@ -121,7 +122,7 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         body = {
             "project_id": "project_1",
             "task_template_id": "template_1",
-            "action_id": 1,
+            "action_id": 2,
             "title": "task_title",
             "description": "task_description",
             "start_date": "2099-12-31",
