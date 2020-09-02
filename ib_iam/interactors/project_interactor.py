@@ -7,7 +7,7 @@ from ib_iam.app_interfaces.dtos import (
     UserTeamsDTO)
 from ib_iam.exceptions.custom_exceptions import (
     InvalidUserIds, ProjectNameAlreadyExists, ProjectDisplayIdAlreadyExists,
-    InvalidTeamIds)
+    InvalidTeamIds, DuplicateTeamIds)
 from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO, \
     CompleteProjectDetailsDTO
 from ib_iam.interactors.presenter_interfaces \
@@ -277,6 +277,8 @@ class ProjectInteractor:
                 .get_project_display_id_already_exists_response()
         except InvalidTeamIds as exception:
             response = presenter.get_invalid_team_ids_response(exception)
+        except DuplicateTeamIds:
+            response = presenter.get_duplicate_team_ids_response()
         return response
 
     # todo remove the tag after writing validations properly
@@ -310,6 +312,8 @@ class ProjectInteractor:
             name=project_with_team_ids_and_roles_dto.name)
         self._validate_if_given_display_id_already_exists(
             display_id=project_with_team_ids_and_roles_dto.display_id)
+        self._validate_duplicate_team_ids(
+            team_ids=project_with_team_ids_and_roles_dto.team_ids)
         self._validate_invalid_team_ids(
             team_ids=project_with_team_ids_and_roles_dto.team_ids)
 
@@ -420,6 +424,12 @@ class ProjectInteractor:
         role_ids_to_be_deleted = list(set(project_role_ids) - set(role_ids))
         self.project_storage.delete_project_roles(
             role_ids=role_ids_to_be_deleted)
+
+    @staticmethod
+    def _validate_duplicate_team_ids(team_ids: List[str]):
+        is_duplicate_team_ids_exist = len(team_ids) != len(set(team_ids))
+        if is_duplicate_team_ids_exist:
+            raise DuplicateTeamIds
 
     def _validate_invalid_team_ids(self, team_ids: List[str]):
         valid_team_ids = self.team_storage.get_valid_team_ids(

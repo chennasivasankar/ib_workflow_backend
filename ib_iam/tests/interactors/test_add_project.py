@@ -108,6 +108,39 @@ class TestAddProjectIneractor:
 
     # todo remove it while removing transaction tag on add_project interactor
     @pytest.mark.django_db
+    def test_given_duplicate_team_ids_returns_duplicate_team_ids_response(
+            self, project_storage, team_storage, interactor, presenter):
+        from ib_iam.interactors.dtos.dtos import \
+            ProjectWithTeamIdsAndRolesDTO
+        from ib_iam.tests.factories.storage_dtos import \
+            ProjectWithoutIdDTOFactory
+        team_ids = ["1", "1"]
+        project_details = ProjectWithoutIdDTOFactory()
+        project_storage.get_project_id_if_project_name_already_exists \
+            .return_value = None
+        project_storage.get_project_id_if_display_id_already_exists \
+            .return_value = None
+        presenter.get_duplicate_team_ids_response.return_value = mock.Mock()
+        project_with_team_ids_and_roles_dto = ProjectWithTeamIdsAndRolesDTO(
+            name=project_details.name,
+            display_id=project_details.display_id,
+            description=project_details.description,
+            logo_url=project_details.logo_url,
+            team_ids=team_ids,
+            roles=[])
+
+        interactor.add_project_wrapper(presenter=presenter,
+                                       project_with_team_ids_and_roles_dto=
+                                       project_with_team_ids_and_roles_dto)
+
+        project_storage.get_project_id_if_project_name_already_exists \
+            .assert_called_once_with(name=project_details.name)
+        project_storage.get_project_id_if_display_id_already_exists \
+            .assert_called_once_with(display_id=project_details.display_id)
+        presenter.get_duplicate_team_ids_response.assert_called_once()
+
+    # todo remove it while removing transaction tag on add_project interactor
+    @pytest.mark.django_db
     def test_given_invalid_team_ids_returns_invalid_team_ids_response(
             self, project_storage, team_storage, interactor, presenter):
         from ib_iam.interactors.dtos.dtos import \

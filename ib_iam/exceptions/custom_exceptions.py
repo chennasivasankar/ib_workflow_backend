@@ -179,3 +179,7 @@ class ProjectNameAlreadyExists(Exception):
 
 class ProjectDisplayIdAlreadyExists(Exception):
     pass
+
+
+class DuplicateTeamIds(Exception):
+    pass
