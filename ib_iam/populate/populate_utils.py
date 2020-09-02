@@ -196,6 +196,15 @@ def populate_admin_users_with_project_roles_and_teams(project_id: str):
         user_storage.add_user_to_the_teams(user_id=user_id, team_ids=team_ids)
         populate_user_roles_for_admin_user(
             admin_user_id=user_id, project_id=project_id)
+        from ib_iam.storages.elastic_storage_implementation import \
+            ElasticStorageImplementation
+        elastic_storage = ElasticStorageImplementation()
+        elastic_user_id = elastic_storage.create_elastic_user(
+            user_id=user_id, name=admin_user["name"]
+        )
+        elastic_storage.create_elastic_user_intermediary(
+            elastic_user_id=elastic_user_id, user_id=user_id
+        )
 
 
 def populate_test_users_for_given_project(project_id: str):
