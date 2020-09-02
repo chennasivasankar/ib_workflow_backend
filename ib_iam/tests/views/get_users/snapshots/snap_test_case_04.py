@@ -10,7 +10,7 @@ snapshots = Snapshot()
 snapshots['TestCase04GetUsersAPITestCase.test_case status_code'] = '200'
 
 snapshots['TestCase04GetUsersAPITestCase.test_case body'] = {
-    'total': 4,
+    'total': 5,
     'users': [
         {
             'company': {
