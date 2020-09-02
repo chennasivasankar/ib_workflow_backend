@@ -311,22 +311,22 @@ class ProjectInteractor(ValidationMixin):
             self,
             project_with_team_ids_and_roles_dto: ProjectWithTeamIdsAndRolesDTO
     ):
-        self._validate_if_given_name_already_exists(
+        self._validate_is_given_name_already_exists(
             name=project_with_team_ids_and_roles_dto.name)
-        self._validate_if_given_display_id_already_exists(
+        self._validate_is_given_display_id_already_exists(
             display_id=project_with_team_ids_and_roles_dto.display_id)
         self._validate_duplicate_team_ids(
             team_ids=project_with_team_ids_and_roles_dto.team_ids)
         self._validate_invalid_team_ids(
             team_ids=project_with_team_ids_and_roles_dto.team_ids)
 
-    def _validate_if_given_name_already_exists(self, name: str):
+    def _validate_is_given_name_already_exists(self, name: str):
         project_id = self.project_storage \
             .get_project_id_if_project_name_already_exists(name=name)
         if project_id:
             raise ProjectNameAlreadyExists
 
-    def _validate_if_given_display_id_already_exists(self, display_id: str):
+    def _validate_is_given_display_id_already_exists(self, display_id: str):
         project_id = self.project_storage \
             .get_project_id_if_display_id_already_exists(display_id=display_id)
         if project_id:
