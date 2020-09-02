@@ -95,6 +95,13 @@ class TestSaveAndActOnATaskInteractor:
         return mocker.patch(path)
 
     @pytest.fixture
+    def get_task_current_stages_details_mock(self, mocker):
+        path = "ib_tasks.interactors.get_task_current_stages_interactor" \
+               ".GetTaskCurrentStagesInteractor" \
+               ".get_task_current_stages_details"
+        return mocker.patch(path)
+
+    @pytest.fixture
     def mock_object(self):
         return mock.Mock()
 
@@ -395,7 +402,8 @@ class TestSaveAndActOnATaskInteractor:
             action_storage=action_storage_mock,
             elastic_storage=elastic_storage_mock,
             task_stage_storage=task_stage_storage_mock)
-        presenter_mock.raise_duplicate_same_gof_orders_for_a_gof.return_value = \
+        presenter_mock.raise_duplicate_same_gof_orders_for_a_gof \
+            .return_value = \
             mock_object
 
         # Act
@@ -1887,5 +1895,79 @@ class TestSaveAndActOnATaskInteractor:
             .call_args
         error_object = call_args[0][0]
         stage_ids = error_object.invalid_stage_ids
-
         assert stage_ids == given_stage_ids
+
+    def test_with_empty_stage_ids_list(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock,
+            action_storage_mock, task_stage_storage_mock,
+            presenter_mock, mock_object, update_task_mock,
+            user_action_on_task_mock,
+            get_task_current_stages_details_mock
+    ):
+        # Arrange
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
+        from ib_tasks.exceptions.stage_custom_exceptions import \
+            StageIdsListEmptyException
+        update_task_mock.side_effect = StageIdsListEmptyException
+        interactor = SaveAndActOnATaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
+        presenter_mock.raise_stage_ids_list_empty_exception.return_value = \
+            mock_object
+
+        # Act
+        response = interactor.save_and_act_on_task_wrapper(presenter_mock,
+                                                           task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_stage_ids_list_empty_exception \
+            .assert_called_once()
+
+    def test_with_invalid_stage_ids_list(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock,
+            action_storage_mock, task_stage_storage_mock,
+            presenter_mock, mock_object, update_task_mock,
+            user_action_on_task_mock,
+            get_task_current_stages_details_mock
+    ):
+        # Arrange
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
+
+        from ib_tasks.exceptions.stage_custom_exceptions import \
+            InvalidStageIdsListException
+        stage_ids = ["stage_1", "stage_2"]
+        update_task_mock.side_effect = InvalidStageIdsListException(stage_ids)
+        interactor = SaveAndActOnATaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
+        presenter_mock.raise_invalid_stage_ids_list_exception.return_value = \
+            mock_object
+
+        # Act
+        response = interactor.save_and_act_on_task_wrapper(presenter_mock,
+                                                           task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_invalid_stage_ids_list_exception \
+            .assert_called_once()
+        call_args = presenter_mock.raise_invalid_stage_ids_list_exception\
+            .call_args
+        error_object = call_args[0][0]
+        invalid_stage_ids = error_object.invalid_stage_ids
+        assert invalid_stage_ids == stage_ids
