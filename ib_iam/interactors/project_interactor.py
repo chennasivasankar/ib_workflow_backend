@@ -4,11 +4,12 @@ from ib_iam.app_interfaces.dtos import (
     ProjectTeamUserDTO, UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO,
     UserTeamsDTO)
 from ib_iam.exceptions.custom_exceptions import (
-    InvalidUserIds, ProjectNameAlreadyExists, ProjectDisplayIdAlreadyExists,
-    DuplicateTeamIds, TeamIdsAreInvalid, UserIsNotAdmin, InvalidProjectId,
-    RoleIdsAreDuplicated, RoleIdsAreInvalid)
-from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO, \
-    CompleteProjectDetailsDTO
+    ProjectNameAlreadyExists, ProjectDisplayIdAlreadyExists, DuplicateTeamIds,
+    TeamIdsAreInvalid, UserIsNotAdmin, InvalidProjectId, RoleIdsAreDuplicated,
+    RoleIdsAreInvalid, InvalidUserIds, InvalidUserId, InvalidProjectIds)
+from ib_iam.interactors.dtos.dtos import (
+    ProjectWithTeamIdsAndRolesDTO, CompleteProjectDetailsDTO,
+    UserIdWithProjectIdAndStatusDTO)
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
     .add_project_presenter_interface import AddProjectPresenterInterface
@@ -17,13 +18,6 @@ from ib_iam.interactors.presenter_interfaces \
 from ib_iam.interactors.storage_interfaces.dtos import (
     ProjectWithoutIdDTO, RoleDTO, RoleNameAndDescriptionDTO,
     ProjectWithDisplayIdDTO, ProjectDTO, TeamWithUserIdDTO, TeamIdAndNameDTO)
-from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
-    UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO, UserTeamsDTO
-from ib_iam.exceptions.custom_exceptions import InvalidUserIds, InvalidUserId, \
-    InvalidProjectIds
-from ib_iam.interactors.dtos.dtos import UserIdWithProjectIdAndStatusDTO
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, TeamWithUserIdDTO, \
-    TeamIdAndNameDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
@@ -513,7 +507,8 @@ class ProjectInteractor(ValidationMixin):
             project_ids=project_ids, user_id=user_id)
 
     def _validate_project_ids(self, project_ids: List[str]):
-        valid_project_ids = self.project_storage.get_valid_project_ids_from_given_project_ids(
+        valid_project_ids = self.project_storage \
+            .get_valid_project_ids_from_given_project_ids(
             project_ids=project_ids)
         invalid_project_ids = list(set(project_ids) - set(valid_project_ids))
         if invalid_project_ids:
