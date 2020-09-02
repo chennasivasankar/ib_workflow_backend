@@ -283,8 +283,7 @@ class ProjectInteractor:
         # todo confirm and write user permissions
         # todo display_id uniqueness
         # todo validate duplicate or invalid team_ids
-        project_id = self.project_storage \
-            .get_project_id_if_project_name_already_exists(
+        self._validate_if_given_name_already_exists(
             name=project_with_team_ids_and_roles_dto.name)
         if project_id:
             raise ProjectNameAlreadyExists
@@ -301,6 +300,12 @@ class ProjectInteractor:
         self.project_storage.add_project_roles(
             project_id=project_id,
             roles=project_with_team_ids_and_roles_dto.roles)
+
+    def _validate_if_given_name_already_exists(self, name: str):
+        project_id = self.project_storage \
+            .get_project_id_if_project_name_already_exists(name=name)
+        if project_id:
+            raise ProjectNameAlreadyExists
 
     def update_project_wrapper(
             self,
