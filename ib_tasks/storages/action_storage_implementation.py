@@ -282,13 +282,14 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
         q = None
         for counter, item in enumerate(user_project_roles):
-            current_queue = Q(action__stage__currenttaskstage__task=item.task_id) \
-                            & Q(role_id__in=item.roles) | Q(role_id=ALL_ROLES_ID)
+            current_queue = Q(role_id__in=item.roles) | Q(role_id=ALL_ROLES_ID) & \
+                            Q(action__stage__currenttaskstage__task=item.task_id)
             if counter == 0:
                 q = current_queue
             else:
                 q = q | current_queue
 
-        action_ids = (ActionPermittedRoles.objects.filter(q, Q(action__stage__stage_id__in=stage_ids))
+        action_ids = (ActionPermittedRoles.objects.filter(q,
+                                                          Q(action__stage__stage_id__in=stage_ids))
                       .values_list('action_id', flat=True))
-        return sorted(list(set(action_ids)))
+        return list(set(action_ids))

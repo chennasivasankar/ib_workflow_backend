@@ -75,9 +75,11 @@ class UserRoleValidationInteractor:
         project_ids = [task.project_id for task in task_project_dtos]
         user_role_ids = self._get_user_role_ids_for_project_ids(
             user_id, project_ids)
+        task_project_roles = self._get_task_project_roles_dtos(user_role_ids,
+                                                               task_project_dtos)
         field_ids_having_write_permission_for_user = \
-            field_storage.get_field_ids_having_write_permission_for_user(
-                user_roles=user_role_ids, field_ids=field_ids)
+            field_storage.get_field_ids_permissions_for_user_in_projects(
+                task_project_roles=task_project_roles, field_ids=field_ids)
 
         return field_ids_having_write_permission_for_user
 
@@ -174,7 +176,8 @@ class UserRoleValidationInteractor:
 
     @staticmethod
     def _get_task_project_roles_dtos(user_project_roles: List[ProjectRolesDTO],
-                                     task_project_dtos: List[TaskProjectDTO]):
+                                     task_project_dtos: List[TaskProjectDTO]) -> \
+            List[TaskProjectRolesDTO]:
         task_project_roles_dtos = []
         for user_project, task_project in zip(user_project_roles, task_project_dtos):
             if user_project.project_id == task_project.project_id:

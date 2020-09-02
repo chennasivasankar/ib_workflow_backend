@@ -17,6 +17,7 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectRolesDTO
 
 
 class ActionStorageInterface(ABC):
@@ -93,6 +94,6 @@ class ActionStorageInterface(ABC):
     @abc.abstractmethod
     def get_permitted_action_ids_for_given_task_stages(
             self,
-            user_project_roles: List[ProjectRolesDTO],
+            user_project_roles: List[TaskProjectRolesDTO],
             stage_ids):
         pass

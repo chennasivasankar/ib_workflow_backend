@@ -10,6 +10,7 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskTemplateStageDTO, StageDetailsDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectRolesDTO
 
 
 @dataclass
@@ -84,6 +85,12 @@ class FieldsStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_field_ids_having_write_permission_for_user(
             self, user_roles: List[str], field_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_field_ids_permissions_for_user_in_projects(
+            self, task_project_roles: List[TaskProjectRolesDTO],
+            field_ids: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod
