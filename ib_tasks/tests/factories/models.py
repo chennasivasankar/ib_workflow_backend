@@ -355,6 +355,7 @@ class StageFactory(factory.django.DjangoModelFactory):
     task_template_id = factory.Sequence(lambda c: "template_{}".format(c))
     display_name = factory.Sequence(lambda c: "display_name_{}".format(c))
     value = factory.Sequence(lambda c: c)
+    stage_color = factory.Sequence(lambda counter: "#fff2f{}".format(counter))
 
 
 class ProjectTaskTemplateFactory(factory.django.DjangoModelFactory):
