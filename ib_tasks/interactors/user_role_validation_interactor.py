@@ -7,6 +7,7 @@ from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectDTO, TaskProjectRolesDTO
 
 
 class UserRoleValidationInteractor:
@@ -68,9 +69,10 @@ class UserRoleValidationInteractor:
 
     def get_field_ids_having_permission_for_user(
             self, user_id: str, field_ids: List[str],
-            project_ids: List[str],
+            task_project_dtos: List[TaskProjectDTO],
             field_storage: FieldsStorageInterface) -> List[str]:
 
+        project_ids = [task.project_id for task in task_project_dtos]
         user_role_ids = self._get_user_role_ids_for_project_ids(
             user_id, project_ids)
         field_ids_having_write_permission_for_user = \
@@ -122,13 +124,16 @@ class UserRoleValidationInteractor:
 
     def get_permitted_action_ids_for_given_user_in_projects(
             self, stage_ids: List[str],
-            user_id: str, project_ids: List[str],
+            user_id: str, task_project_dtos: List[TaskProjectDTO],
             action_storage: ActionStorageInterface) -> List[int]:
+        project_ids = [task.project_id for task in task_project_dtos]
         user_project_roles = self._get_user_role_ids_for_project_ids(
             user_id, project_ids)
+        task_project_roles = self._get_task_project_roles_dtos(user_project_roles,
+                                                               task_project_dtos)
         permitted_action_ids = action_storage. \
             get_permitted_action_ids_for_given_task_stages(
-            user_project_roles, stage_ids)
+            task_project_roles, stage_ids)
         return permitted_action_ids
 
     @staticmethod
@@ -166,3 +171,18 @@ class UserRoleValidationInteractor:
                 user_id=user_id,
                 project_ids=project_ids)
         return project_roles_dtos
+
+    @staticmethod
+    def _get_task_project_roles_dtos(user_project_roles: List[ProjectRolesDTO],
+                                     task_project_dtos: List[TaskProjectDTO]):
+        task_project_roles_dtos = []
+        for user_project, task_project in zip(user_project_roles, task_project_dtos):
+            if user_project.project_id == task_project.project_id:
+                task_project_roles_dtos.append(
+                    TaskProjectRolesDTO(
+                        task_id=task_project.task_id,
+                        project_id=user_project.project_id,
+                        roles=user_project.roles
+                    )
+                )
+        return task_project_roles_dtos

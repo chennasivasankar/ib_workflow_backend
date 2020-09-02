@@ -58,13 +58,13 @@ class GetTaskFieldsAndActionsInteractor:
         self._validate_stage_and_tasks(valid_stage_and_tasks, task_dtos)
 
         task_project_dtos = self.task_storage.get_task_project_ids(task_ids)
-        project_ids = [task.project_id for task in task_project_dtos]
+
         task_stage_dtos = self.stage_storage.get_stage_details(stage_task_dtos)
 
         user_roles_interactor = UserRoleValidationInteractor()
         permitted_action_ids = user_roles_interactor. \
             get_permitted_action_ids_for_given_user_in_projects(
-            project_ids=project_ids,
+            task_project_dtos=task_project_dtos,
             action_storage=self.action_storage, user_id=user_id, stage_ids=stage_ids)
 
         action_dtos = self.action_storage.get_actions_details(permitted_action_ids)
@@ -73,7 +73,7 @@ class GetTaskFieldsAndActionsInteractor:
         list_of_field_ids = self._get_field_ids(stage_fields_dtos)
         permitted_field_ids = user_roles_interactor. \
             get_field_ids_having_permission_for_user(
-            project_ids=project_ids, user_id=user_id,
+            task_project_dtos=task_project_dtos, user_id=user_id,
             field_ids=list_of_field_ids, field_storage=self.field_storage)
 
         task_fields_dtos = self._map_task_and_their_fields(

@@ -54,3 +54,8 @@ class TaskDisplayIdDTO:
 class TaskProjectDTO:
     task_id: int
     project_id: str
+
+
+@dataclass
+class TaskProjectRolesDTO(TaskProjectDTO):
+    roles: List[str]

@@ -15,6 +15,7 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectRolesDTO
 from ib_tasks.models import StageAction, Stage, ActionPermittedRoles, \
     TaskTemplateInitialStage
 
@@ -276,12 +277,13 @@ class ActionsStorageImplementation(ActionStorageInterface):
         ]
 
     def get_permitted_action_ids_for_given_task_stages(
-            self, user_project_roles: List[ProjectRolesDTO],
+            self, user_project_roles: List[TaskProjectRolesDTO],
             stage_ids):
 
         q = None
         for counter, item in enumerate(user_project_roles):
-            current_queue = Q(action__stage__currenttaskstage__task__project_id=item.project_id) & Q(role_id__in=item.roles) | Q(role_id=ALL_ROLES_ID)
+            current_queue = Q(action__stage__currenttaskstage__task=item.task_id) \
+                            & Q(role_id__in=item.roles) | Q(role_id=ALL_ROLES_ID)
             if counter == 0:
                 q = current_queue
             else:
