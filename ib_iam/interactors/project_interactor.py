@@ -8,7 +8,7 @@ from ib_iam.app_interfaces.dtos import (
 from ib_iam.exceptions.custom_exceptions import (
     InvalidUserIds, ProjectNameAlreadyExists, ProjectDisplayIdAlreadyExists,
     DuplicateTeamIds, TeamIdsAreInvalid, UserIsNotAdmin, InvalidProjectId,
-    RoleIdsAreDuplicated)
+    RoleIdsAreDuplicated, RoleIdsAreInvalid)
 from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO, \
     CompleteProjectDetailsDTO
 from ib_iam.interactors.mixins.validation import ValidationMixin
@@ -339,7 +339,8 @@ class ProjectInteractor(ValidationMixin):
             response = presenter.get_invalid_team_ids_response()
         except RoleIdsAreDuplicated:
             response = presenter.get_duplicate_role_ids_response()
-
+        except RoleIdsAreInvalid:
+            response = presenter.get_invalid_role_ids_response()
         return response
 
     # todo remove the tag after writing validations properly
@@ -364,8 +365,13 @@ class ProjectInteractor(ValidationMixin):
             project_id=complete_project_details_dto.project_id,
             project_team_ids=project_team_ids,
             team_ids=complete_project_details_dto.team_ids)
+        project_role_ids = self.project_storage.get_project_role_ids(
+            project_id=complete_project_details_dto.project_id)
+        self._validate_roles(roles=complete_project_details_dto.roles,
+                             project_role_ids=project_role_ids)
         self._project_roles_related_operations(
             project_id=complete_project_details_dto.project_id,
+            project_role_ids=project_role_ids,
             roles=complete_project_details_dto.roles)
 
     def _validate_update_project_details(
@@ -378,7 +384,6 @@ class ProjectInteractor(ValidationMixin):
             team_ids=complete_project_details_dto.team_ids)
         self._validate_invalid_team_ids(
             team_ids=complete_project_details_dto.team_ids)
-        self._validate_roles(roles=complete_project_details_dto.roles)
 
     def _validate_project_id(self, project_id: str):
         is_project_exist = self.user_storage.is_valid_project_id(
@@ -387,7 +392,8 @@ class ProjectInteractor(ValidationMixin):
             raise InvalidProjectId
 
     def _project_roles_related_operations(
-            self, project_id: str, roles: List[RoleDTO]):
+            self, project_id: str, project_role_ids: List[str],
+            roles: List[RoleDTO]):
         project_role_ids = self.project_storage.get_project_role_ids(
             project_id=project_id)
         self._add_project_roles(project_id=project_id, roles=roles)
@@ -468,12 +474,23 @@ class ProjectInteractor(ValidationMixin):
         if invalid_team_ids:
             raise TeamIdsAreInvalid
 
-    def _validate_roles(self, roles: List[RoleDTO]):
-        role_ids = [role_dto.role_id for role_dto in roles]
+    def _validate_roles(self, roles: List[RoleDTO],
+                        project_role_ids: List[str]):
+        role_ids = [role_dto.role_id
+                    for role_dto in roles if role_dto.role_id is not None]
         self._validate_duplicate_role_ids(role_ids=role_ids)
+        self._validate_invalid_role_ids(role_ids=role_ids,
+                                        project_role_ids=project_role_ids)
 
     @staticmethod
     def _validate_duplicate_role_ids(role_ids: List[str]):
         is_duplicate_role_ids_exist = len(role_ids) != len(set(role_ids))
         if is_duplicate_role_ids_exist:
             raise RoleIdsAreDuplicated
+
+    @staticmethod
+    def _validate_invalid_role_ids(role_ids: List[str],
+                                   project_role_ids: List[str]):
+        is_invalid_role_ids_exist = list(set(role_ids) - set(project_role_ids))
+        if is_invalid_role_ids_exist:
+            raise RoleIdsAreInvalid
