@@ -1,11 +1,11 @@
 import pytest
 
-from ib_tasks.adapters.dtos import ProjectRolesDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectRolesDTO
 from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
 from ib_tasks.tests.factories.models import StageModelFactory, \
     StageActionFactory, ActionPermittedRolesFactory, \
-    StageActionWithTransitionFactory, TaskTemplateFactory, TaskFactory
+    StageActionWithTransitionFactory, TaskTemplateFactory, TaskFactory, TaskStageModelFactory
 
 
 @pytest.mark.django_db
@@ -15,10 +15,15 @@ class TestGetActionDetails:
     def populate_data(self):
         TaskTemplateFactory.reset_sequence()
         StageModelFactory.reset_sequence()
+        TaskFactory.reset_sequence()
         stages = StageModelFactory.create_batch(size=3)
-        TaskFactory.create_batch(size=10, project_id="project_id_1")
+        tasks = TaskFactory.create_batch(size=10, project_id="project_id_1")
         ActionPermittedRolesFactory.reset_sequence()
         StageActionFactory.reset_sequence()
+        TaskStageModelFactory.reset_sequence()
+        TaskStageModelFactory(task=tasks[0], stage=stages[0])
+        TaskStageModelFactory(task=tasks[1], stage=stages[1])
+        TaskStageModelFactory(task=tasks[1])
         actions = StageActionWithTransitionFactory.create_batch(size=3, stage=stages[0])
         ActionPermittedRolesFactory.create_batch(size=4, action=actions[0])
         ActionPermittedRolesFactory.reset_sequence()
@@ -106,10 +111,12 @@ class TestGetActionDetails:
                                                             snapshot):
         # Arrange
         user_roles = [
-            ProjectRolesDTO(
+            TaskProjectRolesDTO(
+                task_id=1,
                 project_id="project_id_1",
                 roles=["role_1", "role_2", "role_3", "role_4"]),
-            ProjectRolesDTO(
+            TaskProjectRolesDTO(
+                task_id=2,
                 project_id="project_id_1",
                 roles=["role_1", "role_2", "role_3", "role_4"])
         ]
