@@ -261,8 +261,6 @@ class TestGetUsers:
     def test_get_team_details_of_users_bulk(self, users_with_teams,
                                             user_team_dtos):
         # Arrange
-        print(users_with_teams)
-        print(user_team_dtos)
         user_ids = ['user1', 'user2']
         expected_output = user_team_dtos
         storage = UserStorageImplementation()
@@ -300,12 +298,10 @@ class TestGetUsers:
         user_ids = ['user1', 'user2']
 
         expected_output = user_with_roles_dtos
-        print(expected_output)
         storage = UserStorageImplementation()
 
         # Act
         output = storage.get_role_details_of_users_bulk(user_ids=user_ids)
-        print(output, len(output))
 
         # Assert
         assert output == expected_output

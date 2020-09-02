@@ -62,10 +62,10 @@ class TestGetUserStatusForGivenProjects:
                 "user_id": "1"
             }
         ]
-        from ib_iam.tests.factories.models import UserTeamFactory
+        from ib_iam.tests.factories.models import TeamUserFactory
         from ib_iam.models import Team
         team_user_objects = [
-            UserTeamFactory.create(
+            TeamUserFactory.create(
                 user_id=team_user["user_id"],
                 team=Team.objects.get(team_id=team_user["team_id"])
             ) for team_user in team_users
