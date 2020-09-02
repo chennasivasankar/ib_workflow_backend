@@ -255,11 +255,11 @@ CURRENT_PASSWORD_MISMATCH = (
 )
 
 PROJECT_NAME_ALREADY_EXISTS = (
-    "Given project name already exists, choose another"
+    "Given project name already exists, choose another",
     "PROJECT_NAME_ALREADY_EXISTS"
 )
 
 PROJECT_DISPLAY_ID_ALREADY_EXISTS = (
-    "Given project display id already exists, choose another"
+    "Given project display id already exists, choose another",
     "PROJECT_DISPLAY_ID_ALREADY_EXISTS"
 )
