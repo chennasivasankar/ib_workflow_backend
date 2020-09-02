@@ -11,6 +11,17 @@ class UpdateProjectPresenterImplementation(UpdateProjectPresenterInterface,
     def get_success_response_for_update_project(self):
         return self.prepare_200_success_response(response_dict={})
 
+    def get_user_has_no_access_response(self):
+        from ib_iam.constants.exception_messages import \
+            USER_HAS_NO_ACCESS_TO_ADD_PROJECT
+        response_dict = {
+            "response": USER_HAS_NO_ACCESS_TO_ADD_PROJECT[0],
+            "http_status_code": StatusCode.UNAUTHORIZED.value,
+            "res_status": USER_HAS_NO_ACCESS_TO_ADD_PROJECT[1]
+        }
+        return self.prepare_401_unauthorized_response(
+            response_dict=response_dict)
+
     def get_invalid_project_response(self):
         from ib_iam.constants.exception_messages import INVALID_PROJECT_ID
         response_dict = {"response": INVALID_PROJECT_ID[0],

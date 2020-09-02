@@ -8,6 +8,10 @@ class UpdateProjectPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_user_has_no_access_response(self):
+        pass
+
+    @abc.abstractmethod
     def get_invalid_project_response(self):
         pass
 

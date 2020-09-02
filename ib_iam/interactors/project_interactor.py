@@ -1,7 +1,5 @@
 from typing import List, Tuple, Optional
 
-from django.db import transaction
-
 from ib_iam.app_interfaces.dtos import (
     ProjectTeamUserDTO, UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO,
     UserTeamsDTO)
@@ -322,13 +320,16 @@ class ProjectInteractor(ValidationMixin):
             team_ids=project_with_team_ids_and_roles_dto.team_ids)
 
     def update_project_wrapper(
-            self,
+            self, user_id: str,
             complete_project_details_dto: CompleteProjectDetailsDTO,
             presenter: UpdateProjectPresenterInterface):
         try:
             self.update_project(
+                user_id=user_id,
                 complete_project_details_dto=complete_project_details_dto)
             response = presenter.get_success_response_for_update_project()
+        except UserIsNotAdmin:
+            response = presenter.get_user_has_no_access_response()
         except InvalidProjectId:
             response = presenter.get_invalid_project_response()
         except ProjectNameAlreadyExists:
@@ -343,12 +344,10 @@ class ProjectInteractor(ValidationMixin):
             response = presenter.get_invalid_role_ids_response()
         return response
 
-    # todo remove the tag after writing validations properly
-    @transaction.atomic
     def update_project(
-            self, complete_project_details_dto: CompleteProjectDetailsDTO):
-        # todo confirm and write user permissions
-        # todo validate role_ids - duplicate role_ids or invalid_role_ids
+            self, user_id: str,
+            complete_project_details_dto: CompleteProjectDetailsDTO):
+        self._validate_is_user_admin(user_id=user_id)
         self._validate_update_project_details(
             complete_project_details_dto=complete_project_details_dto)
         project_dto = self._convert_to_project_dto(

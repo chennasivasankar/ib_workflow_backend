@@ -56,8 +56,29 @@ class TestUpdateProjectIneractor:
         roles = [RoleDTOFactory(role_id=role_id) for role_id in role_ids]
         return roles
 
-    # todo remove it while removing transaction tag update_project interactor
-    @pytest.mark.django_db
+    def test_given_user_is_not_admin_returns_user_has_no_access_response(
+            self, project_storage, user_storage, interactor, presenter):
+        from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
+        project_dto = ProjectDTOFactory()
+        user_id = "1"
+        user_storage.is_user_admin.return_value = False
+        presenter.get_invalid_project_response.return_value = mock.Mock()
+        complete_project_details_dto = CompleteProjectDetailsDTO(
+            project_id=project_dto.project_id,
+            name=project_dto.name,
+            description=project_dto.description,
+            logo_url=project_dto.logo_url,
+            team_ids=[],
+            roles=[])
+
+        interactor.update_project_wrapper(presenter=presenter,
+                                          user_id=user_id,
+                                          complete_project_details_dto=
+                                          complete_project_details_dto)
+
+        user_storage.is_user_admin.assert_called_once_with(user_id=user_id)
+        presenter.get_user_has_no_access_response.assert_called_once()
+
     def test_given_invalid_project_returns_invalid_project_response(
             self, project_storage, user_storage, interactor, presenter):
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
@@ -73,14 +94,13 @@ class TestUpdateProjectIneractor:
             roles=[])
 
         interactor.update_project_wrapper(presenter=presenter,
+                                          user_id="1",
                                           complete_project_details_dto=
                                           complete_project_details_dto)
 
         user_storage.is_valid_project_id.assert_called_once()
         presenter.get_invalid_project_response.assert_called_once()
 
-    # todo remove it while removing transaction tag update_project interactor
-    @pytest.mark.django_db
     def test_given_name_already_exists_returns_name_already_exists_response(
             self, project_storage, user_storage, interactor, presenter):
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
@@ -99,6 +119,7 @@ class TestUpdateProjectIneractor:
             roles=[])
 
         interactor.update_project_wrapper(presenter=presenter,
+                                          user_id="1",
                                           complete_project_details_dto=
                                           complete_project_details_dto)
 
@@ -106,8 +127,6 @@ class TestUpdateProjectIneractor:
             .assert_called_once_with(name=name)
         presenter.get_project_name_already_exists_response.assert_called_once()
 
-    # todo remove it while removing transaction tag update_project interactor
-    @pytest.mark.django_db
     def test_given_duplicate_team_ids_returns_duplicate_team_ids_response(
             self, project_storage, user_storage, interactor, presenter):
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
@@ -124,14 +143,13 @@ class TestUpdateProjectIneractor:
             roles=[])
 
         interactor.update_project_wrapper(presenter=presenter,
+                                          user_id="1",
                                           complete_project_details_dto=
                                           complete_project_details_dto)
 
         presenter.get_duplicate_team_ids_response.assert_called_once()
 
-    # todo remove it while removing transaction tag update_project interactor
-    @pytest.mark.django_db
-    def test_given_duplicate_team_ids_returns_duplicate_team_ids_response(
+    def test_given_invalid_team_ids_returns_invalid_team_ids_response(
             self, project_storage, user_storage, team_storage, interactor,
             presenter):
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
@@ -151,6 +169,7 @@ class TestUpdateProjectIneractor:
             roles=[])
 
         interactor.update_project_wrapper(presenter=presenter,
+                                          user_id="1",
                                           complete_project_details_dto=
                                           complete_project_details_dto)
 
@@ -158,8 +177,6 @@ class TestUpdateProjectIneractor:
             team_ids=team_ids)
         presenter.get_invalid_team_ids_response.assert_called_once()
 
-    # todo remove it while removing transaction tag update_project interactor
-    @pytest.mark.django_db
     def test_given_duplicate_role_ids_returns_duplicate_role_ids_response(
             self, project_storage, user_storage, team_storage, interactor,
             presenter, duplicate_roles):
@@ -179,39 +196,12 @@ class TestUpdateProjectIneractor:
             roles=duplicate_roles)
 
         interactor.update_project_wrapper(presenter=presenter,
+                                          user_id="1",
                                           complete_project_details_dto=
                                           complete_project_details_dto)
 
         presenter.get_duplicate_role_ids_response.assert_called_once()
 
-    # todo remove it while removing transaction tag update_project interactor
-    @pytest.mark.django_db
-    def test_given_duplicate_role_ids_returns_duplicate_role_ids_response(
-            self, project_storage, user_storage, team_storage, interactor,
-            presenter, duplicate_roles):
-        from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
-        project_dto = ProjectDTOFactory()
-        team_ids = ["1", "2"]
-        project_storage.get_project_id_if_project_name_already_exists \
-            .return_value = None
-        team_storage.get_valid_team_ids.return_value = team_ids
-        presenter.get_duplicate_role_ids_response.return_value = mock.Mock()
-        complete_project_details_dto = CompleteProjectDetailsDTO(
-            project_id=project_dto.project_id,
-            name=project_dto.name,
-            description=project_dto.description,
-            logo_url=project_dto.logo_url,
-            team_ids=team_ids,
-            roles=duplicate_roles)
-
-        interactor.update_project_wrapper(presenter=presenter,
-                                          complete_project_details_dto=
-                                          complete_project_details_dto)
-
-        presenter.get_duplicate_role_ids_response.assert_called_once()
-
-    # todo remove it while removing transaction tag update_project interactor
-    @pytest.mark.django_db
     def test_given_invalid_role_ids_returns_invalid_role_ids_response(
             self, project_storage, user_storage, team_storage, interactor,
             presenter, roles):
@@ -233,13 +223,12 @@ class TestUpdateProjectIneractor:
             roles=roles)
 
         interactor.update_project_wrapper(presenter=presenter,
+                                          user_id="1",
                                           complete_project_details_dto=
                                           complete_project_details_dto)
 
         presenter.get_invalid_role_ids_response.assert_called_once()
 
-    # todo remove it while removing transaction tag update_project interactor
-    @pytest.mark.django_db
     def test_update_project_returns_success_response(
             self, project_storage, user_storage, team_storage, interactor,
             presenter, roles):
@@ -275,9 +264,10 @@ class TestUpdateProjectIneractor:
             team_ids=team_ids,
             roles=roles)
 
-        interactor.update_project_wrapper(
-            presenter=presenter,
-            complete_project_details_dto=complete_project_details_dto)
+        interactor.update_project_wrapper(presenter=presenter,
+                                          user_id="1",
+                                          complete_project_details_dto=
+                                          complete_project_details_dto)
 
         project_storage.update_project.assert_called_once_with(
             project_dto=project_dto)
