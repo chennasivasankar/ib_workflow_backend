@@ -82,7 +82,8 @@ class TestCase03GetUsersAPITestCase(TestUtils):
         reset_sequence_role_factory()
         user_role_objects = [UserRoleFactory.create(
             user_id=user_role["user_id"],
-            project_role=ProjectRoleFactory.create(role_id=user_role["role_id"])
+            project_role=ProjectRoleFactory.create(
+                role_id=user_role["role_id"])
         ) for user_role in user_roles]
         return user_role_objects
 
@@ -93,8 +94,8 @@ class TestCase03GetUsersAPITestCase(TestUtils):
             import reset_sequence_user_details_factory
         reset_sequence_user_details_factory()
         from ib_iam.tests.factories.models import UserDetailsFactory
-        admin_user = UserDetailsFactory.create(user_id=user_id, is_admin=True,
-                                               company=None)
+        admin_user = UserDetailsFactory.create(
+            user_id=user_id, is_admin=True, company=None, name="sanju")
         return admin_user
 
     @pytest.mark.django_db
