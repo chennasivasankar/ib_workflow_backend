@@ -3245,7 +3245,7 @@
                "201":{
                   "$ref":"#/responses/CreateTransitionChecklistSuccessResponse"
                },
-               "404":{
+               "400":{
                   "$ref":"#/responses/CreateTransitionChecklistFailureResponse"
                }
             }

@@ -436,6 +436,50 @@ class TestUpdateTaskInteractor:
         invalid_due_date = error_object.due_datetime
         assert invalid_due_date == given_due_datetime
 
+    @freezegun.freeze_time('2020-09-09 13:00:00')
+    def test_with_expired_due_date_time_when_due_date_is_today(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object
+    ):
+        # Arrange
+        given_start_datetime = datetime.datetime(2020, 8, 20)
+        given_due_datetime = datetime.datetime(2020, 9, 9, 13, 0, 0)
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_id = 1
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        create_task_storage_mock.is_valid_task_id.return_value = True
+        create_task_storage_mock.get_template_id_for_given_task.return_value \
+            = "template_1"
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            start_datetime=given_start_datetime,
+            due_datetime=given_due_datetime)
+        interactor = UpdateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock,
+            storage=storage_mock, field_storage=field_storage_mock,
+            stage_storage=stage_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
+        )
+        presenter_mock.raise_due_date_time_has_expired \
+            .return_value = mock_object
+
+        # Act
+        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_due_date_time_has_expired.assert_called_once()
+        call_args = presenter_mock.raise_due_date_time_has_expired.call_args
+        error_object = call_args[0][0]
+        invalid_due_date = error_object.due_datetime
+        assert invalid_due_date == given_due_datetime
+
     def test_with_start_date_ahead_of_due_date(
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
