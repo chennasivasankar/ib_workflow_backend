@@ -53,9 +53,9 @@ def create_user_teams(create_teams):
         "20be920b-7b4c-49e7-8adb-41a0c18da848",
         "30be920b-7b4c-49e7-8adb-41a0c18da848"
     ]
-    from ib_iam.tests.factories.models import UserTeamFactory
+    from ib_iam.tests.factories.models import TeamUserFactory
     user_team_objects_of_level_one = [
-        UserTeamFactory(
+        TeamUserFactory(
             user_id=user_id,
             team=team_objects[0],
             team_member_level=team_member_level_object
@@ -63,7 +63,7 @@ def create_user_teams(create_teams):
         for user_id in user_ids
     ]
     for user_id in user_ids:
-        UserTeamFactory(
+        TeamUserFactory(
             user_id=user_id,
             team=team_objects[1],
             team_member_level=team_member_level_object
@@ -80,9 +80,9 @@ def create_user_teams(create_teams):
         "50be920b-7b4c-49e7-8adb-41a0c18da848",
         "60be920b-7b4c-49e7-8adb-41a0c18da848"
     ]
-    from ib_iam.tests.factories.models import UserTeamFactory
+    from ib_iam.tests.factories.models import TeamUserFactory
     user_team_objects = [
-        UserTeamFactory(
+        TeamUserFactory(
             user_id=user_id,
             team=team_objects[0],
             team_member_level=team_member_level_object
@@ -90,7 +90,7 @@ def create_user_teams(create_teams):
         for user_id in user_ids
     ]
     for user_id in user_ids:
-        UserTeamFactory(
+        TeamUserFactory(
             user_id=user_id,
             team=team_objects[1],
             team_member_level=team_member_level_object

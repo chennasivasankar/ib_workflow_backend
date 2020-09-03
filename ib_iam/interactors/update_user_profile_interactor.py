@@ -43,7 +43,8 @@ class UpdateUserProfileInteractor(ValidationMixin):
         return response
 
     def update_user_profile(
-            self, user_profile_dto: CompleteUserProfileDTO, role_ids: List[str]):
+            self, user_profile_dto: CompleteUserProfileDTO,
+            role_ids: List[str]):
         name = user_profile_dto.name
         user_id = user_profile_dto.user_id
         self._validate_name_and_throw_exception(name=name)
@@ -80,10 +81,11 @@ class UpdateUserProfileInteractor(ValidationMixin):
         return user_profile_dto
 
     def _update_user_roles(self, role_ids: List[str], user_id: str):
-        self.user_storage.remove_roles_for_user(user_id)
-        ids_of_role_objects = self.user_storage.get_role_objs_ids(role_ids)
-        # self.user_storage.add_roles_to_the_user(user_id=user_id,
-        #                                         role_ids=ids_of_role_objects)
+        pass
+        # self.user_storage.remove_roles_for_user(user_id)
+        # # ids_of_role_objects = self.user_storage.get_role_objs_ids(role_ids)
+        # self.user_storage.add_roles_to_the_user(
+        #     user_id=user_id, role_ids=role_ids)
 
     def _validate_roles(self, role_ids: List[str]):
         self._validate_duplicate_role_ids(role_ids=role_ids)

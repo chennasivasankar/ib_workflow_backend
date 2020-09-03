@@ -402,3 +402,9 @@ USER_NOT_A_MEMBER_OF_PROJECT = (
     "USER_NOT_A_MEMBER_OF_PROJECT"
 )
 
+
+TASK_DELAY_REASON_NOT_UPDATED = (
+    "Task delay reason not updated for task {} in stage {} with missed due "
+    "date {}",
+    "TASK_DELAY_REASON_NOT_UPDATED"
+)

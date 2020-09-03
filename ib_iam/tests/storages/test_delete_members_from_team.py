@@ -1,6 +1,6 @@
 import pytest
 
-from ib_iam.models import UserTeam
+from ib_iam.models import TeamUser
 from ib_iam.storages.team_storage_implementation import \
     TeamStorageImplementation
 
@@ -20,7 +20,7 @@ class TestDeleteMembersFromTeam:
         storage.delete_members_from_team(team_id=team_id,
                                          user_ids=user_ids_to_delete)
 
-        team_objects = UserTeam.objects.filter(
+        team_objects = TeamUser.objects.filter(
             team_id=team_id, user_id__in=user_ids_to_delete
         )
         assert list(team_objects) == []

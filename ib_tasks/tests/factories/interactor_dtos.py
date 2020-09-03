@@ -2,7 +2,7 @@ from datetime import timedelta, datetime
 
 import factory
 
-from ib_tasks.adapters.dtos import UserDTO
+from ib_tasks.adapters.dtos import UserDTO, AssigneeDetailsDTO
 from ib_tasks.constants.enum import Searchable, Priority
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
@@ -10,7 +10,8 @@ from ib_tasks.interactors.filter_dtos import SearchQueryWithPaginationDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
-from ib_tasks.interactors.stage_dtos import TaskStageDTO
+from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
+    TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
     UserStagesWithPaginationDTO, StageAssigneeDTO, \
@@ -570,3 +571,30 @@ class AssigneeWithTeamDetailsDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def team_info_dto(self):
         return TeamInfoDTOFactory()
+
+
+class TaskStageAssigneeDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskStageAssigneeDetailsDTO
+
+    task_id = factory.sequence(lambda counter: counter + 1)
+    stage_id = factory.sequence(lambda counter: 'stage_{}'.format(counter + 1))
+
+    @factory.lazy_attribute
+    def assignee_details(self):
+        return AssigneeWithTeamDetailsDTOFactory()
+
+
+class AssigneesDTOFactory(factory.Factory):
+    class Meta:
+        model = AssigneeDetailsDTO
+
+    assignee_id = factory.sequence(
+        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+            counter))
+    name = factory.sequence(lambda counter: "name_{}".format(counter))
+    profile_pic_url = "https://www.google.com/search?q=ibhubs&client=ubuntu" \
+                      "&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved" \
+                      "=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw" \
+                      "=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
+

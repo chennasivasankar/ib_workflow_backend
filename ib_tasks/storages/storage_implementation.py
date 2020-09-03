@@ -38,6 +38,10 @@ from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
 
 class StagesStorageImplementation(StageStorageInterface):
 
+    def get_stage_display_name_for_stage_id(self, stage_id: int) -> str:
+        stage_display_name = Stage.objects.get(id=stage_id).display_name
+        return stage_display_name
+
     def create_stages(self, stage_information: List[StageDTO]):
         list_of_stages = []
         for stage in stage_information:

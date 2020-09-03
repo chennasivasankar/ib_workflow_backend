@@ -4,7 +4,7 @@ from ib_iam.storages.user_storage_implementation import \
     UserStorageImplementation
 from ib_iam.tests.factories.models \
     import CompanyFactory, TeamFactory, ProjectRoleFactory, UserDetailsFactory, \
-    UserTeamFactory, UserRoleFactory
+    TeamUserFactory, UserRoleFactory
 
 
 @pytest.fixture()
@@ -31,7 +31,7 @@ def user_teams():
                 "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
     teams = [TeamFactory.create(team_id=team_id)
              for team_id in team_ids]
-    UserTeamFactory.create(user_id="ef6d1fc6-ac3f-4d2d-a983-752c992e8444",
+    TeamUserFactory.create(user_id="ef6d1fc6-ac3f-4d2d-a983-752c992e8444",
                            team=teams[0])
 
 

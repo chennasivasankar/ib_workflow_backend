@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+import abc
 from typing import List
 
 from ib_discussions.adapters.auth_service import UserProfileDTO
@@ -11,28 +11,28 @@ from ib_discussions.interactors.storage_interfaces.dtos import CommentDTO, \
     CommentIdWithMentionUserIdDTO
 
 
-class CreateDiscussionPresenterInterface(ABC):
+class CreateDiscussionPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_empty_title(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def prepare_success_response_for_create_discussion(self):
         pass
 
 
-class GetDiscussionsPresenterInterface(ABC):
+class GetDiscussionsPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def raise_exception_for_invalid_offset(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def raise_exception_for_invalid_limit(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def prepare_response_for_discussions_details_dto(
             self,
             discussions_with_users_and_discussion_count_dto: DiscussionsWithUsersAndDiscussionCountDTO,
@@ -43,71 +43,71 @@ class GetDiscussionsPresenterInterface(ABC):
     ):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def raise_exception_for_invalid_user_id(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def raise_exception_for_discussion_set_not_found(self):
         pass
 
 
-class MarkDiscussionClarifiedPresenterInterface(ABC):
+class MarkDiscussionClarifiedPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def raise_exception_for_discussion_id_not_found(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def raise_exception_for_user_cannot_mark_as_clarified(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def raise_success_response_for_mark_discussion_as_clarified(self):
         pass
 
 
-class UpdateDiscussionPresenterInterface(ABC):
+class UpdateDiscussionPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_empty_title(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_discussion_id_not_found(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_user_cannot_update_discussion(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def prepare_success_response_for_update_discussion(self):
         pass
 
 
-class DeleteDiscussionPresenterInterface(ABC):
+class DeleteDiscussionPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_discussion_id_not_found(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_user_cannot_delete_discussion(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def prepare_success_response_for_delete_discussion(self):
         pass
 
 
-class CreateCommentPresenterInterface(ABC):
+class CreateCommentPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_discussion_id_not_found(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def prepare_response_for_comment(
             self,
             comment_with_replies_count_and_editable_dto: CommentWithRepliesCountAndEditableDTO,
@@ -118,18 +118,18 @@ class CreateCommentPresenterInterface(ABC):
     ):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_invalid_user_ids(self, err):
         pass
 
 
-class GetCommentsForDiscussionPresenterInterface(ABC):
+class GetCommentsForDiscussionPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_discussion_id_not_found(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def prepare_response_for_comments_with_users_dtos(
             self,
             comment_with_replies_count_and_editable_dtos: List[
@@ -142,13 +142,13 @@ class GetCommentsForDiscussionPresenterInterface(ABC):
         pass
 
 
-class CreateReplyPresenterInterface(ABC):
+class CreateReplyPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_comment_id_not_found(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def prepare_response_for_reply(
             self, comment_dto: CommentDTO,
             comment_with_editable_status_dto: CommentIdWithEditableStatusDTO,
@@ -159,18 +159,18 @@ class CreateReplyPresenterInterface(ABC):
     ):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_invalid_user_ids(self, err):
         pass
 
 
-class GetRepliesForCommentPresenterInterface(ABC):
+class GetRepliesForCommentPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_comment_id_not_found(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def prepare_response_for_replies_with_users_dtos(
             self, user_profile_dtos: List[UserProfileDTO],
             comment_with_editable_status_dtos: List[
@@ -183,17 +183,17 @@ class GetRepliesForCommentPresenterInterface(ABC):
         pass
 
 
-class UpdateCommentPresenterInterface(ABC):
+class UpdateCommentPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def prepare_response_for_comment_id_not_found(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_invalid_user_ids(self, err):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def prepare_response_for_comment(
             self,
             comment_with_replies_count_and_editable_dto: CommentWithRepliesCountAndEditableDTO,
@@ -204,21 +204,21 @@ class UpdateCommentPresenterInterface(ABC):
     ):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_user_cannot_edit_comment(self):
         pass
 
 
-class DeleteCommentPresenterInterface(ABC):
+class DeleteCommentPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def prepare_response_for_comment_id_not_found(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def response_for_user_cannot_edit_comment(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def prepare_response_for_delete_comment(self):
         pass

@@ -11,6 +11,6 @@ snapshots['TestCase02CreateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase02CreateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'INVALID_TASK_TEMPLATE_IDS',
-    'response': "invalid task template ids: ['template_2']"
+    'res_status': 'INVALID_TASK_TEMPLATE_DB_ID',
+    'response': 'template_1 invalid task template id, please give a valid task template id'
 }
