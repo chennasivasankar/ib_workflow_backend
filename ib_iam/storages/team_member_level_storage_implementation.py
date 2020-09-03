@@ -214,11 +214,14 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
 
     def validate_users_belong_to_given_level_hierarchy_in_a_team(
             self, team_id: str, user_ids: List[str], level_hierarchy: int
-    ) -> Optional[UsersNotBelongToLevel]:
+    ) -> [UsersNotBelongToLevel, InvalidLevelHierarchyOfTeam]:
         from ib_iam.models import TeamMemberLevel, TeamUser
-        team_member_level_object = TeamMemberLevel.objects.get(
-            team_id=team_id, level_hierarchy=level_hierarchy
-        )
+        try:
+            team_member_level_object = TeamMemberLevel.objects.get(
+                team_id=team_id, level_hierarchy=level_hierarchy
+            )
+        except TeamMemberLevel.DoesNotExist:
+            raise InvalidLevelHierarchyOfTeam
         user_ids_in_database = TeamUser.objects.filter(
             team_id=team_id, team_member_level=team_member_level_object
         ).values_list(

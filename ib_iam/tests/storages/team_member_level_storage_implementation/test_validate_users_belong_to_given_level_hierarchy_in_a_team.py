@@ -11,6 +11,29 @@ class TestValidateUsersBelongToGivenLevelHierarchyInATeam:
         return storage
 
     @pytest.mark.django_db
+    def test_with_invalid_level_hierarchy_of_a_team(
+            self, storage, assign_users_to_levels
+    ):
+        # Arrange
+        team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        user_ids = [
+            "31be920b-7b4c-49e7-8adb-41a0c18da848",
+            "01be920b-7b4c-49e7-8adb-41a0c18da848",
+            "17be920b-7b4c-49e7-8adb-41a0c18da848",
+            "27be920b-7b4c-49e7-8adb-41a0c18da848"
+        ]
+        level_hierarchy = 3
+
+        # Assert
+        from ib_iam.exceptions.custom_exceptions import \
+            InvalidLevelHierarchyOfTeam
+        with pytest.raises(InvalidLevelHierarchyOfTeam):
+            storage.validate_users_belong_to_given_level_hierarchy_in_a_team(
+                team_id=team_id, level_hierarchy=level_hierarchy,
+                user_ids=user_ids
+            )
+
+    @pytest.mark.django_db
     def test_with_users_not_belong_to_level_raise_exception(
             self, storage, assign_users_to_levels
     ):
