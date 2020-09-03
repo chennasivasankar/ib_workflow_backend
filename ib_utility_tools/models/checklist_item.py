@@ -18,6 +18,6 @@ class ChecklistItem(models.Model):
                                          editable=False)
     checklist = models.ForeignKey("Checklist", on_delete=models.CASCADE,
                                   related_name="checklist_items")
-    text = models.CharField(max_length=1000)
+    text = models.TextField()
     is_checked = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=get_datetime_now)

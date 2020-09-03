@@ -1,5 +1,5 @@
 """
-get task templates when user has no field read/write permissions returns empty fields
+get task templates when user has no field read/write permissions returns task templates without those gofs
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -24,7 +24,7 @@ class TestCase07GetTaskTemplatesAPITestCase(TestUtils):
         from ib_tasks.tests.factories.models import TaskTemplateFactory, \
             StageModelFactory, StageActionFactory, GoFFactory, GoFRoleFactory, \
             FieldFactory, FieldRoleFactory, GoFToTaskTemplateFactory, \
-            TaskTemplateInitialStageFactory
+            TaskTemplateInitialStageFactory, ProjectTaskTemplateFactory
         from ib_tasks.constants.enum import ValidationType
 
         TaskTemplateFactory.reset_sequence()
@@ -36,12 +36,15 @@ class TestCase07GetTaskTemplatesAPITestCase(TestUtils):
         FieldRoleFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
         TaskTemplateInitialStageFactory.reset_sequence()
+        ProjectTaskTemplateFactory.reset_sequence(1)
 
         template_ids = ['template_1', 'template_2']
 
         task_template_objs = TaskTemplateFactory.create_batch(
             size=2, template_id=factory.Iterator(template_ids)
         )
+        ProjectTaskTemplateFactory.create_batch(
+            size=2, task_template=factory.Iterator(task_template_objs))
         gof_objs = GoFFactory.create_batch(size=4)
         GoFRoleFactory.create_batch(
             size=4, gof=factory.Iterator(gof_objs),

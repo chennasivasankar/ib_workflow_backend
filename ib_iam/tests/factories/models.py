@@ -2,11 +2,9 @@ import factory
 
 from ib_iam import models
 from ib_iam.models import ProjectRole, Team, Company, Country, State, City, \
-    Project
-from ib_iam.models import Role, Team, Company, Country, State, City, Project, \
-    ProjectTeam
+    Project, ProjectTeam
 from ib_iam.models.team_member_level import TeamMemberLevel
-from ib_iam.models.user import UserDetails, UserTeam, UserRole
+from ib_iam.models.user import UserDetails, TeamUser, UserRole
 
 
 class CompanyFactory(factory.django.DjangoModelFactory):
@@ -40,9 +38,9 @@ class UserDetailsFactory(factory.django.DjangoModelFactory):
     cover_page_url = factory.sequence(lambda n: "url%d" % n)
 
 
-class UserTeamFactory(factory.django.DjangoModelFactory):
+class TeamUserFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = UserTeam
+        model = TeamUser
 
     user_id = factory.sequence(lambda number: "user%s" % number)
     team = factory.Iterator(models.Team.objects.all())
@@ -107,6 +105,7 @@ class ProjectFactory(factory.django.DjangoModelFactory):
         model = Project
 
     project_id = factory.Sequence(lambda n: 'project %s' % n)
+    display_id = factory.Sequence(lambda n: 'display_id %s' % n)
     name = factory.Sequence(lambda n: 'name %s' % n)
     description = factory.Sequence(lambda n: 'description %s' % n)
     logo_url = factory.Sequence(lambda n: 'logo %s' % n)
@@ -115,11 +114,11 @@ class ProjectFactory(factory.django.DjangoModelFactory):
 class ProjectRoleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ProjectRole
+        django_get_or_create = ('role_id', 'name', 'description', 'project')
 
-    id = factory.Faker("uuid4")
     role_id = factory.sequence(lambda number: "ROLE_%s" % number)
     name = factory.sequence(lambda number: "role %s" % number)
-    description = factory.Sequence(lambda n: 'payment_description%s' % n)
+    description = factory.Sequence(lambda n: 'role description %s' % n)
     project = factory.SubFactory(ProjectFactory)
 
 
@@ -127,5 +126,5 @@ class ProjectTeamFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ProjectTeam
 
-    project_id = factory.Sequence(lambda n: 'project %s' % n)
-    team_id = factory.Faker("uuid4")
+    project = factory.SubFactory(ProjectFactory)
+    team = factory.SubFactory(ProjectFactory)

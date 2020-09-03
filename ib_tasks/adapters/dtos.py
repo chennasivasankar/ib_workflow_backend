@@ -48,14 +48,11 @@ class AssigneeDetailsDTO:
     name: str
     profile_pic_url: str
 
+
 @dataclass
 class TeamInfoDTO:
     team_id: str
     team_name: str
-
-@dataclass
-class AssigneeWithTeamDetailsDTO(AssigneeDetailsDTO):
-    team_info_dto: TeamInfoDTO
 
 
 @dataclass
@@ -83,6 +80,7 @@ class UserIdWIthTeamDetailsDTOs:
     user_id: str
     team_details: List[TeamDetailsDTO]
 
+
 @dataclass
 class UserIdWIthTeamDetailsDTO:
     user_id: str
@@ -100,6 +98,12 @@ class ProjectDetailsDTO:
 class UserIdWithTeamIdDTO:
     user_id: str
     team_id: str
+
+
+@dataclass
+class ProjectRolesDTO:
+    project_id: str
+    roles: List[str]
 
 
 @dataclass

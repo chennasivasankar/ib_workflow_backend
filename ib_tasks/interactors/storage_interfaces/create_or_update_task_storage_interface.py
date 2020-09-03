@@ -1,6 +1,9 @@
 import abc
+import datetime
 from typing import Union, List
 
+from ib_tasks.exceptions.gofs_custom_exceptions import \
+    InvalidSameGoFOrderForAGoF
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
@@ -59,7 +62,7 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_task_gof_fields(
-        self, task_gof_field_dtos: List[TaskGoFFieldDTO]
+            self, task_gof_field_dtos: List[TaskGoFFieldDTO]
     ):
         pass
 
@@ -77,7 +80,7 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def update_task_gofs(
             self, task_gof_dtos: List[TaskGoFWithTaskIdDTO]
-    ) -> List[TaskGoFDetailsDTO]:
+    ) -> Union[List[TaskGoFDetailsDTO], InvalidSameGoFOrderForAGoF]:
         pass
 
     @abc.abstractmethod
@@ -123,3 +126,16 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
     def get_task_ids(self) -> List[int]:
         pass
 
+    @abc.abstractmethod
+    def get_existing_task_due_date(self, task_id):
+        pass
+
+    @abc.abstractmethod
+    def check_task_delay_reason_updated_or_not(
+            self, task_id: int, stage_id: int,
+            updated_due_date: datetime.datetime):
+        pass
+
+    @abc.abstractmethod
+    def get_task_display_id_for_task_id(self, task_id: int):
+        pass

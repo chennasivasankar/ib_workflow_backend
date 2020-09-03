@@ -1,9 +1,13 @@
+from collections import Iterator
+
 import factory
 import pytest
 
 from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.constants.enum import PermissionTypes
-from ib_tasks.tests.factories.models import FieldFactory, FieldRoleFactory
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectRolesDTO
+from ib_tasks.tests.factories.models import FieldFactory, FieldRoleFactory, TaskGoFFieldFactory, TaskGoFFactory, \
+    TaskFactory
 from ib_tasks.tests.factories.storage_dtos import \
     FieldCompleteDetailsDTOFactory
 
@@ -21,7 +25,7 @@ class TestFieldsStorageImplementation:
     def reset_sequence(self):
         from ib_tasks.tests.factories.models import GoFFactory, FieldFactory
         GoFFactory.reset_sequence()
-        FieldFactory.reset_sequence()
+        FieldFactory.reset_sequence(1)
 
     def test_get_fields_of_gofs_in_dtos(self, storage):
         from ib_tasks.tests.factories.models import GoFFactory, FieldFactory
@@ -29,16 +33,7 @@ class TestFieldsStorageImplementation:
             import FieldDTO
         from ib_tasks.constants.enum import FieldTypes
         expected_gof_ids = ['gof_1', 'gof_2']
-        expected_field_dtos = [FieldDTO(gof_id='gof_1', field_id='FIELD_ID-0',
-                                        field_display_name='DISPLAY_NAME-0',
-                                        field_type=FieldTypes.PLAIN_TEXT.value,
-                                        field_values=None, required=True,
-                                        help_text=None, tooltip=None,
-                                        placeholder_text=None,
-                                        error_message=None,
-                                        allowed_formats=None,
-                                        validation_regex=None),
-                               FieldDTO(gof_id='gof_2', field_id='FIELD_ID-1',
+        expected_field_dtos = [FieldDTO(gof_id='gof_1', field_id='FIELD_ID-1',
                                         field_display_name='DISPLAY_NAME-1',
                                         field_type=FieldTypes.PLAIN_TEXT.value,
                                         field_values=None, required=True,
@@ -46,7 +41,18 @@ class TestFieldsStorageImplementation:
                                         placeholder_text=None,
                                         error_message=None,
                                         allowed_formats=None,
-                                        validation_regex=None)]
+                                        validation_regex=None,
+                                        order=1),
+                               FieldDTO(gof_id='gof_2', field_id='FIELD_ID-2',
+                                        field_display_name='DISPLAY_NAME-2',
+                                        field_type=FieldTypes.PLAIN_TEXT.value,
+                                        field_values=None, required=True,
+                                        help_text=None, tooltip=None,
+                                        placeholder_text=None,
+                                        error_message=None,
+                                        allowed_formats=None,
+                                        validation_regex=None,
+                                        order=2)]
 
         import factory
         gof_objs = GoFFactory.create_batch(
@@ -141,6 +147,39 @@ class TestFieldsStorageImplementation:
 
         # Assert
         assert field_ids_having_read_permission_for_user == field_ids
+
+    def test_get_field_ids_having_permission_for_user_projects(self, storage):
+        # Arrange
+        user_roles = [TaskProjectRolesDTO(
+            task_id=1,
+            project_id="project_id_1",
+            roles=["FIN_MAN"]),
+            TaskProjectRolesDTO(
+                task_id=1,
+                project_id="project_id_1",
+                roles=["FIN_MAN"])]
+        fields = FieldFactory.create_batch(size=2)
+        FieldRoleFactory.create_batch(
+            size=2, permission_type=PermissionTypes.READ.value,
+            role=factory.Iterator(user_roles[0].roles),
+            field=factory.Iterator(fields)
+        )
+        TaskGoFFactory.reset_sequence()
+        TaskFactory.reset_sequence()
+        gofs = TaskGoFFactory.create_batch(size=3)
+        TaskGoFFieldFactory.create_batch(size=3,
+                                         task_gof=factory.Iterator(gofs),
+                                         field=factory.Iterator(fields))
+
+        field_ids = ['FIELD_ID-1', 'FIELD_ID-2']
+
+        # Act
+        field_ids_having_permission_for_user = \
+            storage.get_field_ids_permissions_for_user_in_projects(
+                field_ids=field_ids, task_project_roles=user_roles)
+
+        # Assert
+        assert field_ids_having_permission_for_user == field_ids
 
     def test_get_field_ids_having_read_permission_for_user_when_fields_has_all_roles(
             self, storage):
@@ -293,21 +332,22 @@ class TestFieldsStorageImplementation:
         field_ids = [field.field_id for field in fields]
         expected_field_dtos = [
             FieldDTO(
-                gof_id='gof_1', field_id='FIELD_ID-0',
-                field_display_name='DISPLAY_NAME-0',
+                gof_id='gof_1', field_id='FIELD_ID-1',
+                field_display_name='DISPLAY_NAME-1',
                 field_type=FieldTypes.PLAIN_TEXT.value,
                 field_values=None, required=True,
                 help_text=None, tooltip=None, placeholder_text=None,
                 error_message=None, allowed_formats=None,
-                validation_regex=None
+                validation_regex=None, order=1
             ),
             FieldDTO(
-                gof_id='gof_2', field_id='FIELD_ID-1',
-                field_display_name='DISPLAY_NAME-1',
+                gof_id='gof_2', field_id='FIELD_ID-2',
+                field_display_name='DISPLAY_NAME-2',
                 field_type=FieldTypes.PLAIN_TEXT.value,
                 field_values=None, required=True, help_text=None, tooltip=None,
                 placeholder_text=None, error_message=None,
-                allowed_formats=None, validation_regex=None)]
+                allowed_formats=None, validation_regex=None, order=2
+            )]
 
         # Act
         field_dtos = storage.get_field_dtos(field_ids=field_ids)

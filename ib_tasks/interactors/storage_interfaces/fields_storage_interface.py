@@ -10,6 +10,7 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskTemplateStageDTO, StageDetailsDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectRolesDTO
 
 
 @dataclass
@@ -87,6 +88,12 @@ class FieldsStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_field_ids_permissions_for_user_in_projects(
+            self, task_project_roles: List[TaskProjectRolesDTO],
+            field_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
     def check_is_user_has_read_permission_for_field(
             self, field_id: str, user_roles: List[str]) -> bool:
         pass
@@ -106,4 +113,13 @@ class FieldsStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_field_dtos(self, field_ids: List[str]) -> List[FieldDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_virtual_stage_ids_in_given_stage_ids(self, db_stage_ids):
+        pass
+
+    @abc.abstractmethod
+    def get_gof_ids_for_given_field_ids(
+            self, field_ids: List[str]) -> List[FieldIdWithGoFIdDTO]:
         pass

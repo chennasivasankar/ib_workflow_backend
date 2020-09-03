@@ -1,8 +1,7 @@
 from typing import List, Optional, Union
 
 from ib_tasks.constants.config import TIME_FORMAT
-from ib_tasks.constants.enum import ActionTypes
-from ib_tasks.documents.elastic_task import ElasticFieldDTO
+from ib_tasks.constants.enum import ActionTypes, ViewType
 from ib_tasks.exceptions.action_custom_exceptions import \
     InvalidActionException, InvalidKeyError, InvalidCustomLogicException, \
     InvalidPresentStageAction
@@ -27,19 +26,18 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserActionPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
-    InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee
+    InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee, \
+    StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId, \
+    InvalidTaskTemplateOfProject
 from ib_tasks.interactors \
     .call_action_logic_function_and_update_task_status_variables_interactor \
     import \
-    InvalidMethodFound
+    InvalidMethodFound, InvalidModulePathFound
 from ib_tasks.interactors.create_or_update_task \
     .template_gofs_fields_base_validations import \
     TemplateGoFsFieldsBaseValidationsInteractor
-from ib_tasks.interactors \
-    .get_next_stages_random_assignees_of_a_task_interactor import \
-    InvalidModulePathFound
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -69,8 +67,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
-from ib_tasks.interactors.task_dtos import CreateTaskDTO, GoFFieldsDTO, \
-    UpdateTaskDTO, FieldValuesDTO
+from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO
 from ib_tasks.interactors.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
 
@@ -108,6 +105,8 @@ class CreateTaskInteractor:
                 task_dto, presenter)
         except InvalidTaskTemplateDBId as err:
             return presenter.raise_invalid_task_template_id(err)
+        except InvalidTaskTemplateOfProject as err:
+            return presenter.raise_invalid_task_template_of_project(err)
         except InvalidActionException as err:
             return presenter.raise_invalid_action_id(err)
         except DuplicateSameGoFOrderForAGoF as err:
@@ -209,17 +208,24 @@ class CreateTaskInteractor:
             return presenter. \
                 raise_stage_ids_with_invalid_permission_for_assignee_exception(
                 invalid_stage_ids=err.invalid_stage_ids)
+        except StageIdsListEmptyException as err:
+            return presenter.raise_stage_ids_list_empty_exception(err)
+        except InvalidStageIdsListException as err:
+            return presenter.raise_invalid_stage_ids_list_exception(err)
 
     def _prepare_create_task_response(
             self, task_dto: CreateTaskDTO,
             presenter: CreateTaskPresenterInterface
     ):
-        task_current_stage_details_dto = self.create_task(task_dto)
+        task_current_stage_details_dto, all_tasks_overview_dto = \
+            self.create_task(task_dto)
         return presenter.get_create_task_response(
-            task_current_stage_details_dto)
+            task_current_stage_details_dto, all_tasks_overview_dto)
 
     def create_task(self, task_dto: CreateTaskDTO):
         self._validate_task_template_id(task_dto.task_template_id)
+        self._validate_task_template_project_id(
+            task_dto.project_id, task_dto.task_template_id)
         is_valid_action_id = self.storage.validate_action(
             action_id=task_dto.action_id)
         if not is_valid_action_id:
@@ -227,7 +233,6 @@ class CreateTaskInteractor:
         action_type = self.action_storage.get_action_type_for_given_action_id(
             action_id=task_dto.action_id)
         self._validate_task_details(task_dto, action_type)
-        self._validate_same_gof_order(task_dto.gof_fields_dtos)
         base_validations_interactor = \
             TemplateGoFsFieldsBaseValidationsInteractor(
                 self.task_storage, self.gof_storage,
@@ -279,24 +284,21 @@ class CreateTaskInteractor:
         task_current_stage_details_dto = \
             get_task_current_stages_interactor.get_task_current_stages_details(
                 task_id=created_task_id, user_id=task_dto.created_by_id)
-        return task_current_stage_details_dto
-
-    def _get_fields_dto(
-            self, task_dto: CreateTaskDTO) -> List[ElasticFieldDTO]:
-
-        fields_dto = []
-        gof_fields_dtos = task_dto.gof_fields_dtos
-        for gof_fields_dto in gof_fields_dtos:
-            for field_value_dto in gof_fields_dto.field_values_dtos:
-                fields_dto.append(self._get_elastic_field_dto(field_value_dto))
-        return fields_dto
-
-    @staticmethod
-    def _get_elastic_field_dto(field_dto: FieldValuesDTO) -> ElasticFieldDTO:
-        return ElasticFieldDTO(
-            field_id=field_dto.field_id,
-            value=field_dto.field_response
+        from ib_tasks.interactors \
+            .get_all_task_overview_with_filters_and_searches_for_user import \
+            GetTasksOverviewForUserInteractor
+        task_overview_interactor = GetTasksOverviewForUserInteractor(
+            stage_storage=self.stage_storage, task_storage=self.task_storage,
+            field_storage=self.field_storage,
+            action_storage=self.action_storage,
+            task_stage_storage=self.task_stage_storage
         )
+        all_tasks_overview_details_dto = \
+            task_overview_interactor.get_filtered_tasks_overview_for_user(
+                user_id=task_dto.created_by_id, task_ids=[created_task_id],
+                view_type=ViewType.KANBAN.value,
+                project_id=task_dto.project_id)
+        return task_current_stage_details_dto, all_tasks_overview_details_dto
 
     def _validate_task_template_id(
             self, task_template_id: str
@@ -341,35 +343,6 @@ class CreateTaskInteractor:
             if gof_matched:
                 return task_gof_details_dto.task_gof_id
         return
-
-    def _validate_same_gof_order(
-            self, gof_fields_dtos: List[GoFFieldsDTO]
-    ) -> Optional[DuplicateSameGoFOrderForAGoF]:
-        from collections import defaultdict
-        gof_with_order_dict = defaultdict(list)
-        for gof_fields_dto in gof_fields_dtos:
-            gof_with_order_dict[
-                gof_fields_dto.gof_id].append(gof_fields_dto.same_gof_order)
-        for gof_id, same_gof_orders in gof_with_order_dict.items():
-            duplicate_same_gof_orders = self._get_duplicates_in_given_list(
-                same_gof_orders)
-            if duplicate_same_gof_orders:
-                raise DuplicateSameGoFOrderForAGoF(gof_id,
-                                                   duplicate_same_gof_orders)
-        return
-
-    @staticmethod
-    def _get_duplicates_in_given_list(values: List) -> List:
-        duplicate_values = list(
-            set(
-                [
-                    value
-                    for value in values if values.count(value) > 1
-                ]
-            )
-        )
-        duplicate_values.sort()
-        return duplicate_values
 
     def _validate_task_details(
             self, task_dto: Union[CreateTaskDTO, UpdateTaskDTO],
@@ -417,3 +390,14 @@ class CreateTaskInteractor:
         start_date_is_ahead_of_due_date = start_date > due_date
         if start_date_is_ahead_of_due_date:
             raise StartDateIsAheadOfDueDate(start_date, due_date)
+
+    def _validate_task_template_project_id(
+            self, project_id: str, task_template_id: str
+    ) -> Optional[InvalidTaskTemplateOfProject]:
+        project_task_templates = \
+            self.task_template_storage.get_project_templates(project_id)
+        invalid_template_of_project = \
+            task_template_id not in project_task_templates
+        if invalid_template_of_project:
+            raise InvalidTaskTemplateOfProject(project_id, task_template_id)
+        return

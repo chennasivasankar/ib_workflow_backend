@@ -14,6 +14,25 @@ class TestCreateTaskPresenterImplementation:
 
         return presenter
 
+    def test_raise_exception_for_invalid_present_stage_actions(
+            self, snapshot, presenter):
+        # Arrange
+        action_id = 1
+        from ib_tasks.exceptions.action_custom_exceptions import \
+            InvalidPresentStageAction
+        err = InvalidPresentStageAction(action_id)
+
+        # Act
+        response_object = \
+            presenter.raise_exception_for_invalid_present_stage_actions(
+            err)
+
+        # Assert
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
+
     def test_raise_due_date_has_expired(self, snapshot, presenter):
         # Arrange
         expected_due_date = datetime.date(2020, 3, 5)
@@ -816,8 +835,8 @@ class TestCreateTaskPresenterImplementation:
             CurrentStageDetailsDTOFactory
         CurrentStageDetailsDTOFactory.reset_sequence()
         TaskCurrentStageDetailsDTOFactory.reset_sequence()
-
         task_current_stage_details_dto = TaskCurrentStageDetailsDTOFactory()
+        # todo: write all_tasks_overview_dto factory
 
         # Act
         response_object = presenter.get_create_task_response(

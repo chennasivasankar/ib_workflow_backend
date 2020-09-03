@@ -25,4 +25,3 @@ class FieldConfigStorageInterface(abc.ABC):
     @abc.abstractmethod
     def delete_field_roles(self, field_ids: List[str]):
         pass
-

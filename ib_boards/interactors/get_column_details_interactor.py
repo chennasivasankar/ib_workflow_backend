@@ -51,13 +51,15 @@ class GetColumnDetailsInteractor:
         view_type = columns_parameters.view_type
         self._validate_board_id(board_id=board_id)
 
-        column_dtos = self._get_column_details_dto(board_id, user_id)
+        project_id = self.storage.get_project_id_for_board(board_id)
+        column_dtos = self._get_column_details_dto(board_id, user_id, project_id)
         column_ids = [column_dto.column_id for column_dto in column_dtos]
         column_tasks_parameters = ColumnsTasksParametersDTO(
             column_ids=column_ids,
             limit=limit,
             offset=offset,
             user_id=user_id,
+            project_id=project_id,
             view_type=view_type,
             search_query=columns_parameters.search_query
         )
@@ -82,12 +84,14 @@ class GetColumnDetailsInteractor:
             storage=self.storage
         )
         return interactor.get_column_tasks_with_column_ids(
-                column_tasks_parameters=column_tasks
-            )
+            column_tasks_parameters=column_tasks
+        )
 
-    def _get_column_details_dto(self, board_id, user_id):
+    def _get_column_details_dto(self, board_id: str, user_id: str,
+                                project_id: str):
         user_service = get_service_adapter().iam_service
-        user_roles = user_service.get_user_roles(user_id)
+        user_roles = user_service.get_user_role_ids_based_on_project(
+            user_id=user_id, project_id=project_id)
         self._validate_if_user_has_permissions_for_given_board_id(
             board_id=board_id, user_roles=user_roles)
 

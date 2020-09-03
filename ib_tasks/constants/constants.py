@@ -12,6 +12,8 @@ SEARCHABLE_VALUES = [item.value for item in Searchable]
 Permission_Types = [(item.value, item.value) for item in PermissionTypes]
 
 OPERATOR_TYPES = [(item.value, item.value) for item in Operators]
+OPERATORS = [item.value for item in Operators]
+
 
 Field_Types = [(item.value, item.value) for item in FieldTypes]
 
@@ -50,4 +52,9 @@ TASK_DISPLAY_ID = "IBWF-{}"
 INTEGER_FIELD_TYPES = [
     FieldTypes.NUMBER.value,
     FieldTypes.PHONE_NUMBER.value,
+]
+
+NUMERIC_OPERATORS = [
+    Operators.GTE.value, Operators.GT.value,
+    Operators.LTE.value, Operators.LT.value
 ]

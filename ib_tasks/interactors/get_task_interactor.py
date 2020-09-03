@@ -1,6 +1,10 @@
 from typing import List
 
+from ib_tasks.adapters.assignees_details_service import InvalidUserIdException
+from ib_tasks.adapters.auth_service import InvalidProjectIdsException, \
+    TeamsNotExistForGivenProjectException, UsersNotExistsForGivenTeamsException
 from ib_tasks.adapters.dtos import SearchableDetailsDTO
+from ib_tasks.adapters.roles_service import UserNotAMemberOfAProjectException
 from ib_tasks.adapters.searchable_details_service import \
     InvalidUserIdsException, InvalidStateIdsException, \
     InvalidCountryIdsException, InvalidCityIdsException
@@ -13,9 +17,8 @@ from ib_tasks.interactors.get_task_base_interactor \
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
-    import GetTaskPresenterInterface
-from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
-    import TaskCompleteDetailsDTO
+    import \
+    GetTaskPresenterInterface, TaskCompleteDetailsDTO
 from ib_tasks.interactors.stages_dtos import StageAssigneeWithTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
@@ -90,7 +93,21 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         except InvalidUserIdsException:
             response = presenter.raise_invalid_searchable_records_found()
             return response
-        # TODO : Need to handle exception raised by interface
+        except InvalidProjectIdsException as err:
+            response = presenter.raise_invalid_project_id(err)
+            return response
+        except TeamsNotExistForGivenProjectException as err:
+            response = presenter.raise_teams_does_not_exists_for_project(err)
+            return response
+        except UsersNotExistsForGivenTeamsException as err:
+            response = presenter.raise_users_not_exist_for_given_teams(err)
+            return response
+        except InvalidUserIdException:
+            response = presenter.raise_invalid_user()
+            return response
+        except UserNotAMemberOfAProjectException:
+            response = presenter.raise_user_not_a_member_of_project()
+            return response
 
     def get_task_details_response(
             self, user_id: str, task_display_id: str,
@@ -119,9 +136,10 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         stage_ids = self._get_stage_ids(stages_and_actions_details_dtos)
         self._validate_user_have_permission_for_at_least_one_stage(stage_ids,
                                                                    user_roles)
-        stage_assignee_details_dtos = self._stage_assignee_with_team_details_dtos(
-            task_id, stage_ids, project_id
-        )
+        stage_assignee_details_dtos = \
+            self._stage_assignee_with_team_details_dtos(
+                task_id, stage_ids, project_id
+            )
         task_complete_details_dto = TaskCompleteDetailsDTO(
             task_details_dto=task_details_dto,
             stages_and_actions_details_dtos=stages_and_actions_details_dtos,
@@ -135,8 +153,8 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         is_user_has_permission = \
             self.task_stage_storage \
                 .is_user_has_permission_for_at_least_one_stage(
-                    stage_ids=stage_ids, user_roles=user_roles
-                )
+                stage_ids=stage_ids, user_roles=user_roles
+            )
         is_user_permission_denied = not is_user_has_permission
         if is_user_permission_denied:
             raise UserPermissionDenied()
@@ -188,6 +206,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             )
         task_details_dto = TaskDetailsDTO(
             task_base_details_dto=task_details_dto.task_base_details_dto,
+            project_details_dto=task_details_dto.project_details_dto,
             task_gof_dtos=permission_task_gof_dtos,
             task_gof_field_dtos=permission_task_gof_field_dtos
         )
@@ -345,7 +364,20 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         )
         stages_and_actions_details_dtos = \
             interactor.get_task_stages_and_actions(task_id, user_id)
-        return stages_and_actions_details_dtos
+        db_stage_ids = [
+            dto.db_stage_id
+            for dto in stages_and_actions_details_dtos
+        ]
+        virtual_stage_ids = \
+            self.stages_storage.get_virtual_stage_ids_in_given_stage_ids(
+            db_stage_ids)
+        filtered_stages_and_actions_details_dtos = []
+        for dto in stages_and_actions_details_dtos:
+            stage_is_virtual = dto.db_stage_id in virtual_stage_ids
+            if stage_is_virtual:
+                continue
+            filtered_stages_and_actions_details_dtos.append(dto)
+        return filtered_stages_and_actions_details_dtos
 
     @staticmethod
     def _get_task_gof_field_dtos(

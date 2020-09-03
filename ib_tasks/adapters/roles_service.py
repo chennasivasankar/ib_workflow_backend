@@ -1,7 +1,13 @@
 from typing import List
 
+from ib_tasks.adapters.dtos import ProjectRolesDTO
+from ib_tasks.build.parameters.ProjectIdParameter import project_id
 from ib_tasks.exceptions.permission_custom_exceptions import \
     InvalidUserIdException
+
+
+class UserNotAMemberOfAProjectException(Exception):
+    pass
 
 
 class RolesService:
@@ -41,4 +47,25 @@ class RolesService:
 
     def get_user_role_ids_based_on_project(
             self, user_id, project_id: str) -> List[str]:
-        raise NotImplementedError
+        from ib_iam.interactors.project_role_interactor import \
+            UserNotAMemberOfAProject
+        try:
+            return self.interface.get_user_role_ids_based_on_project(
+                user_id=user_id, project_id=project_id)
+        except UserNotAMemberOfAProject:
+            raise UserNotAMemberOfAProjectException()
+
+    def get_user_role_ids_based_on_given_project_ids(
+            self, user_id, project_ids: List[str]) -> \
+            List[ProjectRolesDTO]:
+        # raise NotImplementedError
+        # TODO: Remove get roles from loop
+        project_roles = [
+            ProjectRolesDTO(
+                project_id=project_id,
+                roles=self.get_user_role_ids_based_on_project(
+                    user_id, project_id)
+            )
+            for project_id in project_ids
+        ]
+        return project_roles

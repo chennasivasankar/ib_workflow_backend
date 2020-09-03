@@ -5,7 +5,7 @@ from ib_iam.tests.common_fixtures.reset_fixture import \
     reset_sequence_for_user_profile_dto_factory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import UserDetailsFactory, CompanyFactory, \
-    UserTeamFactory, TeamFactory, UserRoleFactory, ProjectRoleFactory
+    TeamUserFactory, TeamFactory, UserRoleFactory, ProjectRoleFactory
 
 
 class TestCase03GetUsersAPITestCase(TestUtils):
@@ -58,7 +58,7 @@ class TestCase03GetUsersAPITestCase(TestUtils):
             reset_sequence_team_factory, reset_sequence_user_team_factory
         reset_sequence_team_factory()
         reset_sequence_user_team_factory()
-        user_team_objects = [UserTeamFactory.create(
+        user_team_objects = [TeamUserFactory.create(
             user_id=user_team["user_id"],
             team=TeamFactory.create(team_id=user_team["team_id"])
         ) for user_team in user_teams]
@@ -82,7 +82,8 @@ class TestCase03GetUsersAPITestCase(TestUtils):
         reset_sequence_role_factory()
         user_role_objects = [UserRoleFactory.create(
             user_id=user_role["user_id"],
-            role=ProjectRoleFactory.create(role_id=user_role["role_id"])
+            project_role=ProjectRoleFactory.create(
+                role_id=user_role["role_id"])
         ) for user_role in user_roles]
         return user_role_objects
 
@@ -93,8 +94,8 @@ class TestCase03GetUsersAPITestCase(TestUtils):
             import reset_sequence_user_details_factory
         reset_sequence_user_details_factory()
         from ib_iam.tests.factories.models import UserDetailsFactory
-        admin_user = UserDetailsFactory.create(user_id=user_id, is_admin=True,
-                                               company=None)
+        admin_user = UserDetailsFactory.create(
+            user_id=user_id, is_admin=True, company=None, name="sanju")
         return admin_user
 
     @pytest.mark.django_db

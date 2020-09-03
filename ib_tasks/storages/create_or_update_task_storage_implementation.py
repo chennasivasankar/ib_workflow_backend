@@ -1,8 +1,9 @@
+import datetime
 from typing import Union, List, Optional
 
 from django.db.models import Q
 
-from ib_tasks.constants.config import TIME_FORMAT, TASK_DISPLAY_ID_PREFIX
+from ib_tasks.constants.config import TIME_FORMAT
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
@@ -26,13 +27,29 @@ class CreateOrUpdateTaskStorageImplementation(
     CreateOrUpdateTaskStorageInterface
 ):
 
+    def get_task_display_id_for_task_id(self, task_id: int):
+        task_display_id = Task.objects.get(id=task_id).task_display_id
+        return task_display_id
+
+    def check_task_delay_reason_updated_or_not(
+            self, task_id: int, stage_id: int,
+            updated_due_date: datetime.datetime):
+        from ib_tasks.models import UserTaskDelayReason
+        due_date_updated_status = UserTaskDelayReason.objects.filter(
+            task_id=task_id, stage_id=stage_id, due_datetime=updated_due_date
+        ).exists()
+        return due_date_updated_status
+
+    def get_existing_task_due_date(self, task_id):
+        task_due_date = Task.objects.get(id=task_id).due_date
+        return task_due_date
+
     def update_task_with_given_task_details(self, task_dto: UpdateTaskDTO):
         task_obj = Task.objects.get(id=task_dto.task_id)
         import datetime
         due_date_time = datetime.datetime.combine(
             task_dto.due_date,
-            datetime.datetime.strptime(task_dto.due_time, TIME_FORMAT).time()
-        )
+            datetime.datetime.strptime(task_dto.due_time, TIME_FORMAT).time())
         task_obj.title = task_dto.title
         task_obj.description = task_dto.description
         task_obj.start_date = task_dto.start_date
@@ -117,7 +134,7 @@ class CreateOrUpdateTaskStorageImplementation(
 
         task_gof_field_objs = TaskGoFField.objects.filter(
             task_gof_id__in=task_gof_ids
-        )
+        ).exclude(field_response='')
         task_gof_field_dtos = []
         for task_gof_field_obj in task_gof_field_objs:
             task_gof_field_dto = TaskGoFFieldDTO(
@@ -149,7 +166,7 @@ class CreateOrUpdateTaskStorageImplementation(
             self, task_id: int) -> List[GoFIdWithSameGoFOrderDTO]:
         gof_dicts = list(
             TaskGoF.objects.filter(task_id=task_id).values(
-                'gof_id', 'same_gof_order'))
+                'gof_id', 'same_gof_order', 'id'))
         gof_id_with_same_gof_order_dtos = [
             GoFIdWithSameGoFOrderDTO(
                 gof_id=gof_dict['gof_id'],
@@ -181,8 +198,7 @@ class CreateOrUpdateTaskStorageImplementation(
         task_gof_objects = TaskGoF.objects.filter(task_id=task_id)
         for task_gof_object in task_gof_objects:
             task_gof_dto = self._get_matching_task_gof_dto(
-                task_gof_object, task_gof_dtos
-            )
+                task_gof_object, task_gof_dtos)
             task_gof_object.same_gof_order = task_gof_dto.same_gof_order
         TaskGoF.objects.bulk_update(task_gof_objects, ['same_gof_order'])
         task_gof_ids = [
@@ -370,5 +386,6 @@ class CreateOrUpdateTaskStorageImplementation(
         ]
         return field_searchable_dtos
 
-    def get_task_ids(self) -> List[int]:
+    @staticmethod
+    def get_task_ids() -> List[int]:
         return list(Task.objects.values_list('id', flat=True))

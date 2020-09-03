@@ -1,15 +1,20 @@
 import abc
 
 from ib_tasks.exceptions.datetime_custom_exceptions import DueDateHasExpired
+from ib_tasks.exceptions.stage_custom_exceptions import \
+    StageIdsListEmptyException, InvalidStageIdsListException
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 
 
 class CreateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_create_task_response(self,
-                                 task_current_stage_details_dto:
-                                     TaskCurrentStageDetailsDTO):
+    def get_create_task_response(
+            self, task_current_stage_details_dto: TaskCurrentStageDetailsDTO,
+            all_tasks_overview_dto: AllTasksOverviewDetailsDTO
+    ):
         pass
 
     @abc.abstractmethod
@@ -175,10 +180,6 @@ class CreateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_due_date_is_behind_start_date(self, err):
-        pass
-
-    @abc.abstractmethod
     def raise_due_time_has_expired_for_today(self, err):
         pass
 
@@ -188,4 +189,18 @@ class CreateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_exception_for_invalid_present_stage_actions(self, err):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_task_template_of_project(self, err):
+        pass
+
+    @abc.abstractmethod
+    def raise_stage_ids_list_empty_exception(
+            self, err: StageIdsListEmptyException):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_stage_ids_list_exception(
+            self, err: InvalidStageIdsListException):
         pass

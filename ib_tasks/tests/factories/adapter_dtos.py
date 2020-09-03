@@ -78,3 +78,50 @@ class SearchableDetailsDTOFactory(factory.Factory):
     search_type = Searchable.STATE.value
     id = 2
     value = "Hyderabad"
+
+
+class ProjectDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = ProjectDetailsDTO
+
+    project_id = factory.sequence(lambda counter: "project{}".format(counter))
+    name = factory.sequence(lambda counter: "project_name{}".format(counter))
+    logo_url = factory.sequence(lambda counter: "logo_url{}".format(counter))
+
+
+class TeamDetailsWithUserIdDTOFactory(factory.Factory):
+    class Meta:
+        model = TeamDetailsWithUserIdDTO
+
+    user_id = factory.sequence(
+        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+            counter))
+    team_id = factory.sequence(lambda counter: "team_{}".format(counter))
+    name = factory.sequence(lambda counter: "team_name{}".format(counter))
+
+
+class TeamInfoDTOFactory(factory.Factory):
+    class Meta:
+        model = TeamInfoDTO
+
+    team_id = factory.Sequence(lambda counter: "team_{}".format(counter))
+    team_name = factory.Sequence(lambda counter: "team_name{}".format(counter))
+
+
+class TeamDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TeamDetailsDTO
+
+    team_id = factory.Sequence(lambda counter: "team_{}".format(counter))
+    name = factory.Sequence(lambda counter: "team_name{}".format(counter))
+
+
+class UserIdWIthTeamDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = UserIdWIthTeamDetailsDTOs
+
+    user_id = factory.sequence(lambda counter: "user_{}".format(counter))
+
+    @factory.lazy_attribute
+    def team_details(self):
+        return TeamDetailsDTOFactory.create_batch(size=2)

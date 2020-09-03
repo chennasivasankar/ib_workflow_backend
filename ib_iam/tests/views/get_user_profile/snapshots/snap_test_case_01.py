@@ -34,23 +34,14 @@ snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id body'] = {
             }
         ],
         'logo_url': 'url 0',
-        'name': 'company 0'
+        'name': 'company 0',
+        'roles': None
     },
     'cover_page_url': 'url0',
     'email': 'name1@gmail.com',
     'is_admin': False,
     'name': 'name1',
     'profile_pic_url': 'url1',
-    'roles': [
-        {
-            'role_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb211',
-            'role_name': 'role 0'
-        },
-        {
-            'role_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb222',
-            'role_name': 'role 1'
-        }
-    ],
     'teams': [
         {
             'description': 'team_description 0',

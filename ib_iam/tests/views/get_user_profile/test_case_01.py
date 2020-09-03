@@ -115,8 +115,8 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
             reset_sequence_team_factory, reset_sequence_user_team_factory
         reset_sequence_team_factory()
         reset_sequence_user_team_factory()
-        from ib_iam.tests.factories.models import UserTeamFactory
-        user_team_objects = [UserTeamFactory.create(
+        from ib_iam.tests.factories.models import TeamUserFactory
+        user_team_objects = [TeamUserFactory.create(
             user_id=user_team["user_id"],
             team=self._get_or_create_team(team_id=user_team["team_id"])
         ) for user_team in user_teams]
@@ -139,7 +139,7 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
         ProjectRoleFactory.reset_sequence(0)
         user_role_objects = [UserRoleFactory.create(
             user_id=user_role["user_id"],
-            role=self._get_or_create_role(role_id=user_role["role_id"])
+            project_role=self._get_or_create_role(role_id=user_role["role_id"])
         ) for user_role in user_roles]
         return user_role_objects
 

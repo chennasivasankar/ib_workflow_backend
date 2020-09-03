@@ -68,12 +68,12 @@ class TestGetUserProfileInteractor:
             user_id=user_id, is_admin=True, cover_page_url="url1")
         expected_response_dto = UserWithExtraDetailsDTO(
             user_profile_dto=user_profile_dto,
-            role_dtos=expected_role_dtos,
             company_dto=expected_company_dto,
             team_dtos=expected_team_dtos,
             team_user_ids_dto=expected_team_user_ids_dtos,
             company_id_with_employee_ids_dto=expected_company_employee_ids_dto,
-            user_dtos=expected_user_dtos
+            user_dtos=expected_user_dtos,
+            role_dtos=expected_role_dtos
         )
         return expected_response_dto
 

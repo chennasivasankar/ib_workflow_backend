@@ -1,4 +1,3 @@
-
 from ib_iam.documents.elastic_docs import (
     ElasticCountryDTO, ElasticStateDTO, ElasticCityDTO,
     USER_INDEX_NAME, COUNTRY_INDEX_NAME, STATE_INDEX_NAME,
@@ -12,14 +11,12 @@ from ib_iam.storages.elastic_storage_implementation \
 
 
 def populate_data():
-
     populate_elastic_search_country_data()
     populate_elastic_search_state_data()
     populate_elastic_search_city_data()
 
 
 def populate_existing_users_to_elastic_search_database():
-
     storage = ElasticStorageImplementation()
     user_objs = UserDetails.objects.filter(is_admin=False)
     ElasticUserIntermediary.objects.all().delete()
@@ -34,7 +31,6 @@ def populate_existing_users_to_elastic_search_database():
 
 
 def populate_elastic_search_country_data():
-
     country_dtos = [
         ElasticCountryDTO(
             country_id=1,
@@ -58,7 +54,15 @@ def populate_elastic_search_country_data():
         ),
         ElasticCountryDTO(
             country_id=1,
-            country_name="Pakistan"   
+            country_name="Pakistan"
+        ),
+        ElasticCountryDTO(
+            country_id=1,
+            country_name="United States of America"
+        ),
+        ElasticCountryDTO(
+            country_id=1,
+            country_name="Saint Vincent Grenadines Country"
         )
     ]
     Country.objects.all().delete()
@@ -67,6 +71,10 @@ def populate_elastic_search_country_data():
         for country_dto in country_dtos
     ]
     Country.objects.bulk_create(countries)
+    copy_countries_to_es()
+
+
+def copy_countries_to_es():
     country_objs = Country.objects.all()
 
     country_dtos = [
@@ -118,6 +126,10 @@ def populate_elastic_search_state_data():
         for country_dto in state_dtos
     ]
     State.objects.bulk_create(countries)
+    copy_states_to_es()
+
+
+def copy_states_to_es():
     country_objs = State.objects.all()
     state_dtos = [
         ElasticStateDTO(
@@ -156,6 +168,10 @@ def populate_elastic_search_city_data():
         ElasticCityDTO(
             city_id=6,
             city_name="Visakapatnam"
+        ),
+        ElasticCityDTO(
+            city_id=6,
+            city_name="Sri Potti Sriramula Nellore"
         )
     ]
     City.objects.all().delete()
@@ -164,13 +180,17 @@ def populate_elastic_search_city_data():
         for country_dto in city_dtos
     ]
     City.objects.bulk_create(countries)
-    country_objs = City.objects.all()
+    copy_cities_to_es()
+
+
+def copy_cities_to_es():
+    city_objs = City.objects.all()
     city_dtos = [
         ElasticCityDTO(
             city_id=city_obj.id,
             city_name=city_obj.name
         )
-        for city_obj in country_objs
+        for city_obj in city_objs
     ]
     storage = ElasticStorageImplementation()
     for state_dto in city_dtos:

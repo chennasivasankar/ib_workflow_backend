@@ -1,4 +1,5 @@
 from collections import defaultdict
+from datetime import datetime
 from typing import List, Optional, Dict, Tuple
 
 from django.db.models import Q, Count
@@ -19,14 +20,14 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageValueDTO, TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO, TaskProjectDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO
 from ib_tasks.models import Stage, TaskTemplate, CurrentTaskStage, \
-    TaskTemplateStatusVariable
+    TaskTemplateStatusVariable, TaskStageHistory
 from ib_tasks.models.field import Field
 from ib_tasks.models.stage_actions import StageAction
 from ib_tasks.models.task import Task, ElasticSearchTask
@@ -35,8 +36,15 @@ from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 
 class TasksStorageImplementation(TaskStorageInterface):
+
+    def get_project_id_for_task_display_id(self, task_display_id: str):
+        from ib_tasks.models.task import Task
+        project_id = Task.objects.filter(task_display_id=task_display_id). \
+            values_list('project_id', flat=True)
+        return project_id.first()
+
     def get_tasks_with_max_stage_value_dto(self) -> List[
-        TaskIdWithStageValueDTO]:
+            TaskIdWithStageValueDTO]:
         pass
 
     def create_elastic_task(self, task_id: int, elastic_task_id: str):
@@ -443,7 +451,7 @@ class TasksStorageImplementation(TaskStorageInterface):
         if q is None:
             return []
         task_objs = CurrentTaskStage.objects.filter(q).values('task_id',
-                                                       'stage__stage_id')
+                                                              'stage__stage_id')
 
         task_stage_dtos = self._convert_task_objs_to_dtos(task_objs)
         return task_stage_dtos
@@ -458,13 +466,17 @@ class TasksStorageImplementation(TaskStorageInterface):
         return valid_task_stages_dtos
 
     def get_user_task_ids_and_max_stage_value_dto_based_on_given_stage_ids(
-            self, stage_ids: List[str]) -> List[
+            self, stage_ids: List[str], task_ids: List[int]) -> List[
         TaskIdWithStageValueDTO]:
         from django.db.models import Max
         task_objs_with_max_stage_value = list(
             CurrentTaskStage.objects.filter(
-                stage__stage_id__in=stage_ids).values("task_id").annotate(
-                stage_value=Max("stage__value")))
+                stage__stage_id__in=stage_ids,
+                task_id__in=task_ids
+            ).values("task_id").annotate(
+                stage_value=Max("stage__value")
+            )
+        )
         task_id_with_max_stage_value_dtos = self. \
             _prepare_task_id_with_max_stage_value_dtos(
             task_objs_with_max_stage_value)
@@ -493,7 +505,6 @@ class TasksStorageImplementation(TaskStorageInterface):
         task_id = task_id_queryset.first()
         return task_id
 
-
     def get_task_display_ids_dtos(self, task_ids: List[int]) -> List[
         TaskDisplayIdDTO]:
         task_ids = Task.objects.filter(
@@ -511,7 +522,38 @@ class TasksStorageImplementation(TaskStorageInterface):
     def get_project_id_for_the_task_id(self, task_id) -> str:
         return Task.objects.get(id=task_id).project_id
 
-
     def get_project_id_of_task(self, task_id: int) -> str:
         task_obj = Task.objects.get(id=task_id)
         return task_obj.project_id
+
+    def get_user_team_id(self, user_id: str, task_id: int) -> str:
+        task = TaskStageHistory.objects.filter(
+            assignee_id=user_id, task_id=task_id
+        )
+        return task[0].team_id
+
+    def get_user_missed_the_task_due_time(
+            self, task_id: int, user_id: str, stage_id: int) -> datetime:
+        task_due_time = TaskStageHistory.objects.filter(
+            task_id=task_id, assignee_id=user_id, stage_id=stage_id
+                                               ).values_list('task__due_date', flat=True)
+        return task_due_time[0]
+
+    def get_valid_task_ids_from_the_project(self, task_ids: List[int], project_id: str):
+        task_ids = Task.objects.filter(
+            project_id=project_id
+        ).values_list('id', flat=True)
+        return list(task_ids)
+
+    def get_task_project_ids(self, task_ids: List[int]) -> \
+            List[TaskProjectDTO]:
+        tasks = Task.objects.filter(id__in=task_ids)
+        task_project_dtos = [
+            TaskProjectDTO(
+                task_id=task.task_id,
+                project_id=task.project_id
+            )
+            for task in tasks
+        ]
+        return task_project_dtos
+

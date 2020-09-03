@@ -59,8 +59,8 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
         roles = self._get_roles(
             role_dtos=user_with_extra_details_dto.role_dtos)
         response_dict = self._get_user_profile_dict_from_user_profile_dto(
-            user_profile_dto=user_profile_dto, teams=teams,
-            company=company_dictionary, roles=roles)
+            user_profile_dto=user_profile_dto, teams=teams, roles=roles,
+            company=company_dictionary)
         return self.prepare_200_success_response(response_dict=response_dict)
 
     @staticmethod
@@ -76,8 +76,8 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
             "email": user_profile_dto.email,
             "profile_pic_url": user_profile_dto.profile_pic_url,
             "cover_page_url": cover_page_url,
-            "roles": roles,
-            "teams": teams
+            "teams": teams,
+            "roles": roles
         }
         if company is not None:
             user_profile_dictionary["company"] = company

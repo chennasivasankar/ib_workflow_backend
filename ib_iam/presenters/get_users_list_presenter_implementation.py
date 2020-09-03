@@ -4,11 +4,12 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.constants.enums import StatusCode
-from ib_iam.interactors.presenter_interfaces.dtos import ListOfCompleteUsersDTO
+from ib_iam.interactors.presenter_interfaces.dtos import \
+    ListOfCompleteUsersWithRolesDTO
 from ib_iam.interactors.presenter_interfaces.get_users_list_presenter_interface \
     import GetUsersListPresenterInterface
-from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, \
-    UserRoleDTO, UserCompanyDTO, TeamIdAndNameDTO, RoleIdAndNameDTO, RoleDTO
+from ib_iam.interactors.storage_interfaces.dtos import TeamWithUserIdDTO, \
+    UserCompanyDTO, UserRoleDTO
 
 
 class GetUsersListPresenterImplementation(GetUsersListPresenterInterface,
@@ -45,14 +46,14 @@ class GetUsersListPresenterImplementation(GetUsersListPresenterInterface,
             response_dict=response_dict)
 
     def response_for_get_users(
-            self, complete_user_details_dtos: ListOfCompleteUsersDTO):
+            self, complete_user_details_dtos: ListOfCompleteUsersWithRolesDTO):
         user_dtos = complete_user_details_dtos.users
         team_dtos = complete_user_details_dtos.teams
-        # role_dtos = complete_user_details_dtos.roles
+        role_dtos = complete_user_details_dtos.roles
         company_dtos = complete_user_details_dtos.companies
         total_no_of_users = complete_user_details_dtos.total_no_of_users
         users = self._prepare_response_for_user_details(
-            user_dtos, team_dtos, company_dtos)
+            user_dtos, team_dtos, company_dtos, role_dtos)
         response = {
             "users": users,
             "total": total_no_of_users
@@ -61,29 +62,31 @@ class GetUsersListPresenterImplementation(GetUsersListPresenterInterface,
             response_dict=response)
 
     def _prepare_response_for_user_details(
-            self, user_dtos, team_dtos, company_dtos):
+            self, user_dtos, team_dtos, company_dtos, role_dtos):
         users = []
         for user_profile_dto in user_dtos:
             user_id = user_profile_dto.user_id
             user_team_dtos = self._get_user_teams(team_dtos, user_id)
-            # user_role_dtos = self._get_user_roles(role_dtos, user_id)
+            user_role_dtos = self._get_user_roles(role_dtos, user_id)
             user_company_dto = self._get_company(company_dtos, user_id)
             user_response_dict = self._convert_user_response_dict(
                 user_profile_dto, user_team_dtos,
-                user_company_dto)
+                user_company_dto, user_role_dtos)
             users.append(user_response_dict)
         return users
 
     def _convert_user_response_dict(
             self, user_profile_dto: UserProfileDTO,
-            user_team_dtos: List[UserTeamDTO],
-            user_company_dto: UserCompanyDTO):
+            user_team_dtos: List[TeamWithUserIdDTO],
+            user_company_dto: UserCompanyDTO,
+            user_role_dtos: List[UserRoleDTO]):
         user_response_dict = {
             "user_id": user_profile_dto.user_id,
             "name": user_profile_dto.name,
             "email": user_profile_dto.email,
             "teams": self._convert_to_teams_dict(user_team_dtos),
-            "company": self._convert_to_company_dict(user_company_dto)
+            "company": self._convert_to_company_dict(user_company_dto),
+            "roles": self._convert_to_roles_dict(user_role_dtos)
         }
         return user_response_dict
 
@@ -110,20 +113,20 @@ class GetUsersListPresenterImplementation(GetUsersListPresenterInterface,
 
     @staticmethod
     def _get_user_teams(
-            team_dtos: List[UserTeamDTO], user_id: str) -> List[UserTeamDTO]:
+            team_dtos: List[TeamWithUserIdDTO], user_id: str) -> List[TeamWithUserIdDTO]:
         user_teams = [
             user_team
             for user_team in team_dtos if user_team.user_id == user_id]
         return user_teams
 
-    # @staticmethod
-    # def _get_user_roles(
-    #         user_role_dtos: List[UserRoleDTO], user_id: str
-    # ) -> List[UserRoleDTO]:
-    #     user_roles = [
-    #         user_role
-    #         for user_role in user_role_dtos if user_role.user_id == user_id]
-    #     return user_roles
+    @staticmethod
+    def _get_user_roles(
+            user_role_dtos: List[UserRoleDTO], user_id: str
+    ) -> List[UserRoleDTO]:
+        user_roles = [
+            user_role
+            for user_role in user_role_dtos if user_role.user_id == user_id]
+        return user_roles
 
     @staticmethod
     def _get_company(
@@ -137,19 +140,19 @@ class GetUsersListPresenterImplementation(GetUsersListPresenterInterface,
 
     @staticmethod
     def _convert_to_teams_dict(
-            team_dtos: List[UserTeamDTO]) -> List[dict]:
+            team_dtos: List[TeamWithUserIdDTO]) -> List[dict]:
         teams = [
             {
                 "team_id": team_dto.team_id, "team_name": team_dto.team_name
             } for team_dto in team_dtos]
         return teams
 
-    # @staticmethod
-    # def _convert_to_roles_dict(
-    #         role_dtos: List[UserRoleDTO]) -> List[dict]:
-    #     roles = [
-    #         {
-    #             "role_id": role_dto.role_id, "role_name": role_dto.name
-    #         } for role_dto in role_dtos
-    #     ]
-    #     return roles
+    @staticmethod
+    def _convert_to_roles_dict(
+            role_dtos: List[UserRoleDTO]) -> List[dict]:
+        roles = [
+            {
+                "role_id": role_dto.role_id, "role_name": role_dto.name
+            } for role_dto in role_dtos
+        ]
+        return roles

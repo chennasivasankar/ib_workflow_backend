@@ -3,7 +3,8 @@ from typing import List, Optional
 
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.interactors.storage_interfaces.dtos import MemberDTO, \
-    TeamMemberLevelDetailsDTO, MemberIdWithSubordinateMemberIdsDTO
+    TeamMemberLevelDetailsDTO, MemberIdWithSubordinateMemberIdsDTO, \
+    RoleNameAndDescriptionDTO, RoleDTO
 
 
 @dataclass
@@ -58,3 +59,30 @@ class CompleteTeamMemberLevelsDetailsDTO:
         TeamMemberLevelIdWithMemberIdsDTO]
     member_id_with_subordinate_member_ids_dtos: List[
         MemberIdWithSubordinateMemberIdsDTO]
+
+
+@dataclass
+class ProjectWithTeamIdsAndRolesDTO:
+    name: str
+    display_id: str
+    team_ids: List[str]
+    roles: List[RoleNameAndDescriptionDTO]
+    description: Optional[str] = None
+    logo_url: Optional[str] = None
+
+
+@dataclass
+class CompleteProjectDetailsDTO:
+    project_id: str
+    name: str
+    team_ids: List[str]
+    roles: List[RoleDTO]
+    description: Optional[str] = None
+    logo_url: Optional[str] = None
+
+
+@dataclass
+class UserIdWithProjectIdAndStatusDTO:
+    user_id: str
+    project_id: str
+    is_exist: bool

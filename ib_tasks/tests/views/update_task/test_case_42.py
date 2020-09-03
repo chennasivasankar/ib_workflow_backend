@@ -1,5 +1,5 @@
 """
-test with valid details
+test with invalid stage ids list
 """
 
 import pytest
@@ -8,12 +8,13 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
     TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, \
-    GoFRoleFactory, FieldRoleFactory, StageFactory
+    GoFRoleFactory, FieldRoleFactory, StageFactory, StagePermittedRolesFactory, \
+    ProjectTaskTemplateFactory
 from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase42UpdateTaskAPITestCase(TestUtils):
+class TestCase41UpdateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -30,10 +31,14 @@ class TestCase42UpdateTaskAPITestCase(TestUtils):
         GoFRoleFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
         StageFactory.reset_sequence()
+        StagePermittedRolesFactory.reset_sequence()
+        ProjectTaskTemplateFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
         task_id = "IBWF-1"
+        stage_id = 1
+        project_id = "project_0"
         template_id = "TEMPLATE-1"
         gof_id = "GOF-1"
         field_id = "FIELD-1"
@@ -56,12 +61,15 @@ class TestCase42UpdateTaskAPITestCase(TestUtils):
             role=user_roles[0], field=field,
             permission_type=PermissionTypes.WRITE.value)
         task_template = TaskTemplateFactory.create(template_id=template_id)
+        ProjectTaskTemplateFactory.create(
+            task_template=task_template, project_id=project_id)
         task_template_gofs = GoFToTaskTemplateFactory.create(
             task_template=task_template, gof=gof)
         task = TaskFactory.create(
             task_display_id=task_id, template_id=task_template.template_id)
         stage = StageFactory.create(
             id=1, task_template_id=task_template.template_id)
+        StagePermittedRolesFactory.create(stage=stage, role_id=user_roles[0])
 
     @pytest.mark.django_db
     def test_case(self, snapshot, mocker):
@@ -77,7 +85,8 @@ class TestCase42UpdateTaskAPITestCase(TestUtils):
             "priority": "HIGH",
             "stage_assignee": {
                 "stage_id": 1,
-                "assignee_id": "assignee_id_1"
+                "assignee_id": "assignee_id_1",
+                "team_id": "team_1"
             },
             "task_gofs": [
                 {

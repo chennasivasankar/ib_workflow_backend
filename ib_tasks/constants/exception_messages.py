@@ -52,6 +52,7 @@ EMPTY_VALUE_FOR_READ_PERMISSIONS = "Read Permission roles shouldn't be empty " \
                                    "" \
                                    "" \
                                    "" \
+                                   "" \
                                    "for these fields ids {}"
 DUPLICATED_VALUES_FOR_READ_PERMISSIONS = "Repeated roles for read " \
                                          "permissions for these fields {}"
@@ -343,8 +344,6 @@ INVALID_TASK_TEMPLATE_DB_ID = (
     "INVALID_TASK_TEMPLATE_DB_ID"
 )
 
-INVALID_PROJECT_ID = ("given invalid project id: {}", "INVALID_PROJECT_ID")
-
 SEARCHABLE_RECORDS_NOT_FOUND = (
     "Something went wrong contact Admin",
     "SEARCHABLE_RECORDS_NOT_FOUND"
@@ -363,4 +362,49 @@ INVALID_USER_ID = (
     "User with id {} doesn't exist",
     "INVALID_USER_ID"
 )
-USER_NOT_IN_ANY_TEAM_OF_PROJECT=("user id with {} is not in any team of project", "USER_NOT_IN_ANY_TEAM_OF_PROJECT")
+USER_NOT_IN_ANY_TEAM_OF_PROJECT = (
+    "user id with {} is not in any team of project",
+    "USER_NOT_IN_ANY_TEAM_OF_PROJECT")
+
+INVALID_PROJECT_TEMPLATE = (
+    "{} is not valid template for given project {}",
+    "INVALID_PROJECT_TEMPLATE"
+)
+FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE = (
+    "filter '{}' not valid for the given value",
+    "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
+)
+
+DUPLICATE_ORDER_FOR_FIELDS_OF_SAME_GOF = \
+    "Given duplicate orders: {} for fields of gof: {}, " \
+    "please send unique orders for fields of same gof"
+
+ORDER_FOR_FIELD_SHOULD_NOT_BE_NEGATIVE = \
+    "Order for Field should not be negative, " \
+    "got negative orders for fields: {}"
+
+TEAMS_NOT_EXISTS_FOR_PROJECT = (
+    "invalid teams = {} for project",
+    "TEAMS_NOT_EXISTS_FOR_PROJECT"
+)
+USERS_NOT_EXISTS_FOR_TEAMS = (
+    "users = {} not exists for teams",
+    "USERS_NOT_EXISTS_FOR_TEAMS"
+)
+
+INVALID_USER = (
+    "invalid user",
+    "INVALID_USER"
+)
+
+USER_NOT_A_MEMBER_OF_PROJECT = (
+    "user not a member of the project",
+    "USER_NOT_A_MEMBER_OF_PROJECT"
+)
+
+
+TASK_DELAY_REASON_NOT_UPDATED = (
+    "Task delay reason not updated for task {} in stage {} with missed due "
+    "date {}",
+    "TASK_DELAY_REASON_NOT_UPDATED"
+)

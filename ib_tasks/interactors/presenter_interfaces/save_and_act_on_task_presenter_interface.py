@@ -2,16 +2,22 @@ import abc
 
 from ib_tasks.exceptions.datetime_custom_exceptions import DueDateHasExpired
 from ib_tasks.exceptions.stage_custom_exceptions import \
-    StageIdsWithInvalidPermissionForAssignee, InvalidStageId
+    StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
+    StageIdsListEmptyException, InvalidStageIdsListException
+from ib_tasks.exceptions.task_custom_exceptions import \
+    TaskDelayReasonIsNotUpdated
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 
 
 class SaveAndActOnATaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_save_and_act_on_task_response(self,
-                                          task_current_stage_details_dto:
-                                          TaskCurrentStageDetailsDTO):
+    def get_save_and_act_on_task_response(
+            self, task_current_stage_details_dto: TaskCurrentStageDetailsDTO,
+            all_tasks_overview_details_dto: AllTasksOverviewDetailsDTO
+    ):
         pass
 
     @abc.abstractmethod
@@ -150,15 +156,11 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_due_date_is_behind_start_date(self, err):
-        pass
-
-    @abc.abstractmethod
     def raise_due_time_has_expired_for_today(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_present_stage_actions(self, error_obj):
+    def raise_exception_for_invalid_present_stage_actions(self, err):
         pass
 
     @abc.abstractmethod
@@ -195,4 +197,23 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_invalid_stage_id(self, err: InvalidStageId):
+        pass
+
+    @abc.abstractmethod
+    def raise_duplicate_same_gof_orders_for_a_gof(self, err):
+        pass
+
+    @abc.abstractmethod
+    def raise_stage_ids_list_empty_exception(
+            self, err: StageIdsListEmptyException):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_stage_ids_list_exception(
+            self, err: InvalidStageIdsListException):
+        pass
+
+    @abc.abstractmethod
+    def raise_task_delay_reason_not_updated(self,
+                                            err: TaskDelayReasonIsNotUpdated):
         pass

@@ -1,26 +1,21 @@
-from dataclasses import dataclass
 from typing import List, Optional
 
-from ib_tasks.adapters.dtos import AssigneeDetailsDTO, UserIdWithTeamIdDTO, \
-    ProjectTeamUserIdsDTO, TeamDetailsWithUserIdDTO, \
-    AssigneeWithTeamDetailsDTO, TeamInfoDTO
+from ib_tasks.adapters.dtos import (
+    AssigneeDetailsDTO, UserIdWithTeamIdDTO, TeamInfoDTO,
+    ProjectTeamUserIdsDTO, TeamDetailsWithUserIdDTO
+)
 from ib_tasks.adapters.service_adapter import get_service_adapter
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidStageIdsForTask
-from ib_tasks.interactors.stages_dtos import StageAssigneeWithTeamDetailsDTO
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
+from ib_tasks.interactors.stages_dtos import StageAssigneeWithTeamDetailsDTO, \
+    AssigneeWithTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
     TaskStageStorageInterface, TaskStageAssigneeIdDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-
-
-@dataclass
-class TaskStageAssigneeDetailsDTO:
-    task_id: int
-    stage_id: str
-    assignee_details: Optional[AssigneeDetailsDTO]
 
 
 class GetStagesAssigneesDetailsInteractor:
@@ -36,8 +31,7 @@ class GetStagesAssigneesDetailsInteractor:
             task_id, stage_ids
         )
         user_id_with_team_id_dtos = self._get_user_id_with_team_id_dtos(
-            stage_assignee_dtos
-        )
+            stage_assignee_dtos)
         project_team_user_ids_dto = ProjectTeamUserIdsDTO(
             project_id=project_id,
             user_id_with_team_id_dtos=user_id_with_team_id_dtos
@@ -101,7 +95,7 @@ class GetStagesAssigneesDetailsInteractor:
         service_interface = get_service_adapter()
         auth_service = service_interface.auth_service
         team_details_with_user_id_dtos = \
-            auth_service.get_team_details_for_given_project_team_user_ids_dto(
+            auth_service.get_user_id_team_details_dtos(
                 project_team_user_ids_dto)
         return team_details_with_user_id_dtos
 
@@ -121,12 +115,11 @@ class GetStagesAssigneesDetailsInteractor:
     ) -> List[UserIdWithTeamIdDTO]:
         user_id_with_team_id_dtos = []
         for stage_assignee_dto in stage_assignee_dtos:
-            is_assignee_id = not stage_assignee_dto.assignee_id
+            is_assignee_id = stage_assignee_dto.assignee_id
             if is_assignee_id:
                 user_id_with_team_id_dto = UserIdWithTeamIdDTO(
                     user_id=stage_assignee_dto.assignee_id,
-                    team_id=stage_assignee_dto.team_id
-                )
+                    team_id=stage_assignee_dto.team_id)
                 user_id_with_team_id_dtos.append(user_id_with_team_id_dto)
         return user_id_with_team_id_dtos
 

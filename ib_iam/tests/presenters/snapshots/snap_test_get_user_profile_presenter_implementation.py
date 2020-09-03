@@ -33,12 +33,12 @@ snapshots['TestGetUserProfilePresenterImplementation.test_prepare_response_for_u
     'profile_pic_url': 'url1',
     'roles': [
         {
-            'role_id': 'PAYMENT1',
-            'role_name': 'payment 1'
+            'role_id': 'ROLE_1',
+            'role_name': 'role 1'
         },
         {
-            'role_id': 'PAYMENT2',
-            'role_name': 'payment 2'
+            'role_id': 'ROLE_2',
+            'role_name': 'role 2'
         }
     ],
     'teams': [

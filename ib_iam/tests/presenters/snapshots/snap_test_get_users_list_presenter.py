@@ -17,6 +17,16 @@ snapshots['TestGetUsersListPresenter.test_response_for_get_users get_users_respo
             },
             'email': 'name0@gmail.com',
             'name': 'name0',
+            'roles': [
+                {
+                    'role_id': 'ROLE_0',
+                    'role_name': 'role 0'
+                },
+                {
+                    'role_id': 'ROLE_1',
+                    'role_name': 'role 1'
+                }
+            ],
             'teams': [
                 {
                     'team_id': 'team0',
@@ -36,6 +46,16 @@ snapshots['TestGetUsersListPresenter.test_response_for_get_users get_users_respo
             },
             'email': 'name1@gmail.com',
             'name': 'name1',
+            'roles': [
+                {
+                    'role_id': 'ROLE_2',
+                    'role_name': 'role 2'
+                },
+                {
+                    'role_id': 'ROLE_3',
+                    'role_name': 'role 3'
+                }
+            ],
             'teams': [
                 {
                     'team_id': 'team2',
@@ -55,6 +75,16 @@ snapshots['TestGetUsersListPresenter.test_response_for_get_users get_users_respo
             },
             'email': 'name2@gmail.com',
             'name': 'name2',
+            'roles': [
+                {
+                    'role_id': 'ROLE_4',
+                    'role_name': 'role 4'
+                },
+                {
+                    'role_id': 'ROLE_5',
+                    'role_name': 'role 5'
+                }
+            ],
             'teams': [
                 {
                     'team_id': 'team4',

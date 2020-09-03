@@ -28,12 +28,12 @@ class TestGetImmediateSuperiorUserId:
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         user_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         immediate_superior_user_id = "21be920b-7b4c-49e7-8adb-41a0c18da848"
-        from ib_iam.tests.factories.models import UserTeamFactory
-        immediate_superior_user_object = UserTeamFactory(
+        from ib_iam.tests.factories.models import TeamUserFactory
+        immediate_superior_user_object = TeamUserFactory(
             team_id=team_id, user_id=immediate_superior_user_id
         )
 
-        UserTeamFactory(
+        TeamUserFactory(
             team_id=team_id, user_id=user_id,
             immediate_superior_team_user=immediate_superior_user_object
         )
@@ -52,8 +52,8 @@ class TestGetImmediateSuperiorUserId:
         # Arrange
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         user_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
-        from ib_iam.tests.factories.models import UserTeamFactory
-        UserTeamFactory(
+        from ib_iam.tests.factories.models import TeamUserFactory
+        TeamUserFactory(
             team_id=team_id, user_id=user_id
         )
 

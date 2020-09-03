@@ -12,15 +12,6 @@ snapshots['TestCase01GetTransitionTemplateAPITestCase.test_case status_code'] = 
 snapshots['TestCase01GetTransitionTemplateAPITestCase.test_case body'] = {
     'group_of_fields': [
         {
-            'enable_add_another': True,
-            'fields': [
-            ],
-            'gof_display_name': 'GOF_DISPLAY_NAME-0',
-            'gof_id': 'gof_1',
-            'max_columns': 2,
-            'order': 0
-        },
-        {
             'enable_add_another': False,
             'fields': [
                 {
@@ -28,6 +19,7 @@ snapshots['TestCase01GetTransitionTemplateAPITestCase.test_case body'] = {
                     'display_name': 'DISPLAY_NAME-1',
                     'error_msg': None,
                     'field_id': 'FIELD_ID-1',
+                    'field_order': 1,
                     'field_type': 'PLAIN_TEXT',
                     'field_values': None,
                     'help_text': None,
@@ -42,6 +34,7 @@ snapshots['TestCase01GetTransitionTemplateAPITestCase.test_case body'] = {
                     'display_name': 'DISPLAY_NAME-5',
                     'error_msg': None,
                     'field_id': 'FIELD_ID-5',
+                    'field_order': 5,
                     'field_type': 'PLAIN_TEXT',
                     'field_values': None,
                     'help_text': None,

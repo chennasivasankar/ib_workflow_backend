@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from ib_tasks.models import Stage, TaskTemplateStatusVariable, StageAction, \
     TaskTemplateInitialStage, TaskStatusVariable, StagePermittedRoles, \
-    TaskStageHistory, UserTaskDelayReason, ProjectTaskTemplate
+    TaskStageHistory, UserTaskDelayReason, ProjectTaskTemplate, TaskStageRp
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.gof import GoF
@@ -36,9 +36,9 @@ admin.site.register(CurrentTaskStage)
 admin.site.register(TaskGoF)
 admin.site.register(TaskGoFField)
 admin.site.register(TaskTemplateGoFs)
-admin.site.register(TaskStageHistory)
 admin.site.register(UserTaskDelayReason)
 admin.site.register(ProjectTaskTemplate)
+admin.site.register(TaskStageRp)
 
 
 class TaskStageInline(admin.StackedInline):
@@ -52,12 +52,13 @@ class TaskGoFInline(admin.StackedInline):
 
 class StagesAdmin(admin.ModelAdmin):
     list_display_links = ('display_name',)
-    list_display = ('id', 'stage_id', 'display_name')
-    list_editable = ('stage_id',)
+    list_display = ('id', 'stage_id', 'display_name', 'stage_color')
+    list_editable = ('stage_id', 'stage_color')
 
 
 class StagesActionsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'stage_name', 'name')
+    list_display = ('id', 'stage_name', 'name', 'button_text', 'button_color')
+    list_editable = ('button_text', 'button_color')
 
     def stage_name(self, obj):
         return "%s" % obj.stage.stage_id
@@ -66,6 +67,12 @@ class StagesActionsAdmin(admin.ModelAdmin):
 class TaskAdmin(admin.ModelAdmin):
     inlines = [TaskStageInline, TaskGoFInline]
 
+
+class TaskStageHistoryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'task', 'stage', 'team_id', 'assignee_id')
+
+
+admin.site.register(TaskStageHistory, TaskStageHistoryAdmin)
 
 admin.site.register(Task, TaskAdmin)
 

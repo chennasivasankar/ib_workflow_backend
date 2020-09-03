@@ -13,6 +13,7 @@ def api_wrapper(*args, **kwargs):
     request_params = kwargs['request_data']
     reason_id = request_params['reason_id']
     reason = request_params['reason']
+    stage_id = request_params['stage_id']
     updated_due_datetime = request_params['updated_due_date_time']
     task_id = request_params['task_id']
 
@@ -20,6 +21,7 @@ def api_wrapper(*args, **kwargs):
         user_id=user.user_id,
         reason_id=reason_id,
         reason=reason,
+        stage_id=stage_id,
         due_date_time=updated_due_datetime
     )
 

@@ -45,10 +45,12 @@ class GetUserProfileInteractor:
             team_user_ids_dtos=team_user_ids_dtos,
             company_id_with_employee_ids_dto=company_id_with_employee_ids_dto)
         user_with_extra_details_dto = self._prepare_complete_user_profile_dto(
-            company_dto=company_dto, role_dtos=role_dtos,
+            company_dto=company_dto,
             team_dtos=team_dtos, team_user_ids_dtos=team_user_ids_dtos,
             user_dtos=user_dtos, user_profile_dto=user_profile_dto,
-            company_id_with_employee_ids_dto=company_id_with_employee_ids_dto)
+            company_id_with_employee_ids_dto=company_id_with_employee_ids_dto,
+            role_dtos=role_dtos
+        )
         return user_with_extra_details_dto
 
     def _get_all_user_dtos(self, company_id_with_employee_ids_dto,
@@ -61,17 +63,17 @@ class GetUserProfileInteractor:
 
     @staticmethod
     def _prepare_complete_user_profile_dto(
-            company_dto, role_dtos, team_dtos, team_user_ids_dtos,
+            company_dto, team_dtos, team_user_ids_dtos, role_dtos,
             user_dtos, user_profile_dto, company_id_with_employee_ids_dto) \
             -> UserWithExtraDetailsDTO:
         user_with_extra_details_dto = UserWithExtraDetailsDTO(
             user_profile_dto=user_profile_dto,
-            role_dtos=role_dtos,
             company_dto=company_dto,
             team_dtos=team_dtos,
             team_user_ids_dto=team_user_ids_dtos,
             user_dtos=user_dtos,
-            company_id_with_employee_ids_dto=company_id_with_employee_ids_dto
+            company_id_with_employee_ids_dto=company_id_with_employee_ids_dto,
+            role_dtos=role_dtos
         )
         return user_with_extra_details_dto
 

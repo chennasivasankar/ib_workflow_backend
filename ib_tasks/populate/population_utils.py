@@ -1,3 +1,5 @@
+from typing import List
+
 from django.db import transaction
 
 from ib_iam.populate.add_project_roles_details import ProjectRoleDetails
@@ -32,10 +34,15 @@ def populate_projects_for_task_templates(spread_sheet_name: str):
 
 
 @transaction.atomic()
-def populate_data(spread_sheet_name: str):
+def populate_project_roles(spread_sheet_name: str):
     project_roles = ProjectRoleDetails()
     project_roles.add_project_roles_details_to_database(
         spread_sheet_name=spread_sheet_name, sub_sheet_name=ROLES_SUB_SHEET)
+
+
+
+@transaction.atomic()
+def populate_data(spread_sheet_name: str):
 
     task_template = PopulateTaskTemplates()
     task_template.populate_task_templates(spread_sheet_name=spread_sheet_name)
@@ -56,7 +63,7 @@ def populate_data(spread_sheet_name: str):
         spread_sheet_name=spread_sheet_name)
 
     fields = PopulateFields()
-    fields.create_fields(spread_sheet_name=spread_sheet_name)
+    fields.create_or_update_fields(spread_sheet_name=spread_sheet_name)
 
     global_constants = PopulateGlobalConstantsToTemplate()
     global_constants.populate_global_constants_to_template(
@@ -125,3 +132,10 @@ def create_tasks_in_elasticsearch_data(task_ids=None):
         interactor.create_task_in_elasticsearch_storage(
             task_id=task_id
         )
+
+
+def delete_task_template_gofs_with_gof_fields(template_ids: List[str]):
+    from ib_tasks.models.task_template_gofs import TaskTemplateGoFs, GoF
+    gof_ids = TaskTemplateGoFs.objects.filter(
+        task_template_id__in=template_ids).values_list('gof_id', flat=True)
+    GoF.objects.filter(gof_id__in=gof_ids).delete()

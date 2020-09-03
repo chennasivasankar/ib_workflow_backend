@@ -2,20 +2,20 @@ from datetime import timedelta, datetime
 
 import factory
 
-from ib_tasks.adapters.dtos import UserDTO
+from ib_tasks.adapters.dtos import UserDTO, AssigneeDetailsDTO
 from ib_tasks.constants.enum import Searchable, Priority
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
-from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
-    import SearchQueryWithPaginationDTO
-from ib_tasks.interactors.get_tasks_to_relevant_search_query import \
-    SearchQueryDTO
+from ib_tasks.interactors.filter_dtos import SearchQueryWithPaginationDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
-from ib_tasks.interactors.stage_dtos import TaskStageDTO
+from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
+    TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
-    StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO,  UserStagesWithPaginationDTO, StageAssigneeDTO
+    StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
+    UserStagesWithPaginationDTO, StageAssigneeDTO, \
+    StageAssigneeWithTeamDetailsDTO, AssigneeWithTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -32,12 +32,12 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeDTO, \
     SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
     TaskDelayParametersDTO, UpdateTaskWithTaskDisplayIdDTO, \
-    SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO
+    SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO, SearchQueryDTO
 from ib_tasks.interactors.task_template_dtos import \
     CreateTransitionChecklistTemplateDTO, \
     CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
 from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, \
-    UserDetailsDTO
+    UserDetailsDTO, TeamInfoDTOFactory
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -267,7 +267,7 @@ class TaskIdWithStageAssigneeDTOFactory(factory.Factory):
 
     task_id = factory.sequence(lambda n: n + 1)
     db_stage_id = factory.Sequence(lambda n: n + 1)
-    assignee_id = factory.sequence(lambda n: "user_{}".format(n))
+    assignee_id = factory.sequence(lambda n: "user_{}".format(n+1))
     team_id = factory.sequence(lambda n: "team_{}".format(n + 1))
 
 
@@ -312,6 +312,7 @@ class TaskDueParametersDTOFactory(factory.Factory):
     user_id = factory.Sequence(lambda n: "user_id_%d" % n)
     due_date_time = datetime.now() + timedelta(days=2)
     reason_id = factory.Iterator([1, 2, 3, 4, -1])
+    stage_id = factory.Sequence(lambda n: "stage_id_%d" % (n + 1))
     reason = "reason"
 
 
@@ -321,6 +322,7 @@ class TaskDelayParametersDTOFactory(factory.Factory):
 
     user_id = factory.Sequence(lambda n: "user_id_%d" % n)
     task_id = factory.sequence(lambda n: (n + 1))
+    stage_id = factory.Sequence(lambda n: (n + 1))
     due_date_time = datetime.now() + timedelta(days=2)
     reason_id = factory.Iterator([1, 2, 3, 4, -1])
     reason = "reason"
@@ -532,9 +534,67 @@ class SearchableDTOFactory(factory.Factory):
     search_type = Searchable.TEAM.value
     id = "team1"
 
+
 class StageIdWithValueDTOFactory(factory.Factory):
     class Meta:
         model = StageIdWithValueDTO
 
     db_stage_id = factory.Sequence(lambda n: n + 1)
     stage_value = factory.Sequence(lambda n: n)
+
+
+class StageAssigneeWithTeamDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = StageAssigneeWithTeamDetailsDTO
+
+    task_stage_id = factory.sequence(lambda counter: counter + 1)
+    stage_id = factory.sequence(lambda counter: counter + 1)
+
+    @factory.lazy_attribute
+    def assignee_details_dto(self):
+        return AssigneeWithTeamDetailsDTOFactory()
+
+
+class AssigneeWithTeamDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = AssigneeWithTeamDetailsDTO
+
+    assignee_id = factory.sequence(
+        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+            counter))
+    name = factory.sequence(lambda counter: "name_{}".format(counter))
+    profile_pic_url = "https://www.google.com/search?q=ibhubs&client=ubuntu" \
+                      "&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved" \
+                      "=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw" \
+                      "=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
+
+    @factory.lazy_attribute
+    def team_info_dto(self):
+        return TeamInfoDTOFactory()
+
+
+class TaskStageAssigneeDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskStageAssigneeDetailsDTO
+
+    task_id = factory.sequence(lambda counter: counter + 1)
+    stage_id = factory.sequence(lambda counter: 'stage_{}'.format(counter + 1))
+
+    @factory.lazy_attribute
+    def assignee_details(self):
+        return AssigneeWithTeamDetailsDTOFactory()
+
+
+class AssigneesDTOFactory(factory.Factory):
+    class Meta:
+        model = AssigneeDetailsDTO
+
+    assignee_id = factory.sequence(
+        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+            counter))
+    name = factory.sequence(lambda counter: "name_{}".format(counter))
+    profile_pic_url = "https://www.google.com/search?q=ibhubs&client=ubuntu" \
+                      "&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved" \
+                      "=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw" \
+                      "=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
+

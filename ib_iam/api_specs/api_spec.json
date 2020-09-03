@@ -147,6 +147,38 @@
         "company_name"
       ]
     },
+    "RoleNameAndDescription": {
+      "type": "object",
+      "properties": {
+        "role_name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "role_name"
+      ]
+    },
+    "Role": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/RoleNameAndDescription"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "role_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "role_id"
+          ]
+        }
+      ]
+    },
     "RoleDetails": {
       "type": "object",
       "properties": {
@@ -200,7 +232,25 @@
         "users": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/CompleteUserDetails"
+            "allOf": [
+              {
+                "$ref": "#/definitions/UserDetails"
+              },
+              {
+                "$ref": "#/definitions/ListOfRoles"
+              },
+              {
+                "$ref": "#/definitions/ListOfTeams"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "company": {
+                    "$ref": "#/definitions/CompanyDetails"
+                  }
+                }
+              }
+            ]
           }
         }
       },
@@ -574,12 +624,20 @@
         "company_id"
       ]
     },
-    "Project": {
+    "ProjectId": {
       "type": "object",
       "properties": {
         "project_id": {
           "type": "string"
-        },
+        }
+      },
+      "required": [
+        "project_id"
+      ]
+    },
+    "ProjectDetails": {
+      "type": "object",
+      "properties": {
         "name": {
           "type": "string"
         },
@@ -591,8 +649,142 @@
         }
       },
       "required": [
-        "project_id",
         "name"
+      ]
+    },
+    "Project": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProjectDetails"
+        },
+        {
+          "$ref": "#/definitions/ProjectId"
+        }
+      ]
+    },
+    "ProjectWithExtraFields": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Project"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "project_display_id": {
+              "type": "string"
+            },
+            "teams": {
+              "$ref": "#/definitions/Teams"
+            },
+            "roles": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Role"
+              }
+            }
+          },
+          "required": [
+            "teams",
+            "roles"
+          ]
+        }
+      ]
+    },
+    "ProjectsWithTotalProjectsCount": {
+      "type": "object",
+      "properties": {
+        "total_projects_count": {
+          "type": "integer"
+        },
+        "projects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ProjectWithExtraFields"
+          }
+        }
+      },
+      "required": [
+        "total_projects_count",
+        "projects"
+      ]
+    },
+    "ProjectWithTeamIds": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProjectDetails"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "team_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "team_ids"
+          ]
+        }
+      ]
+    },
+    "ProjectWithTeamIdsAndRolesForAddProject": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProjectWithTeamIds"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "project_display_id": {
+              "type": "string"
+            },
+            "roles": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RoleNameAndDescription"
+              }
+            }
+          },
+          "required": [
+            "project_display_id",
+            "roles"
+          ]
+        }
+      ]
+    },
+    "ProjectWithTeamIdsAndRolesForUpdateProject": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProjectWithTeamIds"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "roles": {
+              "type": "array",
+              "items": {
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/RoleNameAndDescription"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "role_id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "required": [
+            "roles"
+          ]
+        }
       ]
     },
     "LevelDetails": {
@@ -658,12 +850,6 @@
               },
               "cover_page_url": {
                 "type": "string"
-              },
-              "role_ids": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
               }
             }
           }
@@ -776,6 +962,13 @@
       "description": "team_id to identify a team",
       "type": "string",
       "format": "uuid"
+    },
+    "ProjectIdPathParameter": {
+      "name": "project_id",
+      "in": "path",
+      "required": true,
+      "description": "project_id to identify a project",
+      "type": "string"
     },
     "LevelHierarchyPathParameter": {
       "name": "level_hierarchy",
@@ -978,6 +1171,59 @@
             }
           }
         }
+      }
+    },
+    "AssignUserRolesForGivenProjectBulkParameter": {
+      "name": "AssignUserRolesForGivenProjectBulkParameter",
+      "in": "body",
+      "required": true,
+      "description": "Assign user roles bulk for given project",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "role_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "user_id",
+                "role_ids"
+              ]
+            }
+          }
+        },
+        "required": [
+          "users"
+        ]
+      }
+    },
+    "AddProjectParameter": {
+      "name": "add_project",
+      "in": "body",
+      "required": true,
+      "description": "parameters or details to create/add a project",
+      "schema": {
+        "$ref": "#/definitions/ProjectWithTeamIdsAndRolesForAddProject"
+      }
+    },
+    "UpdateProjectParameter": {
+      "name": "update_project",
+      "in": "body",
+      "description": "details that are to be updated of a project",
+      "schema": {
+        "$ref": "#/definitions/ProjectWithTeamIdsAndRolesForUpdateProject"
       }
     }
   },
@@ -1397,12 +1643,6 @@
               "is_admin": {
                 "type": "boolean"
               },
-              "roles": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/RoleDetails"
-                }
-              },
               "company": {
                 "type": "object",
                 "properties": {
@@ -1423,6 +1663,9 @@
                     "items": {
                       "$ref": "#/definitions/EmployeeDetails"
                     }
+                  },
+                  "roles": {
+                    "$ref": "#/definitions/ListOfRoles"
                   }
                 }
               },
@@ -1435,7 +1678,6 @@
             },
             "required": [
               "is_admin",
-              "roles",
               "teams"
             ]
           }
@@ -2059,10 +2301,97 @@
     "SuccessForGetProjectsResponse": {
       "description": "returns all Projects",
       "schema": {
-        "type": "array",
-        "items": {
-          "$ref": "#/definitions/Project"
+        "$ref": "#/definitions/ProjectsWithTotalProjectsCount"
+      }
+    },
+    "SuccessfullyCreatedForAddProjectResponse": {
+      "description": "Project Created successfully",
+      "schema": {
+        "$ref": "#/definitions/ProjectId"
+      }
+    },
+    "GetListOfUserRolesForGivenProjectSuccessResponse": {
+      "description": "Get specific project details success response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": "array",
+            "items": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "user_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "user_id",
+                    "name"
+                  ]
+                },
+                {
+                  "$ref": "#/definitions/ListOfRoles"
+                }
+              ]
+            }
+          }
         }
+      }
+    },
+    "GetListOfUserRolesForGivenProjectBadRequestResponse": {
+      "description": "Bad request Response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_PROJECT_ID"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "AssignUserRolesForGivenProjectBulkBadRequestResponse": {
+      "description": "Add specific project details bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_PROJECT_ID",
+                  "INVALID_ROLE_IDS_FOR_PROJECT",
+                  "INVALID_USER_IDS_FOR_PROJECT"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
       }
     }
   },
@@ -2891,6 +3220,12 @@
           }
         ],
         "parameters": [
+          {
+            "$ref": "#/parameters/OffsetQueryParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitQueryParameter"
+          }
         ],
         "responses": {
           "200": {
@@ -2919,6 +3254,114 @@
         "responses": {
           "200": {
             "$ref": "#/responses/GetTeamMembersSuccessResponse"
+          }
+        }
+      }
+    },
+    "/project/{project_id}/users/roles/v1/": {
+      "get": {
+        "operationId": "get_list_of_user_roles_for_given_project",
+        "summary": "Get List Of User Roles For Given Project",
+        "description": "Get list of user roles for given project",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetListOfUserRolesForGivenProjectSuccessResponse"
+          },
+          "400": {
+            "$ref": "#/responses/GetListOfUserRolesForGivenProjectBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/project/{project_id}/users/roles/assign/v1/": {
+      "post": {
+        "operationId": "assign_user_roles_for_given_project_bulk",
+        "summary": "Assign User Roles For Given Project Bulk",
+        "description": "Assign user roles for given project bulk",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/AssignUserRolesForGivenProjectBulkParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully assign the user roles for given project bulk"
+          },
+          "400": {
+            "$ref": "#/responses/AssignUserRolesForGivenProjectBulkBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/project/add/v1/": {
+      "post": {
+        "summary": "Add Project",
+        "description": "Adds a project",
+        "operationId": "add_project",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/AddProjectParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Project created Successfully"
+          }
+        }
+      }
+    },
+    "/project/{project_id}/v1/": {
+      "put": {
+        "summary": "Update Project",
+        "description": "Updates project details",
+        "operationId": "update_project_details",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/UpdateProjectParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project details updated Successfully"
           }
         }
       }

@@ -3,6 +3,9 @@ from typing import List, Dict
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
+from ib_tasks.adapters.auth_service import \
+    UsersNotExistsForGivenTeamsException, \
+    TeamsNotExistForGivenProjectException, InvalidProjectIdsException
 from ib_tasks.constants.constants import DATETIME_FORMAT
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskIdException, \
@@ -11,17 +14,94 @@ from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import GetTaskPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import TaskCompleteDetailsDTO
-from ib_tasks.interactors.stages_dtos import StageAssigneeWithTeamDetailsDTO
+from ib_tasks.interactors.stages_dtos import StageAssigneeWithTeamDetailsDTO, \
+    AssigneeWithTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
     import TaskGoFFieldDTO, TaskGoFDTO, TaskDetailsDTO
-from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO, \
-    AssigneeWithTeamDetailsDTO
+from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 
 
 class GetTaskPresenterImplementation(GetTaskPresenterInterface,
                                      HTTPResponseMixin):
+
+    def raise_user_not_a_member_of_project(self):
+        from ib_tasks.constants.exception_messages import \
+            USER_NOT_A_MEMBER_OF_PROJECT
+        response_message = USER_NOT_A_MEMBER_OF_PROJECT[0]
+        data = {
+            "response": response_message,
+            "http_status_code": 404,
+            "res_status": USER_NOT_A_MEMBER_OF_PROJECT[1]
+        }
+        response_object = self.prepare_404_not_found_response(
+            response_dict=data
+        )
+        return response_object
+
+    def raise_invalid_user(self):
+        from ib_tasks.constants.exception_messages import INVALID_USER
+        response_message = INVALID_USER[0]
+        data = {
+            "response": response_message,
+            "http_status_code": 404,
+            "res_status": INVALID_USER[1]
+        }
+        response_object = self.prepare_404_not_found_response(
+            response_dict=data
+        )
+        return response_object
+
+    def raise_invalid_project_id(self, err: InvalidProjectIdsException):
+        from ib_tasks.constants.exception_messages import INVALID_PROJECT_ID
+        project_id = err.project_ids[0]
+        response_message = INVALID_PROJECT_ID[0].format(project_id)
+        data = {
+            "response": response_message,
+            "http_status_code": 404,
+            "res_status": INVALID_PROJECT_ID[1]
+        }
+        response_object = self.prepare_404_not_found_response(
+            response_dict=data
+        )
+        return response_object
+
+    def raise_teams_does_not_exists_for_project(
+            self,
+            err: TeamsNotExistForGivenProjectException
+    ):
+        from ib_tasks.constants.exception_messages import \
+            TEAMS_NOT_EXISTS_FOR_PROJECT
+        team_ids = err.team_ids
+        response_message = TEAMS_NOT_EXISTS_FOR_PROJECT[0].format(team_ids)
+        data = {
+            "response": response_message,
+            "http_status_code": 404,
+            "res_status": TEAMS_NOT_EXISTS_FOR_PROJECT[1]
+        }
+        response_object = self.prepare_404_not_found_response(
+            response_dict=data
+        )
+        return response_object
+
+    def raise_users_not_exist_for_given_teams(
+            self,
+            err: UsersNotExistsForGivenTeamsException
+    ):
+        from ib_tasks.constants.exception_messages import \
+            USERS_NOT_EXISTS_FOR_TEAMS
+        user_ids = err.user_ids
+        response_message = USERS_NOT_EXISTS_FOR_TEAMS[0].format(user_ids)
+        data = {
+            "response": response_message,
+            "http_status_code": 404,
+            "res_status": USERS_NOT_EXISTS_FOR_TEAMS[1]
+        }
+        response_object = self.prepare_404_not_found_response(
+            response_dict=data
+        )
+        return response_object
 
     def raise_invalid_searchable_records_found(self):
         from ib_tasks.constants.exception_messages import \
