@@ -47,6 +47,13 @@ class TestCase03AddUserAPITestCase(TestUtils):
         mock.create_elastic_user_intermediary.return_value = None
         return mock
 
+    @staticmethod
+    def send_verification_email_mock(mocker):
+        mock = mocker.patch(
+            "ib_iam.interactors.send_verify_email_link_interactor.SendVerifyEmailLinkInteractor.send_verification_email"
+        )
+        return mock
+
     @pytest.mark.django_db
     def test_case(self, user_set_up, snapshot, mocker):
         self.elastic_storage_create_elastic_user_mock(mocker=mocker)
@@ -71,6 +78,9 @@ class TestCase03AddUserAPITestCase(TestUtils):
             update_is_email_verified_value_mock
         update_is_email_verified_value_mock = update_is_email_verified_value_mock(
             mocker=mocker)
+        send_verification_email_mock = self.send_verification_email_mock(
+            mocker=mocker)
+        send_verification_email_mock.return_value = None
 
         self.make_api_call(
             body=body, path_params=path_params,

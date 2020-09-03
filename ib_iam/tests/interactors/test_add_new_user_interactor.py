@@ -35,6 +35,13 @@ class TestAddNewUserIneractor:
         return storage
 
     @pytest.fixture
+    def send_verification_email_mock(self, mocker):
+        mock = mocker.patch(
+            "ib_iam.interactors.send_verify_email_link_interactor.SendVerifyEmailLinkInteractor.send_verification_email"
+        )
+        return mock
+
+    @pytest.fixture
     def set_up(self):
         new_user_id = "user1"
         name = "namedurga"
@@ -55,7 +62,8 @@ class TestAddNewUserIneractor:
                user_company_id, add_user_details_dto
 
     def test_create_user_when_user_is_not_admin_then_throw_exception(
-            self, storage_mock, presenter_mock, elastic_storage, set_up):
+            self, storage_mock, presenter_mock, elastic_storage, set_up,
+    ):
         invalid_user_id = "user_1"
         add_user_details_dto = set_up[5]
 
@@ -75,7 +83,8 @@ class TestAddNewUserIneractor:
         presenter_mock.raise_user_is_not_admin_exception.assert_called_once()
 
     def test_validate_name_when_contains_special_characters_and_numbers_throw_exception(
-            self, storage_mock, presenter_mock, elastic_storage, set_up):
+            self, storage_mock, presenter_mock, elastic_storage, set_up
+    ):
         user_id = "user_1"
         invalid_name = "user@1"
         add_user_details_dto = set_up[5]
@@ -99,7 +108,8 @@ class TestAddNewUserIneractor:
             assert_called_once()
 
     def test_validate_name_returns_should_contain_minimum_5_characters_exception(
-            self, storage_mock, presenter_mock, elastic_storage, set_up):
+            self, storage_mock, presenter_mock, elastic_storage, set_up
+    ):
         # Arrange
         user_id = "user_1"
         invalid_name = "user"
@@ -124,7 +134,8 @@ class TestAddNewUserIneractor:
             assert_called_once()
 
     def test_validate_email_and_throw_exception(
-            self, storage_mock, presenter_mock, elastic_storage, set_up):
+            self, storage_mock, presenter_mock, elastic_storage, set_up
+    ):
         # Arrange
         user_id = "user1"
         invalid_email = "123"
@@ -172,7 +183,8 @@ class TestAddNewUserIneractor:
     #     presenter_mock.raise_role_ids_are_invalid.assert_called_once()
 
     def test_validate_teams_and_throw_exception(
-            self, storage_mock, presenter_mock, elastic_storage, set_up):
+            self, storage_mock, presenter_mock, elastic_storage, set_up
+    ):
         # Arrange
         user_id = "user_1"
         add_user_details_dto = set_up[5]
@@ -199,7 +211,8 @@ class TestAddNewUserIneractor:
         presenter_mock.raise_team_ids_are_invalid.assert_called_once()
 
     def test_validate_company_id_and_throw_exception(
-            self, storage_mock, presenter_mock, elastic_storage, set_up):
+            self, storage_mock, presenter_mock, elastic_storage, set_up
+    ):
         # Arrange
         user_id = "user_1"
         add_user_details_dto = set_up[5]
@@ -230,7 +243,8 @@ class TestAddNewUserIneractor:
 
     def test_create_user_account_with_email_already_exist_throws_exception(
             self, storage_mock, presenter_mock, mocker, elastic_storage,
-            set_up):
+            set_up
+    ):
         # Arrange
         user_id = "user_1"
         add_user_details_dto = set_up[5]
@@ -307,7 +321,8 @@ class TestAddNewUserIneractor:
 
     def test_create_ib_user_with_given_valid_details(
             self, storage_mock, presenter_mock, mocker, elastic_storage,
-            set_up):
+            set_up, send_verification_email_mock
+    ):
         # Arrange
         user_id = "user_1"
         new_user_id = "user1"
@@ -333,6 +348,7 @@ class TestAddNewUserIneractor:
         user_profile_adapter_mock = \
             create_user_profile_adapter_mock(mocker=mocker)
         user_profile_adapter_mock.return_value = user_profile_dto
+        send_verification_email_mock.return_value = None
 
         # Act
         interactor.add_new_user_wrapper(
@@ -350,7 +366,8 @@ class TestAddNewUserIneractor:
 
     def test_add_new_user_when_company_is_none_adds_user_successfully(
             self, storage_mock, presenter_mock, mocker, elastic_storage,
-            set_up):
+            set_up, send_verification_email_mock
+    ):
         # Arrange
         user_id = "user_1"
         new_user_id = "user1"
@@ -377,6 +394,7 @@ class TestAddNewUserIneractor:
         update_is_email_verified_value_mock = update_is_email_verified_value_mock(
             mocker=mocker)
         update_is_email_verified_value_mock.return_value = None
+        send_verification_email_mock.return_value = None
 
         # Act
         interactor.add_new_user_wrapper(
@@ -401,7 +419,8 @@ class TestAddNewUserIneractor:
 
     def test_add_new_user(
             self, storage_mock, presenter_mock, mocker, elastic_storage,
-            set_up):
+            set_up, send_verification_email_mock
+    ):
         # Arrange
         user_id = "user_1"
         new_user_id = "user1"
@@ -427,6 +446,7 @@ class TestAddNewUserIneractor:
         update_is_email_verified_value_mock = update_is_email_verified_value_mock(
             mocker=mocker)
         update_is_email_verified_value_mock.return_value = None
+        send_verification_email_mock.return_value = None
 
         # Act
         interactor.add_new_user_wrapper(

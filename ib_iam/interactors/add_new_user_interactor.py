@@ -73,12 +73,25 @@ class AddNewUserInteractor(ValidationMixin):
             user_id=new_user_id, team_ids=team_ids)
         # self.user_storage.add_roles_to_the_user(
         #     user_id=new_user_id, role_ids=role_obj_ids)
+        self._create_elastic_user(user_id=new_user_id, name=name)
+        self._send_email_verify_link(
+            user_id=new_user_id, name=name, email=email)
+
+    def _create_elastic_user(self, user_id: str, name: str):
         elastic_user_id = self.elastic_storage.create_elastic_user(
-            user_id=new_user_id, name=name
+            user_id=user_id, name=name
         )
         self.elastic_storage.create_elastic_user_intermediary(
-            elastic_user_id=elastic_user_id, user_id=new_user_id
+            elastic_user_id=elastic_user_id, user_id=user_id
         )
+
+    @staticmethod
+    def _send_email_verify_link(user_id: str, name: str, email: str):
+        from ib_iam.interactors.send_verify_email_link_interactor import \
+            SendVerifyEmailLinkInteractor
+        interactor = SendVerifyEmailLinkInteractor()
+        interactor.send_verification_email(
+            user_id=user_id, name=name, email=email)
 
     def _validate_add_new_user_details(
             self, user_id,
