@@ -25,9 +25,11 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee, DuplicateStageIds, \
-    InvalidDbStageIdsListException, InvalidStageId
+    InvalidDbStageIdsListException, InvalidStageId, StageIdsListEmptyException, \
+    InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId, \
+    TaskDelayReasonIsNotUpdated
 from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
     UpdateTaskInteractor
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
@@ -106,6 +108,8 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter.raise_due_date_has_expired(err)
         except DueTimeHasExpiredForToday as err:
             return presenter.raise_due_time_has_expired_for_today(err)
+        except TaskDelayReasonIsNotUpdated as err:
+            return presenter.raise_task_delay_reason_not_updated(err)
         except DuplicateSameGoFOrderForAGoF as err:
             return presenter.raise_duplicate_same_gof_orders_for_a_gof(err)
         except InvalidGoFIds as err:
@@ -197,6 +201,10 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter. \
                 raise_stage_ids_with_invalid_permission_for_assignee_exception(
                 err)
+        except StageIdsListEmptyException as err:
+            return presenter.raise_stage_ids_list_empty_exception(err)
+        except InvalidStageIdsListException as err:
+            return presenter.raise_invalid_stage_ids_list_exception(err)
 
     def _prepare_save_and_act_response(
             self, presenter, task_dto: SaveAndActOnTaskWithTaskDisplayIdDTO):

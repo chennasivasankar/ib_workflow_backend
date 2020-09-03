@@ -4,6 +4,8 @@ from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.presenter_interfaces. \
     get_task_templates_presenter_interface import \
     GetTaskTemplatesPresenterInterface, CompleteTaskTemplatesDTO
+from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+    ActionWithStageIdDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     UserFieldPermissionDTO, FieldPermissionDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
@@ -75,23 +77,25 @@ class GetTaskTemplatesInteractor:
             get_project_id_with_task_template_id_dtos()
         stage_id_with_template_id_dtos = \
             self.task_storage.get_initial_stage_id_with_template_id_dtos()
-        stage_ids = self._get_stage_ids(
+        action_with_stage_id_dtos = self._get_action_with_stage_id_dtos(
             stage_id_with_template_id_dtos=stage_id_with_template_id_dtos)
-        action_with_stage_id_dtos = \
-            self.task_storage.get_actions_for_given_stage_ids_in_dtos(
-                stage_ids=stage_ids)
         gof_ids_permitted_for_user = \
             self.gof_storage.get_gof_ids_with_read_permission_for_user(
                 user_roles=user_roles)
-        gofs_of_task_templates_dtos = self.task_template_storage. \
-            get_gofs_to_templates_from_permitted_gofs(
-                gof_ids=gof_ids_permitted_for_user)
-        gofs_details_dtos = \
-            self.gof_storage.get_gofs_details_dtos_for_given_gof_ids(
-                gof_ids=gof_ids_permitted_for_user)
         field_with_permissions_dtos = \
             self._get_field_with_permissions_of_gofs_in_dtos(
                 gof_ids=gof_ids_permitted_for_user, user_roles=user_roles)
+
+        gof_ids_with_at_least_one_field = \
+            self._get_gof_ids_having_at_least_one_field(
+                gof_ids=gof_ids_permitted_for_user,
+                field_with_permissions_dtos=field_with_permissions_dtos)
+        gofs_of_task_templates_dtos = self.task_template_storage. \
+            get_gofs_to_templates_from_permitted_gofs(
+                gof_ids=gof_ids_with_at_least_one_field)
+        gofs_details_dtos = \
+            self.gof_storage.get_gofs_details_dtos_for_given_gof_ids(
+                gof_ids=gof_ids_with_at_least_one_field)
 
         return CompleteTaskTemplatesDTO(
             task_template_dtos=task_templates_dtos,
@@ -103,16 +107,31 @@ class GetTaskTemplatesInteractor:
             gofs_of_task_templates_dtos=gofs_of_task_templates_dtos,
             field_with_permissions_dtos=field_with_permissions_dtos)
 
+    def _get_action_with_stage_id_dtos(
+            self,
+            stage_id_with_template_id_dtos: List[StageIdWithTemplateIdDTO]
+    ) -> List[ActionWithStageIdDTO]:
+        stage_ids = self._get_stage_ids(
+            stage_id_with_template_id_dtos=stage_id_with_template_id_dtos)
+        action_with_stage_id_dtos = \
+            self.task_storage.get_actions_for_given_stage_ids_in_dtos(
+                stage_ids=stage_ids)
+        return action_with_stage_id_dtos
+
     def _get_field_with_permissions_of_gofs_in_dtos(
             self, gof_ids: List[str],
             user_roles: List[str]) -> List[FieldPermissionDTO]:
         field_dtos = \
             self.field_storage.get_fields_of_gofs_in_dtos(gof_ids=gof_ids)
+        field_dtos = \
+            self._remove_gof_ids_from_gof_selector_if_user_having_no_gof_read_permission(
+                field_dtos=field_dtos,
+                gof_ids_having_user_read_permissions=gof_ids)
+
         field_ids = self._get_field_ids(field_dtos=field_dtos)
         user_field_permission_dtos = self.field_storage. \
             get_user_field_permission_dtos(
-                roles=user_roles, field_ids=field_ids
-            )
+                roles=user_roles, field_ids=field_ids)
         user_field_permission_dtos_dict = \
             self._make_user_field_permission_dtos_dict(
                 user_field_permission_dtos=user_field_permission_dtos
@@ -131,6 +150,24 @@ class GetTaskTemplatesInteractor:
                     )
                 field_permission_dtos.append(field_permission_dto)
         return field_permission_dtos
+
+    def _remove_gof_ids_from_gof_selector_if_user_having_no_gof_read_permission(
+            self, field_dtos: List[FieldDTO],
+            gof_ids_having_user_read_permissions: List[str]) -> List[FieldDTO]:
+        import json
+        from ib_tasks.constants.enum import FieldTypes
+        for field_dto in field_dtos:
+            is_field_is_gof_selector = \
+                field_dto.field_type == FieldTypes.GOF_SELECTOR.value
+            if is_field_is_gof_selector:
+                field_values = json.loads(field_dto.field_values)
+                gof_details = \
+                    self._get_gof_details_with_user_permitted_gof_ids(
+                        gof_details_dicts=field_values,
+                        gof_ids_having_user_read_permissions=
+                        gof_ids_having_user_read_permissions)
+                field_dto.field_values = json.dumps(gof_details)
+        return field_dtos
 
     @staticmethod
     def _get_field_with_permissions_dto(
@@ -193,3 +230,41 @@ class GetTaskTemplatesInteractor:
             for stage_id_with_template_id_dto in stage_id_with_template_id_dtos
         ]
         return stage_ids
+
+    @staticmethod
+    def _get_gof_ids_having_at_least_one_field(
+            gof_ids: List[str],
+            field_with_permissions_dtos: List[FieldPermissionDTO]) -> List[str]:
+        field_dtos = [
+            field_with_permissions_dto.field_dto
+            for field_with_permissions_dto in field_with_permissions_dtos
+        ]
+
+        gof_ids_of_fields = [
+            field_dto.gof_id for field_dto in field_dtos
+        ]
+        gof_ids_having_at_least_one_field = [
+            gof_id for gof_id in gof_ids if gof_id in gof_ids_of_fields
+        ]
+
+        return gof_ids_having_at_least_one_field
+
+    @staticmethod
+    def _get_gof_details_with_user_permitted_gof_ids(
+            gof_details_dicts: List[Dict],
+            gof_ids_having_user_read_permissions: List[str]) -> List[Dict]:
+        for gof_details_dict in gof_details_dicts:
+            gof_ids = gof_details_dict["gof_ids"]
+            gof_ids_of_gof_selector_having_user_read_permission = [
+                gof_id for gof_id in gof_ids
+                if gof_id in gof_ids_having_user_read_permissions
+            ]
+            is_user_has_no_read_permission_for_gof_ids = \
+                not gof_ids_of_gof_selector_having_user_read_permission
+            if is_user_has_no_read_permission_for_gof_ids:
+                gof_details_dicts.remove(gof_details_dict)
+                continue
+
+            gof_details_dict["gof_ids"] = \
+                gof_ids_of_gof_selector_having_user_read_permission
+        return gof_details_dicts

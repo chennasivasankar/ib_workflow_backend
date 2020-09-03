@@ -11,7 +11,7 @@ from ib_iam.tests.common_fixtures.adapters.user_service_mocks import (
 )
 from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
 from ib_iam.tests.factories.models import (
-    TeamFactory, UserDetailsFactory, UserTeamFactory
+    TeamFactory, UserDetailsFactory, TeamUserFactory
 )
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
@@ -52,7 +52,7 @@ class TestCase01GetListOfTeamsAPITestCase(TestUtils):
         user_obj = api_user
         UserDetailsFactory.reset_sequence(1)
         TeamFactory.reset_sequence(1)
-        UserTeamFactory.reset_sequence(1)
+        TeamUserFactory.reset_sequence(1)
         UserDetailsFactory.create(user_id=user_obj.user_id, is_admin=True)
         teams = [
             {
@@ -83,4 +83,4 @@ class TestCase01GetListOfTeamsAPITestCase(TestUtils):
         for team in teams:
             team_object = TeamFactory(team_id=team["team_id"])
             for user_id in team["user_ids"]:
-                UserTeamFactory(team=team_object, user_id=user_id)
+                TeamUserFactory(team=team_object, user_id=user_id)

@@ -28,3 +28,12 @@ snapshots['TestGetActionDetails.test_get_permitted_action_ids_given_stage_ids re
 
 snapshots['TestGetActionDetails.test_get_action_details_when_no_actions response'] = [
 ]
+
+snapshots['TestGetActionDetails.test_get_permitted_action_ids_for_given_task_stages response'] = [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+]

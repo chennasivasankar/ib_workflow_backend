@@ -31,7 +31,7 @@ class TestCase01UpdateAssigneesOfDiffStagesForATaskAPITestCase(TestUtils):
         TaskStageHistoryModelFactory.reset_sequence()
         UserDetailsFactory.create(user_id=user_id, is_admin=True)
         role_obj = ProjectRoleFactory(role_id="FIN_PAYMENT_REQUESTER")
-        UserRoleFactory(user_id=user_id, role=role_obj)
+        UserRoleFactory(user_id=user_id, project_role=role_obj)
         task_obj = TaskFactory(template_id="task_template_id_1")
         stage_objs = StageModelFactory.create_batch(2,
                                                     task_template_id=
@@ -39,8 +39,9 @@ class TestCase01UpdateAssigneesOfDiffStagesForATaskAPITestCase(TestUtils):
         StagePermittedRolesFactory(stage=stage_objs[0])
         StagePermittedRolesFactory(stage=stage_objs[1])
         task_stage_obj_1 = TaskStageHistoryModelFactory(task=task_obj,
-                                                        stage=stage_objs[0])
-        task_stage_obj_1 = TaskStageHistoryModelFactory(task=task_obj,
+                                                        stage=stage_objs[0],
+                                                        assignee_id="assignee_id_1")
+        task_stage_obj_2 = TaskStageHistoryModelFactory(task=task_obj,
                                                         stage=stage_objs[1])
         return user_id
 
@@ -55,3 +56,10 @@ class TestCase01UpdateAssigneesOfDiffStagesForATaskAPITestCase(TestUtils):
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
+
+        from ib_tasks.models import TaskStageHistory
+        task_stage_objs = list(TaskStageHistory.objects.filter(
+            task_id=1).values('task_id', 'stage_id', 'assignee_id',
+                              'left_at'))
+
+        snapshot.assert_match(task_stage_objs, "task_stage_objs")
