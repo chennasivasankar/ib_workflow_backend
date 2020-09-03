@@ -47,7 +47,7 @@ class TestGetFilterInteractor:
         # Arrange
         user_id = '1'
         project_id = "FIN_MAN"
-        from ib_tasks.interactors.filter_interactor import FilterInteractor
+        from ib_tasks.interactors.filters.filter_interactor import FilterInteractor
         project_ids_mock.return_value = []
         interactor = FilterInteractor(
             filter_storage=filter_storage, presenter=presenter,
@@ -70,7 +70,7 @@ class TestGetFilterInteractor:
         # Arrange
         user_id = '1'
         project_id = "FIN_MAN"
-        from ib_tasks.interactors.filter_interactor import FilterInteractor
+        from ib_tasks.interactors.filters.filter_interactor import FilterInteractor
         project_ids_mock.return_value = [project_id]
         user_project_mock.return_value = False
         interactor = FilterInteractor(
@@ -108,7 +108,7 @@ class TestGetFilterInteractor:
         filter_storage.get_filters_dto_to_user.return_value = filters
         filter_ids = [1, 2]
         filter_storage.get_conditions_to_filters.return_value = conditions
-        from ib_tasks.interactors.filter_interactor import FilterInteractor
+        from ib_tasks.interactors.filters.filter_interactor import FilterInteractor
         interactor = FilterInteractor(
             filter_storage=filter_storage, presenter=presenter,
             field_storage=field_storage
@@ -140,7 +140,7 @@ class TestGetFilterInteractor:
         filter_storage.get_filters_dto_to_user.return_value = []
         filter_ids = []
         filter_storage.get_conditions_to_filters.return_value = []
-        from ib_tasks.interactors.filter_interactor import FilterInteractor
+        from ib_tasks.interactors.filters.filter_interactor import FilterInteractor
         interactor = FilterInteractor(
             filter_storage=filter_storage, presenter=presenter,
             field_storage=field_storage
@@ -163,7 +163,7 @@ class TestGetFilterInteractor:
     def test_update_filter_status_raises_invalid_filter_exception(
             self, filter_storage, presenter, field_storage):
         # Arrange
-        from ib_tasks.interactors.filter_interactor import FilterInteractor
+        from ib_tasks.interactors.filters.filter_interactor import FilterInteractor
         interactor = FilterInteractor(
             filter_storage=filter_storage, presenter=presenter, field_storage=field_storage
         )
@@ -185,7 +185,7 @@ class TestGetFilterInteractor:
     def test_raises_invalid_user_permission(
             self, filter_storage, presenter, field_storage):
         # Arrange
-        from ib_tasks.interactors.filter_interactor import FilterInteractor
+        from ib_tasks.interactors.filters.filter_interactor import FilterInteractor
         interactor = FilterInteractor(
             filter_storage=filter_storage, presenter=presenter, field_storage=field_storage
         )
@@ -209,7 +209,7 @@ class TestGetFilterInteractor:
     def test_returns_update_status(
             self, filter_storage, presenter, field_storage):
         # Arrange
-        from ib_tasks.interactors.filter_interactor import FilterInteractor
+        from ib_tasks.interactors.filters.filter_interactor import FilterInteractor
         interactor = FilterInteractor(
             filter_storage=filter_storage, presenter=presenter,
             field_storage=field_storage
@@ -234,7 +234,7 @@ class TestGetFilterInteractor:
     def test_returns_disabled_update_status(
             self, filter_storage, presenter, field_storage):
         # Arrange
-        from ib_tasks.interactors.filter_interactor import FilterInteractor
+        from ib_tasks.interactors.filters.filter_interactor import FilterInteractor
         interactor = FilterInteractor(
             filter_storage=filter_storage, presenter=presenter, field_storage=field_storage
         )

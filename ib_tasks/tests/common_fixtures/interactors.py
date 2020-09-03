@@ -30,8 +30,7 @@ def prepare_mock_for_next_stage_random_assignees(mocker):
 
 
 def prepare_get_field_ids_having_write_permission_for_user(mocker, field_ids):
-    path = "ib_tasks.interactors.user_role_validation_interactor." \
-           "UserRoleValidationInteractor.get_field_ids_having_write_permission_for_user"
+    path = "ib_tasks.adapters.roles_service.RolesService.get_user_role_ids_based_on_project"
     mock_obj = mocker.patch(path)
     mock_obj.return_value = field_ids
     return mock_obj

@@ -12,7 +12,7 @@ def api_wrapper(*args, **kwargs):
     filter_id = request_dict['filter_id']
     action = request_dict['action']
 
-    from ib_tasks.interactors.filter_interactor \
+    from ib_tasks.interactors.filters.filter_interactor \
         import FilterInteractor
     from ib_tasks.storages.filter_storage_implementation \
         import FilterStorageImplementation

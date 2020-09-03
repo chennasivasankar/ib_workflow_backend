@@ -11,7 +11,7 @@ def api_wrapper(*args, **kwargs):
     params = kwargs['query_params']
     project_id = params['project_id']
 
-    from ib_tasks.interactors.filter_interactor \
+    from ib_tasks.interactors.filters.filter_interactor \
         import FilterInteractor
     from ib_tasks.storages.filter_storage_implementation \
         import FilterStorageImplementation
