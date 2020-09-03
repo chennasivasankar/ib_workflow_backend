@@ -172,20 +172,66 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
         return member_id_with_subordinate_member_ids_dto
 
     def validate_team_id(self, team_id: str) -> Optional[InvalidTeamId]:
-        pass
+        from ib_iam.models import Team
+        team_objects = Team.objects.filter(team_id=team_id)
+        is_team_objects_not_exists = not team_objects.exists()
+        if is_team_objects_not_exists:
+            raise InvalidTeamId
+        return
 
     def get_team_member_level_ids(self, team_id: str) -> List[str]:
-        pass
+        from ib_iam.models import TeamMemberLevel
+        team_member_level_ids = TeamMemberLevel.objects.filter(
+            team_id=team_id
+        ).values_list(
+            "id", flat=True
+        )
+        team_member_level_ids = list(map(str, list(team_member_level_ids)))
+        return team_member_level_ids
 
     def get_team_member_ids(self, team_id: str) -> List[str]:
-        pass
+        from ib_iam.models import TeamUser
+        user_ids = TeamUser.objects.filter(
+            team_id=team_id
+        ).values_list(
+            "user_id", flat=True
+        )
+        user_ids = list(map(str, list(user_ids)))
+        return user_ids
 
     def validate_level_hierarchy_of_team(
             self, team_id: str, level_hierarchy: int
     ) -> Optional[InvalidLevelHierarchyOfTeam]:
-        pass
+        from ib_iam.models import TeamMemberLevel
+        team_member_level_objects = TeamMemberLevel.objects.filter(
+            team_id=team_id, level_hierarchy=level_hierarchy
+        )
+        is_team_member_level_objects_not_exists = \
+            not team_member_level_objects.exists()
+        if is_team_member_level_objects_not_exists:
+            raise InvalidLevelHierarchyOfTeam
+        return
 
     def validate_users_belong_to_given_level_hierarchy_in_a_team(
             self, team_id: str, user_ids: List[str], level_hierarchy: int
     ) -> Optional[UsersNotBelongToLevel]:
-        pass
+        from ib_iam.models import TeamMemberLevel, TeamUser
+        team_member_level_object = TeamMemberLevel.objects.get(
+            team_id=team_id, level_hierarchy=level_hierarchy
+        )
+        user_ids_in_database = TeamUser.objects.filter(
+            team_id=team_id, team_member_level=team_member_level_object
+        ).values_list(
+            "user_id", flat=True
+        )
+
+        user_ids_not_found = [
+            user_id
+            for user_id in user_ids if user_id not in user_ids_in_database
+        ]
+        if user_ids_not_found:
+            raise UsersNotBelongToLevel(
+                user_ids=user_ids_not_found,
+                level_hierarchy=level_hierarchy
+            )
+        return
