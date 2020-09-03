@@ -77,11 +77,11 @@ class UserRoleValidationInteractor:
             user_id, project_ids)
         task_project_roles = self._get_task_project_roles_dtos(user_role_ids,
                                                                task_project_dtos)
-        field_ids_having_write_permission_for_user = \
+        field_ids_having_permission_for_user = \
             field_storage.get_field_ids_permissions_for_user_in_projects(
                 task_project_roles=task_project_roles, field_ids=field_ids)
 
-        return field_ids_having_write_permission_for_user
+        return field_ids_having_permission_for_user
 
     def check_is_user_has_read_permission_for_field(
             self, user_id: str, field_id: str,
