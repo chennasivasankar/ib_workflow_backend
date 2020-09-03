@@ -1,6 +1,5 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
-
 from .validator_class import ValidatorClass
 
 
@@ -16,8 +15,8 @@ def api_wrapper(*args, **kwargs):
         TeamMemberLevelIdWithMemberIdsDTOFactory
     team_member_level_id_with_member_ids_dtos = [
         TeamMemberLevelIdWithMemberIdsDTOFactory(
-            team_member_level_id=member_dict["team_member_level_id"],
-            member_ids=member_dict["member_ids"]
+            team_member_level_id=str(member_dict["team_member_level_id"]),
+            member_ids=list(map(str, member_dict["member_ids"]))
         )
         for member_dict in members
     ]

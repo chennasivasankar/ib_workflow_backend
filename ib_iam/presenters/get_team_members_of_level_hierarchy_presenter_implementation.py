@@ -22,7 +22,7 @@ INVALID_LEVEL_HIERARCHY = (
 class GetTeamMembersOfLevelHierarchyPresenterImplementation(
     GetTeamMembersOfLevelHierarchyPresenterInterface, HTTPResponseMixin
 ):
-
+     
     def prepare_success_response_for_get_team_members_of_level_hierarchy(
             self, member_dtos: List[MemberDTO],
             user_profile_dtos: List[UserProfileDTO]

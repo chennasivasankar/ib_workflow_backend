@@ -10,7 +10,7 @@ INVALID_TEAM_ID = (
 )
 
 TEAM_MEMBER_LEVEL_IDS_NOT_FOUND = (
-    "Please send valid team member level ids, invalid team member level ids are {team_member_level_ids},"
+    "Please send valid team member level ids, invalid team member level ids are {team_member_level_ids}",
     "TEAM_MEMBER_LEVEL_IDS_NOT_FOUND"
 )
 
