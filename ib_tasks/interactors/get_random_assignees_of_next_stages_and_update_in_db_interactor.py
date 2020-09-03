@@ -42,7 +42,7 @@ class GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
                 task_stage_storage=self.task_stage_storage)
         stage_ids_excluding_virtual_stages = self.stage_storage. \
             get_stage_ids_excluding_virtual_stages(stage_ids)
-        self._create_task_stage_history_records_for_virtua_stages(
+        self._create_task_stage_history_records_for_virtual_stages(
             task_id=task_id, stage_ids_excluding_virtual_stages=
             stage_ids_excluding_virtual_stages, stage_ids=stage_ids)
         stage_with_user_details_and_team_details_dto = \
@@ -79,7 +79,7 @@ class GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
             task_id_with_stage_assignees_dto=task_id_with_stage_assignees_dto)
         return
 
-    def _create_task_stage_history_records_for_virtua_stages(
+    def _create_task_stage_history_records_for_virtual_stages(
             self, task_id: int, stage_ids_excluding_virtual_stages: List[str],
             stage_ids: List[str]):
         stage_ids_having_virtual_stages = \

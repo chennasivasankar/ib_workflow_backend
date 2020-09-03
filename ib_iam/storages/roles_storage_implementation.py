@@ -10,14 +10,12 @@ class RolesStorageImplementation(RolesStorageInterface):
 
     def create_roles(self, role_dtos: List[RoleDTO], project_id: str):
         from ib_iam.models import ProjectRole
-        from ib_iam.models import Project
-        # TODO optimize the db hits
-        project = Project.objects.get(project_id=project_id)
+        # TODO If break the entire project then need to change the back step
         role_objects = [
             ProjectRole(
                 role_id=role_dto.role_id, name=role_dto.name,
                 description=role_dto.description,
-                project=project
+                project_id=project_id
             )
             for role_dto in role_dtos]
         ProjectRole.objects.bulk_create(role_objects)

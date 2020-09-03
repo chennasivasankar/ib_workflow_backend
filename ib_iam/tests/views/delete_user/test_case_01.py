@@ -22,7 +22,7 @@ class TestCase01DeleteUserAPITestCase(TestUtils):
     @pytest.fixture
     def set_up(self):
         from ib_iam.tests.factories.models import UserDetailsFactory, \
-            CompanyFactory, UserRoleFactory, UserTeamFactory
+            CompanyFactory, UserRoleFactory, TeamUserFactory
         user_id = "413642ff-1272-4990-b878-6607a5e02bc2"
         delete_user_id = "413642ff-1272-4990-b878-6607a5e02bc1"
         UserDetailsFactory.create(user_id=user_id, is_admin=True)
@@ -31,10 +31,10 @@ class TestCase01DeleteUserAPITestCase(TestUtils):
         UserDetailsFactory.create(user_id=delete_user_id, company=company)
         from ib_iam.tests.factories.models import ProjectRoleFactory
         [UserRoleFactory.create(
-            user_id=delete_user_id, role=ProjectRoleFactory.create()
+            user_id=delete_user_id, project_role=ProjectRoleFactory.create()
         ) for _ in range(4)]
         from ib_iam.tests.factories.models import TeamFactory
-        [UserTeamFactory.create(
+        [TeamUserFactory.create(
             user_id=delete_user_id, team=TeamFactory.create()) for _ in
             range(4)]
         return delete_user_id, user_id

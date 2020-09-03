@@ -1,5 +1,5 @@
 """
-get task templates when user has no field read/write permissions returns empty fields
+get task templates when user has no field read/write permissions returns task templates without those gofs
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils

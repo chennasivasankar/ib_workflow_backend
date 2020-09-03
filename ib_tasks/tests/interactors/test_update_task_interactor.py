@@ -78,6 +78,20 @@ class TestUpdateTaskInteractor:
         return mock.create_autospec(ElasticSearchStorageInterface)
 
     @pytest.fixture
+    def action_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces \
+            .action_storage_interface import \
+            ActionStorageInterface
+        return mock.create_autospec(ActionStorageInterface)
+
+    @pytest.fixture
+    def task_stage_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces \
+            .task_stage_storage_interface import \
+            TaskStageStorageInterface
+        return mock.create_autospec(TaskStageStorageInterface)
+
+    @pytest.fixture
     def presenter_mock(self):
         from ib_tasks.interactors.presenter_interfaces.update_task_presenter \
             import UpdateTaskPresenterInterface
@@ -103,11 +117,21 @@ class TestUpdateTaskInteractor:
                ".update_task_stage_assignees"
         return mocker.patch(path)
 
+    @pytest.fixture
+    def get_filtered_tasks_overview_for_user_mock(self, mocker):
+        path = \
+            "ib_tasks.interactors" \
+            ".get_all_task_overview_with_filters_and_searches_for_user" \
+            ".GetTasksOverviewForUserInteractor" \
+            ".get_filtered_tasks_overview_for_user"
+        return mocker.patch(path)
+
     def test_with_invalid_task_display_id(
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
         given_task_display_id = "task_1"
@@ -119,7 +143,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_invalid_task_display_id.return_value = mock_object
 
@@ -141,7 +167,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
         given_task_display_id = "task_1"
@@ -157,7 +184,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_invalid_task_id.return_value = mock_object
 
@@ -178,7 +207,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
         given_task_display_id = "task_1"
@@ -197,7 +227,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock)
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
         presenter_mock.raise_invalid_stage_id.return_value = mock_object
 
         # Act
@@ -217,7 +249,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
         given_due_time = "12-12-12"
@@ -238,7 +271,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_invalid_due_time_format \
             .return_value = mock_object
@@ -259,9 +294,11 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        given_start_date = datetime.date(2020, 8, 20)
         given_due_date = datetime.date(2020, 9, 1)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_id = 1
@@ -271,13 +308,15 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            due_date=given_due_date)
+            start_date=given_start_date, due_date=given_due_date)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_due_date_has_expired \
             .return_value = mock_object
@@ -297,7 +336,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
         given_start_date = datetime.date(2020, 9, 9)
@@ -317,7 +357,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_start_date_is_ahead_of_due_date \
             .return_value = mock_object
@@ -342,7 +384,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
         given_start_date = datetime.date(2020, 9, 1)
@@ -365,7 +408,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_due_time_has_expired_for_today \
             .return_value = mock_object
@@ -387,7 +432,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -395,7 +441,7 @@ class TestUpdateTaskInteractor:
         given_same_gof_order = 1
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=3, gof_id=given_gof_id, same_gof_order=given_same_gof_order)
-        perform_base_validations_for_template_gofs_and_fields_mock\
+        perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = \
             DuplicateSameGoFOrderForAGoF(given_gof_id, [given_same_gof_order])
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
@@ -415,17 +461,22 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
-        presenter_mock.raise_duplicate_same_gof_orders_for_a_gof.return_value = mock_object
+        presenter_mock.raise_duplicate_same_gof_orders_for_a_gof \
+            .return_value = mock_object
 
         # Act
         response = interactor.update_task_wrapper(presenter_mock, task_dto)
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_duplicate_same_gof_orders_for_a_gof.assert_called_once()
-        call_args = presenter_mock.raise_duplicate_same_gof_orders_for_a_gof.call_args
+        presenter_mock.raise_duplicate_same_gof_orders_for_a_gof \
+            .assert_called_once()
+        call_args = presenter_mock.raise_duplicate_same_gof_orders_for_a_gof \
+            .call_args
         error_object = call_args[0][0]
         invalid_gof_id = error_object.gof_id
         assert invalid_gof_id == given_gof_id
@@ -434,7 +485,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -461,7 +513,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_invalid_gof_ids.return_value = mock_object
 
@@ -480,7 +534,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -510,7 +565,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_invalid_gofs_given_to_a_task_template \
             .return_value = mock_object
@@ -535,7 +592,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -565,7 +623,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_invalid_field_ids.return_value = mock_object
 
@@ -584,7 +644,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -617,7 +678,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_duplicate_field_ids_to_a_gof.return_value = \
             mock_object
@@ -639,7 +702,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -670,7 +734,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_invalid_fields_given_to_a_gof.return_value = \
             mock_object
@@ -693,7 +759,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -724,7 +791,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_user_needs_gof_writable_permission.return_value \
             = \
@@ -751,7 +820,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -783,7 +853,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_user_needs_field_writable_permission \
             .return_value \
@@ -810,7 +882,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -841,7 +914,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_exception_for_empty_value_in_required_field \
             .return_value = mock_object
@@ -864,7 +939,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -897,7 +973,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_phone_number_value \
             .return_value = mock_object
@@ -922,7 +1000,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -954,7 +1033,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_email_address \
             .return_value = mock_object
@@ -979,7 +1060,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1012,7 +1094,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_url_address \
             .return_value = mock_object
@@ -1037,7 +1121,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1070,7 +1155,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_exception_for_weak_password \
             .return_value = mock_object
@@ -1095,7 +1182,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1128,7 +1216,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_number_value \
             .return_value = mock_object
@@ -1153,7 +1243,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1186,7 +1277,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_float_value \
             .return_value = mock_object
@@ -1211,7 +1304,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1246,7 +1340,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_dropdown_value \
             .return_value = mock_object
@@ -1274,7 +1370,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1309,7 +1406,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
             .raise_exception_for_invalid_name_in_gof_selector_field_value \
@@ -1339,7 +1438,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1374,7 +1474,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
             .raise_exception_for_invalid_choice_in_radio_group_field \
@@ -1404,7 +1506,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1439,7 +1542,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
             .raise_exception_for_invalid_checkbox_group_options_selected \
@@ -1469,7 +1574,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1505,7 +1611,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
             .raise_exception_for_invalid_multi_select_options_selected \
@@ -1537,7 +1645,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1572,7 +1681,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
             .raise_exception_for_invalid_multi_select_labels_selected \
@@ -1604,7 +1715,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1640,7 +1752,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
             .raise_exception_for_invalid_date_format \
@@ -1670,7 +1784,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1706,7 +1821,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
             .raise_exception_for_invalid_time_format \
@@ -1736,7 +1853,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1769,7 +1887,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_image_url.return_value = \
             mock_object
@@ -1796,7 +1916,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1831,7 +1952,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
             .raise_exception_for_not_acceptable_image_format \
@@ -1861,7 +1984,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1894,7 +2018,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
             .raise_exception_for_invalid_file_url \
@@ -1922,7 +2048,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1957,7 +2084,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
             .raise_exception_for_not_acceptable_file_format \
@@ -1983,13 +2112,170 @@ class TestUpdateTaskInteractor:
         assert given_invalid_format == given_format
         assert valid_formats == allowed_formats
 
+    def test_with_empty_stage_ids_list(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            update_task_stage_assignees_mock,
+            get_filtered_tasks_overview_for_user_mock
+    ):
+        # Arrange
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_id = 1
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        create_task_storage_mock.is_valid_task_id.return_value = True
+        create_task_storage_mock.get_template_id_for_given_task.return_value \
+            = "template_1"
+        expected_existing_gofs = [
+            GoFIdWithSameGoFOrderDTOFactory(
+                gof_id=gof_fields_dto.gof_id,
+                same_gof_order=gof_fields_dto.same_gof_order
+            )
+            for gof_fields_dto in task_dto.gof_fields_dtos
+        ]
+        create_task_storage_mock \
+            .get_gof_ids_with_same_gof_order_related_to_a_task.return_value \
+            = expected_existing_gofs
+        field_ids = []
+        for gof_fields_dto in task_dto.gof_fields_dtos:
+            for field_values_dto in gof_fields_dto.field_values_dtos:
+                field_ids.append(field_values_dto.field_id)
+        task_gof_ids = [0, 0, 1, 1]
+        expected_existing_fields = FieldIdWithTaskGoFIdDTOFactory.build_batch(
+            size=len(field_ids), field_id=factory.Iterator(field_ids),
+            task_gof_id=factory.Iterator(task_gof_ids)
+        )
+        create_task_storage_mock \
+            .get_field_ids_with_task_gof_id_related_to_given_task \
+            .return_value = expected_existing_fields
+        gof_ids = [gof.gof_id for gof in expected_existing_gofs]
+        same_gof_orders = [gof.same_gof_order for gof in
+                           expected_existing_gofs]
+        expected_task_gof_details_dtos = TaskGoFDetailsDTOFactory.build_batch(
+            size=len(gof_ids), task_gof_id=factory.Iterator([0, 1]),
+            gof_id=factory.Iterator(gof_ids),
+            same_gof_order=factory.Iterator(same_gof_orders)
+        )
+        create_task_storage_mock.update_task_gofs.return_value = \
+            expected_task_gof_details_dtos
+        from ib_tasks.exceptions.stage_custom_exceptions import \
+            StageIdsListEmptyException
+        get_filtered_tasks_overview_for_user_mock.side_effect = \
+            StageIdsListEmptyException
+        interactor = UpdateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock,
+            storage=storage_mock, field_storage=field_storage_mock,
+            stage_storage=stage_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
+        )
+        presenter_mock.raise_stage_ids_list_empty_exception.return_value = \
+            mock_object
+
+        # Act
+        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_stage_ids_list_empty_exception\
+            .assert_called_once()
+
+    def test_with_invalid_stage_ids_list(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            update_task_stage_assignees_mock,
+            get_filtered_tasks_overview_for_user_mock
+    ):
+        # Arrange
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_id = 1
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        create_task_storage_mock.is_valid_task_id.return_value = True
+        create_task_storage_mock.get_template_id_for_given_task.return_value \
+            = "template_1"
+        expected_existing_gofs = [
+            GoFIdWithSameGoFOrderDTOFactory(
+                gof_id=gof_fields_dto.gof_id,
+                same_gof_order=gof_fields_dto.same_gof_order
+            )
+            for gof_fields_dto in task_dto.gof_fields_dtos
+        ]
+        create_task_storage_mock \
+            .get_gof_ids_with_same_gof_order_related_to_a_task.return_value \
+            = expected_existing_gofs
+        field_ids = []
+        for gof_fields_dto in task_dto.gof_fields_dtos:
+            for field_values_dto in gof_fields_dto.field_values_dtos:
+                field_ids.append(field_values_dto.field_id)
+        task_gof_ids = [0, 0, 1, 1]
+        expected_existing_fields = FieldIdWithTaskGoFIdDTOFactory.build_batch(
+            size=len(field_ids), field_id=factory.Iterator(field_ids),
+            task_gof_id=factory.Iterator(task_gof_ids)
+        )
+        create_task_storage_mock \
+            .get_field_ids_with_task_gof_id_related_to_given_task \
+            .return_value = expected_existing_fields
+        gof_ids = [gof.gof_id for gof in expected_existing_gofs]
+        same_gof_orders = [gof.same_gof_order for gof in
+                           expected_existing_gofs]
+        expected_task_gof_details_dtos = TaskGoFDetailsDTOFactory.build_batch(
+            size=len(gof_ids), task_gof_id=factory.Iterator([0, 1]),
+            gof_id=factory.Iterator(gof_ids),
+            same_gof_order=factory.Iterator(same_gof_orders)
+        )
+        create_task_storage_mock.update_task_gofs.return_value = \
+            expected_task_gof_details_dtos
+        stage_ids = ["stage_1", "stage_2"]
+        from ib_tasks.exceptions.stage_custom_exceptions import \
+            InvalidStageIdsListException
+        get_filtered_tasks_overview_for_user_mock.side_effect = \
+            InvalidStageIdsListException(stage_ids)
+        interactor = UpdateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock,
+            storage=storage_mock, field_storage=field_storage_mock,
+            stage_storage=stage_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
+        )
+        presenter_mock.raise_invalid_stage_ids_list_exception.return_value =\
+            mock_object
+
+        # Act
+        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_invalid_stage_ids_list_exception\
+            .assert_called_once()
+        call_args = presenter_mock.raise_invalid_stage_ids_list_exception.call_args
+        error_object = call_args[0][0]
+        invalid_stage_ids = error_object.invalid_stage_ids
+        assert invalid_stage_ids == stage_ids
+
     def test_with_valid_task_details_updates_task(
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock,
-            update_task_stage_assignees_mock
+            update_task_stage_assignees_mock,
+            get_filtered_tasks_overview_for_user_mock
     ):
         # Arrange
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
@@ -2050,7 +2336,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
 
         # Act
@@ -2083,7 +2371,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock,
             update_task_stage_assignees_mock
     ):
@@ -2110,7 +2399,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         given_invalid_stage_ids = [1, 2]
         from ib_tasks.exceptions.stage_custom_exceptions import \
@@ -2143,9 +2434,11 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock,
-            update_task_stage_assignees_mock
+            update_task_stage_assignees_mock,
+            get_filtered_tasks_overview_for_user_mock
     ):
         # Arrange
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
@@ -2161,7 +2454,9 @@ class TestUpdateTaskInteractor:
             create_task_storage=create_task_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock,
             stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.get_update_task_response.return_value = mock_object
 

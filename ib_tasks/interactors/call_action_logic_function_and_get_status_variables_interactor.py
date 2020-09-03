@@ -74,8 +74,7 @@ class CallActionLogicFunctionAndGetTaskStatusVariablesInteractor(
 
     @staticmethod
     def _get_updated_status_variable_dto(
-            status_dict: Dict[str,
-                              str],
+            status_dict: Dict[str, str],
             status_variables_dto: List[StatusVariableDTO]
     ) -> List[StatusVariableDTO]:
         lst = []

@@ -1,5 +1,5 @@
 """
-get task templates when no fields exists returns empty fields
+get task templates when no fields exists returns task templates without those gofs
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils

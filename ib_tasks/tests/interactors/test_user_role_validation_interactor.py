@@ -75,12 +75,11 @@ class TestUserRoleValidationInteractor:
         get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
 
     def test_get_gof_ids_having_read_permission_for_user(
-            self, mocker, gof_storage_mock):
+            self, gof_storage_mock):
         # Arrange
-        user_id = "user_1"
+        user_roles = ["user_role_1", "user_role_2"]
         gof_ids = ["gof_1", "gof_2", "gof_3"]
         expected_gof_ids = ["gof_1", "gof_2"]
-        get_user_role_ids_mock_method = get_user_role_ids(mocker)
         gof_storage_mock.get_gof_ids_having_read_permission_for_user. \
             return_value = expected_gof_ids
 
@@ -88,19 +87,20 @@ class TestUserRoleValidationInteractor:
 
         # Act
         result = interactor.get_gof_ids_having_read_permission_for_user(
-            user_id=user_id, gof_ids=gof_ids, gof_storage=gof_storage_mock)
+            user_roles=user_roles, gof_ids=gof_ids,
+            gof_storage=gof_storage_mock)
 
         # Assert
         assert result == expected_gof_ids
-        get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
+        gof_storage_mock.get_gof_ids_having_read_permission_for_user.\
+            assert_called_once_with(user_roles=user_roles, gof_ids=gof_ids)
 
     def test_get_gof_ids_having_write_permission_for_user(
-            self, mocker, gof_storage_mock):
+            self, gof_storage_mock):
         # Arrange
-        user_id = "user_1"
+        user_roles = ["user_role_1", "user_role_2"]
         gof_ids = ["gof_1", "gof_2", "gof_3"]
         expected_gof_ids = ["gof_1", "gof_2"]
-        get_user_role_ids_mock_method = get_user_role_ids(mocker)
         gof_storage_mock.get_gof_ids_having_write_permission_for_user. \
             return_value = expected_gof_ids
 
@@ -108,19 +108,20 @@ class TestUserRoleValidationInteractor:
 
         # Act
         result = interactor.get_gof_ids_having_write_permission_for_user(
-            user_id=user_id, gof_ids=gof_ids, gof_storage=gof_storage_mock)
+            user_roles=user_roles, gof_ids=gof_ids,
+            gof_storage=gof_storage_mock)
 
         # Assert
         assert result == expected_gof_ids
-        get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
+        gof_storage_mock.get_gof_ids_having_write_permission_for_user.\
+            assert_called_once_with(user_roles=user_roles, gof_ids=gof_ids)
 
     def test_get_field_ids_having_read_permission_for_user(
-            self, mocker, field_storage_mock):
+            self, field_storage_mock):
         # Arrange
-        user_id = "user_1"
+        user_roles = ["user_role_1", "user_role_2"]
         field_ids = ["field_1", "field_2", "field_3"]
         expected_field_ids = ["field_1", "field_2"]
-        get_user_role_ids_mock_method = get_user_role_ids(mocker)
         field_storage_mock.get_field_ids_having_read_permission_for_user. \
             return_value = expected_field_ids
 
@@ -128,20 +129,20 @@ class TestUserRoleValidationInteractor:
 
         # Act
         result = interactor.get_field_ids_having_read_permission_for_user(
-            user_id=user_id, field_ids=field_ids,
+            user_roles=user_roles, field_ids=field_ids,
             field_storage=field_storage_mock)
 
         # Assert
         assert result == expected_field_ids
-        get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
+        field_storage_mock.get_field_ids_having_read_permission_for_user.\
+            assert_called_once_with(user_roles=user_roles, field_ids=field_ids)
 
     def test_get_field_ids_having_write_permission_for_user(
-            self, mocker, field_storage_mock):
+            self, field_storage_mock):
         # Arrange
-        user_id = "user_1"
+        user_roles = ["user_role_1", "user_role_2"]
         field_ids = ["field_1", "field_2", "field_3"]
         expected_field_ids = ["field_1", "field_2"]
-        get_user_role_ids_mock_method = get_user_role_ids(mocker)
         field_storage_mock.get_field_ids_having_write_permission_for_user. \
             return_value = expected_field_ids
 
@@ -149,19 +150,19 @@ class TestUserRoleValidationInteractor:
 
         # Act
         result = interactor.get_field_ids_having_write_permission_for_user(
-            user_id=user_id, field_ids=field_ids,
+            user_roles=user_roles, field_ids=field_ids,
             field_storage=field_storage_mock)
 
         # Assert
         assert result == expected_field_ids
-        get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
+        field_storage_mock.get_field_ids_having_write_permission_for_user.\
+            assert_called_once_with(user_roles=user_roles, field_ids=field_ids)
 
     def test_check_is_user_has_read_permission_for_field_when_user_does_not_have_returns_false(
-            self, mocker, field_storage_mock):
+            self, field_storage_mock):
         # Arrange
-        user_id = "user_1"
+        user_roles = ["user_role_1", "user_role_2"]
         field_id = "field_1"
-        get_user_role_ids_mock_method = get_user_role_ids(mocker)
         field_storage_mock.check_is_user_has_read_permission_for_field. \
             return_value = False
 
@@ -169,19 +170,19 @@ class TestUserRoleValidationInteractor:
 
         # Act
         result = interactor.check_is_user_has_read_permission_for_field(
-            user_id=user_id, field_id=field_id,
+            user_roles=user_roles, field_id=field_id,
             field_storage=field_storage_mock)
 
         # Assert
         assert result is False
-        get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
+        field_storage_mock.check_is_user_has_read_permission_for_field.\
+            assert_called_once_with(user_roles=user_roles, field_id=field_id)
 
     def test_check_is_user_has_read_permission_for_field_when_user_have_permission_returns_true(
-            self, mocker, field_storage_mock):
+            self, field_storage_mock):
         # Arrange
-        user_id = "user_1"
+        user_roles = ["user_role_1", "user_role_2"]
         field_id = "field_1"
-        get_user_role_ids_mock_method = get_user_role_ids(mocker)
         field_storage_mock.check_is_user_has_read_permission_for_field. \
             return_value = True
 
@@ -189,19 +190,19 @@ class TestUserRoleValidationInteractor:
 
         # Act
         result = interactor.check_is_user_has_read_permission_for_field(
-            user_id=user_id, field_id=field_id,
+            user_roles=user_roles, field_id=field_id,
             field_storage=field_storage_mock)
 
         # Assert
         assert result is True
-        get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
+        field_storage_mock.check_is_user_has_read_permission_for_field.\
+            assert_called_once_with(user_roles=user_roles, field_id=field_id)
 
     def test_check_is_user_has_write_permission_for_field_when_user_does_not_have_returns_false(
-            self, mocker, field_storage_mock):
+            self, field_storage_mock):
         # Arrange
-        user_id = "user_1"
+        user_roles = ["user_role_1", "user_role_2"]
         field_id = "field_1"
-        get_user_role_ids_mock_method = get_user_role_ids(mocker)
         field_storage_mock.check_is_user_has_write_permission_for_field. \
             return_value = False
 
@@ -209,19 +210,19 @@ class TestUserRoleValidationInteractor:
 
         # Act
         result = interactor.check_is_user_has_write_permission_for_field(
-            user_id=user_id, field_id=field_id,
+            user_roles=user_roles, field_id=field_id,
             field_storage=field_storage_mock)
 
         # Assert
         assert result is False
-        get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
+        field_storage_mock.check_is_user_has_write_permission_for_field.\
+            assert_called_once_with(user_roles=user_roles, field_id=field_id)
 
     def test_check_is_user_has_write_permission_for_field_when_user_have_permission_returns_true(
-            self, mocker, field_storage_mock):
+            self, field_storage_mock):
         # Arrange
-        user_id = "user_1"
+        user_roles = ["user_role_1", "user_role_2"]
         field_id = "field_1"
-        get_user_role_ids_mock_method = get_user_role_ids(mocker)
         field_storage_mock.check_is_user_has_write_permission_for_field. \
             return_value = True
 
@@ -229,9 +230,10 @@ class TestUserRoleValidationInteractor:
 
         # Act
         result = interactor.check_is_user_has_write_permission_for_field(
-            user_id=user_id, field_id=field_id,
+            user_roles=user_roles, field_id=field_id,
             field_storage=field_storage_mock)
 
         # Assert
         assert result is True
-        get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
+        field_storage_mock.check_is_user_has_write_permission_for_field.\
+            assert_called_once_with(user_roles=user_roles, field_id=field_id)

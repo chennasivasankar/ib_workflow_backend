@@ -13,7 +13,7 @@ class TestMemberIdWithSubordinateMemberIdsDTO:
     @pytest.fixture()
     def prepare_user_teams_subordinate_members(
             self, create_user_teams):
-        from ib_iam.models import UserTeam
+        from ib_iam.models import TeamUser
 
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         member_id_with_immediate_superior_team_user_id_list = [{
@@ -36,7 +36,7 @@ class TestMemberIdWithSubordinateMemberIdsDTO:
             'immediate_superior_team_user_id': None
         }]
         for member_details_dict in member_id_with_immediate_superior_team_user_id_list:
-            UserTeam.objects.filter(
+            TeamUser.objects.filter(
                 user_id=member_details_dict["user_id"],
                 team_id=team_id
             ).update(

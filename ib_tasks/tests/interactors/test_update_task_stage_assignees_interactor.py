@@ -5,6 +5,7 @@ import pytest
 
 from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.interactors.stages_dtos import TaskDisplayIdWithStageAssigneesDTO
+from ib_tasks.tests.factories.interactor_dtos import StageAssigneeDTOFactory
 
 from ib_tasks.tests.factories.storage_dtos import StageRoleDTOFactory
 
@@ -63,6 +64,17 @@ class TestUpdateTaskStageAssigneesInteractor:
                 task_display_id="task_1",
                 stage_assignees=StageAssigneeDTOFactory.create_batch(2))
         return task_display_id_with_stage_assignees_dto
+
+    @pytest.fixture
+    def task_display_id_with_single_stage_assignee_dto(self):
+        from ib_tasks.tests.factories.interactor_dtos import \
+            StageAssigneeDTOFactory
+        StageAssigneeDTOFactory.reset_sequence()
+        task_display_id_with_single_stage_assignee_dto = \
+            TaskDisplayIdWithStageAssigneesDTO(
+                task_display_id="task_1",
+                stage_assignees=[StageAssigneeDTOFactory()])
+        return task_display_id_with_single_stage_assignee_dto
 
     @pytest.fixture
     def stage_id_with_value_dtos(self):
@@ -190,15 +202,52 @@ class TestUpdateTaskStageAssigneesInteractor:
         presenter_mock.raise_virtual_stage_ids_exception. \
             assert_called_once_with(virtual_stage_ids=[2])
 
+    def test_update_given_an_assignee_of_stage(
+            self, stage_role_dtos, stage_storage_mock,
+            task_storage_mock, presenter_mock,
+            task_display_id_with_single_stage_assignee_dto,
+            stage_id_with_value_dtos):
+        StageAssigneeDTOFactory.reset_sequence()
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = 1
+        stage_storage_mock.get_valid_db_stage_ids_with_stage_value.return_value \
+            = stage_id_with_value_dtos
+        stage_storage_mock.get_stage_role_dtos_given_db_stage_ids.return_value \
+            = stage_role_dtos
+        stage_storage_mock. \
+            get_task_stages_assignees_without_having_left_at_status. \
+            return_value = StageAssigneeDTOFactory.create_batch(2)
+        stage_storage_mock. \
+            get_current_stage_db_ids_of_task.return_value = [1, 2]
+
+        from ib_tasks.interactors.update_task_stage_assignees_interactor import \
+            UpdateTaskStageAssigneesInteractor
+
+        update_task_stage_assignees_interactor = \
+            UpdateTaskStageAssigneesInteractor(
+                stage_storage=stage_storage_mock,
+                task_storage=task_storage_mock)
+        # Act
+        update_task_stage_assignees_interactor. \
+            update_task_stage_assignees_wrapper(
+            task_display_id_with_stage_assignees_dto=
+            task_display_id_with_single_stage_assignee_dto,
+            presenter=presenter_mock)
+
+        # Assert
+        stage_storage_mock. \
+            update_task_stages_other_than_matched_stages_with_left_at_status. \
+            assert_called_once_with(task_id=1, db_stage_ids=[1, 2])
+
     def test_given_invalid_user_id_in_assignee_raise_exception(
             self, mocker, stage_storage_mock, task_storage_mock,
             presenter_mock, task_display_id_with_stage_assignees_dto,
             stage_id_with_value_dtos):
         # Arrange
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
-            import get_user_role_ids_exception
-        get_user_role_ids_mock_method = get_user_role_ids_exception(
-            mocker, user_id="user_2")
+            import get_user_role_ids_based_on_project_mock_exception
+        get_user_role_ids_mock_method = get_user_role_ids_based_on_project_mock_exception(
+            mocker)
         task_storage_mock.check_is_task_exists.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = 1
         stage_storage_mock. \
@@ -214,8 +263,7 @@ class TestUpdateTaskStageAssigneesInteractor:
         update_task_stage_assignees_interactor. \
             update_task_stage_assignees_wrapper(
             task_display_id_with_stage_assignees_dto, presenter=presenter_mock)
-        presenter_mock.raise_invalid_user_id_exception.assert_called_once_with(
-            user_id="user_2")
+        presenter_mock.raise_invalid_user_id_exception.assert_called_once()
 
     def test_given_invalid_user_permission_for_stages_raise_exception(
             self, mocker, stage_storage_mock, task_storage_mock,
@@ -265,7 +313,7 @@ class TestUpdateTaskStageAssigneesInteractor:
         stage_storage_mock. \
             get_valid_db_stage_ids_with_stage_value.return_value = \
             stage_id_with_value_dtos
-        stage_storage_mock.get_stage_role_dtos_given_db_stage_ids.\
+        stage_storage_mock.get_stage_role_dtos_given_db_stage_ids. \
             return_value = stage_role_dtos
         stage_storage_mock. \
             get_task_stages_assignees_without_having_left_at_status. \
@@ -330,8 +378,7 @@ class TestUpdateTaskStageAssigneesInteractor:
             assert_called_once_with(task_id=1, db_stage_ids=[1])
         stage_storage_mock.create_task_stage_assignees.assert_called_once_with(
             task_id_with_stage_assignee_dtos=
-            [TaskIdWithStageAssigneeDTOFactory(task_id=1
-                )])
+            [TaskIdWithStageAssigneeDTOFactory(task_id=1)])
 
     def test_given_stages_having_different_assignees_in_db(
             self, mocker, stage_role_dtos, stage_storage_mock,
@@ -346,6 +393,8 @@ class TestUpdateTaskStageAssigneesInteractor:
         TaskIdWithStageAssigneeDTOFactory.reset_sequence()
         task_storage_mock.check_is_task_exists.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = 1
+        task_storage_mock.get_project_id_for_the_task_id.return_value = \
+            "project_1"
         stage_storage_mock. \
             get_valid_db_stage_ids_with_stage_value.return_value = \
             stage_id_with_value_dtos
@@ -355,8 +404,9 @@ class TestUpdateTaskStageAssigneesInteractor:
             get_task_stages_assignees_without_having_left_at_status. \
             return_value = [StageAssigneeDTOFactory(assignee_id='user_3')]
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
-            import get_user_role_ids
-        get_user_role_ids_mock_method = get_user_role_ids(mocker)
+            import get_user_role_ids_based_on_project_mock
+        get_user_role_ids_mock_method = get_user_role_ids_based_on_project_mock(
+            mocker)
         from ib_tasks.interactors.update_task_stage_assignees_interactor \
             import UpdateTaskStageAssigneesInteractor
         update_task_stage_assignees_interactor = \
