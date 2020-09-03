@@ -19,6 +19,7 @@ sudo apt-get install krb5-config libkrb5-dev libssl-dev libsasl2-dev libsasl2-mo
 
 ## running django management commands & usage
 
+
 ```sh
 source .venv/bin/activate
 export DJANGO_SETTINGS_MODULE=ib_workflows_backend.settings.local
