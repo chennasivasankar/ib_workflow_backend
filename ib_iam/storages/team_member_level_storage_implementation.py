@@ -160,9 +160,8 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
                 "user_id", flat=True
             )
         subordinate_member_ids = [
-            str(subordinate_member_id) for
-            subordinate_member_id in
-            subordinate_member_ids
+            str(subordinate_member_id)
+            for subordinate_member_id in subordinate_member_ids
         ]
         member_id_with_subordinate_member_ids_dto = \
             MemberIdWithSubordinateMemberIdsDTO(
