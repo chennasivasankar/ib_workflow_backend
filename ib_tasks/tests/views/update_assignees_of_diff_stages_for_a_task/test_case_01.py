@@ -47,8 +47,8 @@ class TestCase01UpdateAssigneesOfDiffStagesForATaskAPITestCase(TestUtils):
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):
         body = {'stage_assignees': [
-            {'stage_id': 1, 'assignee_id': setup}]}
-        path_params = {"task_id": 1}
+            {'stage_id': 1, 'assignee_id': "123e4567-e89b-12d3-a456-426614174000"}]}
+        path_params = {"task_id": "IBWF-10"}
         query_params = {}
         headers = {}
         response = self.make_api_call(

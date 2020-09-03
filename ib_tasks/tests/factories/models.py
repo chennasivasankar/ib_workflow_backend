@@ -82,6 +82,7 @@ class TaskModelFactory(factory.django.DjangoModelFactory):
 
     task_display_id = factory.sequence(lambda counter: "iB_{}".format(counter))
     template_id = factory.Sequence(lambda n: "template_%d" % (n + 1))
+    project_id = factory.Sequence(lambda n: "project_id{}".format(n))
     created_by = factory.Sequence(lambda n: (n + 1))
     title = factory.Sequence(lambda c: "title_{}".format(c))
     description = factory.Sequence(lambda c: "description_{}".format(c))
