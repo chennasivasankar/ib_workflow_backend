@@ -408,6 +408,6 @@ class CreateTaskInteractor:
             priority: Priority, action_type_is_no_validations: bool
     ) -> Optional[PriorityIsRequired]:
         priority_is_not_given = not priority
-        if priority_is_not_given and action_type_is_no_validations:
+        if priority_is_not_given and not action_type_is_no_validations:
             raise PriorityIsRequired()
         return

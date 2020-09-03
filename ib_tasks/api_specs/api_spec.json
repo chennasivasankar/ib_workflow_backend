@@ -882,9 +882,6 @@
             "gofs",
             "stages_with_actions",
             "title",
-            "start_date",
-            "due_date",
-            "priority",
             "project_info"
          ]
       },
