@@ -288,6 +288,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
                 q = current_queue
             else:
                 q = q | current_queue
+        if q is None:
+            return []
 
         action_ids = (ActionPermittedRoles.objects.filter(q,
                                                           Q(action__stage__stage_id__in=stage_ids))
