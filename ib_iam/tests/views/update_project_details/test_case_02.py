@@ -5,7 +5,9 @@ success case of update project
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from ib_iam.tests.factories.models import UserDetailsFactory, ProjectFactory
+from ib_iam.tests.factories.models import (
+    UserDetailsFactory, ProjectFactory, ProjectRoleFactory, TeamFactory,
+    ProjectTeamFactory)
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -50,20 +52,15 @@ class TestCase02UpdateProjectDetailsAPITestCase(TestUtils):
         UserDetailsFactory(user_id=str(api_user.user_id), is_admin=True)
         project_id = "project_1"
         name = "project 1"
-        ProjectFactory.create(name=name, project_id=project_id)
+        ProjectFactory.reset_sequence()
+        ProjectFactory.create(project_id=project_id)
+        ProjectFactory.create(name=name)
         body = {
             'name': name,
             'description': None,
             'logo_url': None,
-            'team_ids': ['89d96f4b-c19d-4e69-8eae-e818f3123b09',
-                         '89d96f4b-c19d-4e69-8eae-e818f3123b00'],
-            'roles': [
-                {
-                    'role_name': 'Payment_RP',
-                    'description': "pay_1",
-                    'role_id': 'pay_role'
-                }
-            ]
+            'team_ids': [],
+            'roles': []
         }
         path_params = {"project_id": project_id}
         query_params = {}
@@ -81,16 +78,10 @@ class TestCase02UpdateProjectDetailsAPITestCase(TestUtils):
             'name': "project_1",
             'description': 'project_description',
             'logo_url': 'https://logo.com',
-            'team_ids': ["123e4567-e89b-12d3-a456-426614174000",
-                         "123e4567-e89b-12d3-a456-426614174000"],
-            "project_display_id": "display_id 1",
-            'roles': [{
-                'role_name': 'Payment_RP',
-                'description': "pay_1",
-                'role_id': 'pay_role'
-            }]
+            'team_ids': [setup["team_id"], setup["team_id"]],
+            'roles': []
         }
-        path_params = {"project_id": setup}
+        path_params = {"project_id": setup["project_id"]}
         query_params = {}
         headers = {}
         self.make_api_call(body=body,
@@ -106,15 +97,10 @@ class TestCase02UpdateProjectDetailsAPITestCase(TestUtils):
             'name': "project_1",
             'description': 'project_description',
             'logo_url': 'https://logo.com',
-            'team_ids': ["123e4567-e89b-12d3-a456-426614174000"],
-            "project_display_id": "display_id 1",
-            'roles': [{
-                'role_name': 'Payment_RP',
-                'description': "pay_1",
-                'role_id': 'pay_role'
-            }]
+            'team_ids': ["123e4567-e89b-12d3-a456-426614174001"],
+            'roles': []
         }
-        path_params = {"project_id": setup}
+        path_params = {"project_id": setup["project_id"]}
         query_params = {}
         headers = {}
         self.make_api_call(body=body,
@@ -131,21 +117,20 @@ class TestCase02UpdateProjectDetailsAPITestCase(TestUtils):
             'description': 'project_description',
             'logo_url': 'https://logo.com',
             'team_ids': [],
-            "project_display_id": "display_id 1",
             'roles': [
                 {
                     'role_name': 'Payment_RP',
                     'description': "pay_1",
-                    'role_id': 'pay_role'
+                    'role_id': setup["role_id"]
                 },
                 {
                     'role_name': 'Payment',
                     'description': "pay_2",
-                    'role_id': 'pay_role'
+                    'role_id': setup["role_id"]
                 }
             ]
         }
-        path_params = {"project_id": setup}
+        path_params = {"project_id": setup["project_id"]}
         query_params = {}
         headers = {}
         self.make_api_call(body=body,
@@ -162,14 +147,13 @@ class TestCase02UpdateProjectDetailsAPITestCase(TestUtils):
             'description': 'project_description',
             'logo_url': 'https://logo.com',
             'team_ids': [],
-            "project_display_id": "display_id 1",
             'roles': [{
                 'role_name': 'Payment_RP',
                 'description': "pay_1",
-                'role_id': 'pay_role'
+                'role_id': 'finance_role'
             }]
         }
-        path_params = {"project_id": setup}
+        path_params = {"project_id": setup["project_id"]}
         query_params = {}
         headers = {}
         self.make_api_call(body=body,
@@ -182,5 +166,12 @@ class TestCase02UpdateProjectDetailsAPITestCase(TestUtils):
     def setup(self, api_user):
         UserDetailsFactory(user_id=str(api_user.user_id), is_admin=True)
         project_id = "project_1"
-        ProjectFactory(project_id=project_id)
-        return project_id
+        team_id = "123e4567-e89b-12d3-a456-426614174000"
+        project_object = ProjectFactory(project_id=project_id)
+        team_object = TeamFactory(team_id=team_id)
+        ProjectTeamFactory(project=project_object, team=team_object)
+        role_id = 'pay_role'
+        ProjectRoleFactory.create(project_id=project_id, role_id=role_id)
+        return {"project_id": project_id,
+                "team_id": team_id,
+                "role_id": role_id}

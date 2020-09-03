@@ -105,9 +105,10 @@ class TestUpdateProjectIneractor:
             self, project_storage, user_storage, interactor, presenter):
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
         name = "name 1"
+        ProjectDTOFactory.reset_sequence(1)
         project_dto = ProjectDTOFactory(name=name)
         project_storage.get_project_id_if_project_name_already_exists \
-            .return_value = "project_2"
+            .return_value = "project 2"
         presenter.get_project_name_already_exists_response \
             .return_value = mock.Mock()
         complete_project_details_dto = CompleteProjectDetailsDTO(

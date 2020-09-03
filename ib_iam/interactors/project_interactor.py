@@ -349,8 +349,12 @@ class ProjectInteractor(ValidationMixin):
             self, user_id: str,
             complete_project_details_dto: CompleteProjectDetailsDTO):
         self._validate_is_user_admin(user_id=user_id)
+        # todo have to know whether we can do any better here
+        project_role_ids = self.project_storage.get_project_role_ids(
+            project_id=complete_project_details_dto.project_id)
         self._validate_update_project_details(
-            complete_project_details_dto=complete_project_details_dto)
+            complete_project_details_dto=complete_project_details_dto,
+            project_role_ids=project_role_ids)
         project_dto = self._convert_to_project_dto(
             complete_project_details_dto=complete_project_details_dto,
             project_id=complete_project_details_dto.project_id)
@@ -365,23 +369,23 @@ class ProjectInteractor(ValidationMixin):
             project_id=complete_project_details_dto.project_id,
             project_team_ids=project_team_ids,
             team_ids=complete_project_details_dto.team_ids)
-        project_role_ids = self.project_storage.get_project_role_ids(
-            project_id=complete_project_details_dto.project_id)
-        self._validate_roles(roles=complete_project_details_dto.roles,
-                             project_role_ids=project_role_ids)
         self._project_roles_related_operations(
             project_id=complete_project_details_dto.project_id,
             project_role_ids=project_role_ids,
             roles=complete_project_details_dto.roles)
 
     def _validate_update_project_details(
-            self, complete_project_details_dto: CompleteProjectDetailsDTO):
+            self, complete_project_details_dto: CompleteProjectDetailsDTO,
+            project_role_ids: List[str]):
         self._validate_project_id(
             project_id=complete_project_details_dto.project_id)
-        self._validate_is_given_name_already_exists(
-            name=complete_project_details_dto.name)
+        self._validate_is_given_name_already_exists_for_update_project(
+            name=complete_project_details_dto.name,
+            project_id=complete_project_details_dto.project_id)
         self._validate_duplicate_team_ids(
             team_ids=complete_project_details_dto.team_ids)
+        self._validate_roles(roles=complete_project_details_dto.roles,
+                             project_role_ids=project_role_ids)
         self._validate_invalid_team_ids(
             team_ids=complete_project_details_dto.team_ids)
 
@@ -394,8 +398,6 @@ class ProjectInteractor(ValidationMixin):
     def _project_roles_related_operations(
             self, project_id: str, project_role_ids: List[str],
             roles: List[RoleDTO]):
-        project_role_ids = self.project_storage.get_project_role_ids(
-            project_id=project_id)
         self._add_project_roles(project_id=project_id, roles=roles)
         self._update_project_roles(
             project_role_ids=project_role_ids, roles=roles)
@@ -453,6 +455,13 @@ class ProjectInteractor(ValidationMixin):
         project_id = self.project_storage \
             .get_project_id_if_project_name_already_exists(name=name)
         if project_id:
+            raise ProjectNameAlreadyExists
+
+    def _validate_is_given_name_already_exists_for_update_project(
+            self, project_id: str, name: str):
+        project_id_from_db = self.project_storage \
+            .get_project_id_if_project_name_already_exists(name=name)
+        if project_id_from_db not in [None, project_id]:
             raise ProjectNameAlreadyExists
 
     def _validate_is_given_display_id_already_exists(self, display_id: str):
