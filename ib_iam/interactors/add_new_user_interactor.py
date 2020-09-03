@@ -124,6 +124,8 @@ class AddNewUserInteractor(ValidationMixin):
             name=name, email=email, user_id=user_id)
         service_adapter.user_service.create_user_profile(
             user_id=user_id, user_profile_dto=user_profile_dto)
+        service_adapter.auth_service.update_is_email_verified_value_in_ib_user_profile_details(
+            user_id=user_id, is_email_verified=False)
 
     @staticmethod
     def _create_user_profile_dto(name, email, user_id):

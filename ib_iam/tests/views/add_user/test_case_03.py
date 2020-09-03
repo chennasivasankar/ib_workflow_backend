@@ -59,6 +59,7 @@ class TestCase03AddUserAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
+        new_user_id = "user2"
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import create_user_account_adapter_mock, \
             create_user_profile_adapter_mock
@@ -66,9 +67,17 @@ class TestCase03AddUserAPITestCase(TestUtils):
             create_user_account_adapter_mock(mocker=mocker)
         user_profile_adapter_mock = \
             create_user_profile_adapter_mock(mocker=mocker)
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
+            update_is_email_verified_value_mock
+        update_is_email_verified_value_mock = update_is_email_verified_value_mock(
+            mocker=mocker)
+
         self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
+
         user_account_adapter_mock.assert_called_once()
         user_profile_adapter_mock.assert_called_once()
+        update_is_email_verified_value_mock.assert_called_once_with(
+            user_id=new_user_id, is_email_verified=False)
