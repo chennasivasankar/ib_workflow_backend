@@ -103,6 +103,6 @@ class GetTaskIdsBasedOnUserSearchQuery(ValidationMixin):
                                 and field_type != FieldTypes.FLOAT.value \
                                 and filter_dto.operator in NUMERIC_OPERATORS
             if is_invalid_filter:
-                from ib_tasks.interactors.filters.filter_interactor import \
+                from ib_tasks.exceptions.filter_exceptions import \
                     InvalidFilterCondition
                 raise InvalidFilterCondition(condition=filter_dto.operator)

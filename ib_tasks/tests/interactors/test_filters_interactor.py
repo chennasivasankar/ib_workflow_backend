@@ -9,7 +9,7 @@ import pytest
 
 from ib_tasks.exceptions.filter_exceptions import InvalidFilterId, \
     UserNotHaveAccessToFilter, UserNotHaveAccessToFields
-from ib_tasks.interactors.filters.filter_interactor import FilterInteractor
+from ib_tasks.interactors.filters.create_or_update_or_delete_filters import CreateOrUpdateOrDeleteFiltersInteractor
 from ib_tasks.tests.common_fixtures.interactors import \
     prepare_get_field_ids_having_write_permission_for_user
 
@@ -80,7 +80,7 @@ class TestFiltersInteractor:
         # Arrange
         template_id = filter_dto.template_id
         expected_response = Mock()
-        interactor = FilterInteractor(
+        interactor = CreateOrUpdateOrDeleteFiltersInteractor(
             filter_storage=storage_mock,
             presenter=presenter_mock,
             field_storage=field_storage
@@ -125,7 +125,7 @@ class TestFiltersInteractor:
         project_id = '1'
         field_ids = [condition_dto.field_id for condition_dto in condition_dtos]
         expected_response = Mock()
-        interactor = FilterInteractor(
+        interactor = CreateOrUpdateOrDeleteFiltersInteractor(
             filter_storage=storage_mock,
             presenter=presenter_mock,
             field_storage=field_storage
@@ -181,7 +181,7 @@ class TestFiltersInteractor:
         project_id = '1'
         prepare_get_field_ids_having_write_permission_for_user(mocker,
                                                                user_roles)
-        interactor = FilterInteractor(
+        interactor = CreateOrUpdateOrDeleteFiltersInteractor(
             filter_storage=storage_mock,
             presenter=presenter_mock,
             field_storage=field_storage
@@ -230,7 +230,7 @@ class TestFiltersInteractor:
         expected_response = Mock()
         prepare_get_field_ids_having_write_permission_for_user(mocker,
                                                                user_roles)
-        interactor = FilterInteractor(
+        interactor = CreateOrUpdateOrDeleteFiltersInteractor(
             filter_storage=storage_mock,
             presenter=presenter_mock,
             field_storage=field_storage
@@ -282,7 +282,7 @@ class TestFiltersInteractor:
         prepare_get_field_ids_having_write_permission_for_user(mocker,
                                                                field_ids)
         expected_response = Mock()
-        interactor = FilterInteractor(
+        interactor = CreateOrUpdateOrDeleteFiltersInteractor(
             filter_storage=storage_mock,
             presenter=presenter_mock,
             field_storage=field_storage
@@ -330,7 +330,7 @@ class TestFiltersInteractor:
         filter_dto = update_filter_dto
         filter_id = filter_dto.filter_id
         expected_response = Mock()
-        interactor = FilterInteractor(
+        interactor = CreateOrUpdateOrDeleteFiltersInteractor(
             filter_storage=storage_mock,
             presenter=presenter_mock,
             field_storage=field_storage
@@ -375,7 +375,7 @@ class TestFiltersInteractor:
         filter_id = filter_dto.filter_id
         user_id = filter_dto.user_id
         expected_response = Mock()
-        interactor = FilterInteractor(
+        interactor = CreateOrUpdateOrDeleteFiltersInteractor(
             filter_storage=storage_mock,
             presenter=presenter_mock,
             field_storage=field_storage
@@ -418,7 +418,7 @@ class TestFiltersInteractor:
         filter_id = 1
         user_id = 'user_id_0'
         expected_response = Mock()
-        interactor = FilterInteractor(
+        interactor = CreateOrUpdateOrDeleteFiltersInteractor(
             filter_storage=storage_mock,
             presenter=presenter_mock,
             field_storage=field_storage
@@ -460,7 +460,7 @@ class TestFiltersInteractor:
         filter_id = 1
         user_id = 'user_id_0'
         expected_response = Mock()
-        interactor = FilterInteractor(
+        interactor = CreateOrUpdateOrDeleteFiltersInteractor(
             filter_storage=storage_mock,
             presenter=presenter_mock,
             field_storage=field_storage

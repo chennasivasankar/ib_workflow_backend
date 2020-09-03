@@ -47,11 +47,11 @@ class TestGetFilterInteractor:
         # Arrange
         user_id = '1'
         project_id = "FIN_MAN"
-        from ib_tasks.interactors.filters.filter_interactor import FilterInteractor
         project_ids_mock.return_value = []
-        interactor = FilterInteractor(
+        from ib_tasks.interactors.filters.get_filters import \
+            GetFiltersInteractor
+        interactor = GetFiltersInteractor(
             filter_storage=filter_storage, presenter=presenter,
-            field_storage=field_storage
         )
 
         # Act
@@ -70,12 +70,12 @@ class TestGetFilterInteractor:
         # Arrange
         user_id = '1'
         project_id = "FIN_MAN"
-        from ib_tasks.interactors.filters.filter_interactor import FilterInteractor
         project_ids_mock.return_value = [project_id]
         user_project_mock.return_value = False
-        interactor = FilterInteractor(
+        from ib_tasks.interactors.filters.get_filters import \
+            GetFiltersInteractor
+        interactor = GetFiltersInteractor(
             filter_storage=filter_storage, presenter=presenter,
-            field_storage=field_storage
         )
 
         # Act
@@ -108,10 +108,10 @@ class TestGetFilterInteractor:
         filter_storage.get_filters_dto_to_user.return_value = filters
         filter_ids = [1, 2]
         filter_storage.get_conditions_to_filters.return_value = conditions
-        from ib_tasks.interactors.filters.filter_interactor import FilterInteractor
-        interactor = FilterInteractor(
+        from ib_tasks.interactors.filters.get_filters import \
+            GetFiltersInteractor
+        interactor = GetFiltersInteractor(
             filter_storage=filter_storage, presenter=presenter,
-            field_storage=field_storage
         )
 
         # Act
@@ -140,10 +140,10 @@ class TestGetFilterInteractor:
         filter_storage.get_filters_dto_to_user.return_value = []
         filter_ids = []
         filter_storage.get_conditions_to_filters.return_value = []
-        from ib_tasks.interactors.filters.filter_interactor import FilterInteractor
-        interactor = FilterInteractor(
+        from ib_tasks.interactors.filters.get_filters import \
+            GetFiltersInteractor
+        interactor = GetFiltersInteractor(
             filter_storage=filter_storage, presenter=presenter,
-            field_storage=field_storage
         )
         project_id = "FIN_MAN"
         project_ids_mock.return_value = [project_id]
@@ -159,98 +159,3 @@ class TestGetFilterInteractor:
             .assert_called_once_with(filter_ids=filter_ids)
         presenter.get_response_for_get_filters_details \
             .assert_called_once_with(filter_complete_details=response)
-
-    def test_update_filter_status_raises_invalid_filter_exception(
-            self, filter_storage, presenter, field_storage):
-        # Arrange
-        from ib_tasks.interactors.filters.filter_interactor import FilterInteractor
-        interactor = FilterInteractor(
-            filter_storage=filter_storage, presenter=presenter, field_storage=field_storage
-        )
-        from ib_tasks.exceptions.filter_exceptions import InvalidFilterId
-        filter_storage.validate_filter_id.side_effect = InvalidFilterId()
-        user_id = "1"
-        filter_id = 1
-        from ib_tasks.constants.enum import Status
-        is_selected = Status.ENABLED.value
-
-        # Act
-        interactor.update_filter_select_status_wrapper(
-            user_id=user_id, filter_id=filter_id, is_selected=is_selected
-        )
-
-        # Assert
-        presenter.get_response_for_invalid_filter_id.assert_called_once()
-
-    def test_raises_invalid_user_permission(
-            self, filter_storage, presenter, field_storage):
-        # Arrange
-        from ib_tasks.interactors.filters.filter_interactor import FilterInteractor
-        interactor = FilterInteractor(
-            filter_storage=filter_storage, presenter=presenter, field_storage=field_storage
-        )
-        from ib_tasks.exceptions.filter_exceptions import UserNotHaveAccessToFilter
-        filter_storage.validate_user_with_filter_id \
-            .side_effect = UserNotHaveAccessToFilter()
-        user_id = "1"
-        filter_id = 1
-        from ib_tasks.constants.enum import Status
-        is_selected = Status.ENABLED.value
-
-        # Act
-        interactor.update_filter_select_status_wrapper(
-            user_id=user_id, filter_id=filter_id, is_selected=is_selected
-        )
-
-        # Assert
-        presenter.get_response_for_invalid_user_to_update_filter_status \
-            .assert_called_once()
-
-    def test_returns_update_status(
-            self, filter_storage, presenter, field_storage):
-        # Arrange
-        from ib_tasks.interactors.filters.filter_interactor import FilterInteractor
-        interactor = FilterInteractor(
-            filter_storage=filter_storage, presenter=presenter,
-            field_storage=field_storage
-        )
-        from ib_tasks.constants.enum import Status
-        boolean_field = Status.ENABLED.value
-        filter_storage.update_filter_status.return_value = boolean_field
-        user_id = "1"
-        filter_id = 1
-
-        is_selected = Status.ENABLED.value
-
-        # Act
-        interactor.update_filter_select_status_wrapper(
-            user_id=user_id, filter_id=filter_id, is_selected=is_selected
-        )
-
-        # Assert
-        presenter.get_response_for_update_filter_status \
-            .assert_called_once_with(filter_id=filter_id, is_selected=is_selected)
-
-    def test_returns_disabled_update_status(
-            self, filter_storage, presenter, field_storage):
-        # Arrange
-        from ib_tasks.interactors.filters.filter_interactor import FilterInteractor
-        interactor = FilterInteractor(
-            filter_storage=filter_storage, presenter=presenter, field_storage=field_storage
-        )
-        from ib_tasks.constants.enum import Status
-        boolean_field = Status.DISABLED.value
-        filter_storage.update_filter_status.return_value = boolean_field
-        user_id = "1"
-        filter_id = 1
-
-        is_selected = Status.DISABLED.value
-
-        # Act
-        interactor.update_filter_select_status_wrapper(
-            user_id=user_id, filter_id=filter_id, is_selected=is_selected
-        )
-
-        # Assert
-        presenter.get_response_for_update_filter_status \
-            .assert_called_once_with(filter_id=filter_id, is_selected=is_selected)

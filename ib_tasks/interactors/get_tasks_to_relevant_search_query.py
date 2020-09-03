@@ -9,8 +9,7 @@ from ib_tasks.exceptions.fields_custom_exceptions import \
     OffsetShouldBeGreaterThanZeroException
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException
-from ib_tasks.interactors.filters.filter_interactor import \
-    InvalidFilterCondition
+from ib_tasks.exceptions.filter_exceptions import InvalidFilterCondition
 from ib_tasks.interactors.presenter_interfaces.get_all_tasks_overview_for_user_presenter_interface import \
     GetFilteredTasksOverviewForUserPresenterInterface
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \

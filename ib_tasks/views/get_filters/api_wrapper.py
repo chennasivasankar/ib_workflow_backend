@@ -11,20 +11,16 @@ def api_wrapper(*args, **kwargs):
     params = kwargs['query_params']
     project_id = params['project_id']
 
-    from ib_tasks.interactors.filters.filter_interactor \
-        import FilterInteractor
     from ib_tasks.storages.filter_storage_implementation \
         import FilterStorageImplementation
     storage = FilterStorageImplementation()
     from ib_tasks.presenters.filter_presenter_implementation \
         import FilterPresenterImplementation
     presenter = FilterPresenterImplementation()
-    from ib_tasks.storages.fields_storage_implementation import \
-        FieldsStorageImplementation
-    interactor = FilterInteractor(
+    from ib_tasks.interactors.filters.get_filters import GetFiltersInteractor
+    interactor = GetFiltersInteractor(
         filter_storage=storage,
-        presenter=presenter,
-        field_storage=FieldsStorageImplementation()
+        presenter=presenter
     )
     response = interactor.get_filters_details_wrapper(
         user_id=user_id, project_id=project_id
