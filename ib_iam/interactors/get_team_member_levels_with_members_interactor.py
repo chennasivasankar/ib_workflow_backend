@@ -76,8 +76,9 @@ class GetTeamMemberLevelsWithMembersInteractor:
             GetTeamMembersOfLevelHierarchyInteractor(
                 team_member_level_storage=self.team_member_level_storage
             )
-        team_member_dtos = team_user_profile_dtos = \
-            team_member_level_id_with_member_ids_dtos = []
+        team_member_dtos = []
+        team_user_profile_dtos = []
+        team_member_level_id_with_member_ids_dtos = []
         for team_member_level_details_dto in team_member_level_details_dtos:
             member_dtos, user_profile_dtos = \
                 get_team_members_of_level_hierarchy_interactor.get_team_members_of_level_hierarchy(

@@ -79,7 +79,7 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
             TeamUser.objects.filter(
                 team_id=team_id,
                 team_member_level__level_hierarchy=level_hierarchy
-            ).values("user_id", "immediate_superior_team_user_id")
+            ).values("user_id", "immediate_superior_team_user__user_id")
 
         member_dtos = [
             MemberDTO(
@@ -87,7 +87,7 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
                     "user_id"],
                 immediate_superior_team_user_id=
                 member_id_with_immediate_superior_user_id_dict[
-                    "immediate_superior_team_user_id"]
+                    "immediate_superior_team_user__user_id"]
             )
             for member_id_with_immediate_superior_user_id_dict in
             member_id_with_immediate_superior_user_id_list
@@ -99,6 +99,14 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
             immediate_superior_user_id_with_member_ids_dtos: List[
                 ImmediateSuperiorUserIdWithUserIdsDTO]
     ):
+        from ib_iam.models import TeamUser
+        for immediate_superior_user_id_with_member_ids_dto in immediate_superior_user_id_with_member_ids_dtos:
+            TeamUser.objects.filter(
+                team_id=team_id,
+                team_member_level__level_hierarchy=member_level_hierarchy,
+                immediate_superior_team_user__user_id=immediate_superior_user_id_with_member_ids_dto.immediate_superior_user_id
+            ).update(immediate_superior_team_user=None)
+
         for immediate_superior_user_id_with_member_ids_dto in immediate_superior_user_id_with_member_ids_dtos:
             self._add_members_to_superior(
                 immediate_superior_user_id_with_member_ids_dto,
