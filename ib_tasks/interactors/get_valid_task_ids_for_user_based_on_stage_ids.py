@@ -30,9 +30,9 @@ class GetTaskIdsOfUserBasedOnStagesInteractor(ValidationMixin):
             project_id: str) \
             -> List[TaskWithCompleteStageDetailsDTO]:
         given_stage_ids = stage_ids
-        self._validate_project_data(
-            project_id=project_id, user_id=user_id, task_ids=task_ids
-        )
+        # self._validate_project_data(
+        #     project_id=project_id, user_id=user_id, task_ids=task_ids
+        # )
         self._validate_given_stage_ids_list_empty(given_stage_ids)
         given_unique_stage_ids = sorted(list(set(given_stage_ids)))
         valid_stage_ids = self.stage_storage. \
