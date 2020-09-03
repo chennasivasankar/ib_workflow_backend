@@ -34,7 +34,8 @@ snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id body'] = {
             }
         ],
         'logo_url': 'url 0',
-        'name': 'company 0'
+        'name': 'company 0',
+        'roles': None
     },
     'cover_page_url': 'url0',
     'email': 'name1@gmail.com',

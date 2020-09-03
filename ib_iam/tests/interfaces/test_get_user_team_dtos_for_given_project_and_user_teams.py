@@ -18,10 +18,10 @@ class TestGetUserTeamDTOSForGivenProjectAndUserTeams:
         from ib_iam.tests.factories.models import ProjectTeamFactory
         ProjectTeamFactory.reset_sequence(0)
         project_team_object = ProjectTeamFactory.create(
-            team_id=team_id, project_id=project_id)
-        from ib_iam.tests.factories.models import UserTeamFactory
-        UserTeamFactory.reset_sequence(0)
-        user_team_object = UserTeamFactory.create(team=team_object,
+            team=team_object, project=project_object)
+        from ib_iam.tests.factories.models import TeamUserFactory
+        TeamUserFactory.reset_sequence(0)
+        user_team_object = TeamUserFactory.create(team=team_object,
                                                   user_id=user_id)
         return project_object, team_object, user_team_object, project_team_object
 
@@ -39,9 +39,9 @@ class TestGetUserTeamDTOSForGivenProjectAndUserTeams:
             project_id=project_id,
             user_id_with_team_id_dtos=[user_team_ids_dto]
         )
-        from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO
+        from ib_iam.interactors.storage_interfaces.dtos import TeamWithUserIdDTO
         expected_result = [
-            UserTeamDTO(user_id=user_id, team_id=team_id, team_name="team 0")
+            TeamWithUserIdDTO(user_id=user_id, team_id=team_id, team_name="team 0")
         ]
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         service_interface = ServiceInterface()
@@ -110,13 +110,13 @@ class TestGetUserTeamDTOSForGivenProjectAndUserTeams:
         team_id = "b953895a-b77b-4a60-b94d-e4ee6a9b8c3a"
         from ib_iam.tests.factories.models import ProjectFactory
         ProjectFactory.reset_sequence(0)
-        ProjectFactory.create(project_id=project_id)
+        project_object = ProjectFactory.create(project_id=project_id)
         from ib_iam.tests.factories.models import TeamFactory
         TeamFactory.reset_sequence(0)
-        TeamFactory.create(team_id=team_id)
+        team_object = TeamFactory.create(team_id=team_id)
         from ib_iam.tests.factories.models import ProjectTeamFactory
         ProjectTeamFactory.reset_sequence(0)
-        ProjectTeamFactory.create(team_id=team_id, project_id=project_id)
+        ProjectTeamFactory.create(team=team_object, project=project_object)
         from ib_iam.app_interfaces.dtos import UserIdWithTeamIdDTO
         user_team_ids_dto = UserIdWithTeamIdDTO(user_id=invalid_user_id,
                                                 team_id=team_id)
