@@ -316,7 +316,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         q = None
         for counter, item in enumerate(task_project_roles):
             current_queue = Q(role__in=item.roles) | Q(role=ALL_ROLES_ID) & \
-                            Q(field__taskgoffield__taskgof__task_id=item.task_id)
+                            Q(field__taskgoffield__task_gof__task_id=item.task_id)
             if counter == 0:
                 q = current_queue
             else:

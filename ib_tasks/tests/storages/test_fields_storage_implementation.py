@@ -1,3 +1,5 @@
+from collections import Iterator
+
 import factory
 import pytest
 
@@ -161,7 +163,8 @@ class TestFieldsStorageImplementation:
             role=factory.Iterator(user_roles),
             field=factory.Iterator(fields)
         )
-        TaskGoFFieldFactory.create_batch()
+        TaskGoFFieldFactory.create_batch(size=3,
+                                         field=factory.Iterator(fields))
 
         field_ids = [field.field_id for field in fields]
 
