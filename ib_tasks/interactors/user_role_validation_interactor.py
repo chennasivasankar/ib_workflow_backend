@@ -73,7 +73,6 @@ class UserRoleValidationInteractor:
 
         return field_ids_having_write_permission_for_user
 
-    @staticmethod
     def get_field_ids_having_permission_for_user(
             self, user_id: str, field_ids: List[str],
             task_project_dtos: List[TaskProjectDTO],
