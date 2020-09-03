@@ -20,7 +20,8 @@ class TestCase01EditUserAPITestCase(TestUtils):
             import reset_sequence_user_details_factory
         reset_sequence_user_details_factory()
         from ib_iam.tests.factories.models import UserDetailsFactory
-        UserDetailsFactory.create(user_id=user_id, is_admin=False, company=None)
+        UserDetailsFactory.create(user_id=user_id, is_admin=False,
+                                  company=None)
 
     @pytest.mark.django_db
     def test_case(self, user_set_up, snapshot):

@@ -1992,7 +1992,8 @@
                   "type":"string",
                   "enum":[
                      "INVALID_TASK_ID",
-                     "INVALID_STAGE_IDS"
+                     "INVALID_STAGE_IDS",
+                     "USER_NOT_IN_PROJECT"
                   ]
                }
             },

@@ -53,9 +53,6 @@ EMPTY_VALUE_FOR_READ_PERMISSIONS = "Read Permission roles shouldn't be empty " \
                                    "" \
                                    "" \
                                    "" \
-                                   "" \
-                                   "" \
-                                   "" \
                                    "for these fields ids {}"
 DUPLICATED_VALUES_FOR_READ_PERMISSIONS = "Repeated roles for read " \
                                          "permissions for these fields {}"
@@ -425,6 +422,7 @@ DUE_DATE_TIME_IS_REQUIRED = (
     "due datetime is required if action type is not no validations",
     "DUE_DATE_TIME_IS_REQUIRED"
 )
+
 
 DUE_DATE_TIME_HAS_EXPIRED = (
     "given due date time {} has expired, please give a valid due date time",

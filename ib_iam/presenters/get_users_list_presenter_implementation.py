@@ -8,7 +8,7 @@ from ib_iam.interactors.presenter_interfaces.dtos import \
     ListOfCompleteUsersWithRolesDTO
 from ib_iam.interactors.presenter_interfaces.get_users_list_presenter_interface \
     import GetUsersListPresenterInterface
-from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, \
+from ib_iam.interactors.storage_interfaces.dtos import TeamWithUserIdDTO, \
     UserCompanyDTO, UserRoleDTO
 
 
@@ -77,7 +77,7 @@ class GetUsersListPresenterImplementation(GetUsersListPresenterInterface,
 
     def _convert_user_response_dict(
             self, user_profile_dto: UserProfileDTO,
-            user_team_dtos: List[UserTeamDTO],
+            user_team_dtos: List[TeamWithUserIdDTO],
             user_company_dto: UserCompanyDTO,
             user_role_dtos: List[UserRoleDTO]):
         user_response_dict = {
@@ -113,7 +113,7 @@ class GetUsersListPresenterImplementation(GetUsersListPresenterInterface,
 
     @staticmethod
     def _get_user_teams(
-            team_dtos: List[UserTeamDTO], user_id: str) -> List[UserTeamDTO]:
+            team_dtos: List[TeamWithUserIdDTO], user_id: str) -> List[TeamWithUserIdDTO]:
         user_teams = [
             user_team
             for user_team in team_dtos if user_team.user_id == user_id]
@@ -140,7 +140,7 @@ class GetUsersListPresenterImplementation(GetUsersListPresenterInterface,
 
     @staticmethod
     def _convert_to_teams_dict(
-            team_dtos: List[UserTeamDTO]) -> List[dict]:
+            team_dtos: List[TeamWithUserIdDTO]) -> List[dict]:
         teams = [
             {
                 "team_id": team_dto.team_id, "team_name": team_dto.team_name

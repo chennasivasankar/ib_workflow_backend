@@ -22,9 +22,9 @@ class TestAddMembersToLevelsForATeam:
             "37be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
 
-        from ib_iam.tests.factories.models import UserTeamFactory
+        from ib_iam.tests.factories.models import TeamUserFactory
         user_team_objects = [
-            UserTeamFactory(
+            TeamUserFactory(
                 user_id=user_id, team_id=team_id
             )
             for user_id in user_ids
@@ -116,8 +116,8 @@ class TestAddMembersToLevelsForATeam:
         )
 
         # Assert
-        from ib_iam.models import UserTeam
-        user_team_details = UserTeam.objects.values(
+        from ib_iam.models import TeamUser
+        user_team_details = TeamUser.objects.values(
             "user_id", "team_member_level_id")
         for user_team_details_dict in user_team_details:
             user_team_details_dict["team_member_level_id"] = \

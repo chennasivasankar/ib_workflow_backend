@@ -1,4 +1,3 @@
-
 import pytest
 
 
@@ -19,7 +18,6 @@ class TestUpdateTaskStages:
         CurrentTaskStageModelFactory.create_batch(size=2, task=task)
 
         storage = StorageImplementation()
-
 
         # Act
         storage.update_task_stages(task_id=task_id, stage_ids=['stage_id_0'])

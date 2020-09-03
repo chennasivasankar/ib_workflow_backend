@@ -161,3 +161,13 @@ class InvalidTeamIds(Exception):
 class InvalidProjectIds(Exception):
     def __init__(self, project_ids):
         self.project_ids = project_ids
+
+
+class InvalidUserIdsForProject(Exception):
+    def __init__(self, user_ids):
+        self.user_ids = user_ids
+
+
+class InvalidRoleIdsForProject(Exception):
+    def __init__(self, role_ids: List[str]):
+        self.role_ids = role_ids

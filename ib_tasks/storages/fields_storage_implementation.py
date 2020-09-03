@@ -15,6 +15,7 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (
     TaskTemplateStageDTO, StageDetailsDTO)
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectRolesDTO
 from ib_tasks.models import CurrentTaskStage, Stage, TaskGoFField, FieldRole, \
     TaskTemplateGoFs, Field
 
@@ -325,6 +326,23 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         ).values_list('field_id', flat=True)
 
         field_ids_list = list(field_ids_queryset)
+        return field_ids_list
+
+    def get_field_ids_permissions_for_user_in_projects(
+            self, task_project_roles: List[TaskProjectRolesDTO],
+            field_ids: List[str]) -> List[str]:
+        q = None
+        for counter, item in enumerate(task_project_roles):
+            current_queue = Q(role__in=item.roles) | Q(role=ALL_ROLES_ID) & \
+                            Q(field__taskgoffield__task_gof__task_id=item.task_id)
+            if counter == 0:
+                q = current_queue
+            else:
+                q = q | current_queue
+
+        field_ids_queryset = (FieldRole.objects.filter(q)
+                              .values_list('field_id', flat=True))
+        field_ids_list = list(set(field_ids_queryset))
         return field_ids_list
 
     def check_is_user_has_read_permission_for_field(

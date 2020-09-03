@@ -1,7 +1,8 @@
 import pytest
 
 from ib_iam.models.project_role import ProjectRole
-from ib_iam.storages.roles_storage_implementation import RolesStorageImplementation
+from ib_iam.storages.roles_storage_implementation import \
+    RolesStorageImplementation
 
 
 class TestCreateRoles:
@@ -16,9 +17,13 @@ class TestCreateRoles:
             import reset_sequence_for_role_dto_factory
         reset_sequence_for_role_dto_factory()
         role_dtos = RoleDTOFactory.create_batch(objects_count)
+        project_id = "1"
+        from ib_iam.tests.factories.models import ProjectFactory
+        ProjectFactory.reset_sequence(0)
+        ProjectFactory.create(project_id=project_id)
 
         # Act
-        storage.create_roles(role_dtos=role_dtos)
+        storage.create_roles(role_dtos=role_dtos, project_id=project_id)
 
         # Assert
         current_storage_len = ProjectRole.objects.count()

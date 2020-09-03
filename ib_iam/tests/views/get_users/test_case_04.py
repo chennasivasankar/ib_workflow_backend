@@ -14,7 +14,7 @@ from ib_iam.tests.common_fixtures.reset_fixture import \
     reset_sequence_for_user_profile_dto_factory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import UserDetailsFactory, UserRoleFactory, \
-    ProjectRoleFactory, CompanyFactory, UserTeamFactory, TeamFactory
+    ProjectRoleFactory, CompanyFactory, TeamUserFactory, TeamFactory
 
 
 class TestCase04GetUsersAPITestCase(TestUtils):
@@ -105,7 +105,7 @@ class TestCase04GetUsersAPITestCase(TestUtils):
             reset_sequence_team_factory, reset_sequence_user_team_factory
         reset_sequence_team_factory()
         reset_sequence_user_team_factory()
-        user_team_objects = [UserTeamFactory.create(
+        user_team_objects = [TeamUserFactory.create(
             user_id=user_team["user_id"],
             team=self._get_or_create_team(team_id=user_team["team_id"])
         ) for user_team in user_teams]
@@ -128,7 +128,7 @@ class TestCase04GetUsersAPITestCase(TestUtils):
             },
             {
                 "user_id": "7e39bf1c-f9a5-4e76-8451-b962ddd52044",
-                "role_id": "b9d000c7-c14f-4909-8c5a-6a6c02abb222s"
+                "role_id": "b9d000c7-c14f-4909-8c5a-6a6c02abb222"
             }
         ]
         from ib_iam.tests.common_fixtures.reset_fixture import \
