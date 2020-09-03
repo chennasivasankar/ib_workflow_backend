@@ -272,7 +272,7 @@ class TestSaveAndActOnATaskInteractor:
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
             action_id=given_action_id, priority=None)
         storage_mock.validate_action.return_value = True
-        action_storage_mock.get_action_type_for_given_action_id.return_value\
+        action_storage_mock.get_action_type_for_given_action_id.return_value \
             = "DO_VALIDATIONS"
         from ib_tasks.exceptions.task_custom_exceptions import \
             PriorityIsRequired
@@ -294,6 +294,130 @@ class TestSaveAndActOnATaskInteractor:
         assert response == mock_object
         storage_mock.validate_action.assert_called_once_with(given_action_id)
         presenter_mock.raise_priority_is_required.assert_called_once()
+
+    def test_with_due_datetime_without_start_date(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock,
+            action_storage_mock, task_stage_storage_mock,
+            presenter_mock, mock_object, update_task_mock
+    ):
+        # Arrange
+        given_action_id = 1
+        given_due_datetime = datetime.datetime(2020, 9, 9)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            action_id=given_action_id, start_datetime=None,
+            due_datetime=given_due_datetime)
+        storage_mock.validate_action.return_value = True
+        action_storage_mock.get_action_type_for_given_action_id.return_value \
+            = "DO_VALIDATIONS"
+        from ib_tasks.exceptions.datetime_custom_exceptions import \
+            DueDateTimeWithoutStartDateTimeIsNotValid
+        update_task_mock.side_effect = \
+            DueDateTimeWithoutStartDateTimeIsNotValid(given_due_datetime)
+        interactor = SaveAndActOnATaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
+        presenter_mock.raise_due_date_time_without_start_datetime \
+            .return_value = mock_object
+
+        # Act
+        response = interactor.save_and_act_on_task_wrapper(presenter_mock,
+                                                           task_dto)
+
+        # Assert
+        assert response == mock_object
+        storage_mock.validate_action.assert_called_once_with(given_action_id)
+        presenter_mock.raise_due_date_time_without_start_datetime \
+            .assert_called_once()
+        call_args = \
+            presenter_mock.raise_due_date_time_without_start_datetime.call_args
+        error_object = call_args[0][0]
+        due_datetime = error_object.due_datetime
+        assert due_datetime == given_due_datetime
+
+    def test_without_start_datetime_when_action_type_is_no_validations(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock,
+            action_storage_mock, task_stage_storage_mock,
+            presenter_mock, mock_object, update_task_mock
+    ):
+        # Arrange
+        given_action_id = 1
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            action_id=given_action_id, start_datetime=None,
+            due_datetime=None)
+        storage_mock.validate_action.return_value = True
+        action_storage_mock.get_action_type_for_given_action_id.return_value \
+            = "DO_VALIDATIONS"
+        from ib_tasks.exceptions.datetime_custom_exceptions import \
+            StartDateTimeIsRequired
+        update_task_mock.side_effect = \
+            StartDateTimeIsRequired
+        interactor = SaveAndActOnATaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
+        presenter_mock.raise_start_date_time_is_required \
+            .return_value = mock_object
+
+        # Act
+        response = interactor.save_and_act_on_task_wrapper(presenter_mock,
+                                                           task_dto)
+
+        # Assert
+        assert response == mock_object
+        storage_mock.validate_action.assert_called_once_with(given_action_id)
+        presenter_mock.raise_start_date_time_is_required \
+            .assert_called_once()
+
+    def test_without_due_datetime_when_action_type_is_no_validations(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock,
+            action_storage_mock, task_stage_storage_mock,
+            presenter_mock, mock_object, update_task_mock
+    ):
+        # Arrange
+        given_action_id = 1
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            action_id=given_action_id, due_datetime=None)
+        storage_mock.validate_action.return_value = True
+        action_storage_mock.get_action_type_for_given_action_id.return_value \
+            = "DO_VALIDATIONS"
+        from ib_tasks.exceptions.datetime_custom_exceptions import \
+            DueDateTimeIsRequired
+        update_task_mock.side_effect = DueDateTimeIsRequired
+        interactor = SaveAndActOnATaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
+        presenter_mock.raise_due_date_time_is_required \
+            .return_value = mock_object
+
+        # Act
+        response = interactor.save_and_act_on_task_wrapper(presenter_mock,
+                                                           task_dto)
+
+        # Assert
+        assert response == mock_object
+        storage_mock.validate_action.assert_called_once_with(given_action_id)
+        presenter_mock.raise_due_date_time_is_required \
+            .assert_called_once()
 
     def test_with_start_date_is_ahead_of_due_date(
             self, task_storage_mock, gof_storage_mock,
