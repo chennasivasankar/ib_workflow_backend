@@ -339,6 +339,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                 q = current_queue
             else:
                 q = q | current_queue
+        if q is None:
+            return []
 
         field_ids_queryset = (FieldRole.objects.filter(q)
                               .values_list('field_id', flat=True))
