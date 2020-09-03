@@ -14,8 +14,8 @@ def api_wrapper(*args, **kwargs):
     from ib_iam.interactors.dtos.dtos import TeamMemberLevelIdWithMemberIdsDTO
     team_member_level_id_with_member_ids_dtos = [
         TeamMemberLevelIdWithMemberIdsDTO(
-            team_member_level_id=member_dict["team_member_level_id"],
-            member_ids=member_dict["member_ids"]
+            team_member_level_id=str(member_dict["team_member_level_id"]),
+            member_ids=list(map(str, member_dict["member_ids"]))
         )
         for member_dict in members
     ]
