@@ -24,14 +24,14 @@ class ActionsStorageImplementation(ActionStorageInterface):
             self, action_id) -> Optional[InvalidActionException]:
         try:
             StageAction.objects.get(id=action_id)
-        except StageAction.DoesNotExists:
+        except StageAction.DoesNotExist:
             raise InvalidActionException(action_id)
         return
 
     def validate_stage_id(self, stage_id) -> Optional[InvalidStageId]:
         try:
             Stage.objects.get(id=stage_id)
-        except Stage.DoesNotExists:
+        except Stage.DoesNotExist:
             raise InvalidStageId(stage_id)
         return
 

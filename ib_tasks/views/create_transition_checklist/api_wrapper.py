@@ -67,7 +67,7 @@ def api_wrapper(*args, **kwargs):
         gof_storage=gof_storage, storage=storage, field_storage=field_storage,
         stage_action_storage=stage_action_storage
     )
-    interactor.create_transition_checklist_wrapper(
+    return interactor.create_transition_checklist_wrapper(
         transition_template_dto, presenter
     )
 
