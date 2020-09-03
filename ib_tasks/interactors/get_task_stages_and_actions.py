@@ -29,13 +29,15 @@ class GetTaskStagesAndActions:
         if is_invalid:
             raise InvalidTaskIdException(task_id)
 
+        project_id = self.task_storage.get_task_project_id(task_id)
         stage_ids = self.storage.get_task_stages(task_id)
         stage_details_dtos = self.storage.get_stage_complete_details(
             stage_ids)
         user_roles_interactor = UserRoleValidationInteractor()
         permitted_action_ids = user_roles_interactor. \
             get_permitted_action_ids_for_given_user_id(
-            action_storage=self.action_storage, user_id=user_id, stage_ids=stage_ids)
+            action_storage=self.action_storage, user_id=user_id,
+            stage_ids=stage_ids, project_id=project_id)
 
         stage_actions_dtos = self.action_storage.get_actions_details(permitted_action_ids)
 

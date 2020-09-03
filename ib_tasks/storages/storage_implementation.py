@@ -532,6 +532,10 @@ class StorageImplementation(StorageInterface):
 
         return Task.objects.filter(id=task_id).exists()
 
+    def get_task_project_id(self, task_id: int) -> str:
+        task = Task.objects.get(id=task_id)
+        return task.project_id
+
     def get_status_variables_to_task(
             self, task_id: int) -> List[StatusVariableDTO]:
 
