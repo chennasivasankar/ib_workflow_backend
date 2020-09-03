@@ -283,7 +283,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         action_roles = self.storage.get_action_roles(action_id=self.action_id)
         self._validate_present_task_stage_actions(task_id=task_id)
         self._validate_user_permission_to_user(
-            self.user_id, action_roles, self.action_id
+            self.user_id, action_roles, self.action_id, project_id=project_id
         )
 
     def _validate_present_task_stage_actions(self, task_id: int):
@@ -317,13 +317,13 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
     @staticmethod
     def _validate_user_permission_to_user(user_id: str,
                                           action_roles: List[str],
-                                          action_id: int):
+                                          action_id: int, project_id: str):
 
         from ib_tasks.interactors.user_role_validation_interactor \
             import UserRoleValidationInteractor
         interactor = UserRoleValidationInteractor()
         permit = interactor.does_user_has_required_permission(
-            user_id=user_id, role_ids=action_roles
+            user_id=user_id, role_ids=action_roles, project_id=project_id
         )
         is_permission_denied = not permit
         if is_permission_denied:

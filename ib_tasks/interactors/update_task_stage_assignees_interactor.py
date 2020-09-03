@@ -24,6 +24,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.user_role_validation_interactor import \
     UserRoleValidationInteractor
+from ib_tasks.adapters.roles_service import UserNotAMemberOfAProjectException
 
 
 class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
@@ -57,9 +58,8 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
         except VirtualStageIdsException as exception:
             return presenter.raise_virtual_stage_ids_exception(
                 virtual_stage_ids=exception.virtual_stage_ids)
-        except InvalidUserIdException as exception:
-            return presenter.raise_invalid_user_id_exception(user_id=
-                                                             exception.user_id)
+        except UserNotAMemberOfAProjectException:
+            return presenter.raise_invalid_user_id_exception()
 
         except StageIdsWithInvalidPermissionForAssignee as exception:
             return presenter. \
@@ -75,8 +75,12 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
     def validations_of_request(self,
                                task_id_with_stage_assignees_dto:
                                TaskIdWithStageAssigneesDTO):
+        task_id = task_id_with_stage_assignees_dto.task_id
+        project_id = self.task_storage.get_project_id_for_the_task_id(task_id=
+                                                                      task_id)
         stage_ids = self._get_stage_ids_from_given_dto(
             task_id_with_stage_assignees_dto)
+
         self._check_duplicate_stage_ids(stage_ids)
         stage_dtos = self.stage_storage. \
             get_valid_db_stage_ids_with_stage_value(stage_ids)
@@ -101,7 +105,8 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
                 task_id_with_stage_assignees_dto
             )
         self._validate_does_given_assignee_of_stage_ids_have_valid_permission(
-            role_ids_and_assignee_id_group_by_stage_id_dtos)
+            role_ids_and_assignee_id_group_by_stage_id_dtos,
+            project_id=project_id)
         return
 
     def update_task_stage_assignees(
@@ -144,7 +149,6 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_id=task_id,
             db_stage_ids=matched_stage_ids_in_stage_assignee_dtos)
 
-
         task_id_with_stage_assignee_dtos_for_creation = self. \
             _get_task_id_with_stage_assignee_dtos_given_task_stage_ids(
             stage_ids_that_are_not_matched, task_id_with_stage_assignees_dto)
@@ -178,7 +182,7 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
     @staticmethod
     def _validate_does_given_assignee_of_stage_ids_have_valid_permission(
             role_ids_and_assignee_id_group_by_stage_id_dtos: List[
-                StageIdWithRoleIdsAndAssigneeIdDTO]):
+                StageIdWithRoleIdsAndAssigneeIdDTO], project_id: str):
         stage_ids_with_invalid_permission_for_assignee_id = []
         user_role_validation_interactor = UserRoleValidationInteractor()
         for each_stage_id_with_role_ids_and_assignee_id_dto in \
@@ -190,7 +194,7 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
                     user_id=each_stage_id_with_role_ids_and_assignee_id_dto.
                         assignee_id,
                     role_ids=each_stage_id_with_role_ids_and_assignee_id_dto.
-                        role_ids)
+                        role_ids, project_id=project_id)
             user_doesnt_has_required_permission = not \
                 user_has_required_permission
             if user_doesnt_has_required_permission:
@@ -210,7 +214,6 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
     ) -> List[StageIdWithRoleIdsAndAssigneeIdDTO]:
         role_ids_and_assignee_id_group_by_stage_id_dtos = []
         for each_stage_id in stage_ids:
-
             list_of_role_ids = []
             for each_stage_role_dto in \
                     stage_role_dtos:

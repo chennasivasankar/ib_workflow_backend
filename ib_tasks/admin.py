@@ -36,7 +36,6 @@ admin.site.register(CurrentTaskStage)
 admin.site.register(TaskGoF)
 admin.site.register(TaskGoFField)
 admin.site.register(TaskTemplateGoFs)
-admin.site.register(TaskStageHistory)
 admin.site.register(UserTaskDelayReason)
 admin.site.register(ProjectTaskTemplate)
 admin.site.register(TaskStageRp)
@@ -68,6 +67,12 @@ class StagesActionsAdmin(admin.ModelAdmin):
 class TaskAdmin(admin.ModelAdmin):
     inlines = [TaskStageInline, TaskGoFInline]
 
+
+class TaskStageHistoryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'task', 'stage', 'team_id', 'assignee_id')
+
+
+admin.site.register(TaskStageHistory, TaskStageHistoryAdmin)
 
 admin.site.register(Task, TaskAdmin)
 

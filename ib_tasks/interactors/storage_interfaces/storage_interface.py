@@ -20,6 +20,9 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_task_project_id(self, task_id: int) -> str:
+        pass
+    @abc.abstractmethod
     def get_status_variables_to_task(
             self, task_id: int) -> List[StatusVariableDTO]:
         pass
