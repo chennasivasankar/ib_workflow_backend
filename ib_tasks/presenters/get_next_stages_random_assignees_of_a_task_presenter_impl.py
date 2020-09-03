@@ -25,15 +25,6 @@ class GetNextStagesRandomAssigneesOfATaskPresenterImpl(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_invalid_task_id_exception(self, task_id: int):
-        from ib_tasks.constants.exception_messages import INVALID_TASK_ID
-        data = {
-            "response": INVALID_TASK_ID[0].format(task_id),
-            "http_status_code": 404,
-            "res_status": INVALID_TASK_ID[1]
-        }
-        return self.prepare_404_not_found_response(data)
-
     def raise_exception_for_invalid_action(self, action_id: int):
         from ib_tasks.constants.exception_messages import INVALID_ACTION_ID
         response_message = INVALID_ACTION_ID[0].format(action_id)
