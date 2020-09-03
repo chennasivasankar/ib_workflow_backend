@@ -39,20 +39,10 @@ class GetTaskFieldsAndActionsInteractor:
                                    user_id: str, view_type: ViewType) -> \
             List[GetTaskStageCompleteDetailsDTO]:
 
-        task_ids = [task.task_id for task in task_dtos]
-        stage_ids = [task.stage_id for task in task_dtos]
-
-        unique_task_ids = list(sorted(set(task_ids)))
-        unique_stage_ids = list(sorted(set(stage_ids)))
-
-        valid_task_ids = self.task_storage.get_valid_task_ids(unique_task_ids)
-        self._validate_task_ids(unique_task_ids, valid_task_ids)
+        task_ids = self.validate_task_ids(task_dtos)
 
         stage_task_dtos = task_dtos
-        valid_stage_ids = self.stage_storage.get_existing_stage_ids(
-            unique_stage_ids)
-
-        self._validate_stage_ids(unique_stage_ids, valid_stage_ids)
+        stage_ids = self.validate_stage_ids(task_dtos)
         valid_stage_and_tasks = self.task_storage.validate_task_related_stage_ids(
             task_dtos)
         self._validate_stage_and_tasks(valid_stage_and_tasks, task_dtos)
@@ -87,6 +77,29 @@ class GetTaskFieldsAndActionsInteractor:
             action_dtos, field_dtos, stage_fields_dtos)
         return task_details_dtos
 
+    def validate_stage_ids(self, task_dtos):
+        stage_ids = [task.stage_id for task in task_dtos]
+        unique_stage_ids = list(sorted(set(stage_ids)))
+
+        valid_stage_ids = self.stage_storage.get_existing_stage_ids(
+            unique_stage_ids)
+        invalid_stage_ids = [
+            stage_id for stage_id in stage_ids
+            if stage_id not in valid_stage_ids
+        ]
+        if invalid_stage_ids:
+            from ib_tasks.exceptions.stage_custom_exceptions import \
+                InvalidStageIdsListException
+            raise InvalidStageIdsListException(invalid_stage_ids)
+        return valid_stage_ids
+
+    def validate_task_ids(self, task_dtos):
+        task_ids = [task.task_id for task in task_dtos]
+        unique_task_ids = list(sorted(set(task_ids)))
+        valid_task_ids = self.task_storage.get_valid_task_ids(unique_task_ids)
+        self._validate_task_ids(unique_task_ids, valid_task_ids)
+        return task_ids
+
     @staticmethod
     def _get_field_ids(stage_fields_dtos: List[TaskTemplateStageFieldsDTO]):
         field_ids_list = []
@@ -117,18 +130,6 @@ class GetTaskFieldsAndActionsInteractor:
         return StageTaskFieldsDTO(task_id=task.task_id,
                                   stage_id=stage.stage_id,
                                   field_ids=valid_field_ids)
-
-    @staticmethod
-    def _validate_stage_ids(stage_ids, valid_stage_ids):
-        invalid_stage_ids = [
-            stage_id for stage_id in stage_ids
-            if stage_id not in valid_stage_ids
-        ]
-        if invalid_stage_ids:
-            from ib_tasks.exceptions.stage_custom_exceptions import \
-                InvalidStageIdsListException
-            raise InvalidStageIdsListException(invalid_stage_ids)
-        return
 
     @staticmethod
     def _validate_task_ids(task_ids, valid_task_ids):

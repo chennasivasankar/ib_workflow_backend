@@ -58,4 +58,12 @@ class RolesService:
     def get_user_role_ids_based_on_given_project_ids(
             self, user_id, project_ids: List[str]) -> \
             List[ProjectRolesDTO]:
-        raise NotImplementedError
+        # raise NotImplementedError
+        project_roles = [
+            ProjectRolesDTO(
+                project_id=project_id,
+                roles=self.get_user_role_ids_based_on_project(user_id, project_id)
+            )
+            for project_id in project_ids
+        ]
+        return project_roles
