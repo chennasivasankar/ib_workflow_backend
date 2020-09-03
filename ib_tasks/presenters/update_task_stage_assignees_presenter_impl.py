@@ -1,7 +1,6 @@
 from typing import List
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
-
 from ib_tasks.interactors.presenter_interfaces \
     .update_task_stage_assignees_presenter_interface import \
     UpdateTaskStageAssigneesPresenterInterface
@@ -54,12 +53,12 @@ class UpdateTaskStageAssigneesPresenterImplementation(
         response_object = self.prepare_400_bad_request_response(response_dict)
         return response_object
 
-    def raise_invalid_user_id_exception(self, user_id: str):
-        from ib_tasks.constants.exception_messages import INVALID_USER_ID
+    def raise_invalid_user_id_exception(self):
+        from ib_tasks.constants.exception_messages import USER_NOT_IN_PROJECT
         response_dict = {
-            "response": INVALID_USER_ID[0].format(user_id),
+            "response": USER_NOT_IN_PROJECT[0],
             "http_status_code": 404,
-            "res_status": INVALID_USER_ID[1]
+            "res_status": USER_NOT_IN_PROJECT[1]
         }
         response_object = self.prepare_404_not_found_response(response_dict)
         return response_object

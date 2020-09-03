@@ -24,6 +24,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.user_role_validation_interactor import \
     UserRoleValidationInteractor
+from ib_tasks.adapters.roles_service import UserNotAMemberOfAProjectException
 
 
 class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
@@ -57,9 +58,8 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
         except VirtualStageIdsException as exception:
             return presenter.raise_virtual_stage_ids_exception(
                 virtual_stage_ids=exception.virtual_stage_ids)
-        except InvalidUserIdException as exception:
-            return presenter.raise_invalid_user_id_exception(user_id=
-                                                             exception.user_id)
+        except UserNotAMemberOfAProjectException:
+            return presenter.raise_invalid_user_id_exception()
 
         except StageIdsWithInvalidPermissionForAssignee as exception:
             return presenter. \

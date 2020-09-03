@@ -27,5 +27,5 @@ class UpdateTaskStageAssigneesPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_user_id_exception(self, user_id: str):
+    def raise_invalid_user_id_exception(self):
         pass
