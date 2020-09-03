@@ -5,7 +5,6 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     InvalidDueTimeFormat, StartDateIsAheadOfDueDate, \
-    DueDateIsBehindStartDate, \
     DueTimeHasExpiredForToday, DueDateHasExpired
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField, InvalidPhoneNumberValue, \
@@ -23,10 +22,11 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserBoardPermissionDenied, UserActionPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import \
-    StageIdsWithInvalidPermissionForAssignee, InvalidStageId
+    StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
+    InvalidStageIdsListException, StageIdsListEmptyException
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, TaskDelayReasonIsNotUpdated
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.presenter_interfaces \
@@ -41,6 +41,42 @@ from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 class SaveAndActOnATaskPresenterImplementation(
     SaveAndActOnATaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_task_delay_reason_not_updated(self,
+                                            err: TaskDelayReasonIsNotUpdated):
+        from ib_tasks.constants.exception_messages import \
+            TASK_DELAY_REASON_NOT_UPDATED
+        message = TASK_DELAY_REASON_NOT_UPDATED[0].format(
+            err.task_display_id, err.stage_display_name, err.due_date)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": TASK_DELAY_REASON_NOT_UPDATED[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_stage_ids_list_empty_exception(self,
+                                             err: StageIdsListEmptyException):
+        from ib_tasks.constants.exception_messages import \
+            EMPTY_STAGE_IDS_ARE_INVALID
+        data = {
+            "response": EMPTY_STAGE_IDS_ARE_INVALID[0],
+            "http_status_code": 400,
+            "res_status": EMPTY_STAGE_IDS_ARE_INVALID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_stage_ids_list_exception(self,
+                                               err:
+                                               InvalidStageIdsListException):
+        from ib_tasks.constants.exception_messages import INVALID_STAGE_IDS
+        message = INVALID_STAGE_IDS[0].format(err.invalid_stage_ids)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_STAGE_IDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_duplicate_same_gof_orders_for_a_gof(self, err):
         from ib_tasks.constants.exception_messages import \

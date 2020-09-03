@@ -7,10 +7,12 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase41UpdateTaskAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase41UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase41UpdateTaskAPITestCase.test_case body'] = {
-    'message': 'task updated successfully'
+    'http_status_code': 400,
+    'res_status': 'EMPTY_STAGE_IDS_ARE_INVALID',
+    'response': 'Stage Ids list should not be empty'
 }
 
 snapshots['TestCase41UpdateTaskAPITestCase.test_case task_title'] = 'updated_title'

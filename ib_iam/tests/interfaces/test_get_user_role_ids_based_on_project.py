@@ -83,6 +83,18 @@ class TestGetUserRoleIdsBasedOnProject:
             "001bfcc5-e1ea-4231-b482-f7f34fb5c7c4",
             "011bfcc5-e1ea-4231-b482-f7f34fb5c7c5"
         ]
+        team_id = "001bfcc5-e1ea-4231-b482-f7f34fb5c7c8"
+        from ib_iam.tests.factories.models import TeamFactory
+        TeamFactory.reset_sequence(0)
+        team_object = TeamFactory.create(team_id=team_id)
+        from ib_iam.tests.factories.models import ProjectTeamFactory
+        ProjectTeamFactory.reset_sequence(0)
+        project_team_object = ProjectTeamFactory.create(
+            team=team_object, project=project_objects[0])
+        from ib_iam.tests.factories.models import TeamUserFactory
+        TeamUserFactory.reset_sequence(0)
+        team_user_object = TeamUserFactory.create(
+            user_id=user_ids[0], team=team_object)
         from ib_iam.tests.factories.models import UserRoleFactory
         UserRoleFactory(
             user_id=user_ids[0],
@@ -96,4 +108,6 @@ class TestGetUserRoleIdsBasedOnProject:
             user_id=user_ids[1],
             project_role=project_role_objects[2]
         )
-        return project_objects
+        return (
+            project_objects, team_object, project_team_object, team_user_object
+        )

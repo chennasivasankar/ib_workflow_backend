@@ -1,7 +1,9 @@
 import abc
 from typing import List
 
-from ib_iam.documents.elastic_docs import ElasticUserDTO, ElasticCountryDTO, ElasticStateDTO, ElasticCityDTO
+from ib_iam.documents.elastic_docs import (
+    ElasticCountryDTO, ElasticStateDTO, ElasticCityDTO
+)
 
 
 class ElasticSearchStorageInterface(abc.ABC):

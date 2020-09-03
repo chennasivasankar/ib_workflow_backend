@@ -4,7 +4,6 @@ Author: Pavankumar Pamuru
 
 """
 import abc
-from abc import ABC
 from typing import List, Optional
 
 from ib_tasks.adapters.dtos import ProjectRolesDTO
@@ -20,7 +19,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectRolesDTO
 
 
-class ActionStorageInterface(ABC):
+class ActionStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_stage_action_names(

@@ -11,5 +11,5 @@ class Company(models.Model):
     company_id = models.UUIDField(primary_key=True, default=generate_uuid4,
                                   editable=False)
     name = models.CharField(max_length=1000)
-    description = models.CharField(max_length=1000, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     logo_url = models.URLField(max_length=1000, null=True, blank=True)
