@@ -354,15 +354,13 @@ class CreateTaskInteractor:
     ):
         start_datetime = task_dto.start_datetime
         due_datetime = task_dto.due_datetime
+        self._validate_due_datetime_without_start_datetime(
+            start_datetime, due_datetime)
         action_type_is_no_validations = \
             action_type == ActionTypes.NO_VALIDATIONS.value
         self._validate_priority_in_no_validations_case(
             task_dto.priority, action_type_is_no_validations)
-        empty_values_given = not start_datetime and not due_datetime
         if action_type_is_no_validations:
-            if not empty_values_given:
-                self._validate_due_datetime_without_start_datetime(
-                    start_datetime, due_datetime)
             return
         start_datetime_is_emtpy = not start_datetime
         due_datetime_is_empty = not due_datetime
@@ -373,7 +371,7 @@ class CreateTaskInteractor:
         self._validate_start_date_and_due_date_dependencies(
             start_datetime, due_datetime)
         import datetime
-        due_datetime_is_expired = due_datetime < datetime.datetime.now()
+        due_datetime_is_expired = due_datetime <= datetime.datetime.now()
         if due_datetime_is_expired:
             raise DueDateTimeHasExpired(due_datetime)
 
@@ -410,6 +408,6 @@ class CreateTaskInteractor:
             priority: Priority, action_type_is_no_validations: bool
     ) -> Optional[PriorityIsRequired]:
         priority_is_not_given = not priority
-        if priority_is_not_given and not action_type_is_no_validations:
+        if priority_is_not_given and action_type_is_no_validations:
             raise PriorityIsRequired()
         return

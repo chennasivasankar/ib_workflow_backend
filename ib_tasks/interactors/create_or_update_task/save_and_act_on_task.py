@@ -250,13 +250,14 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         update_task_dto = UpdateTaskDTO(
             task_id=task_dto.task_id, created_by_id=task_dto.created_by_id,
             title=task_dto.title, description=task_dto.description,
-            start_date=task_dto.start_date, due_date=task_dto.due_date,
-            due_time=task_dto.due_time, priority=task_dto.priority,
+            start_datetime=task_dto.start_datetime,
+            due_datetime=task_dto.due_datetime, priority=task_dto.priority,
             stage_assignee=task_dto.stage_assignee,
-            gof_fields_dtos=task_dto.gof_fields_dtos
+            gof_fields_dtos=task_dto.gof_fields_dtos,
+            action_type=action_type
         )
         all_tasks_overview_details_dto = \
-            update_task_interactor.update_task(update_task_dto, action_type)
+            update_task_interactor.update_task(update_task_dto)
         act_on_task_interactor = UserActionOnTaskInteractor(
             user_id=task_dto.created_by_id, board_id=None,
             task_storage=self.task_storage,

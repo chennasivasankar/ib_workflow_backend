@@ -259,7 +259,7 @@ class TestSaveAndActOnATaskInteractor:
         invalid_stage_id = error_object.stage_id
         assert invalid_stage_id == given_stage_id
 
-    def test_with_invalid_due_time_format(
+    def test_with_priority_value_none_when_action_type_is_not_no_validations(
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
@@ -268,12 +268,15 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock, mock_object, update_task_mock
     ):
         # Arrange
-        given_due_time = "12-00-00"
+        given_action_id = 1
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
-            due_time=given_due_time)
-        from ib_tasks.exceptions.datetime_custom_exceptions import \
-            InvalidDueTimeFormat
-        update_task_mock.side_effect = InvalidDueTimeFormat(given_due_time)
+            action_id=given_action_id, priority=None)
+        storage_mock.validate_action.return_value = True
+        action_storage_mock.get_action_type_for_given_action_id.return_value\
+            = "DO_VALIDATIONS"
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            PriorityIsRequired
+        update_task_mock.side_effect = PriorityIsRequired
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
@@ -281,7 +284,7 @@ class TestSaveAndActOnATaskInteractor:
             action_storage=action_storage_mock,
             elastic_storage=elastic_storage_mock,
             task_stage_storage=task_stage_storage_mock)
-        presenter_mock.raise_invalid_due_time_format.return_value = mock_object
+        presenter_mock.raise_priority_is_required.return_value = mock_object
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(presenter_mock,
@@ -289,11 +292,8 @@ class TestSaveAndActOnATaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_invalid_due_time_format.assert_called_once()
-        call_args = presenter_mock.raise_invalid_due_time_format.call_args
-        error_object = call_args[0][0]
-        invalid_due_time = error_object.due_time
-        assert invalid_due_time == given_due_time
+        storage_mock.validate_action.assert_called_once_with(given_action_id)
+        presenter_mock.raise_priority_is_required.assert_called_once()
 
     def test_with_start_date_is_ahead_of_due_date(
             self, task_storage_mock, gof_storage_mock,
@@ -304,14 +304,15 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock, mock_object, update_task_mock
     ):
         # Arrange
-        given_start_date = datetime.date(2020, 9, 1)
-        given_due_date = datetime.date(2020, 8, 1)
+        given_start_datetime = datetime.datetime(2020, 9, 1)
+        given_due_datetime = datetime.datetime(2020, 8, 1)
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
-            start_date=given_start_date, due_date=given_due_date)
+            start_datetime=given_start_datetime,
+            due_datetime=given_due_datetime)
         from ib_tasks.exceptions.datetime_custom_exceptions import \
             StartDateIsAheadOfDueDate
         update_task_mock.side_effect = StartDateIsAheadOfDueDate(
-            given_start_date, given_due_date)
+            given_start_datetime, given_due_datetime)
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
@@ -335,8 +336,8 @@ class TestSaveAndActOnATaskInteractor:
         error_object = call_args[0][0]
         invalid_start_date = error_object.given_start_date
         invalid_due_date = error_object.given_due_date
-        assert invalid_start_date == given_start_date
-        assert invalid_due_date == given_due_date
+        assert invalid_start_date == given_start_datetime
+        assert invalid_due_date == given_due_datetime
 
     def test_with_expired_due_time_for_today(
             self, task_storage_mock, gof_storage_mock,
@@ -347,13 +348,12 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock, mock_object, update_task_mock
     ):
         # Arrange
-        given_due_time = "12-00-00"
-        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
-            due_time=given_due_time)
+        given_due_datetime = datetime.datetime(2020, 9, 9)
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         from ib_tasks.exceptions.datetime_custom_exceptions import \
-            DueTimeHasExpiredForToday
-        update_task_mock.side_effect = DueTimeHasExpiredForToday(
-            given_due_time)
+            DueDateTimeHasExpired
+        update_task_mock.side_effect = DueDateTimeHasExpired(
+            given_due_datetime)
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
@@ -361,7 +361,7 @@ class TestSaveAndActOnATaskInteractor:
             action_storage=action_storage_mock,
             elastic_storage=elastic_storage_mock,
             task_stage_storage=task_stage_storage_mock)
-        presenter_mock.raise_due_time_has_expired_for_today.return_value = \
+        presenter_mock.raise_due_date_time_has_expired.return_value = \
             mock_object
 
         # Act
@@ -370,13 +370,13 @@ class TestSaveAndActOnATaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_due_time_has_expired_for_today \
+        presenter_mock.raise_due_date_time_has_expired \
             .assert_called_once()
-        call_args = presenter_mock.raise_due_time_has_expired_for_today \
+        call_args = presenter_mock.raise_due_date_time_has_expired \
             .call_args
         error_object = call_args[0][0]
-        invalid_due_time = error_object.due_time
-        assert invalid_due_time == given_due_time
+        invalid_due_time = error_object.due_datetime
+        assert invalid_due_time == given_due_datetime
 
     def test_with_duplicate_same_gof_order(
             self, task_storage_mock, gof_storage_mock,
@@ -1966,7 +1966,7 @@ class TestSaveAndActOnATaskInteractor:
         assert response == mock_object
         presenter_mock.raise_invalid_stage_ids_list_exception \
             .assert_called_once()
-        call_args = presenter_mock.raise_invalid_stage_ids_list_exception\
+        call_args = presenter_mock.raise_invalid_stage_ids_list_exception \
             .call_args
         error_object = call_args[0][0]
         invalid_stage_ids = error_object.invalid_stage_ids

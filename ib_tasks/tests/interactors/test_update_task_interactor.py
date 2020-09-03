@@ -245,7 +245,7 @@ class TestUpdateTaskInteractor:
         invalid_stage_id = error_object.stage_id
         assert invalid_stage_id == given_stage_id
 
-    def test_with_invalid_due_time_format(
+    def test_with_priority_none_when_action_type_is_no_validations(
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
@@ -253,19 +253,13 @@ class TestUpdateTaskInteractor:
             task_stage_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
-        given_due_time = "12-12-12"
-        given_task_display_id = "task_1"
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            task_display_id=given_task_display_id, due_time=given_due_time)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(priority=None)
         task_id = 1
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        task_storage_mock.check_is_valid_task_display_id.return_value = True
-        task_storage_mock.get_task_id_for_task_display_id.return_value = \
-            task_id
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
-            = "template_1"
+        create_task_storage_mock.is_valid_task_id.return_value = True
+        stage_storage_mock.check_is_stage_exists.return_value = True
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock,
@@ -273,24 +267,18 @@ class TestUpdateTaskInteractor:
             stage_storage=stage_storage_mock,
             elastic_storage=elastic_storage_mock,
             action_storage=action_storage_mock,
-            task_stage_storage=task_stage_storage_mock
-        )
-        presenter_mock.raise_invalid_due_time_format \
-            .return_value = mock_object
+            task_stage_storage=task_stage_storage_mock)
+        presenter_mock.raise_priority_is_required.return_value = mock_object
 
         # Act
         response = interactor.update_task_wrapper(presenter_mock, task_dto)
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_invalid_due_time_format.assert_called_once()
-        call_args = presenter_mock.raise_invalid_due_time_format.call_args
-        error_object = call_args[0][0]
-        invalid_due_time = error_object.due_time
-        assert invalid_due_time == given_due_time
+        presenter_mock.raise_priority_is_required.assert_called_once()
 
     @freezegun.freeze_time('2020-09-09 13:00:00')
-    def test_with_expired_due_date(
+    def test_with_due_date_time_without_start_date_time(
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
@@ -298,8 +286,123 @@ class TestUpdateTaskInteractor:
             task_stage_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
-        given_start_date = datetime.date(2020, 8, 20)
-        given_due_date = datetime.date(2020, 9, 1)
+        given_due_date_time = datetime.datetime.now()
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            start_datetime=None, due_datetime=given_due_date_time)
+        task_id = 1
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        create_task_storage_mock.is_valid_task_id.return_value = True
+        stage_storage_mock.check_is_stage_exists.return_value = True
+        interactor = UpdateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock,
+            storage=storage_mock, field_storage=field_storage_mock,
+            stage_storage=stage_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
+        presenter_mock.raise_due_date_time_without_start_datetime\
+            .return_value = mock_object
+
+        # Act
+        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_due_date_time_without_start_datetime\
+            .assert_called_once()
+        call_args = \
+            presenter_mock.raise_due_date_time_without_start_datetime.call_args
+        error_object = call_args[0][0]
+        due_datetime = error_object.due_datetime
+        assert due_datetime == given_due_date_time
+
+    @freezegun.freeze_time('2020-09-09 13:00:00')
+    def test_without_start_datetime_when_action_type_is_not_no_validations(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object
+    ):
+        # Arrange
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            start_datetime=None, due_datetime=None)
+        task_id = 1
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        create_task_storage_mock.is_valid_task_id.return_value = True
+        stage_storage_mock.check_is_stage_exists.return_value = True
+        interactor = UpdateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock,
+            storage=storage_mock, field_storage=field_storage_mock,
+            stage_storage=stage_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
+        presenter_mock.raise_start_date_time_is_required \
+            .return_value = mock_object
+
+        # Act
+        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_start_date_time_is_required \
+            .assert_called_once()
+
+    @freezegun.freeze_time('2020-09-09 13:00:00')
+    def test_without_due_datetime_when_action_type_is_not_no_validations(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object
+    ):
+        # Arrange
+        given_start_datetime = datetime.datetime.now()
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            start_datetime=given_start_datetime, due_datetime=None)
+        task_id = 1
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        create_task_storage_mock.is_valid_task_id.return_value = True
+        stage_storage_mock.check_is_stage_exists.return_value = True
+        interactor = UpdateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock,
+            storage=storage_mock, field_storage=field_storage_mock,
+            stage_storage=stage_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
+        presenter_mock.raise_due_date_time_is_required \
+            .return_value = mock_object
+
+        # Act
+        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_due_date_time_is_required \
+            .assert_called_once()
+
+    @freezegun.freeze_time('2020-09-09 13:00:00')
+    def test_with_expired_due_date_time(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, presenter_mock, mock_object
+    ):
+        # Arrange
+        given_start_datetime = datetime.datetime(2020, 8, 20)
+        given_due_datetime = datetime.datetime(2020, 9, 1)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
@@ -308,7 +411,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            start_date=given_start_date, due_date=given_due_date)
+            start_datetime=given_start_datetime,
+            due_datetime=given_due_datetime)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock,
@@ -318,7 +422,7 @@ class TestUpdateTaskInteractor:
             action_storage=action_storage_mock,
             task_stage_storage=task_stage_storage_mock
         )
-        presenter_mock.raise_due_date_has_expired \
+        presenter_mock.raise_due_date_time_has_expired \
             .return_value = mock_object
 
         # Act
@@ -326,11 +430,11 @@ class TestUpdateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_due_date_has_expired.assert_called_once()
-        call_args = presenter_mock.raise_due_date_has_expired.call_args
+        presenter_mock.raise_due_date_time_has_expired.assert_called_once()
+        call_args = presenter_mock.raise_due_date_time_has_expired.call_args
         error_object = call_args[0][0]
-        invalid_due_date = error_object.due_date
-        assert invalid_due_date == given_due_date
+        invalid_due_date = error_object.due_datetime
+        assert invalid_due_date == given_due_datetime
 
     def test_with_start_date_ahead_of_due_date(
             self, task_storage_mock, gof_storage_mock,
@@ -340,11 +444,11 @@ class TestUpdateTaskInteractor:
             task_stage_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
-        given_start_date = datetime.date(2020, 9, 9)
-        given_due_date = datetime.date(2020, 9, 1)
+        given_start_datetime = datetime.datetime(2020, 9, 9)
+        given_due_datetime = datetime.datetime(2020, 9, 1)
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            start_date=given_start_date,
-            due_date=given_due_date)
+            start_datetime=given_start_datetime,
+            due_datetime=given_due_datetime)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
@@ -376,8 +480,8 @@ class TestUpdateTaskInteractor:
         error_object = call_args[0][0]
         invalid_start_date = error_object.given_start_date
         invalid_due_date = error_object.given_due_date
-        assert invalid_start_date == given_start_date
-        assert invalid_due_date == given_due_date
+        assert invalid_start_date == given_start_datetime
+        assert invalid_due_date == given_due_datetime
 
     @freezegun.freeze_time('2020-09-09 13:00:00')
     def test_with_expired_due_time_for_today(
@@ -388,13 +492,11 @@ class TestUpdateTaskInteractor:
             task_stage_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
-        given_start_date = datetime.date(2020, 9, 1)
-        given_due_date = datetime.date(2020, 9, 9)
-        given_due_time = "12:00:00"
+        given_start_date = datetime.datetime(2020, 9, 1)
+        given_due_datetime = datetime.datetime(2020, 9, 9, 13, 0, 0)
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            start_date=given_start_date,
-            due_date=given_due_date,
-            due_time=given_due_time)
+            start_datetime=given_start_date,
+            due_datetime=given_due_datetime)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
@@ -412,7 +514,7 @@ class TestUpdateTaskInteractor:
             action_storage=action_storage_mock,
             task_stage_storage=task_stage_storage_mock
         )
-        presenter_mock.raise_due_time_has_expired_for_today \
+        presenter_mock.raise_due_date_time_has_expired \
             .return_value = mock_object
 
         # Act
@@ -420,13 +522,13 @@ class TestUpdateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_due_time_has_expired_for_today \
+        presenter_mock.raise_due_date_time_has_expired \
             .assert_called_once()
-        call_args = presenter_mock.raise_due_time_has_expired_for_today \
+        call_args = presenter_mock.raise_due_date_time_has_expired \
             .call_args
         error_object = call_args[0][0]
-        invalid_due_time = error_object.due_time
-        assert invalid_due_time == given_due_time
+        invalid_due_datetime = error_object.due_datetime
+        assert given_due_datetime == invalid_due_datetime
 
     def test_with_duplicate_same_gof_orders(
             self, task_storage_mock, gof_storage_mock,
@@ -2184,7 +2286,7 @@ class TestUpdateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_stage_ids_list_empty_exception\
+        presenter_mock.raise_stage_ids_list_empty_exception \
             .assert_called_once()
 
     def test_with_invalid_stage_ids_list(
@@ -2252,7 +2354,7 @@ class TestUpdateTaskInteractor:
             action_storage=action_storage_mock,
             task_stage_storage=task_stage_storage_mock
         )
-        presenter_mock.raise_invalid_stage_ids_list_exception.return_value =\
+        presenter_mock.raise_invalid_stage_ids_list_exception.return_value = \
             mock_object
 
         # Act
@@ -2260,9 +2362,10 @@ class TestUpdateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_invalid_stage_ids_list_exception\
+        presenter_mock.raise_invalid_stage_ids_list_exception \
             .assert_called_once()
-        call_args = presenter_mock.raise_invalid_stage_ids_list_exception.call_args
+        call_args = presenter_mock.raise_invalid_stage_ids_list_exception \
+            .call_args
         error_object = call_args[0][0]
         invalid_stage_ids = error_object.invalid_stage_ids
         assert invalid_stage_ids == stage_ids
@@ -2349,9 +2452,8 @@ class TestUpdateTaskInteractor:
             task_id=task_id, created_by_id=task_dto.created_by_id,
             title=task_dto.title,
             description=task_dto.description,
-            start_date=task_dto.start_date,
-            due_date=task_dto.due_date,
-            due_time=task_dto.due_time,
+            start_datetime=task_dto.start_datetime,
+            due_datetime=task_dto.due_datetime,
             priority=task_dto.priority,
             stage_assignee=task_dto.stage_assignee,
             gof_fields_dtos=task_dto.gof_fields_dtos

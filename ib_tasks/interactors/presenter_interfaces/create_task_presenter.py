@@ -3,6 +3,8 @@ import abc
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueDateTimeHasExpired, DueDateTimeWithoutStartDateTimeIsNotValid, \
     StartDateTimeIsRequired, DueDateTimeIsRequired
+from ib_tasks.exceptions.field_values_custom_exceptions import \
+    InvalidDateFormat
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import PriorityIsRequired
@@ -211,4 +213,8 @@ class CreateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_priority_is_required(self, err: PriorityIsRequired):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_date_format(self, err: InvalidDateFormat):
         pass

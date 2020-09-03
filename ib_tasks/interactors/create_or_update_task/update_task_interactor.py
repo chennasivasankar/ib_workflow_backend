@@ -211,19 +211,20 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             start_datetime=task_dto.start_datetime,
             due_datetime=task_dto.due_datetime, priority=task_dto.priority,
             stage_assignee=task_dto.stage_assignee,
-            gof_fields_dtos=task_dto.gof_fields_dtos
+            gof_fields_dtos=task_dto.gof_fields_dtos,
+            action_type=task_dto.action_type
         )
         all_tasks_overview_details_dto = \
             self.update_task(task_dto_with_db_task_id)
         return all_tasks_overview_details_dto
 
-    def update_task(self, task_dto: UpdateTaskDTO, action_type=None):
+    def update_task(self, task_dto: UpdateTaskDTO):
         task_id = task_dto.task_id
         self._validate_task_id(task_id)
         self._validate_stage_id(task_dto.stage_assignee.stage_id)
         task_template_id = \
             self.create_task_storage.get_template_id_for_given_task(task_id)
-        self._validate_task_details(task_dto, action_type)
+        self._validate_task_details(task_dto, task_dto.action_type)
         base_validations_interactor = \
             TemplateGoFsFieldsBaseValidationsInteractor(
                 self.task_storage, self.gof_storage,
@@ -233,7 +234,7 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         base_validations_interactor \
             .perform_base_validations_for_template_gofs_and_fields(
             task_dto.gof_fields_dtos, task_dto.created_by_id,
-            task_template_id, action_type=action_type)
+            task_template_id, action_type=task_dto.action_type)
         self.create_task_storage.update_task_with_given_task_details(
             task_dto=task_dto)
         existing_gofs = \
@@ -241,8 +242,7 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
                 .get_gof_ids_with_same_gof_order_related_to_a_task(task_id)
         existing_fields = \
             self.create_task_storage \
-                .get_field_ids_with_task_gof_id_related_to_given_task(
-                task_id)
+                .get_field_ids_with_task_gof_id_related_to_given_task(task_id)
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=task_id,
@@ -425,15 +425,13 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
     ):
         start_datetime = task_dto.start_datetime
         due_datetime = task_dto.due_datetime
+        self._validate_due_datetime_without_start_datetime(
+            start_datetime, due_datetime)
         action_type_is_no_validations = \
             action_type == ActionTypes.NO_VALIDATIONS.value
         self._validate_priority_in_no_validations_case(
             task_dto.priority, action_type_is_no_validations)
-        empty_values_given = not start_datetime and not due_datetime
         if action_type_is_no_validations:
-            if not empty_values_given:
-                self._validate_due_datetime_without_start_datetime(
-                    start_datetime, due_datetime)
             return
         start_datetime_is_emtpy = not start_datetime
         due_datetime_is_empty = not due_datetime
@@ -444,7 +442,7 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         self._validate_start_date_and_due_date_dependencies(
             start_datetime, due_datetime)
         import datetime
-        due_datetime_is_expired = due_datetime < datetime.datetime.now()
+        due_datetime_is_expired = due_datetime <= datetime.datetime.now()
         if due_datetime_is_expired:
             raise DueDateTimeHasExpired(due_datetime)
         self._validate_task_delay_reason_is_added_if_due_date_is_changed(

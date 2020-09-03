@@ -16,7 +16,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     IncorrectNameInGoFSelectorField, InvalidValueForDropdownField, \
     InvalidFloatValue, InvalidNumberValue, NotAStrongPassword, \
     InvalidURLValue, \
-    InvalidEmailFieldValue, InvalidPhoneNumberValue, EmptyValueForRequiredField
+    InvalidEmailFieldValue, InvalidPhoneNumberValue, \
+    EmptyValueForRequiredField, InvalidDateFormat
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
     DuplicateFieldIdsToGoF
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
@@ -42,6 +43,18 @@ from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 class CreateTaskPresenterImplementation(
     CreateTaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_exception_for_invalid_date_format(self, err: InvalidDateFormat):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_DATE_FORMAT
+        message = INVALID_DATE_FORMAT[0].format(err.field_value, err.field_id,
+                                                err.expected_format)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_DATE_FORMAT[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_priority_is_required(self, err: PriorityIsRequired):
         from ib_tasks.constants.exception_messages import \

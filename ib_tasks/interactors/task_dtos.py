@@ -2,7 +2,7 @@ import datetime
 from dataclasses import dataclass
 from typing import Union, List, Any, Optional
 
-from ib_tasks.constants.enum import Priority, Searchable, ViewType
+from ib_tasks.constants.enum import Priority, Searchable, ViewType, ActionTypes
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionDetailsDTO, TaskStageIdsDTO, StageDetailsDTO, \
     CurrentStageDetailsDTO
@@ -45,6 +45,7 @@ class StageIdWithAssigneeDTO:
 @dataclass
 class UpdateTaskDTO:
     task_id: int
+    action_type: Optional[ActionTypes]
     created_by_id: str
     title: str
     description: str
@@ -58,6 +59,7 @@ class UpdateTaskDTO:
 @dataclass
 class UpdateTaskWithTaskDisplayIdDTO:
     task_display_id: str
+    action_type: Optional[ActionTypes]
     created_by_id: str
     title: str
     description: str
