@@ -29,7 +29,7 @@ class GetTaskFieldsInteractor:
             stage_fields_dtos, task_stage_dtos, permitted_field_ids)
         field_dtos = self.field_storage.get_fields_details(
             task_fields_dtos)
-        return field_dtos
+        return field_dtos, stage_fields_dtos
 
     @staticmethod
     def _get_field_ids(stage_fields_dtos: List[TaskTemplateStageFieldsDTO]):

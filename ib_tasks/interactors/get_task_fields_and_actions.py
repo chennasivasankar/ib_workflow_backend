@@ -4,6 +4,7 @@ from ib_boards.interactors.dtos import StageActionDetailsDTO
 from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidTaskStageIds
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
+from ib_tasks.interactors.get_task_fields import GetTaskFieldsInteractor
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
@@ -59,18 +60,12 @@ class GetTaskFieldsAndActionsInteractor:
 
         action_dtos = self.action_storage.get_actions_details(permitted_action_ids)
 
-        stage_fields_dtos = self.field_storage.get_field_ids(task_stage_dtos, view_type)
-        list_of_field_ids = self._get_field_ids(stage_fields_dtos)
-        permitted_field_ids = user_roles_interactor. \
-            get_field_ids_having_permission_for_user(
-            task_project_dtos=task_project_dtos, user_id=user_id,
-            field_ids=list_of_field_ids, field_storage=self.field_storage)
-
-        task_fields_dtos = self._map_task_and_their_fields(
-            stage_fields_dtos, task_stage_dtos, permitted_field_ids)
-
-        field_dtos = self.field_storage.get_fields_details(
-            task_fields_dtos)
+        fields_interactor = GetTaskFieldsInteractor(self.field_storage)
+        field_dtos, stage_fields_dtos = fields_interactor.get_task_fields(
+            task_stage_dtos=task_stage_dtos,
+            task_project_dtos=task_project_dtos,
+            user_id=user_id,
+            view_type=view_type)
 
         task_details_dtos = self. \
             _map_fields_and_actions_based_on_their_stage_and_task_id(
@@ -100,27 +95,6 @@ class GetTaskFieldsAndActionsInteractor:
         self._validate_task_ids(unique_task_ids, valid_task_ids)
         return task_ids
 
-    @staticmethod
-    def _get_field_ids(stage_fields_dtos: List[TaskTemplateStageFieldsDTO]):
-        field_ids_list = []
-        for stage in stage_fields_dtos:
-            field_ids_list += stage.field_ids
-
-        return list(set(field_ids_list))
-
-    def _map_task_and_their_fields(self, stage_fields_dtos: List[TaskTemplateStageFieldsDTO],
-                                   task_stage_dtos: List[TaskTemplateStageDTO],
-                                   permitted_field_ids: List[str]):
-        list_of_stage_fields = []
-        for task in task_stage_dtos:
-            for stage in stage_fields_dtos:
-                template_condition = stage.task_template_id == \
-                                     task.task_template_id
-                stage_condition = stage.stage_id == task.stage_id
-                if task.task_id == stage.task_id and stage_condition and template_condition:
-                    list_of_stage_fields.append(
-                        self._get_task_fields(stage, task, permitted_field_ids))
-        return list_of_stage_fields
 
     @staticmethod
     def _get_task_fields(stage, task, permitted_field_ids: List[str]):
