@@ -20,7 +20,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageValueDTO, TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO, TaskProjectDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
@@ -544,3 +544,16 @@ class TasksStorageImplementation(TaskStorageInterface):
             project_id=project_id
         ).values_list('id', flat=True)
         return list(task_ids)
+
+    def get_task_project_ids(self, task_ids: List[int]) -> \
+            List[TaskProjectDTO]:
+        tasks = Task.objects.filter(id__in=task_ids)
+        task_project_dtos = [
+            TaskProjectDTO(
+                task_id=task.task_id,
+                project_id=task.project_id
+            )
+            for task in tasks
+        ]
+        return task_project_dtos
+

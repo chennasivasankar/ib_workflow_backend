@@ -11,9 +11,9 @@ def api_wrapper(*args, **kwargs):
     team_id = path_params["team_id"]
     team_member_levels = request_data["team_member_levels"]
 
-    from ib_iam.tests.factories.interactor_dtos import TeamMemberLevelDTOFactory
+    from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO
     team_member_level_dtos = [
-        TeamMemberLevelDTOFactory(
+        TeamMemberLevelDTO(
             team_member_level_name=team_member_level_dict["level_name"],
             level_hierarchy=team_member_level_dict["level_hierarchy"]
         )

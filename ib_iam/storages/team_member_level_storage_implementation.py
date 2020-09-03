@@ -109,9 +109,9 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
 
         for immediate_superior_user_id_with_member_ids_dto in immediate_superior_user_id_with_member_ids_dtos:
             self._add_members_to_superior(
-                immediate_superior_user_id_with_member_ids_dto,
-                member_level_hierarchy,
-                team_id)
+                immediate_superior_user_id_with_member_ids_dto=immediate_superior_user_id_with_member_ids_dto,
+                member_level_hierarchy=member_level_hierarchy,
+                team_id=team_id)
         return
 
     def get_immediate_superior_user_id(self, team_id: str, user_id: str) -> \
@@ -145,7 +145,6 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
         ).update(
             immediate_superior_team_user=user_team_object
         )
-        return
 
     def get_member_id_with_subordinate_member_ids_dtos(
             self, team_id: str, member_ids: List[str]
@@ -156,7 +155,8 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
             team_id=team_id, user_id__in=member_ids
         )
         member_id_with_subordinate_member_ids_dtos = [
-            self.get_member_id_with_subordinate_member_ids_dto(user_team_object)
+            self.get_member_id_with_subordinate_member_ids_dto(
+                user_team_object)
             for user_team_object in user_team_objects
         ]
         return member_id_with_subordinate_member_ids_dtos

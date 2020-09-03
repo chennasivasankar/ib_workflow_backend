@@ -11,12 +11,11 @@ def api_wrapper(*args, **kwargs):
     team_id = path_params["team_id"]
     members = request_data["members"]
 
-    from ib_iam.tests.factories.interactor_dtos import \
-        TeamMemberLevelIdWithMemberIdsDTOFactory
+    from ib_iam.interactors.dtos.dtos import TeamMemberLevelIdWithMemberIdsDTO
     team_member_level_id_with_member_ids_dtos = [
-        TeamMemberLevelIdWithMemberIdsDTOFactory(
-            team_member_level_id=str(member_dict["team_member_level_id"]),
-            member_ids=list(map(str, member_dict["member_ids"]))
+        TeamMemberLevelIdWithMemberIdsDTO(
+            team_member_level_id=member_dict["team_member_level_id"],
+            member_ids=member_dict["member_ids"]
         )
         for member_dict in members
     ]

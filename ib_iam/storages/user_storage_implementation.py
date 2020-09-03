@@ -4,7 +4,8 @@ from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
 from ib_iam.exceptions.custom_exceptions import InvalidUserIdsForProject, \
     InvalidRoleIdsForProject, InvalidProjectId
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
-from ib_iam.interactors.storage_interfaces.dtos import UserDTO, TeamWithUserIdDTO, \
+from ib_iam.interactors.storage_interfaces.dtos import UserDTO, \
+    TeamWithUserIdDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, \
     CompanyDTO, \
@@ -78,9 +79,8 @@ class UserStorageImplementation(UserStorageInterface):
     def add_roles_to_the_user(self, user_id: str, role_ids: List[str]):
         from ib_iam.models import UserRole
         user_roles = [
-            UserRole(user_id=user_id, project_role_role_id=role_id)
+            UserRole(user_id=user_id, project_role_id=role_id)
             for role_id in role_ids]
-        print(user_roles)
         UserRole.objects.bulk_create(user_roles)
 
     def add_user_to_the_teams(self, user_id: str, team_ids: List[str]):
