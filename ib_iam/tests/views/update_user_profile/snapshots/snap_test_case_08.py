@@ -13,5 +13,3 @@ snapshots['TestCase01UpdateUserProfileAPITestCase.test_case body'] = {
 }
 
 snapshots['TestCase01UpdateUserProfileAPITestCase.test_case updated_user_name'] = 'username'
-
-snapshots['TestCase01UpdateUserProfileAPITestCase.test_case updated_user_role_id'] = 'role_1'

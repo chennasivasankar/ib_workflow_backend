@@ -62,19 +62,19 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
         team_id = team_member_level_object.team_id
 
         member_ids = team_member_level_id_with_member_ids_dto.member_ids
-        from ib_iam.models import UserTeam
-        UserTeam.objects.filter(
+        from ib_iam.models import TeamUser
+        TeamUser.objects.filter(
             team_member_level=team_member_level_object
         ).update(team_member_level=None)
-        UserTeam.objects.filter(
+        TeamUser.objects.filter(
             team_id=team_id, user_id__in=member_ids
         ).update(team_member_level=team_member_level_object)
 
     def get_member_details(self, team_id: str, level_hierarchy: int) \
             -> List[MemberDTO]:
-        from ib_iam.models import UserTeam
+        from ib_iam.models import TeamUser
         member_id_with_immediate_superior_user_id_list = \
-            UserTeam.objects.filter(
+            TeamUser.objects.filter(
                 team_id=team_id,
                 team_member_level__level_hierarchy=level_hierarchy
             ).values("user_id", "immediate_superior_team_user_id")
@@ -99,15 +99,15 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
     ):
         for immediate_superior_user_id_with_member_ids_dto in immediate_superior_user_id_with_member_ids_dtos:
             self._add_members_to_superior(
-                immediate_superior_user_id_with_member_ids_dto,
-                member_level_hierarchy,
-                team_id)
+                immediate_superior_user_id_with_member_ids_dto=immediate_superior_user_id_with_member_ids_dto,
+                member_level_hierarchy=member_level_hierarchy,
+                team_id=team_id)
         return
 
     def get_immediate_superior_user_id(self, team_id: str, user_id: str) -> \
             Optional[str]:
-        from ib_iam.models import UserTeam
-        user_team_object = UserTeam.objects.get(
+        from ib_iam.models import TeamUser
+        user_team_object = TeamUser.objects.get(
             team_id=team_id, user_id=user_id
         )
         immediate_superior_team_user_object = \
@@ -125,28 +125,28 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
             immediate_superior_user_id_with_member_ids_dto.member_ids
         immediate_superior_user_id = \
             immediate_superior_user_id_with_member_ids_dto.immediate_superior_user_id
-        from ib_iam.models import UserTeam
-        user_team_object = UserTeam.objects.get(
+        from ib_iam.models import TeamUser
+        user_team_object = TeamUser.objects.get(
             user_id=immediate_superior_user_id, team_id=team_id)
-        UserTeam.objects.filter(
+        TeamUser.objects.filter(
             team_id=team_id,
             team_member_level__level_hierarchy=member_level_hierarchy,
             user_id__in=member_ids
         ).update(
             immediate_superior_team_user=user_team_object
         )
-        return
 
     def get_member_id_with_subordinate_member_ids_dtos(
             self, team_id: str, member_ids: List[str]
     ) -> List[MemberIdWithSubordinateMemberIdsDTO]:
         member_ids = list(set(member_ids))
-        from ib_iam.models import UserTeam
-        user_team_objects = UserTeam.objects.filter(
+        from ib_iam.models import TeamUser
+        user_team_objects = TeamUser.objects.filter(
             team_id=team_id, user_id__in=member_ids
         )
         member_id_with_subordinate_member_ids_dtos = [
-            self.get_member_id_with_subordinate_member_ids_dto(user_team_object)
+            self.get_member_id_with_subordinate_member_ids_dto(
+                user_team_object)
             for user_team_object in user_team_objects
         ]
         return member_id_with_subordinate_member_ids_dtos

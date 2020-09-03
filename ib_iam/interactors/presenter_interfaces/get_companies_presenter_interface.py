@@ -1,5 +1,5 @@
-from abc import ABC
-from abc import abstractmethod
+import abc
+
 from dataclasses import dataclass
 from typing import List
 
@@ -16,13 +16,13 @@ class CompanyWithEmployeeIdsAndUserDetailsDTO:
     user_dtos: List[BasicUserDetailsDTO]
 
 
-class GetCompaniesPresenterInterface(ABC):
+class GetCompaniesPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_user_has_no_access_response_for_get_companies(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_response_for_get_companies(
             self, company_details_dtos: CompanyWithEmployeeIdsAndUserDetailsDTO
     ):

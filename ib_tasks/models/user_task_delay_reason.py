@@ -5,7 +5,7 @@ from ib_tasks.models import Task, Stage
 
 class UserTaskDelayReason(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
-    due_datetime = models.DateTimeField(auto_now=True)
+    due_datetime = models.DateTimeField()
     count = models.IntegerField()
     reason_id = models.IntegerField()
     reason = models.TextField(null=True, blank=True)

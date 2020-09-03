@@ -8,7 +8,7 @@ from ib_iam.app_interfaces.dtos import SearchableDTO, ProjectTeamUserDTO, \
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO, \
     UserIdWithProjectIdAndStatusDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserIdAndNameDTO, \
-    TeamIdAndNameDTO, ProjectDTO, UserTeamDTO
+    TeamIdAndNameDTO, ProjectDTO, TeamWithUserIdDTO
 from ib_tasks.adapters.dtos import SearchableDetailsDTO
 
 
@@ -357,7 +357,7 @@ class ServiceInterface:
     @staticmethod
     def get_user_team_dtos_for_given_project_teams_and_users_details_dto(
             project_teams_and_users_dto: ProjectTeamsAndUsersDTO
-    ) -> List[UserTeamDTO]:
+    ) -> List[TeamWithUserIdDTO]:
         from ib_iam.interactors.project_interactor import ProjectInteractor
         from ib_iam.storages.project_storage_implementation import \
             ProjectStorageImplementation
