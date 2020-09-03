@@ -3,7 +3,7 @@
 
 RESPONSE_200_JSON = """
 {
-    "user_id": "a4130880-2b9f-4182-a7ca-370464b0e90d",
+    "user_id": "932ab285-4bcc-4b2c-95a1-77397856aac3",
     "name": "string",
     "email": "string",
     "profile_pic_url": "string",
@@ -20,7 +20,15 @@ RESPONSE_200_JSON = """
                 "name": "string",
                 "profile_pic_url": "string"
             }
-        ]
+        ],
+        "roles": {
+            "roles": [
+                {
+                    "role_id": "string",
+                    "role_name": "string"
+                }
+            ]
+        }
     },
     "teams": [
         {

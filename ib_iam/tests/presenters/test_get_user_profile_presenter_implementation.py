@@ -73,7 +73,8 @@ class TestGetUserProfilePresenterImplementation:
                 team_dtos=team_dtos,
                 team_user_ids_dto=team_user_ids_dtos,
                 user_dtos=user_dtos,
-                company_id_with_employee_ids_dto=company_employee_ids_dtos
+                company_id_with_employee_ids_dto=company_employee_ids_dtos,
+                role_dtos=user_role_dtos
             )
 
         # Act

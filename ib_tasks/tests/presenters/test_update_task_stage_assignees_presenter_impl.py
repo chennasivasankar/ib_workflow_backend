@@ -1,110 +1,103 @@
+import json
+
 import pytest
 
 
 class TestUpdateTaskStageAssigneesPresenterImplementation:
-
     @pytest.fixture
     def presenter(self):
-        from ib_tasks.presenters.update_task_stage_assignees_presenter_impl \
-            import \
+        from ib_tasks.presenters.update_task_stage_assignees_presenter_impl import \
             UpdateTaskStageAssigneesPresenterImplementation
-        presenter = UpdateTaskStageAssigneesPresenterImplementation()
-        return presenter
+        return UpdateTaskStageAssigneesPresenterImplementation()
 
-    def test_given_invalid_task_display_id_raise_exception(
-            self, presenter, snapshot
-    ):
+    def test_with_invalid_task_display_id(self, presenter, snapshot):
         # Arrange
         from ib_tasks.exceptions.task_custom_exceptions import \
             InvalidTaskDisplayId
-        task_display_id = "BWG-10"
-        err = InvalidTaskDisplayId(task_display_id=task_display_id)
+        task_display_id = "task_display_id"
+        err = InvalidTaskDisplayId(task_display_id)
 
         # Act
-        response = presenter.raise_invalid_task_display_id(err)
+        json_response = presenter.raise_invalid_task_display_id(err)
 
         # Assert
+        json_json_response = json.loads(json_response.content)
         snapshot.assert_match(
-            name="response",
-            value=response.content
-        )
+            json_json_response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(json_json_response['res_status'], 'res_status')
+        snapshot.assert_match(json_json_response['response'],
+                              'json_response')
 
-    def test_given_duplication_of_stage_ids_raise_exception(
-            self, presenter, snapshot
-    ):
+    def test_with_duplicate_stage_ids(self, presenter, snapshot):
         # Arrange
-        duplicate_stage_ids = [1, 2]
-
+        duplicate_stage_ids = [2, 2]
         # Act
-        response = presenter.raise_duplicate_stage_ids_not_valid(
-            duplicate_stage_ids)
-
+        json_response = presenter.raise_duplicate_stage_ids_not_valid(
+            duplicate_stage_ids=duplicate_stage_ids)
         # Assert
+        json_json_response = json.loads(json_response.content)
         snapshot.assert_match(
-            name="response",
-            value=response.content
-        )
+            json_json_response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(json_json_response['res_status'], 'res_status')
+        snapshot.assert_match(json_json_response['response'],
+                              'json_response')
 
-    def test_given_invalid_stage_ids_raise_exception(
-            self, presenter, snapshot
-    ):
+    def test_given_invalid_stage_ids_raise_exception(self, presenter,
+                                                     snapshot):
         # Arrange
         invalid_stage_ids = [1, 2]
-
         # Act
-        response = presenter.raise_invalid_stage_ids_exception(
-            invalid_stage_ids)
-
+        json_response = presenter.raise_invalid_stage_ids_exception(
+            invalid_stage_ids=invalid_stage_ids)
         # Assert
+        json_json_response = json.loads(json_response.content)
         snapshot.assert_match(
-            name="response",
-            value=response.content
-        )
+            json_json_response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(json_json_response['res_status'], 'res_status')
+        snapshot.assert_match(json_json_response['response'],
+                              'json_response')
 
-    def test_given_virtual_stage_ids_raise_exception(
-            self, presenter, snapshot
-    ):
+    def test_given_virtual_stageids_raise_exception(self, presenter,
+                                                    snapshot):
         # Arrange
         virtual_stage_ids = [1, 2]
-
         # Act
-        response = presenter.raise_virtual_stage_ids_exception(
-            virtual_stage_ids)
-
+        json_response = presenter.raise_virtual_stage_ids_exception(
+            virtual_stage_ids=virtual_stage_ids)
         # Assert
+        json_json_response = json.loads(json_response.content)
         snapshot.assert_match(
-            name="response",
-            value=response.content
-        )
+            json_json_response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(json_json_response['res_status'], 'res_status')
+        snapshot.assert_match(json_json_response['response'],
+                              'json_response')
 
-    def test_given_invalid_user_id_raise_exception(
-            self, presenter, snapshot
-    ):
+    def test_raise_invalid_user_id_exception(self, presenter, snapshot):
         # Arrange
-        invalid_user_id = "123e4567-e89b-12d3-a456-42661417400"
-
+        user_id = "assignee_1"
         # Act
-        response = presenter.raise_invalid_user_id_exception(
-            invalid_user_id)
-
+        json_response = presenter.raise_invalid_user_id_exception(user_id=
+                                                                  user_id)
         # Assert
+        json_json_response = json.loads(json_response.content)
         snapshot.assert_match(
-            name="response",
-            value=response.content
-        )
+            json_json_response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(json_json_response['res_status'], 'res_status')
+        snapshot.assert_match(json_json_response['response'],
+                              'json_response')
 
-    def test_given_stage_ids_having_invalid_permission_for_user(
-            self, presenter, snapshot
-    ):
+    def test_raise_stage_ids_with_invalid_permission_for_assignee_exception(
+            self, presenter, snapshot):
         # Arrange
         invalid_stage_ids = [1, 2]
-
         # Act
-        response = presenter.raise_stage_ids_with_invalid_permission_for_assignee_exception(
-            invalid_stage_ids)
-
+        json_response = presenter. \
+            raise_stage_ids_with_invalid_permission_for_assignee_exception(
+            invalid_stage_ids=invalid_stage_ids)
         # Assert
+        json_json_response = json.loads(json_response.content)
         snapshot.assert_match(
-            name="response",
-            value=response.content
-        )
+            json_json_response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(json_json_response['res_status'], 'res_status')
+        snapshot.assert_match(json_json_response['response'],
+                              'json_response')

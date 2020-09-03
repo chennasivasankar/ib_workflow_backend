@@ -9,7 +9,7 @@ from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ib_tasks.tests.factories.models import TaskFactory, StageFactory
 
 
-class TestCase04UpdateAssigneesOfDiffStagesForATaskAPITestCase(TestUtils):
+class TestCase05UpdateAssigneesOfDiffStagesForATaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD

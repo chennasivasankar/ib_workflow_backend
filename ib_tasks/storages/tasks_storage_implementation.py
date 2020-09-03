@@ -540,4 +540,7 @@ class TasksStorageImplementation(TaskStorageInterface):
         return task_due_time[0]
 
     def get_valid_task_ids_from_the_project(self, task_ids: List[int], project_id: str):
-        pass
+        task_ids = Task.objects.filter(
+            project_id=project_id
+        ).values_list('id', flat=True)
+        return list(task_ids)

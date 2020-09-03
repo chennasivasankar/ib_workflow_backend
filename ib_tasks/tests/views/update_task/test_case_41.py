@@ -1,5 +1,7 @@
 """
-test with valid details
+test with empty stage ids list
+since user does not have stage permitted roles so, stage ids are empty for
+this user
 """
 
 import pytest

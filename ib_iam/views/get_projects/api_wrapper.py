@@ -6,6 +6,11 @@ from .validator_class import ValidatorClass
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
+    query_params = kwargs["query_params"]
+    offset = query_params.get("offset")
+    limit = query_params.get("limit")
+    from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+    pagination_dto = PaginationDTO(offset=offset, limit=limit)
     from ib_iam.storages.project_storage_implementation import \
         ProjectStorageImplementation
     from ib_iam.presenters.get_projects_presenter_implementation import \
@@ -13,7 +18,12 @@ def api_wrapper(*args, **kwargs):
     from ib_iam.interactors.get_projects_interactor import \
         GetProjectsInteractor
     project_storage = ProjectStorageImplementation()
+    from ib_iam.storages.team_storage_implementation import \
+        TeamStorageImplementation
+    team_storage = TeamStorageImplementation()
     presenter = GetProjectsPresenterImplementation()
-    interactor = GetProjectsInteractor(project_storage=project_storage)
-    response = interactor.get_projects_wrapper(presenter=presenter)
+    interactor = GetProjectsInteractor(project_storage=project_storage,
+                                       team_storage=team_storage)
+    response = interactor.get_projects_wrapper(presenter=presenter,
+                                               pagination_dto=pagination_dto)
     return response

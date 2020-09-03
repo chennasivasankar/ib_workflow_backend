@@ -57,7 +57,7 @@ class GetTaskIdsOfUserBasedOnStagesInteractor(ValidationMixin):
             get_task_id_with_stage_details_dtos_based_on_stage_value(
                 stage_values=stage_values,
                 task_ids_group_by_stage_value_dtos=task_ids_group_by_stage_value_dtos
-        )
+            )
         task_ids = []
         task_id_with_single_stage_details_dto = []
         for task_id_with_stage_details_dto in task_id_with_stage_details_dtos:
@@ -160,7 +160,8 @@ class GetTaskIdsOfUserBasedOnStagesInteractor(ValidationMixin):
             raise InvalidStageIdsListException(
                 invalid_stage_ids=invalid_stage_ids)
 
-    def _validate_project_data(self, project_id: str, user_id: str, task_ids: List[int]):
+    def _validate_project_data(self, project_id: str, user_id: str,
+                               task_ids: List[int]):
         self.validate_given_project_ids(project_ids=[project_id])
         self.validate_if_user_is_in_project(
             project_id=project_id, user_id=user_id
@@ -170,7 +171,8 @@ class GetTaskIdsOfUserBasedOnStagesInteractor(ValidationMixin):
         )
         invalid_task_ids = [
             invalid_task_id
-            for invalid_task_id in task_ids if invalid_task_id not in valid_task_ids
+            for invalid_task_id in task_ids if
+            invalid_task_id not in valid_task_ids
         ]
         if invalid_task_ids:
             from ib_tasks.exceptions.task_custom_exceptions import \

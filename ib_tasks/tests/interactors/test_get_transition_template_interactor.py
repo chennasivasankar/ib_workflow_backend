@@ -1,3 +1,4 @@
+import factory
 import mock
 import pytest
 
@@ -11,6 +12,8 @@ from ib_tasks.interactors.presenter_interfaces. \
 from ib_tasks.tests.factories.storage_dtos import \
     TaskTemplateDTOFactory, UserFieldPermissionDTOFactory, FieldDTOFactory, \
     GoFToTaskTemplateDTOFactory, GoFDTOFactory, FieldPermissionDTOFactory
+from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+    get_user_role_ids
 
 
 class TestGetTransitionTemplateInteractor:
@@ -127,9 +130,13 @@ class TestGetTransitionTemplateInteractor:
 
         transition_template_dto = TaskTemplateDTOFactory.create()
         gof_dtos = GoFDTOFactory.create_batch(size=2)
-        field_dtos = FieldDTOFactory.create_batch(size=4)
+        field_dtos = FieldDTOFactory.create_batch(
+            size=4, gof_id=factory.Iterator(expected_gof_ids))
         gof_to_template_dtos = \
             GoFToTaskTemplateDTOFactory.create_batch(size=2)
+
+        get_user_role_ids_mock_method = get_user_role_ids(mocker)
+        user_roles = get_user_role_ids_mock_method.return_value
 
         get_gof_ids_having_read_permission_for_user_mock_method = \
             self.get_gof_ids_having_read_permission_for_user_mock(mocker)
@@ -175,13 +182,14 @@ class TestGetTransitionTemplateInteractor:
 
         # Assert
         assert complete_transition_template == presenter_response_mock
+        get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
         get_gof_ids_having_read_permission_for_user_mock_method. \
             assert_called_once_with(
-                gof_ids=expected_gof_ids, user_id=user_id,
+                gof_ids=expected_gof_ids, user_roles=user_roles,
                 gof_storage=gof_storage_mock)
         get_field_ids_having_write_permission_for_user_mock_method. \
             assert_called_once_with(
-                field_ids=expected_field_ids, user_id=user_id,
+                field_ids=expected_field_ids, user_roles=user_roles,
                 field_storage=field_storage_mock)
         task_template_storage_mock.check_is_transition_template_exists. \
             assert_called_once_with(
@@ -259,6 +267,9 @@ class TestGetTransitionTemplateInteractor:
         field_dtos = FieldDTOFactory.create_batch(size=4)
         gof_to_template_dtos = []
 
+        get_user_role_ids_mock_method = get_user_role_ids(mocker)
+        user_roles = get_user_role_ids_mock_method.return_value
+
         get_gof_ids_having_read_permission_for_user_mock_method = \
             self.get_gof_ids_having_read_permission_for_user_mock(mocker)
         get_field_ids_having_write_permission_for_user_mock_method = \
@@ -305,13 +316,14 @@ class TestGetTransitionTemplateInteractor:
 
         # Assert
         assert complete_transition_template == presenter_response_mock
+        get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
         get_gof_ids_having_read_permission_for_user_mock_method. \
             assert_called_once_with(
-                gof_ids=expected_gof_ids, user_id=user_id,
+                gof_ids=expected_gof_ids, user_roles=user_roles,
                 gof_storage=gof_storage_mock)
         get_field_ids_having_write_permission_for_user_mock_method. \
             assert_called_once_with(
-                field_ids=expected_field_ids, user_id=user_id,
+                field_ids=expected_field_ids, user_roles=user_roles,
                 field_storage=field_storage_mock)
         task_template_storage_mock.check_is_transition_template_exists. \
             assert_called_once_with(
@@ -352,6 +364,9 @@ class TestGetTransitionTemplateInteractor:
         field_dtos = []
         gof_to_template_dtos = \
             GoFToTaskTemplateDTOFactory.create_batch(size=2)
+
+        get_user_role_ids_mock_method = get_user_role_ids(mocker)
+        user_roles = get_user_role_ids_mock_method.return_value
 
         get_gof_ids_having_read_permission_for_user_mock_method = \
             self.get_gof_ids_having_read_permission_for_user_mock(mocker)
@@ -399,13 +414,14 @@ class TestGetTransitionTemplateInteractor:
 
         # Assert
         assert complete_transition_template == presenter_response_mock
+        get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
         get_gof_ids_having_read_permission_for_user_mock_method. \
             assert_called_once_with(
-                gof_ids=expected_gof_ids, user_id=user_id,
+                gof_ids=expected_gof_ids, user_roles=user_roles,
                 gof_storage=gof_storage_mock)
         get_field_ids_having_write_permission_for_user_mock_method. \
             assert_called_once_with(
-                field_ids=expected_field_ids, user_id=user_id,
+                field_ids=expected_field_ids, user_roles=user_roles,
                 field_storage=field_storage_mock)
         task_template_storage_mock.check_is_transition_template_exists. \
             assert_called_once_with(
@@ -416,7 +432,7 @@ class TestGetTransitionTemplateInteractor:
         task_template_storage_mock.get_gof_ids_of_template. \
             assert_called_once_with(template_id=transition_template_id)
         gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
-            assert_called_once_with(gof_ids=expected_gof_ids)
+            assert_called_once_with(gof_ids=[])
         task_template_storage_mock \
             .get_gofs_to_template_from_permitted_gofs.assert_called_once_with(
                 gof_ids=expected_gof_ids, template_id=transition_template_id)
@@ -445,6 +461,9 @@ class TestGetTransitionTemplateInteractor:
         gof_dtos = GoFDTOFactory.create_batch(size=2)
         field_dtos = FieldDTOFactory.create_batch(size=4)
         gof_to_template_dtos = []
+
+        get_user_role_ids_mock_method = get_user_role_ids(mocker)
+        user_roles = get_user_role_ids_mock_method.return_value
 
         get_gof_ids_having_read_permission_for_user_mock_method = \
             self.get_gof_ids_having_read_permission_for_user_mock(mocker)
@@ -492,13 +511,14 @@ class TestGetTransitionTemplateInteractor:
 
         # Assert
         assert complete_transition_template == presenter_response_mock
+        get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
         get_gof_ids_having_read_permission_for_user_mock_method. \
             assert_called_once_with(
-                gof_ids=expected_gof_ids, user_id=user_id,
+                gof_ids=expected_gof_ids, user_roles=user_roles,
                 gof_storage=gof_storage_mock)
         get_field_ids_having_write_permission_for_user_mock_method. \
             assert_called_once_with(
-                field_ids=expected_field_ids, user_id=user_id,
+                field_ids=expected_field_ids, user_roles=user_roles,
                 field_storage=field_storage_mock)
         task_template_storage_mock.check_is_transition_template_exists. \
             assert_called_once_with(

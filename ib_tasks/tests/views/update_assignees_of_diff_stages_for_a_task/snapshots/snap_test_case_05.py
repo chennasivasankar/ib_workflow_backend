@@ -7,9 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase04UpdateAssigneesOfDiffStagesForATaskAPITestCase.test_case status_code'] = '400'
+snapshots['TestCase05UpdateAssigneesOfDiffStagesForATaskAPITestCase.test_case status_code'] = '400'
 
-snapshots['TestCase04UpdateAssigneesOfDiffStagesForATaskAPITestCase.test_case body'] = {
+snapshots['TestCase05UpdateAssigneesOfDiffStagesForATaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'VIRTUAL_STAGE_IDS',
     'response': 'Invalid stage ids that you have sent are: [2],please send valid stage ids'

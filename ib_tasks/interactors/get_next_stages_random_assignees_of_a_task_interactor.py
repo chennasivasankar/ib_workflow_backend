@@ -57,14 +57,12 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
                 stage_with_user_details_and_team_details_dto)
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
-        except InvalidTaskIdException as exception:
-            return presenter.raise_invalid_task_id_exception(
-                task_id=exception.task_id)
         except InvalidActionException as exception:
             return presenter.raise_exception_for_invalid_action(
                 action_id=exception.action_id)
         except UserNotInAnyTeamForGivenProjectException as exception:
-            return presenter.raise_user_not_in_any_given_team_of_project(user_id=exception.user_id)
+            return presenter.raise_user_not_in_any_given_team_of_project(
+                user_id=exception.user_id)
 
         except InvalidKeyError:
             return presenter.raise_invalid_key_error()
@@ -133,7 +131,7 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor
         get_task_stage_logic_satisfied_next_stages_interactor = \
             GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor(
-                storage=self.storage)
+                storage=self.storage, stage_storage=self.stage_storage)
         next_stage_ids = get_task_stage_logic_satisfied_next_stages_interactor. \
             get_task_stage_logic_satisfied_next_stages(
             task_id=task_id, status_variable_dtos=status_variable_dtos)

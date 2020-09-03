@@ -29,12 +29,16 @@ class Project:
 
     @staticmethod
     def _convert_to_project_dtos(projects):
-        from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
+        from ib_iam.interactors.storage_interfaces.dtos import \
+            ProjectWithDisplayIdDTO
         project_dtos = [
-            ProjectDTO(project_id=project['project_id'],
-                       name=project['project_name'],
-                       description=project.get('description', None),
-                       logo_url=project.get('project_logo_url', None)
-                       ) for project in projects
+            ProjectWithDisplayIdDTO(
+                project_id=project['project_id'],
+                display_id=project.get('project_display_id',
+                                       project['project_id']),
+                name=project['project_name'],
+                description=project.get('description', None),
+                logo_url=project.get('project_logo_url', None)
+            ) for project in projects
         ]
         return project_dtos

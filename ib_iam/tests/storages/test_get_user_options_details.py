@@ -67,7 +67,7 @@ class TestGetUserOptionsDetailsStorage:
                              team_name='team 1')]
 
         # Act
-        output = storage.get_teams()
+        output = storage.get_team_id_and_name_dtos()
 
         # Assert
         assert output == expected_ouput
