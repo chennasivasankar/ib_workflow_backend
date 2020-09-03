@@ -1,14 +1,13 @@
 from typing import List, Optional, Union
 
-from ib_tasks.constants.config import TIME_FORMAT
-from ib_tasks.constants.enum import ActionTypes, ViewType
+from ib_tasks.constants.enum import ActionTypes, ViewType, Priority
 from ib_tasks.exceptions.action_custom_exceptions import \
     InvalidActionException, InvalidKeyError, InvalidCustomLogicException, \
     InvalidPresentStageAction
 from ib_tasks.exceptions.datetime_custom_exceptions import \
-    DueTimeHasExpiredForToday, InvalidDueTimeFormat, \
     StartDateIsAheadOfDueDate, \
-    DueDateHasExpired
+    DueDateTimeHasExpired, DueDateTimeWithoutStartDateTimeIsNotValid, \
+    StartDateTimeIsRequired, DueDateTimeIsRequired
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField, InvalidPhoneNumberValue, \
     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
@@ -30,7 +29,7 @@ from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId, \
-    InvalidTaskTemplateOfProject
+    InvalidTaskTemplateOfProject, PriorityIsRequired
 from ib_tasks.interactors \
     .call_action_logic_function_and_update_task_status_variables_interactor \
     import \
@@ -114,14 +113,18 @@ class CreateTaskInteractor:
             return presenter.raise_invalid_action_id(err)
         except DuplicateSameGoFOrderForAGoF as err:
             return presenter.raise_duplicate_same_gof_orders_for_a_gof(err)
-        except InvalidDueTimeFormat as err:
-            return presenter.raise_invalid_due_time_format(err)
-        except DueDateHasExpired as err:
-            return presenter.raise_due_date_has_expired(err)
+        except PriorityIsRequired as err:
+            return presenter.raise_priority_is_required(err)
+        except DueDateTimeWithoutStartDateTimeIsNotValid as err:
+            return presenter.raise_due_date_time_without_start_datetime(err)
+        except StartDateTimeIsRequired as err:
+            return presenter.raise_start_date_time_is_required(err)
+        except DueDateTimeIsRequired as err:
+            return presenter.raise_due_date_time_is_required(err)
         except StartDateIsAheadOfDueDate as err:
             return presenter.raise_start_date_is_ahead_of_due_date(err)
-        except DueTimeHasExpiredForToday as err:
-            return presenter.raise_due_time_has_expired_for_today(err)
+        except DueDateTimeHasExpired as err:
+            return presenter.raise_due_date_time_has_expired(err)
         except InvalidGoFIds as err:
             return presenter.raise_invalid_gof_ids(err)
         except InvalidGoFsOfTaskTemplate as err:
@@ -240,13 +243,11 @@ class CreateTaskInteractor:
             TemplateGoFsFieldsBaseValidationsInteractor(
                 self.task_storage, self.gof_storage,
                 self.create_task_storage, self.storage,
-                self.field_storage
-            )
+                self.field_storage)
         base_validations_interactor. \
             perform_base_validations_for_template_gofs_and_fields(
             task_dto.gof_fields_dtos, task_dto.created_by_id,
-            task_dto.task_template_id, action_type
-        )
+            task_dto.task_template_id, action_type)
         created_task_id = \
             self.create_task_storage.create_task_with_given_task_details(
                 task_dto)
@@ -348,44 +349,33 @@ class CreateTaskInteractor:
         return
 
     def _validate_task_details(
-            self, task_dto: Union[CreateTaskDTO, UpdateTaskDTO],
+            self, task_dto: CreateTaskDTO,
             action_type: Optional[ActionTypes]
     ):
-        start_date = task_dto.start_date
-        due_date = task_dto.due_date
-        due_time = task_dto.due_time
-        dates_validation_is_not_required = False
-        action_type_is_no_validations = action_type == \
-                                        ActionTypes.NO_VALIDATIONS.value
+        start_datetime = task_dto.start_datetime
+        due_datetime = task_dto.due_datetime
+        action_type_is_no_validations = \
+            action_type == ActionTypes.NO_VALIDATIONS.value
+        self._validate_priority_in_no_validations_case(
+            task_dto.priority, action_type_is_no_validations)
+        empty_values_given = not start_datetime and not due_datetime
         if action_type_is_no_validations:
-            empty_values_given = (
-                    not start_date or not due_date or not due_time)
-            if empty_values_given:
-                dates_validation_is_not_required = True
-        if dates_validation_is_not_required:
+            if not empty_values_given:
+                self._validate_due_datetime_without_start_datetime(
+                    start_datetime, due_datetime)
             return
+        start_datetime_is_emtpy = not start_datetime
+        due_datetime_is_empty = not due_datetime
+        if start_datetime_is_emtpy:
+            raise StartDateTimeIsRequired()
+        if due_datetime_is_empty:
+            raise DueDateTimeIsRequired()
         self._validate_start_date_and_due_date_dependencies(
-            start_date, due_date)
+            start_datetime, due_datetime)
         import datetime
-        self._validate_due_time_format(due_time)
-        due_date_is_expired = (due_date < datetime.datetime.today().date())
-        if due_date_is_expired:
-            raise DueDateHasExpired(due_date)
-        due_time_obj = datetime.datetime.strptime(due_time, TIME_FORMAT).time()
-        now_time = datetime.datetime.now().time()
-        due_time_is_expired_if_due_date_is_today = (
-                due_date == datetime.datetime.today().date() and
-                due_time_obj < now_time)
-        if due_time_is_expired_if_due_date_is_today:
-            raise DueTimeHasExpiredForToday(due_time)
-
-    @staticmethod
-    def _validate_due_time_format(due_time: str):
-        import datetime
-        try:
-            datetime.datetime.strptime(due_time, TIME_FORMAT)
-        except ValueError:
-            raise InvalidDueTimeFormat(due_time)
+        due_datetime_is_expired = due_datetime < datetime.datetime.now()
+        if due_datetime_is_expired:
+            raise DueDateTimeHasExpired(due_datetime)
 
     @staticmethod
     def _validate_start_date_and_due_date_dependencies(start_date,
@@ -403,4 +393,23 @@ class CreateTaskInteractor:
             task_template_id not in project_task_templates
         if invalid_template_of_project:
             raise InvalidTaskTemplateOfProject(project_id, task_template_id)
+        return
+
+    @staticmethod
+    def _validate_due_datetime_without_start_datetime(
+            start_datetime, due_datetime
+    ) -> Optional[DueDateTimeWithoutStartDateTimeIsNotValid]:
+        due_datetime_given_without_start_date = not start_datetime and \
+                                                due_datetime
+        if due_datetime_given_without_start_date:
+            raise DueDateTimeWithoutStartDateTimeIsNotValid(due_datetime)
+        return
+
+    @staticmethod
+    def _validate_priority_in_no_validations_case(
+            priority: Priority, action_type_is_no_validations: bool
+    ) -> Optional[PriorityIsRequired]:
+        priority_is_not_given = not priority
+        if priority_is_not_given and not action_type_is_no_validations:
+            raise PriorityIsRequired()
         return

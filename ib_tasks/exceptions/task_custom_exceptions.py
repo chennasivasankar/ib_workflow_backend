@@ -152,6 +152,7 @@ class TaskIdsNotInProject(Exception):
     def __str__(self):
         return self.invalid_task_ids
 
+
 class TaskDelayReasonIsNotUpdated(Exception):
     def __init__(
             self, due_date: datetime.datetime, task_display_id: str,
@@ -160,3 +161,7 @@ class TaskDelayReasonIsNotUpdated(Exception):
         self.due_date = due_date
         self.task_display_id = task_display_id
         self.stage_display_name = stage_display_name
+
+
+class PriorityIsRequired(Exception):
+    pass

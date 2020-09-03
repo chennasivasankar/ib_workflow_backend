@@ -29,9 +29,8 @@ class CreateTaskDTO:
     action_id: int
     title: str
     description: str
-    start_date: datetime.date
-    due_date: datetime.date
-    due_time: str
+    start_datetime: datetime.datetime
+    due_datetime: datetime.datetime
     priority: Priority
     gof_fields_dtos: List[GoFFieldsDTO]
 
@@ -49,9 +48,8 @@ class UpdateTaskDTO:
     created_by_id: str
     title: str
     description: str
-    start_date: datetime.date
-    due_date: datetime.date
-    due_time: str
+    start_datetime: datetime.datetime
+    due_datetime: datetime.datetime
     priority: Priority
     stage_assignee: StageIdWithAssigneeDTO
     gof_fields_dtos: List[GoFFieldsDTO]
@@ -63,9 +61,8 @@ class UpdateTaskWithTaskDisplayIdDTO:
     created_by_id: str
     title: str
     description: str
-    start_date: datetime.date
-    due_date: datetime.date
-    due_time: str
+    start_datetime: datetime.datetime
+    due_datetime: datetime.datetime
     priority: Priority
     stage_assignee: StageIdWithAssigneeDTO
     gof_fields_dtos: List[GoFFieldsDTO]
@@ -78,9 +75,8 @@ class SaveAndActOnTaskDTO:
     action_id: int
     title: str
     description: str
-    start_date: datetime.date
-    due_date: datetime.date
-    due_time: str
+    start_datetime: datetime.datetime
+    due_datetime: datetime.datetime
     priority: Priority
     stage_assignee: StageIdWithAssigneeDTO
     gof_fields_dtos: List[GoFFieldsDTO]
@@ -93,9 +89,8 @@ class SaveAndActOnTaskWithTaskDisplayIdDTO:
     action_id: int
     title: str
     description: str
-    start_date: datetime.date
-    due_date: datetime.date
-    due_time: str
+    start_datetime: datetime.datetime
+    due_datetime: datetime.datetime
     priority: Priority
     stage_assignee: StageIdWithAssigneeDTO
     gof_fields_dtos: List[GoFFieldsDTO]

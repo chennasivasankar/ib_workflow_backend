@@ -253,22 +253,13 @@
             "description":{
                "type":"string"
             },
-            "start_date":{
+            "start_datetime":{
                "type":"string",
-               "format":"date"
+               "format":"date-time"
             },
-            "due_date":{
-               "type":"object",
-               "properties":{
-                  "date":{
-                     "type":"string",
-                     "format":"date"
-                  },
-                  "time":{
-                     "type":"string",
-                     "example":"14:30:00"
-                  }
-               }
+            "due_datetime":{
+               "type":"string",
+               "format": "date-time"
             },
             "priority":{
                "type":"string",
@@ -927,22 +918,13 @@
             "description":{
                "type":"string"
             },
-            "start_date":{
+            "start_datetime":{
                "type":"string",
-               "format":"date"
+               "format":"date-time"
             },
-            "due_date":{
-               "type":"object",
-               "properties":{
-                  "date":{
-                     "type":"string",
-                     "format":"date"
-                  },
-                  "time":{
-                     "type":"string",
-                     "example":"14:30:00"
-                  }
-               }
+            "due_datetime":{
+               "type":"string",
+               "format": "date-time"
             },
             "priority":{
                "type":"string",

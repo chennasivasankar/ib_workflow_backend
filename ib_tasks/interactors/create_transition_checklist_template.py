@@ -256,8 +256,8 @@ class CreateTransitionChecklistTemplateInteractor(
             transition_checklist_template_id)
         return
 
-    def _validate_action_id(self, action_id) -> Optional[
-        InvalidActionException]:
+    def _validate_action_id(
+            self, action_id) -> Optional[InvalidActionException]:
         self.stage_action_storage.validate_action_id(action_id)
         return
 

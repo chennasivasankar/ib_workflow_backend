@@ -53,6 +53,9 @@ EMPTY_VALUE_FOR_READ_PERMISSIONS = "Read Permission roles shouldn't be empty " \
                                    "" \
                                    "" \
                                    "" \
+                                   "" \
+                                   "" \
+                                   "" \
                                    "for these fields ids {}"
 DUPLICATED_VALUES_FOR_READ_PERMISSIONS = "Repeated roles for read " \
                                          "permissions for these fields {}"
@@ -402,9 +405,33 @@ USER_NOT_A_MEMBER_OF_PROJECT = (
     "USER_NOT_A_MEMBER_OF_PROJECT"
 )
 
-
 TASK_DELAY_REASON_NOT_UPDATED = (
     "Task delay reason not updated for task {} in stage {} with missed due "
     "date {}",
     "TASK_DELAY_REASON_NOT_UPDATED"
+)
+
+DUE_DATE_TIME_WITHOUT_START_DATE_TIME = (
+    "due date time {} is given with out start datetime",
+    "DUE_DATE_TIME_WITHOUT_START_DATE_TIME"
+)
+
+START_DATE_TIME_IS_REQUIRED = (
+    "start datetime is required if action type is not no validations",
+    "START_DATE_TIME_IS_REQUIRED"
+)
+
+DUE_DATE_TIME_IS_REQUIRED = (
+    "due datetime is required if action type is not no validations",
+    "DUE_DATE_TIME_IS_REQUIRED"
+)
+
+DUE_DATE_TIME_HAS_EXPIRED = (
+    "given due date time {} has expired, please give a valid due date time",
+    "DUE_DATE_TIME_HAS_EXPIRED"
+)
+
+PRIORITY_IS_REQUIRED = (
+    "task priority is required if action type is not no validations",
+    "PRIORITY_IS_REQUIRED"
 )

@@ -1,11 +1,13 @@
 import abc
 
-from ib_tasks.exceptions.datetime_custom_exceptions import DueDateHasExpired
+from ib_tasks.exceptions.datetime_custom_exceptions import \
+    DueDateTimeHasExpired, DueDateTimeWithoutStartDateTimeIsNotValid, \
+    StartDateTimeIsRequired, DueDateTimeIsRequired
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
     StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId, \
-    TaskDelayReasonIsNotUpdated
+    TaskDelayReasonIsNotUpdated, PriorityIsRequired
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 
@@ -132,23 +134,7 @@ class UpdateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_due_time_format(self, err):
-        pass
-
-    @abc.abstractmethod
     def raise_start_date_is_ahead_of_due_date(self, err):
-        pass
-
-    @abc.abstractmethod
-    def raise_due_date_is_behind_start_date(self, err):
-        pass
-
-    @abc.abstractmethod
-    def raise_due_time_has_expired_for_today(self, err):
-        pass
-
-    @abc.abstractmethod
-    def raise_due_date_has_expired(self, err: DueDateHasExpired):
         pass
 
     @abc.abstractmethod
@@ -176,4 +162,25 @@ class UpdateTaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_task_delay_reason_not_updated(self,
                                             err: TaskDelayReasonIsNotUpdated):
+        pass
+
+    @abc.abstractmethod
+    def raise_due_date_time_without_start_datetime(
+            self, err: DueDateTimeWithoutStartDateTimeIsNotValid):
+        pass
+
+    @abc.abstractmethod
+    def raise_start_date_time_is_required(self, err: StartDateTimeIsRequired):
+        pass
+
+    @abc.abstractmethod
+    def raise_due_date_time_is_required(self, err: DueDateTimeIsRequired):
+        pass
+
+    @abc.abstractmethod
+    def raise_due_date_time_has_expired(self, err: DueDateTimeHasExpired):
+        pass
+
+    @abc.abstractmethod
+    def raise_priority_is_required(self, err: PriorityIsRequired):
         pass

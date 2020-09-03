@@ -3,9 +3,9 @@ from typing import List, Optional, Dict
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.exceptions.datetime_custom_exceptions import \
-    InvalidDueTimeFormat, StartDateIsAheadOfDueDate, \
-    DueDateIsBehindStartDate, \
-    DueTimeHasExpiredForToday, DueDateHasExpired
+    StartDateIsAheadOfDueDate, \
+    DueDateTimeHasExpired, DueDateTimeIsRequired, \
+    StartDateTimeIsRequired, DueDateTimeWithoutStartDateTimeIsNotValid
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidFileFormat, InvalidUrlForFile, InvalidImageFormat, \
     InvalidUrlForImage, InvalidTimeFormat, InvalidDateFormat, \
@@ -26,7 +26,7 @@ from ib_tasks.exceptions.stage_custom_exceptions import \
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId, \
-    TaskDelayReasonIsNotUpdated
+    TaskDelayReasonIsNotUpdated, PriorityIsRequired
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
@@ -39,6 +39,60 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 class UpdateTaskPresenterImplementation(
     UpdateTaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_priority_is_required(self, err: PriorityIsRequired):
+        from ib_tasks.constants.exception_messages import \
+            PRIORITY_IS_REQUIRED
+        data = {
+            "response": PRIORITY_IS_REQUIRED[0],
+            "http_status_code": 400,
+            "res_status": PRIORITY_IS_REQUIRED[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_due_date_time_without_start_datetime(
+            self, err: DueDateTimeWithoutStartDateTimeIsNotValid):
+        from ib_tasks.constants.exception_messages import \
+            DUE_DATE_TIME_WITHOUT_START_DATE_TIME
+        message = DUE_DATE_TIME_WITHOUT_START_DATE_TIME[0].format(
+            err.due_datetime)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": DUE_DATE_TIME_WITHOUT_START_DATE_TIME[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_start_date_time_is_required(self, err: StartDateTimeIsRequired):
+        from ib_tasks.constants.exception_messages import \
+            START_DATE_TIME_IS_REQUIRED
+        data = {
+            "response": START_DATE_TIME_IS_REQUIRED[0],
+            "http_status_code": 400,
+            "res_status": START_DATE_TIME_IS_REQUIRED[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_due_date_time_is_required(self, err: DueDateTimeIsRequired):
+        from ib_tasks.constants.exception_messages import \
+            DUE_DATE_TIME_IS_REQUIRED
+        data = {
+            "response": DUE_DATE_TIME_IS_REQUIRED[0],
+            "http_status_code": 400,
+            "res_status": DUE_DATE_TIME_IS_REQUIRED[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_due_date_time_has_expired(self, err: DueDateTimeHasExpired):
+        from ib_tasks.constants.exception_messages import \
+            DUE_DATE_TIME_HAS_EXPIRED
+        message = DUE_DATE_TIME_HAS_EXPIRED[0].format(err.due_datetime)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": DUE_DATE_TIME_HAS_EXPIRED[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_task_delay_reason_not_updated(self,
                                             err: TaskDelayReasonIsNotUpdated):
@@ -110,28 +164,6 @@ class UpdateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_due_date_has_expired(self, err: DueDateHasExpired):
-        from ib_tasks.constants.exception_messages import \
-            DUE_DATE_HAS_EXPIRED
-        message = DUE_DATE_HAS_EXPIRED[0].format(err.due_date)
-        data = {
-            "response": message,
-            "http_status_code": 400,
-            "res_status": DUE_DATE_HAS_EXPIRED[1]
-        }
-        return self.prepare_400_bad_request_response(data)
-
-    def raise_invalid_due_time_format(self, err: InvalidDueTimeFormat):
-        from ib_tasks.constants.exception_messages import \
-            INVALID_DUE_TIME_FORMAT
-        message = INVALID_DUE_TIME_FORMAT[0].format(err.due_time)
-        data = {
-            "response": message,
-            "http_status_code": 400,
-            "res_status": INVALID_DUE_TIME_FORMAT[1]
-        }
-        return self.prepare_400_bad_request_response(data)
-
     def raise_start_date_is_ahead_of_due_date(self,
                                               err: StartDateIsAheadOfDueDate):
         from ib_tasks.constants.exception_messages import \
@@ -143,32 +175,6 @@ class UpdateTaskPresenterImplementation(
             "response": message,
             "http_status_code": 400,
             "res_status": START_DATE_IS_AHEAD_OF_DUE_DATE[1]
-        }
-        return self.prepare_400_bad_request_response(data)
-
-    def raise_due_date_is_behind_start_date(self,
-                                            err: DueDateIsBehindStartDate):
-        from ib_tasks.constants.exception_messages import \
-            DUE_DATE_IS_BEHIND_START_DATE
-        message = DUE_DATE_IS_BEHIND_START_DATE[0].format(
-            str(err.given_due_date), str(err.given_start_date)
-        )
-        data = {
-            "response": message,
-            "http_status_code": 400,
-            "res_status": DUE_DATE_IS_BEHIND_START_DATE[1]
-        }
-        return self.prepare_400_bad_request_response(data)
-
-    def raise_due_time_has_expired_for_today(self,
-                                             err: DueTimeHasExpiredForToday):
-        from ib_tasks.constants.exception_messages import \
-            DUE_TIME_HAS_EXPIRED_FOR_TODAY
-        message = DUE_TIME_HAS_EXPIRED_FOR_TODAY[0].format(err.due_time)
-        data = {
-            "response": message,
-            "http_status_code": 400,
-            "res_status": DUE_TIME_HAS_EXPIRED_FOR_TODAY[1]
         }
         return self.prepare_400_bad_request_response(data)
 
