@@ -5,9 +5,12 @@ from ib_tasks.exceptions.datetime_custom_exceptions import \
     StartDateTimeIsRequired, DueDateTimeIsRequired
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidDateFormat
+from ib_tasks.exceptions.fields_custom_exceptions import UserDidNotFillRequiredFields
+from ib_tasks.exceptions.gofs_custom_exceptions import UserDidNotFillRequiredGoFs
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException, InvalidStageIdsListException
-from ib_tasks.exceptions.task_custom_exceptions import PriorityIsRequired
+from ib_tasks.exceptions.task_custom_exceptions import PriorityIsRequired, \
+    InvalidTaskJson
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
@@ -218,3 +221,17 @@ class CreateTaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_exception_for_invalid_date_format(self, err: InvalidDateFormat):
         pass
+
+    @abc.abstractmethod
+    def raise_user_did_not_fill_required_gofs(self, err: UserDidNotFillRequiredGoFs):
+        pass
+
+    @abc.abstractmethod
+    def raise_user_did_not_fill_required_fields(
+            self, err: UserDidNotFillRequiredFields):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_task_json(self, err: InvalidTaskJson):
+        pass
+
