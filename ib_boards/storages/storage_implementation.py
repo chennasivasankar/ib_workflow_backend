@@ -450,3 +450,7 @@ class StorageImplementation(StorageInterface):
 
     def validate_field_id_with_column_id(self, column_id: str, field_id: str):
         pass
+
+    def change_display_status_of_field(
+            self, column_id: str, user_id: str, field_id: str):
+        pass

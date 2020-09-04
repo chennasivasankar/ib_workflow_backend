@@ -61,3 +61,8 @@ class ChangeFieldsDisplayStatus:
             column_id=field_order_parameter.column_id,
             field_id=field_order_parameter.field_id
         )
+        self.storage.change_display_status_of_field(
+            column_id=field_order_parameter.column_id,
+            user_id=field_order_parameter.user_id,
+            field_id=field_order_parameter.field_id
+        )
