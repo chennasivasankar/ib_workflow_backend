@@ -45,7 +45,7 @@ class TestCase02GetTaskAPITestCase(TestUtils):
 
     @pytest.fixture
     def setup(self, reset_factories):
-        task_obj = TaskFactory(task_display_id="iBWF-1")
+        task_obj = TaskFactory(task_display_id="iBWF-1", project_id="project0")
         gof_objs = GoFFactory.create_batch(size=3)
         task_gof_objs = TaskGoFFactory.create_batch(
             size=3, task=task_obj, gof=factory.Iterator(gof_objs)
@@ -77,9 +77,9 @@ class TestCase02GetTaskAPITestCase(TestUtils):
         )
         stage_objs = StageModelFactory.create_batch(size=4)
         assignee_ids = [
+            "123e4567-e89b-12d3-a456-426614174000",
             "123e4567-e89b-12d3-a456-426614174001",
-            "123e4567-e89b-12d3-a456-426614174002",
-            "123e4567-e89b-12d3-a456-426614174003"
+            "123e4567-e89b-12d3-a456-426614174002"
         ]
 
         CurrentTaskStageModelFactory.create_batch(size=4, task=task_obj,
@@ -107,12 +107,15 @@ class TestCase02GetTaskAPITestCase(TestUtils):
     @pytest.mark.django_db
     def test_case(self, snapshot, setup, mocker):
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        get_user_role_ids(mocker)
+            get_user_role_ids_based_on_project_mock
+        get_user_role_ids_based_on_project_mock(mocker)
         from ib_tasks.tests.common_fixtures.adapters \
             .assignees_details_service \
             import assignee_details_dtos_mock
         assignee_details_dtos_mock(mocker)
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_projects_info_for_given_ids_mock
+        get_projects_info_for_given_ids_mock(mocker)
 
         body = {}
         path_params = {}

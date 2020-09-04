@@ -17,7 +17,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO, TaskProjectDTO
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO
 
 
@@ -150,4 +150,13 @@ class TaskStorageInterface(abc.ABC):
     def get_user_missed_the_task_due_time(self, task_id: int,
                                           user_id: str,
                                           stage_id: int) -> datetime:
+        pass
+
+    @abc.abstractmethod
+    def get_valid_task_ids_from_the_project(self, task_ids: List[int], project_id: str):
+        pass
+
+    @abc.abstractmethod
+    def get_task_project_ids(self, task_ids: List[int]) -> \
+            List[TaskProjectDTO]:
         pass

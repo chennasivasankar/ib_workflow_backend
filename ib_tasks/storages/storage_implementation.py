@@ -38,6 +38,10 @@ from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
 
 class StagesStorageImplementation(StageStorageInterface):
 
+    def get_stage_display_name_for_stage_id(self, stage_id: int) -> str:
+        stage_display_name = Stage.objects.get(id=stage_id).display_name
+        return stage_display_name
+
     def create_stages(self, stage_information: List[StageDTO]):
         list_of_stages = []
         for stage in stage_information:
@@ -436,6 +440,13 @@ class StagesStorageImplementation(StageStorageInterface):
             task_id=task_id
         ).values_list('stage__id', flat=True))
 
+    def get_current_stages_of_task_in_given_stages(
+            self, task_id: int, stage_ids: List[str]) -> List[str]:
+        return list(CurrentTaskStage.objects.filter(
+            task_id=task_id, stage__stage_id__in=stage_ids
+        ).values_list('stage__stage_id', flat=True))
+
+
 
 class StorageImplementation(StorageInterface):
 
@@ -520,6 +531,10 @@ class StorageImplementation(StorageInterface):
     def validate_task_id(self, task_id: int) -> bool:
 
         return Task.objects.filter(id=task_id).exists()
+
+    def get_task_project_id(self, task_id: int) -> str:
+        task = Task.objects.get(id=task_id)
+        return task.project_id
 
     def get_status_variables_to_task(
             self, task_id: int) -> List[StatusVariableDTO]:
@@ -750,8 +765,7 @@ class StorageImplementation(StorageInterface):
                                            reason_id=reason_id,
                                            stage_id=stage_id,
                                            reason=due_details.reason)
-        Task.objects.filter(pk=task_id, taskstagehistory__assignee_id=user_id
-                            ).update(due_date=updated_due_datetime)
+
 
     def validate_stage_id(self, stage_id: int) -> bool:
         does_exists = Stage.objects.filter(id=stage_id).exists()
@@ -793,3 +807,9 @@ class StorageImplementation(StorageInterface):
         if objs:
             return objs[0]
         return None
+
+    def update_task_due_datetime(self, due_details: TaskDelayParametersDTO):
+        task_id = due_details.task_id
+        updated_due_datetime = due_details.due_date_time
+
+        Task.objects.filter(pk=task_id).update(due_date=updated_due_datetime)

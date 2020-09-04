@@ -5,9 +5,10 @@ from ib_iam.app_interfaces.dtos import SearchableDTO, UserTeamsDTO, \
     ProjectTeamsAndUsersDTO
 from ib_iam.app_interfaces.dtos import SearchableDTO, ProjectTeamUserDTO, \
     UserIdWithTeamIDAndNameDTO
-from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
+from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO, \
+    UserIdWithProjectIdAndStatusDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserIdAndNameDTO, \
-    TeamIdAndNameDTO, ProjectDTO, UserTeamDTO
+    TeamIdAndNameDTO, ProjectDTO, TeamWithUserIdDTO
 from ib_tasks.adapters.dtos import SearchableDetailsDTO
 
 
@@ -356,7 +357,7 @@ class ServiceInterface:
     @staticmethod
     def get_user_team_dtos_for_given_project_teams_and_users_details_dto(
             project_teams_and_users_dto: ProjectTeamsAndUsersDTO
-    ) -> List[UserTeamDTO]:
+    ) -> List[TeamWithUserIdDTO]:
         from ib_iam.interactors.project_interactor import ProjectInteractor
         from ib_iam.storages.project_storage_implementation import \
             ProjectStorageImplementation
@@ -398,3 +399,25 @@ class ServiceInterface:
         )
         return interactor.is_valid_user_id_for_given_project(
             user_id=user_id, project_id=project_id)
+
+    @staticmethod
+    def get_user_status_for_given_projects(
+            user_id: str, project_ids: List[str]
+    ) -> List[UserIdWithProjectIdAndStatusDTO]:
+        from ib_iam.interactors.project_interactor import ProjectInteractor
+        from ib_iam.storages.project_storage_implementation import \
+            ProjectStorageImplementation
+        project_storage = ProjectStorageImplementation()
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        user_storage = UserStorageImplementation()
+        from ib_iam.storages.team_storage_implementation import \
+            TeamStorageImplementation
+        team_storage = TeamStorageImplementation()
+        interactor = ProjectInteractor(
+            project_storage=project_storage,
+            user_storage=user_storage,
+            team_storage=team_storage
+        )
+        return interactor.get_user_status_for_given_projects(
+            user_id=user_id, project_ids=project_ids)

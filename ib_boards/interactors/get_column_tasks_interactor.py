@@ -52,12 +52,13 @@ class GetColumnTasksInteractor:
 
     def get_column_tasks(self,
                          column_tasks_parameters: ColumnTasksParametersDTO):
-        self._validate_given_data(
-            column_tasks_parameters=column_tasks_parameters)
         column_id = column_tasks_parameters.column_id
+        project_id = self.storage.get_project_id_for_given_column_id(column_id)
+        self._validate_given_data(
+            column_tasks_parameters=column_tasks_parameters,
+            project_id=project_id)
         user_id = column_tasks_parameters.user_id
         view_type = column_tasks_parameters.view_type
-        project_id = self.storage.get_project_id_for_given_column_id(column_id)
 
         column_tasks = ColumnsTasksParametersDTO(
             column_ids=[column_id],
@@ -91,7 +92,7 @@ class GetColumnTasksInteractor:
         # TODO need to prepare DTO
         return task_field_dtos, task_action_dtos, total_tasks, task_id_dtos, task_stage_dtos, assignees_dtos
 
-    def _validate_given_data(self, column_tasks_parameters):
+    def _validate_given_data(self, column_tasks_parameters, project_id):
         column_id = column_tasks_parameters.column_id
         self.storage.validate_column_id(column_id=column_id)
         offset = column_tasks_parameters.offset
@@ -103,8 +104,8 @@ class GetColumnTasksInteractor:
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         user_id = column_tasks_parameters.user_id
-        user_role = service_adapter.user_service.get_user_roles(
-            user_id=user_id)
+        user_role = service_adapter.user_service.get_user_role_ids_based_on_project(
+            user_id=user_id, project_id=project_id)
         self.storage.validate_user_role_with_column_roles(
             user_role=user_role,
             column_id=column_id

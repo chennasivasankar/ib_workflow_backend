@@ -82,6 +82,7 @@ class TaskModelFactory(factory.django.DjangoModelFactory):
 
     task_display_id = factory.sequence(lambda counter: "iB_{}".format(counter))
     template_id = factory.Sequence(lambda n: "template_%d" % (n + 1))
+    project_id = factory.Sequence(lambda n: "project_id{}".format(n))
     created_by = factory.Sequence(lambda n: (n + 1))
     title = factory.Sequence(lambda c: "title_{}".format(c))
     description = factory.Sequence(lambda c: "description_{}".format(c))
@@ -324,6 +325,7 @@ class TaskStageHistoryModelFactory(factory.django.DjangoModelFactory):
         lambda n: "123e4567-e89b-12d3-a456-42661417400{}".format(n))
     joined_at = datetime(2012, 10, 10)
     left_at = datetime(2012, 10, 11)
+    team_id = factory.Sequence(lambda n: "team_{}".format(n + 1))
 
 
 class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
@@ -355,6 +357,7 @@ class StageFactory(factory.django.DjangoModelFactory):
     task_template_id = factory.Sequence(lambda c: "template_{}".format(c))
     display_name = factory.Sequence(lambda c: "display_name_{}".format(c))
     value = factory.Sequence(lambda c: c)
+    stage_color = factory.Sequence(lambda counter: "#fff2f{}".format(counter))
 
 
 class ProjectTaskTemplateFactory(factory.django.DjangoModelFactory):

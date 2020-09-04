@@ -120,7 +120,9 @@ class UserIdWIthTeamDetailsDTOFactory(factory.Factory):
     class Meta:
         model = UserIdWIthTeamDetailsDTOs
 
-    user_id = factory.sequence(lambda counter: "user_{}".format(counter))
+    user_id = factory.sequence(
+        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+            counter))
 
     @factory.lazy_attribute
     def team_details(self):

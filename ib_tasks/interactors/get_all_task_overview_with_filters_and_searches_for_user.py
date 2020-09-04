@@ -8,6 +8,8 @@ from dataclasses import dataclass
 from typing import List
 
 from ib_tasks.constants.enum import ViewType
+from ib_tasks.exceptions.task_custom_exceptions import TaskIdsNotInProject
+from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -15,7 +17,7 @@ from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskIdWithStageDetailsDTO, GetTaskStageCompleteDetailsDTO, \
+    GetTaskStageCompleteDetailsDTO, \
     TaskWithCompleteStageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
@@ -36,7 +38,7 @@ class UserIdPaginationDTO:
     offset: int
 
 
-class GetTasksOverviewForUserInteractor:
+class GetTasksOverviewForUserInteractor(ValidationMixin):
     def __init__(self, stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,
                  field_storage: FieldsStorageInterface,
@@ -52,9 +54,11 @@ class GetTasksOverviewForUserInteractor:
             self, user_id: str, task_ids: List[int],
             view_type: ViewType, project_id: str
     ) -> AllTasksOverviewDetailsDTO:
-        stage_ids = self._get_allowed_stage_ids_of_user(
-            user_id=user_id, project_id=project_id
+        self._validate_project_data(
+            project_id=project_id, user_id=user_id, task_ids=task_ids
         )
+        stage_ids = self._get_allowed_stage_ids_of_user(
+            user_id=user_id, project_id=project_id)
         task_with_complete_stage_details_dtos = \
             self._get_task_with_complete_stage_details_dtos(
                 user_id=user_id,
@@ -78,19 +82,11 @@ class GetTasksOverviewForUserInteractor:
         task_fields_and_action_details_dtos = self._get_task_fields_and_action(
             task_id_with_stage_id_dtos, user_id, view_type=view_type)
 
-        task_with_stage_details_having_actions_dtos = \
-            self._filter_tasks_with_stage_details_having_actions(
-                task_with_complete_stage_details_dtos
-                =task_with_complete_stage_details_dtos,
-                task_fields_and_action_details_dtos
-                =task_fields_and_action_details_dtos
-            )
-
         from ib_tasks.interactors.presenter_interfaces.dtos import \
             AllTasksOverviewDetailsDTO
         all_tasks_overview_details_dto = AllTasksOverviewDetailsDTO(
             task_with_complete_stage_details_dtos
-            =task_with_stage_details_having_actions_dtos,
+            =task_with_complete_stage_details_dtos,
             task_fields_and_action_details_dtos=
             task_fields_and_action_details_dtos,
         )
@@ -112,18 +108,15 @@ class GetTasksOverviewForUserInteractor:
         from ib_tasks.interactors. \
             get_valid_task_ids_for_user_based_on_stage_ids import \
             GetTaskIdsOfUserBasedOnStagesInteractor
-        task_ids_of_user_based_on_stage_ids_interactor = \
-            GetTaskIdsOfUserBasedOnStagesInteractor(
-                stage_storage=self.stage_storage,
-                task_storage=self.task_storage,
-                task_stage_storage=self.task_stage_storage
-            )
-        task_id_with_stage_ids_dtos = \
-            task_ids_of_user_based_on_stage_ids_interactor. \
-                get_task_ids_of_user_based_on_stage_ids(
-                user_id=user_id, stage_ids=stage_ids, task_ids=task_ids,
-                project_id=project_id
-            )
+        task_ids_interactor = GetTaskIdsOfUserBasedOnStagesInteractor(
+            stage_storage=self.stage_storage,
+            task_storage=self.task_storage,
+            task_stage_storage=self.task_stage_storage
+        )
+        task_id_with_stage_ids_dtos = task_ids_interactor.get_task_ids_of_user_based_on_stage_ids(
+            user_id=user_id, stage_ids=stage_ids, task_ids=task_ids,
+            project_id=project_id
+        )
         return task_id_with_stage_ids_dtos
 
     def _get_task_fields_and_action(
@@ -142,57 +135,17 @@ class GetTasksOverviewForUserInteractor:
                                        user_id=user_id, view_type=view_type)
         return task_details_dtos
 
-    @staticmethod
-    def _get_filtered_task_id_with_stage_details_dtos(
-            task_id_with_stage_details_dtos: List[TaskIdWithStageDetailsDTO],
-            task_ids: List[str]) -> List[TaskIdWithStageDetailsDTO]:
-        new_task_id_with_stage_details_dtos = [
-            task_id_with_stage_details_dto
-            for task_id_with_stage_details_dto in
-            task_id_with_stage_details_dtos
-            if task_id_with_stage_details_dto.task_id in task_ids
+    def _validate_project_data(self, project_id: str, user_id: str, task_ids: List[int]):
+        self.validate_given_project_ids(project_ids=[project_id])
+        self.validate_if_user_is_in_project(
+            project_id=project_id, user_id=user_id
+        )
+        valid_task_ids = self.task_storage.get_valid_task_ids_from_the_project(
+            task_ids=task_ids, project_id=project_id
+        )
+        invalid_task_ids = [
+            invalid_task_id
+            for invalid_task_id in task_ids if invalid_task_id not in valid_task_ids
         ]
-        return new_task_id_with_stage_details_dtos
-
-    def _filter_tasks_with_stage_details_having_actions(
-            self,
-            task_with_complete_stage_details_dtos: List[
-                TaskWithCompleteStageDetailsDTO],
-            task_fields_and_action_details_dtos: List[
-                GetTaskStageCompleteDetailsDTO]
-    ) -> List[TaskWithCompleteStageDetailsDTO]:
-        task_with_stage_details_having_actions_dtos = []
-
-        for task_with_complete_stage_details_dto in \
-                task_with_complete_stage_details_dtos:
-            task_id_with_stage_details_dto = \
-                task_with_complete_stage_details_dto \
-                    .task_with_stage_details_dto
-            is_task_has_actions = self._check_is_task_having_actions(
-                task_id=task_id_with_stage_details_dto.task_id,
-                task_fields_and_action_details_dtos=
-                task_fields_and_action_details_dtos)
-            if is_task_has_actions:
-                task_with_stage_details_having_actions_dtos.append(
-                    task_with_complete_stage_details_dto
-                )
-        return task_with_stage_details_having_actions_dtos
-
-    @staticmethod
-    def _check_is_task_having_actions(
-            task_id: int,
-            task_fields_and_action_details_dtos:
-            List[GetTaskStageCompleteDetailsDTO]) -> bool:
-        for task_fields_and_action_details_dto in \
-                task_fields_and_action_details_dtos:
-            task_id_in_task_fields_and_actions_dto = \
-                task_fields_and_action_details_dto.task_id
-            is_task_id_same = task_id == task_id_in_task_fields_and_actions_dto
-            is_task_having_actions = \
-                task_fields_and_action_details_dto.action_dtos
-            is_given_task_having_actions = \
-                is_task_id_same and is_task_having_actions
-            if is_given_task_having_actions:
-                return True
-
-        return False
+        if invalid_task_ids:
+            raise TaskIdsNotInProject(invalid_task_ids=invalid_task_ids)

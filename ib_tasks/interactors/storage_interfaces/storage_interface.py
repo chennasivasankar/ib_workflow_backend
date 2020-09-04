@@ -20,6 +20,9 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_task_project_id(self, task_id: int) -> str:
+        pass
+    @abc.abstractmethod
     def get_status_variables_to_task(
             self, task_id: int) -> List[StatusVariableDTO]:
         pass
@@ -129,4 +132,8 @@ class StorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_latest_rp_added_datetime(self,
                                      task_id: int, stage_id: int) -> Optional[str]:
+        pass
+
+    @abc.abstractmethod
+    def update_task_due_datetime(self, due_details: TaskDelayParametersDTO):
         pass

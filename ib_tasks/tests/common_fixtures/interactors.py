@@ -36,6 +36,13 @@ def prepare_get_field_ids_having_write_permission_for_user(mocker, field_ids):
     mock_obj.return_value = field_ids
     return mock_obj
 
+def prepare_get_field_ids_having_permission_for_user_projects(mocker, field_ids):
+    path = "ib_tasks.interactors.user_role_validation_interactor." \
+           "UserRoleValidationInteractor.get_field_ids_having_permission_for_user"
+    mock_obj = mocker.patch(path)
+    mock_obj.return_value = field_ids
+    return mock_obj
+
 
 def prepare_get_stage_ids_for_user(mocker, stage_ids):
     path = "ib_tasks.interactors.user_role_validation_interactor." \
@@ -52,6 +59,12 @@ def prepare_get_permitted_action_ids(mocker, action_ids):
     mock_obj.return_value = action_ids
     return mock_obj
 
+def prepare_get_permitted_action_ids_for_project(mocker, action_ids):
+    path = "ib_tasks.interactors.user_role_validation_interactor." \
+           "UserRoleValidationInteractor.get_permitted_action_ids_for_given_user_in_projects"
+    mock_obj = mocker.patch(path)
+    mock_obj.return_value = action_ids
+    return mock_obj
 
 def prepare_call_action_logic_update_stages_mock(mocker):
     path = "ib_tasks.interactors.call_action_logic_function_and_update_task_status_variables_interactor" \
@@ -178,4 +191,4 @@ def prepare_assignees_interactor_mock(mocker, assignees):
     mock = mocker.patch(
         'ib_tasks.interactors.get_stages_assignees_details_interactor.GetStagesAssigneesDetailsInteractor.get_stages_assignee_details_by_given_task_ids'
     )
-    mock.return_value = [assignees]
+    mock.return_value = assignees
