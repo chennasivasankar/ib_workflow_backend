@@ -181,7 +181,7 @@ class TestUserActionOnTaskInteractor:
         from ib_tasks.interactors.stage_dtos import TaskStageDTO
         return TaskCompleteDetailsDTO(
             task_id=task_id,
-            task_display_id='',
+            task_display_id=task_display_id,
             task_boards_details=task_boards_details,
             actions_dto=[ActionDTOFactory()],
             field_dtos=[FieldDisplayDTOFactory()],
@@ -457,11 +457,17 @@ class TestUserActionOnTaskInteractor:
         assert action_id == expected_action_id
         validation_mock_obj.called_once()
 
+    @pytest.fixture()
+    def current_board_mock(self, mocker):
+        path = 'ib_tasks.interactors.get_task_current_board_complete_details_interactor' \
+               '.GetTaskCurrentBoardCompleteDetailsInteractor.get_task_current_board_complete_details'
+        return mocker.patch(path)
+
     def test_given_user_board_permission_denied_raises_exception(
             self, mocker, storage, presenter, elasticsearch_storage,
             task_stage_storage, user_in_project_mock,
             gof_storage, field_storage, stage_storage, board_mock,
-            task_storage_mock, action_storage_mock):
+            task_storage_mock, action_storage_mock, current_board_mock):
         # Arrange
         user_id = "user_1"
         board_id = "board_1"
@@ -511,7 +517,7 @@ class TestUserActionOnTaskInteractor:
 
         from ib_tasks.exceptions.permission_custom_exceptions \
             import UserBoardPermissionDenied
-        board_mock.side_effect = UserBoardPermissionDenied(board_id=board_id)
+        current_board_mock.side_effect = UserBoardPermissionDenied(board_id=board_id)
 
         # Act
         interactor.user_action_on_task_wrapper(presenter=presenter,
@@ -535,7 +541,7 @@ class TestUserActionOnTaskInteractor:
             task_stage_storage, assignees, user_in_project_mock,
             gof_storage, field_storage, stage_storage, board_mock,
             task_storage_mock, action_storage_mock, filtered_task_overview_user,
-            get_task_current_stages_mock):
+            get_task_current_stages_mock, current_board_mock):
         # Arrange
         user_id = "1"
         board_id = "board_1"
@@ -602,9 +608,9 @@ class TestUserActionOnTaskInteractor:
             task_id=task_id, task_boards_details=task_board_details,
             assignees=assignees, task_display_id=task_display_id
         )
+        current_board_mock.return_value = task_complete_details
         stage_ids = ['stage_1', 'stage_2']
         stage_mock.return_value = stage_ids
-        board_mock.return_value = task_board_details
 
         # Act
         interactor.user_action_on_task_wrapper(presenter=presenter,
@@ -628,3 +634,4 @@ class TestUserActionOnTaskInteractor:
             task_current_stage_details_dto=task_current_stages_details,
             all_tasks_overview_dto=None
         )
+        current_board_mock.assert_called_once_with(task_id=task_id, stage_ids=stage_ids)

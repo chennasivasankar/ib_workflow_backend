@@ -147,7 +147,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         self.validate_if_user_is_in_project(
             project_id=project_id, user_id=self.user_id
         )
-        self._validations_for_task_action(task_id)
+        self._validations_for_task_action(task_id, project_id)
         task_dto = self._get_task_dto(task_id)
         updated_task_dto = \
             self._call_logic_and_update_status_variables_and_get_stage_ids(
@@ -272,7 +272,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             .get_task(task_id=task_id)
         return task_dto
 
-    def _validations_for_task_action(self, task_id: int):
+    def _validations_for_task_action(self, task_id: int, project_id: str):
 
         if self.board_id:
             self._validate_board_id()

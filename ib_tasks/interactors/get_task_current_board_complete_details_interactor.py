@@ -2,7 +2,6 @@ from typing import Optional, List
 from ib_tasks.adapters.dtos import ColumnStageDTO
 from ib_tasks.constants.enum import ViewType
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
-from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.presenter_interfaces.dtos import TaskCompleteDetailsDTO
 from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import ActionStorageInterface
@@ -15,7 +14,7 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
 
 
-class GetTaskCurrentBoardCompleteDetailsInteractor(ValidationMixin):
+class GetTaskCurrentBoardCompleteDetailsInteractor:
 
     def __init__(self, user_id: str,
                  field_storage: FieldsStorageInterface,
@@ -36,8 +35,12 @@ class GetTaskCurrentBoardCompleteDetailsInteractor(ValidationMixin):
 
     def get_task_current_board_complete_details(self, task_id: int,
                                                 stage_ids: List[str]):
+
+        task_display_id = self.task_storage.get_task_display_id_for_task_id(
+            task_id=task_id
+        )
         if self.board_id is None:
-            return self._get_task_complete_details(task_id)
+            return self._get_task_complete_details(task_id, task_display_id)
         task_boards_details = self._get_task_boards_details(stage_ids)
         column_stage_dtos = task_boards_details.column_stage_dtos
         board_stage_ids = self._get_present_board_stages(column_stage_dtos)
@@ -48,7 +51,7 @@ class GetTaskCurrentBoardCompleteDetailsInteractor(ValidationMixin):
         )
         return TaskCompleteDetailsDTO(
             task_id=task_id,
-            task_display_id='',
+            task_display_id=task_display_id,
             task_boards_details=task_boards_details,
             actions_dto=actions_dto,
             field_dtos=fields_dto,
@@ -57,11 +60,11 @@ class GetTaskCurrentBoardCompleteDetailsInteractor(ValidationMixin):
         )
 
     @staticmethod
-    def _get_task_complete_details(task_id: int):
+    def _get_task_complete_details(task_id: int, task_display_id: str):
 
         return TaskCompleteDetailsDTO(
             task_id=task_id,
-            task_display_id='',
+            task_display_id=task_display_id,
             task_boards_details=None,
             actions_dto=None,
             field_dtos=None,
