@@ -7,8 +7,9 @@ import factory
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from ib_tasks.adapters.auth_service import AuthService
-from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Searchable
+from ib_tasks.adapters.auth_service import AuthService, \
+    TeamsNotExistForGivenProjectException
+from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.tests.factories.models import (
     TaskFactory,
     TaskGoFFactory,
@@ -16,13 +17,13 @@ from ib_tasks.tests.factories.models import (
     GoFRoleFactory,
     GoFFactory,
     FieldRoleFactory,
-    FieldFactory, StageModelFactory, CurrentTaskStageModelFactory,
-    TaskStageHistoryModelFactory, StagePermittedRolesFactory,
+    FieldFactory, CurrentTaskStageModelFactory, StageModelFactory,
+    TaskStageHistoryModelFactory, StagePermittedRolesFactory
 )
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase09GetTaskAPITestCase(TestUtils):
+class TestCase010GetTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -44,29 +45,20 @@ class TestCase09GetTaskAPITestCase(TestUtils):
 
     @pytest.fixture
     def setup(self, reset_factories):
-        task_obj = TaskFactory(task_display_id="iBWF-1")
+        task_obj = TaskFactory(project_id="project0")
         gof_objs = GoFFactory.create_batch(size=3)
         task_gof_objs = TaskGoFFactory.create_batch(
             size=3, task=task_obj, gof=factory.Iterator(gof_objs)
         )
-        searchable = [
-            Searchable.CITY.value,
-            Searchable.USER.value
-        ]
         field_objs = FieldFactory.create_batch(
-            size=2, gof=factory.Iterator(gof_objs),
-            field_type=FieldTypes.SEARCHABLE.value,
-            field_values=factory.Iterator(searchable)
+            size=10, gof=factory.Iterator(gof_objs)
         )
-        field_responses = ["1", "123e4567-e89b-12d3-a456-426614174000"]
         TaskGoFFieldFactory.create_batch(
-            size=2,
+            size=10,
             task_gof=factory.Iterator(task_gof_objs),
-            field=factory.Iterator(field_objs),
-            field_response=factory.Iterator(field_responses)
+            field=factory.Iterator(field_objs)
         )
-        roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC",
-                 "FIN_PAYMENT_APPROVER"]
+        roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"]
         permission_type = [
             PermissionTypes.READ.value,
             PermissionTypes.WRITE.value
@@ -77,16 +69,16 @@ class TestCase09GetTaskAPITestCase(TestUtils):
             permission_type=factory.Iterator(permission_type)
         )
         FieldRoleFactory.create_batch(
-            size=2,
+            size=10,
             field=factory.Iterator(field_objs),
             role=factory.Iterator(roles),
             permission_type=factory.Iterator(permission_type)
         )
         stage_objs = StageModelFactory.create_batch(size=4)
         assignee_ids = [
-            "123e4567-e89b-12d3-a456-426614174000",
             "123e4567-e89b-12d3-a456-426614174001",
-            "123e4567-e89b-12d3-a456-426614174002"
+            "123e4567-e89b-12d3-a456-426614174002",
+            "123e4567-e89b-12d3-a456-426614174003"
         ]
 
         CurrentTaskStageModelFactory.create_batch(size=4, task=task_obj,
@@ -106,31 +98,24 @@ class TestCase09GetTaskAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     @patch.object(AuthService, "get_user_id_team_details_dtos")
-    def test_case(
-            self, user_id_team_details_dtos_mock, snapshot, setup, mocker
-    ):
+    def test_case(self, user_id_team_details_dtos_mock, snapshot, setup,
+                  mocker):
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids_based_on_project_mock
         get_user_role_ids_based_on_project_mock(mocker)
-        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
-            get_projects_info_for_given_ids_mock
-        get_projects_info_for_given_ids_mock(mocker)
-        from ib_tasks.tests.common_fixtures.adapters \
-            .searchable_details_service import \
-            searchable_details_dtos_mock
-        searchable_details_dtos_mock(mocker)
         from ib_tasks.tests.common_fixtures.adapters \
             .assignees_details_service \
             import assignee_details_dtos_mock
         assignee_details_dtos_mock(mocker)
-        from ib_tasks.tests.factories.adapter_dtos import \
-            TeamDetailsWithUserIdDTOFactory
-        TeamDetailsWithUserIdDTOFactory.reset_sequence()
-        user_id_team_details_dtos_mock.return_value = \
-            TeamDetailsWithUserIdDTOFactory.create_batch(size=3)
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_projects_info_for_given_ids_mock
+        get_projects_info_for_given_ids_mock(mocker)
+        team_ids = ["team1", "team2"]
+        exception_object = TeamsNotExistForGivenProjectException(team_ids)
+        user_id_team_details_dtos_mock.side_effect = exception_object
         body = {}
         path_params = {}
-        query_params = {'task_id': "iBWF-1"}
+        query_params = {'task_id': "IBWF-1"}
         headers = {}
         self.make_api_call(
             body=body, path_params=path_params,

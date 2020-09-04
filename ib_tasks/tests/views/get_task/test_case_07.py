@@ -89,8 +89,11 @@ class TestCase07GetTaskAPITestCase(TestUtils):
             snapshot, setup, mocker
     ):
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        get_user_role_ids(mocker)
+            get_user_role_ids_based_on_project_mock
+        get_user_role_ids_based_on_project_mock(mocker)
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_projects_info_for_given_ids_mock
+        get_projects_info_for_given_ids_mock(mocker)
         invalid_country_ids = [100]
         exception_object = InvalidCountryIdsException(invalid_country_ids)
         get_searchable_details_dtos_mock.side_effect = exception_object
