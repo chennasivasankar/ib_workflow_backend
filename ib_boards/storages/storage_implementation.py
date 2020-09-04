@@ -447,3 +447,6 @@ class StorageImplementation(StorageInterface):
 
         UserStarredBoard.objects.get_or_create(
             board_id=board_id, user_id=user_id)
+
+    def validate_field_id_with_column_id(self, column_id: str, field_id: str):
+        pass

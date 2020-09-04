@@ -81,7 +81,7 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def validate_user_role_with_column_roles(self, user_role: str, column_id: int):
+    def validate_user_role_with_column_roles(self, user_role: str, column_id: str):
         pass
 
     @abc.abstractmethod
@@ -125,4 +125,8 @@ class StorageInterface(abc.ABC):
     @abc.abstractmethod
     def unstar_given_board(self,
                            parameters: StarOrUnstarParametersDTO):
+        pass
+
+    @abc.abstractmethod
+    def validate_field_id_with_column_id(self, column_id: str, field_id: str):
         pass
