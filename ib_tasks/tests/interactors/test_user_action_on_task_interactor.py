@@ -598,7 +598,8 @@ class TestUserActionOnTaskInteractor:
             prepare_mock_for_next_stage_random_assignees,
             prepare_assignees_interactor_mock
         )
-        prepare_assignees_interactor_mock(mocker, assignees)
+        assignee_mock = prepare_assignees_interactor_mock(mocker=mocker)
+        assignee_mock.return_value = assignees
         prepare_mock_for_next_stage_random_assignees(mocker)
         filtered_task_overview_user.return_value = None
         task_board_details = prepare_task_boards_details()

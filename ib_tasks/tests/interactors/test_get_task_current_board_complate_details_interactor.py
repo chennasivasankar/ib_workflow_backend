@@ -194,7 +194,9 @@ class TestUserActionOnTaskInteractor:
             prepare_task_boards_details,
             prepare_assignees_interactor_mock
         )
-        prepare_assignees_interactor_mock(mocker, assignees)
+        assignee_mock = prepare_assignees_interactor_mock(mocker)
+        assignee_mock.return_value = [assignees]
+
         task_board_details = prepare_task_boards_details()
         board_mock.return_value = task_board_details
         stage_ids = ['stage_1']
