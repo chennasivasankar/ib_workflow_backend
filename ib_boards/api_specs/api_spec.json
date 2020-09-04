@@ -996,8 +996,8 @@
     },
     "/columns/{column_id}/fields/{field_id}/display_order/": {
       "post": {
-        "summary": "Change the display status of the field in the column",
-        "operationId": "change_the_display_status_of_field",
+        "summary": "Change the display order of the field in the column",
+        "operationId": "change_the_display_order_of_field",
         "security": [
           {
             "oauth": [
