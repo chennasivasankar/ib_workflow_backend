@@ -93,9 +93,8 @@ def get_some_user_role_ids(mocker):
 
 
 def get_user_role_ids_based_on_project_mock(mocker):
-    mock = mocker.patch(
-        "ib_tasks.adapters.roles_service.RolesService"
-        ".get_user_role_ids_based_on_project")
+    mock = mocker.patch("ib_tasks.adapters.roles_service.RolesService."
+                        "get_user_role_ids_based_on_project")
     user_role_ids = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC',
                      'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
                      'FIN_COMPLIANCE_APPROVER', 'FIN_PAYMENTS_LEVEL1_VERIFIER',
@@ -105,6 +104,14 @@ def get_user_role_ids_based_on_project_mock(mocker):
                      'FIN_ACCOUNTS_LEVEL1_VERIFIER',
                      'FIN_ACCOUNTS_LEVEL2_VERIFIER']
     mock.return_value = user_role_ids
+    return mock
+
+def get_user_role_ids_based_on_project_mock_exception(mocker):
+    from ib_tasks.adapters.roles_service import \
+        UserNotAMemberOfAProjectException
+    mock = mocker.patch(
+        "ib_tasks.adapters.roles_service.RolesService.get_user_role_ids_based_on_project")
+    mock.side_effect = UserNotAMemberOfAProjectException()
     return mock
 
 

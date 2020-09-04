@@ -19,12 +19,12 @@ snapshots['TestGetUsersListPresenter.test_response_for_get_users get_users_respo
             'name': 'name0',
             'roles': [
                 {
-                    'role_id': 'PAYMENT0',
-                    'role_name': 'payment 0'
+                    'role_id': 'ROLE_0',
+                    'role_name': 'role 0'
                 },
                 {
-                    'role_id': 'PAYMENT1',
-                    'role_name': 'payment 1'
+                    'role_id': 'ROLE_1',
+                    'role_name': 'role 1'
                 }
             ],
             'teams': [
@@ -48,12 +48,12 @@ snapshots['TestGetUsersListPresenter.test_response_for_get_users get_users_respo
             'name': 'name1',
             'roles': [
                 {
-                    'role_id': 'PAYMENT2',
-                    'role_name': 'payment 2'
+                    'role_id': 'ROLE_2',
+                    'role_name': 'role 2'
                 },
                 {
-                    'role_id': 'PAYMENT3',
-                    'role_name': 'payment 3'
+                    'role_id': 'ROLE_3',
+                    'role_name': 'role 3'
                 }
             ],
             'teams': [
@@ -77,12 +77,12 @@ snapshots['TestGetUsersListPresenter.test_response_for_get_users get_users_respo
             'name': 'name2',
             'roles': [
                 {
-                    'role_id': 'PAYMENT4',
-                    'role_name': 'payment 4'
+                    'role_id': 'ROLE_4',
+                    'role_name': 'role 4'
                 },
                 {
-                    'role_id': 'PAYMENT5',
-                    'role_name': 'payment 5'
+                    'role_id': 'ROLE_5',
+                    'role_name': 'role 5'
                 }
             ],
             'teams': [

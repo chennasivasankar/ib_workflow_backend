@@ -56,16 +56,16 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
             user_dtos=user_with_extra_details_dto.user_dtos,
             company_id_with_employee_ids_dto=
             user_with_extra_details_dto.company_id_with_employee_ids_dto)
-        # roles = self._get_roles(
-        #     role_dtos=user_with_extra_details_dto.role_dtos)
+        roles = self._get_roles(
+            role_dtos=user_with_extra_details_dto.role_dtos)
         response_dict = self._get_user_profile_dict_from_user_profile_dto(
-            user_profile_dto=user_profile_dto, teams=teams,
+            user_profile_dto=user_profile_dto, teams=teams, roles=roles,
             company=company_dictionary)
         return self.prepare_200_success_response(response_dict=response_dict)
 
     @staticmethod
     def _get_user_profile_dict_from_user_profile_dto(
-            user_profile_dto: CompleteUserProfileDTO, teams, company):
+            user_profile_dto: CompleteUserProfileDTO, teams, company, roles):
         cover_page_url = user_profile_dto.cover_page_url
         if cover_page_url is None:
             cover_page_url = ""
@@ -76,7 +76,8 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
             "email": user_profile_dto.email,
             "profile_pic_url": user_profile_dto.profile_pic_url,
             "cover_page_url": cover_page_url,
-            "teams": teams
+            "teams": teams,
+            "roles": roles
         }
         if company is not None:
             user_profile_dictionary["company"] = company
@@ -84,11 +85,11 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
             user_profile_dictionary["company"] = None
         return user_profile_dictionary
 
-    # @staticmethod
-    # def _get_roles(role_dtos):
-    #     roles = [{"role_id": role_dto.role_id, "role_name": role_dto.name}
-    #              for role_dto in role_dtos]
-    #     return roles
+    @staticmethod
+    def _get_roles(role_dtos):
+        roles = [{"role_id": role_dto.role_id, "role_name": role_dto.name}
+                 for role_dto in role_dtos]
+        return roles
 
     def _convert_team_dtos_to_teams(
             self, team_dtos: List[TeamDTO],

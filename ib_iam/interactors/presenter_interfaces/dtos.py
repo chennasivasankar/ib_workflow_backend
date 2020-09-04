@@ -3,15 +3,16 @@ from typing import List
 
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.interactors.storage_interfaces.dtos \
-    import UserTeamDTO, UserRoleDTO, UserCompanyDTO, \
+    import TeamWithUserIdDTO, UserRoleDTO, UserCompanyDTO, \
     CompanyIdAndNameDTO, RoleIdAndNameDTO, BasicUserDetailsDTO, \
-    TeamIdAndNameDTO, TeamUserIdsDTO, TeamDTO
+    TeamIdAndNameDTO, TeamUserIdsDTO, TeamDTO, ProjectTeamIdsDTO, \
+    ProjectRoleDTO, ProjectWithDisplayIdDTO
 
 
 @dataclass
 class ListOfCompleteUsersDTO:
     users: List[UserProfileDTO]
-    teams: List[UserTeamDTO]
+    teams: List[TeamWithUserIdDTO]
     # roles: List[UserRoleDTO]
     companies: List[UserCompanyDTO]
     total_no_of_users: int
@@ -20,7 +21,7 @@ class ListOfCompleteUsersDTO:
 @dataclass
 class ListOfCompleteUsersWithRolesDTO:
     users: List[UserProfileDTO]
-    teams: List[UserTeamDTO]
+    teams: List[TeamWithUserIdDTO]
     roles: List[UserRoleDTO]
     companies: List[UserCompanyDTO]
     total_no_of_users: int
@@ -39,3 +40,12 @@ class TeamWithUsersDetailsDTO:
     team_dtos: List[TeamDTO]
     team_user_ids_dtos: List[TeamUserIdsDTO]
     user_dtos: List[BasicUserDetailsDTO]
+
+
+@dataclass
+class ProjectWithTeamsDTO:
+    total_projects_count: int
+    project_dtos: List[ProjectWithDisplayIdDTO]
+    project_team_ids_dtos: List[ProjectTeamIdsDTO]
+    team_dtos: List[TeamDTO]
+    project_role_dtos: List[ProjectRoleDTO]

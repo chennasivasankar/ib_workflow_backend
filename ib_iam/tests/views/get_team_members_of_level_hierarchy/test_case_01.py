@@ -79,9 +79,9 @@ class TestCase01GetTeamMembersOfLevelHierarchyAPITestCase(TestUtils):
             "20be920b-7b4c-49e7-8adb-41a0c18da848",
             "30be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
-        from ib_iam.tests.factories.models import UserTeamFactory
+        from ib_iam.tests.factories.models import TeamUserFactory
         user_team_objects_of_level_one = [
-            UserTeamFactory(
+            TeamUserFactory(
                 user_id=user_id,
                 team=team_object,
                 team_member_level=team_member_level_object
@@ -100,9 +100,9 @@ class TestCase01GetTeamMembersOfLevelHierarchyAPITestCase(TestUtils):
             "50be920b-7b4c-49e7-8adb-41a0c18da848",
             "60be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
-        from ib_iam.tests.factories.models import UserTeamFactory
+        from ib_iam.tests.factories.models import TeamUserFactory
         user_team_objects = [
-            UserTeamFactory(
+            TeamUserFactory(
                 user_id=user_id,
                 team=team_object,
                 team_member_level=team_member_level_object

@@ -191,4 +191,4 @@ def prepare_assignees_interactor_mock(mocker, assignees):
     mock = mocker.patch(
         'ib_tasks.interactors.get_stages_assignees_details_interactor.GetStagesAssigneesDetailsInteractor.get_stages_assignee_details_by_given_task_ids'
     )
-    mock.return_value = [assignees]
+    mock.return_value = assignees

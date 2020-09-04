@@ -58,8 +58,7 @@ class GetTasksOverviewForUserInteractor(ValidationMixin):
             project_id=project_id, user_id=user_id, task_ids=task_ids
         )
         stage_ids = self._get_allowed_stage_ids_of_user(
-            user_id=user_id, project_id=project_id
-        )
+            user_id=user_id, project_id=project_id)
         task_with_complete_stage_details_dtos = \
             self._get_task_with_complete_stage_details_dtos(
                 user_id=user_id,

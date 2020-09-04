@@ -21,10 +21,12 @@ from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.stage_custom_exceptions import \
-    StageIdsWithInvalidPermissionForAssignee, InvalidStageId
+    StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
+    InvalidStageIdsListException, StageIdsListEmptyException
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId, \
+    TaskDelayReasonIsNotUpdated
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
@@ -37,6 +39,42 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 class UpdateTaskPresenterImplementation(
     UpdateTaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_task_delay_reason_not_updated(self,
+                                            err: TaskDelayReasonIsNotUpdated):
+        from ib_tasks.constants.exception_messages import \
+            TASK_DELAY_REASON_NOT_UPDATED
+        message = TASK_DELAY_REASON_NOT_UPDATED[0].format(
+            err.task_display_id, err.stage_display_name, err.due_date)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": TASK_DELAY_REASON_NOT_UPDATED[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_stage_ids_list_empty_exception(self,
+                                             err: StageIdsListEmptyException):
+        from ib_tasks.constants.exception_messages import \
+            EMPTY_STAGE_IDS_ARE_INVALID
+        data = {
+            "response": EMPTY_STAGE_IDS_ARE_INVALID[0],
+            "http_status_code": 400,
+            "res_status": EMPTY_STAGE_IDS_ARE_INVALID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_stage_ids_list_exception(self,
+                                               err:
+                                               InvalidStageIdsListException):
+        from ib_tasks.constants.exception_messages import INVALID_STAGE_IDS
+        message = INVALID_STAGE_IDS[0].format(err.invalid_stage_ids)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_STAGE_IDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_duplicate_same_gof_orders_for_a_gof(self, err):
         from ib_tasks.constants.exception_messages import \
@@ -160,6 +198,10 @@ class UpdateTaskPresenterImplementation(
     def _prepare_task_overview_details_dict(
             self, all_tasks_overview_dto: AllTasksOverviewDetailsDTO
     ):
+        task_stages_has_no_actions = \
+            not all_tasks_overview_dto.task_with_complete_stage_details_dtos
+        if task_stages_has_no_actions:
+            return None
         complete_task_stage_details_dto = \
             all_tasks_overview_dto.task_with_complete_stage_details_dtos[0]
         task_fields_action_details_dtos = \

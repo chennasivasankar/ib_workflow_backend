@@ -1477,10 +1477,7 @@
             "task_details":{
                "$ref":"#/definitions/TaskOverviewWithStageAndActions"
             }
-         },
-         "required": [
-           "task_details"
-         ]
+         }
       },
       "SaveAndActOnTaskSuccessResponseBody":{
          "type":"object",
@@ -2013,7 +2010,8 @@
                   "type":"string",
                   "enum":[
                      "INVALID_TASK_ID",
-                     "INVALID_STAGE_IDS"
+                     "INVALID_STAGE_IDS",
+                     "USER_NOT_IN_PROJECT"
                   ]
                }
             },
