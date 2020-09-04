@@ -440,6 +440,13 @@ class StagesStorageImplementation(StageStorageInterface):
             task_id=task_id
         ).values_list('stage__id', flat=True))
 
+    def get_current_stages_of_task_in_given_stages(
+            self, task_id: int, stage_ids: List[str]) -> List[str]:
+        return list(CurrentTaskStage.objects.filter(
+            task_id=task_id, stage__stage_id__in=stage_ids
+        ).values_list('stage__stage_id', flat=True))
+
+
 
 class StorageImplementation(StorageInterface):
 
@@ -524,6 +531,10 @@ class StorageImplementation(StorageInterface):
     def validate_task_id(self, task_id: int) -> bool:
 
         return Task.objects.filter(id=task_id).exists()
+
+    def get_task_project_id(self, task_id: int) -> str:
+        task = Task.objects.get(id=task_id)
+        return task.project_id
 
     def get_status_variables_to_task(
             self, task_id: int) -> List[StatusVariableDTO]:

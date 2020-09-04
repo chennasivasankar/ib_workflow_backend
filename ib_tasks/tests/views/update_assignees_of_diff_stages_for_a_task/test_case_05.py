@@ -49,7 +49,7 @@ class TestCase01UpdateAssigneesOfDiffStagesForATaskAPITestCase(TestUtils):
     def test_case(self, snapshot, setup):
         body = {'stage_assignees': [
             {'stage_id': 1, 'assignee_id': setup}]}
-        path_params = {"task_id": 1}
+        path_params = {"task_id": 2}
         query_params = {}
         headers = {}
         response = self.make_api_call(
@@ -57,9 +57,4 @@ class TestCase01UpdateAssigneesOfDiffStagesForATaskAPITestCase(TestUtils):
             query_params=query_params, headers=headers, snapshot=snapshot
         )
 
-        from ib_tasks.models import TaskStageHistory
-        task_stage_objs = list(TaskStageHistory.objects.filter(
-            task_id=1).values('task_id', 'stage_id', 'assignee_id',
-                              'left_at'))
 
-        snapshot.assert_match(task_stage_objs, "task_stage_objs")

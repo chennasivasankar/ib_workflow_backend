@@ -71,8 +71,7 @@
       "type": "object",
       "properties": {
         "entity_id": {
-          "type": "string",
-          "format": "uuid"
+          "type": "string"
         },
         "entity_type": {
           "type": "string",
