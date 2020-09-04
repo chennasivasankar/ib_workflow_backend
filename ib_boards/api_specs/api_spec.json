@@ -386,6 +386,53 @@
         "stage_id"
       ]
     },
+    "FieldsOperationInvalid": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_COLUMN_ID",
+            "INVALID_FIELD_ID"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "ForbiddenInFieldsOperation": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "USER_DO_NOT_HAVE_ACCESS_COLUMN",
+            "USER_DO_NOT_HAVE_ACCESS_FIELD",
+            "FIELD_NOT_BELONGS_TO_COLUMN"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
     "ColumnDetails": {
       "type": "object",
       "properties": {
@@ -471,6 +518,34 @@
         "total_tasks",
         "tasks"
       ]
+    },
+    "FieldDisplay": {
+      "type": "object",
+      "properties": {
+        "field_id": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "display_status": {
+          "type": "string",
+          "enum": [
+            "HIDE",
+            "SHOW"
+          ]
+        },
+        "display_order": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "required": [
+        "display_order",
+        "display_status",
+        "field_id",
+        "display_name"
+      ]
     }
   },
   "parameters": {
@@ -517,6 +592,50 @@
       "description": "column id value",
       "type": "string",
       "required": true
+    },
+    "FieldIdPathParameter": {
+      "name": "field_id",
+      "in": "path",
+      "description": "field id value",
+      "type": "string",
+      "required": true
+    },
+    "FieldDisplayStatus": {
+      "name": "Status",
+      "in": "body",
+      "description": "Field display status",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "display_status": {
+            "type": "string",
+            "enum": [
+              "HIDE",
+              "SHOW"
+            ]
+          }
+        },
+        "required": [
+          "display_status"
+        ]
+      }
+    },
+    "FieldDisplayOrder": {
+      "name": "Status",
+      "in": "body",
+      "description": "Field display status",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "display_order": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "display_order"
+        ]
+      }
     },
     "ActionParameter": {
       "name": "action",
@@ -603,6 +722,18 @@
         "$ref": "#/definitions/InvalidStarBoardDetails"
       }
     },
+    "InvalidFieldsOperationResponse": {
+      "description": "invalid offset or invalid limit",
+      "schema": {
+        "$ref": "#/definitions/FieldsOperationInvalid"
+      }
+    },
+    "ForbiddenResponse": {
+      "description": "invalid starred board response",
+      "schema": {
+        "$ref": "#/definitions/ForbiddenInFieldsOperation"
+      }
+    },
     "GetBoardsResponse": {
       "description": "get boards response",
       "schema": {
@@ -648,6 +779,15 @@
       "description": "tasks details",
       "schema": {
         "$ref": "#/definitions/TaskCompleteDetails"
+      }
+    },
+    "FieldsDisplayResponse": {
+      "description": "Fields display order and display status",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/FieldDisplay"
+        }
       }
     }
   },
@@ -814,6 +954,78 @@
           },
           "200": {
             "$ref": "#/responses/TaskDetailsResponse"
+          }
+        }
+      }
+    },
+    "/columns/{column_id}/fields/{field_id}/display_status/": {
+      "post": {
+        "summary": "Change the display status of the field in the column",
+        "operationId": "change_the_display_status_of_field",
+        "security": [
+          {
+            "oauth": [
+              "read",
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/FieldIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/ColumnIdParameter"
+          },
+          {
+            "$ref": "#/parameters/FieldDisplayStatus"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "field display status successfully updated"
+          },
+          "404": {
+            "$ref": "#/responses/InvalidFieldsOperationResponse"
+          },
+          "403": {
+            "$ref": "#/responses/ForbiddenResponse"
+          }
+        }
+      }
+    },
+    "/columns/{column_id}/fields/{field_id}/display_order/": {
+      "post": {
+        "summary": "Change the display status of the field in the column",
+        "operationId": "change_the_display_status_of_field",
+        "security": [
+          {
+            "oauth": [
+              "read",
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/FieldIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/ColumnIdParameter"
+          },
+          {
+            "$ref": "#/parameters/FieldDisplayOrder"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/FieldsDisplayResponse"
+          },
+          "404": {
+            "$ref": "#/responses/InvalidFieldsOperationResponse"
+          },
+          "403": {
+            "$ref": "#/responses/ForbiddenResponse"
           }
         }
       }
