@@ -25,12 +25,14 @@ class TestGetValidTaskTemplateIds:
         storage = TaskTemplateStorageImplementation()
 
         # Act
-        response = storage.get_valid_transition_template_ids(transition_template_ids)
+        response = storage.get_valid_transition_template_ids(
+            transition_template_ids)
 
         # Assert
         assert response == expected_response
 
-    def test_get_valid_task_template_ids_given_ids_are_invalid(self, populate_data):
+    def test_get_valid_task_template_ids_given_ids_are_invalid(self,
+                                                               populate_data):
         # Arrange
         expected_response = []
         transition_template_ids = ["template_2", "template_4",
@@ -38,7 +40,8 @@ class TestGetValidTaskTemplateIds:
         storage = TaskTemplateStorageImplementation()
 
         # Act
-        response = storage.get_valid_transition_template_ids(transition_template_ids)
+        response = storage.get_valid_transition_template_ids(
+            transition_template_ids)
 
         # Assert
         assert response == expected_response

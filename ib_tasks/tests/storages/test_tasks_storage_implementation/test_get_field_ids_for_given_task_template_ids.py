@@ -1,7 +1,9 @@
 import pytest
 
-from ib_tasks.storages.tasks_storage_implementation import TasksStorageImplementation
-from ib_tasks.tests.factories.models import GoFToTaskTemplateFactory, GoFFactory, TaskTemplateFactory, FieldFactory
+from ib_tasks.storages.tasks_storage_implementation import \
+    TasksStorageImplementation
+from ib_tasks.tests.factories.models import GoFToTaskTemplateFactory, \
+    GoFFactory, TaskTemplateFactory, FieldFactory
 
 
 @pytest.mark.django_db
