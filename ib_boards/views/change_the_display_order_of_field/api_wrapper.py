@@ -5,7 +5,6 @@ from .validator_class import ValidatorClass
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
 
     user = kwargs["user"]
     column_id = kwargs['column_id']

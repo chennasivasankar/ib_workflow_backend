@@ -402,8 +402,9 @@ class GetColumnTasksListViewPresenterImplementation(
             }
             for all_fields_dto in all_fields
         ]
+        new_all_fields_dict = sorted(all_fields_dict, key=lambda x: x['display_order'])
         return {
-            "all_fields": all_fields_dict
+            "all_fields": new_all_fields_dict
         }
 
 
