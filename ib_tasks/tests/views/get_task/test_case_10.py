@@ -1,11 +1,14 @@
 """
 # TODO: Update test case description
 """
+from unittest.mock import patch
 
 import factory
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
+from ib_tasks.adapters.auth_service import AuthService, \
+    InvalidProjectIdsException
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Searchable
 from ib_tasks.tests.factories.models import (
     TaskFactory,
@@ -42,90 +45,19 @@ class TestCase10GetTaskAPITestCase(TestUtils):
 
     @pytest.fixture
     def setup(self, reset_factories):
-        task_obj = TaskFactory(task_display_id="iBWF-1")
-        gof_objs = GoFFactory.create_batch(size=3)
-        task_gof_objs = TaskGoFFactory.create_batch(
-            size=3, task=task_obj, gof=factory.Iterator(gof_objs)
-        )
-        field_values = [
-            Searchable.CITY.value,
-            Searchable.USER.value,
-            '["mr", "mrs", "ms"]'
-        ]
-        field_types = [
-            FieldTypes.SEARCHABLE.value,
-            FieldTypes.SEARCHABLE.value,
-            FieldTypes.DROPDOWN.value
-        ]
-        field_objs = FieldFactory.create_batch(
-            size=3, gof=factory.Iterator(gof_objs),
-            field_type=factory.Iterator(field_types),
-            field_values=factory.Iterator(field_values)
-        )
-        field_responses = ["1", "123e4567-e89b-12d3-a456-426614174000", "mr"]
-        TaskGoFFieldFactory.create_batch(
-            size=3,
-            task_gof=factory.Iterator(task_gof_objs),
-            field=factory.Iterator(field_objs),
-            field_response=factory.Iterator(field_responses)
-        )
-        roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC",
-                 "FIN_PAYMENT_APPROVER"]
-        permission_type = [
-            PermissionTypes.READ.value,
-            PermissionTypes.WRITE.value
-        ]
-        GoFRoleFactory.create_batch(
-            size=3, gof=factory.Iterator(gof_objs),
-            role=factory.Iterator(roles),
-            permission_type=factory.Iterator(permission_type)
-        )
-        FieldRoleFactory.create_batch(
-            size=3,
-            field=factory.Iterator(field_objs),
-            role=factory.Iterator(roles),
-            permission_type=factory.Iterator(permission_type)
-        )
-        stage_objs = StageModelFactory.create_batch(size=4)
-        assignee_ids = [
-            "123e4567-e89b-12d3-a456-426614174001",
-            "123e4567-e89b-12d3-a456-426614174002",
-            "123e4567-e89b-12d3-a456-426614174003"
-        ]
-
-        CurrentTaskStageModelFactory.create_batch(size=4, task=task_obj,
-                                                  stage=factory.Iterator(
-                                                      stage_objs))
-        TaskStageHistoryModelFactory.create_batch(
-            size=3, task=task_obj, stage=factory.Iterator(stage_objs),
-            assignee_id=factory.Iterator(assignee_ids)
-        )
-        TaskStageHistoryModelFactory.create(
-            task=task_obj, stage=stage_objs[3], assignee_id=None
-        )
-        StagePermittedRolesFactory.create_batch(
-            size=3,
-            stage=factory.Iterator(stage_objs),
-        )
+        TaskFactory(task_display_id="IBWF-1", project_id="project0")
 
     @pytest.mark.django_db
+    @patch.object(AuthService, "get_projects_info_for_given_ids")
     def test_case(
-            self, snapshot, setup, mocker
+            self, project_info_mock, snapshot, setup, mocker
     ):
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        get_user_role_ids(mocker)
-        from ib_tasks.tests.common_fixtures.adapters \
-            .searchable_details_service import \
-            searchable_details_dtos_mock
-        searchable_details_dtos_mock(mocker)
-        from ib_tasks.tests.common_fixtures.adapters \
-            .assignees_details_service \
-            import assignee_details_dtos_mock
-        assignee_details_dtos_mock(mocker)
+        project_ids = ["project0"]
+        exception_object = InvalidProjectIdsException(project_ids)
+        project_info_mock.side_effect = exception_object
         body = {}
         path_params = {}
-        query_params = {'task_id': "iBWF-1"}
+        query_params = {'task_id': "IBWF-1"}
         headers = {}
         self.make_api_call(
             body=body, path_params=path_params,
