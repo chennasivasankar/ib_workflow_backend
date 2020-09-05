@@ -106,16 +106,33 @@ snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_get_response_for_u
     'task_current_stages_details': {
         'stages': [
             {
-                'stage_display_name': 'stage_display_name_4',
-                'stage_id': 'stage_4'
+                'stage_display_name': 'stage_display_name_0',
+                'stage_id': 'stage_0'
             },
             {
-                'stage_display_name': 'stage_display_name_5',
-                'stage_id': 'stage_5'
+                'stage_display_name': 'stage_display_name_1',
+                'stage_id': 'stage_1'
             }
         ],
         'task_id': 'task_display_1',
         'user_has_permission': True
+    },
+    'task_details': {
+        'stage_with_actions': {
+            'actions': [
+            ],
+            'assignee': {
+                'assignee_id': '123e4567-e89b-12d3-a456-426614174000',
+                'name': 'name_0',
+                'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM'
+            },
+            'stage_color': 'color_1',
+            'stage_display_name': 'stage_display_1',
+            'stage_id': 1
+        },
+        'task_id': 'iBWF-1',
+        'task_overview_fields': [
+        ]
     },
     'task_id': 'task_display_1'
 }
