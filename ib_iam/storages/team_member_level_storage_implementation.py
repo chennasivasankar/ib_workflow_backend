@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from ib_iam.exceptions.custom_exceptions import UsersNotBelongToLevel, \
-    InvalidTeamId, InvalidLevelHierarchyOfTeam
+    InvalidTeamId, InvalidLevelHierarchyOfTeam, UserNotBelongToTeam
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import \
@@ -244,4 +244,15 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
                 user_ids=user_ids_not_found,
                 level_hierarchy=level_hierarchy
             )
+        return
+
+    def validate_user_in_a_team(self, team_id: str, user_id: str) \
+            -> Optional[UserNotBelongToTeam]:
+        from ib_iam.models import TeamUser
+        team_user_objects = TeamUser.objects.filter(
+            team_id=team_id, user_id=user_id)
+
+        is_team_user_objects_not_exists = not team_user_objects.exists()
+        if is_team_user_objects_not_exists:
+            raise UserNotBelongToTeam
         return
