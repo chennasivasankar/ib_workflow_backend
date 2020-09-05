@@ -39,6 +39,13 @@ def prepare_get_field_ids_having_write_permission_for_user(mocker, field_ids):
     return mock_obj
 
 
+def prepare_get_field_ids__user(mocker, user_roles):
+    path = "ib_tasks.adapters.roles_service.RolesService.get_user_role_ids_based_on_project"
+    mock_obj = mocker.patch(path)
+    mock_obj.return_value = user_roles
+    return mock_obj
+
+
 def prepare_get_field_ids_having_permission_for_user_projects(mocker,
                                                               field_ids):
     path = "ib_tasks.interactors.user_role_validation_interactor." \

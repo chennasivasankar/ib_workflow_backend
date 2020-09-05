@@ -11,7 +11,7 @@ from ib_tasks.exceptions.filter_exceptions import InvalidFilterId, \
     UserNotHaveAccessToFilter, UserNotHaveAccessToFields
 from ib_tasks.interactors.filters.create_or_update_or_delete_filters import CreateOrUpdateOrDeleteFiltersInteractor
 from ib_tasks.tests.common_fixtures.interactors import \
-    prepare_get_field_ids_having_write_permission_for_user
+    prepare_get_field_ids__user
 
 
 class TestFiltersInteractor:
@@ -179,8 +179,7 @@ class TestFiltersInteractor:
         expected_response = Mock()
         permitted_field_ids = ["field_1", "field_2"]
         project_id = '1'
-        prepare_get_field_ids_having_write_permission_for_user(mocker,
-                                                               user_roles)
+        prepare_get_field_ids__user(mocker, user_roles)
         interactor = CreateOrUpdateOrDeleteFiltersInteractor(
             filter_storage=storage_mock,
             presenter=presenter_mock,
@@ -228,7 +227,7 @@ class TestFiltersInteractor:
         ]
         field_ids = [condition_dto.field_id for condition_dto in condition_dtos]
         expected_response = Mock()
-        prepare_get_field_ids_having_write_permission_for_user(mocker,
+        prepare_get_field_ids__user(mocker,
                                                                user_roles)
         interactor = CreateOrUpdateOrDeleteFiltersInteractor(
             filter_storage=storage_mock,
@@ -279,7 +278,7 @@ class TestFiltersInteractor:
             "FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"
         ]
         field_ids = [condition_dto.field_id for condition_dto in condition_dtos]
-        prepare_get_field_ids_having_write_permission_for_user(mocker,
+        prepare_get_field_ids__user(mocker,
                                                                field_ids)
         expected_response = Mock()
         interactor = CreateOrUpdateOrDeleteFiltersInteractor(
