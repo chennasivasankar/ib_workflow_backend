@@ -457,3 +457,43 @@ class TestProjectStorageImplementation:
         role_ids = ProjectRole.objects.filter(role_id__in=role_ids) \
             .values_list("role_id", flat=True)
         assert list(role_ids) == expected_role_ids
+
+    @pytest.mark.django_db
+    def test_get_user_team_ids_dtos_for_given_project(self):
+        from ib_iam.tests.factories.models import (
+            ProjectFactory, ProjectTeamFactory, TeamFactory, TeamUserFactory)
+        project_id = "project_1"
+        project_object = ProjectFactory.create(project_id=project_id)
+        team_ids = ["31be920b-7b4c-49e7-8adb-41a0c18da848",
+                    "31be920b-7b4c-49e7-8adb-41a0c18da849"]
+        team_objects = [TeamFactory.create(team_id=team_id)
+                        for team_id in team_ids]
+        project_team_objects = [
+            ProjectTeamFactory.create(project=project_object, team=team_object)
+            for team_object in team_objects]
+        team_users = [
+            {"team": team_objects[0], "user_id": "user1"},
+            {"team": team_objects[0], "user_id": "user2"},
+            {"team": team_objects[1], "user_id": "user1"}
+        ]
+        team_user_objects = [TeamUserFactory.create(
+            team=team_user["team"], user_id=team_user["user_id"])
+            for team_user in team_users]
+        from ib_iam.interactors.storage_interfaces.dtos import \
+            UserIdAndTeamIdsDTO
+        expected_user_id_and_team_ids_dtos = [
+            UserIdAndTeamIdsDTO(
+                user_id='user1',
+                team_ids=['31be920b-7b4c-49e7-8adb-41a0c18da848',
+                          '31be920b-7b4c-49e7-8adb-41a0c18da849']),
+            UserIdAndTeamIdsDTO(
+                user_id='user2',
+                team_ids=['31be920b-7b4c-49e7-8adb-41a0c18da848'])
+        ]
+        project_storage = ProjectStorageImplementation()
+
+        actual_user_id_and_team_ids_dtos = project_storage \
+            .get_user_team_ids_dtos_for_given_project(project_id=project_id)
+
+        assert actual_user_id_and_team_ids_dtos == \
+               expected_user_id_and_team_ids_dtos

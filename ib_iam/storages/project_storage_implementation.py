@@ -1,16 +1,12 @@
 from typing import List
 
-from ib_iam.interactors.storage_interfaces.dtos import (
-    ProjectDTO, ProjectsWithTotalCountDTO, PaginationDTO, ProjectTeamIdsDTO,
-    ProjectRoleDTO, ProjectWithoutIdDTO, RoleNameAndDescriptionDTO, RoleDTO,
-    ProjectWithDisplayIdDTO)
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, \
-    ProjectsWithTotalCountDTO, PaginationDTO, ProjectTeamIdsDTO, ProjectRoleDTO
 from ib_iam.interactors.dtos.dtos import UserIdWithProjectIdAndStatusDTO
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
+from ib_iam.interactors.storage_interfaces.dtos import (
+    ProjectWithoutIdDTO, RoleNameAndDescriptionDTO, RoleDTO,
+    ProjectWithDisplayIdDTO, ProjectsWithTotalCountDTO, PaginationDTO,
+    ProjectTeamIdsDTO, ProjectRoleDTO, ProjectDTO, UserIdAndTeamIdsDTO)
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
-from ib_iam.models import Project, ProjectTeam
 from ib_iam.models import Project, ProjectTeam, ProjectRole
 
 
@@ -235,3 +231,24 @@ class ProjectStorageImplementation(ProjectStorageInterface):
                 is_exist=project_id in valid_project_ids
             ) for project_id in project_ids
         ]
+
+    def get_user_team_ids_dtos_for_given_project(
+            self, project_id: str) -> List[UserIdAndTeamIdsDTO]:
+        from ib_iam.models import TeamUser
+        user_teams = TeamUser.objects.filter(
+            team__projectteam__project_id=project_id) \
+            .values_list('team__team_id', 'user_id')
+        from collections import defaultdict
+        user_team_ids_dictionary = defaultdict(list)
+        for user_team in user_teams:
+            user_id = user_team[1]
+            user_team_ids_dictionary[user_id].extend([str(user_team[0])])
+        user_id_and_team_ids_dtos = [
+            UserIdAndTeamIdsDTO(user_id=user_id, team_ids=team_ids)
+            for user_id, team_ids in user_team_ids_dictionary.items()]
+        return user_id_and_team_ids_dtos
+
+    def remove_user_roles_related_to_given_project_and_user(
+            self, project_id: str, user_ids: List[str]):
+        # todo: Implement this and write a test for it
+        pass
