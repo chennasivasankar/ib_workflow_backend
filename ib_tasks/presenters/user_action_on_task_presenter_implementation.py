@@ -435,15 +435,18 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
 
     @staticmethod
     def _get_column_fields(fields_dto: List[FieldDisplayDTO]):
-
-        return [
-            {
-                "field_type": field_dto.field_type,
-                "field_display_name": field_dto.key,
-                "field_response": field_dto.value
-            }
-            for field_dto in fields_dto
-        ]
+        field_ids = []
+        fields = []
+        for field_dto in fields_dto:
+            if field_dto.field_id not in field_ids:
+                field_dict = {
+                    "field_type": field_dto.field_type,
+                    "field_display_name": field_dto.key,
+                    "field_response": field_dto.value
+                }
+                fields.append(field_dict)
+            field_ids.append(field_dto.field_id)
+        return fields
 
     def raise_invalid_key_error(self):
         from ib_tasks.constants.exception_messages import \
