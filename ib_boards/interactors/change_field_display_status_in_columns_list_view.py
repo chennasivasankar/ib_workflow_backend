@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 from ib_boards.constants.enum import DisplayStatus
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
-    PresenterInterface, FieldsDisplayStatusPresenterInterface
+    FieldsDisplayStatusPresenterInterface
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
