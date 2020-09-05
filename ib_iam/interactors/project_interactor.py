@@ -368,6 +368,8 @@ class ProjectInteractor(ValidationMixin):
             response = presenter.get_duplicate_role_ids_response()
         except RoleIdsAreInvalid:
             response = presenter.get_invalid_role_ids_response()
+        except DuplicateRoleNamesExists:
+            response = presenter.get_duplicate_role_names_exists_response()
         return response
 
     def update_project(
@@ -413,6 +415,9 @@ class ProjectInteractor(ValidationMixin):
                              project_role_ids=project_role_ids)
         self._validate_invalid_team_ids(
             team_ids=complete_project_details_dto.team_ids)
+        role_names = [role_dto.name
+                      for role_dto in complete_project_details_dto.roles]
+        self._validate_duplicate_role_names(role_names=role_names)
 
     def _validate_project_id(self, project_id: str):
         is_project_exist = self.user_storage.is_valid_project_id(

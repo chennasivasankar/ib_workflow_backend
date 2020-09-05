@@ -230,6 +230,38 @@ class TestUpdateProjectIneractor:
 
         presenter.get_invalid_role_ids_response.assert_called_once()
 
+    def test_given_duplicate_role_names_returns_duplicate_role_names_response(
+            self, project_storage, user_storage, team_storage, interactor,
+            presenter):
+        from ib_iam.tests.factories.storage_dtos import (
+            ProjectDTOFactory, RoleDTOFactory)
+        project_id = "project_1"
+        project_dto = ProjectDTOFactory(project_id=project_id)
+        team_ids = ["1", "2"]
+        role_ids = ["1", "2"]
+        roles = [RoleDTOFactory.create(role_id=role_id, name="role 1")
+                 for role_id in role_ids]
+        project_storage.get_project_id_if_project_name_already_exists \
+            .return_value = None
+        project_storage.get_project_role_ids.return_value = role_ids
+        team_storage.get_valid_team_ids.return_value = team_ids
+        presenter.get_duplicate_role_names_exists_response \
+            .return_value = mock.Mock()
+        complete_project_details_dto = CompleteProjectDetailsDTO(
+            project_id=project_dto.project_id,
+            name=project_dto.name,
+            description=project_dto.description,
+            logo_url=project_dto.logo_url,
+            team_ids=team_ids,
+            roles=roles)
+
+        interactor.update_project_wrapper(presenter=presenter,
+                                          user_id="1",
+                                          complete_project_details_dto=
+                                          complete_project_details_dto)
+
+        presenter.get_duplicate_role_names_exists_response.assert_called_once()
+
     def test_update_project_returns_success_response(
             self, project_storage, user_storage, team_storage, interactor,
             presenter, roles):

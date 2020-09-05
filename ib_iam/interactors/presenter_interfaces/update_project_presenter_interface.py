@@ -34,3 +34,7 @@ class UpdateProjectPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def get_invalid_role_ids_response(self):
         pass
+
+    @abc.abstractmethod
+    def get_duplicate_role_names_exists_response(self):
+        pass
