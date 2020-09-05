@@ -179,7 +179,7 @@ class TestChangeFieldsDisplayOrder:
         )
 
         # Act
-        actual_response = interactor.change_field_display_status_wrapper(
+        interactor.change_field_display_status_wrapper(
             field_display_status_parameter=field_display_status_parameter,
             presenter=presenter
         )
