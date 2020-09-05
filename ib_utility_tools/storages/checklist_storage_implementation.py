@@ -49,7 +49,7 @@ class ChecklistStorageImplementation(ChecklistStorageInterface):
     def get_checklist_item_dtos(self, checklist_id: str) -> \
             List[ChecklistItemWithIdDTO]:
         checklist_item_objects = ChecklistItem.objects.filter(
-            checklist_id=checklist_id)
+            checklist_id=checklist_id).order_by('created_at')
         checklist_item_dtos = [
             self._prepare_checklist_item_dto_from_checklist_item_object(
                 checklist_item_object=checklist_item_object
