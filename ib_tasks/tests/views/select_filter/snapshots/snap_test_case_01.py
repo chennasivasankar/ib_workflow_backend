@@ -4,11 +4,13 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
+
 snapshots = Snapshot()
 
-snapshots['TestCase01SelectFilterAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase01SelectFilterAPITestCase.test_case status_code'] = '500'
 
 snapshots['TestCase01SelectFilterAPITestCase.test_case body'] = {
-    'action': 'ENABLED',
-    'filter_id': 1
+    'res_status': [
+        '"USER_DO_NOT_ACCESS_TO_UPDATE_FILTER_STATUS" is not a valid choice.'
+    ]
 }

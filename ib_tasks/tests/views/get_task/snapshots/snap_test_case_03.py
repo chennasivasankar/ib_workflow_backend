@@ -73,7 +73,7 @@ snapshots['TestCase03GetTaskAPITestCase.test_case body'] = {
                     'team_name': 'team_name1'
                 }
             },
-            'stage_color': 'blue',
+            'stage_color': 'white',
             'stage_display_name': 'name_0',
             'stage_id': 1,
             'task_stage_id': 1
@@ -90,7 +90,7 @@ snapshots['TestCase03GetTaskAPITestCase.test_case body'] = {
                     'team_name': 'team_name2'
                 }
             },
-            'stage_color': 'orange',
+            'stage_color': 'black',
             'stage_display_name': 'name_1',
             'stage_id': 2,
             'task_stage_id': 2
@@ -99,7 +99,7 @@ snapshots['TestCase03GetTaskAPITestCase.test_case body'] = {
             'actions': [
             ],
             'assignee': None,
-            'stage_color': 'green',
+            'stage_color': 'blue',
             'stage_display_name': 'name_2',
             'stage_id': 3,
             'task_stage_id': 3
@@ -108,7 +108,7 @@ snapshots['TestCase03GetTaskAPITestCase.test_case body'] = {
             'actions': [
             ],
             'assignee': None,
-            'stage_color': 'blue',
+            'stage_color': 'white',
             'stage_display_name': 'name_3',
             'stage_id': 4,
             'task_stage_id': 4

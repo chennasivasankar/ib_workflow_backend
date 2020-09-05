@@ -11,6 +11,6 @@ snapshots['TestCase05AddReasonForMissingDueDateTimeAPITestCase.test_case status_
 
 snapshots['TestCase05AddReasonForMissingDueDateTimeAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'INVALID_REASON_ID',
-    'response': 'given reason id is not in options'
+    'res_status': 'INVALID_DUE_DATE_TIME',
+    'response': 'given updated due datetime is invalid'
 }

@@ -32,6 +32,8 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
     TaskGoFFieldDTO,
     TaskDetailsDTO, FieldSearchableDTO
 )
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
@@ -47,11 +49,12 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def __init__(
             self, task_crud_storage: CreateOrUpdateTaskStorageInterface,
-            stages_storage: FieldsStorageInterface,
+            fields_storage: FieldsStorageInterface,
             storage: StorageInterface,
             task_storage: TaskStorageInterface,
             action_storage: ActionStorageInterface,
-            task_stage_storage: TaskStageStorageInterface
+            task_stage_storage: TaskStageStorageInterface,
+            gof_storage: GoFStorageInterface
 
     ):
         self.storage = storage
@@ -59,7 +62,8 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         self.action_storage = action_storage
         self.task_storage = task_storage
         self.task_crud_storage = task_crud_storage
-        self.stages_storage = stages_storage
+        self.fields_storage = fields_storage
+        self.gof_storage = gof_storage
 
     def get_task_details_wrapper(
             self, user_id: str, task_display_id: str,
@@ -122,12 +126,17 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
     def get_task_details(
             self, user_id: str, task_id: int
     ) -> TaskCompleteDetailsDTO:
+        from ib_tasks.interactors.user_role_validation_interactor import \
+            UserRoleValidationInteractor
+        user_role_validation_interactor = UserRoleValidationInteractor()
         get_task_base_interactor = GetTaskBaseInteractor(
             storage=self.task_crud_storage)
         task_details_dto = get_task_base_interactor.get_task(task_id)
         project_details_dto = task_details_dto.project_details_dto
         project_id = project_details_dto.project_id
-        user_roles = self._get_user_roles(user_id, project_id)
+        user_roles = \
+            user_role_validation_interactor.get_user_role_ids_for_project(
+                user_id, project_id)
         task_details_dto = self._get_task_details_dto(
             task_details_dto, user_roles
         )
@@ -358,7 +367,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         from ib_tasks.interactors.get_task_stages_and_actions \
             import GetTaskStagesAndActions
         interactor = GetTaskStagesAndActions(
-            storage=self.stages_storage,
+            storage=self.fields_storage,
             task_storage=self.storage,
             action_storage=self.action_storage
         )
@@ -369,8 +378,8 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             for dto in stages_and_actions_details_dtos
         ]
         virtual_stage_ids = \
-            self.stages_storage.get_virtual_stage_ids_in_given_stage_ids(
-            db_stage_ids)
+            self.fields_storage.get_virtual_stage_ids_in_given_stage_ids(
+                db_stage_ids)
         filtered_stages_and_actions_details_dtos = []
         for dto in stages_and_actions_details_dtos:
             stage_is_virtual = dto.db_stage_id in virtual_stage_ids
@@ -405,10 +414,15 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_gof_field_dto.field_id
             for task_gof_field_dto in task_gof_field_dtos
         ]
+        from ib_tasks.interactors.user_role_validation_interactor import \
+            UserRoleValidationInteractor
+        user_role_validation_interactor = UserRoleValidationInteractor()
         permission_field_ids = \
-            self.task_crud_storage.get_field_ids_having_permission(
-                field_ids, user_roles
-            )
+            user_role_validation_interactor \
+                .get_field_ids_having_read_permission_for_user(
+                    user_roles=user_roles, field_ids=field_ids,
+                    field_storage=self.fields_storage
+                )
         permission_task_gof_field_dtos = [
             task_gof_field_dto
             for task_gof_field_dto in task_gof_field_dtos
@@ -424,10 +438,15 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_gof_dto.gof_id
             for task_gof_dto in task_gof_dtos
         ]
+        from ib_tasks.interactors.user_role_validation_interactor import \
+            UserRoleValidationInteractor
+        user_role_validation_interactor = UserRoleValidationInteractor()
         permission_gof_ids = \
-            self.task_crud_storage.get_gof_ids_having_permission(
-                gof_ids, user_roles
-            )
+            user_role_validation_interactor \
+                .get_gof_ids_having_read_permission_for_user(
+                    user_roles=user_roles, gof_ids=gof_ids,
+                    gof_storage=self.gof_storage
+                )
         permission_task_gof_dtos = [
             task_gof_dto
             for task_gof_dto in task_gof_dtos
@@ -435,14 +454,3 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         ]
         return permission_task_gof_dtos
 
-    @staticmethod
-    def _get_user_roles(user_id: str, project_id: str) -> List[str]:
-
-        from ib_tasks.adapters.roles_service_adapter \
-            import get_roles_service_adapter
-        roles_service_adapter = get_roles_service_adapter()
-        roles_service = roles_service_adapter.roles_service
-        user_roles = roles_service.get_user_role_ids_based_on_project(
-            user_id=user_id, project_id=project_id
-        )
-        return user_roles

@@ -82,7 +82,11 @@ class TestCase09GetTaskAPITestCase(TestUtils):
             role=factory.Iterator(roles),
             permission_type=factory.Iterator(permission_type)
         )
-        stage_objs = StageModelFactory.create_batch(size=4)
+        stage_colors = ["white", "black", "blue"]
+        stage_objs = StageModelFactory.create_batch(
+            size=4,
+            stage_color=factory.Iterator(stage_colors)
+        )
         assignee_ids = [
             "123e4567-e89b-12d3-a456-426614174000",
             "123e4567-e89b-12d3-a456-426614174001",

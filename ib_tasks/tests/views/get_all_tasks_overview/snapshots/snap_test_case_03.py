@@ -10,7 +10,7 @@ snapshots = Snapshot()
 snapshots['TestCase03GetAllTasksOverviewAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase03GetAllTasksOverviewAPITestCase.test_case body'] = {
-    'http_status_code': 400,
-    'res_status': 'EMPTY_STAGE_IDS_ARE_INVALID',
-    'response': 'Stage Ids list should not be empty'
+    'project_id': [
+        'This field is required.'
+    ]
 }
