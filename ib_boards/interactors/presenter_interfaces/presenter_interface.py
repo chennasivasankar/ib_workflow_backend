@@ -154,6 +154,21 @@ class FieldsDisplayStatusPresenterInterface(abc.ABC):
     def get_response_for_field_not_belongs_to_column(self):
         pass
 
+
+class FieldsDisplayOrderPresenterInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def get_response_for_the_invalid_column_id(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_user_have_no_access_for_column(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_field_not_belongs_to_column(self):
+        pass
+
     @abc.abstractmethod
     def get_response_for_the_invalid_display_order(self):
         pass

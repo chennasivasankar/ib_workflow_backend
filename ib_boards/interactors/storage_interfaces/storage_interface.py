@@ -1,4 +1,5 @@
 import abc
+from dataclasses import dataclass
 from typing import List
 
 from ib_boards.constants.enum import DisplayStatus
@@ -9,11 +10,13 @@ from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
     ColumnStageIdsDTO, ColumnDetailsDTO, TaskBoardsDetailsDTO
 
 
+@dataclass
 class FieldOrderDTO:
     field_id: str
     order: int
 
 
+@dataclass
 class FieldDisplayStatusDTO:
     field_id: str
     display_status: DisplayStatus

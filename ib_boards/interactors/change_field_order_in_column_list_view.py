@@ -6,7 +6,7 @@ Author: Pavankumar Pamuru
 
 from ib_boards.interactors.dtos import ChangeFieldsOrderParameter
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
-    FieldsDisplayStatusPresenterInterface
+    FieldsDisplayStatusPresenterInterface, FieldsDisplayOrderPresenterInterface
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
@@ -19,14 +19,14 @@ class ChangeFieldsDisplayOrder:
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
-    def change_field_display_status_wrapper(
+    def change_field_display_order_wrapper(
             self, field_order_parameter: ChangeFieldsOrderParameter,
-            presenter: FieldsDisplayStatusPresenterInterface):
+            presenter: FieldsDisplayOrderPresenterInterface):
         from ib_boards.exceptions.custom_exceptions import \
             FieldNotBelongsToColumn, UserDoNotHaveAccessToColumn, InvalidColumnId
         try:
             field_display_name_dtos, field_display_order_dtos, field_display_status_dtos = \
-                self.change_field_display_status(
+                self.change_field_display_order(
                     field_order_parameter=field_order_parameter
                 )
         except InvalidColumnId:
@@ -42,7 +42,7 @@ class ChangeFieldsDisplayOrder:
             field_display_status_dtos
         )
 
-    def change_field_display_status(
+    def change_field_display_order(
             self, field_order_parameter: ChangeFieldsOrderParameter):
         self._validate_given_data(field_order_parameter)
         self.storage.change_display_order_of_field(
