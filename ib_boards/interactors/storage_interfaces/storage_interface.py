@@ -2,7 +2,7 @@ import abc
 from typing import List
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
-    StarOrUnstarParametersDTO, ProjectBoardDTO
+    StarOrUnstarParametersDTO, ProjectBoardDTO, ChangeFieldsStatusParameter
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
     ColumnStageIdsDTO, ColumnDetailsDTO, TaskBoardsDetailsDTO
 
@@ -133,5 +133,5 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def change_display_status_of_field(
-            self, column_id: str, user_id: str, field_id: str):
+            self, field_display_status_parameter: ChangeFieldsStatusParameter):
         pass

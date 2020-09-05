@@ -3,21 +3,12 @@ Created on: 04/09/20
 Author: Pavankumar Pamuru
 
 """
-from dataclasses import dataclass
 
-from ib_boards.constants.enum import DisplayStatus
+from ib_boards.interactors.dtos import ChangeFieldsStatusParameter
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     FieldsDisplayStatusPresenterInterface
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
-
-
-@dataclass
-class ChangeFieldsOrderParameter:
-    user_id: str
-    column_id: str
-    field_id: str
-    display_status: DisplayStatus
 
 
 class ChangeFieldsDisplayStatus:
@@ -25,13 +16,13 @@ class ChangeFieldsDisplayStatus:
         self.storage = storage
 
     def change_field_display_status_wrapper(
-            self, field_order_parameter: ChangeFieldsOrderParameter,
+            self, field_display_status_parameter: ChangeFieldsStatusParameter,
             presenter: FieldsDisplayStatusPresenterInterface):
         from ib_boards.exceptions.custom_exceptions import \
             FieldNotBelongsToColumn, UserDoNotHaveAccessToColumn, InvalidColumnId
         try:
             self.change_field_display_status(
-                field_order_parameter=field_order_parameter
+                field_order_parameter=field_display_status_parameter
             )
         except InvalidColumnId:
             return presenter.get_response_for_the_invalid_column_id()
@@ -41,7 +32,7 @@ class ChangeFieldsDisplayStatus:
             return presenter.get_response_for_field_not_belongs_to_column()
 
     def change_field_display_status(
-            self, field_order_parameter: ChangeFieldsOrderParameter):
+            self, field_order_parameter: ChangeFieldsStatusParameter):
         self.storage.validate_column_id(
             column_id=field_order_parameter.column_id
         )
@@ -62,7 +53,5 @@ class ChangeFieldsDisplayStatus:
             field_id=field_order_parameter.field_id
         )
         self.storage.change_display_status_of_field(
-            column_id=field_order_parameter.column_id,
-            user_id=field_order_parameter.user_id,
-            field_id=field_order_parameter.field_id
+            field_display_status_parameter=field_order_parameter
         )

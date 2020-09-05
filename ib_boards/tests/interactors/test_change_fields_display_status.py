@@ -26,7 +26,8 @@ class TestChangeFieldsDisplayOrder:
         # Arrange
         expected_response = Mock()
         from ib_boards.interactors.change_field_display_status_in_columns_list_view import \
-            ChangeFieldsDisplayStatus, ChangeFieldsOrderParameter
+            ChangeFieldsDisplayStatus
+        from ib_boards.interactors.dtos import ChangeFieldsStatusParameter
         interactor = ChangeFieldsDisplayStatus(
             storage=storage
         )
@@ -34,7 +35,7 @@ class TestChangeFieldsDisplayOrder:
         storage.validate_column_id.side_effect = InvalidColumnId
         presenter.get_response_for_the_invalid_column_id.return_value = expected_response
         from ib_boards.constants.enum import DisplayStatus
-        field_order_parameter = ChangeFieldsOrderParameter(
+        field_display_status_parameter = ChangeFieldsStatusParameter(
             user_id='user_id_1',
             column_id='column_id_1',
             field_id='field_id',
@@ -43,13 +44,13 @@ class TestChangeFieldsDisplayOrder:
 
         # Act
         actual_response = interactor.change_field_display_status_wrapper(
-            field_order_parameter=field_order_parameter,
+            field_display_status_parameter=field_display_status_parameter,
             presenter=presenter
         )
 
         # Assert
         storage.validate_column_id.assert_called_once_with(
-            column_id=field_order_parameter.column_id
+            column_id=field_display_status_parameter.column_id
         )
         assert actual_response == expected_response
 
@@ -60,7 +61,8 @@ class TestChangeFieldsDisplayOrder:
         user_role = 'User',
         project_id = "1"
         from ib_boards.interactors.change_field_display_status_in_columns_list_view import \
-            ChangeFieldsDisplayStatus, ChangeFieldsOrderParameter
+            ChangeFieldsDisplayStatus
+        from ib_boards.interactors.dtos import ChangeFieldsStatusParameter
         interactor = ChangeFieldsDisplayStatus(
             storage=storage
         )
@@ -76,7 +78,7 @@ class TestChangeFieldsDisplayOrder:
         storage.get_project_id_for_given_column_id.return_value = project_id
         presenter.get_response_for_user_have_no_access_for_column.return_value = expected_response
         from ib_boards.constants.enum import DisplayStatus
-        field_order_parameter = ChangeFieldsOrderParameter(
+        field_display_status_parameter = ChangeFieldsStatusParameter(
             user_id='user_id_1',
             column_id='column_id_1',
             field_id='field_id',
@@ -85,16 +87,16 @@ class TestChangeFieldsDisplayOrder:
 
         # Act
         actual_response = interactor.change_field_display_status_wrapper(
-            field_order_parameter=field_order_parameter,
+            field_display_status_parameter=field_display_status_parameter,
             presenter=presenter
         )
 
         # Assert
         adapter_mock.assert_called_once_with(
-            user_id=field_order_parameter.user_id, project_id=project_id
+            user_id=field_display_status_parameter.user_id, project_id=project_id
         )
         storage.validate_user_role_with_column_roles.assert_called_once_with(
-            user_role=user_role, column_id=field_order_parameter.column_id
+            user_role=user_role, column_id=field_display_status_parameter.column_id
         )
         presenter.get_response_for_user_have_no_access_for_column. \
             assert_called_once_with()
@@ -107,7 +109,8 @@ class TestChangeFieldsDisplayOrder:
         user_role = 'User',
         project_id = "1"
         from ib_boards.interactors.change_field_display_status_in_columns_list_view import \
-            ChangeFieldsDisplayStatus, ChangeFieldsOrderParameter
+            ChangeFieldsDisplayStatus
+        from ib_boards.interactors.dtos import ChangeFieldsStatusParameter
         interactor = ChangeFieldsDisplayStatus(
             storage=storage
         )
@@ -122,7 +125,7 @@ class TestChangeFieldsDisplayOrder:
         storage.validate_field_id_with_column_id.side_effect = FieldNotBelongsToColumn
         presenter.get_response_for_field_not_belongs_to_column.return_value = expected_response
         from ib_boards.constants.enum import DisplayStatus
-        field_order_parameter = ChangeFieldsOrderParameter(
+        field_display_status_parameter = ChangeFieldsStatusParameter(
             user_id='user_id_1',
             column_id='column_id_1',
             field_id='field_id',
@@ -131,17 +134,17 @@ class TestChangeFieldsDisplayOrder:
 
         # Act
         actual_response = interactor.change_field_display_status_wrapper(
-            field_order_parameter=field_order_parameter,
+            field_display_status_parameter=field_display_status_parameter,
             presenter=presenter
         )
 
         # Assert
         adapter_mock.assert_called_once_with(
-            user_id=field_order_parameter.user_id, project_id=project_id
+            user_id=field_display_status_parameter.user_id, project_id=project_id
         )
         storage.validate_field_id_with_column_id.assert_called_once_with(
-            field_id=field_order_parameter.field_id,
-            column_id=field_order_parameter.column_id
+            field_id=field_display_status_parameter.field_id,
+            column_id=field_display_status_parameter.column_id
         )
         presenter.get_response_for_field_not_belongs_to_column. \
             assert_called_once_with()
@@ -154,7 +157,8 @@ class TestChangeFieldsDisplayOrder:
         user_role = 'User',
         project_id = "1"
         from ib_boards.interactors.change_field_display_status_in_columns_list_view import \
-            ChangeFieldsDisplayStatus, ChangeFieldsOrderParameter
+            ChangeFieldsDisplayStatus
+        from ib_boards.interactors.dtos import ChangeFieldsStatusParameter
         interactor = ChangeFieldsDisplayStatus(
             storage=storage
         )
@@ -165,7 +169,7 @@ class TestChangeFieldsDisplayOrder:
         )
         storage.get_project_id_for_given_column_id.return_value = project_id
         from ib_boards.constants.enum import DisplayStatus
-        field_order_parameter = ChangeFieldsOrderParameter(
+        field_display_status_parameter = ChangeFieldsStatusParameter(
             user_id='user_id_1',
             column_id='column_id_1',
             field_id='field_id',
@@ -174,20 +178,18 @@ class TestChangeFieldsDisplayOrder:
 
         # Act
         actual_response = interactor.change_field_display_status_wrapper(
-            field_order_parameter=field_order_parameter,
+            field_display_status_parameter=field_display_status_parameter,
             presenter=presenter
         )
 
         # Assert
         adapter_mock.assert_called_once_with(
-            user_id=field_order_parameter.user_id, project_id=project_id
+            user_id=field_display_status_parameter.user_id, project_id=project_id
         )
         storage.validate_field_id_with_column_id.assert_called_once_with(
-            field_id=field_order_parameter.field_id,
-            column_id=field_order_parameter.column_id
+            field_id=field_display_status_parameter.field_id,
+            column_id=field_display_status_parameter.column_id
         )
         storage.change_display_status_of_field.assert_called_once_with(
-            column_id=field_order_parameter.column_id,
-            user_id=field_order_parameter.user_id,
-            field_id=field_order_parameter.field_id
+            field_display_status_parameter=field_display_status_parameter
         )

@@ -2,8 +2,8 @@ import json
 from typing import List, Tuple
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
-    TaskTemplateStagesDTO, TaskSummaryFieldsDTO, StarOrUnstarParametersDTO,\
-    ProjectBoardDTO
+    TaskTemplateStagesDTO, TaskSummaryFieldsDTO, StarOrUnstarParametersDTO, \
+    ProjectBoardDTO, ChangeFieldsStatusParameter
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
     ColumnDetailsDTO, TaskBoardsDetailsDTO, ColumnStageIdsDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnBoardDTO, \
@@ -452,5 +452,5 @@ class StorageImplementation(StorageInterface):
         pass
 
     def change_display_status_of_field(
-            self, column_id: str, user_id: str, field_id: str):
+            self, field_display_status_parameter: ChangeFieldsStatusParameter):
         pass
