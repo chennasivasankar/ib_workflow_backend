@@ -85,12 +85,10 @@ class GetColumnTasksInteractorListView:
         field_ids_in_order = self.storage.get_field_ids_list_in_order(
             column_id=column_id,
             user_id=user_id,
-            field_ids=field_ids
         )
         field_display_status_dtos = self.storage.get_fields_display_status(
             column_id=column_id,
             user_id=user_id,
-            field_ids=field_ids
         )
         return self._get_all_fields(
             field_ids_in_order=field_ids_in_order,

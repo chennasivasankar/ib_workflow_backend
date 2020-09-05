@@ -12,10 +12,11 @@ from ib_boards.interactors.dtos import ColumnTasksDTO, FieldDTO, ActionDTO, \
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetBoardsPresenterInterface, \
     GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO, TaskDisplayIdDTO, \
-    CompleteTasksDetailsDTO
+    CompleteTasksDetailsDTO, GetColumnTasksListViewPresenterInterface
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
-from ib_boards.interactors.storage_interfaces.dtos import ColumnCompleteDetails
+from ib_boards.interactors.storage_interfaces.dtos import ColumnCompleteDetails, \
+    AllFieldsDTO
 from ib_boards.interactors.storage_interfaces.dtos import (
     TaskFieldsDTO, TaskActionsDTO)
 
@@ -172,6 +173,13 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
 
     def get_response_for_column_tasks(
             self, complete_tasks_details_dto: CompleteTasksDetailsDTO):
+        response_dict = self.get_column_tasks_details(
+            complete_tasks_details_dto=complete_tasks_details_dto
+        )
+        return self.prepare_200_success_response(response_dict)
+
+    def get_column_tasks_details(
+            self, complete_tasks_details_dto: CompleteTasksDetailsDTO):
 
         task_fields_dtos = complete_tasks_details_dto.task_fields_dtos
         task_actions_dtos = complete_tasks_details_dto.task_actions_dtos
@@ -209,12 +217,10 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
             task_ids_map=task_ids_map
         )
 
-        response_dict = {
+        return {
             "total_tasks": total_tasks,
             "tasks": tasks_list
         }
-
-        return self.prepare_200_success_response(response_dict)
 
     def get_task_details_dict_from_dtos(
             self, task_fields_dtos: List[FieldDTO], task_ids_map,
@@ -317,8 +323,34 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
         return task_actions_list
 
 
-class GetColumnTasksListViewPresenterImplementation(GetColumnTasksPresenterImplementation, HTTPResponseMixin):
-    pass
+class GetColumnTasksListViewPresenterImplementation(
+        GetColumnTasksPresenterImplementation, HTTPResponseMixin,
+        GetColumnTasksListViewPresenterInterface):
+
+    def get_response_for_column_tasks_in_list_view(
+            self, complete_tasks_details_dto: CompleteTasksDetailsDTO, all_fields: List[AllFieldsDTO]):
+        column_tasks_details_dict = self.get_column_tasks_details(
+            complete_tasks_details_dto=complete_tasks_details_dto
+        )
+        all_fields_dict = self._get_all_fields_dict(
+            all_fields=all_fields
+        )
+        response_dict = column_tasks_details_dict.update(all_fields_dict)
+        return self.prepare_200_success_response(response_dict)
+
+
+
+    @staticmethod
+    def _get_all_fields_dict(all_fields: List[AllFieldsDTO]):
+        return [
+            {
+                "field_id": all_fields_dto.field_id,
+                "field_display_name": all_fields_dto.display_name,
+                "display_order": all_fields_dto.display_order,
+                "display_status": all_fields_dto.display_status
+            }
+            for all_fields_dto in all_fields
+        ]
 
 
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):

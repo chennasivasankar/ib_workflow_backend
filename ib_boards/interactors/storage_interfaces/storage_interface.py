@@ -169,12 +169,12 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_field_ids_list_in_order(
-            self, column_id: str, user_id: str, field_ids: List[str]) -> List[str]:
+            self, column_id: str, user_id: str) -> List[str]:
         pass
 
     @abc.abstractmethod
     def get_fields_display_status(
-            self, column_id: str, user_id: str, field_ids: List[str]) -> List[FieldDisplayStatusDTO]:
+            self, column_id: str, user_id: str) -> List[FieldDisplayStatusDTO]:
         pass
 
     @abc.abstractmethod
