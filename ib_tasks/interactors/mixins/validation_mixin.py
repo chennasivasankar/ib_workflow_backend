@@ -85,3 +85,13 @@ class ValidationMixin:
         service_adapter = get_service_adapter()
         return service_adapter
 
+    def validate_filter_id(self, filter_id: int):
+        self.filter_storage.validate_filter_id(
+            filter_id=filter_id
+        )
+
+    def validate_user_with_filter_id(self, user_id: str, filter_id: int):
+        self.filter_storage.validate_user_with_filter_id(
+            user_id=user_id, filter_id=filter_id
+        )
+

@@ -21,8 +21,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
-    TaskDisplayIdDTO, \
-    TaskProjectDTO
+    TaskDisplayIdDTO, TaskProjectDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
@@ -559,3 +558,7 @@ class TasksStorageImplementation(TaskStorageInterface):
             for task in tasks
         ]
         return task_project_dtos
+
+    def get_task_display_id_for_task_id(self, task_id: int) -> str:
+        task_display_id = Task.objects.get(id=task_id).task_display_id
+        return task_display_id

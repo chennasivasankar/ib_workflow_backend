@@ -1,7 +1,6 @@
 import json
 from collections import defaultdict
 from typing import List, Dict
-
 from ib_tasks.exceptions.roles_custom_exceptions import InvalidRolesException
 from ib_tasks.exceptions.stage_custom_exceptions import \
     InvalidStageIdsException
@@ -10,6 +9,7 @@ from ib_tasks.exceptions.task_custom_exceptions import \
 from ib_tasks.interactors.stages_dtos import StageActionDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
     import \
     TaskTemplateStorageInterface
@@ -35,39 +35,40 @@ class DuplicateStageActionNamesException(Exception):
         self.stage_actions = stage_actions
 
 
-class CreateUpdateDeleteStageActionsInteractor:
+class CreateOrUpdateOrDeleteStageActions:
 
     def __init__(self, storage: ActionStorageInterface,
-                 template_storage: TaskTemplateStorageInterface,
-                 actions_dto: List[StageActionDTO]):
+                 template_storage: TaskTemplateStorageInterface):
         self.storage = storage
         self.template_storage = template_storage
-        self.actions_dto = actions_dto
 
-    def create_update_delete_stage_actions(self):
-        actions_dto = self.actions_dto
-        stage_ids = self._get_stage_ids(actions_dto)
+    def create_or_update_or_delete_stage_actions(
+            self, action_dtos: List[StageActionDTO]):
+        stage_ids = self._get_stage_ids(action_dtos)
         self._validations_for_stage_ids(stage_ids=stage_ids)
-        transition_template_ids = self._get_transition_template_ids(
-            actions_dto)
+        transition_template_ids = \
+            self._get_transition_template_ids(action_dtos)
         self._validations_for_transition_template_ids(transition_template_ids)
-        self._validations_for_stage_roles(actions_dto)
-        self._validations_for_empty_stage_display_logic(actions_dto)
-        self._validations_for_empty_button_texts(actions_dto)
-        self._validations_for_button_texts(actions_dto)
-        self._validations_for_duplicate_stage_actions(actions_dto)
-        self._create_update_delete_stage_actions(actions_dto)
+        self._validations_for_stage_roles(action_dtos)
+        self._validations_for_empty_stage_display_logic(action_dtos)
+        self._validations_for_empty_button_texts(action_dtos)
+        self._validations_for_button_texts(action_dtos)
+        self._validations_for_duplicate_stage_actions(action_dtos)
+        db_stage_action_name_dtos = \
+            self.storage.get_stage_action_names(stage_ids=stage_ids)
+        self._create_update_delete_stage_actions(
+            db_stage_action_name_dtos, action_dtos
+        )
+        self._delete_stage_actions(db_stage_action_name_dtos, action_dtos)
 
-    def _validations_for_transition_template_ids(self,
-                                                transition_template_ids: List[
-                                                    str]):
+    def _validations_for_transition_template_ids(
+            self, transition_template_ids: List[str]):
         valid_transition_template_ids = self.template_storage. \
             get_valid_transition_template_ids(transition_template_ids)
         invalid_transition_ids = [
             transition_id
             for transition_id in transition_template_ids
             if transition_id.strip() and transition_id not in valid_transition_template_ids
-
         ]
         if invalid_transition_ids:
             raise InvalidTransitionTemplateIds(invalid_transition_ids)
@@ -234,85 +235,27 @@ class CreateUpdateDeleteStageActionsInteractor:
         return stage_ids
 
     def _create_update_delete_stage_actions(
-            self, actions_dto: List[StageActionDTO]):
-        stage_ids = self._get_stage_ids(actions_dto)
-        db_stage_actions_dto = self.storage \
-            .get_stage_action_names(stage_ids=stage_ids)
-        for action in actions_dto:
-            if action.transition_template_id == '':
-                action.transition_template_id = None
+            self, db_stage_actions_dto: List[StageActionNamesDTO],
+            actions_dto: List[StageActionDTO]):
 
-        is_db_stage_actions_empty = not db_stage_actions_dto
-        if is_db_stage_actions_empty:
-            self.storage.create_stage_actions(stage_actions=actions_dto)
-            return
-        stage_actions = self._get_stage_actions(actions_dto)
-        self._create_update_stage_actions(db_stage_actions_dto, stage_actions)
-        stage_action_names = self._get_stage_action_names(actions_dto)
-        self._delete_stage_actions(db_stage_actions_dto, stage_action_names)
+        from ib_tasks.interactors.create_or_update_stage_actions_interactor \
+            import CreateOrUpdateStageActions
+        interactor = CreateOrUpdateStageActions(storage=self.storage)
 
-    def _delete_stage_actions(self, db_stage_actions_dto, stage_actions):
+        interactor.create_or_update_stage_actions(
+            db_stage_action_name_dtos=db_stage_actions_dto,
+            action_dtos=actions_dto
+        )
 
-        delete_stage_actions = defaultdict(list)
-        for stage_action_dto in db_stage_actions_dto:
-            for action_name in stage_action_dto.action_names:
-                stage_id = stage_action_dto.stage_id
-                if action_name not in stage_actions[stage_id]:
-                    delete_stage_actions[stage_id].append(action_name)
+    def _delete_stage_actions(
+            self,
+            db_stage_actions_dto: List[StageActionNamesDTO],
+            stage_actions: List[StageActionDTO]):
 
-        is_delete_stage_actions_present = delete_stage_actions
-        from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-            StageActionNamesDTO
-        if is_delete_stage_actions_present:
-            delete_actions = [
-                StageActionNamesDTO(stage_id=key, action_names=value)
-                for key, value in delete_stage_actions.items()
-            ]
-            self.storage \
-                .delete_stage_actions(stage_actions=delete_actions)
-
-    @staticmethod
-    def _get_stage_actions(actions_dto):
-        stage_actions = defaultdict(list)
-        for action_dto in actions_dto:
-            stage_actions[action_dto.stage_id].append(action_dto)
-        return stage_actions
-
-    def _create_update_stage_actions(
-            self, db_stage_action_dtos, stage_actions):
-        create_stage_actions, update_stage_actions = [], []
-        stage_ids = [
-            db_stage_action_dto.stage_id
-            for db_stage_action_dto in db_stage_action_dtos
-        ]
-        for key, value in stage_actions.items():
-            if key not in stage_ids:
-                create_stage_actions += value
-
-        for stage_action_dto in db_stage_action_dtos:
-            db_action_names = stage_action_dto.action_names
-            stage_actions_dto = stage_actions[stage_action_dto.stage_id]
-            self._append_create_and_update_stage_dto(
-                db_action_names, stage_actions_dto,
-                create_stage_actions, update_stage_actions
-            )
-
-        is_create_actions_present = create_stage_actions
-        if is_create_actions_present:
-            self.storage \
-                .create_stage_actions(stage_actions=create_stage_actions)
-        is_update_actions_present = update_stage_actions
-        if is_update_actions_present:
-            self.storage \
-                .update_stage_actions(stage_actions=update_stage_actions)
-
-    @staticmethod
-    def _append_create_and_update_stage_dto(
-            db_action_names, stage_actions_dto,
-            create_stage_actions, update_stage_actions):
-
-        for stage_action_dto in stage_actions_dto:
-            if stage_action_dto.action_name not in db_action_names:
-                create_stage_actions.append(stage_action_dto)
-            elif stage_action_dto.action_name in db_action_names:
-                update_stage_actions.append(stage_action_dto)
+        from ib_tasks.interactors.delete_stage_actions_interactor \
+            import DeleteStageActionsInteractor
+        interactor = DeleteStageActionsInteractor(storage=self.storage)
+        interactor.delete_stage_actions_wrapper(
+            db_stage_action_name_dtos=db_stage_actions_dto,
+            action_dtos=stage_actions
+        )
