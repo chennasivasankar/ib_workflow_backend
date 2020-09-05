@@ -5,8 +5,8 @@ test all exception cases of add_project
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from ib_iam.tests.factories.models import ProjectFactory, UserDetailsFactory, \
-    TeamFactory
+from ib_iam.tests.factories.models import (
+    ProjectFactory, UserDetailsFactory, TeamFactory, ProjectRoleFactory)
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -119,6 +119,60 @@ class TestCase02AddProjectAPITestCase(TestUtils):
             "project_display_id": "display_id 1",
             'roles': [{
                 'role_name': 'role1',
+                'description': 'description1'
+            }]
+        }
+        path_params = {}
+        query_params = {}
+        headers = {}
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
+
+    @pytest.mark.django_db
+    def test_given_duplicate_role_names_returns_duplicate_response(
+            self, setup, snapshot):
+        body = {
+            'name': "project_1",
+            'description': 'project_description',
+            'logo_url': 'https://logo.com',
+            'team_ids': [],
+            "project_display_id": "display_id 1",
+            'roles': [
+                {
+                    'role_name': 'role1',
+                    'description': 'description1'
+                },
+                {
+                    'role_name': 'role1',
+                    'description': 'description2'
+                }
+            ]
+        }
+        path_params = {}
+        query_params = {}
+        headers = {}
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
+
+    @pytest.mark.django_db
+    def test_given_existing_role_names_returns_role_names_already_exist_response(
+            self, setup, snapshot):
+        role_name = "role1"
+        ProjectRoleFactory.create(name=role_name)
+        body = {
+            'name': "project_1",
+            'description': 'project_description',
+            'logo_url': 'https://logo.com',
+            'team_ids': [],
+            "project_display_id": "display_id 1",
+            'roles': [{
+                'role_name': role_name,
                 'description': 'description1'
             }]
         }

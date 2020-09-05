@@ -46,3 +46,19 @@ snapshots['TestCase02AddProjectAPITestCase.test_given_invalid_team_ids_returns_i
     'res_status': 'INVALID_TEAM_IDS',
     'response': 'given team ids are invalid'
 }
+
+snapshots['TestCase02AddProjectAPITestCase.test_given_duplicate_role_names_returns_duplicate_response status_code'] = '400'
+
+snapshots['TestCase02AddProjectAPITestCase.test_given_duplicate_role_names_returns_duplicate_response body'] = {
+    'http_status_code': 400,
+    'res_status': 'DUPLICATE_ROLE_NAMES',
+    'response': 'Duplicate role names has been given'
+}
+
+snapshots['TestCase02AddProjectAPITestCase.test_given_existing_role_names_returns_role_names_already_exist_response status_code'] = '400'
+
+snapshots['TestCase02AddProjectAPITestCase.test_given_existing_role_names_returns_role_names_already_exist_response body'] = {
+    'http_status_code': 400,
+    'res_status': 'ROLE_NAMES_ALREADY_EXISTS',
+    'response': "Role names ['role1'] already exist"
+}
