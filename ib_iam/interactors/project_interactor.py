@@ -329,21 +329,8 @@ class ProjectInteractor(ValidationMixin):
             role_dto.name
             for role_dto in project_with_team_ids_and_roles_dto.roles]
         self._validate_duplicate_role_names(role_names=role_names)
-        self._validate_if_role_names_already_exist(role_names=role_names)
-
-    @staticmethod
-    def _validate_duplicate_role_names(role_names: List[str]):
-        is_duplicate_role_names_exists = len(role_names) != len(
-            set(role_names))
-        if is_duplicate_role_names_exists:
-            raise DuplicateRoleNamesExists
-
-    def _validate_if_role_names_already_exist(self, role_names: List[str]):
-        role_names_that_already_exists = self.project_storage \
-            .get_valid_role_names_from_given_role_names(role_names=role_names)
-        if role_names_that_already_exists:
-            raise RoleNamesAlreadyExists(
-                role_names=role_names_that_already_exists)
+        self._validate_is_role_names_already_exists_for_add_project(
+            role_names=role_names)
 
     def update_project_wrapper(
             self, user_id: str,
@@ -480,6 +467,21 @@ class ProjectInteractor(ValidationMixin):
         role_ids_to_be_deleted = list(set(project_role_ids) - set(role_ids))
         self.project_storage.delete_project_roles(
             role_ids=role_ids_to_be_deleted)
+
+    @staticmethod
+    def _validate_duplicate_role_names(role_names: List[str]):
+        is_duplicate_role_names_exists = len(role_names) != len(
+            set(role_names))
+        if is_duplicate_role_names_exists:
+            raise DuplicateRoleNamesExists
+
+    def _validate_is_role_names_already_exists_for_add_project(
+            self, role_names: List[str]):
+        role_names_that_already_exists = self.project_storage \
+            .get_valid_role_names_from_given_role_names(role_names=role_names)
+        if role_names_that_already_exists:
+            raise RoleNamesAlreadyExists(
+                role_names=role_names_that_already_exists)
 
     def _validate_is_given_name_already_exists(self, name: str):
         project_id = self.project_storage \
