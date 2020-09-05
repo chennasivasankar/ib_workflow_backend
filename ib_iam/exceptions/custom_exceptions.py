@@ -185,5 +185,9 @@ class DuplicateTeamIds(Exception):
     pass
 
 
-class DuplicateRoleNamesExist(Exception):
+class DuplicateRoleNamesExists(Exception):
+    pass
+
+
+class RoleNamesAlreadyExists(Exception):
     pass

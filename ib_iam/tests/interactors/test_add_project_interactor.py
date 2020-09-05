@@ -230,6 +230,47 @@ class TestAddProjectIneractor:
             team_ids=team_ids)
         presenter.get_duplicate_role_names_response.assert_called_once()
 
+    def test_given_existing_role_names_returns_role_names_already_exists_response(
+            self, project_storage, team_storage, interactor, presenter):
+        from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
+        from ib_iam.tests.factories.storage_dtos import \
+            ProjectWithoutIdDTOFactory, RoleNameAndDescriptionDTOFactory
+        team_ids = ["1", "2"]
+        project_details = ProjectWithoutIdDTOFactory()
+        role_names = ["role 1"]
+        roles = [RoleNameAndDescriptionDTOFactory(name=name)
+                 for name in role_names]
+        project_storage.get_project_id_if_project_name_already_exists \
+            .return_value = None
+        project_storage.get_project_id_if_display_id_already_exists \
+            .return_value = None
+        team_storage.get_valid_team_ids.return_value = team_ids
+        project_storage.get_valid_role_names_from_given_role_names \
+            .return_value = role_names
+        presenter.get_role_names_already_exist_response.return_value = mock.Mock()
+        project_with_team_ids_and_roles_dto = ProjectWithTeamIdsAndRolesDTO(
+            name=project_details.name,
+            display_id=project_details.display_id,
+            description=project_details.description,
+            logo_url=project_details.logo_url,
+            team_ids=team_ids,
+            roles=roles)
+
+        interactor.add_project_wrapper(presenter=presenter,
+                                       user_id="1",
+                                       project_with_team_ids_and_roles_dto=
+                                       project_with_team_ids_and_roles_dto)
+
+        project_storage.get_project_id_if_project_name_already_exists \
+            .assert_called_once_with(name=project_details.name)
+        project_storage.get_project_id_if_display_id_already_exists \
+            .assert_called_once_with(display_id=project_details.display_id)
+        team_storage.get_valid_team_ids.assert_called_once_with(
+            team_ids=team_ids)
+        project_storage.get_valid_role_names_from_given_role_names \
+            .assert_called_once_with(role_names=role_names)
+        presenter.get_role_names_already_exist_response.assert_called_once()
+
     def test_add_project_returns_in_success_response(
             self, project_storage, team_storage, interactor, presenter):
         from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
@@ -245,6 +286,8 @@ class TestAddProjectIneractor:
         project_storage.get_project_id_if_display_id_already_exists \
             .return_value = None
         team_storage.get_valid_team_ids.return_value = team_ids
+        project_storage.get_valid_role_names_from_given_role_names \
+            .return_value = []
         project_storage.add_project.return_value = project_id
         presenter.get_success_response_for_add_project \
             .return_value = mock.Mock()

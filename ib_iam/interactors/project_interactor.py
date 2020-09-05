@@ -7,7 +7,7 @@ from ib_iam.exceptions.custom_exceptions import (
     ProjectNameAlreadyExists, ProjectDisplayIdAlreadyExists, DuplicateTeamIds,
     TeamIdsAreInvalid, UserIsNotAdmin, InvalidProjectId, RoleIdsAreDuplicated,
     RoleIdsAreInvalid, InvalidUserIds, InvalidUserId, InvalidProjectIds,
-    DuplicateRoleNamesExist)
+    DuplicateRoleNamesExists, RoleNamesAlreadyExists)
 from ib_iam.interactors.dtos.dtos import (
     ProjectWithTeamIdsAndRolesDTO, CompleteProjectDetailsDTO,
     UserIdWithProjectIdAndStatusDTO)
@@ -285,8 +285,10 @@ class ProjectInteractor(ValidationMixin):
             response = presenter.get_invalid_team_ids_response()
         except DuplicateTeamIds:
             response = presenter.get_duplicate_team_ids_response()
-        except DuplicateRoleNamesExist:
+        except DuplicateRoleNamesExists:
             response = presenter.get_duplicate_role_names_response()
+        except RoleNamesAlreadyExists:
+            response = presenter.get_role_names_already_exist_response()
         return response
 
     def add_project(
@@ -322,12 +324,23 @@ class ProjectInteractor(ValidationMixin):
             team_ids=project_with_team_ids_and_roles_dto.team_ids)
         self._validate_invalid_team_ids(
             team_ids=project_with_team_ids_and_roles_dto.team_ids)
-        role_names = [role_dto.name
-                      for role_dto in project_with_team_ids_and_roles_dto.roles
-                      ]
-        is_duplicate_role_names_exist = len(role_names) != len(set(role_names))
-        if is_duplicate_role_names_exist:
-            raise DuplicateRoleNamesExist
+        role_names = [
+            role_dto.name
+            for role_dto in project_with_team_ids_and_roles_dto.roles]
+        self._validate_duplicate_role_names(role_names=role_names)
+        self._validate_if_role_names_already_exist(role_names=role_names)
+
+    @staticmethod
+    def _validate_duplicate_role_names(role_names: List[str]):
+        is_duplicate_role_names_exists = len(role_names) != len(set(role_names))
+        if is_duplicate_role_names_exists:
+            raise DuplicateRoleNamesExists
+
+    def _validate_if_role_names_already_exist(self, role_names: List[str]):
+        role_names_that_already_exists = self.project_storage \
+            .get_valid_role_names_from_given_role_names(role_names=role_names)
+        if role_names_that_already_exists:
+            raise RoleNamesAlreadyExists
 
     def update_project_wrapper(
             self, user_id: str,

@@ -128,3 +128,8 @@ class ProjectStorageInterface(abc.ABC):
     def get_project_id_if_display_id_already_exists(
             self, display_id: str) -> Optional[str]:
         pass
+
+    @abc.abstractmethod
+    def get_valid_role_names_from_given_role_names(
+            self, role_names: List[str]) -> List[str]:
+        pass
