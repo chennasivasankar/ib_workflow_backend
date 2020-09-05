@@ -3,12 +3,15 @@ Created on: 04/09/20
 Author: Pavankumar Pamuru
 
 """
+from typing import List
 
-from ib_boards.interactors.dtos import ChangeFieldsOrderParameter
+from ib_boards.interactors.dtos import ChangeFieldsOrderParameter, FieldDTO, \
+    FieldNameDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     FieldsDisplayStatusPresenterInterface, FieldsDisplayOrderPresenterInterface
+from ib_boards.interactors.storage_interfaces.dtos import AllFieldsDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
-    StorageInterface
+    StorageInterface, FieldDisplayStatusDTO
 
 
 class InvalidFieldDisplayOrder(Exception):
@@ -25,10 +28,9 @@ class ChangeFieldsDisplayOrder:
         from ib_boards.exceptions.custom_exceptions import \
             FieldIdsNotBelongsToColumn, UserDoNotHaveAccessToColumn, InvalidColumnId
         try:
-            field_display_name_dtos, field_display_order_dtos, field_display_status_dtos = \
-                self.change_field_display_order(
-                    field_order_parameter=field_order_parameter
-                )
+            all_fields = self.change_field_display_order(
+                field_order_parameter=field_order_parameter
+            )
         except InvalidColumnId:
             return presenter.get_response_for_the_invalid_column_id()
         except UserDoNotHaveAccessToColumn:
@@ -38,13 +40,13 @@ class ChangeFieldsDisplayOrder:
         except InvalidFieldDisplayOrder:
             return presenter.get_response_for_the_invalid_display_order()
         return presenter.get_response_for_field_order_in_column(
-            field_display_name_dtos, field_display_order_dtos,
-            field_display_status_dtos
+            all_fields=all_fields
         )
 
     def change_field_display_order(
             self, field_order_parameter: ChangeFieldsOrderParameter):
         self._validate_given_data(field_order_parameter)
+        field_ids = field_order_parameter.field_ids
         self.storage.change_display_order_of_field(
             field_order_parameter=field_order_parameter
         )
@@ -52,20 +54,21 @@ class ChangeFieldsDisplayOrder:
             column_id=field_order_parameter.column_id,
             user_id=field_order_parameter.user_id
         )
-        field_display_order_dtos = self.storage.get_field_display_order_dtos(
+        field_ids_in_order = self.storage.get_field_ids_list_in_order(
             column_id=field_order_parameter.column_id,
             user_id=field_order_parameter.user_id
         )
-        field_ids = [
-            field_display_status_dto.field_id
-            for field_display_status_dto in field_display_status_dtos
-        ]
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         field_display_name_dtos = service_adapter.task_service.get_field_display_name(
             field_ids=field_ids
         )
-        return field_display_name_dtos, field_display_order_dtos, field_display_status_dtos
+        return self._get_all_fields(
+            field_ids_in_order=field_ids_in_order,
+            field_display_status_dtos=field_display_status_dtos,
+            field_dtos=field_display_name_dtos,
+            field_ids=field_ids
+        )
 
     def _validate_given_data(self, field_order_parameter: ChangeFieldsOrderParameter):
         self.storage.validate_column_id(
@@ -89,10 +92,6 @@ class ChangeFieldsDisplayOrder:
         self._validate_field_ids(
             field_order_parameter=field_order_parameter
         )
-        self.storage.validate_field_id_with_column_id(
-            column_id=field_order_parameter.column_id,
-            field_id=field_order_parameter.field_id
-        )
 
     @staticmethod
     def _validate_display_order(display_order: int):
@@ -105,7 +104,8 @@ class ChangeFieldsDisplayOrder:
             field_ids.append(field_order_parameter.field_id)
         valid_field_ids = self.storage.get_valid_field_ids(
             column_id=field_order_parameter.column_id,
-            field_ids=field_order_parameter.field_ids
+            field_ids=field_order_parameter.field_ids,
+            user_id=field_order_parameter.user_id
         )
         invalid_field_ids = [
             invalid_field_id
@@ -118,3 +118,28 @@ class ChangeFieldsDisplayOrder:
             raise FieldIdsNotBelongsToColumn(
                 invalid_field_ids=invalid_field_ids
             )
+
+    @staticmethod
+    def _get_all_fields(
+            field_ids_in_order: List[str],
+            field_display_status_dtos: List[FieldDisplayStatusDTO],
+            field_dtos: List[FieldNameDTO], field_ids: List[str]) -> List[AllFieldsDTO]:
+
+        fields_display_status_dict = {}
+        for field_display_status_dto in field_display_status_dtos:
+            fields_display_status_dict[field_display_status_dto.field_id] = \
+                field_display_status_dto.display_status
+
+        field_display_name_dict = {}
+        for field_dto in field_dtos:
+            field_display_name_dict[field_dto.field_id] = field_dto.display_name
+
+        return [
+            AllFieldsDTO(
+                field_id=field_id,
+                display_name=field_display_name_dict[field_id],
+                display_status=fields_display_status_dict[field_id],
+                display_order=field_ids_in_order.index(field_id)
+            )
+            for field_id in field_ids
+        ]

@@ -488,6 +488,28 @@
         "res_status"
       ]
     },
+    "InvalidDisplayOrder": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_DISPLAY_ORDER"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
     "ForbiddenInFieldsOperation": {
       "type": "object",
       "properties": {
@@ -500,8 +522,8 @@
         "res_status": {
           "type": "string",
           "enum": [
-            "USER_DO_NOT_HAVE_ACCESS_COLUMN",
-            "USER_DO_NOT_HAVE_ACCESS_FIELD",
+            "USER_NOT_HAVE_ACCESS_TO_COLUMN",
+            "USER_DO_NOT_HAVE_ACCESS_FIELDS",
             "FIELD_NOT_BELONGS_TO_COLUMN"
           ]
         }
@@ -843,6 +865,12 @@
       "description": "invalid starred board response",
       "schema": {
         "$ref": "#/definitions/ForbiddenInFieldsOperation"
+      }
+    },
+    "InvalidDisplayOrderResponse": {
+      "description": "invalid starred board response",
+      "schema": {
+        "$ref": "#/definitions/InvalidDisplayOrder"
       }
     },
     "GetBoardsResponse": {
@@ -1188,6 +1216,9 @@
             "$ref": "#/responses/InvalidFieldsOperationResponse"
           },
           "403": {
+            "$ref": "#/responses/ForbiddenResponse"
+          },
+          "400": {
             "$ref": "#/responses/ForbiddenResponse"
           }
         }

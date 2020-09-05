@@ -451,28 +451,52 @@ class StorageImplementation(StorageInterface):
         UserStarredBoard.objects.get_or_create(
             board_id=board_id, user_id=user_id)
 
-    def validate_field_id_with_column_id(self, column_id: str, field_id: str):
-        pass
+    def validate_field_id_with_column_id(self, column_id: str, field_id: str, user_id: str):
+        is_field_status_present = not FieldDisplayStatus.objects.get(
+            user_id=user_id,
+            column_id=column_id,
+            field_id=field_id
+        ).exists()
+        if is_field_status_present:
+            from ib_boards.exceptions.custom_exceptions import \
+                FieldNotBelongsToColumn
+            raise FieldNotBelongsToColumn
 
     def change_display_status_of_field(
             self, field_display_status_parameter: ChangeFieldsStatusParameter):
-        pass
+        field_status_object = FieldDisplayStatus.objects.get(
+            user_id=field_display_status_parameter.user_id,
+            column_id=field_display_status_parameter.column_id,
+            field_id=field_display_status_parameter.field_id
+        )
+        field_status_object.display_status = field_display_status_parameter.display_status
+        field_status_object.save()
 
     def change_display_order_of_field(self,
                                       field_order_parameter: ChangeFieldsOrderParameter):
-        pass
+        fields_order_object = FieldOrder.objects.get(
+            column_id=field_order_parameter.column_id,
+            user_id=field_order_parameter.user_id
+        )
+        import json
+        field_ids = json.loads(fields_order_object.fields_order)['field_ids']
+        field_ids.remove(field_order_parameter.field_id)
+        field_ids.insert(field_order_parameter.display_order, field_order_parameter.field_id)
+        new_fields_ids = json.dumps(
+            {
+                "field_ids": field_ids
+            }
+        )
+        fields_order_object.fields_order = new_fields_ids
+        fields_order_object.save()
 
-    def get_field_display_status_dtos(
-            self, column_id: str, user_id: str) -> List[FieldDisplayStatusDTO]:
-        pass
-
-    def get_field_display_order_dtos(
-            self, column_id: str, user_id: str) -> List[FieldOrderDTO]:
-        pass
-
-    def get_valid_field_ids(self, column_id: str, field_ids: List[str]) -> List[
-        str]:
-        pass
+    def get_valid_field_ids(
+            self, column_id: str, field_ids: List[str], user_id: str) -> List[str]:
+        return list(FieldDisplayStatus.objects.filter(
+            user_id=user_id,
+            column_id=column_id,
+            field_id__in=field_ids
+        ).values_list('field_id', flat=True))
 
     def get_field_ids_list_in_order(
             self, column_id: str, user_id: str) -> List[str]:
@@ -484,7 +508,7 @@ class StorageImplementation(StorageInterface):
         field_ids = json.loads(field_ids)['field_ids']
         return field_ids
 
-    def get_fields_display_status(
+    def get_field_display_status_dtos(
             self, column_id: str, user_id: str) -> List[FieldDisplayStatusDTO]:
         field_status_objects = FieldDisplayStatus.objects.filter(
             user_id=user_id,

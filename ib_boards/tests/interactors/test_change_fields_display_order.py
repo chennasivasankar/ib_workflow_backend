@@ -214,7 +214,7 @@ class TestChangeFieldsDisplayOrder:
         storage.get_valid_field_ids.return_value = field_ids
         storage.get_project_id_for_given_column_id.return_value = project_id
         storage.get_field_display_status_dtos.return_value = field_display_status_dtos
-        storage.get_field_display_order_dtos.return_value = field_display_order_dtos
+        storage.get_field_ids_list_in_order.return_value = field_display_order_dtos
         presenter.get_response_for_field_order_in_column.return_value = expected_response
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             field_display_name_mock

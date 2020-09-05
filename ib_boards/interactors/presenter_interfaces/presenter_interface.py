@@ -216,6 +216,6 @@ class FieldsDisplayOrderPresenterInterface(abc.ABC):
         pass
 
     def get_response_for_field_order_in_column(
-            self, field_display_name_dtos, field_display_order_dtos, field_display_status_dtos):
+            self, all_fields: List[AllFieldsDTO]):
         pass
 

@@ -143,7 +143,7 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def validate_field_id_with_column_id(self, column_id: str, field_id: str):
+    def validate_field_id_with_column_id(self, column_id: str, field_id: str, user_id: str):
         pass
 
     @abc.abstractmethod
@@ -155,16 +155,13 @@ class StorageInterface(abc.ABC):
     def change_display_order_of_field(self, field_order_parameter: ChangeFieldsOrderParameter):
         pass
 
+
     @abc.abstractmethod
-    def get_field_display_status_dtos(self, column_id: str, user_id: str) -> List[FieldDisplayStatusDTO]:
+    def get_field_ids_list_in_order(self, column_id: str, user_id: str) -> List[FieldOrderDTO]:
         pass
 
     @abc.abstractmethod
-    def get_field_display_order_dtos(self, column_id: str, user_id: str) -> List[FieldOrderDTO]:
-        pass
-
-    @abc.abstractmethod
-    def get_valid_field_ids(self, column_id: str, field_ids: List[str]) -> List[str]:
+    def get_valid_field_ids(self, column_id: str, field_ids: List[str], user_id: str) -> List[str]:
         pass
 
     @abc.abstractmethod
@@ -173,7 +170,7 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_fields_display_status(
+    def get_field_display_status_dtos(
             self, column_id: str, user_id: str) -> List[FieldDisplayStatusDTO]:
         pass
 

@@ -89,7 +89,7 @@ class GetColumnTasksInteractorListView:
             column_id=column_id,
             user_id=user_id,
         )
-        field_display_status_dtos = self.storage.get_fields_display_status(
+        field_display_status_dtos = self.storage.get_field_display_status_dtos(
             column_id=column_id,
             user_id=user_id,
         )

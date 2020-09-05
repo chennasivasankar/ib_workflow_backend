@@ -57,9 +57,18 @@ USER_DONOT_HAVE_ACCESS = (
 )
 
 INVALID_PROJECT_ID = [
-    "invalid project_id is: {}, please send valid project id", "INVALID_PROJECT_ID"
+    "invalid project_id is: {}, please send valid project id",
+    "INVALID_PROJECT_ID"
 ]
 
 USER_IS_NOT_IN_PROJECT = (
     "user is not in given project", "USER_IS_NOT_IN_PROJECT"
+)
+
+FIELD_NOT_BELONGS_TO_COLUMN = (
+    "field not belongs to the column", "FIELD_NOT_BELONGS_TO_COLUMN"
+)
+
+INVALID_DISPLAY_ORDER = (
+    "invalid display order", "INVALID_DISPLAY_ORDER"
 )
