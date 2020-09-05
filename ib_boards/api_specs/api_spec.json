@@ -623,13 +623,19 @@
     "FieldDisplayOrder": {
       "name": "Status",
       "in": "body",
-      "description": "Field display status",
+      "description": "Field display order",
       "schema": {
         "type": "object",
         "properties": {
           "display_order": {
             "type": "integer",
             "format": "int64"
+          },
+          "field_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "required": [
