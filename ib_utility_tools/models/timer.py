@@ -23,7 +23,7 @@ class Timer(models.Model):
                                 editable=False)
     entity_id = models.CharField(max_length=200)
     entity_type = models.CharField(
-        max_length=10, validators=[validate_timer_entity_type]
+        max_length=25, validators=[validate_timer_entity_type]
     )
     start_datetime = models.DateTimeField(null=True)
     duration_in_seconds = models.IntegerField(default=0)
