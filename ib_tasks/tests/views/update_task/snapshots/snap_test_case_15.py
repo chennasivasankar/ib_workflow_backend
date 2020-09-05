@@ -11,6 +11,6 @@ snapshots['TestCase15UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase15UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'USER_NEEDS_FILED_WRITABLE_PERMISSION',
-    'response': "user needs write access on field FIELD-1, because user does not have at least one role in ['FIELD_EDITOR'] roles"
+    'res_status': 'TASK_DELAY_REASON_NOT_UPDATED',
+    'response': 'Task delay reason not updated for task IBWF-1 in stage display_name_0 with missed due date 2020-09-09 11:00:00'
 }
