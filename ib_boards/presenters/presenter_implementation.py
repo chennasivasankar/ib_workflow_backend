@@ -11,7 +11,8 @@ from ib_boards.interactors.dtos import ColumnTasksDTO, FieldDTO, ActionDTO, \
     StarredAndOtherBoardsDTO, TaskStageDTO, StageAssigneesDTO, AssigneesDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetBoardsPresenterInterface, \
-    GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO, TaskDisplayIdDTO
+    GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO, TaskDisplayIdDTO, \
+    CompleteTasksDetailsDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_boards.interactors.storage_interfaces.dtos import ColumnCompleteDetails
@@ -170,11 +171,14 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
         )
 
     def get_response_for_column_tasks(
-            self, task_fields_dtos: List[FieldDTO],
-            task_actions_dtos: List[ActionDTO],
-            total_tasks: int, task_id_dtos: List[TaskDisplayIdDTO],
-            task_stage_dtos: List[TaskStageDTO],
-            assignees_dtos: List[StageAssigneesDTO]):
+            self, complete_tasks_details_dto: CompleteTasksDetailsDTO):
+
+        task_fields_dtos = complete_tasks_details_dto.task_fields_dtos
+        task_actions_dtos = complete_tasks_details_dto.task_actions_dtos
+        total_tasks = complete_tasks_details_dto.total_tasks
+        task_id_dtos = complete_tasks_details_dto.task_id_dtos
+        task_stage_dtos = complete_tasks_details_dto.task_stage_dtos
+        assignees_dtos = complete_tasks_details_dto.assignees_dtos
 
         task_ids = [
             task_id_dto.task_id
@@ -311,6 +315,10 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
                 )
                 action_ids.append(action_dto.action_id)
         return task_actions_list
+
+
+class GetColumnTasksListViewPresenterImplementation(GetColumnTasksPresenterImplementation, HTTPResponseMixin):
+    pass
 
 
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
@@ -451,3 +459,5 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             "total_tasks": column_dto.total_tasks,
             "tasks": task_details_list
         }
+
+

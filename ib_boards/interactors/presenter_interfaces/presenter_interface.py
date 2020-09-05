@@ -1,4 +1,5 @@
 import abc
+from abc import ABC
 from dataclasses import dataclass
 from typing import List
 
@@ -19,6 +20,16 @@ from ib_boards.interactors.storage_interfaces.dtos import (
 class TaskDisplayIdDTO:
     task_id: int
     display_id: str
+
+
+@dataclass
+class CompleteTasksDetailsDTO:
+    task_fields_dtos: List[FieldDTO]
+    task_actions_dtos: List[ActionDTO]
+    total_tasks: int
+    task_id_dtos: List[TaskDisplayIdDTO]
+    task_stage_dtos: List[TaskStageDTO]
+    assignees_dtos: List[StageAssigneesDTO]
 
 
 class GetBoardsPresenterInterface(abc.ABC):
@@ -131,12 +142,16 @@ class GetColumnTasksPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_column_tasks(
-            self, task_fields_dtos: List[FieldDTO],
-            task_actions_dtos: List[ActionDTO],
-            total_tasks: int,
-            task_id_dtos: List[TaskDisplayIdDTO],
-            task_stage_dtos: List[TaskStageDTO],
-            assignees_dtos: List[StageAssigneesDTO]):
+            self, complete_tasks_details_dto: CompleteTasksDetailsDTO):
+        pass
+
+
+class GetColumnTasksListViewPresenterInterface(GetColumnTasksPresenterInterface, abc.ABC):
+
+    @abc.abstractmethod
+    def get_response_for_column_tasks_in_list_view(self,
+                                                   complete_tasks_details_dto,
+                                                   all_fields):
         pass
 
 
