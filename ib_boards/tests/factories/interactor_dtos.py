@@ -9,7 +9,8 @@ import factory
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
     TaskTemplateStagesDTO, TaskSummaryFieldsDTO, \
     TaskStatusDTO, FieldDetailsDTO, ActionDetailsDTO, TaskIdStageDTO, \
-    ColumnTaskIdsDTO, StageAssigneesDTO, AssigneesDTO, ProjectBoardDTO
+    ColumnTaskIdsDTO, StageAssigneesDTO, AssigneesDTO, ProjectBoardDTO, \
+    FieldNameDTO
 from ib_boards.interactors.dtos import ColumnTasksDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnStageIdsDTO
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, \
@@ -179,3 +180,11 @@ class ProjectBoardDTOFactory(factory.Factory):
 
     project_id = factory.Sequence(lambda n: f'PROJECT_ID_{n}')
     board_id = factory.Sequence(lambda n: f'BOARD_ID_{n}')
+
+
+class FieldNameDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldNameDTO
+
+    display_name = factory.Sequence(lambda n: "display_name_%d" % n)
+    field_id = factory.Sequence(lambda n: "field_id_%d" % n)

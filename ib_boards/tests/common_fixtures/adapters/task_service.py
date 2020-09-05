@@ -3,7 +3,7 @@ from typing import List
 from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import TaskStageIdDTO, \
     TaskCompleteDetailsDTO, \
-    ColumnTaskIdsDTO
+    ColumnTaskIdsDTO, FieldNameDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory, TaskStageDTOFactory
 
@@ -119,4 +119,12 @@ def task_ids_mock(mocker, task_stage_ids: List[ColumnTaskIdsDTO]):
         'ib_boards.adapters.task_service.TaskService.get_task_ids_for_stage_ids'
     )
     mock.return_value = task_stage_ids
+    return mock
+
+
+def field_display_name_mock(mocker, field_display_name_dtos: List[FieldNameDTO]):
+    mock = mocker.patch(
+        'ib_boards.adapters.task_service.TaskService.get_field_display_name'
+    )
+    mock.return_value = field_display_name_dtos
     return mock
