@@ -287,8 +287,9 @@ class ProjectInteractor(ValidationMixin):
             response = presenter.get_duplicate_team_ids_response()
         except DuplicateRoleNamesExists:
             response = presenter.get_duplicate_role_names_response()
-        except RoleNamesAlreadyExists:
-            response = presenter.get_role_names_already_exist_response()
+        except RoleNamesAlreadyExists as exception:
+            response = presenter.get_role_names_already_exists_response(
+                exception)
         return response
 
     def add_project(
@@ -332,7 +333,8 @@ class ProjectInteractor(ValidationMixin):
 
     @staticmethod
     def _validate_duplicate_role_names(role_names: List[str]):
-        is_duplicate_role_names_exists = len(role_names) != len(set(role_names))
+        is_duplicate_role_names_exists = len(role_names) != len(
+            set(role_names))
         if is_duplicate_role_names_exists:
             raise DuplicateRoleNamesExists
 
@@ -340,7 +342,8 @@ class ProjectInteractor(ValidationMixin):
         role_names_that_already_exists = self.project_storage \
             .get_valid_role_names_from_given_role_names(role_names=role_names)
         if role_names_that_already_exists:
-            raise RoleNamesAlreadyExists
+            raise RoleNamesAlreadyExists(
+                role_names=role_names_that_already_exists)
 
     def update_project_wrapper(
             self, user_id: str,

@@ -522,3 +522,20 @@ class TestProjectStorageImplementation:
                 display_id=display_id)
 
         assert actual_result == expected_result
+
+    @pytest.mark.django_db
+    def test_get_valid_role_names_from_given_role_names_returns_role_names(
+            self):
+        from ib_iam.tests.factories.models import ProjectRoleFactory
+        role_names = ["role 1", "role2"]
+        for role_name in role_names:
+            ProjectRoleFactory.create(name=role_name)
+        expected_role_names = ["role 1"]
+        role_names_to_check = ["role 1", "role3"]
+        project_storage = ProjectStorageImplementation()
+
+        actual_role_names = project_storage \
+            .get_valid_role_names_from_given_role_names(
+            role_names=role_names_to_check)
+
+        assert actual_role_names == expected_role_names

@@ -55,3 +55,22 @@ class AddProjectPresenterImplementation(AddProjectPresenterInterface,
                          "res_status": DUPLICATE_TEAM_IDS[1]}
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
+
+    def get_duplicate_role_names_response(self):
+        from ib_iam.constants.exception_messages import DUPLICATE_ROLE_NAMES
+        response_dict = {"response": DUPLICATE_ROLE_NAMES[0],
+                         "http_status_code": StatusCode.BAD_REQUEST.value,
+                         "res_status": DUPLICATE_ROLE_NAMES[1]}
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict)
+
+    def get_role_names_already_exists_response(self, exception):
+        from ib_iam.constants.exception_messages import \
+            ROLE_NAMES_ALREADY_EXISTS
+        response_dict = {
+            "response": ROLE_NAMES_ALREADY_EXISTS[0].format(
+                role_names=exception.role_names),
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": ROLE_NAMES_ALREADY_EXISTS[1]}
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict)

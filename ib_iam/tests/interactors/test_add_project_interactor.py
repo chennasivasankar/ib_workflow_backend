@@ -247,7 +247,8 @@ class TestAddProjectIneractor:
         team_storage.get_valid_team_ids.return_value = team_ids
         project_storage.get_valid_role_names_from_given_role_names \
             .return_value = role_names
-        presenter.get_role_names_already_exist_response.return_value = mock.Mock()
+        presenter.get_role_names_already_exists_response \
+            .return_value = mock.Mock()
         project_with_team_ids_and_roles_dto = ProjectWithTeamIdsAndRolesDTO(
             name=project_details.name,
             display_id=project_details.display_id,
@@ -269,7 +270,10 @@ class TestAddProjectIneractor:
             team_ids=team_ids)
         project_storage.get_valid_role_names_from_given_role_names \
             .assert_called_once_with(role_names=role_names)
-        presenter.get_role_names_already_exist_response.assert_called_once()
+        call_obj = presenter.get_role_names_already_exists_response.call_args
+        error_obj = call_obj.args[0]
+        actual_role_names_from_exception = error_obj.role_names
+        assert actual_role_names_from_exception == role_names
 
     def test_add_project_returns_in_success_response(
             self, project_storage, team_storage, interactor, presenter):

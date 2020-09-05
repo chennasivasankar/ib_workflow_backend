@@ -278,3 +278,13 @@ DUPLICATE_ROLE_IDS_FOR_UPDATE_PROJECT = (
     "Duplicate roles has been given",
     "DUPLICATE_ROLE_IDS"
 )
+
+DUPLICATE_ROLE_NAMES = (
+    "Duplicate role names has been given",
+    "DUPLICATE_ROLE_NAMES"
+)
+
+ROLE_NAMES_ALREADY_EXISTS = (
+    "Role names {role_names} already exist",
+    "ROLE_NAMES_ALREADY_EXISTS"
+)

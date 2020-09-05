@@ -32,5 +32,5 @@ class AddProjectPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_role_names_already_exist_response(self):
+    def get_role_names_already_exists_response(self, exception):
         pass

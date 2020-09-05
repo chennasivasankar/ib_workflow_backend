@@ -190,4 +190,5 @@ class DuplicateRoleNamesExists(Exception):
 
 
 class RoleNamesAlreadyExists(Exception):
-    pass
+    def __init__(self, role_names: List[str]):
+        self.role_names = role_names

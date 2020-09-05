@@ -1,13 +1,10 @@
 from typing import List, Optional
 
-from ib_iam.interactors.storage_interfaces.dtos import (
-    ProjectDTO, ProjectsWithTotalCountDTO, PaginationDTO, ProjectTeamIdsDTO,
-    ProjectRoleDTO, ProjectWithoutIdDTO, RoleNameAndDescriptionDTO, RoleDTO,
-    ProjectWithDisplayIdDTO)
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, \
-    ProjectsWithTotalCountDTO, PaginationDTO, ProjectTeamIdsDTO, ProjectRoleDTO
 from ib_iam.interactors.dtos.dtos import UserIdWithProjectIdAndStatusDTO
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
+from ib_iam.interactors.storage_interfaces.dtos import (
+    ProjectWithoutIdDTO, RoleNameAndDescriptionDTO, RoleDTO,
+    ProjectWithDisplayIdDTO, ProjectsWithTotalCountDTO, PaginationDTO,
+    ProjectTeamIdsDTO, ProjectRoleDTO, ProjectDTO)
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.models import Project, ProjectTeam, ProjectRole
@@ -248,3 +245,9 @@ class ProjectStorageImplementation(ProjectStorageInterface):
                 is_exist=project_id in valid_project_ids
             ) for project_id in project_ids
         ]
+
+    def get_valid_role_names_from_given_role_names(
+            self, role_names: List[str]) -> List[str]:
+        valid_role_names = ProjectRole.objects.filter(name__in=role_names) \
+            .values_list("name", flat=True)
+        return list(valid_role_names)
