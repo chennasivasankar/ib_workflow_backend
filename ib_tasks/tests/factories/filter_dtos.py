@@ -38,6 +38,7 @@ class CreateFilterDTOFactory(factory.Factory):
     class Meta:
         model = CreateFilterDTO
 
+    project_id = factory.Sequence(lambda n: "project_{}".format(n))
     filter_name = factory.sequence(lambda n: "filed_name_{}".format(n))
     user_id = factory.sequence(lambda n: "{}".format(n))
     template_id = factory.sequence(lambda n: "template_{}".format(n))

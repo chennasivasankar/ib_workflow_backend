@@ -93,14 +93,11 @@ class StagesStorageImplementation(StageStorageInterface):
         return list_of_permitted_roles
 
     def get_permitted_stage_ids(
-            self, user_role_ids: List[str], project_id: str) -> List[str]:
+            self, user_role_ids: List[str], project_id: Optional[str]
+    ) -> List[str]:
 
         project_template_ids = ProjectTaskTemplate.objects.filter(
-            (
-                    Q(project_id=project_id) &
-                    Q(task_template__is_transition_template=False)
-            ) | (Q(project_id=None) & Q(
-                task_template__is_transition_template=False))
+            project_id=project_id, task_template__is_transition_template=False
         ).values_list('task_template_id', flat=True)
         stage_ids = StagePermittedRoles.objects.filter(
             (Q(role_id__in=user_role_ids) | Q(role_id=ALL_ROLES_ID)) &
@@ -447,7 +444,6 @@ class StagesStorageImplementation(StageStorageInterface):
         ).values_list('stage__stage_id', flat=True))
 
 
-
 class StorageImplementation(StorageInterface):
 
     def get_write_permission_roles_for_given_gof_ids(
@@ -766,7 +762,6 @@ class StorageImplementation(StorageInterface):
                                            stage_id=stage_id,
                                            reason=due_details.reason)
 
-
     def validate_stage_id(self, stage_id: int) -> bool:
         does_exists = Stage.objects.filter(id=stage_id).exists()
         return does_exists
@@ -800,7 +795,8 @@ class StorageImplementation(StorageInterface):
             task_id=task_id, stage_id=stage_id, rp_id=superior_id)
 
     def get_latest_rp_added_datetime(self,
-                                     task_id: int, stage_id: int) -> Optional[str]:
+                                     task_id: int, stage_id: int) -> Optional[
+        str]:
         objs = TaskStageRp.objects.filter(
             task_id=task_id, stage_id=stage_id
         ).values_list('added_at', flat=True).order_by('-added_at')
