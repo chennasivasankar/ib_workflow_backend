@@ -11,9 +11,8 @@ from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskIdException, \
     InvalidStageIdsForTask, InvalidTaskDisplayId
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
-    import GetTaskPresenterInterface
-from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
-    import TaskCompleteDetailsDTO
+    import \
+    GetTaskPresenterInterface, TaskCompleteDetailsDTO
 from ib_tasks.interactors.stages_dtos import StageAssigneeWithTeamDetailsDTO, \
     AssigneeWithTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
@@ -63,8 +62,7 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
             "res_status": INVALID_PROJECT_ID[1]
         }
         response_object = self.prepare_404_not_found_response(
-            response_dict=data
-        )
+            response_dict=data)
         return response_object
 
     def raise_teams_does_not_exists_for_project(
@@ -188,12 +186,15 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
             task_stage_complete_details_dtos,
             stage_assignee_with_team_details_dtos
         )
-        start_date = self._convert_datetime_object_to_string(
-            task_base_details_dto.start_date
-        )
-        due_date = self._convert_datetime_object_to_string(
-            task_base_details_dto.due_date
-        )
+        start_date, due_date = None, None
+        if task_base_details_dto.start_date is not None and \
+                task_base_details_dto.due_date is not None:
+            start_date = self._convert_datetime_object_to_string(
+                task_base_details_dto.start_date
+            )
+            due_date = self._convert_datetime_object_to_string(
+                task_base_details_dto.due_date
+            )
         task_details_dict = {
             "task_id": task_base_details_dto.task_display_id,
             "project_info": project_info,

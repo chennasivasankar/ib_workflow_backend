@@ -142,7 +142,7 @@ INVALID_PHONE_NUMBER_VALUE = (
 INVALID_EMAIL = ("Invalid value for email: {} for field: {}", "INVALID_EMAIL")
 INVALID_URL = ("Invalid value for url: {} for field: {}", "INVALID_URL")
 NOT_A_STRONG_PASSWORD = (
-    "Given a weak password: {} for field: {}! Try with atleast 8 characters "
+    "Given a weak password: {} for field: {}! Try with at least 6 characters "
     "including special characters",
     "NOT_A_STRONG_PASSWORD")
 INVALID_NUMBER_VALUE = (
@@ -256,16 +256,16 @@ DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF = (
     "DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF")
 
 INVALID_TRANSITION_CHECKLIST_TEMPLATE_ID = (
-    "please give a valid transition checklist template id, {} is invalid \
-    transition checklist template id",
+    "please give a valid transition checklist template id, {} is invalid "
+    "transition checklist template id",
     "INVALID_TRANSITION_CHECKLIST_TEMPLATE_ID")
 
 INVALID_STAGE_ID = ("please give a valid stage id, {} is invalid stage id",
                     "INVALID_STAGE_ID")
 
 TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION = (
-    "given transition template id {} is not linked to given stage id {} and \
-    action id {}", "TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION")
+    "given transition template id {} is not linked to given stage id {} and "
+    "action id {}", "TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION")
 
 INVALID_STAGE_IDS = ("Invalid stage ids that you have sent are: {},"
                      "please send valid stage ids", "INVALID_STAGE_IDS")
@@ -402,9 +402,34 @@ USER_NOT_A_MEMBER_OF_PROJECT = (
     "USER_NOT_A_MEMBER_OF_PROJECT"
 )
 
-
 TASK_DELAY_REASON_NOT_UPDATED = (
     "Task delay reason not updated for task {} in stage {} with missed due "
     "date {}",
     "TASK_DELAY_REASON_NOT_UPDATED"
+)
+
+DUE_DATE_TIME_WITHOUT_START_DATE_TIME = (
+    "due date time {} is given with out start datetime",
+    "DUE_DATE_TIME_WITHOUT_START_DATE_TIME"
+)
+
+START_DATE_TIME_IS_REQUIRED = (
+    "start datetime is required if action type is not no validations",
+    "START_DATE_TIME_IS_REQUIRED"
+)
+
+DUE_DATE_TIME_IS_REQUIRED = (
+    "due datetime is required if action type is not no validations",
+    "DUE_DATE_TIME_IS_REQUIRED"
+)
+
+
+DUE_DATE_TIME_HAS_EXPIRED = (
+    "given due date time {} has expired, please give a valid due date time",
+    "DUE_DATE_TIME_HAS_EXPIRED"
+)
+
+PRIORITY_IS_REQUIRED = (
+    "task priority is required if action type is not no validations",
+    "PRIORITY_IS_REQUIRED"
 )

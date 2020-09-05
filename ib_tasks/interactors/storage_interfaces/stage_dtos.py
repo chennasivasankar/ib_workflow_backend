@@ -14,6 +14,7 @@ class StageAssigneeDetailsDTO:
     stage_id: int
     assignee_details_dto: Optional[AssigneeDetailsDTO]
 
+
 @dataclass
 class StageActionNamesDTO:
     stage_id: str

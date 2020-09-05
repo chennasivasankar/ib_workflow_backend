@@ -6,11 +6,8 @@ REQUEST_BODY_JSON = """
     "task_id": "string",
     "title": "string",
     "description": "string",
-    "start_date": "2099-12-31",
-    "due_date": {
-        "date": "2099-12-31",
-        "time": "string"
-    },
+    "start_datetime": "2099-12-31 00:00:00",
+    "due_datetime": "2099-12-31 00:00:00",
     "priority": "HIGH",
     "stage_assignee": {
         "stage_id": 1,
