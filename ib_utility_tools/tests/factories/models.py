@@ -24,6 +24,7 @@ class ChecklistItemFactory(factory.django.DjangoModelFactory):
     checklist = factory.SubFactory(ChecklistFactory)
     text = factory.sequence(lambda number: "text%s" % number)
     is_checked = False
+    created_at = factory.LazyFunction(datetime.now)
 
 
 class TimerFactory(factory.django.DjangoModelFactory):
