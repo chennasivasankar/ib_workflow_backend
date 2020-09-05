@@ -4,6 +4,7 @@ from ib_tasks.constants.enum import ActionTypes, ViewType, Priority
 from ib_tasks.exceptions.action_custom_exceptions import \
     InvalidActionException, InvalidKeyError, InvalidCustomLogicException, \
     InvalidPresentStageAction
+from ib_tasks.exceptions.custom_exceptions import InvalidProjectId
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     StartDateIsAheadOfDueDate, \
     DueDateTimeHasExpired, DueDateTimeWithoutStartDateTimeIsNotValid, \
@@ -105,6 +106,8 @@ class CreateTaskInteractor:
         try:
             return self._prepare_create_task_response(
                 task_dto, presenter, task_request_json)
+        except InvalidProjectId as err:
+            return presenter.raise_invalid_project_id(err)
         except InvalidTaskTemplateDBId as err:
             return presenter.raise_invalid_task_template_id(err)
         except InvalidTaskTemplateOfProject as err:
@@ -243,6 +246,7 @@ class CreateTaskInteractor:
             task_current_stage_details_dto, all_tasks_overview_dto)
 
     def create_task(self, task_dto: CreateTaskDTO):
+        self._validate_project_id(task_dto.project_id)
         self._validate_task_template_id(task_dto.task_template_id)
         self._validate_task_template_project_id(
             task_dto.project_id, task_dto.task_template_id)
@@ -428,4 +432,15 @@ class CreateTaskInteractor:
         priority_is_not_given = not priority
         if priority_is_not_given and not action_type_is_no_validations:
             raise PriorityIsRequired()
+        return
+
+    @staticmethod
+    def _validate_project_id(project_id: str) -> Optional[InvalidProjectId]:
+        from ib_tasks.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        valid_project_ids = \
+            service_adapter.project_service.get_valid_project_ids([project_id])
+        project_id_is_not_valid = project_id not in valid_project_ids
+        if project_id_is_not_valid:
+            raise InvalidProjectId(project_id)
         return

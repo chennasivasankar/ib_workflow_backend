@@ -3,6 +3,7 @@ from typing import List, Optional, Dict
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.exceptions.custom_exceptions import InvalidProjectId
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     StartDateIsAheadOfDueDate, \
     DueTimeHasExpiredForToday, DueDateTimeHasExpired, DueDateTimeIsRequired, \
@@ -43,6 +44,16 @@ from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 class CreateTaskPresenterImplementation(
     CreateTaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_invalid_project_id(self, err: InvalidProjectId):
+        from ib_tasks.constants.exception_messages import INVALID_PROJECT_ID
+        message = INVALID_PROJECT_ID[0].format(err.project_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_PROJECT_ID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_invalid_task_json(self, err: InvalidTaskJson):
         from ib_tasks.constants.exception_messages import INVALID_TASK_JSON

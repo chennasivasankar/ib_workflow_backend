@@ -1,5 +1,6 @@
 import abc
 
+from ib_tasks.exceptions.custom_exceptions import InvalidProjectId
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueDateTimeHasExpired, DueDateTimeWithoutStartDateTimeIsNotValid, \
     StartDateTimeIsRequired, DueDateTimeIsRequired
@@ -223,7 +224,8 @@ class CreateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_user_did_not_fill_required_gofs(self, err: UserDidNotFillRequiredGoFs):
+    def raise_user_did_not_fill_required_gofs(
+            self, err: UserDidNotFillRequiredGoFs):
         pass
 
     @abc.abstractmethod
@@ -233,5 +235,9 @@ class CreateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_invalid_task_json(self, err: InvalidTaskJson):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_project_id(self, err: InvalidProjectId):
         pass
 
