@@ -1,14 +1,11 @@
 import abc
 from typing import List
 
-from ib_iam.interactors.storage_interfaces.dtos import (
-    ProjectDTO, ProjectTeamIdsDTO, ProjectsWithTotalCountDTO, PaginationDTO,
-    ProjectRoleDTO, ProjectWithoutIdDTO, RoleNameAndDescriptionDTO, RoleDTO,
-    ProjectWithDisplayIdDTO)
-from ib_iam.interactors.storage_interfaces.dtos import ProjectTeamIdsDTO, \
-    ProjectsWithTotalCountDTO, PaginationDTO, ProjectRoleDTO, ProjectDTO
 from ib_iam.interactors.dtos.dtos import UserIdWithProjectIdAndStatusDTO
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
+from ib_iam.interactors.storage_interfaces.dtos import ProjectWithoutIdDTO, \
+    RoleNameAndDescriptionDTO, RoleDTO, ProjectWithDisplayIdDTO, \
+    UserIdAndTeamIdsDTO, ProjectTeamIdsDTO, ProjectsWithTotalCountDTO, \
+    PaginationDTO, ProjectRoleDTO, ProjectDTO
 
 
 class ProjectStorageInterface(abc.ABC):
@@ -117,4 +114,14 @@ class ProjectStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def delete_project_roles(self, role_ids: List[str]):
+        pass
+
+    @abc.abstractmethod
+    def get_user_team_ids_dtos_for_given_project(
+            self, project_id: str) -> List[UserIdAndTeamIdsDTO]:
+        pass
+
+    @abc.abstractmethod
+    def remove_user_roles_related_to_given_project_and_user(
+            self, project_id: str, user_ids: List[str]):
         pass

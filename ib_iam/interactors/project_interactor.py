@@ -2,26 +2,19 @@ from typing import List, Tuple, Optional
 
 from django.db import transaction
 
-from ib_iam.app_interfaces.dtos import (
-    ProjectTeamUserDTO, UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO,
-    UserTeamsDTO)
-from ib_iam.exceptions.custom_exceptions import InvalidUserIds
-from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO, \
-    CompleteProjectDetailsDTO
-from ib_iam.interactors.presenter_interfaces \
-    .add_project_presenter_interface import AddProjectPresenterInterface
-from ib_iam.interactors.presenter_interfaces \
-    .update_project_presenter_interface import UpdateProjectPresenterInterface
-from ib_iam.interactors.storage_interfaces.dtos import (
-    ProjectWithoutIdDTO, RoleDTO, RoleNameAndDescriptionDTO,
-    ProjectWithDisplayIdDTO, ProjectDTO, TeamWithUserIdDTO, TeamIdAndNameDTO)
 from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
     UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO, UserTeamsDTO
 from ib_iam.exceptions.custom_exceptions import InvalidUserIds, InvalidUserId, \
     InvalidProjectIds
-from ib_iam.interactors.dtos.dtos import UserIdWithProjectIdAndStatusDTO
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, TeamWithUserIdDTO, \
-    TeamIdAndNameDTO
+from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO, \
+    CompleteProjectDetailsDTO, UserIdWithProjectIdAndStatusDTO
+from ib_iam.interactors.presenter_interfaces \
+    .add_project_presenter_interface import AddProjectPresenterInterface
+from ib_iam.interactors.presenter_interfaces \
+    .update_project_presenter_interface import UpdateProjectPresenterInterface
+from ib_iam.interactors.storage_interfaces.dtos import ProjectWithoutIdDTO, \
+    RoleDTO, RoleNameAndDescriptionDTO, ProjectWithDisplayIdDTO, ProjectDTO, \
+    TeamWithUserIdDTO, TeamIdAndNameDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
@@ -368,6 +361,16 @@ class ProjectInteractor:
         team_ids_to_be_removed = list(set(project_team_ids) - set(team_ids))
         self.project_storage.remove_teams_from_project(
             project_id=project_id, team_ids=team_ids_to_be_removed)
+        user_id_and_team_ids_dtos = self.project_storage \
+            .get_user_team_ids_dtos_for_given_project(project_id=project_id)
+        user_ids = [
+            user_team_ids_dto.user_id
+            for user_team_ids_dto in user_id_and_team_ids_dtos
+            if set(user_team_ids_dto.team_ids).issubset(
+                set(team_ids_to_be_removed))]
+        self.project_storage \
+            .remove_user_roles_related_to_given_project_and_user(
+            project_id=project_id, user_ids=user_ids)
 
     def _add_project_roles(self, project_id: str, roles: List[RoleDTO]):
         role_name_and_description_dtos = [
