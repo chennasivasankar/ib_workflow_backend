@@ -72,6 +72,38 @@ class TestGetFieldsAndActionsInteractor:
                         field_ids=['FIELD-ID-3', 'FIELD-ID-4'])]
         return fields, stage_fields_dtos
 
+    @pytest.fixture
+    def expected_output_for_task_in_two_stages(self):
+        fields = [
+                FieldDetailsDTOWithTaskId(
+                        field_type='Drop down', field_id='FIELD-ID-1',
+                        key='key', value='value',
+                        task_id=1),
+                FieldDetailsDTOWithTaskId(
+                        field_type='Drop down', field_id='FIELD-ID-2',
+                        key='key', value='value',
+                        task_id=1),
+                FieldDetailsDTOWithTaskId(
+                        field_type='Drop down', field_id='FIELD-ID-3',
+                        key='key', value='value',
+                        task_id=2),
+                FieldDetailsDTOWithTaskId(
+                        field_type='Drop down', field_id='FIELD-ID-4',
+                        key='key', value='value',
+                        task_id=2)]
+        stage_fields_dtos = [TaskTemplateStageFieldsDTO(
+                task_template_id='task_template_id_1', task_id=1,
+                stage_id='stage_id_1', display_name='display_name_1',
+                db_stage_id=1, stage_color='blue',
+                field_ids=['FIELD-ID-1', 'FIELD-ID-2']),
+                TaskTemplateStageFieldsDTO(
+                        task_template_id='task_template_id_1',
+                        task_id=1, stage_id='stage_id_2',
+                        display_name='display_name_2',
+                        db_stage_id=2, stage_color='blue',
+                        field_ids=['FIELD-ID-3', 'FIELD-ID-4'])]
+        return fields, stage_fields_dtos
+
     @pytest.fixture()
     def get_field_ids(self):
         return [TaskTemplateStageFieldsDTO(
@@ -164,7 +196,7 @@ class TestGetFieldsAndActionsInteractor:
                                                     get_field_ids,
                                                     task_storage_mock,
                                                     get_task_dtos,
-                                                    expected_output,
+                                                    expected_output_for_task_in_two_stages,
                                                     get_task_template_stage_dtos):
         # Arrange
         view_type = ViewType.KANBAN.value
@@ -201,7 +233,7 @@ class TestGetFieldsAndActionsInteractor:
         task_storage_mock.get_valid_task_ids.assert_called_once_with(task_ids)
         field_storage_mock.get_field_ids.assert_called_once_with(
                 get_task_template_stage_dtos, view_type)
-        assert response == expected_output
+        assert response == expected_output_for_task_in_two_stages
 
     def test_get_fields_when_invalid_task_id_raises_exception(
             self,
