@@ -1492,6 +1492,43 @@
          "required":[
             "task_current_stages_details"
          ]
+      },
+      "ActionFlowBody": {
+        "type": "object",
+        "properties": {
+          "previous_stage": {
+            "type": "integer"
+          },
+          "action_name": {
+            "type": "string"
+          },
+          "next_stage": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "previous_stage", "action_name", "next_stage"
+        ]
+      },
+      "StageFlowResponseBody": {
+        "type": "object",
+        "properties": {
+          "stages": {
+            "type": "array",
+            "items": {
+              "$ref":"#/definitions/StageResponseBody"
+            }
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "$ref":"#/definitions/ActionFlowBody"
+            }
+          }
+        },
+        "required": [
+          "stages", "actions"
+        ]
       }
    },
    "parameters":{
@@ -1744,6 +1781,13 @@
          "description":"transition template Id",
          "type":"string"
       },
+      "TemplateIdParameter":{
+         "name":"template_id",
+         "in":"path",
+         "required":true,
+         "description":"template Id",
+         "type":"string"
+      },
       "CreateTransitionChecklistRequestBodyParameter":{
          "in":"body",
          "name":"CreateTransitionChecklistRequestBody",
@@ -1876,6 +1920,12 @@
                "http_status_code",
                "res_status"
             ]
+         }
+      },
+      "StageFlowResponse": {
+         "description":"Success",
+         "schema":{
+            "$ref":"#/definitions/StageFlowResponseBody"
          }
       },
       "GetTaskSuccessResponse":{
@@ -2071,6 +2121,34 @@
                   "enum":[
                      "INVALID_STAGE_ID",
                      "INVALID_TASK_ID"
+                  ]
+               }
+            },
+            "required":[
+               "response",
+               "http_status_code",
+               "res_status"
+            ]
+         }
+      },
+      "InvalidTemplateResponse": {
+        "description":"Invalid Template Failure Response",
+         "schema":{
+            "type":"object",
+            "properties":{
+               "response":{
+                  "type":"string"
+               },
+               "http_status_code":{
+                  "type":"integer",
+                  "enum":[
+                     404
+                  ]
+               },
+               "res_status":{
+                  "type":"string",
+                  "enum":[
+                     "INVALID_TEMPLATE_ID"
                   ]
                }
             },
@@ -3430,6 +3508,60 @@
                },
                "403":{
                   "$ref":"#/responses/TaskIsNotAssignedToUserResponse"
+               }
+            }
+         }
+      },
+      "/template/{template_id}/permitted_stage_flow/v1/":{
+        "get":{
+            "operationId":"get_permitted_template_stage_flow",
+            "summary":"get permitted stage flow",
+            "description":"get permitted stage flow",
+            "security":[
+               {
+                  "oauth":[
+                     "read"
+                  ]
+               }
+            ],
+            "parameters":[
+                {
+                  "$ref":"#/parameters/TemplateIdParameter"
+               }
+            ],
+            "responses":{
+               "200":{
+                  "$ref":"#/responses/StageFlowResponse"
+               },
+               "404":{
+                  "$ref":"#/responses/InvalidTemplateResponse"
+               }
+            }
+         }
+      },
+      "/template/{template_id}/complete_stage_flow/v1/":{
+        "get":{
+            "operationId":"get_template_stage_flow",
+            "summary":"get permitted stage flow",
+            "description":"get permitted stage flow",
+            "security":[
+               {
+                  "oauth":[
+                     "read"
+                  ]
+               }
+            ],
+            "parameters":[
+                {
+                  "$ref":"#/parameters/TemplateIdParameter"
+               }
+            ],
+            "responses":{
+               "200":{
+                  "$ref":"#/responses/StageFlowResponse"
+               },
+               "404":{
+                  "$ref":"#/responses/InvalidTemplateResponse"
                }
             }
          }
