@@ -235,3 +235,11 @@ class ChangeFieldsStatusParameter:
     column_id: str
     field_id: str
     display_status: DisplayStatus
+
+
+@dataclass
+class ChangeFieldsOrderParameter:
+    user_id: str
+    column_id: str
+    field_id: str
+    display_order: int

@@ -153,3 +153,12 @@ class FieldsDisplayStatusPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def get_response_for_field_not_belongs_to_column(self):
         pass
+
+    @abc.abstractmethod
+    def get_response_for_the_invalid_display_order(self):
+        pass
+
+    def get_response_for_field_order_in_column(
+            self, field_display_name_dtos, field_display_order_dtos, field_display_status_dtos):
+        pass
+

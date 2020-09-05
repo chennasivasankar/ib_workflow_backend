@@ -191,3 +191,6 @@ class TaskService:
             name=assignee_details.name,
             profile_pic_url=assignee_details.profile_pic_url
         )
+
+    def get_field_display_name(self, field_ids: List[str]):
+        pass
