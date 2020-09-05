@@ -45,11 +45,11 @@ def api_wrapper(*args, **kwargs):
         transition_checklist_gof_dtos.append(gof_field_dto)
     transition_template_dto = \
         CreateTransitionChecklistTemplateWithTaskDisplayIdDTO(
-        task_display_id=task_id, created_by_id=user_id,
-        transition_checklist_template_id=transition_checklist_template_id,
-        action_id=action_id, stage_id=stage_id,
-        transition_checklist_gofs=transition_checklist_gof_dtos
-    )
+            task_display_id=task_id, created_by_id=user_id,
+            transition_checklist_template_id=transition_checklist_template_id,
+            action_id=action_id, stage_id=stage_id,
+            transition_checklist_gofs=transition_checklist_gof_dtos
+        )
 
     task_storage = TasksStorageImplementation()
     create_task_storage = CreateOrUpdateTaskStorageImplementation()
@@ -67,7 +67,7 @@ def api_wrapper(*args, **kwargs):
         gof_storage=gof_storage, storage=storage, field_storage=field_storage,
         stage_action_storage=stage_action_storage
     )
-    interactor.create_transition_checklist_wrapper(
+    return interactor.create_transition_checklist_wrapper(
         transition_template_dto, presenter
     )
 

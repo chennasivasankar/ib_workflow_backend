@@ -1838,6 +1838,31 @@
             "$ref":"#/definitions/CreateTaskSuccessResponseBody"
          }
       },
+      "CreateTaskAccessUnauthorized":{
+         "description":"user does not have access",
+         "schema":{
+            "type":"object",
+            "properties":{
+               "response":{
+                  "type":"string"
+               },
+               "http_status_code":{
+                  "type":"integer"
+               },
+               "res_status":{
+                  "type":"string",
+                  "enum":[
+                     "USER_DO_NOT_HAVE_ACCESS"
+                  ]
+               }
+            },
+            "required":[
+               "response",
+               "http_status_code",
+               "res_status"
+            ]
+         }
+      },
       "TaskTemplatesDoesNotExistsResponse":{
          "description":"No task templates exists",
          "schema":{
@@ -2671,7 +2696,26 @@
          "description":"transition checklist created successfully"
       },
       "CreateTransitionChecklistFailureResponse":{
-         "description":"transition checklist creation failed"
+         "description":"transition checklist creation failed",
+         "schema": {
+            "type": "object",
+            "properties": {
+               "response": {
+                  "type": "string"
+               },
+               "http_status_code": {
+                  "type": "integer"
+               },
+               "res_status": {
+                  "type": "string"
+               }
+            },
+            "required": [
+               "response",
+               "http_status_code",
+               "res_status"
+            ]
+         }
       },
       "TaskWithCurrentStagesResponse":{
          "description":"task with current stages details response",
@@ -2870,6 +2914,9 @@
                },
                "400":{
                   "$ref":"#/responses/CreateTaskFailureResponse"
+               },
+               "403": {
+                  "$ref":"#/responses/CreateTaskAccessUnauthorized"
                }
             }
          },
@@ -3325,13 +3372,14 @@
       },
       "/transition_checklist/v1/":{
          "post":{
-            "operationId":"create_transistion_checklist",
+            "operationId":"create_transition_checklist",
             "summary":"create transition checklist",
             "description":"create transition checklist",
             "security":[
                {
                   "oauth":[
-                     "read"
+                     "read",
+                     "write"
                   ]
                }
             ],
@@ -3344,7 +3392,7 @@
                "201":{
                   "$ref":"#/responses/CreateTransitionChecklistSuccessResponse"
                },
-               "404":{
+               "400":{
                   "$ref":"#/responses/CreateTransitionChecklistFailureResponse"
                }
             }
