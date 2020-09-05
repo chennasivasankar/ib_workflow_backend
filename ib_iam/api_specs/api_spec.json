@@ -2467,7 +2467,9 @@
                 "enum": [
                   "PROJECT_NAME_ALREADY_EXISTS",
                   "DUPLICATE_TEAM_IDS",
-                  "DUPLICATE_ROLE_IDS"
+                  "DUPLICATE_ROLE_IDS",
+                  "DUPLICATE_ROLE_NAMES",
+                  "ROLE_NAMES_ALREADY_EXISTS"
                 ]
               }
             },

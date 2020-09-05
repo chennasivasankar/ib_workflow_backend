@@ -162,6 +162,74 @@ class TestCase02UpdateProjectDetailsAPITestCase(TestUtils):
                            headers=headers,
                            snapshot=snapshot)
 
+    @pytest.mark.django_db
+    def test_given_duplicate_role_names_returns_duplicate_role_names_response(
+            self, setup, snapshot):
+        body = {
+            'name': "project_1",
+            'description': 'project_description',
+            'logo_url': 'https://logo.com',
+            'team_ids': [],
+            'roles': [
+                {
+                    'role_name': 'Payment_RP',
+                    'description': "pay_1",
+                    'role_id': 'pay_role'
+                },
+                {
+                    'role_name': 'Payment_RP',
+                    'description': "pay_2",
+                    'role_id': None
+                }
+            ]
+        }
+        path_params = {"project_id": setup["project_id"]}
+        query_params = {}
+        headers = {}
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
+
+    @pytest.mark.django_db
+    def test_given_role_names_already_exists_returns_role_names_already_exists_response(
+            self, setup, snapshot):
+        role_id = "ROLE_3"
+        ProjectRoleFactory.create(
+            project=setup["project_object"], role_id=role_id, name="role 2")
+        body = {
+            'name': "project_1",
+            'description': 'project_description',
+            'logo_url': 'https://logo.com',
+            'team_ids': [],
+            'roles': [
+                {
+                    'role_name': 'role 3',
+                    'description': "pay_1",
+                    'role_id': 'pay_role'
+                },
+                {
+                    'role_name': 'role 2',
+                    'description': "pay_1",
+                    'role_id': None
+                },
+                {
+                    'role_name': 'role 1',
+                    'description': "pay_3",
+                    'role_id': None
+                }
+            ]
+        }
+        path_params = {"project_id": setup["project_id"]}
+        query_params = {}
+        headers = {}
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
+
     @pytest.fixture
     def setup(self, api_user):
         UserDetailsFactory(user_id=str(api_user.user_id), is_admin=True)
@@ -174,4 +242,5 @@ class TestCase02UpdateProjectDetailsAPITestCase(TestUtils):
         ProjectRoleFactory.create(project_id=project_id, role_id=role_id)
         return {"project_id": project_id,
                 "team_id": team_id,
-                "role_id": role_id}
+                "role_id": role_id,
+                "project_object": project_object}
