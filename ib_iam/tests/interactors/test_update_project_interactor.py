@@ -255,7 +255,7 @@ class TestUpdateProjectIneractor:
             .return_value = None
         project_storage.get_project_role_ids.return_value = role_ids
         team_storage.get_valid_team_ids.return_value = team_ids
-        presenter.get_duplicate_role_names_exists_response \
+        presenter.get_duplicate_role_names_response \
             .return_value = mock.Mock()
         complete_project_details_dto = CompleteProjectDetailsDTO(
             project_id=project_dto.project_id,
@@ -270,7 +270,7 @@ class TestUpdateProjectIneractor:
                                           complete_project_details_dto=
                                           complete_project_details_dto)
 
-        presenter.get_duplicate_role_names_exists_response.assert_called_once()
+        presenter.get_duplicate_role_names_response.assert_called_once()
 
     def test_given_role_names_already_exists_returns_role_names_already_exists_response(
             self, project_storage, user_storage, team_storage, interactor,

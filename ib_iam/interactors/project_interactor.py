@@ -356,7 +356,7 @@ class ProjectInteractor(ValidationMixin):
         except RoleIdsAreInvalid:
             response = presenter.get_invalid_role_ids_response()
         except DuplicateRoleNamesExists:
-            response = presenter.get_duplicate_role_names_exists_response()
+            response = presenter.get_duplicate_role_names_response()
         except RoleNamesAlreadyExists as exception:
             response = presenter.get_role_names_already_exists_response(
                 exception)
