@@ -35,9 +35,9 @@ class GetNextStagesRandomAssigneesOfATaskPresenterImpl(
         }
         return self.prepare_404_not_found_response(data)
 
-    def raise_user_not_in_any_given_team_of_project(self, user_id: str):
+    def raise_users_not_exists_for_given_projects(self, user_ids: List[str]):
         from ib_tasks.constants.exception_messages import USER_NOT_IN_ANY_TEAM_OF_PROJECT
-        response_message = USER_NOT_IN_ANY_TEAM_OF_PROJECT[0].format(user_id)
+        response_message = USER_NOT_IN_ANY_TEAM_OF_PROJECT[0].format(user_ids)
         data = {
             "response": response_message,
             "http_status_code": 404,

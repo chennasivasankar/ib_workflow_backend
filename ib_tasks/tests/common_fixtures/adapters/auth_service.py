@@ -50,6 +50,16 @@ def prepare_permitted_user_details_mock(mocker):
     return mock
 
 
+def prepare_permitted_multiple_user_details_mock(mocker):
+    UserDetailsDTOFactory.reset_sequence()
+    mock = mocker.patch(
+        "ib_tasks.adapters.auth_service.AuthService.get_permitted_user_details"
+    )
+    user_details_dtos = UserDetailsDTOFactory.create_batch(3)
+    mock.return_value = user_details_dtos
+    return mock
+
+
 def prepare_empty_permitted_user_details_mock(mocker):
     mock = mocker.patch(
         "ib_tasks.adapters.auth_service.AuthService.get_permitted_user_details"
@@ -137,6 +147,7 @@ def validate_if_user_is_in_project_mock(mocker, is_user_in_project: bool):
     )
     mock.return_value = is_user_in_project
     return mock
+
 
 def get_team_info_for_given_user_ids_mock(mocker):
     path = "ib_tasks.adapters.auth_service.AuthService." \
