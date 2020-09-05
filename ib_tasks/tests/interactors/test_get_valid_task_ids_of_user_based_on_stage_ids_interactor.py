@@ -281,7 +281,8 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
         ]
         from ib_tasks.tests.common_fixtures.interactors import \
             prepare_assignees_interactor_mock
-        prepare_assignees_interactor_mock(mocker=mocker, assignees=[])
+        assignee_mock = prepare_assignees_interactor_mock(mocker=mocker)
+        assignee_mock.return_value = []
 
         from ib_tasks.interactors. \
             get_valid_task_ids_for_user_based_on_stage_ids import \
@@ -356,8 +357,8 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
         ]
         from ib_tasks.tests.common_fixtures.interactors import \
             prepare_assignees_interactor_mock
-        prepare_assignees_interactor_mock(mocker=mocker, assignees=assignees)
-
+        assignee_mock = prepare_assignees_interactor_mock(mocker=mocker)
+        assignee_mock.return_value = assignees
         from ib_tasks.interactors. \
             get_valid_task_ids_for_user_based_on_stage_ids import \
             GetTaskIdsOfUserBasedOnStagesInteractor

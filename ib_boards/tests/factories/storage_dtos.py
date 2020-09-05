@@ -1,10 +1,13 @@
 import factory
 
+from ib_boards.constants.enum import DisplayStatus
 from ib_boards.interactors.dtos import TaskStageIdDTO, TaskDetailsDTO, \
     FieldsDTO, ActionDTO, FieldDTO, TaskStageDTO
 from ib_boards.interactors.storage_interfaces.dtos import (
     TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO, BoardDTO,
     ColumnCompleteDetails)
+from ib_boards.interactors.storage_interfaces.storage_interface import \
+    FieldDisplayStatusDTO, FieldOrderDTO
 
 
 class TaskDTOFactory(factory.Factory):
@@ -99,3 +102,19 @@ class BoardDTOFactory(factory.Factory):
 
     board_id = factory.Sequence(lambda n: f'BOARD_ID_{n + 1}')
     name = factory.Sequence(lambda n: f'BOARD_DISPLAY_NAME')
+
+
+class FieldDisplayStatusDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldDisplayStatusDTO
+
+    display_status = DisplayStatus.SHOW.value
+    field_id = factory.Sequence(lambda n: "field_id_%d" % n)
+
+
+class FieldOrderDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldOrderDTO
+
+    order = factory.Sequence(lambda n: n)
+    field_id = factory.Sequence(lambda n: "field_id_%d" % n)

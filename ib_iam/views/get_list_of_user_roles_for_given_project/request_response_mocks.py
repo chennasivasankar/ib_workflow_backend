@@ -5,7 +5,7 @@ RESPONSE_200_JSON = """
 {
     "users": [
         {
-            "user_id": "89d96f4b-c19d-4e69-8eae-e818f3123b09",
+            "user_id": "256ac36a-d4d5-4402-88ba-d0991e4b383e",
             "name": "string",
             "roles": [
                 {

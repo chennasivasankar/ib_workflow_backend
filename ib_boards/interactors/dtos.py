@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Optional
 
-from ib_boards.constants.enum import ViewType
+from ib_boards.constants.enum import ViewType, DisplayStatus
 
 
 @dataclass
@@ -227,3 +227,26 @@ class StageAssigneesDTO:
 class ProjectBoardDTO:
     project_id: str
     board_id: str
+
+
+@dataclass
+class ChangeFieldsStatusParameter:
+    user_id: str
+    column_id: str
+    field_id: str
+    display_status: DisplayStatus
+
+
+@dataclass
+class ChangeFieldsOrderParameter:
+    user_id: str
+    column_id: str
+    field_id: str
+    display_order: int
+    field_ids: List[str]
+
+
+@dataclass
+class FieldNameDTO:
+    field_id: str
+    display_name: str

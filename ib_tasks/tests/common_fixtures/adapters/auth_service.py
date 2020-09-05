@@ -138,6 +138,7 @@ def validate_if_user_is_in_project_mock(mocker, is_user_in_project: bool):
     mock.return_value = is_user_in_project
     return mock
 
+
 def get_team_info_for_given_user_ids_mock(mocker):
     path = "ib_tasks.adapters.auth_service.AuthService." \
            "get_team_info_for_given_user_ids"

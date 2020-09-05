@@ -25,7 +25,7 @@ class GetTaskActionsInteractor:
                          user_id: str,
                          task_ids: List[int]):
         task_ids = self._validate_task_ids(task_ids)
-        stage_ids = self._validate_stage_ids(stage_ids)
+        self._validate_stage_ids(stage_ids)
         task_project_dtos = self.task_storage.get_task_project_ids(task_ids)
         user_roles_interactor = UserRoleValidationInteractor()
         permitted_action_ids = user_roles_interactor. \
