@@ -176,7 +176,8 @@ class TestChangeFieldsDisplayOrder:
         )
         storage.get_valid_field_ids.assert_called_once_with(
             column_id=field_order_parameter.column_id,
-            field_ids=field_ids
+            field_ids=field_ids,
+            user_id=field_order_parameter.user_id
         )
         call_args = presenter.get_response_for_field_not_belongs_to_column.call_args
         assert call_args.kwargs['error'].invalid_field_ids == invalid_field_ids
@@ -214,7 +215,7 @@ class TestChangeFieldsDisplayOrder:
         storage.get_valid_field_ids.return_value = field_ids
         storage.get_project_id_for_given_column_id.return_value = project_id
         storage.get_field_display_status_dtos.return_value = field_display_status_dtos
-        storage.get_field_ids_list_in_order.return_value = field_display_order_dtos
+        storage.get_field_ids_list_in_order.return_value = field_ids
         presenter.get_response_for_field_order_in_column.return_value = expected_response
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             field_display_name_mock
@@ -228,7 +229,28 @@ class TestChangeFieldsDisplayOrder:
             display_order=1,
             field_ids=field_ids
         )
-
+        from ib_boards.interactors.storage_interfaces.dtos import AllFieldsDTO
+        from ib_boards.constants.enum import DisplayStatus
+        all_fields = [
+            AllFieldsDTO(
+                field_id='field_id_0',
+                display_name='display_name_0',
+                display_order=0,
+                display_status=DisplayStatus.SHOW.value
+            ),
+            AllFieldsDTO(
+                field_id='field_id_1',
+                display_name='display_name_1',
+                display_order=1,
+                display_status=DisplayStatus.SHOW.value
+            ),
+            AllFieldsDTO(
+                field_id='field_id_2',
+                display_name='display_name_2',
+                display_order=2,
+                display_status=DisplayStatus.SHOW.value
+            )
+        ]
         # Act
         actual_response = interactor.change_field_display_order_wrapper(
             field_order_parameter=field_order_parameter,
@@ -242,15 +264,15 @@ class TestChangeFieldsDisplayOrder:
         field_name_adapter_mock.assert_called_once_with(
             field_ids=field_ids
         )
-        storage.validate_field_id_with_column_id.assert_called_once_with(
-            field_id=field_order_parameter.field_id,
-            column_id=field_order_parameter.column_id
+        storage.get_valid_field_ids.assert_called_once_with(
+            field_ids=field_order_parameter.field_ids,
+            column_id=field_order_parameter.column_id,
+            user_id=field_order_parameter.user_id
         )
         storage.change_display_order_of_field.assert_called_once_with(
             field_order_parameter=field_order_parameter
         )
         presenter.get_response_for_field_order_in_column.assert_called_once_with(
-            field_display_name_dtos, field_display_order_dtos,
-            field_display_status_dtos
+            all_fields=all_fields
         )
         assert actual_response == expected_response
