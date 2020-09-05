@@ -253,22 +253,13 @@
             "description":{
                "type":"string"
             },
-            "start_date":{
+            "start_datetime":{
                "type":"string",
-               "format":"date"
+               "format":"date-time"
             },
-            "due_date":{
-               "type":"object",
-               "properties":{
-                  "date":{
-                     "type":"string",
-                     "format":"date"
-                  },
-                  "time":{
-                     "type":"string",
-                     "example":"14:30:00"
-                  }
-               }
+            "due_datetime":{
+               "type":"string",
+               "format": "date-time"
             },
             "priority":{
                "type":"string",
@@ -891,9 +882,6 @@
             "gofs",
             "stages_with_actions",
             "title",
-            "start_date",
-            "due_date",
-            "priority",
             "project_info"
          ]
       },
@@ -927,22 +915,13 @@
             "description":{
                "type":"string"
             },
-            "start_date":{
+            "start_datetime":{
                "type":"string",
-               "format":"date"
+               "format":"date-time"
             },
-            "due_date":{
-               "type":"object",
-               "properties":{
-                  "date":{
-                     "type":"string",
-                     "format":"date"
-                  },
-                  "time":{
-                     "type":"string",
-                     "example":"14:30:00"
-                  }
-               }
+            "due_datetime":{
+               "type":"string",
+               "format": "date-time"
             },
             "priority":{
                "type":"string",
@@ -1492,6 +1471,43 @@
          "required":[
             "task_current_stages_details"
          ]
+      },
+      "ActionFlowBody": {
+        "type": "object",
+        "properties": {
+          "previous_stage": {
+            "type": "integer"
+          },
+          "action_name": {
+            "type": "string"
+          },
+          "next_stage": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "previous_stage", "action_name", "next_stage"
+        ]
+      },
+      "StageFlowResponseBody": {
+        "type": "object",
+        "properties": {
+          "stages": {
+            "type": "array",
+            "items": {
+              "$ref":"#/definitions/StageResponseBody"
+            }
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "$ref":"#/definitions/ActionFlowBody"
+            }
+          }
+        },
+        "required": [
+          "stages", "actions"
+        ]
       }
    },
    "parameters":{
@@ -1744,6 +1760,13 @@
          "description":"transition template Id",
          "type":"string"
       },
+      "TemplateIdParameter":{
+         "name":"template_id",
+         "in":"path",
+         "required":true,
+         "description":"template Id",
+         "type":"string"
+      },
       "CreateTransitionChecklistRequestBodyParameter":{
          "in":"body",
          "name":"CreateTransitionChecklistRequestBody",
@@ -1792,6 +1815,31 @@
          "description":"task created successfully",
          "schema":{
             "$ref":"#/definitions/CreateTaskSuccessResponseBody"
+         }
+      },
+      "CreateTaskAccessUnauthorized":{
+         "description":"user does not have access",
+         "schema":{
+            "type":"object",
+            "properties":{
+               "response":{
+                  "type":"string"
+               },
+               "http_status_code":{
+                  "type":"integer"
+               },
+               "res_status":{
+                  "type":"string",
+                  "enum":[
+                     "USER_DO_NOT_HAVE_ACCESS"
+                  ]
+               }
+            },
+            "required":[
+               "response",
+               "http_status_code",
+               "res_status"
+            ]
          }
       },
       "TaskTemplatesDoesNotExistsResponse":{
@@ -1876,6 +1924,12 @@
                "http_status_code",
                "res_status"
             ]
+         }
+      },
+      "StageFlowResponse": {
+         "description":"Success",
+         "schema":{
+            "$ref":"#/definitions/StageFlowResponseBody"
          }
       },
       "GetTaskSuccessResponse":{
@@ -2071,6 +2125,34 @@
                   "enum":[
                      "INVALID_STAGE_ID",
                      "INVALID_TASK_ID"
+                  ]
+               }
+            },
+            "required":[
+               "response",
+               "http_status_code",
+               "res_status"
+            ]
+         }
+      },
+      "InvalidTemplateResponse": {
+        "description":"Invalid Template Failure Response",
+         "schema":{
+            "type":"object",
+            "properties":{
+               "response":{
+                  "type":"string"
+               },
+               "http_status_code":{
+                  "type":"integer",
+                  "enum":[
+                     404
+                  ]
+               },
+               "res_status":{
+                  "type":"string",
+                  "enum":[
+                     "INVALID_TEMPLATE_ID"
                   ]
                }
             },
@@ -2593,7 +2675,26 @@
          "description":"transition checklist created successfully"
       },
       "CreateTransitionChecklistFailureResponse":{
-         "description":"transition checklist creation failed"
+         "description":"transition checklist creation failed",
+         "schema": {
+            "type": "object",
+            "properties": {
+               "response": {
+                  "type": "string"
+               },
+               "http_status_code": {
+                  "type": "integer"
+               },
+               "res_status": {
+                  "type": "string"
+               }
+            },
+            "required": [
+               "response",
+               "http_status_code",
+               "res_status"
+            ]
+         }
       },
       "TaskWithCurrentStagesResponse":{
          "description":"task with current stages details response",
@@ -2792,6 +2893,9 @@
                },
                "400":{
                   "$ref":"#/responses/CreateTaskFailureResponse"
+               },
+               "403": {
+                  "$ref":"#/responses/CreateTaskAccessUnauthorized"
                }
             }
          },
@@ -3247,13 +3351,14 @@
       },
       "/transition_checklist/v1/":{
          "post":{
-            "operationId":"create_transistion_checklist",
+            "operationId":"create_transition_checklist",
             "summary":"create transition checklist",
             "description":"create transition checklist",
             "security":[
                {
                   "oauth":[
-                     "read"
+                     "read",
+                     "write"
                   ]
                }
             ],
@@ -3266,7 +3371,7 @@
                "201":{
                   "$ref":"#/responses/CreateTransitionChecklistSuccessResponse"
                },
-               "404":{
+               "400":{
                   "$ref":"#/responses/CreateTransitionChecklistFailureResponse"
                }
             }
@@ -3430,6 +3535,60 @@
                },
                "403":{
                   "$ref":"#/responses/TaskIsNotAssignedToUserResponse"
+               }
+            }
+         }
+      },
+      "/template/{template_id}/permitted_stage_flow/v1/":{
+        "get":{
+            "operationId":"get_permitted_template_stage_flow",
+            "summary":"get permitted stage flow",
+            "description":"get permitted stage flow",
+            "security":[
+               {
+                  "oauth":[
+                     "read"
+                  ]
+               }
+            ],
+            "parameters":[
+                {
+                  "$ref":"#/parameters/TemplateIdParameter"
+               }
+            ],
+            "responses":{
+               "200":{
+                  "$ref":"#/responses/StageFlowResponse"
+               },
+               "404":{
+                  "$ref":"#/responses/InvalidTemplateResponse"
+               }
+            }
+         }
+      },
+      "/template/{template_id}/complete_stage_flow/v1/":{
+        "get":{
+            "operationId":"get_template_stage_flow",
+            "summary":"get permitted stage flow",
+            "description":"get permitted stage flow",
+            "security":[
+               {
+                  "oauth":[
+                     "read"
+                  ]
+               }
+            ],
+            "parameters":[
+                {
+                  "$ref":"#/parameters/TemplateIdParameter"
+               }
+            ],
+            "responses":{
+               "200":{
+                  "$ref":"#/responses/StageFlowResponse"
+               },
+               "404":{
+                  "$ref":"#/responses/InvalidTemplateResponse"
                }
             }
          }

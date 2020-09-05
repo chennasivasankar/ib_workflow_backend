@@ -8,19 +8,20 @@ def populate_stage_actions(action_dicts: List[Dict]):
         action_dicts)
     for action_dict in actions_dict:
         actions_dtos.append(append_action_dict(action_dict))
-    from ib_tasks.interactors.create_update_delete_stage_actions import \
-        CreateUpdateDeleteStageActionsInteractor
+    from ib_tasks.interactors.create_or_update_or_delete_stage_actions import \
+        CreateOrUpdateOrDeleteStageActions
     from ib_tasks.storages.action_storage_implementation import \
         ActionsStorageImplementation
     from ib_tasks.storages.task_template_storage_implementation import \
         TaskTemplateStorageImplementation
 
-    interactor = CreateUpdateDeleteStageActionsInteractor(
+    interactor = CreateOrUpdateOrDeleteStageActions(
         storage=ActionsStorageImplementation(),
-        actions_dto=actions_dtos,
         template_storage=TaskTemplateStorageImplementation()
     )
-    interactor.create_update_delete_stage_actions()
+    interactor.create_or_update_or_delete_stage_actions(
+        action_dtos=actions_dtos
+    )
 
 
 def _remove_white_spaces_and_apply_replaces_to_roles(

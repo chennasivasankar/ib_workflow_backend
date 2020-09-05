@@ -1,17 +1,17 @@
 from typing import List
+
 from ib_iam.interactors.storage_interfaces.company_storage_interface import \
     CompanyStorageInterface
 from ib_iam.interactors.storage_interfaces.dtos import \
-    CompanyNameLogoAndDescriptionDTO
+    CompanyNameLogoAndDescriptionDTO, CompanyDTO, CompanyIdWithEmployeeIdsDTO
 from ib_iam.models import UserDetails, Company
-from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDTO, CompanyIdWithEmployeeIdsDTO)
 
 
 class CompanyStorageImplementation(CompanyStorageInterface):
 
     def get_company_dtos(self) -> List[CompanyDTO]:
-        company_objects = Company.objects.all()
+        from django.db.models.functions import Lower
+        company_objects = Company.objects.all().order_by(Lower('name'))
         company_dtos = [
             self._convert_company_object_to_company_dto(
                 company_object=company_object
@@ -22,8 +22,8 @@ class CompanyStorageImplementation(CompanyStorageInterface):
     def get_company_employee_ids_dtos(self, company_ids: List[str]) -> \
             List[CompanyIdWithEmployeeIdsDTO]:
         company_employees = \
-            UserDetails.objects.filter(company_id__in=company_ids) \
-                .values_list('company_id', 'user_id')
+            UserDetails.objects.filter(company_id__in=company_ids).values_list(
+                'company_id', 'user_id')
         from collections import defaultdict
         company_employee_ids_dictionary = defaultdict(list)
         for company_employee in company_employees:

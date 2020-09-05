@@ -217,7 +217,7 @@ class TestGetFiltersDetailsPresenter:
 
         # Act
         response_object = presenter.get_response_for_update_filter_status(
-            filter_id=filter_id, is_selected=is_selected
+            filter_id=filter_id, filter_status=is_selected
         )
 
         # Assert

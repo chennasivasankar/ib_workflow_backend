@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from django.db.models import F, Q
 
+from ib_tasks.adapters.dtos import ProjectRolesDTO
 from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
@@ -14,6 +15,7 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectRolesDTO
 from ib_tasks.models import StageAction, Stage, ActionPermittedRoles, \
     TaskTemplateInitialStage
 
@@ -24,14 +26,14 @@ class ActionsStorageImplementation(ActionStorageInterface):
             self, action_id) -> Optional[InvalidActionException]:
         try:
             StageAction.objects.get(id=action_id)
-        except StageAction.DoesNotExists:
+        except StageAction.DoesNotExist:
             raise InvalidActionException(action_id)
         return
 
     def validate_stage_id(self, stage_id) -> Optional[InvalidStageId]:
         try:
             Stage.objects.get(id=stage_id)
-        except Stage.DoesNotExists:
+        except Stage.DoesNotExist:
             raise InvalidStageId(stage_id)
         return
 
@@ -273,3 +275,23 @@ class ActionsStorageImplementation(ActionStorageInterface):
             )
             for action_obj in action_objs
         ]
+
+    def get_permitted_action_ids_for_given_task_stages(
+            self, user_project_roles: List[TaskProjectRolesDTO],
+            stage_ids):
+
+        q = None
+        for counter, item in enumerate(user_project_roles):
+            current_queue = Q(role_id__in=item.roles) | Q(role_id=ALL_ROLES_ID) & \
+                            Q(action__stage__currenttaskstage__task=item.task_id)
+            if counter == 0:
+                q = current_queue
+            else:
+                q = q | current_queue
+        if q is None:
+            return []
+
+        action_ids = (ActionPermittedRoles.objects.filter(q,
+                                                          Q(action__stage__stage_id__in=stage_ids))
+                      .values_list('action_id', flat=True))
+        return list(set(action_ids))

@@ -275,6 +275,28 @@
         "stage_with_actions"
       ]
     },
+    "TaskOverviewWithStageAndActionsListView": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "task_overview_fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaskOverviewFieldsListView"
+          }
+        },
+        "stage_with_actions": {
+          "$ref": "#/definitions/StagesWithActions"
+        }
+      },
+      "required": [
+        "task_id",
+        "task_overview_fields",
+        "stage_with_actions"
+      ]
+    },
     "TaskOverviewFields": {
       "allOf": [
         {
@@ -294,6 +316,59 @@
             "field_display_name"
           ]
         }
+      ]
+    },
+    "TaskOverviewFieldsListView": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/FieldTypeEnum"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "field_display_name": {
+              "type": "string"
+            },
+            "field_response": {
+              "type": "string"
+            },
+            "field_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "field_display_name",
+            "field_id"
+          ]
+        }
+      ]
+    },
+    "AllFieldsInColumn": {
+      "type": "object",
+      "properties": {
+        "field_id": {
+          "type": "string"
+        },
+        "field_display_name": {
+          "type": "string"
+        },
+        "display_order": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "display_status": {
+          "type": "string",
+          "enum": [
+            "HIDE",
+            "SHOW"
+          ]
+        }
+      },
+      "required": [
+        "field_display_name",
+        "display_order",
+        "display_status",
+        "field_id"
       ]
     },
     "Assignee": {
@@ -386,6 +461,53 @@
         "stage_id"
       ]
     },
+    "FieldsOperationInvalid": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_COLUMN_ID",
+            "INVALID_FIELD_ID"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "ForbiddenInFieldsOperation": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "USER_DO_NOT_HAVE_ACCESS_COLUMN",
+            "USER_DO_NOT_HAVE_ACCESS_FIELD",
+            "FIELD_NOT_BELONGS_TO_COLUMN"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
     "ColumnDetails": {
       "type": "object",
       "properties": {
@@ -471,6 +593,60 @@
         "total_tasks",
         "tasks"
       ]
+    },
+    "TaskCompleteDetailsListView": {
+      "type": "object",
+      "properties": {
+        "total_tasks": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaskOverviewWithStageAndActionsListView"
+          }
+        },
+        "all_fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AllFieldsInColumn"
+          }
+        }
+      },
+      "required": [
+        "total_tasks",
+        "tasks",
+        "all_fields"
+      ]
+    },
+    "FieldDisplay": {
+      "type": "object",
+      "properties": {
+        "field_id": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "display_status": {
+          "type": "string",
+          "enum": [
+            "HIDE",
+            "SHOW"
+          ]
+        },
+        "display_order": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "required": [
+        "display_order",
+        "display_status",
+        "field_id",
+        "display_name"
+      ]
     }
   },
   "parameters": {
@@ -517,6 +693,56 @@
       "description": "column id value",
       "type": "string",
       "required": true
+    },
+    "FieldIdPathParameter": {
+      "name": "field_id",
+      "in": "path",
+      "description": "field id value",
+      "type": "string",
+      "required": true
+    },
+    "FieldDisplayStatus": {
+      "name": "Status",
+      "in": "body",
+      "description": "Field display status",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "display_status": {
+            "type": "string",
+            "enum": [
+              "HIDE",
+              "SHOW"
+            ]
+          }
+        },
+        "required": [
+          "display_status"
+        ]
+      }
+    },
+    "FieldDisplayOrder": {
+      "name": "Status",
+      "in": "body",
+      "description": "Field display order",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "display_order": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "field_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "display_order"
+        ]
+      }
     },
     "ActionParameter": {
       "name": "action",
@@ -603,6 +829,18 @@
         "$ref": "#/definitions/InvalidStarBoardDetails"
       }
     },
+    "InvalidFieldsOperationResponse": {
+      "description": "invalid offset or invalid limit",
+      "schema": {
+        "$ref": "#/definitions/FieldsOperationInvalid"
+      }
+    },
+    "ForbiddenResponse": {
+      "description": "invalid starred board response",
+      "schema": {
+        "$ref": "#/definitions/ForbiddenInFieldsOperation"
+      }
+    },
     "GetBoardsResponse": {
       "description": "get boards response",
       "schema": {
@@ -648,6 +886,21 @@
       "description": "tasks details",
       "schema": {
         "$ref": "#/definitions/TaskCompleteDetails"
+      }
+    },
+    "TaskDetailsListViewResponse": {
+      "description": "tasks details",
+      "schema": {
+        "$ref": "#/definitions/TaskCompleteDetailsListView"
+      }
+    },
+    "FieldsDisplayResponse": {
+      "description": "Fields display order and display status",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/FieldDisplay"
+        }
       }
     }
   },
@@ -814,6 +1067,124 @@
           },
           "200": {
             "$ref": "#/responses/TaskDetailsResponse"
+          }
+        }
+      }
+    },
+    "/columns/{column_id}/tasks/v2/": {
+      "post": {
+        "operationId": "get_column_tasks_for_list_view",
+        "summary": "Get Column Tasks in list view",
+        "description": "get column tasks details",
+        "security": [
+          {
+            "oauth": [
+              "read",
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/ColumnIdParameter"
+          },
+          {
+            "$ref": "#/parameters/ViewTypeParameter"
+          },
+          {
+            "$ref": "#/parameters/SearchQueryParameter"
+          }
+        ],
+        "responses": {
+          "403": {
+            "$ref": "#/responses/InvalidAccessResponse"
+          },
+          "400": {
+            "$ref": "#/responses/InvalidPaginationResponse"
+          },
+          "404": {
+            "$ref": "#/responses/InvalidTasksResponse"
+          },
+          "200": {
+            "$ref": "#/responses/TaskDetailsListViewResponse"
+          }
+        }
+      }
+    },
+    "/columns/{column_id}/fields/{field_id}/display_status/": {
+      "post": {
+        "summary": "Change the display status of the field in the column",
+        "operationId": "change_the_display_status_of_field",
+        "security": [
+          {
+            "oauth": [
+              "read",
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/FieldIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/ColumnIdParameter"
+          },
+          {
+            "$ref": "#/parameters/FieldDisplayStatus"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "field display status successfully updated"
+          },
+          "404": {
+            "$ref": "#/responses/InvalidFieldsOperationResponse"
+          },
+          "403": {
+            "$ref": "#/responses/ForbiddenResponse"
+          }
+        }
+      }
+    },
+    "/columns/{column_id}/fields/{field_id}/display_order/": {
+      "post": {
+        "summary": "Change the display order of the field in the column",
+        "operationId": "change_the_display_order_of_field",
+        "security": [
+          {
+            "oauth": [
+              "read",
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/FieldIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/ColumnIdParameter"
+          },
+          {
+            "$ref": "#/parameters/FieldDisplayOrder"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/FieldsDisplayResponse"
+          },
+          "404": {
+            "$ref": "#/responses/InvalidFieldsOperationResponse"
+          },
+          "403": {
+            "$ref": "#/responses/ForbiddenResponse"
           }
         }
       }

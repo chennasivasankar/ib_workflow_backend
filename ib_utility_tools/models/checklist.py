@@ -22,7 +22,7 @@ class Checklist(models.Model):
                                     editable=False)
     entity_id = models.CharField(max_length=200)
     entity_type = models.CharField(
-        max_length=10,
+        max_length=25,
         validators=[validate_entity_type]
     )
 

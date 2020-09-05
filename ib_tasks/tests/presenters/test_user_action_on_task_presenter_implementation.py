@@ -5,12 +5,12 @@ import pytest
 from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO
-from ib_tasks.tests.factories.interactor_dtos import TaskStageDTOFactory
 from ib_tasks.tests.factories.adapter_dtos import (
     ColumnStageDTOFactory, BoardDTOFactory, ColumnDTOFactory, AssigneeDetailsDTOFactory
 )
 from ib_tasks.tests.factories.interactor_dtos import FieldDisplayDTOFactory, \
-    TaskCurrentStageDetailsDTOFactory
+    TaskCurrentStageDetailsDTOFactory, CurrentStageDetailsDTOFactory, TaskStageAssigneeDetailsDTOFactory, \
+    AssigneeWithTeamDetailsDTOFactory
 from ib_tasks.tests.factories.interactor_dtos import TaskStageDTOFactory
 from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory
 
@@ -133,20 +133,24 @@ class TestCreateOrUpdateTaskPresenterImplementation:
     @pytest.fixture()
     def task_complete_details(self):
         self.reset_sequence()
-        column_stage_dtos = ColumnStageDTOFactory.create_batch(size=3)
         ColumnStageDTOFactory.reset_sequence(0)
+        column_stage_dtos = ColumnStageDTOFactory.create_batch(size=3)
 
         task_board_details = TaskBoardsDetailsDTO(
             board_dto=BoardDTOFactory(),
             column_stage_dtos=column_stage_dtos,
             columns_dtos=ColumnDTOFactory.create_batch(size=3)
         )
+        field_dtos = FieldDisplayDTOFactory.create_batch(size=3)
+        field_dto = field_dtos[1]
+        field_dto.stage_id = 'stage_2'
+        field_dtos.append(field_dto)
         assignee_dtos = [AssigneeDetailsDTOFactory()]
         return TaskCompleteDetailsDTO(
             task_id=1,
             task_boards_details=task_board_details,
             actions_dto=ActionDTOFactory.create_batch(size=3),
-            field_dtos=FieldDisplayDTOFactory.create_batch(size=3),
+            field_dtos=field_dtos,
             assignees_details=[],
             task_stage_details=TaskStageDTOFactory.create_batch(3),
             task_display_id=''
@@ -157,13 +161,24 @@ class TestCreateOrUpdateTaskPresenterImplementation:
     ):
         # Arrange
         TaskCurrentStageDetailsDTOFactory.reset_sequence(1)
+        CurrentStageDetailsDTOFactory.reset_sequence()
         task_current_stage_details_dto = TaskCurrentStageDetailsDTOFactory()
+        from ib_tasks.tests.factories.presenter_dtos \
+            import AllTasksOverviewDetailsDTOFactory
+        AllTasksOverviewDetailsDTOFactory.reset_sequence()
+        TaskStageAssigneeDetailsDTOFactory.reset_sequence()
+        from ib_tasks.tests.factories.presenter_dtos \
+            import TaskIdWithStageDetailsDTOFactory
+        TaskIdWithStageDetailsDTOFactory.reset_sequence()
+        AssigneeWithTeamDetailsDTOFactory.reset_sequence()
+        all_tasks_overview_details = AllTasksOverviewDetailsDTOFactory()
 
         # Act
         response_object = \
             presenter.get_response_for_user_action_on_task(
                 task_complete_details_dto=task_complete_details,
-                task_current_stage_details_dto=task_current_stage_details_dto
+                task_current_stage_details_dto=task_current_stage_details_dto,
+                all_tasks_overview_dto=all_tasks_overview_details
             )
 
         # Assert

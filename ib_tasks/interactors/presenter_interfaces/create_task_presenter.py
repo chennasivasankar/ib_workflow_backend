@@ -1,8 +1,13 @@
 import abc
 
-from ib_tasks.exceptions.datetime_custom_exceptions import DueDateHasExpired
+from ib_tasks.exceptions.datetime_custom_exceptions import \
+    DueDateTimeHasExpired, DueDateTimeWithoutStartDateTimeIsNotValid, \
+    StartDateTimeIsRequired, DueDateTimeIsRequired
+from ib_tasks.exceptions.field_values_custom_exceptions import \
+    InvalidDateFormat
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException, InvalidStageIdsListException
+from ib_tasks.exceptions.task_custom_exceptions import PriorityIsRequired
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
@@ -107,10 +112,6 @@ class CreateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_date_format(self, err):
-        pass
-
-    @abc.abstractmethod
     def raise_exception_for_invalid_time_format(self, err):
         pass
 
@@ -167,24 +168,12 @@ class CreateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_stage_ids_with_invalid_permission_for_assignee_exception(self,
-                                                                       invalid_stage_ids):
-        pass
-
-    @abc.abstractmethod
-    def raise_invalid_due_time_format(self, err):
+    def raise_stage_ids_with_invalid_permission_for_assignee_exception(
+            self, invalid_stage_ids):
         pass
 
     @abc.abstractmethod
     def raise_start_date_is_ahead_of_due_date(self, err):
-        pass
-
-    @abc.abstractmethod
-    def raise_due_time_has_expired_for_today(self, err):
-        pass
-
-    @abc.abstractmethod
-    def raise_due_date_has_expired(self, err: DueDateHasExpired):
         pass
 
     @abc.abstractmethod
@@ -203,4 +192,29 @@ class CreateTaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_invalid_stage_ids_list_exception(
             self, err: InvalidStageIdsListException):
+        pass
+
+    @abc.abstractmethod
+    def raise_due_date_time_without_start_datetime(
+            self, err: DueDateTimeWithoutStartDateTimeIsNotValid):
+        pass
+
+    @abc.abstractmethod
+    def raise_start_date_time_is_required(self, err: StartDateTimeIsRequired):
+        pass
+
+    @abc.abstractmethod
+    def raise_due_date_time_is_required(self, err: DueDateTimeIsRequired):
+        pass
+
+    @abc.abstractmethod
+    def raise_due_date_time_has_expired(self, err: DueDateTimeHasExpired):
+        pass
+
+    @abc.abstractmethod
+    def raise_priority_is_required(self, err: PriorityIsRequired):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_date_format(self, err: InvalidDateFormat):
         pass
