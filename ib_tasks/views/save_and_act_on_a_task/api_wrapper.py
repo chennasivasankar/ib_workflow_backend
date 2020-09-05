@@ -4,7 +4,6 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
 from ib_tasks.interactors.task_dtos import FieldValuesDTO, \
-    SaveAndActOnTaskDTO, \
     StageIdWithAssigneeDTO, SaveAndActOnTaskWithTaskDisplayIdDTO
 from .validator_class import ValidatorClass
 from ...interactors.create_or_update_task.save_and_act_on_task import \
@@ -32,9 +31,8 @@ def api_wrapper(*args, **kwargs):
     action_id = request_data['action_id']
     title = request_data['title']
     description = request_data['description']
-    start_date = request_data['start_date']
-    due_date = request_data['due_date']['date']
-    due_time = request_data['due_date']['time']
+    start_datetime = request_data['start_datetime']
+    due_datetime = request_data['due_datetime']
     priority = request_data['priority']
     task_gofs = request_data['task_gofs']
     stage_assignee_stage_id = request_data['stage_assignee']['stage_id']
@@ -62,8 +60,9 @@ def api_wrapper(*args, **kwargs):
     task_dto = SaveAndActOnTaskWithTaskDisplayIdDTO(
         task_display_id=task_id, action_id=action_id, created_by_id=user_id,
         title=title,
-        description=description, start_date=start_date, due_date=due_date,
-        due_time=due_time, priority=priority, stage_assignee=stage_assignee,
+        description=description, start_datetime=start_datetime,
+        due_datetime=due_datetime, priority=priority,
+        stage_assignee=stage_assignee,
         gof_fields_dtos=task_gofs_dtos
     )
 

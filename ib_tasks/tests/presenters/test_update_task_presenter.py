@@ -69,9 +69,9 @@ class TestUpdateTaskPresenterImplementation:
         # Arrange
         expected_due_date = datetime.date(2020, 3, 5)
         from ib_tasks.exceptions.datetime_custom_exceptions import \
-            DueDateHasExpired
+            DueDateTimeHasExpired
 
-        err = DueDateHasExpired(expected_due_date)
+        err = DueDateTimeHasExpired(expected_due_date)
 
         # Act
         response = presenter.raise_due_date_has_expired(err)

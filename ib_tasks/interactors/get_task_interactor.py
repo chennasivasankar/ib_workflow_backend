@@ -65,7 +65,6 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             self, user_id: str, task_display_id: str,
             presenter: GetTaskPresenterInterface
     ):
-
         try:
             return self.get_task_details_response(user_id, task_display_id,
                                                   presenter)
