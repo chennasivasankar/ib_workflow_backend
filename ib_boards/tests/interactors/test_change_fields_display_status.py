@@ -145,7 +145,8 @@ class TestChangeFieldsDisplayOrder:
         )
         storage.validate_field_id_with_column_id.assert_called_once_with(
             field_id=field_display_status_parameter.field_id,
-            column_id=field_display_status_parameter.column_id
+            column_id=field_display_status_parameter.column_id,
+            user_id=field_display_status_parameter.user_id
         )
         presenter.get_response_for_field_not_belongs_to_column. \
             assert_called_once_with()
@@ -189,7 +190,8 @@ class TestChangeFieldsDisplayOrder:
         )
         storage.validate_field_id_with_column_id.assert_called_once_with(
             field_id=field_display_status_parameter.field_id,
-            column_id=field_display_status_parameter.column_id
+            column_id=field_display_status_parameter.column_id,
+            user_id=field_display_status_parameter.user_id
         )
         storage.change_display_status_of_field.assert_called_once_with(
             field_display_status_parameter=field_display_status_parameter
