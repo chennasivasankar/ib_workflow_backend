@@ -468,3 +468,7 @@ class StorageImplementation(StorageInterface):
 
     def get_valid_field_ids(self, column_id: str, field_ids: List[str]) -> List[str]:
         pass
+
+    def get_field_ids_list_in_order(
+            self, column_id: str, user_id: str, field_ids: List[str]) -> List[str]:
+        pass

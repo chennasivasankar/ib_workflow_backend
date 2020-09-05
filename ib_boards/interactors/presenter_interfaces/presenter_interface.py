@@ -9,7 +9,8 @@ from ib_boards.adapters.iam_service import InvalidProjectIdsException
 from ib_boards.interactors.dtos import ActionDTO, \
     TaskCompleteDetailsDTO, FieldDTO, StarredAndOtherBoardsDTO, TaskStageDTO, \
     StageAssigneesDTO
-from ib_boards.interactors.storage_interfaces.dtos import ColumnCompleteDetails
+from ib_boards.interactors.storage_interfaces.dtos import ColumnCompleteDetails, \
+    AllFieldsDTO
 
 from ib_boards.interactors.dtos import ColumnTasksDTO
 from ib_boards.interactors.storage_interfaces.dtos import (
@@ -149,9 +150,8 @@ class GetColumnTasksPresenterInterface(abc.ABC):
 class GetColumnTasksListViewPresenterInterface(GetColumnTasksPresenterInterface, abc.ABC):
 
     @abc.abstractmethod
-    def get_response_for_column_tasks_in_list_view(self,
-                                                   complete_tasks_details_dto,
-                                                   all_fields):
+    def get_response_for_column_tasks_in_list_view(
+            self, complete_tasks_details_dto: CompleteTasksDetailsDTO, all_fields: List[AllFieldsDTO]):
         pass
 
 
