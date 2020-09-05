@@ -1,10 +1,25 @@
 import abc
+from dataclasses import dataclass
 from typing import List
 
+from ib_boards.constants.enum import DisplayStatus
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
-    StarOrUnstarParametersDTO, ProjectBoardDTO
+    StarOrUnstarParametersDTO, ProjectBoardDTO, ChangeFieldsStatusParameter, \
+    ChangeFieldsOrderParameter
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
     ColumnStageIdsDTO, ColumnDetailsDTO, TaskBoardsDetailsDTO
+
+
+@dataclass
+class FieldOrderDTO:
+    field_id: str
+    order: int
+
+
+@dataclass
+class FieldDisplayStatusDTO:
+    field_id: str
+    display_status: DisplayStatus
 
 
 class StorageInterface(abc.ABC):
@@ -81,7 +96,7 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def validate_user_role_with_column_roles(self, user_role: str, column_id: int):
+    def validate_user_role_with_column_roles(self, user_role: str, column_id: str):
         pass
 
     @abc.abstractmethod
@@ -125,4 +140,29 @@ class StorageInterface(abc.ABC):
     @abc.abstractmethod
     def unstar_given_board(self,
                            parameters: StarOrUnstarParametersDTO):
+        pass
+
+    @abc.abstractmethod
+    def validate_field_id_with_column_id(self, column_id: str, field_id: str):
+        pass
+
+    @abc.abstractmethod
+    def change_display_status_of_field(
+            self, field_display_status_parameter: ChangeFieldsStatusParameter):
+        pass
+
+    @abc.abstractmethod
+    def change_display_order_of_field(self, field_order_parameter: ChangeFieldsOrderParameter):
+        pass
+
+    @abc.abstractmethod
+    def get_field_display_status_dtos(self, column_id: str, user_id: str) -> List[FieldDisplayStatusDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_field_display_order_dtos(self, column_id: str, user_id: str) -> List[FieldOrderDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_valid_field_ids(self, column_id: str, field_ids: List[str]) -> List[str]:
         pass

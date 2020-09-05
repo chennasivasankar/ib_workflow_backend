@@ -3,7 +3,6 @@ import pytest
 from ib_tasks.storages.storage_implementation import \
     StagesStorageImplementation
 from ib_tasks.tests.factories.models import TaskFactory, \
-    CurrentTaskStageModelFactory, \
     StageModelFactory, TaskStageHistoryModelFactory
 from ib_tasks.tests.factories.storage_dtos import \
     TaskStageHavingAssigneeIdDTOFactory

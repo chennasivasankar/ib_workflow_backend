@@ -184,8 +184,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             )
         set_stage_assignees_interactor \
             .get_random_assignees_of_next_stages_and_update_in_db(
-            task_id=task_id, stage_ids=stage_ids
-        )
+            task_id=task_id, stage_ids=stage_ids)
         current_assignees_of_stages = self._get_stage_assignees_details(
             stage_ids=stage_ids, task_id=task_id
         )
@@ -345,8 +344,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         return adapter.boards_service \
             .get_display_boards_and_column_details(
             user_id=self.user_id, board_id=self.board_id,
-            stage_ids=stage_ids
-        )
+            stage_ids=stage_ids)
 
     def _call_logic_and_update_status_variables_and_get_stage_ids(
             self, task_dto: TaskDetailsDTO, task_id: int) -> TaskDetailsDTO:
@@ -391,7 +389,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
     def _validations_for_task_action(self, task_id: int):
 
         self._validate_task_id(task_id)
-        project_id = self.task_storage.get_project_id_for_the_task_id(task_id=task_id)
+        project_id = self.task_storage.get_project_id_for_the_task_id(
+            task_id=task_id)
         self.validate_if_user_is_in_project(
             project_id=project_id, user_id=self.user_id
         )
@@ -404,7 +403,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         action_roles = self.storage.get_action_roles(action_id=self.action_id)
         self._validate_present_task_stage_actions(task_id=task_id)
         self._validate_user_permission_to_user(
-            self.user_id, action_roles, self.action_id
+            self.user_id, action_roles, self.action_id, project_id=project_id
         )
 
     def _validate_present_task_stage_actions(self, task_id: int):
@@ -438,13 +437,13 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
     @staticmethod
     def _validate_user_permission_to_user(user_id: str,
                                           action_roles: List[str],
-                                          action_id: int):
+                                          action_id: int, project_id: str):
 
         from ib_tasks.interactors.user_role_validation_interactor \
             import UserRoleValidationInteractor
         interactor = UserRoleValidationInteractor()
         permit = interactor.does_user_has_required_permission(
-            user_id=user_id, role_ids=action_roles
+            user_id=user_id, role_ids=action_roles, project_id=project_id
         )
         is_permission_denied = not permit
         if is_permission_denied:

@@ -101,6 +101,12 @@ class UserIdWithTeamIdDTO:
 
 
 @dataclass
+class ProjectRolesDTO:
+    project_id: str
+    roles: List[str]
+
+
+@dataclass
 class TeamDetailsWithUserIdDTO(TeamDetailsDTO):
     user_id: str
 
