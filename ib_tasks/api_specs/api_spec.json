@@ -2143,7 +2143,7 @@
          }
       },
       "InvalidTemplateResponse": {
-        "description":"Invalid Template Failure Response",
+         "description":"Invalid Template Failure Response",
          "schema":{
             "type":"object",
             "properties":{
@@ -2159,7 +2159,36 @@
                "res_status":{
                   "type":"string",
                   "enum":[
-                     "INVALID_TEMPLATE_ID"
+                     "INVALID_TASK_TEMPLATE_DB_ID",
+                     "INVALID_PROJECT_ID"
+                  ]
+               }
+            },
+            "required":[
+               "response",
+               "http_status_code",
+               "res_status"
+            ]
+         }
+      },
+      "UserNotInProjectResponse": {
+        "description":"User not in Project",
+         "schema":{
+            "type":"object",
+            "properties":{
+               "response":{
+                  "type":"string"
+               },
+               "http_status_code":{
+                  "type":"integer",
+                  "enum":[
+                     403
+                  ]
+               },
+               "res_status":{
+                  "type":"string",
+                  "enum":[
+                     "USER_NOT_IN_PROJECT"
                   ]
                }
             },
@@ -3572,6 +3601,9 @@
                },
                "404":{
                   "$ref":"#/responses/InvalidTemplateResponse"
+               },
+               "403": {
+                  "$ref":"#/responses/UserNotInProjectResponse"
                }
             }
          }
@@ -3602,6 +3634,9 @@
                },
                "404":{
                   "$ref":"#/responses/InvalidTemplateResponse"
+               },
+               "403": {
+                  "$ref":"#/responses/UserNotInProjectResponse"
                }
             }
          }

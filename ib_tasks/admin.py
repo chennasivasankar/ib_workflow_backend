@@ -17,8 +17,9 @@ from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models.filter import Filter
 from ib_tasks.models.filter_condition import FilterCondition
 from ib_tasks.models.action_permitted_roles import ActionPermittedRoles
+from ib_tasks.models.stage_flow import StageFlow
 
-
+admin.site.register(StageFlow)
 admin.site.register(ActionPermittedRoles)
 admin.site.register(Filter)
 admin.site.register(FilterCondition)
