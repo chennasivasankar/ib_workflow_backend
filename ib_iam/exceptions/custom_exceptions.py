@@ -183,3 +183,7 @@ class ProjectDisplayIdAlreadyExists(Exception):
 
 class DuplicateTeamIds(Exception):
     pass
+
+
+class DuplicateRoleNamesExist(Exception):
+    pass

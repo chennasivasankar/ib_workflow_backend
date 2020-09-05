@@ -26,3 +26,7 @@ class AddProjectPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def get_duplicate_team_ids_response(self):
         pass
+
+    @abc.abstractmethod
+    def get_duplicate_role_names_response(self):
+        pass

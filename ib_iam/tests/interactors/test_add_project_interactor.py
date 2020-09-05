@@ -43,8 +43,7 @@ class TestAddProjectIneractor:
 
     def test_given_user_is_not_admin_returns_user_has_no_access_response(
             self, project_storage, user_storage, interactor, presenter):
-        from ib_iam.interactors.dtos.dtos import \
-            ProjectWithTeamIdsAndRolesDTO
+        from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
         from ib_iam.tests.factories.storage_dtos import \
             ProjectWithoutIdDTOFactory
         project_details = ProjectWithoutIdDTOFactory()
@@ -70,8 +69,7 @@ class TestAddProjectIneractor:
 
     def test_given_name_already_exists_returns_name_already_exists_response(
             self, project_storage, interactor, presenter):
-        from ib_iam.interactors.dtos.dtos import \
-            ProjectWithTeamIdsAndRolesDTO
+        from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
         from ib_iam.tests.factories.storage_dtos import \
             ProjectWithoutIdDTOFactory
         name = "project_1"
@@ -99,8 +97,7 @@ class TestAddProjectIneractor:
 
     def test_given_display_id_already_exists_returns_display_id_already_exists_response(
             self, project_storage, interactor, presenter):
-        from ib_iam.interactors.dtos.dtos import \
-            ProjectWithTeamIdsAndRolesDTO
+        from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
         from ib_iam.tests.factories.storage_dtos import \
             ProjectWithoutIdDTOFactory
         display_id = "display_id 1"
@@ -133,8 +130,7 @@ class TestAddProjectIneractor:
 
     def test_given_duplicate_team_ids_returns_duplicate_team_ids_response(
             self, project_storage, team_storage, interactor, presenter):
-        from ib_iam.interactors.dtos.dtos import \
-            ProjectWithTeamIdsAndRolesDTO
+        from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
         from ib_iam.tests.factories.storage_dtos import \
             ProjectWithoutIdDTOFactory
         team_ids = ["1", "1"]
@@ -165,8 +161,7 @@ class TestAddProjectIneractor:
 
     def test_given_invalid_team_ids_returns_invalid_team_ids_response(
             self, project_storage, team_storage, interactor, presenter):
-        from ib_iam.interactors.dtos.dtos import \
-            ProjectWithTeamIdsAndRolesDTO
+        from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
         from ib_iam.tests.factories.storage_dtos import \
             ProjectWithoutIdDTOFactory
         team_ids = ["1", "2"]
@@ -198,6 +193,42 @@ class TestAddProjectIneractor:
         team_storage.get_valid_team_ids.assert_called_once_with(
             team_ids=team_ids)
         presenter.get_invalid_team_ids_response.assert_called_once()
+
+    def test_given_duplicate_role_names_returns_duplicate_role_names_response(
+            self, project_storage, team_storage, interactor, presenter):
+        from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO
+        from ib_iam.tests.factories.storage_dtos import \
+            ProjectWithoutIdDTOFactory, RoleNameAndDescriptionDTOFactory
+        team_ids = ["1", "2"]
+        project_details = ProjectWithoutIdDTOFactory()
+        roles = RoleNameAndDescriptionDTOFactory.create_batch(size=2,
+                                                              name="role 1")
+        project_storage.get_project_id_if_project_name_already_exists \
+            .return_value = None
+        project_storage.get_project_id_if_display_id_already_exists \
+            .return_value = None
+        team_storage.get_valid_team_ids.return_value = team_ids
+        presenter.get_duplicate_role_names_response.return_value = mock.Mock()
+        project_with_team_ids_and_roles_dto = ProjectWithTeamIdsAndRolesDTO(
+            name=project_details.name,
+            display_id=project_details.display_id,
+            description=project_details.description,
+            logo_url=project_details.logo_url,
+            team_ids=team_ids,
+            roles=roles)
+
+        interactor.add_project_wrapper(presenter=presenter,
+                                       user_id="1",
+                                       project_with_team_ids_and_roles_dto=
+                                       project_with_team_ids_and_roles_dto)
+
+        project_storage.get_project_id_if_project_name_already_exists \
+            .assert_called_once_with(name=project_details.name)
+        project_storage.get_project_id_if_display_id_already_exists \
+            .assert_called_once_with(display_id=project_details.display_id)
+        team_storage.get_valid_team_ids.assert_called_once_with(
+            team_ids=team_ids)
+        presenter.get_duplicate_role_names_response.assert_called_once()
 
     def test_add_project_returns_in_success_response(
             self, project_storage, team_storage, interactor, presenter):

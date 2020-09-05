@@ -6,7 +6,8 @@ from ib_iam.app_interfaces.dtos import (
 from ib_iam.exceptions.custom_exceptions import (
     ProjectNameAlreadyExists, ProjectDisplayIdAlreadyExists, DuplicateTeamIds,
     TeamIdsAreInvalid, UserIsNotAdmin, InvalidProjectId, RoleIdsAreDuplicated,
-    RoleIdsAreInvalid, InvalidUserIds, InvalidUserId, InvalidProjectIds)
+    RoleIdsAreInvalid, InvalidUserIds, InvalidUserId, InvalidProjectIds,
+    DuplicateRoleNamesExist)
 from ib_iam.interactors.dtos.dtos import (
     ProjectWithTeamIdsAndRolesDTO, CompleteProjectDetailsDTO,
     UserIdWithProjectIdAndStatusDTO)
@@ -284,6 +285,8 @@ class ProjectInteractor(ValidationMixin):
             response = presenter.get_invalid_team_ids_response()
         except DuplicateTeamIds:
             response = presenter.get_duplicate_team_ids_response()
+        except DuplicateRoleNamesExist:
+            response = presenter.get_duplicate_role_names_response()
         return response
 
     def add_project(
@@ -319,6 +322,12 @@ class ProjectInteractor(ValidationMixin):
             team_ids=project_with_team_ids_and_roles_dto.team_ids)
         self._validate_invalid_team_ids(
             team_ids=project_with_team_ids_and_roles_dto.team_ids)
+        role_names = [role_dto.name
+                      for role_dto in project_with_team_ids_and_roles_dto.roles
+                      ]
+        is_duplicate_role_names_exist = len(role_names) != len(set(role_names))
+        if is_duplicate_role_names_exist:
+            raise DuplicateRoleNamesExist
 
     def update_project_wrapper(
             self, user_id: str,
