@@ -191,8 +191,8 @@ class TestAddMembersToSuperiorsInteractor:
         assert response == \
                expected_presenter_response_for_team_member_ids_not_found_mock
 
-        call_obj = presenter_mock.response_for_team_member_ids_not_found.call_args
-        error_object = call_obj.args[0]
+        call_args = presenter_mock.response_for_team_member_ids_not_found.call_args
+        error_object = call_args[0][0]
 
         assert error_object.team_member_ids == team_member_ids_not_found
         presenter_mock.response_for_team_member_ids_not_found. \
@@ -258,8 +258,8 @@ class TestAddMembersToSuperiorsInteractor:
             user_ids=subordinate_user_ids
         )
 
-        call_obj = presenter_mock.response_for_users_not_belong_to_team_member_level.call_args
-        error_object = call_obj.args[0]
+        call_args = presenter_mock.response_for_users_not_belong_to_team_member_level.call_args
+        error_object = call_args[0][0]
         assert error_object.user_ids == subordinate_user_ids
         assert error_object.level_hierarchy == member_level_hierarchy
 
