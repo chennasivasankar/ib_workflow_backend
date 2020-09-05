@@ -1,3 +1,4 @@
+from abc import ABC
 from typing import List
 
 from django.http import response
@@ -296,6 +297,7 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
             if field_dto.field_id not in field_ids:
                 task_fields_list.append(
                     {
+                        "field_id": field_dto.field_id,
                         "field_type": field_dto.field_type,
                         "field_display_name": field_dto.key,
                         "field_response": field_dto.value
@@ -324,25 +326,73 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
 
 
 class GetColumnTasksListViewPresenterImplementation(
-        GetColumnTasksPresenterImplementation, HTTPResponseMixin,
-        GetColumnTasksListViewPresenterInterface):
+        HTTPResponseMixin, GetColumnTasksListViewPresenterInterface):
+    def get_response_for_the_invalid_column_id(self):
+        from ib_boards.constants.exception_messages import INVALID_COLUMN_ID
+        response_dict = {
+            "response": INVALID_COLUMN_ID[0],
+            "http_status_code": 404,
+            "res_status": INVALID_COLUMN_ID[1]
+        }
+        return self.prepare_404_not_found_response(
+            response_dict=response_dict
+        )
+
+    def get_response_for_invalid_stage_ids(self, error):
+        pass
+
+    def get_response_for_invalid_offset(self):
+        from ib_boards.constants.exception_messages import INVALID_OFFSET_VALUE
+        response_dict = {
+            "response": INVALID_OFFSET_VALUE[0],
+            "http_status_code": 400,
+            "res_status": INVALID_OFFSET_VALUE[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict
+        )
+
+    def get_response_for_invalid_limit(self):
+        from ib_boards.constants.exception_messages import INVALID_LIMIT_VALUE
+        response_dict = {
+            "response": INVALID_LIMIT_VALUE[0],
+            "http_status_code": 400,
+            "res_status": INVALID_LIMIT_VALUE[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict
+        )
+
+    def get_response_for_offset_exceeds_total_tasks(self):
+        pass
+
+    def get_response_for_user_have_no_access_for_column(self):
+        from ib_boards.constants.exception_messages import \
+            USER_NOT_HAVE_ACCESS_TO_COLUMN
+        response_dict = {
+            "response": USER_NOT_HAVE_ACCESS_TO_COLUMN[0],
+            "http_status_code": 403,
+            "res_status": USER_NOT_HAVE_ACCESS_TO_COLUMN[1]
+        }
+        return self.prepare_403_forbidden_response(
+            response_dict=response_dict
+        )
 
     def get_response_for_column_tasks_in_list_view(
             self, complete_tasks_details_dto: CompleteTasksDetailsDTO, all_fields: List[AllFieldsDTO]):
-        column_tasks_details_dict = self.get_column_tasks_details(
+        presenter = GetColumnTasksPresenterImplementation()
+        column_tasks_details_dict = presenter.get_column_tasks_details(
             complete_tasks_details_dto=complete_tasks_details_dto
         )
         all_fields_dict = self._get_all_fields_dict(
             all_fields=all_fields
         )
-        response_dict = column_tasks_details_dict.update(all_fields_dict)
-        return self.prepare_200_success_response(response_dict)
-
-
+        column_tasks_details_dict.update(all_fields_dict)
+        return self.prepare_200_success_response(column_tasks_details_dict)
 
     @staticmethod
     def _get_all_fields_dict(all_fields: List[AllFieldsDTO]):
-        return [
+        all_fields_dict = [
             {
                 "field_id": all_fields_dto.field_id,
                 "field_display_name": all_fields_dto.display_name,
@@ -351,6 +401,9 @@ class GetColumnTasksListViewPresenterImplementation(
             }
             for all_fields_dto in all_fields
         ]
+        return {
+            "all_fields": all_fields_dict
+        }
 
 
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):

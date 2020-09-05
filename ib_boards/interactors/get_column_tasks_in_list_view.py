@@ -56,7 +56,10 @@ class GetColumnTasksInteractorListView:
             column_tasks_parameters=column_tasks_parameters
         )
         field_dtos = complete_tasks_details_dto.task_fields_dtos
-        field_ids = [field_dto.field_id for field_dto in field_dtos]
+        field_ids = []
+        for field_dto in field_dtos:
+            if field_dto.field_id not in field_ids:
+                field_ids.append(field_dto.field_id)
         all_fields = self._get_all_fields_in_the_column(
             column_id=column_tasks_parameters.column_id,
             user_id=column_tasks_parameters.user_id,

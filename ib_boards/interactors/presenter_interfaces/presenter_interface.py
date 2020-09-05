@@ -147,7 +147,34 @@ class GetColumnTasksPresenterInterface(abc.ABC):
         pass
 
 
-class GetColumnTasksListViewPresenterInterface(GetColumnTasksPresenterInterface, abc.ABC):
+class GetColumnTasksListViewPresenterInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def get_response_for_the_invalid_column_id(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_offset(self) -> response.HttpResponse:
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_limit(self) -> response.HttpResponse:
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_offset_exceeds_total_tasks(
+            self) -> response.HttpResponse:
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_user_have_no_access_for_column(
+            self) -> response.HttpResponse:
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_stage_ids(self,
+                                           error) -> response.HttpResponse:
+        pass
 
     @abc.abstractmethod
     def get_response_for_column_tasks_in_list_view(

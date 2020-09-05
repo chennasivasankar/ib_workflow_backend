@@ -46,7 +46,8 @@ RESPONSE_200_JSON = """
                         {
                             "field_type": "PLAIN_TEXT",
                             "field_display_name": "string",
-                            "field_response": "string"
+                            "field_response": "string",
+                            "field_id": "string"
                         }
                     ],
                     "stage_with_actions": {

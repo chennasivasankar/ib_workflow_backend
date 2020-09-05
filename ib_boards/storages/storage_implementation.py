@@ -479,7 +479,7 @@ class StorageImplementation(StorageInterface):
         field_ids = FieldOrder.objects.get(
             column_id=column_id,
             user_id=user_id
-        ).field_order
+        ).fields_order
         import json
         field_ids = json.loads(field_ids)['field_ids']
         return field_ids
@@ -563,7 +563,7 @@ class StorageImplementation(StorageInterface):
         FieldOrder.objects.create(
             column_id=column_id,
             user_id=user_id,
-            field_ids=field_ids
+            fields_order=field_ids
         )
 
     @staticmethod
