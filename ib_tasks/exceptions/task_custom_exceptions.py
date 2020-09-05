@@ -66,7 +66,7 @@ class TaskTemplatesDoesNotExists(Exception):
 
 
 class InvalidTaskIds(Exception):
-    def __init__(self, task_ids: List[str]):
+    def __init__(self, task_ids: List[int]):
         self.invalid_task_ids = task_ids
 
 
