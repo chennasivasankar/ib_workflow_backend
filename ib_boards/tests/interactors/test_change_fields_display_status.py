@@ -52,6 +52,7 @@ class TestChangeFieldsDisplayOrder:
         storage.validate_column_id.assert_called_once_with(
             column_id=field_display_status_parameter.column_id
         )
+        presenter.get_response_for_the_invalid_column_id.assert_called_once_with()
         assert actual_response == expected_response
 
     def test_with_user_not_have_access_to_column_return_exception_message(

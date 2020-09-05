@@ -166,7 +166,7 @@ class FieldsDisplayOrderPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_response_for_field_not_belongs_to_column(self):
+    def get_response_for_field_not_belongs_to_column(self, error):
         pass
 
     @abc.abstractmethod

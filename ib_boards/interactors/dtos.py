@@ -243,6 +243,7 @@ class ChangeFieldsOrderParameter:
     column_id: str
     field_id: str
     display_order: int
+    field_ids: List[str]
 
 
 @dataclass

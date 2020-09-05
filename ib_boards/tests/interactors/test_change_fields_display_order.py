@@ -39,7 +39,8 @@ class TestChangeFieldsDisplayOrder:
             user_id='user_id_1',
             column_id='column_id_1',
             field_id='field_id',
-            display_order=1
+            display_order=1,
+            field_ids=['field_id_0', 'field_id_1', 'field_id_3']
         )
 
         # Act
@@ -47,6 +48,13 @@ class TestChangeFieldsDisplayOrder:
             field_order_parameter=field_order_parameter,
             presenter=presenter
         )
+
+        # Assert
+        storage.validate_column_id.assert_called_once_with(
+            column_id=field_order_parameter.column_id
+        )
+        presenter.get_response_for_the_invalid_column_id.assert_called_once_with()
+        assert actual_response == expected_response
 
     def test_with_invalid_display_order_return_exception_message(self, storage,
                                                                  presenter):
@@ -63,7 +71,8 @@ class TestChangeFieldsDisplayOrder:
             user_id='user_id_1',
             column_id='column_id_1',
             field_id='field_id',
-            display_order=-1
+            display_order=-1,
+            field_ids=['field_id_0', 'field_id_1', 'field_id_3']
         )
 
         # Act
@@ -99,12 +108,12 @@ class TestChangeFieldsDisplayOrder:
             side_effect = UserDoNotHaveAccessToColumn
         storage.get_project_id_for_given_column_id.return_value = project_id
         presenter.get_response_for_user_have_no_access_for_column.return_value = expected_response
-        from ib_boards.constants.enum import DisplayStatus
         field_order_parameter = ChangeFieldsOrderParameter(
             user_id='user_id_1',
             column_id='column_id_1',
             field_id='field_id',
-            display_order=1
+            display_order=1,
+            field_ids=['field_id_0', 'field_id_1', 'field_id_3']
         )
 
         # Act
@@ -130,6 +139,9 @@ class TestChangeFieldsDisplayOrder:
         expected_response = Mock()
         user_role = 'User',
         project_id = "1"
+        field_ids = ['field_id_0', 'field_id_1', 'field_id_3']
+        valid_field_ids = ['field_id_0', 'field_id_1']
+        invalid_field_ids = ['field_id_3']
         from ib_boards.interactors.dtos import ChangeFieldsOrderParameter
         from ib_boards.interactors.change_field_order_in_column_list_view import \
             ChangeFieldsDisplayOrder
@@ -142,16 +154,14 @@ class TestChangeFieldsDisplayOrder:
             mocker=mocker, user_role=user_role
         )
         storage.get_project_id_for_given_column_id.return_value = project_id
-        from ib_boards.exceptions.custom_exceptions import \
-            FieldNotBelongsToColumn
-        storage.validate_field_id_with_column_id.side_effect = FieldNotBelongsToColumn
+        storage.get_valid_field_ids.return_value = valid_field_ids
         presenter.get_response_for_field_not_belongs_to_column.return_value = expected_response
-        from ib_boards.constants.enum import DisplayStatus
         field_order_parameter = ChangeFieldsOrderParameter(
             user_id='user_id_1',
             column_id='column_id_1',
-            field_id='field_id',
-            display_order=1
+            field_id='field_id_0',
+            display_order=1,
+            field_ids=['field_id_0', 'field_id_1', 'field_id_3']
         )
 
         # Act
@@ -164,12 +174,12 @@ class TestChangeFieldsDisplayOrder:
         adapter_mock.assert_called_once_with(
             user_id=field_order_parameter.user_id, project_id=project_id
         )
-        storage.validate_field_id_with_column_id.assert_called_once_with(
-            field_id=field_order_parameter.field_id,
-            column_id=field_order_parameter.column_id
+        storage.get_valid_field_ids.assert_called_once_with(
+            column_id=field_order_parameter.column_id,
+            field_ids=field_ids
         )
-        presenter.get_response_for_field_not_belongs_to_column. \
-            assert_called_once_with()
+        call_args = presenter.get_response_for_field_not_belongs_to_column.call_args
+        assert call_args.kwargs['error'].invalid_field_ids == invalid_field_ids
         assert actual_response == expected_response
 
     def test_with_valid_data_creates_data(
@@ -178,6 +188,18 @@ class TestChangeFieldsDisplayOrder:
         expected_response = Mock()
         user_role = 'User',
         project_id = "1"
+        from ib_boards.tests.factories.storage_dtos import FieldOrderDTOFactory
+        from ib_boards.tests.factories.storage_dtos import \
+            FieldDisplayStatusDTOFactory
+        field_display_order_dtos = FieldOrderDTOFactory.create_batch(3)
+        from ib_boards.tests.factories.interactor_dtos import \
+            FieldNameDTOFactory
+        field_display_name_dtos = FieldNameDTOFactory.create_batch(3)
+        field_display_status_dtos = FieldDisplayStatusDTOFactory.create_batch(3)
+        field_ids = [
+            field_display_status_dto.field_id
+            for field_display_status_dto in field_display_status_dtos
+        ]
         from ib_boards.interactors.dtos import ChangeFieldsOrderParameter
         from ib_boards.interactors.change_field_order_in_column_list_view import \
             ChangeFieldsDisplayOrder
@@ -189,22 +211,11 @@ class TestChangeFieldsDisplayOrder:
         adapter_mock = adapter_mock_to_get_user_role(
             mocker=mocker, user_role=user_role
         )
-        from ib_boards.tests.factories.storage_dtos import FieldOrderDTOFactory
-        from ib_boards.tests.factories.storage_dtos import \
-            FieldDisplayStatusDTOFactory
-        field_display_order_dtos = FieldOrderDTOFactory.create_batch(3)
-        from ib_boards.tests.factories.interactor_dtos import \
-            FieldNameDTOFactory
-        field_display_name_dtos = FieldNameDTOFactory.create_batch(3)
-        field_display_status_dtos = FieldDisplayStatusDTOFactory.create_batch(3)
+        storage.get_valid_field_ids.return_value = field_ids
         storage.get_project_id_for_given_column_id.return_value = project_id
         storage.get_field_display_status_dtos.return_value = field_display_status_dtos
         storage.get_field_display_order_dtos.return_value = field_display_order_dtos
         presenter.get_response_for_field_order_in_column.return_value = expected_response
-        field_ids = [
-            field_display_status_dto.field_id
-            for field_display_status_dto in field_display_status_dtos
-        ]
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             field_display_name_mock
         field_name_adapter_mock = field_display_name_mock(
@@ -213,8 +224,9 @@ class TestChangeFieldsDisplayOrder:
         field_order_parameter = ChangeFieldsOrderParameter(
             user_id='user_id_1',
             column_id='column_id_1',
-            field_id='field_id',
-            display_order=1
+            field_id='field_id_0',
+            display_order=1,
+            field_ids=field_ids
         )
 
         # Act

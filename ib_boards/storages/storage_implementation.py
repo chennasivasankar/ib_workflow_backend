@@ -465,3 +465,6 @@ class StorageImplementation(StorageInterface):
     def get_field_display_order_dtos(
             self, column_id: str, user_id: str) -> List[FieldOrderDTO]:
         pass
+
+    def get_valid_field_ids(self, column_id: str, field_ids: List[str]) -> List[str]:
+        pass
