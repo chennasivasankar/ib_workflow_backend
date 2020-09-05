@@ -38,3 +38,7 @@ class UpdateProjectPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def get_duplicate_role_names_exists_response(self):
         pass
+
+    @abc.abstractmethod
+    def get_role_names_already_exists_response(self, exception):
+        pass

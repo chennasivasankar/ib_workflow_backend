@@ -357,6 +357,9 @@ class ProjectInteractor(ValidationMixin):
             response = presenter.get_invalid_role_ids_response()
         except DuplicateRoleNamesExists:
             response = presenter.get_duplicate_role_names_exists_response()
+        except RoleNamesAlreadyExists as exception:
+            response = presenter.get_role_names_already_exists_response(
+                exception)
         return response
 
     def update_project(
@@ -405,6 +408,8 @@ class ProjectInteractor(ValidationMixin):
         role_names = [role_dto.name
                       for role_dto in complete_project_details_dto.roles]
         self._validate_duplicate_role_names(role_names=role_names)
+        self._validate_is_role_names_already_exists_for_update_project(
+            roles=complete_project_details_dto.roles)
 
     def _validate_project_id(self, project_id: str):
         is_project_exist = self.user_storage.is_valid_project_id(
@@ -479,6 +484,25 @@ class ProjectInteractor(ValidationMixin):
             self, role_names: List[str]):
         role_names_that_already_exists = self.project_storage \
             .get_valid_role_names_from_given_role_names(role_names=role_names)
+        if role_names_that_already_exists:
+            raise RoleNamesAlreadyExists(
+                role_names=role_names_that_already_exists)
+
+    def _validate_is_role_names_already_exists_for_update_project(
+            self, roles: List[RoleDTO]):
+        role_id_and_name_dtos = self.user_storage.get_roles()
+        role_names = [role.name for role in roles if role.role_id is None]
+        roles_dictionary = {}
+        for role in roles:
+            roles_dictionary[role.role_id] = role.name
+        for role_id_and_name_dto in role_id_and_name_dtos:
+            roles_dictionary[role_id_and_name_dto.role_id] = \
+                role_id_and_name_dto.name
+            role_names.append(role_id_and_name_dto.name)
+        import collections
+        role_names_that_already_exists = [
+            item for item, count in collections.Counter(role_names).items()
+            if count > 1]
         if role_names_that_already_exists:
             raise RoleNamesAlreadyExists(
                 role_names=role_names_that_already_exists)
