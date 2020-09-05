@@ -11,18 +11,18 @@ snapshots['TestCase02GetReasonsForMissingTaskDueDateTimeAPITestCase.test_case st
 
 snapshots['TestCase02GetReasonsForMissingTaskDueDateTimeAPITestCase.test_case body'] = [
     {
-        'due_date_time': '2020-08-11 14:19:33',
+        'due_date_time': '2020-09-07 12:46:02',
         'due_missed_count': 1,
         'reason': 'Missed reiterating objective',
         'task_id': 'IBWF-1',
         'user': {
             'name': 'name_0',
             'profile_pic': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM',
-            'user_id': '881148bd-72c9-4095-b3af-a5217cc58de2'
+            'user_id': '9711bc1a-3e4f-40fb-8852-190b295da438'
         }
     },
     {
-        'due_date_time': '2020-08-11 14:19:33',
+        'due_date_time': '2020-09-07 12:46:02',
         'due_missed_count': 2,
         'reason': 'wrong estimation of time',
         'task_id': 'IBWF-1',
@@ -33,7 +33,7 @@ snapshots['TestCase02GetReasonsForMissingTaskDueDateTimeAPITestCase.test_case bo
         }
     },
     {
-        'due_date_time': '2020-08-11 14:19:33',
+        'due_date_time': '2020-09-07 12:46:02',
         'due_missed_count': 3,
         'reason': 'wrong estimation of time',
         'task_id': 'IBWF-1',
@@ -44,7 +44,7 @@ snapshots['TestCase02GetReasonsForMissingTaskDueDateTimeAPITestCase.test_case bo
         }
     },
     {
-        'due_date_time': '2020-08-11 14:19:33',
+        'due_date_time': '2020-09-07 12:46:02',
         'due_missed_count': 4,
         'reason': 'wrong estimation of time',
         'task_id': 'IBWF-1',

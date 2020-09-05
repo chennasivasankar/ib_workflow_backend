@@ -216,11 +216,11 @@ class CreateTransitionChecklistTemplateInteractor(
             )
         template_gofs_fields_validation_interactor \
             .perform_base_validations_for_template_gofs_and_fields(
-            transition_template_dto.transition_checklist_gofs,
-            transition_template_dto.created_by_id,
-            transition_template_dto.transition_checklist_template_id,
-            action_type
-        )
+                transition_template_dto.transition_checklist_gofs,
+                transition_template_dto.created_by_id,
+                transition_template_dto.transition_checklist_template_id,
+                action_type
+            )
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=transition_template_dto.task_id,
@@ -256,8 +256,8 @@ class CreateTransitionChecklistTemplateInteractor(
             transition_checklist_template_id)
         return
 
-    def _validate_action_id(self, action_id) -> Optional[
-        InvalidActionException]:
+    def _validate_action_id(
+            self, action_id) -> Optional[InvalidActionException]:
         self.stage_action_storage.validate_action_id(action_id)
         return
 

@@ -10,7 +10,7 @@ snapshots = Snapshot()
 snapshots['TestCase02GetAllTasksOverviewAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase02GetAllTasksOverviewAPITestCase.test_case body'] = {
-    'http_status_code': 400,
-    'res_status': 'OFFSET_SHOULD_BE_GREATER_THAN_ZERO',
-    'response': 'Offset value should be greater than zero'
+    'project_id': [
+        'This field is required.'
+    ]
 }
