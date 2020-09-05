@@ -19,7 +19,7 @@ class Project(models.Model):
     display_id = models.CharField(max_length=100, unique=True)
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(null=True, blank=True)
-    logo_url = models.TextField(null=True, blank=True)
+    logo_url = models.URLField(null=True, blank=True)
 
 
 class ProjectTeam(models.Model):

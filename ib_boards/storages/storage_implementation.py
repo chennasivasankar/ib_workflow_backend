@@ -2,14 +2,14 @@ import json
 from typing import List, Tuple
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
-    TaskTemplateStagesDTO, TaskSummaryFieldsDTO, StarOrUnstarParametersDTO,\
-    ProjectBoardDTO
+    TaskTemplateStagesDTO, TaskSummaryFieldsDTO, StarOrUnstarParametersDTO, \
+    ProjectBoardDTO, ChangeFieldsStatusParameter, ChangeFieldsOrderParameter
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
     ColumnDetailsDTO, TaskBoardsDetailsDTO, ColumnStageIdsDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnBoardDTO, \
     ColumnStageDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
-    StorageInterface
+    StorageInterface, FieldDisplayStatusDTO, FieldOrderDTO
 from ib_boards.models import Board, ColumnPermission, Column, UserStarredBoard
 
 
@@ -447,3 +447,24 @@ class StorageImplementation(StorageInterface):
 
         UserStarredBoard.objects.get_or_create(
             board_id=board_id, user_id=user_id)
+
+    def validate_field_id_with_column_id(self, column_id: str, field_id: str):
+        pass
+
+    def change_display_status_of_field(
+            self, field_display_status_parameter: ChangeFieldsStatusParameter):
+        pass
+
+    def change_display_order_of_field(self, field_order_parameter: ChangeFieldsOrderParameter):
+        pass
+
+    def get_field_display_status_dtos(
+            self, column_id: str, user_id: str) -> List[FieldDisplayStatusDTO]:
+        pass
+
+    def get_field_display_order_dtos(
+            self, column_id: str, user_id: str) -> List[FieldOrderDTO]:
+        pass
+
+    def get_valid_field_ids(self, column_id: str, field_ids: List[str]) -> List[str]:
+        pass
