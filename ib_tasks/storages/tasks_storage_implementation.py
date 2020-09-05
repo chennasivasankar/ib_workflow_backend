@@ -550,10 +550,13 @@ class TasksStorageImplementation(TaskStorageInterface):
         tasks = Task.objects.filter(id__in=task_ids)
         task_project_dtos = [
             TaskProjectDTO(
-                task_id=task.task_id,
+                task_id=task.id,
                 project_id=task.project_id
             )
             for task in tasks
         ]
         return task_project_dtos
 
+    def get_task_display_id_for_task_id(self, task_id: int) -> str:
+        task_display_id = Task.objects.get(id=task_id).task_display_id
+        return task_display_id

@@ -160,3 +160,7 @@ class TaskStorageInterface(abc.ABC):
     def get_task_project_ids(self, task_ids: List[int]) -> \
             List[TaskProjectDTO]:
         pass
+
+    @abc.abstractmethod
+    def get_task_display_id_for_task_id(self, task_id: int) -> str:
+        pass

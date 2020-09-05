@@ -23,7 +23,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO
+    CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO, StageActionNamesDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     TaskDueParametersDTO, \
@@ -82,6 +82,13 @@ class StageActionDTOFactory(factory.Factory):
         lambda n: "template_%d" % (n + 1))
     button_color = factory.Sequence(lambda n: 'button_color_%d' % (n + 1))
     function_path = "sample_function_path"
+
+
+class StageActionNamesDTOFactory(factory.Factory):
+    class Meta:
+        model = StageActionNamesDTO
+    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
+    action_names = factory.Sequence(lambda n: ['action_name_%d' % (n + 1)])
 
 
 class TaskTemplateStageActionDTOFactory(factory.Factory):
