@@ -29,48 +29,8 @@ class TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
         StagePermittedRolesFactory.reset_sequence()
 
         TaskFactory.reset_sequence()
-        StageModelFactory.reset_sequence()
-        CurrentTaskStageModelFactory.reset_sequence()
-
-        user_details_mock = prepare_permitted_user_details_mock(mocker)
-        stage1 = StageModelFactory(
-            task_template_id='template_1',
-            display_logic="variable0==stage_id_0",
-            card_info_kanban=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
-            card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
-        )
-        stage2 = StageModelFactory(
-            task_template_id='template_1',
-            display_logic="variable1==stage_id_1",
-            card_info_kanban=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
-            card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
-        )
-        stage3 = StageModelFactory(
-            task_template_id='template_1',
-            display_logic="variable2==stage_id_2",
-            card_info_kanban=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
-            card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
-        )
-        stages = [stage1, stage2, stage3]
-        path = 'ib_tasks.tests.populate.stage_actions_logic.stage_1_action_name_1'
-        action = StageActionFactory(stage=stage1, py_function_import_path=path)
-        actions = StageActionFactory.create_batch(6, stage=factory.Iterator(
-            stages))
-
         task = TaskFactory(template_id='template_1')
-        TaskStatusVariableFactory(task_id=1, variable='variable0',
-                                  value="stage_id_0")
-        TaskStatusVariableFactory(task_id=1, variable='variable1',
-                                  value="stage_id_1")
-        TaskStatusVariableFactory(task_id=1, variable='variable2',
-                                  value="stage_id_2")
-        TaskStatusVariableFactory(task_id=1, variable='variable3',
-                                  value="stage_id_1")
-        CurrentTaskStageModelFactory.create_batch(
-            3, task=task,
-            stage=factory.Iterator(stages)
-        )
-        ActionPermittedRolesFactory.create_batch(3, action=action)
+
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup, mocker):

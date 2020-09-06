@@ -96,3 +96,7 @@ class ActionStorageInterface(abc.ABC):
             user_project_roles: List[TaskProjectRolesDTO],
             stage_ids):
         pass
+
+    @abc.abstractmethod
+    def get_stage_id_for_given_action_id(self, action_id: int) -> int:
+        pass

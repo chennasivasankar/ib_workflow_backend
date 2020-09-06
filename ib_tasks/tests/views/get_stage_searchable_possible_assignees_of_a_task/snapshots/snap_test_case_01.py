@@ -11,7 +11,7 @@ snapshots['TestCase01GetStageSearchablePossibleAssigneesOfATaskAPITestCase.test_
 
 snapshots['TestCase01GetStageSearchablePossibleAssigneesOfATaskAPITestCase.test_case body'] = [
     {
-        'id': 'user_1',
+        'id': '123e4567-e89b-12d3-a456-426614174001',
         'name': 'user_name_1',
         'profile_pic_url': 'profile_pic_1',
         'team_info': [
@@ -26,7 +26,7 @@ snapshots['TestCase01GetStageSearchablePossibleAssigneesOfATaskAPITestCase.test_
         ]
     },
     {
-        'id': 'user_2',
+        'id': '123e4567-e89b-12d3-a456-426614174002',
         'name': 'user_name_2',
         'profile_pic_url': 'profile_pic_2',
         'team_info': [

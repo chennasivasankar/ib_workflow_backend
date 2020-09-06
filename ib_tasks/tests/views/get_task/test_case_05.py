@@ -84,12 +84,15 @@ class TestCase05GetTaskAPITestCase(TestUtils):
             self, snapshot, setup, mocker
     ):
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
+            get_user_role_ids_based_on_project_mock
+        get_user_role_ids_based_on_project_mock(mocker)
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_projects_info_for_given_ids_mock
+        get_projects_info_for_given_ids_mock(mocker)
         from ib_tasks.tests.common_fixtures.adapters \
             .searchable_details_service import \
             searchable_details_dtos_invalid_city_ids_mock
         searchable_details_dtos_invalid_city_ids_mock(mocker)
-        get_user_role_ids(mocker)
         body = {}
         path_params = {}
         query_params = {'task_id': "iBWF-1"}
