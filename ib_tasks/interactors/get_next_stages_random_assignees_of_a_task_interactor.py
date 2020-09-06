@@ -78,7 +78,6 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
     def get_next_stages_random_assignees_of_a_task(
             self, task_id: int,
             action_id: int) -> StageWithUserDetailsAndTeamDetailsDTO:
-        self.validate_task_id(task_id=task_id)
         self.validate_action_id(action_id=action_id)
         project_id = self.task_storage.get_project_id_of_task(task_id)
         status_variable_dtos = self. \

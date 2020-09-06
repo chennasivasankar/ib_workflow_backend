@@ -9,6 +9,13 @@ from ib_tasks.interactors.get_task_stage_logic_satisfied_next_stages_given_statu
     GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor
 from ib_tasks.interactors.get_users_with_less_tasks_for_stages import \
     GetUsersWithLessTasksInGivenStagesInteractor
+from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO
+from ib_tasks.tests.factories.adapter_dtos import \
+    UserIdWIthTeamDetailsDTOFactory, AssigneeDetailsDTOFactory, \
+    TeamDetailsDTOFactory
+from ib_tasks.tests.factories.interactor_dtos import \
+    StageWithUserDetailsDTOFactory
+from ib_tasks.tests.factories.storage_dtos import StatusVariableDTOFactory
 
 
 class TestGetNextStagesRandomAssigneesOfATaskInteractor:
@@ -132,7 +139,8 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         from ib_tasks.exceptions.action_custom_exceptions import \
             InvalidActionException
         exception_object = InvalidActionException(action_id)
-        task_storage_mock.check_is_valid_task_display_id.return_value = False
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        action_storage_mock.validate_action.return_value = False
 
         interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
             storage=storage_mock, action_storage=action_storage_mock,
@@ -149,9 +157,8 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             mock_object
 
         # Assert
-        call_tuple = presenter_mock.raise_exception_for_invalid_action.call_args
-        error_obj = call_tuple.args[0]
-        assert error_obj.task_display_id == exception_object.action_id
+        presenter_mock.raise_exception_for_invalid_action.assert_called_once_with(
+            action_id=action_id)
 
     @patch.object(CallActionLogicFunctionAndGetTaskStatusVariablesInteractor,
                   'get_status_variables_dtos_of_task_based_on_action')
@@ -250,21 +257,62 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         # Assert
         presenter_mock.raise_invalid_key_error.assert_called_once()
 
-    # @patch.object(GetUsersWithLessTasksInGivenStagesInteractor,
-    #               'get_users_with_less_tasks_in_given_stages')
-    # @patch.object(
-    #     GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor,
-    #     'get_task_stage_logic_satisfied_next_stages')
-    # @patch.object(CallActionLogicFunctionAndGetTaskStatusVariablesInteractor,
-    #               'get_status_variables_dtos_of_task_based_on_action')
-    # def test_given_valid_details_get_next_stage_assignees(
-    #         self, action_logic_mock, next_stages_mock,
-    #         users_with_less_tasks_mock, storage_mock,
-    #         presenter_mock, stage_storage_mock, action_storage_mock,
-    #         task_storage_mock, task_stage_storage_mock):
-    #     # Arrange
-    #
-    #     task_display_id = "IBWF-1"
-    #     action_id = 1
-    #     task_storage_mock.check_is_valid_task_display_id.return_value = True
-    #     task_storage_mock.get_task_id_for_task_display_id.return_value=1
+    @patch.object(GetUsersWithLessTasksInGivenStagesInteractor,
+                  'get_users_with_less_tasks_in_given_stages')
+    @patch.object(
+        GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor,
+        'get_task_stage_logic_satisfied_next_stages')
+    @patch.object(CallActionLogicFunctionAndGetTaskStatusVariablesInteractor,
+                  'get_status_variables_dtos_of_task_based_on_action')
+    def test_given_valid_details_get_next_stage_assignees(
+            self, action_logic_mock, next_stages_mock,
+            users_with_less_tasks_mock, storage_mock,
+            presenter_mock, stage_storage_mock, action_storage_mock,
+            task_storage_mock, task_stage_storage_mock):
+        # Arrange
+        StageWithUserDetailsDTOFactory.reset_sequence()
+        AssigneeDetailsDTOFactory.reset_sequence()
+        UserIdWIthTeamDetailsDTOFactory.reset_sequence()
+        TeamDetailsDTOFactory.reset_sequence()
+        task_display_id = "IBWF-1"
+        action_id = 1
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = 1
+        task_storage_mock.get_project_id_of_task.return_value = "project_1"
+        stage_storage_mock. \
+            get_stage_ids_excluding_virtual_stages.return_value = \
+            ['stage_2', 'stage_3']
+        action_logic_mock.return_value = [
+            StatusVariableDTOFactory(value='stage_2'),
+            StatusVariableDTOFactory(value='stage_3')]
+        next_stages_mock.return_value = ['stage_2', 'stage_3']
+        from ib_tasks.interactors.stages_dtos import \
+            StageWithUserDetailsAndTeamDetailsDTO
+        stage_with_user_details_and_team_details_dto = \
+            StageWithUserDetailsAndTeamDetailsDTO(
+                stages_with_user_details_dtos=[
+                    StageWithUserDetailsDTOFactory.create_batch(2)],
+                user_with_team_details_dtos=[
+                    UserIdWIthTeamDetailsDTOFactory(
+                        user_id="123e4567-e89b-12d3-a456-426614174000"),
+                    UserIdWIthTeamDetailsDTOFactory(
+                        user_id="123e4567-e89b-12d3-a456-426614174001")])
+        users_with_less_tasks_mock.return_value = stage_with_user_details_and_team_details_dto
+
+        interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
+            storage=storage_mock, action_storage=action_storage_mock,
+            stage_storage=stage_storage_mock, task_storage=task_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
+
+        # Act
+        interactor \
+            .get_next_stages_random_assignees_of_a_task_wrapper(
+            action_id=action_id, task_display_id=task_display_id,
+            presenter=presenter_mock)
+
+        # Assert
+        presenter_mock. \
+            get_next_stages_random_assignees_of_a_task_response.\
+            assert_called_once_with(
+            stage_with_user_details_and_team_details_dto=
+            stage_with_user_details_and_team_details_dto)

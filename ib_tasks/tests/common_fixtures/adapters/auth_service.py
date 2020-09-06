@@ -1,5 +1,7 @@
 from typing import List
 
+import factory
+
 from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTOFactory, \
     TeamDetailsWithUserIdDTOFactory
 
@@ -174,4 +176,18 @@ def get_user_details_for_the_given_role_ids_based_on_query_mock(mocker):
 
     mock.return_value = \
         UserDetailsDTOFactory.create_batch(size=2)
+    return mock
+
+def get_team_info_for_given_user_ids_with_given_names_mock(mocker):
+    path = "ib_tasks.adapters.auth_service.AuthService." \
+           "get_team_info_for_given_user_ids"
+    mock = mocker.patch(path)
+    from ib_tasks.tests.factories.adapter_dtos import \
+        UserIdWIthTeamDetailsDTOFactory, TeamDetailsDTOFactory
+    UserIdWIthTeamDetailsDTOFactory.reset_sequence()
+    TeamDetailsDTOFactory.reset_sequence()
+    user_ids=['user_id_0', 'user_id_1']
+    user_id_with_team_details_dtos = \
+        UserIdWIthTeamDetailsDTOFactory.create_batch(size=2, user_id=factory.Iterator(user_ids))
+    mock.return_value = user_id_with_team_details_dtos
     return mock

@@ -9,6 +9,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...common_fixtures.adapters.auth_service import \
     prepare_permitted_user_details_mock
+
 from ...factories.models import StagePermittedRolesFactory, TaskFactory, \
     StageModelFactory, CurrentTaskStageModelFactory, StageActionFactory, \
     TaskStatusVariableFactory, ActionPermittedRolesFactory
@@ -65,16 +66,19 @@ class TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
                                   value="stage_id_2")
         TaskStatusVariableFactory(task_id=1, variable='variable3',
                                   value="stage_id_1")
-        CurrentTaskStageModelFactory()
+        CurrentTaskStageModelFactory.create_batch(
+            3, task=task,
+            stage=factory.Iterator(stages)
+        )
         ActionPermittedRolesFactory.create_batch(3, action=action)
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup, mocker):
         from ib_tasks.tests.common_fixtures.adapters.auth_service import \
-            get_team_info_for_given_user_ids_with_given_names_mock
-        get_team_info_for_given_user_ids_with_given_names_mock(mocker)
+            get_team_info_for_given_user_ids_mock
+        get_team_info_for_given_user_ids_mock(mocker)
 
-        body = {"task_id": "IBWF-1", "action_id": 1}
+        body = {"task_id": "IBWF-1", "action_id": 8}
         path_params = {}
         query_params = {}
         headers = {}

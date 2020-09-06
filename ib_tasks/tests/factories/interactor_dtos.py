@@ -15,7 +15,8 @@ from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
     UserStagesWithPaginationDTO, StageAssigneeDTO, \
-    StageAssigneeWithTeamDetailsDTO, AssigneeWithTeamDetailsDTO
+    StageAssigneeWithTeamDetailsDTO, AssigneeWithTeamDetailsDTO, \
+    StageWithUserDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -23,12 +24,8 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-<<<<<<< HEAD
-    CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO, \
-    TaskWithDbStageIdDTO, AssigneeCurrentTasksCountDTO
-=======
-    CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO, StageActionNamesDTO
->>>>>>> cde8286fe74c4245073ef66d924d81076c62d554
+    TaskWithDbStageIdDTO, AssigneeCurrentTasksCountDTO, StageActionNamesDTO, \
+    StageAssigneeDetailsDTO, CurrentStageDetailsDTO, StageIdWithValueDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     TaskDueParametersDTO, \
@@ -92,6 +89,7 @@ class StageActionDTOFactory(factory.Factory):
 class StageActionNamesDTOFactory(factory.Factory):
     class Meta:
         model = StageActionNamesDTO
+
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
     action_names = factory.Sequence(lambda n: ['action_name_%d' % (n + 1)])
 
@@ -625,3 +623,16 @@ class AssigneeCurrentTasksCountDTOFactory(factory.Factory):
         lambda counter: 'assignee_{}'.format(counter + 1))
     tasks_count = factory.sequence(
         lambda counter: counter + 1)
+
+
+class StageWithUserDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = StageWithUserDetailsDTO
+
+    db_stage_id = factory.sequence(lambda counter: counter + 1)
+    stage_display_name = factory.sequence(
+        lambda counter: 'stage_{}'.format(counter + 1))
+
+    @factory.lazy_attribute
+    def assignee_details_dto(self):
+        return [AssigneeDetailsDTOFactory()]
