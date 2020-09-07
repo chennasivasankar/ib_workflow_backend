@@ -6,7 +6,7 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
 from .validator_class import ValidatorClass
 from ...interactors.create_or_update_task.update_task_interactor import \
     UpdateTaskInteractor
-from ...interactors.task_dtos import UpdateTaskDTO, FieldValuesDTO, \
+from ...interactors.task_dtos import FieldValuesDTO, \
     StageIdWithAssigneeDTO, UpdateTaskWithTaskDisplayIdDTO
 from ...presenters.update_task_presenter import \
     UpdateTaskPresenterImplementation
@@ -30,9 +30,8 @@ def api_wrapper(*args, **kwargs):
     task_id = request_data['task_id']
     title = request_data['title']
     description = request_data['description']
-    start_date = request_data['start_date']
-    due_date = request_data['due_date']['date']
-    due_time = request_data['due_date']['time']
+    start_datetime = request_data['start_datetime']
+    due_datetime = request_data['due_datetime']
     priority = request_data['priority']
     task_gofs = request_data['task_gofs']
     stage_assignee_stage_id = request_data['stage_assignee']['stage_id']
@@ -59,9 +58,10 @@ def api_wrapper(*args, **kwargs):
 
     task_dto = UpdateTaskWithTaskDisplayIdDTO(
         task_display_id=task_id, created_by_id=user_id, title=title,
-        description=description, start_date=start_date, due_date=due_date,
-        due_time=due_time, priority=priority, stage_assignee=stage_assignee,
-        gof_fields_dtos=task_gofs_dtos
+        description=description, start_datetime=start_datetime,
+        due_datetime=due_datetime, priority=priority,
+        stage_assignee=stage_assignee,
+        gof_fields_dtos=task_gofs_dtos, action_type=None
     )
 
     from ib_tasks.storages.tasks_storage_implementation \

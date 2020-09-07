@@ -124,10 +124,9 @@ class PopulateBulkTasks:
             priority = task_details.pop("priority*")
             self._validate_for_mandatory_fields(
                 title, start_date, due_date, priority)
-            due_time = "12:00:00"
-            start_date = datetime.datetime.strptime(start_date,
-                                                    DATE_FORMAT).date()
-            due_date = datetime.datetime.strptime(due_date, DATE_FORMAT).date()
+            start_datetime = datetime.datetime.strptime(start_date,
+                                                        DATE_FORMAT)
+            due_datetime = datetime.datetime.strptime(due_date, DATE_FORMAT)
             self._validate_priority_value(title, priority)
             priority = priority.upper()
             gof_fields_dtos = self._prepare_gof_fields_dtos(task_details)
@@ -137,8 +136,8 @@ class PopulateBulkTasks:
                     task_template_id=self.task_template_id,
                     created_by_id=self.user_id, action_id=self.action_id,
                     title=title, description=description,
-                    start_date=start_date, due_date=due_date,
-                    due_time=due_time, priority=priority,
+                    start_datetime=start_datetime, due_datetime=due_datetime,
+                    priority=priority,
                     gof_fields_dtos=gof_fields_dtos))
         return create_task_dtos
 

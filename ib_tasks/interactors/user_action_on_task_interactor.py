@@ -1,6 +1,6 @@
+import datetime
 from typing import List, Optional
 
-from ib_tasks.adapters.dtos import ColumnFieldDTO, ColumnStageDTO
 from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.action_custom_exceptions import InvalidKeyError, \
     InvalidCustomLogicException, InvalidActionException, \
@@ -11,8 +11,9 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
 from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee, \
     StageIdsListEmptyException, InvalidStageIdsListException
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
-    InvalidTaskDisplayId
+from ib_tasks.exceptions.task_custom_exceptions import (InvalidTaskException,
+                                                        InvalidTaskDisplayId,
+                                                        TaskDelayReasonIsNotUpdated)
 from ib_tasks.interactors \
     .call_action_logic_function_and_update_task_status_variables_interactor \
     import CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor, \
@@ -20,38 +21,30 @@ from ib_tasks.interactors \
 from ib_tasks.interactors \
     .get_all_task_overview_with_filters_and_searches_for_user import \
     GetTasksOverviewForUserInteractor
-from ib_tasks.interactors.get_field_details import GetFieldsDetails
 from ib_tasks.interactors \
     .get_next_stages_random_assignees_of_a_task_interactor import \
     InvalidModulePathFound
 from ib_tasks.interactors \
     .get_random_assignees_of_next_stages_and_update_in_db_interactor import \
     GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor
-from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
+from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.presenter_interfaces.dtos import \
-    TaskCompleteDetailsDTO
+    TaskCompleteDetailsDTO, AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
-from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
-    TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
-    StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces \
     .create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TaskDetailsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
@@ -60,7 +53,6 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 
 
 class InvalidBoardIdException(Exception):
@@ -81,7 +73,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
                  action_storage: ActionStorageInterface,
                  elasticsearch_storage: ElasticSearchStorageInterface,
                  task_stage_storage: Optional[TaskStageStorageInterface],
-                 view_type: ViewType = None):
+                 view_type: ViewType = ViewType.KANBAN.value):
         self.task_stage_storage = task_stage_storage
         self.elasticsearch_storage = elasticsearch_storage
         self.user_id = user_id
@@ -145,6 +137,9 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             return presenter.raise_stage_ids_list_empty_exception(err)
         except InvalidStageIdsListException as err:
             return presenter.raise_invalid_stage_ids_list_exception(err)
+        except TaskDelayReasonIsNotUpdated as err:
+            return presenter.get_response_for_task_delay_reason_not_updated(
+                err)
         return presenter.get_response_for_user_action_on_task(
             task_complete_details_dto=task_complete_details_dto,
             task_current_stage_details_dto=task_current_stage_details_dto,
@@ -152,29 +147,104 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         )
 
     def user_action_on_task(self, task_id: int):
-        self._validations_for_task_action(task_id)
+        self._validate_task_id(task_id)
+        project_id = \
+            self.task_storage.get_project_id_for_the_task_id(task_id=task_id)
+        self.validate_if_user_is_in_project(
+            project_id=project_id, user_id=self.user_id
+        )
+        self._validations_for_task_action(task_id, project_id)
+        self._validate_task_delay_reason_updated_or_not(task_id)
         task_dto = self._get_task_dto(task_id)
         updated_task_dto = \
             self._call_logic_and_update_status_variables_and_get_stage_ids(
                 task_dto=task_dto, task_id=task_id
             )
-
         stage_ids = self._get_task_stage_display_satisfied_stage_ids(task_id)
         self._update_task_stages(stage_ids=stage_ids, task_id=task_id)
-        if self.board_id:
-            task_boards_details = self._get_task_boards_details(stage_ids)
-        else:
-            task_boards_details = None
         self._create_or_update_task_in_elasticsearch(
             task_dto=updated_task_dto, task_id=task_id, stage_ids=stage_ids
         )
-        if self.board_id:
-            column_stage_dtos = task_boards_details.column_stage_dtos
-            board_stage_ids = self._get_present_board_stages(column_stage_dtos)
-            actions_dto, fields_dto, task_stage_details = \
-                self._get_task_fields_and_actions_dto(board_stage_ids, task_id)
-        else:
-            actions_dto, fields_dto, task_stage_details = None, None, None
+        task_complete_details_dto = \
+            self._get_task_current_board_complete_details(
+                task_id=task_id, stage_ids=stage_ids
+            )
+        self._set_next_stage_assignees_to_task_and_update_in_db(
+            task_id=task_id, stage_ids=stage_ids
+        )
+        task_current_stage_details_dto = \
+            self._get_task_current_stage_details(task_id=task_id)
+        all_tasks_overview_details_dto = self._get_tasks_overview_for_users(
+            task_id=task_id, project_id=project_id
+        )
+        return (
+            task_complete_details_dto, task_current_stage_details_dto,
+            all_tasks_overview_details_dto)
+
+    def _validate_task_delay_reason_updated_or_not(self, task_id):
+
+        stage_id = self.action_storage.get_stage_id_for_given_action_id(
+            self.action_id)
+        due_date = self.gof_storage.get_existing_task_due_date(
+            task_id)
+        due_date_is_none_when_action_type_is_no_validations = due_date is None
+        if due_date_is_none_when_action_type_is_no_validations:
+            return
+        due_date_is_expired = (due_date < datetime.datetime.now())
+        if due_date_is_expired:
+            updated_due_date = due_date
+            self._validate_task_delay_reason_is_added(
+                task_id=task_id, updated_due_date=updated_due_date,
+                stage_id=stage_id)
+
+    def _get_tasks_overview_for_users(
+            self, task_id: int, project_id: str
+    ) -> AllTasksOverviewDetailsDTO:
+        task_overview_interactor = GetTasksOverviewForUserInteractor(
+            stage_storage=self.stage_storage, task_storage=self.task_storage,
+            field_storage=self.field_storage,
+            action_storage=self.action_storage,
+            task_stage_storage=self.task_stage_storage
+        )
+        all_tasks_overview_details_dto = \
+            task_overview_interactor.get_filtered_tasks_overview_for_user(
+                user_id=self.user_id, task_ids=[task_id],
+                view_type=self.view_type,
+                project_id=project_id)
+        return all_tasks_overview_details_dto
+
+    def _get_task_current_board_complete_details(
+            self, task_id: int, stage_ids: List[str]
+    ) -> TaskCompleteDetailsDTO:
+        from ib_tasks.interactors \
+            .get_task_current_board_complete_details_interactor \
+            import GetTaskCurrentBoardCompleteDetailsInteractor
+        interactor = GetTaskCurrentBoardCompleteDetailsInteractor(
+            task_stage_storage=self.task_stage_storage,
+            user_id=self.user_id,
+            board_id=self.board_id,
+            field_storage=self.field_storage,
+            stage_storage=self.stage_storage,
+            task_storage=self.task_storage,
+            action_storage=self.action_storage,
+            view_type=self.view_type
+        )
+        return interactor.get_task_current_board_complete_details(
+            task_id=task_id, stage_ids=stage_ids)
+
+    def _get_task_current_stage_details(self, task_id: int):
+        from ib_tasks.interactors.get_task_current_stages_interactor import \
+            GetTaskCurrentStagesInteractor
+        get_task_current_stages_interactor = GetTaskCurrentStagesInteractor(
+            task_stage_storage=self.task_stage_storage)
+        task_current_stage_details_dto = \
+            get_task_current_stages_interactor.get_task_current_stages_details(
+                task_id=task_id, user_id=self.user_id)
+        return task_current_stage_details_dto
+
+    def _set_next_stage_assignees_to_task_and_update_in_db(
+            self, task_id: int, stage_ids: List[str]
+    ):
         set_stage_assignees_interactor = \
             GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor(
                 storage=self.storage, stage_storage=self.stage_storage,
@@ -184,135 +254,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             )
         set_stage_assignees_interactor \
             .get_random_assignees_of_next_stages_and_update_in_db(
-            task_id=task_id, stage_ids=stage_ids)
-        current_assignees_of_stages = self._get_stage_assignees_details(
-            stage_ids=stage_ids, task_id=task_id
+            task_id=task_id, stage_ids=stage_ids
         )
-        task_complete_details_dto = TaskCompleteDetailsDTO(
-            task_id=task_id,
-            task_display_id='',
-            task_boards_details=task_boards_details,
-            actions_dto=actions_dto,
-            field_dtos=fields_dto,
-            task_stage_details=task_stage_details,
-            assignees_details=current_assignees_of_stages
-        )
-        from ib_tasks.interactors.get_task_current_stages_interactor import \
-            GetTaskCurrentStagesInteractor
-        get_task_current_stages_interactor = GetTaskCurrentStagesInteractor(
-            task_stage_storage=self.task_stage_storage)
-        task_current_stage_details_dto = \
-            get_task_current_stages_interactor.get_task_current_stages_details(
-                task_id=task_id, user_id=self.user_id)
-        task_overview_interactor = GetTasksOverviewForUserInteractor(
-            stage_storage=self.stage_storage, task_storage=self.task_storage,
-            field_storage=self.field_storage,
-            action_storage=self.action_storage,
-            task_stage_storage=self.task_stage_storage
-        )
-        project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
-        all_tasks_overview_details_dto = \
-            task_overview_interactor.get_filtered_tasks_overview_for_user(
-                user_id=self.user_id, task_ids=[task_id],
-                view_type=ViewType.KANBAN.value,
-                project_id=project_id)
-        return (
-            task_complete_details_dto, task_current_stage_details_dto,
-            all_tasks_overview_details_dto)
-
-    @staticmethod
-    def _get_present_board_stages(column_stage_dtos: List[ColumnStageDTO]):
-
-        return [
-            column_stage_dto.stage_id
-            for column_stage_dto in column_stage_dtos
-        ]
-
-    def _get_task_fields_and_actions_dto(self, stage_ids: List[str],
-                                         task_id: int):
-
-        from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-        task_stage_dtos = [
-            GetTaskDetailsDTO(
-                task_id=task_id,
-                stage_id=stage_id
-            )
-            for stage_id in stage_ids
-        ]
-        from ib_tasks.interactors.get_task_fields_and_actions \
-            import GetTaskFieldsAndActionsInteractor
-        interactor = GetTaskFieldsAndActionsInteractor(
-            field_storage=self.field_storage,
-            task_storage=self.task_storage,
-            action_storage=self.action_storage,
-            stage_storage=self.stage_storage
-        )
-        from ib_boards.constants.enum import ViewType
-        is_view_type_none = not self.view_type
-        if is_view_type_none:
-            self.view_type = ViewType.KANBAN.value
-        task_stage_details_dtos = interactor.get_task_fields_and_action(
-            task_dtos=task_stage_dtos, user_id=self.user_id,
-            view_type=self.view_type
-        )
-        actions_dto, fields_dto, task_stage_details = \
-            self._get_field_dtos_and_actions_dtos(
-                task_stage_details_dtos=task_stage_details_dtos)
-        return actions_dto, fields_dto, task_stage_details
-
-    def _get_field_dtos_and_actions_dtos(
-            self,
-            task_stage_details_dtos: List[GetTaskStageCompleteDetailsDTO]):
-
-        actions_dto = []
-        for task_stage_details_dto in task_stage_details_dtos:
-            for action_dto in task_stage_details_dto.action_dtos:
-                actions_dto.append(action_dto)
-        actions_dto = self._get_actions_dto(actions_dto)
-
-        fields_dto = []
-        for task_stage_details_dto in task_stage_details_dtos:
-            stage_id = task_stage_details_dto.stage_id
-            for field_dto in task_stage_details_dto.field_dtos:
-                fields_dto.append(self._get_field_dto(field_dto, stage_id))
-        task_stage_details = [
-            TaskStageDTO(
-                stage_id=task_stage_details_dto.stage_id,
-                db_stage_id=task_stage_details_dto.db_stage_id,
-                display_name=task_stage_details_dto.display_name,
-                stage_colour=task_stage_details_dto.stage_color
-            )
-            for task_stage_details_dto in task_stage_details_dtos
-        ]
-
-        return actions_dto, fields_dto, task_stage_details
-
-    @staticmethod
-    def _get_field_dto(field_dto: FieldDetailsDTO, stage_id: str):
-
-        return FieldDisplayDTO(
-            field_id=str(field_dto.field_id),
-            field_type=field_dto.field_type,
-            stage_id=stage_id,
-            key=field_dto.key,
-            value=field_dto.value
-        )
-
-    @staticmethod
-    def _get_actions_dto(actions_dto: List[StageActionDetailsDTO]):
-
-        return [
-            ActionDTO(
-                action_id=action_dto.action_id,
-                name=action_dto.name,
-                action_type=action_dto.action_type,
-                transition_template_id=action_dto.transition_template_id,
-                stage_id=action_dto.stage_id,
-                button_text=action_dto.button_text,
-                button_color=action_dto.button_color
-            )
-            for action_dto in actions_dto
-        ]
 
     def _update_task_stages(self, stage_ids: List[str], task_id: int):
 
@@ -329,22 +272,6 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         )
         stage_ids = interactor.get_task_stage_logic_satisfied_stages()
         return stage_ids
-
-    def _get_fields_dtos(self, field_ids: List[str]):
-        get_fields_obj = GetFieldsDetails(user_id=self.user_id,
-                                          field_ids=field_ids,
-                                          storage=self.storage)
-        fields_dto = get_fields_obj.get_fields_details()
-        return fields_dto
-
-    def _get_task_boards_details(self, stage_ids: List[str]):
-
-        from ib_tasks.adapters.service_adapter import ServiceAdapter
-        adapter = ServiceAdapter()
-        return adapter.boards_service \
-            .get_display_boards_and_column_details(
-            user_id=self.user_id, board_id=self.board_id,
-            stage_ids=stage_ids)
 
     def _call_logic_and_update_status_variables_and_get_stage_ids(
             self, task_dto: TaskDetailsDTO, task_id: int) -> TaskDetailsDTO:
@@ -369,31 +296,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             .get_task(task_id=task_id)
         return task_dto
 
-    @staticmethod
-    def _get_field_ids(column_fields_dtos: List[ColumnFieldDTO]):
+    def _validations_for_task_action(self, task_id: int, project_id: str):
 
-        field_ids = []
-        for column_field_dto in column_fields_dtos:
-            for field_id in column_field_dto.field_ids:
-                field_ids.append(field_id)
-        return field_ids
-
-    @staticmethod
-    def _get_stage_ids(column_stage_dtos: List[ColumnStageDTO]):
-
-        return [
-            column_stage_dto.stage_id
-            for column_stage_dto in column_stage_dtos
-        ]
-
-    def _validations_for_task_action(self, task_id: int):
-
-        self._validate_task_id(task_id)
-        project_id = self.task_storage.get_project_id_for_the_task_id(
-            task_id=task_id)
-        self.validate_if_user_is_in_project(
-            project_id=project_id, user_id=self.user_id
-        )
         if self.board_id:
             self._validate_board_id()
         valid_action = self.storage.validate_action(action_id=self.action_id)
@@ -464,25 +368,27 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             task_dto=task_dto, stage_ids=stage_ids, task_id=task_id
         )
 
-    def _get_stage_assignees_details(
-            self, stage_ids: List[str], task_id
-    ) -> List[TaskStageAssigneeDetailsDTO]:
-        if self.task_stage_storage is None:
-            return []
-        from ib_tasks.interactors.get_stages_assignees_details_interactor \
-            import GetStagesAssigneesDetailsInteractor
-        assignees_interactor = GetStagesAssigneesDetailsInteractor(
-            task_stage_storage=self.task_stage_storage
-        )
-        from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-        task_stage_dtos = [
-            GetTaskDetailsDTO(
-                task_id=task_id,
-                stage_id=stage_id
-            )
-            for stage_id in stage_ids
-        ]
-        return \
-            assignees_interactor.get_stages_assignee_details_by_given_task_ids(
-                task_stage_dtos=task_stage_dtos
-            )
+    def _validate_task_delay_reason_is_added(
+            self, updated_due_date: datetime.datetime, task_id: int,
+            stage_id: int
+    ) -> Optional[TaskDelayReasonIsNotUpdated]:
+        self._validate_delay_reason_is_updated_or_not(
+            task_id, stage_id, updated_due_date)
+        return
+
+    def _validate_delay_reason_is_updated_or_not(
+            self, task_id: int, stage_id: int,
+            updated_due_date: datetime.datetime
+    ) -> Optional[TaskDelayReasonIsNotUpdated]:
+        is_task_delay_reason_updated = \
+            self.gof_storage.check_task_delay_reason_updated_or_not(
+                task_id, stage_id, updated_due_date)
+        task_delay_reason_is_not_updated = not is_task_delay_reason_updated
+        task_display_id = \
+            self.gof_storage.get_task_display_id_for_task_id(task_id)
+        stage_display_name = \
+            self.stage_storage.get_stage_display_name_for_stage_id(stage_id)
+        if task_delay_reason_is_not_updated:
+            raise TaskDelayReasonIsNotUpdated(
+                updated_due_date, task_display_id, stage_display_name)
+        return

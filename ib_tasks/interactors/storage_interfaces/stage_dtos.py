@@ -14,6 +14,7 @@ class StageAssigneeDetailsDTO:
     stage_id: int
     assignee_details_dto: Optional[AssigneeDetailsDTO]
 
+
 @dataclass
 class StageActionNamesDTO:
     stage_id: str
@@ -194,3 +195,9 @@ class StageIdWithValueDTO:
     db_stage_id: int
     stage_value: int
 
+
+@dataclass
+class StageFlowDTO:
+    previous_stage_id: int
+    action_name: str
+    next_stage_id: int

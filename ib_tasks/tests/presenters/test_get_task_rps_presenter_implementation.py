@@ -50,3 +50,14 @@ class TestGetTaskRelatedRps:
 
         # Assert
         snapshot.assert_match(response_object.content, "response")
+
+    def test_response_for_due_date_does_not_exist_to_task(self, snapshot):
+        # Arrange
+        presenter = GetTaskRpsPresenterImplementation()
+
+        # Act
+        response_object = presenter.\
+            response_for_due_date_does_not_exist_to_task()
+
+        # Assert
+        snapshot.assert_match(response_object.content, "response")

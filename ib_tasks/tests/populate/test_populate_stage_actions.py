@@ -98,7 +98,7 @@ class TestCasePopulateStageActions:
         )]
         from ib_tasks.populate.populate_stage_actions \
             import populate_stage_actions
-        path = "ib_tasks.interactors.create_update_delete_stage_actions.CreateUpdateDeleteStageActionsInteractor" \
+        path = "ib_tasks.interactors.create_update_delete_stage_actions.CreateOrUpdateOrDeleteStageActions" \
                ".create_update_delete_stage_actions"
         mock_obj = mocker.patch(path)
 

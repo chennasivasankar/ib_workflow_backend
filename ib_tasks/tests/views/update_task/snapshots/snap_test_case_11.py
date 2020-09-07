@@ -11,6 +11,6 @@ snapshots['TestCase11UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase11UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'INVALID_FIELDS_OF_GOF',
-    'response': "invalid fields ['FIELD-1', 'FIELD-2']  given to the gof GOF-1"
+    'res_status': 'TASK_DELAY_REASON_NOT_UPDATED',
+    'response': 'Task delay reason not updated for task IBWF-1 in stage display_name_0 with missed due date 2020-09-09 11:00:00'
 }

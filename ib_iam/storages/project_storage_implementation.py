@@ -4,7 +4,7 @@ from ib_iam.interactors.dtos.dtos import UserIdWithProjectIdAndStatusDTO
 from ib_iam.interactors.storage_interfaces.dtos import (
     ProjectWithoutIdDTO, RoleNameAndDescriptionDTO, RoleDTO,
     ProjectWithDisplayIdDTO, ProjectsWithTotalCountDTO, PaginationDTO,
-    ProjectTeamIdsDTO, ProjectRoleDTO, ProjectDTO)
+    ProjectTeamIdsDTO, ProjectRoleDTO, ProjectDTO, UserIdAndTeamIdsDTO)
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.models import Project, ProjectTeam, ProjectRole
@@ -23,7 +23,7 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         ]
         Project.objects.bulk_create(projects)
 
-    def get_valid_project_ids_from_given_project_ids(
+    def get_valid_project_ids(
             self, project_ids: List[str]) -> List[str]:
         project_ids = Project.objects.filter(project_id__in=project_ids) \
             .values_list("project_id", flat=True)
@@ -193,7 +193,7 @@ class ProjectStorageImplementation(ProjectStorageInterface):
                     description=project_dto.description,
                     logo_url=project_dto.logo_url)
 
-    def remove_teams_from_project(self, project_id: str, team_ids: List[str]):
+    def remove_teams(self, project_id: str, team_ids: List[str]):
         ProjectTeam.objects.filter(project_id=project_id,
                                    team_id__in=team_ids).delete()
 
@@ -245,6 +245,28 @@ class ProjectStorageImplementation(ProjectStorageInterface):
                 is_exist=project_id in valid_project_ids
             ) for project_id in project_ids
         ]
+
+    def get_user_id_with_teams_ids_dtos(
+            self, project_id: str) -> List[UserIdAndTeamIdsDTO]:
+        from ib_iam.models import TeamUser
+        user_teams = TeamUser.objects.filter(
+            team__projectteam__project_id=project_id) \
+            .values_list('team__team_id', 'user_id')
+        from collections import defaultdict
+        user_team_ids_dictionary = defaultdict(list)
+        for user_team in user_teams:
+            user_id = user_team[1]
+            user_team_ids_dictionary[user_id].extend([str(user_team[0])])
+        user_id_and_team_ids_dtos = [
+            UserIdAndTeamIdsDTO(user_id=user_id, team_ids=team_ids)
+            for user_id, team_ids in user_team_ids_dictionary.items()]
+        return user_id_and_team_ids_dtos
+
+    def remove_user_roles(
+            self, project_id: str, user_ids: List[str]):
+        from ib_iam.models import UserRole
+        UserRole.objects.filter(user_id__in=user_ids,
+                                project_role__project_id=project_id).delete()
 
     def get_valid_role_names_from_given_role_names(
             self, role_names: List[str]) -> List[str]:
