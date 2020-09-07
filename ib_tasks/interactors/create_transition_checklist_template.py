@@ -1,5 +1,6 @@
 from typing import Optional, List
 
+from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField, InvalidPhoneNumberValue, \
@@ -229,6 +230,12 @@ class CreateTransitionChecklistTemplateInteractor(
             transition_template_dto.created_by_id,
             transition_template_dto.transition_checklist_template_id,
             project_id, action_type)
+        action_type_is_not_no_validations = action_type != \
+                                            ActionTypes.NO_VALIDATIONS.value
+        if action_type_is_not_no_validations:
+            self._validate_all_user_template_permitted_fields_are_filled_or_not(
+                transition_template_dto.created_by_id,
+                transition_template_dto.task_id, project_id)
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=transition_template_dto.task_id,
@@ -342,4 +349,74 @@ class CreateTransitionChecklistTemplateInteractor(
             )
             if gof_matched:
                 return task_gof_details_dto.task_gof_id
+        return
+
+    def _validate_all_user_template_permitted_fields_are_filled_or_not(
+            self, user_id: str, task_id: int, project_id: str
+    ):
+        from ib_tasks.adapters.roles_service_adapter import \
+            get_roles_service_adapter
+        roles_service_adapter = get_roles_service_adapter()
+        user_roles = roles_service_adapter.roles_service \
+            .get_user_role_ids_based_on_project(
+            user_id=user_id, project_id=project_id)
+        task_template_id = \
+            self.create_or_update_task_storage.get_template_id_for_given_task(
+                task_id)
+        template_gof_ids = self.task_template_storage.get_gof_ids_of_template(
+            template_id=task_template_id)
+        gof_id_with_display_name_dtos = \
+            self.gof_storage.get_user_write_permitted_gof_ids_in_given_gof_ids(
+                user_roles, template_gof_ids)
+        user_permitted_gof_ids = [
+            dto.gof_id for dto in gof_id_with_display_name_dtos]
+        field_id_with_display_name_dtos = \
+            self.field_storage \
+                .get_user_write_permitted_field_ids_for_given_gof_ids(
+                user_roles, user_permitted_gof_ids)
+        filled_gofs_with_task_gof_ids = \
+            self.gof_storage.get_filled_task_gofs_with_gof_id(task_id)
+        filled_gof_ids = [dto.gof_id for dto in filled_gofs_with_task_gof_ids]
+        task_gof_ids = [
+            dto.task_gof_id for dto in filled_gofs_with_task_gof_ids]
+        filled_field_ids = \
+            self.gof_storage.get_filled_field_ids_of_given_task_gof_ids(
+                task_gof_ids)
+        self._validate_all_user_permitted_gof_ids_are_filled_or_not(
+            gof_id_with_display_name_dtos, filled_gof_ids)
+        self._validate_all_user_permitted_field_ids_are_filled_or_not(
+            field_id_with_display_name_dtos, filled_field_ids)
+
+    @staticmethod
+    def _validate_all_user_permitted_gof_ids_are_filled_or_not(
+            permitted_gofs, filled_gof_ids
+    ) -> Optional[UserDidNotFillRequiredGoFs]:
+        permitted_gof_ids = [
+            permitted_gof.gof_id for permitted_gof in permitted_gofs]
+        unfilled_gof_ids = list(sorted(
+            set(permitted_gof_ids) - set(filled_gof_ids)))
+        if unfilled_gof_ids:
+            gof_display_names = [
+                permitted_gof.gof_display_name
+                for permitted_gof in permitted_gofs
+                if permitted_gof.gof_id in unfilled_gof_ids
+            ]
+            raise UserDidNotFillRequiredGoFs(gof_display_names)
+        return
+
+    @staticmethod
+    def _validate_all_user_permitted_field_ids_are_filled_or_not(
+            permitted_fields, filled_field_ids
+    ) -> Optional[UserDidNotFillRequiredFields]:
+        permitted_field_ids = [
+            permitted_field.field_id for permitted_field in permitted_fields]
+        unfilled_field_ids = list(sorted(
+            set(permitted_field_ids) - set(filled_field_ids)))
+        if unfilled_field_ids:
+            unfilled_field_dtos = [
+                permitted_field
+                for permitted_field in permitted_fields
+                if permitted_field.field_id in unfilled_field_ids
+            ]
+            raise UserDidNotFillRequiredFields(unfilled_field_dtos)
         return
