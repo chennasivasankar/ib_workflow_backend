@@ -1,5 +1,5 @@
 from typing import List
-from ib_utility_tools.interactors.presenter_interfaces.get_checklist_presenter_interface import (
+from ib_utility_tools.interactors.presenter_interfaces.checklist_presenter_interface import (
     GetChecklistPresenterInterface
 )
 from ib_utility_tools.interactors.storage_interfaces.checklist_storage_interface import (

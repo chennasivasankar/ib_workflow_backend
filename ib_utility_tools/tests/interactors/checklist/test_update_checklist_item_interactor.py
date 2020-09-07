@@ -18,7 +18,7 @@ class TestUpdateChecklistItemInteractor:
 
     @pytest.fixture()
     def presenter_mock(self):
-        from ib_utility_tools.interactors.presenter_interfaces.update_checklist_item_presenter_interface import (
+        from ib_utility_tools.interactors.presenter_interfaces.checklist_presenter_interface import (
             UpdateChecklistItemPresenterInterface
         )
         presenter = mock.create_autospec(UpdateChecklistItemPresenterInterface)

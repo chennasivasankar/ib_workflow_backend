@@ -3,7 +3,7 @@ from typing import List
 from ib_utility_tools.exceptions.custom_exceptions import (
     DuplicateChecklistItemIds, InvalidChecklistItemIds
 )
-from ib_utility_tools.interactors.presenter_interfaces.delete_checklist_items_presenter_interface import (
+from ib_utility_tools.interactors.presenter_interfaces.checklist_presenter_interface import (
     DeleteChecklistItemsPresenterInterface
 )
 from ib_utility_tools.interactors.storage_interfaces.checklist_storage_interface import (

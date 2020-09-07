@@ -2,7 +2,7 @@ from ib_utility_tools.constants.enum import EntityType
 from ib_utility_tools.exceptions.custom_exceptions import (
     EmptyChecklistItemText
 )
-from ib_utility_tools.interactors.presenter_interfaces.create_checklist_item_presenter_interface import (
+from ib_utility_tools.interactors.presenter_interfaces.checklist_presenter_interface import (
     CreateChecklistItemPresenterInterface
 )
 from ib_utility_tools.interactors.storage_interfaces.checklist_storage_interface import (

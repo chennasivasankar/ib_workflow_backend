@@ -14,7 +14,7 @@ class TestDeleteChecklistItemsInteractor:
 
     @pytest.fixture()
     def presenter_mock(self):
-        from ib_utility_tools.interactors.presenter_interfaces.delete_checklist_items_presenter_interface import (
+        from ib_utility_tools.interactors.presenter_interfaces.checklist_presenter_interface import (
             DeleteChecklistItemsPresenterInterface
         )
         presenter = mock.create_autospec(
