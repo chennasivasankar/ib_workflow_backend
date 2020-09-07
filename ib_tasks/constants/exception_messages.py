@@ -142,7 +142,7 @@ INVALID_PHONE_NUMBER_VALUE = (
 INVALID_EMAIL = ("Invalid value for email: {} for field: {}", "INVALID_EMAIL")
 INVALID_URL = ("Invalid value for url: {} for field: {}", "INVALID_URL")
 NOT_A_STRONG_PASSWORD = (
-    "Given a weak password: {} for field: {}! Try with atleast 8 characters "
+    "Given a weak password: {} for field: {}! Try with at least 6 characters "
     "including special characters",
     "NOT_A_STRONG_PASSWORD")
 INVALID_NUMBER_VALUE = (
@@ -256,16 +256,16 @@ DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF = (
     "DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF")
 
 INVALID_TRANSITION_CHECKLIST_TEMPLATE_ID = (
-    "please give a valid transition checklist template id, {} is invalid \
-    transition checklist template id",
+    "please give a valid transition checklist template id, {} is invalid "
+    "transition checklist template id",
     "INVALID_TRANSITION_CHECKLIST_TEMPLATE_ID")
 
 INVALID_STAGE_ID = ("please give a valid stage id, {} is invalid stage id",
                     "INVALID_STAGE_ID")
 
 TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION = (
-    "given transition template id {} is not linked to given stage id {} and \
-    action id {}", "TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION")
+    "given transition template id {} is not linked to given stage id {} and "
+    "action id {}", "TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION")
 
 INVALID_STAGE_IDS = ("Invalid stage ids that you have sent are: {},"
                      "please send valid stage ids", "INVALID_STAGE_IDS")
@@ -277,6 +277,9 @@ STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE = (
     "please assign valid assignees for stages",
     "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE")
 
+TASK_DELAY_REASON_IS_NOT_ADDED = ("""Task {} in Stage {} has missed the
+                                  due date""",
+                                  "REASON_NOT_ADDED_FOR_TASK_DELAY")
 INVALID_STAGE_IDS_FOR_TASK = "Invalid stage_ids : {} for the task_id: {}"
 INVALID_KEY_ERROR = ("invalid key error", "INVALID_KEY_ERROR")
 

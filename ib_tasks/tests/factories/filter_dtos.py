@@ -5,9 +5,12 @@ Author: Pavankumar Pamuru
 """
 import factory
 
+from ib_tasks.constants.constants import VALID_FIELD_TYPES
 from ib_tasks.constants.enum import Operators
 from ib_tasks.interactors.filter_dtos import FilterDTO, \
     CreateConditionDTO, CreateFilterDTO, ConditionDTO, UpdateFilterDTO
+from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+    FieldTypeDTO
 
 
 class FilterDTOFactory(factory.Factory):
@@ -42,6 +45,7 @@ class CreateFilterDTOFactory(factory.Factory):
     filter_name = factory.sequence(lambda n: "filed_name_{}".format(n))
     user_id = factory.sequence(lambda n: "{}".format(n))
     template_id = factory.sequence(lambda n: "template_{}".format(n))
+    project_id = factory.sequence(lambda n: "project_{}".format(n))
 
 
 class UpdateFilterDTOFactory(factory.Factory):
@@ -59,5 +63,13 @@ class CreateConditionDTOFactory(factory.Factory):
         model = CreateConditionDTO
 
     field_id = factory.sequence(lambda n: "field_{}".format(n))
-    operator = Operators.GTE.value
+    operator = Operators.EQ.value
     value = factory.sequence(lambda n: "value_{}".format(n))
+
+
+class FieldTypeDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldTypeDTO
+
+    field_id = factory.Sequence(lambda counter: "field_{}".format(counter))
+    field_type = factory.Iterator(VALID_FIELD_TYPES)

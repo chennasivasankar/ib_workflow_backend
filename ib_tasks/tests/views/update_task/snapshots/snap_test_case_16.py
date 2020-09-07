@@ -11,6 +11,6 @@ snapshots['TestCase16UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase16UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'EMPTY_VALUE_FOR_REQUIRED_FIELD',
-    'response': 'Given Empty value for the required field of field_id: FIELD-1! Required field should not be empty'
+    'res_status': 'TASK_DELAY_REASON_NOT_UPDATED',
+    'response': 'Task delay reason not updated for task IBWF-1 in stage display_name_0 with missed due date 2020-09-09 11:00:00'
 }
