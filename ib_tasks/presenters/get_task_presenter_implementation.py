@@ -187,11 +187,11 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
             stage_assignee_with_team_details_dtos
         )
         start_date, due_date = None, None
-        if task_base_details_dto.start_date is not None and \
-                task_base_details_dto.due_date is not None:
+        if task_base_details_dto.start_date is not None:
             start_date = self._convert_datetime_object_to_string(
                 task_base_details_dto.start_date
             )
+        if task_base_details_dto.due_date is not None:
             due_date = self._convert_datetime_object_to_string(
                 task_base_details_dto.due_date
             )
@@ -381,12 +381,3 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
             "field_response": task_gof_field_dto.field_response
         }
         return field_dict
-
-    def response_for_invalid_task_id(self):
-        pass
-
-    def response_for_user_is_not_assignee_for_task(self):
-        pass
-
-    def get_response_for_get_task_due_details(self, task_dtos):
-        pass

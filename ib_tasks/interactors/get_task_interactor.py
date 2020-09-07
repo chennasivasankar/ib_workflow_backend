@@ -84,7 +84,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         except UserPermissionDenied:
             response = presenter.raise_user_permission_denied()
             return response
-        except InvalidCityIdsException:
+        except InvalidCityIdsException as err:
             response = presenter.raise_invalid_searchable_records_found()
             return response
         except InvalidStateIdsException:

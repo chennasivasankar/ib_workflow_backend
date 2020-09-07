@@ -5,7 +5,8 @@ from typing import List
 from ib_tasks.constants.enum import ViewType, FieldTypes
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldCompleteDetailsDTO, UserFieldPermissionDTO, FieldIdWithGoFIdDTO, \
-    TaskTemplateStageFieldsDTO, StageTaskFieldsDTO, FieldDetailsDTOWithTaskId, FieldNameDTO
+    TaskTemplateStageFieldsDTO, StageTaskFieldsDTO, FieldDetailsDTOWithTaskId, \
+    FieldNameDTO, FieldIdWithFieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
@@ -122,4 +123,10 @@ class FieldsStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_gof_ids_for_given_field_ids(
             self, field_ids: List[str]) -> List[FieldIdWithGoFIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_user_write_permitted_field_ids_for_given_gof_ids(
+            self, user_roles, gof_ids: List[str]
+    ) -> List[FieldIdWithFieldDisplayNameDTO]:
         pass
