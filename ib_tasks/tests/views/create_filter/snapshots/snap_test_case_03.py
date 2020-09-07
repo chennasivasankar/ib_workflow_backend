@@ -7,10 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase02CreateFilterAPITestCase.test_case status_code'] = '403'
+snapshots['TestCase02CreateFilterAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase02CreateFilterAPITestCase.test_case body'] = {
-    'http_status_code': 403,
-    'res_status': 'FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE',
-    'response': "fields not belongs to task template: ['FIELD_ID-1']"
+    'project_id': [
+        'This field is required.'
+    ]
 }

@@ -5,6 +5,8 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
+from ib_tasks.constants.enum import Operators
+
 
 class InvalidTemplateID(Exception):
     pass
@@ -33,3 +35,11 @@ class UserNotHaveAccessToFields(Exception):
 
 class UserNotHaveAccessToFilter(Exception):
     pass
+
+
+class InvalidFilterCondition(Exception):
+    def __init__(self, condition: Operators):
+        self.condition = condition
+
+    def __str__(self):
+        return self.condition

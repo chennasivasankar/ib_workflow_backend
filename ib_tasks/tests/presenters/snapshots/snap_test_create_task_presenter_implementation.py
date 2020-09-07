@@ -161,7 +161,7 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_weak_p
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_weak_password res_status'] = 'NOT_A_STRONG_PASSWORD'
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_weak_password response'] = 'Given a weak password: admin123 for field: field_1! Try with atleast 8 characters including special characters'
+snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_weak_password response'] = 'Given a weak password: admin123 for field: field_1! Try with at least 6 characters including special characters'
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_number_value http_status_code'] = 400
 
