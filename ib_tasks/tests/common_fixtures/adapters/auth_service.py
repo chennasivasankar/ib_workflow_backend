@@ -125,7 +125,7 @@ def get_immediate_superior_user_id_mock(mocker):
 
 def get_valid_project_ids_mock(mocker, project_ids: List[str]):
     mock = mocker.patch(
-        "ib_tasks.adapters.auth_service.AuthService.validate_project_ids"
+            "ib_tasks.adapters.auth_service.AuthService.validate_project_ids"
     )
     mock.return_value = project_ids
     return mock

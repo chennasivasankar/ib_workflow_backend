@@ -98,6 +98,10 @@ class ActionStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_stage_id_for_given_action_id(self, action_id: int) -> int:
+        pass
+
+    @abc.abstractmethod
     def get_stage_action_name_dtos(
             self, stage_id_action_dtos: List[StageIdActionNameDTO]
     ) -> List[StageActionIdDTO]:

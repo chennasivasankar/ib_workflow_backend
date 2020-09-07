@@ -796,12 +796,12 @@ class StorageImplementation(StorageInterface):
             List[str]:
         rp_ids = list(TaskStageRp.objects.filter(
             task_id=task_id, stage_id=stage_id
-        ).values_list('rp_id', flat=True))
+        ).values_list('rp_id', flat=True).order_by('id'))
         return rp_ids
 
     def add_superior_to_db(
             self, task_id: int, stage_id: int, superior_id: str):
-        TaskStageRp.objects.create(
+        TaskStageRp.objects.get_or_create(
             task_id=task_id, stage_id=stage_id, rp_id=superior_id)
 
     def get_latest_rp_added_datetime(self,
