@@ -22,7 +22,7 @@ INVALID_USER_IDS = (
 )
 
 COMMENT_OR_MULTIMEDIA_SHOULD_BE_PROVIDED = (
-    "Please provide comment or multimedia to create the comment",
+    "Please provide comment content or multimedia to create the comment",
     "COMMENT_OR_MULTIMEDIA_SHOULD_BE_PROVIDED"
 )
 
