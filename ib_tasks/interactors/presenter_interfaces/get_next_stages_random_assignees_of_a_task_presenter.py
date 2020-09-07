@@ -37,5 +37,5 @@ class GetNextStagesRandomAssigneesOfATaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_user_not_in_any_given_team_of_project(self, user_id: str):
+    def raise_users_not_exists_for_given_projects(self, user_ids: List[str]):
         pass

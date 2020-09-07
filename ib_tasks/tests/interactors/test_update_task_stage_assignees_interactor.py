@@ -271,8 +271,8 @@ class TestUpdateTaskStageAssigneesInteractor:
             stage_id_with_value_dtos):
         StageRoleDTOFactory.reset_sequence()
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
-            import get_required_user_role_ids
-        get_user_role_ids_mock_method = get_required_user_role_ids(
+            import get_user_role_ids_based_on_project_mock_given_user_role_ids
+        get_user_role_ids_mock_method = get_user_role_ids_based_on_project_mock_given_user_role_ids(
             mocker,
             user_role_ids=['FIN_PAYMENT_POC', 'FIN_COMPLIANCE_VERIFIER'])
         task_storage_mock.check_is_task_exists.return_value = True
