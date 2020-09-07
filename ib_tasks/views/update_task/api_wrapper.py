@@ -61,7 +61,7 @@ def api_wrapper(*args, **kwargs):
         description=description, start_datetime=start_datetime,
         due_datetime=due_datetime, priority=priority,
         stage_assignee=stage_assignee,
-        gof_fields_dtos=task_gofs_dtos
+        gof_fields_dtos=task_gofs_dtos, action_type=None
     )
 
     from ib_tasks.storages.tasks_storage_implementation \

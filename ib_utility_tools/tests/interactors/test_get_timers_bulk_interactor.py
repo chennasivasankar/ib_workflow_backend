@@ -105,7 +105,7 @@ class TestStopTimerInteractor:
             entity_id="f2c02d98-f311-4ab2-8673-3daa00757002",
             entity_type="STAGE_TASK",
             duration_in_seconds=100)]
-        storage_mock.get_timer_details_dtos_for_given_entities \
+        storage_mock.get_timer_details_dtos \
             .return_value = complete_timer_details_dtos
         from ib_utility_tools.tests.factories.storage_dtos import \
             TimerEntityDTOFactory
@@ -121,7 +121,7 @@ class TestStopTimerInteractor:
         actual_entity_with_timer_dtos = interactor.get_timers_bulk(
             timer_entity_dtos=timer_entity_dtos)
 
-        storage_mock.get_timer_details_dtos_for_given_entities \
+        storage_mock.get_timer_details_dtos \
             .assert_called_once_with(timer_entity_dtos=timer_entity_dtos)
         assert actual_entity_with_timer_dtos == expected_entity_with_timer_dtos
 
@@ -129,7 +129,7 @@ class TestStopTimerInteractor:
             self, interactor, storage_mock, timer_entity_dtos,
             complete_timer_details_when_no_timers_in_running_state,
             entity_with_timer_dtos_when_no_timers_in_running_state):
-        storage_mock.get_timer_details_dtos_for_given_entities.return_value = \
+        storage_mock.get_timer_details_dtos.return_value = \
             complete_timer_details_when_no_timers_in_running_state
         expected_entity_with_timer_dtos = \
             entity_with_timer_dtos_when_no_timers_in_running_state
@@ -137,7 +137,7 @@ class TestStopTimerInteractor:
         actual_entity_with_timer_dtos = interactor.get_timers_bulk(
             timer_entity_dtos=timer_entity_dtos)
 
-        storage_mock.get_timer_details_dtos_for_given_entities \
+        storage_mock.get_timer_details_dtos \
             .assert_called_once_with(timer_entity_dtos=timer_entity_dtos)
         assert actual_entity_with_timer_dtos == expected_entity_with_timer_dtos
 
@@ -153,7 +153,7 @@ class TestStopTimerInteractor:
         complete_timer_details_dto = CompleteTimerDetailsDTOFactory.create(
             entity_id=entity_id, is_running=True,
             start_datetime=start_datetime)
-        storage_mock.get_timer_details_dtos_for_given_entities \
+        storage_mock.get_timer_details_dtos \
             .return_value = [complete_timer_details_dto]
         present_datetime = datetime.datetime.now()
         time_delta = \
@@ -171,6 +171,6 @@ class TestStopTimerInteractor:
         actual_entity_with_timer_dtos = interactor.get_timers_bulk(
             timer_entity_dtos=timer_entity_dtos)
 
-        storage_mock.get_timer_details_dtos_for_given_entities \
+        storage_mock.get_timer_details_dtos \
             .assert_called_once_with(timer_entity_dtos=timer_entity_dtos)
         assert actual_entity_with_timer_dtos == entity_with_timer_dtos
