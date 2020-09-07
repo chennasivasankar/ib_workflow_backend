@@ -52,8 +52,7 @@ class TestUpdateProjectIneractor:
     def test_update_project_returns_success_response(
             self, project_storage, interactor, presenter, roles):
         from ib_iam.interactors.dtos.dtos import CompleteProjectDetailsDTO
-        from ib_iam.tests.factories.storage_dtos import \
-            ProjectDTOFactory
+        from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
         project_id = "1"
         ProjectDTOFactory.reset_sequence(1)
         project_dto = ProjectDTOFactory(project_id=project_id)
@@ -66,10 +65,19 @@ class TestUpdateProjectIneractor:
         roles_to_be_updated = [roles[0]]
         role_ids_to_be_deleted = ["role2"]
         from ib_iam.interactors.storage_interfaces.dtos import \
+            UserIdAndTeamIdsDTO
+        user_id_and_team_ids_dtos = [
+            UserIdAndTeamIdsDTO(user_id="1", team_ids=["1", "2", "3"]),
+            UserIdAndTeamIdsDTO(user_id="2", team_ids=["3"])
+        ]
+        user_ids = ["2"]
+        from ib_iam.interactors.storage_interfaces.dtos import \
             RoleNameAndDescriptionDTO
         roles_to_be_created = [RoleNameAndDescriptionDTO(
             name=roles[1].name, description=roles[1].description)]
         project_storage.get_project_role_ids.return_value = role_ids_from_db
+        project_storage.get_user_id_with_teams_ids_dtos \
+            .return_value = user_id_and_team_ids_dtos
         presenter.get_success_response_for_update_project \
             .return_value = mock.Mock()
         complete_project_details_dto = CompleteProjectDetailsDTO(
@@ -90,8 +98,12 @@ class TestUpdateProjectIneractor:
             project_id=project_id)
         project_storage.assign_teams_to_projects.assert_called_once_with(
             project_id=project_id, team_ids=team_ids_to_add)
-        project_storage.remove_teams_from_project.assert_called_once_with(
+        project_storage.remove_teams.assert_called_once_with(
             project_id=project_id, team_ids=team_ids_to_be_removed)
+        project_storage.get_user_id_with_teams_ids_dtos \
+            .assert_called_once_with(project_id=project_id)
+        project_storage.remove_user_roles \
+            .assert_called_once_with(project_id=project_id, user_ids=user_ids)
         project_storage.add_project_roles.assert_called_once_with(
             project_id=project_id, roles=roles_to_be_created)
         project_storage.update_project_roles.assert_called_once_with(
