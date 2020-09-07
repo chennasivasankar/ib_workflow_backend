@@ -117,8 +117,21 @@ class ServiceInterface:
         )
         return interactor.validate_template_ids(template_ids=task_template_ids)
 
+    @staticmethod
     def get_field_display_names(
-            self, field_ids: List[str], user_id: str,
+            field_ids: List[str], user_id: str,
             project_id: str) -> List[FieldDisplayNameDTO]:
-        pass
+        from ib_tasks.storages.fields_storage_implementation import \
+            FieldsStorageImplementation
+        field_storage = FieldsStorageImplementation()
+        from ib_tasks.interactors.get_field_display_name import \
+            GetFieldDisplayNamesInteractor
+        interactor = GetFieldDisplayNamesInteractor(
+            field_storage=field_storage
+        )
+        return interactor.get_field_display_names(
+            user_id=user_id,
+            field_ids=field_ids,
+            project_id=project_id
+        )
 

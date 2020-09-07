@@ -15,7 +15,7 @@ RESPONSE_200_JSON = """
 [
     {
         "field_id": "string",
-        "display_name": "string",
+        "field_display_name": "string",
         "display_status": "HIDE",
         "display_order": 1
     }

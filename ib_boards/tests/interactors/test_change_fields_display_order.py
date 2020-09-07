@@ -189,10 +189,8 @@ class TestChangeFieldsDisplayOrder:
         expected_response = Mock()
         user_role = 'User',
         project_id = "1"
-        from ib_boards.tests.factories.storage_dtos import FieldOrderDTOFactory
         from ib_boards.tests.factories.storage_dtos import \
             FieldDisplayStatusDTOFactory
-        field_display_order_dtos = FieldOrderDTOFactory.create_batch(3)
         from ib_boards.tests.factories.interactor_dtos import \
             FieldNameDTOFactory
         field_display_name_dtos = FieldNameDTOFactory.create_batch(3)

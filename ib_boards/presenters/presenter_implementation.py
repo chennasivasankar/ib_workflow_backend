@@ -642,7 +642,7 @@ class FieldsDisplayOrderPresenterImplementation(
         response_dict = [
             {
                 "field_id": all_fields_dto.field_id,
-                "display_name": all_fields_dto.display_name,
+                "field_display_name": all_fields_dto.display_name,
                 "display_order": all_fields_dto.display_order,
                 "display_status": all_fields_dto.display_status
             }

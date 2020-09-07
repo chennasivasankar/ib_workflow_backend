@@ -8,7 +8,8 @@ from ib_tasks.constants.enum import PermissionTypes, ViewType
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldCompleteDetailsDTO, FieldDTO, UserFieldPermissionDTO, \
     FieldIdWithGoFIdDTO, StageTaskFieldsDTO, \
-    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId, FieldNameDTO
+    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId, FieldNameDTO, \
+    FieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface, FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
@@ -406,4 +407,32 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                 field_type=field_type['field_type']
             )
             for field_type in field_types
+        ]
+
+    def validate_user_roles_with_field_ids_roles(
+            self, user_roles, field_ids):
+        fields_user_roles = FieldRole.objects.values_list(
+            'role', flat=True
+        ).filter(field_id__in=field_ids)
+        user_roles = sorted(list(set(user_roles)))
+        from ib_tasks.constants.constants import ALL_ROLES_ID
+        updated_user_role = user_roles + [ALL_ROLES_ID]
+        fields_user_roles = sorted(list(set(fields_user_roles)))
+        invalid_user = not (updated_user_role == fields_user_roles or set(fields_user_roles).issubset(
+                    set(updated_user_role)))
+        if invalid_user:
+            from ib_tasks.exceptions.filter_exceptions import \
+                UserNotHaveAccessToFields
+            raise UserNotHaveAccessToFields
+
+    def get_field_display_names(self, field_ids: List[str]) -> List[FieldDisplayNameDTO]:
+        field_display_names = Field.objects.filter(
+            field_id__in=field_ids
+        ).values('field_id', 'display_name')
+        return [
+            FieldDisplayNameDTO(
+                field_id=field_display_name['field_id'],
+                field_display_name=field_display_name['display_name']
+            )
+            for field_display_name in field_display_names
         ]

@@ -653,7 +653,7 @@
         "field_id": {
           "type": "string"
         },
-        "display_name": {
+        "field_display_name": {
           "type": "string"
         },
         "display_status": {
@@ -672,7 +672,7 @@
         "display_order",
         "display_status",
         "field_id",
-        "display_name"
+        "field_display_name"
       ]
     }
   },
