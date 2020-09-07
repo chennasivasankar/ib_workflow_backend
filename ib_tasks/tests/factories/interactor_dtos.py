@@ -23,7 +23,8 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO, StageActionNamesDTO, CreateStageFlowDTO
+    CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO, StageActionNamesDTO, CreateStageFlowDTO, \
+    StageFlowWithActionIdDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     TaskDueParametersDTO, \
@@ -610,3 +611,12 @@ class CreateStageFlowDTOFactory(factory.Factory):
     previous_stage_id = factory.sequence(lambda n: "stage_{}".format(n))
     action_name = factory.sequence(lambda n: "action_name_{}".format(n))
     next_stage_id = factory.sequence(lambda n: "stage_{}".format(n+1))
+
+
+class StageFlowWithActionIdDTOFactory(factory.Factory):
+    class Meta:
+        model = StageFlowWithActionIdDTO
+
+    previous_stage_id = factory.sequence(lambda n: "stage_{}".format(n))
+    action_id = factory.sequence(lambda n: n)
+    next_stage_id = factory.sequence(lambda n: "stage_{}".format(n + 1))
