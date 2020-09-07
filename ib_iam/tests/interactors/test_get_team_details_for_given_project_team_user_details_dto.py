@@ -48,7 +48,7 @@ class TestGetTeamDetailsForGivenProjectTeamUserDetailsDto:
         project_team_user_dto = ProjectTeamUserDTOFactory(
             project_id=project_id)
         project_storage_mock \
-            .get_valid_project_ids_from_given_project_ids \
+            .get_valid_project_ids \
             .return_value = []
 
         with pytest.raises(InvalidProjectId):
@@ -56,7 +56,7 @@ class TestGetTeamDetailsForGivenProjectTeamUserDetailsDto:
                 .get_team_details_for_given_project_team_user_details_dto(
                 project_team_user_dto=project_team_user_dto)
 
-        project_storage_mock.get_valid_project_ids_from_given_project_ids \
+        project_storage_mock.get_valid_project_ids \
             .assert_called_once_with(project_ids=[project_id])
 
     def test_given_team_not_exists_in_project_raises_team_not_exists_exception(
@@ -69,7 +69,7 @@ class TestGetTeamDetailsForGivenProjectTeamUserDetailsDto:
         team_id = "1"
         project_team_user_dto = ProjectTeamUserDTOFactory(
             project_id=project_id, team_id=team_id)
-        project_storage_mock.get_valid_project_ids_from_given_project_ids \
+        project_storage_mock.get_valid_project_ids \
             .return_value = [project_id]
         project_storage_mock.is_team_exists_in_project.return_value = False
 
@@ -78,7 +78,7 @@ class TestGetTeamDetailsForGivenProjectTeamUserDetailsDto:
                 .get_team_details_for_given_project_team_user_details_dto(
                 project_team_user_dto=project_team_user_dto)
 
-        project_storage_mock.get_valid_project_ids_from_given_project_ids \
+        project_storage_mock.get_valid_project_ids \
             .assert_called_once_with(project_ids=[project_id])
         project_storage_mock.is_team_exists_in_project.assert_called_once_with(
             project_id=project_id, team_id=team_id)
@@ -94,7 +94,7 @@ class TestGetTeamDetailsForGivenProjectTeamUserDetailsDto:
         user_id = "1"
         project_team_user_dto = ProjectTeamUserDTOFactory(
             project_id=project_id, team_id=team_id, user_id=user_id)
-        project_storage_mock.get_valid_project_ids_from_given_project_ids \
+        project_storage_mock.get_valid_project_ids \
             .return_value = [project_id]
         project_storage_mock.is_user_exists_in_team.return_value = False
 
@@ -103,7 +103,7 @@ class TestGetTeamDetailsForGivenProjectTeamUserDetailsDto:
                 .get_team_details_for_given_project_team_user_details_dto(
                 project_team_user_dto=project_team_user_dto)
 
-        project_storage_mock.get_valid_project_ids_from_given_project_ids \
+        project_storage_mock.get_valid_project_ids \
             .assert_called_once_with(project_ids=[project_id])
         project_storage_mock.is_team_exists_in_project.assert_called_once_with(
             project_id=project_id, team_id=team_id)
@@ -120,7 +120,7 @@ class TestGetTeamDetailsForGivenProjectTeamUserDetailsDto:
         name = "team1"
         project_team_user_dto = ProjectTeamUserDTOFactory(
             project_id=project_id, team_id=team_id, user_id=user_id)
-        project_storage_mock.get_valid_project_ids_from_given_project_ids \
+        project_storage_mock.get_valid_project_ids \
             .return_value = [project_id]
         project_storage_mock.get_team_name.return_value = name
         from ib_iam.app_interfaces.dtos import UserIdWithTeamIDAndNameDTO
@@ -133,7 +133,7 @@ class TestGetTeamDetailsForGivenProjectTeamUserDetailsDto:
             .get_team_details_for_given_project_team_user_details_dto(
             project_team_user_dto=project_team_user_dto)
 
-        project_storage_mock.get_valid_project_ids_from_given_project_ids \
+        project_storage_mock.get_valid_project_ids \
             .assert_called_once_with(project_ids=[project_id])
         project_storage_mock.is_team_exists_in_project.assert_called_once_with(
             project_id=project_id, team_id=team_id)
