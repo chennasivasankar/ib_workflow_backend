@@ -54,7 +54,7 @@ class UserDetailsDTOFactory(factory.Factory):
     class Meta:
         model = UserDetailsDTO
 
-    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
+    user_id = factory.Sequence(lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
     user_name = factory.Sequence(lambda n: "name_%d" % n)
     profile_pic_url = "pic_url"
 

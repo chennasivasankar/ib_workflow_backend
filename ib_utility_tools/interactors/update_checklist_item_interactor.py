@@ -25,7 +25,7 @@ class UpdateChecklistItemInteractor:
             response = presenter.get_checklist_item_id_not_found_response()
         except EmptyChecklistItemText:
             response = presenter \
-                .get_response_for_empty_checklist_item_text_exception()
+                .response_for_empty_checklist_item_text_exception()
         return response
 
     def update_checklist_item(
