@@ -6,13 +6,33 @@ from django.db.models import Q
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFToTaskTemplateDTO, GoFDTO, GoFRoleDTO, TaskTemplateGofsDTO, \
-    GoFIdWithGoFDisplayNameDTO
+    GoFIdWithGoFDisplayNameDTO, GoFIdWithTaskGoFIdDTO
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
-from ib_tasks.models import GoFRole, GoF, TaskTemplateGoFs
+from ib_tasks.models import GoFRole, GoF, TaskTemplateGoFs, TaskGoF, \
+    TaskGoFField
 
 
 class GoFStorageImplementation(GoFStorageInterface):
+
+    def get_filled_field_ids_of_given_task_gof_ids(
+            self, task_gof_ids: List[int]) -> List[str]:
+        filled_field_ids = TaskGoFField.objects.filter(
+            task_gof_id__in=task_gof_ids).values('field_id', flat=True)
+        return filled_field_ids
+
+    def get_filled_task_gofs_with_gof_id(
+            self, task_id: int) -> List[GoFIdWithTaskGoFIdDTO]:
+        task_gof_dicts = TaskGoF.objects.filter(task_id=task_id) \
+            .values('id', 'gof_id')
+        gof_id_with_task_gof_id_dtos = [
+            GoFIdWithTaskGoFIdDTO(
+                gof_id=task_gof_dict['gof_id'],
+                task_gof_id=task_gof_dict['id']
+            )
+            for task_gof_dict in task_gof_dicts
+        ]
+        return gof_id_with_task_gof_id_dtos
 
     def get_user_write_permitted_gof_ids_in_given_gof_ids(
             self, user_roles: List[str], template_gof_ids: List[str]

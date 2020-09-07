@@ -292,13 +292,15 @@ class CreateTaskInteractor:
             user_id=task_dto.created_by_id, board_id=None,
             action_id=task_dto.action_id,
             storage=self.storage,
-            gof_storage=self.create_task_storage,
+            gof_storage=self.gof_storage,
             field_storage=self.field_storage,
             stage_storage=self.stage_storage,
             task_storage=self.task_storage,
             action_storage=self.action_storage,
             task_stage_storage=self.task_stage_storage,
-            elasticsearch_storage=self.elastic_storage
+            elasticsearch_storage=self.elastic_storage,
+            create_task_storage=self.create_task_storage,
+            task_template_storage=self.task_template_storage
         )
         act_on_task_interactor.user_action_on_task(task_id=created_task_id)
         from ib_tasks.interactors.get_task_current_stages_interactor import \

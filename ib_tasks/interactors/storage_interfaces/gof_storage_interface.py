@@ -2,7 +2,8 @@ import abc
 from typing import List
 
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
-    GoFRoleDTO, GoFToTaskTemplateDTO, GoFIdWithGoFDisplayNameDTO
+    GoFRoleDTO, GoFToTaskTemplateDTO, GoFIdWithGoFDisplayNameDTO, \
+    GoFIdWithTaskGoFIdDTO
 
 
 class GoFStorageInterface(abc.ABC):
@@ -78,4 +79,14 @@ class GoFStorageInterface(abc.ABC):
     def get_user_write_permitted_gof_ids_in_given_gof_ids(
             self, user_roles: List[str], template_gof_ids: List[str]
     ) -> List[GoFIdWithGoFDisplayNameDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_filled_task_gofs_with_gof_id(
+            self, task_id: int) -> List[GoFIdWithTaskGoFIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_filled_field_ids_of_given_task_gof_ids(
+            self, task_gof_ids: List[int]) -> List[str]:
         pass

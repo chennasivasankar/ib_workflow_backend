@@ -1,5 +1,9 @@
 import abc
 
+from ib_tasks.exceptions.fields_custom_exceptions import \
+    UserDidNotFillRequiredFields
+from ib_tasks.exceptions.gofs_custom_exceptions import \
+    UserDidNotFillRequiredGoFs
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import \
@@ -94,3 +98,14 @@ class PresenterInterface(abc.ABC):
     def get_response_for_task_delay_reason_not_updated(
             self, err: TaskDelayReasonIsNotUpdated):
         pass
+
+    @abc.abstractmethod
+    def raise_user_did_not_fill_required_gofs(self,
+                                              err: UserDidNotFillRequiredGoFs):
+        pass
+
+    @abc.abstractmethod
+    def raise_user_did_not_fill_required_fields(
+            self, err: UserDidNotFillRequiredFields):
+        pass
+
