@@ -370,7 +370,7 @@ class ProjectInteractor:
                 set(team_ids_to_be_removed))]
         self.project_storage.remove_user_roles(
             project_id=project_id, user_ids=user_ids)
-        self.project_storage.remove_teams_from_project(
+        self.project_storage.remove_teams(
             project_id=project_id, team_ids=team_ids_to_be_removed)
 
     def _add_project_roles(self, project_id: str, roles: List[RoleDTO]):

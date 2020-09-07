@@ -195,7 +195,7 @@ class ProjectStorageImplementation(ProjectStorageInterface):
                     description=project_dto.description,
                     logo_url=project_dto.logo_url)
 
-    def remove_teams_from_project(self, project_id: str, team_ids: List[str]):
+    def remove_teams(self, project_id: str, team_ids: List[str]):
         ProjectTeam.objects.filter(project_id=project_id,
                                    team_id__in=team_ids).delete()
 
