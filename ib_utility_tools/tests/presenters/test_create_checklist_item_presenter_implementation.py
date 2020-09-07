@@ -1,7 +1,5 @@
 import json
-
 import pytest
-
 from ib_utility_tools.constants.enum import StatusCode
 
 
