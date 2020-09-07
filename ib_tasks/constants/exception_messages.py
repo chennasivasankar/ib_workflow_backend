@@ -451,6 +451,6 @@ PRIORITY_IS_REQUIRED = (
 )
 
 DUE_DATE_IS_NOT_ADDED_TO_TASK = (
-        "due date is not added to task",
+        "please add due date to task",
         "DUE_DATE_IS_NOT_ADDED_TO_TASK"
 )

@@ -15,4 +15,4 @@ snapshots['TestGetTaskRelatedRps.test_response_for_invalid_stage_id response'] =
 
 snapshots['TestGetTaskRelatedRps.test_response_for_get_task_rps_details response'] = b'[{"user_id": "123e4567-e89b-12d3-a456-426614174000", "name": "name_0", "profile_pic_url": "pic_url"}, {"user_id": "123e4567-e89b-12d3-a456-426614174001", "name": "name_1", "profile_pic_url": "pic_url"}, {"user_id": "123e4567-e89b-12d3-a456-426614174002", "name": "name_2", "profile_pic_url": "pic_url"}, {"user_id": "123e4567-e89b-12d3-a456-426614174003", "name": "name_3", "profile_pic_url": "pic_url"}]'
 
-snapshots['TestGetTaskRelatedRps.test_response_for_due_date_does_not_exist_to_task response'] = b'{"response": "due date is not added to task", "http_status_code": 404, "res_status": "DUE_DATE_IS_NOT_ADDED_TO_TASK"}'
+snapshots['TestGetTaskRelatedRps.test_response_for_due_date_does_not_exist_to_task response'] = b'{"response": "please add due date to task", "http_status_code": 404, "res_status": "DUE_DATE_IS_NOT_ADDED_TO_TASK"}'
