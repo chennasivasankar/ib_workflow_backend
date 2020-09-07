@@ -2125,7 +2125,8 @@
                   "type":"string",
                   "enum":[
                      "INVALID_STAGE_ID",
-                     "INVALID_TASK_ID"
+                     "INVALID_TASK_ID",
+                     "DUE_DATE_IS_NOT_ADDED_TO_TASK"
                   ]
                }
             },

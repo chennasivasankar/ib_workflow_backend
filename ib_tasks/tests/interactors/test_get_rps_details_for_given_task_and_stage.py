@@ -96,6 +96,34 @@ class TestGetTaskRelatedRps:
             task_display_id)
         presenter_mock.response_for_invalid_stage_id.assert_called_once()
 
+    def test_given_task_has_no_due_date_added_raises_exception(
+            self, storage, task_storage,
+            parameters, presenter_mock):
+        # Arrange
+        task_display_id = parameters.task_id
+        task_id = 1
+        stage_id = parameters.stage_id
+        user_id = parameters.user_id
+        storage.validate_stage_id.return_value = True
+        task_storage.check_is_valid_task_display_id.return_value = True
+        task_storage.get_task_id_for_task_display_id.return_value = 1
+        storage.validate_if_task_is_assigned_to_user_in_given_stage. \
+            return_value = True
+        task_storage.get_user_missed_the_task_due_time.return_value = None
+
+        interactor = GetTaskRPsInteractor(storage=storage, task_storage=task_storage)
+
+        # Act
+        response = interactor.get_task_rps_wrapper(presenter_mock, parameters)
+
+        # Assert
+        task_storage.check_is_valid_task_display_id.assert_called_once_with(
+            task_display_id)
+        storage.validate_if_task_is_assigned_to_user_in_given_stage.assert_called_once_with(
+            task_id, user_id, stage_id
+        )
+        presenter_mock.response_for_due_date_does_not_exist_to_task.assert_called_once()
+
     def test_when_due_datetime_is_not_changed_and_rp_is_already_added(
             self, storage, task_storage, mocker,
             parameters, presenter_mock):
