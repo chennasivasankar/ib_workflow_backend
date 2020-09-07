@@ -32,11 +32,12 @@ def append_action_dict(stage_dict: Dict[str, Any]):
 
 def validation_for_stage_flow_dict(stage_flow_dicts: List[Dict]):
     from schema import Schema, SchemaError
+    from schema import And
     schema = Schema(
         [{
-            "previous_stage_id": str,
-            "action_name": str,
-            "next_stage_id": str
+            "previous_stage_id": And(str, len),
+            "action_name": And(str, len),
+            "next_stage_id": And(str, len)
         }],
         ignore_extra_keys=True
     )
