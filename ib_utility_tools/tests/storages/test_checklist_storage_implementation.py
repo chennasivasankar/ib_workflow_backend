@@ -6,8 +6,9 @@ from ib_utility_tools.models import ChecklistItem, Checklist
 class TestChecklistStorageImplementation:
     @pytest.fixture()
     def storage(self):
-        from ib_utility_tools.storages.checklist_storage_implementation \
-            import ChecklistStorageImplementation
+        from ib_utility_tools.storages.checklist_storage_implementation import (
+            ChecklistStorageImplementation
+        )
         storage = ChecklistStorageImplementation()
         return storage
 

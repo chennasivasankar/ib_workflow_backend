@@ -8,8 +8,9 @@ from ib_utility_tools.interactors.storage_interfaces.dtos import \
 class TimerStorageInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_timer_id_if_exists(self, timer_entity_dto: TimerEntityDTO) -> \
-            Optional[str]:
+    def get_timer_id_if_exists(
+            self, timer_entity_dto: TimerEntityDTO
+    ) -> Optional[str]:
         pass
 
     @abc.abstractmethod
@@ -17,18 +18,20 @@ class TimerStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def update_timer(self,
-                     timer_entity_dto: TimerEntityDTO,
-                     timer_details_dto: TimerDetailsDTO):
+    def update_timer(
+            self, timer_entity_dto: TimerEntityDTO,
+            timer_details_dto: TimerDetailsDTO
+    ):
         pass
 
     @abc.abstractmethod
     def get_timer_details_dto(
-            self, timer_entity_dto: TimerEntityDTO) -> TimerDetailsDTO:
+            self, timer_entity_dto: TimerEntityDTO
+    ) -> TimerDetailsDTO:
         pass
 
     @abc.abstractmethod
-    def get_timer_details_dtos_for_given_entities(
-            self, timer_entity_dtos: List[TimerEntityDTO]) -> \
-            List[CompleteTimerDetailsDTO]:
+    def get_timer_details_dtos(
+            self, timer_entity_dtos: List[TimerEntityDTO]
+    ) -> List[CompleteTimerDetailsDTO]:
         pass

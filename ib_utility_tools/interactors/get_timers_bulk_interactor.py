@@ -14,7 +14,7 @@ class GetTimersBulkInteractor:
     def get_timers_bulk(self, timer_entity_dtos: List[TimerEntityDTO]) \
             -> List[EntityWithTimerDTO]:
         complete_timer_details_dtos = \
-            self.timer_storage.get_timer_details_dtos_for_given_entities(
+            self.timer_storage.get_timer_details_dtos(
                 timer_entity_dtos=timer_entity_dtos)
         self._calculate_and_update_duration_seconds_for_running_timers(
             complete_timer_details_dtos=complete_timer_details_dtos)
