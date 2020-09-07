@@ -21,6 +21,8 @@ from ...storages.storage_implementation import StorageImplementation, \
     StagesStorageImplementation
 from ...storages.task_stage_storage_implementation import \
     TaskStageStorageImplementation
+from ...storages.task_template_storage_implementation import \
+    TaskTemplateStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -80,6 +82,7 @@ def api_wrapper(*args, **kwargs):
     action_storage = ActionsStorageImplementation()
     elastic_storage = ElasticSearchStorageImplementation()
     task_stage_storage = TaskStageStorageImplementation()
+    task_template_storage = TaskTemplateStorageImplementation()
 
     presenter = SaveAndActOnATaskPresenterImplementation()
     interactor = SaveAndActOnATaskInteractor(
@@ -87,7 +90,8 @@ def api_wrapper(*args, **kwargs):
         create_task_storage=create_task_storage,
         storage=storage, field_storage=field_storage,
         stage_storage=stage_storage, action_storage=action_storage,
-        elastic_storage=elastic_storage, task_stage_storage=task_stage_storage
+        elastic_storage=elastic_storage, task_stage_storage=task_stage_storage,
+        task_template_storage=task_template_storage
     )
 
     response = interactor.save_and_act_on_task_wrapper(

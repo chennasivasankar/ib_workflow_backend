@@ -125,3 +125,10 @@ class FieldIdWithGoFIdDTO:
 class FieldWritePermissionRolesDTO:
     field_id: str
     write_permission_roles: List[str]
+
+
+@dataclass
+class FieldIdWithFieldDisplayNameDTO:
+    field_id: str
+    gof_display_name: str
+    field_display_name: str

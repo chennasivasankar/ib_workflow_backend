@@ -5,6 +5,10 @@ from ib_tasks.exceptions.datetime_custom_exceptions import \
     StartDateTimeIsRequired, DueDateTimeIsRequired
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidDateFormat
+from ib_tasks.exceptions.fields_custom_exceptions import \
+    UserDidNotFillRequiredFields
+from ib_tasks.exceptions.gofs_custom_exceptions import \
+    UserDidNotFillRequiredGoFs
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
     StageIdsListEmptyException, InvalidStageIdsListException
@@ -186,3 +190,14 @@ class UpdateTaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_priority_is_required(self, err: PriorityIsRequired):
         pass
+
+    @abc.abstractmethod
+    def raise_user_did_not_fill_required_gofs(self,
+                                              err: UserDidNotFillRequiredGoFs):
+        pass
+
+    @abc.abstractmethod
+    def raise_user_did_not_fill_required_fields(
+            self, err: UserDidNotFillRequiredFields):
+        pass
+

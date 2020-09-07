@@ -454,3 +454,18 @@ DUE_DATE_IS_NOT_ADDED_TO_TASK = (
         "please add due date to task",
         "DUE_DATE_IS_NOT_ADDED_TO_TASK"
 )
+
+USER_DID_NOT_FILL_REQUIRED_GOFS = (
+    "user did not fill required gofs: {}",
+    "USER_DID_NOT_FILL_REQUIRED_GOFS"
+)
+
+USER_DID_NOT_FILL_REQUIRED_FIELDS = (
+    "user did not fill required fields: {}",
+    "USER_DID_NOT_FILL_REQUIRED_FIELDS"
+)
+
+INVALID_TASK_JSON = (
+    "Invalid task json object recieved",
+    "INVALID_TASK_JSON"
+)

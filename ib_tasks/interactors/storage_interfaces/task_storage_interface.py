@@ -60,12 +60,6 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_ids_for_the_stage_ids(
-            self, stage_ids: List[str], task_ids: List[int]) -> List[
-        TaskStageIdsDTO]:
-        pass
-
-    @abc.abstractmethod
     def get_field_ids_for_given_task_template_ids(self,
                                                   task_template_ids: List[
                                                       str]) -> \
