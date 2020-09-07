@@ -61,9 +61,7 @@ class AddNewUserInteractor(ValidationMixin):
         name = add_user_details_dto.name
         company_id = add_user_details_dto.company_id
         team_ids = add_user_details_dto.team_ids
-        # role_ids = add_user_details_dto.role_ids
         new_user_id = self._create_user_in_ib_users(email, name)
-        # role_obj_ids = self.user_storage.get_role_objs_ids(role_ids=role_ids)
         is_admin = False
 
         self.user_storage.create_user(
@@ -71,27 +69,36 @@ class AddNewUserInteractor(ValidationMixin):
             user_id=new_user_id, name=name)
         self.user_storage.add_user_to_the_teams(
             user_id=new_user_id, team_ids=team_ids)
-        # self.user_storage.add_roles_to_the_user(
-        #     user_id=new_user_id, role_ids=role_obj_ids)
+        self._create_elastic_user(user_id=new_user_id, name=name)
+        self._send_email_verify_link(
+            user_id=new_user_id, name=name, email=email)
+
+    def _create_elastic_user(self, user_id: str, name: str):
         elastic_user_id = self.elastic_storage.create_elastic_user(
-            user_id=new_user_id, name=name
+            user_id=user_id, name=name
         )
         self.elastic_storage.create_elastic_user_intermediary(
-            elastic_user_id=elastic_user_id, user_id=new_user_id
+            elastic_user_id=elastic_user_id, user_id=user_id
         )
+
+    @staticmethod
+    def _send_email_verify_link(user_id: str, name: str, email: str):
+        from ib_iam.interactors.send_verify_email_link_interactor import \
+            SendVerifyEmailLinkInteractor
+        interactor = SendVerifyEmailLinkInteractor()
+        interactor.send_verification_email(
+            user_id=user_id, name=name, email=email)
 
     def _validate_add_new_user_details(
             self, user_id,
             add_user_details_dto: AddUserDetailsDTO):
         name = add_user_details_dto.name
         email = add_user_details_dto.email
-        # role_ids = add_user_details_dto.role_ids
         team_ids = add_user_details_dto.team_ids
         company_id = add_user_details_dto.company_id
         self._validate_is_user_admin(user_id=user_id)
         self._validate_name_and_throw_exception(name=name)
         self._validate_email_and_throw_exception(email=email)
-        # self._validate_roles(role_ids=role_ids)
         self._validate_teams(team_ids=team_ids)
         if company_id is not None:
             self._validate_company_id(company_id=company_id)
@@ -124,6 +131,8 @@ class AddNewUserInteractor(ValidationMixin):
             name=name, email=email, user_id=user_id)
         service_adapter.user_service.create_user_profile(
             user_id=user_id, user_profile_dto=user_profile_dto)
+        service_adapter.auth_service.update_is_email_verified_value_in_ib_user_profile_details(
+            user_id=user_id, is_email_verified=False)
 
     @staticmethod
     def _create_user_profile_dto(name, email, user_id):

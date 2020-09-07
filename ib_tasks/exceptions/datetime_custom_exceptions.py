@@ -33,7 +33,21 @@ class DueTimeHasExpiredForToday(Exception):
         self.due_time = given_due_time
 
 
-class DueDateHasExpired(Exception):
+class DueDateTimeHasExpired(Exception):
 
-    def __init__(self, given_due_date: datetime.date):
-        self.due_date = given_due_date
+    def __init__(self, given_due_datetime: datetime.datetime):
+        self.due_datetime = given_due_datetime
+
+
+class DueDateTimeWithoutStartDateTimeIsNotValid(Exception):
+
+    def __init__(self, given_due_datetime: datetime.datetime):
+        self.due_datetime = given_due_datetime
+
+
+class StartDateTimeIsRequired(Exception):
+    pass
+
+
+class DueDateTimeIsRequired(Exception):
+    pass

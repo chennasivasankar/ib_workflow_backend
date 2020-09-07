@@ -2,7 +2,7 @@ import datetime
 from dataclasses import dataclass
 from typing import Union, List, Any, Optional
 
-from ib_tasks.constants.enum import Priority, Searchable, ViewType
+from ib_tasks.constants.enum import Priority, Searchable, ViewType, ActionTypes
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionDetailsDTO, TaskStageIdsDTO, StageDetailsDTO, \
     CurrentStageDetailsDTO
@@ -29,9 +29,8 @@ class CreateTaskDTO:
     action_id: int
     title: str
     description: str
-    start_date: datetime.date
-    due_date: datetime.date
-    due_time: str
+    start_datetime: datetime.datetime
+    due_datetime: datetime.datetime
     priority: Priority
     gof_fields_dtos: List[GoFFieldsDTO]
 
@@ -46,12 +45,12 @@ class StageIdWithAssigneeDTO:
 @dataclass
 class UpdateTaskDTO:
     task_id: int
+    action_type: Optional[ActionTypes]
     created_by_id: str
     title: str
     description: str
-    start_date: datetime.date
-    due_date: datetime.date
-    due_time: str
+    start_datetime: datetime.datetime
+    due_datetime: datetime.datetime
     priority: Priority
     stage_assignee: StageIdWithAssigneeDTO
     gof_fields_dtos: List[GoFFieldsDTO]
@@ -60,12 +59,12 @@ class UpdateTaskDTO:
 @dataclass
 class UpdateTaskWithTaskDisplayIdDTO:
     task_display_id: str
+    action_type: Optional[ActionTypes]
     created_by_id: str
     title: str
     description: str
-    start_date: datetime.date
-    due_date: datetime.date
-    due_time: str
+    start_datetime: datetime.datetime
+    due_datetime: datetime.datetime
     priority: Priority
     stage_assignee: StageIdWithAssigneeDTO
     gof_fields_dtos: List[GoFFieldsDTO]
@@ -78,9 +77,8 @@ class SaveAndActOnTaskDTO:
     action_id: int
     title: str
     description: str
-    start_date: datetime.date
-    due_date: datetime.date
-    due_time: str
+    start_datetime: datetime.datetime
+    due_datetime: datetime.datetime
     priority: Priority
     stage_assignee: StageIdWithAssigneeDTO
     gof_fields_dtos: List[GoFFieldsDTO]
@@ -93,9 +91,8 @@ class SaveAndActOnTaskWithTaskDisplayIdDTO:
     action_id: int
     title: str
     description: str
-    start_date: datetime.date
-    due_date: datetime.date
-    due_time: str
+    start_datetime: datetime.datetime
+    due_datetime: datetime.datetime
     priority: Priority
     stage_assignee: StageIdWithAssigneeDTO
     gof_fields_dtos: List[GoFFieldsDTO]

@@ -9,15 +9,17 @@ def generate_uuid():
     return uuid.uuid4()
 
 
+MULTI_MEDIA_CHOICES = (
+    (MultimediaFormat.IMAGE.value, MultimediaFormat.IMAGE.value),
+    (MultimediaFormat.VIDEO.value, MultimediaFormat.VIDEO.value)
+)
+
+
 class MultiMedia(models.Model):
     id = models.UUIDField(primary_key=True, default=generate_uuid,
                           editable=False)
-    multimedia_choices = (
-        (MultimediaFormat.IMAGE.value, MultimediaFormat.IMAGE.value),
-        (MultimediaFormat.VIDEO.value, MultimediaFormat.VIDEO.value)
-    )
     format_type = models.CharField(
-        max_length=30, choices=multimedia_choices
+        max_length=30, choices=MULTI_MEDIA_CHOICES
     )
-    url = models.TextField()
-    thumbnail_url = models.TextField()
+    url = models.URLField()
+    thumbnail_url = models.URLField()

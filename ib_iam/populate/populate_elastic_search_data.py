@@ -18,7 +18,7 @@ def populate_data():
 
 def populate_existing_users_to_elastic_search_database():
     storage = ElasticStorageImplementation()
-    user_objs = UserDetails.objects.filter(is_admin=False)
+    user_objs = UserDetails.objects.all()
     ElasticUserIntermediary.objects.all().delete()
     for user_obj in user_objs:
         elastic_id = storage.create_elastic_user(

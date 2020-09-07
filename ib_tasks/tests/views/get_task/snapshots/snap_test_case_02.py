@@ -55,6 +55,11 @@ snapshots['TestCase02GetTaskAPITestCase.test_case body'] = {
         }
     ],
     'priority': 'HIGH',
+    'project_info': {
+        'project_id': 'project0',
+        'project_logo_url': 'logo_url0',
+        'project_name': 'project_name0'
+    },
     'stages_with_actions': [
         {
             'actions': [
@@ -81,11 +86,15 @@ snapshots['TestCase02GetTaskAPITestCase.test_case body'] = {
                 }
             ],
             'assignee': {
-                'assignee_id': '123e4567-e89b-12d3-a456-426614174001',
+                'assignee_id': '123e4567-e89b-12d3-a456-426614174000',
                 'name': 'name_0',
-                'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM'
+                'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM',
+                'team_info': {
+                    'team_id': 'team_0',
+                    'team_name': 'team_name0'
+                }
             },
-            'stage_color': 'blue',
+            'stage_color': 'white',
             'stage_display_name': 'name_0',
             'stage_id': 1,
             'task_stage_id': 1
@@ -115,11 +124,15 @@ snapshots['TestCase02GetTaskAPITestCase.test_case body'] = {
                 }
             ],
             'assignee': {
-                'assignee_id': '123e4567-e89b-12d3-a456-426614174002',
+                'assignee_id': '123e4567-e89b-12d3-a456-426614174001',
                 'name': 'name_1',
-                'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM'
+                'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM',
+                'team_info': {
+                    'team_id': 'team_1',
+                    'team_name': 'team_name1'
+                }
             },
-            'stage_color': 'orange',
+            'stage_color': 'black',
             'stage_display_name': 'name_1',
             'stage_id': 2,
             'task_stage_id': 2
@@ -142,11 +155,15 @@ snapshots['TestCase02GetTaskAPITestCase.test_case body'] = {
                 }
             ],
             'assignee': {
-                'assignee_id': '123e4567-e89b-12d3-a456-426614174003',
+                'assignee_id': '123e4567-e89b-12d3-a456-426614174002',
                 'name': 'name_2',
-                'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM'
+                'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM',
+                'team_info': {
+                    'team_id': 'team_2',
+                    'team_name': 'team_name2'
+                }
             },
-            'stage_color': 'green',
+            'stage_color': 'blue',
             'stage_display_name': 'name_2',
             'stage_id': 3,
             'task_stage_id': 3
@@ -169,14 +186,14 @@ snapshots['TestCase02GetTaskAPITestCase.test_case body'] = {
                 }
             ],
             'assignee': None,
-            'stage_color': 'blue',
+            'stage_color': 'white',
             'stage_display_name': 'name_3',
             'stage_id': 4,
             'task_stage_id': 4
         }
     ],
     'start_date': '2020-10-12 04:40:00',
-    'task_id': 'iBWF-1',
+    'task_id': 'IBWF-1',
     'template_id': 'template_0',
     'title': 'title_0'
 }

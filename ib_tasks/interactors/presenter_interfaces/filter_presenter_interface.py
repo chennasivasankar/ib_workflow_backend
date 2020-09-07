@@ -73,7 +73,7 @@ class FilterPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_update_filter_status(
-            self, filter_id: int, is_selected: Status):
+            self, filter_id: int, filter_status: Status):
         pass
 
     @abc.abstractmethod

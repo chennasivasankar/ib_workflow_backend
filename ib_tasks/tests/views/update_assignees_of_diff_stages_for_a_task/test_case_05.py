@@ -1,17 +1,15 @@
 """
-# TODO: Update snapshot asserts to get know what are the details getting save in db
+# TODO: Update snapshot asserts to get know what are the details getting
+save in db
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from ib_iam.tests.factories.models import UserRoleFactory, ProjectRoleFactory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...factories.models import TaskFactory, StageModelFactory, \
-    StagePermittedRolesFactory, \
-    TaskStageHistoryModelFactory
+from ib_tasks.tests.factories.models import TaskFactory, StageFactory
 
 
-class TestCase01UpdateAssigneesOfDiffStagesForATaskAPITestCase(TestUtils):
+class TestCase05UpdateAssigneesOfDiffStagesForATaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -19,42 +17,40 @@ class TestCase01UpdateAssigneesOfDiffStagesForATaskAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['read']}}
 
     @pytest.fixture(autouse=True)
-    def setup(self, api_user):
-        user_obj = api_user
-        user_id = str(user_obj.user_id)
-        from ib_iam.tests.factories.models import UserDetailsFactory
-        UserDetailsFactory.reset_sequence()
-        StagePermittedRolesFactory.reset_sequence()
-        UserRoleFactory.reset_sequence()
+    def setup(self):
+
         TaskFactory.reset_sequence()
-        StageModelFactory.reset_sequence()
-        TaskStageHistoryModelFactory.reset_sequence()
-        UserDetailsFactory.create(user_id=user_id, is_admin=True)
-        role_obj = ProjectRoleFactory(role_id="FIN_PAYMENT_REQUESTER")
-        UserRoleFactory(user_id=user_id, project_role=role_obj)
-        task_obj = TaskFactory(template_id="task_template_id_1")
-        stage_objs = StageModelFactory.create_batch(2,
-                                                    task_template_id=
-                                                    'task_template_id_1')
-        StagePermittedRolesFactory(stage=stage_objs[0])
-        StagePermittedRolesFactory(stage=stage_objs[1])
-        task_stage_obj_1 = TaskStageHistoryModelFactory(task=task_obj,
-                                                        stage=stage_objs[0],
-                                                        assignee_id="assignee_id_1")
-        task_stage_obj_2 = TaskStageHistoryModelFactory(task=task_obj,
-                                                        stage=stage_objs[1])
-        return user_id
+        TaskFactory()
+        value = [1, -1, 3]
+        import factory
+        StageFactory.create_batch(size=4, value=factory.Iterator(value))
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):
-        body = {'stage_assignees': [
-            {'stage_id': 1, 'assignee_id': setup}]}
-        path_params = {"task_id": 2}
+        body = {
+            "task_id": "IBWF-1",
+            "stage_assignees": [
+                {
+                    "stage_id": 1,
+                     "assignee_id": "123e4567-e89b-12d3-a456-42661417400",
+                     "team_id": "123e4567-e89b-12d3-a456-426614174001"
+                },
+                {
+                    "stage_id": 2,
+                    "assignee_id": "123e4567-e89b-12d3-a456-42761417400",
+                    "team_id": "123e4567-e89b-12d3-a456-426714174001"
+                },
+                {
+                    "stage_id": 3,
+                    "assignee_id": "123e4567-e89b-12d3-a476-42761417400",
+                    "team_id": "123e4567-e89b-12d3-a458-426714174001"
+                }
+            ]
+        }
+        path_params = {}
         query_params = {}
         headers = {}
         response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
-
-
