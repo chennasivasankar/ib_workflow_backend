@@ -1,5 +1,7 @@
 from typing import List
 
+from ib_discussions.exceptions.custom_exceptions import \
+    EmptyCommentAndMultiMediaException
 from ib_discussions.interactors.dtos.dtos import CreateCompleteReplyToCommentDTO
 from ib_discussions.interactors.presenter_interfaces.dtos import \
     CommentIdWithEditableStatusDTO
@@ -19,7 +21,6 @@ class CreateReplyToCommentInteractor:
             self, presenter: CreateReplyPresenterInterface,
             create_complete_reply_to_comment_dto: CreateCompleteReplyToCommentDTO
     ):
-        # TODO: if comment_content empty we should have atleast multimedia input
         from ib_discussions.adapters.auth_service import InvalidUserIds
         from ib_discussions.exceptions.custom_exceptions import \
             CommentIdNotFound
@@ -29,6 +30,9 @@ class CreateReplyToCommentInteractor:
                 create_complete_reply_to_comment_dto= \
                     create_complete_reply_to_comment_dto
             )
+        except EmptyCommentAndMultiMediaException:
+            response = \
+                presenter.response_for_comment_or_multimedia_should_be_provided()
         except CommentIdNotFound:
             response = presenter.response_for_comment_id_not_found()
         except InvalidUserIds as err:
@@ -57,6 +61,8 @@ class CreateReplyToCommentInteractor:
             self,
             create_complete_reply_to_comment_dto: CreateCompleteReplyToCommentDTO
     ):
+        self._validate_empty_comment_content_and_multimedia(
+            create_complete_reply_to_comment_dto)
         self._validate_comment_id_and_mention_user_ids(
             create_complete_reply_to_comment_dto)
 
@@ -89,6 +95,17 @@ class CreateReplyToCommentInteractor:
             )
         return comment_dto, comment_with_editable_status_dto, user_profile_dtos, \
                comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos
+
+    @staticmethod
+    def _validate_empty_comment_content_and_multimedia(
+            create_complete_reply_to_comment_dto: CreateCompleteReplyToCommentDTO
+    ):
+        comment_content = create_complete_reply_to_comment_dto.comment_content
+        multimedia_dtos = create_complete_reply_to_comment_dto.multimedia_dtos
+        is_empty_comment_content_and_multimedia = \
+            not (comment_content or multimedia_dtos)
+        if is_empty_comment_content_and_multimedia:
+            raise EmptyCommentAndMultiMediaException
 
     def _validate_comment_id_and_mention_user_ids(
             self,
