@@ -204,38 +204,51 @@ class TestChecklistStorageImplementation:
     def test_get_checklist_items_dto(
             self, storage, create_checklist_items, expected_checklist_item_dtos
     ):
+        # Arrange
         checklist_id, _ = create_checklist_items
 
+        # Act
         checklist_item_dtos = storage.get_checklist_item_dtos(
-            checklist_id=checklist_id)
+            checklist_id=checklist_id
+        )
 
+        # Assert
         assert checklist_item_dtos == expected_checklist_item_dtos
 
     @pytest.mark.django_db
     def test_delete_checklist_items_bulk_deletes_the_items(
-            self, storage, create_checklist_items):
-        _, checklist_item_ids = \
-            create_checklist_items
+            self, storage, create_checklist_items
+    ):
+        # Arrange
+        _, checklist_item_ids = create_checklist_items
         expected_response = False
 
+        # Act
         storage.delete_checklist_items_bulk(
-            checklist_item_ids=checklist_item_ids)
+            checklist_item_ids=checklist_item_ids
+        )
 
+        # Assert
         checklist_items = ChecklistItem.objects.filter(
-            checklist_item_id__in=checklist_item_ids)
+            checklist_item_id__in=checklist_item_ids
+        )
         actual_response = checklist_items.exists()
+
         assert actual_response == expected_response
 
     @pytest.mark.django_db
     def test_get_valid_checklist_item_ids_valid_checklist_item_ids(
-            self, storage, create_checklist_items):
-        _, checklist_item_ids = \
-            create_checklist_items
+            self, storage, create_checklist_items
+    ):
+        # Arrange
+        _, checklist_item_ids = create_checklist_items
         expected_checklist_item_ids = checklist_item_ids.copy()
-        checklist_item_ids.append(
-            '09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5d')
+        checklist_item_ids.append('09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5d')
 
+        # Act
         actual_checklist_item_ids = storage.get_valid_checklist_item_ids(
-            checklist_item_ids=checklist_item_ids)
+            checklist_item_ids=checklist_item_ids
+        )
 
+        # Assert
         assert list(actual_checklist_item_ids) == expected_checklist_item_ids
