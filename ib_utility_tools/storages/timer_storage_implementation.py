@@ -43,7 +43,7 @@ class TimerStorageImplementation(TimerStorageInterface):
             duration_in_seconds=timer_details_dto.duration_in_seconds,
             is_running=timer_details_dto.is_running)
 
-    def get_timer_details_dtos_for_given_entities(
+    def get_timer_details_dtos(
             self, timer_entity_dtos: List[TimerEntityDTO]) -> \
             List[CompleteTimerDetailsDTO]:
         entity_q_objects = self._prepare_entity_q_objects_for_given_dtos(

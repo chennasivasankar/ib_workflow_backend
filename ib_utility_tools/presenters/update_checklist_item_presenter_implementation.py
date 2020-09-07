@@ -24,7 +24,7 @@ class UpdateChecklistItemPresenterImplementation(
         }
         return self.prepare_404_not_found_response(response_dict=response_dict)
 
-    def get_response_for_empty_checklist_item_text_exception(self):
+    def response_for_empty_checklist_item_text_exception(self):
         from ib_utility_tools.constants.exception_messages import \
             EMPTY_CHECKLIST_ITEM_TEXT_FOR_UPDATE_CHECKLIST_ITEM
         response_dict = {
