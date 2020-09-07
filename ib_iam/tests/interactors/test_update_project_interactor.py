@@ -1,50 +1,55 @@
 import mock
 import pytest
-
 from ib_iam.interactors.dtos.dtos import CompleteProjectDetailsDTO
 
 
-class TestUpdateProjectIneractor:
+class TestUpdateProjectInteractor:
 
     @pytest.fixture
     def project_storage(self):
-        from ib_iam.interactors.storage_interfaces \
-            .project_storage_interface import ProjectStorageInterface
+        from ib_iam.interactors.storage_interfaces.project_storage_interface import (
+            ProjectStorageInterface
+        )
         storage = mock.create_autospec(ProjectStorageInterface)
         return storage
 
     @pytest.fixture
     def user_storage(self):
-        from ib_iam.interactors.storage_interfaces \
-            .user_storage_interface import UserStorageInterface
+        from ib_iam.interactors.storage_interfaces.user_storage_interface import (
+            UserStorageInterface
+        )
         storage = mock.create_autospec(UserStorageInterface)
         return storage
 
     @pytest.fixture
     def team_storage(self):
-        from ib_iam.interactors.storage_interfaces \
-            .team_storage_interface import TeamStorageInterface
+        from ib_iam.interactors.storage_interfaces.team_storage_interface import (
+            TeamStorageInterface
+        )
         storage = mock.create_autospec(TeamStorageInterface)
         return storage
 
     @pytest.fixture
     def presenter(self):
-        from ib_iam.interactors.presenter_interfaces.update_project_presenter_interface import \
+        from ib_iam.interactors.presenter_interfaces.update_project_presenter_interface import (
             UpdateProjectPresenterInterface
+        )
         storage = mock.create_autospec(UpdateProjectPresenterInterface)
         return storage
 
     @pytest.fixture
     def interactor(self, project_storage, team_storage, user_storage):
         from ib_iam.interactors.project_interactor import ProjectInteractor
-        interactor = ProjectInteractor(project_storage=project_storage,
-                                       user_storage=user_storage,
-                                       team_storage=team_storage)
+        interactor = ProjectInteractor(
+            project_storage=project_storage, user_storage=user_storage,
+            team_storage=team_storage
+        )
         return interactor
 
     @pytest.fixture
     def roles(self):
         from ib_iam.tests.factories.storage_dtos import RoleDTOFactory
+        RoleDTOFactory.reset_sequence(0)
         role_ids = ["role1", None]
         roles = [RoleDTOFactory(role_id=role_id) for role_id in role_ids]
         return roles
@@ -52,6 +57,7 @@ class TestUpdateProjectIneractor:
     @pytest.fixture
     def duplicate_roles(self):
         from ib_iam.tests.factories.storage_dtos import RoleDTOFactory
+        RoleDTOFactory.reset_sequence(0)
         role_ids = ["role1", "role1"]
         roles = [RoleDTOFactory(role_id=role_id) for role_id in role_ids]
         return roles
@@ -231,13 +237,9 @@ class TestUpdateProjectIneractor:
         presenter.get_invalid_role_ids_response.assert_called_once()
 
     def test_update_project_returns_success_response(
-            self, project_storage, interactor, presenter, roles):
-        from ib_iam.interactors.dtos.dtos import CompleteProjectDetailsDTO
-        from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
             self, project_storage, user_storage, team_storage, interactor,
             presenter, roles):
-        from ib_iam.tests.factories.storage_dtos import \
-            ProjectDTOFactory
+        from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
         project_id = "1"
         ProjectDTOFactory.reset_sequence(1)
         project_dto = ProjectDTOFactory(project_id=project_id)
