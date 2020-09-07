@@ -11,7 +11,7 @@ class TestCreateChecklistItemPresenterImplementation:
         presenter = CreateChecklistItemPresenterImplementation()
         return presenter
 
-    def test_whether_it_gives_empty_checklist_item_text_response(
+    def test_with_empty_check_list_item_then_raise_empty_checklist_item_text_response(
             self, presenter
     ):
         # Arrange
@@ -38,7 +38,7 @@ class TestCreateChecklistItemPresenterImplementation:
         assert actual_res_status == expected_res_status
         assert expected_http_status_code == actual_http_status_code
 
-    def test_whether_it_returns_checklist_id_response(self, presenter):
+    def test_with_valid_details_then_returns_checklist_id_response(self, presenter):
         # Arrange
         checklist_item_id = "checklist_item_id"
         expected_response = {"checklist_item_id": checklist_item_id}
