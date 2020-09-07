@@ -54,7 +54,7 @@ class TestProjectStorageImplementation:
         project_storage = ProjectStorageImplementation()
 
         actual_project_ids = project_storage \
-            .get_valid_project_ids_from_given_project_ids(
+            .get_valid_project_ids(
             project_ids=invalid_project_ids)
 
         assert actual_project_ids == expected_project_ids
@@ -395,7 +395,7 @@ class TestProjectStorageImplementation:
              for team_object in team_objects]
         project_storage = ProjectStorageImplementation()
 
-        project_storage.remove_teams_from_project(
+        project_storage.remove_teams(
             project_id=project_id, team_ids=team_ids_to_be_removed)
 
         from ib_iam.models import ProjectTeam
@@ -457,3 +457,73 @@ class TestProjectStorageImplementation:
         role_ids = ProjectRole.objects.filter(role_id__in=role_ids) \
             .values_list("role_id", flat=True)
         assert list(role_ids) == expected_role_ids
+
+    @pytest.mark.django_db
+    def test_get_user_team_ids_dtos_for_given_project(self):
+        from ib_iam.tests.factories.models import (
+            ProjectFactory, ProjectTeamFactory, TeamFactory, TeamUserFactory)
+        project_id = "project_1"
+        project_object = ProjectFactory.create(project_id=project_id)
+        team_ids = ["31be920b-7b4c-49e7-8adb-41a0c18da848",
+                    "31be920b-7b4c-49e7-8adb-41a0c18da849"]
+        team_objects = [TeamFactory.create(team_id=team_id)
+                        for team_id in team_ids]
+        project_team_objects = [
+            ProjectTeamFactory.create(project=project_object, team=team_object)
+            for team_object in team_objects]
+        team_users = [
+            {"team": team_objects[0], "user_id": "user1"},
+            {"team": team_objects[0], "user_id": "user2"},
+            {"team": team_objects[1], "user_id": "user1"}
+        ]
+        team_user_objects = [TeamUserFactory.create(
+            team=team_user["team"], user_id=team_user["user_id"])
+            for team_user in team_users]
+        from ib_iam.interactors.storage_interfaces.dtos import \
+            UserIdAndTeamIdsDTO
+        expected_user_id_and_team_ids_dtos = [
+            UserIdAndTeamIdsDTO(
+                user_id='user1',
+                team_ids=['31be920b-7b4c-49e7-8adb-41a0c18da848',
+                          '31be920b-7b4c-49e7-8adb-41a0c18da849']),
+            UserIdAndTeamIdsDTO(
+                user_id='user2',
+                team_ids=['31be920b-7b4c-49e7-8adb-41a0c18da848'])
+        ]
+        project_storage = ProjectStorageImplementation()
+
+        actual_user_id_and_team_ids_dtos = project_storage \
+            .get_user_id_with_teams_ids_dtos(project_id=project_id)
+
+        assert actual_user_id_and_team_ids_dtos == \
+               expected_user_id_and_team_ids_dtos
+
+    @pytest.mark.django_db
+    def test_remove_user_roles_related_to_given_project_and_user(self):
+        from ib_iam.tests.factories.models import (
+            ProjectFactory, ProjectRoleFactory, UserRoleFactory)
+        project_id = "project_1"
+        project_object = ProjectFactory.create(project_id=project_id)
+        project_role_ids = ["ROLE_1", "ROLE_2"]
+        project_role_objects = [
+            ProjectRoleFactory.create(project=project_object,
+                                      role_id=project_role_id)
+            for project_role_id in project_role_ids]
+        expected_role_id = "ROLE_3"
+        project_role_objects.append(ProjectRoleFactory(
+            role_id=expected_role_id))
+        user_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        user_role_objects = [
+            UserRoleFactory(user_id=user_id, project_role=project_role_object)
+            for project_role_object in project_role_objects
+        ]
+        user_ids = [user_id]
+        project_storage = ProjectStorageImplementation()
+
+        project_storage.remove_user_roles(
+            project_id=project_id, user_ids=user_ids)
+
+        from ib_iam.models import UserRole
+        user_role_objects = UserRole.objects.filter(user_id__in=user_ids)
+        assert len(user_role_objects) == 1
+        assert user_role_objects[0].project_role_id == expected_role_id

@@ -100,3 +100,15 @@ class ActionStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_stage_id_for_given_action_id(self, action_id: int) -> int:
         pass
+
+    @abc.abstractmethod
+    def get_user_permitted_action_ids_given_stage_ids(
+            self, user_roles: List[str],
+            stage_ids: List[int]
+    ) -> List[int]:
+        pass
+
+    @abc.abstractmethod
+    def get_action_ids_given_stage_ids(
+            self, stage_ids: List[int]) -> List[int]:
+        pass

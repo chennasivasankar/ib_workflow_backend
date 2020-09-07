@@ -16,7 +16,7 @@ class TestCase01GetTemplateStageFlowAPITestCase(TestUtils):
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {}
-        path_params = {"template_id": "ibgroup"}
+        path_params = {"project_id": "ibgroup", "template_id": "ibgroup"}
         query_params = {}
         headers = {}
         response = self.make_api_call(body=body,

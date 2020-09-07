@@ -33,27 +33,27 @@ class TestUpdateChecklistItemInteractor:
     def test_given_item_text_is_empty_returns_empty_text_exception_response(
             self, interactor, storage_mock, presenter_mock):
         checklist_item_with_id_dto = ChecklistItemWithIdDTOFactory(text="")
-        presenter_mock.get_response_for_empty_checklist_item_text_exception = \
+        presenter_mock.response_for_empty_checklist_item_text_exception = \
             mock.Mock()
 
         interactor.update_checklist_item_wrapper(
             checklist_item_with_id_dto=checklist_item_with_id_dto,
             presenter=presenter_mock)
 
-        presenter_mock.get_response_for_empty_checklist_item_text_exception \
+        presenter_mock.response_for_empty_checklist_item_text_exception \
             .assert_called_once()
 
     def test_item_text_has_only_spaces_returns_empty_text_exception_response(
             self, interactor, storage_mock, presenter_mock):
         checklist_item_with_id_dto = ChecklistItemWithIdDTOFactory(text="   ")
-        presenter_mock.get_response_for_empty_checklist_item_text_exception = \
+        presenter_mock.response_for_empty_checklist_item_text_exception = \
             mock.Mock()
 
         interactor.update_checklist_item_wrapper(
             checklist_item_with_id_dto=checklist_item_with_id_dto,
             presenter=presenter_mock)
 
-        presenter_mock.get_response_for_empty_checklist_item_text_exception \
+        presenter_mock.response_for_empty_checklist_item_text_exception \
             .assert_called_once()
 
     def test_given_invalid_checklist_item_id_returns_checklist_item_id_not_found_exception_response(

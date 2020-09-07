@@ -1,6 +1,5 @@
 """
-# TODO: Update snapshot asserts to get know what are the details getting
-save in db
+# Given use who is not in project raise exception
 """
 from unittest.mock import patch
 

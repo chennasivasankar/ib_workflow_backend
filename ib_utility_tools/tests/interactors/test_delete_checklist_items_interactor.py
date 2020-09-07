@@ -42,7 +42,7 @@ class TestDeleteChecklistItemsInteractor:
             checklist_item_ids=checklist_item_ids)
         storage_mock.get_valid_checklist_item_ids.assert_called_once_with(
             checklist_item_ids=checklist_item_ids)
-        presenter_mock.get_success_response_for_delete_checklist_items \
+        presenter_mock.get_response_for_delete_checklist_items \
             .return_value = mock.Mock()
 
     def test_given_duplicate_item_ids_then_raise_duplicate_item_ids_response(
@@ -54,7 +54,7 @@ class TestDeleteChecklistItemsInteractor:
             presenter=presenter_mock)
 
         presenter_mock \
-            .raise_duplicate_checklist_item_ids_exception \
+            .response_for_duplicate_checklist_item_ids_exception \
             .return_value = mock.Mock()
 
     def test_given_invalid_item_ids_then_raise_invalid_item_ids_response(
@@ -69,5 +69,5 @@ class TestDeleteChecklistItemsInteractor:
         storage_mock.get_valid_checklist_item_ids.assert_called_once_with(
             checklist_item_ids=checklist_item_ids)
         presenter_mock \
-            .raise_invalid_checklist_item_ids_exception \
+            .response_for_invalid_checklist_item_ids_exception \
             .return_value = mock.Mock()
