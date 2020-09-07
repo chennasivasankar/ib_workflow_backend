@@ -190,14 +190,3 @@ class UpdateTaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_priority_is_required(self, err: PriorityIsRequired):
         pass
-
-    @abc.abstractmethod
-    def raise_user_did_not_fill_required_gofs(self,
-                                              err: UserDidNotFillRequiredGoFs):
-        pass
-
-    @abc.abstractmethod
-    def raise_user_did_not_fill_required_fields(
-            self, err: UserDidNotFillRequiredFields):
-        pass
-

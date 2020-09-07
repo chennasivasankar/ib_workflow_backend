@@ -67,3 +67,9 @@ class GoFWritePermissionRolesDTO:
 class GoFIdWithGoFDisplayNameDTO:
     gof_id: str
     gof_display_name: str
+
+
+@dataclass
+class GoFIdWithTaskGoFIdDTO:
+    gof_id: str
+    task_gof_id: int

@@ -21,3 +21,8 @@ class InvalidKeyError(Exception):
 
 class InvalidCustomLogicException(Exception):
     pass
+
+
+class InvalidStageActionException(Exception):
+    def __init__(self, stage_actions: str):
+        self.stage_actions = stage_actions
