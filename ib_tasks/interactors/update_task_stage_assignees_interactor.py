@@ -149,6 +149,7 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_id=task_id,
             db_stage_ids=matched_stage_ids_in_stage_assignee_dtos)
 
+
         task_id_with_stage_assignee_dtos_for_creation = self. \
             _get_task_id_with_stage_assignee_dtos_given_task_stage_ids(
             stage_ids_that_are_not_matched, task_id_with_stage_assignees_dto)

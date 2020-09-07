@@ -1,11 +1,13 @@
 """
 # TODO: Update test case description
 """
+from unittest.mock import patch
 
 import factory
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
+from ib_tasks.adapters.auth_service import AuthService
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Searchable
 from ib_tasks.tests.factories.models import (
     TaskFactory,
@@ -80,11 +82,15 @@ class TestCase09GetTaskAPITestCase(TestUtils):
             role=factory.Iterator(roles),
             permission_type=factory.Iterator(permission_type)
         )
-        stage_objs = StageModelFactory.create_batch(size=4)
+        stage_colors = ["white", "black", "blue"]
+        stage_objs = StageModelFactory.create_batch(
+            size=4,
+            stage_color=factory.Iterator(stage_colors)
+        )
         assignee_ids = [
+            "123e4567-e89b-12d3-a456-426614174000",
             "123e4567-e89b-12d3-a456-426614174001",
-            "123e4567-e89b-12d3-a456-426614174002",
-            "123e4567-e89b-12d3-a456-426614174003"
+            "123e4567-e89b-12d3-a456-426614174002"
         ]
 
         CurrentTaskStageModelFactory.create_batch(size=4, task=task_obj,
@@ -103,12 +109,16 @@ class TestCase09GetTaskAPITestCase(TestUtils):
         )
 
     @pytest.mark.django_db
+    @patch.object(AuthService, "get_user_id_team_details_dtos")
     def test_case(
-            self, snapshot, setup, mocker
+            self, user_id_team_details_dtos_mock, snapshot, setup, mocker
     ):
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        get_user_role_ids(mocker)
+            get_user_role_ids_based_on_project_mock
+        get_user_role_ids_based_on_project_mock(mocker)
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_projects_info_for_given_ids_mock
+        get_projects_info_for_given_ids_mock(mocker)
         from ib_tasks.tests.common_fixtures.adapters \
             .searchable_details_service import \
             searchable_details_dtos_mock
@@ -117,6 +127,11 @@ class TestCase09GetTaskAPITestCase(TestUtils):
             .assignees_details_service \
             import assignee_details_dtos_mock
         assignee_details_dtos_mock(mocker)
+        from ib_tasks.tests.factories.adapter_dtos import \
+            TeamDetailsWithUserIdDTOFactory
+        TeamDetailsWithUserIdDTOFactory.reset_sequence()
+        user_id_team_details_dtos_mock.return_value = \
+            TeamDetailsWithUserIdDTOFactory.create_batch(size=3)
         body = {}
         path_params = {}
         query_params = {'task_id': "iBWF-1"}

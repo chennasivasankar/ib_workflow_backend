@@ -46,14 +46,10 @@ class CreateOrUpdateTaskStorageImplementation(
 
     def update_task_with_given_task_details(self, task_dto: UpdateTaskDTO):
         task_obj = Task.objects.get(id=task_dto.task_id)
-        import datetime
-        due_date_time = datetime.datetime.combine(
-            task_dto.due_date,
-            datetime.datetime.strptime(task_dto.due_time, TIME_FORMAT).time())
         task_obj.title = task_dto.title
         task_obj.description = task_dto.description
-        task_obj.start_date = task_dto.start_date
-        task_obj.due_date = due_date_time
+        task_obj.start_date = task_dto.start_datetime
+        task_obj.due_date = task_dto.due_datetime
         task_obj.priority = task_dto.priority
         task_obj.save()
 
@@ -286,21 +282,14 @@ class CreateOrUpdateTaskStorageImplementation(
     def create_task_with_given_task_details(self,
                                             task_dto: CreateTaskDTO) -> int:
         from ib_tasks.models.task import Task
-        import datetime
-        from ib_tasks.constants.config import TIME_FORMAT
-        due_date_time = datetime.datetime.combine(
-            task_dto.due_date,
-            datetime.datetime.strptime(task_dto.due_time, TIME_FORMAT).time()
-        )
         task_object = Task.objects.create(
             task_display_id=None,
             project_id=task_dto.project_id,
             template_id=task_dto.task_template_id,
             created_by=task_dto.created_by_id,
             title=task_dto.title, description=task_dto.description,
-            start_date=task_dto.start_date, due_date=due_date_time,
-            priority=task_dto.priority
-        )
+            start_date=task_dto.start_datetime, due_date=task_dto.due_datetime,
+            priority=task_dto.priority)
         from ib_tasks.constants.constants import TASK_DISPLAY_ID
         task_object.task_display_id = TASK_DISPLAY_ID.format(task_object.id)
         task_object.save()

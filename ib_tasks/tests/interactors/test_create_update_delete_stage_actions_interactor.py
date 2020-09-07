@@ -3,10 +3,10 @@ import json
 from unittest.mock import create_autospec
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTransitionTemplateIds
-from ib_tasks.interactors.create_update_delete_stage_actions import (
+from ib_tasks.interactors.create_or_update_or_delete_stage_actions import (
     EmptyStageDisplayLogic, DuplicateStageButtonsException,
     DuplicateStageActionNamesException, EmptyStageButtonText,
-    CreateUpdateDeleteStageActionsInteractor
+    CreateOrUpdateOrDeleteStageActions
 )
 from ib_tasks.interactors.storage_interfaces.action_storage_interface \
     import ActionStorageInterface
@@ -30,16 +30,18 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         storage = create_autospec(ActionStorageInterface)
         template_storage = create_autospec(TaskTemplateStorageInterface)
         storage.get_valid_stage_ids.return_value = ["stage_id_1"]
-        interactor = CreateUpdateDeleteStageActionsInteractor(
+        interactor = CreateOrUpdateOrDeleteStageActions(
             storage=storage,
-            template_storage=template_storage,
-            actions_dto=actions_dto
+            template_storage=template_storage
         )
-        from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageIdsException
+        from ib_tasks.exceptions.stage_custom_exceptions \
+            import InvalidStageIdsException
 
         # Act
         with pytest.raises(InvalidStageIdsException) as err:
-            assert interactor.create_update_delete_stage_actions()
+            interactor.create_or_update_or_delete_stage_actions(
+                action_dtos=actions_dto
+            )
 
         # Assert
         assert err.value.stage_ids_dict == expected_stage_ids_dict
@@ -57,16 +59,16 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         template_storage = create_autospec(TaskTemplateStorageInterface)
         storage.get_valid_stage_ids.return_value = ["stage_id_1", "stage_id_2"]
         template_storage.get_valid_transition_template_ids.return_value = []
-        interactor = CreateUpdateDeleteStageActionsInteractor(
+        interactor = CreateOrUpdateOrDeleteStageActions(
             storage=storage,
-            template_storage=template_storage,
-            actions_dto=actions_dto
+            template_storage=template_storage
         )
 
         # Act
         with pytest.raises(InvalidTransitionTemplateIds) as err:
-            assert interactor.create_update_delete_stage_actions()
-
+            interactor.create_or_update_or_delete_stage_actions(
+                action_dtos=actions_dto
+            )
         # Assert
 
         storage.get_valid_stage_ids \
@@ -91,10 +93,9 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         ["template_1", "template_2", "template_3"]
         stage_ids = ["stage_id_1", "stage_id_2", "stage_id_3"]
         storage.get_valid_stage_ids.return_value = stage_ids
-        interactor = CreateUpdateDeleteStageActionsInteractor(
+        interactor = CreateOrUpdateOrDeleteStageActions(
             storage=storage,
-            template_storage=template_storage,
-            actions_dto=actions_dto
+            template_storage=template_storage
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import prepare_get_roles_for_invalid_mock
@@ -104,7 +105,9 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
         # Act
         with pytest.raises(InvalidRolesException) as err:
-            interactor.create_update_delete_stage_actions()
+            interactor.create_or_update_or_delete_stage_actions(
+                action_dtos=actions_dto
+            )
 
         # Assert
         assert err.value.stage_roles_dict == expected_stage_role_dict
@@ -124,10 +127,9 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         template_storage.get_valid_transition_template_ids.return_value = \
             ["template_1", "template_2", "template_3"]
         storage.get_valid_stage_ids.return_value = stage_ids
-        interactor = CreateUpdateDeleteStageActionsInteractor(
+        interactor = CreateOrUpdateOrDeleteStageActions(
             storage=storage,
-            template_storage=template_storage,
-            actions_dto=actions_dto
+            template_storage=template_storage
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import prepare_get_roles_for_valid_mock
@@ -135,7 +137,9 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
         # Act
         with pytest.raises(EmptyStageDisplayLogic) as err:
-            interactor.create_update_delete_stage_actions()
+            interactor.create_or_update_or_delete_stage_actions(
+                action_dtos=actions_dto
+            )
 
         assert err.value.stage_ids_dict == expected_stage_ids_dict
         mocker_obj.assert_called_once()
@@ -156,10 +160,9 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         storage = create_autospec(ActionStorageInterface)
         stage_ids = ["stage_id_1", "stage_id_2", "stage_id_3"]
         storage.get_valid_stage_ids.return_value = stage_ids
-        interactor = CreateUpdateDeleteStageActionsInteractor(
+        interactor = CreateOrUpdateOrDeleteStageActions(
             storage=storage,
-            template_storage=template_storage,
-            actions_dto=actions_dto
+            template_storage=template_storage
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import prepare_get_roles_for_valid_mock
@@ -167,7 +170,9 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
         # Act
         with pytest.raises(EmptyStageButtonText) as err:
-            interactor.create_update_delete_stage_actions()
+            interactor.create_or_update_or_delete_stage_actions(
+                action_dtos=actions_dto
+            )
 
         assert err.value.stage_ids_dict == expected_stage_ids_dict
         mocker_obj.assert_called_once()
@@ -192,10 +197,9 @@ class TestCreateUpdateDeleteStageActionsInteractor:
              ]
         stage_ids = ["stage_id_1", "stage_id_2"]
         storage.get_valid_stage_ids.return_value = stage_ids
-        interactor = CreateUpdateDeleteStageActionsInteractor(
+        interactor = CreateOrUpdateOrDeleteStageActions(
             storage=storage,
-            template_storage=template_storage,
-            actions_dto=actions_dto
+            template_storage=template_storage
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import prepare_get_roles_for_valid_mock
@@ -203,7 +207,9 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
         # Act
         with pytest.raises(DuplicateStageButtonsException) as err:
-            interactor.create_update_delete_stage_actions()
+            interactor.create_or_update_or_delete_stage_actions(
+                action_dtos=actions_dto
+            )
 
         assert err.value.stage_buttons_dict == expected_stage_buttons_dict
         mocker_obj.assert_called_once()
@@ -227,10 +233,9 @@ class TestCreateUpdateDeleteStageActionsInteractor:
              "template_3"
              ]
         storage.get_valid_stage_ids.return_value = ["stage_id_1", "stage_id_2"]
-        interactor = CreateUpdateDeleteStageActionsInteractor(
+        interactor = CreateOrUpdateOrDeleteStageActions(
             storage=storage,
-            template_storage=template_storage,
-            actions_dto=actions_dto
+            template_storage=template_storage
         )
 
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
@@ -239,13 +244,31 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
         # Act
         with pytest.raises(DuplicateStageActionNamesException) as err:
-            interactor.create_update_delete_stage_actions()
+            interactor.create_or_update_or_delete_stage_actions(
+                action_dtos=actions_dto
+            )
 
         assert err.value.stage_actions == expected_stage_actions_dict
         mocker_obj.assert_called_once()
 
+    @pytest.fixture()
+    def create_update_mock(self, mocker):
+
+        path = 'ib_tasks.interactors.create_or_update_stage_actions_interactor.CreateOrUpdateStageActions' \
+               '.create_or_update_stage_actions'
+        mock_obj = mocker.patch(path)
+        return mock_obj
+
+    @pytest.fixture()
+    def delete_stage_action_mock(self, mocker):
+        path = 'ib_tasks.interactors.delete_stage_actions_interactor.DeleteStageActionsInteractor' \
+               '.delete_stage_actions_wrapper'
+        mock_obj = mocker.patch(path)
+        return mock_obj
+
     @staticmethod
-    def test_given_create_stage_actions_creates_actions(mocker):
+    def test_given_create_stage_actions_creates_actions(
+            mocker, create_update_mock, delete_stage_action_mock):
 
         StageActionDTOFactory.reset_sequence(0)
         actions_dto = StageActionDTOFactory.create_batch(size=2)
@@ -260,111 +283,28 @@ class TestCreateUpdateDeleteStageActionsInteractor:
              ]
         storage.get_valid_stage_ids.return_value = stage_ids
         storage.get_stage_action_names.return_value = stage_actions_dto
-        interactor = CreateUpdateDeleteStageActionsInteractor(
+        interactor = CreateOrUpdateOrDeleteStageActions(
             storage=storage,
-            template_storage=template_storage,
-            actions_dto=actions_dto
+            template_storage=template_storage
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import prepare_get_roles_for_valid_mock
         mocker_obj = prepare_get_roles_for_valid_mock(mocker)
 
         # Act
-        interactor.create_update_delete_stage_actions()
-
-        # Assert
-        storage.get_stage_action_names\
-            .assert_called_once_with(stage_ids=stage_ids)
-        storage.create_stage_actions \
-            .assert_called_once_with(stage_actions=create_stage_actions_dto)
-        mocker_obj.assert_called_once()
-
-    @staticmethod
-    def test_given_update_stage_actions_updates_actions(mocker):
-        from ib_tasks.tests.factories.interactor_dtos import StageActionDTOFactory
-        StageActionDTOFactory.reset_sequence(0)
-        actions_dto = StageActionDTOFactory.create_batch(size=2)
-        from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO
-        stage_actions_dto = [
-            StageActionNamesDTO(
-                stage_id="stage_id_1", action_names=["action_name_1"]
-            )
-        ]
-        update_stage_actions_dto = [actions_dto[0]]
-        stage_ids = ["stage_id_1", "stage_id_2"]
-        storage = create_autospec(ActionStorageInterface)
-        template_storage = create_autospec(TaskTemplateStorageInterface)
-        template_storage.get_valid_transition_template_ids.return_value = \
-            ["template_1", "template_2",
-             "template_3"
-             ]
-        storage.get_valid_stage_ids.return_value = stage_ids
-        storage.get_stage_action_names.return_value = stage_actions_dto
-        interactor = CreateUpdateDeleteStageActionsInteractor(
-            storage=storage,
-            template_storage=template_storage,
-            actions_dto=actions_dto
+        interactor.create_or_update_or_delete_stage_actions(
+            action_dtos=actions_dto
         )
-        from ib_tasks.tests.common_fixtures.adapters.roles_service \
-            import prepare_get_roles_for_valid_mock
-        mocker_obj = prepare_get_roles_for_valid_mock(mocker)
-
-        # Act
-        interactor.create_update_delete_stage_actions()
 
         # Assert
         storage.get_stage_action_names\
             .assert_called_once_with(stage_ids=stage_ids)
-        storage.update_stage_actions \
-            .assert_called_once_with(stage_actions=update_stage_actions_dto)
-        mocker_obj.assert_called_once()
-
-    @staticmethod
-    def test_given_delete_stage_actions_deletes_actions(mocker):
-        from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO
-        expected_stage_actions = [
-            StageActionNamesDTO(
-                stage_id="stage_id_3", action_names=["action_name_3"]
-            )
-        ]
-        from ib_tasks.tests.factories.interactor_dtos import StageActionDTOFactory
-        StageActionDTOFactory.reset_sequence(0)
-        actions_dto = StageActionDTOFactory.create_batch(size=2)
-        stage_actions_dto = [
-            StageActionNamesDTO(
-                stage_id="stage_id_1", action_names=["action_name_1"]
-            ),
-            StageActionNamesDTO(
-                stage_id="stage_id_3", action_names=["action_name_3"]
-            )
-        ]
-        update_stage_actions_dto = [actions_dto[0]]
-        stage_ids = ["stage_id_1", "stage_id_2"]
-        storage = create_autospec(ActionStorageInterface)
-        template_storage = create_autospec(TaskTemplateStorageInterface)
-        template_storage.get_valid_transition_template_ids.return_value = \
-            ["template_1", "template_2",
-             "template_3"
-             ]
-        storage.get_valid_stage_ids.return_value = stage_ids
-        storage.get_stage_action_names.return_value = stage_actions_dto
-        interactor = CreateUpdateDeleteStageActionsInteractor(
-            storage=storage,
-            template_storage=template_storage,
-            actions_dto=actions_dto
+        create_update_mock.assert_called_once_with(
+            db_stage_action_name_dtos=stage_actions_dto,
+            action_dtos=create_stage_actions_dto
         )
-        from ib_tasks.tests.common_fixtures.adapters.roles_service \
-            import prepare_get_roles_for_valid_mock
-        mocker_obj = prepare_get_roles_for_valid_mock(mocker)
-
-        # Act
-        interactor.create_update_delete_stage_actions()
-
-        # Assert
-        storage.get_stage_action_names\
-            .assert_called_once_with(stage_ids=stage_ids)
-        storage.update_stage_actions \
-            .assert_called_once_with(stage_actions=update_stage_actions_dto)
-        storage.delete_stage_actions \
-            .assert_called_once_with(stage_actions=expected_stage_actions)
+        delete_stage_action_mock.ssert_called_once_with(
+            db_stage_action_name_dtos=stage_actions_dto,
+            action_dtos=create_stage_actions_dto
+        )
         mocker_obj.assert_called_once()

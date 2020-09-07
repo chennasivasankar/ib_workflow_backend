@@ -40,7 +40,6 @@ def populate_project_roles(spread_sheet_name: str):
         spread_sheet_name=spread_sheet_name, sub_sheet_name=ROLES_SUB_SHEET)
 
 
-
 @transaction.atomic()
 def populate_data(spread_sheet_name: str):
 
@@ -139,3 +138,7 @@ def delete_task_template_gofs_with_gof_fields(template_ids: List[str]):
     gof_ids = TaskTemplateGoFs.objects.filter(
         task_template_id__in=template_ids).values_list('gof_id', flat=True)
     GoF.objects.filter(gof_id__in=gof_ids).delete()
+
+
+def create_task_index_with_mapping():
+    pass
