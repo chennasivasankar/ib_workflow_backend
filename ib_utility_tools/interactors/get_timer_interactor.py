@@ -29,12 +29,8 @@ class GetTimerInteractor:
             return timer_details_dto
         present_datetime = datetime.datetime.now()
         time_delta = present_datetime - timer_details_dto.start_datetime
-        duration_in_seconds = \
-            timer_details_dto.duration_in_seconds + time_delta.seconds
-        timer_details_dto = TimerDetailsDTO(
-            duration_in_seconds=duration_in_seconds,
-            start_datetime=present_datetime,
-            is_running=True)
+        timer_details_dto.duration_in_seconds += time_delta.seconds
+        timer_details_dto.start_datetime = present_datetime
         return timer_details_dto
 
     def _create_timer_if_not_exists(self, timer_entity_dto: TimerEntityDTO):
