@@ -138,14 +138,14 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         project_objects = Project.objects.filter(project_id=project_id)
         return project_objects.exists()
 
-    def get_valid_team_ids_for_given_project(
+    def get_valid_team_ids(
             self, project_id: str, team_ids: List[str]) -> List[str]:
         team_ids = list(ProjectTeam.objects.filter(
             project_id=project_id, team_id__in=team_ids
         ).values_list('team__team_id', flat=True))
         return list(map(str, team_ids))
 
-    def get_valid_team_ids(self, project_id) -> List[str]:
+    def get_team_ids(self, project_id) -> List[str]:
         team_ids = list(ProjectTeam.objects.filter(
             project_id=project_id
         ).values_list('team__team_id', flat=True))
@@ -216,21 +216,18 @@ class ProjectStorageImplementation(ProjectStorageInterface):
     def delete_project_roles(self, role_ids: List[str]):
         ProjectRole.objects.filter(role_id__in=role_ids).delete()
 
-    def get_project_id_if_project_name_already_exists(
-            self, name: str) -> Optional[str]:
+    def get_project_id(self, name: str) -> Optional[str]:
         try:
             project_object = Project.objects.get(name=name)
         except Project.DoesNotExist:
             return None
         return project_object.project_id
 
-    def get_project_id_if_display_id_already_exists(
-            self, display_id: str) -> Optional[str]:
-        try:
-            project_object = Project.objects.get(display_id=display_id)
-        except Project.DoesNotExist:
-            return None
-        return project_object.project_id
+    def is_exists_display_id(self, display_id: str) -> bool:
+        is_exists_display_id = Project.objects.filter(
+            display_id=display_id).exists()
+
+        return is_exists_display_id
 
     def get_user_status_for_given_projects(
             self, user_id: str, project_ids: List[str]
@@ -268,7 +265,7 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         UserRole.objects.filter(user_id__in=user_ids,
                                 project_role__project_id=project_id).delete()
 
-    def get_valid_role_names_from_given_role_names(
+    def get_valid_role_names(
             self, role_names: List[str]) -> List[str]:
         valid_role_names = ProjectRole.objects.filter(name__in=role_names) \
             .values_list("name", flat=True)

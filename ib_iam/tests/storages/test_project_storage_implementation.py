@@ -572,24 +572,24 @@ class TestProjectStorageImplementation:
         project_storage = ProjectStorageImplementation()
 
         actual_result = project_storage \
-            .get_project_id_if_project_name_already_exists(name=name)
+            .get_project_id(name=name)
 
         assert actual_result == expected_result
 
     @pytest.mark.django_db
-    @pytest.mark.parametrize("display_id, expected_result",
-                             [("display_id 1", "project 1"),
-                              ("display_id 2", None)])
-    def test_get_project_id_if_display_id_already_exists(
+    @pytest.mark.parametrize(
+        "display_id, expected_result",
+        [("display_id 1", True), ("display_id 2", False)])
+    def test_is_exists_project_display_id(
             self, display_id, expected_result):
         from ib_iam.tests.factories.models import ProjectFactory
         ProjectFactory.reset_sequence(1)
         ProjectFactory.create()
         project_storage = ProjectStorageImplementation()
 
-        actual_result = \
-            project_storage.get_project_id_if_display_id_already_exists(
-                display_id=display_id)
+        actual_result = project_storage.is_exists_display_id(
+            display_id=display_id
+        )
 
         assert actual_result == expected_result
 
@@ -604,8 +604,8 @@ class TestProjectStorageImplementation:
         role_names_to_check = ["role 1", "role3"]
         project_storage = ProjectStorageImplementation()
 
-        actual_role_names = project_storage \
-            .get_valid_role_names_from_given_role_names(
-            role_names=role_names_to_check)
+        actual_role_names = project_storage.get_valid_role_names(
+            role_names=role_names_to_check
+        )
 
         assert actual_role_names == expected_role_names

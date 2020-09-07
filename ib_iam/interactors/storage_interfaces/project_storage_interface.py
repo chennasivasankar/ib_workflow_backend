@@ -82,12 +82,13 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_team_ids_for_given_project(
-            self, project_id: str, team_ids: List[str]) -> List[str]:
+    def get_valid_team_ids(
+            self, project_id: str, team_ids: List[str]
+    ) -> List[str]:
         pass
 
     @abc.abstractmethod
-    def get_valid_team_ids(self, project_id) -> List[str]:
+    def get_team_ids(self, project_id: str) -> List[str]:
         pass
 
     @abc.abstractmethod
@@ -117,17 +118,15 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_project_id_if_project_name_already_exists(
-            self, name: str) -> Optional[str]:
+    def get_project_id(self, name: str) -> Optional[str]:
         pass
 
     @abc.abstractmethod
-    def get_project_id_if_display_id_already_exists(
-            self, display_id: str) -> Optional[str]:
+    def is_exists_display_id(self, display_id: str) -> Optional[str]:
         pass
 
     @abc.abstractmethod
-    def get_valid_role_names_from_given_role_names(
+    def get_valid_role_names(
             self, role_names: List[str]) -> List[str]:
         pass
 
