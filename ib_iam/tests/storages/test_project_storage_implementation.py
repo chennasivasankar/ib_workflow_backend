@@ -534,7 +534,8 @@ class TestProjectStorageImplementation:
     @pytest.mark.django_db
     def test_remove_user_roles_related_to_given_project_and_user(self):
         from ib_iam.tests.factories.models import (
-            ProjectFactory, ProjectRoleFactory, UserRoleFactory)
+            ProjectFactory, ProjectRoleFactory, UserRoleFactory
+        )
         project_id = "project_1"
         project_object = ProjectFactory.create(project_id=project_id)
         project_role_ids = ["ROLE_1", "ROLE_2"]
@@ -562,10 +563,13 @@ class TestProjectStorageImplementation:
         assert user_role_objects[0].project_role_id == expected_role_id
 
     @pytest.mark.django_db
-    @pytest.mark.parametrize("name, expected_result", [("name 1", "project 1"),
-                                                       ("name 2", None)])
+    @pytest.mark.parametrize(
+        "name, "
+        "expected_result", [("name 1", "project 1"), ("name 2", None)]
+    )
     def test_get_project_id_if_project_name_already_exists(
-            self, name, expected_result):
+            self, name, expected_result
+    ):
         from ib_iam.tests.factories.models import ProjectFactory
         ProjectFactory.reset_sequence(1)
         ProjectFactory.create()
@@ -581,7 +585,8 @@ class TestProjectStorageImplementation:
         "display_id, expected_result",
         [("display_id 1", True), ("display_id 2", False)])
     def test_is_exists_project_display_id(
-            self, display_id, expected_result):
+            self, display_id, expected_result
+    ):
         from ib_iam.tests.factories.models import ProjectFactory
         ProjectFactory.reset_sequence(1)
         ProjectFactory.create()
@@ -595,7 +600,8 @@ class TestProjectStorageImplementation:
 
     @pytest.mark.django_db
     def test_get_valid_role_names_from_given_role_names_returns_role_names(
-            self):
+            self
+    ):
         from ib_iam.tests.factories.models import ProjectRoleFactory
         role_names = ["role 1", "role2"]
         for role_name in role_names:
