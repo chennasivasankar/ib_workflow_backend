@@ -1,5 +1,5 @@
 """
-# Success Test Case
+# Invalid Task Id
 """
 import json
 
@@ -15,7 +15,7 @@ from ...factories.models import StagePermittedRolesFactory, TaskFactory, \
     TaskStatusVariableFactory, ActionPermittedRolesFactory
 
 
-class TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
+class TestCase02GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
