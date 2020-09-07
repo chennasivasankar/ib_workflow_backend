@@ -1609,6 +1609,13 @@
          "type":"string",
          "required":true
       },
+      "ProjectIDPathParameter":{
+         "name":"project_id",
+         "description":"Project Query Parameter",
+         "in":"path",
+         "type":"string",
+         "required":true
+      },
       "OffsetParameter":{
          "name":"offset",
          "description":"Offset Parameter",
@@ -2138,7 +2145,7 @@
          }
       },
       "InvalidTemplateResponse": {
-        "description":"Invalid Template Failure Response",
+         "description":"Invalid Template Failure Response",
          "schema":{
             "type":"object",
             "properties":{
@@ -2154,7 +2161,36 @@
                "res_status":{
                   "type":"string",
                   "enum":[
-                     "INVALID_TEMPLATE_ID"
+                     "INVALID_TASK_TEMPLATE_DB_ID",
+                     "INVALID_PROJECT_ID"
+                  ]
+               }
+            },
+            "required":[
+               "response",
+               "http_status_code",
+               "res_status"
+            ]
+         }
+      },
+      "UserNotInProjectResponse": {
+        "description":"User not in Project",
+         "schema":{
+            "type":"object",
+            "properties":{
+               "response":{
+                  "type":"string"
+               },
+               "http_status_code":{
+                  "type":"integer",
+                  "enum":[
+                     403
+                  ]
+               },
+               "res_status":{
+                  "type":"string",
+                  "enum":[
+                     "USER_NOT_IN_PROJECT"
                   ]
                }
             },
@@ -3541,7 +3577,7 @@
             }
          }
       },
-      "/template/{template_id}/permitted_stage_flow/v1/":{
+      "/projects/{project_id}/templates/{template_id}/permitted_stage_flow/v1/":{
         "get":{
             "operationId":"get_permitted_template_stage_flow",
             "summary":"get permitted stage flow",
@@ -3554,9 +3590,12 @@
                }
             ],
             "parameters":[
-                {
-                  "$ref":"#/parameters/TemplateIdParameter"
-               }
+              {
+                "$ref":"#/parameters/ProjectIDPathParameter"
+              },
+              {
+                "$ref":"#/parameters/TemplateIdParameter"
+              }
             ],
             "responses":{
                "200":{
@@ -3564,11 +3603,14 @@
                },
                "404":{
                   "$ref":"#/responses/InvalidTemplateResponse"
+               },
+               "403": {
+                  "$ref":"#/responses/UserNotInProjectResponse"
                }
             }
          }
       },
-      "/template/{template_id}/complete_stage_flow/v1/":{
+      "/projects/{project_id}/templates/{template_id}/complete_stage_flow/v1/":{
         "get":{
             "operationId":"get_template_stage_flow",
             "summary":"get permitted stage flow",
@@ -3581,9 +3623,12 @@
                }
             ],
             "parameters":[
-                {
-                  "$ref":"#/parameters/TemplateIdParameter"
-               }
+              {
+                "$ref":"#/parameters/ProjectIDPathParameter"
+              },
+              {
+                "$ref":"#/parameters/TemplateIdParameter"
+              }
             ],
             "responses":{
                "200":{
@@ -3591,6 +3636,9 @@
                },
                "404":{
                   "$ref":"#/responses/InvalidTemplateResponse"
+               },
+               "403": {
+                  "$ref":"#/responses/UserNotInProjectResponse"
                }
             }
          }

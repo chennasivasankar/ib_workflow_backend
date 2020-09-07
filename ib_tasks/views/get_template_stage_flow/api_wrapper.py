@@ -1,48 +1,38 @@
+<<<<<<< HEAD
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
+=======
+from typing import Dict, List, Any
+from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
+    import validate_decorator
+from .validator_class import ValidatorClass
+from ...constants.enum import ViewType
+from ...interactors.get_permitted_template_stage_flow_to_user import GetPermittedTemplateStageFlowToUser
+from ...interactors.task_dtos import SearchQueryDTO
+from ...presenters.get_template_stage_flow_implementation import GetTemplateStageFlowPresenterImplementation
+from ...storages.action_storage_implementation import ActionsStorageImplementation
+from ...storages.storage_implementation import StagesStorageImplementation
+from ...storages.task_template_storage_implementation import TaskTemplateStorageImplementation
+>>>>>>> dev
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
+    project_id = kwargs['project_id']
+    user_obj = kwargs['user']
+    template_id = kwargs['template_id']
+    stage_storage = StagesStorageImplementation()
+    action_storage = ActionsStorageImplementation()
+    presenter = GetTemplateStageFlowPresenterImplementation()
+    template_storage = TaskTemplateStorageImplementation()
+    interactor = GetPermittedTemplateStageFlowToUser(
+        stage_storage=stage_storage, action_storage=action_storage,
+        template_storage=template_storage
+    )
+    response = interactor.get_template_stage_flow_to_user_wrapper(
+        user_id=user_obj.user_id, project_id=project_id,
+        template_id=template_id, presenter=presenter
+    )
+    return response
 
-    try:
-        from ib_tasks.views.get_template_stage_flow.request_response_mocks \
-            import REQUEST_BODY_JSON
-        body = REQUEST_BODY_JSON
-    except ImportError:
-        body = {}
-
-    test_case = {
-        "path_params": {'template_id': 'string'},
-        "query_params": {},
-        "header_params": {},
-        "body": body,
-        "securities": [{'oauth': ['read']}]
-    }
-
-    from django_swagger_utils.drf_server.utils.server_gen.mock_response \
-        import mock_response
-    try:
-        response = ''
-        status_code = 200
-        if '200' in ['200', '404']:
-            from ib_tasks.views.get_template_stage_flow.request_response_mocks \
-                import RESPONSE_200_JSON
-            response = RESPONSE_200_JSON
-            status_code = 200
-        elif '201' in ['200', '404']:
-            from ib_tasks.views.get_template_stage_flow.request_response_mocks \
-                import RESPONSE_201_JSON
-            response = RESPONSE_201_JSON
-            status_code = 201
-    except ImportError:
-        response = ''
-        status_code = 200
-    response_tuple = mock_response(
-        app_name="ib_tasks", test_case=test_case,
-        operation_name="get_template_stage_flow",
-        kwargs=kwargs, default_response_body=response,
-        group_name="", status_code=status_code)
-    return response_tuple
