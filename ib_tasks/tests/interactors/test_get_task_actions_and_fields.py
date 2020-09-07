@@ -21,8 +21,11 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.tests.common_fixtures.adapters.roles_service import \
     get_user_role_ids_based_on_projects_mock
-from ib_tasks.tests.common_fixtures.interactors import prepare_get_permitted_action_ids_for_project, \
-    prepare_get_field_ids_having_permission_for_user_projects
+from ib_tasks.tests.common_fixtures.interactors import \
+    (prepare_get_permitted_action_ids_for_project,
+     prepare_get_field_ids_having_permission_for_user_projects,
+     prepare_actions_for_get_task_fields_and_actions,
+     prepare_fields_for_get_task_fields_and_actions)
 from ib_tasks.tests.factories.interactor_dtos import \
     GetTaskDetailsDTOFactory
 from ib_tasks.tests.factories.storage_dtos import (
@@ -123,7 +126,7 @@ class TestGetFieldsAndActionsInteractor:
         ),
             TaskTemplateStageFieldsDTO(
                 task_template_id="task_template_id_1",
-                task_id=1,
+                task_id=2,
                 db_stage_id=2,
                 stage_color="blue",
                 display_name="display_name_2",
@@ -152,6 +155,28 @@ class TestGetFieldsAndActionsInteractor:
                 stage_id="stage_id_2",
                 field_ids=["FIELD-ID-3", "FIELD-ID-4"]
             )
+        ]
+
+    @pytest.fixture()
+    def get_field_ids_for_a_tasks_in_two_stage(self):
+        return [TaskTemplateStageFieldsDTO(
+                task_template_id="task_template_id_1",
+                task_id=1,
+                db_stage_id=1,
+                display_name="display_name_1",
+                stage_color="blue",
+                stage_id="stage_id_1",
+                field_ids=["FIELD-ID-1", "FIELD-ID-2"]
+        ),
+                TaskTemplateStageFieldsDTO(
+                        task_template_id="task_template_id_1",
+                        task_id=1,
+                        db_stage_id=2,
+                        display_name="display_name_2",
+                        stage_color="blue",
+                        stage_id="stage_id_2",
+                        field_ids=["FIELD-ID-3", "FIELD-ID-4"]
+                )
         ]
 
     @pytest.fixture()
@@ -252,7 +277,7 @@ class TestGetFieldsAndActionsInteractor:
     def test_get_user_permitted_fields_and_actions(
             self, mocker,
             get_task_template_stage_dtos_for_two_tasks,
-            get_actions_dtos,
+            get_actions_dtos, get_field_ids,
             get_fields_dtos, expected_response,
             get_field_ids_for_two_tasks, task_fields_dtos, snapshot):
         # Arrange
@@ -266,8 +291,6 @@ class TestGetFieldsAndActionsInteractor:
         user_roles_mock = get_user_role_ids_based_on_projects_mock(mocker)
         user_roles_mock.return_value = user_roles
         GetTaskDetailsDTOFactory.reset_sequence()
-        field_ids = ["FIELD-ID-1", "FIELD-ID-2", "FIELD-ID-3", "FIELD-ID-4"]
-        prepare_get_field_ids_having_permission_for_user_projects(mocker, field_ids)
         task_dtos = GetTaskDetailsDTOFactory.create_batch(size=2)
 
         field_storage = create_autospec(FieldsStorageInterface)
@@ -287,20 +310,16 @@ class TestGetFieldsAndActionsInteractor:
         task_storage.validate_task_related_stage_ids.return_value = task_dtos
         stage_storage.get_stage_details.return_value = task_template_stages_dtos
         field_storage.get_field_ids.return_value = get_field_ids_for_two_tasks
-        action_storage.get_actions_details.return_value = action_dtos
-        field_storage.get_fields_details.return_value = field_dtos
-
+        prepare_actions_for_get_task_fields_and_actions(mocker, action_dtos)
+        prepare_fields_for_get_task_fields_and_actions(mocker, field_dtos,
+                                                       get_field_ids)
         # Act
         response = interactor.get_task_fields_and_action(task_dtos, user_id, view_type)
 
         # Assert
         stage_storage.get_stage_details.assert_called_once_with(task_dtos)
-        action_storage.get_actions_details.assert_called_once()
-        field_storage.get_field_ids.assert_called()
         task_storage.validate_task_related_stage_ids.assert_called_once_with(
             task_dtos)
-        field_storage.get_fields_details.assert_called_once_with(
-            task_fields_dtos)
 
         snapshot.assert_match(response, "response")
 
@@ -343,21 +362,17 @@ class TestGetFieldsAndActionsInteractor:
         stage_storage.get_existing_stage_ids.return_value = stage_ids
         task_storage.validate_task_related_stage_ids.return_value = task_dtos
         stage_storage.get_stage_details.return_value = task_template_stages_dtos
-        field_storage.get_field_ids.return_value = \
-            get_field_ids_for_two_tasks_in_same_stage
-        action_storage.get_actions_details.return_value = action_dtos
-        field_storage.get_fields_details.return_value = field_dtos
+        prepare_actions_for_get_task_fields_and_actions(mocker, action_dtos)
+        prepare_fields_for_get_task_fields_and_actions(mocker, field_dtos,
+                                                       get_field_ids_for_two_tasks_in_same_stage)
 
         # Act
         response = interactor.get_task_fields_and_action(task_dtos, user_id, view_type)
 
         # Assert
         stage_storage.get_stage_details.assert_called_once_with(task_dtos)
-        field_storage.get_field_ids.assert_called()
         task_storage.validate_task_related_stage_ids.assert_called_once_with(
             task_dtos)
-        field_storage.get_fields_details.assert_called_once_with(
-            task_fields_dtos_with_for_same_stage_tasks)
 
         snapshot.assert_match(response, "response")
 
@@ -399,20 +414,17 @@ class TestGetFieldsAndActionsInteractor:
         stage_storage.get_existing_stage_ids.return_value = stage_ids
         task_storage.validate_task_related_stage_ids.return_value = task_dtos
         stage_storage.get_stage_details.return_value = task_template_stages_dtos
-        field_storage.get_field_ids.return_value = get_field_ids_for_two_tasks
-        action_storage.get_actions_details.return_value = action_dtos
-        field_storage.get_fields_details.return_value = field_dtos
+        prepare_actions_for_get_task_fields_and_actions(mocker, action_dtos)
+        prepare_fields_for_get_task_fields_and_actions(mocker, field_dtos,
+                                                       get_field_ids_for_two_tasks)
 
         # Act
         response = interactor.get_task_fields_and_action(task_dtos, user_id, view_type)
 
         # Assert
         stage_storage.get_stage_details.assert_called_once_with(task_dtos)
-        action_storage.get_actions_details.assert_called_once_with(action_ids)
-        field_storage.get_field_ids.assert_called()
         task_storage.validate_task_related_stage_ids.assert_called_once_with(
             task_dtos)
-        field_storage.get_fields_details.assert_called_once_with(task_fields_dtos)
 
         snapshot.assert_match(response, "response")
 
@@ -454,27 +466,24 @@ class TestGetFieldsAndActionsInteractor:
         stage_storage.get_existing_stage_ids.return_value = stage_ids
         task_storage.validate_task_related_stage_ids.return_value = task_dtos
         stage_storage.get_stage_details.return_value = task_template_stages_dtos
-        field_storage.get_field_ids.return_value = get_field_ids_for_two_tasks
-        action_storage.get_actions_details.return_value = action_dtos
-        field_storage.get_fields_details.return_value = field_dtos
+        prepare_actions_for_get_task_fields_and_actions(mocker, action_dtos)
+        prepare_fields_for_get_task_fields_and_actions(mocker, field_dtos,
+                                                       get_field_ids_for_two_tasks)
 
         # Act
         response = interactor.get_task_fields_and_action(task_dtos, user_id, view_type)
 
         # Assert
         stage_storage.get_stage_details.assert_called_once_with(task_dtos)
-        action_storage.get_actions_details.assert_called_once_with(action_ids)
-        field_storage.get_field_ids.assert_called()
         task_storage.validate_task_related_stage_ids.assert_called_once_with(
             task_dtos)
-        field_storage.get_fields_details.assert_called_once_with(task_fields_dtos)
 
         snapshot.assert_match(response, "response")
 
     def test_get_actions_and_fields_when_task_is_in_two_stages(
             self, mocker, get_task_dtos, get_task_template_stage_dtos,
             get_actions_dtos, get_fields_dtos_for_a_tasks_with_two_stage,
-            get_field_ids, snapshot):
+            get_field_ids_for_a_tasks_in_two_stage, snapshot):
         # Arrange
         user_id = "user_id_1"
         view_type = ViewType.LIST.value
@@ -502,6 +511,7 @@ class TestGetFieldsAndActionsInteractor:
             field_storage=field_storage, stage_storage=stage_storage,
             task_storage=task_storage, action_storage=action_storage)
         task_ids = [1]
+
         task_template_stages_dtos = get_task_template_stage_dtos
         stage_ids = ["stage_id_1", "stage_id_2"]
         action_dtos = get_actions_dtos
@@ -510,20 +520,17 @@ class TestGetFieldsAndActionsInteractor:
         stage_storage.get_existing_stage_ids.return_value = stage_ids
         task_storage.validate_task_related_stage_ids.return_value = task_dtos
         stage_storage.get_stage_details.return_value = task_template_stages_dtos
-        field_storage.get_field_ids.return_value = get_field_ids
-        action_storage.get_actions_details.return_value = action_dtos
-        field_storage.get_fields_details.return_value = field_dtos
+        prepare_actions_for_get_task_fields_and_actions(mocker, action_dtos)
+        prepare_fields_for_get_task_fields_and_actions(mocker, field_dtos,
+                                                       get_field_ids_for_a_tasks_in_two_stage)
 
         # Act
         response = interactor.get_task_fields_and_action(task_dtos, user_id, view_type)
 
         # Assert
         stage_storage.get_stage_details.assert_called_once_with(task_dtos)
-        action_storage.get_actions_details.assert_called_once_with(action_ids)
-        field_storage.get_field_ids.assert_called()
         task_storage.validate_task_related_stage_ids.assert_called_once_with(
             task_dtos)
-        field_storage.get_fields_details.assert_called_once_with(task_fields_dtos)
 
         snapshot.assert_match(response, "response")
 
@@ -660,17 +667,14 @@ class TestGetFieldsAndActionsInteractor:
         stage_storage.get_existing_stage_ids.return_value = stage_ids
         task_storage.validate_task_related_stage_ids.return_value = task_dtos
         stage_storage.get_stage_details.return_value = task_template_stages_dtos
-        field_storage.get_field_ids.side_effect = [task_with_no_fields]
-        action_storage.get_actions_details.return_value = []
-        field_storage.get_fields_details.return_value = []
+        prepare_actions_for_get_task_fields_and_actions(mocker, [])
+        prepare_fields_for_get_task_fields_and_actions(mocker, [], task_with_no_fields)
 
         # Act
         response = interactor.get_task_fields_and_action(task_dtos, user_id, view_type)
 
         # Assert
         stage_storage.get_stage_details.assert_called_once_with(task_dtos)
-        action_storage.get_actions_details.assert_called_once_with(action_ids)
-        field_storage.get_field_ids.assert_called()
         task_storage.validate_task_related_stage_ids.assert_called_once_with(
             task_dtos)
         snapshot.assert_match(response, "response")

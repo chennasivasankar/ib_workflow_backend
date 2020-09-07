@@ -7,11 +7,8 @@ REQUEST_BODY_JSON = """
     "action_id": 1,
     "title": "string",
     "description": "string",
-    "start_date": "2099-12-31",
-    "due_date": {
-        "date": "2099-12-31",
-        "time": "string"
-    },
+    "start_datetime": "2099-12-31 00:00:00",
+    "due_datetime": "2099-12-31 00:00:00",
     "priority": "HIGH",
     "task_gofs": [
         {

@@ -9,3 +9,8 @@ class StartAction(enum.Enum):
 class ViewType(enum.Enum):
     LIST = "LIST"
     KANBAN = "KANBAN"
+
+
+class DisplayStatus(enum.Enum):
+    HIDE = "HIDE"
+    SHOW = "SHOW"

@@ -71,7 +71,9 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
 
         user_team_id = self.task_storage.get_user_team_id(user_id, task_id)
         rp_added_datetime = self.storage.get_latest_rp_added_datetime(task_id, stage_id)
-        if rp_added_datetime < due_date and rp_added_datetime is not None:
+        if rp_added_datetime and rp_added_datetime < due_date:
+            self.add_rp_when_due_date_is_missed(stage_id, task_id, user_id, user_team_id)
+        elif rp_added_datetime is None:
             self.add_rp_when_due_date_is_missed(stage_id, task_id, user_id, user_team_id)
 
         rp_ids = self.storage.get_rp_ids(task_id, stage_id)
@@ -79,7 +81,15 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
             return []
 
         rp_details_dtos = service_adapter.auth_service.get_user_details(rp_ids)
-        return rp_details_dtos
+        rp_dict = {}
+        for rp_dto in rp_details_dtos:
+            rp_dict[rp_dto.user_id] = rp_dto
+        rp_dtos = [
+                rp_dict[rp_id]
+                for rp_id in rp_ids
+        ]
+
+        return rp_dtos
 
     def add_rp_when_due_date_is_missed(self, stage_id, task_id, user_id, user_team_id):
 

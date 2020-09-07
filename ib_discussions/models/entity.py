@@ -24,6 +24,6 @@ class Entity(models.Model):
     id = models.UUIDField(primary_key=True, default=generate_uuid,
                           editable=False)
     entity_type = models.CharField(
-        max_length=50,
+        max_length=25,
         validators=[validate_entity_type_for_discussion]
     )

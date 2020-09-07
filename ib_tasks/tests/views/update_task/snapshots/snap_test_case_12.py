@@ -11,6 +11,6 @@ snapshots['TestCase12UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase12UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'USER_NEEDS_GOF_WRITABLE_PERMISSION',
-    'response': "user needs write access on gof GOF-1, because user does not have at least one role in ['FIN_GOF_CREATOR'] roles"
+    'res_status': 'TASK_DELAY_REASON_NOT_UPDATED',
+    'response': 'Task delay reason not updated for task IBWF-1 in stage display_name_0 with missed due date 2020-09-09 11:00:00'
 }
