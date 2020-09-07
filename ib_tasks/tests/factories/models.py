@@ -80,6 +80,7 @@ class TaskModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Task
 
+    project_id = factory.Sequence(lambda counter: "project_{}".format(counter))
     task_display_id = factory.sequence(lambda counter: "iB_{}".format(counter))
     template_id = factory.Sequence(lambda n: "template_%d" % (n + 1))
     project_id = factory.Sequence(lambda n: "project_id{}".format(n))

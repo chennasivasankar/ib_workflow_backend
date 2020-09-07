@@ -15,6 +15,10 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.task_dtos import GetTaskRPsParametersDTO
 
 
+class DueDateIsNotAddedException(Exception):
+    pass
+
+
 class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
     def __init__(self, storage: StorageInterface,
                  task_storage: TaskStorageInterface):
@@ -31,6 +35,8 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter.response_for_user_is_not_assignee_for_task()
         except InvalidStageIdException:
             return presenter.response_for_invalid_stage_id()
+        except DueDateIsNotAddedException:
+            return presenter.response_for_due_date_does_not_exist_to_task()
         return presenter.response_for_get_rps_details(rps_dtos)
 
     def get_task_rps(self, paramters: GetTaskRPsParametersDTO):
@@ -50,8 +56,11 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
         user_id = parameters.user_id
 
         stage_id = parameters.stage_id
-        due_date = self.task_storage.get_user_missed_the_task_due_time(
-            task_id, user_id, stage_id)
+        due_date = self.task_storage.get_task_due_datetime(
+            task_id)
+
+        if due_date is None:
+            raise DueDateIsNotAddedException
 
         service_adapter = get_service_adapter()
 
@@ -113,9 +122,10 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def _validate_if_task_is_assigned_to_user(self, task_id: int, user_id: str,
                                               stage_id: int):
-        is_assigned = self.storage.validate_if_task_is_assigned_to_user_in_given_stage(
-            task_id, user_id, stage_id
-        )
-        is_not_assigned = not is_assigned
-        if is_not_assigned:
-            raise UserIsNotAssigneeToTask
+        # is_assigned = self.storage.validate_if_task_is_assigned_to_user_in_given_stage(
+        #     task_id, user_id, stage_id
+        # )
+        # is_not_assigned = not is_assigned
+        # if is_not_assigned:
+        #     raise UserIsNotAssigneeToTask
+        pass

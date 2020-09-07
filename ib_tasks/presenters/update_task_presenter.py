@@ -16,8 +16,9 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidURLValue, \
     InvalidEmailFieldValue, InvalidPhoneNumberValue, EmptyValueForRequiredField
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
-    DuplicateFieldIdsToGoF
-from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
+    DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
+from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
+    UserDidNotFillRequiredGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.stage_custom_exceptions import \
@@ -39,7 +40,35 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 class UpdateTaskPresenterImplementation(
     UpdateTaskPresenterInterface, HTTPResponseMixin
 ):
-    
+
+    def raise_user_did_not_fill_required_fields(
+            self, err: UserDidNotFillRequiredFields):
+        from ib_tasks.constants.exception_messages import \
+            USER_DID_NOT_FILL_REQUIRED_FIELDS
+        field_display_names = [
+            dto.field_display_name for dto in err.unfilled_field_dtos]
+        message = USER_DID_NOT_FILL_REQUIRED_FIELDS[0].format(
+            field_display_names)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": USER_DID_NOT_FILL_REQUIRED_FIELDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_user_did_not_fill_required_gofs(
+            self, err: UserDidNotFillRequiredGoFs):
+        from ib_tasks.constants.exception_messages import \
+            USER_DID_NOT_FILL_REQUIRED_GOFS
+        message = USER_DID_NOT_FILL_REQUIRED_GOFS[0].format(
+            err.gof_display_names)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": USER_DID_NOT_FILL_REQUIRED_GOFS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
     def raise_priority_is_required(self, err: PriorityIsRequired):
         from ib_tasks.constants.exception_messages import \
             PRIORITY_IS_REQUIRED

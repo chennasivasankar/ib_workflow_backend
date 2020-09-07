@@ -10,6 +10,8 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldIdWithGoFIdDTO, StageTaskFieldsDTO, \
     TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId, FieldNameDTO, \
     FieldDisplayNameDTO
+    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId, FieldNameDTO, \
+    FieldIdWithFieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface, FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
@@ -22,6 +24,24 @@ from ib_tasks.models import CurrentTaskStage, Stage, TaskGoFField, FieldRole, \
 
 
 class FieldsStorageImplementation(FieldsStorageInterface):
+
+    def get_user_write_permitted_field_ids_for_given_gof_ids(
+            self, user_roles, gof_ids: List[str]
+    ) -> List[FieldIdWithFieldDisplayNameDTO]:
+        field_dicts = FieldRole.objects.filter(
+            Q(role__in=user_roles) | Q(role=ALL_ROLES_ID),
+            field__gof_id__in=gof_ids,
+            permission_type=PermissionTypes.WRITE.value
+        ).values_list(
+            "field_id", "field__gof__display_name", "field__display_name")
+        field_id_with_display_name_dtos = [
+            FieldIdWithFieldDisplayNameDTO(
+                field_id=field_dict['field_id'],
+                gof_display_name=field_dict['field__gof__display_name'],
+                field_display_name=field_dict['field__display_name']
+            ) for field_dict in field_dicts
+        ]
+        return field_id_with_display_name_dtos
 
     def get_gof_ids_for_given_field_ids(
             self, field_ids: List[str]) -> List[FieldIdWithGoFIdDTO]:
