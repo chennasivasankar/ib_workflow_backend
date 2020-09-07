@@ -104,6 +104,6 @@ class TestStopTimerInteractor:
         storage_mock.create_timer.assert_not_called()
         storage_mock.get_timer_details_dto.assert_called_once_with(
             timer_entity_dto=timer_entity_dto)
-        presenter_mock.get_success_response_with_timer_details_dto \
+        presenter_mock.get_response_for_get_timer_details \
             .assert_called_once_with(
             timer_details_dto=timer_details_dto_for_response)
