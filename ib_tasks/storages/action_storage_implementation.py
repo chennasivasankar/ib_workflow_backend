@@ -308,3 +308,21 @@ class ActionsStorageImplementation(ActionStorageInterface):
     def get_stage_id_for_given_action_id(self, action_id: int) -> int:
         obj = StageAction.objects.get(id=action_id)
         return obj.stage_id
+
+    def get_user_permitted_action_ids_given_stage_ids(
+            self, user_roles: List[str],
+            stage_ids: List[int]
+    ) -> List[int]:
+        action_ids = ActionPermittedRoles.objects.filter(
+            action__stage_id__in=stage_ids
+        ).filter(
+            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+        ).values_list('action_id', flat=True)
+        return sorted(list(set(action_ids)))
+
+    def get_action_ids_given_stage_ids(
+            self, stage_ids: List[int]) -> List[int]:
+        action_ids = StageAction.objects\
+            .filter(stage_id__in=stage_ids)\
+            .values_list('id', flat=True)
+        return sorted(list(set(action_ids)))
