@@ -50,7 +50,7 @@ class TestGetBulkTimerDetailsForGivenEntities:
         return timer_objects
 
     @pytest.fixture
-    def timer_objects_for_invalid_entities(self, timer_details):
+    def timer_objects_for_invalid_entities(self, timers):
         from ib_utility_tools.constants.enum import TimerEntityType
         timer = {
             "entity_id": "ef6d1fc6-ac3f-4d2d-a983-752c992e8331",

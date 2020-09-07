@@ -1,16 +1,26 @@
 import json
 
+import pytest
+
 from ib_utility_tools.constants.enum import StatusCode
-from ib_utility_tools.presenters.create_checklist_item_presenter_implementation import (
-    CreateChecklistItemPresenterImplementation)
 
 
 class TestCreateChecklistItemPresenterImplementation:
-    def test_whether_it_gives_empty_checklist_item_text_response(self):
+    @pytest.fixture
+    def presenter(self):
+        from ib_utility_tools.presenters.create_checklist_item_presenter_implementation import (
+            CreateChecklistItemPresenterImplementation)
+        presenter = CreateChecklistItemPresenterImplementation()
+        return presenter
+
+    def test_whether_it_gives_empty_checklist_item_text_response(
+            self, presenter
+    ):
         # Arrange
         from ib_utility_tools.constants.exception_messages import (
-            EMPTY_CHECKLIST_ITEM_TEXT_FOR_CREATE_CHECKLIST_ITEM)
-        json_presenter = CreateChecklistItemPresenterImplementation()
+            EMPTY_CHECKLIST_ITEM_TEXT_FOR_CREATE_CHECKLIST_ITEM
+        )
+
         expected_response = \
             EMPTY_CHECKLIST_ITEM_TEXT_FOR_CREATE_CHECKLIST_ITEM[0]
         expected_res_status = \
@@ -18,7 +28,7 @@ class TestCreateChecklistItemPresenterImplementation:
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
         # Act
-        result = json_presenter.response_for_empty_checklist_item_text_exception()
+        result = presenter.response_for_empty_checklist_item_text_exception()
 
         # Assert
         response_dict = json.loads(result.content)
@@ -30,13 +40,16 @@ class TestCreateChecklistItemPresenterImplementation:
         assert actual_res_status == expected_res_status
         assert expected_http_status_code == actual_http_status_code
 
-    def test_whether_it_returns_checklist_id_response(self):
-        json_presenter = CreateChecklistItemPresenterImplementation()
+    def test_whether_it_returns_checklist_id_response(self, presenter):
+        # Arrange
         checklist_item_id = "checklist_item_id"
         expected_response = {"checklist_item_id": checklist_item_id}
 
-        result = json_presenter.get_success_response_for_create_checklist_item(
-            checklist_item_id=checklist_item_id)
+        # Act
+        result = presenter.get_success_response_for_create_checklist_item(
+            checklist_item_id=checklist_item_id
+        )
 
+        # Assert
         actual_response = json.loads(result.content)
         assert actual_response == expected_response

@@ -38,7 +38,7 @@ class TestUpdateChecklistItemPresenterImplementation:
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
         result = json_presenter \
-            .get_response_for_empty_checklist_item_text_exception()
+            .response_for_empty_checklist_item_text_exception()
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]
         actual_res_status = response_dict["res_status"]
