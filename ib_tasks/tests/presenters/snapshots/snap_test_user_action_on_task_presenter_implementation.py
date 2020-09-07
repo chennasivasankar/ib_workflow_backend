@@ -136,3 +136,9 @@ snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_get_response_for_u
     },
     'task_id': 'task_display_1'
 }
+
+snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exception_for_reason_is_not_added_to_task reason is not added to task delay'] = {
+    'http_status_code': 404,
+    'res_status': 'REASON_NOT_ADDED_FOR_TASK_DELAY',
+    'response': 'Task IBWF-1 in Stage PR APPROVALS has missed the due date'
+}

@@ -1,3 +1,4 @@
+import datetime
 from typing import List, Optional
 from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.action_custom_exceptions import InvalidKeyError, \
@@ -9,8 +10,9 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
 from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee, \
     StageIdsListEmptyException, InvalidStageIdsListException
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
-    InvalidTaskDisplayId
+from ib_tasks.exceptions.task_custom_exceptions import (InvalidTaskException,
+                                                        InvalidTaskDisplayId,
+                                                        TaskDelayReasonIsNotUpdated)
 from ib_tasks.interactors \
     .call_action_logic_function_and_update_task_status_variables_interactor \
     import CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor, \
@@ -134,6 +136,9 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             return presenter.raise_stage_ids_list_empty_exception(err)
         except InvalidStageIdsListException as err:
             return presenter.raise_invalid_stage_ids_list_exception(err)
+        except TaskDelayReasonIsNotUpdated as err:
+            return presenter.get_response_for_task_delay_reason_not_updated(
+                    err)
         return presenter.get_response_for_user_action_on_task(
             task_complete_details_dto=task_complete_details_dto,
             task_current_stage_details_dto=task_current_stage_details_dto,
@@ -148,6 +153,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             project_id=project_id, user_id=self.user_id
         )
         self._validations_for_task_action(task_id, project_id)
+        self._validate_task_delay_reason_updated_or_not(task_id)
         task_dto = self._get_task_dto(task_id)
         updated_task_dto = \
             self._call_logic_and_update_status_variables_and_get_stage_ids(
@@ -158,7 +164,6 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         self._create_or_update_task_in_elasticsearch(
             task_dto=updated_task_dto, task_id=task_id, stage_ids=stage_ids
         )
-
         task_complete_details_dto = self._get_task_current_board_complete_details(
             task_id=task_id, stage_ids=stage_ids
         )
@@ -173,6 +178,18 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         return (
             task_complete_details_dto, task_current_stage_details_dto,
             all_tasks_overview_details_dto)
+
+    def _validate_task_delay_reason_updated_or_not(self, task_id):
+        stage_id = self.action_storage.get_stage_id_for_given_action_id(
+                self.action_id)
+        due_date = self.gof_storage.get_existing_task_due_date(
+                task_id)
+        due_date_is_expired = (due_date < datetime.datetime.now())
+        if due_date_is_expired:
+            updated_due_date = due_date
+            self._validate_task_delay_reason_is_added(
+                    task_id=task_id, updated_due_date=updated_due_date,
+                    stage_id=stage_id)
 
     def _get_tasks_overview_for_users(
             self, task_id: int, project_id: str
@@ -343,3 +360,28 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         elasticsearch_interactor.create_or_update_task_in_elasticsearch(
             task_dto=task_dto, stage_ids=stage_ids, task_id=task_id
         )
+
+    def _validate_task_delay_reason_is_added(
+            self, updated_due_date: datetime.datetime, task_id: int,
+            stage_id: int
+    ) -> Optional[TaskDelayReasonIsNotUpdated]:
+        self._validate_delay_reason_is_updated_or_not(
+                task_id, stage_id, updated_due_date)
+        return
+
+    def _validate_delay_reason_is_updated_or_not(
+            self, task_id: int, stage_id: int,
+            updated_due_date: datetime.datetime
+    ) -> Optional[TaskDelayReasonIsNotUpdated]:
+        is_task_delay_reason_updated = \
+            self.gof_storage.check_task_delay_reason_updated_or_not(
+                    task_id, stage_id, updated_due_date)
+        task_delay_reason_is_not_updated = not is_task_delay_reason_updated
+        task_display_id = \
+            self.gof_storage.get_task_display_id_for_task_id(task_id)
+        stage_display_name = \
+            self.stage_storage.get_stage_display_name_for_stage_id(stage_id)
+        if task_delay_reason_is_not_updated:
+            raise TaskDelayReasonIsNotUpdated(
+                    updated_due_date, task_display_id, stage_display_name)
+        return
