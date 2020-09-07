@@ -9,7 +9,7 @@ def api_wrapper(*args, **kwargs):
 
     user = kwargs["user"]
     column_id = kwargs['column_id']
-    field_id = kwargs['field_id']
+    field_id = kwargs['request_data']['field_id']
     display_status = kwargs['request_data']['display_status']
     from ib_boards.interactors.dtos import ChangeFieldsStatusParameter
     field_display_status_parameter = ChangeFieldsStatusParameter(

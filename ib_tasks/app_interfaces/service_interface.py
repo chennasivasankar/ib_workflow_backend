@@ -4,6 +4,8 @@ from ib_tasks.constants.enum import ViewType
 from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO, \
+    FieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO, TaskStagesDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
@@ -114,4 +116,9 @@ class ServiceInterface:
             storage=StagesStorageImplementation()
         )
         return interactor.validate_template_ids(template_ids=task_template_ids)
+
+    def get_field_display_names(
+            self, field_ids: List[str], user_id: str,
+            project_id: str) -> List[FieldDisplayNameDTO]:
+        pass
 

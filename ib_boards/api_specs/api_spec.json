@@ -524,7 +524,8 @@
           "enum": [
             "USER_NOT_HAVE_ACCESS_TO_COLUMN",
             "USER_DO_NOT_HAVE_ACCESS_FIELDS",
-            "FIELD_NOT_BELONGS_TO_COLUMN"
+            "FIELD_NOT_BELONGS_TO_COLUMN",
+            "FIELDS_NOT_BELONGS_TO_COLUMN"
           ]
         }
       },
@@ -734,6 +735,9 @@
       "schema": {
         "type": "object",
         "properties": {
+          "field_id": {
+            "type": "string"
+          },
           "display_status": {
             "type": "string",
             "enum": [
@@ -743,7 +747,8 @@
           }
         },
         "required": [
-          "display_status"
+          "display_status",
+          "field_id"
         ]
       }
     },
@@ -754,6 +759,9 @@
       "schema": {
         "type": "object",
         "properties": {
+          "field_id": {
+            "type": "string"
+          },
           "display_order": {
             "type": "integer",
             "format": "int64"
@@ -766,7 +774,9 @@
           }
         },
         "required": [
-          "display_order"
+          "display_order",
+          "field_id",
+          "field_ids"
         ]
       }
     },
@@ -1149,7 +1159,7 @@
         }
       }
     },
-    "/columns/{column_id}/fields/{field_id}/display_status/": {
+    "/columns/{column_id}/fields_display_status/v1/": {
       "post": {
         "summary": "Change the display status of the field in the column",
         "operationId": "change_the_display_status_of_field",
@@ -1162,9 +1172,6 @@
           }
         ],
         "parameters": [
-          {
-            "$ref": "#/parameters/FieldIdPathParameter"
-          },
           {
             "$ref": "#/parameters/ColumnIdParameter"
           },
@@ -1185,7 +1192,7 @@
         }
       }
     },
-    "/columns/{column_id}/fields/{field_id}/display_order/": {
+    "/columns/{column_id}/fields_display_order/v1/": {
       "post": {
         "summary": "Change the display order of the field in the column",
         "operationId": "change_the_display_order_of_field",
@@ -1198,9 +1205,6 @@
           }
         ],
         "parameters": [
-          {
-            "$ref": "#/parameters/FieldIdPathParameter"
-          },
           {
             "$ref": "#/parameters/ColumnIdParameter"
           },

@@ -262,7 +262,8 @@ class TestChangeFieldsDisplayOrder:
             user_id=field_order_parameter.user_id, project_id=project_id
         )
         field_name_adapter_mock.assert_called_once_with(
-            field_ids=field_ids
+            field_ids=field_ids, user_id=field_order_parameter.user_id,
+            project_id=project_id
         )
         storage.get_valid_field_ids.assert_called_once_with(
             field_ids=field_order_parameter.field_ids,

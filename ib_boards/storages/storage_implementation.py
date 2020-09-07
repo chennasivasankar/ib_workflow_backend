@@ -452,7 +452,7 @@ class StorageImplementation(StorageInterface):
             board_id=board_id, user_id=user_id)
 
     def validate_field_id_with_column_id(self, column_id: str, field_id: str, user_id: str):
-        is_field_status_present = not FieldDisplayStatus.objects.get(
+        is_field_status_present = not FieldDisplayStatus.objects.filter(
             user_id=user_id,
             column_id=column_id,
             field_id=field_id

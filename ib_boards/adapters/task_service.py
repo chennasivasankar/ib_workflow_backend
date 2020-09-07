@@ -8,7 +8,7 @@ from typing import List, Tuple
 from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import TaskTemplateStagesDTO, \
     TaskSummaryFieldsDTO, TaskStatusDTO, FieldDTO, ColumnTaskIdsDTO, ActionDTO, \
-    TaskStageDTO, StageAssigneesDTO, AssigneesDTO
+    TaskStageDTO, StageAssigneesDTO, AssigneesDTO, FieldNameDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
@@ -192,5 +192,13 @@ class TaskService:
             profile_pic_url=assignee_details.profile_pic_url
         )
 
-    def get_field_display_name(self, field_ids: List[str]):
-        pass
+    @staticmethod
+    def get_field_display_name(
+            field_ids: List[str], user_id: str, project_id: str) -> List[FieldNameDTO]:
+        return [
+            FieldNameDTO(
+                field_id=field_id,
+                display_name=field_id
+            )
+            for field_id in field_ids
+        ]

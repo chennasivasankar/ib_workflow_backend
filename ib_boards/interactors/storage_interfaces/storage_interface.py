@@ -155,18 +155,12 @@ class StorageInterface(abc.ABC):
     def change_display_order_of_field(self, field_order_parameter: ChangeFieldsOrderParameter):
         pass
 
-
     @abc.abstractmethod
-    def get_field_ids_list_in_order(self, column_id: str, user_id: str) -> List[FieldOrderDTO]:
+    def get_field_ids_list_in_order(self, column_id: str, user_id: str) -> List[str]:
         pass
 
     @abc.abstractmethod
     def get_valid_field_ids(self, column_id: str, field_ids: List[str], user_id: str) -> List[str]:
-        pass
-
-    @abc.abstractmethod
-    def get_field_ids_list_in_order(
-            self, column_id: str, user_id: str) -> List[str]:
         pass
 
     @abc.abstractmethod

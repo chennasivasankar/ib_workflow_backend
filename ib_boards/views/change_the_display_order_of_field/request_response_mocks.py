@@ -2,6 +2,7 @@
 
 REQUEST_BODY_JSON = """
 {
+    "field_id": "string",
     "display_order": 1,
     "field_ids": [
         "string"

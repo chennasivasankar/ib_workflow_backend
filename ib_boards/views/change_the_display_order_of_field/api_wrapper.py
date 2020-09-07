@@ -8,9 +8,9 @@ def api_wrapper(*args, **kwargs):
 
     user = kwargs["user"]
     column_id = kwargs['column_id']
-    field_id = kwargs['field_id']
+    field_id = kwargs['request_data']['field_id']
     display_order = kwargs['request_data']['display_order']
-    field_ids = kwargs['request_data']['display_order']
+    field_ids = kwargs['request_data']['field_ids']
     from ib_boards.interactors.dtos import ChangeFieldsOrderParameter
     field_order_parameter = ChangeFieldsOrderParameter(
         user_id=user.user_id,
@@ -30,7 +30,8 @@ def api_wrapper(*args, **kwargs):
     interactor = ChangeFieldsDisplayOrder(
         storage=storage
     )
-    interactor.change_field_display_order_wrapper(
+    response = interactor.change_field_display_order_wrapper(
         field_order_parameter=field_order_parameter,
         presenter=presenter
     )
+    return response

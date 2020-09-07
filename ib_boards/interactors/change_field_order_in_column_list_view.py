@@ -5,10 +5,9 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
-from ib_boards.interactors.dtos import ChangeFieldsOrderParameter, FieldDTO, \
-    FieldNameDTO
+from ib_boards.interactors.dtos import ChangeFieldsOrderParameter, FieldNameDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
-    FieldsDisplayStatusPresenterInterface, FieldsDisplayOrderPresenterInterface
+    FieldsDisplayOrderPresenterInterface
 from ib_boards.interactors.storage_interfaces.dtos import AllFieldsDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface, FieldDisplayStatusDTO
@@ -45,7 +44,13 @@ class ChangeFieldsDisplayOrder:
 
     def change_field_display_order(
             self, field_order_parameter: ChangeFieldsOrderParameter):
-        self._validate_given_data(field_order_parameter)
+        self.storage.validate_column_id(
+            column_id=field_order_parameter.column_id
+        )
+        project_id = self.storage.get_project_id_for_given_column_id(
+            field_order_parameter.column_id
+        )
+        self._validate_given_data(field_order_parameter, project_id)
         field_ids = field_order_parameter.field_ids
         self.storage.change_display_order_of_field(
             field_order_parameter=field_order_parameter
@@ -61,7 +66,7 @@ class ChangeFieldsDisplayOrder:
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         field_display_name_dtos = service_adapter.task_service.get_field_display_name(
-            field_ids=field_ids
+            field_ids=field_ids, user_id=field_order_parameter.user_id, project_id=project_id
         )
         return self._get_all_fields(
             field_ids_in_order=field_ids_in_order,
@@ -70,15 +75,10 @@ class ChangeFieldsDisplayOrder:
             field_ids=field_ids
         )
 
-    def _validate_given_data(self, field_order_parameter: ChangeFieldsOrderParameter):
-        self.storage.validate_column_id(
-            column_id=field_order_parameter.column_id
-        )
+    def _validate_given_data(
+            self, field_order_parameter: ChangeFieldsOrderParameter, project_id: str):
         self._validate_display_order(
             display_order=field_order_parameter.display_order
-        )
-        project_id = self.storage.get_project_id_for_given_column_id(
-            field_order_parameter.column_id
         )
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()

@@ -72,3 +72,7 @@ FIELD_NOT_BELONGS_TO_COLUMN = (
 INVALID_DISPLAY_ORDER = (
     "invalid display order", "INVALID_DISPLAY_ORDER"
 )
+
+FIELDS_NOT_BELONGS_TO_COLUMN = (
+    "{} field ids not belongs to the column", "FIELD_NOT_BELONGS_TO_COLUMN"
+)

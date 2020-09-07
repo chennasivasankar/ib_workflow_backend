@@ -615,11 +615,11 @@ class FieldsDisplayOrderPresenterImplementation(
 
     def get_response_for_field_not_belongs_to_column(self, error):
         from ib_boards.constants.exception_messages import \
-            FIELD_NOT_BELONGS_TO_COLUMN
+            FIELDS_NOT_BELONGS_TO_COLUMN
         response_dict = {
-            "response": FIELD_NOT_BELONGS_TO_COLUMN[0],
+            "response": FIELDS_NOT_BELONGS_TO_COLUMN[0].format(error.invalid_field_ids),
             "http_status_code": 403,
-            "res_status": FIELD_NOT_BELONGS_TO_COLUMN[1]
+            "res_status": FIELDS_NOT_BELONGS_TO_COLUMN[1]
         }
         return self.prepare_403_forbidden_response(
             response_dict=response_dict
@@ -642,12 +642,14 @@ class FieldsDisplayOrderPresenterImplementation(
         response_dict = [
             {
                 "field_id": all_fields_dto.field_id,
-                "field_display_name": all_fields_dto.display_name,
+                "display_name": all_fields_dto.display_name,
                 "display_order": all_fields_dto.display_order,
                 "display_status": all_fields_dto.display_status
             }
             for all_fields_dto in all_fields
         ]
-        return self.prepare_200_success_response(response_dict)
+        new_all_fields_dict = sorted(response_dict,
+                                     key=lambda x: x['display_order'])
+        return self.prepare_200_success_response(new_all_fields_dict)
 
 

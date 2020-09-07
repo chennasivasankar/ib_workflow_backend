@@ -36,6 +36,12 @@ class FieldNameDTO:
     field_display_name: str
 
 
+@dataclass()
+class FieldDisplayNameDTO:
+    field_id: str
+    field_display_name: str
+
+
 @dataclass
 class FieldRolesDTO:
     field_id: str

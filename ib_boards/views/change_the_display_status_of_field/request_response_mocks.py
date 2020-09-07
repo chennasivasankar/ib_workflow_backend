@@ -2,6 +2,7 @@
 
 REQUEST_BODY_JSON = """
 {
+    "field_id": "string",
     "display_status": "HIDE"
 }
 """
