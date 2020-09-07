@@ -9,5 +9,5 @@ class CreateChecklistItemPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_response_for_empty_checklist_item_text_exception(self):
+    def response_for_empty_checklist_item_text_exception(self):
         pass

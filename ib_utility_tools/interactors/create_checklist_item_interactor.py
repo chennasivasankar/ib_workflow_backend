@@ -26,7 +26,7 @@ class CreateChecklistItemInteractor:
                     checklist_item_id=checklist_item_id)
         except EmptyChecklistItemText:
             response = presenter \
-                .get_response_for_empty_checklist_item_text_exception()
+                .response_for_empty_checklist_item_text_exception()
         return response
 
     def create_checklist_item(self,

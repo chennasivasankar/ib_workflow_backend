@@ -34,28 +34,28 @@ class TestCreateChecklistItemInteractor:
             self, interactor, storage_mock, presenter_mock):
         checklist_item_with_entity_dto = ChecklistItemWithEntityDTOFactory(
             text="")
-        presenter_mock.get_response_for_empty_checklist_item_text_exception = \
+        presenter_mock.response_for_empty_checklist_item_text_exception = \
             mock.Mock()
 
         interactor.create_checklist_item_wrapper(
             checklist_item_with_entity_dto=checklist_item_with_entity_dto,
             presenter=presenter_mock)
 
-        presenter_mock.get_response_for_empty_checklist_item_text_exception \
+        presenter_mock.response_for_empty_checklist_item_text_exception \
             .assert_called_once()
 
     def test_item_text_has_only_spaces_returns_empty_text_exception_response(
             self, interactor, storage_mock, presenter_mock):
         checklist_item_with_entity_dto = ChecklistItemWithEntityDTOFactory(
             text="")
-        presenter_mock.get_response_for_empty_checklist_item_text_exception = \
+        presenter_mock.response_for_empty_checklist_item_text_exception = \
             mock.Mock()
 
         interactor.create_checklist_item_wrapper(
             checklist_item_with_entity_dto=checklist_item_with_entity_dto,
             presenter=presenter_mock)
 
-        presenter_mock.get_response_for_empty_checklist_item_text_exception \
+        presenter_mock.response_for_empty_checklist_item_text_exception \
             .assert_called_once()
 
     def test_given_details_already_has_checklist_returns_success_response(

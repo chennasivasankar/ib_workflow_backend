@@ -7,14 +7,15 @@ from ib_utility_tools.interactors.presenter_interfaces \
 
 
 class CreateChecklistItemPresenterImplementation(
-    CreateChecklistItemPresenterInterface, HTTPResponseMixin):
+    CreateChecklistItemPresenterInterface, HTTPResponseMixin
+):
 
     def get_success_response_for_create_checklist_item(self,
                                                        checklist_item_id: str):
         return self.prepare_201_created_response(
             response_dict={"checklist_item_id": checklist_item_id})
 
-    def get_response_for_empty_checklist_item_text_exception(self):
+    def response_for_empty_checklist_item_text_exception(self):
         from ib_utility_tools.constants.exception_messages import \
             EMPTY_CHECKLIST_ITEM_TEXT_FOR_CREATE_CHECKLIST_ITEM
         response_dict = {
