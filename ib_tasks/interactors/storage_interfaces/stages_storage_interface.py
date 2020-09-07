@@ -2,9 +2,9 @@ import abc
 from typing import Optional, List
 
 from ib_tasks.interactors.stages_dtos import StageDTO, \
-    TaskIdWithStageAssigneeDTO, StageAssigneeDTO
+    TaskIdWithStageAssigneeDTO, StageAssigneeDTO, StageMinimalDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO, \
-    StageIdWithValueDTO, StageFlowWithActionIdDTO
+    StageFlowDTO, StageIdWithValueDTO, StageFlowWithActionIdDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
     TaskStagesDTO, TaskTemplateStageDTO, StageValueWithTaskIdsDTO, \
     TaskIdWithStageDetailsDTO
@@ -164,6 +164,24 @@ class StageStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_current_stages_of_task_in_given_stages(
             self, task_id: int, stage_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_user_permitted_stages_in_template(
+        self, template_id: str, user_roles: List[str]
+    ) -> List[StageMinimalDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_stages_in_template(
+            self, template_id: str) -> List[StageMinimalDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_stage_flows_to_user(
+        self, stage_ids: List[int],
+        action_ids: List[int]
+    ) -> List[StageFlowDTO]:
         pass
 
     @abc.abstractmethod

@@ -197,6 +197,13 @@ class StageIdWithValueDTO:
 
 
 @dataclass
+class StageFlowDTO:
+    previous_stage_id: int
+    action_name: str
+    next_stage_id: int
+
+
+@dataclass
 class CreateStageFlowDTO:
     previous_stage_id: str
     action_name: str

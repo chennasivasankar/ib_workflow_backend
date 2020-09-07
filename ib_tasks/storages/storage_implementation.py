@@ -7,7 +7,7 @@ from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageDTO, \
-    TaskIdWithStageAssigneeDTO, StageAssigneeDTO
+    TaskIdWithStageAssigneeDTO, StageAssigneeDTO, StageMinimalDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
     ActionRolesDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -19,6 +19,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageDetailsDTO, \
     TaskStagesDTO, StageValueDTO, TaskTemplateStageDTO, StageRoleDTO, \
     StageDetailsDTO, TaskStageHavingAssigneeIdDTO, TaskWithDbStageIdDTO, \
+    StageIdWithValueDTO, StageFlowDTO, \
     StageIdWithValueDTO, StageFlowWithActionIdDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
@@ -445,6 +446,55 @@ class StagesStorageImplementation(StageStorageInterface):
         return list(CurrentTaskStage.objects.filter(
             task_id=task_id, stage__stage_id__in=stage_ids
         ).values_list('stage__stage_id', flat=True))
+
+    def get_user_permitted_stages_in_template(
+            self, template_id: str, user_roles: List[str]
+    ) -> List[StageMinimalDTO]:
+
+        stage_ids = StagePermittedRoles.objects.filter(
+            stage_id__in=Stage.objects.filter(task_template_id=template_id)
+        ).filter(
+            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+        ).values_list('stage_id', flat=True)
+        stage_objs = Stage.objects.filter(id__in=stage_ids)
+        return [
+            StageMinimalDTO(
+                stage_id=stage_obj.id,
+                name=stage_obj.display_name,
+                color=stage_obj.stage_color
+            )
+            for stage_obj in stage_objs
+        ]
+
+    def get_stages_in_template(
+            self, template_id: str) -> List[StageMinimalDTO]:
+        stage_objs = Stage.objects.filter(task_template_id=template_id)
+        return [
+            StageMinimalDTO(
+                stage_id=stage_obj.id,
+                name=stage_obj.display_name,
+                color=stage_obj.stage_color
+            )
+            for stage_obj in stage_objs
+        ]
+
+    def get_stage_flows_to_user(
+        self, stage_ids: List[int], action_ids: List[int]
+    ) -> List[StageFlowDTO]:
+        from ib_tasks.models import StageFlow
+        from django.db.models import F
+        stage_flow_objs = StageFlow.objects.filter(
+            previous_stage_id__in=stage_ids,
+            action_id__in=action_ids,
+            next_stage_id__in=stage_ids
+        ).annotate(action_name=F('action__name'))
+        return [
+            StageFlowDTO(
+                previous_stage_id=stage_flow.previous_stage_id,
+                action_name=stage_flow.action_name,
+                next_stage_id=stage_flow.next_stage_id
+            ) for stage_flow in stage_flow_objs
+        ]
 
     def create_stage_flows(
             self, stage_flow_dtos: List[StageFlowWithActionIdDTO]):
