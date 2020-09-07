@@ -22,7 +22,7 @@ class CreateChecklistItemInteractor:
                 checklist_item_with_entity_dto=
                 checklist_item_with_entity_dto)
             response = \
-                presenter.get_success_response_for_create_checklist_item(
+                presenter.get_response_for_create_checklist_item(
                     checklist_item_id=checklist_item_id)
         except EmptyChecklistItemText:
             response = presenter \

@@ -46,7 +46,7 @@ class TestCreateChecklistItemPresenterImplementation:
         expected_response = {"checklist_item_id": checklist_item_id}
 
         # Act
-        result = presenter.get_success_response_for_create_checklist_item(
+        result = presenter.get_response_for_create_checklist_item(
             checklist_item_id=checklist_item_id
         )
 
