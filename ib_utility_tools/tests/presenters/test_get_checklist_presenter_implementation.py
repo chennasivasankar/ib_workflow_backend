@@ -31,8 +31,9 @@ class TestGetChecklistPresenterImplementation:
             self, checklist_item_dtos, presenter, snapshot
     ):
         # Act
-        http_response = presenter.get_success_response_for_get_checklist(
-            checklist_item_dtos=checklist_item_dtos)
+        http_response = presenter.get_response_for_get_checklist(
+            checklist_item_dtos=checklist_item_dtos
+        )
 
         # Assert
         response = json.loads(http_response.content)

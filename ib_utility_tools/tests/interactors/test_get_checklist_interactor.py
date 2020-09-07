@@ -43,7 +43,7 @@ class TestGetChecklistInteractor:
         checklist_id = "checklist_id1"
         storage_mock.get_checklist_id_if_exists.return_value = checklist_id
         storage_mock.get_checklist_item_dtos.return_value = checklist_item_dtos
-        presenter_mock.get_success_response_for_get_checklist \
+        presenter_mock.get_response_for_get_checklist \
             .return_value = mock.Mock()
 
         interactor.get_checklist_wrapper(entity_dto=entity_dto,
@@ -53,7 +53,7 @@ class TestGetChecklistInteractor:
             entity_dto=entity_dto)
         storage_mock.get_checklist_item_dtos.assert_called_once_with(
             checklist_id=checklist_id)
-        presenter_mock.get_success_response_for_get_checklist \
+        presenter_mock.get_response_for_get_checklist \
             .assert_called_once_with(
             checklist_item_dtos=checklist_item_dtos)
 
@@ -63,7 +63,7 @@ class TestGetChecklistInteractor:
             EntityDTOFactory
         entity_dto = EntityDTOFactory()
         storage_mock.get_checklist_id_if_exists.return_value = None
-        presenter_mock.get_success_response_for_get_checklist \
+        presenter_mock.get_response_for_get_checklist \
             .return_value = mock.Mock()
 
         interactor.get_checklist_wrapper(entity_dto=entity_dto,
@@ -71,5 +71,5 @@ class TestGetChecklistInteractor:
 
         storage_mock.get_checklist_id_if_exists.assert_called_once_with(
             entity_dto=entity_dto)
-        presenter_mock.get_success_response_for_get_checklist \
+        presenter_mock.get_response_for_get_checklist \
             .assert_called_once_with(checklist_item_dtos=[])
