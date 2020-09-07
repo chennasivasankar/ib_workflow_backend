@@ -1,8 +1,15 @@
 import pytest
 
+from ib_tasks.tests.factories.models import TaskFactory
+
 
 @pytest.mark.django_db
 class TestValidateTaskId:
+
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        TaskFactory.reset_sequence()
+
     def test_given_invalid_task_id_raise_exception(self, storage):
         # Arrange
         from ib_tasks.exceptions.task_custom_exceptions \
@@ -20,7 +27,6 @@ class TestValidateTaskId:
     def test_given_valid_task_id_returns_task_base_details_dto(self, storage):
         # Arrange
         task_id = 1
-        from ib_tasks.tests.factories.models import TaskFactory
         task_obj = TaskFactory()
         from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
             TaskBaseDetailsDTO

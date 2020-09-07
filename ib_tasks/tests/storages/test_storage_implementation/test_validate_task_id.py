@@ -1,53 +1,40 @@
 import pytest
-from freezegun import freeze_time
-
-from ib_tasks.storages.storage_implementation import StorageImplementation
-from ib_tasks.tests.factories.models import TaskFactory, \
-    TaskDueDetailsFactory, \
-    TaskStageHistoryModelFactory, StageModelFactory, TaskStageModelFactory
 
 
 @pytest.mark.django_db
 class TestValidateTaskId:
 
-    @pytest.fixture()
-    @freeze_time("2020-08-10 12:30:56")
-    def populate_data(self):
-        TaskFactory.reset_sequence()
-        StageModelFactory.reset_sequence()
-        stage = StageModelFactory()
-        tasks = TaskFactory.create_batch(size=3)
-        TaskStageModelFactory.reset_sequence()
-        TaskStageModelFactory(task=tasks[0])
-        TaskDueDetailsFactory.reset_sequence()
-        TaskStageHistoryModelFactory.reset_sequence()
-        TaskStageHistoryModelFactory.create_batch(size=5, task=tasks[0],
-                                                  stage=stage)
-        TaskDueDetailsFactory.create_batch(task=tasks[0], size=2, count=1,
-                                           stage=stage)
-        TaskDueDetailsFactory.create_batch(task=tasks[0], size=2, reason_id=-1,
-                                           count=1)
-
-    def test_validate_task_id_given_valid_task_id(self, populate_data):
+    def test_given_valid_task_returns_true(self):
         # Arrange
         task_id = 1
-        expected_response = True
+        from ib_tasks.storages.storage_implementation \
+            import StorageImplementation
+
+        from ib_tasks.tests.factories.models import TaskModelFactory
+        TaskModelFactory.reset_sequence(0)
         storage = StorageImplementation()
+        TaskModelFactory()
+        expected = True
 
         # Act
-        response = storage.validate_task_id(task_id)
+        response = storage.validate_task_id(task_id=task_id)
 
         # Assert
-        assert response == expected_response
+        assert response == expected
 
-    def test_validate_task_id_given_invalid_task_id(self):
+    def test_given_invalid_task_returns_false(self):
         # Arrange
-        task_id = 1
-        expected_response = False
+        task_id = 2
+        from ib_tasks.storages.storage_implementation \
+            import StorageImplementation
+        from ib_tasks.tests.factories.models import TaskModelFactory
+        TaskModelFactory.reset_sequence(0)
         storage = StorageImplementation()
+        TaskModelFactory()
+        expected = False
 
         # Act
-        response = storage.validate_task_id(task_id)
+        response = storage.validate_task_id(task_id=task_id)
 
         # Assert
-        assert response == expected_response
+        assert response == expected

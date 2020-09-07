@@ -24,6 +24,6 @@ class TestGetTaskStageIds:
         # Act
         actual_result = storage.get_task_stage_ids_in_given_stage_ids(
             stage_ids=[1, 3, 5],
-            task_id=task_stage_objects[0].task_display_id)
+            task_id=task_stage_objects[0].task_id)
         # Assert
         assert actual_result == expected_result

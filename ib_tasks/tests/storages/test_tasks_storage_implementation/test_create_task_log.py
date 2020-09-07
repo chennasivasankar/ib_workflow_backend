@@ -8,7 +8,7 @@ import pytest
 class TestCreateTaskLog:
 
     @freezegun.freeze_time(datetime.datetime(2020, 8, 1, 7, 4, 3))
-    def test_create_task_log_with_valid_details(self, task_storage):
+    def test_create_task_log_with_valid_details(self, storage):
         # Arrange
         from ib_tasks.tests.factories.models import TaskFactory, \
             StageActionFactory
@@ -27,7 +27,7 @@ class TestCreateTaskLog:
         expected_acted_at = datetime.datetime(2020, 8, 1, 7, 4, 3)
 
         # Act
-        task_storage.create_task_log(create_task_log_dto=create_task_log_dto)
+        storage.create_task_log(create_task_log_dto=create_task_log_dto)
 
         # Assert
         from ib_tasks.models.task_log import TaskLog

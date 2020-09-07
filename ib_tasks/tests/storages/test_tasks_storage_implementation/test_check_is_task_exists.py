@@ -1,29 +1,29 @@
 import pytest
 
+from ib_tasks.tests.factories.models import TaskFactory
+
 
 @pytest.mark.django_db
 class TestCheckIsTaskExists:
 
-    def test_check_is_task_exists_with_valid_task_id_returns_true(
-            self, task_storage):
+    def test_given_valid_task_id_returns_true(self, storage):
         # Arrange
+        TaskFactory()
         task_id = 1
-        from ib_tasks.tests.factories.models import TaskFactory
-        TaskFactory.create()
 
         # Act
-        is_task_exists = task_storage.check_is_task_exists(task_id=task_id)
+        is_task_exists = storage.check_is_task_exists(task_id)
 
         # Assert
-        assert is_task_exists is True
+        assert is_task_exists == True
 
-    def test_check_is_task_exists_with_invalid_task_id_returns_false(
-            self, task_storage):
+    def test_given_invalid_task_id_returns_false(self, storage):
         # Arrange
-        task_id = 1
+        TaskFactory()
+        task_id = 2
 
         # Act
-        is_task_exists = task_storage.check_is_task_exists(task_id=task_id)
+        is_task_exists = storage.check_is_task_exists(task_id)
 
         # Assert
         assert is_task_exists is False

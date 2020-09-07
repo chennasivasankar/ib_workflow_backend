@@ -1,11 +1,13 @@
 import factory
 import pytest
 
+from ib_tasks.tests.factories.models import TaskStageHistoryModelFactory
+
 
 @pytest.mark.django_db
 class TestGetStageAssigneeDTOS:
 
-    @pytest.fixture()
+    @pytest.fixture
     def populate_task_stages_history(self):
         TaskStageHistoryModelFactory.reset_sequence()
         stage_ids = [1, 2, 3, 4]

@@ -3,7 +3,8 @@ import pytest
 from ib_tasks.models import StageAction, ActionPermittedRoles
 from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
-from ib_tasks.tests.factories.interactor_dtos import ActionDTOFactory, StageActionDTOFactory
+from ib_tasks.tests.factories.interactor_dtos import ActionDTOFactory, \
+    StageActionDTOFactory
 from ib_tasks.tests.factories.models import StageActionFactory, \
     StageModelFactory, TaskTemplateWithTransitionFactory, TaskTemplateFactory
 
@@ -11,23 +12,23 @@ from ib_tasks.tests.factories.models import StageActionFactory, \
 @pytest.mark.django_db
 class TestUpdateStageActions:
 
-    @classmethod
-    def setup_class(cls):
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
         ActionDTOFactory.reset_sequence()
         StageActionFactory.reset_sequence()
         StageModelFactory.reset_sequence()
-
-    @pytest.fixture()
-    def stage_actions_dtos(self):
         StageActionDTOFactory.reset_sequence()
         StageModelFactory.reset_sequence()
         TaskTemplateFactory.reset_sequence()
+        StageActionFactory.reset_sequence()
+
+    @pytest.fixture()
+    def stage_actions_dtos(self):
         TaskTemplateWithTransitionFactory.create_batch(size=4)
         return StageActionDTOFactory.create_batch(size=4)
 
     @pytest.fixture()
     def create_stage_actions(self):
-        StageActionFactory.reset_sequence()
         StageActionFactory.create_batch(size=40)
 
     @staticmethod
@@ -52,7 +53,6 @@ class TestUpdateStageActions:
         # Assert
         returned = StageAction.objects.filter(id__in=action_ids)
         roles = ActionPermittedRoles.objects.filter(
-            action_id__in=action_ids
-        ).values()
+            action_id__in=action_ids).values()
         self._validate(stage_actions_dtos, returned)
         snapshot.assert_match(roles, "roles")

@@ -9,6 +9,12 @@ from ib_tasks.tests.factories.storage_dtos import TaskGoFFieldDTOFactory
 @pytest.mark.django_db
 class TestCreateTaskGoFFields:
 
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        TaskGoFFieldDTOFactory.reset_sequence()
+        FieldFactory.reset_sequence()
+        TaskGoFFactory.reset_sequence()
+
     def test_create_task_gof_fields(self, storage):
         # Arrange
         task_gof_field_dtos = TaskGoFFieldDTOFactory.create_batch(size=1)

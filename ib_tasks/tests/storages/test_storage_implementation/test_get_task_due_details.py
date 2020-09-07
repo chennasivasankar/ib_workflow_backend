@@ -23,10 +23,10 @@ class TestGetTaskDueMissingDetails:
         TaskStageHistoryModelFactory.reset_sequence()
         TaskStageHistoryModelFactory.create_batch(size=5, task=tasks[0],
                                                   stage=stage)
-        TaskDueDetailsFactory.create_batch(task=tasks[0], size=2, count=1,
-                                           stage=stage)
-        TaskDueDetailsFactory.create_batch(task=tasks[0], size=2, reason_id=-1,
-                                           count=1)
+        TaskDueDetailsFactory.create_batch(
+            task=tasks[0], size=2, count=1, stage=stage)
+        TaskDueDetailsFactory.create_batch(
+            task=tasks[0], size=2, reason_id=-1, count=1)
 
     @freeze_time("2020-08-10 12:30:56")
     def test_get_due_details_of_task_given_task_id(self, populate_data,

@@ -1,6 +1,7 @@
 import pytest
 
-from ib_tasks.tests.factories.models import CurrentTaskStageModelFactory
+from ib_tasks.tests.factories.models import CurrentTaskStageModelFactory, \
+    StagePermittedRolesFactory
 
 
 @pytest.fixture
@@ -14,3 +15,4 @@ def task_storage():
 @pytest.fixture
 def reset_sequence():
     CurrentTaskStageModelFactory.reset_sequence()
+    StagePermittedRolesFactory.reset_sequence()

@@ -10,15 +10,19 @@ from ib_tasks.tests.factories.storage_dtos import StageActionsDTOFactory
 
 @pytest.mark.django_db
 class TestGetStageActions:
-    @pytest.fixture()
-    def create_stage_actions(self):
+
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
         StageModelFactory.reset_sequence()
         StageActionFactory.reset_sequence()
+        StageActionsDTOFactory.reset_sequence()
+
+    @pytest.fixture
+    def create_stage_actions(self):
         StageActionFactory.create_batch(size=3)
 
-    @pytest.fixture()
+    @pytest.fixture
     def expected_output(self):
-        StageActionsDTOFactory.reset_sequence()
         return StageActionsDTOFactory.create_batch(size=3)
 
     def test_get_stage_actions(self, snapshot,
