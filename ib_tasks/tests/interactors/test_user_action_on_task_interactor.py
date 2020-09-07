@@ -529,7 +529,7 @@ class TestUserActionOnTaskInteractor:
         path = 'ib_tasks.interactors.user_role_validation_interactor' \
                '.UserRoleValidationInteractor' \
                '.does_user_has_required_permission'
-        task_storage_mock.get_user_missed_the_task_due_time.return_value = \
+        task_storage_mock.get_task_due_datetime.return_value = \
             datetime.datetime.now() - datetime.timedelta(days=1)
         action_storage_mock.get_stage_id_for_given_action_id.return_value = 1
         validation_mock_obj = mocker.patch(path)
@@ -583,7 +583,7 @@ class TestUserActionOnTaskInteractor:
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        task_storage_mock.get_user_missed_the_task_due_time.return_value = \
+        task_storage_mock.get_task_due_datetime.return_value = \
             datetime.datetime.now() - datetime.timedelta(days=1)
         action_storage_mock.get_stage_id_for_given_action_id.return_value = 1
         storage.get_task_present_stage_actions.return_value = action_ids
@@ -691,7 +691,7 @@ class TestUserActionOnTaskInteractor:
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        task_storage_mock.get_user_missed_the_task_due_time.return_value = \
+        task_storage_mock.get_task_due_datetime.return_value = \
             datetime.datetime.now() - datetime.timedelta(days=1)
         action_storage_mock.get_stage_id_for_given_action_id.return_value = 1
         storage.get_task_present_stage_actions.return_value = action_ids
@@ -740,7 +740,7 @@ class TestUserActionOnTaskInteractor:
                 task_id=task_id, task_boards_details=task_board_details,
                 assignees=assignees, task_display_id=task_display_id
         )
-        task_storage_mock.get_user_missed_the_task_due_time.return_value = \
+        task_storage_mock.get_task_due_datetime.return_value = \
             datetime.datetime.now() - datetime.timedelta(days=1)
         gof_storage.check_task_delay_reason_updated_or_not.return_value = False
         action_storage_mock.get_stage_id_for_given_action_id.return_value = 1
