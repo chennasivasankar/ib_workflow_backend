@@ -1,7 +1,6 @@
 from typing import List
 
 from ib_tasks.adapters.dtos import ProjectRolesDTO
-from ib_tasks.build.parameters.ProjectIdParameter import project_id
 from ib_tasks.exceptions.permission_custom_exceptions import \
     InvalidUserIdException
 
