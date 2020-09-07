@@ -7,7 +7,8 @@ from ib_utility_tools.interactors.presenter_interfaces \
 
 
 class UpdateChecklistItemPresenterImplementation(
-    UpdateChecklistItemPresenterInterface, HTTPResponseMixin):
+    UpdateChecklistItemPresenterInterface, HTTPResponseMixin
+):
 
     def get_success_response_for_update_checklist_item(self):
         return self.prepare_200_success_response(response_dict={})

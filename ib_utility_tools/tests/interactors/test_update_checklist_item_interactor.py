@@ -84,7 +84,7 @@ class TestUpdateChecklistItemInteractor:
         storage_mock.is_checklist_item_id_exists.assert_called_once_with(
             checklist_item_id=checklist_item_with_id_dto.checklist_item_id
         )
-        presenter_mock.get_checklist_item_id_not_found_responses.assert_called_once()
+        presenter_mock.get_checklist_item_id_not_found_response.assert_called_once()
 
     def test_given_valid_details_returns_success_response(
             self, interactor, storage_mock, presenter_mock
