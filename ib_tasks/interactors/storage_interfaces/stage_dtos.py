@@ -195,3 +195,27 @@ class StageIdWithValueDTO:
     db_stage_id: int
     stage_value: int
 
+
+@dataclass
+class CreateStageFlowDTO:
+    previous_stage_id: str
+    action_name: str
+    next_stage_id: str
+
+
+@dataclass
+class StageFlowWithActionIdDTO:
+    previous_stage_id: str
+    action_id: int
+    next_stage_id: str
+
+
+@dataclass
+class StageIdActionNameDTO:
+    stage_id: str
+    action_name: str
+
+
+@dataclass
+class StageActionIdDTO(StageIdActionNameDTO):
+    action_id: int

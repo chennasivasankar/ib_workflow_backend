@@ -19,7 +19,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageDetailsDTO, \
     TaskStagesDTO, StageValueDTO, TaskTemplateStageDTO, StageRoleDTO, \
     StageDetailsDTO, TaskStageHavingAssigneeIdDTO, TaskWithDbStageIdDTO, \
-    StageIdWithValueDTO
+    StageIdWithValueDTO, StageFlowWithActionIdDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import (
@@ -445,6 +445,11 @@ class StagesStorageImplementation(StageStorageInterface):
         return list(CurrentTaskStage.objects.filter(
             task_id=task_id, stage__stage_id__in=stage_ids
         ).values_list('stage__stage_id', flat=True))
+
+    def create_stage_flows(
+            self, stage_flow_dtos: List[StageFlowWithActionIdDTO]):
+        pass
+
 
 
 
