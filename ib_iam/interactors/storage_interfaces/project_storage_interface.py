@@ -2,10 +2,10 @@ import abc
 from typing import List
 
 from ib_iam.interactors.dtos.dtos import UserIdWithProjectIdAndStatusDTO
-from ib_iam.interactors.storage_interfaces.dtos import ProjectWithoutIdDTO, \
-    RoleNameAndDescriptionDTO, RoleDTO, ProjectWithDisplayIdDTO, \
-    UserIdAndTeamIdsDTO, ProjectTeamIdsDTO, ProjectsWithTotalCountDTO, \
-    PaginationDTO, ProjectRoleDTO, ProjectDTO
+from ib_iam.interactors.storage_interfaces.dtos import (
+    ProjectWithoutIdDTO, RoleNameAndDescriptionDTO, RoleDTO,
+    ProjectWithDisplayIdDTO, UserIdAndTeamIdsDTO, ProjectTeamIdsDTO,
+    ProjectsWithTotalCountDTO, PaginationDTO, ProjectRoleDTO, ProjectDTO)
 
 
 class ProjectStorageInterface(abc.ABC):

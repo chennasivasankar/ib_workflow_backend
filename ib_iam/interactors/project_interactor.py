@@ -2,19 +2,21 @@ from typing import List, Tuple, Optional
 
 from django.db import transaction
 
-from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
-    UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO, UserTeamsDTO
-from ib_iam.exceptions.custom_exceptions import InvalidUserIds, InvalidUserId, \
-    InvalidProjectIds
-from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO, \
-    CompleteProjectDetailsDTO, UserIdWithProjectIdAndStatusDTO
+from ib_iam.app_interfaces.dtos import (
+    ProjectTeamUserDTO, UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO,
+    UserTeamsDTO)
+from ib_iam.exceptions.custom_exceptions import (
+    InvalidUserIds, InvalidUserId, InvalidProjectIds)
+from ib_iam.interactors.dtos.dtos import (
+    ProjectWithTeamIdsAndRolesDTO, CompleteProjectDetailsDTO,
+    UserIdWithProjectIdAndStatusDTO)
 from ib_iam.interactors.presenter_interfaces \
     .add_project_presenter_interface import AddProjectPresenterInterface
 from ib_iam.interactors.presenter_interfaces \
     .update_project_presenter_interface import UpdateProjectPresenterInterface
-from ib_iam.interactors.storage_interfaces.dtos import ProjectWithoutIdDTO, \
-    RoleDTO, RoleNameAndDescriptionDTO, ProjectWithDisplayIdDTO, ProjectDTO, \
-    TeamWithUserIdDTO, TeamIdAndNameDTO
+from ib_iam.interactors.storage_interfaces.dtos import (
+    ProjectWithoutIdDTO, RoleDTO, RoleNameAndDescriptionDTO,
+    ProjectWithDisplayIdDTO, ProjectDTO, TeamWithUserIdDTO, TeamIdAndNameDTO)
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
