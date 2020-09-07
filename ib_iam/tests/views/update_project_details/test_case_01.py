@@ -62,6 +62,7 @@ class TestCase01UpdateProjectDetailsAPITestCase(TestUtils):
         project_roles = ProjectRole.objects.filter(project_id=project_id) \
             .values("role_id", "name", "description")
         snapshot.assert_match(list(project_roles), "project_roles")
+        # todo after merging add-validations-pr-of-update-project
 
     @pytest.fixture
     def setup(self):

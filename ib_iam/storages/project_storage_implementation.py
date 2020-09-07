@@ -250,5 +250,6 @@ class ProjectStorageImplementation(ProjectStorageInterface):
 
     def remove_user_roles_related_to_given_project_and_user(
             self, project_id: str, user_ids: List[str]):
-        # todo: Implement this and write a test for it
-        pass
+        from ib_iam.models import UserRole
+        UserRole.objects.filter(user_id__in=user_ids,
+                                project_role__project_id=project_id).delete()
