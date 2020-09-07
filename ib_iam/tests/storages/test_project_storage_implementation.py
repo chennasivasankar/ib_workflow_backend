@@ -131,7 +131,7 @@ class TestProjectStorageImplementation:
         project_storage = ProjectStorageImplementation()
 
         actual_project_dtos = \
-            project_storage.get_project_dtos_for_given_project_ids(
+            project_storage.get_project_dtos(
                 project_ids=input_project_ids)
 
         assert actual_project_dtos == expected_project_dtos

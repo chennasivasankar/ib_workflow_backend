@@ -78,7 +78,7 @@ class ProjectInteractor(ValidationMixin):
             self, project_ids: List[str]
     ) -> List[ProjectDTO]:
         project_dtos = self.project_storage. \
-            get_project_dtos_for_given_project_ids(project_ids=project_ids)
+            get_project_dtos(project_ids=project_ids)
         invalid_project_ids = self._get_invalid_project_ids(
             project_dtos=project_dtos, project_ids=project_ids)
         if invalid_project_ids:
