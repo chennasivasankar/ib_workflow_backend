@@ -1,10 +1,10 @@
 from typing import List, Optional
 
 from ib_iam.exceptions.custom_exceptions import InvalidTeamId
-from ib_iam.interactors.storage_interfaces.dtos import \
-    TeamNameAndDescriptionDTO, TeamIdAndNameDTO, PaginationDTO, TeamUserIdsDTO, \
-    TeamsWithTotalTeamsCountDTO, TeamWithTeamIdAndUserIdsDTO, TeamDTO, \
-    TeamWithUserIdDTO
+from ib_iam.interactors.storage_interfaces.dtos import (
+    TeamNameAndDescriptionDTO, TeamIdAndNameDTO, PaginationDTO, TeamUserIdsDTO,
+    TeamsWithTotalTeamsCountDTO, TeamWithTeamIdAndUserIdsDTO, TeamDTO,
+    TeamWithUserIdDTO)
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
     TeamStorageInterface
 from ib_iam.models import Team, TeamUser
@@ -22,7 +22,7 @@ class TeamStorageImplementation(TeamStorageInterface):
         offset = pagination_dto.offset
         limit = pagination_dto.limit
         team_objects = team_objects[offset:offset + limit]
-        team_dtos_list = self._get_team_dtos(team_objects=team_objects)
+        team_dtos_list = self._convert_to_team_dtos(team_objects=team_objects)
         teams_with_total_teams_count_dto = TeamsWithTotalTeamsCountDTO(
             teams=team_dtos_list,
             total_teams_count=total_teams_count
@@ -110,11 +110,11 @@ class TeamStorageImplementation(TeamStorageInterface):
 
     def get_team_dtos(self, team_ids: List[str]) -> List[TeamDTO]:
         team_objects = Team.objects.filter(team_id__in=team_ids)
-        team_dtos = self._get_team_dtos(team_objects)
+        team_dtos = self._convert_to_team_dtos(team_objects)
         return team_dtos
 
     @staticmethod
-    def _get_team_dtos(team_objects):
+    def _convert_to_team_dtos(team_objects):
         team_dtos = [
             TeamDTO(
                 team_id=str(team_object.team_id),
