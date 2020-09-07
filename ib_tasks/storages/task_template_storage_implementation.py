@@ -13,7 +13,6 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     TaskTemplateStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO, ProjectTemplateDTO, ProjectIdWithTaskTemplateIdDTO
-
 from ib_tasks.models import TaskTemplate, TaskTemplateGoFs, ProjectTaskTemplate
 
 
@@ -21,8 +20,8 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
     def get_project_templates(self, project_id: str) -> List[str]:
         project_templates = \
-            ProjectTaskTemplate.objects.filter(project_id=project_id).\
-            values_list('task_template_id', flat=True)
+            ProjectTaskTemplate.objects.filter(project_id=project_id). \
+                values_list('task_template_id', flat=True)
         return project_templates
 
     def validate_transition_template_id(
@@ -109,9 +108,10 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
         task_template_objs = ProjectTaskTemplate.objects.filter(
             (
-                Q(project_id__in=project_ids) &
-                Q(task_template__is_transition_template=False)
-            ) | (Q(project_id=None) & Q(task_template__is_transition_template=False))
+                    Q(project_id__in=project_ids) &
+                    Q(task_template__is_transition_template=False)
+            ) | (Q(project_id=None) & Q(
+                task_template__is_transition_template=False))
         ).annotate(template_name=F('task_template__name'))
         task_template_dtos = self._convert_project_templates_objs_to_dtos(
             task_template_objs=task_template_objs)
@@ -283,8 +283,8 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
     def get_gof_ids_of_template(self, template_id: str) -> List[str]:
         gof_ids_queryset = TaskTemplateGoFs.objects.filter(
-            task_template_id=template_id).values_list('gof_id', flat=True)
-
+            task_template_id=template_id).exclude(order=-1).\
+            values_list('gof_id', flat=True)
         gof_ids_list = list(gof_ids_queryset)
         return gof_ids_list
 
