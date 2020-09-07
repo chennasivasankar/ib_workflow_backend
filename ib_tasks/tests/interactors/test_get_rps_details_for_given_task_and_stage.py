@@ -128,7 +128,7 @@ class TestGetTaskRelatedRps:
         task_storage.get_task_id_for_task_display_id.return_value = 1
         storage.validate_if_task_is_assigned_to_user_in_given_stage. \
             return_value = True
-        task_storage.get_user_missed_the_task_due_time.return_value = None
+        task_storage.get_task_due_datetime.return_value = None
 
         interactor = GetTaskRPsInteractor(storage=storage,
                                           task_storage=task_storage)
@@ -169,7 +169,7 @@ class TestGetTaskRelatedRps:
         user_details_mock = get_user_dtos_given_user_ids(mocker)
         storage.get_rp_ids.return_value = user_ids
         storage.get_latest_rp_id_if_exists.return_value = None
-        task_storage.get_user_missed_the_task_due_time.return_value = \
+        task_storage.get_task_due_datetime.return_value = \
             datetime.datetime.now() - datetime.timedelta(
             days=2)
         storage.get_latest_rp_added_datetime.return_value = \
@@ -187,6 +187,7 @@ class TestGetTaskRelatedRps:
         assert response == expected_response
         task_storage.check_is_valid_task_display_id.assert_called_once_with(
                 task_display_id)
+        storage.get_task_due_datetime.assert_called_once_with(task_id)
         storage.get_latest_rp_added_datetime.assert_called_once_with(task_id,
                                                                      stage_id)
         presenter_mock.response_for_get_rps_details.assert_called_once()
@@ -221,7 +222,7 @@ class TestGetTaskRelatedRps:
         storage.get_latest_rp_added_datetime.return_value = \
             datetime.datetime.now() - datetime.timedelta(
             days=3)
-        task_storage.get_user_missed_the_task_due_time.return_value = \
+        task_storage.get_task_due_datetime.return_value = \
             datetime.datetime.now()
         presenter_mock.response_for_get_rps_details.return_value = \
             expected_response
@@ -236,7 +237,7 @@ class TestGetTaskRelatedRps:
         assert response == expected_response
         task_storage.check_is_valid_task_display_id.assert_called_once_with(
                 task_display_id)
-
+        storage.get_task_due_datetime.assert_called_once_with(task_id)
         user_details_mock.assert_called_once_with(user_ids)
         superior_mock.assert_called_once_with(user_id=superior_id,
                                               team_id=team_id)
@@ -269,7 +270,7 @@ class TestGetTaskRelatedRps:
         user_details_mock = get_user_dtos_given_user_ids(mocker)
         storage.get_rp_ids.return_value = []
         storage.get_latest_rp_id_if_exists.return_value = None
-        task_storage.get_user_missed_the_task_due_time.return_value = \
+        task_storage.get_task_due_datetime.return_value = \
             datetime.datetime.now() - datetime.timedelta(
             days=2)
         storage.get_latest_rp_added_datetime.return_value = \
@@ -286,6 +287,7 @@ class TestGetTaskRelatedRps:
         assert response == expected_response
         task_storage.check_is_valid_task_display_id.assert_called_once_with(
                 task_display_id)
+        storage.get_task_due_datetime.assert_called_once_with(task_id)
         storage.get_latest_rp_added_datetime.assert_called_once_with(task_id,
                                                                      stage_id)
         presenter_mock.response_for_get_rps_details.assert_called_once()

@@ -56,8 +56,8 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
         user_id = parameters.user_id
 
         stage_id = parameters.stage_id
-        due_date = self.task_storage.get_user_missed_the_task_due_time(
-            task_id, user_id, stage_id)
+        due_date = self.task_storage.get_task_due_datetime(
+            task_id)
 
         if due_date is None:
             raise DueDateIsNotAddedException

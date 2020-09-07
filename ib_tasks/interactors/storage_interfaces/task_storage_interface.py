@@ -147,9 +147,7 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_user_missed_the_task_due_time(self, task_id: int,
-                                          user_id: str,
-                                          stage_id: int) -> datetime:
+    def get_task_due_datetime(self, task_id: int) -> Optional[datetime]:
         pass
 
     @abc.abstractmethod
