@@ -85,9 +85,6 @@ class GetNextStagesRandomAssigneesOfATaskPresenterImpl(
         }
         return self.prepare_400_bad_request_response(data)
 
-
-
-
     def get_next_stages_random_assignees_of_a_task_response(
             self,
             stage_with_user_details_and_team_details_dto:
