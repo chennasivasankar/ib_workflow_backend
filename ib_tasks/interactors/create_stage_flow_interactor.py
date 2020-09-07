@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import List
+from typing import List, Dict
 
 from ib_tasks.exceptions.action_custom_exceptions import InvalidStageActionException
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageIdsException
@@ -17,49 +17,52 @@ class CreateStageFlowInteractor:
 
     def create_stage_flows(self, stage_flow_dtos: List[CreateStageFlowDTO]):
 
-        self._validations_for_stage_flow_dtos(stage_flow_dtos)
-        self._validate_stage_actions_and_create_stage_flow(
-            stage_flow_dtos
-        )
-
-    def _validations_for_stage_flow_dtos(
-            self, stage_flow_dtos: List[CreateStageFlowDTO]
-    ):
         stage_ids = self._get_stage_ids(stage_flow_dtos)
         self._validate_stage_ids(stage_ids)
-
-    def _validate_stage_actions_and_create_stage_flow(
-            self, stage_flow_dtos: List[CreateStageFlowDTO]):
-
         stage_id_action_dtos = self._get_stage_id_action_name_dtos(stage_flow_dtos)
-        stage_action_id_dtos = self.action_storage\
+        stage_action_id_dtos = self.action_storage \
             .get_stage_action_name_dtos(stage_id_action_dtos)
         stage_action_name_dict = self._get_stage_action_name_dict(stage_action_id_dtos)
-        invalid_stage_action = defaultdict(list)
+        self._validate_stage_actions(stage_flow_dtos, stage_action_name_dict)
+        self._create_stage_flows(stage_flow_dtos, stage_action_name_dict)
+
+    def _create_stage_flows(
+            self, stage_flow_dtos: List[CreateStageFlowDTO],
+            stage_action_name_dict: Dict[str, StageActionIdDTO]
+    ):
         create_stage_flow_dtos = []
+        for stage_flow_dto in stage_flow_dtos:
+            key = stage_flow_dto.previous_stage_id + stage_flow_dto.action_name
+            create_stage_flow_dtos.append(
+                StageFlowWithActionIdDTO(
+                    previous_stage_id=stage_flow_dto.previous_stage_id,
+                    action_id=stage_action_name_dict[key].action_id,
+                    next_stage_id=stage_flow_dto.next_stage_id
+                )
+            )
+        if create_stage_flow_dtos:
+            self.stage_storage.create_stage_flows(
+                stage_flow_dtos=create_stage_flow_dtos
+            )
+
+    @staticmethod
+    def _validate_stage_actions(
+            stage_flow_dtos: List[CreateStageFlowDTO],
+            stage_action_name_dict: Dict[str, StageActionIdDTO]
+    ):
+        invalid_stage_action = defaultdict(list)
         for stage_flow_dto in stage_flow_dtos:
             key = stage_flow_dto.previous_stage_id + stage_flow_dto.action_name
             if key not in stage_action_name_dict:
                 stage_id = stage_flow_dto.previous_stage_id
                 action_name = stage_flow_dto.action_name
                 invalid_stage_action[stage_id].append(action_name)
-            else:
-                create_stage_flow_dtos.append(
-                    StageFlowWithActionIdDTO(
-                        previous_stage_id=stage_flow_dto.previous_stage_id,
-                        action_id=stage_action_name_dict[key].action_id,
-                        next_stage_id=stage_flow_dto.next_stage_id
-                    )
-                )
+
         if invalid_stage_action:
             import json
             stage_actions = json.dumps(invalid_stage_action)
             raise InvalidStageActionException(
                 stage_actions=stage_actions
-            )
-        if create_stage_flow_dtos:
-            self.stage_storage.create_stage_flows(
-                stage_flow_dtos=create_stage_flow_dtos
             )
 
     @staticmethod
