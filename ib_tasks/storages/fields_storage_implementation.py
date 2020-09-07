@@ -16,7 +16,8 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (
     TaskTemplateStageDTO, StageDetailsDTO)
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectRolesDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import \
+    TaskProjectRolesDTO
 from ib_tasks.models import CurrentTaskStage, Stage, TaskGoFField, FieldRole, \
     TaskTemplateGoFs, Field
 
@@ -30,7 +31,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             Q(role__in=user_roles) | Q(role=ALL_ROLES_ID),
             field__gof_id__in=gof_ids,
             permission_type=PermissionTypes.WRITE.value
-        ).values_list(
+        ).values(
             "field_id", "field__gof__display_name", "field__display_name")
         field_id_with_display_name_dtos = [
             FieldIdWithFieldDisplayNameDTO(
@@ -353,7 +354,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         q = None
         for counter, item in enumerate(task_project_roles):
             current_queue = Q(role__in=item.roles) | Q(role=ALL_ROLES_ID) & \
-                            Q(field__taskgoffield__task_gof__task_id=item.task_id)
+                            Q(
+                                field__taskgoffield__task_gof__task_id=item.task_id)
             if counter == 0:
                 q = current_queue
             else:

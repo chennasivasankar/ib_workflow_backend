@@ -139,10 +139,6 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter.raise_user_needs_gof_writable_permission(err)
         except UserNeedsFieldWritablePermission as err:
             return presenter.raise_user_needs_field_writable_permission(err)
-        except UserDidNotFillRequiredGoFs as err:
-            return presenter.raise_user_did_not_fill_required_gofs(err)
-        except UserDidNotFillRequiredFields as err:
-            return presenter.raise_user_did_not_fill_required_fields(err)
         except EmptyValueForRequiredField as err:
             return presenter. \
                 raise_exception_for_empty_value_in_required_field(err)

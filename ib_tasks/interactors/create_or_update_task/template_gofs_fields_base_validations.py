@@ -2,9 +2,9 @@ from typing import List, Optional, Union
 
 from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
-    DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
+    DuplicateFieldIdsToGoF
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
-    DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs
+    DuplicateSameGoFOrderForAGoF
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.task_custom_exceptions import \
@@ -20,7 +20,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, FieldValuesDTO
@@ -64,10 +64,6 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
             gof_fields_dtos, gof_ids)
         self._validate_user_permission_on_given_fields_and_gofs(
             gof_ids, field_ids, user_id)
-        self._validate_all_user_template_permitted_fields_are_filled_or_not(
-            user_id=user_id, project_id=project_id,
-            task_template_id=task_template_id, gof_fields_dtos=gof_fields_dtos
-        )
         from ib_tasks.interactors.create_or_update_task. \
             validate_field_responses import ValidateFieldResponsesInteractor
         field_validation_interactor = ValidateFieldResponsesInteractor(
@@ -241,71 +237,3 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
             )
         ))
         return duplicate_values
-
-    def _validate_all_user_template_permitted_fields_are_filled_or_not(
-            self, user_id: str, project_id: str, task_template_id: str,
-            gof_fields_dtos: List[GoFFieldsDTO]
-    ):
-        from ib_tasks.adapters.roles_service_adapter import \
-            get_roles_service_adapter
-        roles_service_adapter = get_roles_service_adapter()
-        user_roles = roles_service_adapter.roles_service \
-            .get_user_role_ids_based_on_project(
-            user_id=user_id, project_id=project_id)
-        template_gof_ids = self.task_template_storage.get_gof_ids_of_template(
-            template_id=task_template_id)
-        gof_id_with_display_name_dtos = \
-            self.gof_storage.get_user_write_permitted_gof_ids_in_given_gof_ids(
-                user_roles, template_gof_ids)
-        user_permitted_gof_ids = [
-            dto.gof_id for dto in gof_id_with_display_name_dtos]
-        field_id_with_display_name_dtos = \
-            self.field_storage \
-                .get_user_write_permitted_field_ids_for_given_gof_ids(
-                user_roles, user_permitted_gof_ids)
-        filled_gof_ids = [
-            gof_field_dto.gof_id for gof_field_dto in gof_fields_dtos]
-        filled_field_ids = []
-        for gof_fields_dto in gof_fields_dtos:
-            filled_field_ids += [
-                field_value_dto.field_id
-                for field_value_dto in gof_fields_dto.field_values_dtos
-            ]
-        self._validate_all_user_permitted_gof_ids_are_filled_or_not(
-            gof_id_with_display_name_dtos, filled_gof_ids)
-        self._validate_all_user_permitted_field_ids_are_filled_or_not(
-            field_id_with_display_name_dtos, filled_field_ids)
-
-    @staticmethod
-    def _validate_all_user_permitted_gof_ids_are_filled_or_not(
-            permitted_gofs, filled_gof_ids
-    ) -> Optional[UserDidNotFillRequiredGoFs]:
-        permitted_gof_ids = [
-            permitted_gof.gof_id for permitted_gof in permitted_gofs]
-        unfilled_gof_ids = list(sorted(
-            set(permitted_gof_ids) - set(filled_gof_ids)))
-        if unfilled_gof_ids:
-            gof_display_names = [
-                permitted_gof.gof_display_name
-                for permitted_gof in permitted_gofs
-                if permitted_gof.gof_id in unfilled_gof_ids
-            ]
-            raise UserDidNotFillRequiredGoFs(gof_display_names)
-        return
-
-    @staticmethod
-    def _validate_all_user_permitted_field_ids_are_filled_or_not(
-            permitted_fields, filled_field_ids
-    ) -> Optional[UserDidNotFillRequiredFields]:
-        permitted_field_ids = [
-            permitted_field.field_id for permitted_field in permitted_fields]
-        unfilled_field_ids = list(sorted(
-            set(permitted_field_ids) - set(filled_field_ids)))
-        if unfilled_field_ids:
-            unfilled_field_dtos = [
-                permitted_field
-                for permitted_field in permitted_fields
-                if permitted_field.field_id in unfilled_field_ids
-            ]
-            raise UserDidNotFillRequiredFields(unfilled_field_dtos)
-        return

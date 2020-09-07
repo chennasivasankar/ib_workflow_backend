@@ -11,9 +11,9 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidUrlForImage, InvalidImageFormat, InvalidUrlForFile, \
     InvalidFileFormat
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
-    DuplicateFieldIdsToGoF
+    DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import \
-    DuplicateSameGoFOrderForAGoF, InvalidGoFIds
+    DuplicateSameGoFOrderForAGoF, InvalidGoFIds, UserDidNotFillRequiredGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId, \
@@ -67,7 +67,8 @@ class CreateTransitionChecklistTemplateInteractor(
                  stage_action_storage: ActionStorageInterface,
                  task_storage: TaskStorageInterface,
                  gof_storage: GoFStorageInterface, storage: StorageInterface,
-                 field_storage: FieldsStorageInterface
+                 field_storage: FieldsStorageInterface,
+                 task_template_storage: TaskTemplateStorageInterface
                  ):
         self.field_storage = field_storage
         self.storage = storage
@@ -76,6 +77,7 @@ class CreateTransitionChecklistTemplateInteractor(
         self.stage_action_storage = stage_action_storage
         self.template_storage = template_storage
         self.create_or_update_task_storage = create_or_update_task_storage
+        self.task_template_storage = task_template_storage
 
     def create_transition_checklist_wrapper(
             self,
@@ -118,6 +120,10 @@ class CreateTransitionChecklistTemplateInteractor(
             return presenter.raise_user_needs_gof_writable_permission(err)
         except UserNeedsFieldWritablePermission as err:
             return presenter.raise_user_needs_field_writable_permission(err)
+        except UserDidNotFillRequiredGoFs as err:
+            return presenter.raise_user_did_not_fill_required_gofs(err)
+        except UserDidNotFillRequiredFields as err:
+            return presenter.raise_user_did_not_fill_required_fields(err)
         except EmptyValueForRequiredField as err:
             return presenter. \
                 raise_exception_for_empty_value_in_required_field(err)
@@ -208,18 +214,21 @@ class CreateTransitionChecklistTemplateInteractor(
             TemplateGoFsFieldsBaseValidationsInteractor(
                 task_storage=self.task_storage, gof_storage=self.gof_storage,
                 create_task_storage=self.create_or_update_task_storage,
-                storage=self.storage, field_storage=self.field_storage
+                storage=self.storage, field_storage=self.field_storage,
+                task_template_storage=self.task_template_storage
             )
         action_type = \
             self.stage_action_storage.get_action_type_for_given_action_id(
                 action_id=transition_template_dto.action_id
             )
+        project_id = self.task_storage.get_project_id_for_the_task_id(
+            transition_template_dto.task_id)
         template_gofs_fields_validation_interactor \
             .perform_base_validations_for_template_gofs_and_fields(
             transition_template_dto.transition_checklist_gofs,
             transition_template_dto.created_by_id,
             transition_template_dto.transition_checklist_template_id,
-            action_type)
+            project_id, action_type)
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=transition_template_dto.task_id,

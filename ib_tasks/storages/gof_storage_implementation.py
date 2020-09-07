@@ -18,7 +18,7 @@ class GoFStorageImplementation(GoFStorageInterface):
     def get_filled_field_ids_of_given_task_gof_ids(
             self, task_gof_ids: List[int]) -> List[str]:
         filled_field_ids = TaskGoFField.objects.filter(
-            task_gof_id__in=task_gof_ids).values('field_id', flat=True)
+            task_gof_id__in=task_gof_ids).values_list('field_id', flat=True)
         return filled_field_ids
 
     def get_filled_task_gofs_with_gof_id(
@@ -42,7 +42,7 @@ class GoFStorageImplementation(GoFStorageInterface):
             Q(role__in=user_roles) | Q(role=ALL_ROLES_ID),
             gof_id__in=template_gof_ids,
             permission_type=PermissionTypes.WRITE.value). \
-            values_list('gof_id', 'gof__display_name')
+            values('gof_id', 'gof__display_name')
         gof_id_with_display_names_dtos = [
             GoFIdWithGoFDisplayNameDTO(
                 gof_id=gof_dict['gof_id'],
