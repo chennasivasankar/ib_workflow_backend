@@ -20,12 +20,12 @@ from ib_tasks.interactors \
 from ib_tasks.interactors \
     .get_all_task_overview_with_filters_and_searches_for_user import \
     GetTasksOverviewForUserInteractor
+from ib_tasks.interactors.get_and_update_assignees_having_less_tasks_counts_for_next_stages_interactor import \
+    GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor
 from ib_tasks.interactors \
     .get_next_stages_random_assignees_of_a_task_interactor import \
     InvalidModulePathFound
-from ib_tasks.interactors \
-    .get_random_assignees_of_next_stages_and_update_in_db_interactor import \
-    GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor
+
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.presenter_interfaces.dtos import \

@@ -1,5 +1,7 @@
-import pytest
 from unittest.mock import create_autospec, patch
+
+import pytest
+
 from ib_tasks.interactors.call_action_logic_function_and_get_status_variables_interactor import \
     CallActionLogicFunctionAndGetTaskStatusVariablesInteractor
 from ib_tasks.interactors.get_next_stages_random_assignees_of_a_task_interactor import \
@@ -9,7 +11,6 @@ from ib_tasks.interactors.get_task_stage_logic_satisfied_next_stages_given_statu
     GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor
 from ib_tasks.interactors.get_users_with_less_tasks_for_stages import \
     GetUsersWithLessTasksInGivenStagesInteractor
-from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO
 from ib_tasks.tests.factories.adapter_dtos import \
     UserIdWIthTeamDetailsDTOFactory, AssigneeDetailsDTOFactory, \
     TeamDetailsDTOFactory

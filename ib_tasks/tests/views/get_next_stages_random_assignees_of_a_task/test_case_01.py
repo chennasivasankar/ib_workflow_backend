@@ -51,6 +51,8 @@ class TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
             card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
         )
         stages = [stage1, stage2, stage3]
+        StagePermittedRolesFactory.create_batch(6, stage=factory.Iterator(
+            stages))
         path = 'ib_tasks.tests.populate.stage_actions_logic.stage_1_action_name_1'
         action = StageActionFactory(stage=stage1, py_function_import_path=path)
         actions = StageActionFactory.create_batch(6, stage=factory.Iterator(

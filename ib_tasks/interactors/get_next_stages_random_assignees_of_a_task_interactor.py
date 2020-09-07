@@ -5,8 +5,7 @@ from ib_tasks.exceptions.action_custom_exceptions \
     import InvalidKeyError
 from ib_tasks.exceptions.custom_exceptions import InvalidModulePathFound, \
     InvalidMethodFound
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
-    InvalidTaskDisplayId, UserNotInAnyTeamForGivenProjectException
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId
 from ib_tasks.interactors.get_users_with_less_tasks_for_stages import \
     GetUsersWithLessTasksInGivenStagesInteractor
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \

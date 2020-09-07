@@ -1,16 +1,13 @@
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
-from ib_tasks.adapters.dtos import UserDetailsDTO, AssigneeDetailsDTO, \
-    UserIdWIthTeamDetailsDTO
-from ib_tasks.exceptions.task_custom_exceptions import \
-    UserNotInAnyTeamForGivenProjectException
-from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO, \
-    StageWithUserDetailsAndTeamDetailsDTO
+from ib_tasks.adapters.dtos import UserDetailsDTO, AssigneeDetailsDTO
+from ib_tasks.interactors.stages_dtos import \
+    StageWithUserDetailsAndTeamDetailsDTO, StageWithUserDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
-    StageIdWithRoleIdsDTO, StageDetailsDTO, TaskWithDbStageIdDTO, \
-    AssigneeCurrentTasksCountDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO, \
+    AssigneeCurrentTasksCountDTO, StageIdWithRoleIdsDTO, TaskWithDbStageIdDTO, \
+    StageRoleDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
@@ -35,12 +32,12 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
             get_stage_detail_dtos_given_stage_ids(stage_ids)
         db_stage_ids = self._get_db_stage_ids_given_stage_detail_dtos(
             stage_detail_dtos)
-        stages_having_user_details_dtos = self. \
+        user_details_dtos_having_less_tasks_for_given_stages = self. \
             _get_user_details_dtos_having_less_tasks_for_given_stages(
             db_stage_ids=db_stage_ids, stage_detail_dtos=stage_detail_dtos,
             project_id=project_id)
         assignee_ids = self._get_assignees_of_stages_having_user_details_dtos(
-            stages_having_user_details_dtos)
+            user_details_dtos_having_less_tasks_for_given_stages)
 
         user_id_with_team_details_dtos = self. \
             _get_team_details_of_given_assignee_ids_based_on_project(
@@ -48,7 +45,7 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
 
         stage_with_user_details_and_team_details_dto = \
             StageWithUserDetailsAndTeamDetailsDTO(
-                stages_with_user_details_dtos=stages_having_user_details_dtos,
+                stages_with_user_details_dtos=user_details_dtos_having_less_tasks_for_given_stages,
                 user_with_team_details_dtos=user_id_with_team_details_dtos)
 
         return stage_with_user_details_and_team_details_dto
@@ -62,6 +59,7 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
                                              project_id=project_id)
         user_with_first_team_details_dtos = []
         for user_id_with_team_details_dto in user_id_with_team_details_dtos:
+            from ib_tasks.adapters.dtos import UserIdWIthTeamDetailsDTO
             user_with_first_team_details_dtos.append(UserIdWIthTeamDetailsDTO(
                 user_id=user_id_with_team_details_dto.user_id, team_details=
                 user_id_with_team_details_dto.team_details[0]))
@@ -100,19 +98,19 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
 
     def _get_assignee_with_current_tasks_count_dtos(self) -> List[
         AssigneeCurrentTasksCountDTO]:
-        tasks_that_are_not_completed_with_stage_dtos = self. \
-            _get_tasks_that_are_not_completed_with_stage_dtos()
-        stage_ids_of_tasks_that_are_not_completed = [
+        tasks_that_are_not_yet_completed_with_stage_dtos = self. \
+            _get_tasks_that_are_not_yet_completed_with_stage_dtos()
+        stage_ids_of_tasks_that_are_not_yet_completed = [
             each_task_stage_dto.db_stage_id for each_task_stage_dto in
-            tasks_that_are_not_completed_with_stage_dtos
+            tasks_that_are_not_yet_completed_with_stage_dtos
         ]
-        task_ids_of_tasks_that_are_not_completed = [
+        task_ids_of_tasks_that_are_not_yet_completed = [
             each_task_stage_dto.task_id for each_task_stage_dto in
-            tasks_that_are_not_completed_with_stage_dtos]
+            tasks_that_are_not_yet_completed_with_stage_dtos]
         assignee_with_current_tasks_count_dtos = self.task_stage_storage. \
             get_count_of_tasks_assigned_for_each_user(
-            db_stage_ids=stage_ids_of_tasks_that_are_not_completed,
-            task_ids=task_ids_of_tasks_that_are_not_completed)
+            db_stage_ids=stage_ids_of_tasks_that_are_not_yet_completed,
+            task_ids=task_ids_of_tasks_that_are_not_yet_completed)
         return assignee_with_current_tasks_count_dtos
 
     @staticmethod
@@ -175,12 +173,11 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
             List[StageWithUserDetailsDTO]:
         assignee_with_current_tasks_count_dtos = self. \
             _get_assignee_with_current_tasks_count_dtos()
+        from ib_tasks.adapters.auth_service import AuthService
+        auth_service_adapter = AuthService()
         stage_with_user_details_dtos = []
-
         updated_task_count_dtos_for_assignee_having_less_tasks = []
         for each_dto in role_ids_group_by_stage_id_dtos:
-            from ib_tasks.adapters.auth_service import AuthService
-            auth_service_adapter = AuthService()
             permitted_user_details_dtos = auth_service_adapter. \
                 get_permitted_user_details(role_ids=each_dto.role_ids,
                                            project_id=project_id)
@@ -367,27 +364,26 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
                  'assignee_id']), None)
         return assignee_id_index
 
-    def _get_tasks_that_are_not_completed_with_stage_dtos(
+    def _get_tasks_that_are_not_yet_completed_with_stage_dtos(
             self) -> List[TaskWithDbStageIdDTO]:
-        task_with_stage_id_dtos = self. \
+        all_tasks_with_current_stage_id_dtos = self. \
             stage_storage. \
             get_current_stages_of_all_tasks()
 
-        stage_ids_of_tasks = [
+        current_stage_ids_of_tasks = [
             task_with_stage_id_dto.db_stage_id
-            for task_with_stage_id_dto in task_with_stage_id_dtos
-        ]
-        stage_ids_having_actions = \
+            for task_with_stage_id_dto in all_tasks_with_current_stage_id_dtos]
+
+        current_stage_ids_having_actions = \
             self.action_storage.get_stage_ids_having_actions(
-                db_stage_ids=stage_ids_of_tasks)
-        stage_ids_having_actions = list(set(stage_ids_having_actions))
-        tasks_that_are_not_completed_with_stage_dtos = []
-        for each_task_with_stage_id_dto in task_with_stage_id_dtos:
-            if each_task_with_stage_id_dto.db_stage_id in \
-                    stage_ids_having_actions:
-                tasks_that_are_not_completed_with_stage_dtos.append(
-                    each_task_with_stage_id_dto)
-        return tasks_that_are_not_completed_with_stage_dtos
+                db_stage_ids=current_stage_ids_of_tasks)
+        current_stage_ids_having_actions = list(set(current_stage_ids_having_actions))
+        tasks_that_are_not_yet_completed_with_stage_dtos = [
+            each_task_with_stage_id_dto for each_task_with_stage_id_dto in
+            all_tasks_with_current_stage_id_dtos if
+            each_task_with_stage_id_dto.db_stage_id in \
+            current_stage_ids_having_actions]
+        return tasks_that_are_not_yet_completed_with_stage_dtos
 
     @staticmethod
     def _prepare_stage_with_user_details_dto(
@@ -419,24 +415,22 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
             -> List[StageIdWithRoleIdsDTO]:
         role_ids_group_by_stage_id_dtos = []
         for each_stage_id in stage_ids:
-            list_of_role_ids = []
-            role_id = self._get_matched_role_id_from_stage_role_dtos(
+            role_ids = self._get_matched_role_ids_from_stage_role_dtos(
                 stage_role_dtos=stage_role_dtos, stage_id=each_stage_id)
-            list_of_role_ids.append(role_id)
             each_stage_id_with_role_ids_dto = \
                 StageIdWithRoleIdsDTO(db_stage_id=each_stage_id,
-                                      role_ids=list_of_role_ids)
+                                      role_ids=role_ids)
             role_ids_group_by_stage_id_dtos.append(
                 each_stage_id_with_role_ids_dto)
+
         return role_ids_group_by_stage_id_dtos
 
     @staticmethod
-    def _get_matched_role_id_from_stage_role_dtos(
-            stage_role_dtos: List[StageRoleDTO], stage_id: int):
-        for each_stage_role_dto in stage_role_dtos:
-            if each_stage_role_dto.db_stage_id == stage_id:
-                return each_stage_role_dto.role_id
-        return None
+    def _get_matched_role_ids_from_stage_role_dtos(
+            stage_role_dtos: List[StageRoleDTO], stage_id: int) -> \
+            List[str]:
+        return [each_stage_role_dto.role_id for each_stage_role_dto in
+                stage_role_dtos if each_stage_role_dto.db_stage_id == stage_id]
 
     @staticmethod
     def _get_db_stage_ids_given_stage_detail_dtos(
