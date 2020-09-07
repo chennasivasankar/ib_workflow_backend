@@ -5,15 +5,15 @@ from typing import List
 from ib_tasks.constants.enum import ViewType, FieldTypes
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldCompleteDetailsDTO, UserFieldPermissionDTO, FieldIdWithGoFIdDTO, \
-    TaskTemplateStageFieldsDTO, StageTaskFieldsDTO, FieldDetailsDTOWithTaskId, \
-    FieldNameDTO, FieldIdWithFieldDisplayNameDTO
+    FieldIdWithFieldDisplayNameDTO, \
     TaskTemplateStageFieldsDTO, StageTaskFieldsDTO, FieldDetailsDTOWithTaskId, \
     FieldNameDTO, FieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskTemplateStageDTO, StageDetailsDTO
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectRolesDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import \
+    TaskProjectRolesDTO
 
 
 @dataclass

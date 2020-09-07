@@ -8,8 +8,7 @@ from ib_tasks.constants.enum import PermissionTypes, ViewType
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldCompleteDetailsDTO, FieldDTO, UserFieldPermissionDTO, \
     FieldIdWithGoFIdDTO, StageTaskFieldsDTO, \
-    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId, FieldNameDTO, \
-    FieldDisplayNameDTO
+    FieldDisplayNameDTO, \
     TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId, FieldNameDTO, \
     FieldIdWithFieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
@@ -18,7 +17,8 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (
     TaskTemplateStageDTO, StageDetailsDTO)
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectRolesDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import \
+    TaskProjectRolesDTO
 from ib_tasks.models import CurrentTaskStage, Stage, TaskGoFField, FieldRole, \
     TaskTemplateGoFs, Field
 

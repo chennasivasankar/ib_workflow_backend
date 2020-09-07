@@ -500,10 +500,13 @@ class StorageImplementation(StorageInterface):
 
     def get_field_ids_list_in_order(
             self, column_id: str, user_id: str) -> List[str]:
-        field_ids = FieldOrder.objects.get(
-            column_id=column_id,
-            user_id=user_id
-        ).fields_order
+        try:
+            field_ids = FieldOrder.objects.get(
+                column_id=column_id,
+                user_id=user_id
+            ).fields_order
+        except FieldOrder.DoesNotExist:
+            return []
         import json
         field_ids = json.loads(field_ids)['field_ids']
         return field_ids
