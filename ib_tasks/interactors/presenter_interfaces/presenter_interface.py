@@ -2,6 +2,8 @@ import abc
 
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException, InvalidStageIdsListException
+from ib_tasks.exceptions.task_custom_exceptions import \
+    TaskDelayReasonIsNotUpdated
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO, AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
@@ -86,4 +88,9 @@ class PresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_invalid_stage_ids_list_exception(
             self, err: InvalidStageIdsListException):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_task_delay_reason_not_updated(
+            self, err: TaskDelayReasonIsNotUpdated):
         pass

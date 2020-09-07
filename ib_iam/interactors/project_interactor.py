@@ -5,9 +5,17 @@ from django.db import transaction
 from ib_iam.app_interfaces.dtos import (
     ProjectTeamUserDTO, UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO,
     UserTeamsDTO)
-from ib_iam.exceptions.custom_exceptions import InvalidUserIds
+from ib_iam.exceptions.custom_exceptions import (
+    InvalidUserIds, InvalidUserId, InvalidProjectIds)
+from ib_iam.interactors.dtos.dtos import (
+    ProjectWithTeamIdsAndRolesDTO, CompleteProjectDetailsDTO,
+    UserIdWithProjectIdAndStatusDTO)
+from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
+    UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO, UserTeamsDTO
+from ib_iam.exceptions.custom_exceptions import InvalidProjectId, \
+    InvalidUserIds, InvalidUserId, InvalidProjectIds
 from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO, \
-    CompleteProjectDetailsDTO
+    CompleteProjectDetailsDTO, UserIdWithProjectIdAndStatusDTO
 from ib_iam.interactors.presenter_interfaces \
     .add_project_presenter_interface import AddProjectPresenterInterface
 from ib_iam.interactors.presenter_interfaces \
@@ -15,13 +23,9 @@ from ib_iam.interactors.presenter_interfaces \
 from ib_iam.interactors.storage_interfaces.dtos import (
     ProjectWithoutIdDTO, RoleDTO, RoleNameAndDescriptionDTO,
     ProjectWithDisplayIdDTO, ProjectDTO, TeamWithUserIdDTO, TeamIdAndNameDTO)
-from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
-    UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO, UserTeamsDTO
-from ib_iam.exceptions.custom_exceptions import InvalidUserIds, InvalidUserId, \
-    InvalidProjectIds
-from ib_iam.interactors.dtos.dtos import UserIdWithProjectIdAndStatusDTO
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, TeamWithUserIdDTO, \
-    TeamIdAndNameDTO
+from ib_iam.interactors.storage_interfaces.dtos import ProjectWithoutIdDTO, \
+    RoleDTO, RoleNameAndDescriptionDTO, ProjectWithDisplayIdDTO, ProjectDTO, \
+    TeamWithUserIdDTO, TeamIdAndNameDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
@@ -65,7 +69,7 @@ class ProjectInteractor:
     def get_valid_project_ids(self, project_ids):
         # todo check for duplicate project_ids
         valid_project_ids = \
-            self.project_storage.get_valid_project_ids_from_given_project_ids(
+            self.project_storage.get_valid_project_ids(
                 project_ids=project_ids)
         return valid_project_ids
 
@@ -167,7 +171,7 @@ class ProjectInteractor:
 
     def _validate_project(self, project_id: str):
         valid_project_ids = self.project_storage \
-            .get_valid_project_ids_from_given_project_ids(
+            .get_valid_project_ids(
             project_ids=[project_id])
         is_not_valid_project = not (
                 len(valid_project_ids) == 1 and
@@ -366,7 +370,16 @@ class ProjectInteractor:
                                    project_team_ids: List[str],
                                    team_ids: List[str]):
         team_ids_to_be_removed = list(set(project_team_ids) - set(team_ids))
-        self.project_storage.remove_teams_from_project(
+        user_id_and_team_ids_dtos = self.project_storage \
+            .get_user_id_with_teams_ids_dtos(project_id=project_id)
+        user_ids = [
+            user_team_ids_dto.user_id
+            for user_team_ids_dto in user_id_and_team_ids_dtos
+            if set(user_team_ids_dto.team_ids).issubset(
+                set(team_ids_to_be_removed))]
+        self.project_storage.remove_user_roles(
+            project_id=project_id, user_ids=user_ids)
+        self.project_storage.remove_teams(
             project_id=project_id, team_ids=team_ids_to_be_removed)
 
     def _add_project_roles(self, project_id: str, roles: List[RoleDTO]):
@@ -403,8 +416,18 @@ class ProjectInteractor:
             project_ids=project_ids, user_id=user_id)
 
     def _validate_project_ids(self, project_ids: List[str]):
-        valid_project_ids = self.project_storage.get_valid_project_ids_from_given_project_ids(
+        valid_project_ids = self.project_storage.get_valid_project_ids(
             project_ids=project_ids)
         invalid_project_ids = list(set(project_ids) - set(valid_project_ids))
         if invalid_project_ids:
             raise InvalidProjectIds(project_ids=invalid_project_ids)
+
+    def get_project_role_ids(self, project_id: str) -> List[str]:
+        is_valid_project = self.project_storage.is_valid_project_id(
+            project_id=project_id)
+        is_invalid_project = not is_valid_project
+        if is_invalid_project:
+            raise InvalidProjectId
+        project_role_ids = self.project_storage.get_project_role_ids(
+            project_id=project_id)
+        return project_role_ids
