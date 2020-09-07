@@ -6,7 +6,7 @@ Author: Pavankumar Pamuru
 from typing import List, Dict
 
 
-class GetSheetDataForStageActions:
+class GetSheetDataForStageFlows:
 
     @property
     def data_sheet(self):
