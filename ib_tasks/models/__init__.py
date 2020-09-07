@@ -28,8 +28,10 @@ from .task_template_global_constants import TaskTemplateGlobalConstants, \
 from .task_template_initial_stages import TaskTemplateInitialStage
 from .task_template_status_variable import TaskTemplateStatusVariable
 from .template_status_variables import TaskTemplateStatusVariables
+from .stage_flow import StageFlow
 
 __all__ = [
+    "StageFlow",
     "TaskStageHistory",
     "ElasticSearchTask",
     "Filter",
