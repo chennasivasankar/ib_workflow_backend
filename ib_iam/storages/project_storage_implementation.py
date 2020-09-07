@@ -23,7 +23,7 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         ]
         Project.objects.bulk_create(projects)
 
-    def get_valid_project_ids_from_given_project_ids(
+    def get_valid_project_ids(
             self, project_ids: List[str]) -> List[str]:
         project_ids = Project.objects.filter(project_id__in=project_ids) \
             .values_list("project_id", flat=True)
@@ -232,7 +232,7 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             ) for project_id in project_ids
         ]
 
-    def get_user_team_ids_dtos_for_given_project(
+    def get_user_id_with_teams_ids_dtos(
             self, project_id: str) -> List[UserIdAndTeamIdsDTO]:
         from ib_iam.models import TeamUser
         user_teams = TeamUser.objects.filter(
@@ -248,7 +248,7 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             for user_id, team_ids in user_team_ids_dictionary.items()]
         return user_id_and_team_ids_dtos
 
-    def remove_user_roles_related_to_given_project_and_user(
+    def remove_user_roles(
             self, project_id: str, user_ids: List[str]):
         from ib_iam.models import UserRole
         UserRole.objects.filter(user_id__in=user_ids,

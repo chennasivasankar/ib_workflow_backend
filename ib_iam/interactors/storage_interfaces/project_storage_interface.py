@@ -15,7 +15,7 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_project_ids_from_given_project_ids(
+    def get_valid_project_ids(
             self, project_ids: List[str]) -> List[str]:
         pass
 
@@ -117,11 +117,11 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_user_team_ids_dtos_for_given_project(
+    def get_user_id_with_teams_ids_dtos(
             self, project_id: str) -> List[UserIdAndTeamIdsDTO]:
         pass
 
     @abc.abstractmethod
-    def remove_user_roles_related_to_given_project_and_user(
+    def remove_user_roles(
             self, project_id: str, user_ids: List[str]):
         pass

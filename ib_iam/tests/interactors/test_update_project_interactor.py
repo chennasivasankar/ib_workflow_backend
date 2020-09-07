@@ -76,7 +76,7 @@ class TestUpdateProjectIneractor:
         roles_to_be_created = [RoleNameAndDescriptionDTO(
             name=roles[1].name, description=roles[1].description)]
         project_storage.get_project_role_ids.return_value = role_ids_from_db
-        project_storage.get_user_team_ids_dtos_for_given_project \
+        project_storage.get_user_id_with_teams_ids_dtos \
             .return_value = user_id_and_team_ids_dtos
         presenter.get_success_response_for_update_project \
             .return_value = mock.Mock()
@@ -100,9 +100,9 @@ class TestUpdateProjectIneractor:
             project_id=project_id, team_ids=team_ids_to_add)
         project_storage.remove_teams_from_project.assert_called_once_with(
             project_id=project_id, team_ids=team_ids_to_be_removed)
-        project_storage.get_user_team_ids_dtos_for_given_project \
+        project_storage.get_user_id_with_teams_ids_dtos \
             .assert_called_once_with(project_id=project_id)
-        project_storage.remove_user_roles_related_to_given_project_and_user \
+        project_storage.remove_user_roles \
             .assert_called_once_with(project_id=project_id, user_ids=user_ids)
         project_storage.add_project_roles.assert_called_once_with(
             project_id=project_id, roles=roles_to_be_created)

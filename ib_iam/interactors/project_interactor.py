@@ -60,7 +60,7 @@ class ProjectInteractor:
     def get_valid_project_ids(self, project_ids):
         # todo check for duplicate project_ids
         valid_project_ids = \
-            self.project_storage.get_valid_project_ids_from_given_project_ids(
+            self.project_storage.get_valid_project_ids(
                 project_ids=project_ids)
         return valid_project_ids
 
@@ -162,7 +162,7 @@ class ProjectInteractor:
 
     def _validate_project(self, project_id: str):
         valid_project_ids = self.project_storage \
-            .get_valid_project_ids_from_given_project_ids(
+            .get_valid_project_ids(
             project_ids=[project_id])
         is_not_valid_project = not (
                 len(valid_project_ids) == 1 and
@@ -364,14 +364,13 @@ class ProjectInteractor:
         self.project_storage.remove_teams_from_project(
             project_id=project_id, team_ids=team_ids_to_be_removed)
         user_id_and_team_ids_dtos = self.project_storage \
-            .get_user_team_ids_dtos_for_given_project(project_id=project_id)
+            .get_user_id_with_teams_ids_dtos(project_id=project_id)
         user_ids = [
             user_team_ids_dto.user_id
             for user_team_ids_dto in user_id_and_team_ids_dtos
             if set(user_team_ids_dto.team_ids).issubset(
                 set(team_ids_to_be_removed))]
-        self.project_storage \
-            .remove_user_roles_related_to_given_project_and_user(
+        self.project_storage.remove_user_roles(
             project_id=project_id, user_ids=user_ids)
 
     def _add_project_roles(self, project_id: str, roles: List[RoleDTO]):
@@ -408,7 +407,7 @@ class ProjectInteractor:
             project_ids=project_ids, user_id=user_id)
 
     def _validate_project_ids(self, project_ids: List[str]):
-        valid_project_ids = self.project_storage.get_valid_project_ids_from_given_project_ids(
+        valid_project_ids = self.project_storage.get_valid_project_ids(
             project_ids=project_ids)
         invalid_project_ids = list(set(project_ids) - set(valid_project_ids))
         if invalid_project_ids:

@@ -54,7 +54,7 @@ class TestProjectStorageImplementation:
         project_storage = ProjectStorageImplementation()
 
         actual_project_ids = project_storage \
-            .get_valid_project_ids_from_given_project_ids(
+            .get_valid_project_ids(
             project_ids=invalid_project_ids)
 
         assert actual_project_ids == expected_project_ids
@@ -493,7 +493,7 @@ class TestProjectStorageImplementation:
         project_storage = ProjectStorageImplementation()
 
         actual_user_id_and_team_ids_dtos = project_storage \
-            .get_user_team_ids_dtos_for_given_project(project_id=project_id)
+            .get_user_id_with_teams_ids_dtos(project_id=project_id)
 
         assert actual_user_id_and_team_ids_dtos == \
                expected_user_id_and_team_ids_dtos
@@ -520,7 +520,7 @@ class TestProjectStorageImplementation:
         user_ids = [user_id]
         project_storage = ProjectStorageImplementation()
 
-        project_storage.remove_user_roles_related_to_given_project_and_user(
+        project_storage.remove_user_roles(
             project_id=project_id, user_ids=user_ids)
 
         from ib_iam.models import UserRole
