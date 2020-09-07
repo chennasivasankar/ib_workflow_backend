@@ -10,6 +10,12 @@ from ib_iam.exceptions.custom_exceptions import (
 from ib_iam.interactors.dtos.dtos import (
     ProjectWithTeamIdsAndRolesDTO, CompleteProjectDetailsDTO,
     UserIdWithProjectIdAndStatusDTO)
+from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
+    UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO, UserTeamsDTO
+from ib_iam.exceptions.custom_exceptions import InvalidProjectId, \
+    InvalidUserIds, InvalidUserId, InvalidProjectIds
+from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO, \
+    CompleteProjectDetailsDTO, UserIdWithProjectIdAndStatusDTO
 from ib_iam.interactors.presenter_interfaces \
     .add_project_presenter_interface import AddProjectPresenterInterface
 from ib_iam.interactors.presenter_interfaces \
@@ -17,6 +23,9 @@ from ib_iam.interactors.presenter_interfaces \
 from ib_iam.interactors.storage_interfaces.dtos import (
     ProjectWithoutIdDTO, RoleDTO, RoleNameAndDescriptionDTO,
     ProjectWithDisplayIdDTO, ProjectDTO, TeamWithUserIdDTO, TeamIdAndNameDTO)
+from ib_iam.interactors.storage_interfaces.dtos import ProjectWithoutIdDTO, \
+    RoleDTO, RoleNameAndDescriptionDTO, ProjectWithDisplayIdDTO, ProjectDTO, \
+    TeamWithUserIdDTO, TeamIdAndNameDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
@@ -412,3 +421,13 @@ class ProjectInteractor:
         invalid_project_ids = list(set(project_ids) - set(valid_project_ids))
         if invalid_project_ids:
             raise InvalidProjectIds(project_ids=invalid_project_ids)
+
+    def get_project_role_ids(self, project_id: str) -> List[str]:
+        is_valid_project = self.project_storage.is_valid_project_id(
+            project_id=project_id)
+        is_invalid_project = not is_valid_project
+        if is_invalid_project:
+            raise InvalidProjectId
+        project_role_ids = self.project_storage.get_project_role_ids(
+            project_id=project_id)
+        return project_role_ids
