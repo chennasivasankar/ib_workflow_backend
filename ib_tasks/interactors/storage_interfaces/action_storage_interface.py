@@ -112,6 +112,7 @@ class ActionStorageInterface(abc.ABC):
     def get_action_ids_given_stage_ids(
             self, stage_ids: List[int]) -> List[int]:
         pass
+
     @abc.abstractmethod
     def get_stage_action_name_dtos(
             self, stage_id_action_dtos: List[StageIdActionNameDTO]

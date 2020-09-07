@@ -16,7 +16,7 @@ from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageActionNamesDTO
+    StageActionNamesDTO, StageIdActionNameDTO, StageActionIdDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskProjectRolesDTO
 from ib_tasks.models import (StageAction, Stage, ActionPermittedRoles,
@@ -326,3 +326,28 @@ class ActionsStorageImplementation(ActionStorageInterface):
             .filter(stage_id__in=stage_ids)\
             .values_list('id', flat=True)
         return sorted(list(set(action_ids)))
+
+    def get_stage_action_name_dtos(
+            self, stage_id_action_dtos: List[StageIdActionNameDTO]
+    ) -> List[StageActionIdDTO]:
+
+        q = None
+        for counter, item in enumerate(stage_id_action_dtos):
+            current_queue = Q(stage__stage_id=item.stage_id, name=item.action_name)
+            if counter == 0:
+                q = current_queue
+            else:
+                q = q | current_queue
+        if q is None:
+            q = []
+        action_objs = StageAction.objects.filter(q)\
+            .annotate(normal_stage_id=F('stage__stage_id'))
+
+        return [
+            StageActionIdDTO(
+                stage_id=action_obj.normal_stage_id,
+                action_id=action_obj.id,
+                action_name=action_obj.name
+            )
+            for action_obj in action_objs
+        ]

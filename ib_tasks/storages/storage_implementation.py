@@ -498,9 +498,17 @@ class StagesStorageImplementation(StageStorageInterface):
 
     def create_stage_flows(
             self, stage_flow_dtos: List[StageFlowWithActionIdDTO]):
-        pass
 
-
+        from ib_tasks.models import StageFlow
+        stage_flow_instances = [
+            StageFlow(
+                previous_stage_id=stage_flow_dto.previous_stage_id,
+                action_id=stage_flow_dto.action_id,
+                next_stage_id=stage_flow_dto.next_stage_id
+            )
+            for stage_flow_dto in stage_flow_dtos
+        ]
+        StageFlow.objects.bulk_create(stage_flow_instances)
 
 
 class StorageImplementation(StorageInterface):
