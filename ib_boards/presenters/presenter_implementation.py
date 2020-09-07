@@ -3,9 +3,10 @@ from typing import List
 from django.http import response
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
+from ib_boards.adapters.iam_service import InvalidProjectIdsException
 from ib_boards.constants.exception_messages import (
     INVALID_BOARD_ID, INVALID_OFFSET_VALUE, INVALID_LIMIT_VALUE,
-    USER_DONOT_HAVE_ACCESS)
+    USER_DONOT_HAVE_ACCESS, INVALID_PROJECT_ID, USER_IS_NOT_IN_PROJECT)
 from ib_boards.interactors.dtos import ColumnTasksDTO, FieldDTO, ActionDTO, \
     StarredAndOtherBoardsDTO, TaskStageDTO, StageAssigneesDTO, AssigneesDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
@@ -84,6 +85,29 @@ class GetBoardsPresenterImplementation(GetBoardsPresenterInterface, HTTPResponse
 
     def get_response_for_offset_exceeds_total_tasks(self):
         pass
+
+    def get_response_for_invalid_project_id(self, error: InvalidProjectIdsException)\
+            -> response.HttpResponse:
+        invalid_project_id = error.invalid_project_ids[0]
+        response_dict = {
+            "response": INVALID_PROJECT_ID[0].format(invalid_project_id),
+            "http_status_code": 404,
+            "res_status": INVALID_PROJECT_ID[1]
+        }
+        return self.prepare_404_not_found_response(
+            response_dict=response_dict
+        )
+
+    def get_response_for_user_is_not_in_project(self) \
+            -> response.HttpResponse:
+        response_dict = {
+            "response": USER_IS_NOT_IN_PROJECT[0],
+            "http_status_code": 403,
+            "res_status": USER_IS_NOT_IN_PROJECT[1]
+        }
+        return self.prepare_403_forbidden_response(
+            response_dict=response_dict
+        )
 
 
 class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,

@@ -11,6 +11,6 @@ snapshots['TestCase02UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase02UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'INVALID_TASK_ID',
-    'response': 'invalid task id is: 1, please send valid task id'
+    'res_status': 'INVALID_STAGE_ID',
+    'response': 'please give a valid stage id, 1 is invalid stage id'
 }

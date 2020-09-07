@@ -4,6 +4,7 @@ from typing import List
 
 from django.http import response
 
+from ib_boards.adapters.iam_service import InvalidProjectIdsException
 from ib_boards.interactors.dtos import ActionDTO, \
     TaskCompleteDetailsDTO, FieldDTO, StarredAndOtherBoardsDTO, TaskStageDTO, \
     StageAssigneesDTO
@@ -43,6 +44,16 @@ class GetBoardsPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_offset_exceeds_total_tasks(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_project_id(self, error: InvalidProjectIdsException)\
+            -> response.HttpResponse:
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_user_is_not_in_project(self) \
+            -> response.HttpResponse:
         pass
 
 
@@ -127,3 +138,42 @@ class GetColumnTasksPresenterInterface(abc.ABC):
             task_stage_dtos: List[TaskStageDTO],
             assignees_dtos: List[StageAssigneesDTO]):
         pass
+
+
+class FieldsDisplayStatusPresenterInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def get_response_for_the_invalid_column_id(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_user_have_no_access_for_column(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_field_not_belongs_to_column(self):
+        pass
+
+
+class FieldsDisplayOrderPresenterInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def get_response_for_the_invalid_column_id(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_user_have_no_access_for_column(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_field_not_belongs_to_column(self, error):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_the_invalid_display_order(self):
+        pass
+
+    def get_response_for_field_order_in_column(
+            self, field_display_name_dtos, field_display_order_dtos, field_display_status_dtos):
+        pass
+

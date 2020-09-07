@@ -1,11 +1,13 @@
 """
-test with start date is ahead of due date raises exception
+test with invalid due time format
 """
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ib_tasks.tests.factories.models import TaskFactory, StageFactory
+from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
+    REQUEST_METHOD, URL_SUFFIX
 
 
 class TestCase03UpdateTaskAPITestCase(TestUtils):
@@ -16,30 +18,34 @@ class TestCase03UpdateTaskAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.fixture(autouse=True)
-    def setup(self, mocker):
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        get_user_role_ids(mocker)
+    def reset_sequence(self):
+        TaskFactory.reset_sequence()
+        StageFactory.reset_sequence()
 
-        template_id = "template_1"
-        from ib_tasks.tests.factories.models import TaskFactory
-        TaskFactory.create(template_id=template_id)
+    @pytest.fixture(autouse=True)
+    def setup(self, mocker):
+        task_id = "IBWF-1"
+        stage_id = 1
+
+        StageFactory.create(id=stage_id)
+        TaskFactory.create(task_display_id=task_id)
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {
-            "task_id": 1,
+            "task_id": "IBWF-1",
             "title": "updated_title",
             "description": "updated_description",
             "start_date": "2099-12-31",
             "due_date": {
-                "date": "2099-10-31",
-                "time": "12:00:00"
+                "date": "2099-12-31",
+                "time": "12-00-00"
             },
             "priority": "HIGH",
             "stage_assignee": {
                 "stage_id": 1,
-                "assignee_id": "assignee_id_1"
+                "assignee_id": "assignee_id_1",
+                "team_id": "team_1"
             },
             "task_gofs": [
                 {

@@ -25,21 +25,42 @@ snapshots['TestGetStageSearchablePossibleAssigneesPresenterImplementation.test_r
 
 snapshots['TestGetStageSearchablePossibleAssigneesPresenterImplementation.test_raise_invalid_stage_id_exception response'] = 'please give a valid stage id, 100 is invalid stage id'
 
+snapshots['TestGetStageSearchablePossibleAssigneesPresenterImplementation.test_raise_invalid_task_display_id_exception http_status_code'] = 404
+
+snapshots['TestGetStageSearchablePossibleAssigneesPresenterImplementation.test_raise_invalid_task_display_id_exception res_status'] = 'INVALID_TASK_ID'
+
+snapshots['TestGetStageSearchablePossibleAssigneesPresenterImplementation.test_raise_invalid_task_display_id_exception response'] = 'IBWF-100 is invalid task_id send valid task_id'
+
 snapshots['TestGetStageSearchablePossibleAssigneesPresenterImplementation.test_get_stage_assignee_details_response user_details'] = [
     {
-        'id': 'user_id_0',
-        'name': 'name_0',
-        'profile_pic_url': 'pic_url'
+        'id': 'user_1',
+        'name': 'user_name_1',
+        'profile_pic_url': 'profile_pic_1',
+        'team_info': [
+            {
+                'team_id': 'team_1',
+                'team_name': 'team_name1'
+            },
+            {
+                'team_id': 'team_2',
+                'team_name': 'team_name2'
+            }
+        ]
     },
     {
-        'id': 'user_id_1',
-        'name': 'name_1',
-        'profile_pic_url': 'pic_url'
-    },
-    {
-        'id': 'user_id_2',
-        'name': 'name_2',
-        'profile_pic_url': 'pic_url'
+        'id': 'user_2',
+        'name': 'user_name_2',
+        'profile_pic_url': 'profile_pic_2',
+        'team_info': [
+            {
+                'team_id': 'team_3',
+                'team_name': 'team_name3'
+            },
+            {
+                'team_id': 'team_4',
+                'team_name': 'team_name4'
+            }
+        ]
     }
 ]
 

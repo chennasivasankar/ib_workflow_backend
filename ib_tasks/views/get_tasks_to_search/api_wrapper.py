@@ -1,10 +1,13 @@
+from typing import Dict, List, Any
+
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
 from .validator_class import ValidatorClass
 from ...constants.enum import ViewType
 from ...interactors.get_tasks_to_relevant_search_query \
-    import GetTasksToRelevantSearchQuery, SearchQueryDTO
+    import GetTasksToRelevantSearchQuery
+from ...interactors.task_dtos import SearchQueryDTO
 from ...presenters.get_all_tasks_overview_for_user_presenter_impl \
     import GetFilteredTasksOverviewForUserPresenterImplementation
 from ...storages.action_storage_implementation import ActionsStorageImplementation
@@ -22,8 +25,12 @@ def api_wrapper(*args, **kwargs):
     user_obj = kwargs['user']
     request_body = kwargs['request_data']
     templates_conditions = request_body.get('templates_conditions', [])
-    apply_filters_dto = get_apply_filters_dto(templates_conditions)
-    search_query_dto = get_search_query_dto(request_data, user_obj.user_id)
+    project_id = request_body.get('project_id')
+    apply_filters_dto = \
+        get_apply_filters_dto(templates_conditions, project_id)
+    search_query_dto = get_search_query_dto(
+        request_data, user_obj.user_id, project_id
+    )
     stage_storage = StagesStorageImplementation()
     task_storage = TasksStorageImplementation()
     field_storage = FieldsStorageImplementation()
@@ -46,7 +53,8 @@ def api_wrapper(*args, **kwargs):
     return response
 
 
-def get_apply_filters_dto(templates_conditions):
+def get_apply_filters_dto(
+        templates_conditions: List[Dict[str, Any]], project_id: str):
     from ib_tasks.interactors.storage_interfaces.elastic_storage_interface \
         import ApplyFilterDTO
 
@@ -57,16 +65,18 @@ def get_apply_filters_dto(templates_conditions):
                 template_id=template_conditions['template_id'],
                 field_id=condition['field_id'],
                 operator=condition['operator'],
-                value=condition['value']
+                value=condition['value'],
+                project_id=project_id
             ))
     return apply_filters
 
 
-def get_search_query_dto(request_data, user_id: str):
+def get_search_query_dto(request_data, user_id: str, project_id: str):
     return SearchQueryDTO(
         offset=request_data.offset,
         limit=request_data.limit,
         user_id=user_id,
         query_value=request_data.search_query,
-        view_type=ViewType.KANBAN.value
+        view_type=ViewType.KANBAN.value,
+        project_id=project_id
     )

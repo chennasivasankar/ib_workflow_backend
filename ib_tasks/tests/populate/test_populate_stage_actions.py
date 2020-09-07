@@ -70,8 +70,7 @@ class TestCasePopulateStageActions:
             populate_stage_actions(action_dicts=actions)
 
     @staticmethod
-    @mock.patch('builtins.open', new_callable=mock.mock_open)
-    def test_given_valid_key_creates_dtos(os_system, mocker):
+    def test_given_valid_key_creates_dtos(mocker):
         # Arrange
         actions = [
             {
@@ -99,7 +98,7 @@ class TestCasePopulateStageActions:
         )]
         from ib_tasks.populate.populate_stage_actions \
             import populate_stage_actions
-        path = "ib_tasks.interactors.create_update_delete_stage_actions.CreateUpdateDeleteStageActionsInteractor" \
+        path = "ib_tasks.interactors.create_update_delete_stage_actions.CreateOrUpdateOrDeleteStageActions" \
                ".create_update_delete_stage_actions"
         mock_obj = mocker.patch(path)
 
@@ -107,7 +106,4 @@ class TestCasePopulateStageActions:
         response = populate_stage_actions(action_dicts=actions)
 
         # Assert
-
-        os_system.assert_called_with(
-            'ib_tasks/populate/stage_actions_logic.py', 'a')
         mock_obj.called_once()

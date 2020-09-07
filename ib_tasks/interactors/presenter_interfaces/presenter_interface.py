@@ -1,7 +1,11 @@
 import abc
 
+from ib_tasks.exceptions.stage_custom_exceptions import \
+    StageIdsListEmptyException, InvalidStageIdsListException
+from ib_tasks.exceptions.task_custom_exceptions import \
+    TaskDelayReasonIsNotUpdated
 from ib_tasks.interactors.presenter_interfaces.dtos import \
-    TaskCompleteDetailsDTO
+    TaskCompleteDetailsDTO, AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 
 
@@ -28,9 +32,14 @@ class PresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_response_for_user_not_in_project(self):
+        pass
+
+    @abc.abstractmethod
     def get_response_for_user_action_on_task(
             self, task_complete_details_dto: TaskCompleteDetailsDTO,
-            task_current_stage_details_dto: TaskCurrentStageDetailsDTO
+            task_current_stage_details_dto: TaskCurrentStageDetailsDTO,
+            all_tasks_overview_dto: AllTasksOverviewDetailsDTO
     ):
         pass
 
@@ -69,4 +78,19 @@ class PresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_invalid_task_display_id(self, err):
+        pass
+
+    @abc.abstractmethod
+    def raise_stage_ids_list_empty_exception(
+            self, err: StageIdsListEmptyException):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_stage_ids_list_exception(
+            self, err: InvalidStageIdsListException):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_task_delay_reason_not_updated(
+            self, err: TaskDelayReasonIsNotUpdated):
         pass

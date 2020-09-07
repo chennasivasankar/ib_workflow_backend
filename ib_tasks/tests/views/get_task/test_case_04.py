@@ -12,7 +12,7 @@ from ib_tasks.tests.factories.models import (
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase05GetTaskAPITestCase(TestUtils):
+class TestCase04GetTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -28,7 +28,7 @@ class TestCase05GetTaskAPITestCase(TestUtils):
 
     @pytest.fixture
     def setup(self, reset_factories):
-        task_obj = TaskFactory()
+        task_obj = TaskFactory(project_id="project0")
         stage_objs = StageModelFactory.create_batch(size=4)
         CurrentTaskStageModelFactory.create_batch(size=4, task=task_obj,
                                                   stage=factory.Iterator(
@@ -49,8 +49,11 @@ class TestCase05GetTaskAPITestCase(TestUtils):
     @pytest.mark.django_db
     def test_case(self, snapshot, setup, mocker):
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_some_user_role_ids
-        get_some_user_role_ids(mocker)
+            get_user_role_ids_based_on_project_mock
+        get_user_role_ids_based_on_project_mock(mocker)
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_projects_info_for_given_ids_mock
+        get_projects_info_for_given_ids_mock(mocker)
         body = {}
         path_params = {}
         query_params = {'task_id': "IBWF-1"}

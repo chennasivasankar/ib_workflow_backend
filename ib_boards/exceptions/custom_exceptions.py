@@ -60,6 +60,10 @@ class InvalidOffsetValue(Exception):
     pass
 
 
+class InvalidProjectId(Exception):
+    pass
+
+
 class InvalidLimitValue(Exception):
     pass
 
@@ -154,3 +158,25 @@ class DuplicateValuesInColumnDisplayOrder(Exception):
 class InvalidTemplateFields(Exception):
     def __init__(self, invalid_field_template_ids: List[str]):
         self.invalid_field_template_ids = invalid_field_template_ids
+
+
+class InvalidFormatException(Exception):
+    def __init__(self, valid_format: str):
+        self.valid_format = valid_format
+
+
+class InvalidBoardIdsException(Exception):
+    def __init__(self, invalid_board_ids: List[str]):
+        self.invalid_board_ids = invalid_board_ids
+
+
+class FieldIdsNotBelongsToColumn(Exception):
+    def __init__(self, invalid_field_ids: List[str]):
+        self.invalid_field_ids = invalid_field_ids
+
+    def __str__(self):
+        return self.invalid_field_ids
+
+
+class FieldNotBelongsToColumn(Exception):
+    pass

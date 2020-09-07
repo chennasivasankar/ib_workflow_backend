@@ -70,6 +70,10 @@ class InvalidStageId(Exception):
         self.stage_id = stage_id
 
 
+class InvalidStageIdException(Exception):
+    pass
+
+
 class TransitionTemplateIsNotRelatedToGivenStageAction(Exception):
 
     def __init__(self, transition_checklist_template_id, action_id, stage_id):
@@ -77,3 +81,8 @@ class TransitionTemplateIsNotRelatedToGivenStageAction(Exception):
         self.action_id = action_id
         self.transition_checklist_template_id = \
             transition_checklist_template_id
+
+
+class VirtualStageIdsException(Exception):
+    def __init__(self, virtual_stage_ids: List[int]):
+        self.virtual_stage_ids = virtual_stage_ids

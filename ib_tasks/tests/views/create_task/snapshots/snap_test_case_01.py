@@ -10,7 +10,46 @@ snapshots = Snapshot()
 snapshots['TestCase01CreateTaskAPITestCase.test_case status_code'] = '201'
 
 snapshots['TestCase01CreateTaskAPITestCase.test_case body'] = {
-    'message': 'task created successfully'
+    'task_current_stages_details': {
+        'stages': [
+            {
+                'stage_display_name': 'name_0',
+                'stage_id': 'stage_1'
+            }
+        ],
+        'task_id': 'IBWF-1',
+        'user_has_permission': True
+    },
+    'task_details': {
+        'stage_with_actions': {
+            'actions': [
+                {
+                    'action_id': 1,
+                    'action_type': 'NO_VALIDATIONS',
+                    'button_color': '#fafafa',
+                    'button_text': 'hey',
+                    'transition_template_id': 'template_2'
+                }
+            ],
+            'assignee': {
+                'assignee_id': 'user_1',
+                'name': 'name_3',
+                'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM',
+                'team_info': None
+            },
+            'stage_color': 'blue',
+            'stage_display_name': 'name_0',
+            'stage_id': 1
+        },
+        'task_id': 'IBWF-1',
+        'task_overview_fields': [
+            {
+                'field_display_name': 'DISPLAY_NAME-0',
+                'field_response': 'field_0_response',
+                'field_type': 'PLAIN_TEXT'
+            }
+        ]
+    }
 }
 
 snapshots['TestCase01CreateTaskAPITestCase.test_case task_id'] = 1

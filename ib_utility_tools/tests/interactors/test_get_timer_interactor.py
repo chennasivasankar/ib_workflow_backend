@@ -36,7 +36,7 @@ class TestStopTimerInteractor:
         timer_details_dto = TimerDetailsDTOFactory(duration_in_seconds=0)
         storage_mock.get_timer_id_if_exists.return_value = None
         storage_mock.create_timer.return_value = "1"
-        presenter_mock.get_success_response_with_timer_details_dto \
+        presenter_mock.get_response_for_get_timer_details \
             .return_value = mock.Mock()
 
         interactor.get_timer_wrapper(timer_entity_dto=timer_entity_dto,
@@ -46,7 +46,7 @@ class TestStopTimerInteractor:
             timer_entity_dto=timer_entity_dto)
         storage_mock.create_timer.assert_called_once_with(
             timer_entity_dto=timer_entity_dto)
-        presenter_mock.get_success_response_with_timer_details_dto \
+        presenter_mock.get_response_for_get_timer_details \
             .assert_called_once_with(timer_details_dto=timer_details_dto)
 
     def test_given_valid_details_and_timer_is_not_running_returns_timer_details(
@@ -57,7 +57,7 @@ class TestStopTimerInteractor:
         timer_details_dto = TimerDetailsDTOFactory(is_running=False)
         storage_mock.get_timer_id_if_exists.return_value = "1"
         storage_mock.get_timer_details_dto.return_value = timer_details_dto
-        presenter_mock.get_success_response_with_timer_details_dto \
+        presenter_mock.get_response_for_get_timer_details \
             .return_value = mock.Mock()
 
         interactor.get_timer_wrapper(timer_entity_dto=timer_entity_dto,
@@ -68,7 +68,7 @@ class TestStopTimerInteractor:
         storage_mock.create_timer.assert_not_called()
         storage_mock.get_timer_details_dto.assert_called_once_with(
             timer_entity_dto=timer_entity_dto)
-        presenter_mock.get_success_response_with_timer_details_dto \
+        presenter_mock.get_response_for_get_timer_details \
             .assert_called_once_with(timer_details_dto=timer_details_dto)
 
     @freeze_time("2020-08-07 18:00:00")
@@ -93,7 +93,7 @@ class TestStopTimerInteractor:
         timer_details_dto_for_response = TimerDetailsDTOFactory(
             duration_in_seconds=duration_in_seconds, is_running=True,
             start_datetime=present_datetime)
-        presenter_mock.get_success_response_with_timer_details_dto \
+        presenter_mock.get_response_for_get_timer_details \
             .return_value = mock.Mock()
 
         interactor.get_timer_wrapper(timer_entity_dto=timer_entity_dto,

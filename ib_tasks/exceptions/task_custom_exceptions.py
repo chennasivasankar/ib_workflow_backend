@@ -1,3 +1,4 @@
+import datetime
 from typing import List
 
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO
@@ -36,6 +37,11 @@ class InvalidTaskTemplateIds(Exception):
         self.invalid_task_template_ids = invalid_task_template_ids
 
 
+class InvalidTaskTemplateDBId(Exception):
+    def __init__(self, invalid_task_template_id: str):
+        self.task_template_id = invalid_task_template_id
+
+
 class DuplicateTaskStatusVariableIds(Exception):
     def __init__(self, duplicate_status_ids_for_tasks: List[str]):
         self.task_ids = duplicate_status_ids_for_tasks
@@ -60,7 +66,7 @@ class TaskTemplatesDoesNotExists(Exception):
 
 
 class InvalidTaskIds(Exception):
-    def __init__(self, task_ids: List[str]):
+    def __init__(self, task_ids: List[int]):
         self.invalid_task_ids = task_ids
 
 
@@ -123,6 +129,39 @@ class InvalidTaskDisplayId(Exception):
 
 
 class UserPermissionDenied(Exception):
-   pass
+    pass
 
 
+class UserNotInAnyTeamForGivenProjectException(Exception):
+    def __init__(self, user_id: str):
+        self.user_id = user_id
+
+    pass
+
+
+class InvalidTaskTemplateOfProject(Exception):
+    def __init__(self, project_id: str, template_id: str):
+        self.template_id = template_id
+        self.project_id = project_id
+
+
+class TaskIdsNotInProject(Exception):
+    def __init__(self, invalid_task_ids: List[int]):
+        self.invalid_task_ids = invalid_task_ids
+
+    def __str__(self):
+        return self.invalid_task_ids
+
+
+class TaskDelayReasonIsNotUpdated(Exception):
+    def __init__(
+            self, due_date: datetime.datetime, task_display_id: str,
+            stage_display_name: str
+    ):
+        self.due_date = due_date
+        self.task_display_id = task_display_id
+        self.stage_display_name = stage_display_name
+
+
+class PriorityIsRequired(Exception):
+    pass

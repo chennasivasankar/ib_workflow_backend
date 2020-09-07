@@ -24,13 +24,13 @@ from ...storages.task_template_storage_implementation import \
 def api_wrapper(*args, **kwargs):
     user_id = kwargs['user'].user_id
     request_data = kwargs['request_data']
+    project_id = request_data['project_id']
     task_template_id = request_data['task_template_id']
     action_id = request_data['action_id']
     title = request_data['title']
     description = request_data['description']
-    start_date = request_data['start_date']
-    due_date = request_data['due_date']['date']
-    due_time = request_data['due_date']['time']
+    start_datetime = request_data['start_datetime']
+    due_datetime = request_data['due_datetime']
     priority = request_data['priority']
     task_gofs = request_data['task_gofs']
 
@@ -47,11 +47,11 @@ def api_wrapper(*args, **kwargs):
         task_gofs_dtos.append(gof_field_dto)
 
     task_dto = CreateTaskDTO(
-        task_template_id=task_template_id, created_by_id=user_id,
-        action_id=action_id, title=title, description=description,
-        start_date=start_date, due_date=due_date, due_time=due_time,
-        priority=priority, gof_fields_dtos=task_gofs_dtos
-    )
+        project_id=project_id, task_template_id=task_template_id,
+        created_by_id=user_id, action_id=action_id, title=title,
+        description=description, start_datetime=start_datetime,
+        due_datetime=due_datetime, priority=priority,
+        gof_fields_dtos=task_gofs_dtos)
 
     from ib_tasks.storages.tasks_storage_implementation \
         import TasksStorageImplementation
@@ -85,8 +85,7 @@ def api_wrapper(*args, **kwargs):
     )
 
     response = interactor.create_task_wrapper(
-        task_dto=task_dto, presenter=presenter
-    )
+        task_dto=task_dto, presenter=presenter)
     return response
 
 

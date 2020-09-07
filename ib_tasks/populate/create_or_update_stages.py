@@ -31,7 +31,7 @@ def append_stage_dto(stage_dict: Dict[str, Any]):
         card_info_kanban=stage_dict['card_info_kanban'],
         card_info_list=stage_dict['card_info_list'],
         stage_color=stage_dict['stage_color'],
-        roles=stage_dict['roles'],
+        roles=stage_dict['roles'].replace("\r", ""),
         stage_display_name=stage_dict['stage_display_name'],
         stage_display_logic=stage_dict['stage_display_logic']
     )
@@ -52,7 +52,8 @@ def validation_for_list_of_stages_dict(stages_dict: List[Dict]):
             "stage_display_logic": str,
             "roles": str,
             "stage_color": str
-        }]
+        }],
+        ignore_extra_keys=True
 
     )
 

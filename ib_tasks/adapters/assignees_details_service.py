@@ -1,8 +1,9 @@
-from datetime import timedelta
 from typing import List
-
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
-from ib_tasks.interactors.stages_dtos import EntityTypeDTO, LogDurationDTO
+
+
+class InvalidUserIdException(Exception):
+    pass
 
 
 class AssigneeDetailsService:
@@ -16,6 +17,15 @@ class AssigneeDetailsService:
             self, assignee_ids: List[str]
     ) -> List[AssigneeDetailsDTO]:
 
+        from ib_iam.exceptions.custom_exceptions import InvalidUserId
+        try:
+            return self._get_assignees_details_dtos(assignee_ids)
+        except InvalidUserId:
+            raise InvalidUserIdException()
+
+    def _get_assignees_details_dtos(
+            self, assignee_ids: List[str]
+    ) -> List[AssigneeDetailsDTO]:
         user_details_dtos = self.interface.get_user_details_bulk(assignee_ids)
         assignee_details_dtos = [
             AssigneeDetailsDTO(
@@ -26,15 +36,3 @@ class AssigneeDetailsService:
             for user_details_dto in user_details_dtos
         ]
         return assignee_details_dtos
-
-    def get_log_duration_dtos(
-            self, entity_dtos: List[EntityTypeDTO]
-    ) -> List[LogDurationDTO]:
-
-        return [
-            LogDurationDTO(
-                entity_id=entity_dto.entity_id,
-                duration=timedelta(seconds=300)
-            )
-            for entity_dto in entity_dtos
-        ]

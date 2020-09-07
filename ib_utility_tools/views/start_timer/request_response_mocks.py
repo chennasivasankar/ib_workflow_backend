@@ -2,7 +2,7 @@
 
 REQUEST_BODY_JSON = """
 {
-    "entity_id": "d695a1e9-461c-4722-ad30-ea0bf389206e",
+    "entity_id": "string",
     "entity_type": "STAGE_TASK"
 }
 """

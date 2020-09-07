@@ -221,3 +221,21 @@ class AuthService:
             converted_user_tokens_dto = self._convert_to_user_tokens_dto(
                 user_auth_tokens_dto)
             return converted_user_tokens_dto
+
+    def create_auth_tokens_for_user(
+            self, user_id: str, expiry_in_seconds: int) -> UserTokensDTO:
+        user_auth_tokens_dto = self.interface.create_auth_tokens_for_user(
+            user_id=user_id,
+            expiry_in_seconds=expiry_in_seconds)
+        converted_user_tokens_dto = self._convert_to_user_tokens_dto(
+            user_auth_tokens_dto)
+        return converted_user_tokens_dto
+
+    def update_is_email_verified_value_in_ib_user_profile_details(
+            self, user_id: str, is_email_verified: bool):
+        from ib_users.interactors.user_profile_interactor import UserProfileDTO
+        user_profile = UserProfileDTO(
+            is_email_verified=is_email_verified
+        )
+        self.interface.update_user_profile(
+            user_id=user_id, user_profile=user_profile)

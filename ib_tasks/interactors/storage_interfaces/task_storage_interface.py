@@ -5,6 +5,7 @@ Author: Pavankumar Pamuru
 """
 
 import abc
+from datetime import datetime
 from typing import List, Optional
 
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
@@ -16,7 +17,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO, TaskProjectDTO
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO
 
 
@@ -56,12 +57,6 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_valid_task_ids(self, task_ids: List[int]) -> Optional[List[int]]:
-        pass
-
-    @abc.abstractmethod
-    def get_task_ids_for_the_stage_ids(
-            self, stage_ids: List[str], task_ids: List[int]) -> List[
-        TaskStageIdsDTO]:
         pass
 
     @abc.abstractmethod
@@ -108,7 +103,7 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_user_task_ids_and_max_stage_value_dto_based_on_given_stage_ids(
-            self, user_id: str, stage_ids: List[str]
+            self, stage_ids: List[str], task_ids: List[int]
     ) -> List[TaskIdWithStageValueDTO]:
         pass
 
@@ -125,5 +120,39 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_display_ids_dtos(self, task_ids: List[int]) -> List[TaskDisplayIdDTO]:
+    def get_task_display_ids_dtos(self, task_ids: List[int]) -> List[
+        TaskDisplayIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_project_id_of_task(self, task_id: int) -> str:
+        pass
+
+    @abc.abstractmethod
+    def get_project_id_for_the_task_id(self, task_id) -> str:
+        pass
+
+    @abc.abstractmethod
+    def get_project_id_for_task_display_id(self, task_display_id: str):
+        pass
+
+    @abc.abstractmethod
+    def get_user_team_id(self, user_id: str, task_id: int) -> str:
+        pass
+
+    @abc.abstractmethod
+    def get_task_due_datetime(self, task_id: int) -> Optional[datetime]:
+        pass
+
+    @abc.abstractmethod
+    def get_valid_task_ids_from_the_project(self, task_ids: List[int], project_id: str):
+        pass
+
+    @abc.abstractmethod
+    def get_task_project_ids(self, task_ids: List[int]) -> \
+            List[TaskProjectDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_task_display_id_for_task_id(self, task_id: int) -> str:
         pass

@@ -4,8 +4,7 @@ from typing import List
 
 from ib_tasks.exceptions.task_custom_exceptions import \
     TransitionTemplateDoesNotExist
-from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldPermissionDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
@@ -17,7 +16,7 @@ class CompleteTransitionTemplateDTO:
     transition_template_dto: TemplateDTO
     gof_dtos: List[GoFDTO]
     gofs_of_transition_template_dtos: List[GoFToTaskTemplateDTO]
-    field_with_permissions_dtos: List[FieldPermissionDTO]
+    field_dtos: List[FieldDTO]
 
 
 class GetTransitionTemplatePresenterInterface(abc.ABC):

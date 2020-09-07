@@ -4,6 +4,7 @@ from freezegun import freeze_time
 
 from ib_tasks.presenters.task_due_delay_presenter_implementation import \
     TaskDueDetailsPresenterImplementation
+from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
 from ib_tasks.tests.factories.interactor_dtos import GetTaskDueDetailsDTOFactory
 
 
@@ -37,6 +38,8 @@ class TestGetTaskDueDelay:
     def test_get_response_for_get_task_due_details(self, snapshot):
         # Arrange
         GetTaskDueDetailsDTOFactory.reset_sequence()
+        from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
+        AssigneeDetailsDTOFactory.reset_sequence()
         tasks_dtos = GetTaskDueDetailsDTOFactory.create_batch(size=5,
                                                               due_date_time=datetime.now())
         presenter = TaskDueDetailsPresenterImplementation()

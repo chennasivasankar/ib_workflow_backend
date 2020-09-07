@@ -2,8 +2,9 @@
 from django.contrib import admin
 
 from ib_iam.models import (
-    UserDetails, UserTeam, UserRole, Company,
-    Role, Team, ElasticUserIntermediary
+    UserDetails, TeamUser, UserRole, Company,
+    ProjectRole, Team, ElasticUserIntermediary, TeamMemberLevel, City, State, Country,
+    Project, ProjectTeam
 )
 
 
@@ -35,21 +36,54 @@ class UserRoleAdmin(admin.ModelAdmin):
     list_display = ("user_id", "_role_id")
     search_fields = ["user_id"]
     list_filter = ["user_id"]
+    raw_id_fields = ("project_role",)
 
     @staticmethod
     def _role_id(obj):
-        return obj.role.role_id
+        return obj.project_role.role_id
 
 
-class UserTeamAdmin(admin.ModelAdmin):
-    list_display = ("user_id", "team_id")
+class TeamUserAdmin(admin.ModelAdmin):
+    list_display = ("user_id", "team_id", "team_member_level",
+                    "immediate_superior_team_user")
     search_fields = ["user_id"]
+    raw_id_fields = ("team",)
+
+
+class TeamMemberLevelAdmin(admin.ModelAdmin):
+    list_display = ("id", "team", "level_name", "level_hierarchy")
+
+
+class ProjectTeamInline(admin.TabularInline):
+    model = ProjectTeam
+
+
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ("project_id", "name", "description", "logo_url")
+    search_fields = ["name"]
+    list_filter = ["project_id"]
+    inlines = [
+        ProjectTeamInline
+    ]
+
+
+class ProjectTeamAdmin(admin.ModelAdmin):
+    list_display = ("project", "team")
+    search_fields = ["project"]
+    list_filter = ["project"]
+    raw_id_fields = ("team", "project")
 
 
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(Team, TeamAdmin)
-admin.site.register(Role, RoleAdmin)
+admin.site.register(ProjectRole, RoleAdmin)
 admin.site.register(UserDetails, IAMUserAdmin)
 admin.site.register(UserRole, UserRoleAdmin)
-admin.site.register(UserTeam, UserTeamAdmin)
+admin.site.register(TeamUser, TeamUserAdmin)
+admin.site.register(TeamMemberLevel, TeamMemberLevelAdmin)
 admin.site.register(ElasticUserIntermediary, ElasticUserIntermediaryAdmin)
+admin.site.register(Project, ProjectAdmin)
+admin.site.register(ProjectTeam, ProjectTeamAdmin)
+admin.site.register(City)
+admin.site.register(State)
+admin.site.register(Country)

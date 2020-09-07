@@ -3,17 +3,53 @@ from typing import List, Dict
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.constants.enum import Status
+from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException
 from ib_tasks.interactors.filter_dtos import FilterCompleteDetailsDTO, \
     ConditionDTO, FilterDTO
 from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
-    import FilterPresenterInterface, TaskTemplateFieldsDto
+    import FilterPresenterInterface, ProjectTemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import \
-    GoFToTaskTemplateDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import TaskTemplateGofsDTO
 
 
 class FilterPresenterImplementation(FilterPresenterInterface,
                                     HTTPResponseMixin):
+
+    def get_response_for_invalid_project_id(
+            self, err: InvalidProjectIdsException):
+        from ib_tasks.constants.exception_messages import INVALID_PROJECT_ID
+        project_id = err.invalid_project_ids[0]
+        message = INVALID_PROJECT_ID[0].format(project_id)
+        response_dict = {
+            "response": message,
+            "http_status_code": 404,
+            "res_status": INVALID_PROJECT_ID[1]
+        }
+
+        response_object = self.prepare_404_not_found_response(response_dict)
+        return response_object
+
+    def get_response_for_user_not_in_project(self):
+        from ib_tasks.constants.exception_messages import USER_NOT_IN_PROJECT
+        response_dict = {
+            "response": USER_NOT_IN_PROJECT[0],
+            "http_status_code": 404,
+            "res_status": USER_NOT_IN_PROJECT[1]
+        }
+
+        response_object = self.prepare_403_forbidden_response(response_dict)
+        return response_object
+
+    def get_response_for_invalid_filter_condition(self, error):
+        from ib_tasks.constants.exception_messages import FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE
+        response_dict = {
+            "response": FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE[0].format(error.condition),
+            "http_status_code": 404,
+            "res_status": FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE[1]
+        }
+
+        response_object = self.prepare_417_expectation_mismatch_response(response_dict)
+        return response_object
 
     def get_response_for_invalid_filter_id(self):
         from ib_tasks.constants.exception_messages import INVALID_FILTER_ID
@@ -27,11 +63,11 @@ class FilterPresenterImplementation(FilterPresenterInterface,
         return response_object
 
     def get_response_for_update_filter_status(
-            self, filter_id: int, is_selected: Status):
+            self, filter_id: int, filter_status: Status):
 
         response_dict = {
             "filter_id": filter_id,
-            "action": is_selected
+            "action": filter_status
         }
         response_object = self.prepare_200_success_response(response_dict)
         return response_object
@@ -186,16 +222,17 @@ class FilterPresenterImplementation(FilterPresenterInterface,
         return response_object
 
     def get_response_for_get_task_templates_fields(
-            self, task_template_fields: TaskTemplateFieldsDto):
+            self, task_template_fields: ProjectTemplateFieldsDTO):
         task_template_dtos = task_template_fields.task_template_dtos
         fields_dto = task_template_fields.fields_dto
-        task_template_gofs = task_template_fields.gofs_of_task_templates_dtos
+        task_template_gofs = task_template_fields.task_template_gofs_dtos
         gof_fields_dict = self._get_gof_fields_dict(fields_dto)
         task_template_gofs_dict = \
             self._get_task_template_gof_dict(task_template_gofs)
         task_template_fields_dict = self._get_template_fields_dict(
             task_template_gofs_dict, gof_fields_dict
         )
+        from ib_tasks.constants.constants import OPERATORS
         response_dict = {
             "task_template_fields_details": [
                 {
@@ -207,9 +244,8 @@ class FilterPresenterImplementation(FilterPresenterInterface,
                 }
                 for template_dto in task_template_dtos
             ],
-            "operators": [
-                "GTE", "LTE", "GT", "LE", "NE", "EQ", "CONTAINS"
-            ]
+            "operators": OPERATORS
+
         }
         response_object = self.prepare_200_success_response(response_dict)
         return response_object
@@ -240,13 +276,12 @@ class FilterPresenterImplementation(FilterPresenterInterface,
 
     @staticmethod
     def _get_task_template_gof_dict(
-            task_template_gofs: List[GoFToTaskTemplateDTO]):
+            task_template_gofs: List[TaskTemplateGofsDTO]):
         from collections import defaultdict
         template_gof_dict = defaultdict(list)
         for task_template_gof in task_template_gofs:
             template_id = task_template_gof.template_id
-            gof_id = task_template_gof.gof_id
-            template_gof_dict[template_id].append(gof_id)
+            template_gof_dict[template_id] = task_template_gof.gof_ids
         return template_gof_dict
 
     @staticmethod

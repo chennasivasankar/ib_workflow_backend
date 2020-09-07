@@ -4,13 +4,13 @@ from datetime import datetime, timedelta
 import factory
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
-    Priority, ActionTypes, DelayReasons
+    Priority, ActionTypes, DELAY_REASONS
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     UserTaskDelayReason, Task, TaskGoF, TaskGoFField,
     TaskTemplateGlobalConstants,
     TaskStatusVariable, Filter, FilterCondition, TaskLog,
-    StagePermittedRoles, ElasticSearchTask, TaskStageHistory)
+    StagePermittedRoles, ElasticSearchTask, ProjectTaskTemplate, TaskStageRp)
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -30,6 +30,9 @@ class TaskFactory(factory.django.DjangoModelFactory):
 
     task_display_id = factory.sequence(
         lambda counter: "IBWF-{}".format(counter + 1))
+    project_id = factory.Sequence(
+        lambda n: "project_id_%d" % (n + 1)
+    )
     template_id = factory.Sequence(
         lambda counter: "template_{}".format(counter))
     created_by = "123e4567-e89b-12d3-a456-426614174000"
@@ -55,6 +58,16 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     card_info_list = json.dumps(['field_id_1', "field_id_2"])
 
 
+class UserRpInTaskStageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskStageRp
+
+    task = factory.SubFactory(TaskFactory)
+    stage = factory.SubFactory(StageModelFactory)
+    rp_id = factory.Sequence(
+        lambda n: "123e4567-e89b-12d3-a456-42661417405%d" % n)
+
+
 class TaskStageModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = CurrentTaskStage
@@ -67,8 +80,10 @@ class TaskModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Task
 
+    project_id = factory.Sequence(lambda counter: "project_{}".format(counter))
     task_display_id = factory.sequence(lambda counter: "iB_{}".format(counter))
     template_id = factory.Sequence(lambda n: "template_%d" % (n + 1))
+    project_id = factory.Sequence(lambda n: "project_id{}".format(n))
     created_by = factory.Sequence(lambda n: (n + 1))
     title = factory.Sequence(lambda c: "title_{}".format(c))
     description = factory.Sequence(lambda c: "description_{}".format(c))
@@ -94,11 +109,12 @@ class TaskDueDetailsFactory(factory.django.DjangoModelFactory):
 
     task = factory.SubFactory(TaskFactory)
     due_datetime = datetime.now() + timedelta(days=2)
+    stage = factory.SubFactory(StageModelFactory)
     count = factory.Sequence(lambda n: (n + 1))
     user_id = factory.Sequence(
         lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
-    reason_id = DelayReasons[0]['id']
-    reason = DelayReasons[0]['reason']
+    reason_id = DELAY_REASONS[0]['id']
+    reason = DELAY_REASONS[0]['reason']
 
 
 class StageActionFactory(factory.django.DjangoModelFactory):
@@ -133,7 +149,7 @@ class TaskTemplateStatusVariableFactory(factory.django.DjangoModelFactory):
         model = TaskTemplateStatusVariable
 
     task_template_id = factory.Sequence(lambda n: n)
-    variable = factory.Sequence(lambda n: "variable%d" % n)
+    variable = factory.Sequence(lambda n: "status_id_%d" % n)
     value = factory.Sequence(lambda n: n)
 
 
@@ -178,6 +194,7 @@ class FieldFactory(factory.django.DjangoModelFactory):
     )
     field_type = FieldTypes.PLAIN_TEXT.value
     required = True
+    order = factory.sequence(lambda counter: counter)
 
     class Params:
         optional = factory.Trait(
@@ -185,7 +202,7 @@ class FieldFactory(factory.django.DjangoModelFactory):
         )
 
 
-class GoFRoleFactory(factory.DjangoModelFactory):
+class GoFRoleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = GoFRole
 
@@ -194,7 +211,7 @@ class GoFRoleFactory(factory.DjangoModelFactory):
     permission_type = PermissionTypes.READ.value
 
 
-class FieldRoleFactory(factory.DjangoModelFactory):
+class FieldRoleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = FieldRole
 
@@ -269,19 +286,6 @@ class CurrentTaskStageModelFactory(factory.django.DjangoModelFactory):
     stage = factory.SubFactory(StageModelFactory)
 
 
-class TaskLogFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = TaskLog
-
-    task = factory.SubFactory(TaskFactory)
-    task_json = """ values"""
-    action = factory.SubFactory(StageActionFactory)
-    acted_at = "2020-10-25 12:00:00"
-    user_id = factory.sequence(
-        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
-            counter))
-
-
 class FilterFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Filter
@@ -322,15 +326,7 @@ class TaskStageHistoryModelFactory(factory.django.DjangoModelFactory):
         lambda n: "123e4567-e89b-12d3-a456-42661417400{}".format(n))
     joined_at = datetime(2012, 10, 10)
     left_at = datetime(2012, 10, 11)
-
-
-class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = ElasticSearchTask
-
-    elasticsearch_id = factory.sequence(
-        lambda n: 'elastic_search_id_{}'.format(n))
-    task_id = factory.sequence(lambda n: n)
+    team_id = factory.Sequence(lambda n: "team_{}".format(n + 1))
 
 
 class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
@@ -352,3 +348,35 @@ class TaskLogFactory(factory.django.DjangoModelFactory):
     action = factory.SubFactory(StageActionFactory)
     user_id = factory.Sequence(
         lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
+
+
+class StageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Stage
+
+    stage_id = factory.Sequence(lambda c: "stage_{}".format(c))
+    task_template_id = factory.Sequence(lambda c: "template_{}".format(c))
+    display_name = factory.Sequence(lambda c: "display_name_{}".format(c))
+    value = factory.Sequence(lambda c: c)
+    stage_color = factory.Sequence(lambda counter: "#fff2f{}".format(counter))
+
+
+class ProjectTaskTemplateFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProjectTaskTemplate
+
+    task_template = factory.SubFactory(TaskTemplateFactory)
+    project_id = factory.sequence(lambda counter: "project_{}".format(counter))
+
+
+class TaskStageHistoryFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskStageHistory
+
+    task = factory.SubFactory(TaskFactory)
+    stage = factory.SubFactory(StageModelFactory)
+    team_id = factory.Sequence(lambda n: "TEAM_ID_%d" % n)
+    assignee_id = factory.sequence(
+        lambda n: "123e4567-e89b-12d3-a456-42661417400{}".format(n))
+    joined_at = datetime(2012, 10, 10)
+    left_at = datetime(2012, 10, 11)

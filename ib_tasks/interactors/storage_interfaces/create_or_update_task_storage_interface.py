@@ -1,12 +1,15 @@
 import abc
+import datetime
 from typing import Union, List
 
+from ib_tasks.exceptions.gofs_custom_exceptions import \
+    InvalidSameGoFOrderForAGoF
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
 from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import TaskGoFDTO, \
-    TaskGoFFieldDTO, TaskBaseDetailsDTO
+    TaskGoFFieldDTO, TaskBaseDetailsDTO, FieldSearchableDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFDetailsDTO, TaskGoFWithTaskIdDTO
 from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO
@@ -59,7 +62,7 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_task_gof_fields(
-        self, task_gof_field_dtos: List[TaskGoFFieldDTO]
+            self, task_gof_field_dtos: List[TaskGoFFieldDTO]
     ):
         pass
 
@@ -77,7 +80,7 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def update_task_gofs(
             self, task_gof_dtos: List[TaskGoFWithTaskIdDTO]
-    ) -> List[TaskGoFDetailsDTO]:
+    ) -> Union[List[TaskGoFDetailsDTO], InvalidSameGoFOrderForAGoF]:
         pass
 
     @abc.abstractmethod
@@ -113,3 +116,26 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
     def update_task_with_given_task_details(self, task_dto: UpdateTaskDTO):
         pass
 
+    @abc.abstractmethod
+    def get_field_searchable_dtos(
+            self, field_ids: List[str], task_gof_ids: List[int]
+    ) -> List[FieldSearchableDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_task_ids(self) -> List[int]:
+        pass
+
+    @abc.abstractmethod
+    def get_existing_task_due_date(self, task_id):
+        pass
+
+    @abc.abstractmethod
+    def check_task_delay_reason_updated_or_not(
+            self, task_id: int, stage_id: int,
+            updated_due_date: datetime.datetime):
+        pass
+
+    @abc.abstractmethod
+    def get_task_display_id_for_task_id(self, task_id: int):
+        pass

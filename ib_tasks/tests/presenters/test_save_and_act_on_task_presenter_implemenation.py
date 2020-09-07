@@ -76,13 +76,30 @@ class TestSaveAndActOnATaskPresenterImplementation:
         snapshot.assert_match(json_json_response['response'],
                               'json_response')
 
+    def test_raise_invalid_stage_id(self, presenter, snapshot):
+        # Arrange
+        stage_id = 1
+        from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId
+        err = InvalidStageId(stage_id)
+
+        # Act
+        json_response = presenter.raise_invalid_stage_id(err)
+
+        # Assert
+        json_json_response = json.loads(json_response.content)
+        snapshot.assert_match(
+            json_json_response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(json_json_response['res_status'], 'res_status')
+        snapshot.assert_match(json_json_response['response'],
+                              'json_response')
+
     def test_raise_due_date_has_expired(self, snapshot, presenter):
         # Arrange
         expected_due_date = datetime.date(2020, 3, 5)
         from ib_tasks.exceptions.datetime_custom_exceptions import \
-            DueDateHasExpired
+            DueDateTimeHasExpired
 
-        err = DueDateHasExpired(expected_due_date)
+        err = DueDateTimeHasExpired(expected_due_date)
 
         # Act
         response = presenter.raise_due_date_has_expired(err)
@@ -730,6 +747,27 @@ class TestSaveAndActOnATaskPresenterImplementation:
         snapshot.assert_match(json_response['res_status'], 'res_status')
         snapshot.assert_match(json_response['response'], 'json_response')
 
+    def test_raise_duplicate_same_gof_orders_for_a_gof(
+            self, snapshot, presenter):
+        # Arrange
+        expected_duplicate_same_gof_order = [1, 2]
+        expected_gof_id = "gof_1"
+
+        from ib_tasks.exceptions.gofs_custom_exceptions import \
+            DuplicateSameGoFOrderForAGoF
+        err = DuplicateSameGoFOrderForAGoF(
+            expected_gof_id, expected_duplicate_same_gof_order)
+
+        # Act
+        response_object = \
+            presenter.raise_duplicate_same_gof_orders_for_a_gof(err)
+
+        # Assert
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
+
     def test_raise_exception_for_user_action_permission_denied(
             self, snapshot, presenter):
         # Arrange
@@ -750,7 +788,7 @@ class TestSaveAndActOnATaskPresenterImplementation:
         snapshot.assert_match(json_response['res_status'], 'res_status')
         snapshot.assert_match(json_response['response'], 'response')
 
-    def test_raise_exception_for_invalid_present_actions(
+    def test_raise_exception_for_invalid_present_stage_actions(
             self, snapshot, presenter):
         # Arrange
         expected_action_id = 1
@@ -761,7 +799,7 @@ class TestSaveAndActOnATaskPresenterImplementation:
 
         # Act
         response = \
-            presenter.raise_exception_for_invalid_present_actions(err)
+            presenter.raise_exception_for_invalid_present_stage_actions(err)
 
         # Assert
         json_response = json.loads(response.content)

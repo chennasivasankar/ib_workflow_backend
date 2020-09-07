@@ -97,3 +97,13 @@ class DuplicateSameGoFOrderForAGoF(Exception):
     def __init__(self, gof_id: str, duplicate_same_gof_orders: List[int]):
         self.gof_id = gof_id
         self.same_gof_orders = duplicate_same_gof_orders
+
+
+class InvalidSameGoFOrderForAGoF(Exception):
+    pass
+
+
+class UserDidNotFillRequiredGoFs(Exception):
+
+    def __init__(self, gof_display_names: List[str]):
+        self.gof_display_names = gof_display_names

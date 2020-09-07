@@ -6,7 +6,7 @@ import factory
 from ib_tasks.adapters.dtos import UserDetailsDTO
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
 from ib_tasks.constants.enum import Priority, ValidationType, FieldTypes, \
-    PermissionTypes, Status, Operators
+    PermissionTypes, Status, Operators, Searchable
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
 from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
@@ -19,19 +19,19 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldCompleteDetailsDTO, FieldRolesDTO, FieldRoleDTO, \
     UserFieldPermissionDTO, FieldDetailsDTOWithTaskId, FieldDetailsDTO, \
-    StageTaskFieldsDTO, FieldPermissionDTO, FieldValueDTO
+    StageTaskFieldsDTO, FieldPermissionDTO, FieldValueDTO, FieldNameDTO, \
+    FieldIdWithFieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
     TaskGoFFieldDTO,
-    TaskGoFDTO, TaskDetailsDTO, TaskBaseDetailsDTO
+    TaskGoFDTO, TaskDetailsDTO, TaskBaseDetailsDTO, FieldSearchableDTO
 )
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, GoFToTaskTemplateDTO, \
-    GroupOfFieldsDTO, GOFMultipleEnableDTO
+    GroupOfFieldsDTO, GOFMultipleEnableDTO, TaskTemplateGofsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO, ValidStageDTO, TaskStageIdsDTO, StageValueDTO, \
     StageDetailsDTO, StageDisplayValueDTO, StageIdWithTemplateIdDTO, \
-    StageRoleDTO, TaskStagesDTO, TaskTemplateStageDTO, TaskStageAssigneeDTO, \
-    TaskStageHavingAssigneeIdDTO, StageRoleDTO, TaskStagesDTO, \
+    StageRoleDTO, TaskStagesDTO, \
     TaskTemplateStageDTO, TaskStageAssigneeDTO, TaskStageHavingAssigneeIdDTO, \
     CurrentStageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
@@ -39,7 +39,7 @@ from ib_tasks.interactors.storage_interfaces.status_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO, TaskDueMissingDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TemplateDTO
+    TemplateDTO, ProjectIdWithTaskTemplateIdDTO
 from ib_tasks.interactors.task_dtos import TaskStatusVariableDTO
 from ib_tasks.models import StageAction
 
@@ -310,6 +310,7 @@ class FieldDTOFactory(factory.Factory):
     error_message = None
     allowed_formats = None
     validation_regex = None
+    order = factory.sequence(lambda counter: counter)
 
 
 class FieldRolesDTOFactory(factory.Factory):
@@ -366,6 +367,15 @@ class TaskTemplateDTOFactory(factory.Factory):
         factory.sequence(lambda n: 'Task Template {}'.format(n + 1))
 
 
+class ProjectTemplateDTOFactory(factory.Factory):
+    class Meta:
+        model = TemplateDTO
+
+    template_id = factory.Sequence(lambda n: 'template_{}'.format(n))
+    template_name = \
+        factory.sequence(lambda n: 'Task Template {}'.format(n))
+
+
 class ActionWithStageIdDTOFactory(factory.Factory):
     class Meta:
         model = ActionWithStageIdDTO
@@ -404,6 +414,25 @@ class GoFToTaskTemplateDTOFactory(factory.Factory):
     template_id = factory.Sequence(lambda n: 'template_{}'.format(n + 1))
     order = factory.Sequence(lambda n: n)
     enable_add_another = factory.Iterator([True, False])
+
+
+class TaskTemplateGofsDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskTemplateGofsDTO
+
+    template_id = factory.Sequence(lambda n: 'template_{}'.format(n))
+    gof_ids = factory.Sequence(
+        lambda n: ['gof_{}'.format(n), 'gof_{}'.format(n + 1)])
+
+
+class FieldNameDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldNameDTO
+
+    field_id = factory.Sequence(lambda n: 'field_{}'.format(n))
+    gof_id = factory.Sequence(lambda n: 'gof_{}'.format(n))
+    field_display_name = factory.Sequence(
+        lambda n: 'display_name_{}'.format(n))
 
 
 class TaskGoFDTOFactory(factory.Factory):
@@ -475,8 +504,9 @@ class TaskStageIdsDTOFactory(factory.Factory):
     class Meta:
         model = TaskStageIdsDTO
 
-    task_id = factory.Sequence(lambda n: f'TASK_ID_{n + 1}')
+    task_id = factory.Sequence(lambda n: (n + 1))
     stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
+    task_display_id = factory.Sequence(lambda n: f'TASK_ID_{n + 1}')
 
 
 class StageDisplayValueDTOFactory(factory.Factory):
@@ -539,6 +569,8 @@ class TaskBaseDetailsDTOFactory(factory.Factory):
 
     template_id = factory.sequence(
         lambda counter: "template_{}".format(counter))
+    project_id = factory.sequence(
+        lambda counter: "project_id{}".format(counter))
     task_display_id = factory.sequence(
         lambda counter: "IBWF-{}".format(counter + 1))
     title = factory.sequence(lambda counter: "title_{}".format(counter))
@@ -565,6 +597,12 @@ class TaskDetailsDTOFactory(factory.Factory):
     def task_gof_field_dtos(self):
         return [TaskGoFFieldDTOFactory()]
 
+    @factory.lazy_attribute
+    def project_details_dto(self):
+        from ib_tasks.tests.factories.adapter_dtos \
+            import ProjectDetailsDTOFactory
+        return ProjectDetailsDTOFactory()
+
 
 class StageRoleDTOFactory(factory.Factory):
     class Meta:
@@ -583,7 +621,9 @@ class TaskDueMissingDTOFactory(factory.Factory):
     task_id = factory.Sequence(lambda n: "task_id_%d" % n)
     due_missed_count = factory.Sequence(lambda n: n)
     due_date_time = datetime.today().date() + timedelta(days=2)
-    user_id = factory.Sequence(lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(counter))
+    user_id = factory.Sequence(
+        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+            counter))
     reason = "reason"
 
 
@@ -591,17 +631,19 @@ class UserDetailsDTOFactory(factory.Factory):
     class Meta:
         model = UserDetailsDTO
 
-    user_id = factory.Sequence(lambda n: "user_id_%d" % (n + 1))
+    user_id = factory.Sequence(
+        lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % (n + 1))
     user_name = factory.Sequence(lambda n: "user_name_%d" % (n + 1))
     profile_pic_url = factory.Sequence(lambda n: "profile_pic_%d" % (n + 1))
 
 
-class StageAssigneeDTOFactory(factory.Factory):
+class TaskStageAssigneeDTOFactory(factory.Factory):
     class Meta:
         model = TaskStageAssigneeDTO
 
     task_stage_id = factory.sequence(lambda counter: counter + 1)
     stage_id = factory.Sequence(lambda counter: counter + 1)
+    team_id = factory.Sequence(lambda counter: "team{}".format(counter))
     assignee_id = factory.sequence(
         lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
             counter))
@@ -674,3 +716,32 @@ class CurrentStageDetailsDTOFactory(factory.Factory):
     stage_id = factory.sequence(lambda counter: "stage_{}".format(counter))
     stage_display_name = factory.sequence(
         lambda counter: "name_{}".format(counter))
+
+
+class FieldSearchableDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldSearchableDTO
+
+    field_id = factory.sequence(lambda counter: "field{}".format(counter))
+    field_value = Searchable.CITY.value
+    field_response = "1"
+
+
+class ProjectIdWithTaskTemplateIdDTOFactory(factory.Factory):
+    class Meta:
+        model = ProjectIdWithTaskTemplateIdDTO
+
+    project_id = factory.sequence(lambda counter: "project_{}".format(counter))
+    task_template_id = factory.sequence(
+        lambda counter: "template_{}".format(counter))
+
+
+class FieldIdWithFieldDisplayNameDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldIdWithFieldDisplayNameDTO
+
+    field_id = factory.Sequence(lambda c: "field_id_{}".format(c))
+    gof_display_name = factory.Sequence(
+        lambda c: "gof_display_name{}".format(c))
+    field_display_name = factory.Sequence(
+        lambda c: "field_display_name_{}".format(c))

@@ -7,7 +7,7 @@ from django.conf import settings
 from dataclasses import dataclass
 from typing import List, Any, Optional
 
-from elasticsearch_dsl import Document, Nested, InnerDoc, Text, Integer
+from elasticsearch_dsl import Document, Nested, InnerDoc, Text, Integer, Keyword
 
 TASK_INDEX_NAME = 'task-{}'.format(settings.STAGE)
 
@@ -20,6 +20,7 @@ class ElasticFieldDTO:
 
 @dataclass
 class ElasticTaskDTO:
+    project_id: Optional[str]
     template_id: Optional[str]
     task_id: int
     title: str
@@ -33,10 +34,11 @@ class Field(InnerDoc):
 
 
 class Stage(InnerDoc):
-    stage_id: Text()
+    stage_id = Text()
 
 
 class Task(Document):
+    project_id = Text()
     template_id = Text()
     task_id = Integer()
     title = Text()

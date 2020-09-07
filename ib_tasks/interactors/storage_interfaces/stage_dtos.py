@@ -1,10 +1,18 @@
 from dataclasses import dataclass
 from typing import List, Any, Optional
 
-from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
+
+
+@dataclass
+class StageAssigneeDetailsDTO:
+    task_stage_id: int
+    stage_id: int
+    assignee_details_dto: Optional[AssigneeDetailsDTO]
 
 
 @dataclass
@@ -51,6 +59,7 @@ class TaskStageIdsDTO:
 class TaskWithDbStageIdDTO:
     task_id: int
     db_stage_id: int
+
 
 
 @dataclass
@@ -102,6 +111,7 @@ class TaskStageAssigneeDTO:
     task_stage_id: int
     stage_id: int
     assignee_id: Optional[str]
+    team_id: Optional[str]
 
 
 @dataclass
@@ -118,7 +128,7 @@ class TaskIdWithStageDetailsDTO:
 @dataclass
 class TaskWithCompleteStageDetailsDTO:
     task_with_stage_details_dto: TaskIdWithStageDetailsDTO
-    stage_assignee_dto: List[StageAssigneeDetailsDTO]
+    stage_assignee_dto: List[TaskStageAssigneeDetailsDTO]
 
 
 @dataclass
@@ -127,7 +137,6 @@ class StageDetailsDTO:
     stage_id: str
     color: str
     name: str
-    color: str
 
 
 @dataclass()
@@ -179,3 +188,16 @@ class CurrentStageDetailsDTO:
 class AssigneeCurrentTasksCountDTO:
     assignee_id: str
     tasks_count: int
+
+
+@dataclass
+class StageIdWithValueDTO:
+    db_stage_id: int
+    stage_value: int
+
+
+@dataclass
+class StageFlowDTO:
+    previous_stage_id: int
+    action_name: str
+    next_stage_id: int

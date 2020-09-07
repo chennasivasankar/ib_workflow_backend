@@ -25,7 +25,8 @@ def api_wrapper(*args, **kwargs):
     filter_dto = CreateFilterDTO(
         filter_name=request_data['name'],
         template_id=request_data['template_id'],
-        user_id=user_id
+        user_id=user_id,
+        project_id=request_data['project_id']
     )
     conditions = request_data['conditions']
     condition_dtos = get_conditions_dtos(conditions=conditions)
@@ -35,10 +36,10 @@ def api_wrapper(*args, **kwargs):
     from ib_tasks.presenters.filter_presenter_implementation import \
         FilterPresenterImplementation
     presenter = FilterPresenterImplementation()
-    from ib_tasks.interactors.filter_interactor import FilterInteractor
+    from ib_tasks.interactors.filters.create_or_update_or_delete_filters import CreateOrUpdateOrDeleteFiltersInteractor
     from ib_tasks.storages.fields_storage_implementation import \
         FieldsStorageImplementation
-    interactor = FilterInteractor(
+    interactor = CreateOrUpdateOrDeleteFiltersInteractor(
         filter_storage=storage,
         presenter=presenter,
         field_storage=FieldsStorageImplementation()

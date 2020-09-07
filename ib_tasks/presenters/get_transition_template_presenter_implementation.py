@@ -9,7 +9,7 @@ from ib_tasks.interactors.presenter_interfaces. \
     get_transition_template_presenter_interface import \
     CompleteTransitionTemplateDTO, GetTransitionTemplatePresenterInterface
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldPermissionDTO
+    FieldDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFToTaskTemplateDTO
 
@@ -40,20 +40,18 @@ class GetTransitionTemplatePresenterImplementation(
         gof_dtos = complete_transition_template_dto.gof_dtos
         gofs_of_transition_template_dtos = \
             complete_transition_template_dto.gofs_of_transition_template_dtos
-        field_with_permissions_dtos = \
-            complete_transition_template_dto.field_with_permissions_dtos
+        field_dtos = complete_transition_template_dto.field_dtos
 
         gofs_of_template_dicts = self._get_gofs_of_template_dicts(
             gofs_of_template_dtos=gofs_of_transition_template_dtos,
             gof_dtos=gof_dtos
         )
         fields_of_gofs_dict = self._get_fields_of_gofs_dict(
-            field_with_permissions_dtos=field_with_permissions_dtos
+            field_dtos=field_dtos
         )
         complete_gof_details_dicts = self._merge_gofs_with_fields(
             gofs_of_template_dicts, fields_of_gofs_dict
         )
-
         complete_transition_template_dict = {
             'transition_template_id': transition_template_dto.template_id,
             "transition_template_name": transition_template_dto.template_name,
@@ -74,12 +72,8 @@ class GetTransitionTemplatePresenterImplementation(
             )
         return gof_details_dicts
 
-    def _get_fields_of_gofs_dict(
-            self,
-            field_with_permissions_dtos: List[FieldPermissionDTO]):
-        field_dicts = self._get_fields_details_dicts(
-            field_with_permissions_dtos=field_with_permissions_dtos
-        )
+    def _get_fields_of_gofs_dict(self, field_dtos: List[FieldDTO]) -> Dict:
+        field_dicts = self._get_fields_details_dicts(field_dtos=field_dtos)
         fields_group_by_gof_id_dict = collections.defaultdict(list)
         for field_dict in field_dicts:
             fields_group_by_gof_id_dict[field_dict['gof_id']].append(
@@ -92,14 +86,10 @@ class GetTransitionTemplatePresenterImplementation(
         return fields_of_gofs_dict
 
     def _get_fields_details_dicts(
-            self,
-            field_with_permissions_dtos: List[FieldPermissionDTO]
-    ) -> List[Dict]:
+            self, field_dtos: List[FieldDTO]) -> List[Dict]:
         field_dicts = []
-        for field_with_permissions_dto in field_with_permissions_dtos:
-            field_dict = self._get_field_details_as_dict(
-                field_with_permissions_dto=field_with_permissions_dto
-            )
+        for field_dto in field_dtos:
+            field_dict = self._get_field_details_as_dict(field_dto=field_dto)
             field_dicts.append(field_dict)
         return field_dicts
 
@@ -118,7 +108,8 @@ class GetTransitionTemplatePresenterImplementation(
             complete_gof_details_dict = {
                 'gof_id': gof_id,
                 'order': gofs_to_task_templates_dto.order,
-                'enable_add_another': gofs_to_task_templates_dto.enable_add_another,
+                'enable_add_another':
+                    gofs_to_task_templates_dto.enable_add_another,
                 'gof_display_name': gof_details_dto_dict[
                     gof_id].gof_display_name,
                 'max_columns': gof_details_dto_dict[gof_id].max_columns
@@ -127,9 +118,9 @@ class GetTransitionTemplatePresenterImplementation(
         return gofs_to_template_dicts_list
 
     @staticmethod
-    def _get_field_details_as_dict(
-            field_with_permissions_dto: FieldPermissionDTO) -> Dict:
-        field_dto = field_with_permissions_dto.field_dto
+    def _get_field_details_as_dict(field_dto: FieldDTO) -> Dict:
+        # ToDo Remove is_field_readable in fields details
+        # TODO change order attribute to gof_order
         field_dict = {
             "field_id": field_dto.field_id,
             'gof_id': field_dto.gof_id,
@@ -143,7 +134,8 @@ class GetTransitionTemplatePresenterImplementation(
             "tooltip": field_dto.tooltip,
             "help_text": field_dto.help_text,
             "placeholder_text": field_dto.placeholder_text,
-            "is_field_writable": field_with_permissions_dto.is_field_writable
+            "is_field_writable": True,
+            "field_order": field_dto.order
         }
         return field_dict
 

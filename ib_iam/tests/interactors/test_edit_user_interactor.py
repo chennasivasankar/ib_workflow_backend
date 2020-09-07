@@ -43,7 +43,7 @@ class TestEditNewUserInteractor:
         name = "username"
         email = "user@email.com"
         team_ids = ['team0', 'team1']
-        role_ids = ['role0', 'role1']
+        # role_ids = ['role0', 'role1']
         company_id = 'company0'
 
         interactor = EditUserInteractor(
@@ -53,7 +53,7 @@ class TestEditNewUserInteractor:
         presenter_mock.raise_user_is_not_admin_exception.return_value = Mock()
 
         add_user_details_dto = AddUserDetailsDTOFactory(
-            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            name=name, email=email, team_ids=team_ids,
             company_id=company_id
         )
 
@@ -76,7 +76,7 @@ class TestEditNewUserInteractor:
         name = "user"
         email = "user@email.com"
         team_ids = ['team0', 'team1']
-        role_ids = ['role0', 'role1']
+        # role_ids = ['role0', 'role1']
         company_id = 'company0'
 
         interactor = EditUserInteractor(
@@ -87,7 +87,7 @@ class TestEditNewUserInteractor:
             .return_value = Mock()
 
         add_user_details_dto = AddUserDetailsDTOFactory(
-            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            name=name, email=email, team_ids=team_ids,
             company_id=company_id
         )
 
@@ -110,7 +110,7 @@ class TestEditNewUserInteractor:
         name = "user@2"
         email = "user@email.com"
         team_ids = ['team0', 'team1']
-        role_ids = ['role0', 'role1']
+        # role_ids = ['role0', 'role1']
         company_id = 'company0'
 
         interactor = EditUserInteractor(
@@ -122,7 +122,7 @@ class TestEditNewUserInteractor:
             .return_value = Mock()
 
         add_user_details_dto = AddUserDetailsDTOFactory(
-            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            name=name, email=email, team_ids=team_ids,
             company_id=company_id
         )
 
@@ -145,7 +145,7 @@ class TestEditNewUserInteractor:
         name = "username"
         email = ""
         team_ids = ['team0', 'team1']
-        role_ids = ['role0', 'role1']
+        # role_ids = ['role0', 'role1']
         company_id = 'company0'
 
         interactor = EditUserInteractor(
@@ -155,7 +155,7 @@ class TestEditNewUserInteractor:
         presenter_mock.raise_invalid_email_exception.return_value = Mock()
 
         add_user_details_dto = AddUserDetailsDTOFactory(
-            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            name=name, email=email, team_ids=team_ids,
             company_id=company_id
         )
 
@@ -168,40 +168,40 @@ class TestEditNewUserInteractor:
         # Assert
         presenter_mock.raise_invalid_email_exception.assert_called_once()
 
-    def test_validate_roles_and_throw_exception(
-            self, storage_mock, presenter_mock, elastic_storage):
-        # Arrange
-        user_id = "user_1"
-        admin_user_id = "user_0"
-        name = "username"
-        email = "user@gmail.com"
-        team_ids = ['team0', 'team1']
-        role_ids = ['role0', 'role1']
-        company_id = 'company0'
-
-        interactor = EditUserInteractor(
-            user_storage=storage_mock, elastic_storage=elastic_storage
-        )
-        storage_mock.is_user_admin.return_value = True
-        storage_mock.check_are_valid_role_ids.return_value = False
-        storage_mock.check_are_valid_team_ids.return_value = True
-        storage_mock.check_is_exists_company_id.return_value = True
-        presenter_mock.raise_role_ids_are_invalid.return_value = Mock()
-
-        add_user_details_dto = AddUserDetailsDTOFactory(
-            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
-            company_id=company_id
-        )
-
-        # Act
-        interactor.edit_user_wrapper(
-            admin_user_id=admin_user_id, user_id=user_id,
-            add_user_details_dto=add_user_details_dto,
-            presenter=presenter_mock)
-
-        # Assert
-        storage_mock.check_are_valid_role_ids.assert_called_once()
-        presenter_mock.raise_role_ids_are_invalid.assert_called_once()
+    # def test_validate_roles_and_throw_exception(
+    #         self, storage_mock, presenter_mock, elastic_storage):
+    #     # Arrange
+    #     user_id = "user_1"
+    #     admin_user_id = "user_0"
+    #     name = "username"
+    #     email = "user@gmail.com"
+    #     team_ids = ['team0', 'team1']
+    #     role_ids = ['role0', 'role1']
+    #     company_id = 'company0'
+    #
+    #     interactor = EditUserInteractor(
+    #         user_storage=storage_mock, elastic_storage=elastic_storage
+    #     )
+    #     storage_mock.is_user_admin.return_value = True
+    #     storage_mock.check_are_valid_role_ids.return_value = False
+    #     storage_mock.check_are_valid_team_ids.return_value = True
+    #     storage_mock.check_is_exists_company_id.return_value = True
+    #     presenter_mock.raise_role_ids_are_invalid.return_value = Mock()
+    #
+    #     add_user_details_dto = AddUserDetailsDTOFactory(
+    #         name=name, email=email, team_ids=team_ids,
+    #         company_id=company_id
+    #     )
+    #
+    #     # Act
+    #     interactor.edit_user_wrapper(
+    #         admin_user_id=admin_user_id, user_id=user_id,
+    #         add_user_details_dto=add_user_details_dto,
+    #         presenter=presenter_mock)
+    #
+    #     # Assert
+    #     storage_mock.check_are_valid_role_ids.assert_called_once()
+    #     presenter_mock.raise_role_ids_are_invalid.assert_called_once()
 
     def test_validate_teams_and_throw_exception(
             self, storage_mock, presenter_mock, elastic_storage):
@@ -211,7 +211,7 @@ class TestEditNewUserInteractor:
         name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
-        role_ids = ['role0', 'role1']
+        # role_ids = ['role0', 'role1']
         company_id = 'company0'
 
         interactor = EditUserInteractor(
@@ -222,7 +222,7 @@ class TestEditNewUserInteractor:
         presenter_mock.raise_team_ids_are_invalid.return_value = Mock()
 
         add_user_details_dto = AddUserDetailsDTOFactory(
-            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            name=name, email=email, team_ids=team_ids,
             company_id=company_id
         )
 
@@ -244,20 +244,20 @@ class TestEditNewUserInteractor:
         name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
-        role_ids = ['role0', 'role1']
+        # role_ids = ['role0', 'role1']
         company_id = 'company0'
 
         interactor = EditUserInteractor(
             user_storage=storage_mock, elastic_storage=elastic_storage
         )
         storage_mock.is_user_admin.return_value = True
-        storage_mock.check_are_valid_role_ids.return_value = True
+        # storage_mock.check_are_valid_role_ids.return_value = True
         storage_mock.check_are_valid_team_ids.return_value = True
         storage_mock.check_is_exists_company_id.return_value = False
         presenter_mock.raise_company_ids_is_invalid.return_value = Mock()
 
         add_user_details_dto = AddUserDetailsDTOFactory(
-            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            name=name, email=email, team_ids=team_ids,
             company_id=company_id
         )
 
@@ -279,7 +279,7 @@ class TestEditNewUserInteractor:
         name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
-        role_ids = ['role0', 'role1']
+        # role_ids = ['role0', 'role1']
         company_id = 'company0'
 
         interactor = EditUserInteractor(
@@ -290,7 +290,7 @@ class TestEditNewUserInteractor:
         presenter_mock.raise_user_does_not_exist.return_value = Mock()
 
         add_user_details_dto = AddUserDetailsDTOFactory(
-            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            name=name, email=email, team_ids=team_ids,
             company_id=company_id
         )
 
@@ -312,7 +312,7 @@ class TestEditNewUserInteractor:
         name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
-        role_ids = ['role0', 'role1']
+        # role_ids = ['role0', 'role1']
         company_id = 'company0'
 
         interactor = EditUserInteractor(
@@ -326,7 +326,7 @@ class TestEditNewUserInteractor:
         adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
 
         add_user_details_dto = AddUserDetailsDTOFactory(
-            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            name=name, email=email, team_ids=team_ids,
             company_id=company_id
         )
 
@@ -351,7 +351,7 @@ class TestEditNewUserInteractor:
         name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
-        role_ids = ['role0', 'role1']
+        # role_ids = ['role0', 'role1']
         company_id = 'company0'
 
         interactor = EditUserInteractor(
@@ -362,7 +362,7 @@ class TestEditNewUserInteractor:
         adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
 
         add_user_details_dto = AddUserDetailsDTOFactory(
-            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            name=name, email=email, team_ids=team_ids,
             company_id=company_id
         )
 
@@ -374,7 +374,7 @@ class TestEditNewUserInteractor:
 
         # Assert
         adapter_mock.assert_called_once()
-        storage_mock.remove_roles_for_user.assert_called_once()
+        # storage_mock.remove_roles_for_user.assert_called_once()
         storage_mock.remove_teams_for_user.assert_called_once()
 
     def test_edit_user_assign_existing_stats_for_user_after_unassigning_returns_success_response(
@@ -385,7 +385,7 @@ class TestEditNewUserInteractor:
         name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
-        role_ids = ['role0', 'role1']
+        # role_ids = ['role0', 'role1']
         company_id = 'company0'
 
         interactor = EditUserInteractor(
@@ -397,7 +397,7 @@ class TestEditNewUserInteractor:
         presenter_mock.edit_user_success_response.return_value = Mock()
 
         add_user_details_dto = AddUserDetailsDTOFactory(
-            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            name=name, email=email, team_ids=team_ids,
             company_id=company_id
         )
 
@@ -409,7 +409,47 @@ class TestEditNewUserInteractor:
 
         # Assert
         adapter_mock.assert_called_once()
-        storage_mock.add_roles_to_the_user.assert_called_once()
+        storage_mock.check_is_exists_company_id.assert_called_once_with(
+            company_id=company_id)
+        # storage_mock.add_roles_to_the_user.assert_called_once()
+        storage_mock.add_user_to_the_teams.assert_called_once()
+        storage_mock.update_user_details.assert_called_once()
+        presenter_mock.edit_user_success_response.assert_called_once()
+
+    def test_edit_user_given_company_is_none_returns_success_response(
+            self, storage_mock, presenter_mock, mocker, elastic_storage):
+        # Arrange
+        user_id = "user_1"
+        admin_user_id = "user_0"
+        name = "username"
+        email = "user@gmail.com"
+        team_ids = ['team0', 'team1']
+        # role_ids = ['role0', 'role1']
+        company_id = None
+
+        interactor = EditUserInteractor(
+            user_storage=storage_mock, elastic_storage=elastic_storage
+        )
+        from ib_iam.tests.common_fixtures.adapters.user_service \
+            import prepare_update_user_profile_adapter_mock
+        adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
+        presenter_mock.edit_user_success_response.return_value = Mock()
+
+        add_user_details_dto = AddUserDetailsDTOFactory(
+            name=name, email=email, team_ids=team_ids,
+            company_id=company_id
+        )
+
+        # Act
+        interactor.edit_user_wrapper(
+            admin_user_id=admin_user_id, user_id=user_id,
+            add_user_details_dto=add_user_details_dto,
+            presenter=presenter_mock)
+
+        # Assert
+        adapter_mock.assert_called_once()
+        storage_mock.check_is_exists_company_id.assert_not_called()
+        # storage_mock.add_roles_to_the_user.assert_called_once()
         storage_mock.add_user_to_the_teams.assert_called_once()
         storage_mock.update_user_details.assert_called_once()
         presenter_mock.edit_user_success_response.assert_called_once()

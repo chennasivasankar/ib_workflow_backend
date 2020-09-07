@@ -1,4 +1,7 @@
 from dataclasses import dataclass
+from typing import Optional
+
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 
 
 @dataclass
@@ -13,3 +16,10 @@ class TaskStageDTO:
     db_stage_id: int
     display_name: str
     stage_colour: str
+
+
+@dataclass
+class TaskStageAssigneeDetailsDTO:
+    task_id: int
+    stage_id: str
+    assignee_details: Optional[AssigneeDetailsDTO]

@@ -7,10 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase04UpdateTaskAPITestCase.test_case status_code'] = '400'
+snapshots['TestCase14UpdateTaskAPITestCase.test_case status_code'] = '400'
 
-snapshots['TestCase04UpdateTaskAPITestCase.test_case body'] = {
+snapshots['TestCase14UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'INVALID_FIELD_IDS',
-    'response': "invalid field ids: ['FIELD_ID-0', 'FIELD_ID-1', 'FIELD_ID-2']"
+    'res_status': 'TASK_DELAY_REASON_NOT_UPDATED',
+    'response': 'Task delay reason not updated for task IBWF-1 in stage display_name_0 with missed due date 2020-09-09 11:00:00'
 }

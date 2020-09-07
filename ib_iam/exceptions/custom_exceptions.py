@@ -41,6 +41,10 @@ class RoleIdsAreInvalid(Exception):
     pass
 
 
+class RoleIdsAreDuplicated(Exception):
+    pass
+
+
 class InvalidCompanyId(Exception):
     pass
 
@@ -120,3 +124,50 @@ class InvalidNewPassword(Exception):
 
 class CurrentPasswordMismatch(Exception):
     pass
+
+
+class InvalidCityIds(Exception):
+    def __init__(self, city_ids: List[int]):
+        self.city_ids = city_ids
+
+
+class InvalidStateIds(Exception):
+    def __init__(self, state_ids: List[int]):
+        self.state_ids = state_ids
+
+
+class InvalidCountryIds(Exception):
+    def __init__(self, country_ids: List[int]):
+        self.country_ids = country_ids
+
+
+class InvalidProjectId(Exception):
+    pass
+
+
+class TeamNotExistsInGivenProject(Exception):
+    pass
+
+
+class UserNotExistsInGivenTeam(Exception):
+    pass
+
+
+class InvalidTeamIds(Exception):
+    def __init__(self, team_ids):
+        self.team_ids = team_ids
+
+
+class InvalidProjectIds(Exception):
+    def __init__(self, project_ids):
+        self.project_ids = project_ids
+
+
+class InvalidUserIdsForProject(Exception):
+    def __init__(self, user_ids):
+        self.user_ids = user_ids
+
+
+class InvalidRoleIdsForProject(Exception):
+    def __init__(self, role_ids: List[str]):
+        self.role_ids = role_ids

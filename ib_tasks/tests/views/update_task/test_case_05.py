@@ -1,13 +1,14 @@
 """
-test with invalid gofs for task templates raises exception
+test with start date is ahead of due_date
 """
-import json
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+from freezegun import freeze_time
 
-from ib_tasks.constants.enum import FieldTypes
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ib_tasks.tests.factories.models import TaskFactory, StageFactory
+from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
+    REQUEST_METHOD, URL_SUFFIX
 
 
 class TestCase05UpdateTaskAPITestCase(TestUtils):
@@ -18,75 +19,35 @@ class TestCase05UpdateTaskAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        TaskFactory.reset_sequence()
+        StageFactory.reset_sequence()
+
+    @pytest.fixture(autouse=True)
     def setup(self, mocker):
-        import factory
-        from ib_tasks.tests.factories.models import TaskTemplateFactory, \
-            GoFFactory, GoFRoleFactory, TaskFactory, TaskGoFFactory, \
-            FieldFactory, FieldRoleFactory, TaskGoFFieldFactory
+        task_id = "IBWF-1"
+        stage_id = 1
 
-        TaskTemplateFactory.reset_sequence()
-        GoFRoleFactory.reset_sequence()
-        GoFFactory.reset_sequence()
-        FieldFactory.reset_sequence()
-        FieldRoleFactory.reset_sequence()
-        TaskGoFFieldFactory.reset_sequence()
-        TaskGoFFactory.reset_sequence()
+        StageFactory.create(id=stage_id)
+        TaskFactory.create(task_display_id=task_id)
 
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        get_user_role_ids(mocker)
-        template_id = "template_1"
-        gofs = GoFFactory.create_batch(size=2)
-        TaskTemplateFactory.create(template_id=template_id)
-        gof_ids = [gof.gof_id for gof in gofs]
-        plain_text = FieldFactory.create(
-            gof=gofs[0], field_type=FieldTypes.PLAIN_TEXT.value
-        )
-        image_field = FieldFactory.create(
-            gof=gofs[0], field_type=FieldTypes.IMAGE_UPLOADER.value,
-            allowed_formats='[".jpeg", ".png", ".svg"]'
-        )
-        checkbox_group = FieldFactory.create(
-            gof=gofs[1], field_type=FieldTypes.CHECKBOX_GROUP.value,
-            field_values='["interactors", "storages", "presenters"]'
-        )
-
-        task_obj = TaskFactory.create(template_id=template_id)
-        task_gofs = TaskGoFFactory.create_batch(
-            size=2, gof_id=factory.Iterator(gof_ids), task=task_obj
-        )
-
-        TaskGoFFieldFactory.create(
-            task_gof=task_gofs[0],
-            field=plain_text, field_response="string"
-        )
-        TaskGoFFieldFactory.create(
-            task_gof=task_gofs[0],
-            field=image_field,
-            field_response="https://www.freepngimg.com/thumb/light/20246-4"
-                           "-light-transparent.png"
-        )
-        TaskGoFFieldFactory.create(
-            task_gof=task_gofs[1],
-            field=checkbox_group,
-            field_response='["interactors", "storages"]'
-        )
-
+    @freeze_time("2020-09-09 12:00:00")
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {
-            "task_id": 1,
+            "task_id": "IBWF-1",
             "title": "updated_title",
             "description": "updated_description",
-            "start_date": "2099-12-31",
+            "start_date": "2020-09-20",
             "due_date": {
-                "date": "2099-12-31",
+                "date": "2020-09-10",
                 "time": "12:00:00"
             },
             "priority": "HIGH",
             "stage_assignee": {
                 "stage_id": 1,
-                "assignee_id": "assignee_id_1"
+                "assignee_id": "assignee_id_1",
+                "team_id": "team_1"
             },
             "task_gofs": [
                 {

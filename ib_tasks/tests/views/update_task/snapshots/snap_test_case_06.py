@@ -11,6 +11,6 @@ snapshots['TestCase06UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase06UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF',
-    'response': "gof id gof_1 has duplicate field ids ['FIELD_ID-0']"
+    'res_status': 'DUE_TIME_HAS_EXPIRED_FOR_TODAY',
+    'response': 'give due time 11:00:00 has expired for today date'
 }

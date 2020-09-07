@@ -12,6 +12,8 @@ SEARCHABLE_VALUES = [item.value for item in Searchable]
 Permission_Types = [(item.value, item.value) for item in PermissionTypes]
 
 OPERATOR_TYPES = [(item.value, item.value) for item in Operators]
+OPERATORS = [item.value for item in Operators]
+
 
 Field_Types = [(item.value, item.value) for item in FieldTypes]
 
@@ -23,7 +25,6 @@ MULTI_VALUES_INPUT_FIELDS = [
     FieldTypes.MULTI_SELECT_LABELS.value
 ]
 
-GOOGLE_SHEET_NAME = "Vendor Configuration_v1 - Test"
 TASK_TEMPLATE_SUB_SHEET_TITLE = "Task Templates"
 GOF_SUB_SHEET_TITLE = "GOF"
 FIELD_SUB_SHEET_TITLE = "Fields"
@@ -34,6 +35,7 @@ UPLOADERS = [FieldTypes.IMAGE_UPLOADER.value, FieldTypes.FILE_UPLOADER.value]
 
 STAGES_AND_ACTIONS_SUB_SHEET = "Stages and Actions "
 TASK_CREATION_CONFIG_SUB_SHEET = "Task Creation Config"
+PROJECT_FOR_TASK_TEMPLATES_SUB_SHEET = "Project Task Templates"
 STAGE_ID_AND_VALUES_SUB_SHEET = "StageID and Values"
 STATUS_VARIABLES_SUB_SHEET = "Status Variables"
 ROLES_SUB_SHEET = "Roles"
@@ -46,3 +48,13 @@ DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 STAGE_TASK = "STAGE_TASK"
 
 TASK_DISPLAY_ID = "IBWF-{}"
+
+INTEGER_FIELD_TYPES = [
+    FieldTypes.NUMBER.value,
+    FieldTypes.PHONE_NUMBER.value,
+]
+
+NUMERIC_OPERATORS = [
+    Operators.GTE.value, Operators.GT.value,
+    Operators.LTE.value, Operators.LT.value
+]

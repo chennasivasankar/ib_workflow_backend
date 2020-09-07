@@ -2,7 +2,10 @@ from dataclasses import dataclass
 from datetime import time, datetime, timedelta
 from typing import Optional, List
 
-from ib_tasks.adapters.dtos import AssigneeDetailsDTO
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO, \
+    UserIdWIthTeamDetailsDTOs, UserDetailsDTO, UserIdWIthTeamDetailsDTO, \
+    TeamInfoDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageFlowDTO
 
 
 @dataclass
@@ -71,6 +74,7 @@ class UserStagesWithPaginationDTO:
 class StageAssigneeDTO:
     db_stage_id: int
     assignee_id: str
+    team_id: str
 
 
 @dataclass
@@ -86,17 +90,8 @@ class TaskDisplayIdWithStageAssigneesDTO:
 
 
 @dataclass
-class TaskIdWithStageAssigneeDTO:
+class TaskIdWithStageAssigneeDTO(StageAssigneeDTO):
     task_id: int
-    db_stage_id: int
-    assignee_id: str
-
-
-@dataclass
-class StageAssigneeDetailsDTO:
-    task_stage_id: int
-    stage_id: int
-    assignee_details_dto: Optional[AssigneeDetailsDTO]
 
 
 @dataclass
@@ -106,7 +101,13 @@ class StageWithUserDetailsDTO:
     assignee_details_dto: Optional[AssigneeDetailsDTO]
 
 
-@dataclass()
+@dataclass
+class StageWithUserDetailsAndTeamDetailsDTO:
+    stages_with_user_details_dtos: List[StageWithUserDetailsDTO]
+    user_with_team_details_dtos: List[UserIdWIthTeamDetailsDTO]
+
+
+@dataclass
 class StageRolesDTO:
     stage_id: str
     role_ids: List[str]
@@ -148,3 +149,30 @@ class TaskStageCompleteDetailsDTO:
     task_stage_dtos: List[TaskStageHistoryDTO]
     log_duration_dtos: List[LogDurationDTO]
     assignee_details: List[AssigneeDetailsDTO]
+
+
+@dataclass()
+class StageActionLogicDTO:
+    action_id: int
+    stage_id: str
+    action_logic: str
+    action_name: str
+    py_function_import_path: str
+
+
+@dataclass
+class UserDetailsWithTeamDetailsDTO:
+    user_details_dtos: List[UserDetailsDTO]
+    user_id_with_team_details_dtos: List[UserIdWIthTeamDetailsDTOs]
+
+
+@dataclass
+class AssigneeWithTeamDetailsDTO(AssigneeDetailsDTO):
+    team_info_dto: TeamInfoDTO
+
+
+@dataclass()
+class StageAssigneeWithTeamDetailsDTO:
+    task_stage_id: int
+    stage_id: int
+    assignee_details_dto: Optional[AssigneeWithTeamDetailsDTO]

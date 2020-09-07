@@ -26,13 +26,13 @@ class TestGetUserDetailsForGivenRoleIdsBasedOnQuery:
         reset_sequence_role_factory()
 
         import factory
-        from ib_iam.tests.factories.models import RoleFactory, \
+        from ib_iam.tests.factories.models import ProjectRoleFactory, \
             UserRoleFactory, UserDetailsFactory
-        roles = RoleFactory.create_batch(
-            size=2, id=factory.Iterator(role_ids))
+        roles = ProjectRoleFactory.create_batch(
+            size=2, role_id=factory.Iterator(role_ids))
         UserRoleFactory.create_batch(
             size=2, user_id=factory.Iterator(user_ids),
-            role=factory.Iterator(roles))
+            project_role=factory.Iterator(roles))
         UserDetailsFactory.create_batch(
             size=2, user_id=factory.Iterator(user_ids),
             name=factory.Iterator(['iB', 'Hubs']))
@@ -41,6 +41,7 @@ class TestGetUserDetailsForGivenRoleIdsBasedOnQuery:
     def test_get_user_details_for_the_given_role_ids_based_on_query(
             self, user_profile_dtos, set_up, mocker):
         # Arrange
+        project_id = "FA"
         role_ids = [
             "8738f416-b32c-4c95-99ba-48056ec10e30",
             "8738f416-b32c-4c95-99ba-48056ec10e31"]
@@ -60,9 +61,9 @@ class TestGetUserDetailsForGivenRoleIdsBasedOnQuery:
         # Act
         result = service_interface. \
             get_user_details_for_the_given_role_ids_based_on_query(
-                role_ids=role_ids,
-                search_query_with_pagination_dto=
-                search_query_with_pagination_dto)
+            role_ids=role_ids,
+            search_query_with_pagination_dto=search_query_with_pagination_dto,
+            project_id=project_id)
 
         # Assert
         assert result == user_profile_dtos

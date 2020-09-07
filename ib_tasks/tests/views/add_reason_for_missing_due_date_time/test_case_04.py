@@ -1,5 +1,5 @@
 """
-# user is not assigned to task
+# user is not assigned to task TODO: This case is not included in the cases for now
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -18,17 +18,18 @@ class TestCase04AddReasonForMissingDueDateTimeAPITestCase(TestUtils):
         from ib_tasks.tests.factories.models import TaskFactory
         TaskFactory.reset_sequence()
         tasks = TaskFactory.create_batch(size=2)
-        from ib_tasks.tests.factories.models import TaskLogFactory
-        TaskLogFactory.reset_sequence()
-        TaskLogFactory(task=tasks[0], user_id=api_user.user_id)
+        from ib_tasks.tests.factories.models import TaskStageHistoryModelFactory
+        TaskStageHistoryModelFactory.reset_sequence()
+        TaskStageHistoryModelFactory(task=tasks[0], stage_id=1)
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):
         body = {
-            'updated_due_date_time': '2020-08-10T11:30:45.34523',
+            'updated_due_date_time': '2020-08-26T11:30:45.34523',
             'reason_id': 1,
             'reason': 'string',
-            "task_id": "iBWF-1"
+            'stage_id': 1,
+            "task_id": "IBWF-1"
         }
         path_params = {}
         query_params = {}

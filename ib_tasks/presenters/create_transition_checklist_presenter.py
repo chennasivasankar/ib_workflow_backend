@@ -111,7 +111,7 @@ class CreateTransitionChecklistTemplatePresenterImplementation(
         data = {
             "message": "transition checklist created successfully"
         }
-        return self.prepare_200_success_response(response_dict=data)
+        return self.prepare_201_created_response(data)
 
     def raise_invalid_task_id(self, err):
         from ib_tasks.constants.exception_messages import \
@@ -202,7 +202,7 @@ class CreateTransitionChecklistTemplatePresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             USER_NEEDS_GOF_WRITABLE_PERMISSION
         response_message = USER_NEEDS_GOF_WRITABLE_PERMISSION[0].format(
-            err.user_id, err.gof_id, str(err.required_roles))
+            err.gof_id, str(err.required_roles))
         data = {
             "response": response_message,
             "http_status_code": 400,
@@ -216,7 +216,7 @@ class CreateTransitionChecklistTemplatePresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             USER_NEEDS_FILED_WRITABLE_PERMISSION
         response_message = USER_NEEDS_FILED_WRITABLE_PERMISSION[0].format(
-            err.user_id, err.field_id, str(err.required_roles))
+            err.field_id, str(err.required_roles))
         data = {
             "response": response_message,
             "http_status_code": 400,

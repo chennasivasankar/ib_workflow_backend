@@ -6,12 +6,11 @@ from django.db.models import Q
 from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
-from ib_tasks.interactors.stages_dtos import StageActionDTO, StageDTO, \
-    TemplateStageDTO, TaskIdWithStageAssigneeDTO, StageAssigneeDTO
+from ib_tasks.interactors.stages_dtos import StageDTO, \
+    TaskIdWithStageAssigneeDTO, StageAssigneeDTO, StageMinimalDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
     ActionRolesDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldValueDTO, \
     FieldWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GOFMultipleEnableDTO, GoFWritePermissionRolesDTO
@@ -19,7 +18,8 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDisplayValueDTO, StageValueWithTaskIdsDTO, \
     TaskIdWithStageDetailsDTO, \
     TaskStagesDTO, StageValueDTO, TaskTemplateStageDTO, StageRoleDTO, \
-    StageDetailsDTO, TaskStageHavingAssigneeIdDTO, TaskWithDbStageIdDTO
+    StageDetailsDTO, TaskStageHavingAssigneeIdDTO, TaskWithDbStageIdDTO, \
+    StageIdWithValueDTO, StageFlowDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import (
@@ -27,18 +27,21 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
 )
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
-    TaskDueParametersDTO, TaskDelayParametersDTO
+    TaskDelayParametersDTO
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
-    ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
     GlobalConstant, \
-    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskLog, \
-    TaskTemplateStatusVariable
-from ib_tasks.models import \
-    TaskStageHistory
-from ib_tasks.models.task_due_details import UserTaskDelayReason
+    StagePermittedRoles, TaskTemplateInitialStage, Stage, \
+    TaskTemplateStatusVariable, ProjectTaskTemplate, ActionPermittedRoles, \
+    StageAction, CurrentTaskStage, FieldRole, TaskStageHistory, TaskStageRp
+from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
 
 
 class StagesStorageImplementation(StageStorageInterface):
+
+    def get_stage_display_name_for_stage_id(self, stage_id: int) -> str:
+        stage_display_name = Stage.objects.get(id=stage_id).display_name
+        return stage_display_name
+
     def create_stages(self, stage_information: List[StageDTO]):
         list_of_stages = []
         for stage in stage_information:
@@ -89,10 +92,16 @@ class StagesStorageImplementation(StageStorageInterface):
                                         role_id=role))
         return list_of_permitted_roles
 
-    def get_permitted_stage_ids(self, user_role_ids: List[str]) -> List[str]:
+    def get_permitted_stage_ids(
+            self, user_role_ids: List[str], project_id: Optional[str]
+    ) -> List[str]:
 
+        project_template_ids = ProjectTaskTemplate.objects.filter(
+            project_id=project_id, task_template__is_transition_template=False
+        ).values_list('task_template_id', flat=True)
         stage_ids = StagePermittedRoles.objects.filter(
-            (Q(role_id__in=user_role_ids) | Q(role_id=ALL_ROLES_ID))
+            (Q(role_id__in=user_role_ids) | Q(role_id=ALL_ROLES_ID)) &
+            Q(stage__task_template_id__in=project_template_ids)
         ).values_list('stage__stage_id', flat=True)
 
         return list(stage_ids)
@@ -123,13 +132,16 @@ class StagesStorageImplementation(StageStorageInterface):
                 values_list('stage_id', flat=True))
         return stage_ids
 
-    def get_valid_db_stage_ids_excluding_virtual_stages_in_given_db_stage_ids(
-            self, stage_ids: List[int]) -> List[int]:
+    def get_valid_db_stage_ids_with_stage_value(
+            self, stage_ids: List[int]) -> List[StageIdWithValueDTO]:
 
-        stage_ids = list(
-            Stage.objects.filter(id__in=stage_ids).exclude(value=-1).
-                values_list('id', flat=True))
-        return stage_ids
+        stage_objs = list(
+            Stage.objects.filter(id__in=stage_ids).
+                values('id', 'value'))
+        stage_dtos = [StageIdWithValueDTO(db_stage_id=stage_obj['id'],
+                                          stage_value=stage_obj['value']) for
+                      stage_obj in stage_objs]
+        return stage_dtos
 
     def get_stage_details(self, task_dtos: List[GetTaskDetailsDTO]) -> \
             List[TaskTemplateStageDTO]:
@@ -238,51 +250,48 @@ class StagesStorageImplementation(StageStorageInterface):
     def get_task_id_with_stage_details_dtos_based_on_stage_value(
             self, stage_values: List[int],
             task_ids_group_by_stage_value_dtos: List[
-                StageValueWithTaskIdsDTO], user_id: str
+                StageValueWithTaskIdsDTO]
     ) -> List[TaskIdWithStageDetailsDTO]:
-        # ToDo: Need to optimize the storage calls which are in for loop
-        all_task_id_with_stage_details_dtos = []
-        for each_stage_value in stage_values:
-            for each_task_ids_group_by_stage_value_dto in \
-                    task_ids_group_by_stage_value_dtos:
-                if each_task_ids_group_by_stage_value_dto.stage_value \
-                        == each_stage_value:
-                    task_id_with_stage_details = list(
-                        CurrentTaskStage.objects.filter(
-                            stage__value=each_stage_value,
-                            task_id__in=each_task_ids_group_by_stage_value_dto.
-                                task_ids).values("task_id",
-                                                 "task__task_display_id",
-                                                 "stage__stage_id",
-                                                 "stage__display_name",
-                                                 "stage__stage_color",
-                                                 "stage__id"))
 
-                    task_id_with_stage_details_dtos = self. \
-                        _get_task_id_with_stage_details_dtos(
-                        task_id_with_stage_details)
-
-                    all_task_id_with_stage_details_dtos.extend(
-                        task_id_with_stage_details_dtos)
+        query = None
+        for item in task_ids_group_by_stage_value_dtos:
+            current_queue = Q(stage__value=item.stage_value,
+                              task_id__in=item.task_ids)
+            if query is None:
+                query = current_queue
+            else:
+                query = query | current_queue
+        if query is None:
+            return []
+        current_stage_objects = CurrentTaskStage.objects.filter(
+            query
+        ).values(
+            "task_id", "task__task_display_id",
+            "stage__stage_id", "stage__display_name",
+            "stage__stage_color", "stage__id"
+        )
+        all_task_id_with_stage_details_dtos = [
+            self._get_task_id_with_stage_details_dtos(
+                task_id_with_stage_details=current_stage_object
+            )
+            for current_stage_object in current_stage_objects
+        ]
         return all_task_id_with_stage_details_dtos
 
     @staticmethod
     def _get_task_id_with_stage_details_dtos(
-            task_id_with_stage_details: List[dict]
-    ) -> List[TaskIdWithStageDetailsDTO]:
-        task_id_with_stage_details_dtos = [
-            TaskIdWithStageDetailsDTO(
-                task_id=task_id_with_stage_detail["task_id"],
-                task_display_id=task_id_with_stage_detail[
-                    "task__task_display_id"],
-                stage_id=task_id_with_stage_detail["stage__stage_id"],
-                stage_display_name=task_id_with_stage_detail[
-                    "stage__display_name"],
-                stage_color=task_id_with_stage_detail["stage__stage_color"],
-                db_stage_id=task_id_with_stage_detail["stage__id"]
-            )
-            for task_id_with_stage_detail in task_id_with_stage_details
-        ]
+            task_id_with_stage_details: dict
+    ) -> TaskIdWithStageDetailsDTO:
+        task_id_with_stage_details_dtos = TaskIdWithStageDetailsDTO(
+            task_id=task_id_with_stage_details["task_id"],
+            task_display_id=task_id_with_stage_details[
+                "task__task_display_id"],
+            stage_id=task_id_with_stage_details["stage__stage_id"],
+            stage_display_name=task_id_with_stage_details[
+                "stage__display_name"],
+            stage_color=task_id_with_stage_details["stage__stage_color"],
+            db_stage_id=task_id_with_stage_details["stage__id"]
+        )
         return task_id_with_stage_details_dtos
 
     def create_task_stage_assignees(
@@ -292,7 +301,8 @@ class StagesStorageImplementation(StageStorageInterface):
             TaskStageHistory(
                 task_id=each_task_id_with_stage_assignee_dto.task_id,
                 stage_id=each_task_id_with_stage_assignee_dto.db_stage_id,
-                assignee_id=each_task_id_with_stage_assignee_dto.assignee_id)
+                assignee_id=each_task_id_with_stage_assignee_dto.assignee_id,
+                team_id=each_task_id_with_stage_assignee_dto.team_id)
             for each_task_id_with_stage_assignee_dto in
             task_id_with_stage_assignee_dtos
         ]
@@ -304,7 +314,8 @@ class StagesStorageImplementation(StageStorageInterface):
             stage_id: int, task_id_with_stage_assignee_dtos_for_updation):
         for each_task_id_with_stage_assignee_dto in \
                 task_id_with_stage_assignee_dtos_for_updation:
-            stage_id_matched = stage_id == each_task_id_with_stage_assignee_dto.db_stage_id
+            stage_id_matched = stage_id == \
+                               each_task_id_with_stage_assignee_dto.db_stage_id
             if stage_id_matched:
                 return each_task_id_with_stage_assignee_dto
         return
@@ -333,7 +344,7 @@ class StagesStorageImplementation(StageStorageInterface):
             task_stage_obj in task_stage_objs]
         return stages_having_assignee_dtos
 
-    def update_task_stages_with_left_at_status(
+    def update_task_stages_other_than_matched_stages_with_left_at_status(
             self, task_id: int, db_stage_ids: List[int]):
         task_stage_objs = TaskStageHistory.objects \
             .filter(task_id=task_id, left_at__isnull=True) \
@@ -344,16 +355,17 @@ class StagesStorageImplementation(StageStorageInterface):
             task_stage_objs, ['left_at']
         )
 
-    def get_task_stages_having_assignees_without_having_left_at_status(
+    def get_task_stages_assignees_without_having_left_at_status(
             self, task_id: int, db_stage_ids: List[int]) -> List[
         StageAssigneeDTO]:
         task_stage_objs = list(TaskStageHistory.objects.filter(
             task_id=task_id,
-            stage_id__in=db_stage_ids, left_at__isnull=True).exclude(
-            assignee_id__isnull=True).values('stage_id', 'assignee_id'))
+            stage_id__in=db_stage_ids, left_at__isnull=True)
+                               .values('stage_id', 'assignee_id', 'team_id'))
         stages_having_assignee_dtos = [StageAssigneeDTO(
             assignee_id=task_stage_obj['assignee_id'],
-            db_stage_id=task_stage_obj['stage_id']) for
+            db_stage_id=task_stage_obj['stage_id'],
+            team_id=task_stage_obj['team_id']) for
             task_stage_obj in task_stage_objs]
         return stages_having_assignee_dtos
 
@@ -372,8 +384,9 @@ class StagesStorageImplementation(StageStorageInterface):
         return db_stage_ids
 
     def get_virtual_stages_already_having_in_task(
-            self, task_id: int, stage_ids_having_virtual_stages: List[str]) -> \
-            List[str]:
+            self, task_id: int, stage_ids_having_virtual_stages: List[str]) \
+            -> \
+                    List[str]:
         virtual_stages_already_having_task = list(
             TaskStageHistory.objects.filter(task_id=task_id,
                                             stage__stage_id__in=stage_ids_having_virtual_stages,
@@ -401,66 +414,171 @@ class StagesStorageImplementation(StageStorageInterface):
         permitted_user_role_ids_list = list(permitted_user_role_ids_queryset)
         return permitted_user_role_ids_list
 
+    def get_stage_ids_having_actions(self, user_roles: List[str]) -> List[str]:
+        stage_ids = ActionPermittedRoles.objects \
+            .filter(
+            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+        ) \
+            .values_list('action__stage_id', flat=True)
+        stage_ids = StagePermittedRoles.objects.filter(
+            stage_id__in=stage_ids) \
+            .filter(
+            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+        ).values_list('stage__stage_id', flat=True)
+        return sorted(list(set(stage_ids)))
+
+    def get_task_current_stages(self, task_id: int) -> List[str]:
+        return list(CurrentTaskStage.objects.filter(
+            task_id=task_id
+        ).values_list('stage__stage_id', flat=True))
+
+    def get_current_stage_db_ids_of_task(self, task_id: int) -> List[int]:
+        return list(CurrentTaskStage.objects.filter(
+            task_id=task_id
+        ).values_list('stage__id', flat=True))
+
+    def get_current_stages_of_task_in_given_stages(
+            self, task_id: int, stage_ids: List[str]) -> List[str]:
+        return list(CurrentTaskStage.objects.filter(
+            task_id=task_id, stage__stage_id__in=stage_ids
+        ).values_list('stage__stage_id', flat=True))
+
+    def get_user_permitted_stages_in_template(
+            self, template_id: str, user_roles: List[str]
+    ) -> List[StageMinimalDTO]:
+
+        stage_ids = StagePermittedRoles.objects.filter(
+            stage_id__in=Stage.objects.filter(task_template_id=template_id)
+        ).filter(
+            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+        ).values_list('stage_id', flat=True)
+        stage_objs = Stage.objects.filter(id__in=stage_ids)
+        return [
+            StageMinimalDTO(
+                stage_id=stage_obj.id,
+                name=stage_obj.display_name,
+                color=stage_obj.stage_color
+            )
+            for stage_obj in stage_objs
+        ]
+
+    def get_stages_in_template(
+            self, template_id: str) -> List[StageMinimalDTO]:
+        stage_objs = Stage.objects.filter(task_template_id=template_id)
+        return [
+            StageMinimalDTO(
+                stage_id=stage_obj.id,
+                name=stage_obj.display_name,
+                color=stage_obj.stage_color
+            )
+            for stage_obj in stage_objs
+        ]
+
+    def get_stage_flows_to_user(
+        self, stage_ids: List[int], action_ids: List[int]
+    ) -> List[StageFlowDTO]:
+        from ib_tasks.models import StageFlow
+        from django.db.models import F
+        stage_flow_objs = StageFlow.objects.filter(
+            previous_stage_id__in=stage_ids,
+            action_id__in=action_ids,
+            next_stage_id__in=stage_ids
+        ).annotate(action_name=F('action__name'))
+        return [
+            StageFlowDTO(
+                previous_stage_id=stage_flow.previous_stage_id,
+                action_name=stage_flow.action_name,
+                next_stage_id=stage_flow.next_stage_id
+            ) for stage_flow in stage_flow_objs
+        ]
 
 class StorageImplementation(StorageInterface):
 
-    def get_write_permission_roles_for_given_gof_ids(self,
-                                                     gof_ids: List[str]) -> \
-            List[GoFWritePermissionRolesDTO]:
+    def get_write_permission_roles_for_given_gof_ids(
+            self, gof_ids: List[str]
+    ) -> List[GoFWritePermissionRolesDTO]:
         gof_role_objects = GoFRole.objects.filter(
             gof_id__in=gof_ids, permission_type=PermissionTypes.WRITE.value)
         gof_write_permission_roles_dtos = \
-            self._prepare_gof_write_permission_roles_dtos(gof_role_objects)
+            self._prepare_gof_write_permission_roles_dtos(
+                gof_role_objects, gof_ids)
+        return gof_write_permission_roles_dtos
+
+    def _prepare_gof_write_permission_roles_dtos(
+            self, gof_role_objects: List[GoFRole], gof_ids: List[str]
+    ) -> List[GoFWritePermissionRolesDTO]:
+        gof_write_permission_roles_dtos = []
+        for gof_id in gof_ids:
+            gof_roles = self._get_matching_gof_role_object(
+                gof_id, gof_role_objects)
+            gof_roles_are_empty = not gof_roles
+            if gof_roles_are_empty:
+                gof_write_permission_roles_dtos.append(
+                    GoFWritePermissionRolesDTO(gof_id=gof_id,
+                                               write_permission_roles=[]))
+            else:
+                gof_write_permission_roles_dtos.append(
+                    GoFWritePermissionRolesDTO(
+                        gof_id=gof_id, write_permission_roles=gof_roles)
+                )
         return gof_write_permission_roles_dtos
 
     @staticmethod
-    def _prepare_gof_write_permission_roles_dtos(
-            gof_role_objects: List[GoFRole]) -> List[
-        GoFWritePermissionRolesDTO]:
-        from collections import defaultdict
-        gof_roles_dict = defaultdict(list)
+    def _get_matching_gof_role_object(
+            gof_id, gof_role_objects) -> List[str]:
+        gof_roles = []
         for gof_role_obj in gof_role_objects:
-            gof_roles_dict[gof_role_obj.gof_id].append(gof_role_obj.role)
-        gof_write_permission_roles_dtos = [
-            GoFWritePermissionRolesDTO(
-                gof_id=gof_id, write_permission_roles=write_permission_roles
-            )
-            for gof_id, write_permission_roles in gof_roles_dict.items()
-        ]
-        return gof_write_permission_roles_dtos
+            gof_id_matched = gof_id == gof_role_obj.gof_id
+            if gof_id_matched:
+                gof_roles.append(gof_role_obj.role)
+        return gof_roles
 
-    def get_write_permission_roles_for_given_field_ids(self,
-                                                       field_ids: List[str]) \
-            -> \
-                    List[FieldWritePermissionRolesDTO]:
+    def get_write_permission_roles_for_given_field_ids(
+            self, field_ids: List[str]) -> List[FieldWritePermissionRolesDTO]:
         field_role_objects = FieldRole.objects.filter(
             field_id__in=field_ids, permission_type=PermissionTypes.WRITE.value
         )
         field_write_permission_roles_dtos = \
-            self._prepare_field_write_permission_roles_dtos(field_role_objects)
+            self._prepare_field_write_permission_roles_dtos(
+                field_role_objects, field_ids)
+        return field_write_permission_roles_dtos
+
+    def _prepare_field_write_permission_roles_dtos(
+            self, field_role_objects: List[FieldRole], field_ids: List[str]
+    ) -> List[FieldWritePermissionRolesDTO]:
+        field_write_permission_roles_dtos = []
+        for field_id in field_ids:
+            field_roles = self._get_matching_field_role_object(
+                field_id, field_role_objects)
+            field_roles_are_empty = not field_roles
+            if field_roles_are_empty:
+                field_write_permission_roles_dtos.append(
+                    FieldWritePermissionRolesDTO(field_id=field_id,
+                                                 write_permission_roles=[]))
+            else:
+                field_write_permission_roles_dtos.append(
+                    FieldWritePermissionRolesDTO(
+                        field_id=field_id, write_permission_roles=field_roles)
+                )
         return field_write_permission_roles_dtos
 
     @staticmethod
-    def _prepare_field_write_permission_roles_dtos(
-            field_role_objects: List[FieldRole]) -> List[
-        FieldWritePermissionRolesDTO]:
-        from collections import defaultdict
-        field_roles_dict = defaultdict(list)
+    def _get_matching_field_role_object(
+            field_id, field_role_objects) -> List[str]:
+        field_roles = []
         for field_role_obj in field_role_objects:
-            field_roles_dict[field_role_obj.field_id].append(
-                field_role_obj.role)
-        field_write_permission_roles_dtos = [
-            FieldWritePermissionRolesDTO(
-                field_id=field_id,
-                write_permission_roles=write_permission_roles
-            )
-            for field_id, write_permission_roles in field_roles_dict.items()
-        ]
-        return field_write_permission_roles_dtos
+            field_id_matched = field_id == field_role_obj.field_id
+            if field_id_matched:
+                field_roles.append(field_role_obj.role)
+        return field_roles
 
     def validate_task_id(self, task_id: int) -> bool:
 
         return Task.objects.filter(id=task_id).exists()
+
+    def get_task_project_id(self, task_id: int) -> str:
+        task = Task.objects.get(id=task_id)
+        return task.project_id
 
     def get_status_variables_to_task(
             self, task_id: int) -> List[StatusVariableDTO]:
@@ -539,7 +657,9 @@ class StorageImplementation(StorageInterface):
                 name=action_obj.name,
                 stage_id=action_obj.stage.stage_id,
                 button_text=action_obj.button_text,
-                button_color=action_obj.button_color
+                button_color=action_obj.button_color,
+                action_type=action_obj.action_type,
+                transition_template_id=action_obj.transition_template_id
             )
             for action_obj in action_objs
         ]
@@ -638,21 +758,26 @@ class StorageImplementation(StorageInterface):
             .values_list('id', flat=True)
         return action_ids
 
-    def validate_if_task_is_assigned_to_user(self,
-                                             task_id: int,
-                                             user_id: str) -> bool:
-        is_assigned = TaskLog.objects.filter(
-            task_id=task_id, user_id=user_id).exists()
+    def validate_if_task_is_assigned_to_user_in_given_stage(self,
+                                                            task_id: int,
+                                                            user_id: str,
+                                                            stage_id: int) \
+            -> bool:
+        is_assigned = TaskStageHistory.objects.filter(
+            task_id=task_id, assignee_id=user_id, stage_id=stage_id
+        ).exists()
         return is_assigned
 
-    def get_task_due_details(self, task_id: int) -> \
+    def get_task_due_details(self, task_id: int, stage_id: int) -> \
             List[TaskDueMissingDTO]:
-        task_due_objs = (UserTaskDelayReason.objects.filter(task_id=task_id)
-                         .values('due_datetime', 'count', 'reason', 'user_id',
-                                 'task__task_display_id'))
+        task_due_objects = (
+            UserTaskDelayReason.objects.filter(
+                task_id=task_id, stage_id=stage_id
+            ).values('due_datetime', 'count', 'reason', 'user_id',
+                     'task__task_display_id'))
 
         task_due_details_dtos = self._convert_task_due_details_objs_to_dtos(
-            task_due_objs)
+            task_due_objects)
         return task_due_details_dtos
 
     @staticmethod
@@ -674,6 +799,7 @@ class StorageImplementation(StorageInterface):
         user_id = due_details.user_id
         task_id = due_details.task_id
         reason_id = due_details.reason_id
+        stage_id = due_details.stage_id
         updated_due_datetime = due_details.due_date_time
         count = UserTaskDelayReason.objects.filter(
             task_id=task_id, user_id=user_id).count()
@@ -682,6 +808,53 @@ class StorageImplementation(StorageInterface):
                                            due_datetime=updated_due_datetime,
                                            count=count + 1,
                                            reason_id=reason_id,
+                                           stage_id=stage_id,
                                            reason=due_details.reason)
-        Task.objects.filter(pk=task_id, tasklog__user_id=user_id
-                            ).update(due_date=updated_due_datetime)
+
+    def validate_stage_id(self, stage_id: int) -> bool:
+        does_exists = Stage.objects.filter(id=stage_id).exists()
+        return does_exists
+
+    def get_due_missed_count(self, task_id: int, user_id: str,
+                             stage_id: str) -> int:
+        count = UserTaskDelayReason.objects.filter(
+            task_id=task_id, stage__stage_id=stage_id, user_id=user_id
+        ).count()
+        return count
+
+    def get_latest_rp_id_if_exists(self, task_id: int,
+                                   stage_id: int) -> Optional[str]:
+        rp_ids = TaskStageRp.objects.filter(
+            task_id=task_id, stage_id=stage_id
+        ).values_list('rp_id', flat=True).order_by('-id')
+        if not rp_ids:
+            return None
+        return rp_ids[0]
+
+    def get_rp_ids(self, task_id: int, stage_id: int) -> \
+            List[str]:
+        rp_ids = list(TaskStageRp.objects.filter(
+            task_id=task_id, stage_id=stage_id
+        ).values_list('rp_id', flat=True).order_by('id'))
+        return rp_ids
+
+    def add_superior_to_db(
+            self, task_id: int, stage_id: int, superior_id: str):
+        TaskStageRp.objects.get_or_create(
+            task_id=task_id, stage_id=stage_id, rp_id=superior_id)
+
+    def get_latest_rp_added_datetime(self,
+                                     task_id: int, stage_id: int) -> Optional[
+        str]:
+        objs = TaskStageRp.objects.filter(
+            task_id=task_id, stage_id=stage_id
+        ).values_list('added_at', flat=True).order_by('-added_at')
+        if objs:
+            return objs[0]
+        return None
+
+    def update_task_due_datetime(self, due_details: TaskDelayParametersDTO):
+        task_id = due_details.task_id
+        updated_due_datetime = due_details.due_date_time
+
+        Task.objects.filter(pk=task_id).update(due_date=updated_due_datetime)

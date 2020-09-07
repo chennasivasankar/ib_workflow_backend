@@ -4,9 +4,9 @@ Author: Pavankumar Pamuru
 
 """
 import abc
-from abc import ABC
 from typing import List, Optional
 
+from ib_tasks.adapters.dtos import ProjectRolesDTO
 from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId, \
@@ -16,9 +16,10 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectRolesDTO
 
 
-class ActionStorageInterface(ABC):
+class ActionStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_stage_action_names(
@@ -87,4 +88,27 @@ class ActionStorageInterface(ABC):
     @abc.abstractmethod
     def get_stage_ids_having_actions(self, db_stage_ids: List[int]) \
             -> List[int]:
+        pass
+
+    @abc.abstractmethod
+    def get_permitted_action_ids_for_given_task_stages(
+            self,
+            user_project_roles: List[TaskProjectRolesDTO],
+            stage_ids):
+        pass
+
+    @abc.abstractmethod
+    def get_stage_id_for_given_action_id(self, action_id: int) -> int:
+        pass
+
+    @abc.abstractmethod
+    def get_user_permitted_action_ids_given_stage_ids(
+            self, user_roles: List[str],
+            stage_ids: List[int]
+    ) -> List[int]:
+        pass
+
+    @abc.abstractmethod
+    def get_action_ids_given_stage_ids(
+            self, stage_ids: List[int]) -> List[int]:
         pass

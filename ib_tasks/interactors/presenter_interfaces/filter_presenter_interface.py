@@ -3,19 +3,27 @@ from dataclasses import dataclass
 from typing import List
 
 from ib_tasks.constants.enum import Status
+from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException
 from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO, \
     FilterCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
-    GoFToTaskTemplateDTO
+    GoFToTaskTemplateDTO, TaskTemplateGofsDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TemplateDTO
+    TemplateDTO, ProjectTemplateDTO
 
 
 @dataclass()
 class TaskTemplateFieldsDto:
     task_template_dtos: List[TemplateDTO]
     gofs_of_task_templates_dtos: List[GoFToTaskTemplateDTO]
+    fields_dto: List[FieldNameDTO]
+
+
+@dataclass()
+class ProjectTemplateFieldsDTO:
+    task_template_dtos: List[ProjectTemplateDTO]
+    task_template_gofs_dtos: List[TaskTemplateGofsDTO]
     fields_dto: List[FieldNameDTO]
 
 
@@ -65,10 +73,23 @@ class FilterPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_update_filter_status(
-            self, filter_id: int, is_selected: Status):
+            self, filter_id: int, filter_status: Status):
         pass
 
     @abc.abstractmethod
     def get_response_for_get_task_templates_fields(
-            self, task_template_fields: TaskTemplateFieldsDto):
+            self, task_template_fields: ProjectTemplateFieldsDTO):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_project_id(
+            self, err: InvalidProjectIdsException):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_user_not_in_project(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_filter_condition(self, error):
         pass

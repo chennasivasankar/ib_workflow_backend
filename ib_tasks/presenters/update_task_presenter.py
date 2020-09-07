@@ -1,8 +1,11 @@
+from typing import List, Optional, Dict
+
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.exceptions.datetime_custom_exceptions import \
-    InvalidDueTimeFormat, StartDateIsAheadOfDueDate, DueDateIsBehindStartDate, \
-    DueTimeHasExpiredForToday, DueDateHasExpired
+    StartDateIsAheadOfDueDate, \
+    DueDateTimeHasExpired, DueDateTimeIsRequired, \
+    StartDateTimeIsRequired, DueDateTimeWithoutStartDateTimeIsNotValid
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidFileFormat, InvalidUrlForFile, InvalidImageFormat, \
     InvalidUrlForImage, InvalidTimeFormat, InvalidDateFormat, \
@@ -13,22 +16,171 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidURLValue, \
     InvalidEmailFieldValue, InvalidPhoneNumberValue, EmptyValueForRequiredField
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
-    DuplicateFieldIdsToGoF
-from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
+    DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
+from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
+    UserDidNotFillRequiredGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.stage_custom_exceptions import \
-    StageIdsWithInvalidPermissionForAssignee
+    StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
+    InvalidStageIdsListException, StageIdsListEmptyException
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId, \
+    TaskDelayReasonIsNotUpdated, PriorityIsRequired
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
     UpdateTaskPresenterInterface
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    GetTaskStageCompleteDetailsDTO
 
 
 class UpdateTaskPresenterImplementation(
     UpdateTaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_user_did_not_fill_required_fields(
+            self, err: UserDidNotFillRequiredFields):
+        from ib_tasks.constants.exception_messages import \
+            USER_DID_NOT_FILL_REQUIRED_FIELDS
+        field_display_names = [
+            dto.field_display_name for dto in err.unfilled_field_dtos]
+        message = USER_DID_NOT_FILL_REQUIRED_FIELDS[0].format(
+            field_display_names)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": USER_DID_NOT_FILL_REQUIRED_FIELDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_user_did_not_fill_required_gofs(
+            self, err: UserDidNotFillRequiredGoFs):
+        from ib_tasks.constants.exception_messages import \
+            USER_DID_NOT_FILL_REQUIRED_GOFS
+        message = USER_DID_NOT_FILL_REQUIRED_GOFS[0].format(
+            err.gof_display_names)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": USER_DID_NOT_FILL_REQUIRED_GOFS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_priority_is_required(self, err: PriorityIsRequired):
+        from ib_tasks.constants.exception_messages import \
+            PRIORITY_IS_REQUIRED
+        data = {
+            "response": PRIORITY_IS_REQUIRED[0],
+            "http_status_code": 400,
+            "res_status": PRIORITY_IS_REQUIRED[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_due_date_time_without_start_datetime(
+            self, err: DueDateTimeWithoutStartDateTimeIsNotValid):
+        from ib_tasks.constants.exception_messages import \
+            DUE_DATE_TIME_WITHOUT_START_DATE_TIME
+        message = DUE_DATE_TIME_WITHOUT_START_DATE_TIME[0].format(
+            err.due_datetime)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": DUE_DATE_TIME_WITHOUT_START_DATE_TIME[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_start_date_time_is_required(self, err: StartDateTimeIsRequired):
+        from ib_tasks.constants.exception_messages import \
+            START_DATE_TIME_IS_REQUIRED
+        data = {
+            "response": START_DATE_TIME_IS_REQUIRED[0],
+            "http_status_code": 400,
+            "res_status": START_DATE_TIME_IS_REQUIRED[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_due_date_time_is_required(self, err: DueDateTimeIsRequired):
+        from ib_tasks.constants.exception_messages import \
+            DUE_DATE_TIME_IS_REQUIRED
+        data = {
+            "response": DUE_DATE_TIME_IS_REQUIRED[0],
+            "http_status_code": 400,
+            "res_status": DUE_DATE_TIME_IS_REQUIRED[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_due_date_time_has_expired(self, err: DueDateTimeHasExpired):
+        from ib_tasks.constants.exception_messages import \
+            DUE_DATE_TIME_HAS_EXPIRED
+        message = DUE_DATE_TIME_HAS_EXPIRED[0].format(err.due_datetime)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": DUE_DATE_TIME_HAS_EXPIRED[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_task_delay_reason_not_updated(self,
+                                            err: TaskDelayReasonIsNotUpdated):
+        from ib_tasks.constants.exception_messages import \
+            TASK_DELAY_REASON_NOT_UPDATED
+        message = TASK_DELAY_REASON_NOT_UPDATED[0].format(
+            err.task_display_id, err.stage_display_name, err.due_date)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": TASK_DELAY_REASON_NOT_UPDATED[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_stage_ids_list_empty_exception(self,
+                                             err: StageIdsListEmptyException):
+        from ib_tasks.constants.exception_messages import \
+            EMPTY_STAGE_IDS_ARE_INVALID
+        data = {
+            "response": EMPTY_STAGE_IDS_ARE_INVALID[0],
+            "http_status_code": 400,
+            "res_status": EMPTY_STAGE_IDS_ARE_INVALID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_stage_ids_list_exception(self,
+                                               err:
+                                               InvalidStageIdsListException):
+        from ib_tasks.constants.exception_messages import INVALID_STAGE_IDS
+        message = INVALID_STAGE_IDS[0].format(err.invalid_stage_ids)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_STAGE_IDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_duplicate_same_gof_orders_for_a_gof(self, err):
+        from ib_tasks.constants.exception_messages import \
+            DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF
+        response_message = DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF[0].format(
+            err.gof_id, err.same_gof_orders
+        )
+        data = {
+            "response": response_message,
+            "http_status_code": 400,
+            "res_status": DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_stage_id(self, err: InvalidStageId):
+        from ib_tasks.constants.exception_messages import INVALID_STAGE_ID
+        message = INVALID_STAGE_ID[0].format(err.stage_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_STAGE_ID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_invalid_task_display_id(self, err: InvalidTaskDisplayId):
         from ib_tasks.constants.exception_messages import \
@@ -38,28 +190,6 @@ class UpdateTaskPresenterImplementation(
             "response": message,
             "http_status_code": 400,
             "res_status": INVALID_TASK_DISPLAY_ID[1]
-        }
-        return self.prepare_400_bad_request_response(data)
-
-    def raise_due_date_has_expired(self, err: DueDateHasExpired):
-        from ib_tasks.constants.exception_messages import \
-            DUE_DATE_HAS_EXPIRED
-        message = DUE_DATE_HAS_EXPIRED[0].format(err.due_date)
-        data = {
-            "response": message,
-            "http_status_code": 400,
-            "res_status": DUE_DATE_HAS_EXPIRED[1]
-        }
-        return self.prepare_400_bad_request_response(data)
-
-    def raise_invalid_due_time_format(self, err: InvalidDueTimeFormat):
-        from ib_tasks.constants.exception_messages import \
-            INVALID_DUE_TIME_FORMAT
-        message = INVALID_DUE_TIME_FORMAT[0].format(err.due_time)
-        data = {
-            "response": message,
-            "http_status_code": 400,
-            "res_status": INVALID_DUE_TIME_FORMAT[1]
         }
         return self.prepare_400_bad_request_response(data)
 
@@ -77,32 +207,6 @@ class UpdateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_due_date_is_behind_start_date(self,
-                                            err: DueDateIsBehindStartDate):
-        from ib_tasks.constants.exception_messages import \
-            DUE_DATE_IS_BEHIND_START_DATE
-        message = DUE_DATE_IS_BEHIND_START_DATE[0].format(
-            str(err.given_due_date), str(err.given_start_date)
-        )
-        data = {
-            "response": message,
-            "http_status_code": 400,
-            "res_status": DUE_DATE_IS_BEHIND_START_DATE[1]
-        }
-        return self.prepare_400_bad_request_response(data)
-
-    def raise_due_time_has_expired_for_today(self,
-                                             err: DueTimeHasExpiredForToday):
-        from ib_tasks.constants.exception_messages import \
-            DUE_TIME_HAS_EXPIRED_FOR_TODAY
-        message = DUE_TIME_HAS_EXPIRED_FOR_TODAY[0].format(err.due_time)
-        data = {
-            "response": message,
-            "http_status_code": 400,
-            "res_status": DUE_TIME_HAS_EXPIRED_FOR_TODAY[1]
-        }
-        return self.prepare_400_bad_request_response(data)
-
     def raise_stage_ids_with_invalid_permission_for_assignee_exception(
             self, err: StageIdsWithInvalidPermissionForAssignee):
         from ib_tasks.constants.exception_messages import \
@@ -116,11 +220,108 @@ class UpdateTaskPresenterImplementation(
         response_object = self.prepare_400_bad_request_response(response_dict)
         return response_object
 
-    def get_update_task_response(self):
+    def get_update_task_response(
+            self, all_tasks_overview_details_dto: AllTasksOverviewDetailsDTO):
+        task_overview_details_dict = \
+            self._prepare_task_overview_details_dict(
+                all_tasks_overview_details_dto)
         data = {
-            "message": "task updated successfully"
+            "task_details": task_overview_details_dict
         }
         return self.prepare_200_success_response(response_dict=data)
+
+    def _prepare_task_overview_details_dict(
+            self, all_tasks_overview_dto: AllTasksOverviewDetailsDTO
+    ):
+        task_stages_has_no_actions = \
+            not all_tasks_overview_dto.task_with_complete_stage_details_dtos
+        if task_stages_has_no_actions:
+            return None
+        complete_task_stage_details_dto = \
+            all_tasks_overview_dto.task_with_complete_stage_details_dtos[0]
+        task_fields_action_details_dtos = \
+            all_tasks_overview_dto.task_fields_and_action_details_dtos
+        task_stage_details_dto = \
+            complete_task_stage_details_dto.task_with_stage_details_dto
+        task_overview_fields_details, actions_details = \
+            self.task_fields_and_actions_details(
+                task_stage_details_dto.task_id, task_fields_action_details_dtos
+            )
+        assignee = self._get_assignee_details(
+            complete_task_stage_details_dto.stage_assignee_dto)
+        task_overview_details_dict = {
+            "task_id": task_stage_details_dto.task_display_id,
+            "task_overview_fields": task_overview_fields_details,
+            "stage_with_actions": {
+                "stage_id":
+                    task_stage_details_dto.db_stage_id,
+                "stage_display_name":
+                    task_stage_details_dto.stage_display_name,
+                "stage_color":
+                    task_stage_details_dto.stage_color,
+                "assignee": assignee,
+                "actions": actions_details
+            }
+        }
+        return task_overview_details_dict
+
+    @staticmethod
+    def _get_assignee_details(
+            stage_assignee_dto: List[TaskStageAssigneeDetailsDTO]
+    ) -> Optional[Dict]:
+        if stage_assignee_dto:
+            assignee_details_dto = stage_assignee_dto[0].assignee_details
+        else:
+            return None
+        if assignee_details_dto:
+            assignee_details = {
+                "assignee_id": assignee_details_dto.assignee_id,
+                "name": assignee_details_dto.name,
+                "profile_pic_url": assignee_details_dto.profile_pic_url
+            }
+            return assignee_details
+
+    def task_fields_and_actions_details(
+            self, given_task_id: int,
+            task_fields_and_action_details_dtos: List[
+                GetTaskStageCompleteDetailsDTO]):
+        for each_task_fields_and_action_details_dto in \
+                task_fields_and_action_details_dtos:
+            if given_task_id == \
+                    each_task_fields_and_action_details_dto.task_id:
+                task_overview_fields_details = self. \
+                    _get_task_overview_fields_details(
+                    each_task_fields_and_action_details_dto)
+                action_details = self._get_actions_details_of_task_stage(
+                    each_task_fields_and_action_details_dto)
+                return task_overview_fields_details, action_details
+        return [], []
+
+    @staticmethod
+    def _get_task_overview_fields_details(
+            each_task_fields_and_action_details_dto):
+        task_overview_fields_details = [
+            {
+                "field_type": each_field_dto.field_type,
+                "field_display_name": each_field_dto.key,
+                "field_response": each_field_dto.value
+            } for each_field_dto in
+            each_task_fields_and_action_details_dto.field_dtos
+        ]
+        return task_overview_fields_details
+
+    @staticmethod
+    def _get_actions_details_of_task_stage(
+            each_task_fields_and_action_details_dto):
+        action_details = [{
+            "action_id": each_action_dto.action_id,
+            "button_text": each_action_dto.button_text,
+            "button_color": each_action_dto.button_color,
+            "action_type": each_action_dto.action_type,
+            "transition_template_id": each_action_dto.transition_template_id
+        } for each_action_dto in
+            each_task_fields_and_action_details_dto.action_dtos]
+        return action_details
 
     def raise_invalid_task_id(self, err):
         from ib_tasks.constants.exception_messages import \
@@ -213,7 +414,7 @@ class UpdateTaskPresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             USER_NEEDS_GOF_WRITABLE_PERMISSION
         response_message = USER_NEEDS_GOF_WRITABLE_PERMISSION[0].format(
-            err.user_id, err.gof_id, str(err.required_roles))
+            err.gof_id, str(err.required_roles))
         data = {
             "response": response_message,
             "http_status_code": 400,
@@ -227,7 +428,7 @@ class UpdateTaskPresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             USER_NEEDS_FILED_WRITABLE_PERMISSION
         response_message = USER_NEEDS_FILED_WRITABLE_PERMISSION[0].format(
-            err.user_id, err.field_id, str(err.required_roles))
+            err.field_id, str(err.required_roles))
         data = {
             "response": response_message,
             "http_status_code": 400,

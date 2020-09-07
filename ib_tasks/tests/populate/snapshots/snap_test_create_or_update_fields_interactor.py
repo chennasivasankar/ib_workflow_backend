@@ -62,11 +62,35 @@ snapshots['TestCreateOrUpdateFields.test_given_invalid_roles_for_write_permissio
     }
 ]
 
-snapshots['TestCreateOrUpdateFields.test_given_empty_values_in_field_values_raise_exceptions exception_message = '] = "Field values shouldn't be empty for this field id field1"
+snapshots['TestCreateOrUpdateFields.test_given_empty_values_in_field_values_raise_exceptions[DROPDOWN] exception_message = '] = "Field values shouldn't be empty for this field id field1"
 
-snapshots['TestCreateOrUpdateFields.test_given_field_values_is_empty_raise_exceptions exception_message = '] = "Field values shouldn't be empty for this field id field1"
+snapshots['TestCreateOrUpdateFields.test_given_empty_values_in_field_values_raise_exceptions[RADIO_GROUP] exception_message = '] = "Field values shouldn't be empty for this field id field1"
 
-snapshots['TestCreateOrUpdateFields.test_given_duplication_of_field_values_raise_exception exception_message = '] = "Duplication of Field values for this field {'field_id': 'field1', 'field_type': 'DROPDOWN', 'duplication_of_values': ['Mrs']}"
+snapshots['TestCreateOrUpdateFields.test_given_empty_values_in_field_values_raise_exceptions[CHECKBOX_GROUP] exception_message = '] = "Field values shouldn't be empty for this field id field1"
+
+snapshots['TestCreateOrUpdateFields.test_given_empty_values_in_field_values_raise_exceptions[MULTI_SELECT_LABELS] exception_message = '] = "Field values shouldn't be empty for this field id field1"
+
+snapshots['TestCreateOrUpdateFields.test_given_empty_values_in_field_values_raise_exceptions[MULTI_SELECT_FIELD] exception_message = '] = "Field values shouldn't be empty for this field id field1"
+
+snapshots['TestCreateOrUpdateFields.test_given_field_values_is_empty_raise_exceptions[DROPDOWN] exception_message = '] = "Field values shouldn't be empty for this field id field1"
+
+snapshots['TestCreateOrUpdateFields.test_given_field_values_is_empty_raise_exceptions[RADIO_GROUP] exception_message = '] = "Field values shouldn't be empty for this field id field1"
+
+snapshots['TestCreateOrUpdateFields.test_given_field_values_is_empty_raise_exceptions[CHECKBOX_GROUP] exception_message = '] = "Field values shouldn't be empty for this field id field1"
+
+snapshots['TestCreateOrUpdateFields.test_given_field_values_is_empty_raise_exceptions[MULTI_SELECT_LABELS] exception_message = '] = "Field values shouldn't be empty for this field id field1"
+
+snapshots['TestCreateOrUpdateFields.test_given_field_values_is_empty_raise_exceptions[MULTI_SELECT_FIELD] exception_message = '] = "Field values shouldn't be empty for this field id field1"
+
+snapshots['TestCreateOrUpdateFields.test_given_duplication_of_field_values_raise_exception[DROPDOWN] exception_message = '] = "Duplication of Field values for this field {'field_id': 'field1', 'field_type': 'DROPDOWN', 'duplication_of_values': ['Mrs']}"
+
+snapshots['TestCreateOrUpdateFields.test_given_duplication_of_field_values_raise_exception[RADIO_GROUP] exception_message = '] = "Duplication of Field values for this field {'field_id': 'field1', 'field_type': 'RADIO_GROUP', 'duplication_of_values': ['Mrs']}"
+
+snapshots['TestCreateOrUpdateFields.test_given_duplication_of_field_values_raise_exception[CHECKBOX_GROUP] exception_message = '] = "Duplication of Field values for this field {'field_id': 'field1', 'field_type': 'CHECKBOX_GROUP', 'duplication_of_values': ['Mrs']}"
+
+snapshots['TestCreateOrUpdateFields.test_given_duplication_of_field_values_raise_exception[MULTI_SELECT_LABELS] exception_message = '] = "Duplication of Field values for this field {'field_id': 'field1', 'field_type': 'MULTI_SELECT_LABELS', 'duplication_of_values': ['Mrs']}"
+
+snapshots['TestCreateOrUpdateFields.test_given_duplication_of_field_values_raise_exception[MULTI_SELECT_FIELD] exception_message = '] = "Duplication of Field values for this field {'field_id': 'field1', 'field_type': 'MULTI_SELECT_FIELD', 'duplication_of_values': ['Mrs']}"
 
 snapshots['TestCreateOrUpdateFields.test_given_field_type_gof_selector_and_field_values_as_invalid_json_raise_exception exception_message = '] = 'Field values contains invalid json for these field_id = field1'
 
@@ -364,32 +388,6 @@ snapshots['TestCreateOrUpdateFields.test_create_or_update_fields_and_fields_role
 
 snapshots['TestCreateOrUpdateFields.test_create_or_update_fields_and_fields_roles_given_field_dtos_and_field_role_dtos permission_type9'] = 'WRITE'
 
-snapshots['TestCreateOrUpdateFields.test_given_empty_values_in_field_values_raise_exceptions[DROPDOWN] exception_message = '] = "Field values shouldn't be empty for this field id field1"
+snapshots['TestCreateOrUpdateFields.test_given_negative_order_for_fields_raises_exception exception_message = '] = "Order for Field should not be negative, got negative orders for fields: ['FIN_SALUTATION', 'FIN_PR']"
 
-snapshots['TestCreateOrUpdateFields.test_given_empty_values_in_field_values_raise_exceptions[RADIO_GROUP] exception_message = '] = "Field values shouldn't be empty for this field id field1"
-
-snapshots['TestCreateOrUpdateFields.test_given_empty_values_in_field_values_raise_exceptions[CHECKBOX_GROUP] exception_message = '] = "Field values shouldn't be empty for this field id field1"
-
-snapshots['TestCreateOrUpdateFields.test_given_empty_values_in_field_values_raise_exceptions[MULTI_SELECT_LABELS] exception_message = '] = "Field values shouldn't be empty for this field id field1"
-
-snapshots['TestCreateOrUpdateFields.test_given_empty_values_in_field_values_raise_exceptions[MULTI_SELECT_FIELD] exception_message = '] = "Field values shouldn't be empty for this field id field1"
-
-snapshots['TestCreateOrUpdateFields.test_given_duplication_of_field_values_raise_exception[DROPDOWN] exception_message = '] = "Duplication of Field values for this field {'field_id': 'field1', 'field_type': 'DROPDOWN', 'duplication_of_values': ['Mrs']}"
-
-snapshots['TestCreateOrUpdateFields.test_given_duplication_of_field_values_raise_exception[RADIO_GROUP] exception_message = '] = "Duplication of Field values for this field {'field_id': 'field1', 'field_type': 'RADIO_GROUP', 'duplication_of_values': ['Mrs']}"
-
-snapshots['TestCreateOrUpdateFields.test_given_duplication_of_field_values_raise_exception[CHECKBOX_GROUP] exception_message = '] = "Duplication of Field values for this field {'field_id': 'field1', 'field_type': 'CHECKBOX_GROUP', 'duplication_of_values': ['Mrs']}"
-
-snapshots['TestCreateOrUpdateFields.test_given_duplication_of_field_values_raise_exception[MULTI_SELECT_LABELS] exception_message = '] = "Duplication of Field values for this field {'field_id': 'field1', 'field_type': 'MULTI_SELECT_LABELS', 'duplication_of_values': ['Mrs']}"
-
-snapshots['TestCreateOrUpdateFields.test_given_duplication_of_field_values_raise_exception[MULTI_SELECT_FIELD] exception_message = '] = "Duplication of Field values for this field {'field_id': 'field1', 'field_type': 'MULTI_SELECT_FIELD', 'duplication_of_values': ['Mrs']}"
-
-snapshots['TestCreateOrUpdateFields.test_given_field_values_is_empty_raise_exceptions[DROPDOWN] exception_message = '] = "Field values shouldn't be empty for this field id field1"
-
-snapshots['TestCreateOrUpdateFields.test_given_field_values_is_empty_raise_exceptions[RADIO_GROUP] exception_message = '] = "Field values shouldn't be empty for this field id field1"
-
-snapshots['TestCreateOrUpdateFields.test_given_field_values_is_empty_raise_exceptions[CHECKBOX_GROUP] exception_message = '] = "Field values shouldn't be empty for this field id field1"
-
-snapshots['TestCreateOrUpdateFields.test_given_field_values_is_empty_raise_exceptions[MULTI_SELECT_LABELS] exception_message = '] = "Field values shouldn't be empty for this field id field1"
-
-snapshots['TestCreateOrUpdateFields.test_given_field_values_is_empty_raise_exceptions[MULTI_SELECT_FIELD] exception_message = '] = "Field values shouldn't be empty for this field id field1"
+snapshots['TestCreateOrUpdateFields.test_given_duplicate_order_for_fields_of_same_gof_raises_exception exception_message = '] = 'Given duplicate orders: [1] for fields of gof: FIN_GOF, please send unique orders for fields of same gof'

@@ -25,12 +25,6 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_start_date_is_ahead_
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_start_date_is_ahead_of_due_date response'] = 'given start date 2020-05-04 is ahead of given due date 2020-04-04 '
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_is_behind_start_date http_status_code'] = 400
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_is_behind_start_date res_status'] = 'DUE_DATE_IS_BEHIND_START_DATE'
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_is_behind_start_date response'] = 'given due date 2020-04-04 is behind given start date 2020-05-04'
-
 snapshots['TestCreateTaskPresenterImplementation.test_raise_due_time_has_expired_for_today http_status_code'] = 400
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_due_time_has_expired_for_today res_status'] = 'DUE_TIME_HAS_EXPIRED_FOR_TODAY'
@@ -85,11 +79,11 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_duplicate_same_gof_o
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_duplicate_same_gof_orders_for_a_gof response'] = 'duplicate same gof orders given for gof gof_1, duplicates are [1, 2]'
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_ids http_status_code'] = 400
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_id http_status_code'] = 400
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_ids res_status'] = 'INVALID_TASK_TEMPLATE_IDS'
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_id res_status'] = 'INVALID_TASK_TEMPLATE_DB_ID'
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_ids response'] = "invalid task template ids: ['template_1', 'template_2']"
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_id response'] = 'template_1 invalid task template id, please give a valid task template id'
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_action_id http_status_code'] = 400
 
@@ -131,13 +125,13 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_gof_writa
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_gof_writable_permission res_status'] = 'USER_NEEDS_GOF_WRITABLE_PERMISSION'
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_gof_writable_permission response'] = "user user_1 needs write access on gof gof_1, because user does not have ['role_1', 'role_2'] roles"
+snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_gof_writable_permission response'] = "user needs write access on gof gof_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission http_status_code'] = 400
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission res_status'] = 'USER_NEEDS_FILED_WRITABLE_PERMISSION'
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission response'] = "user user_1 needs write access on field field_1, because user does not have ['role_1', 'role_2'] roles"
+snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission response'] = "user needs write access on field field_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_empty_value_in_required_field http_status_code'] = 400
 
@@ -167,7 +161,7 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_weak_p
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_weak_password res_status'] = 'NOT_A_STRONG_PASSWORD'
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_weak_password response'] = 'Given a weak password: admin123 for field: field_1! Try with atleast 8 characters including special characters'
+snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_weak_password response'] = 'Given a weak password: admin123 for field: field_1! Try with at least 6 characters including special characters'
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_number_value http_status_code'] = 400
 
@@ -191,7 +185,7 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invali
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value res_status'] = 'INCORRECT_NAME_IN_GOF_SELECTOR_FIELD'
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value response'] = "Invalid gof selector name: city for field: field_1! Try with these gof_id values: ['Mr', 'Mrs']"
+snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_name_in_gof_selector_field_value response'] = "Invalid gof selector name: city for field: field_1! Try with these gof selector names: ['Mr', 'Mrs'] "
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_choice_in_radio_group_field http_status_code'] = 400
 
@@ -279,3 +273,9 @@ snapshots['TestCreateTaskPresenterImplementation.test_get_create_task_response c
     'task_id': 'task_display_0',
     'user_has_permission': True
 }
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_present_stage_actions http_status_code'] = 400
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_present_stage_actions res_status'] = 'INVALID_PRESENT_STAGE_ACTION'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_present_stage_actions response'] = '1 is invalid present stage action'

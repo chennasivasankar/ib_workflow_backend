@@ -27,14 +27,14 @@ class ConfigureInitialTaskTemplateStageActions:
         tasks_dto = self.tasks_dto
         self._validations_for_initial_task_template_stages(tasks_dto)
         actions_dto = self._get_stage_actions_dto(tasks_dto)
-        from ib_tasks.interactors.create_update_delete_stage_actions \
-            import CreateUpdateDeleteStageActionsInteractor
-        interactor_obj = CreateUpdateDeleteStageActionsInteractor(
-            storage=self.storage, actions_dto=actions_dto,
-            template_storage=self.template_storage
+        from ib_tasks.interactors.create_or_update_or_delete_stage_actions \
+            import CreateOrUpdateOrDeleteStageActions
+        interactor_obj = CreateOrUpdateOrDeleteStageActions(
+            storage=self.storage, template_storage=self.template_storage
         )
-        interactor_obj.create_update_delete_stage_actions()
-
+        interactor_obj.create_or_update_or_delete_stage_actions(
+            action_dtos=actions_dto
+        )
         task_template_stage_dtos = \
             self._get_initial_stage_dto_to_tasks_templates(tasks_dto)
         self.storage.create_initial_stage_to_task_template(

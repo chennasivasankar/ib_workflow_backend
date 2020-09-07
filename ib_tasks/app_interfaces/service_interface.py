@@ -1,19 +1,15 @@
 from typing import List
 
 from ib_tasks.constants.enum import ViewType
-from ib_tasks.interactors.get_stages_assignees_details_interactor import \
-    TaskStageAssigneeDetailsDTO
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
-from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO, TaskStagesDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
     TaskDetailsConfigDTO
 from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
-
-
 # class TaskDetailsServiceInterface:
 #
 #     @staticmethod
@@ -22,7 +18,8 @@ from ib_tasks.storages.action_storage_implementation import \
 #         interactor = GetTaskFieldsAndActionsInteractor(storage)
 #         result = interactor.get_task_fields_and_action(task_dtos)
 #         return result
-from ib_tasks.storages.tasks_storage_implementation import TasksStorageImplementation
+from ib_tasks.storages.tasks_storage_implementation import \
+    TasksStorageImplementation
 
 
 class ServiceInterface:
@@ -41,12 +38,16 @@ class ServiceInterface:
         elasticsearch_storage = ElasticSearchStorageImplementation()
         from ib_tasks.storages.filter_storage_implementation import \
             FilterStorageImplementation
+        from ib_tasks.storages.fields_storage_implementation import \
+            FieldsStorageImplementation
+        field_storage = FieldsStorageImplementation()
         filter_storage = FilterStorageImplementation()
         interactor = GetTaskIdsInteractor(
             task_storage=TasksStorageImplementation(),
             stage_storage=StagesStorageImplementation(),
             filter_storage=filter_storage,
-            elasticsearch_storage=elasticsearch_storage
+            elasticsearch_storage=elasticsearch_storage,
+            field_storage=field_storage
         )
 
         task_ids_dtos = interactor.get_task_ids(

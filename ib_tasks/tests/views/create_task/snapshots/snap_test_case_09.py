@@ -7,10 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01CreateTaskAPITestCase.test_case status_code'] = '400'
+snapshots['TestCase09CreateTaskAPITestCase.test_case status_code'] = '400'
 
-snapshots['TestCase01CreateTaskAPITestCase.test_case body'] = {
+snapshots['TestCase09CreateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'INVALID_GOFS_OF_TASK_TEMPLATE',
-    'response': "invalid gofs ['gof_1', 'gof_2']  given to the task template template_1"
+    'res_status': 'DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF',
+    'response': 'duplicate same gof orders given for gof gof_1, duplicates are [1]'
 }

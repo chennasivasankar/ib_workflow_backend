@@ -1,19 +1,33 @@
 import abc
 
-from ib_tasks.exceptions.datetime_custom_exceptions import DueDateHasExpired
+from ib_tasks.exceptions.custom_exceptions import InvalidProjectId
+from ib_tasks.exceptions.datetime_custom_exceptions import \
+    DueDateTimeHasExpired, DueDateTimeWithoutStartDateTimeIsNotValid, \
+    StartDateTimeIsRequired, DueDateTimeIsRequired
+from ib_tasks.exceptions.field_values_custom_exceptions import \
+    InvalidDateFormat
+from ib_tasks.exceptions.fields_custom_exceptions import UserDidNotFillRequiredFields
+from ib_tasks.exceptions.gofs_custom_exceptions import UserDidNotFillRequiredGoFs
+from ib_tasks.exceptions.stage_custom_exceptions import \
+    StageIdsListEmptyException, InvalidStageIdsListException
+from ib_tasks.exceptions.task_custom_exceptions import PriorityIsRequired, \
+    InvalidTaskJson
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 
 
 class CreateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_create_task_response(self,
-                                 task_current_stage_details_dto:
-                                     TaskCurrentStageDetailsDTO):
+    def get_create_task_response(
+            self, task_current_stage_details_dto: TaskCurrentStageDetailsDTO,
+            all_tasks_overview_dto: AllTasksOverviewDetailsDTO
+    ):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_task_template_ids(self, err):
+    def raise_invalid_task_template_id(self, err):
         pass
 
     @abc.abstractmethod
@@ -102,10 +116,6 @@ class CreateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_date_format(self, err):
-        pass
-
-    @abc.abstractmethod
     def raise_exception_for_invalid_time_format(self, err):
         pass
 
@@ -162,12 +172,8 @@ class CreateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_stage_ids_with_invalid_permission_for_assignee_exception(self,
-                                                                       invalid_stage_ids):
-        pass
-
-    @abc.abstractmethod
-    def raise_invalid_due_time_format(self, err):
+    def raise_stage_ids_with_invalid_permission_for_assignee_exception(
+            self, invalid_stage_ids):
         pass
 
     @abc.abstractmethod
@@ -175,13 +181,63 @@ class CreateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_due_date_is_behind_start_date(self, err):
+    def raise_exception_for_invalid_present_stage_actions(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_due_time_has_expired_for_today(self, err):
+    def raise_invalid_task_template_of_project(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_due_date_has_expired(self, err: DueDateHasExpired):
+    def raise_stage_ids_list_empty_exception(
+            self, err: StageIdsListEmptyException):
         pass
+
+    @abc.abstractmethod
+    def raise_invalid_stage_ids_list_exception(
+            self, err: InvalidStageIdsListException):
+        pass
+
+    @abc.abstractmethod
+    def raise_due_date_time_without_start_datetime(
+            self, err: DueDateTimeWithoutStartDateTimeIsNotValid):
+        pass
+
+    @abc.abstractmethod
+    def raise_start_date_time_is_required(self, err: StartDateTimeIsRequired):
+        pass
+
+    @abc.abstractmethod
+    def raise_due_date_time_is_required(self, err: DueDateTimeIsRequired):
+        pass
+
+    @abc.abstractmethod
+    def raise_due_date_time_has_expired(self, err: DueDateTimeHasExpired):
+        pass
+
+    @abc.abstractmethod
+    def raise_priority_is_required(self, err: PriorityIsRequired):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_date_format(self, err: InvalidDateFormat):
+        pass
+
+    @abc.abstractmethod
+    def raise_user_did_not_fill_required_gofs(
+            self, err: UserDidNotFillRequiredGoFs):
+        pass
+
+    @abc.abstractmethod
+    def raise_user_did_not_fill_required_fields(
+            self, err: UserDidNotFillRequiredFields):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_task_json(self, err: InvalidTaskJson):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_project_id(self, err: InvalidProjectId):
+        pass
+

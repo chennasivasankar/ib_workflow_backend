@@ -1,5 +1,7 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Union
+
+from ib_tasks.constants.enum import Searchable
 
 
 @dataclass()
@@ -48,7 +50,68 @@ class AssigneeDetailsDTO:
 
 
 @dataclass
+class TeamInfoDTO:
+    team_id: str
+    team_name: str
+
+
+@dataclass
 class UserDetailsDTO:
     user_id: str
     user_name: str
     profile_pic_url: str
+
+
+@dataclass
+class SearchableDetailsDTO:
+    search_type: Searchable
+    id: Union[int, str]
+    value: str
+
+
+@dataclass
+class TeamDetailsDTO:
+    team_id: str
+    name: str
+
+
+@dataclass
+class UserIdWIthTeamDetailsDTOs:
+    user_id: str
+    team_details: List[TeamDetailsDTO]
+
+
+@dataclass
+class UserIdWIthTeamDetailsDTO:
+    user_id: str
+    team_details: TeamDetailsDTO
+
+
+@dataclass
+class ProjectDetailsDTO:
+    project_id: str
+    name: str
+    logo_url: str
+
+
+@dataclass
+class UserIdWithTeamIdDTO:
+    user_id: str
+    team_id: str
+
+
+@dataclass
+class ProjectRolesDTO:
+    project_id: str
+    roles: List[str]
+
+
+@dataclass
+class TeamDetailsWithUserIdDTO(TeamDetailsDTO):
+    user_id: str
+
+
+@dataclass
+class ProjectTeamUserIdsDTO:
+    project_id: str
+    user_id_with_team_id_dtos: List[UserIdWithTeamIdDTO]

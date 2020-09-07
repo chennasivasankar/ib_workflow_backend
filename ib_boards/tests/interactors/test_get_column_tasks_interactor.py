@@ -117,11 +117,13 @@ class TestGetColumnTasksInteractor:
     def task_stage_dtos(self):
         return [
             TaskIdStageDTO(
-                task_id="TASK_ID_1",
+                task_display_id="TASK_ID_1",
+                task_id=1,
                 stage_id="STAGE_ID_1"
             ),
             TaskIdStageDTO(
-                task_id="TASK_ID_2",
+                task_display_id="TASK_ID_2",
+                task_id=2,
                 stage_id="STAGE_ID_2"
             )
         ]
@@ -221,6 +223,7 @@ class TestGetColumnTasksInteractor:
         # Arrange
         user_role = 'User'
         column_id = 'COLUMN_ID_1'
+        project_id = "FIN_MAN"
         expected_response = Mock()
         interactor = GetColumnTasksInteractor(
             storage=storage_mock
@@ -237,6 +240,7 @@ class TestGetColumnTasksInteractor:
         adapter_mock = adapter_mock_to_get_user_role(
             mocker=mocker, user_role=user_role
         )
+        storage_mock.get_project_id_for_given_column_id.return_value = project_id
 
         # Act
         actual_response = interactor.get_column_tasks_wrapper(
@@ -246,7 +250,7 @@ class TestGetColumnTasksInteractor:
 
         # Assert
         adapter_mock.assert_called_once_with(
-            user_id=get_column_tasks_dto.user_id
+            user_id=get_column_tasks_dto.user_id, project_id=project_id
         )
         storage_mock.validate_user_role_with_column_roles.assert_called_once_with(
             user_role=user_role, column_id=column_id
@@ -264,7 +268,9 @@ class TestGetColumnTasksInteractor:
         view_type = get_column_tasks_dto.view_type
         stage_ids = ['STAGE_ID_1', 'STAGE_ID_2']
         task_ids = ['TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3']
+        project_id = "project_id_1"
         expected_response = Mock()
+        storage_mock.get_project_id_for_given_column_id.return_value = project_id
         storage_mock.get_columns_stage_ids.return_value = column_stage_dtos
         presenter_mock.get_response_for_column_tasks. \
             return_value = expected_response
@@ -285,6 +291,7 @@ class TestGetColumnTasksInteractor:
                 stage_ids=stage_ids,
                 offset=get_column_tasks_dto.offset,
                 limit=get_column_tasks_dto.limit,
+                project_id = "project_id_1",
                 user_id='user_id_1',
                 search_query="hello"
             )
@@ -333,6 +340,8 @@ class TestGetColumnTasksInteractor:
         stage_ids = ['STAGE_ID_3', 'STAGE_ID_4']
         task_ids = ['TASK_ID_7', 'TASK_ID_8', 'TASK_ID_9']
         expected_response = Mock()
+        project_id = "project_id_1"
+        storage_mock.get_project_id_for_given_column_id.return_value = project_id
         storage_mock.get_columns_stage_ids.return_value = column_stage_dtos
         presenter_mock.get_response_for_column_tasks. \
             return_value = expected_response
@@ -352,6 +361,7 @@ class TestGetColumnTasksInteractor:
             TaskDetailsConfigDTO(
                 unique_key=get_column_tasks_dto.column_id,
                 stage_ids=stage_ids,
+                project_id="project_id_1",
                 offset=get_column_tasks_dto.offset,
                 limit=get_column_tasks_dto.limit,
                 user_id='user_id_1',

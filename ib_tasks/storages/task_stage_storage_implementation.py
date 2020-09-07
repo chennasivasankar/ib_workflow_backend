@@ -5,6 +5,8 @@ from django.db.models import Q
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.stages_dtos import TaskStageHistoryDTO, \
     StageMinimalDTO
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    FieldSearchableDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStageAssigneeDTO, CurrentStageDetailsDTO, AssigneeCurrentTasksCountDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
@@ -63,12 +65,13 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
 
         task_stage_objs = TaskStageHistory.objects.filter(
             task_id=task_id, stage_id__in=stage_ids
-        ).values('id', 'stage_id', 'assignee_id')
+        ).values('id', 'stage_id', 'assignee_id', 'team_id')
         task_stage_assignee_dtos = [
             TaskStageAssigneeDTO(
                 task_stage_id=task_stage_obj['id'],
                 stage_id=task_stage_obj['stage_id'],
-                assignee_id=task_stage_obj['assignee_id']
+                assignee_id=task_stage_obj['assignee_id'],
+                team_id=task_stage_obj['team_id']
             )
             for task_stage_obj in task_stage_objs
         ]
@@ -130,8 +133,8 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
         return assignee_with_current_tasks_count_dtos
 
     def get_stage_assignee_id_dtos(
-            self, task_stage_dtos: List[GetTaskDetailsDTO]) -> List[
-        TaskStageAssigneeIdDTO]:
+            self, task_stage_dtos: List[GetTaskDetailsDTO]
+    ) -> List[TaskStageAssigneeIdDTO]:
         q = None
         for counter, item in enumerate(task_stage_dtos):
             current_queue = Q(
@@ -142,10 +145,11 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
             q = q | current_queue
         if q is None:
             return []
+        q = q & Q(assignee_id__isnull=False)
         task_stage_objects = TaskStageHistory.objects.filter(q).values(
             'task_id', 'stage__stage_id', 'assignee_id'
         )
-        return [
+        task_stage_assignee_id_dto = [
             TaskStageAssigneeIdDTO(
                 task_id=task_stage_object['task_id'],
                 stage_id=task_stage_object['stage__stage_id'],
@@ -153,6 +157,7 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
             )
             for task_stage_object in task_stage_objects
         ]
+        return task_stage_assignee_id_dto
 
     def create_task_stage_history_records_for_virtual_stages(
             self, stage_ids: List[int], task_id: int):
@@ -160,3 +165,4 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
             TaskStageHistory(task_id=task_id, stage_id=stage_id)
             for stage_id in stage_ids]
         TaskStageHistory.objects.bulk_create(task_stage_history_objs)
+

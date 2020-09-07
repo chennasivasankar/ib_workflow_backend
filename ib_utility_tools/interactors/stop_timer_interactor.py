@@ -18,10 +18,10 @@ class StopTimerInteractor:
         try:
             timer_details_dto = self.stop_timer(
                 timer_entity_dto=timer_entity_dto)
-            response = presenter.get_success_response_with_timer_details_dto(
+            response = presenter.get_response_for_get_timer_details(
                 timer_details_dto=timer_details_dto)
         except TimerIsAlreadyStopped:
-            response = presenter.raise_timer_is_already_stopped_exception()
+            response = presenter.response_for_timer_is_already_stopped_exception()
         return response
 
     def stop_timer(self, timer_entity_dto: TimerEntityDTO):

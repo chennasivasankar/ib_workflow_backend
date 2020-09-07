@@ -3,7 +3,8 @@ import pytest
 from ib_iam.tests.common_fixtures.reset_fixture import \
     reset_sequence_role_factory, reset_sequence_company_factory, \
     reset_sequence_user_details_factory
-from ib_iam.tests.factories.models import CompanyFactory, UserDetailsFactory
+from ib_iam.tests.factories.models import CompanyFactory, UserDetailsFactory, \
+    ProjectFactory
 
 
 class TestGetUserDetailsBulkForGivenRoleIds:
@@ -21,22 +22,30 @@ class TestGetUserDetailsBulkForGivenRoleIds:
     def set_up(self):
         role_ids = ["12233442", "12312323", "4141264557"]
         user_ids = ["user1", "user2", "user3"]
+        project_id = "FA"
         user_roles = [
             {"role_id": role_id, "user_id": user_ids[index]}
             for index, role_id in enumerate(role_ids)
         ]
         reset_sequence_role_factory()
-        from ib_iam.tests.factories.models import UserRoleFactory, RoleFactory
+        from ib_iam.tests.factories.models import UserRoleFactory, \
+            ProjectRoleFactory
+        ProjectFactory.reset_sequence(0)
+        project_object = ProjectFactory.create(project_id=project_id)
         for user_role in user_roles:
-            role_object = RoleFactory.create(role_id=user_role["role_id"])
+            role_object = ProjectRoleFactory.create(
+                role_id=user_role["role_id"],
+                project=project_object
+            )
             UserRoleFactory.create(
-                role=role_object, user_id=user_role["user_id"])
+                project_role=role_object, user_id=user_role["user_id"])
         return role_ids
 
     @pytest.mark.django_db
     def test_get_user_details_dtos_for_given_valid_role_ids(
             self, user_profile_dtos, set_up, mocker):
         role_ids = set_up
+        project_id = "FA"
         from ib_iam.tests.common_fixtures.adapters.user_service_mocks import \
             prepare_user_profile_dtos_mock
         get_user_profile_mock = prepare_user_profile_dtos_mock(mocker)
@@ -45,7 +54,8 @@ class TestGetUserDetailsBulkForGivenRoleIds:
         service_interface = ServiceInterface()
 
         expected_result = service_interface. \
-            get_user_details_for_given_role_ids(role_ids=role_ids)
+            get_user_details_for_given_role_ids(
+            role_ids=role_ids, project_id=project_id)
 
         assert len(expected_result) == len(user_profile_dtos)
         self._check_are_valid_user_dtos(
@@ -54,13 +64,14 @@ class TestGetUserDetailsBulkForGivenRoleIds:
     @pytest.mark.django_db
     def test_given_invalid_role_ids_then_raise_exception(self):
         invalid_role_ids = ["1", "2", "3"]
+        project_id = "FA"
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         service_interface = ServiceInterface()
 
         from ib_iam.exceptions.custom_exceptions import RoleIdsAreInvalid
         with pytest.raises(RoleIdsAreInvalid):
             service_interface.get_user_details_for_given_role_ids(
-                role_ids=invalid_role_ids)
+                role_ids=invalid_role_ids, project_id=project_id)
 
     @pytest.mark.django_db
     def test_given_valid_role_ids_with_all_role_id_then_return_all_users(
@@ -84,6 +95,7 @@ class TestGetUserDetailsBulkForGivenRoleIds:
                 "is_admin": False
             }
         ]
+        project_id = "FA"
         actual_user_ids = ["4", "5", "6"]
         reset_sequence_company_factory()
         reset_sequence_user_details_factory()
@@ -104,7 +116,8 @@ class TestGetUserDetailsBulkForGivenRoleIds:
         service_interface = ServiceInterface()
 
         expected_result = service_interface. \
-            get_user_details_for_given_role_ids(role_ids=role_ids)
+            get_user_details_for_given_role_ids(
+            role_ids=role_ids, project_id=project_id)
 
         assert len(expected_result) == len(user_profile_dtos)
         self._check_are_valid_user_dtos(

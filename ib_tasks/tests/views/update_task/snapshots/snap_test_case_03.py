@@ -7,10 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase03UpdateTaskAPITestCase.test_case status_code'] = '500'
+snapshots['TestCase03UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase03UpdateTaskAPITestCase.test_case body'] = {
-    'res_status': [
-        '"START_DATE_IS_AHEAD_OF_DUE_DATE" is not a valid choice.'
-    ]
+    'http_status_code': 400,
+    'res_status': 'INVALID_DUE_TIME_FORMAT',
+    'response': '12-00-00 has invalid due time format, time format should be HH:MM:SS'
 }

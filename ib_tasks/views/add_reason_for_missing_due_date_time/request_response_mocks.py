@@ -5,7 +5,8 @@ REQUEST_BODY_JSON = """
     "task_id": "string",
     "updated_due_date_time": "2099-12-31 00:00:00",
     "reason_id": 1,
-    "reason": "string"
+    "reason": "string",
+    "stage_id": 1
 }
 """
 

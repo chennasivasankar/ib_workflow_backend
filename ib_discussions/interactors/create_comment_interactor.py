@@ -21,6 +21,7 @@ class CreateCommentInteractor:
             self, presenter: CreateCommentPresenterInterface,
             create_complete_comment_dto: CreateCompleteCommentDTO
     ):
+        # TODO: if comment_content empty we should have atleast multimedia input
         from ib_discussions.adapters.auth_service import InvalidUserIds
         try:
             response = self._create_comment_for_discussion_response(
@@ -119,15 +120,12 @@ class CreateCommentInteractor:
                 comment_dtos=comment_dtos, user_id=user_id)
         comment_id_with_replies_count_dtos = \
             self.storage.get_replies_count_for_comments(
-                comment_ids=comment_ids
-            )
+                comment_ids=comment_ids)
         comment_id_with_mention_user_id_dtos = \
             self.storage.get_comment_id_with_mention_user_id_dtos(
-                comment_ids=comment_ids
-            )
+                comment_ids=comment_ids)
         comment_id_with_multimedia_dtos = self.storage.get_multimedia_dtos(
-            comment_ids=comment_ids
-        )
+            comment_ids=comment_ids)
         comment_with_replies_count_and_editable_dtos = \
             self._prepare_comment_with_replies_count_and_editable_dtos(
                 comment_dtos=comment_dtos,
@@ -154,8 +152,7 @@ class CreateCommentInteractor:
                                               user_id):
         comment_editable_status_dtos = [
             CreateCommentInteractor._prepare_comment_editable_status_dto(
-                comment_dto=comment_dto, user_id=user_id
-            )
+                comment_dto=comment_dto, user_id=user_id)
             for comment_dto in comment_dtos
         ]
         return comment_editable_status_dtos
@@ -187,8 +184,7 @@ class CreateCommentInteractor:
 
         comment_id_wise_editable_status_dto_dict = \
             self._prepare_comment_id_wise_editable_status_dto_dict(
-                comment_editable_status_dtos=comment_editable_status_dtos
-            )
+                comment_editable_status_dtos=comment_editable_status_dtos)
 
         comment_with_replies_count_dtos = [
             CommentWithRepliesCountAndEditableDTO(
