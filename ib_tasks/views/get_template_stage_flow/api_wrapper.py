@@ -3,12 +3,16 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
 from ...constants.enum import ViewType
-from ...interactors.get_permitted_template_stage_flow_to_user import GetPermittedTemplateStageFlowToUser
+from ...interactors.get_permitted_template_stage_flow_to_user import \
+    GetPermittedTemplateStageFlowToUser
 from ...interactors.task_dtos import SearchQueryDTO
-from ...presenters.get_template_stage_flow_implementation import GetTemplateStageFlowPresenterImplementation
-from ...storages.action_storage_implementation import ActionsStorageImplementation
+from ...presenters.get_template_stage_flow_implementation import \
+    GetTemplateStageFlowPresenterImplementation
+from ...storages.action_storage_implementation import \
+    ActionsStorageImplementation
 from ...storages.storage_implementation import StagesStorageImplementation
-from ...storages.task_template_storage_implementation import TaskTemplateStorageImplementation
+from ...storages.task_template_storage_implementation import \
+    TaskTemplateStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
