@@ -19,13 +19,13 @@ class DeleteChecklistItemsInteractor:
         try:
             self.delete_checklist_items(checklist_item_ids=checklist_item_ids)
             response = \
-                presenter.get_success_response_for_delete_checklist_items()
+                presenter.get_response_for_delete_checklist_items()
         except DuplicateChecklistItemIds:
             response = presenter \
-                .raise_duplicate_checklist_item_ids_exception()
+                .response_for_duplicate_checklist_item_ids_exception()
         except InvalidChecklistItemIds:
             response = presenter \
-                .raise_invalid_checklist_item_ids_exception()
+                .response_for_invalid_checklist_item_ids_exception()
         return response
 
     def delete_checklist_items(self, checklist_item_ids: List[str]):

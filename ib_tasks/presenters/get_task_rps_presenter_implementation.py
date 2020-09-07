@@ -3,7 +3,9 @@ from typing import List
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.adapters.dtos import UserDetailsDTO
-from ib_tasks.constants.exception_messages import USER_IS_NOT_ASSIGNED_TO_TASK
+from ib_tasks.constants.exception_messages import (
+    USER_IS_NOT_ASSIGNED_TO_TASK,
+    DUE_DATE_IS_NOT_ADDED_TO_TASK)
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId
 from ib_tasks.interactors.presenter_interfaces.get_task_rps_presenter_interface \
     import GetTaskRpsPresenterInterface
@@ -65,3 +67,15 @@ class GetTaskRpsPresenterImplementation(GetTaskRpsPresenterInterface,
             "name": rp_dto.user_name,
             "profile_pic_url": rp_dto.profile_pic_url
         }
+
+    def response_for_due_date_does_not_exist_to_task(self):
+        response_message = DUE_DATE_IS_NOT_ADDED_TO_TASK[0]
+        data = {
+                "response": response_message,
+                "http_status_code": 404,
+                "res_status": DUE_DATE_IS_NOT_ADDED_TO_TASK[1]
+        }
+        response_object = self.prepare_404_not_found_response(
+                response_dict=data
+        )
+        return response_object

@@ -80,7 +80,7 @@ class TestGetTaskRPs:
         storage = TasksStorageImplementation()
 
         # Act
-        result = storage.get_user_missed_the_task_due_time(task_id, user_id, stage_id)
+        result = storage.get_task_due_datetime(task_id, user_id, stage_id)
 
         # Assert
         assert result == expected_output
