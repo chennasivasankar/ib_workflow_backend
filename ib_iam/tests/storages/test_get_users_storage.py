@@ -109,9 +109,11 @@ class TestGetUsers:
         assert output == expected_output
 
     @pytest.mark.django_db
-    @pytest.mark.parametrize("user_id, expected_result",
-                             [("413642ff-1272-4990-b878-6607a5e02bc1", True),
-                              ("413642ff-1272-4990-b878-6607a5e02bc2", False)])
+    @pytest.mark.parametrize(
+        "user_id, expected_result",
+        [("413642ff-1272-4990-b878-6607a5e02bc1", True),
+         ("413642ff-1272-4990-b878-6607a5e02bc2", False)]
+    )
     def test_is_user_exist(self, user_id, expected_result):
         # Arrange
         from ib_iam.tests.factories.models import UserDetailsFactory
