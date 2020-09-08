@@ -192,9 +192,14 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             self._get_task_current_board_complete_details(
                 task_id=task_id, stage_ids=stage_ids
             )
-        self._set_next_stage_assignees_to_task_and_update_in_db(
-            task_id=task_id, stage_ids=stage_ids
-        )
+        transition_template_exists_for_next_stages_on_action = \
+            self.action_storage\
+                .check_is_transition_template_exists_for_action_id(
+                self.action_id)
+        if not transition_template_exists_for_next_stages_on_action:
+            self._set_next_stage_assignees_to_task_and_update_in_db(
+                task_id=task_id, stage_ids=stage_ids
+            )
         task_current_stage_details_dto = \
             self._get_task_current_stage_details(task_id=task_id)
         all_tasks_overview_details_dto = self._get_tasks_overview_for_users(
