@@ -433,7 +433,7 @@ class TestGetBoardsInteractor:
         )
         assert actual_response == expected_response
 
-    def test_with_given_valid_project_details_return_board_details(
+    def test_with_given_valid_project_details_return_board_details_user_not_have_permission_to_board(
             self, storage_mock, presenter_mock, get_boards_dto, mocker):
         # Arrange
         total_boards = 3
@@ -472,7 +472,7 @@ class TestGetBoardsInteractor:
         user_in_project_mock.return_value = True
         expected_response = Mock()
         storage_mock.get_board_ids.return_value = board_ids, starred_boards
-        storage_mock.get_user_permitted_board_ids.return_value = all_board_ids
+        storage_mock.get_user_permitted_board_ids.return_value = []
         presenter_mock.get_response_for_get_boards. \
             return_value = expected_response
         from ib_boards.tests.common_fixtures.interactors import \

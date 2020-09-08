@@ -83,8 +83,6 @@ class GetBoardsInteractor(ValidationMixin):
             user_roles=user_roles
         )
         total_boards = len(board_ids)
-        if offset >= total_boards:
-            raise OffsetValueExceedsTotalTasksCount
 
         board_ids = board_ids[offset:offset + limit]
         all_boards_details_dtos = self._get_board_details_dtos(
