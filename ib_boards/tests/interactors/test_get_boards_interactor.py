@@ -292,7 +292,6 @@ class TestGetBoardsInteractor:
             assert_called_once()
         assert actual_response == expected_response
 
-
     def test_with_valid_details_return_board_details(
             self, storage_mock, presenter_mock, get_boards_dto, mocker):
         # Arrange
@@ -332,6 +331,7 @@ class TestGetBoardsInteractor:
         user_in_project_mock.return_value = True
         expected_response = Mock()
         storage_mock.get_board_ids.return_value = board_ids, starred_boards
+        storage_mock.get_user_permitted_board_ids.return_value = all_board_ids
         presenter_mock.get_response_for_get_boards. \
             return_value = expected_response
         from ib_boards.tests.common_fixtures.interactors import \
@@ -347,6 +347,9 @@ class TestGetBoardsInteractor:
         # Assert
         storage_mock.get_board_ids.assert_called_once_with(
             user_id=user_id, project_id=project_id
+        )
+        storage_mock.get_user_permitted_board_ids.assert_called_once_with(
+            user_roles=roles, board_ids=all_board_ids
         )
         interactor_mock.assert_called_once_with(
             board_ids=all_board_ids
@@ -396,6 +399,7 @@ class TestGetBoardsInteractor:
         user_in_project_mock.return_value = True
         expected_response = Mock()
         storage_mock.get_board_ids.return_value = board_ids, starred_board_ids
+        storage_mock.get_user_permitted_board_ids.return_value = board_ids
         presenter_mock.get_response_for_get_boards. \
             return_value = expected_response
         from ib_boards.tests.common_fixtures.interactors import \
@@ -414,6 +418,9 @@ class TestGetBoardsInteractor:
         )
         interactor_mock.assert_called_once_with(
             board_ids=board_ids
+        )
+        storage_mock.get_user_permitted_board_ids.assert_called_once_with(
+            user_roles=roles, board_ids=board_ids
         )
         user_in_project_mock.assert_called_once_with(
             project_id=project_id, user_id=user_id)
@@ -465,6 +472,7 @@ class TestGetBoardsInteractor:
         user_in_project_mock.return_value = True
         expected_response = Mock()
         storage_mock.get_board_ids.return_value = board_ids, starred_boards
+        storage_mock.get_user_permitted_board_ids.return_value = all_board_ids
         presenter_mock.get_response_for_get_boards. \
             return_value = expected_response
         from ib_boards.tests.common_fixtures.interactors import \
@@ -480,6 +488,9 @@ class TestGetBoardsInteractor:
         # Assert
         storage_mock.get_board_ids.assert_called_once_with(
             user_id=user_id, project_id=project_id
+        )
+        storage_mock.get_user_permitted_board_ids.assert_called_once_with(
+            user_roles=roles, board_ids=all_board_ids
         )
         interactor_mock.assert_called_once_with(
             board_ids=all_board_ids
