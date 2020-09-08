@@ -18,13 +18,14 @@ class TestCase01GetTimerAPITestCase(TestUtils):
     @pytest.mark.django_db
     def test_case(self, snapshot):
         from ib_utility_tools.constants.enum import TimerEntityType
-        body = {'entity_id': "09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5a",
-                'entity_type': TimerEntityType.STAGE_TASK.value}
+        body = {
+            'entity_id': "09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5a",
+            'entity_type': TimerEntityType.STAGE_TASK.value
+        }
         path_params = {}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(
+            body=body, path_params=path_params,
+            query_params=query_params, headers=headers, snapshot=snapshot
+        )

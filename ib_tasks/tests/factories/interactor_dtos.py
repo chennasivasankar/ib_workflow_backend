@@ -15,7 +15,8 @@ from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
     UserStagesWithPaginationDTO, StageAssigneeDTO, \
-    StageAssigneeWithTeamDetailsDTO, AssigneeWithTeamDetailsDTO
+    StageAssigneeWithTeamDetailsDTO, AssigneeWithTeamDetailsDTO, \
+    StageWithUserDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -23,7 +24,10 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO, StageActionNamesDTO
+    TaskWithDbStageIdDTO, AssigneeCurrentTasksCountDTO, StageActionNamesDTO, \
+    StageAssigneeDetailsDTO, CurrentStageDetailsDTO, StageIdWithValueDTO, \
+    CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO, StageActionNamesDTO, CreateStageFlowDTO, \
+    StageFlowWithActionIdDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     TaskDueParametersDTO, \
@@ -52,7 +56,7 @@ class UserDetailsDTOFactory(factory.Factory):
     class Meta:
         model = UserDetailsDTO
 
-    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
+    user_id = factory.Sequence(lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
     user_name = factory.Sequence(lambda n: "name_%d" % n)
     profile_pic_url = "pic_url"
 
@@ -87,6 +91,7 @@ class StageActionDTOFactory(factory.Factory):
 class StageActionNamesDTOFactory(factory.Factory):
     class Meta:
         model = StageActionNamesDTO
+
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
     action_names = factory.Sequence(lambda n: ['action_name_%d' % (n + 1)])
 
@@ -274,7 +279,7 @@ class TaskIdWithStageAssigneeDTOFactory(factory.Factory):
 
     task_id = factory.sequence(lambda n: n + 1)
     db_stage_id = factory.Sequence(lambda n: n + 1)
-    assignee_id = factory.sequence(lambda n: "user_{}".format(n+1))
+    assignee_id = factory.sequence(lambda n: "user_{}".format(n + 1))
     team_id = factory.sequence(lambda n: "team_{}".format(n + 1))
 
 
@@ -602,3 +607,51 @@ class AssigneesDTOFactory(factory.Factory):
                       "=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw" \
                       "=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
 
+
+class TaskWithDbStageIdDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskWithDbStageIdDTO
+
+    task_id = factory.sequence(lambda counter: counter + 1)
+    db_stage_id = factory.sequence(
+        lambda counter: counter + 1)
+
+
+class AssigneeCurrentTasksCountDTOFactory(factory.Factory):
+    class Meta:
+        model = AssigneeCurrentTasksCountDTO
+
+    assignee_id = factory.sequence(
+        lambda counter: 'assignee_{}'.format(counter + 1))
+    tasks_count = factory.sequence(
+        lambda counter: counter + 1)
+
+
+class StageWithUserDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = StageWithUserDetailsDTO
+
+    db_stage_id = factory.sequence(lambda counter: counter + 1)
+    stage_display_name = factory.sequence(
+        lambda counter: 'stage_{}'.format(counter + 1))
+
+    @factory.lazy_attribute
+    def assignee_details_dto(self):
+        return AssigneeDetailsDTOFactory()
+
+class CreateStageFlowDTOFactory(factory.Factory):
+    class Meta:
+        model = CreateStageFlowDTO
+
+    previous_stage_id = factory.sequence(lambda n: "stage_{}".format(n))
+    action_name = factory.sequence(lambda n: "action_name_{}".format(n))
+    next_stage_id = factory.sequence(lambda n: "stage_{}".format(n+1))
+
+
+class StageFlowWithActionIdDTOFactory(factory.Factory):
+    class Meta:
+        model = StageFlowWithActionIdDTO
+
+    previous_stage_id = factory.sequence(lambda n: "stage_{}".format(n))
+    action_id = factory.sequence(lambda n: n)
+    next_stage_id = factory.sequence(lambda n: "stage_{}".format(n + 1))

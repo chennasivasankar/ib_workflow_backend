@@ -127,27 +127,6 @@
           "$ref": "#/definitions/ChecklistItemDetails"
         }
       ]
-    },
-    "EmptyChecklistItemTextException": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/CommonHttpExceptionFields"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "res_status": {
-              "type": "string",
-              "enum": [
-                "EMPTY_CHECKLIST_ITEM_TEXT"
-              ]
-            }
-          },
-          "required": [
-            "res_status"
-          ]
-        }
-      ]
     }
   },
   "parameters": {
@@ -226,18 +205,6 @@
         "required": [
           "checklist_item_id"
         ]
-      }
-    },
-    "CreateChecklistItemBadRequestResponse": {
-      "description": "create checklist item bad request response",
-      "schema": {
-        "$ref": "#/definitions/EmptyChecklistItemTextException"
-      }
-    },
-    "UpdateChecklistItemBadRequestResponse": {
-      "description": "create checklist item bad request response",
-      "schema": {
-        "$ref": "#/definitions/EmptyChecklistItemTextException"
       }
     },
     "UpdateChecklistItemNotFoundResponse": {
@@ -414,9 +381,6 @@
         "responses": {
           "201": {
             "$ref": "#/responses/SuccessForCreateChecklistItemResponse"
-          },
-          "400": {
-            "$ref": "#/responses/CreateChecklistItemBadRequestResponse"
           }
         }
       }
@@ -444,9 +408,6 @@
         "responses": {
           "200": {
             "description": "Success response for update checklist item"
-          },
-          "400": {
-            "$ref": "#/responses/UpdateChecklistItemBadRequestResponse"
           },
           "404": {
             "$ref": "#/responses/UpdateChecklistItemNotFoundResponse"

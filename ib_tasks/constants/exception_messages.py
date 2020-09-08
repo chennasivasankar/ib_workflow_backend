@@ -53,6 +53,8 @@ EMPTY_VALUE_FOR_READ_PERMISSIONS = "Read Permission roles shouldn't be empty " \
                                    "" \
                                    "" \
                                    "" \
+                                   "" \
+                                   "" \
                                    "for these fields ids {}"
 DUPLICATED_VALUES_FOR_READ_PERMISSIONS = "Repeated roles for read " \
                                          "permissions for these fields {}"
@@ -124,7 +126,8 @@ INVALID_TASK_ID = [
 ]
 
 INVALID_BOARD_ID = [
-    "invalid board id is: {}, please send valid board id", "INVALID_BOARD_ID"
+    "invalid board id is: {}, please send valid board id",
+    "INVALID_BOARD_ID"
 ]
 
 INVALID_ACTION_ID = [
@@ -142,7 +145,8 @@ INVALID_PHONE_NUMBER_VALUE = (
 INVALID_EMAIL = ("Invalid value for email: {} for field: {}", "INVALID_EMAIL")
 INVALID_URL = ("Invalid value for url: {} for field: {}", "INVALID_URL")
 NOT_A_STRONG_PASSWORD = (
-    "Given a weak password: {} for field: {}! Try with at least 6 characters "
+    "Given a weak password: {} for field: {}! Try with at least 6 "
+    "characters "
     "including special characters",
     "NOT_A_STRONG_PASSWORD")
 INVALID_NUMBER_VALUE = (
@@ -167,23 +171,28 @@ INCORRECT_CHECK_BOX_OPTIONS_SELECTED = (
     "valid options: {}",
     "INCORRECT_CHECK_BOX_OPTIONS_SELECTED")
 INCORRECT_MULTI_SELECT_OPTIONS_SELECTED = (
-    "Invalid multi select options selected: {} for field: {}! Try with these "
+    "Invalid multi select options selected: {} for field: {}! Try with "
+    "these "
     "valid options: {}",
     "INCORRECT_MULTI_SELECT_OPTIONS_SELECTED")
 INCORRECT_MULTI_SELECT_LABELS_SELECTED = (
-    "Invalid multi select labels selected: {} for field: {}! Try with these "
+    "Invalid multi select labels selected: {} for field: {}! Try with "
+    "these "
     "valid options: {}",
     "INCORRECT_MULTI_SELECT_LABELS_SELECTED")
 INVALID_DATE_FORMAT = (
-    "given invalid format for date: {} for field: {}! Try with this format: "
+    "given invalid format for date: {} for field: {}! Try with this "
+    "format: "
     "{}",
     "INVALID_DATE_FORMAT")
 INVALID_TIME_FORMAT = (
-    "given invalid format for time: {} for field: {}! Try with this format: "
+    "given invalid format for time: {} for field: {}! Try with this "
+    "format: "
     "{}",
     "INVALID_TIME_FORMAT")
 INVALID_IMAGE_FORMAT = (
-    "Invalid format for an image: {} for field: {}! Try with these formats: "
+    "Invalid format for an image: {} for field: {}! Try with these "
+    "formats: "
     "{}",
     "INVALID_IMAGE_FORMAT")
 INVALID_IMAGE_URL = ("Invalid url for an image: {} for field: {}!",
@@ -192,7 +201,8 @@ INVALID_FILE_URL = ("Invalid url for a file: {} for field: {}!",
                     "INVALID_FILE_URL")
 
 INVALID_FILE_FORMAT = (
-    "Invalid format for a file: {} for field: {}! Try with these formats: {}",
+    "Invalid format for a file: {} for field: {}! Try with these "
+    "formats: {}",
     "INVALID_FILE_FORMAT")
 EMPTY_VALUE_FOR_REQUIRED_FIELD = [
     "Given Empty value for the required field of field_id: {}! Required "
@@ -216,7 +226,8 @@ INVALID_FIELDS_OF_GOF = ("invalid fields {}  given to the gof {}",
                          "INVALID_FIELDS_OF_GOF")
 
 USER_NEEDS_GOF_WRITABLE_PERMISSION = (
-    "user needs write access on gof {}, because user does not have at least "
+    "user needs write access on gof {}, because user does not have at "
+    "least "
     "one role in {} roles",
     "USER_NEEDS_GOF_WRITABLE_PERMISSION")
 
@@ -264,15 +275,18 @@ INVALID_STAGE_ID = ("please give a valid stage id, {} is invalid stage id",
                     "INVALID_STAGE_ID")
 
 TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION = (
-    "given transition template id {} is not linked to given stage id {} and "
-    "action id {}", "TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION")
+    "given transition template id {} is not linked to given stage id {} "
+    "and "
+    "action id {}",
+    "TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION")
 
 INVALID_STAGE_IDS = ("Invalid stage ids that you have sent are: {},"
                      "please send valid stage ids", "INVALID_STAGE_IDS")
 VIRTUAL_STAGE_IDS = ("Invalid stage ids that you have sent are: {},"
                      "please send valid stage ids", "VIRTUAL_STAGE_IDS")
 STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE = (
-    "Stage ids with invalid permission of assignees that you have sent are: "
+    "Stage ids with invalid permission of assignees that you have sent "
+    "are: "
     "{},"
     "please assign valid assignees for stages",
     "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE")
@@ -406,8 +420,8 @@ USER_NOT_A_MEMBER_OF_PROJECT = (
 )
 
 TASK_DELAY_REASON_NOT_UPDATED = (
-    "Task delay reason not updated for task {} in stage {} with missed due "
-    "date {}",
+    "you are trying to update task due date to {} without updating the delay"
+    " reason for task {} in stage {}",
     "TASK_DELAY_REASON_NOT_UPDATED"
 )
 
@@ -426,7 +440,6 @@ DUE_DATE_TIME_IS_REQUIRED = (
     "DUE_DATE_TIME_IS_REQUIRED"
 )
 
-
 DUE_DATE_TIME_HAS_EXPIRED = (
     "given due date time {} has expired, please give a valid due date time",
     "DUE_DATE_TIME_HAS_EXPIRED"
@@ -435,4 +448,24 @@ DUE_DATE_TIME_HAS_EXPIRED = (
 PRIORITY_IS_REQUIRED = (
     "task priority is required if action type is not no validations",
     "PRIORITY_IS_REQUIRED"
+)
+
+DUE_DATE_IS_NOT_ADDED_TO_TASK = (
+    "please add due date to task",
+    "DUE_DATE_IS_NOT_ADDED_TO_TASK"
+)
+
+USER_DID_NOT_FILL_REQUIRED_GOFS = (
+    "user did not fill required gofs: {}",
+    "USER_DID_NOT_FILL_REQUIRED_GOFS"
+)
+
+USER_DID_NOT_FILL_REQUIRED_FIELDS = (
+    "user did not fill required fields: {}",
+    "USER_DID_NOT_FILL_REQUIRED_FIELDS"
+)
+
+INVALID_TASK_JSON = (
+    "Invalid task json object recieved",
+    "INVALID_TASK_JSON"
 )

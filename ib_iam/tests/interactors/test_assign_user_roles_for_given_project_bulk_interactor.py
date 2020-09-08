@@ -135,9 +135,9 @@ class TestAssignUserRolesForGivenProjectBulkInteractor:
         storage_mock.validate_users_for_project.assert_called_with(
             user_ids=expected_user_ids, project_id=project_id
         )
-        call_obj = \
+        call_args = \
             presenter_mock.response_for_invalid_user_ids_for_project.call_args
-        assert call_obj[0][0].user_ids == invalid_user_ids
+        assert call_args[0][0].user_ids == invalid_user_ids
 
     def test_with_invalid_role_ids_for_project_return_response(
             self, storage_mock, presenter_mock, interactor,
@@ -179,9 +179,9 @@ class TestAssignUserRolesForGivenProjectBulkInteractor:
         storage_mock.validate_role_ids_for_project.assert_called_with(
             role_ids=expected_role_ids, project_id=project_id
         )
-        call_obj = \
+        call_args = \
             presenter_mock.response_for_invalid_role_ids_for_project.call_args
-        assert call_obj[0][0].role_ids == invalid_role_ids
+        assert call_args[0][0].role_ids == invalid_role_ids
 
     def test_with_valid_details_return_response(
             self, storage_mock, presenter_mock, interactor,

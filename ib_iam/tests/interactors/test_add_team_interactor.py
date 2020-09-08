@@ -54,9 +54,9 @@ class TestAddTeamInteractor:
             team_with_user_ids_dto=team_with_user_ids_dto,
             presenter=presenter)
 
-        call_obj = \
+        call_args = \
             presenter.get_duplicate_users_response_for_add_team.call_args
-        error_obj = call_obj.args[0]
+        error_obj = call_args[0][0]
         actual_user_ids_from_exception = error_obj.user_ids
         assert actual_user_ids_from_exception == \
                expected_user_ids_from_exception
@@ -85,9 +85,9 @@ class TestAddTeamInteractor:
 
         user_storage.get_valid_user_ids_among_the_given_user_ids \
             .assert_called_once_with(user_ids=invalid_user_ids)
-        call_obj = \
+        call_args = \
             presenter.get_invalid_users_response_for_add_team.call_args
-        error_obj = call_obj.args[0]
+        error_obj = call_args[0][0]
         actual_user_ids_from_exception = error_obj.user_ids
         assert actual_user_ids_from_exception == \
                expected_user_ids_from_exception
@@ -117,9 +117,9 @@ class TestAddTeamInteractor:
 
         team_storage.get_team_id_if_team_name_already_exists \
             .assert_called_once_with(name=team_with_user_ids_dto.name)
-        call_obj = \
+        call_args = \
             presenter.get_team_name_already_exists_response_for_add_team.call_args
-        error_obj = call_obj.args[0]
+        error_obj = call_args[0][0]
         actual_team_name_from_team_name_already_exists_error = \
             error_obj.team_name
         assert actual_team_name_from_team_name_already_exists_error == \
