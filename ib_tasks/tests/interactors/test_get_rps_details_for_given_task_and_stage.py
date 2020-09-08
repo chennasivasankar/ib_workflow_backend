@@ -156,7 +156,7 @@ class TestGetTaskRelatedRps:
         expected_response = Mock()
         storage.validate_stage_id.return_value = True
         task_storage.check_is_valid_task_display_id.return_value = True
-        task_storage.get_user_team_id.return_value = team_id
+        task_storage.get_team_id.return_value = team_id
         task_storage.get_task_id_for_task_display_id.return_value = 1
         storage.validate_if_task_is_assigned_to_user_in_given_stage. \
             return_value = True
@@ -206,7 +206,7 @@ class TestGetTaskRelatedRps:
         expected_response = Mock()
         storage.validate_stage_id.return_value = True
         task_storage.check_is_valid_task_display_id.return_value = True
-        task_storage.get_user_team_id.return_value = team_id
+        task_storage.get_team_id.return_value = team_id
         task_storage.get_task_id_for_task_display_id.return_value = 1
         storage.validate_if_task_is_assigned_to_user_in_given_stage. \
             return_value = True
@@ -257,7 +257,7 @@ class TestGetTaskRelatedRps:
         expected_response = Mock()
         storage.validate_stage_id.return_value = True
         task_storage.check_is_valid_task_display_id.return_value = True
-        task_storage.get_user_team_id.return_value = team_id
+        task_storage.get_team_id.return_value = team_id
         task_storage.get_task_id_for_task_display_id.return_value = 1
         storage.validate_if_task_is_assigned_to_user_in_given_stage. \
             return_value = True
