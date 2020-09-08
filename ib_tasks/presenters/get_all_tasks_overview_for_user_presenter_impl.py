@@ -174,7 +174,7 @@ class GetAllTasksOverviewForUserPresenterImpl(
             assignee_details = {
                 "assignee_id": assignee_details_dto.assignee_id,
                 "name": assignee_details_dto.name,
-                "profile_pic_url": "https://pbs.twimg.com/profile_images/1195221976203198469/BzPJZcn8_400x400.jpg"
+                "profile_pic_url": assignee_details_dto.profile_pic_url
             }
             return assignee_details
 
