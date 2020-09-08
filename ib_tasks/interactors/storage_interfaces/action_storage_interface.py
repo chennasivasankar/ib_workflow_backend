@@ -15,7 +15,7 @@ from ib_tasks.interactors.stages_dtos import StageActionDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageActionNamesDTO
+    StageActionNamesDTO, StageActionIdDTO, StageIdActionNameDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectRolesDTO
 
 
@@ -111,4 +111,10 @@ class ActionStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_action_ids_given_stage_ids(
             self, stage_ids: List[int]) -> List[int]:
+        pass
+
+    @abc.abstractmethod
+    def get_stage_action_name_dtos(
+            self, stage_id_action_dtos: List[StageIdActionNameDTO]
+    ) -> List[StageActionIdDTO]:
         pass

@@ -1,16 +1,14 @@
-from typing import List
+from typing import List, Optional
 
-from ib_iam.interactors.storage_interfaces.dtos import (
-    ProjectDTO, ProjectsWithTotalCountDTO, PaginationDTO, ProjectTeamIdsDTO,
-    ProjectRoleDTO, ProjectWithoutIdDTO, RoleNameAndDescriptionDTO, RoleDTO,
-    ProjectWithDisplayIdDTO)
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, \
-    ProjectsWithTotalCountDTO, PaginationDTO, ProjectTeamIdsDTO, ProjectRoleDTO
 from ib_iam.interactors.dtos.dtos import UserIdWithProjectIdAndStatusDTO
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
-from ib_iam.interactors.storage_interfaces.project_storage_interface import \
+from ib_iam.interactors.storage_interfaces.dtos import (
+    ProjectWithoutIdDTO, RoleNameAndDescriptionDTO, RoleDTO,
+    ProjectWithDisplayIdDTO, ProjectsWithTotalCountDTO, PaginationDTO,
+    ProjectTeamIdsDTO, ProjectRoleDTO, ProjectDTO, UserIdAndTeamIdsDTO
+)
+from ib_iam.interactors.storage_interfaces.project_storage_interface import (
     ProjectStorageInterface
-from ib_iam.models import Project, ProjectTeam
+)
 from ib_iam.models import Project, ProjectTeam, ProjectRole
 
 
@@ -27,15 +25,17 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         ]
         Project.objects.bulk_create(projects)
 
-    def get_valid_project_ids_from_given_project_ids(
-            self, project_ids: List[str]) -> List[str]:
-        project_ids = Project.objects.filter(project_id__in=project_ids) \
-            .values_list("project_id", flat=True)
+    def get_valid_project_ids(
+            self, project_ids: List[str]
+    ) -> List[str]:
+        project_ids = Project.objects.filter(
+            project_id__in=project_ids
+        ).values_list("project_id", flat=True)
         return list(project_ids)
 
     def get_projects_with_total_count_dto(
-            self, pagination_dto: PaginationDTO) -> ProjectsWithTotalCountDTO:
-        # todo update its test method with new things
+            self, pagination_dto: PaginationDTO
+    ) -> ProjectsWithTotalCountDTO:
         project_objects = Project.objects.all()
         total_projects_count = len(project_objects)
         offset = pagination_dto.offset
@@ -49,8 +49,8 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         return projects_with_total_count
 
     def get_project_team_ids_dtos(
-            self, project_ids: List[str]) -> List[ProjectTeamIdsDTO]:
-        # todo write tests for this method
+            self, project_ids: List[str]
+    ) -> List[ProjectTeamIdsDTO]:
         project_teams = ProjectTeam.objects.filter(
             project__project_id__in=project_ids
         ).values_list('project__project_id', 'team__team_id')
@@ -80,33 +80,32 @@ class ProjectStorageImplementation(ProjectStorageInterface):
 
     @staticmethod
     def _convert_to_project_dto(project_object):
-        project_dto = ProjectDTO(project_id=project_object.project_id,
-                                 name=project_object.name,
-                                 description=project_object.description,
-                                 logo_url=project_object.logo_url)
+        project_dto = ProjectDTO(
+            project_id=project_object.project_id,
+            name=project_object.name, description=project_object.description,
+            logo_url=project_object.logo_url
+        )
         return project_dto
 
-    def get_project_dtos_for_given_project_ids(self, project_ids: List[str]):
+    def get_project_dtos(self, project_ids: List[str]) -> List[ProjectDTO]:
         project_objects = Project.objects.filter(project_id__in=project_ids)
         project_dtos = [
             self._convert_to_project_dto(project_object=project_object)
-            for project_object in project_objects]
+            for project_object in project_objects
+        ]
         return project_dtos
 
     def is_team_exists_in_project(self, project_id: str, team_id: str) -> bool:
-        try:
-            ProjectTeam.objects.get(project_id=project_id, team_id=team_id)
-        except ProjectTeam.DoesNotExist:
-            return False
-        return True
+        is_team_exists = ProjectTeam.objects.filter(
+            project_id=project_id, team_id=team_id
+        ).exists()
+        return is_team_exists
 
     def is_user_exists_in_team(self, team_id: str, user_id: str) -> bool:
         from ib_iam.models import TeamUser
-        try:
-            TeamUser.objects.get(team_id=team_id, user_id=user_id)
-        except TeamUser.DoesNotExist:
-            return False
-        return True
+        return TeamUser.objects.filter(
+            team_id=team_id, user_id=user_id
+        ).exists()
 
     def get_team_name(self, team_id: str) -> str:
         from ib_iam.models import Team
@@ -131,9 +130,7 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             self, user_id: str, project_id: str) -> bool:
         team_ids = ProjectTeam.objects.filter(
             project_id=project_id
-        ).values_list(
-            "team_id", flat=True
-        )
+        ).values_list("team_id", flat=True)
         from ib_iam.models import TeamUser
         user_team_objects = TeamUser.objects.filter(
             team_id__in=team_ids, user_id=user_id
@@ -144,14 +141,14 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         project_objects = Project.objects.filter(project_id=project_id)
         return project_objects.exists()
 
-    def get_valid_team_ids_for_given_project(
+    def get_valid_team_ids(
             self, project_id: str, team_ids: List[str]) -> List[str]:
         team_ids = list(ProjectTeam.objects.filter(
             project_id=project_id, team_id__in=team_ids
         ).values_list('team__team_id', flat=True))
         return list(map(str, team_ids))
 
-    def get_valid_team_ids(self, project_id) -> List[str]:
+    def get_team_ids(self, project_id) -> List[str]:
         team_ids = list(ProjectTeam.objects.filter(
             project_id=project_id
         ).values_list('team__team_id', flat=True))
@@ -159,17 +156,19 @@ class ProjectStorageImplementation(ProjectStorageInterface):
 
     def get_all_project_roles(self) -> List[ProjectRoleDTO]:
         project_role_objects = ProjectRole.objects.all()
-        project_role_dtos = [self._get_project_role_dto(project_role_object)
-                             for project_role_object in project_role_objects]
+        project_role_dtos = [
+            self._get_project_role_dto(project_role_object)
+            for project_role_object in project_role_objects
+        ]
         return project_role_dtos
 
     @staticmethod
     def _get_project_role_dto(project_role_object):
         project_role_dto = ProjectRoleDTO(
             project_id=project_role_object.project_id,
-            role_id=project_role_object.role_id,
-            name=project_role_object.name,
-            description=project_role_object.description)
+            role_id=project_role_object.role_id, name=project_role_object.name,
+            description=project_role_object.description
+        )
         return project_role_dto
 
     def add_project(self, project_without_id_dto: ProjectWithoutIdDTO) -> str:
@@ -177,35 +176,45 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             name=project_without_id_dto.name,
             display_id=project_without_id_dto.display_id,
             description=project_without_id_dto.description,
-            logo_url=project_without_id_dto.logo_url)
+            logo_url=project_without_id_dto.logo_url
+        )
         return project_object.project_id
 
     def assign_teams_to_projects(self, project_id: str, team_ids: List[str]):
-        project_teams = [ProjectTeam(project_id=project_id, team_id=team_id)
-                         for team_id in team_ids]
+        project_teams = [
+            ProjectTeam(project_id=project_id, team_id=team_id)
+            for team_id in team_ids
+        ]
         ProjectTeam.objects.bulk_create(project_teams)
 
-    def add_project_roles(self, project_id: str,
-                          roles: List[RoleNameAndDescriptionDTO]):
-        project_roles = [ProjectRole(project_id=project_id,
-                                     name=role.name,
-                                     description=role.description)
-                         for role in roles]
+    def add_project_roles(
+            self, project_id: str, roles: List[RoleNameAndDescriptionDTO]
+    ):
+        project_roles = [
+            ProjectRole(
+                project_id=project_id, name=role.name,
+                description=role.description
+            ) for role in roles
+        ]
         ProjectRole.objects.bulk_create(project_roles)
 
     def update_project(self, project_dto: ProjectDTO):
-        Project.objects.filter(project_id=project_dto.project_id) \
-            .update(name=project_dto.name,
-                    description=project_dto.description,
-                    logo_url=project_dto.logo_url)
+        Project.objects.filter(
+            project_id=project_dto.project_id
+        ).update(
+            name=project_dto.name, description=project_dto.description,
+            logo_url=project_dto.logo_url
+        )
 
-    def remove_teams_from_project(self, project_id: str, team_ids: List[str]):
-        ProjectTeam.objects.filter(project_id=project_id,
-                                   team_id__in=team_ids).delete()
+    def remove_teams(self, project_id: str, team_ids: List[str]):
+        ProjectTeam.objects.filter(
+            project_id=project_id, team_id__in=team_ids
+        ).delete()
 
     def get_project_role_ids(self, project_id: str) -> List[str]:
-        project_role_ids = ProjectRole.objects.filter(project_id=project_id) \
-            .values_list("role_id", flat=True)
+        project_role_ids = ProjectRole.objects.filter(
+            project_id=project_id
+        ).values_list("role_id", flat=True)
         return list(project_role_ids)
 
     def update_project_roles(self, roles: List[RoleDTO]):
@@ -222,6 +231,19 @@ class ProjectStorageImplementation(ProjectStorageInterface):
     def delete_project_roles(self, role_ids: List[str]):
         ProjectRole.objects.filter(role_id__in=role_ids).delete()
 
+    def get_project_id(self, name: str) -> Optional[str]:
+        try:
+            project_object = Project.objects.get(name=name)
+        except Project.DoesNotExist:
+            return None
+        return project_object.project_id
+
+    def is_exists_display_id(self, display_id: str) -> bool:
+        is_exists_display_id = Project.objects.filter(
+            display_id=display_id
+        ).exists()
+        return is_exists_display_id
+
     def get_user_status_for_given_projects(
             self, user_id: str, project_ids: List[str]
     ) -> List[UserIdWithProjectIdAndStatusDTO]:
@@ -230,8 +252,47 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         ).values_list('project_id', flat=True))
         return [
             UserIdWithProjectIdAndStatusDTO(
-                user_id=user_id,
-                project_id=project_id,
+                user_id=user_id, project_id=project_id,
                 is_exist=project_id in valid_project_ids
             ) for project_id in project_ids
         ]
+
+    def get_valid_role_names_from_given_role_names(
+            self, role_names: List[str]) -> List[str]:
+        valid_role_names = ProjectRole.objects.filter(name__in=role_names) \
+            .values_list("name", flat=True)
+        return list(valid_role_names)
+
+    def get_user_id_with_teams_ids_dtos(
+            self, project_id: str
+    ) -> List[UserIdAndTeamIdsDTO]:
+        from ib_iam.models import TeamUser
+        user_teams = TeamUser.objects.filter(
+            team__projectteam__project_id=project_id
+        ).values_list('team__team_id', 'user_id')
+        from collections import defaultdict
+        user_team_ids_dictionary = defaultdict(list)
+        for user_team in user_teams:
+            user_id = user_team[1]
+            user_team_ids_dictionary[user_id].extend([str(user_team[0])])
+        user_id_and_team_ids_dtos = [
+            UserIdAndTeamIdsDTO(user_id=user_id, team_ids=team_ids)
+            for user_id, team_ids in user_team_ids_dictionary.items()
+        ]
+        return user_id_and_team_ids_dtos
+
+    def remove_user_roles(
+            self, project_id: str, user_ids: List[str]
+    ):
+        from ib_iam.models import UserRole
+        UserRole.objects.filter(
+            user_id__in=user_ids, project_role__project_id=project_id
+        ).delete()
+
+    def get_valid_role_names(
+            self, role_names: List[str]
+    ) -> List[str]:
+        valid_role_names = ProjectRole.objects.filter(
+            name__in=role_names
+        ).values_list("name", flat=True)
+        return list(valid_role_names)

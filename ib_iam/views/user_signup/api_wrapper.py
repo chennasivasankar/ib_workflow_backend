@@ -16,9 +16,14 @@ def api_wrapper(*args, **kwargs):
     from ib_iam.storages.user_storage_implementation import \
         UserStorageImplementation
     user_storage = UserStorageImplementation()
+    from ib_iam.storages.elastic_storage_implementation import \
+        ElasticStorageImplementation
+    elastic_storage = ElasticStorageImplementation()
 
     from ib_iam.interactors.sign_up_interactor import SignupInteractor
-    interactor = SignupInteractor(user_storage=user_storage)
+    interactor = SignupInteractor(
+        user_storage=user_storage, elastic_storage=elastic_storage
+    )
 
     response = interactor.signup_wrapper(
         presenter=presenter, email=email, name=name, password=password)

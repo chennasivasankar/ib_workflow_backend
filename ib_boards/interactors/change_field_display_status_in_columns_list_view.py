@@ -50,7 +50,8 @@ class ChangeFieldsDisplayStatus:
         )
         self.storage.validate_field_id_with_column_id(
             column_id=field_order_parameter.column_id,
-            field_id=field_order_parameter.field_id
+            field_id=field_order_parameter.field_id,
+            user_id=field_order_parameter.user_id
         )
         self.storage.change_display_status_of_field(
             field_display_status_parameter=field_order_parameter

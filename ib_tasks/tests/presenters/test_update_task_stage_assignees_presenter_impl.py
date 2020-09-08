@@ -76,8 +76,7 @@ class TestUpdateTaskStageAssigneesPresenterImplementation:
         # Arrange
         user_id = "assignee_1"
         # Act
-        json_response = presenter.raise_invalid_user_id_exception(user_id=
-                                                                  user_id)
+        json_response = presenter.raise_invalid_user_id_exception()
         # Assert
         json_json_response = json.loads(json_response.content)
         snapshot.assert_match(

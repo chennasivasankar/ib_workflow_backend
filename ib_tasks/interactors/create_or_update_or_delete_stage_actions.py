@@ -156,21 +156,22 @@ class CreateOrUpdateOrDeleteStageActions:
             raise EmptyStageButtonText(stage_ids_dict=stage_ids_dict)
 
     def _validations_for_stage_roles(self, actions_dto: List[StageActionDTO]):
-        from ib_tasks.adapters.service_adapter import get_service_adapter
-        db_roles = get_service_adapter().roles_service.get_db_roles()
-        invalid_stage_roles = defaultdict(list)
-        for action_dto in actions_dto:
-            if not action_dto.roles == ["ALL_ROLES"]:
-                stage_id = action_dto.stage_id
-                self._validation_for_action_roles(
-                    action_dto.roles, db_roles, invalid_stage_roles, stage_id)
-
-        is_invalid_stage_roles_present = invalid_stage_roles
-
-        if is_invalid_stage_roles_present:
-            stage_roles_dict = \
-                json.dumps(invalid_stage_roles)
-            raise InvalidRolesException(stage_roles_dict=stage_roles_dict)
+        # from ib_tasks.adapters.service_adapter import get_service_adapter
+        # db_roles = get_service_adapter().roles_service.get_db_roles()
+        # invalid_stage_roles = defaultdict(list)
+        # for action_dto in actions_dto:
+        #     if not action_dto.roles == ["ALL_ROLES"]:
+        #         stage_id = action_dto.stage_id
+        #         self._validation_for_action_roles(
+        #             action_dto.roles, db_roles, invalid_stage_roles, stage_id)
+        #
+        # is_invalid_stage_roles_present = invalid_stage_roles
+        #
+        # if is_invalid_stage_roles_present:
+        #     stage_roles_dict = \
+        #         json.dumps(invalid_stage_roles)
+        #     raise InvalidRolesException(stage_roles_dict=stage_roles_dict)
+        return
 
     def _validation_for_action_roles(self, action_roles: List[str],
                                      db_roles: List[str],

@@ -1,6 +1,8 @@
 import factory
 
-from ib_boards.models import Board, Column, ColumnPermission, UserStarredBoard
+from ib_boards.constants.enum import DisplayStatus
+from ib_boards.models import Board, Column, ColumnPermission, UserStarredBoard, \
+    FieldDisplayStatus, FieldOrder
 
 
 class BoardFactory(factory.django.DjangoModelFactory):
@@ -52,3 +54,26 @@ class ColumnPermissionFactory(factory.django.DjangoModelFactory):
 
     column = factory.SubFactory(ColumnFactory)
     user_role_id = 'ALL_ROLES'
+
+
+class FieldDisplayStatusFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = FieldDisplayStatus
+
+    column_id = factory.Sequence(lambda n: f'COLUMN_ID_{n + 1}')
+    user_id = factory.Sequence(lambda n: f'user_id_{n}')
+    field_id = factory.Sequence(lambda n: f'field_id_{n}')
+    display_status = DisplayStatus.HIDE.value
+
+
+class FieldOrderFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = FieldOrder
+
+    column_id = factory.Sequence(lambda n: f'COLUMN_ID_{n + 1}')
+    user_id = factory.Sequence(lambda n: f'user_id_{n}')
+    fields_order = """{
+        "field_ids": [
+            "field_id_0", "field_id_1", "field_id_2"
+        ]
+    }"""

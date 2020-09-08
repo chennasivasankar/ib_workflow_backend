@@ -17,9 +17,9 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidUrlForImage, InvalidImageFormat, InvalidUrlForFile, \
     InvalidFileFormat
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
-    DuplicateFieldIdsToGoF
+    DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
-    DuplicateSameGoFOrderForAGoF
+    DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.stage_custom_exceptions import \
@@ -63,6 +63,9 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
+    import \
+    TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO, CreateTaskDTO, \
     UpdateTaskWithTaskDisplayIdDTO
 from ib_tasks.interactors.update_task_stage_assignees_interactor import \
@@ -80,6 +83,7 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             elastic_storage: ElasticSearchStorageInterface,
             action_storage: ActionStorageInterface,
             task_stage_storage: TaskStageStorageInterface,
+            task_template_storage: TaskTemplateStorageInterface
     ):
         self.task_stage_storage = task_stage_storage
         self.action_storage = action_storage
@@ -90,6 +94,7 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         self.field_storage = field_storage
         self.stage_storage = stage_storage
         self.elastic_storage = elastic_storage
+        self.task_template_storage = task_template_storage
 
     def update_task_wrapper(
             self, presenter: UpdateTaskPresenterInterface,
@@ -225,16 +230,19 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         task_template_id = \
             self.create_task_storage.get_template_id_for_given_task(task_id)
         self._validate_task_details(task_dto, task_dto.action_type)
+        project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
         base_validations_interactor = \
             TemplateGoFsFieldsBaseValidationsInteractor(
                 self.task_storage, self.gof_storage,
                 self.create_task_storage, self.storage,
-                self.field_storage
+                self.field_storage, self.task_template_storage
             )
         base_validations_interactor \
             .perform_base_validations_for_template_gofs_and_fields(
-            task_dto.gof_fields_dtos, task_dto.created_by_id,
-            task_template_id, action_type=task_dto.action_type)
+            gof_fields_dtos=task_dto.gof_fields_dtos,
+            user_id=task_dto.created_by_id,
+            task_template_id=task_template_id, project_id=project_id,
+            action_type=task_dto.action_type)
         self.create_task_storage.update_task_with_given_task_details(
             task_dto=task_dto)
         existing_gofs = \
@@ -288,6 +296,9 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             action_storage=self.action_storage,
             task_stage_storage=self.task_stage_storage)
         project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
+        self._update_task_in_elasticsearch(
+            task_id=task_id
+        )
         all_tasks_overview_details_dto = \
             task_overview_interactor.get_filtered_tasks_overview_for_user(
                 user_id=task_dto.created_by_id, task_ids=[task_id],
@@ -512,3 +523,17 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         if priority_is_not_given and not action_type_is_no_validations:
             raise PriorityIsRequired()
         return
+
+    def _update_task_in_elasticsearch(self, task_id: int):
+        from ib_tasks.interactors.create_or_update_tasks_into_elasticsearch_interactor import \
+            CreateOrUpdateDataIntoElasticsearchInteractor
+        interactor = CreateOrUpdateDataIntoElasticsearchInteractor(
+            elasticsearch_storage=self.elastic_storage,
+            storage=self.create_task_storage,
+            task_storage=self.task_storage,
+            stage_storage=self.stage_storage,
+            field_storage=self.field_storage
+        )
+        interactor.create_or_update_task_in_elasticsearch_storage(
+            task_id=task_id
+        )
