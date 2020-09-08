@@ -78,10 +78,11 @@ class TestGetBoardsInteractor:
             storage=storage_mock
         )
         user_role = 'User'
+        roles = ["role_1"]
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
-            adapter_mock_to_get_user_role
-        adapter_mock = adapter_mock_to_get_user_role(
-            mocker=mocker, user_role=user_role
+            mock_get_user_roles
+        adapter_mock = mock_get_user_roles(
+                mocker=mocker, roles=roles
         )
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             mock_validate_project_ids
@@ -202,10 +203,11 @@ class TestGetBoardsInteractor:
             storage=storage_mock
         )
         user_role = 'User'
+        roles = ["role_1"]
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
-            adapter_mock_to_get_user_role
-        adapter_mock = adapter_mock_to_get_user_role(
-            mocker=mocker, user_role=user_role
+            mock_get_user_roles
+        adapter_mock = mock_get_user_roles(
+                mocker=mocker, roles=roles
         )
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             mock_validate_project_ids
@@ -249,11 +251,11 @@ class TestGetBoardsInteractor:
         interactor = GetBoardsInteractor(
             storage=storage_mock
         )
-        user_role = "User"
+        roles = ["role_1"]
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
-            adapter_mock_to_get_user_role
-        adapter_mock = adapter_mock_to_get_user_role(
-            mocker=mocker, user_role=user_role
+            mock_get_user_roles
+        adapter_mock = mock_get_user_roles(
+                mocker=mocker, roles=roles
         )
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             mock_validate_project_ids
@@ -316,10 +318,11 @@ class TestGetBoardsInteractor:
         presenter_mock.get_response_for_user_have_no_access_for_boards. \
             return_value = expected_response
 
+        roles = ["role_1"]
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
-            adapter_mock_to_get_user_role
-        adapter_mock = adapter_mock_to_get_user_role(
-            mocker=mocker, user_role=user_role
+            mock_get_user_roles
+        adapter_mock = mock_get_user_roles(
+                mocker=mocker, roles=roles
         )
 
         # Act
@@ -348,7 +351,7 @@ class TestGetBoardsInteractor:
             self, storage_mock, presenter_mock, get_boards_dto, mocker):
         # Arrange
         total_boards = 3
-        all_board_ids = ['BOARD_ID_3', 'BOARD_ID_1', 'BOARD_ID_2']
+        all_board_ids = ['BOARD_ID_1', 'BOARD_ID_2', 'BOARD_ID_3']
         board_ids = ['BOARD_ID_1', 'BOARD_ID_2']
         starred_boards = ['BOARD_ID_3']
         project_id = get_boards_dto.project_id
@@ -363,16 +366,17 @@ class TestGetBoardsInteractor:
             other_boards_dtos=board_dtos
         )
 
+        roles = ["role_1"]
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_get_user_roles
+        adapter_mock = mock_get_user_roles(
+                mocker=mocker, roles=roles
+        )
         interactor = GetBoardsInteractor(
             storage=storage_mock
         )
         user_role = "User"
         user_id = get_boards_dto.user_id
-        from ib_boards.tests.common_fixtures.adapters.iam_service import \
-            adapter_mock_to_get_user_role
-        adapter_mock = adapter_mock_to_get_user_role(
-            mocker=mocker, user_role=user_role
-        )
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             mock_validate_project_ids
         project_adapter_mock = mock_validate_project_ids(mocker, project_ids)
@@ -428,15 +432,14 @@ class TestGetBoardsInteractor:
             other_boards_dtos=board_dtos
         )
         BoardDTOFactory.reset_sequence()
-
+        roles = ["role_1"]
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            mock_get_user_roles
+        adapter_mock = mock_get_user_roles(
+                mocker=mocker, roles=roles
+        )
         interactor = GetBoardsInteractor(
             storage=storage_mock
-        )
-        user_role = 'User'
-        from ib_boards.tests.common_fixtures.adapters.iam_service import \
-            adapter_mock_to_get_user_role
-        adapter_mock = adapter_mock_to_get_user_role(
-            mocker=mocker, user_role=user_role
         )
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             mock_validate_project_ids
@@ -481,7 +484,7 @@ class TestGetBoardsInteractor:
             self, storage_mock, presenter_mock, get_boards_dto, mocker):
         # Arrange
         total_boards = 3
-        all_board_ids = ['BOARD_ID_3', 'BOARD_ID_1', 'BOARD_ID_2']
+        all_board_ids = ['BOARD_ID_1', 'BOARD_ID_2', 'BOARD_ID_3']
         board_ids = ['BOARD_ID_1', 'BOARD_ID_2']
         starred_boards = ['BOARD_ID_3']
         project_id = get_boards_dto.project_id
@@ -501,10 +504,11 @@ class TestGetBoardsInteractor:
             storage=storage_mock
         )
         user_role = "User"
+        roles = ["role_1"]
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
-            adapter_mock_to_get_user_role
-        adapter_mock = adapter_mock_to_get_user_role(
-            mocker=mocker, user_role=user_role
+            mock_get_user_roles
+        adapter_mock = mock_get_user_roles(
+            mocker=mocker, roles=roles
         )
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             mock_validate_project_ids
