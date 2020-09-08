@@ -6,8 +6,11 @@ from ...storages.action_storage_implementation import \
     ActionsStorageImplementation
 from ...storages.elasticsearch_storage_implementation import \
     ElasticSearchStorageImplementation
+from ...storages.gof_storage_implementation import GoFStorageImplementation
 from ...storages.task_stage_storage_implementation import \
     TaskStageStorageImplementation
+from ...storages.task_template_storage_implementation import \
+    TaskTemplateStorageImplementation
 from ...storages.tasks_storage_implementation import TasksStorageImplementation
 
 
@@ -34,18 +37,23 @@ def api_wrapper(*args, **kwargs):
     field_storage = FieldsStorageImplementation()
     storage = StorageImplementation()
     stage_storage = StagesStorageImplementation()
-    gof_storage = CreateOrUpdateTaskStorageImplementation()
+    gof_storage = GoFStorageImplementation()
+    create_task_storage = CreateOrUpdateTaskStorageImplementation()
     task_storage = TasksStorageImplementation()
     action_storage = ActionsStorageImplementation()
     task_stage_storage = TaskStageStorageImplementation()
     elastic_search_storage = ElasticSearchStorageImplementation()
+    task_template_storage = TaskTemplateStorageImplementation()
+
     interactor = UserActionOnTaskInteractor(
         user_id=user_id, action_id=action_id,
         board_id=board_id, storage=storage, gof_storage=gof_storage,
         stage_storage=stage_storage, field_storage=field_storage,
         task_storage=task_storage, action_storage=action_storage,
         task_stage_storage=task_stage_storage, view_type=view_type,
-        elasticsearch_storage=elastic_search_storage
+        elasticsearch_storage=elastic_search_storage,
+        create_task_storage=create_task_storage,
+        task_template_storage=task_template_storage
     )
 
     response = interactor.user_action_on_task_wrapper(

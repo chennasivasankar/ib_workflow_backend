@@ -1,3 +1,4 @@
+import json
 from typing import List, Dict
 
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
@@ -33,6 +34,9 @@ def api_wrapper(*args, **kwargs):
     due_datetime = request_data['due_datetime']
     priority = request_data['priority']
     task_gofs = request_data['task_gofs']
+    request_data['start_datetime'] = str(request_data['start_datetime'])
+    request_data['due_datetime'] = str(request_data['due_datetime'])
+    task_request_json = json.dumps(request_data)
 
     from ib_tasks.interactors.task_dtos import GoFFieldsDTO, CreateTaskDTO
 
@@ -85,7 +89,8 @@ def api_wrapper(*args, **kwargs):
     )
 
     response = interactor.create_task_wrapper(
-        task_dto=task_dto, presenter=presenter)
+        task_dto=task_dto, presenter=presenter,
+        task_request_json=task_request_json)
     return response
 
 

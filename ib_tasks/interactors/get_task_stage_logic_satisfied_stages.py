@@ -130,8 +130,8 @@ class GetTaskStageLogicSatisfiedStages:
             "==": operator.eq,
             ">=": operator.ge,
             "<=": operator.le,
-            ">": operator.le,
-            "<": operator.ge,
+            ">": operator.gt,
+            "<": operator.lt,
             "!=": operator.ne
         }
 

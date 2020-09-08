@@ -2,7 +2,8 @@ import datetime
 import pytest
 from freezegun import freeze_time
 from ib_utility_tools.interactors.storage_interfaces.dtos import (
-    EntityWithTimerDTO)
+    EntityWithTimerDTO
+)
 
 
 class TestGetBulkTimerDetailsForGivenEntities:
@@ -40,8 +41,7 @@ class TestGetBulkTimerDetailsForGivenEntities:
         from ib_utility_tools.tests.factories.models import TimerFactory
         timer_objects = [
             TimerFactory.create(
-                entity_id=timer["entity_id"],
-                entity_type=timer["entity_type"],
+                entity_id=timer["entity_id"], entity_type=timer["entity_type"],
                 duration_in_seconds=timer["duration_in_seconds"],
                 is_running=timer["is_running"],
                 start_datetime=timer["start_datetime"]
@@ -55,29 +55,28 @@ class TestGetBulkTimerDetailsForGivenEntities:
         timer = {
             "entity_id": "ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
             "entity_type": TimerEntityType.STAGE_TASK.value,
-            "duration_in_seconds": 0,
-            "is_running": False,
+            "duration_in_seconds": 0, "is_running": False,
             "start_datetime": None
         }
         from ib_utility_tools.tests.factories.models import TimerFactory
         timer_objects = [
             TimerFactory.create(
-                entity_id=timer["entity_id"],
-                entity_type=timer["entity_type"],
+                entity_id=timer["entity_id"], entity_type=timer["entity_type"],
                 duration_in_seconds=timer["duration_in_seconds"],
                 is_running=timer["is_running"],
-                start_datetime=timer["start_datetime"])
+                start_datetime=timer["start_datetime"]
+            )
         ]
         return timer_objects
 
     @pytest.fixture
     def timer_entity_dtos(self, timers):
         from ib_utility_tools.tests.factories.storage_dtos import (
-            TimerEntityDTOFactory)
+            TimerEntityDTOFactory
+        )
         timer_entity_dtos = [
             TimerEntityDTOFactory(
-                entity_id=timer["entity_id"],
-                entity_type=timer["entity_type"]
+                entity_id=timer["entity_id"], entity_type=timer["entity_type"]
             ) for timer in timers
         ]
         return timer_entity_dtos
@@ -107,8 +106,7 @@ class TestGetBulkTimerDetailsForGivenEntities:
     def entity_with_timer_dtos(self, expected_timers):
         entity_with_timer_dtos = [
             EntityWithTimerDTO(
-                entity_id=timer["entity_id"],
-                entity_type=timer["entity_type"],
+                entity_id=timer["entity_id"], entity_type=timer["entity_type"],
                 duration_in_seconds=timer["duration_in_seconds"],
                 is_running=timer["is_running"]
             ) for timer in expected_timers
@@ -140,8 +138,7 @@ class TestGetBulkTimerDetailsForGivenEntities:
     ):
         entity_with_timer_dtos = [
             EntityWithTimerDTO(
-                entity_id=timer["entity_id"],
-                entity_type=timer["entity_type"],
+                entity_id=timer["entity_id"], entity_type=timer["entity_type"],
                 duration_in_seconds=timer["duration_in_seconds"],
                 is_running=timer["is_running"]
             ) for timer in expected_timers_for_invalid_entities
@@ -155,15 +152,14 @@ class TestGetBulkTimerDetailsForGivenEntities:
             entity_with_timer_dtos_for_invalid_entities
     ):
         # Arrange
-
+        expected_result = entity_with_timer_dtos_for_invalid_entities
         # Act
-        actual_entity_with_timer_dtos = \
-            service_interface.get_bulk_timer_details_for_given_entities(
-                timer_entity_dtos=timer_entity_dtos)
+        actual_result = service_interface.get_bulk_timer_details_for_given_entities(
+            timer_entity_dtos=timer_entity_dtos
+        )
 
         # Assert
-        assert actual_entity_with_timer_dtos == \
-               entity_with_timer_dtos_for_invalid_entities
+        assert actual_result == expected_result
 
     @pytest.mark.django_db
     @freeze_time("2020-08-07 18:00:00")
@@ -171,10 +167,13 @@ class TestGetBulkTimerDetailsForGivenEntities:
             self, service_interface, timer_objects, timer_entity_dtos,
             entity_with_timer_dtos
     ):
+        # Arrange
+        expected_result = entity_with_timer_dtos
+
         # Act
-        actual_entity_with_timer_dtos = \
-            service_interface.get_bulk_timer_details_for_given_entities(
-                timer_entity_dtos=timer_entity_dtos)
+        actual_result = service_interface.get_bulk_timer_details_for_given_entities(
+            timer_entity_dtos=timer_entity_dtos
+        )
 
         # Assert
-        assert actual_entity_with_timer_dtos == entity_with_timer_dtos
+        assert actual_result == expected_result

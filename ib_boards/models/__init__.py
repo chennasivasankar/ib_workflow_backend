@@ -1,13 +1,16 @@
 from ib_boards.models.board import Board
 from ib_boards.models.column import Column, ColumnPermission
 from ib_boards.models.user_starred_boards import UserStarredBoard
+from ib_boards.models.fields_in_list_view import FieldOrder, FieldDisplayStatus
 
 
 __all__ = [
     'Board',
     'Column',
     'ColumnPermission',
-    'UserStarredBoard'
+    'UserStarredBoard',
+    'FieldOrder',
+    'FieldDisplayStatus'
 ]
 
 # class DummyModel(AbstractDateTimeModel):
