@@ -75,6 +75,7 @@ class TestCreateReplyToCommentInteractor:
         # Assert
         assert response == \
                expected_presenter_response_for_comment_id_not_found_mock
+
         presenter_mock.response_for_comment_id_not_found.assert_called_once()
         storage_mock.is_comment_id_exists.assert_called_once()
 
@@ -93,6 +94,7 @@ class TestCreateReplyToCommentInteractor:
         invalid_user_ids = [
             "10be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
+
         from ib_discussions.tests.common_fixtures.adapters import \
             prepare_validate_user_ids_mock
         validate_user_ids_mock = prepare_validate_user_ids_mock(mocker=mocker)
@@ -202,6 +204,7 @@ class TestCreateReplyToCommentInteractor:
         # Assert
         assert response \
                == expected_presenter_prepare_response_for_reply_mock
+
         storage_mock.is_comment_id_exists.assert_called_once_with(
             comment_id=comment_id
         )
@@ -300,6 +303,7 @@ class TestCreateReplyToCommentInteractor:
         # Assert
         assert response \
                == expected_presenter_prepare_response_for_reply_mock
+
         storage_mock.is_comment_id_exists.assert_called_once_with(
             comment_id=comment_id
         )

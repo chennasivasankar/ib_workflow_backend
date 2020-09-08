@@ -35,7 +35,7 @@ class TestMarkDiscussionClarifiedInteractor:
         storage_mock.validate_discussion_id.side_effect \
             = DiscussionIdNotFound
 
-        presenter_mock.raise_exception_for_discussion_id_not_found.return_value \
+        presenter_mock.response_for_discussion_id_not_found.return_value \
             = expected_presenter_raise_exception_for_discussion_id_not_found_mock
 
         from ib_discussions.interactors.mark_discussion_clarified_interactor import \
@@ -53,7 +53,7 @@ class TestMarkDiscussionClarifiedInteractor:
         storage_mock.validate_discussion_id.assert_called_once_with(
             discussion_id=discussion_id
         )
-        presenter_mock.raise_exception_for_discussion_id_not_found. \
+        presenter_mock.response_for_discussion_id_not_found. \
             assert_called_once()
 
     def test_with_user_id_cannot_mark_as_clarified_raise_exception(
@@ -70,7 +70,7 @@ class TestMarkDiscussionClarifiedInteractor:
         storage_mock.validate_is_user_can_mark_as_clarified.side_effect \
             = UserCannotMarkAsClarified
 
-        presenter_mock.raise_exception_for_user_cannot_mark_as_clarified.return_value \
+        presenter_mock.response_for_user_cannot_mark_as_clarified.return_value \
             = expected_presenter_raise_exception_for_user_cannot_mark_as_clarified_mock
 
         from ib_discussions.interactors.mark_discussion_clarified_interactor import \
@@ -88,7 +88,7 @@ class TestMarkDiscussionClarifiedInteractor:
         storage_mock.validate_is_user_can_mark_as_clarified. \
             assert_called_once_with(user_id=user_id,
                                     discussion_id=discussion_id)
-        presenter_mock.raise_exception_for_user_cannot_mark_as_clarified. \
+        presenter_mock.response_for_user_cannot_mark_as_clarified. \
             assert_called_once_with()
 
     def test_with_valid_details_return_response(
@@ -100,7 +100,7 @@ class TestMarkDiscussionClarifiedInteractor:
         expected_presenter_raise_success_response_for_mark_discussion_as_clarified_mock \
             = Mock()
 
-        presenter_mock.raise_success_response_for_mark_discussion_as_clarified.return_value \
+        presenter_mock.prepare_success_response_for_mark_discussion_as_clarified.return_value \
             = expected_presenter_raise_success_response_for_mark_discussion_as_clarified_mock
 
         from ib_discussions.interactors.mark_discussion_clarified_interactor import \
@@ -118,5 +118,5 @@ class TestMarkDiscussionClarifiedInteractor:
         storage_mock.mark_discussion_clarified.assert_called_once_with(
             discussion_id=discussion_id
         )
-        presenter_mock.raise_success_response_for_mark_discussion_as_clarified. \
+        presenter_mock.prepare_success_response_for_mark_discussion_as_clarified. \
             assert_called_once_with()

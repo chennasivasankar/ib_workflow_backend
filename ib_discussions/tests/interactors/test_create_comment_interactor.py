@@ -39,6 +39,7 @@ class TestCreateCommentInteractor:
             "10be920b-7b4c-49e7-8adb-41a0c18da848",
             "20be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
+
         from ib_discussions.tests.common_fixtures.adapters import \
             prepare_validate_user_ids_mock
         prepare_validate_user_ids_mock(mocker=mocker)
@@ -73,6 +74,7 @@ class TestCreateCommentInteractor:
 
         # Assert
         assert response == expected_presenter_response_for_discussion_id_not_found_mock
+
         presenter_mock.response_for_discussion_id_not_found.assert_called_once()
         storage_mock.is_discussion_id_exists.assert_called_once_with(
             discussion_id=discussion_id
@@ -92,6 +94,7 @@ class TestCreateCommentInteractor:
         invalid_user_ids = [
             "10be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
+
         from ib_discussions.tests.common_fixtures.adapters import \
             prepare_validate_user_ids_mock
         validate_user_ids_mock = prepare_validate_user_ids_mock(mocker=mocker)
@@ -129,6 +132,7 @@ class TestCreateCommentInteractor:
 
         # Assert
         assert response == expected_presenter_response_for_invalid_user_ids_mock
+
         presenter_mock.response_for_invalid_user_ids.assert_called_once()
 
     def test_with_valid_details_return_response(
@@ -144,6 +148,7 @@ class TestCreateCommentInteractor:
             "10be920b-7b4c-49e7-8adb-41a0c18da848",
             "20be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
+
         from ib_discussions.tests.common_fixtures.adapters import \
             prepare_validate_user_ids_mock
         prepare_validate_user_ids_mock(mocker=mocker)
@@ -206,6 +211,7 @@ class TestCreateCommentInteractor:
         # Assert
         assert response \
                == expected_presenter_prepare_response_for_create_comment_mock
+
         presenter_mock.prepare_response_for_comment.assert_called_once()
         storage_mock.create_comment_for_discussion.assert_called_once_with(
             user_id=user_id, discussion_id=discussion_id,

@@ -25,11 +25,11 @@ class CreateDiscussionPresenterInterface(abc.ABC):
 class GetDiscussionsPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_offset(self):
+    def response_for_invalid_offset(self):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_limit(self):
+    def response_for_invalid_limit(self):
         pass
 
     @abc.abstractmethod
@@ -44,26 +44,26 @@ class GetDiscussionsPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_user_id(self):
+    def response_for_invalid_user_id(self):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_discussion_set_not_found(self):
+    def response_for_discussion_set_not_found(self):
         pass
 
 
 class MarkDiscussionClarifiedPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def raise_exception_for_discussion_id_not_found(self):
+    def response_for_discussion_id_not_found(self):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_user_cannot_mark_as_clarified(self):
+    def response_for_user_cannot_mark_as_clarified(self):
         pass
 
     @abc.abstractmethod
-    def raise_success_response_for_mark_discussion_as_clarified(self):
+    def prepare_success_response_for_mark_discussion_as_clarified(self):
         pass
 
 

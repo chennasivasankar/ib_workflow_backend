@@ -41,7 +41,8 @@ class CommentStorageImplementation(CommentStorageInterface):
         return comment_dto
 
     def get_replies_count_for_comments(
-            self, comment_ids: List[str]) -> List[CommentIdWithRepliesCountDTO]:
+            self, comment_ids: List[str]
+    ) -> List[CommentIdWithRepliesCountDTO]:
         comment_id_wise_replies_count_dto_dict = {
             str(comment_id): CommentIdWithRepliesCountDTO(
                 comment_id=comment_id, replies_count=0
@@ -120,7 +121,7 @@ class CommentStorageImplementation(CommentStorageInterface):
         comment_objects = Comment.objects.filter(parent_comment_id=comment_id)
         comment_dtos = [
             CommentDTO(
-                comment_id=comment_object.id,
+                comment_id=str(comment_object.id),
                 comment_content=comment_object.content,
                 user_id=comment_object.user_id,
                 created_at=comment_object.created_at,
@@ -141,13 +142,15 @@ class CommentStorageImplementation(CommentStorageInterface):
         CommentWithMentionUserId.objects.bulk_create(
             comment_with_mention_user_ids_objects)
 
-    def add_multimedia_to_comment(self, comment_id,
-                                  multimedia_dtos: List[MultimediaDTO]):
+    def add_multimedia_to_comment(
+            self, comment_id: str, multimedia_dtos: List[MultimediaDTO]
+    ):
         from ib_discussions.models.comment import CommentWithMultiMedia
         from ib_discussions.models.multimedia import MultiMedia
+
         multimedia_objects = [
             CommentWithMultiMedia(
-                comment_id=comment_id,
+                comment_id=str(comment_id),
                 multimedia=MultiMedia.objects.create(
                     format_type=multimedia_dto.format_type,
                     url=multimedia_dto.url,
@@ -196,7 +199,8 @@ class CommentStorageImplementation(CommentStorageInterface):
         comment_id_with_multimedia_dtos = [
             CommentIdWithMultiMediaDTO(
                 comment_id=str(comment_id_with_multimedia_object.comment_id),
-                multimedia_id=str(comment_id_with_multimedia_object.multimedia_id),
+                multimedia_id=str(
+                    comment_id_with_multimedia_object.multimedia_id),
                 format_type=comment_id_with_multimedia_object.multimedia.format_type,
                 url=comment_id_with_multimedia_object.multimedia.url,
                 thumbnail_url=comment_id_with_multimedia_object.multimedia.thumbnail_url
@@ -212,11 +216,10 @@ class CommentStorageImplementation(CommentStorageInterface):
         comment_object.save()
         return
 
-    def get_comment_creator_id(self, comment_id: str):
+    def get_comment_creator_id(self, comment_id: str) -> str:
         comment_object = Comment.objects.get(id=comment_id)
         return str(comment_object.user_id)
 
     def delete_comment(self, comment_id: str):
         Comment.objects.filter(id=comment_id).delete()
         return
-

@@ -1,5 +1,6 @@
 from typing import List
 
+from ib_discussions.adapters.auth_service import UserProfileDTO
 from ib_discussions.interactors.dtos.dtos import CreateCompleteReplyToCommentDTO
 from ib_discussions.interactors.presenter_interfaces.dtos import \
     CommentIdWithEditableStatusDTO
@@ -23,6 +24,7 @@ class CreateReplyToCommentInteractor:
         from ib_discussions.adapters.auth_service import InvalidUserIds
         from ib_discussions.exceptions.custom_exceptions import \
             CommentIdNotFound
+
         try:
             response = self._reply_to_comment_response(
                 presenter=presenter,
@@ -37,7 +39,8 @@ class CreateReplyToCommentInteractor:
 
     def _reply_to_comment_response(
             self, presenter: CreateReplyPresenterInterface,
-            create_complete_reply_to_comment_dto: CreateCompleteReplyToCommentDTO):
+            create_complete_reply_to_comment_dto: CreateCompleteReplyToCommentDTO
+    ):
         comment_dto, comment_with_editable_status_dto, user_profile_dtos, \
         comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos = \
             self.reply_to_comment(
@@ -92,7 +95,8 @@ class CreateReplyToCommentInteractor:
 
     def _validate_comment_id_and_mention_user_ids(
             self,
-            create_complete_reply_to_comment_dto: CreateCompleteReplyToCommentDTO):
+            create_complete_reply_to_comment_dto: CreateCompleteReplyToCommentDTO
+    ):
         from ib_discussions.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
         service_adapter.auth_service.validate_user_ids(
@@ -120,7 +124,8 @@ class CreateReplyToCommentInteractor:
                comment_id_with_multimedia_dtos
 
     def get_replies_for_comment(
-            self, reply_dtos: List[CommentDTO], user_id: str):
+            self, reply_dtos: List[CommentDTO], user_id: str
+    ):
         comment_ids = [comment.comment_id for comment in reply_dtos]
         mention_user_ids = self.storage.get_mention_user_ids(
             comment_ids=comment_ids)
@@ -145,7 +150,7 @@ class CreateReplyToCommentInteractor:
                comment_id_with_multimedia_dtos
 
     @staticmethod
-    def _get_user_profile_dtos(user_ids: List[str]):
+    def _get_user_profile_dtos(user_ids: List[str]) -> List[UserProfileDTO]:
         from ib_discussions.adapters.service_adapter import get_service_adapter
         adapter = get_service_adapter()
         user_profile_dtos = adapter.auth_service.get_user_profile_dtos(
@@ -154,8 +159,9 @@ class CreateReplyToCommentInteractor:
         return user_profile_dtos
 
     @staticmethod
-    def _prepare_comment_editable_status_dtos(comment_dtos: List[CommentDTO],
-                                              user_id):
+    def _prepare_comment_editable_status_dtos(
+            comment_dtos: List[CommentDTO], user_id: str
+    ) -> List[CommentIdWithEditableStatusDTO]:
         comment_editable_status_dtos = [
             CreateReplyToCommentInteractor._prepare_comment_editable_status_dto(
                 comment_dto=comment_dto, user_id=user_id
@@ -169,7 +175,8 @@ class CreateReplyToCommentInteractor:
             comment_dto: CommentDTO, user_id: str
     ) -> CommentIdWithEditableStatusDTO:
         is_editable = False
-        if str(user_id) == str(comment_dto.user_id):
+        is_user_comment_creator = str(user_id) == str(comment_dto.user_id)
+        if is_user_comment_creator:
             is_editable = True
         comment_editable_status_dto = CommentIdWithEditableStatusDTO(
             comment_id=comment_dto.comment_id,

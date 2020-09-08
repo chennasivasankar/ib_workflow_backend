@@ -106,7 +106,7 @@ class TestGetUserProfileInteractor:
         from ib_iam.exceptions.custom_exceptions import InvalidUserId
         get_user_profile_dto_mock.side_effect = InvalidUserId
 
-        presenter_mock.raise_exception_for_invalid_user_id.return_value \
+        presenter_mock.response_for_invalid_user_id.return_value \
             = expected_presenter_invalid_user_id_mock
 
         from ib_iam.interactors.get_user_profile_interactor import \
@@ -120,7 +120,7 @@ class TestGetUserProfileInteractor:
 
         # Assert
         assert response == expected_presenter_invalid_user_id_mock
-        presenter_mock.raise_exception_for_invalid_user_id.assert_called_once()
+        presenter_mock.response_for_invalid_user_id.assert_called_once()
 
     def test_with_user_id_which_is_does_not_exist_raise_exception(
             self, mocker, presenter_mock, storage_mock
