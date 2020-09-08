@@ -2383,7 +2383,8 @@
                 "enum": [
                   "INVALID_PROJECT_ID",
                   "INVALID_ROLE_IDS_FOR_PROJECT",
-                  "INVALID_USER_IDS_FOR_PROJECT"
+                  "INVALID_USER_IDS_FOR_PROJECT",
+                  "USER_DOES_NOT_ACCESS"
                 ]
               }
             },
