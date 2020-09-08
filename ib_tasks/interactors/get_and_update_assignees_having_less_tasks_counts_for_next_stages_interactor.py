@@ -34,7 +34,7 @@ class GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
 
     def get_random_assignees_of_next_stages_and_update_in_db(
             self, task_id: int, stage_ids: List[str]):
-        project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
+        project_id = self.task_storage.get_project_id_of_task(task_id)
         get_users_with_less_tasks_interactor = \
             GetUsersWithLessTasksInGivenStagesInteractor(
                 action_storage=self.action_storage,
@@ -49,7 +49,7 @@ class GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
             get_users_with_less_tasks_interactor. \
                 get_users_with_less_tasks_in_given_stages(
                 stage_ids=stage_ids_excluding_virtual_stages,
-                project_id=project_id, task_id=task_id)
+                project_id=project_id)
         stages_with_user_details_dtos = \
             stage_with_user_details_and_team_details_dto.\
                 stages_with_user_details_dtos
