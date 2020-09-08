@@ -59,3 +59,6 @@ NUMERIC_OPERATORS = [
     Operators.GTE.value, Operators.GT.value,
     Operators.LTE.value, Operators.LT.value
 ]
+SEARCHABLE_TYPES_WITH_RESPONSE_ID_AS_STRING = [
+    Searchable.USER.value
+]
