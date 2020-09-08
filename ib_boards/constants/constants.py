@@ -10,3 +10,5 @@ BOARDS_AND_COLUMN_SUB_SHEET = "Boards and Columns"
 PROJECT_BOARDS_SUB_SHEET = "Project Boards"
 
 DISPLAY_STATUSES = [(item.value, item.value) for item in DisplayStatus]
+
+ALL_ROLES_ID = "ALL_ROLES"

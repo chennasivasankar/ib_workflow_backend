@@ -176,3 +176,7 @@ class StorageInterface(abc.ABC):
     def create_field_ids_order_and_display_status(
             self, column_id: str, user_id: str, field_ids: List[str]):
         pass
+
+    @abc.abstractmethod
+    def get_user_permitted_board_ids(self, board_ids: List[str], user_roles: List[str]) -> List[str]:
+        pass

@@ -61,28 +61,33 @@ class GetBoardsInteractor(ValidationMixin):
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         user_id = get_boards_dto.user_id
-        user_role = service_adapter.user_service.get_user_roles(
+        user_roles = service_adapter.user_service.get_user_roles(
             user_id=user_id)
-        self.storage.validate_user_role_with_boards_roles(user_role=user_role)
+        self.storage.validate_user_role_with_boards_roles(user_role=user_roles)
 
         limit, offset = self._pagination_validations(get_boards_dto)
 
         all_boards_details_dtos, total_boards = self._get_all_boards_details_dtos(
-            limit, offset, project_id, user_id)
+            limit, offset, project_id, user_id, user_roles
+        )
         return all_boards_details_dtos, total_boards
 
     def _get_all_boards_details_dtos(self, limit: int, offset: int,
-                                     project_id: str, user_id: str) -> \
+                                     project_id: str, user_id: str, user_roles: List[str]) -> \
             Tuple[StarredAndOtherBoardsDTO, int]:
         other_boards_ids, starred_board_ids = self.storage.get_board_ids(
             user_id=user_id, project_id=project_id
         )
         all_board_ids = other_boards_ids + starred_board_ids
-        total_boards = len(all_board_ids)
+        board_ids = self.storage.get_user_permitted_board_ids(
+            board_ids=all_board_ids,
+            user_roles=user_roles
+        )
+        total_boards = len(board_ids)
         if offset >= total_boards:
             raise OffsetValueExceedsTotalTasksCount
 
-        board_ids = all_board_ids[offset:offset + limit]
+        board_ids = board_ids[offset:offset + limit]
         all_boards_details_dtos = self._get_board_details_dtos(
             board_ids, other_boards_ids, starred_board_ids)
 
