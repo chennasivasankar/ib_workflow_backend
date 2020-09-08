@@ -303,6 +303,11 @@ class TestGetBoardsInteractor:
         interactor = GetBoardsInteractor(
             storage=storage_mock
         )
+        all_board_ids = ['BOARD_ID_1', 'BOARD_ID_2', 'BOARD_ID_3']
+        board_ids = ['BOARD_ID_1', 'BOARD_ID_2']
+        starred_boards = ['BOARD_ID_3']
+        project_id = get_boards_dto.project_id
+        project_ids = [project_id]
         from ib_boards.exceptions.custom_exceptions import \
             UserDoNotHaveAccessToBoards
         storage_mock.validate_user_role_with_boards_roles. \
@@ -314,6 +319,8 @@ class TestGetBoardsInteractor:
             mock_for_validate_if_user_is_in_project
         user_in_project_mock = mock_for_validate_if_user_is_in_project(mocker)
         user_in_project_mock.return_value = True
+        storage_mock.get_valid_board_ids.return_value = all_board_ids
+        storage_mock.get_board_ids.return_value = board_ids, starred_boards
 
         presenter_mock.get_response_for_user_have_no_access_for_boards. \
             return_value = expected_response
@@ -336,7 +343,7 @@ class TestGetBoardsInteractor:
             user_id=user_id
         )
         storage_mock.validate_user_role_with_boards_roles.assert_called_once_with(
-            user_role=user_role
+            user_role=roles
         )
         user_in_project_mock.assert_called_once_with(
             project_id=project_id, user_id=user_id)

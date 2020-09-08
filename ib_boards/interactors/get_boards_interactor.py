@@ -63,7 +63,6 @@ class GetBoardsInteractor(ValidationMixin):
         user_id = get_boards_dto.user_id
         user_role = service_adapter.user_service.get_user_roles(
             user_id=user_id)
-        self.storage.validate_user_role_with_boards_roles(user_role=user_role)
 
         limit, offset = self._pagination_validations(get_boards_dto)
 
