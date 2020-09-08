@@ -64,7 +64,7 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
     ) -> List[TaskStageAssigneeDTO]:
 
         task_stage_objs = TaskStageHistory.objects.filter(
-            task_id=task_id, stage_id__in=stage_ids
+            task_id=task_id, stage_id__in=stage_ids, left_at=None
         ).values('id', 'stage_id', 'assignee_id', 'team_id')
         task_stage_assignee_dtos = [
             TaskStageAssigneeDTO(
