@@ -5,7 +5,7 @@ from django.db import transaction
 from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
     ProjectTeamsAndUsersDTO, UserTeamsDTO
 from ib_iam.exceptions.custom_exceptions import InvalidProjectId, \
-    InvalidUserIds, InvalidUserId, InvalidProjectIds
+    InvalidUserIds, InvalidUserId, InvalidProjectIds, InvalidTeamId
 from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO, \
     CompleteProjectDetailsDTO, UserIdWithProjectIdAndStatusDTO
 from ib_iam.interactors.presenter_interfaces \
@@ -85,10 +85,11 @@ class ProjectInteractor:
     def get_team_details_for_given_project_team_user_details_dto(
             self, project_team_user_dto: ProjectTeamUserDTO
     ) -> TeamWithUserIdDTO:
-        # todo confirm and add invalid team and user exceptions
         self._validate_project(project_id=project_team_user_dto.project_id)
+        self._validate_team(team_id=project_team_user_dto.team_id)
         self._validate_team_existence_in_project(
             project_team_user_dto=project_team_user_dto)
+        self._validate_user(user_id=project_team_user_dto.user_id)
         self._validate_user_existence_in_given_team(
             project_team_user_dto=project_team_user_dto)
         team_name = self.project_storage.get_team_name(
@@ -96,6 +97,18 @@ class ProjectInteractor:
         return TeamWithUserIdDTO(user_id=project_team_user_dto.user_id,
                                  team_id=project_team_user_dto.team_id,
                                  team_name=team_name)
+
+    def _validate_user(self, user_id: str):
+        is_user_exist = self.user_storage.is_user_exist(user_id=user_id)
+        is_user_not_exist = not is_user_exist
+        if is_user_not_exist:
+            raise InvalidUserId
+
+    def _validate_team(self, team_id: str):
+        is_team_exists = self.team_storage.is_team_exist(team_id=team_id)
+        is_team_not_exists = not is_team_exists
+        if is_team_not_exists:
+            raise InvalidTeamId
 
     def get_user_team_dtos_for_given_project_teams_and_users_details_dto(
             self, project_teams_and_users_dto: ProjectTeamsAndUsersDTO
@@ -156,9 +169,9 @@ class ProjectInteractor:
             raise InvalidUserId
 
     def _validate_project(self, project_id: str):
-        valid_project_ids = self.project_storage \
-            .get_valid_project_ids(
-            project_ids=[project_id])
+        valid_project_ids = self.project_storage.get_valid_project_ids(
+            project_ids=[project_id]
+        )
         is_not_valid_project = not (
                 len(valid_project_ids) == 1 and
                 valid_project_ids[0] == project_id

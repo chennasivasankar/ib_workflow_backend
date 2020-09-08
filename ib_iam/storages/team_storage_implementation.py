@@ -147,3 +147,7 @@ class TeamStorageImplementation(TeamStorageInterface):
             ) for user_team_object in user_team_objects
         ]
         return user_team_dtos
+
+    def is_team_exist(self, team_id: str) -> bool:
+        # todo write tests for this
+        return Team.objects.filter(team_id=team_id).exists
