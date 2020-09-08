@@ -1,5 +1,8 @@
 import pytest
 
+from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
+    import \
+    TaskCompleteDetailsDTO
 from ib_tasks.tests.factories.adapter_dtos import \
     AssigneeDetailsDTOFactory, ProjectDetailsDTOFactory, TeamInfoDTOFactory
 from ib_tasks.tests.factories.interactor_dtos import \
@@ -7,7 +10,8 @@ from ib_tasks.tests.factories.interactor_dtos import \
     StageAssigneeWithTeamDetailsDTOFactory
 from ib_tasks.tests.factories.storage_dtos import \
     StageActionDetailsDTOFactory, \
-    TaskGoFDTOFactory, TaskGoFFieldDTOFactory, TaskStageAssigneeDTOFactory
+    TaskGoFDTOFactory, TaskGoFFieldDTOFactory, TaskStageAssigneeDTOFactory, \
+    TaskBaseDetailsDTOFactory
 
 
 class TestGetTaskPresenterImplementation:
@@ -18,13 +22,6 @@ class TestGetTaskPresenterImplementation:
             import GetTaskPresenterImplementation
         presenter = GetTaskPresenterImplementation()
         return presenter
-
-    @pytest.fixture
-    def task_base_details_dto(self):
-        from ib_tasks.tests.factories.storage_dtos import \
-            TaskBaseDetailsDTOFactory
-        task_base_details_dto = TaskBaseDetailsDTOFactory()
-        return task_base_details_dto
 
     @pytest.fixture
     def reset_sequence(self):
@@ -38,6 +35,25 @@ class TestGetTaskPresenterImplementation:
         AssigneeWithTeamDetailsDTOFactory.reset_sequence()
         TeamInfoDTOFactory.reset_sequence()
         StageAssigneeWithTeamDetailsDTOFactory.reset_sequence()
+        TaskBaseDetailsDTOFactory.reset_sequence()
+
+    @pytest.fixture
+    def task_base_details_dto(self, reset_sequence):
+        task_base_details_dto = TaskBaseDetailsDTOFactory()
+        return task_base_details_dto
+
+    @pytest.fixture
+    def task_base_details_dto_with_out_due_date(self, reset_sequence):
+        task_base_details_dto = TaskBaseDetailsDTOFactory(due_date=None)
+        return task_base_details_dto
+
+    @pytest.fixture
+    def task_base_details_dto_with_out_due_date_and_start_date(
+            self, reset_sequence
+    ):
+        task_base_details_dto = TaskBaseDetailsDTOFactory(due_date=None,
+                                                          start_date=None)
+        return task_base_details_dto
 
     @pytest.fixture
     def permission_task_gof_dtos(self):
@@ -70,6 +86,39 @@ class TestGetTaskPresenterImplementation:
         project_details_dto = ProjectDetailsDTOFactory()
         task_details_dto = TaskDetailsDTO(
             task_base_details_dto=task_base_details_dto,
+            project_details_dto=project_details_dto,
+            task_gof_dtos=permission_task_gof_dtos,
+            task_gof_field_dtos=permission_task_gof_field_dtos
+        )
+        return task_details_dto
+
+    @pytest.fixture
+    def permission_task_details_dto_with_out_due_date(
+            self, permission_task_gof_dtos, permission_task_gof_field_dtos,
+            task_base_details_dto_with_out_due_date
+    ):
+        from ib_tasks.interactors.storage_interfaces.get_task_dtos \
+            import TaskDetailsDTO
+        project_details_dto = ProjectDetailsDTOFactory()
+        task_details_dto = TaskDetailsDTO(
+            task_base_details_dto=task_base_details_dto_with_out_due_date,
+            project_details_dto=project_details_dto,
+            task_gof_dtos=permission_task_gof_dtos,
+            task_gof_field_dtos=permission_task_gof_field_dtos
+        )
+        return task_details_dto
+
+    @pytest.fixture
+    def permission_task_details_dto_with_out_due_date_and_start_date(
+            self, permission_task_gof_dtos, permission_task_gof_field_dtos,
+            task_base_details_dto_with_out_due_date_and_start_date
+    ):
+        from ib_tasks.interactors.storage_interfaces.get_task_dtos \
+            import TaskDetailsDTO
+        project_details_dto = ProjectDetailsDTOFactory()
+        task_details_dto = TaskDetailsDTO(
+            task_base_details_dto
+            =task_base_details_dto_with_out_due_date_and_start_date,
             project_details_dto=project_details_dto,
             task_gof_dtos=permission_task_gof_dtos,
             task_gof_field_dtos=permission_task_gof_field_dtos
@@ -170,9 +219,6 @@ class TestGetTaskPresenterImplementation:
             stages_and_actions_details_dtos,
             stage_assignee_details_dtos
     ):
-        from ib_tasks.interactors.presenter_interfaces \
-            .get_task_presenter_interface \
-            import TaskCompleteDetailsDTO
         task_complete_details_dto = TaskCompleteDetailsDTO(
             task_details_dto=permission_task_details_dto,
             stages_and_actions_details_dtos=stages_and_actions_details_dtos,
@@ -331,6 +377,46 @@ class TestGetTaskPresenterImplementation:
             self, presenter, task_complete_details_dto, snapshot
     ):
         # Arrange
+
+        # Act
+        response_object = presenter.get_task_response(
+            task_complete_details_dto)
+
+        # Assert
+        snapshot.assert_match(name="task_details = ",
+                              value=response_object.content)
+
+    def test_given_task_complete_details__dto_with_out_due_date_returns_task_details(
+            self, presenter, snapshot,
+            stages_and_actions_details_dtos, stage_assignee_details_dtos,
+            permission_task_details_dto_with_out_due_date
+    ):
+        # Arrange
+        task_complete_details_dto = TaskCompleteDetailsDTO(
+            task_details_dto=permission_task_details_dto_with_out_due_date,
+            stages_and_actions_details_dtos=stages_and_actions_details_dtos,
+            stage_assignee_with_team_details_dtos=stage_assignee_details_dtos
+        )
+
+        # Act
+        response_object = presenter.get_task_response(
+            task_complete_details_dto)
+
+        # Assert
+        snapshot.assert_match(name="task_details = ",
+                              value=response_object.content)
+
+    def test_given_task_complete_details__dto_with_out_due_date_and_start_date_returns_task_details(
+            self, presenter, snapshot,
+            stages_and_actions_details_dtos, stage_assignee_details_dtos,
+            permission_task_details_dto_with_out_due_date_and_start_date
+    ):
+        # Arrange
+        task_complete_details_dto = TaskCompleteDetailsDTO(
+            task_details_dto=permission_task_details_dto_with_out_due_date_and_start_date,
+            stages_and_actions_details_dtos=stages_and_actions_details_dtos,
+            stage_assignee_with_team_details_dtos=stage_assignee_details_dtos
+        )
 
         # Act
         response_object = presenter.get_task_response(

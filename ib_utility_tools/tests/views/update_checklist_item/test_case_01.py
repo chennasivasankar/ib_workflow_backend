@@ -14,6 +14,16 @@ class TestCase01UpdateChecklistItemAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['write']}}
 
+    @pytest.fixture()
+    def setup(self, api_user):
+        checklist_item_id = "413642ff-1272-4990-b878-6607a5e02bc1"
+        from ib_utility_tools.tests.factories.models import (
+            ChecklistItemFactory
+        )
+        ChecklistItemFactory.reset_sequence(1)
+        ChecklistItemFactory.create(checklist_item_id=checklist_item_id)
+        return checklist_item_id
+
     @pytest.mark.django_db
     def test_case(self, setup, snapshot):
         body = {
@@ -22,19 +32,11 @@ class TestCase01UpdateChecklistItemAPITestCase(TestUtils):
         }
         checklist_item_id = setup
         path_params = {
-            "checklist_item_id": checklist_item_id}
+            "checklist_item_id": checklist_item_id
+        }
         query_params = {}
         headers = {}
-        response = self.make_api_call(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
-
-    @pytest.fixture()
-    def setup(self, api_user):
-        checklist_item_id = "413642ff-1272-4990-b878-6607a5e02bc1"
-        from ib_utility_tools.tests.factories.models import \
-            ChecklistItemFactory
-        ChecklistItemFactory.reset_sequence(1)
-        ChecklistItemFactory.create(checklist_item_id=checklist_item_id)
-        return checklist_item_id

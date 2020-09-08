@@ -4,7 +4,7 @@ from typing import Optional, List
 from ib_tasks.interactors.stages_dtos import StageDTO, \
     TaskIdWithStageAssigneeDTO, StageAssigneeDTO, StageMinimalDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO, \
-    StageIdWithValueDTO, StageFlowDTO
+    StageFlowDTO, StageIdWithValueDTO, StageFlowWithActionIdDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
     TaskStagesDTO, TaskTemplateStageDTO, StageValueWithTaskIdsDTO, \
     TaskIdWithStageDetailsDTO
@@ -182,4 +182,9 @@ class StageStorageInterface(abc.ABC):
         self, stage_ids: List[int],
         action_ids: List[int]
     ) -> List[StageFlowDTO]:
+        pass
+
+    @abc.abstractmethod
+    def create_stage_flows(
+            self, stage_flow_dtos: List[StageFlowWithActionIdDTO]):
         pass

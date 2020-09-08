@@ -984,6 +984,25 @@
             "res_status"
          ]
       },
+      "UserActionOnTaskFailureResponseBody": {
+         "type":"object",
+         "properties":{
+            "response":{
+               "type":"string"
+            },
+            "http_status_code":{
+               "type":"integer"
+            },
+            "res_status":{
+               "type":"string"
+            }
+         },
+         "required":[
+            "response",
+            "http_status_code",
+            "res_status"
+         ]
+      },
       "SaveAndActOnATaskTaskFailureResponseBody":{
          "type":"object",
          "properties":{
@@ -2415,6 +2434,12 @@
             "$ref":"#/definitions/CreateTaskFailureResponseBody"
          }
       },
+      "UserActionOnTaskFailureResponse": {
+         "description":"can not act on task",
+         "schema":{
+            "$ref":"#/definitions/UserActionOnTaskFailureResponseBody"
+         }
+      },
       "SaveAndActOnATaskTaskFailureResponse":{
          "description":"can not update and act on a task",
          "schema":{
@@ -2852,6 +2877,9 @@
                   "schema":{
                      "$ref":"#/definitions/InvalidTaskActionDetails"
                   }
+               },
+               "400":{
+                  "$ref":"#/responses/UserActionOnTaskFailureResponse"
                }
             }
          }

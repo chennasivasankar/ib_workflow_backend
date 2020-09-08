@@ -105,7 +105,7 @@ class ColumnTasksParametersDTO:
 class FieldDTO:
     task_id: int
     field_type: str
-    field_id: int
+    field_id: str
     key: str
     value: str
     stage_id: str

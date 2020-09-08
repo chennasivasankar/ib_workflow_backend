@@ -58,6 +58,7 @@ def api_wrapper(*args, **kwargs):
     field_storage = FieldsStorageImplementation()
     template_storage = TaskTemplateStorageImplementation()
     stage_action_storage = ActionsStorageImplementation()
+    task_template_storage = TaskTemplateStorageImplementation()
 
     presenter = CreateTransitionChecklistTemplatePresenterImplementation()
 
@@ -65,10 +66,12 @@ def api_wrapper(*args, **kwargs):
         create_or_update_task_storage=create_task_storage,
         template_storage=template_storage, task_storage=task_storage,
         gof_storage=gof_storage, storage=storage, field_storage=field_storage,
-        stage_action_storage=stage_action_storage
+        stage_action_storage=stage_action_storage,
+        task_template_storage=task_template_storage
     )
-    return interactor.create_transition_checklist_wrapper(
+    response = interactor.create_transition_checklist_wrapper(
         transition_template_dto, presenter)
+    return response
 
 
 def get_field_values_dtos(fields: List[Dict]) -> List[FieldValuesDTO]:

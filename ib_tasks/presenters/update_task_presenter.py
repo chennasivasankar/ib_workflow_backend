@@ -39,7 +39,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 class UpdateTaskPresenterImplementation(
     UpdateTaskPresenterInterface, HTTPResponseMixin
 ):
-    
+
     def raise_priority_is_required(self, err: PriorityIsRequired):
         from ib_tasks.constants.exception_messages import \
             PRIORITY_IS_REQUIRED
