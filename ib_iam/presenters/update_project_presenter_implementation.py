@@ -99,8 +99,9 @@ class UpdateProjectPresenterImplementation(
         from ib_iam.constants.exception_messages import DUPLICATE_ROLE_NAMES
         response_dict = {
             "response": DUPLICATE_ROLE_NAMES[0],
-                         "http_status_code": StatusCode.BAD_REQUEST.value,
-                         "res_status": DUPLICATE_ROLE_NAMES[1]}
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": DUPLICATE_ROLE_NAMES[1]
+        }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict
         )
@@ -112,7 +113,8 @@ class UpdateProjectPresenterImplementation(
             "response": ROLE_NAMES_ALREADY_EXISTS[0].format(
                 role_names=exception.role_names),
             "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": ROLE_NAMES_ALREADY_EXISTS[1]}
+            "res_status": ROLE_NAMES_ALREADY_EXISTS[1]
+        }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict
         )

@@ -458,8 +458,9 @@ class ProjectInteractor(ValidationMixin):
         self._validate_invalid_team_ids(
             team_ids=complete_project_details_dto.team_ids
         )
-        role_names = [role_dto.name
-                      for role_dto in complete_project_details_dto.roles]
+        role_names = [
+            role_dto.name for role_dto in complete_project_details_dto.roles
+        ]
         self._validate_duplicate_role_names(role_names=role_names)
         self._validate_is_role_names_already_exists_for_update_project(
             roles=complete_project_details_dto.roles
@@ -583,7 +584,8 @@ class ProjectInteractor(ValidationMixin):
         import collections
         role_names_that_already_exists = [
             item for item, count in collections.Counter(role_names).items()
-            if count > 1]
+            if count > 1
+        ]
         if role_names_that_already_exists:
             raise RoleNamesAlreadyExists(
                 role_names=role_names_that_already_exists
