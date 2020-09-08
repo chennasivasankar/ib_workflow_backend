@@ -78,7 +78,7 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
                                               task_id: int, user_id: str):
         service_adapter = get_service_adapter()
 
-        user_team_id = self.task_storage.get_user_team_id(user_id, task_id)
+        user_team_id = self.task_storage.get_team_id(stage_id, task_id)
         rp_added_datetime = self.storage.get_latest_rp_added_datetime(task_id, stage_id)
         if rp_added_datetime and rp_added_datetime < due_date:
             self.add_rp_when_due_date_is_missed(stage_id, task_id, user_id, user_team_id)

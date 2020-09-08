@@ -104,7 +104,6 @@ class StagesStorageImplementation(StageStorageInterface):
             (Q(role_id__in=user_role_ids) | Q(role_id=ALL_ROLES_ID)) &
             Q(stage__task_template_id__in=project_template_ids)
         ).values_list('stage__stage_id', flat=True)
-
         return list(stage_ids)
 
     @staticmethod
@@ -419,8 +418,7 @@ class StagesStorageImplementation(StageStorageInterface):
         stage_ids = ActionPermittedRoles.objects \
             .filter(
             Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
-        ) \
-            .values_list('action__stage_id', flat=True)
+        ).values_list('action__stage_id', flat=True).distinct()
         stage_ids = StagePermittedRoles.objects.filter(
             stage_id__in=stage_ids) \
             .filter(
@@ -832,7 +830,7 @@ class StorageImplementation(StorageInterface):
         stage_id = due_details.stage_id
         updated_due_datetime = due_details.due_date_time
         count = UserTaskDelayReason.objects.filter(
-            task_id=task_id, user_id=user_id).count()
+            task_id=task_id, user_id=user_id, stage_id=stage_id).count()
 
         UserTaskDelayReason.objects.create(user_id=user_id, task_id=task_id,
                                            due_datetime=updated_due_datetime,

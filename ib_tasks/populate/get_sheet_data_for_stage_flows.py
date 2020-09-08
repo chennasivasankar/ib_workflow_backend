@@ -33,9 +33,9 @@ class GetSheetDataForStageFlows:
     def _convert_stage_flow_sheet_data_dict_to_our_format(field_record: Dict):
 
         return {
-            "previous_stage_id": field_record["Previous Stage ID*"],
+            "previous_stage_id": field_record["Stage ID*"],
             "action_name": field_record["Action name"],
-            "next_stage_id": field_record["Next Stage ID*"]
+            "next_stage_id": field_record["To Stage"]
         }
 
     def _validation_for_stage_flows(self, stage_flows: List[Dict]):
@@ -43,9 +43,9 @@ class GetSheetDataForStageFlows:
         from schema import And
         schema = Schema(
             [{
-                "Previous Stage ID*": And(str, len),
+                "Stage ID*": And(str, len),
                 "Action name": And(str, len),
-                "Next Stage ID*": And(str, len)
+                "To Stage": And(str, len)
             }],
             ignore_extra_keys=True
         )
@@ -56,9 +56,9 @@ class GetSheetDataForStageFlows:
 
     def _raise_exception_for_valid_stage_flows_format(self):
         valid_format = {
-            "Previous Stage ID*": "PREVIOUS STAGE ID",
+            "Stage ID*": "PREVIOUS STAGE ID",
             "Action name": "SUBMIT",
-            "Next Stage ID*": "NEXT STAGE ID"
+            "To Stage": "NEXT STAGE ID"
         }
         self.data_sheet.raise_exception_for_valid_format(valid_format)
 

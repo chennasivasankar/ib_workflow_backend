@@ -125,7 +125,6 @@ class GetTaskIdsOfUserBasedOnStagesInteractor(ValidationMixin):
     ) -> List[StageValueWithTaskIdsDTO]:
         task_ids_group_by_stage_value_dtos = []
         for each_value in stage_values:
-
             list_of_task_ids = []
             for each_task_id_with_max_stage_value_dto in \
                     task_id_with_max_stage_value_dtos:
