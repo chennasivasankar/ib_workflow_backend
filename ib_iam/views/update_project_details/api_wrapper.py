@@ -4,18 +4,14 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
 from ib_iam.interactors.dtos.dtos import CompleteProjectDetailsDTO
 from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
 from .validator_class import ValidatorClass
-from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
-    import validate_decorator
-
-from ib_iam.interactors.dtos.dtos import CompleteProjectDetailsDTO
-from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
-from .validator_class import ValidatorClass
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     complete_project_details_dto = \
         convert_to_complete_project_details_dto(kwargs)
+    user = kwargs["user"]
+    user_id = str(user.user_id)
 
     from ib_iam.storages.project_storage_implementation import \
         ProjectStorageImplementation
@@ -36,6 +32,7 @@ def api_wrapper(*args, **kwargs):
 
     response_data = interactor.update_project_wrapper(
         presenter=presenter,
+        user_id=user_id,
         complete_project_details_dto=complete_project_details_dto)
 
     return response_data
