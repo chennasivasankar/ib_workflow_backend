@@ -24,12 +24,6 @@ from ib_tasks.models import (StageAction, Stage, ActionPermittedRoles,
 
 class ActionsStorageImplementation(ActionStorageInterface):
 
-    def check_is_transition_template_exists_for_action_id(self,
-                                                          action_id: int):
-        is_transition_template_exists = StageAction.objects.filter(
-            id=action_id, transition_template=None).exists()
-        return is_transition_template_exists
-
     def validate_action_id(
             self, action_id) -> Optional[InvalidActionException]:
         try:
