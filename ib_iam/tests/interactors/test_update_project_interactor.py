@@ -268,30 +268,23 @@ class TestUpdateProjectInteractor:
 
     def test_given_role_names_already_exists_returns_role_names_already_exists_response(
             self, project_storage, user_storage, team_storage, interactor,
-            presenter, roles, roles_for_role_names_already_exists):
+            presenter, roles, roles_for_role_names_already_exists
+    ):
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
         project_id = "project_1"
         project_dto = ProjectDTOFactory(project_id=project_id)
-        team_ids = ["1", "2"]
-        role_ids = ["role1", "role2"]
-        expected_names_that_already_exists = ['payment2']
+        role_ids = ["4", "5"]
         project_storage.get_project_id.return_value = None
         project_storage.get_project_role_ids.return_value = role_ids
-        team_storage.get_valid_team_ids.return_value = team_ids
-        user_storage.get_roles.return_value = roles_for_role_names_already_exists
-        presenter.get_role_names_already_exists_response \
-            .return_value = mock.Mock()
+        presenter.get_invalid_role_ids_response.return_value = mock.Mock()
         complete_project_details_dto = CompleteProjectDetailsDTO(
-            project_id=project_dto.project_id,
-            name=project_dto.name,
-            description=project_dto.description,
-            logo_url=project_dto.logo_url,
-            team_ids=team_ids,
-            roles=roles)
+            project_id=project_dto.project_id, name=project_dto.name,
+            description=project_dto.description, logo_url=project_dto.logo_url,
+            team_ids=[], roles=roles
+        )
 
         interactor.update_project_wrapper(
-            presenter=presenter,
-            user_id="1",
+            presenter=presenter, user_id="1",
             complete_project_details_dto=complete_project_details_dto
         )
 

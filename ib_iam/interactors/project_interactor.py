@@ -462,7 +462,8 @@ class ProjectInteractor(ValidationMixin):
                       for role_dto in complete_project_details_dto.roles]
         self._validate_duplicate_role_names(role_names=role_names)
         self._validate_is_role_names_already_exists_for_update_project(
-            roles=complete_project_details_dto.roles)
+            roles=complete_project_details_dto.roles
+        )
 
     def _validate_project_id(self, project_id: str):
         is_project_exist = self.user_storage.is_valid_project_id(
@@ -585,7 +586,8 @@ class ProjectInteractor(ValidationMixin):
             if count > 1]
         if role_names_that_already_exists:
             raise RoleNamesAlreadyExists(
-                role_names=role_names_that_already_exists)
+                role_names=role_names_that_already_exists
+            )
 
     def _validate_is_given_name_already_exists(self, name: str):
         project_id = self.project_storage.get_project_id(name=name)
