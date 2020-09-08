@@ -203,6 +203,7 @@ class TeamInteractor(ValidationMixin):
                 team_ids.remove(team_id_and_name_dto.team_id)
         return team_ids
 
+    # TODO: CE
     def get_user_teams_for_each_user(
             self, user_ids: List[str]) -> List[UserTeamsDTO]:
         valid_user_ids = self.user_storage.get_valid_user_ids(

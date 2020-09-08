@@ -79,6 +79,7 @@ class UserStorageInterface(abc.ABC):
             self, user_ids: List[str]) -> List[UserCompanyDTO]:
         pass
 
+    # TODO: Typing
     @abc.abstractmethod
     def get_total_count_of_users_for_query(self, name_search_query: str):
         pass

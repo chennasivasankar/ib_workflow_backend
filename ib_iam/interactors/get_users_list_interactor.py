@@ -84,6 +84,7 @@ class GetListOfUsersInteractor(ValidationMixin):
 
         return user_profile_dtos
 
+    # TODO: Typing
     def _get_complete_user_details_dto(self, user_ids, total_count):
         user_team_dtos = self.user_storage.get_team_details_of_users_bulk(
             user_ids=user_ids)
@@ -98,6 +99,7 @@ class GetListOfUsersInteractor(ValidationMixin):
             user_profile_dtos=user_profile_dtos,
             total_no_of_users=total_count)
 
+    # TODO: Typing
     @staticmethod
     def _get_user_profile_dtos(user_ids):
         from ib_iam.adapters.user_service import UserService
@@ -106,6 +108,7 @@ class GetListOfUsersInteractor(ValidationMixin):
             user_ids=user_ids)
         return user_profile_dtos
 
+    # TODO: Typing
     @staticmethod
     def get_user_dtos(user_ids):
         from ib_iam.adapters.user_service import UserService
@@ -115,11 +118,13 @@ class GetListOfUsersInteractor(ValidationMixin):
         )
         return user_dtos
 
+    # TODO: Typing
     def get_valid_user_ids(self, user_ids: List[str]):
         valid_user_ids = self.user_storage.get_valid_user_ids(
             user_ids=user_ids)
         return valid_user_ids
 
+    # TODO: Typing
     @staticmethod
     def _convert_complete_user_details_dtos(
             user_team_dtos, role_dtos,
@@ -133,6 +138,7 @@ class GetListOfUsersInteractor(ValidationMixin):
         )
         return complete_user_details_dto
 
+    # TODO: Typing, conditional encapsulate
     @staticmethod
     def _get_user_team(user_team_dtos, user_id):
         teams = []
@@ -141,18 +147,21 @@ class GetListOfUsersInteractor(ValidationMixin):
                 teams.append(team_dto)
         return teams
 
+    # TODO: Typing, conditional encapsulate
     @staticmethod
     def _get_user_company(user_company_dtos, user_id):
         for company_dto in user_company_dtos:
             if company_dto.user_id == user_id:
                 return company_dto
 
+    # TODO: Typing, conditional encapsulate
     @staticmethod
     def _get_profile(user_profile_dtos, user_id):
         for user_profile in user_profile_dtos:
             if user_profile.user_id == user_id:
                 return user_profile
 
+    # TODO: Typing, conditional encapsulate
     @staticmethod
     def _get_role(user_role_dtos, user_id):
         roles = []
@@ -178,6 +187,7 @@ class GetListOfUsersInteractor(ValidationMixin):
         )
         return user_details_dtos
 
+    # TODO: condition encapsulate
     def get_user_details_for_given_role_ids(
             self, role_ids: List[str], project_id: str
     ) -> List[UserProfileDTO]:
@@ -194,6 +204,7 @@ class GetListOfUsersInteractor(ValidationMixin):
             user_ids=user_ids)
         return user_details_dtos
 
+    # TODO: condition encapsulate
     def _validate_role_ids(self, role_ids: List[str]):
         valid_role_ids = self.user_storage.get_valid_role_ids(
             role_ids=role_ids)

@@ -1,7 +1,6 @@
 import abc
 
 
-
 class DeleteTeamPresenterInterface(abc.ABC):
 
     @abc.abstractmethod

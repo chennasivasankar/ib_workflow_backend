@@ -45,12 +45,14 @@ class RolesInteractor:
         self._validate_role_description(
             role_description=role_dto.description)
 
+    # TODO: CE, Ty
     @staticmethod
     def _is_invalid_string(value):
         if value == '' or not isinstance(value, str):
             return True
         return False
 
+    # TODO: Typing
     def _validate_role_name(self, role_name):
         is_invalid_string = self._is_invalid_string(value=role_name)
         if is_invalid_string:
@@ -61,6 +63,7 @@ class RolesInteractor:
         if is_invalid_string:
             raise RoleDescriptionIsEmpty()
 
+    # TODO: CE
     @staticmethod
     def _validate_role_id_format(role_id: str):
         import re
@@ -79,6 +82,7 @@ class RolesInteractor:
         if duplicte_role_ids:
             raise DuplicateRoleIds(role_ids=duplicte_role_ids)
 
+    # TODO: CE
     def get_valid_role_ids(self, role_ids: List[str]):
         role_ids = list(set(role_ids))
         valid_role_ids = self.storage.get_valid_role_ids(role_ids=role_ids)

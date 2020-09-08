@@ -89,6 +89,7 @@ class AddNewUserInteractor(ValidationMixin):
         interactor.send_verification_email(
             user_id=user_id, name=name, email=email)
 
+    # TODO: Typing, encapsulate if condition
     def _validate_add_new_user_details(
             self, user_id,
             add_user_details_dto: AddUserDetailsDTO):
@@ -103,11 +104,13 @@ class AddNewUserInteractor(ValidationMixin):
         if company_id is not None:
             self._validate_company_id(company_id=company_id)
 
+    # ToDO: Typing
     def _create_user_in_ib_users(self, email, name):
         new_user_id = self._create_user_account_with_email(email=email)
         self._create_user_profile(user_id=new_user_id, email=email, name=name)
         return new_user_id
 
+    # TODO: encapsulate if cond
     @staticmethod
     def _validate_email_and_throw_exception(email: str):
         import re
@@ -134,6 +137,7 @@ class AddNewUserInteractor(ValidationMixin):
         service_adapter.auth_service.update_is_email_verified_value_in_ib_user_profile_details(
             user_id=user_id, is_email_verified=False)
 
+    # ToDO: Typing
     @staticmethod
     def _create_user_profile_dto(name, email, user_id):
         from ib_iam.adapters.dtos import UserProfileDTO
@@ -144,6 +148,7 @@ class AddNewUserInteractor(ValidationMixin):
         )
         return user_profile_dto
 
+    # ToDO: Typing, intense revealing name(are_valid)
     def _validate_teams(self, team_ids):
         are_valid = self.user_storage.check_are_valid_team_ids(
             team_ids=team_ids)
@@ -151,6 +156,7 @@ class AddNewUserInteractor(ValidationMixin):
         if are_not_valid:
             raise TeamIdsAreInvalid()
 
+    # ToDO: Typing, intense revealing name(are_valid)
     def _validate_company_id(self, company_id):
         is_valid = self.user_storage.check_is_exists_company_id(
             company_id=company_id)

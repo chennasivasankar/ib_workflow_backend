@@ -114,6 +114,7 @@ class TeamStorageImplementation(TeamStorageInterface):
         team_dtos = self._get_team_dtos(team_objects)
         return team_dtos
 
+    # TODO: Typing - verify with SP how to write the
     @staticmethod
     def _get_team_dtos(team_objects):
         team_dtos = [

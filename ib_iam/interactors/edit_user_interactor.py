@@ -53,6 +53,7 @@ class EditUserInteractor(ValidationMixin):
             response = presenter.raise_team_ids_are_invalid()
         return response
 
+    # TODO: Typing
     def edit_user(
             self, admin_user_id: str, user_id: str,
             add_user_details_dto):
@@ -84,6 +85,7 @@ class EditUserInteractor(ValidationMixin):
         if not bool(re.match(email_valid_pattern, email)):
             raise InvalidEmailAddress()
 
+    # TODO: Typing
     @staticmethod
     def _create_user_profile_dto(name, email, user_id):
         from ib_iam.adapters.dtos import UserProfileDTO

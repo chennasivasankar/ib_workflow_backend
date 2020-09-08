@@ -93,6 +93,7 @@ class SignupInteractor(ValidationMixin):
         self._validate_email(email=email)
         self._validate_password_criteria(password=password)
 
+    # TODO: CE
     @staticmethod
     def _validate_email(email: str):
         import re
@@ -105,6 +106,7 @@ class SignupInteractor(ValidationMixin):
         if domain not in valid_domains:
             raise InvalidDomainException()
 
+    # TODO: CE
     @staticmethod
     def _validate_password_criteria(password: str):
         from ib_iam.constants.config import PASSWORD_VALIDATION_EXPRESSION

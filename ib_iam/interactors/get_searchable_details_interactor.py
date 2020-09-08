@@ -69,6 +69,7 @@ class GetSearchableDetailsInteractor:
             )
         return searchable_type_user_details_dtos
 
+    # TODO: intenser revealing names(ids), encapsulate conditionals
     @staticmethod
     def _validate_user_ids(
             ids: List[str], valid_user_ids: List[str]
@@ -177,6 +178,7 @@ class GetSearchableDetailsInteractor:
                 valid_city_ids)
         return searchable_type_city_details_dtos
 
+    # TODO: conditional encapsulate, intense revealing names(invalid_ids)
     @staticmethod
     def _validate_city_ids(
             city_ids: List[int],
@@ -190,6 +192,7 @@ class GetSearchableDetailsInteractor:
             raise InvalidCityIds(invalid_ids)
         return
 
+    # TODO: conditional encapsulate, intense revealing names(invalid_ids)
     @staticmethod
     def _validate_state_ids(
             state_ids: List[int],
@@ -203,6 +206,7 @@ class GetSearchableDetailsInteractor:
             raise InvalidStateIds(invalid_ids)
         return
 
+    # TODO: conditional encapsulate, intense revealing names(invalid_ids)
     @staticmethod
     def _validate_country_ids(
             country_ids: List[int],

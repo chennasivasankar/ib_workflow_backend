@@ -38,6 +38,7 @@ class LoginInteractor:
             response = presenter.raise_exception_for_login_with_not_verify_email()
         return response
 
+    # TODO: CE
     def _get_login_response(
             self, email_and_password_dto: EmailAndPasswordDTO,
             presenter: AuthPresenterInterface
@@ -72,6 +73,7 @@ class LoginInteractor:
 
         return user_tokens_dto, is_admin
 
+    # TODO: CE
     @staticmethod
     def _validate_email(email: str):
         import re

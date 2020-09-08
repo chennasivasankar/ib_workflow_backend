@@ -208,6 +208,7 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             .values_list("role_id", flat=True)
         return list(project_role_ids)
 
+    # TODO: Reduce indent depth
     def update_project_roles(self, roles: List[RoleDTO]):
         # todo have to know whether there is any better way to update
         role_ids = [role_dto.role_id for role_dto in roles]

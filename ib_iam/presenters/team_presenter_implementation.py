@@ -127,6 +127,7 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
         ]
         return teams_details_dict_list
 
+    # TODO: Typing
     def _convert_to_team_details_dictionary(
             self,
             team_user_ids_dict,
@@ -143,6 +144,7 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
         )
         return team_dictionary
 
+    # TODO: Typing
     @staticmethod
     def _convert_to_team_dictionary(team_dto, team_members_dict_list):
         team_details_dict = {
@@ -154,6 +156,7 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
         }
         return team_details_dict
 
+    # TODO: Typing
     @staticmethod
     def _get_members(members_ids, members_dictionary):
         members_dict_list = [
@@ -161,6 +164,7 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
         ]
         return members_dict_list
 
+    # TODO: Typing
     @staticmethod
     def _get_members_dictionary(member_dtos):
         from collections import defaultdict
@@ -173,6 +177,7 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
             }
         return members_dict
 
+    # TODO: Typing
     @staticmethod
     def _get_team_members_dict_from_team_user_ids_dtos(
             team_user_ids_dtos

@@ -1,7 +1,6 @@
 import abc
 
 
-
 class UpdateTeamPresenterInterface(abc.ABC):
 
     @abc.abstractmethod

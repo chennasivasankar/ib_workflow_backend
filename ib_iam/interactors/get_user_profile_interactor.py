@@ -53,6 +53,7 @@ class GetUserProfileInteractor:
         )
         return user_with_extra_details_dto
 
+    # TODO: Typing
     def _get_all_user_dtos(self, company_id_with_employee_ids_dto,
                            team_user_ids_dtos) -> List[UserProfileDTO]:
         user_ids = self._get_all_user_ids_from_teams_and_companies(
@@ -61,6 +62,7 @@ class GetUserProfileInteractor:
         user_dtos = self._get_user_dtos_from_service(user_ids=user_ids)
         return user_dtos
 
+    # TODO: Typing
     @staticmethod
     def _prepare_complete_user_profile_dto(
             company_dto, team_dtos, team_user_ids_dtos, role_dtos,
@@ -77,6 +79,7 @@ class GetUserProfileInteractor:
         )
         return user_with_extra_details_dto
 
+    # TODO: Typing, condition encapsulation
     def _get_company_id_with_employee_ids_dto(self, company_dto) -> \
             CompanyIdWithEmployeeIdsDTO:
         company_id_with_employee_ids_dto = None
@@ -86,6 +89,7 @@ class GetUserProfileInteractor:
                 .get_company_employee_ids_dto(company_id=company_id)
         return company_id_with_employee_ids_dto
 
+    # TODO: Typing
     def _get_user_profile_dto(self, user_id) -> CompleteUserProfileDTO:
         from ib_iam.adapters.service_adapter import get_service_adapter
         user_service = get_service_adapter().user_service
@@ -117,6 +121,7 @@ class GetUserProfileInteractor:
         team_ids = [team_dto.team_id for team_dto in team_dtos]
         return team_ids
 
+    # TODO: Condition encapsulation
     def _get_all_user_ids_from_teams_and_companies(
             self, team_user_ids_dtos: List[TeamUserIdsDTO],
             company_id_with_employee_ids_dto: CompanyIdWithEmployeeIdsDTO

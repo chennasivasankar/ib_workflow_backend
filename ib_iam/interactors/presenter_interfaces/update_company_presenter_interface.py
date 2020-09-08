@@ -1,7 +1,6 @@
 import abc
 
 
-
 class UpdateCompanyPresenterInterface(abc.ABC):
 
     @abc.abstractmethod

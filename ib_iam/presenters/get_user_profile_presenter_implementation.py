@@ -63,6 +63,7 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
             company=company_dictionary)
         return self.prepare_200_success_response(response_dict=response_dict)
 
+    # Todo: Typing
     @staticmethod
     def _get_user_profile_dict_from_user_profile_dto(
             user_profile_dto: CompleteUserProfileDTO, teams, company, roles):
@@ -85,6 +86,7 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
             user_profile_dictionary["company"] = None
         return user_profile_dictionary
 
+    # Todo: Typing
     @staticmethod
     def _get_roles(role_dtos):
         roles = [{"role_id": role_dto.role_id, "role_name": role_dto.name}
@@ -104,6 +106,7 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
             teams.append(team_dictionary)
         return teams
 
+    # Todo: Typing
     def _get_team_members(self, team_dto, team_user_ids_dtos, user_dtos):
         members = []
         for team_user_ids_dto in team_user_ids_dtos:
@@ -124,6 +127,7 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
         }
         return member_dictionary
 
+    # Todo: Typing
     @staticmethod
     def _convert_to_team_dictionary(team_dto):
         team_details_dict = {
@@ -133,6 +137,7 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
         }
         return team_details_dict
 
+    # TODO: conditional encapsulation, decrease indent depth
     def _get_company_dictionary(
             self, company_dto: CompanyDTO,
             user_dtos: List[UserProfileDTO],

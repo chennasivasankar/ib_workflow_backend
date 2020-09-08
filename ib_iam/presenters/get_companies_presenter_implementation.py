@@ -39,6 +39,7 @@ class GetCompaniesPresenterImplementation(
         response_dict = {"companies": company_details_dictionaries}
         return self.prepare_200_success_response(response_dict=response_dict)
 
+    # TODO: Typing
     def _convert_company_details_dtos_into_company_dictionaries(
             self, company_details_dtos):
         company_dtos = company_details_dtos.company_dtos
@@ -58,6 +59,7 @@ class GetCompaniesPresenterImplementation(
         ]
         return company_details
 
+    # TODO: Typing
     def _convert_to_company_details_dictionary(
             self,
             company_employee_ids_dict,
@@ -72,6 +74,7 @@ class GetCompaniesPresenterImplementation(
             company_employees=company_employees)
         return company_dictionary
 
+    # TODO: Typing
     def _convert_to_company_dictionary(self, company_dto,
                                        company_employees):
         company_details_dict = self._convert_company_dto_to_company_dictionary(
@@ -96,6 +99,7 @@ class GetCompaniesPresenterImplementation(
         ]
         return employees_dict_list
 
+    # TODO: Typing
     def _get_employees_dictionary(self, user_dtos):
         from collections import defaultdict
         employees_dictionaries = defaultdict()

@@ -219,6 +219,7 @@ class UserStorageImplementation(UserStorageInterface):
             name=role_object['name']) for role_object in role_query_set]
         return role_dtos
 
+    # TODO: typing
     def validate_user_id(self, user_id):
         from ib_iam.models import UserDetails
         user_details_object = UserDetails.objects.filter(user_id=user_id)
@@ -446,6 +447,7 @@ class UserStorageImplementation(UserStorageInterface):
             logo_url=company_object.logo_url)
         return company_dto
 
+    # TODO: Typing
     @staticmethod
     def _get_team_dtos(team_objects):
         team_dtos = [

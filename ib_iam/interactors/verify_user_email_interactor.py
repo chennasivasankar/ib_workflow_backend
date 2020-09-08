@@ -34,6 +34,7 @@ class VerifyEmailInteractor:
         adapter.auth_service.update_is_email_verified_value_in_ib_user_profile_details(
             user_id=user_id, is_email_verified=True)
 
+    # TODO: CE
     @staticmethod
     def _validate_email_to_link_to_user_account(
             email: str, is_email_verified: bool):

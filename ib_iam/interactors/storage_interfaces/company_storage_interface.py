@@ -18,6 +18,7 @@ class CompanyStorageInterface(abc.ABC):
             List[CompanyIdWithEmployeeIdsDTO]:
         pass
 
+    # TODO: Typing
     @abc.abstractmethod
     def get_company_id_if_company_name_already_exists(self, name: str):
         pass
@@ -32,6 +33,7 @@ class CompanyStorageInterface(abc.ABC):
     def add_users_to_company(self, company_id: str, user_ids: List[str]):
         pass
 
+    # TODO: Typing
     @abc.abstractmethod
     def validate_is_company_exists(self, company_id: str):
         pass

@@ -80,6 +80,7 @@ class ProjectInteractor:
             raise InvalidProjectIds(project_ids=project_ids)
         return project_dtos
 
+    # TODO: condition encapsulation
     @staticmethod
     def _get_invalid_project_ids(
             project_dtos: List[ProjectDTO], project_ids: List[str]
@@ -130,6 +131,7 @@ class ProjectInteractor:
             raise UsersNotExistsForGivenTeams(user_ids=invalid_user_ids)
         return team_user_dtos
 
+    # TODO: condition encapsulation
     @staticmethod
     def _get_invalid_user_ids_for_given_team_ids(
             user_ids: List[str], team_user_dtos: List[TeamWithUserIdDTO]
@@ -224,6 +226,7 @@ class ProjectInteractor:
         return self._fetch_user_teams_for_each_user(
             user_team_dtos=user_team_dtos)
 
+    # TODO: CE
     def _validate_user_ids_and_get_user_team_dtos_for_given_project(
             self, project_id: str, user_ids: List[str]
     ) -> Optional[List[TeamWithUserIdDTO]]:
@@ -391,6 +394,7 @@ class ProjectInteractor:
         self.project_storage.delete_project_roles(
             role_ids=role_ids_to_be_deleted)
 
+    # TODO: CE
     def get_user_status_for_given_projects(
             self, user_id: str, project_ids: List[str]
     ) -> List[UserIdWithProjectIdAndStatusDTO]:

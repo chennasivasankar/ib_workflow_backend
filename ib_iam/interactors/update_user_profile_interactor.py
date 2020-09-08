@@ -97,6 +97,7 @@ class UpdateUserProfileInteractor(ValidationMixin):
         if is_duplicate_role_ids_exist:
             raise RoleIdsAreDuplicated()
 
+    # TODO: Intense revealing names(are_valid)
     def _validate_invalid_role_ids(self, role_ids):
         are_valid = self.user_storage.check_are_valid_role_ids(
             role_ids=role_ids)
