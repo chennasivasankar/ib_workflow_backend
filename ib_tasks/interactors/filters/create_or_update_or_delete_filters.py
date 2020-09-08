@@ -206,8 +206,8 @@ class CreateOrUpdateOrDeleteFiltersInteractor(ValidationMixin):
             is_invalid_filter_string = field_type != FieldTypes.NUMBER.value \
                                 and field_type != FieldTypes.FLOAT.value \
                                 and condition_dto.operator in NUMERIC_OPERATORS
-            is_invalid_filter = field_type == FieldTypes.NUMBER.value \
-                                or field_type == FieldTypes.FLOAT.value \
+            is_invalid_filter = (field_type == FieldTypes.NUMBER.value \
+                                or field_type == FieldTypes.FLOAT.value) \
                                 and condition_dto.operator in STRING_OPERATORS
             if is_invalid_filter or is_invalid_filter_string:
                 raise InvalidFilterCondition(condition=condition_dto.operator)
