@@ -13,6 +13,7 @@ from ib_iam.tests.factories.storage_dtos import \
 
 class TestUpdateCompanyDetails:
 
+    # TODO: write repeated lines in a fixtures.
     def test_if_user_not_admin_returns_unauthorized_exception_response(self):
         company_storage = create_autospec(CompanyStorageInterface)
         user_storage = create_autospec(UserStorageInterface)

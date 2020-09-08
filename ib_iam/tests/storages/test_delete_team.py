@@ -9,6 +9,7 @@ from ib_iam.storages.team_storage_implementation import (
 @pytest.mark.django_db
 class TestDeleteTeam:
 
+    # TODO: give proper name to empty list and assert it
     def test_whether_it_returns_list_of_team_members_dtos(
             self, create_teams
     ):

@@ -1,19 +1,20 @@
 from mock import create_autospec, Mock
+
+from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
+    TeamPresenterInterface)
+from ib_iam.interactors.storage_interfaces.team_storage_interface import (
+    TeamStorageInterface)
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 from ib_iam.interactors.team_interactor import TeamInteractor
-from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
-    TeamPresenterInterface)
 from ib_iam.tests.factories.storage_dtos import (
     TeamNameAndDescriptionDTOFactory, TeamWithUserIdsDTOFactory)
-from ib_iam.interactors.storage_interfaces.team_storage_interface import (
-    TeamStorageInterface)
 
 
 class TestAddTeamInteractor:
 
+    # TODO: Repeated lines write in fixtures.
     def test_if_user_not_admin_returns_unauthorized_exception_response(self):
-        from ib_iam.exceptions.custom_exceptions import UserHasNoAccess
         team_storage = create_autospec(TeamStorageInterface)
         user_storage = create_autospec(UserStorageInterface)
         presenter = create_autospec(TeamPresenterInterface)
@@ -125,6 +126,7 @@ class TestAddTeamInteractor:
         assert actual_team_name_from_team_name_already_exists_error == \
                expected_team_name_from_team_name_already_exists_error
 
+    # TODO: verify line 157. why it is their
     def test_given_valid_details_then_returns_team_id(self):
         team_storage = create_autospec(TeamStorageInterface)
         user_storage = create_autospec(UserStorageInterface)

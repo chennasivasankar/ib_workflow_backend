@@ -58,6 +58,7 @@ class TestGetProjectDTOs:
         project_storage_mock.get_project_dtos_for_given_project_ids.\
             assert_called_once_with(project_ids=project_ids)
 
+    # TODO: write assert statements for storage and presenter
     def test_get_project_dtos_for_give_invalid_project_ids_then_raise_exception(
             self, init_interactor, project_storage_mock, user_storage_mock,
             team_storage_mock):

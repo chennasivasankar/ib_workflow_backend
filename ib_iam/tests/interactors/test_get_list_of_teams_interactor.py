@@ -41,6 +41,7 @@ class TestGetListOfTeamsInteractor:
         ]
         return user_profile_dtos
 
+    # TODO: Repeated lines write in a fixtures
     def test_if_user_not_admin_returns_unauthorized_response(self):
         team_storage = create_autospec(TeamStorageInterface)
         user_storage = create_autospec(UserStorageInterface)

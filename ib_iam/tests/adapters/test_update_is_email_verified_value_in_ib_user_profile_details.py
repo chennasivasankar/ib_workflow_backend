@@ -1,5 +1,6 @@
 class TestUpdateIsEmailVerifiedValueInIbUsers:
-    def update_user_profile_mock(self, mocker):
+    @staticmethod
+    def update_user_profile_mock(mocker):
         mock = mocker.patch(
             "ib_users.interfaces.service_interface.ServiceInterface.update_user_profile"
         )

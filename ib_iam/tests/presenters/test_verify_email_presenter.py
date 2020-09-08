@@ -42,6 +42,7 @@ class TestVerifyEmailLinkPresenter:
         actual_response_content = json.loads(response.content)
         assert response_dict == actual_response_content
 
+    # TODO: for 200 use the ENUM
     def test_get_response_for_verified_email(self, presenter_mock):
         response = presenter_mock.get_response_for_verified_email()
 

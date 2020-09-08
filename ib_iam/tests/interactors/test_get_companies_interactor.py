@@ -40,6 +40,8 @@ def expected_company_employee_ids_dtos():
 
 
 class TestGetCompaniesInteractor:
+
+    # TODO: write repeated lines in a fixtures.
     def test_if_user_is_not_admin_returns_user_has_no_access_response(self):
         company_storage = create_autospec(CompanyStorageInterface)
         user_storage = create_autospec(UserStorageInterface)
@@ -58,6 +60,7 @@ class TestGetCompaniesInteractor:
         presenter.get_user_has_no_access_response_for_get_companies \
             .assert_called_once()
 
+    # TODO: Use assert_called_once_with
     def test_if_user_is_admin_it_returns_companies_details_response(
             self,
             mocker,

@@ -10,6 +10,7 @@ from ib_iam.interactors.team_interactor import TeamInteractor
 
 class TestDeleteTeam:
 
+    # TODO: Repeated lines write in fixtures.
     def test_if_user_not_admin_raises_unauthorized_exception(self):
         team_storage = create_autospec(TeamStorageInterface)
         user_storage = create_autospec(UserStorageInterface)

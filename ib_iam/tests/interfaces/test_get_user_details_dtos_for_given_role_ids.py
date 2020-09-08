@@ -41,6 +41,7 @@ class TestGetUserDetailsBulkForGivenRoleIds:
                 project_role=role_object, user_id=user_role["user_id"])
         return role_ids
 
+    # TODO: No need to check the len of user_dtos length
     @pytest.mark.django_db
     def test_get_user_details_dtos_for_given_valid_role_ids(
             self, user_profile_dtos, set_up, mocker):
@@ -73,6 +74,7 @@ class TestGetUserDetailsBulkForGivenRoleIds:
             service_interface.get_user_details_for_given_role_ids(
                 role_ids=invalid_role_ids, project_id=project_id)
 
+    # TODO: No need to check the len of user_dtos length
     @pytest.mark.django_db
     def test_given_valid_role_ids_with_all_role_id_then_return_all_users(
             self, mocker):

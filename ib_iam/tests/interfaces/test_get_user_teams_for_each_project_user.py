@@ -52,6 +52,7 @@ class TestGetUserTeamsForEachProjectUser:
         return user_set_up, project_set_up, team_set_up, project_team_set_up, \
                team_user_set_up
 
+    # TODO: No need to check the length
     @pytest.mark.django_db
     def test_get_user_teams_for_each_project_user_given_valid_details_then_return_response(
             self, set_up):

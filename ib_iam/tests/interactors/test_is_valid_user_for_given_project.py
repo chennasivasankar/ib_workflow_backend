@@ -42,13 +42,13 @@ class TestIsValidUserForGivenProject:
             team_storage_mock):
         user_id = "1"
         project_id = "1"
-        inteactor = init_interactor
+        interactor = init_interactor
         user_storage_mock.is_user_exist.return_value = True
         project_storage_mock.get_valid_project_ids_from_given_project_ids. \
             return_value = [project_id]
         project_storage_mock.is_user_exist_given_project.return_value = True
 
-        inteactor.is_valid_user_id_for_given_project(
+        interactor.is_valid_user_id_for_given_project(
             user_id=user_id, project_id=project_id)
 
         user_storage_mock.is_user_exist.assert_called_once_with(
@@ -63,14 +63,14 @@ class TestIsValidUserForGivenProject:
             team_storage_mock):
         user_id = "1"
         invalid_project_id = "1"
-        inteactor = init_interactor
+        interactor = init_interactor
         user_storage_mock.is_user_exist.return_value = True
         project_storage_mock.get_valid_project_ids_from_given_project_ids. \
             return_value = []
 
         from ib_iam.exceptions.custom_exceptions import InvalidProjectId
         with pytest.raises(InvalidProjectId):
-            inteactor.is_valid_user_id_for_given_project(
+            interactor.is_valid_user_id_for_given_project(
                 user_id=user_id, project_id=invalid_project_id)
 
         user_storage_mock.is_user_exist.assert_called_once_with(
@@ -83,12 +83,12 @@ class TestIsValidUserForGivenProject:
             team_storage_mock):
         user_id = "1"
         project_id = "1"
-        inteactor = init_interactor
+        interactor = init_interactor
         user_storage_mock.is_user_exist.return_value = False
 
         from ib_iam.exceptions.custom_exceptions import InvalidUserId
         with pytest.raises(InvalidUserId):
-            inteactor.is_valid_user_id_for_given_project(
+            interactor.is_valid_user_id_for_given_project(
                 user_id=user_id, project_id=project_id)
 
         user_storage_mock.is_user_exist.assert_called_once_with(

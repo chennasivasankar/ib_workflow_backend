@@ -8,6 +8,7 @@ from ib_iam.storages.team_storage_implementation import \
 @pytest.mark.django_db
 class TestDeleteMembersFromTeam:
 
+    # TODO: give proper name to empty list and assert it
     def test_whether_it_returns_an_empty_users_list(
             self, create_members, create_teams):
         storage = TeamStorageImplementation()

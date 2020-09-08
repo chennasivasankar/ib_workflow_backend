@@ -160,6 +160,7 @@ class TestGetUsersDetailsInteractor:
         # Assert
         presenter_mock.raise_invalid_limit_value_exception.assert_called_once()
 
+    # TODO: assert_called_with
     def test_get_users_returns_user_dtos(
             self, storage_mock, presenter_mock, user_dtos, mocker
     ):
@@ -194,6 +195,7 @@ class TestGetUsersDetailsInteractor:
         storage_mock.get_all_user_dtos.assert_called_once()
         adapter_mock.assert_called_once()
 
+    # TODO: assert_called_with
     def test_get_users_team_details_returns_team_details_of_users(
             self, user_dtos, user_team_dtos, storage_mock, presenter_mock,
             mocker):
@@ -231,6 +233,7 @@ class TestGetUsersDetailsInteractor:
             user_ids)
         adapter_mock.assert_called_once()
 
+    # TODO: assert_called_with
     def test_get_users_role_details_returns_team_details_of_users(
             self, user_dtos, user_role_dtos, storage_mock, presenter_mock,
             mocker):
@@ -268,6 +271,7 @@ class TestGetUsersDetailsInteractor:
         storage_mock.get_role_details_of_users_bulk.assert_called_once_with(
             user_ids)
 
+    # TODO: assert_called_with
     def test_get_users_company_details_returns_team_details_of_users(
             self, user_dtos, user_company_dtos, storage_mock, presenter_mock,
             mocker):
@@ -340,6 +344,7 @@ class TestGetUsersDetailsInteractor:
         # Assert
         adapter_mock.assert_called_once()
 
+    # TODO: assert_called_with
     def test_get_users_complete_details(
             self, user_dtos, user_team_dtos,
             user_role_dtos, user_company_dtos, user_profile_dtos,
@@ -417,6 +422,8 @@ class TestGetUsersDetailsInteractor:
 
         # Assert
         assert response == valid_user_ids
+        storage_mock.get_valid_user_ids.assert_called_once_with(
+            user_ids=user_ids)
 
     def test_get_user_details_for_given_role_ids_based_on_query(
             self, storage_mock, mocker):

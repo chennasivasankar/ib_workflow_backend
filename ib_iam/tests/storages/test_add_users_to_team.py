@@ -7,6 +7,7 @@ from ib_iam.storages.team_storage_implementation import \
 @pytest.mark.django_db
 class TestAddUsersToTeam:
 
+    # TODO: Capture the team_user details with snapshot instead of comparing len
     def test_given_valid_details_return_nothing(self, create_teams):
         storage = TeamStorageImplementation()
         team_id = "f2c02d98-f311-4ab2-8673-3daa00757002"

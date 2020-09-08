@@ -11,6 +11,7 @@ class TestCreateUserAccountPresenter:
         presenter = CreateUserAccountPresenterImplementation()
         return presenter
 
+    # TODO: Assert separately every attribute because in every where like that only we follow and do same for all test cases in the file.
     def test_raise_account_already_exists_exception(self, presenter_mock):
         import json
         from ib_iam.presenters.auth_presenter_implementation import \

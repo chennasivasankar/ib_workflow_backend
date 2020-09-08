@@ -20,6 +20,7 @@ class TestDeleteUSerStorageImplementation:
         with pytest.raises(UserDetails.DoesNotExist):
             UserDetails.objects.get(user_id=user_id)
 
+    # TODO: give proper name to "0" and assert it and do same in all test cases
     @pytest.mark.django_db
     def test_delete_user_roles_from_user_role_db(self):
         from ib_iam.tests.factories.models import UserDetailsFactory

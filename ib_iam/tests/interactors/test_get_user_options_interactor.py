@@ -68,6 +68,7 @@ class TestGetUserOptionsInteractor:
         storage_mock.is_user_admin.assert_called_once_with(user_id="user0")
         presenter_mock.raise_user_is_not_admin_exception.assert_called_once()
 
+    # TODO: user assert_called_with
     def test_get_companies_details(
             self, company_dtos, storage_mock, presenter_mock):
         # Arrange
@@ -81,6 +82,7 @@ class TestGetUserOptionsInteractor:
         # Assert
         storage_mock.get_companies.assert_called_once()
 
+    # TODO: user assert_called_with
     def test_get_teams_details(
             self, team_dtos, storage_mock, presenter_mock):
         # Arrange
@@ -94,6 +96,7 @@ class TestGetUserOptionsInteractor:
         # Assert
         storage_mock.get_team_id_and_name_dtos.assert_called_once()
 
+    # TODO: user assert_called_with
     def test_get_roles_details(
             self, role_dtos, storage_mock, presenter_mock):
         # Arrange
@@ -107,6 +110,7 @@ class TestGetUserOptionsInteractor:
         # Assert
         storage_mock.get_roles.assert_called_once()
 
+    # TODO: user assert_called_with
     def test_get_configuration_details_returns_response(
             self, role_dtos, team_dtos, company_dtos, storage_mock,
             presenter_mock):

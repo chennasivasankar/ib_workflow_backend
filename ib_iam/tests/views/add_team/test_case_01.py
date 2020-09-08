@@ -2,8 +2,10 @@
 # Returns team_id as valid parameters are given
 """
 from uuid import UUID
+
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...common_fixtures.adapters.uuid_mock import prepare_uuid_mock
 
@@ -15,6 +17,7 @@ class TestCase01AddTeamAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['write']}}
 
+    # TODO: remove the response. Because we are not asserting anywhere.
     @pytest.mark.django_db
     def test_case(self, mocker, snapshot, setup):
         mock = prepare_uuid_mock(mocker)

@@ -52,6 +52,7 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
             query_params=query_params, headers=headers, snapshot=snapshot
         )
 
+    # TODO: verify why login_user_profile_dto is highlighted
     @pytest.fixture
     def adapters_mock_setup(self, users_set_up,  mocker):
         login_user_id = '217abeb3-6466-4440-96e7-bf02ee941bf8'

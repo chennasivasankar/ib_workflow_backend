@@ -4,12 +4,14 @@ from freezegun import freeze_time
 
 class TestGetUserTokens:
 
-    def get_user_auth_tokens_mock(self, mocker):
+    @staticmethod
+    def get_user_auth_tokens_mock(mocker):
         mock = mocker.patch(
             "ib_users.interfaces.service_interface.ServiceInterface.get_user_auth_tokens_for_login_with_email_and_password"
         )
         return mock
 
+    # TODO: use assert_called_once_with to assert with parameters
     @freeze_time("2020-01-14 12:00:01")
     def test_get_user_tokens_dto_for_given_email_and_password_dto(
             self, mocker
@@ -58,6 +60,7 @@ class TestGetUserTokens:
         assert response == expected_user_tokens_dtos
         get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()
 
+    # TODO: use assert_called_once_with to assert with parameters
     def test_with_invalid_email_raise_exception(
             self, mocker
     ):
@@ -88,6 +91,7 @@ class TestGetUserTokens:
             )
         get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()
 
+    # TODO: use assert_called_once_with to assert with parameters
     def test_incorrect_password_for_password_at_least_one_special_character_raise_exception(
             self, mocker
     ):
@@ -120,6 +124,7 @@ class TestGetUserTokens:
             )
         get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()
 
+    # TODO: use assert_called_once_with to assert with parameters
     def test_incorrect_password_for_password_min_length_raise_exception(
             self, mocker
     ):
@@ -154,6 +159,7 @@ class TestGetUserTokens:
             )
         get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()
 
+    # TODO: use assert_called_once_with to assert with parameters
     def test_user_account_does_not_exist_raise_exception(
             self, mocker
     ):
@@ -186,6 +192,7 @@ class TestGetUserTokens:
             )
         get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()
 
+    # TODO: use assert_called_once_with to assert with parameters
     def test_user_account_not_registered_raise_exception(
             self, mocker
     ):
@@ -218,6 +225,7 @@ class TestGetUserTokens:
             )
         get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()
 
+    # TODO: use assert_called_once_with to assert with parameters
     def test_with_incorrect_password_then_raise_exception(
             self, mocker
     ):

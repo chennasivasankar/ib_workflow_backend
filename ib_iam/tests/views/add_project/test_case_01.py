@@ -54,6 +54,7 @@ class TestCase01AddProjectAPITestCase(TestUtils):
             .values("role_id", "name", "description")
         snapshot.assert_match(list(project_roles), "project_roles")
 
+    # TODO: Don't use underscore readability is missing.
     @pytest.fixture
     def setup(self):
         team_ids = ['f2c02d98-f311-4ab2-8673-3daa00757003']

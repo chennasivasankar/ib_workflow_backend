@@ -25,3 +25,5 @@ class TestGetValidRoleIds:
 
         # Assert
         assert valid_ids == expected_valid_ids
+        storage_mock.get_valid_role_ids.assert_called_once_with(
+            role_ids=role_ids)

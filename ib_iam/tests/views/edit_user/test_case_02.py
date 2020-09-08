@@ -29,6 +29,7 @@ class TestCase02EditUserAPITestCase(TestUtils):
         TeamFactory.create(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8343')
         ProjectRoleFactory.create(role_id='ROLE_1')
 
+    # TODO: give proper name to test method in all files.
     @pytest.mark.django_db
     def test_case(self, user_set_up, snapshot):
         body = {'name': 'parker', 'email': 'parker2020@gmail.com',

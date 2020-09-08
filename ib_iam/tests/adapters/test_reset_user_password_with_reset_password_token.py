@@ -9,6 +9,7 @@ class TestResetUserPasswordAdapter:
         )
         return mock
 
+    # TODO: use assert_called_once_with to assert with parameters
     def test_reset_user_password_with_reset_password_token(
             self, mocker):
         # Arrange
@@ -32,6 +33,7 @@ class TestResetUserPasswordAdapter:
         reset_password_for_given_user_password_reset_token_mock. \
             assert_called_once()
 
+    # TODO: use assert_called_once_with to assert with parameters
     def test_incorrect_password_for_password_at_least_one_special_character_raise_exception(
             self, mocker):
         # Arrange
@@ -64,6 +66,7 @@ class TestResetUserPasswordAdapter:
         reset_password_for_given_user_password_reset_token_mock. \
             assert_called_once()
 
+    # TODO: use assert_called_once_with to assert with parameters
     def test_incorrect_password_for_password_min_length_raise_exception(
             self, mocker):
         # Arrange
@@ -98,6 +101,7 @@ class TestResetUserPasswordAdapter:
         reset_password_for_given_user_password_reset_token_mock. \
             assert_called_once()
 
+    # TODO: use assert_called_once_with to assert with parameters
     def test_with_token_does_not_exist_raise_exception(
             self, mocker):
         # Arrange
@@ -127,6 +131,7 @@ class TestResetUserPasswordAdapter:
         reset_password_for_given_user_password_reset_token_mock. \
             assert_called_once()
 
+    # TODO: use assert_called_once_with to assert with parameters
     def test_with_token_has_expired_raise_exception(
             self, mocker):
         # Arrange

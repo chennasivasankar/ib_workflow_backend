@@ -14,6 +14,7 @@ from ib_iam.interactors.storage_interfaces.company_storage_interface import \
 
 class TestAddCompanyInteractor:
 
+    # TODO: Repeated lines write in fixtures.
     def test_if_user_not_admin_returns_unauthorized_exception_response(self):
         user_storage = create_autospec(UserStorageInterface)
         company_storage = create_autospec(CompanyStorageInterface)

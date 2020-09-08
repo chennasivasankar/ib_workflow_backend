@@ -3,6 +3,7 @@ UserHasNoAccess exception Response will be given as the does not exist
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -13,6 +14,7 @@ class TestCase02DeleteTeamAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['delete']}}
 
+    # TODO: why here setup is assign to team_id. Observe in other test cases also.
     @pytest.mark.django_db
     def test_case(self, setup, snapshot):
         team_id = setup

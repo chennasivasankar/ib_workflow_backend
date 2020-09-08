@@ -19,6 +19,7 @@ class TestGetProjectDTOsBulk:
         ]
         return project_objects, project_dtos
 
+    # TODO: No need to compare the length of results.
     @pytest.mark.django_db
     def test_get_project_dtos_for_given_valid_details_then_return_list_of_project_dtos(
             self, set_up):

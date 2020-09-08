@@ -69,6 +69,7 @@ class ProjectInteractor:
                 project_ids=project_ids)
         return valid_project_ids
 
+    # TODO: it is better to do validation of project ids before getting project dtos
     def get_project_dtos_bulk(
             self, project_ids: List[str]) -> List[ProjectDTO]:
         project_dtos = self.project_storage. \
