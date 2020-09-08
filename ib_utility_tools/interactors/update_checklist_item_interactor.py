@@ -1,7 +1,7 @@
 from ib_utility_tools.exceptions.custom_exceptions import \
     EmptyChecklistItemText, ChecklistItemIdNotFound
 from ib_utility_tools.interactors.presenter_interfaces \
-    .update_checklist_item_presenter_interface import \
+    .checklist_presenter_interface import \
     UpdateChecklistItemPresenterInterface
 from ib_utility_tools.interactors.storage_interfaces \
     .checklist_storage_interface import ChecklistStorageInterface

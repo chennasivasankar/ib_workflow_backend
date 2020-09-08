@@ -20,6 +20,18 @@ class TestCase01StopTimerAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['write']}}
 
+    @pytest.fixture
+    def setup(self):
+        from ib_utility_tools.constants.enum import TimerEntityType
+        from ib_utility_tools.tests.factories.models import TimerFactory
+        entity_id = "09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5a"
+        entity_type = TimerEntityType.STAGE_TASK.value
+        TimerFactory.create(
+            entity_id=entity_id, entity_type=entity_type,
+            start_datetime=datetime.datetime(2020, 8, 7, 17),
+            duration_in_seconds=100, is_running=True)
+        return entity_id, entity_type
+
     @freeze_time("2020-08-07 18:00:00")
     @pytest.mark.django_db
     def test_case(self, setup, snapshot):
@@ -28,22 +40,7 @@ class TestCase01StopTimerAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
-
-    @pytest.fixture
-    def setup(self):
-        from ib_utility_tools.constants.enum import TimerEntityType
-        from ib_utility_tools.tests.factories.models import TimerFactory
-        entity_id = "09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5a"
-        entity_type = TimerEntityType.STAGE_TASK.value
-
-        TimerFactory.create(entity_id=entity_id,
-                            entity_type=entity_type,
-                            start_datetime=datetime.datetime(2020, 8, 7, 17),
-                            duration_in_seconds=100,
-                            is_running=True)
-        return entity_id, entity_type
+        self.make_api_call(
+            body=body, path_params=path_params,
+            query_params=query_params, headers=headers, snapshot=snapshot
+        )
