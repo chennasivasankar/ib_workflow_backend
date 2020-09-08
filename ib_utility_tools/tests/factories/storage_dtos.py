@@ -4,7 +4,8 @@ from ib_utility_tools.constants.enum import EntityType, TimerEntityType
 from ib_utility_tools.interactors.storage_interfaces.dtos import (
     ChecklistItemWithEntityDTO, ChecklistItemWithChecklistIdDTO, EntityDTO,
     ChecklistItemWithIdDTO, TimerEntityDTO, TimerDetailsDTO,
-    CompleteTimerDetailsDTO)
+    CompleteTimerDetailsDTO
+)
 
 
 class EntityDTOFactory(factory.Factory):
