@@ -1,5 +1,6 @@
 import mock
 import pytest
+
 from ib_utility_tools.tests.factories.storage_dtos import (
     ChecklistItemWithEntityDTOFactory
 )
@@ -12,64 +13,21 @@ class TestCreateChecklistItemInteractor:
         from ib_utility_tools.interactors.storage_interfaces.checklist_storage_interface import (
             ChecklistStorageInterface
         )
-        storage = mock.create_autospec(ChecklistStorageInterface)
-        return storage
+        return mock.create_autospec(ChecklistStorageInterface)
 
     @pytest.fixture()
     def presenter_mock(self):
         from ib_utility_tools.interactors.presenter_interfaces.checklist_presenter_interface import (
             CreateChecklistItemPresenterInterface
         )
-        presenter = mock.create_autospec(CreateChecklistItemPresenterInterface)
-        return presenter
+        return mock.create_autospec(CreateChecklistItemPresenterInterface)
 
     @pytest.fixture()
     def interactor(self, storage_mock):
         from ib_utility_tools.interactors.create_checklist_item_interactor import (
             CreateChecklistItemInteractor
         )
-        interactor = CreateChecklistItemInteractor(
-            checklist_storage=storage_mock
-        )
-        return interactor
-
-    def test_given_item_text_is_empty_returns_empty_text_exception_response(
-            self, interactor, storage_mock, presenter_mock
-    ):
-        # Arrange
-        checklist_item_with_entity_dto = ChecklistItemWithEntityDTOFactory(
-            text=""
-        )
-        presenter_mock.response_for_empty_checklist_item_text_exception = \
-            mock.Mock()
-
-        # Act
-        interactor.create_checklist_item_wrapper(
-            checklist_item_with_entity_dto=checklist_item_with_entity_dto,
-            presenter=presenter_mock
-        )
-
-        # Assert
-        presenter_mock.response_for_empty_checklist_item_text_exception.assert_called_once()
-
-    def test_item_text_has_only_spaces_returns_empty_text_exception_response(
-            self, interactor, storage_mock, presenter_mock
-    ):
-        # Arrange
-        checklist_item_with_entity_dto = ChecklistItemWithEntityDTOFactory(
-            text=""
-        )
-        presenter_mock.response_for_empty_checklist_item_text_exception = \
-            mock.Mock()
-
-        # Act
-        interactor.create_checklist_item_wrapper(
-            checklist_item_with_entity_dto=checklist_item_with_entity_dto,
-            presenter=presenter_mock
-        )
-
-        # Assert
-        presenter_mock.response_for_empty_checklist_item_text_exception.assert_called_once()
+        return CreateChecklistItemInteractor(checklist_storage=storage_mock)
 
     def test_given_details_already_has_checklist_returns_success_response(
             self, interactor, storage_mock, presenter_mock
@@ -138,6 +96,9 @@ class TestCreateChecklistItemInteractor:
         )
 
         # Assert
+        storage_mock.get_checklist_id_if_exists.assert_called_once_with(
+            entity_dto=entity_dto
+        )
         storage_mock.create_checklist.assert_called_once_with(
             entity_dto=entity_dto
         )

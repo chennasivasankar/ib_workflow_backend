@@ -258,6 +258,17 @@ class StorageImplementation(StorageInterface):
                          .values_list('board_id', flat=True))
         return board_ids, starred_board_ids
 
+    def get_user_permitted_board_ids(self, user_roles: List[str], board_ids: List[str]) -> List[str]:
+        from ib_boards.constants.constants import ALL_ROLES_ID
+        user_roles.append(ALL_ROLES_ID)
+        column_ids = list(ColumnPermission.objects.filter(
+            user_role_id__in=user_roles
+        ).values_list('column_id', flat=True))
+        board_ids = Column.objects.filter(
+            column_id__in=column_ids, board_id__in=board_ids
+        ).values_list('board_id', flat=True)
+        return sorted(list(set(board_ids)))
+
     def get_board_details(self, board_ids: List[str]) -> List[BoardDTO]:
         board_objects = Board.objects.filter(
             board_id__in=board_ids
