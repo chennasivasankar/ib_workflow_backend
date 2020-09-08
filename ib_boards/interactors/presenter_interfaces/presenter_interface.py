@@ -1,4 +1,5 @@
 import abc
+from abc import ABC
 from dataclasses import dataclass
 from typing import List
 
@@ -8,7 +9,8 @@ from ib_boards.adapters.iam_service import InvalidProjectIdsException
 from ib_boards.interactors.dtos import ActionDTO, \
     TaskCompleteDetailsDTO, FieldDTO, StarredAndOtherBoardsDTO, TaskStageDTO, \
     StageAssigneesDTO
-from ib_boards.interactors.storage_interfaces.dtos import ColumnCompleteDetails
+from ib_boards.interactors.storage_interfaces.dtos import ColumnCompleteDetails, \
+    AllFieldsDTO
 
 from ib_boards.interactors.dtos import ColumnTasksDTO
 from ib_boards.interactors.storage_interfaces.dtos import (
@@ -19,6 +21,16 @@ from ib_boards.interactors.storage_interfaces.dtos import (
 class TaskDisplayIdDTO:
     task_id: int
     display_id: str
+
+
+@dataclass
+class CompleteTasksDetailsDTO:
+    task_fields_dtos: List[FieldDTO]
+    task_actions_dtos: List[ActionDTO]
+    total_tasks: int
+    task_id_dtos: List[TaskDisplayIdDTO]
+    task_stage_dtos: List[TaskStageDTO]
+    assignees_dtos: List[StageAssigneesDTO]
 
 
 class GetBoardsPresenterInterface(abc.ABC):
@@ -131,10 +143,79 @@ class GetColumnTasksPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_column_tasks(
-            self, task_fields_dtos: List[FieldDTO],
-            task_actions_dtos: List[ActionDTO],
-            total_tasks: int,
-            task_id_dtos: List[TaskDisplayIdDTO],
-            task_stage_dtos: List[TaskStageDTO],
-            assignees_dtos: List[StageAssigneesDTO]):
+            self, complete_tasks_details_dto: CompleteTasksDetailsDTO):
         pass
+
+
+class GetColumnTasksListViewPresenterInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def get_response_for_the_invalid_column_id(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_offset(self) -> response.HttpResponse:
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_limit(self) -> response.HttpResponse:
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_offset_exceeds_total_tasks(
+            self) -> response.HttpResponse:
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_user_have_no_access_for_column(
+            self) -> response.HttpResponse:
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_stage_ids(self,
+                                           error) -> response.HttpResponse:
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_column_tasks_in_list_view(
+            self, complete_tasks_details_dto: CompleteTasksDetailsDTO, all_fields: List[AllFieldsDTO]):
+        pass
+
+
+class FieldsDisplayStatusPresenterInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def get_response_for_the_invalid_column_id(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_user_have_no_access_for_column(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_field_not_belongs_to_column(self):
+        pass
+
+
+class FieldsDisplayOrderPresenterInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def get_response_for_the_invalid_column_id(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_user_have_no_access_for_column(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_field_not_belongs_to_column(self, error):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_the_invalid_display_order(self):
+        pass
+
+    def get_response_for_field_order_in_column(
+            self, all_fields: List[AllFieldsDTO]):
+        pass
+

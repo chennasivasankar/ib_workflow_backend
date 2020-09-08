@@ -156,9 +156,8 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         # Act
         with pytest.raises(InvalidGoFIds) as err:
             interactor.perform_base_validations_for_template_gofs_and_fields(
-                gof_fields_dtos=gof_fields_dtos, created_by_id=created_by_id,
-                task_template_id=task_template_id, action_type=action_type
-            )
+                gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
+                task_template_id=task_template_id, action_type=action_type)
 
         # Assert
         exception_object = err.value
@@ -196,9 +195,8 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         # Act
         with pytest.raises(InvalidFieldIds) as err:
             interactor.perform_base_validations_for_template_gofs_and_fields(
-                gof_fields_dtos=gof_fields_dtos, created_by_id=created_by_id,
-                task_template_id=task_template_id, action_type=action_type
-            )
+                gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
+                task_template_id=task_template_id, action_type=action_type)
 
         # Assert
         exception_object = err.value
@@ -232,9 +230,8 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         # Act
         with pytest.raises(InvalidGoFsOfTaskTemplate) as err:
             interactor.perform_base_validations_for_template_gofs_and_fields(
-                gof_fields_dtos=gof_fields_dtos, created_by_id=created_by_id,
-                task_template_id=task_template_id, action_type=action_type
-            )
+                gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
+                task_template_id=task_template_id, action_type=action_type)
 
         # Assert
         exception_object = err.value
@@ -283,9 +280,8 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         # Act
         with pytest.raises(InvalidFieldsOfGoF) as err:
             interactor.perform_base_validations_for_template_gofs_and_fields(
-                gof_fields_dtos=gof_fields_dtos, created_by_id=created_by_id,
-                task_template_id=task_template_id, action_type=action_type
-            )
+                gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
+                task_template_id=task_template_id, action_type=action_type)
 
         # Assert
         exception_object = err.value
@@ -333,10 +329,8 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         # Act
         with pytest.raises(DuplicateFieldIdsToGoF) as err:
             interactor.perform_base_validations_for_template_gofs_and_fields(
-                gof_fields_dtos=gof_fields_dtos,
-                created_by_id=created_by_id,
-                task_template_id=task_template_id, action_type=action_type
-            )
+                gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
+                task_template_id=task_template_id, action_type=action_type)
 
         # Assert
         exception_object = err.value
@@ -387,10 +381,8 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         # Act
         with pytest.raises(UserNeedsGoFWritablePermission) as err:
             interactor.perform_base_validations_for_template_gofs_and_fields(
-                gof_fields_dtos=gof_fields_dtos,
-                created_by_id=created_by_id,
-                task_template_id=task_template_id, action_type=action_type
-            )
+                gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
+                task_template_id=task_template_id, action_type=action_type)
 
         # Assert
         exception_object = err.value
@@ -445,10 +437,8 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         # Act
         with pytest.raises(UserNeedsFieldWritablePermission) as err:
             interactor.perform_base_validations_for_template_gofs_and_fields(
-                gof_fields_dtos=gof_fields_dtos,
-                created_by_id=created_by_id,
-                task_template_id=task_template_id, action_type=action_type
-            )
+                gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
+                task_template_id=task_template_id, action_type=action_type)
 
         # Assert
         exception_object = err.value
@@ -491,10 +481,8 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
         # Act
         interactor.perform_base_validations_for_template_gofs_and_fields(
-            gof_fields_dtos=gof_fields_dtos,
-            created_by_id=created_by_id,
-            task_template_id=task_template_id, action_type=action_type
-        )
+            gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
+            task_template_id=task_template_id, action_type=action_type)
 
         # Assert
         get_some_user_role_ids_mock_method.assert_called_once()

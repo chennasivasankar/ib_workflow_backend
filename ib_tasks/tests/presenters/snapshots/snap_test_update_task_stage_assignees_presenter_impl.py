@@ -7,7 +7,7 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestUpdateTaskStageAssigneesPresenterImplementation.test_with_invalid_task_display_id http_status_code'] = 400
+snapshots['TestUpdateTaskStageAssigneesPresenterImplementation.test_with_invalid_task_display_id http_status_code'] = 404
 
 snapshots['TestUpdateTaskStageAssigneesPresenterImplementation.test_with_invalid_task_display_id res_status'] = 'INVALID_TASK_ID'
 
@@ -31,14 +31,14 @@ snapshots['TestUpdateTaskStageAssigneesPresenterImplementation.test_given_virtua
 
 snapshots['TestUpdateTaskStageAssigneesPresenterImplementation.test_given_virtual_stageids_raise_exception json_response'] = 'Invalid stage ids that you have sent are: [1, 2],please send valid stage ids'
 
-snapshots['TestUpdateTaskStageAssigneesPresenterImplementation.test_raise_invalid_user_id_exception http_status_code'] = 404
-
-snapshots['TestUpdateTaskStageAssigneesPresenterImplementation.test_raise_invalid_user_id_exception res_status'] = 'INVALID_USER_ID'
-
-snapshots['TestUpdateTaskStageAssigneesPresenterImplementation.test_raise_invalid_user_id_exception json_response'] = "User with id assignee_1 doesn't exist"
-
 snapshots['TestUpdateTaskStageAssigneesPresenterImplementation.test_raise_stage_ids_with_invalid_permission_for_assignee_exception http_status_code'] = 400
 
 snapshots['TestUpdateTaskStageAssigneesPresenterImplementation.test_raise_stage_ids_with_invalid_permission_for_assignee_exception res_status'] = 'STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE'
 
 snapshots['TestUpdateTaskStageAssigneesPresenterImplementation.test_raise_stage_ids_with_invalid_permission_for_assignee_exception json_response'] = 'Stage ids with invalid permission of assignees that you have sent are: [1, 2],please assign valid assignees for stages'
+
+snapshots['TestUpdateTaskStageAssigneesPresenterImplementation.test_raise_invalid_user_id_exception http_status_code'] = 404
+
+snapshots['TestUpdateTaskStageAssigneesPresenterImplementation.test_raise_invalid_user_id_exception res_status'] = 'USER_NOT_IN_PROJECT'
+
+snapshots['TestUpdateTaskStageAssigneesPresenterImplementation.test_raise_invalid_user_id_exception json_response'] = 'User Not a part of the Project'

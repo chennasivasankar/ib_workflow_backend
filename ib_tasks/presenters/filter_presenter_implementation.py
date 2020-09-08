@@ -63,11 +63,11 @@ class FilterPresenterImplementation(FilterPresenterInterface,
         return response_object
 
     def get_response_for_update_filter_status(
-            self, filter_id: int, is_selected: Status):
+            self, filter_id: int, filter_status: Status):
 
         response_dict = {
             "filter_id": filter_id,
-            "action": is_selected
+            "action": filter_status
         }
         response_object = self.prepare_200_success_response(response_dict)
         return response_object

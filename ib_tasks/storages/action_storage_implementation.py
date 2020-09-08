@@ -2,22 +2,24 @@ from typing import List, Optional
 
 from django.db.models import F, Q
 
-from ib_tasks.adapters.dtos import ProjectRolesDTO
 from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.stage_custom_exceptions import \
-    TransitionTemplateIsNotRelatedToGivenStageAction, InvalidStageId
-from ib_tasks.interactors.stages_dtos import TemplateStageDTO, StageActionDTO, StageActionLogicDTO
+    (TransitionTemplateIsNotRelatedToGivenStageAction, InvalidStageId)
+from ib_tasks.interactors.stages_dtos import (TemplateStageDTO,
+                                              StageActionDTO,
+                                              StageActionLogicDTO)
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageActionNamesDTO
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectRolesDTO
-from ib_tasks.models import StageAction, Stage, ActionPermittedRoles, \
-    TaskTemplateInitialStage
+    StageActionNamesDTO, StageIdActionNameDTO, StageActionIdDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import \
+    TaskProjectRolesDTO
+from ib_tasks.models import (StageAction, Stage, ActionPermittedRoles,
+                             TaskTemplateInitialStage)
 
 
 class ActionsStorageImplementation(ActionStorageInterface):
@@ -26,14 +28,14 @@ class ActionsStorageImplementation(ActionStorageInterface):
             self, action_id) -> Optional[InvalidActionException]:
         try:
             StageAction.objects.get(id=action_id)
-        except StageAction.DoesNotExists:
+        except StageAction.DoesNotExist:
             raise InvalidActionException(action_id)
         return
 
     def validate_stage_id(self, stage_id) -> Optional[InvalidStageId]:
         try:
             Stage.objects.get(id=stage_id)
-        except Stage.DoesNotExists:
+        except Stage.DoesNotExist:
             raise InvalidStageId(stage_id)
         return
 
@@ -248,7 +250,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
         return StageAction.objects.filter(id=action_id).exists()
 
     def get_permitted_action_ids_given_stage_ids(self, user_roles: List[str],
-                                                 stage_ids: List[str]) -> List[int]:
+                                                 stage_ids: List[str]) -> List[
+        int]:
         action_ids = ActionPermittedRoles.objects.filter(
             Q(action__stage__stage_id__in=stage_ids),
             Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
@@ -258,13 +261,15 @@ class ActionsStorageImplementation(ActionStorageInterface):
     def get_stage_ids_having_actions(self, db_stage_ids: List[int]) \
             -> List[int]:
         db_stage_ids = \
-            list(StageAction.objects.filter(stage_id__in=db_stage_ids).values_list(
+            list(StageAction.objects.filter(
+                stage_id__in=db_stage_ids).values_list(
                 'stage_id', flat=True))
         return db_stage_ids
 
     def get_database_stage_actions(self) -> List[StageActionLogicDTO]:
 
-        action_objs = StageAction.objects.all().annotate(stage_name=F('stage__stage_id'))
+        action_objs = StageAction.objects.all().annotate(
+            stage_name=F('stage__stage_id'))
         return [
             StageActionLogicDTO(
                 action_id=action_obj.id,
@@ -282,8 +287,10 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
         q = None
         for counter, item in enumerate(user_project_roles):
-            current_queue = Q(role_id__in=item.roles) | Q(role_id=ALL_ROLES_ID) & \
-                            Q(action__stage__currenttaskstage__task=item.task_id)
+            current_queue = Q(role_id__in=item.roles) | Q(
+                role_id=ALL_ROLES_ID) & \
+                            Q(
+                                action__stage__currenttaskstage__task=item.task_id)
             if counter == 0:
                 q = current_queue
             else:
@@ -292,6 +299,55 @@ class ActionsStorageImplementation(ActionStorageInterface):
             return []
 
         action_ids = (ActionPermittedRoles.objects.filter(q,
-                                                          Q(action__stage__stage_id__in=stage_ids))
+                                                          Q(
+                                                              action__stage__stage_id__in=stage_ids))
                       .values_list('action_id', flat=True))
         return list(set(action_ids))
+
+    def get_stage_id_for_given_action_id(self, action_id: int) -> int:
+        obj = StageAction.objects.get(id=action_id)
+        return obj.stage_id
+
+    def get_user_permitted_action_ids_given_stage_ids(
+            self, user_roles: List[str],
+            stage_ids: List[int]
+    ) -> List[int]:
+        action_ids = ActionPermittedRoles.objects.filter(
+            action__stage_id__in=stage_ids
+        ).filter(
+            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+        ).values_list('action_id', flat=True)
+        return sorted(list(set(action_ids)))
+
+    def get_action_ids_given_stage_ids(
+            self, stage_ids: List[int]) -> List[int]:
+        action_ids = StageAction.objects \
+            .filter(stage_id__in=stage_ids) \
+            .values_list('id', flat=True)
+        return sorted(list(set(action_ids)))
+
+    def get_stage_action_name_dtos(
+            self, stage_id_action_dtos: List[StageIdActionNameDTO]
+    ) -> List[StageActionIdDTO]:
+
+        q = None
+        for counter, item in enumerate(stage_id_action_dtos):
+            current_queue = Q(stage__stage_id=item.stage_id,
+                              name=item.action_name)
+            if counter == 0:
+                q = current_queue
+            else:
+                q = q | current_queue
+        if q is None:
+            q = []
+        action_objs = StageAction.objects.filter(q) \
+            .annotate(normal_stage_id=F('stage__stage_id'))
+
+        return [
+            StageActionIdDTO(
+                stage_id=action_obj.normal_stage_id,
+                action_id=action_obj.id,
+                action_name=action_obj.name
+            )
+            for action_obj in action_objs
+        ]

@@ -1,5 +1,5 @@
 """
-# TODO: Update test case description
+# Success Test Case
 """
 import json
 
@@ -51,6 +51,8 @@ class TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
             card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
         )
         stages = [stage1, stage2, stage3]
+        StagePermittedRolesFactory.create_batch(6, stage=factory.Iterator(
+            stages))
         path = 'ib_tasks.tests.populate.stage_actions_logic.stage_1_action_name_1'
         action = StageActionFactory(stage=stage1, py_function_import_path=path)
         actions = StageActionFactory.create_batch(6, stage=factory.Iterator(
@@ -65,18 +67,17 @@ class TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
                                   value="stage_id_2")
         TaskStatusVariableFactory(task_id=1, variable='variable3',
                                   value="stage_id_1")
-        CurrentTaskStageModelFactory.create_batch(
-            3, task=task,
-            stage=factory.Iterator(stages)
-        )
+        CurrentTaskStageModelFactory()
         ActionPermittedRolesFactory.create_batch(3, action=action)
 
-
-
     @pytest.mark.django_db
-    def test_case(self, snapshot, setup):
-        body = {}
-        path_params = {"task_id": 1, "action_id": 1}
+    def test_case(self, snapshot, setup, mocker):
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_team_info_for_given_user_ids_with_given_names_mock
+        get_team_info_for_given_user_ids_with_given_names_mock(mocker)
+
+        body = {"task_id": "IBWF-1", "action_id": 1}
+        path_params = {}
         query_params = {}
         headers = {}
         response = self.make_api_call(body=body,

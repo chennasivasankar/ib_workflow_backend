@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
@@ -11,15 +11,14 @@ from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskIdException, \
     InvalidStageIdsForTask, InvalidTaskDisplayId
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
-    import GetTaskPresenterInterface
-from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
-    import TaskCompleteDetailsDTO
+    import \
+    GetTaskPresenterInterface, TaskCompleteDetailsDTO
 from ib_tasks.interactors.stages_dtos import StageAssigneeWithTeamDetailsDTO, \
     AssigneeWithTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
-    import TaskGoFFieldDTO, TaskGoFDTO, TaskDetailsDTO
+    import TaskGoFFieldDTO, TaskGoFDTO, TaskDetailsDTO, TaskBaseDetailsDTO
 from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 
 
@@ -63,8 +62,7 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
             "res_status": INVALID_PROJECT_ID[1]
         }
         response_object = self.prepare_404_not_found_response(
-            response_dict=data
-        )
+            response_dict=data)
         return response_object
 
     def raise_teams_does_not_exists_for_project(
@@ -188,12 +186,8 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
             task_stage_complete_details_dtos,
             stage_assignee_with_team_details_dtos
         )
-        start_date = self._convert_datetime_object_to_string(
-            task_base_details_dto.start_date
-        )
-        due_date = self._convert_datetime_object_to_string(
-            task_base_details_dto.due_date
-        )
+        start_date, due_date = self._get_start_date_and_due_date(
+            task_base_details_dto)
         task_details_dict = {
             "task_id": task_base_details_dto.task_display_id,
             "project_info": project_info,
@@ -211,6 +205,20 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
         )
         return response_object
 
+    def _get_start_date_and_due_date(
+            self, task_base_details_dto: TaskBaseDetailsDTO
+    ):
+        start_date, due_date = None, None
+        if task_base_details_dto.start_date is not None:
+            start_date = self._convert_datetime_object_to_string(
+                task_base_details_dto.start_date
+            )
+        if task_base_details_dto.due_date is not None:
+            due_date = self._convert_datetime_object_to_string(
+                task_base_details_dto.due_date
+            )
+        return start_date, due_date
+
     @staticmethod
     def _get_project_details(
             task_details_dto: TaskDetailsDTO
@@ -226,7 +234,7 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
     @staticmethod
     def _convert_datetime_object_to_string(
             datetime_obj: datetime
-    ):
+    ) -> str:
         datetime_in_string_format = datetime_obj.strftime(DATETIME_FORMAT)
         return datetime_in_string_format
 
@@ -289,21 +297,32 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
             self, task_stage_complete_details_dto: StageAndActionsDetailsDTO,
             stage_assignee_with_team_details_dtos: List[
                 StageAssigneeWithTeamDetailsDTO]
-    ):
+    ) -> Optional[AssigneeWithTeamDetailsDTO]:
+
         db_stage_id = task_stage_complete_details_dto.db_stage_id
         for stage_assignee_with_team_details_dto in \
                 stage_assignee_with_team_details_dtos:
             stage_id = stage_assignee_with_team_details_dto.stage_id
             if db_stage_id == stage_id:
-                assignee_with_team_details_dto = \
-                    stage_assignee_with_team_details_dto.assignee_details_dto
-                if assignee_with_team_details_dto:
-                    assignee_details_dict = \
-                        self._get_assignee_details_dict(
-                            assignee_with_team_details_dto)
-                else:
-                    assignee_details_dict = None
+                assignee_details_dict = self._get_assignee_details(
+                    stage_assignee_with_team_details_dto)
                 return assignee_details_dict
+
+    def _get_assignee_details(
+            self,
+            stage_assignee_with_team_details_dto:
+            StageAssigneeWithTeamDetailsDTO
+    ) -> Optional[AssigneeWithTeamDetailsDTO]:
+
+        assignee_with_team_details_dto = \
+            stage_assignee_with_team_details_dto.assignee_details_dto
+        if assignee_with_team_details_dto:
+            assignee_details_dict = \
+                self._get_assignee_details_dict(
+                    assignee_with_team_details_dto)
+        else:
+            assignee_details_dict = None
+        return assignee_details_dict
 
     @staticmethod
     def _get_assignee_details_dict(
@@ -322,7 +341,9 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
         }
         return assignee_with_team_details_dict
 
-    def _get_action_details(self, actions_dtos: List[StageActionDetailsDTO]):
+    def _get_action_details(
+            self, actions_dtos: List[StageActionDetailsDTO]
+    ) -> List[Dict]:
         actions = []
         for actions_dto in actions_dtos:
             action_dict = self._prepare_action_dict(actions_dto)
@@ -330,7 +351,7 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
         return actions
 
     @staticmethod
-    def _prepare_action_dict(actions_dto: StageActionDetailsDTO):
+    def _prepare_action_dict(actions_dto: StageActionDetailsDTO) -> Dict:
         action_dict = {
             "action_id": actions_dto.action_id,
             "action_type": actions_dto.action_type,
@@ -355,7 +376,9 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
         return gofs
 
     @staticmethod
-    def _prepare_gof_dict(task_gof_dto: TaskGoFDTO, gof_fields: List[Dict]):
+    def _prepare_gof_dict(
+            task_gof_dto: TaskGoFDTO, gof_fields: List[Dict]
+    ) -> Dict:
         gof_dict = {
             "gof_id": task_gof_dto.gof_id,
             "same_gof_order": task_gof_dto.same_gof_order,
@@ -365,7 +388,7 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
 
     def _get_gof_fields(
             self, task_gof_id: int, task_gof_field_dtos: List[TaskGoFFieldDTO]
-    ):
+    ) -> List[Dict]:
         gof_fields = []
         for task_gof_field_dto in task_gof_field_dtos:
             if task_gof_id == task_gof_field_dto.task_gof_id:
@@ -374,18 +397,9 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
         return gof_fields
 
     @staticmethod
-    def _prepare_field_dict(task_gof_field_dto: TaskGoFFieldDTO):
+    def _prepare_field_dict(task_gof_field_dto: TaskGoFFieldDTO) -> Dict:
         field_dict = {
             "field_id": task_gof_field_dto.field_id,
             "field_response": task_gof_field_dto.field_response
         }
         return field_dict
-
-    def response_for_invalid_task_id(self):
-        pass
-
-    def response_for_user_is_not_assignee_for_task(self):
-        pass
-
-    def get_response_for_get_task_due_details(self, task_dtos):
-        pass

@@ -15,8 +15,8 @@ class ProjectRole(AbstractDateTimeModel):
                                primary_key=True,
                                max_length=100)
     project = models.ForeignKey("Project", on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-    description = models.TextField(max_length=120, null=True, blank=True)
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(null=True, blank=True)
 
     class Meta:
         unique_together = ('role_id', 'project')

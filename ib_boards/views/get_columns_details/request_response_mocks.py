@@ -11,7 +11,7 @@ RESPONSE_403_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "USER_DONOT_HAVE_ACCESS"
+    "res_status": "USER_NOT_HAVE_ACCESS_TO_COLUMN"
 }
 """
 
@@ -46,7 +46,8 @@ RESPONSE_200_JSON = """
                         {
                             "field_type": "PLAIN_TEXT",
                             "field_display_name": "string",
-                            "field_response": "string"
+                            "field_response": "string",
+                            "field_id": "string"
                         }
                     ],
                     "stage_with_actions": {

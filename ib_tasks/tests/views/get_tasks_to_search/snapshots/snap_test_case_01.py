@@ -4,8 +4,13 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
+
 snapshots = Snapshot()
 
-snapshots['TestCase01GetTasksToSearchAPITestCase.test_case status_code'] = '404'
+snapshots['TestCase01GetTasksToSearchAPITestCase.test_case status_code'] = '400'
 
-snapshots['TestCase01GetTasksToSearchAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'
+snapshots['TestCase01GetTasksToSearchAPITestCase.test_case body'] = {
+    'project_id': [
+        'This field is required.'
+    ]
+}

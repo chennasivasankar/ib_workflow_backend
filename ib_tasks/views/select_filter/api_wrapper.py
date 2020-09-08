@@ -12,22 +12,19 @@ def api_wrapper(*args, **kwargs):
     filter_id = request_dict['filter_id']
     action = request_dict['action']
 
-    from ib_tasks.interactors.filter_interactor \
-        import FilterInteractor
     from ib_tasks.storages.filter_storage_implementation \
         import FilterStorageImplementation
     storage = FilterStorageImplementation()
     from ib_tasks.presenters.filter_presenter_implementation \
         import FilterPresenterImplementation
     presenter = FilterPresenterImplementation()
-    from ib_tasks.storages.fields_storage_implementation import \
-        FieldsStorageImplementation
-    interactor = FilterInteractor(
+    from ib_tasks.interactors.filters.update_filter_status import \
+        UpdateFilerStatusInteractor
+    interactor = UpdateFilerStatusInteractor(
         filter_storage=storage,
-        presenter=presenter,
-        field_storage=FieldsStorageImplementation()
+        presenter=presenter
     )
     response = interactor.update_filter_select_status_wrapper(
-        user_id=user_id, filter_id=filter_id, is_selected=action
+        user_id=user_id, filter_id=filter_id, filter_status=action
     )
     return response
