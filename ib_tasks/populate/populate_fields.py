@@ -124,9 +124,9 @@ class PopulateFields:
 
     @staticmethod
     def get_field_roles_dto(field_record: Dict) -> FieldRolesDTO:
-        read_permissions_is_empty = not field_record[
-            "Write Permission to roles"].strip()
         write_permissions_is_empty = not field_record[
+            "Write Permission to roles"].strip()
+        read_permissions_is_empty = not field_record[
             'Read Permission to roles'].strip()
         write_permission_roles = field_record[
             "Write Permission to roles"].split("\n")
@@ -146,6 +146,6 @@ class PopulateFields:
 
         field_roles_dto = FieldRolesDTO(
             field_id=field_record["Field ID*"].strip(),
-            write_permission_roles=read_permission_roles,
-            read_permission_roles=write_permission_roles)
+            write_permission_roles=write_permission_roles,
+            read_permission_roles=read_permission_roles)
         return field_roles_dto

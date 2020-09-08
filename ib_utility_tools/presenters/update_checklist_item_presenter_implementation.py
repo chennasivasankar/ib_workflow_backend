@@ -15,27 +15,10 @@ class UpdateChecklistItemPresenterImplementation(
 
     def get_checklist_item_id_not_found_response(self):
         from ib_utility_tools.constants.exception_messages import (
-            CHECKLIST_ITEM_ID_NOT_FOUND_FOR_UPDATE_CHECKLIST_ITEM
+            CHECKLIST_ITEM_ID_NOT_FOUND_FOR_UPDATE_CHECKLIST_ITEM as checklist_item_id_not_found
         )
-        response_dict = {
-            "response":
-                CHECKLIST_ITEM_ID_NOT_FOUND_FOR_UPDATE_CHECKLIST_ITEM[0],
-            "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status":
-                CHECKLIST_ITEM_ID_NOT_FOUND_FOR_UPDATE_CHECKLIST_ITEM[1]
-        }
+        response_dict = {"response": checklist_item_id_not_found[0],
+                         "http_status_code": StatusCode.BAD_REQUEST.value,
+                         "res_status": checklist_item_id_not_found[1]
+                         }
         return self.prepare_404_not_found_response(response_dict=response_dict)
-
-    def response_for_empty_checklist_item_text_exception(self):
-        from ib_utility_tools.constants.exception_messages import (
-            EMPTY_CHECKLIST_ITEM_TEXT_FOR_UPDATE_CHECKLIST_ITEM
-        )
-        response_dict = {
-            "response": EMPTY_CHECKLIST_ITEM_TEXT_FOR_UPDATE_CHECKLIST_ITEM[0],
-            "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status":
-                EMPTY_CHECKLIST_ITEM_TEXT_FOR_UPDATE_CHECKLIST_ITEM[1]
-        }
-        return self.prepare_400_bad_request_response(
-            response_dict=response_dict
-        )

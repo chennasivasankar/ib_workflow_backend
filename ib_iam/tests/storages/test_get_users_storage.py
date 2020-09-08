@@ -1,11 +1,8 @@
-import uuid
-
 import factory
 import pytest
 
 from ib_iam.storages.user_storage_implementation \
     import UserStorageImplementation
-
 from ib_iam.tests.common_fixtures.storages import \
     user_not_admin, users_company
 
@@ -69,7 +66,8 @@ class TestGetUsers:
 
     @pytest.fixture()
     def user_team_dtos(self):
-        from ib_iam.interactors.storage_interfaces.dtos import TeamWithUserIdDTO
+        from ib_iam.interactors.storage_interfaces.dtos import \
+            TeamWithUserIdDTO
         user_team_dtos = [
             TeamWithUserIdDTO(
                 user_id='user1',
@@ -109,6 +107,25 @@ class TestGetUsers:
 
         # Assert
         assert output == expected_output
+
+    @pytest.mark.django_db
+    @pytest.mark.parametrize(
+        "user_id, expected_result",
+        [("413642ff-1272-4990-b878-6607a5e02bc1", True),
+         ("413642ff-1272-4990-b878-6607a5e02bc2", False)]
+    )
+    def test_is_user_exist(self, user_id, expected_result):
+        # Arrange
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        UserDetailsFactory.create(
+            user_id="413642ff-1272-4990-b878-6607a5e02bc1")
+        storage = UserStorageImplementation()
+
+        # Act
+        actual_result = storage.is_user_exist(user_id=user_id)
+
+        # Assert
+        assert actual_result == expected_result
 
     @pytest.fixture()
     def prepare_create_users_setup(self):
