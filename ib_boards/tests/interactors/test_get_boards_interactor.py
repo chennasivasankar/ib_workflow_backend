@@ -292,67 +292,6 @@ class TestGetBoardsInteractor:
             assert_called_once()
         assert actual_response == expected_response
 
-    def test_with_user_id_not_have_permission_for_boards_return_error_message(
-            self, storage_mock, presenter_mock, get_boards_dto, mocker):
-        # Arrange
-        project_id = get_boards_dto.project_id
-        user_id = get_boards_dto.user_id
-        project_ids = [project_id]
-        user_role = 'User'
-        expected_response = Mock()
-        interactor = GetBoardsInteractor(
-            storage=storage_mock
-        )
-        all_board_ids = ['BOARD_ID_1', 'BOARD_ID_2', 'BOARD_ID_3']
-        board_ids = ['BOARD_ID_1', 'BOARD_ID_2']
-        starred_boards = ['BOARD_ID_3']
-        project_id = get_boards_dto.project_id
-        project_ids = [project_id]
-        from ib_boards.exceptions.custom_exceptions import \
-            UserDoNotHaveAccessToBoards
-        storage_mock.validate_user_role_with_boards_roles. \
-            side_effect = UserDoNotHaveAccessToBoards
-        from ib_boards.tests.common_fixtures.adapters.iam_service import \
-            mock_validate_project_ids
-        project_adapter_mock = mock_validate_project_ids(mocker, project_ids)
-        from ib_boards.tests.common_fixtures.adapters.iam_service import \
-            mock_for_validate_if_user_is_in_project
-        user_in_project_mock = mock_for_validate_if_user_is_in_project(mocker)
-        user_in_project_mock.return_value = True
-        storage_mock.get_valid_board_ids.return_value = all_board_ids
-        storage_mock.get_board_ids.return_value = board_ids, starred_boards
-
-        presenter_mock.get_response_for_user_have_no_access_for_boards. \
-            return_value = expected_response
-
-        roles = ["role_1"]
-        from ib_boards.tests.common_fixtures.adapters.iam_service import \
-            mock_get_user_roles
-        adapter_mock = mock_get_user_roles(
-                mocker=mocker, roles=roles
-        )
-
-        # Act
-        actual_response = interactor.get_boards_wrapper(
-            get_boards_dto=get_boards_dto,
-            presenter=presenter_mock
-        )
-
-        # Assert
-        adapter_mock.assert_called_once_with(
-            user_id=user_id
-        )
-        storage_mock.validate_user_role_with_boards_roles.assert_called_once_with(
-            user_role=roles
-        )
-        user_in_project_mock.assert_called_once_with(
-            project_id=project_id, user_id=user_id)
-        project_adapter_mock.assert_called_once_with(
-            project_ids
-        )
-        presenter_mock.get_response_for_user_have_no_access_for_boards. \
-            assert_called_once()
-        assert actual_response == expected_response
 
     def test_with_valid_details_return_board_details(
             self, storage_mock, presenter_mock, get_boards_dto, mocker):
