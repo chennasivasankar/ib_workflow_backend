@@ -118,7 +118,3 @@ class ActionStorageInterface(abc.ABC):
             self, stage_id_action_dtos: List[StageIdActionNameDTO]
     ) -> List[StageActionIdDTO]:
         pass
-
-    @abc.abstractmethod
-    def check_is_transition_template_exists_for_action_id(self, action_id: int):
-        pass
