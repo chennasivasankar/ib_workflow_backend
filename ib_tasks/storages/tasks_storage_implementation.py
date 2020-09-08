@@ -505,10 +505,9 @@ class TasksStorageImplementation(TaskStorageInterface):
         return task_obj.project_id
 
     def get_team_id(self, stage_id: int, task_id: int) -> str:
-        task = TaskStageHistory.objects.filter(
+        return TaskStageHistory.objects.get(
             task_id=task_id, stage_id=stage_id
-        )
-        return task[0].team_id
+        ).team_id
 
     def get_task_due_datetime(
             self, task_id: int) -> \
