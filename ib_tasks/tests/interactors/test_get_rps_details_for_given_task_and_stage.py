@@ -187,7 +187,7 @@ class TestGetTaskRelatedRps:
         assert response == expected_response
         task_storage.check_is_valid_task_display_id.assert_called_once_with(
                 task_display_id)
-        storage.get_task_due_datetime.assert_called_once_with(task_id)
+        task_storage.get_task_due_datetime.assert_called_once_with(task_id)
         storage.get_latest_rp_added_datetime.assert_called_once_with(task_id,
                                                                      stage_id)
         presenter_mock.response_for_get_rps_details.assert_called_once()
@@ -237,7 +237,7 @@ class TestGetTaskRelatedRps:
         assert response == expected_response
         task_storage.check_is_valid_task_display_id.assert_called_once_with(
                 task_display_id)
-        storage.get_task_due_datetime.assert_called_once_with(task_id)
+        task_storage.get_task_due_datetime.assert_called_once_with(task_id)
         user_details_mock.assert_called_once_with(user_ids)
         superior_mock.assert_called_once_with(user_id=superior_id,
                                               team_id=team_id)
@@ -287,7 +287,7 @@ class TestGetTaskRelatedRps:
         assert response == expected_response
         task_storage.check_is_valid_task_display_id.assert_called_once_with(
                 task_display_id)
-        storage.get_task_due_datetime.assert_called_once_with(task_id)
+        task_storage.get_task_due_datetime.assert_called_once_with(task_id)
         storage.get_latest_rp_added_datetime.assert_called_once_with(task_id,
                                                                      stage_id)
         presenter_mock.response_for_get_rps_details.assert_called_once()
