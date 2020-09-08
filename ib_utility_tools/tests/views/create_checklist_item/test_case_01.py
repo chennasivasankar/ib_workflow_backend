@@ -18,9 +18,8 @@ class TestCase01CreateChecklistItemAPITestCase(TestUtils):
     def test_case(self, mocker, snapshot):
         from uuid import UUID
         from ib_utility_tools.constants.enum import EntityType
-        from ib_utility_tools.tests.common_fixtures.uuid_mock import (
+        from ib_utility_tools.tests.common_fixtures.uuid_mock import \
             prepare_uuid_mock
-        )
         mock = prepare_uuid_mock(mocker)
         mock.return_value = UUID("f2c02d98-f311-4ab2-8673-3daa00757002")
         body = {

@@ -1,6 +1,6 @@
 import abc
 from dataclasses import dataclass
-from typing import List
+from typing import List, Tuple
 
 from ib_boards.constants.enum import DisplayStatus
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
@@ -76,7 +76,7 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_board_ids(
-            self, user_id: str, project_id: str) -> List[str]:
+            self, user_id: str, project_id: str) -> Tuple[List[str], List[str]]:
         pass
 
     @abc.abstractmethod
@@ -175,4 +175,8 @@ class StorageInterface(abc.ABC):
     @abc.abstractmethod
     def create_field_ids_order_and_display_status(
             self, column_id: str, user_id: str, field_ids: List[str]):
+        pass
+
+    @abc.abstractmethod
+    def get_user_permitted_board_ids(self, board_ids: List[str], user_roles: List[str]) -> List[str]:
         pass

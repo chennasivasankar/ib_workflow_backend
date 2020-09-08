@@ -1,5 +1,6 @@
 import abc
 from typing import List
+
 from ib_utility_tools.interactors.storage_interfaces.dtos import (
     ChecklistItemWithIdDTO
 )
@@ -28,10 +29,6 @@ class CreateChecklistItemPresenterInterface(abc.ABC):
     ):
         pass
 
-    @abc.abstractmethod
-    def response_for_empty_checklist_item_text_exception(self):
-        pass
-
 
 class GetChecklistPresenterInterface(abc.ABC):
     @abc.abstractmethod
@@ -49,8 +46,4 @@ class UpdateChecklistItemPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_checklist_item_id_not_found_response(self):
-        pass
-
-    @abc.abstractmethod
-    def response_for_empty_checklist_item_text_exception(self):
         pass
