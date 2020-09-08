@@ -168,3 +168,15 @@ class InvalidFormatException(Exception):
 class InvalidBoardIdsException(Exception):
     def __init__(self, invalid_board_ids: List[str]):
         self.invalid_board_ids = invalid_board_ids
+
+
+class FieldIdsNotBelongsToColumn(Exception):
+    def __init__(self, invalid_field_ids: List[str]):
+        self.invalid_field_ids = invalid_field_ids
+
+    def __str__(self):
+        return self.invalid_field_ids
+
+
+class FieldNotBelongsToColumn(Exception):
+    pass

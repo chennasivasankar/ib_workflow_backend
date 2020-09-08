@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 
 from ib_utility_tools.models import ChecklistItem, Checklist
@@ -15,30 +17,44 @@ class TestChecklistStorageImplementation:
 
     @pytest.fixture
     def create_checklist_items_for_checklist_id(self):
-        checklist_item_ids = ['09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5a',
-                              '7ee2c7b4-34c8-4d65-a83a-f87da75db24e']
+        checklist_items = [
+            {"item_id": '7ee2c7b4-34c8-4d65-a83a-f87da75db24e',
+             "created_at": datetime.datetime(2020, 5, 1, 0, 0)},
+            {"item_id": '09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5a',
+             "created_at": datetime.datetime(2020, 5, 2, 0, 0)}
+        ]
         checklist_id = '2bdb417e-4632-419a-8ddd-085ea272c6eb'
         checklist_object = ChecklistFactory.create(checklist_id=checklist_id)
         from ib_utility_tools.tests.factories.models import \
             ChecklistItemFactory
         ChecklistItemFactory.reset_sequence(1)
-        _ = [
-            ChecklistItemFactory.create(checklist_item_id=checklist_item_id,
-                                        checklist=checklist_object)
-            for checklist_item_id in checklist_item_ids
-        ]
+        checklist_item_ids = []
+        for checklist_item in checklist_items:
+            ChecklistItemFactory.create(
+                checklist_item_id=checklist_item["item_id"],
+                created_at=checklist_item["created_at"],
+                checklist=checklist_object)
+            checklist_item_ids.append(checklist_item["item_id"])
+        checklist_item_ids.sort()
         return checklist_id, checklist_item_ids
 
     @pytest.fixture
     def expected_checklist_item_dtos(self):
-        checklist_item_ids = ['09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5a',
-                              '7ee2c7b4-34c8-4d65-a83a-f87da75db24e']
+        checklist_items = [
+            {"item_id": '7ee2c7b4-34c8-4d65-a83a-f87da75db24e',
+             "text": "text1"},
+            {"item_id": '09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5a',
+             "text": "text2"}
+        ]
         from ib_utility_tools.tests.factories.storage_dtos import \
             ChecklistItemWithIdDTOFactory
         ChecklistItemWithIdDTOFactory.reset_sequence(1)
         checklist_item_dtos = [
-            ChecklistItemWithIdDTOFactory(checklist_item_id=checklist_item_id)
-            for checklist_item_id in checklist_item_ids
+            ChecklistItemWithIdDTOFactory(
+                checklist_item_id=checklist_item["item_id"],
+                text=checklist_item["text"]
+            )
+            for checklist_item in checklist_items
         ]
         return checklist_item_dtos
 
