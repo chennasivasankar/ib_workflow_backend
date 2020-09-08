@@ -24,10 +24,12 @@ class TestCase01AddUserAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, user_set_up, snapshot):
-        body = {'name': '', 'email': 'parker@string.com',
-                'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
-                'team_ids': ['ef6d1fc6-ac3f-4d2d-a983-752c992e8331'],
-                'role_ids': ['ef6d1fc6-ac3f-4d2d-a983-752c992e8331']}
+        body = {
+            'name': '1234567#$', 'email': 'parker@string.com',
+            'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
+            'team_ids': ['ef6d1fc6-ac3f-4d2d-a983-752c992e8331'],
+            'role_ids': ['ef6d1fc6-ac3f-4d2d-a983-752c992e8331']
+        }
         path_params = {}
         query_params = {}
         headers = {}

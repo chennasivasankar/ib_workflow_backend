@@ -16,10 +16,10 @@ class UpdateTaskStageAssigneesPresenterImplementation(
         message = INVALID_TASK_DISPLAY_ID[0].format(err.task_display_id)
         data = {
             "response": message,
-            "http_status_code": 400,
+            "http_status_code": 404,
             "res_status": INVALID_TASK_DISPLAY_ID[1]
         }
-        return self.prepare_400_bad_request_response(data)
+        return self.prepare_404_not_found_response(data)
 
     def raise_duplicate_stage_ids_not_valid(self,
                                             duplicate_stage_ids: List[int]):

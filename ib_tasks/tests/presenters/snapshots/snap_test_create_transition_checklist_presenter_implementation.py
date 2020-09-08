@@ -79,7 +79,7 @@ snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_rai
 
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_exception_for_weak_password res_status'] = 'NOT_A_STRONG_PASSWORD'
 
-snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_exception_for_weak_password json_response'] = 'Given a weak password: admin123 for field: field_1! Try with atleast 8 characters including special characters'
+snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_exception_for_weak_password json_response'] = 'Given a weak password: admin123 for field: field_1! Try with at least 6 characters including special characters'
 
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_exception_for_invalid_number_value http_status_code'] = 400
 
@@ -167,7 +167,7 @@ snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_rai
 
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_invalid_transition_checklist_template_id res_status'] = 'INVALID_TRANSITION_CHECKLIST_TEMPLATE_ID'
 
-snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_invalid_transition_checklist_template_id json_response'] = 'please give a valid transition checklist template id, transition_checklist_template_id is invalid     transition checklist template id'
+snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_invalid_transition_checklist_template_id json_response'] = 'please give a valid transition checklist template id, transition_checklist_template_id is invalid transition checklist template id'
 
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_invalid_action http_status_code'] = 400
 
@@ -185,7 +185,7 @@ snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_rai
 
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_transition_template_is_not_related_to_given_stage_action res_status'] = 'TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION'
 
-snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_transition_template_is_not_related_to_given_stage_action response'] = 'given transition template id transition_template_1 is not linked to given stage id 1 and     action id 2'
+snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_transition_template_is_not_related_to_given_stage_action response'] = 'given transition template id transition_template_1 is not linked to given stage id 1 and action id 2'
 
 snapshots['TestCreateTransitionChecklistTemplatePresenterImplementation.test_raise_same_gof_order_for_a_gof http_status_code'] = 400
 

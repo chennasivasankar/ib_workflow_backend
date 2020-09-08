@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Optional, List
 
+from ib_boards.constants.enum import DisplayStatus
+
 
 @dataclass
 class TaskDetailsDTO:
@@ -79,3 +81,11 @@ class TaskBoardsDetailsDTO:
 class ColumnStageIdsDTO:
     column_id: str
     stage_ids: List[str]
+
+
+@dataclass
+class AllFieldsDTO:
+    field_id: str
+    display_name: str
+    display_order: int
+    display_status: DisplayStatus

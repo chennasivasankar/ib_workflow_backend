@@ -15,7 +15,7 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_project_ids_from_given_project_ids(
+    def get_valid_project_ids(
             self, project_ids: List[str]) -> List[str]:
         pass
 
@@ -101,7 +101,7 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def remove_teams_from_project(self, project_id: str, team_ids: List[str]):
+    def remove_teams(self, project_id: str, team_ids: List[str]):
         pass
 
     @abc.abstractmethod
@@ -129,4 +129,14 @@ class ProjectStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_valid_role_names_from_given_role_names(
             self, role_names: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_user_id_with_teams_ids_dtos(
+            self, project_id: str) -> List[UserIdAndTeamIdsDTO]:
+        pass
+
+    @abc.abstractmethod
+    def remove_user_roles(
+            self, project_id: str, user_ids: List[str]):
         pass

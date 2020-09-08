@@ -35,7 +35,7 @@ class TestStartTimerInteractor:
         timer_entity_dto = TimerEntityDTOFactory()
         timer_details_dto = TimerDetailsDTOFactory(is_running=True)
         storage_mock.get_timer_details_dto.return_value = timer_details_dto
-        presenter_mock.raise_timer_is_already_running_exception \
+        presenter_mock.response_for_timer_is_already_running_exception \
             .return_value = mock.Mock()
 
         interactor.start_timer_wrapper(timer_entity_dto=timer_entity_dto,
@@ -43,7 +43,7 @@ class TestStartTimerInteractor:
 
         storage_mock.get_timer_details_dto.assert_called_once_with(
             timer_entity_dto=timer_entity_dto)
-        presenter_mock.raise_timer_is_already_running_exception \
+        presenter_mock.response_for_timer_is_already_running_exception \
             .assert_called_once()
 
     @freeze_time("2020-08-07 18:00:00")
@@ -54,7 +54,7 @@ class TestStartTimerInteractor:
         timer_entity_dto = TimerEntityDTOFactory()
         timer_details_dto = TimerDetailsDTOFactory()
         storage_mock.get_timer_details_dto.return_value = timer_details_dto
-        presenter_mock.get_success_response_with_timer_details_dto \
+        presenter_mock.get_response_for_get_timer_details \
             .return_value = mock.Mock()
 
         interactor.start_timer_wrapper(timer_entity_dto=timer_entity_dto,
@@ -66,5 +66,5 @@ class TestStartTimerInteractor:
             timer_entity_dto=timer_entity_dto)
         storage_mock.update_timer(timer_entity_dto=timer_entity_dto,
                                   timer_details_dto=timer_details_dto)
-        presenter_mock.get_success_response_with_timer_details_dto \
+        presenter_mock.get_response_for_get_timer_details \
             .assert_called_once_with(timer_details_dto=timer_details_dto)

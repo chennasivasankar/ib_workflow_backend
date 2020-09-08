@@ -8,6 +8,7 @@ from ib_tasks.populate.get_sheet_data_for_creating_or_updating_stages import \
     GetSheetDataForStages
 from ib_tasks.populate.get_sheet_data_for_stage_actions import \
     GetSheetDataForStageActions
+from ib_tasks.populate.get_sheet_data_for_stage_flows import GetSheetDataForStageFlows
 from ib_tasks.populate.get_sheet_data_for_task_creation_config import \
     GetSheetDataForTaskCreationConfig
 from ib_tasks.populate.get_sheet_data_for_task_status_variables import \
@@ -38,7 +39,6 @@ def populate_project_roles(spread_sheet_name: str):
     project_roles = ProjectRoleDetails()
     project_roles.add_project_roles_details_to_database(
         spread_sheet_name=spread_sheet_name, sub_sheet_name=ROLES_SUB_SHEET)
-
 
 
 @transaction.atomic()
@@ -84,6 +84,11 @@ def populate_data(spread_sheet_name: str):
     task_creation_config = GetSheetDataForTaskCreationConfig()
     task_creation_config.get_data_from_task_creation_config_sub_sheet(
         spread_sheet_name=spread_sheet_name)
+
+    stage_flows = GetSheetDataForStageFlows()
+    stage_flows.get_data_from_stage_flows_sub_sheet(
+        spread_sheet_name=spread_sheet_name
+    )
 
 
 def delete_elastic_search_data():
@@ -139,3 +144,7 @@ def delete_task_template_gofs_with_gof_fields(template_ids: List[str]):
     gof_ids = TaskTemplateGoFs.objects.filter(
         task_template_id__in=template_ids).values_list('gof_id', flat=True)
     GoF.objects.filter(gof_id__in=gof_ids).delete()
+
+
+def create_task_index_with_mapping():
+    pass

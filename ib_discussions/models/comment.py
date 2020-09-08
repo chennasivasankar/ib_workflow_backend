@@ -18,7 +18,7 @@ def get_datetime_now():
 class Comment(models.Model):
     id = models.UUIDField(primary_key=True, default=generate_uuid,
                           editable=False)
-    user_id = models.CharField(max_length=40)
+    user_id = models.CharField(max_length=36)
     discussion = models.ForeignKey(
         Discussion, related_name="comments", on_delete=models.CASCADE,
         null=True, default=None)
@@ -36,4 +36,4 @@ class CommentWithMultiMedia(models.Model):
 
 class CommentWithMentionUserId(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
-    mention_user_id = models.CharField(max_length=40)
+    mention_user_id = models.CharField(max_length=36)

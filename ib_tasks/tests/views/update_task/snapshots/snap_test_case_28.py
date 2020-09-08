@@ -11,6 +11,6 @@ snapshots['TestCase28UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase28UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'INCORRECT_MULTI_SELECT_OPTIONS_SELECTED',
-    'response': "Invalid multi select options selected: ['views'] for field: FIELD-1! Try with these valid options: ['interactors', 'storages']"
+    'res_status': 'TASK_DELAY_REASON_NOT_UPDATED',
+    'response': 'Task delay reason not updated for task IBWF-1 in stage display_name_0 with missed due date 2020-09-09 11:00:00'
 }

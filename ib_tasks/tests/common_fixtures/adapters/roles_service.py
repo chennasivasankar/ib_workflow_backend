@@ -19,6 +19,20 @@ def get_valid_role_ids_in_given_role_ids(mocker):
     return mock
 
 
+def get_user_details_for_given_role_ids_mock(mocker):
+    mock = mocker.patch(
+        "ib_tasks.adapters.auth_service.AuthService"
+        ".get_permitted_user_details"
+    )
+    assignees_details_dtos = [AssigneeDetailsDTO(
+        assignee_id='assignee_id_1',
+        name='assignee_1',
+        profile_pic_url='https://google.com'
+    )]
+    mock.return_value = assignees_details_dtos
+    return assignees_details_dtos
+
+
 def prepare_get_roles_for_invalid_mock(mocker):
     mock = mocker.patch(
         'ib_tasks.adapters.roles_service.RolesService.get_db_roles'
@@ -68,7 +82,8 @@ def get_required_user_role_ids(mocker, user_role_ids: List[str]):
 
 def get_assignees_details_dtos(mocker):
     mock = mocker.patch(
-        "ib_tasks.adapters.assignees_details_service.AssigneeDetailsService"
+        "ib_tasks.adapters.assignees_details_service"
+        ".AssigneeDetailsService"
         ".get_assignees_details_dtos"
     )
     assignees_details_dtos = [AssigneeDetailsDTO(
@@ -106,11 +121,22 @@ def get_user_role_ids_based_on_project_mock(mocker):
     mock.return_value = user_role_ids
     return mock
 
+
+def get_user_role_ids_based_on_project_mock_given_user_role_ids(
+        mocker, user_role_ids: List[str]):
+    mock = mocker.patch("ib_tasks.adapters.roles_service.RolesService."
+                        "get_user_role_ids_based_on_project")
+
+    mock.return_value = user_role_ids
+    return mock
+
+
 def get_user_role_ids_based_on_project_mock_exception(mocker):
     from ib_tasks.adapters.roles_service import \
         UserNotAMemberOfAProjectException
     mock = mocker.patch(
-        "ib_tasks.adapters.roles_service.RolesService.get_user_role_ids_based_on_project")
+        "ib_tasks.adapters.roles_service.RolesService"
+        ".get_user_role_ids_based_on_project")
     mock.side_effect = UserNotAMemberOfAProjectException()
     return mock
 

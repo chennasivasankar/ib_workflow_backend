@@ -19,7 +19,7 @@ class TaskCompleteDetailsDTO:
     actions_dto: Optional[List[ActionDTO]]
     field_dtos: Optional[List[FieldDisplayDTO]]
     task_stage_details: Optional[List[TaskStageDTO]]
-    assignees_details: List[TaskStageAssigneeDetailsDTO]
+    assignees_details: Optional[List[TaskStageAssigneeDetailsDTO]]
 
 
 @dataclass

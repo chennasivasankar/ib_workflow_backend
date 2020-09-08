@@ -8,19 +8,40 @@ from ib_tasks.constants.enum import PermissionTypes, ViewType
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldCompleteDetailsDTO, FieldDTO, UserFieldPermissionDTO, \
     FieldIdWithGoFIdDTO, StageTaskFieldsDTO, \
-    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId, FieldNameDTO
+    FieldDisplayNameDTO, \
+    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId, FieldNameDTO, \
+    FieldIdWithFieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface, FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (
     TaskTemplateStageDTO, StageDetailsDTO)
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectRolesDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import \
+    TaskProjectRolesDTO
 from ib_tasks.models import CurrentTaskStage, Stage, TaskGoFField, FieldRole, \
     TaskTemplateGoFs, Field
 
 
 class FieldsStorageImplementation(FieldsStorageInterface):
+
+    def get_user_write_permitted_field_ids_for_given_gof_ids(
+            self, user_roles, gof_ids: List[str]
+    ) -> List[FieldIdWithFieldDisplayNameDTO]:
+        field_dicts = FieldRole.objects.filter(
+            Q(role__in=user_roles) | Q(role=ALL_ROLES_ID),
+            field__gof_id__in=gof_ids,
+            permission_type=PermissionTypes.WRITE.value
+        ).values(
+            "field_id", "field__gof__display_name", "field__display_name")
+        field_id_with_display_name_dtos = [
+            FieldIdWithFieldDisplayNameDTO(
+                field_id=field_dict['field_id'],
+                gof_display_name=field_dict['field__gof__display_name'],
+                field_display_name=field_dict['field__display_name']
+            ) for field_dict in field_dicts
+        ]
+        return field_id_with_display_name_dtos
 
     def get_gof_ids_for_given_field_ids(
             self, field_ids: List[str]) -> List[FieldIdWithGoFIdDTO]:
@@ -334,11 +355,14 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         q = None
         for counter, item in enumerate(task_project_roles):
             current_queue = Q(role__in=item.roles) | Q(role=ALL_ROLES_ID) & \
-                            Q(field__taskgoffield__task_gof__task_id=item.task_id)
+                            Q(
+                                field__taskgoffield__task_gof__task_id=item.task_id)
             if counter == 0:
                 q = current_queue
             else:
                 q = q | current_queue
+        if q is None:
+            return []
 
         field_ids_queryset = (FieldRole.objects.filter(q)
                               .values_list('field_id', flat=True))
@@ -404,4 +428,32 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                 field_type=field_type['field_type']
             )
             for field_type in field_types
+        ]
+
+    def validate_user_roles_with_field_ids_roles(
+            self, user_roles, field_ids):
+        fields_user_roles = FieldRole.objects.values_list(
+            'role', flat=True
+        ).filter(field_id__in=field_ids)
+        user_roles = sorted(list(set(user_roles)))
+        from ib_tasks.constants.constants import ALL_ROLES_ID
+        updated_user_role = user_roles + [ALL_ROLES_ID]
+        fields_user_roles = sorted(list(set(fields_user_roles)))
+        invalid_user = not (updated_user_role == fields_user_roles or set(fields_user_roles).issubset(
+                    set(updated_user_role)))
+        if invalid_user:
+            from ib_tasks.exceptions.filter_exceptions import \
+                UserNotHaveAccessToFields
+            raise UserNotHaveAccessToFields
+
+    def get_field_display_names(self, field_ids: List[str]) -> List[FieldDisplayNameDTO]:
+        field_display_names = Field.objects.filter(
+            field_id__in=field_ids
+        ).values('field_id', 'display_name')
+        return [
+            FieldDisplayNameDTO(
+                field_id=field_display_name['field_id'],
+                field_display_name=field_display_name['display_name']
+            )
+            for field_display_name in field_display_names
         ]

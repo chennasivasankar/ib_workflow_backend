@@ -4,7 +4,6 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
 from ib_tasks.interactors.task_dtos import FieldValuesDTO, \
-    SaveAndActOnTaskDTO, \
     StageIdWithAssigneeDTO, SaveAndActOnTaskWithTaskDisplayIdDTO
 from .validator_class import ValidatorClass
 from ...interactors.create_or_update_task.save_and_act_on_task import \
@@ -22,6 +21,8 @@ from ...storages.storage_implementation import StorageImplementation, \
     StagesStorageImplementation
 from ...storages.task_stage_storage_implementation import \
     TaskStageStorageImplementation
+from ...storages.task_template_storage_implementation import \
+    TaskTemplateStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -32,9 +33,8 @@ def api_wrapper(*args, **kwargs):
     action_id = request_data['action_id']
     title = request_data['title']
     description = request_data['description']
-    start_date = request_data['start_date']
-    due_date = request_data['due_date']['date']
-    due_time = request_data['due_date']['time']
+    start_datetime = request_data['start_datetime']
+    due_datetime = request_data['due_datetime']
     priority = request_data['priority']
     task_gofs = request_data['task_gofs']
     stage_assignee_stage_id = request_data['stage_assignee']['stage_id']
@@ -62,8 +62,9 @@ def api_wrapper(*args, **kwargs):
     task_dto = SaveAndActOnTaskWithTaskDisplayIdDTO(
         task_display_id=task_id, action_id=action_id, created_by_id=user_id,
         title=title,
-        description=description, start_date=start_date, due_date=due_date,
-        due_time=due_time, priority=priority, stage_assignee=stage_assignee,
+        description=description, start_datetime=start_datetime,
+        due_datetime=due_datetime, priority=priority,
+        stage_assignee=stage_assignee,
         gof_fields_dtos=task_gofs_dtos
     )
 
@@ -81,6 +82,7 @@ def api_wrapper(*args, **kwargs):
     action_storage = ActionsStorageImplementation()
     elastic_storage = ElasticSearchStorageImplementation()
     task_stage_storage = TaskStageStorageImplementation()
+    task_template_storage = TaskTemplateStorageImplementation()
 
     presenter = SaveAndActOnATaskPresenterImplementation()
     interactor = SaveAndActOnATaskInteractor(
@@ -88,7 +90,8 @@ def api_wrapper(*args, **kwargs):
         create_task_storage=create_task_storage,
         storage=storage, field_storage=field_storage,
         stage_storage=stage_storage, action_storage=action_storage,
-        elastic_storage=elastic_storage, task_stage_storage=task_stage_storage
+        elastic_storage=elastic_storage, task_stage_storage=task_stage_storage,
+        task_template_storage=task_template_storage
     )
 
     response = interactor.save_and_act_on_task_wrapper(

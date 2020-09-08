@@ -7,20 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01CreateFilterAPITestCase.test_case status_code'] = '201'
+snapshots['TestCase01CreateFilterAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase01CreateFilterAPITestCase.test_case body'] = {
-    'conditions': [
-        {
-            'field_id': 'FIELD_ID-2',
-            'field_name': 'DISPLAY_NAME-2',
-            'operator': 'EQ',
-            'value': 'string'
-        }
-    ],
-    'filter_id': 1,
-    'name': 'Filter',
-    'status': 'ENABLED',
-    'template_id': 'template_1',
-    'template_name': 'Template 1'
+    'project_id': [
+        'This field is required.'
+    ]
 }

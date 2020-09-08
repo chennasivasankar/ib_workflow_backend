@@ -1,7 +1,7 @@
 # your django admin
 from django.contrib import admin
 
-from ib_boards.models import Board, Column, ColumnPermission
+from ib_boards.models import Board, Column, ColumnPermission, FieldOrder, FieldDisplayStatus
 
 admin.site.register(Board)
 admin.site.register(ColumnPermission)
@@ -13,3 +13,5 @@ class ColumnAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Column, ColumnAdmin)
+admin.site.register(FieldDisplayStatus)
+admin.site.register(FieldOrder)
