@@ -34,7 +34,7 @@ SEARCHABLE_TYPES = [searchable_type.value for searchable_type in Searchable]
 UPLOADERS = [FieldTypes.IMAGE_UPLOADER.value, FieldTypes.FILE_UPLOADER.value]
 
 STAGES_AND_ACTIONS_SUB_SHEET = "Stages and Actions "
-STAGE_FLOWS_SUB_SHEET = "Stage Flows"
+STAGE_FLOWS_SUB_SHEET = "Stages and Flow"
 TASK_CREATION_CONFIG_SUB_SHEET = "Task Creation Config"
 PROJECT_FOR_TASK_TEMPLATES_SUB_SHEET = "Project Task Templates"
 STAGE_ID_AND_VALUES_SUB_SHEET = "StageID and Values"
@@ -58,4 +58,7 @@ INTEGER_FIELD_TYPES = [
 NUMERIC_OPERATORS = [
     Operators.GTE.value, Operators.GT.value,
     Operators.LTE.value, Operators.LT.value
+]
+SEARCHABLE_TYPES_WITH_RESPONSE_ID_AS_STRING = [
+    Searchable.USER.value
 ]
