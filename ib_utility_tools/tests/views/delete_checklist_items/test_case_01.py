@@ -31,7 +31,7 @@ class TestCase01DeleteChecklistItemsAPITestCase(TestUtils):
         )
 
     @pytest.mark.django_db
-    def test_duplicate_items_response(self, snapshot):
+    def test_duplicate_checklist_items_ids_response(self, snapshot):
         checklist_item_ids = [
             '1c719377-105f-41a7-9d30-ad51d7beee2a',
             '1c719377-105f-41a7-9d30-ad51d7beee2a'

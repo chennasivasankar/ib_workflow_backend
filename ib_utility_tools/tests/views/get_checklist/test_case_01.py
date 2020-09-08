@@ -1,6 +1,3 @@
-"""
-Check Whether it gets checklist items for given details
-"""
 import datetime
 
 import pytest
@@ -56,9 +53,27 @@ class TestCase01GetChecklistAPITestCase(TestUtils):
         return entity_id, entity_type
 
     @pytest.mark.django_db
-    def test_case(self, setup, snapshot):
+    def test_given_valid_entity_details_returns_checklist_items(
+            self, setup, snapshot
+    ):
         entity_id, entity_type = setup
         body = {'entity_id': entity_id, 'entity_type': entity_type}
+        path_params = {}
+        query_params = {}
+        headers = {}
+        self.make_api_call(
+            body=body, path_params=path_params,
+            query_params=query_params, headers=headers, snapshot=snapshot
+        )
+
+    @pytest.mark.django_db
+    def test_given_entity_details_not_have_checklist_returns_empty_list(
+            self, snapshot
+    ):
+        body = {
+            'entity_id': "09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5a",
+            'entity_type': "TASK"
+        }
         path_params = {}
         query_params = {}
         headers = {}

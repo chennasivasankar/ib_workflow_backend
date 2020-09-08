@@ -12,9 +12,9 @@ snapshots['TestCase01DeleteChecklistItemsAPITestCase.test_success_case_for_delet
 snapshots['TestCase01DeleteChecklistItemsAPITestCase.test_success_case_for_delete_checklist_items body'] = {
 }
 
-snapshots['TestCase01DeleteChecklistItemsAPITestCase.test_duplicate_items_response status_code'] = '400'
+snapshots['TestCase01DeleteChecklistItemsAPITestCase.test_duplicate_checklist_items_ids_response status_code'] = '400'
 
-snapshots['TestCase01DeleteChecklistItemsAPITestCase.test_duplicate_items_response body'] = {
+snapshots['TestCase01DeleteChecklistItemsAPITestCase.test_duplicate_checklist_items_ids_response body'] = {
     'http_status_code': 400,
     'res_status': 'DUPLICATE_CHECKLIST_ITEM_IDS',
     'response': 'Given checklist item ids are duplicated'

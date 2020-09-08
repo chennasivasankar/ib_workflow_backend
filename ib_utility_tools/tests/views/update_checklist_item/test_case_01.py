@@ -1,5 +1,6 @@
 """
-Check whether it updates the checklist item with given details
+test-1: Check whether it updates the checklist item with given details
+test-2: Check whether it returns checklist_item_id_not_found response
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
