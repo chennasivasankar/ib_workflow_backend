@@ -1,16 +1,10 @@
 from ib_utility_tools.constants.enum import EntityType
-from ib_utility_tools.exceptions.custom_exceptions import (
-    EmptyChecklistItemText
-)
-from ib_utility_tools.interactors.presenter_interfaces.checklist_presenter_interface import (
-    CreateChecklistItemPresenterInterface
-)
-from ib_utility_tools.interactors.storage_interfaces.checklist_storage_interface import (
-    ChecklistStorageInterface
-)
-from ib_utility_tools.interactors.storage_interfaces.dtos import (
+from ib_utility_tools.interactors.presenter_interfaces \
+    .checklist_presenter_interface import CreateChecklistItemPresenterInterface
+from ib_utility_tools.interactors.storage_interfaces \
+    .checklist_storage_interface import ChecklistStorageInterface
+from ib_utility_tools.interactors.storage_interfaces.dtos import \
     ChecklistItemWithEntityDTO
-)
 
 
 class CreateChecklistItemInteractor:
@@ -31,31 +25,21 @@ class CreateChecklistItemInteractor:
     def create_checklist_item(
             self, checklist_item_with_entity_dto: ChecklistItemWithEntityDTO
     ):
-        self._validate_checklist_item_text(
-            text=checklist_item_with_entity_dto.text
-        )
         checklist_id = self._get_or_create_checklist_for_given_entity_details(
             entity_id=checklist_item_with_entity_dto.entity_id,
             entity_type=checklist_item_with_entity_dto.entity_type
         )
-        from ib_utility_tools.interactors.storage_interfaces.dtos import (
+        from ib_utility_tools.interactors.storage_interfaces.dtos import \
             ChecklistItemWithChecklistIdDTO
-        )
         checklist_item_with_checklist_id_dto = ChecklistItemWithChecklistIdDTO(
             checklist_id=checklist_id,
             text=checklist_item_with_entity_dto.text,
             is_checked=checklist_item_with_entity_dto.is_checked
         )
         return self.checklist_storage.create_checklist_item(
-            checklist_item_with_checklist_id_dto=checklist_item_with_checklist_id_dto
+            checklist_item_with_checklist_id_dto=
+            checklist_item_with_checklist_id_dto
         )
-
-    @staticmethod
-    def _validate_checklist_item_text(text: str):
-        is_text_empty = not text
-        is_text_contains_only_white_spaces = text.isspace()
-        if is_text_empty or is_text_contains_only_white_spaces:
-            raise EmptyChecklistItemText
 
     def _get_or_create_checklist_for_given_entity_details(
             self, entity_id: str, entity_type: EntityType

@@ -1,14 +1,11 @@
-from ib_utility_tools.exceptions.custom_exceptions import (
-    ChecklistItemIdNotFound)
-from ib_utility_tools.interactors.presenter_interfaces.checklist_presenter_interface import (
-    UpdateChecklistItemPresenterInterface
-)
-from ib_utility_tools.interactors.storage_interfaces.checklist_storage_interface import (
-    ChecklistStorageInterface
-)
-from ib_utility_tools.interactors.storage_interfaces.dtos import (
+from ib_utility_tools.exceptions.custom_exceptions import \
+    ChecklistItemIdNotFound
+from ib_utility_tools.interactors.presenter_interfaces \
+    .checklist_presenter_interface import UpdateChecklistItemPresenterInterface
+from ib_utility_tools.interactors.storage_interfaces \
+    .checklist_storage_interface import ChecklistStorageInterface
+from ib_utility_tools.interactors.storage_interfaces.dtos import \
     ChecklistItemWithIdDTO
-)
 
 
 class UpdateChecklistItemInteractor:
