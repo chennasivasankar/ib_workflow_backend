@@ -2,16 +2,8 @@ from typing import List, Tuple, Optional
 
 from django.db import transaction
 
-from ib_iam.app_interfaces.dtos import (
-    ProjectTeamUserDTO, UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO,
-    UserTeamsDTO)
-from ib_iam.exceptions.custom_exceptions import (
-    InvalidUserIds, InvalidUserId, InvalidProjectIds)
-from ib_iam.interactors.dtos.dtos import (
-    ProjectWithTeamIdsAndRolesDTO, CompleteProjectDetailsDTO,
-    UserIdWithProjectIdAndStatusDTO)
 from ib_iam.app_interfaces.dtos import ProjectTeamUserDTO, \
-    UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO, UserTeamsDTO
+    ProjectTeamsAndUsersDTO, UserTeamsDTO
 from ib_iam.exceptions.custom_exceptions import InvalidProjectId, \
     InvalidUserIds, InvalidUserId, InvalidProjectIds
 from ib_iam.interactors.dtos.dtos import ProjectWithTeamIdsAndRolesDTO, \
@@ -20,9 +12,6 @@ from ib_iam.interactors.presenter_interfaces \
     .add_project_presenter_interface import AddProjectPresenterInterface
 from ib_iam.interactors.presenter_interfaces \
     .update_project_presenter_interface import UpdateProjectPresenterInterface
-from ib_iam.interactors.storage_interfaces.dtos import (
-    ProjectWithoutIdDTO, RoleDTO, RoleNameAndDescriptionDTO,
-    ProjectWithDisplayIdDTO, ProjectDTO, TeamWithUserIdDTO, TeamIdAndNameDTO)
 from ib_iam.interactors.storage_interfaces.dtos import ProjectWithoutIdDTO, \
     RoleDTO, RoleNameAndDescriptionDTO, ProjectWithDisplayIdDTO, ProjectDTO, \
     TeamWithUserIdDTO, TeamIdAndNameDTO
@@ -95,21 +84,18 @@ class ProjectInteractor:
 
     def get_team_details_for_given_project_team_user_details_dto(
             self, project_team_user_dto: ProjectTeamUserDTO
-    ) -> UserIdWithTeamIDAndNameDTO:
+    ) -> TeamWithUserIdDTO:
         # todo confirm and add invalid team and user exceptions
         self._validate_project(project_id=project_team_user_dto.project_id)
         self._validate_team_existence_in_project(
             project_team_user_dto=project_team_user_dto)
         self._validate_user_existence_in_given_team(
             project_team_user_dto=project_team_user_dto)
-        name = self.project_storage.get_team_name(
+        team_name = self.project_storage.get_team_name(
             team_id=project_team_user_dto.team_id)
-        from ib_iam.app_interfaces.dtos import UserIdWithTeamIDAndNameDTO
-        user_id_with_team_id_and_name_dto = UserIdWithTeamIDAndNameDTO(
-            user_id=project_team_user_dto.user_id,
-            team_id=project_team_user_dto.team_id,
-            name=name)
-        return user_id_with_team_id_and_name_dto
+        return TeamWithUserIdDTO(user_id=project_team_user_dto.user_id,
+                                 team_id=project_team_user_dto.team_id,
+                                 team_name=team_name)
 
     def get_user_team_dtos_for_given_project_teams_and_users_details_dto(
             self, project_teams_and_users_dto: ProjectTeamsAndUsersDTO
