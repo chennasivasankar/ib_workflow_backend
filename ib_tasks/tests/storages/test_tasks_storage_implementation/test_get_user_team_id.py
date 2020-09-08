@@ -13,7 +13,7 @@ class TestGetUserTeamId:
 
     def test_get_user_team_id(self, populate_data_for_user_team):
         # Arrange
-        user_id = "123e4567-e89b-12d3-a456-426614174000"
+        stage_id = 1
         task_id = 1
         expected_output = "TEAM_ID_0"
 
@@ -22,7 +22,7 @@ class TestGetUserTeamId:
         storage = TasksStorageImplementation()
 
         # Act
-        result = storage.get_user_team_id(user_id, task_id)
+        result = storage.get_team_id(stage_id, task_id)
 
         # Assert
         assert result == expected_output
