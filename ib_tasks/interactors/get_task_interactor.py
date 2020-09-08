@@ -248,6 +248,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             self, permission_task_gof_field_dtos: List[TaskGoFFieldDTO],
             field_searchable_dtos: List[FieldSearchableDTO]
     ):
+
         field_searchable_dtos = self._get_updated_field_searchable_dtos(
             field_searchable_dtos)
         searchable_dtos = self._get_searchable_dtos(field_searchable_dtos)
