@@ -21,16 +21,12 @@ class CreateChecklistItemInteractor:
             self, checklist_item_with_entity_dto: ChecklistItemWithEntityDTO,
             presenter: CreateChecklistItemPresenterInterface
     ):
-        try:
-            checklist_item_id = self.create_checklist_item(
-                checklist_item_with_entity_dto=checklist_item_with_entity_dto
-            )
-            response = presenter.get_response_for_create_checklist_item(
-                checklist_item_id=checklist_item_id
-            )
-        except EmptyChecklistItemText:
-            response = presenter.response_for_empty_checklist_item_text_exception()
-        return response
+        checklist_item_id = self.create_checklist_item(
+            checklist_item_with_entity_dto=checklist_item_with_entity_dto
+        )
+        return presenter.get_response_for_create_checklist_item(
+            checklist_item_id=checklist_item_id
+        )
 
     def create_checklist_item(
             self, checklist_item_with_entity_dto: ChecklistItemWithEntityDTO
