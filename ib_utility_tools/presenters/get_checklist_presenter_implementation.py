@@ -1,6 +1,6 @@
 from typing import List
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
-from ib_utility_tools.interactors.presenter_interfaces.get_checklist_presenter_interface import (
+from ib_utility_tools.interactors.presenter_interfaces.checklist_presenter_interface import (
     GetChecklistPresenterInterface
 )
 from ib_utility_tools.interactors.storage_interfaces.dtos import (

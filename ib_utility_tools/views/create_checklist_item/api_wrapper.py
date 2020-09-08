@@ -7,7 +7,7 @@ from .validator_class import ValidatorClass
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     request_data = kwargs["request_data"]
-    checklist_item_with_entity_dto = _prepare_checklist_item_with_entity_dto(
+    checklist_item_with_entity_dto = prepare_checklist_item_with_entity_dto(
         request_data=request_data)
 
     from ib_utility_tools.storages.checklist_storage_implementation import \
@@ -28,7 +28,7 @@ def api_wrapper(*args, **kwargs):
     return response_data
 
 
-def _prepare_checklist_item_with_entity_dto(request_data):
+def prepare_checklist_item_with_entity_dto(request_data):
     from ib_utility_tools.interactors.storage_interfaces.dtos import \
         ChecklistItemWithEntityDTO
     checklist_item_with_entity_dto = ChecklistItemWithEntityDTO(
