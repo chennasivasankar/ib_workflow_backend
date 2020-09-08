@@ -15,7 +15,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 
 
-class CreateDataIntoElasticsearchInteractor:
+class CreateOrUpdateDataIntoElasticsearchInteractor:
     def __init__(self, storage: CreateOrUpdateTaskStorageInterface,
                  stage_storage: StageStorageInterface,
                  field_storage: FieldsStorageInterface,
@@ -27,7 +27,7 @@ class CreateDataIntoElasticsearchInteractor:
         self.storage = storage
         self.stage_storage = stage_storage
 
-    def create_task_in_elasticsearch_storage(self, task_id: int):
+    def create_or_update_task_in_elasticsearch_storage(self, task_id: int):
 
         from ib_tasks.interactors.get_task_base_interactor import \
             GetTaskBaseInteractor

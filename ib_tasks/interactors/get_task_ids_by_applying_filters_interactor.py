@@ -33,7 +33,8 @@ class GetTaskIdsBasedOnUserFilters:
         self.filter_storage = filter_storage
 
     def get_task_ids_by_applying_filters(
-            self, filter_tasks_parameter: FilterTasksParameter) -> Tuple[List[int], int]:
+            self, filter_tasks_parameter: FilterTasksParameter
+    ) -> Tuple[List[int], int]:
         self._validations_of_limit_and_offset(
             offset=filter_tasks_parameter.offset,
             limit=filter_tasks_parameter.limit
