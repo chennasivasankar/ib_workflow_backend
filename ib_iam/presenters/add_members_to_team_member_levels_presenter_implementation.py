@@ -2,7 +2,7 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
-    AddMembersToLevelPresenterInterface
+    AddMembersToTeamMemberLevelsPresenterInterface
 
 INVALID_TEAM_ID = (
     "Please send valid team id to add members to team member levels",
@@ -20,11 +20,11 @@ TEAM_MEMBER_IDS_NOT_FOUND = (
 )
 
 
-class AddMembersToLevelPresenterImplementation(
-    AddMembersToLevelPresenterInterface, HTTPResponseMixin
+class AddMembersToTeamMemberLevelsPresenterImplementation(
+    AddMembersToTeamMemberLevelsPresenterInterface, HTTPResponseMixin
 ):
 
-    def prepare_success_response_for_add_members_to_levels(self):
+    def prepare_success_response_for_add_members_to_team_member_levels(self):
         return self.prepare_201_created_response(response_dict={})
 
     def response_for_invalid_team_id(self):

@@ -18,15 +18,15 @@ class TestAddMembersToLevelsInteractor:
     def presenter_mock(self):
         from unittest.mock import create_autospec
         from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
-            AddMembersToLevelPresenterInterface
-        presenter = create_autospec(AddMembersToLevelPresenterInterface)
+            AddMembersToTeamMemberLevelsPresenterInterface
+        presenter = create_autospec(AddMembersToTeamMemberLevelsPresenterInterface)
         return presenter
 
     @pytest.fixture()
     def interactor(self, storage_mock):
         from ib_iam.interactors.add_members_to_team_member_levels_interactor import \
-            AddMembersToLevelsInteractor
-        interactor = AddMembersToLevelsInteractor(
+            AddMembersToTeamMemberLevelsInteractor
+        interactor = AddMembersToTeamMemberLevelsInteractor(
             team_member_level_storage=storage_mock)
         return interactor
 
@@ -77,7 +77,7 @@ class TestAddMembersToLevelsInteractor:
             = expected_presenter_response_for_invalid_team_id_mock
 
         # Act
-        response = interactor.add_members_to_levels_wrapper(
+        response = interactor.add_members_to_team_member_levels_wrapper(
             team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos,
             presenter=presenter_mock, team_id=team_id
         )
@@ -113,7 +113,7 @@ class TestAddMembersToLevelsInteractor:
             team_member_level_ids_in_database
 
         # Act
-        response = interactor.add_members_to_levels_wrapper(
+        response = interactor.add_members_to_team_member_levels_wrapper(
             team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos,
             presenter=presenter_mock, team_id=team_id
         )
@@ -172,7 +172,7 @@ class TestAddMembersToLevelsInteractor:
             expected_presenter_response_for_team_member_ids_not_found_mock
 
         # Act
-        response = interactor.add_members_to_levels_wrapper(
+        response = interactor.add_members_to_team_member_levels_wrapper(
             team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos,
             presenter=presenter_mock, team_id=team_id
         )
@@ -222,11 +222,11 @@ class TestAddMembersToLevelsInteractor:
         storage_mock.get_team_member_ids.return_value = \
             team_member_ids_in_database
 
-        presenter_mock.prepare_success_response_for_add_members_to_levels. \
+        presenter_mock.prepare_success_response_for_add_members_to_team_member_levels. \
             return_value = expected_presenter_prepare_success_response_for_add_members_to_levels
 
         # Act
-        response = interactor.add_members_to_levels_wrapper(
+        response = interactor.add_members_to_team_member_levels_wrapper(
             team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos,
             presenter=presenter_mock, team_id=team_id
         )
@@ -235,5 +235,5 @@ class TestAddMembersToLevelsInteractor:
         assert response == \
                expected_presenter_prepare_success_response_for_add_members_to_levels
 
-        presenter_mock.prepare_success_response_for_add_members_to_levels. \
+        presenter_mock.prepare_success_response_for_add_members_to_team_member_levels. \
             assert_called_once()

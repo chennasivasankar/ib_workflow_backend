@@ -232,9 +232,9 @@ class TestAddMembersToSuperiorsInteractor:
 
         storage_mock.get_team_member_ids.return_value = \
             team_member_ids_in_database
-        from ib_iam.exceptions.custom_exceptions import UsersNotBelongToLevel
+        from ib_iam.exceptions.custom_exceptions import UsersNotBelongToGivenLevelHierarchy
         storage_mock.validate_users_belong_to_given_level_hierarchy_in_a_team.side_effect = \
-            UsersNotBelongToLevel(
+            UsersNotBelongToGivenLevelHierarchy(
                 user_ids=subordinate_user_ids,
                 level_hierarchy=member_level_hierarchy
             )

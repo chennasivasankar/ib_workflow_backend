@@ -123,11 +123,11 @@ class TestCase02AddTeamMemberLevelsAPITestCase(TestUtils):
         path_params = {"team_id": team_id}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
 
     @pytest.mark.django_db
     def test_with_duplicate_level_names_return_response(
@@ -157,8 +157,8 @@ class TestCase02AddTeamMemberLevelsAPITestCase(TestUtils):
         path_params = {"team_id": team_id}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)

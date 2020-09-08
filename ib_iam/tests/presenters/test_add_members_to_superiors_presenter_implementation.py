@@ -100,8 +100,8 @@ class TestAddMembersToSuperiorsPresenterImplementation:
         expected_http_status_code = StatusCode.NOT_FOUND.value
         expected_res_status = USERS_NOT_BELONG_TO_TEAM_MEMBER_LEVEL[1]
 
-        from ib_iam.exceptions.custom_exceptions import UsersNotBelongToLevel
-        error_object = UsersNotBelongToLevel(
+        from ib_iam.exceptions.custom_exceptions import UsersNotBelongToGivenLevelHierarchy
+        error_object = UsersNotBelongToGivenLevelHierarchy(
             user_ids=user_ids, level_hierarchy=level_hierarchy
         )
 
