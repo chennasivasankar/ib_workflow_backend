@@ -51,9 +51,9 @@ class TestAddRolesInteractor:
         )
 
         # Assert
-        call_obj = presenter.raise_duplicate_role_ids_exception.call_args
+        call_args = presenter.raise_duplicate_role_ids_exception.call_args
 
-        assert call_obj[0][0].role_ids == duplicate_role_ids
+        assert call_args[0][0].role_ids == duplicate_role_ids
         presenter.raise_duplicate_role_ids_exception.assert_called_once()
 
     def test_given_role_name_is_empty_then_raise_exception(self):

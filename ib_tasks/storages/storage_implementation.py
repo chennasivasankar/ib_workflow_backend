@@ -104,7 +104,6 @@ class StagesStorageImplementation(StageStorageInterface):
             (Q(role_id__in=user_role_ids) | Q(role_id=ALL_ROLES_ID)) &
             Q(stage__task_template_id__in=project_template_ids)
         ).values_list('stage__stage_id', flat=True)
-
         return list(stage_ids)
 
     @staticmethod
@@ -419,8 +418,7 @@ class StagesStorageImplementation(StageStorageInterface):
         stage_ids = ActionPermittedRoles.objects \
             .filter(
             Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
-        ) \
-            .values_list('action__stage_id', flat=True)
+        ).values_list('action__stage_id', flat=True).distinct()
         stage_ids = StagePermittedRoles.objects.filter(
             stage_id__in=stage_ids) \
             .filter(
