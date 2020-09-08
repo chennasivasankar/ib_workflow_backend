@@ -159,7 +159,7 @@ class TestCase02AssignUserRolesForGivenProjectBulkAPITestCase(TestUtils):
             {
                 "project_id": project_id,
                 "role_id": "ROLE_4",
-                "name": "NAME_3",
+                "name": "NAME_4",
                 "description": "description"
             }
         ]

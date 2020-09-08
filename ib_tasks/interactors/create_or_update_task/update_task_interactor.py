@@ -296,6 +296,9 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             action_storage=self.action_storage,
             task_stage_storage=self.task_stage_storage)
         project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
+        self._update_task_in_elasticsearch(
+            task_id=task_id
+        )
         all_tasks_overview_details_dto = \
             task_overview_interactor.get_filtered_tasks_overview_for_user(
                 user_id=task_dto.created_by_id, task_ids=[task_id],
@@ -520,3 +523,17 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         if priority_is_not_given and not action_type_is_no_validations:
             raise PriorityIsRequired()
         return
+
+    def _update_task_in_elasticsearch(self, task_id: int):
+        from ib_tasks.interactors.create_or_update_tasks_into_elasticsearch_interactor import \
+            CreateOrUpdateDataIntoElasticsearchInteractor
+        interactor = CreateOrUpdateDataIntoElasticsearchInteractor(
+            elasticsearch_storage=self.elastic_storage,
+            storage=self.create_task_storage,
+            task_storage=self.task_storage,
+            stage_storage=self.stage_storage,
+            field_storage=self.field_storage
+        )
+        interactor.create_or_update_task_in_elasticsearch_storage(
+            task_id=task_id
+        )
