@@ -200,11 +200,14 @@ class CreateOrUpdateOrDeleteFiltersInteractor(ValidationMixin):
         field_types_map = {}
         for field_type_dto in field_type_dtos:
             field_types_map[field_type_dto.field_id] = field_type_dto.field_type
-        from ib_tasks.constants.constants import NUMERIC_OPERATORS
+        from ib_tasks.constants.constants import NUMERIC_OPERATORS, STRING_OPERATORS
         for condition_dto in condition_dtos:
             field_type = field_types_map[condition_dto.field_id]
-            is_invalid_filter = field_type != FieldTypes.NUMBER.value \
+            is_invalid_filter_string = field_type != FieldTypes.NUMBER.value \
                                 and field_type != FieldTypes.FLOAT.value \
                                 and condition_dto.operator in NUMERIC_OPERATORS
-            if is_invalid_filter:
+            is_invalid_filter = field_type == FieldTypes.NUMBER.value \
+                                or field_type == FieldTypes.FLOAT.value \
+                                and condition_dto.operator in STRING_OPERATORS
+            if is_invalid_filter or is_invalid_filter_string:
                 raise InvalidFilterCondition(condition=condition_dto.operator)
