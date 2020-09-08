@@ -1,5 +1,6 @@
 from typing import List
 
+
 from ib_tasks.adapters.dtos import UserDetailsDTO, TeamDetailsDTO, \
     UserIdWIthTeamDetailsDTOs, TeamDetailsWithUserIdDTO, \
     ProjectDetailsDTO, ProjectTeamUserIdsDTO
@@ -20,6 +21,12 @@ class UsersNotExistsForGivenTeamsException(Exception):
 class InvalidProjectIdsException(Exception):
     def __init__(self, project_ids: List[str]):
         self.project_ids = project_ids
+
+
+class UsersNotExistsForGivenProjectException(Exception):
+    def __init__(self, user_ids: List[str]):
+        self.user_ids = user_ids
+
 
 
 class AuthService:
@@ -60,9 +67,8 @@ class AuthService:
 
         return user_details_dtos
 
-    def get_permitted_user_details(self, role_ids: List[str], project_id:
-    str) \
-            -> List[UserDetailsDTO]:
+    def get_permitted_user_details(self, role_ids: List[str],
+                                   project_id: str) -> List[UserDetailsDTO]:
         user_profile_details_dtos = \
             self.interface.get_user_details_for_given_role_ids(
                 role_ids=role_ids, project_id=project_id)
@@ -134,8 +140,13 @@ class AuthService:
             self, user_ids: List[str], project_id: str
     ) -> List[UserIdWIthTeamDetailsDTOs]:
         user_ids = list(sorted(set(user_ids)))
-        user_team_dtos = self.interface.get_user_teams_for_each_project_user(
-            user_ids=user_ids, project_id=project_id)
+        from ib_iam.interactors.project_interactor import \
+            UsersNotExistsForGivenProject
+        try:
+            user_team_dtos = self.interface.get_user_teams_for_each_project_user(
+                user_ids=user_ids, project_id=project_id)
+        except UsersNotExistsForGivenProject as err:
+            raise UsersNotExistsForGivenProjectException(user_ids=err.user_ids)
         user_id_with_team_details_dtos = []
         for user_team_dto in user_team_dtos:
             team_details = [

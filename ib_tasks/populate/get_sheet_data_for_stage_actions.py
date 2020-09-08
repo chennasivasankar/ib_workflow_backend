@@ -51,7 +51,7 @@ class GetSheetDataForStageActions:
         schema = Schema(
             [{
                 "Stage ID*": And(str, len),
-                "Stage Display Logic": And(str, len),
+                Optional("Stage Display Logic"): And(str, len),
                 "Action name": And(str, len),
                 "Role": And(str, len),
                 "Logic": And(str, len),

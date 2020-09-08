@@ -1,5 +1,5 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
-from ib_utility_tools.interactors.presenter_interfaces.delete_checklist_items_presenter_interface import (
+from ib_utility_tools.interactors.presenter_interfaces.checklist_presenter_interface import (
     DeleteChecklistItemsPresenterInterface
 )
 from ib_utility_tools.constants.enum import StatusCode

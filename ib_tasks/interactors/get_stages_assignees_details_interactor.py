@@ -71,6 +71,7 @@ class GetStagesAssigneesDetailsInteractor:
             assignee_details_dto: AssigneeDetailsDTO,
             team_details_with_user_id_dtos: List[TeamDetailsWithUserIdDTO]
     ) -> Optional[AssigneeWithTeamDetailsDTO]:
+
         assignee_id = assignee_details_dto.assignee_id
         for team_details_with_user_id_dto in team_details_with_user_id_dtos:
             user_id = team_details_with_user_id_dto.user_id
@@ -113,6 +114,7 @@ class GetStagesAssigneesDetailsInteractor:
     def _get_user_id_with_team_id_dtos(
             stage_assignee_dtos: List[TaskStageAssigneeDTO]
     ) -> List[UserIdWithTeamIdDTO]:
+
         user_id_with_team_id_dtos = []
         for stage_assignee_dto in stage_assignee_dtos:
             is_assignee_id = stage_assignee_dto.assignee_id
@@ -216,6 +218,7 @@ class GetStagesAssigneesDetailsInteractor:
             stage_assignee_dtos: List[TaskStageAssigneeIdDTO],
             assignee_details_dtos: List[AssigneeDetailsDTO]
     ) -> List[TaskStageAssigneeDetailsDTO]:
+
         assignees_dict = {}
         for assignee_details_dto in assignee_details_dtos:
             assignees_dict[

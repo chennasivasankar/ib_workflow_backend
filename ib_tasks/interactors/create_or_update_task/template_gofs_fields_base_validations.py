@@ -20,6 +20,9 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
+    import \
+    TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, FieldValuesDTO
 
 
@@ -29,18 +32,20 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
             self, task_storage: TaskStorageInterface,
             gof_storage: GoFStorageInterface,
             create_task_storage: CreateOrUpdateTaskStorageInterface,
-            storage: StorageInterface, field_storage: FieldsStorageInterface
+            storage: StorageInterface, field_storage: FieldsStorageInterface,
+            task_template_storage: TaskTemplateStorageInterface
     ):
         self.gof_storage = gof_storage
         self.field_storage = field_storage
         self.task_storage = task_storage
         self.create_task_storage = create_task_storage
         self.storage = storage
+        self.task_template_storage = task_template_storage
 
     def perform_base_validations_for_template_gofs_and_fields(
-            self, gof_fields_dtos: List[GoFFieldsDTO], created_by_id: str,
-            task_template_id: str, action_type: Optional[ActionTypes]
-    ):
+            self, gof_fields_dtos: List[GoFFieldsDTO], user_id: str,
+            task_template_id: str, project_id: str,
+            action_type: Optional[ActionTypes]):
         self._validate_same_gof_order(gof_fields_dtos)
         gof_ids = [
             gof_fields_dto.gof_id
@@ -58,8 +63,7 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
         self._validate_for_given_fields_are_related_to_given_gofs(
             gof_fields_dtos, gof_ids)
         self._validate_user_permission_on_given_fields_and_gofs(
-            gof_ids, field_ids, created_by_id
-        )
+            gof_ids, field_ids, user_id)
         from ib_tasks.interactors.create_or_update_task. \
             validate_field_responses import ValidateFieldResponsesInteractor
         field_validation_interactor = ValidateFieldResponsesInteractor(
@@ -67,8 +71,7 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
         field_values_dtos = \
             self._get_field_values_dtos(gof_fields_dtos)
         field_validation_interactor.validate_field_responses(
-            field_values_dtos, action_type
-        )
+            field_values_dtos, action_type)
 
     def _validate_same_gof_order(
             self, gof_fields_dtos: List[GoFFieldsDTO]

@@ -8,6 +8,7 @@ from ib_tasks.populate.get_sheet_data_for_creating_or_updating_stages import \
     GetSheetDataForStages
 from ib_tasks.populate.get_sheet_data_for_stage_actions import \
     GetSheetDataForStageActions
+from ib_tasks.populate.get_sheet_data_for_stage_flows import GetSheetDataForStageFlows
 from ib_tasks.populate.get_sheet_data_for_task_creation_config import \
     GetSheetDataForTaskCreationConfig
 from ib_tasks.populate.get_sheet_data_for_task_status_variables import \
@@ -84,6 +85,11 @@ def populate_data(spread_sheet_name: str):
     task_creation_config.get_data_from_task_creation_config_sub_sheet(
         spread_sheet_name=spread_sheet_name)
 
+    stage_flows = GetSheetDataForStageFlows()
+    stage_flows.get_data_from_stage_flows_sub_sheet(
+        spread_sheet_name=spread_sheet_name
+    )
+
 
 def delete_elastic_search_data():
     from elasticsearch_dsl import connections
@@ -118,9 +124,9 @@ def create_tasks_in_elasticsearch_data(task_ids=None):
     stage_storage = StagesStorageImplementation()
     if task_ids is None:
         task_ids = storage.get_task_ids()
-    from ib_tasks.interactors.create_tasks_into_elasticsearch_interactor import \
-        CreateDataIntoElasticsearchInteractor
-    interactor = CreateDataIntoElasticsearchInteractor(
+    from ib_tasks.interactors.create_or_update_tasks_into_elasticsearch_interactor import \
+        CreateOrUpdateDataIntoElasticsearchInteractor
+    interactor = CreateOrUpdateDataIntoElasticsearchInteractor(
         elasticsearch_storage=elasticsearch_storage,
         storage=storage,
         task_storage=task_storage,
@@ -128,7 +134,7 @@ def create_tasks_in_elasticsearch_data(task_ids=None):
         field_storage=field_storage
     )
     for task_id in task_ids:
-        interactor.create_task_in_elasticsearch_storage(
+        interactor.create_or_update_task_in_elasticsearch_storage(
             task_id=task_id
         )
 

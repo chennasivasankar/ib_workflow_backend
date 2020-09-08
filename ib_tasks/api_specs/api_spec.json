@@ -984,6 +984,25 @@
             "res_status"
          ]
       },
+      "UserActionOnTaskFailureResponseBody": {
+         "type":"object",
+         "properties":{
+            "response":{
+               "type":"string"
+            },
+            "http_status_code":{
+               "type":"integer"
+            },
+            "res_status":{
+               "type":"string"
+            }
+         },
+         "required":[
+            "response",
+            "http_status_code",
+            "res_status"
+         ]
+      },
       "SaveAndActOnATaskTaskFailureResponseBody":{
          "type":"object",
          "properties":{
@@ -2132,7 +2151,8 @@
                   "type":"string",
                   "enum":[
                      "INVALID_STAGE_ID",
-                     "INVALID_TASK_ID"
+                     "INVALID_TASK_ID",
+                     "DUE_DATE_IS_NOT_ADDED_TO_TASK"
                   ]
                }
             },
@@ -2412,6 +2432,12 @@
          "description":"can not create a task",
          "schema":{
             "$ref":"#/definitions/CreateTaskFailureResponseBody"
+         }
+      },
+      "UserActionOnTaskFailureResponse": {
+         "description":"can not act on task",
+         "schema":{
+            "$ref":"#/definitions/UserActionOnTaskFailureResponseBody"
          }
       },
       "SaveAndActOnATaskTaskFailureResponse":{
@@ -2851,6 +2877,9 @@
                   "schema":{
                      "$ref":"#/definitions/InvalidTaskActionDetails"
                   }
+               },
+               "400":{
+                  "$ref":"#/responses/UserActionOnTaskFailureResponse"
                }
             }
          }
