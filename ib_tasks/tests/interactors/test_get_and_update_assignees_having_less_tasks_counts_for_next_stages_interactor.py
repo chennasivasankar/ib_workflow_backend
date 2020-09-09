@@ -74,7 +74,7 @@ class TestGetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
         # Arrange
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = 1
-        task_storage_mock.get_project_id_of_task.return_value = "project_1"
+        task_storage_mock.get_project_id_for_the_task_id.return_value = "project_1"
         stage_storage_mock. \
             get_virtual_stages_already_having_in_task.return_value = []
 
@@ -137,7 +137,7 @@ class TestGetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
         # Arrange
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = 1
-        task_storage_mock.get_project_id_of_task.return_value = "project_1"
+        task_storage_mock.get_project_id_for_the_task_id.return_value = "project_1"
         stage_storage_mock. \
             get_virtual_stages_already_having_in_task.return_value = []
 
