@@ -83,7 +83,7 @@ class TestGetTaskStagesAndActions:
                 "stage_id_0", "stage_id_1", "stage_id_2"]
         action_ids = [1, 2, 3, 4]
         get_user_role_ids_based_on_project_mock(mocker)
-        stage_storage_mock.get_permitted_stage_ids.return_value = [
+        stage_storage_mock.get_permitted_stage_ids_given_stage_ids.return_value = [
                 "stage_id_0", "stage_id_1", "stage_id_2"]
         prepare_get_permitted_action_ids(mocker, action_ids=action_ids)
         action_storage.get_actions_details.return_value = get_stage_actions
@@ -122,7 +122,7 @@ class TestGetTaskStagesAndActions:
         action_storage.get_actions_details.return_value = get_stage_actions
         storage.get_task_stages.return_value = [
                 "stage_id_0", "stage_id_1", "stage_id_2"]
-        stage_storage_mock.get_permitted_stage_ids.return_value = [
+        stage_storage_mock.get_permitted_stage_ids_given_stage_ids.return_value = [
                 "stage_id_0", "stage_id_1", "stage_id_2"]
         prepare_get_permitted_action_ids(mocker, action_ids=[])
         action_storage.get_actions_details.return_value = []
@@ -165,7 +165,7 @@ class TestGetTaskStagesAndActions:
         storage.get_task_stages.return_value = ["stage_id_0"]
         action_storage.get_actions_details.return_value = \
             get_stage_actions_for_one_stage
-        stage_storage_mock.get_permitted_stage_ids.return_value = [
+        stage_storage_mock.get_permitted_stage_ids_given_stage_ids.return_value = [
                 "stage_id_0"]
         storage.get_stage_complete_details.return_value = \
             get_stage_details_for_one_stage
@@ -202,7 +202,7 @@ class TestGetTaskStagesAndActions:
         storage.get_task_stages.return_value = stage_ids
         prepare_get_permitted_action_ids(mocker, action_ids=[])
         action_storage.get_actions_details.return_value = []
-        stage_storage_mock.get_permitted_stage_ids.return_value = stage_ids
+        stage_storage_mock.get_permitted_stage_ids_given_stage_ids.return_value = stage_ids
         storage.get_stage_complete_details.return_value = get_stage_details
         interactor = GetTaskStagesAndActions(storage=storage,
                                              stage_storage=stage_storage_mock,
@@ -241,7 +241,7 @@ class TestGetTaskStagesAndActions:
         prepare_get_permitted_action_ids(mocker, action_ids=[])
         action_storage.get_actions_details.return_value = []
         storage.get_stage_complete_details.return_value = get_stage_details
-        stage_storage_mock.get_permitted_stage_ids.return_value = [
+        stage_storage_mock.get_permitted_stage_ids_given_stage_ids.return_value = [
                 "stage_id_0"]
         interactor = GetTaskStagesAndActions(storage=storage,
                                              stage_storage=stage_storage_mock,
