@@ -43,9 +43,11 @@ class TestCase01UpdateChecklistItemAPITestCase(TestUtils):
         )
         from ib_utility_tools.models import ChecklistItem
         checklist_item_object = ChecklistItem.objects.get(
-            checklist_item_id=checklist_item_id)
-        snapshot.assert_match(checklist_item_object.text,
-                              "checklist_item_text")
+            checklist_item_id=checklist_item_id
+        )
+        snapshot.assert_match(
+            checklist_item_object.text, "checklist_item_text"
+        )
 
     @pytest.mark.django_db
     def test_given_invalid_checklist_item_id_returns_invalid_checklist_item_response(

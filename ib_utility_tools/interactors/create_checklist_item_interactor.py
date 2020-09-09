@@ -3,8 +3,9 @@ from ib_utility_tools.interactors.presenter_interfaces \
     .checklist_presenter_interface import CreateChecklistItemPresenterInterface
 from ib_utility_tools.interactors.storage_interfaces \
     .checklist_storage_interface import ChecklistStorageInterface
-from ib_utility_tools.interactors.storage_interfaces.dtos import \
+from ib_utility_tools.interactors.storage_interfaces.dtos import (
     ChecklistItemWithEntityDTO
+)
 
 
 class CreateChecklistItemInteractor:
@@ -30,8 +31,9 @@ class CreateChecklistItemInteractor:
             entity_id=checklist_item_with_entity_dto.entity_id,
             entity_type=checklist_item_with_entity_dto.entity_type
         )
-        from ib_utility_tools.interactors.storage_interfaces.dtos import \
+        from ib_utility_tools.interactors.storage_interfaces.dtos import (
             ChecklistItemWithChecklistIdDTO
+        )
         checklist_item_with_checklist_id_dto = ChecklistItemWithChecklistIdDTO(
             checklist_id=checklist_id,
             text=checklist_item_with_entity_dto.text,

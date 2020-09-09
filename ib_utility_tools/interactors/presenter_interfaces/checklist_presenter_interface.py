@@ -39,7 +39,7 @@ class GetChecklistPresenterInterface(abc.ABC):
 class UpdateChecklistItemPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_success_response_for_update_checklist_item(self):
+    def get_response_for_update_checklist_item(self):
         pass
 
     @abc.abstractmethod

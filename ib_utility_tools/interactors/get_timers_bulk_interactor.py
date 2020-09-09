@@ -20,7 +20,8 @@ class GetTimersBulkInteractor:
                 timer_entity_dtos=timer_entity_dtos
             )
         self._calculate_and_update_duration_seconds_for_running_timers(
-            complete_timer_details_dtos=complete_timer_details_dtos)
+            complete_timer_details_dtos=complete_timer_details_dtos
+        )
         entity_with_timer_dtos = [
             self._convert_complete_timer_details_dto_to_entity_with_timer_dto(
                 complete_timer_details_dto=complete_timer_details_dto
@@ -51,42 +52,45 @@ class GetTimersBulkInteractor:
         for complete_timer_details_dto in complete_timer_details_dtos:
             if complete_timer_details_dto.is_running is True:
                 self._calculate_and_update_duration_seconds_for_running_timer(
-                    complete_timer_details_dto=complete_timer_details_dto)
+                    complete_timer_details_dto=complete_timer_details_dto
+                )
 
     @staticmethod
     def _calculate_and_update_duration_seconds_for_running_timer(
             complete_timer_details_dto: CompleteTimerDetailsDTO
     ):
         present_datetime = datetime.datetime.now()
-        time_delta = \
-            present_datetime - complete_timer_details_dto.start_datetime
-        duration_in_seconds = \
-            complete_timer_details_dto.duration_in_seconds + time_delta.seconds
+        time_delta = present_datetime - complete_timer_details_dto.start_datetime
+        duration_in_seconds = (
+                complete_timer_details_dto.duration_in_seconds + time_delta.seconds
+        )
         complete_timer_details_dto.duration_in_seconds = duration_in_seconds
         complete_timer_details_dto.start_datetime = present_datetime
 
     def _add_timer_details_info_for_invalid_timer_entities(
-            self,
+            self, timer_entity_dtos: List[TimerEntityDTO],
             complete_timer_details_dtos: List[CompleteTimerDetailsDTO],
-            timer_entity_dtos: List[TimerEntityDTO]
     ) -> List[EntityWithTimerDTO]:
         entity_with_timer_dtos = []
         entity_ids_from_timer_dtos = [
-            timer_dto.entity_id for timer_dto in complete_timer_details_dtos]
+            timer_dto.entity_id for timer_dto in complete_timer_details_dtos
+        ]
         for entity_dto in timer_entity_dtos:
             if entity_dto.entity_id not in entity_ids_from_timer_dtos:
                 entity_with_timer_dtos.append(
                     self._get_default_entity_with_timer_dto(
-                        timer_entity_dto=entity_dto))
+                        timer_entity_dto=entity_dto
+                    )
+                )
         return entity_with_timer_dtos
 
     @staticmethod
     def _get_default_entity_with_timer_dto(
             timer_entity_dto: TimerEntityDTO
     ) -> EntityWithTimerDTO:
-        return EntityWithTimerDTO(
+        entity_with_timer_dto = EntityWithTimerDTO(
             entity_id=timer_entity_dto.entity_id,
             entity_type=timer_entity_dto.entity_type,
-            duration_in_seconds=0,
-            is_running=False
+            duration_in_seconds=0, is_running=False
         )
+        return entity_with_timer_dto

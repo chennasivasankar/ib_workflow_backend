@@ -1,5 +1,5 @@
 """
-test all cases of delete checklist items
+test for success case
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -25,33 +25,6 @@ class TestCase01DeleteChecklistItemsAPITestCase(TestUtils):
             ChecklistItemFactory
         )
         ChecklistItemFactory.create(checklist_item_id=checklist_item_id)
-        self.make_api_call(
-            body=body, path_params=path_params,
-            query_params=query_params, headers=headers, snapshot=snapshot
-        )
-
-    @pytest.mark.django_db
-    def test_duplicate_checklist_items_ids_response(self, snapshot):
-        checklist_item_ids = [
-            '1c719377-105f-41a7-9d30-ad51d7beee2a',
-            '1c719377-105f-41a7-9d30-ad51d7beee2a'
-        ]
-        body = {'checklist_item_ids': checklist_item_ids}
-        path_params = {}
-        query_params = {}
-        headers = {}
-        self.make_api_call(
-            body=body, path_params=path_params,
-            query_params=query_params, headers=headers, snapshot=snapshot
-        )
-
-    @pytest.mark.django_db
-    def test_invalid_checklist_item_ids_response(self, snapshot):
-        checklist_item_ids = ['1c719377-105f-41a7-9d30-ad51d7beee2a']
-        body = {'checklist_item_ids': checklist_item_ids}
-        path_params = {}
-        query_params = {}
-        headers = {}
         self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
