@@ -24,11 +24,12 @@ from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTransitionChecklistTemplateId
 from ib_tasks.interactors.presenter_interfaces \
     .create_transition_checklist_presenter_interface import \
-    CreateTransitionChecklistTemplatePresenterInterface
+    CreateOrUpdateTransitionChecklistTemplatePresenterInterface
 
 
-class CreateTransitionChecklistTemplatePresenterImplementation(
-    CreateTransitionChecklistTemplatePresenterInterface, HTTPResponseMixin
+class CreateOrUpdateTransitionChecklistTemplatePresenterImplementation(
+    CreateOrUpdateTransitionChecklistTemplatePresenterInterface,
+    HTTPResponseMixin
 ):
     def raise_user_did_not_fill_required_fields(
             self, err: UserDidNotFillRequiredFields):
