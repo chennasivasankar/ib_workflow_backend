@@ -63,7 +63,11 @@
                "enum":[
                   "INVALID_ACTION_ID",
                   "INVALID_TASK_ID",
-                  "REASON_NOT_ADDED_FOR_TASK_DELAY"
+                  "REASON_NOT_ADDED_FOR_TASK_DELAY",
+                  "INVALID_TASK_DISPLAY_ID",
+                  "INVALID_BOARD_ID",
+                  "INVALID_STAGE_IDS",
+                  "TASK_DELAY_REASON_IS_NOT_ADDED"
                ]
             }
          },
@@ -130,7 +134,9 @@
                "type":"string",
                "enum":[
                   "USER_DO_NOT_HAVE_ACCESS",
-                  "INVALID_PRESENT_STAGE_ACTION"
+                  "INVALID_PRESENT_STAGE_ACTION",
+                  "USER_DO_NOT_HAVE_BOARD_ACCESS",
+                  "USER_NOT_IN_PROJECT"
                ]
             }
          },
@@ -994,7 +1000,17 @@
                "type":"integer"
             },
             "res_status":{
-               "type":"string"
+               "type":"string",
+               "enum":[
+                  "USER_DID_NOT_FILL_REQUIRED_GOFS",
+                  "USER_DID_NOT_FILL_REQUIRED_FIELDS",
+                  "INVALID_KEY_ERROR",
+                  "INVALID_CUSTOM_LOGIC",
+                  "PATH_NOT_FOUND", "METHOD_NOT_FOUND",
+                  "DUPLICATE_STAGE_IDS",
+                  "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE",
+                  "EMPTY_STAGE_IDS_ARE_INVALID"
+               ]
             }
          },
          "required":[
