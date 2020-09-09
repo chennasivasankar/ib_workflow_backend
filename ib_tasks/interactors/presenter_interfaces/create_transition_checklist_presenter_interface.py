@@ -6,7 +6,7 @@ from ib_tasks.exceptions.gofs_custom_exceptions import \
     UserDidNotFillRequiredGoFs
 
 
-class CreateTransitionChecklistTemplatePresenterInterface(abc.ABC):
+class CreateOrUpdateTransitionChecklistTemplatePresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_create_transition_checklist_response(self):
