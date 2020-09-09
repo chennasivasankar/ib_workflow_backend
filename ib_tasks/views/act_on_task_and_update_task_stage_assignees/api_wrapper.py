@@ -4,6 +4,7 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
 from .validator_class import ValidatorClass
 from ...interactors.act_on_task_and_update_task_stage_assignees_interactor import \
     ActOnTaskAndUpdateTaskStageAssigneesInteractor
+
 from ...storages.action_storage_implementation import \
     ActionsStorageImplementation
 from ...storages.elasticsearch_storage_implementation import \
@@ -39,6 +40,9 @@ def api_wrapper(*args, **kwargs):
         import FieldsStorageImplementation
     from ib_tasks.storages.storage_implementation \
         import StorageImplementation, StagesStorageImplementation
+    from ...presenters.act_on_task_and_upadte_task_stage_assignees_presenter import \
+        ActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation
+    presenter = ActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation()
 
     field_storage = FieldsStorageImplementation()
     storage = StorageImplementation()
@@ -63,5 +67,6 @@ def api_wrapper(*args, **kwargs):
     )
 
     response = interactor.act_on_task_interactor_and_update_task_stage_assignees_wrapper(
-        presenter=presenter, task_display_id=task_display_id, stage_assignee_dtos=stage_assignee_dtos)
+        presenter=presenter, task_display_id=task_display_id,
+        stage_assignee_dtos=stage_assignee_dtos)
     return response
