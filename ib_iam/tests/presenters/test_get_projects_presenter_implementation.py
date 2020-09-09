@@ -52,8 +52,8 @@ class TestGetProjectsPresenterImplementation:
         json_presenter = GetProjectsPresenterImplementation()
         total_projects_count = len(projects_set_up)
         from ib_iam.interactors.presenter_interfaces.dtos import \
-            ProjectWithTeamsDTO
-        project_with_teams_dto = ProjectWithTeamsDTO(
+            ProjectsWithTeamsAndRolesDTO
+        project_with_teams_dto = ProjectsWithTeamsAndRolesDTO(
             total_projects_count=total_projects_count,
             project_dtos=projects_set_up,
             project_team_ids_dtos=project_teams_set_up,

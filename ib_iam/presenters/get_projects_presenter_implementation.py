@@ -2,7 +2,7 @@ from typing import List
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_iam.interactors.presenter_interfaces.dtos import ProjectWithTeamsDTO
+from ib_iam.interactors.presenter_interfaces.dtos import ProjectsWithTeamsAndRolesDTO
 from ib_iam.interactors.presenter_interfaces \
     .get_projects_presenter_interface import GetProjectsPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO, \
@@ -13,7 +13,7 @@ class GetProjectsPresenterImplementation(GetProjectsPresenterInterface,
                                          HTTPResponseMixin):
 
     def get_response_for_get_projects(
-            self, project_with_teams_dto: ProjectWithTeamsDTO):
+            self, project_with_teams_dto: ProjectsWithTeamsAndRolesDTO):
         projects = self._convert_project_with_teams_dto_to_projects_list(
             project_with_teams_dto=project_with_teams_dto)
         response_dict = {"total_projects_count":
@@ -22,7 +22,7 @@ class GetProjectsPresenterImplementation(GetProjectsPresenterInterface,
         return self.prepare_200_success_response(response_dict=response_dict)
 
     def _convert_project_with_teams_dto_to_projects_list(
-            self, project_with_teams_dto: ProjectWithTeamsDTO):
+            self, project_with_teams_dto: ProjectsWithTeamsAndRolesDTO):
         project_dtos = project_with_teams_dto.project_dtos
         project_team_ids_dtos = project_with_teams_dto.project_team_ids_dtos
         team_dtos = project_with_teams_dto.team_dtos
