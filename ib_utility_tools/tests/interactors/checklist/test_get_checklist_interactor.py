@@ -6,33 +6,27 @@ class TestGetChecklistInteractor:
 
     @pytest.fixture()
     def storage_mock(self):
-        from ib_utility_tools.interactors.storage_interfaces.checklist_storage_interface import (
-            ChecklistStorageInterface
-        )
-        storage = mock.create_autospec(ChecklistStorageInterface)
-        return storage
+        from ib_utility_tools.interactors.storage_interfaces \
+            .checklist_storage_interface import ChecklistStorageInterface
+        return mock.create_autospec(ChecklistStorageInterface)
 
     @pytest.fixture()
     def presenter_mock(self):
-        from ib_utility_tools.interactors.presenter_interfaces.checklist_presenter_interface import (
+        from ib_utility_tools.interactors.presenter_interfaces \
+            .checklist_presenter_interface import \
             GetChecklistPresenterInterface
-        )
-        presenter = mock.create_autospec(GetChecklistPresenterInterface)
-        return presenter
+        return mock.create_autospec(GetChecklistPresenterInterface)
 
     @pytest.fixture()
     def interactor(self, storage_mock):
-        from ib_utility_tools.interactors.get_checklist_interactor import (
+        from ib_utility_tools.interactors.get_checklist_interactor import \
             GetChecklistInteractor
-        )
-        interactor = GetChecklistInteractor(checklist_storage=storage_mock)
-        return interactor
+        return GetChecklistInteractor(checklist_storage=storage_mock)
 
     @pytest.fixture()
     def checklist_item_dtos(self):
-        from ib_utility_tools.tests.factories.storage_dtos import (
+        from ib_utility_tools.tests.factories.storage_dtos import \
             ChecklistItemWithIdDTOFactory
-        )
         checklist_item_dtos = ChecklistItemWithIdDTOFactory.create_batch(
             size=3
         )
@@ -43,14 +37,14 @@ class TestGetChecklistInteractor:
             checklist_item_dtos
     ):
         # Arrange
-        from ib_utility_tools.tests.factories.storage_dtos import (
+        from ib_utility_tools.tests.factories.storage_dtos import \
             EntityDTOFactory
-        )
         entity_dto = EntityDTOFactory()
         checklist_id = "checklist_id1"
         storage_mock.get_checklist_id_if_exists.return_value = checklist_id
         storage_mock.get_checklist_item_dtos.return_value = checklist_item_dtos
-        presenter_mock.get_response_for_get_checklist.return_value = mock.Mock()
+        presenter_mock.get_response_for_get_checklist.return_value = \
+            mock.Mock()
 
         # Act
         interactor.get_checklist_wrapper(
@@ -72,12 +66,12 @@ class TestGetChecklistInteractor:
             self, storage_mock, presenter_mock, interactor
     ):
         # Arrange
-        from ib_utility_tools.tests.factories.storage_dtos import (
+        from ib_utility_tools.tests.factories.storage_dtos import \
             EntityDTOFactory
-        )
         entity_dto = EntityDTOFactory()
         storage_mock.get_checklist_id_if_exists.return_value = None
-        presenter_mock.get_response_for_get_checklist.return_value = mock.Mock()
+        presenter_mock.get_response_for_get_checklist.return_value = \
+            mock.Mock()
 
         # Act
         interactor.get_checklist_wrapper(

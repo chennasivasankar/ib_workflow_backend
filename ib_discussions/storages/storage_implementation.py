@@ -156,6 +156,10 @@ class StorageImplementation(StorageInterface):
     def _get_sort_discussion_objects(sort_by_dto, discussion_objects):
         if sort_by_dto.sort_by == SortByEnum.LATEST.value:
             return discussion_objects.order_by("-created_at")
+        if sort_by_dto.sort_by == SortByEnum.TOP.value:
+            return discussion_objects.annotate(
+                comments_count=Count("comments")
+            ).order_by("-comments_count")
 
     def is_user_can_edit_discussion(self, user_id: str, discussion_id: str) \
             -> bool:

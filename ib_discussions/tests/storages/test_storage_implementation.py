@@ -368,7 +368,7 @@ class TestStorageImplementation:
         from ib_discussions.constants.enum import SortByEnum
         from ib_discussions.constants.enum import OrderByEnum
         sort_by_dto = SortByDTO(
-            sort_by=SortByEnum.LATEST.value,
+            sort_by=SortByEnum.TOP.value,
             order=OrderByEnum.ASC.value
         )
         # Act
