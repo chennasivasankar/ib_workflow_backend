@@ -2,7 +2,7 @@ import abc
 from typing import List, Optional
 
 from ib_iam.exceptions.custom_exceptions import InvalidTeamId, \
-    UsersNotBelongToGivenLevelHierarchy, InvalidLevelHierarchyOfTeam, \
+    UsersNotBelongToGivenLevelHierarchy, InvalidLevelHierarchyOfTeam,\
     UserNotBelongToTeam
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO

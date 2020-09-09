@@ -208,6 +208,5 @@ class UsersNotBelongToGivenLevelHierarchy(Exception):
         self.user_ids = user_ids
         self.level_hierarchy = level_hierarchy
 
-
 class UserNotBelongToTeam(Exception):
     pass
