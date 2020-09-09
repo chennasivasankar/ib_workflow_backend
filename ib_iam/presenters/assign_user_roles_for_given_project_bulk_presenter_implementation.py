@@ -19,6 +19,11 @@ INVALID_PROJECT_ID = (
     "INVALID_PROJECT_ID"
 )
 
+USER_DOES_NOT_ACCESS = (
+    "User does not have provision to access",
+    "USER_DOES_NOT_ACCESS"
+)
+
 
 class AssignUserRolesForGivenProjectBulkPresenterImplementation(
     AssignUserRolesForGivenProjectBulkPresenterInterface, HTTPResponseMixin
@@ -53,6 +58,15 @@ class AssignUserRolesForGivenProjectBulkPresenterImplementation(
             "response": INVALID_PROJECT_ID[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": INVALID_PROJECT_ID[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict)
+
+    def response_for_user_is_not_admin(self):
+        response_dict = {
+            "response": USER_DOES_NOT_ACCESS[0],
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": USER_DOES_NOT_ACCESS[1]
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
