@@ -47,7 +47,6 @@ class CreateReplyToCommentInteractor:
             self.reply_to_comment(
                 reply_details_dto=reply_details_dto
             )
-
         response = presenter.prepare_response_for_reply(
             comment_dto=comment_dto, user_profile_dtos=user_profile_dtos,
             comment_with_editable_status_dto=comment_with_editable_status_dto,
@@ -119,8 +118,9 @@ class CreateReplyToCommentInteractor:
     ):
         comment_content = create_complete_reply_to_comment_dto.comment_content
         multimedia_dtos = create_complete_reply_to_comment_dto.multimedia_dtos
-        is_empty_comment_content_and_multimedia = \
-            not (comment_content or multimedia_dtos)
+        is_empty_comment_content_and_multimedia = not (
+                comment_content or multimedia_dtos
+        )
         if is_empty_comment_content_and_multimedia:
             raise EmptyCommentAndMultiMediaException
 
@@ -149,9 +149,11 @@ class CreateReplyToCommentInteractor:
             self.get_replies_for_comment(
                 reply_dtos=comment_dtos, user_id=user_id)
 
-        return comment_dto, comment_with_editable_status_dtos[0], \
-               user_profile_dtos, comment_id_with_mention_user_id_dtos, \
-               comment_id_with_multimedia_dtos
+        return (
+            comment_dto, comment_with_editable_status_dtos[0],
+            user_profile_dtos, comment_id_with_mention_user_id_dtos,
+            comment_id_with_multimedia_dtos
+        )
 
     def get_replies_for_comment(
             self, reply_dtos: List[CommentDTO], user_id: str
@@ -172,7 +174,8 @@ class CreateReplyToCommentInteractor:
         )
         comment_with_editable_status_dtos = \
             self._prepare_comment_editable_status_dtos(
-                comment_dtos=reply_dtos, user_id=user_id)
+                comment_dtos=reply_dtos, user_id=user_id
+            )
 
         return (
             comment_with_editable_status_dtos, user_profile_dtos,
@@ -195,8 +198,7 @@ class CreateReplyToCommentInteractor:
         comment_editable_status_dtos = [
             CreateReplyToCommentInteractor._prepare_comment_editable_status_dto(
                 comment_dto=comment_dto, user_id=user_id
-            )
-            for comment_dto in comment_dtos
+            ) for comment_dto in comment_dtos
         ]
         return comment_editable_status_dtos
 
@@ -208,7 +210,6 @@ class CreateReplyToCommentInteractor:
         if str(user_id) == str(comment_dto.user_id):
             is_editable = True
         comment_editable_status_dto = CommentIdWithEditableStatusDTO(
-            comment_id=comment_dto.comment_id,
-            is_editable=is_editable
+            comment_id=comment_dto.comment_id, is_editable=is_editable
         )
         return comment_editable_status_dto
