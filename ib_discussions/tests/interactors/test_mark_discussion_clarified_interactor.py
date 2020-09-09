@@ -50,6 +50,7 @@ class TestMarkDiscussionClarifiedInteractor:
 
         # Assert
         assert response == expected_presenter_raise_exception_for_discussion_id_not_found_mock
+
         storage_mock.validate_discussion_id.assert_called_once_with(
             discussion_id=discussion_id
         )
@@ -85,6 +86,7 @@ class TestMarkDiscussionClarifiedInteractor:
 
         # Assert
         assert response == expected_presenter_raise_exception_for_user_cannot_mark_as_clarified_mock
+
         storage_mock.validate_is_user_can_mark_as_clarified. \
             assert_called_once_with(user_id=user_id,
                                     discussion_id=discussion_id)
@@ -115,6 +117,7 @@ class TestMarkDiscussionClarifiedInteractor:
 
         # Assert
         assert response == expected_presenter_raise_success_response_for_mark_discussion_as_clarified_mock
+
         storage_mock.mark_discussion_clarified.assert_called_once_with(
             discussion_id=discussion_id
         )

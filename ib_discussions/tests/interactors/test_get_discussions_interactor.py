@@ -194,6 +194,7 @@ class TestGetDiscussionsInteractor:
 
         # Assert
         assert response == expected_presenter_response_for_discussions
+
         storage_mock.get_discussion_set_id_if_exists.assert_called_once()
         storage_mock.get_discussion_dtos.assert_called_once_with(
             discussion_set_id=discussion_set_id,

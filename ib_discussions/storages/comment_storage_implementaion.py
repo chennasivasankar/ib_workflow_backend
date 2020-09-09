@@ -32,7 +32,7 @@ class CommentStorageImplementation(CommentStorageInterface):
     def get_comment_details_dto(self, comment_id: str) -> CommentDTO:
         comment_object = Comment.objects.get(id=comment_id)
         comment_dto = CommentDTO(
-            comment_id=comment_object.id,
+            comment_id=str(comment_object.id),
             comment_content=comment_object.content,
             user_id=comment_object.user_id,
             created_at=comment_object.created_at,
@@ -74,7 +74,7 @@ class CommentStorageImplementation(CommentStorageInterface):
         )
         comment_dtos = [
             CommentDTO(
-                comment_id=comment_object.id,
+                comment_id=str(comment_object.id),
                 comment_content=comment_object.content,
                 user_id=comment_object.user_id,
                 created_at=comment_object.created_at,
@@ -125,7 +125,7 @@ class CommentStorageImplementation(CommentStorageInterface):
                 comment_content=comment_object.content,
                 user_id=comment_object.user_id,
                 created_at=comment_object.created_at,
-                parent_comment_id=comment_object.parent_comment_id
+                parent_comment_id=str(comment_object.parent_comment_id)
             )
             for comment_object in comment_objects
         ]

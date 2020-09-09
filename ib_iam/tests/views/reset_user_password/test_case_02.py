@@ -28,7 +28,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         path_params = {}
         query_params = {'token': "184"}
         headers = {}
-        response = self.make_api_call(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
@@ -47,7 +47,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         path_params = {}
         query_params = {'token': "184"}
         headers = {}
-        response = self.make_api_call(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
@@ -70,7 +70,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         path_params = {}
         query_params = {'token': "184"}
         headers = {}
-        response = self.make_api_call(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
@@ -93,7 +93,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         path_params = {}
         query_params = {'token': reset_password_token}
         headers = {}
-        response = self.make_api_call(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

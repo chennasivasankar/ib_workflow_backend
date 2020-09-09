@@ -43,6 +43,8 @@ class TestCase01AddCommentAPITestCase(TestUtils):
         comment_content = "content"
         mention_user_ids = prepare_users_setup
         multimedia = prepare_multimedia_setup
+        print("*******************")
+        print(multimedia)
 
         body = {
             'comment_content': comment_content,
@@ -52,7 +54,7 @@ class TestCase01AddCommentAPITestCase(TestUtils):
         path_params = {"discussion_id": discussion_id}
         query_params = {}
         headers = {}
-        response = self.make_api_call(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

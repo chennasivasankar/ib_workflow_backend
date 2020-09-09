@@ -166,7 +166,7 @@ class GetDiscussionPresenterImplementation(
     def _convert_to_dict_with_key_discussion_id(
             discussion_id_with_editable_status_dtos: \
                     List[DiscussionIdWithEditableStatusDTO]
-    ) -> Dict[str: DiscussionIdWithEditableStatusDTO]:
+    ):
         discussion_id_with_editable_status_dtos_dict = {
             discussion_id_with_editable_status_dto.discussion_id: \
                 discussion_id_with_editable_status_dto
