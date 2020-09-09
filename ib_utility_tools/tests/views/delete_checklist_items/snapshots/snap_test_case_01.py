@@ -25,5 +25,5 @@ snapshots['TestCase01DeleteChecklistItemsAPITestCase.test_invalid_checklist_item
 snapshots['TestCase01DeleteChecklistItemsAPITestCase.test_invalid_checklist_item_ids_response body'] = {
     'http_status_code': 404,
     'res_status': 'CHECKLIST_ITEM_IDS_NOT_FOUND',
-    'response': 'Given Checklist item ids not found'
+    'response': 'Given checklist item ids not found'
 }
