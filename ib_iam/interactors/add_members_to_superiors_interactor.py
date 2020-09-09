@@ -2,31 +2,36 @@ from typing import List
 
 from ib_iam.exceptions.custom_exceptions import UsersNotBelongToGivenLevelHierarchy
 from ib_iam.interactors.dtos.dtos import ImmediateSuperiorUserIdWithUserIdsDTO
+from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
     AddMembersToSuperiorsPresenterInterface
 from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface import \
     TeamMemberLevelStorageInterface
+from ib_iam.interactors.storage_interfaces.user_storage_interface import \
+    UserStorageInterface
 
 
-class AddMembersToSuperiorsInteractor:
+class AddMembersToSuperiorsInteractor(ValidationMixin):
 
     def __init__(
-            self,
-            team_member_level_storage: TeamMemberLevelStorageInterface):
+            self, user_storage: UserStorageInterface,
+            team_member_level_storage: TeamMemberLevelStorageInterface
+    ):
         self.team_member_level_storage = team_member_level_storage
+        self.user_storage = user_storage
 
     def add_members_to_superiors_wrapper(
             self, team_id: str, member_level_hierarchy: int,
             presenter: AddMembersToSuperiorsPresenterInterface,
             immediate_superior_user_id_with_member_ids_dtos: List[
-                ImmediateSuperiorUserIdWithUserIdsDTO]
+                ImmediateSuperiorUserIdWithUserIdsDTO], user_id: str
     ):
         from ib_iam.exceptions.custom_exceptions import \
             InvalidTeamId, InvalidLevelHierarchyOfTeam, MemberIdsNotFoundInTeam
         try:
             response = self._add_members_to_superiors_response(
                 team_id=team_id, member_level_hierarchy=member_level_hierarchy,
-                presenter=presenter,
+                presenter=presenter, user_id=user_id,
                 immediate_superior_user_id_with_member_ids_dtos=immediate_superior_user_id_with_member_ids_dtos
             )
         except InvalidTeamId:
@@ -44,7 +49,7 @@ class AddMembersToSuperiorsInteractor:
             self, team_id: str, member_level_hierarchy: int,
             presenter: AddMembersToSuperiorsPresenterInterface,
             immediate_superior_user_id_with_member_ids_dtos: List[
-                ImmediateSuperiorUserIdWithUserIdsDTO]
+                ImmediateSuperiorUserIdWithUserIdsDTO], user_id: str
     ):
         self.add_members_to_superiors(
             team_id=team_id, member_level_hierarchy=member_level_hierarchy,
@@ -55,10 +60,11 @@ class AddMembersToSuperiorsInteractor:
         return response
 
     def add_members_to_superiors(
-            self, team_id: str, member_level_hierarchy: int,
+            self, team_id: str, member_level_hierarchy: int, user_id: str,
             immediate_superior_user_id_with_member_ids_dtos: List[
                 ImmediateSuperiorUserIdWithUserIdsDTO]
     ):
+        self._validate_is_user_admin(user_id=user_id)
         self.team_member_level_storage.validate_team_id(team_id=team_id)
         self.team_member_level_storage.validate_level_hierarchy_of_team(
             team_id=team_id, level_hierarchy=member_level_hierarchy

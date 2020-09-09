@@ -1,11 +1,15 @@
 from typing import List
 
-from ib_iam.exceptions.custom_exceptions import MemberIdsNotFoundInTeam
+from ib_iam.exceptions.custom_exceptions import MemberIdsNotFoundInTeam, \
+    UserIsNotAdmin
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelIdWithMemberIdsDTO
+from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
     AddMembersToTeamMemberLevelsPresenterInterface
 from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface import \
     TeamMemberLevelStorageInterface
+from ib_iam.interactors.storage_interfaces.user_storage_interface import \
+    UserStorageInterface
 
 
 class TeamMemberLevelIdsNotFound(Exception):
@@ -13,14 +17,18 @@ class TeamMemberLevelIdsNotFound(Exception):
         self.team_member_level_ids = team_member_level_ids
 
 
-class AddMembersToTeamMemberLevelsInteractor:
+class AddMembersToTeamMemberLevelsInteractor(ValidationMixin):
 
-    def __init__(self,
-                 team_member_level_storage: TeamMemberLevelStorageInterface):
+    def __init__(
+            self, user_storage: UserStorageInterface,
+            team_member_level_storage: TeamMemberLevelStorageInterface
+    ):
         self.team_member_level_storage = team_member_level_storage
+        self.user_storage = user_storage
 
     def add_members_to_team_member_levels_wrapper(
-            self, presenter: AddMembersToTeamMemberLevelsPresenterInterface, team_id: str,
+            self, presenter: AddMembersToTeamMemberLevelsPresenterInterface,
+            team_id: str, user_id: str,
             team_member_level_id_with_member_ids_dtos: List[
                 TeamMemberLevelIdWithMemberIdsDTO]
     ):
@@ -28,8 +36,10 @@ class AddMembersToTeamMemberLevelsInteractor:
         try:
             response = self._add_members_to_team_member_levels_response(
                 team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos,
-                presenter=presenter, team_id=team_id
+                presenter=presenter, team_id=team_id, user_id=user_id
             )
+        except UserIsNotAdmin:
+            response = presenter.response_for_user_is_not_admin()
         except InvalidTeamId:
             response = presenter.response_for_invalid_team_id()
         except TeamMemberLevelIdsNotFound as err:
@@ -43,11 +53,11 @@ class AddMembersToTeamMemberLevelsInteractor:
             self, presenter: AddMembersToTeamMemberLevelsPresenterInterface,
             team_member_level_id_with_member_ids_dtos: List[
                 TeamMemberLevelIdWithMemberIdsDTO],
-            team_id: str
+            team_id: str, user_id: str
     ):
         self.add_members_to_team_member_levels(
             team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos,
-            team_id=team_id
+            team_id=team_id, user_id=user_id
         )
         response = \
             presenter.prepare_success_response_for_add_members_to_team_member_levels()
@@ -56,8 +66,9 @@ class AddMembersToTeamMemberLevelsInteractor:
     def add_members_to_team_member_levels(
             self, team_member_level_id_with_member_ids_dtos: List[
                 TeamMemberLevelIdWithMemberIdsDTO],
-            team_id: str
+            team_id: str, user_id: str
     ):
+        self._validate_is_user_admin(user_id=user_id)
         self.team_member_level_storage.validate_team_id(team_id=team_id)
 
         self._validate_team_member_level_ids(
