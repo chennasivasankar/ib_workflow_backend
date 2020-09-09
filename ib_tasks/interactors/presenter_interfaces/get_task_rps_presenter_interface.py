@@ -22,3 +22,7 @@ class GetTaskRpsPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def response_for_get_rps_details(self, rps_dtos: List[UserDetailsDTO]):
         pass
+
+    @abc.abstractmethod
+    def response_for_due_date_does_not_exist_to_task(self):
+        pass

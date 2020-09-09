@@ -25,16 +25,16 @@ def api_wrapper(*args, **kwargs):
     team_member_level_storage = TeamMemberLevelStorageImplementation()
 
     from ib_iam.presenters.add_members_to_team_member_levels_presenter_implementation import \
-        AddMembersToLevelPresenterImplementation
-    presenter = AddMembersToLevelPresenterImplementation()
+        AddMembersToTeamMemberLevelsPresenterImplementation
+    presenter = AddMembersToTeamMemberLevelsPresenterImplementation()
 
     from ib_iam.interactors.add_members_to_team_member_levels_interactor import \
-        AddMembersToLevelsInteractor
-    interactor = AddMembersToLevelsInteractor(
+        AddMembersToTeamMemberLevelsInteractor
+    interactor = AddMembersToTeamMemberLevelsInteractor(
         team_member_level_storage=team_member_level_storage
     )
 
-    response = interactor.add_members_to_levels_wrapper(
+    response = interactor.add_members_to_team_member_levels_wrapper(
         team_id=team_id, presenter=presenter,
         team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos
     )

@@ -20,6 +20,9 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
+    import \
+    TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, FieldValuesDTO
 
 
@@ -29,18 +32,20 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
             self, task_storage: TaskStorageInterface,
             gof_storage: GoFStorageInterface,
             create_task_storage: CreateOrUpdateTaskStorageInterface,
-            storage: StorageInterface, field_storage: FieldsStorageInterface
+            storage: StorageInterface, field_storage: FieldsStorageInterface,
+            task_template_storage: TaskTemplateStorageInterface
     ):
         self.gof_storage = gof_storage
         self.field_storage = field_storage
         self.task_storage = task_storage
         self.create_task_storage = create_task_storage
         self.storage = storage
+        self.task_template_storage = task_template_storage
 
     def perform_base_validations_for_template_gofs_and_fields(
-            self, gof_fields_dtos: List[GoFFieldsDTO], created_by_id: str,
-            task_template_id: str, action_type: Optional[ActionTypes]
-    ):
+            self, gof_fields_dtos: List[GoFFieldsDTO], user_id: str,
+            task_template_id: str, project_id: str,
+            action_type: Optional[ActionTypes]):
         self._validate_same_gof_order(gof_fields_dtos)
         gof_ids = [
             gof_fields_dto.gof_id
@@ -58,8 +63,7 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
         self._validate_for_given_fields_are_related_to_given_gofs(
             gof_fields_dtos, gof_ids)
         self._validate_user_permission_on_given_fields_and_gofs(
-            gof_ids, field_ids, created_by_id
-        )
+            gof_ids, field_ids, user_id)
         from ib_tasks.interactors.create_or_update_task. \
             validate_field_responses import ValidateFieldResponsesInteractor
         field_validation_interactor = ValidateFieldResponsesInteractor(
@@ -67,8 +71,7 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
         field_values_dtos = \
             self._get_field_values_dtos(gof_fields_dtos)
         field_validation_interactor.validate_field_responses(
-            field_values_dtos, action_type
-        )
+            field_values_dtos, action_type)
 
     def _validate_same_gof_order(
             self, gof_fields_dtos: List[GoFFieldsDTO]
@@ -103,25 +106,11 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
             self, gof_ids: List[str], field_ids: List[str], user_id: str
     ) -> Union[None, UserNeedsGoFWritablePermission,
                UserNeedsFieldWritablePermission]:
-        gof_write_permission_roles_dtos = \
-            self.storage.get_write_permission_roles_for_given_gof_ids(gof_ids)
         from ib_tasks.adapters.roles_service_adapter import \
             get_roles_service_adapter
         roles_service_adapter = get_roles_service_adapter()
         user_roles = roles_service_adapter.roles_service.get_user_role_ids(
             user_id)
-        for gof_roles_dto in gof_write_permission_roles_dtos:
-            required_roles = gof_roles_dto.write_permission_roles
-            from ib_tasks.constants.constants import ALL_ROLES_ID
-            required_roles_has_all_roles = ALL_ROLES_ID in required_roles
-            if required_roles_has_all_roles:
-                continue
-            user_permitted = self.any_in(user_roles, required_roles)
-            required_roles_are_empty = not required_roles
-            if not user_permitted or required_roles_are_empty:
-                raise UserNeedsGoFWritablePermission(user_id,
-                                                     gof_roles_dto.gof_id,
-                                                     required_roles)
         field_write_permission_roles_dtos = \
             self.storage.get_write_permission_roles_for_given_field_ids(
                 field_ids)
@@ -222,15 +211,3 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
         if invalid_field_ids:
             raise InvalidFieldIds(invalid_field_ids)
         return
-
-    @staticmethod
-    def _get_duplicates_in_given_list(values: List) -> List:
-        duplicate_values = sorted(list(
-            set(
-                [
-                    value
-                    for value in values if values.count(value) > 1
-                ]
-            )
-        ))
-        return duplicate_values

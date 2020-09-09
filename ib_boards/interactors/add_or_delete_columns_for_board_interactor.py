@@ -232,22 +232,23 @@ class AddOrDeleteColumnsForBoardInteractor:
 
     @staticmethod
     def _validate_user_roles(column_dtos: List[ColumnDTO]):
-        from ib_boards.adapters.service_adapter import get_service_adapter
-        service_adapter = get_service_adapter()
-        user_roles = []
-        for column_dto in column_dtos:
-            user_roles += column_dto.user_role_ids
-        user_roles = sorted(list(set(user_roles)))
-        valid_user_roles = service_adapter.user_service.get_valid_user_role_ids(
-            user_roles=user_roles
-        )
-        invalid_user_roles = [
-            user_role
-            for user_role in user_roles
-            if user_role not in valid_user_roles
-        ]
-        if invalid_user_roles:
-            raise InvalidUserRoles(user_role_ids=invalid_user_roles)
+        # from ib_boards.adapters.service_adapter import get_service_adapter
+        # service_adapter = get_service_adapter()
+        # user_roles = []
+        # for column_dto in column_dtos:
+        #     user_roles += column_dto.user_role_ids
+        # user_roles = sorted(list(set(user_roles)))
+        # valid_user_roles = service_adapter.user_service.get_valid_user_role_ids(
+        #     user_roles=user_roles
+        # )
+        # invalid_user_roles = [
+        #     user_role
+        #     for user_role in user_roles
+        #     if user_role not in valid_user_roles
+        # ]
+        # if invalid_user_roles:
+        #     raise InvalidUserRoles(user_role_ids=invalid_user_roles)
+        return
 
     @staticmethod
     def _find_duplicates(values: List):

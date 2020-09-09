@@ -173,6 +173,27 @@ class InvalidRoleIdsForProject(Exception):
         self.role_ids = role_ids
 
 
+class ProjectNameAlreadyExists(Exception):
+    pass
+
+
+class ProjectDisplayIdAlreadyExists(Exception):
+    pass
+
+
+class DuplicateTeamIds(Exception):
+    pass
+
+
+class DuplicateRoleNamesExists(Exception):
+    pass
+
+
+class RoleNamesAlreadyExists(Exception):
+    def __init__(self, role_names: List[str]):
+        self.role_names = role_names
+
+
 class InvalidLevelHierarchyOfTeam(Exception):
     pass
 
@@ -182,7 +203,7 @@ class MemberIdsNotFoundInTeam(Exception):
         self.team_member_ids = team_member_ids
 
 
-class UsersNotBelongToLevel(Exception):
+class UsersNotBelongToGivenLevelHierarchy(Exception):
     def __init__(self, user_ids: List[str], level_hierarchy: int):
         self.user_ids = user_ids
         self.level_hierarchy = level_hierarchy

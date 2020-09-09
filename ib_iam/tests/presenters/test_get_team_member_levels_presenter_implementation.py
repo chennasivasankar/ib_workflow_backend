@@ -5,7 +5,7 @@ import pytest
 from ib_iam.constants.enums import StatusCode
 
 
-class TestGetLevelsPresenterImplementation:
+class TestGetTeamMemberLevelsPresenterImplementation:
 
     @pytest.fixture()
     def presenter(self):

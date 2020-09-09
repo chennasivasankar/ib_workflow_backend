@@ -1,6 +1,5 @@
 """
-# TODO: Update snapshot asserts to get know what are the details getting
-save in db
+# Given invalid stage ids raise exception
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils

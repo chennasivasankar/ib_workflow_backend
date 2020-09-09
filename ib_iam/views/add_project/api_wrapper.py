@@ -8,6 +8,8 @@ from .validator_class import ValidatorClass
 def api_wrapper(*args, **kwargs):
     project_with_team_ids_and_roles_dto = \
         convert_to_project_with_team_ids_and_roles_dto(kwargs)
+    user = kwargs["user"]
+    user_id = str(user.user_id)
 
     from ib_iam.storages.project_storage_implementation import \
         ProjectStorageImplementation
@@ -27,6 +29,7 @@ def api_wrapper(*args, **kwargs):
                                    user_storage=user_storage)
 
     response_data = interactor.add_project_wrapper(
+        user_id=user_id,
         presenter=presenter,
         project_with_team_ids_and_roles_dto=project_with_team_ids_and_roles_dto
     )

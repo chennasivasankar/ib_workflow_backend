@@ -30,3 +30,11 @@ snapshots['TestCase02AssignUserRolesForGivenProjectBulkAPITestCase.test_with_inv
     'res_status': 'INVALID_ROLE_IDS_FOR_PROJECT',
     'response': "Please send valid role ids for project, invalid role ids are ['ROLE_10']"
 }
+
+snapshots['TestCase02AssignUserRolesForGivenProjectBulkAPITestCase.test_with_user_is_not_admin_return_response status_code'] = '400'
+
+snapshots['TestCase02AssignUserRolesForGivenProjectBulkAPITestCase.test_with_user_is_not_admin_return_response body'] = {
+    'http_status_code': 400,
+    'res_status': 'USER_DOES_NOT_ACCESS',
+    'response': 'User does not have provision to access'
+}

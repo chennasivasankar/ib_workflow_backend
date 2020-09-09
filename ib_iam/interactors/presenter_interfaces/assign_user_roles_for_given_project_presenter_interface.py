@@ -18,3 +18,7 @@ class AssignUserRolesForGivenProjectBulkPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def response_for_invalid_project_id(self):
         pass
+
+    @abc.abstractmethod
+    def response_for_user_is_not_admin(self):
+        pass

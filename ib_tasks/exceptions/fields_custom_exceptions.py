@@ -1,5 +1,8 @@
 from typing import List
 
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldIdWithFieldDisplayNameDTO
+
 
 class InvalidValueForField(Exception):
     def __init__(self, message: str):
@@ -149,3 +152,10 @@ class OrderForFieldShouldNotBeNegativeException(Exception):
 class DuplicateOrdersForFieldsOfGoFException(Exception):
     def __init__(self, message: str):
         self.message = message
+
+
+class UserDidNotFillRequiredFields(Exception):
+
+    def __init__(
+            self, unfilled_field_dtos: List[FieldIdWithFieldDisplayNameDTO]):
+        self.unfilled_field_dtos = unfilled_field_dtos

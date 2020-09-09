@@ -43,10 +43,10 @@ class GetTeamMemberLevelsPresenterInterface(abc.ABC):
         pass
 
 
-class AddMembersToLevelPresenterInterface(abc.ABC):
+class AddMembersToTeamMemberLevelsPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def prepare_success_response_for_add_members_to_levels(self):
+    def prepare_success_response_for_add_members_to_team_member_levels(self):
         pass
 
     @abc.abstractmethod

@@ -1,6 +1,5 @@
 """
-# TODO: Update snapshot asserts to get know what are the details getting
-save in db
+# Given stage ids with invalid permission roles raise error
 """
 from unittest.mock import patch
 

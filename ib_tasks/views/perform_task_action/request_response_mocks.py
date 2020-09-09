@@ -126,3 +126,11 @@ RESPONSE_404_JSON = """
 }
 """
 
+RESPONSE_400_JSON = """
+{
+    "response": "string",
+    "http_status_code": 1,
+    "res_status": "USER_DID_NOT_FILL_REQUIRED_GOFS"
+}
+"""
+

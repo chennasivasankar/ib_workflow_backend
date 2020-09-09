@@ -28,11 +28,11 @@ class TestCase02GetTeamMembersOfLevelHierarchyAPITestCase(TestUtils):
         query_params = {}
 
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
 
     @pytest.mark.django_db
     def test_invalid_level_hierarchy_of_team_return_response(
@@ -48,11 +48,11 @@ class TestCase02GetTeamMembersOfLevelHierarchyAPITestCase(TestUtils):
         query_params = {}
 
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
 
     @pytest.fixture()
     def prepare_create_team_setup(self):

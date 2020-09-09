@@ -1,6 +1,5 @@
 """
-# TODO: Update snapshot asserts to get know what are the details getting
-save in db
+# Given Valid details
 """
 
 import factory

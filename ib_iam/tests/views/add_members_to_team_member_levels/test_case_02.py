@@ -44,11 +44,11 @@ class TestCase02AddMembersToLevelsAPITestCase(TestUtils):
         path_params = {"team_id": team_id}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
 
     @pytest.mark.django_db
     def test_team_member_level_ids_not_found_return_response(
@@ -83,11 +83,11 @@ class TestCase02AddMembersToLevelsAPITestCase(TestUtils):
         path_params = {"team_id": team_id}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
 
     @pytest.mark.django_db
     def test_team_member_ids_not_found_return_response(
@@ -121,11 +121,11 @@ class TestCase02AddMembersToLevelsAPITestCase(TestUtils):
         path_params = {"team_id": team_id}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
 
     @pytest.fixture()
     def create_team(self):
@@ -168,19 +168,16 @@ class TestCase02AddMembersToLevelsAPITestCase(TestUtils):
             {
                 "id": "00be920b-7b4c-49e7-8adb-41a0c18da848",
                 "team_id": team_id,
-                "level_name": "Developer",
                 "level_hierarchy": 0
             },
             {
                 "id": "01be920b-7b4c-49e7-8adb-41a0c18da848",
                 "team_id": team_id,
-                "level_name": "Software Developer Lead",
                 "level_hierarchy": 1
             },
             {
                 "id": "02be920b-7b4c-49e7-8adb-41a0c18da848",
                 "team_id": team_id,
-                "level_name": "Engineer Manager",
                 "level_hierarchy": 2
             }
         ]
@@ -189,7 +186,6 @@ class TestCase02AddMembersToLevelsAPITestCase(TestUtils):
             TeamMemberLevelFactory(
                 id=team_member_level_dict["id"],
                 team_id=team_member_level_dict["team_id"],
-                level_name=team_member_level_dict["level_name"],
                 level_hierarchy=team_member_level_dict["level_hierarchy"]
             )
             for team_member_level_dict in team_member_level_list

@@ -21,6 +21,8 @@ from ...storages.storage_implementation import StorageImplementation, \
     StagesStorageImplementation
 from ...storages.task_stage_storage_implementation import \
     TaskStageStorageImplementation
+from ...storages.task_template_storage_implementation import \
+    TaskTemplateStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -61,7 +63,7 @@ def api_wrapper(*args, **kwargs):
         description=description, start_datetime=start_datetime,
         due_datetime=due_datetime, priority=priority,
         stage_assignee=stage_assignee,
-        gof_fields_dtos=task_gofs_dtos
+        gof_fields_dtos=task_gofs_dtos, action_type=None
     )
 
     from ib_tasks.storages.tasks_storage_implementation \
@@ -78,6 +80,7 @@ def api_wrapper(*args, **kwargs):
     elastic_storage = ElasticSearchStorageImplementation()
     action_storage = ActionsStorageImplementation()
     task_stage_storage = TaskStageStorageImplementation()
+    task_template_storage = TaskTemplateStorageImplementation()
 
     presenter = UpdateTaskPresenterImplementation()
     interactor = UpdateTaskInteractor(
@@ -87,9 +90,9 @@ def api_wrapper(*args, **kwargs):
         stage_storage=stage_storage,
         elastic_storage=elastic_storage,
         action_storage=action_storage,
-        task_stage_storage=task_stage_storage
+        task_stage_storage=task_stage_storage,
+        task_template_storage=task_template_storage
     )
-
     response = interactor.update_task_wrapper(
         task_dto=task_dto, presenter=presenter)
     return response

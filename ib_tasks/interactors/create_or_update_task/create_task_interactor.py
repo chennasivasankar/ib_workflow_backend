@@ -1,9 +1,10 @@
-from typing import List, Optional, Union
+from typing import List, Optional
 
 from ib_tasks.constants.enum import ActionTypes, ViewType, Priority
 from ib_tasks.exceptions.action_custom_exceptions import \
     InvalidActionException, InvalidKeyError, InvalidCustomLogicException, \
     InvalidPresentStageAction
+from ib_tasks.exceptions.custom_exceptions import InvalidProjectId
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     StartDateIsAheadOfDueDate, \
     DueDateTimeHasExpired, DueDateTimeWithoutStartDateTimeIsNotValid, \
@@ -18,9 +19,9 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidUrlForImage, InvalidImageFormat, InvalidUrlForFile, \
     InvalidFileFormat
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
-    DuplicateFieldIdsToGoF
+    DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
-    DuplicateSameGoFOrderForAGoF
+    DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserActionPermissionDenied
@@ -29,7 +30,7 @@ from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId, \
-    InvalidTaskTemplateOfProject, PriorityIsRequired
+    InvalidTaskTemplateOfProject, PriorityIsRequired, InvalidTaskJson
 from ib_tasks.interactors \
     .call_action_logic_function_and_update_task_status_variables_interactor \
     import \
@@ -69,7 +70,8 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
-from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO
+from ib_tasks.interactors.task_dtos import CreateTaskDTO, CreateTaskLogDTO, \
+    GoFFieldsDTO
 from ib_tasks.interactors.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
 
@@ -100,11 +102,13 @@ class CreateTaskInteractor:
 
     def create_task_wrapper(
             self, presenter: CreateTaskPresenterInterface,
-            task_dto: CreateTaskDTO
+            task_dto: CreateTaskDTO, task_request_json: str
     ):
         try:
             return self._prepare_create_task_response(
-                task_dto, presenter)
+                task_dto, presenter, task_request_json)
+        except InvalidProjectId as err:
+            return presenter.raise_invalid_project_id(err)
         except InvalidTaskTemplateDBId as err:
             return presenter.raise_invalid_task_template_id(err)
         except InvalidTaskTemplateOfProject as err:
@@ -139,6 +143,10 @@ class CreateTaskInteractor:
             return presenter.raise_user_needs_gof_writable_permission(err)
         except UserNeedsFieldWritablePermission as err:
             return presenter.raise_user_needs_field_writable_permission(err)
+        except UserDidNotFillRequiredGoFs as err:
+            return presenter.raise_user_did_not_fill_required_gofs(err)
+        except UserDidNotFillRequiredFields as err:
+            return presenter.raise_user_did_not_fill_required_fields(err)
         except EmptyValueForRequiredField as err:
             return presenter. \
                 raise_exception_for_empty_value_in_required_field(err)
@@ -218,17 +226,28 @@ class CreateTaskInteractor:
             return presenter.raise_stage_ids_list_empty_exception(err)
         except InvalidStageIdsListException as err:
             return presenter.raise_invalid_stage_ids_list_exception(err)
+        except InvalidTaskJson as err:
+            return presenter.raise_invalid_task_json(err)
 
     def _prepare_create_task_response(
             self, task_dto: CreateTaskDTO,
-            presenter: CreateTaskPresenterInterface
+            presenter: CreateTaskPresenterInterface,
+            task_request_json: str
     ):
-        task_current_stage_details_dto, all_tasks_overview_dto = \
-            self.create_task(task_dto)
+        task_current_stage_details_dto, all_tasks_overview_dto, \
+        created_task_id = self.create_task(task_dto)
+        from ib_tasks.interactors.task_log_interactor import TaskLogInteractor
+        task_log_interactor = TaskLogInteractor(
+            storage=self.storage, task_storage=self.task_storage)
+        create_task_log_dto = CreateTaskLogDTO(
+            task_json=task_request_json, task_id=created_task_id,
+            user_id=task_dto.created_by_id, action_id=task_dto.action_id)
+        task_log_interactor.create_task_log(create_task_log_dto)
         return presenter.get_create_task_response(
             task_current_stage_details_dto, all_tasks_overview_dto)
 
     def create_task(self, task_dto: CreateTaskDTO):
+        self._validate_project_id(task_dto.project_id)
         self._validate_task_template_id(task_dto.task_template_id)
         self._validate_task_template_project_id(
             task_dto.project_id, task_dto.task_template_id)
@@ -243,11 +262,21 @@ class CreateTaskInteractor:
             TemplateGoFsFieldsBaseValidationsInteractor(
                 self.task_storage, self.gof_storage,
                 self.create_task_storage, self.storage,
-                self.field_storage)
+                self.field_storage, self.task_template_storage)
         base_validations_interactor. \
             perform_base_validations_for_template_gofs_and_fields(
-            task_dto.gof_fields_dtos, task_dto.created_by_id,
-            task_dto.task_template_id, action_type)
+            gof_fields_dtos=task_dto.gof_fields_dtos,
+            user_id=task_dto.created_by_id,
+            task_template_id=task_dto.task_template_id,
+            project_id=task_dto.project_id, action_type=action_type)
+        action_type_is_not_no_validations = \
+            action_type != ActionTypes.NO_VALIDATIONS.value
+        if action_type_is_not_no_validations:
+            self._validate_all_user_template_permitted_fields_are_filled_or_not(
+                user_id=task_dto.created_by_id, project_id=task_dto.project_id,
+                task_template_id=task_dto.task_template_id,
+                gof_fields_dtos=task_dto.gof_fields_dtos
+            )
         created_task_id = \
             self.create_task_storage.create_task_with_given_task_details(
                 task_dto)
@@ -272,13 +301,15 @@ class CreateTaskInteractor:
             user_id=task_dto.created_by_id, board_id=None,
             action_id=task_dto.action_id,
             storage=self.storage,
-            gof_storage=self.create_task_storage,
+            gof_storage=self.gof_storage,
             field_storage=self.field_storage,
             stage_storage=self.stage_storage,
             task_storage=self.task_storage,
             action_storage=self.action_storage,
             task_stage_storage=self.task_stage_storage,
-            elasticsearch_storage=self.elastic_storage
+            elasticsearch_storage=self.elastic_storage,
+            create_task_storage=self.create_task_storage,
+            task_template_storage=self.task_template_storage
         )
         act_on_task_interactor.user_action_on_task(task_id=created_task_id)
         from ib_tasks.interactors.get_task_current_stages_interactor import \
@@ -302,7 +333,9 @@ class CreateTaskInteractor:
                 user_id=task_dto.created_by_id, task_ids=[created_task_id],
                 view_type=ViewType.KANBAN.value,
                 project_id=task_dto.project_id)
-        return task_current_stage_details_dto, all_tasks_overview_details_dto
+        return (
+            task_current_stage_details_dto, all_tasks_overview_details_dto,
+            created_task_id)
 
     def _validate_task_template_id(
             self, task_template_id: str
@@ -410,4 +443,83 @@ class CreateTaskInteractor:
         priority_is_not_given = not priority
         if priority_is_not_given and not action_type_is_no_validations:
             raise PriorityIsRequired()
+        return
+
+    @staticmethod
+    def _validate_project_id(project_id: str) -> Optional[InvalidProjectId]:
+        from ib_tasks.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        valid_project_ids = \
+            service_adapter.project_service.get_valid_project_ids([project_id])
+        project_id_is_not_valid = project_id not in valid_project_ids
+        if project_id_is_not_valid:
+            raise InvalidProjectId(project_id)
+        return
+
+    def _validate_all_user_template_permitted_fields_are_filled_or_not(
+            self, user_id: str, project_id: str, task_template_id: str,
+            gof_fields_dtos: List[GoFFieldsDTO]
+    ):
+        from ib_tasks.adapters.roles_service_adapter import \
+            get_roles_service_adapter
+        roles_service_adapter = get_roles_service_adapter()
+        user_roles = roles_service_adapter.roles_service \
+            .get_user_role_ids_based_on_project(
+            user_id=user_id, project_id=project_id)
+        template_gof_ids = self.task_template_storage.get_gof_ids_of_template(
+            template_id=task_template_id)
+        gof_id_with_display_name_dtos = \
+            self.gof_storage.get_user_write_permitted_gof_ids_in_given_gof_ids(
+                user_roles, template_gof_ids)
+        user_permitted_gof_ids = [
+            dto.gof_id for dto in gof_id_with_display_name_dtos]
+        field_id_with_display_name_dtos = \
+            self.field_storage \
+                .get_user_write_permitted_field_ids_for_given_gof_ids(
+                user_roles, user_permitted_gof_ids)
+        filled_gof_ids = [
+            gof_field_dto.gof_id for gof_field_dto in gof_fields_dtos]
+        filled_field_ids = []
+        for gof_fields_dto in gof_fields_dtos:
+            filled_field_ids += [
+                field_value_dto.field_id
+                for field_value_dto in gof_fields_dto.field_values_dtos
+            ]
+        # self._validate_all_user_permitted_gof_ids_are_filled_or_not(
+        #     gof_id_with_display_name_dtos, filled_gof_ids)
+        self._validate_all_user_permitted_field_ids_are_filled_or_not(
+            field_id_with_display_name_dtos, filled_field_ids)
+
+    @staticmethod
+    def _validate_all_user_permitted_gof_ids_are_filled_or_not(
+            permitted_gofs, filled_gof_ids
+    ) -> Optional[UserDidNotFillRequiredGoFs]:
+        permitted_gof_ids = [
+            permitted_gof.gof_id for permitted_gof in permitted_gofs]
+        unfilled_gof_ids = list(sorted(
+            set(permitted_gof_ids) - set(filled_gof_ids)))
+        if unfilled_gof_ids:
+            gof_display_names = [
+                permitted_gof.gof_display_name
+                for permitted_gof in permitted_gofs
+                if permitted_gof.gof_id in unfilled_gof_ids
+            ]
+            raise UserDidNotFillRequiredGoFs(gof_display_names)
+        return
+
+    @staticmethod
+    def _validate_all_user_permitted_field_ids_are_filled_or_not(
+            permitted_fields, filled_field_ids
+    ) -> Optional[UserDidNotFillRequiredFields]:
+        permitted_field_ids = [
+            permitted_field.field_id for permitted_field in permitted_fields]
+        unfilled_field_ids = list(sorted(
+            set(permitted_field_ids) - set(filled_field_ids)))
+        if unfilled_field_ids:
+            unfilled_field_dtos = [
+                permitted_field
+                for permitted_field in permitted_fields
+                if permitted_field.field_id in unfilled_field_ids
+            ]
+            raise UserDidNotFillRequiredFields(unfilled_field_dtos)
         return
