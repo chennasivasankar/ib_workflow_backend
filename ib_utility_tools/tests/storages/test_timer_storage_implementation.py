@@ -1,21 +1,20 @@
 import datetime
+
 import pytest
+
 from ib_utility_tools.models import Timer
 from ib_utility_tools.tests.factories.models import TimerFactory
-from ib_utility_tools.tests.factories.storage_dtos import (
-    TimerEntityDTOFactory, TimerDetailsDTOFactory,
+from ib_utility_tools.tests.factories.storage_dtos import \
+    TimerEntityDTOFactory, TimerDetailsDTOFactory, \
     CompleteTimerDetailsDTOFactory
-)
 
 
 class TestTimerStorageImplementation:
     @pytest.fixture()
     def storage(self):
-        from ib_utility_tools.storages.timer_storage_implementation import (
+        from ib_utility_tools.storages.timer_storage_implementation import \
             TimerStorageImplementation
-        )
-        storage = TimerStorageImplementation()
-        return storage
+        return TimerStorageImplementation()
 
     @pytest.fixture
     def timers(self):
@@ -130,7 +129,6 @@ class TestTimerStorageImplementation:
             entity_id=timer_entity_dto.entity_id,
             entity_type=timer_entity_dto.entity_type
         )
-
         assert timer_object.duration_in_seconds == expected_duration_in_seconds
         assert timer_object.is_running == expected_is_running
         assert timer_object.start_datetime == expected_start_datetime
@@ -163,7 +161,6 @@ class TestTimerStorageImplementation:
             entity_id=timer_entity_dto.entity_id,
             entity_type=timer_entity_dto.entity_type
         )
-
         assert timer_object.start_datetime == expected_start_datetime
         assert timer_object.is_running == expected_is_running
         assert timer_object.duration_in_seconds == expected_duration_in_seconds
