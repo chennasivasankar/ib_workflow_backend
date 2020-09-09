@@ -21,8 +21,8 @@ def api_wrapper(*args, **kwargs):
     request_dict = kwargs['request_data']
     task_id = request_dict['task_id']
     action_id = int(request_dict['action_id'])
-    board_id = request_dict['board_id']
-    view_type = request_dict.get('view_type', None)
+    board_id = request_dict.get('board_id')
+    view_type = request_dict.get('view_type')
     from ib_tasks.storages.create_or_update_task_storage_implementation \
         import CreateOrUpdateTaskStorageImplementation
     from ib_tasks.storages.fields_storage_implementation \
