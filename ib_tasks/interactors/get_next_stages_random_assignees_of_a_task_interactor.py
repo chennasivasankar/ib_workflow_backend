@@ -18,6 +18,8 @@ from ib_tasks.interactors.stages_dtos import \
     StageWithUserDetailsAndTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
+from ib_tasks.interactors.storage_interfaces.create_or_update_task_storage_interface import \
+    CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
@@ -36,11 +38,13 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
                  stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,
                  action_storage: ActionStorageInterface,
-                 task_stage_storage: TaskStageStorageInterface):
+                 task_stage_storage: TaskStageStorageInterface,
+                 create_task_storage: CreateOrUpdateTaskStorageInterface):
         self.stage_storage = stage_storage
         self.task_storage = task_storage
         self.action_storage = action_storage
         self.storage = storage
+        self.create_task_storage = create_task_storage
         self.task_stage_storage = task_stage_storage
 
     def get_next_stages_random_assignees_of_a_task_wrapper(
@@ -117,8 +121,9 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
         call_action_logic_function_interactor = \
             CallActionLogicFunctionAndGetTaskStatusVariablesInteractor(
                 action_storage=self.action_storage,
-                task_storage=self.task_storage,
-                storage=self.storage)
+                task_storage=self.task_storage, storage=self.storage,
+                create_task_storage=self.create_task_storage
+            )
         updated_status_variable_dtos = call_action_logic_function_interactor. \
             get_status_variables_dtos_of_task_based_on_action(
             task_id, action_id)

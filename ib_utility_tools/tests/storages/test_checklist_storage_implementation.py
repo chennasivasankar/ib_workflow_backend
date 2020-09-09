@@ -1,16 +1,17 @@
 import datetime
+
 import pytest
+
 from ib_utility_tools.models import ChecklistItem, Checklist
 
 
 class TestChecklistStorageImplementation:
+
     @pytest.fixture()
     def storage(self):
-        from ib_utility_tools.storages.checklist_storage_implementation import (
-            ChecklistStorageImplementation
-        )
-        storage = ChecklistStorageImplementation()
-        return storage
+        from ib_utility_tools.storages.checklist_storage_implementation \
+            import ChecklistStorageImplementation
+        return ChecklistStorageImplementation()
 
     @pytest.fixture
     def create_checklist_items(self):
@@ -25,9 +26,8 @@ class TestChecklistStorageImplementation:
                 "created_at": datetime.datetime(2020, 5, 2, 0, 0)
             }
         ]
-        from ib_utility_tools.tests.factories.models import (
+        from ib_utility_tools.tests.factories.models import \
             ChecklistFactory, ChecklistItemFactory
-        )
         ChecklistFactory.reset_sequence(0)
         checklist_object = ChecklistFactory.create(checklist_id=checklist_id)
         ChecklistItemFactory.reset_sequence(0)
@@ -36,10 +36,14 @@ class TestChecklistStorageImplementation:
             ChecklistItemFactory.create(
                 checklist_item_id=checklist_item["item_id"],
                 created_at=checklist_item["created_at"],
-                checklist=checklist_object)
+                checklist=checklist_object
+            )
             checklist_item_ids.append(checklist_item["item_id"])
         checklist_item_ids.sort()
-        return checklist_id, checklist_item_ids
+        return {
+            "checklist_id": checklist_id,
+            "checklist_item_ids": checklist_item_ids
+        }
 
     @pytest.fixture
     def expected_checklist_item_dtos(self):
@@ -80,9 +84,8 @@ class TestChecklistStorageImplementation:
     ):
         # Arrange
         checklist_id = create_checklist
-        from ib_utility_tools.tests.factories.storage_dtos import (
+        from ib_utility_tools.tests.factories.storage_dtos import \
             ChecklistItemWithChecklistIdDTOFactory
-        )
         ChecklistItemWithChecklistIdDTOFactory.reset_sequence(0)
         checklist_item_with_checklist_id_dto = \
             ChecklistItemWithChecklistIdDTOFactory(checklist_id=checklist_id)
@@ -91,7 +94,8 @@ class TestChecklistStorageImplementation:
 
         # Act
         checklist_item_id = storage.create_checklist_item(
-            checklist_item_with_checklist_id_dto=checklist_item_with_checklist_id_dto
+            checklist_item_with_checklist_id_dto=
+            checklist_item_with_checklist_id_dto
         )
 
         # Assert
@@ -108,9 +112,8 @@ class TestChecklistStorageImplementation:
         # Arrange
         # todo:Can parametrize test for getting None as response too
         checklist_id = '2bdb417e-4632-419a-8ddd-085ea272c6eb'
-        from ib_utility_tools.tests.factories.storage_dtos import (
+        from ib_utility_tools.tests.factories.storage_dtos import \
             EntityDTOFactory
-        )
         entity_dto = EntityDTOFactory()
         from ib_utility_tools.tests.factories.models import ChecklistFactory
         ChecklistFactory.reset_sequence(0)
@@ -132,9 +135,8 @@ class TestChecklistStorageImplementation:
             self, storage
     ):
         # Arrange
-        from ib_utility_tools.tests.factories.storage_dtos import (
+        from ib_utility_tools.tests.factories.storage_dtos import \
             EntityDTOFactory
-        )
         entity_dto = EntityDTOFactory()
 
         # Act
@@ -142,7 +144,6 @@ class TestChecklistStorageImplementation:
 
         # Assert
         checklist_object = Checklist.objects.get(checklist_id=checklist_id)
-
         assert checklist_object.entity_id == entity_dto.entity_id
         assert checklist_object.entity_type == entity_dto.entity_type
 
@@ -172,10 +173,11 @@ class TestChecklistStorageImplementation:
 
         # Assert
         checklist_object = ChecklistItem.objects.get(
-            checklist_item_id=checklist_item_id)
-
+            checklist_item_id=checklist_item_id
+        )
         assert checklist_object.text == checklist_item_with_id_dto.text
-        assert checklist_object.is_checked == checklist_item_with_id_dto.is_checked
+        assert checklist_object.is_checked == \
+               checklist_item_with_id_dto.is_checked
 
     @pytest.mark.django_db
     @pytest.mark.parametrize(
@@ -188,15 +190,15 @@ class TestChecklistStorageImplementation:
     ):
         # Arrange
         checklist_item_id = '2bdb417e-4632-419a-8ddd-085ea272c6eb'
-        from ib_utility_tools.tests.factories.models import (
+        from ib_utility_tools.tests.factories.models import \
             ChecklistItemFactory
-        )
         ChecklistItemFactory.reset_sequence(0)
         ChecklistItemFactory.create(checklist_item_id=checklist_item_id)
 
         # Act
         actual_value = storage.is_checklist_item_id_exists(
-            checklist_item_id=checklist_item_id_to_search)
+            checklist_item_id=checklist_item_id_to_search
+        )
 
         # Assert
         assert actual_value == expected_value
@@ -206,7 +208,7 @@ class TestChecklistStorageImplementation:
             self, storage, create_checklist_items, expected_checklist_item_dtos
     ):
         # Arrange
-        checklist_id, _ = create_checklist_items
+        checklist_id = create_checklist_items["checklist_id"]
 
         # Act
         checklist_item_dtos = storage.get_checklist_item_dtos(
@@ -221,7 +223,7 @@ class TestChecklistStorageImplementation:
             self, storage, create_checklist_items
     ):
         # Arrange
-        _, checklist_item_ids = create_checklist_items
+        checklist_item_ids = create_checklist_items["checklist_item_ids"]
         expected_response = False
 
         # Act
@@ -242,7 +244,7 @@ class TestChecklistStorageImplementation:
             self, storage, create_checklist_items
     ):
         # Arrange
-        _, checklist_item_ids = create_checklist_items
+        checklist_item_ids = create_checklist_items["checklist_item_ids"]
         expected_checklist_item_ids = checklist_item_ids.copy()
         checklist_item_ids.append('09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5d')
 

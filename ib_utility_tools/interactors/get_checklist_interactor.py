@@ -1,16 +1,15 @@
 from typing import List
-from ib_utility_tools.interactors.presenter_interfaces.checklist_presenter_interface import (
-    GetChecklistPresenterInterface
-)
-from ib_utility_tools.interactors.storage_interfaces.checklist_storage_interface import (
-    ChecklistStorageInterface
-)
-from ib_utility_tools.interactors.storage_interfaces.dtos import (
+
+from ib_utility_tools.interactors.presenter_interfaces \
+    .checklist_presenter_interface import GetChecklistPresenterInterface
+from ib_utility_tools.interactors.storage_interfaces \
+    .checklist_storage_interface import ChecklistStorageInterface
+from ib_utility_tools.interactors.storage_interfaces.dtos import \
     EntityDTO, ChecklistItemWithIdDTO
-)
 
 
 class GetChecklistInteractor:
+
     def __init__(self, checklist_storage: ChecklistStorageInterface):
         self.checklist_storage = checklist_storage
 

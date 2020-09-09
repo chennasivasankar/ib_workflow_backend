@@ -59,7 +59,10 @@ class GetTeamMembersOfLevelHierarchyInteractor:
         return member_dtos, user_profile_dtos
 
     def get_immediate_superior_user_id(self, team_id: str, user_id: str):
-        # TODO: validate team id and user id
+        self.team_member_level_storage.validate_team_id(team_id=team_id)
+        self.team_member_level_storage.validate_user_in_a_team(
+            team_id=team_id, user_id=user_id
+        )
         immediate_superior_user_id = \
             self.team_member_level_storage.get_immediate_superior_user_id(
                 team_id=team_id, user_id=user_id

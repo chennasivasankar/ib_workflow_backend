@@ -122,6 +122,10 @@ class CreateCommentPresenterInterface(abc.ABC):
     def response_for_invalid_user_ids(self, err):
         pass
 
+    @abc.abstractmethod
+    def response_for_comment_or_multimedia_should_be_provided(self):
+        pass
+
 
 class GetCommentsForDiscussionPresenterInterface(abc.ABC):
 
@@ -161,6 +165,10 @@ class CreateReplyPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def response_for_invalid_user_ids(self, err):
+        pass
+
+    @abc.abstractmethod
+    def response_for_comment_or_multimedia_should_be_provided(self):
         pass
 
 

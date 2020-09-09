@@ -1,5 +1,5 @@
 CHECKLIST_ITEM_ID_NOT_FOUND_FOR_UPDATE_CHECKLIST_ITEM = (
-    "Given Checklist item id is not found(invalid)",
+    "Given checklist item id is not found(invalid)",
     "CHECKLIST_ITEM_ID_NOT_FOUND"
 )
 
@@ -14,7 +14,7 @@ TIMER_IS_ALREADY_STOPPED = (
 )
 
 INVALID_CHECKLIST_ITEM_IDS = (
-    "Given Checklist item ids not found",
+    "Given checklist item ids not found",
     "CHECKLIST_ITEM_IDS_NOT_FOUND"
 )
 

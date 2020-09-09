@@ -48,6 +48,8 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         # TODO update fields
         status_dict = task_dict.get("status_variables", {})
         self._update_task_status_variables(status_dict, status_variables_dto)
+        task_dto.task_gof_dtos = task_gof_dtos
+        task_dto.task_gof_field_dtos = task_gof_fields_dto
         return task_dto
 
     def _get_updated_task_gof_and_filed_dtos(

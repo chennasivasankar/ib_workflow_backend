@@ -8,6 +8,7 @@ from ib_utility_tools.models import Checklist, ChecklistItem, Timer
 
 
 class ChecklistFactory(factory.django.DjangoModelFactory):
+
     class Meta:
         model = Checklist
 
@@ -17,6 +18,7 @@ class ChecklistFactory(factory.django.DjangoModelFactory):
 
 
 class ChecklistItemFactory(factory.django.DjangoModelFactory):
+
     class Meta:
         model = ChecklistItem
 
@@ -28,6 +30,7 @@ class ChecklistItemFactory(factory.django.DjangoModelFactory):
 
 
 class TimerFactory(factory.django.DjangoModelFactory):
+
     class Meta:
         model = Timer
 
