@@ -4,6 +4,9 @@ import mock
 import pytest
 from freezegun import freeze_time
 
+from ib_utility_tools.tests.factories.storage_dtos import \
+    TimerEntityDTOFactory, TimerDetailsDTOFactory
+
 
 class TestStopTimerInteractor:
 
@@ -11,39 +14,40 @@ class TestStopTimerInteractor:
     def storage_mock(self):
         from ib_utility_tools.interactors.storage_interfaces \
             .timer_storage_interface import TimerStorageInterface
-        storage = mock.create_autospec(TimerStorageInterface)
-        return storage
+        return mock.create_autospec(TimerStorageInterface)
 
     @pytest.fixture()
     def presenter_mock(self):
         from ib_utility_tools.interactors.presenter_interfaces \
             .timer_presenter_interface import TimerPresenterInterface
-        presenter = mock.create_autospec(TimerPresenterInterface)
-        return presenter
+        return mock.create_autospec(TimerPresenterInterface)
 
     @pytest.fixture()
     def interactor(self, storage_mock):
         from ib_utility_tools.interactors.stop_timer_interactor import \
             StopTimerInteractor
-        interactor = StopTimerInteractor(timer_storage=storage_mock)
-        return interactor
+        return StopTimerInteractor(timer_storage=storage_mock)
 
     def test_timer_already_stopped_raises_timer_is_already_stopped_exception(
-            self, interactor, storage_mock, presenter_mock):
-        from ib_utility_tools.tests.factories.storage_dtos import \
-            TimerEntityDTOFactory, TimerDetailsDTOFactory
+            self, interactor, storage_mock, presenter_mock
+    ):
+        # Arrange
         timer_entity_dto = TimerEntityDTOFactory()
         timer_details_dto = TimerDetailsDTOFactory(is_running=False)
         storage_mock.get_timer_details_dto.return_value = timer_details_dto
-        presenter_mock.response_for_timer_is_already_stopped_exception \
+        presenter_mock.get_response_for_timer_is_already_stopped_exception \
             .return_value = mock.Mock()
 
-        interactor.stop_timer_wrapper(timer_entity_dto=timer_entity_dto,
-                                      presenter=presenter_mock)
+        # Act
+        interactor.stop_timer_wrapper(
+            timer_entity_dto=timer_entity_dto, presenter=presenter_mock
+        )
 
+        # Assert
         storage_mock.get_timer_details_dto.assert_called_once_with(
-            timer_entity_dto=timer_entity_dto)
-        presenter_mock.response_for_timer_is_already_stopped_exception \
+            timer_entity_dto=timer_entity_dto
+        )
+        presenter_mock.get_response_for_timer_is_already_stopped_exception \
             .assert_called_once()
 
     @freeze_time("2020-08-07 18:00:00")

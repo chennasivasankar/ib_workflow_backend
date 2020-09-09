@@ -184,7 +184,7 @@ def prepare_fields_dto():
 def mock_user_action_on_task_method(mocker, mock_object):
     mock_method = mocker.patch(
             "ib_tasks.interactors.user_action_on_task_interactor"
-            ".UserActionOnTaskInteractor.user_action_on_task"
+            ".UserActionOnTaskInteractor.act_on_task"
     )
     mock_method.return_value = mock_object
     return mock_method

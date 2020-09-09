@@ -10,8 +10,9 @@ class ChecklistStorageInterface(abc.ABC):
     @abc.abstractmethod
     def create_checklist_item(
             self,
-            checklist_item_with_checklist_id_dto: ChecklistItemWithChecklistIdDTO
-    ):
+            checklist_item_with_checklist_id_dto:
+            ChecklistItemWithChecklistIdDTO
+    ) -> str:
         pass
 
     @abc.abstractmethod

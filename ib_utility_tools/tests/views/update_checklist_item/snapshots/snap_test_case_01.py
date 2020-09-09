@@ -19,5 +19,5 @@ snapshots['TestCase01UpdateChecklistItemAPITestCase.test_given_invalid_checklist
 snapshots['TestCase01UpdateChecklistItemAPITestCase.test_given_invalid_checklist_item_id_returns_invalid_checklist_item_response body'] = {
     'http_status_code': 400,
     'res_status': 'CHECKLIST_ITEM_ID_NOT_FOUND',
-    'response': 'Given Checklist item id is not found(invalid)'
+    'response': 'Given checklist item id is not found(invalid)'
 }
