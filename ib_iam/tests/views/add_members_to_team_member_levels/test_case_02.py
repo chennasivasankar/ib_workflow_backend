@@ -1,5 +1,5 @@
 """
-successfully created the team member levels
+All Exceptions
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -7,7 +7,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01AddMembersToLevelsAPITestCase(TestUtils):
+class TestCase02AddMembersToLevelsAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -15,9 +15,7 @@ class TestCase01AddMembersToLevelsAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.mark.django_db
-    def test_case(
-            self, create_team, create_users_team,
-            create_team_member_levels, snapshot):
+    def test_invalid_team_id_return_response(self, snapshot):
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         team_member_level_id_with_member_ids_list = [
             {
@@ -46,20 +44,88 @@ class TestCase01AddMembersToLevelsAPITestCase(TestUtils):
         path_params = {"team_id": team_id}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
 
-        from ib_iam.models import TeamUser
-        user_team_details = TeamUser.objects.filter(team_id=team_id).values(
-            "user_id", "team_member_level_id")
-        for user_team_details_dict in user_team_details:
-            user_team_details_dict["team_member_level_id"] = \
-                str(user_team_details_dict["team_member_level_id"])
+    @pytest.mark.django_db
+    def test_team_member_level_ids_not_found_return_response(
+            self, snapshot, create_team, create_users_team,
+            create_team_member_levels
+    ):
+        team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        team_member_level_id_with_member_ids_list = [
+            {
+                "team_member_level_id": "00be920b-7b4c-49e7-8adb-41a0c18da848",
+                "member_ids": [
+                    "31be920b-7b4c-49e7-8adb-41a0c18da848",
+                    "01be920b-7b4c-49e7-8adb-41a0c18da848",
+                ]
+            },
+            {
+                "team_member_level_id": "91be920b-7b4c-49e7-8adb-41a0c18da848",
+                "member_ids": [
+                    "77be920b-7b4c-49e7-8adb-41a0c18da848",
+                    "17be920b-7b4c-49e7-8adb-41a0c18da848",
+                    "27be920b-7b4c-49e7-8adb-41a0c18da848",
+                ]
+            },
+            {
+                "team_member_level_id": "92be920b-7b4c-49e7-8adb-41a0c18da848",
+                "member_ids": []
+            }
+        ]
+        body = {
+            'members': team_member_level_id_with_member_ids_list
+        }
+        path_params = {"team_id": team_id}
+        query_params = {}
+        headers = {}
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
 
-        snapshot.assert_match(list(user_team_details), "user_team_details")
+    @pytest.mark.django_db
+    def test_team_member_ids_not_found_return_response(
+            self, create_team, create_users_team,
+            create_team_member_levels, snapshot):
+        team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        team_member_level_id_with_member_ids_list = [
+            {
+                "team_member_level_id": "00be920b-7b4c-49e7-8adb-41a0c18da848",
+                "member_ids": [
+                    "31be920b-7b4c-49e7-8adb-41a0c18da848",
+                    "01be920b-7b4c-49e7-8adb-41a0c18da848",
+                ]
+            },
+            {
+                "team_member_level_id": "01be920b-7b4c-49e7-8adb-41a0c18da848",
+                "member_ids": [
+                    "77be920b-7b4c-49e7-8adb-41a0c18da848",
+                    "97be920b-7b4c-49e7-8adb-41a0c18da848",
+                    "97be920b-7b4c-49e7-8adb-41a0c18da848",
+                ]
+            },
+            {
+                "team_member_level_id": "02be920b-7b4c-49e7-8adb-41a0c18da848",
+                "member_ids": []
+            }
+        ]
+        body = {
+            'members': team_member_level_id_with_member_ids_list
+        }
+        path_params = {"team_id": team_id}
+        query_params = {}
+        headers = {}
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
 
     @pytest.fixture()
     def create_team(self):
@@ -102,19 +168,16 @@ class TestCase01AddMembersToLevelsAPITestCase(TestUtils):
             {
                 "id": "00be920b-7b4c-49e7-8adb-41a0c18da848",
                 "team_id": team_id,
-                "level_name": "Developer",
                 "level_hierarchy": 0
             },
             {
                 "id": "01be920b-7b4c-49e7-8adb-41a0c18da848",
                 "team_id": team_id,
-                "level_name": "Software Developer Lead",
                 "level_hierarchy": 1
             },
             {
                 "id": "02be920b-7b4c-49e7-8adb-41a0c18da848",
                 "team_id": team_id,
-                "level_name": "Engineer Manager",
                 "level_hierarchy": 2
             }
         ]
@@ -123,7 +186,6 @@ class TestCase01AddMembersToLevelsAPITestCase(TestUtils):
             TeamMemberLevelFactory(
                 id=team_member_level_dict["id"],
                 team_id=team_member_level_dict["team_id"],
-                level_name=team_member_level_dict["level_name"],
                 level_hierarchy=team_member_level_dict["level_hierarchy"]
             )
             for team_member_level_dict in team_member_level_list
