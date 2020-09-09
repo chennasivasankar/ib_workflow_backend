@@ -33,6 +33,8 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
 )
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
+    StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
@@ -50,6 +52,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             self, task_crud_storage: CreateOrUpdateTaskStorageInterface,
             fields_storage: FieldsStorageInterface,
             storage: StorageInterface,
+            stage_storage: StageStorageInterface,
             task_storage: TaskStorageInterface,
             action_storage: ActionStorageInterface,
             task_stage_storage: TaskStageStorageInterface,
@@ -59,6 +62,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         self.storage = storage
         self.task_stage_storage = task_stage_storage
         self.action_storage = action_storage
+        self.stage_storage = stage_storage
         self.task_storage = task_storage
         self.task_crud_storage = task_crud_storage
         self.fields_storage = fields_storage
@@ -381,6 +385,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         interactor = GetTaskStagesAndActions(
             storage=self.fields_storage,
             task_storage=self.storage,
+            stage_storage=self.stage_storage,
             action_storage=self.action_storage
         )
         stages_and_actions_details_dtos = \
