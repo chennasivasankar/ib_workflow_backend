@@ -1,8 +1,9 @@
 """
-# TODO: Update test case description
+Add team member levels
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -27,7 +28,7 @@ class TestCase01AddTeamMemberLevelsAPITestCase(TestUtils):
         return team_object
 
     @pytest.mark.django_db
-    def test_case(self, prepare_team_setup, snapshot):
+    def test_add_team_member_levels(self, prepare_team_setup, snapshot):
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         team_member_levels = [
             {
@@ -53,8 +54,8 @@ class TestCase01AddTeamMemberLevelsAPITestCase(TestUtils):
         path_params = {"team_id": team_id}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)

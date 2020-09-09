@@ -1,24 +1,24 @@
 import json
+
 import pytest
+
 from ib_iam.constants.enums import StatusCode
 
 
 class TestTimerPresenterImplementation:
+
     @pytest.fixture
     def presenter(self):
-        from ib_utility_tools.presenters.timer_presenter_implementation import (
-            TimerPresenterImplementation
-        )
-        presenter = TimerPresenterImplementation()
-        return presenter
+        from ib_utility_tools.presenters.timer_presenter_implementation \
+            import TimerPresenterImplementation
+        return TimerPresenterImplementation()
 
     def test_with_valid_details_then_returns_timer_details_response(
             self, presenter
     ):
         # Arrange
-        from ib_utility_tools.tests.factories.storage_dtos import (
+        from ib_utility_tools.tests.factories.storage_dtos import \
             TimerDetailsDTOFactory
-        )
         TimerDetailsDTOFactory.reset_sequence(0)
         timer_details_dto = TimerDetailsDTOFactory()
         expected_duration_in_seconds = timer_details_dto.duration_in_seconds
@@ -41,15 +41,15 @@ class TestTimerPresenterImplementation:
             self, presenter
     ):
         # Arrange
-        from ib_utility_tools.constants.exception_messages import (
+        from ib_utility_tools.constants.exception_messages import \
             TIMER_IS_ALREADY_RUNNING
-        )
         expected_response = TIMER_IS_ALREADY_RUNNING[0]
         expected_res_status = TIMER_IS_ALREADY_RUNNING[1]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
         # Act
-        result = presenter.response_for_timer_is_already_running_exception()
+        result = presenter \
+            .get_response_for_timer_is_already_running_exception()
 
         # Assert
         response_dict = json.loads(result.content)
@@ -65,15 +65,15 @@ class TestTimerPresenterImplementation:
             self, presenter
     ):
         # Arrange
-        from ib_utility_tools.constants.exception_messages import (
+        from ib_utility_tools.constants.exception_messages import \
             TIMER_IS_ALREADY_STOPPED
-        )
         expected_response = TIMER_IS_ALREADY_STOPPED[0]
         expected_res_status = TIMER_IS_ALREADY_STOPPED[1]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
         # Act
-        result = presenter.response_for_timer_is_already_stopped_exception()
+        result = presenter \
+            .get_response_for_timer_is_already_stopped_exception()
 
         # Assert
         response_dict = json.loads(result.content)

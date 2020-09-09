@@ -5,7 +5,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 from ib_tasks.interactors.storage_interfaces.status_dtos \
     import StatusVariableDTO
-from ib_tasks.interactors.task_dtos import StatusOperandStageDTO, StageDisplayLogicDTO
+from ib_tasks.interactors.task_dtos import StageDisplayLogicDTO
 
 
 class GetTaskStageLogicSatisfiedStages:

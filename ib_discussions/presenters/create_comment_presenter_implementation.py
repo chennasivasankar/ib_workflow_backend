@@ -21,6 +21,11 @@ INVALID_USER_IDS = (
     "INVALID_USER_IDS"
 )
 
+COMMENT_OR_MULTIMEDIA_SHOULD_BE_PROVIDED = (
+    "Please provide comment content or multimedia to create the comment",
+    "COMMENT_OR_MULTIMEDIA_SHOULD_BE_PROVIDED"
+)
+
 
 class CreateCommentPresenterImplementation(CreateCommentPresenterInterface,
                                            HTTPResponseMixin):
@@ -38,6 +43,15 @@ class CreateCommentPresenterImplementation(CreateCommentPresenterInterface,
             "response": INVALID_USER_IDS[0].format(user_ids=err.user_ids),
             "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": INVALID_USER_IDS[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict)
+
+    def response_for_comment_or_multimedia_should_be_provided(self):
+        response_dict = {
+            "response": COMMENT_OR_MULTIMEDIA_SHOULD_BE_PROVIDED[0],
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": COMMENT_OR_MULTIMEDIA_SHOULD_BE_PROVIDED[1]
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)

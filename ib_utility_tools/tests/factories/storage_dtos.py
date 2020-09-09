@@ -9,6 +9,7 @@ from ib_utility_tools.interactors.storage_interfaces.dtos import (
 
 
 class EntityDTOFactory(factory.Factory):
+
     class Meta:
         model = EntityDTO
 
@@ -17,6 +18,7 @@ class EntityDTOFactory(factory.Factory):
 
 
 class ChecklistItemWithEntityDTOFactory(EntityDTOFactory, factory.Factory):
+
     class Meta:
         model = ChecklistItemWithEntityDTO
 
@@ -25,6 +27,7 @@ class ChecklistItemWithEntityDTOFactory(EntityDTOFactory, factory.Factory):
 
 
 class ChecklistItemWithChecklistIdDTOFactory(factory.Factory):
+
     class Meta:
         model = ChecklistItemWithChecklistIdDTO
 
@@ -34,6 +37,7 @@ class ChecklistItemWithChecklistIdDTOFactory(factory.Factory):
 
 
 class ChecklistItemWithIdDTOFactory(factory.Factory):
+
     class Meta:
         model = ChecklistItemWithIdDTO
 
@@ -43,6 +47,7 @@ class ChecklistItemWithIdDTOFactory(factory.Factory):
 
 
 class TimerEntityDTOFactory(factory.Factory):
+
     class Meta:
         model = TimerEntityDTO
 
@@ -51,6 +56,7 @@ class TimerEntityDTOFactory(factory.Factory):
 
 
 class TimerDetailsDTOFactory(factory.Factory):
+
     class Meta:
         model = TimerDetailsDTO
 
@@ -60,6 +66,7 @@ class TimerDetailsDTOFactory(factory.Factory):
 
 
 class CompleteTimerDetailsDTOFactory(TimerEntityDTOFactory, factory.Factory):
+
     class Meta:
         model = CompleteTimerDetailsDTO
 

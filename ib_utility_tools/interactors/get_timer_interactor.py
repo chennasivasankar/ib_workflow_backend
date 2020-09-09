@@ -1,17 +1,15 @@
 import datetime
 
-from ib_utility_tools.interactors.presenter_interfaces.timer_presenter_interface import (
-    TimerPresenterInterface
-)
-from ib_utility_tools.interactors.storage_interfaces.dtos import (
+from ib_utility_tools.interactors.presenter_interfaces \
+    .timer_presenter_interface import TimerPresenterInterface
+from ib_utility_tools.interactors.storage_interfaces.dtos import \
     TimerEntityDTO, TimerDetailsDTO
-)
-from ib_utility_tools.interactors.storage_interfaces.timer_storage_interface import (
-    TimerStorageInterface
-)
+from ib_utility_tools.interactors.storage_interfaces \
+    .timer_storage_interface import TimerStorageInterface
 
 
 class GetTimerInteractor:
+
     def __init__(self, timer_storage: TimerStorageInterface):
         self.timer_storage = timer_storage
 
