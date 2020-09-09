@@ -78,10 +78,10 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         message = INVALID_STAGE_IDS[0].format(err.invalid_stage_ids)
         data = {
             "response": message,
-            "http_status_code": 400,
+            "http_status_code": 404,
             "res_status": INVALID_STAGE_IDS[1]
         }
-        return self.prepare_400_bad_request_response(data)
+        return self.prepare_404_not_found_response(data)
 
     def get_response_for_task_delay_reason_not_updated(
             self, err: TaskDelayReasonIsNotUpdated):
@@ -549,10 +549,10 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             INVALID_STAGE_IDS
         data = {
             "response": INVALID_STAGE_IDS[0].format(invalid_stage_ids),
-            "http_status_code": 400,
+            "http_status_code": 404,
             "res_status": INVALID_STAGE_IDS[1]
         }
-        return self.prepare_400_bad_request_response(data)
+        return self.prepare_404_not_found_response(data)
 
     def raise_stage_ids_with_invalid_permission_for_assignee_exception(
             self, invalid_stage_ids):

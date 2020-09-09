@@ -37,7 +37,7 @@ class TestCase01ReplyToCommentAPITestCase(TestUtils):
         path_params = {"comment_id": comment_id}
         query_params = {}
         headers = {}
-        response = self.make_api_call(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

@@ -1,7 +1,3 @@
-class EmptyChecklistItemText(Exception):
-    pass
-
-
 class ChecklistItemIdNotFound(Exception):
     pass
 
@@ -19,8 +15,4 @@ class DuplicateChecklistItemIds(Exception):
 
 
 class InvalidChecklistItemIds(Exception):
-    pass
-
-
-class InvalidEntities(Exception):
     pass

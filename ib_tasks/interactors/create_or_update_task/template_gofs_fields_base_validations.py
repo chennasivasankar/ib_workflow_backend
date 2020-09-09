@@ -106,25 +106,11 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
             self, gof_ids: List[str], field_ids: List[str], user_id: str
     ) -> Union[None, UserNeedsGoFWritablePermission,
                UserNeedsFieldWritablePermission]:
-        gof_write_permission_roles_dtos = \
-            self.storage.get_write_permission_roles_for_given_gof_ids(gof_ids)
         from ib_tasks.adapters.roles_service_adapter import \
             get_roles_service_adapter
         roles_service_adapter = get_roles_service_adapter()
         user_roles = roles_service_adapter.roles_service.get_user_role_ids(
             user_id)
-        for gof_roles_dto in gof_write_permission_roles_dtos:
-            required_roles = gof_roles_dto.write_permission_roles
-            from ib_tasks.constants.constants import ALL_ROLES_ID
-            required_roles_has_all_roles = ALL_ROLES_ID in required_roles
-            if required_roles_has_all_roles:
-                continue
-            user_permitted = self.any_in(user_roles, required_roles)
-            required_roles_are_empty = not required_roles
-            if not user_permitted or required_roles_are_empty:
-                raise UserNeedsGoFWritablePermission(user_id,
-                                                     gof_roles_dto.gof_id,
-                                                     required_roles)
         field_write_permission_roles_dtos = \
             self.storage.get_write_permission_roles_for_given_field_ids(
                 field_ids)
@@ -225,15 +211,3 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
         if invalid_field_ids:
             raise InvalidFieldIds(invalid_field_ids)
         return
-
-    @staticmethod
-    def _get_duplicates_in_given_list(values: List) -> List:
-        duplicate_values = sorted(list(
-            set(
-                [
-                    value
-                    for value in values if values.count(value) > 1
-                ]
-            )
-        ))
-        return duplicate_values

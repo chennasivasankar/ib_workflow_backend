@@ -63,7 +63,7 @@ class TestCase01GetDiscussionsAPITestCase(TestUtils):
         path_params = {}
         query_params = {'offset': offset, 'limit': limit}
         headers = {}
-        response = self.make_api_call(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

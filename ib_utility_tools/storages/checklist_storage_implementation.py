@@ -12,7 +12,7 @@ class ChecklistStorageImplementation(ChecklistStorageInterface):
     def create_checklist_item(
             self,
             checklist_item_with_checklist_id_dto: ChecklistItemWithChecklistIdDTO
-    ):
+    ) -> str:
         checklist_item_object = ChecklistItem.objects.create(
             checklist_id=checklist_item_with_checklist_id_dto.checklist_id,
             text=checklist_item_with_checklist_id_dto.text,

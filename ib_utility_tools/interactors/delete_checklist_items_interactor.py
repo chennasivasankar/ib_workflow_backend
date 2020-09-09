@@ -1,17 +1,16 @@
 from typing import List
 
-from ib_utility_tools.exceptions.custom_exceptions import (
+from ib_utility_tools.exceptions.custom_exceptions import \
     DuplicateChecklistItemIds, InvalidChecklistItemIds
-)
-from ib_utility_tools.interactors.presenter_interfaces.checklist_presenter_interface import (
+from ib_utility_tools.interactors.presenter_interfaces \
+    .checklist_presenter_interface import \
     DeleteChecklistItemsPresenterInterface
-)
-from ib_utility_tools.interactors.storage_interfaces.checklist_storage_interface import (
-    ChecklistStorageInterface
-)
+from ib_utility_tools.interactors.storage_interfaces \
+    .checklist_storage_interface import ChecklistStorageInterface
 
 
 class DeleteChecklistItemsInteractor:
+
     def __init__(self, checklist_storage: ChecklistStorageInterface):
         self.checklist_storage = checklist_storage
 
@@ -22,9 +21,11 @@ class DeleteChecklistItemsInteractor:
             self.delete_checklist_items(checklist_item_ids=checklist_item_ids)
             response = presenter.get_response_for_delete_checklist_items()
         except DuplicateChecklistItemIds:
-            response = presenter.response_for_duplicate_checklist_item_ids_exception()
+            response = presenter \
+                .get_response_for_duplicate_checklist_item_ids_exception()
         except InvalidChecklistItemIds:
-            response = presenter.response_for_invalid_checklist_item_ids_exception()
+            response = presenter \
+                .get_response_for_invalid_checklist_item_ids_exception()
         return response
 
     def delete_checklist_items(self, checklist_item_ids: List[str]):

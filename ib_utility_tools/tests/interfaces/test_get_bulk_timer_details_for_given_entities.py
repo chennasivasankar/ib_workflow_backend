@@ -1,19 +1,19 @@
 import datetime
+
 import pytest
 from freezegun import freeze_time
-from ib_utility_tools.interactors.storage_interfaces.dtos import (
+
+from ib_utility_tools.interactors.storage_interfaces.dtos import \
     EntityWithTimerDTO
-)
 
 
 class TestGetBulkTimerDetailsForGivenEntities:
 
     @pytest.fixture()
     def service_interface(self):
-        from ib_utility_tools.app_interfaces.service_interface import (
-            ServiceInterface)
-        service_interface = ServiceInterface()
-        return service_interface
+        from ib_utility_tools.app_interfaces.service_interface import \
+            ServiceInterface
+        return ServiceInterface()
 
     @pytest.fixture
     def timers(self):
@@ -71,9 +71,8 @@ class TestGetBulkTimerDetailsForGivenEntities:
 
     @pytest.fixture
     def timer_entity_dtos(self, timers):
-        from ib_utility_tools.tests.factories.storage_dtos import (
+        from ib_utility_tools.tests.factories.storage_dtos import \
             TimerEntityDTOFactory
-        )
         timer_entity_dtos = [
             TimerEntityDTOFactory(
                 entity_id=timer["entity_id"], entity_type=timer["entity_type"]
@@ -153,8 +152,10 @@ class TestGetBulkTimerDetailsForGivenEntities:
     ):
         # Arrange
         expected_result = entity_with_timer_dtos_for_invalid_entities
+
         # Act
-        actual_result = service_interface.get_bulk_timer_details_for_given_entities(
+        actual_result = service_interface \
+            .get_bulk_timer_details_for_given_entities(
             timer_entity_dtos=timer_entity_dtos
         )
 
@@ -171,7 +172,8 @@ class TestGetBulkTimerDetailsForGivenEntities:
         expected_result = entity_with_timer_dtos
 
         # Act
-        actual_result = service_interface.get_bulk_timer_details_for_given_entities(
+        actual_result = service_interface \
+            .get_bulk_timer_details_for_given_entities(
             timer_entity_dtos=timer_entity_dtos
         )
 

@@ -1,14 +1,14 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
-from ib_utility_tools.interactors.presenter_interfaces.timer_presenter_interface import (
-    TimerPresenterInterface
-)
-from ib_utility_tools.interactors.storage_interfaces.dtos import (
-    TimerDetailsDTO
-)
+
 from ib_utility_tools.constants.enum import StatusCode
+from ib_utility_tools.interactors.presenter_interfaces \
+    .timer_presenter_interface import TimerPresenterInterface
+from ib_utility_tools.interactors.storage_interfaces.dtos import \
+    TimerDetailsDTO
 
 
 class TimerPresenterImplementation(TimerPresenterInterface, HTTPResponseMixin):
+
     def get_response_for_get_timer_details(
             self, timer_details_dto: TimerDetailsDTO
     ):
@@ -20,10 +20,9 @@ class TimerPresenterImplementation(TimerPresenterInterface, HTTPResponseMixin):
             response_dict=timer_details_dict
         )
 
-    def response_for_timer_is_already_running_exception(self):
-        from ib_utility_tools.constants.exception_messages import (
+    def get_response_for_timer_is_already_running_exception(self):
+        from ib_utility_tools.constants.exception_messages import \
             TIMER_IS_ALREADY_RUNNING
-        )
         response_dict = {
             "response": TIMER_IS_ALREADY_RUNNING[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
@@ -33,10 +32,9 @@ class TimerPresenterImplementation(TimerPresenterInterface, HTTPResponseMixin):
             response_dict=response_dict
         )
 
-    def response_for_timer_is_already_stopped_exception(self):
-        from ib_utility_tools.constants.exception_messages import (
+    def get_response_for_timer_is_already_stopped_exception(self):
+        from ib_utility_tools.constants.exception_messages import \
             TIMER_IS_ALREADY_STOPPED
-        )
         response_dict = {
             "response": TIMER_IS_ALREADY_STOPPED[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,

@@ -2,9 +2,15 @@ from typing import List
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
+from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
     GetTeamMemberLevelsPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import TeamMemberLevelDetailsDTO
+
+INVALID_TEAM_ID = (
+    "Please send valid team id to get team member level details",
+    "INVALID_TEAM_ID"
+)
 
 
 class GetTeamMemberLevelsPresenterImplementation(
@@ -12,7 +18,8 @@ class GetTeamMemberLevelsPresenterImplementation(
 ):
 
     def response_for_team_member_level_details_dtos(
-            self, team_member_level_details_dtos: List[TeamMemberLevelDetailsDTO]):
+            self,
+            team_member_level_details_dtos: List[TeamMemberLevelDetailsDTO]):
         level_details_list = [
             {
                 "team_member_level_id": team_member_level_details_dto.team_member_level_id,
@@ -29,3 +36,12 @@ class GetTeamMemberLevelsPresenterImplementation(
             "levels": level_details_list
         }
         return self.prepare_200_success_response(response_dict=response)
+
+    def response_for_invalid_team_id(self):
+        response_dict = {
+            "response": INVALID_TEAM_ID[0],
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": INVALID_TEAM_ID[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict)

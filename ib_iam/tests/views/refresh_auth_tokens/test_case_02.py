@@ -40,7 +40,7 @@ class TestCase02RefreshTokensAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
+        self.make_api_call(body=body,
                                       path_params=path_params,
                                       query_params=query_params,
                                       headers=headers,

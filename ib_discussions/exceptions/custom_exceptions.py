@@ -28,3 +28,7 @@ class CommentIdNotFound(Exception):
 
 class UserCannotEditComment(Exception):
     pass
+
+
+class EmptyCommentAndMultiMediaException(Exception):
+    pass
