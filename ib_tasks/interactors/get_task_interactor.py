@@ -388,7 +388,6 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         filtered_stages_and_actions_details_dtos = \
             self._get_filtered_stages_and_actions_details_dtos(
                 stages_and_actions_details_dtos)
-
         return filtered_stages_and_actions_details_dtos
 
     def _get_filtered_stages_and_actions_details_dtos(

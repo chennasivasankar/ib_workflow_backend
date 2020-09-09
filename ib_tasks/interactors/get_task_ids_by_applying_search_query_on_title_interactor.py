@@ -95,14 +95,17 @@ class GetTaskIdsBasedOnUserSearchQuery(ValidationMixin):
         field_types_map = {}
         for field_type_dto in field_type_dtos:
             field_types_map[field_type_dto.field_id] = field_type_dto.field_type
-        from ib_tasks.constants.constants import NUMERIC_OPERATORS
+        from ib_tasks.constants.constants import NUMERIC_OPERATORS, STRING_OPERATORS
         for filter_dto in filter_dtos:
             field_type = field_types_map[filter_dto.field_id]
             from ib_tasks.constants.enum import FieldTypes
-            is_invalid_filter = field_type != FieldTypes.NUMBER.value \
+            is_invalid_filter_string = field_type != FieldTypes.NUMBER.value \
                                 and field_type != FieldTypes.FLOAT.value \
                                 and filter_dto.operator in NUMERIC_OPERATORS
-            if is_invalid_filter:
+            is_invalid_filter = field_type == FieldTypes.NUMBER.value \
+                                or field_type == FieldTypes.FLOAT.value \
+                                and filter_dto.operator in STRING_OPERATORS
+            if is_invalid_filter or is_invalid_filter_string:
                 from ib_tasks.exceptions.filter_exceptions import \
                     InvalidFilterCondition
                 raise InvalidFilterCondition(condition=filter_dto.operator)

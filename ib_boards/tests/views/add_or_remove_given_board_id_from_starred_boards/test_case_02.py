@@ -34,7 +34,7 @@ class TestCase02AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase(TestUtils):
         path_params = {"board_id": "board_id_1"}
         query_params = {}
         headers = {}
-        response = self.make_api_call(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

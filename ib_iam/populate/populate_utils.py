@@ -438,7 +438,7 @@ def populate_users_to_team_member_levels_for_tech_team():
     interactor = AddMembersToLevelsInteractor(
         team_member_level_storage=team_member_level_storage
     )
-    interactor.add_members_to_levels(
+    interactor.add_members_to_team_member_levels(
         team_id=team_id,
         team_member_level_id_with_member_ids_dtos=levels_wise_users)
 

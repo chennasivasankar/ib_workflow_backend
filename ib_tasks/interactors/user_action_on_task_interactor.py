@@ -170,13 +170,9 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         self.validate_if_user_is_in_project(
             project_id=project_id, user_id=self.user_id)
         self._validations_for_task_action(task_id, project_id)
-        action_type = self.action_storage.get_action_type_for_given_action_id(
-            self.action_id)
-        action_type_is_not_no_validations = action_type != \
-                                            ActionTypes.NO_VALIDATIONS.value
-        if action_type_is_not_no_validations:
-            self._validate_all_user_template_permitted_fields_are_filled_or_not(
-                self.user_id, task_id, project_id)
+        self._validation_all_user_template_permitted_fields_are_filled_or_not(
+            task_id=task_id, project_id=project_id
+        )
         self._validate_task_delay_reason_updated_or_not(task_id)
         task_dto = self._get_task_dto(task_id)
         updated_task_dto = \
@@ -203,6 +199,17 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         return (
             task_complete_details_dto, task_current_stage_details_dto,
             all_tasks_overview_details_dto)
+
+    def _validation_all_user_template_permitted_fields_are_filled_or_not(
+            self, task_id: int, project_id: str
+    ):
+        action_type = self.action_storage.get_action_type_for_given_action_id(
+            self.action_id)
+        action_type_is_not_no_validations = action_type != \
+                                            ActionTypes.NO_VALIDATIONS.value
+        if action_type_is_not_no_validations:
+            self._validate_all_user_template_permitted_fields_are_filled_or_not(
+                self.user_id, task_id, project_id)
 
     def _validate_task_delay_reason_updated_or_not(self, task_id):
 
@@ -446,8 +453,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         filled_field_ids = \
             self.gof_storage.get_filled_field_ids_of_given_task_gof_ids(
                 task_gof_ids)
-        self._validate_all_user_permitted_gof_ids_are_filled_or_not(
-            gof_id_with_display_name_dtos, filled_gof_ids)
+        # self._validate_all_user_permitted_gof_ids_are_filled_or_not(
+        #     gof_id_with_display_name_dtos, filled_gof_ids)
         self._validate_all_user_permitted_field_ids_are_filled_or_not(
             field_id_with_display_name_dtos, filled_field_ids)
 

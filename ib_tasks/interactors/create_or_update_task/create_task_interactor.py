@@ -485,8 +485,8 @@ class CreateTaskInteractor:
                 field_value_dto.field_id
                 for field_value_dto in gof_fields_dto.field_values_dtos
             ]
-        self._validate_all_user_permitted_gof_ids_are_filled_or_not(
-            gof_id_with_display_name_dtos, filled_gof_ids)
+        # self._validate_all_user_permitted_gof_ids_are_filled_or_not(
+        #     gof_id_with_display_name_dtos, filled_gof_ids)
         self._validate_all_user_permitted_field_ids_are_filled_or_not(
             field_id_with_display_name_dtos, filled_field_ids)
 

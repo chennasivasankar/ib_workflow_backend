@@ -142,6 +142,12 @@ class StatusOperandStageDTO:
 
 
 @dataclass
+class StageDisplayLogicDTO:
+    current_stage: str
+    display_logic_dto: StatusOperandStageDTO
+
+
+@dataclass
 class CreateTaskLogDTO:
     task_json: str
     task_id: int
