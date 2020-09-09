@@ -825,7 +825,8 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_USER_IDS"
+                  "INVALID_USER_IDS",
+                  "COMMENT_OR_MULTIMEDIA_SHOULD_BE_PROVIDED"
                 ]
               }
             },
@@ -849,7 +850,8 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_USER_IDS"
+                  "INVALID_USER_IDS",
+                  "COMMENT_OR_MULTIMEDIA_SHOULD_BE_PROVIDED"
                 ]
               }
             },

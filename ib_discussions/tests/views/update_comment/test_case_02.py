@@ -37,11 +37,10 @@ class TestCase02UpdateCommentAPITestCase(TestUtils):
         path_params = {"comment_id": comment_id}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(
+            body=body, path_params=path_params,
+            query_params=query_params, headers=headers, snapshot=snapshot
+        )
 
     @pytest.mark.django_db
     def test_with_comment_id_not_found(
@@ -60,8 +59,7 @@ class TestCase02UpdateCommentAPITestCase(TestUtils):
         path_params = {"comment_id": comment_id}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(
+            body=body, path_params=path_params,
+            query_params=query_params, headers=headers, snapshot=snapshot
+        )

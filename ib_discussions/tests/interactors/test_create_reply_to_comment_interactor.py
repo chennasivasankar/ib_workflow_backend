@@ -78,6 +78,50 @@ class TestCreateReplyToCommentInteractor:
         presenter_mock.response_for_comment_id_not_found.assert_called_once()
         storage_mock.is_comment_id_exists.assert_called_once()
 
+    def test_empty_comment_content_and_multimedia_return_response(
+            self, storage_mock, presenter_mock, interactor, mocker
+    ):
+        # Arrange
+        user_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        comment_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
+        comment_content = ""
+        mention_user_ids = [
+            "10be920b-7b4c-49e7-8adb-41a0c18da848",
+            "20be920b-7b4c-49e7-8adb-41a0c18da848"
+        ]
+
+        from ib_discussions.tests.common_fixtures.adapters import \
+            prepare_validate_user_ids_mock
+        prepare_validate_user_ids_mock(mocker=mocker)
+
+        multimedia_dtos = []
+
+        from ib_discussions.tests.factories.interactor_dtos import \
+            CreateCompleteReplyToCommentDTOFactory
+        create_complete_reply_to_comment_dto = CreateCompleteReplyToCommentDTOFactory(
+            comment_id=comment_id,
+            user_id=user_id,
+            comment_content=comment_content,
+            mention_user_ids=mention_user_ids,
+            multimedia_dtos=multimedia_dtos
+        )
+
+        expected_presenter_response_for_comment_or_multimedia_should_be_provided_mock = Mock()
+
+        presenter_mock.response_for_comment_or_multimedia_should_be_provided.return_value \
+            = expected_presenter_response_for_comment_or_multimedia_should_be_provided_mock
+
+        # Act
+        response = interactor.reply_to_comment_wrapper(
+            presenter=presenter_mock,
+            create_complete_reply_to_comment_dto=create_complete_reply_to_comment_dto
+        )
+
+        # Assert
+        assert response == \
+               expected_presenter_response_for_comment_or_multimedia_should_be_provided_mock
+        presenter_mock.response_for_comment_or_multimedia_should_be_provided.assert_called_once()
+
     def test_invalid_user_ids_return_response(
             self, storage_mock, presenter_mock, interactor, mocker
     ):

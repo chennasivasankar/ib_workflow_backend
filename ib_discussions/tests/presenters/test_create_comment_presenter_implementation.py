@@ -123,3 +123,23 @@ class TestCreateCommentPresenterImplementation:
         response_dict = json.loads(response_object.content)
 
         snapshot.assert_match(response_dict, "create_comment")
+
+    def test_response_for_comment_or_multimedia_should_be_provided(
+            self, presenter
+    ):
+        from ib_discussions.presenters.create_comment_presenter_implementation import \
+            COMMENT_OR_MULTIMEDIA_SHOULD_BE_PROVIDED
+        expected_response = COMMENT_OR_MULTIMEDIA_SHOULD_BE_PROVIDED[0]
+        expected_http_status_code = StatusCode.BAD_REQUEST.value
+        expected_res_status = COMMENT_OR_MULTIMEDIA_SHOULD_BE_PROVIDED[1]
+
+        # Act
+        response_obj = \
+            presenter.response_for_comment_or_multimedia_should_be_provided()
+
+        # Assert
+        response_data = json.loads(response_obj.content)
+
+        assert response_data["response"] == expected_response
+        assert response_data["http_status_code"] == expected_http_status_code
+        assert response_data["res_status"] == expected_res_status
