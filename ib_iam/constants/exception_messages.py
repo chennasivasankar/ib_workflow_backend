@@ -291,5 +291,5 @@ ROLE_NAMES_ALREADY_EXISTS = (
 
 USER_HAS_NO_ACCESS_TO_GET_PROJECTS = (
     "User has no access to get projects",
-    "USER_HAS_NO_ACCESS"
+    "USER_HAS_NO_ACCESS_TO_GET_PROJECTS"
 )

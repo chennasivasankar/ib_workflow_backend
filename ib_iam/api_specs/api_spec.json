@@ -2305,6 +2305,55 @@
         "$ref": "#/definitions/ProjectsWithTotalProjectsCount"
       }
     },
+    "GetProjectsForbiddenResponse": {
+      "description": "User not have permission for get projects",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_HAS_NO_ACCESS_TO_GET_PROJECTS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetProjectsBadRequestResponse": {
+      "description": "Bad request response for get projects",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_OFFSET_VALUE",
+                  "INVALID_LIMIT_VALUE"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
     "SuccessfullyCreatedForAddProjectResponse": {
       "description": "Project Created successfully",
       "schema": {
@@ -3570,6 +3619,12 @@
         "responses": {
           "200": {
             "$ref": "#/responses/SuccessForGetProjectsResponse"
+          },
+          "400": {
+            "$ref": "#/responses/GetProjectsBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/GetProjectsForbiddenResponse"
           }
         }
       }

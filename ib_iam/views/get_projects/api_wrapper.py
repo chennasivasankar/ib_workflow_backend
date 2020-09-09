@@ -23,9 +23,13 @@ def api_wrapper(*args, **kwargs):
     from ib_iam.storages.team_storage_implementation import \
         TeamStorageImplementation
     team_storage = TeamStorageImplementation()
+    from ib_iam.storages.user_storage_implementation import \
+        UserStorageImplementation
+    user_storage = UserStorageImplementation()
     presenter = GetProjectsPresenterImplementation()
     interactor = GetProjectsInteractor(
-        project_storage=project_storage, team_storage=team_storage
+        project_storage=project_storage, team_storage=team_storage,
+        user_storage=user_storage
     )
     response = interactor.get_projects_wrapper(
         presenter=presenter, user_id=user_id, pagination_dto=pagination_dto

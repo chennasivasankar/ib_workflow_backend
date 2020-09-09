@@ -24,7 +24,7 @@ class GetProjectsPresenterImplementation(
             "http_status_code": StatusCode.FORBIDDEN.value,
             "res_status": USER_HAS_NO_ACCESS_TO_GET_PROJECTS[1]
         }
-        return self.prepare_400_bad_request_response(
+        return self.prepare_403_forbidden_response(
             response_dict=response_dict
         )
 
