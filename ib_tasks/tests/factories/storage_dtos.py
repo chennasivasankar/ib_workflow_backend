@@ -33,7 +33,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDetailsDTO, StageDisplayValueDTO, StageIdWithTemplateIdDTO, \
     StageRoleDTO, TaskStagesDTO, \
     TaskTemplateStageDTO, TaskStageAssigneeDTO, TaskStageHavingAssigneeIdDTO, \
-    CurrentStageDetailsDTO, StageIdActionNameDTO, StageActionIdDTO
+    CurrentStageDetailsDTO, StageIdActionNameDTO, StageActionIdDTO, StageDisplayDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO, TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
@@ -517,6 +517,14 @@ class StageDisplayValueDTOFactory(factory.Factory):
     display_logic = factory.sequence(
         lambda n: "variable_{} == stage_{}".format((n + 1), (n + 1)))
     value = factory.sequence(lambda n: (n + 1))
+
+
+class StageDisplayDTOFactory(factory.Factory):
+    class Meta:
+        model = StageDisplayDTO
+    stage_id = factory.sequence(lambda n: "stage_{}".format(n + 1))
+    display_value = factory.sequence(
+        lambda n: "variable_{} == stage_{}".format((n + 1), (n + 1)))
 
 
 class FieldPermissionDTOFactory(factory.Factory):

@@ -12,7 +12,8 @@ from ib_tasks.storages.fields_storage_implementation \
 from ...storages.action_storage_implementation import \
     ActionsStorageImplementation
 from ...storages.gof_storage_implementation import GoFStorageImplementation
-from ...storages.storage_implementation import StorageImplementation
+from ...storages.storage_implementation import (StorageImplementation,
+                                                StagesStorageImplementation)
 from ...storages.task_stage_storage_implementation import \
     TaskStageStorageImplementation
 from ...storages.tasks_storage_implementation import TasksStorageImplementation
@@ -29,11 +30,13 @@ def api_wrapper(*args, **kwargs):
     fields_storage = FieldsStorageImplementation()
     presenter = GetTaskPresenterImplementation()
     storage = StorageImplementation()
+    stage_storage = StagesStorageImplementation()
     task_stage_storage = TaskStageStorageImplementation()
     action_storage = ActionsStorageImplementation()
     task_storage = TasksStorageImplementation()
     gof_storage = GoFStorageImplementation()
     interactor = GetTaskInteractor(
+            stage_storage=stage_storage,
         task_crud_storage=task_crud_storage, fields_storage=fields_storage,
         action_storage=action_storage, task_stage_storage=task_stage_storage,
         task_storage=task_storage, storage=storage, gof_storage=gof_storage

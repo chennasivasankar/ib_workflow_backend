@@ -58,6 +58,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         StatusVariableDTOFactory.reset_sequence()
         statuses = [StatusVariableDTOFactory()]
         storage.get_status_variables_to_task.return_value = statuses
+        TaskDetailsDTOFactory.reset_sequence()
         task_dto = TaskDetailsDTOFactory(
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
@@ -132,10 +133,10 @@ class TestUpdateTaskStatusVariablesInteractor:
         action_id = 1
         task_id = 1
         storage = create_autospec(StorageInterface)
-        GOFMultipleStatusDTOFactory.reset_sequence()
-        single_gof = GOFMultipleStatusDTOFactory(multiple_status=False)
         TaskGoFFieldDTOFactory.reset_sequence(1)
         gof_field_dtos = TaskGoFFieldDTOFactory.create_batch(size=3)
+        GOFMultipleStatusDTOFactory.reset_sequence()
+        single_gof = GOFMultipleStatusDTOFactory(multiple_status=False)
         multiple_gof = GOFMultipleStatusDTOFactory()
         storage.get_enable_multiple_gofs_field_to_gof_ids.return_value = [
             single_gof, multiple_gof
