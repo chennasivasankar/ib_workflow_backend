@@ -1,5 +1,7 @@
 from typing import List, Optional
 
+from ib_iam.exceptions.custom_exceptions import UsersNotBelongToGivenLevelHierarchy, \
+    InvalidTeamId, InvalidLevelHierarchyOfTeam
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import \
@@ -77,7 +79,7 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
             TeamUser.objects.filter(
                 team_id=team_id,
                 team_member_level__level_hierarchy=level_hierarchy
-            ).values("user_id", "immediate_superior_team_user_id")
+            ).values("user_id", "immediate_superior_team_user__user_id")
 
         member_dtos = [
             MemberDTO(
@@ -85,7 +87,7 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
                     "user_id"],
                 immediate_superior_team_user_id=
                 member_id_with_immediate_superior_user_id_dict[
-                    "immediate_superior_team_user_id"]
+                    "immediate_superior_team_user__user_id"]
             )
             for member_id_with_immediate_superior_user_id_dict in
             member_id_with_immediate_superior_user_id_list
@@ -97,6 +99,14 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
             immediate_superior_user_id_with_member_ids_dtos: List[
                 ImmediateSuperiorUserIdWithUserIdsDTO]
     ):
+        from ib_iam.models import TeamUser
+        for immediate_superior_user_id_with_member_ids_dto in immediate_superior_user_id_with_member_ids_dtos:
+            TeamUser.objects.filter(
+                team_id=team_id,
+                team_member_level__level_hierarchy=member_level_hierarchy,
+                immediate_superior_team_user__user_id=immediate_superior_user_id_with_member_ids_dto.immediate_superior_user_id
+            ).update(immediate_superior_team_user=None)
+
         for immediate_superior_user_id_with_member_ids_dto in immediate_superior_user_id_with_member_ids_dtos:
             self._add_members_to_superior(
                 immediate_superior_user_id_with_member_ids_dto=immediate_superior_user_id_with_member_ids_dto,
@@ -158,9 +168,8 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
                 "user_id", flat=True
             )
         subordinate_member_ids = [
-            str(subordinate_member_id) for
-            subordinate_member_id in
-            subordinate_member_ids
+            str(subordinate_member_id)
+            for subordinate_member_id in subordinate_member_ids
         ]
         member_id_with_subordinate_member_ids_dto = \
             MemberIdWithSubordinateMemberIdsDTO(
@@ -168,3 +177,71 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
                 subordinate_member_ids=subordinate_member_ids
             )
         return member_id_with_subordinate_member_ids_dto
+
+    def validate_team_id(self, team_id: str) -> Optional[InvalidTeamId]:
+        from ib_iam.models import Team
+        team_objects = Team.objects.filter(team_id=team_id)
+        is_team_objects_not_exists = not team_objects.exists()
+        if is_team_objects_not_exists:
+            raise InvalidTeamId
+        return
+
+    def get_team_member_level_ids(self, team_id: str) -> List[str]:
+        from ib_iam.models import TeamMemberLevel
+        team_member_level_ids = TeamMemberLevel.objects.filter(
+            team_id=team_id
+        ).values_list(
+            "id", flat=True
+        )
+        team_member_level_ids = list(map(str, list(team_member_level_ids)))
+        return team_member_level_ids
+
+    def get_team_member_ids(self, team_id: str) -> List[str]:
+        from ib_iam.models import TeamUser
+        user_ids = TeamUser.objects.filter(
+            team_id=team_id
+        ).values_list(
+            "user_id", flat=True
+        )
+        user_ids = list(map(str, list(user_ids)))
+        return user_ids
+
+    def validate_level_hierarchy_of_team(
+            self, team_id: str, level_hierarchy: int
+    ) -> Optional[InvalidLevelHierarchyOfTeam]:
+        from ib_iam.models import TeamMemberLevel
+        team_member_level_objects = TeamMemberLevel.objects.filter(
+            team_id=team_id, level_hierarchy=level_hierarchy
+        )
+        is_team_member_level_objects_not_exists = \
+            not team_member_level_objects.exists()
+        if is_team_member_level_objects_not_exists:
+            raise InvalidLevelHierarchyOfTeam
+        return
+
+    def validate_users_belong_to_given_level_hierarchy_in_a_team(
+            self, team_id: str, user_ids: List[str], level_hierarchy: int
+    ) -> [UsersNotBelongToGivenLevelHierarchy, InvalidLevelHierarchyOfTeam]:
+        from ib_iam.models import TeamMemberLevel, TeamUser
+        try:
+            team_member_level_object = TeamMemberLevel.objects.get(
+                team_id=team_id, level_hierarchy=level_hierarchy
+            )
+        except TeamMemberLevel.DoesNotExist:
+            raise InvalidLevelHierarchyOfTeam
+        user_ids_in_database = TeamUser.objects.filter(
+            team_id=team_id, team_member_level=team_member_level_object
+        ).values_list(
+            "user_id", flat=True
+        )
+
+        user_ids_not_found = [
+            user_id
+            for user_id in user_ids if user_id not in user_ids_in_database
+        ]
+        if user_ids_not_found:
+            raise UsersNotBelongToGivenLevelHierarchy(
+                user_ids=user_ids_not_found,
+                level_hierarchy=level_hierarchy
+            )
+        return

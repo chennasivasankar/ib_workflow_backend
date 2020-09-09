@@ -32,6 +32,64 @@ class TestGetTeamMembersOfLevelHierarchyInteractor:
             team_member_level_storage=storage_mock)
         return interactor
 
+    def test_with_invalid_team_id_return_response(
+            self, storage_mock, presenter_mock, interactor
+    ):
+        # Arrange
+        team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        level_hierarchy = 0
+        expected_presenter_response_for_invalid_team_id_mock = Mock()
+
+        from ib_iam.exceptions.custom_exceptions import InvalidTeamId
+        storage_mock.validate_team_id.side_effect = InvalidTeamId
+
+        presenter_mock.response_for_invalid_team_id.return_value \
+            = expected_presenter_response_for_invalid_team_id_mock
+
+        # Act
+        response = interactor.get_team_members_of_level_hierarchy_wrapper(
+            team_id=team_id, level_hierarchy=level_hierarchy,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == \
+               expected_presenter_response_for_invalid_team_id_mock
+        storage_mock.validate_team_id.assert_called_with(team_id=team_id)
+        presenter_mock.response_for_invalid_team_id.assert_called_once()
+
+    def test_with_invalid_level_hierarchy_return_response(
+            self, storage_mock, presenter_mock, interactor
+    ):
+        # Arrange
+        team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        level_hierarchy = -1
+        expected_presenter_response_for_invalid_level_hierarchy_of_team_mock = \
+            Mock()
+
+        from ib_iam.exceptions.custom_exceptions import \
+            InvalidLevelHierarchyOfTeam
+        storage_mock.validate_level_hierarchy_of_team.side_effect = \
+            InvalidLevelHierarchyOfTeam
+
+        presenter_mock.response_for_invalid_level_hierarchy_of_team.return_value \
+            = expected_presenter_response_for_invalid_level_hierarchy_of_team_mock
+
+        # Act
+        response = interactor.get_team_members_of_level_hierarchy_wrapper(
+            team_id=team_id, level_hierarchy=level_hierarchy,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == \
+               expected_presenter_response_for_invalid_level_hierarchy_of_team_mock
+        storage_mock.validate_level_hierarchy_of_team.assert_called_with(
+            team_id=team_id, level_hierarchy=level_hierarchy
+        )
+        presenter_mock.response_for_invalid_level_hierarchy_of_team.\
+            assert_called_once()
+
     def test_with_valid_details_return_response(
             self, storage_mock, presenter_mock, interactor):
         # Arrange

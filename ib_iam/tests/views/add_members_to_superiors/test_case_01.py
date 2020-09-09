@@ -14,7 +14,9 @@ class TestCase01AddMembersToSuperiorsAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.mark.django_db
-    def test_case(self, snapshot, prepare_user_teams_setup):
+    def test_add_members_to_superiors(
+            self, snapshot, prepare_user_teams_setup
+    ):
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         member_level_hierarchy = 0
         user_team_objects_of_level_one = prepare_user_teams_setup

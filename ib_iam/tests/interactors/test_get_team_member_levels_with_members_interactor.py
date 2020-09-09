@@ -31,11 +31,35 @@ class TestGetTeamMemberLevelsWithMembersInteractor:
             team_member_level_storage=storage_mock)
         return interactor
 
+    def test_with_invalid_team_id_return_response(
+            self, storage_mock, presenter_mock, interactor
+    ):
+        # Arrange
+        team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+
+        expected_presenter_response_for_invalid_team_id_mock = Mock()
+
+        from ib_iam.exceptions.custom_exceptions import InvalidTeamId
+        storage_mock.validate_team_id.side_effect = InvalidTeamId
+
+        presenter_mock.response_for_invalid_team_id.return_value \
+            = expected_presenter_response_for_invalid_team_id_mock
+
+        # Act
+        response = interactor.get_team_member_levels_with_members_wrapper(
+            team_id=team_id, presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == \
+               expected_presenter_response_for_invalid_team_id_mock
+        storage_mock.validate_team_id.assert_called_with(team_id=team_id)
+        presenter_mock.response_for_invalid_team_id.assert_called_once()
+
     def test_with_valid_details_return_response(
             self, storage_mock, presenter_mock, interactor, mocker
     ):
         # Arrange
-        # TODO: For all methods assert with proper parameters in assert
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         expected_presenter_prepare_success_response_for_team_member_levels_with_members = \
             Mock()
