@@ -28,5 +28,5 @@ snapshots['TestCase02AddCommentAPITestCase.test_with_empty_comment_content_and_m
 snapshots['TestCase02AddCommentAPITestCase.test_with_empty_comment_content_and_multimedia_return_response body'] = {
     'http_status_code': 400,
     'res_status': 'COMMENT_OR_MULTIMEDIA_SHOULD_BE_PROVIDED',
-    'response': 'Please provide comment or multimedia to create the comment'
+    'response': 'Please provide comment content or multimedia to create the comment'
 }
