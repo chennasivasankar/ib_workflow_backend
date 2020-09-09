@@ -1090,7 +1090,8 @@
                   "type": "string"
                 },
                 "level_hierarchy": {
-                  "type": "string"
+                  "type": "integer",
+                  "format": "int64"
                 }
               },
               "required": [
@@ -2245,7 +2246,7 @@
         }
       }
     },
-    "GetTeamMembersSuccessResponse": {
+    "GetTeamMemberLevelsWithMembersSuccessResponse": {
       "description": "Get team members success response",
       "schema": {
         "type": "object",
@@ -2511,6 +2512,205 @@
       "description": "user has no access to add project",
       "schema": {
         "$ref": "#/definitions/UserHasNoAccessException"
+      }
+    },
+    "AddTeamMemberLevelsBadRequestResponse": {
+      "description": "Add team members levels bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_TEAM_ID",
+                  "DUPLICATE_LEVEL_HIERARCHIES",
+                  "NEGATIVE_LEVEL_HIERARCHIES",
+                  "DUPLICATE_TEAM_MEMBER_LEVEL_NAMES"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetTeamMemberLevelsBadRequestResponse": {
+      "description": "Get team members levels bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_TEAM_ID"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "AddMembersToTeamMemberLevelsBadRequestResponse": {
+      "description": "add members to team member levels bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_TEAM_ID"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "AddMembersToTeamMemberLevelsNotFoundResponse": {
+      "description": "add members to team member levels not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "TEAM_MEMBER_LEVEL_IDS_NOT_FOUND",
+                  "TEAM_MEMBER_IDS_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetTeamMembersOfLevelHierarchyBadRequestResponse": {
+      "description": "get team members of level hierarchy bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_TEAM_ID",
+                  "INVALID_LEVEL_HIERARCHY"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "AddMembersToSuperiorsBadRequestResponse": {
+      "description": "add members to superiors bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_TEAM_ID",
+                  "INVALID_LEVEL_HIERARCHY"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "AddMembersToSuperiorsNotFoundResponse": {
+      "description": "add members to superiors not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "TEAM_MEMBER_IDS_NOT_FOUND",
+                  "USERS_NOT_BELONG_TO_TEAM_MEMBER_LEVEL"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetTeamMemberLevelsWithMembersBadRequestResponse": {
+      "description": "get team members with levels bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_TEAM_ID"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
       }
     }
   },
@@ -3218,6 +3418,9 @@
         "responses": {
           "201": {
             "description": "Successfully created the team member levels"
+          },
+          "400": {
+            "$ref": "#/responses/AddTeamMemberLevelsBadRequestResponse"
           }
         }
       },
@@ -3240,6 +3443,9 @@
         "responses": {
           "200": {
             "$ref": "#/responses/GetTeamMemberLevelsSuccessResponse"
+          },
+          "400": {
+            "$ref": "#/responses/GetTeamMemberLevelsBadRequestResponse"
           }
         }
       }
@@ -3247,7 +3453,7 @@
     "/team/{team_id}/add_members_to_levels/v1/": {
       "post": {
         "summary": "Add Users To Levels",
-        "operationId": "add_members_to_levels",
+        "operationId": "add_members_to_team_member_levels",
         "description": "Add users to levels for given team id in path",
         "security": [
           {
@@ -3267,6 +3473,12 @@
         "responses": {
           "201": {
             "description": "Successfully add members to levels"
+          },
+          "400": {
+            "$ref": "#/responses/AddMembersToTeamMemberLevelsBadRequestResponse"
+          },
+          "404": {
+            "$ref": "#/responses/AddMembersToTeamMemberLevelsNotFoundResponse"
           }
         }
       }
@@ -3294,6 +3506,9 @@
         "responses": {
           "200": {
             "$ref": "#/responses/GetTeamMembersOfLevelHierarchySuccessResponse"
+          },
+          "400": {
+            "$ref": "#/responses/GetTeamMembersOfLevelHierarchyBadRequestResponse"
           }
         }
       },
@@ -3322,6 +3537,12 @@
         "responses": {
           "201": {
             "description": "Successfully add members to superiors"
+          },
+          "400": {
+            "$ref": "#/responses/AddMembersToSuperiorsBadRequestResponse"
+          },
+          "404": {
+            "$ref": "#/responses/AddMembersToSuperiorsNotFoundResponse"
           }
         }
       }
@@ -3372,7 +3593,10 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/GetTeamMembersSuccessResponse"
+            "$ref": "#/responses/GetTeamMemberLevelsWithMembersSuccessResponse"
+          },
+          "400": {
+            "$ref": "#/responses/GetTeamMemberLevelsWithMembersBadRequestResponse"
           }
         }
       }
