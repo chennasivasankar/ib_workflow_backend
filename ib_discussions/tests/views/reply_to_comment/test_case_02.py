@@ -43,6 +43,31 @@ class TestCase02ReplyToCommentAPITestCase(TestUtils):
         path_params = {"comment_id": comment_id}
         query_params = {}
         headers = {}
+        self.make_api_call(
+            body=body, path_params=path_params,
+            query_params=query_params, headers=headers, snapshot=snapshot
+        )
+
+    @pytest.mark.django_db
+    def test_with_empty_comment_content_and_multimedia_return_response(
+            self, snapshot
+    ):
+        comment_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
+        comment_content = ""
+        multimedia = []
+        mention_user_ids = [
+            "10be920b-7b4c-49e7-8adb-41a0c18da848",
+            "20be920b-7b4c-49e7-8adb-41a0c18da848"
+        ]
+
+        body = {
+            'comment_content': comment_content,
+            'mention_user_ids': mention_user_ids,
+            'multimedia': multimedia
+        }
+        path_params = {"comment_id": comment_id}
+        query_params = {}
+        headers = {}
         response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
@@ -88,7 +113,7 @@ class TestCase02ReplyToCommentAPITestCase(TestUtils):
         path_params = {"comment_id": comment_id}
         query_params = {}
         headers = {}
-        response = self.make_api_call(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
