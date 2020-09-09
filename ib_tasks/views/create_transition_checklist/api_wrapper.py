@@ -4,13 +4,13 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
 from .validator_class import ValidatorClass
-from ...interactors.create_transition_checklist_template import \
-    CreateTransitionChecklistTemplateInteractor
+from ...interactors.create_or_update_transition_checklist_template import \
+    CreateOrUpdateTransitionChecklistTemplateInteractor
 from ...interactors.task_dtos import GoFFieldsDTO, FieldValuesDTO
 from ...interactors.task_template_dtos import \
     CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
 from ...presenters.create_transition_checklist_presenter import \
-    CreateTransitionChecklistTemplatePresenterImplementation
+    CreateOrUpdateTransitionChecklistTemplatePresenterImplementation
 from ...storages.action_storage_implementation import \
     ActionsStorageImplementation
 from ...storages.create_or_update_task_storage_implementation import \
@@ -60,9 +60,9 @@ def api_wrapper(*args, **kwargs):
     stage_action_storage = ActionsStorageImplementation()
     task_template_storage = TaskTemplateStorageImplementation()
 
-    presenter = CreateTransitionChecklistTemplatePresenterImplementation()
+    presenter = CreateOrUpdateTransitionChecklistTemplatePresenterImplementation()
 
-    interactor = CreateTransitionChecklistTemplateInteractor(
+    interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
         create_or_update_task_storage=create_task_storage,
         template_storage=template_storage, task_storage=task_storage,
         gof_storage=gof_storage, storage=storage, field_storage=field_storage,
