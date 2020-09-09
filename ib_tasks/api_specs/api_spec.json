@@ -2032,7 +2032,8 @@
                      "USERS_NOT_EXISTS_FOR_TEAMS",
                      "INVALID_USER",
                      "INVALID_PROJECT_ID",
-                     "USER_NOT_A_MEMBER_OF_PROJECT"
+                     "USER_NOT_A_MEMBER_OF_PROJECT",
+                     "INVALID_STAGE_IDS_FOR_TASK"
                   ]
                }
             }
