@@ -64,7 +64,10 @@ class TestGetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
         from ib_tasks.tests.factories.interactor_dtos \
             import StatusOperandStageDTOFactory
         StatusOperandStageDTOFactory.reset_sequence()
-        status_stage_dtos = StatusOperandStageDTOFactory.create_batch(3)
+        from ib_tasks.tests.factories.interactor_dtos \
+            import StageDisplayLogicDTOFactory
+        StageDisplayLogicDTOFactory.reset_sequence()
+        status_stage_dtos = StageDisplayLogicDTOFactory.create_batch(3)
         return status_stage_dtos
 
     @staticmethod
@@ -177,10 +180,14 @@ class TestGetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
         from ib_tasks.tests.factories.interactor_dtos \
             import StatusOperandStageDTOFactory
         StatusOperandStageDTOFactory.reset_sequence()
+        from ib_tasks.tests.factories.interactor_dtos import StageDisplayLogicDTOFactory
+        StageDisplayLogicDTOFactory.reset_sequence()
         status_stage_dtos = [
-            StatusOperandStageDTOFactory(),
-            StatusOperandStageDTOFactory(operator=">="),
-            StatusOperandStageDTOFactory(operator="<=", stage='stage_1')
+            StageDisplayLogicDTOFactory(display_logic_dto=StatusOperandStageDTOFactory()),
+            StageDisplayLogicDTOFactory(
+                display_logic_dto=StatusOperandStageDTOFactory(operator=">=")),
+            StageDisplayLogicDTOFactory(
+                display_logic_dto=StatusOperandStageDTOFactory(operator="<=", stage='stage_1'))
         ]
         mock_obj = self.stage_display_mock(mocker)
         mock_obj.return_value = status_stage_dtos
