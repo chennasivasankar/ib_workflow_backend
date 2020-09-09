@@ -22,6 +22,11 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_permitted_stage_ids_given_stage_ids(self, user_roles: List[str],
+                                                stage_ids: List[str]):
+        pass
+
+    @abc.abstractmethod
     def create_stages(self, stage_details: List[StageDTO]):
         pass
 

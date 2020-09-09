@@ -37,10 +37,9 @@ class GetTaskStagesAndActions:
         user_roles_interactor = UserRoleValidationInteractor()
         stage_ids = self.storage.get_task_stages(task_id)
         premitted_stage_ids = \
-            user_roles_interactor.get_permitted_stage_ids_given_user_id(
-                    user_id=user_id,
-                    stage_storage=self.stage_storage,
-                    project_id=project_id)
+            user_roles_interactor.get_permitted_stage_ids_for_stages(
+                user_id=user_id, project_id=project_id, stage_ids=stage_ids,
+                stage_storage=self.stage_storage)
         stage_details_dtos = self.storage.get_stage_complete_details(
                 premitted_stage_ids)
 
