@@ -14,6 +14,11 @@ INVALID_TEAM_ID = (
     "INVALID_TEAM_ID"
 )
 
+USER_DOES_NOT_HAVE_ACCESS = (
+    "User does not have provision to access",
+    "USER_DOES_NOT_HAVE_ACCESS"
+)
+
 
 class GetTeamMemberLevelsWithMembersPresenterImplementation(
     GetTeamMemberLevelsWithMembersPresenterInterface, HTTPResponseMixin
@@ -44,7 +49,8 @@ class GetTeamMemberLevelsWithMembersPresenterImplementation(
                     member_id_wise_subordinate_member_ids_dict=member_id_wise_subordinate_member_ids_dict
                 )
             }
-            team_member_levels_with_members.append(team_member_level_details_dict)
+            team_member_levels_with_members.append(
+                team_member_level_details_dict)
         response_dict = {
             "team_member_levels_with_members": team_member_levels_with_members
         }
@@ -150,6 +156,15 @@ class GetTeamMemberLevelsWithMembersPresenterImplementation(
             "response": INVALID_TEAM_ID[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": INVALID_TEAM_ID[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict)
+
+    def response_for_user_is_not_admin(self):
+        response_dict = {
+            "response": USER_DOES_NOT_HAVE_ACCESS[0],
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": USER_DOES_NOT_HAVE_ACCESS[1]
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)

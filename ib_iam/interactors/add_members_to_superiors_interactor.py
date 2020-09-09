@@ -1,6 +1,7 @@
 from typing import List
 
-from ib_iam.exceptions.custom_exceptions import UsersNotBelongToGivenLevelHierarchy
+from ib_iam.exceptions.custom_exceptions import \
+    UsersNotBelongToGivenLevelHierarchy, UserIsNotAdmin
 from ib_iam.interactors.dtos.dtos import ImmediateSuperiorUserIdWithUserIdsDTO
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
@@ -34,6 +35,8 @@ class AddMembersToSuperiorsInteractor(ValidationMixin):
                 presenter=presenter, user_id=user_id,
                 immediate_superior_user_id_with_member_ids_dtos=immediate_superior_user_id_with_member_ids_dtos
             )
+        except UserIsNotAdmin:
+            response = presenter.response_for_user_is_not_admin()
         except InvalidTeamId:
             response = presenter.response_for_invalid_team_id()
         except InvalidLevelHierarchyOfTeam:
@@ -53,7 +56,8 @@ class AddMembersToSuperiorsInteractor(ValidationMixin):
     ):
         self.add_members_to_superiors(
             team_id=team_id, member_level_hierarchy=member_level_hierarchy,
-            immediate_superior_user_id_with_member_ids_dtos=immediate_superior_user_id_with_member_ids_dtos
+            immediate_superior_user_id_with_member_ids_dtos=immediate_superior_user_id_with_member_ids_dtos,
+            user_id=user_id
         )
         response = \
             presenter.prepare_success_response_for_add_members_superiors()

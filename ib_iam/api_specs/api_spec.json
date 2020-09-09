@@ -2530,7 +2530,8 @@
                   "INVALID_TEAM_ID",
                   "DUPLICATE_LEVEL_HIERARCHIES",
                   "NEGATIVE_LEVEL_HIERARCHIES",
-                  "DUPLICATE_TEAM_MEMBER_LEVEL_NAMES"
+                  "DUPLICATE_TEAM_MEMBER_LEVEL_NAMES",
+                  "USER_DOES_NOT_HAVE_ACCESS"
                 ]
               }
             },
@@ -2554,7 +2555,8 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_TEAM_ID"
+                  "INVALID_TEAM_ID",
+                  "USER_DOES_NOT_HAVE_ACCESS"
                 ]
               }
             },
@@ -2578,7 +2580,8 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_TEAM_ID"
+                  "INVALID_TEAM_ID",
+                  "USER_DOES_NOT_HAVE_ACCESS"
                 ]
               }
             },
@@ -2628,7 +2631,8 @@
                 "type": "string",
                 "enum": [
                   "INVALID_TEAM_ID",
-                  "INVALID_LEVEL_HIERARCHY"
+                  "INVALID_LEVEL_HIERARCHY",
+                  "USER_DOES_NOT_HAVE_ACCESS"
                 ]
               }
             },
@@ -2653,7 +2657,8 @@
                 "type": "string",
                 "enum": [
                   "INVALID_TEAM_ID",
-                  "INVALID_LEVEL_HIERARCHY"
+                  "INVALID_LEVEL_HIERARCHY",
+                  "USER_DOES_NOT_HAVE_ACCESS"
                 ]
               }
             },
@@ -2702,7 +2707,8 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_TEAM_ID"
+                  "INVALID_TEAM_ID",
+                  "USER_DOES_NOT_HAVE_ACCESS"
                 ]
               }
             },

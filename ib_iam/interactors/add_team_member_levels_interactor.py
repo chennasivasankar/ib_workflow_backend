@@ -42,7 +42,6 @@ class AddTeamMemberLevelsInteractor(ValidationMixin):
     ):
         from ib_iam.exceptions.custom_exceptions import InvalidTeamId
         from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin
-
         try:
             response = self._add_team_member_levels_response(
                 team_id=team_id, user_id=user_id,
