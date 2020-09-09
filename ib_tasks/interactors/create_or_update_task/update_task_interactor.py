@@ -466,7 +466,8 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
     ) -> Optional[TaskDelayReasonIsNotUpdated]:
         existing_due_date = \
             self.create_task_storage.get_existing_task_due_date(task_id)
-        due_date_has_changed = existing_due_date != updated_due_date
+        due_date_has_changed = existing_due_date != updated_due_date and \
+                               existing_due_date is not None
         if due_date_has_changed:
             self._validate_delay_reason_is_updated_or_not(
                 task_id, stage_id, updated_due_date)
