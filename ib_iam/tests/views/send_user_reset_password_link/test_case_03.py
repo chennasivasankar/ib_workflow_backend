@@ -32,7 +32,7 @@ class TestCase03SendUserResetPasswordLinkAPITestCase(TestUtils):
         path_params = {}
         query_params = {"token": user_reset_password_token}
         headers = {}
-        response = self.make_api_call(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

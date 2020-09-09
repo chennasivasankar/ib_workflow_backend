@@ -146,6 +146,12 @@ class StageDisplayValueDTO:
     value: int
 
 
+@dataclass()
+class StageDisplayDTO:
+    stage_id: str
+    display_value: str
+
+
 @dataclass
 class StageRoleDTO:
     db_stage_id: int

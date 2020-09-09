@@ -9,18 +9,19 @@ from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface i
 
 class GetTeamMemberLevelsInteractor:
 
-    def __init__(self, team_member_level_storage: TeamMemberLevelStorageInterface):
+    def __init__(self,
+                 team_member_level_storage: TeamMemberLevelStorageInterface):
         self.team_member_level_storage = team_member_level_storage
 
     def get_team_member_levels_wrapper(
             self, team_id: str,
             presenter: GetTeamMemberLevelsPresenterInterface):
-        '''
-        TODO:
-        Invalid TeamId
-        '''
-        response = self._get_team_member_levels_response(
-            team_id=team_id, presenter=presenter)
+        from ib_iam.exceptions.custom_exceptions import InvalidTeamId
+        try:
+            response = self._get_team_member_levels_response(
+                team_id=team_id, presenter=presenter)
+        except InvalidTeamId:
+            response = presenter.response_for_invalid_team_id()
         return response
 
     def _get_team_member_levels_response(
@@ -35,6 +36,7 @@ class GetTeamMemberLevelsInteractor:
 
     def get_team_member_levels(self, team_id: str) \
             -> List[TeamMemberLevelDetailsDTO]:
+        self.team_member_level_storage.validate_team_id(team_id=team_id)
         team_member_level_details_dtos = \
             self.team_member_level_storage.get_team_member_level_details_dtos(
                 team_id=team_id
