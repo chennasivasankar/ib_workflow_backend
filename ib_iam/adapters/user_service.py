@@ -19,11 +19,12 @@ class UserService:
             self, user_ids: List[str]) -> List[UserProfileDTO]:
         from ib_users.interactors.exceptions.user_profile \
             import InvalidUserException
+        from ib_iam.exceptions.custom_exceptions import InvalidUserId
+
         try:
             user_profiles = self.interface.get_user_profile_bulk(
                 user_ids=user_ids)
         except InvalidUserException:
-            from ib_iam.exceptions.custom_exceptions import InvalidUserId
             raise InvalidUserId()
         user_profile_dtos = [
             UserProfileDTO(
@@ -36,10 +37,12 @@ class UserService:
 
     def create_user_account_with_email(
             self, email: str, password: str = None) -> str:
-        from ib_iam.exceptions.custom_exceptions \
-            import UserAccountAlreadyExistWithThisEmail
+        from ib_iam.exceptions.custom_exceptions import \
+            UserAccountAlreadyExistWithThisEmail
         from ib_users.exceptions.registration_exceptions \
             import AccountWithThisEmailAlreadyExistsException
+        from ib_users.exceptions.custom_exception_constants import \
+            INVALID_EMAIL
         try:
             user_id = self.interface.create_user_account_with_email(
                 email=email, password=password)
@@ -47,8 +50,6 @@ class UserService:
         except AccountWithThisEmailAlreadyExistsException:
             raise UserAccountAlreadyExistWithThisEmail
         except CustomException as err:
-            from ib_users.exceptions.custom_exception_constants import \
-                INVALID_EMAIL
             if err.error_type == INVALID_EMAIL.code:
                 from ib_iam.exceptions.custom_exceptions import InvalidEmail
                 raise InvalidEmail
@@ -57,9 +58,9 @@ class UserService:
             self, user_id: str, user_profile_dto: UserProfileDTO):
         from ib_users.exceptions.invalid_email_exception import \
             InvalidEmailException
+        from ib_users.interactors.user_profile_interactor import \
+            CreateUserProfileDTO
         try:
-            from ib_users.interactors.user_profile_interactor import \
-                CreateUserProfileDTO
             create_user_profile_dto = CreateUserProfileDTO(
                 name=user_profile_dto.name,
                 email=user_profile_dto.email

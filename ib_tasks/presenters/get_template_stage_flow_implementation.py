@@ -55,10 +55,12 @@ class GetTemplateStageFlowPresenterImplementation(
 
         stage_dtos = stage_flow_complete_details_dto.stage_dtos
         stage_flow_dtos = stage_flow_complete_details_dto.stage_flow_dtos
-        return {
+        response_dict = {
             "stages": self._convert_stage_dtos_to_stages_dict(stage_dtos),
             "actions": self._convert_stage_flow_dtos_to_stage_flows_dict(stage_flow_dtos)
         }
+        response_object = self.prepare_200_success_response(response_dict)
+        return response_object
 
     @staticmethod
     def _convert_stage_flow_dtos_to_stage_flows_dict(

@@ -94,3 +94,20 @@ class TestAssignUserRolesForGivenProjectBulkPresenterImplementation:
         assert response['http_status_code'] == StatusCode.BAD_REQUEST.value
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
+
+    def test_response_for_user_is_not_admin(self, presenter):
+        # Arrange
+        from ib_iam.presenters.assign_user_roles_for_given_project_bulk_presenter_implementation import \
+            USER_DOES_NOT_ACCESS
+        expected_response = USER_DOES_NOT_ACCESS[0]
+        response_status_code = USER_DOES_NOT_ACCESS[1]
+
+        # Act
+        response_object = presenter.response_for_user_is_not_admin()
+
+        # Assert
+        response = json.loads(response_object.content)
+
+        assert response['http_status_code'] == StatusCode.BAD_REQUEST.value
+        assert response['res_status'] == response_status_code
+        assert response['response'] == expected_response
