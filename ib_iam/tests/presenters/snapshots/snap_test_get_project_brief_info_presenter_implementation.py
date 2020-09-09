@@ -10,15 +10,15 @@ snapshots = Snapshot()
 snapshots['TestGetProjectBriefInfoPresenterImplementation.test_success_response_for_get_project_brief_info_return_response get_project_brief_info'] = {
     'projects': [
         {
-            'display_id': 'display_id 1',
             'logo_url': 'logo 1',
             'name': 'name 1',
+            'project_display_id': 'display_id 1',
             'project_id': 'project_1'
         },
         {
-            'display_id': 'display_id 2',
             'logo_url': 'logo 2',
             'name': 'name 2',
+            'project_display_id': 'display_id 2',
             'project_id': 'project_2'
         }
     ]
