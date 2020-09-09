@@ -31,7 +31,7 @@
 #         )
 #
 #         # Act
-#         response = interactor.user_action_on_task_wrapper(presenter=presenter)
+#         response = interactor.act_on_task_wrapper(presenter=presenter)
 #
 #         # Assert
 #         mocker_obj.assert_called_once()

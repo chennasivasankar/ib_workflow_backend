@@ -542,6 +542,26 @@
             }
          }
       },
+      "ActOnTaskAndUpdateTaskStageAssigneesRequestBody":{
+         "type":"object",
+         "properties":{
+            "board_id":{
+               "type":"string"
+            },
+            "task_id":{
+               "type":"string"
+            },
+            "action_id":{
+               "type":"string"
+            },
+            "stage_assignees":{
+               "type":"array",
+               "items":{
+                  "$ref":"#/definitions/StageWithAssignee"
+               }
+            }
+         }
+      },
       "TaskOverviewFields":{
          "allOf":[
             {
@@ -1596,6 +1616,15 @@
             "$ref":"#/definitions/PerformActionRequestBody"
          }
       },
+      "ActOnTaskAndUpdateTaskStageAssigneesBodyParameter":{
+         "in":"body",
+         "name":"ActOnTaskAndUpdateTaskStageAssigneesRequestBody",
+         "description":"give valid details",
+         "required":true,
+         "schema":{
+            "$ref":"#/definitions/ActOnTaskAndUpdateTaskStageAssigneesRequestBody"
+         }
+      },
       "TaskParameterize":{
          "name":"task_id",
          "in":"path",
@@ -2003,7 +2032,8 @@
                      "USERS_NOT_EXISTS_FOR_TEAMS",
                      "INVALID_USER",
                      "INVALID_PROJECT_ID",
-                     "USER_NOT_A_MEMBER_OF_PROJECT"
+                     "USER_NOT_A_MEMBER_OF_PROJECT",
+                     "INVALID_STAGE_IDS_FOR_TASK"
                   ]
                }
             }
@@ -3697,6 +3727,48 @@
                },
                "403": {
                   "$ref":"#/responses/UserNotInProjectResponse"
+               }
+            }
+         }
+      },
+      "/act_on_task_and_update_task_stage_assignees/v1/":{
+         "post":{
+            "operationId":"act_on_task_and_update_task_stage_assignees",
+            "summary":"Act on Task And Update Task Stage Assignees",
+            "description":"User Submitting Response by acting on a task and Update task stage assignees given transition template",
+            "parameters":[
+               {
+                  "$ref":"#/parameters/ActOnTaskAndUpdateTaskStageAssigneesBodyParameter"
+               }
+            ],
+            "security":[
+               {
+                  "oauth":[
+                     "write"
+                  ]
+               }
+            ],
+            "responses":{
+               "200":{
+                  "description":"successful",
+                  "schema":{
+                     "$ref":"#/definitions/TaskActionResponseBody"
+                  }
+               },
+               "403":{
+                  "description":"Forbidden",
+                  "schema":{
+                     "$ref":"#/definitions/AccessUnauthorized"
+                  }
+               },
+               "404":{
+                  "description":"Not Found",
+                  "schema":{
+                     "$ref":"#/definitions/InvalidTaskActionDetails"
+                  }
+               },
+               "400":{
+                  "$ref":"#/responses/UserActionOnTaskFailureResponse"
                }
             }
          }

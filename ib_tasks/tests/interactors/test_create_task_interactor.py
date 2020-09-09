@@ -111,7 +111,7 @@ class TestCreateTaskInteractor:
     @pytest.fixture
     def user_action_on_task_mock(self, mocker):
         path = "ib_tasks.interactors.user_action_on_task_interactor" \
-               ".UserActionOnTaskInteractor.user_action_on_task"
+               ".UserActionOnTaskInteractor.act_on_task"
         return mocker.patch(path)
 
     @pytest.fixture
