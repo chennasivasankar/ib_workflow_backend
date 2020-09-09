@@ -7,7 +7,7 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestGetLevelsPresenterImplementation.test_response_for_level_details_dtos level_details_dtos_response'] = {
+snapshots['TestGetTeamMemberLevelsPresenterImplementation.test_response_for_level_details_dtos level_details_dtos_response'] = {
     'levels': [
         {
             'level_hierarchy': 0,
