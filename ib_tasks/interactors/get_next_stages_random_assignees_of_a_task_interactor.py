@@ -94,12 +94,12 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             next_stage_ids_of_task)
         stage_with_user_details_and_team_details_dto = self. \
             _get_users_with_less_tasks_in_given_stages(
-            valid_next_stage_ids_of_task, project_id)
+            stage_ids=valid_next_stage_ids_of_task, project_id=project_id, task_id=task_id)
 
         return stage_with_user_details_and_team_details_dto
 
     def _get_users_with_less_tasks_in_given_stages(
-            self, stage_ids: List[str], project_id: str) -> \
+            self, stage_ids: List[str],task_id: int, project_id: str) -> \
             StageWithUserDetailsAndTeamDetailsDTO:
         get_users_with_less_tasks_interactor = \
             GetUsersWithLessTasksInGivenStagesInteractor(
@@ -109,7 +109,7 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
         stage_with_user_details_and_team_details_dto = \
             get_users_with_less_tasks_interactor. \
                 get_users_with_less_tasks_in_given_stages(
-                stage_ids=stage_ids, project_id=project_id)
+                stage_ids=stage_ids, project_id=project_id, task_id=task_id)
         return stage_with_user_details_and_team_details_dto
 
     def _get_status_variables_dtos_of_task_based_on_action(self, task_id: int,
