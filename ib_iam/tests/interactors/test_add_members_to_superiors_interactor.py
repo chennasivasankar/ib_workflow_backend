@@ -191,8 +191,8 @@ class TestAddMembersToSuperiorsInteractor:
         assert response == \
                expected_presenter_response_for_team_member_ids_not_found_mock
 
-        call_obj = presenter_mock.response_for_team_member_ids_not_found.call_args
-        error_object = call_obj.args[0]
+        call_args = presenter_mock.response_for_team_member_ids_not_found.call_args
+        error_object = call_args[0][0]
 
         assert error_object.team_member_ids == team_member_ids_not_found
         presenter_mock.response_for_team_member_ids_not_found. \
@@ -232,9 +232,9 @@ class TestAddMembersToSuperiorsInteractor:
 
         storage_mock.get_team_member_ids.return_value = \
             team_member_ids_in_database
-        from ib_iam.exceptions.custom_exceptions import UsersNotBelongToLevel
+        from ib_iam.exceptions.custom_exceptions import UsersNotBelongToGivenLevelHierarchy
         storage_mock.validate_users_belong_to_given_level_hierarchy_in_a_team.side_effect = \
-            UsersNotBelongToLevel(
+            UsersNotBelongToGivenLevelHierarchy(
                 user_ids=subordinate_user_ids,
                 level_hierarchy=member_level_hierarchy
             )
@@ -258,8 +258,8 @@ class TestAddMembersToSuperiorsInteractor:
             user_ids=subordinate_user_ids
         )
 
-        call_obj = presenter_mock.response_for_users_not_belong_to_team_member_level.call_args
-        error_object = call_obj.args[0]
+        call_args = presenter_mock.response_for_users_not_belong_to_team_member_level.call_args
+        error_object = call_args[0][0]
         assert error_object.user_ids == subordinate_user_ids
         assert error_object.level_hierarchy == member_level_hierarchy
 

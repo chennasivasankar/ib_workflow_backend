@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_iam.exceptions.custom_exceptions import InvalidUserIdsForProject, \
-    InvalidRoleIdsForProject, InvalidProjectId
+    InvalidRoleIdsForProject, InvalidProjectId, UserIsNotAdmin
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.presenter_interfaces.assign_user_roles_for_given_project_presenter_interface import \
     AssignUserRolesForGivenProjectBulkPresenterInterface
@@ -15,15 +15,17 @@ class AssignUserRolesForGivenProjectBulkInteractor:
         self.user_storage = user_storage
 
     def assign_user_roles_for_given_project_bulk_wrapper(
-            self, project_id: str,
+            self, project_id: str, user_id: str,
             user_id_with_role_ids_dtos: List[UserIdWithRoleIdsDTO],
             presenter: AssignUserRolesForGivenProjectBulkPresenterInterface
     ):
         try:
             response = self._assign_user_roles_for_given_project_bulk(
                 user_id_with_role_ids_dtos=user_id_with_role_ids_dtos,
-                project_id=project_id, presenter=presenter
+                project_id=project_id, presenter=presenter, user_id=user_id
             )
+        except UserIsNotAdmin:
+            response = presenter.response_for_user_is_not_admin()
         except InvalidProjectId:
             response = presenter.response_for_invalid_project_id()
         except InvalidUserIdsForProject as err:
@@ -33,22 +35,25 @@ class AssignUserRolesForGivenProjectBulkInteractor:
         return response
 
     def _assign_user_roles_for_given_project_bulk(
-            self, project_id: str,
+            self, project_id: str, user_id: str,
             user_id_with_role_ids_dtos: List[UserIdWithRoleIdsDTO],
             presenter: AssignUserRolesForGivenProjectBulkPresenterInterface
     ):
         self.assign_user_roles_for_given_project_bulk(
             user_id_with_role_ids_dtos=user_id_with_role_ids_dtos,
-            project_id=project_id
+            project_id=project_id, user_id=user_id
         )
         response = presenter. \
             prepare_success_response_for_assign_user_roles_for_given_project()
         return response
 
     def assign_user_roles_for_given_project_bulk(
-            self, project_id: str,
+            self, project_id: str, user_id: str,
             user_id_with_role_ids_dtos: List[UserIdWithRoleIdsDTO]
     ):
+        is_user_not_admin = not self.user_storage.is_user_admin(user_id=user_id)
+        if is_user_not_admin:
+            raise UserIsNotAdmin
         user_ids = [
             user_id_with_role_ids_dto.user_id
             for user_id_with_role_ids_dto in user_id_with_role_ids_dtos

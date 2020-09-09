@@ -27,11 +27,11 @@ class TestCase01GetTeamMembersOfLevelHierarchyAPITestCase(TestUtils):
         }
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
 
     @pytest.fixture()
     def prepare_user_profile_dtos_setup(self, mocker):

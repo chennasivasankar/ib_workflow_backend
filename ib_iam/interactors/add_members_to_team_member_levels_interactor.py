@@ -3,7 +3,7 @@ from typing import List
 from ib_iam.exceptions.custom_exceptions import MemberIdsNotFoundInTeam
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelIdWithMemberIdsDTO
 from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
-    AddMembersToLevelPresenterInterface
+    AddMembersToTeamMemberLevelsPresenterInterface
 from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface import \
     TeamMemberLevelStorageInterface
 
@@ -13,20 +13,20 @@ class TeamMemberLevelIdsNotFound(Exception):
         self.team_member_level_ids = team_member_level_ids
 
 
-class AddMembersToLevelsInteractor:
+class AddMembersToTeamMemberLevelsInteractor:
 
     def __init__(self,
                  team_member_level_storage: TeamMemberLevelStorageInterface):
         self.team_member_level_storage = team_member_level_storage
 
-    def add_members_to_levels_wrapper(
-            self, presenter: AddMembersToLevelPresenterInterface, team_id: str,
+    def add_members_to_team_member_levels_wrapper(
+            self, presenter: AddMembersToTeamMemberLevelsPresenterInterface, team_id: str,
             team_member_level_id_with_member_ids_dtos: List[
                 TeamMemberLevelIdWithMemberIdsDTO]
     ):
         from ib_iam.exceptions.custom_exceptions import InvalidTeamId
         try:
-            response = self._add_members_to_levels_response(
+            response = self._add_members_to_team_member_levels_response(
                 team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos,
                 presenter=presenter, team_id=team_id
             )
@@ -39,21 +39,21 @@ class AddMembersToLevelsInteractor:
             response = presenter.response_for_team_member_ids_not_found(err)
         return response
 
-    def _add_members_to_levels_response(
-            self, presenter: AddMembersToLevelPresenterInterface,
+    def _add_members_to_team_member_levels_response(
+            self, presenter: AddMembersToTeamMemberLevelsPresenterInterface,
             team_member_level_id_with_member_ids_dtos: List[
                 TeamMemberLevelIdWithMemberIdsDTO],
             team_id: str
     ):
-        self.add_members_to_levels(
+        self.add_members_to_team_member_levels(
             team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos,
             team_id=team_id
         )
         response = \
-            presenter.prepare_success_response_for_add_members_to_levels()
+            presenter.prepare_success_response_for_add_members_to_team_member_levels()
         return response
 
-    def add_members_to_levels(
+    def add_members_to_team_member_levels(
             self, team_member_level_id_with_member_ids_dtos: List[
                 TeamMemberLevelIdWithMemberIdsDTO],
             team_id: str

@@ -19,9 +19,9 @@ def populate_stage_flows(stage_flow_dicts: List[Dict]):
 
 
 def append_action_dict(stage_dict: Dict[str, Any]):
-    previous_stage_id = stage_dict['previous_stage_id']
-    action_name = stage_dict['action_name']
-    next_stage_id = stage_dict['next_stage_id']
+    previous_stage_id = stage_dict['previous_stage_id'].strip('\n')
+    action_name = stage_dict['action_name'].strip('\n')
+    next_stage_id = stage_dict['next_stage_id'].strip('\n')
     from ib_tasks.interactors.storage_interfaces.stage_dtos import CreateStageFlowDTO
     return CreateStageFlowDTO(
         previous_stage_id=previous_stage_id,

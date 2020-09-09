@@ -64,8 +64,9 @@ class AuthService:
 
     @staticmethod
     def _raise_exception_for_account_id_deactivated(error_type: str):
-        from ib_users.exceptions.custom_exception_constants import \
+        from ib_users.exceptions.custom_exception_constants import (
             USER_ACCOUNT_IS_DEACTIVATED, NOT_REGISTERED_USER
+        )
         from ib_iam.exceptions.custom_exceptions import \
             UserAccountDoesNotExist
 
@@ -76,16 +77,18 @@ class AuthService:
 
     @staticmethod
     def _raise_exception_for_invalid_email(error_type: str):
-        from ib_users.exceptions.custom_exception_constants import \
+        from ib_users.exceptions.custom_exception_constants import (
             INVALID_EMAIL
+        )
         if error_type == INVALID_EMAIL.code:
             from ib_iam.exceptions.custom_exceptions import InvalidEmail
             raise InvalidEmail
 
     @staticmethod
     def _raise_exception_for_invalid_password(error_type: str):
-        from ib_iam.interactors.user_login_interactor import \
+        from ib_iam.interactors.user_login_interactor import (
             IncorrectPassword
+        )
         from ib_users.exceptions.custom_exception_constants import (
             PASSWORD_AT_LEAST_1_SPECIAL_CHARACTER,
             INCORRECT_PASSWORD, PASSWORD_MIN_LENGTH_IS
@@ -102,12 +105,12 @@ class AuthService:
         self.interface.logout_in_all_devices(user_id=user_id)
 
     def get_reset_password_token(self, email: str, expires_in_sec: int) -> str:
-        from ib_users.interactors.exceptions.user_credentials_exceptions import \
-            AccountWithEmailDoesntExistException
-        from ib_users.exceptions.custom_exception_constants import \
-            INVALID_EMAIL
-        from ib_iam.exceptions.custom_exceptions import \
-            UserAccountDoesNotExist, InvalidEmail
+        from ib_users.interactors.exceptions.user_credentials_exceptions import (
+            AccountWithEmailDoesntExistException)
+        from ib_users.exceptions.custom_exception_constants import (
+            INVALID_EMAIL)
+        from ib_iam.exceptions.custom_exceptions import (
+            UserAccountDoesNotExist, InvalidEmail)
 
         try:
             reset_password_token = self.interface. \
@@ -122,10 +125,10 @@ class AuthService:
 
     def update_user_password_with_reset_password_token(
             self, reset_password_token: str, password: str):
-        from ib_users.interactors.exceptions.user_credentials_exceptions import \
-            InvalidTokenException, TokenExpiredException
-        from ib_users.exceptions.custom_exception_constants import \
-            PASSWORD_AT_LEAST_1_SPECIAL_CHARACTER, PASSWORD_MIN_LENGTH_IS
+        from ib_users.interactors.exceptions.user_credentials_exceptions import (
+            InvalidTokenException, TokenExpiredException)
+        from ib_users.exceptions.custom_exception_constants import (
+            PASSWORD_AT_LEAST_1_SPECIAL_CHARACTER, PASSWORD_MIN_LENGTH_IS)
         from ib_iam.interactors.reset_user_password_interactor import (
             PasswordAtLeastOneSpecialCharacter, PasswordMinLength,
             TokenDoesNotExist, TokenHasExpired
@@ -156,15 +159,14 @@ class AuthService:
     def update_user_password(
             self, user_id: str,
             current_and_new_password_dto: CurrentAndNewPasswordDTO):
-        from ib_users.interactors.user_credentials.exceptions \
-            .user_credentials_exceptions import (
+        from ib_users.interactors.user_credentials.exceptions.user_credentials_exceptions import (
             InvalidCurrentPasswordException, InvalidNewPasswordException
         )
-        from ib_users.interactors.exceptions \
-            .user_credentials_exceptions import \
-            CurrentPasswordMismatchException
-        from ib_iam.exceptions.custom_exceptions import \
-            InvalidNewPassword, CurrentPasswordMismatch, InvalidCurrentPassword
+        from ib_users.interactors.exceptions.user_credentials_exceptions import (
+            CurrentPasswordMismatchException)
+        from ib_iam.exceptions.custom_exceptions import (
+            InvalidNewPassword, CurrentPasswordMismatch,
+            InvalidCurrentPassword)
         try:
             self.interface.update_password(
                 user_id=user_id,
@@ -180,11 +182,11 @@ class AuthService:
 
     def get_refresh_auth_tokens_dto(self, access_token: str,
                                     refresh_token: str) -> UserTokensDTO:
-        from ib_users.constants.custom_exception_messages import \
-            INVALID_ACCESS_TOKEN
+        from ib_users.constants.custom_exception_messages import (
+            INVALID_ACCESS_TOKEN)
         from django_swagger_utils.drf_server.exceptions import NotFound
-        from ib_users.exceptions.custom_exception_constants import \
-            USER_ACCOUNT_IS_DEACTIVATED
+        from ib_users.exceptions.custom_exception_constants import (
+            USER_ACCOUNT_IS_DEACTIVATED)
         from ib_users.exceptions.oauth2_exceptions import RefreshTokenExpired
         from ib_users.exceptions.oauth2_exceptions import RefreshTokenNotFound
 

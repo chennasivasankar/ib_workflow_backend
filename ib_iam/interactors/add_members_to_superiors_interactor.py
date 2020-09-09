@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_iam.exceptions.custom_exceptions import UsersNotBelongToLevel
+from ib_iam.exceptions.custom_exceptions import UsersNotBelongToGivenLevelHierarchy
 from ib_iam.interactors.dtos.dtos import ImmediateSuperiorUserIdWithUserIdsDTO
 from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
     AddMembersToSuperiorsPresenterInterface
@@ -35,7 +35,7 @@ class AddMembersToSuperiorsInteractor:
             response = presenter.response_for_invalid_level_hierarchy_of_team()
         except MemberIdsNotFoundInTeam as err:
             response = presenter.response_for_team_member_ids_not_found(err)
-        except UsersNotBelongToLevel as err:
+        except UsersNotBelongToGivenLevelHierarchy as err:
             response = presenter. \
                 response_for_users_not_belong_to_team_member_level(err)
         return response
@@ -67,7 +67,7 @@ class AddMembersToSuperiorsInteractor:
             immediate_superior_user_id_with_member_ids_dtos=immediate_superior_user_id_with_member_ids_dtos,
             team_id=team_id
         )
-        self._validate_users_belong_to_given_level_hierarchy_in_a_team(
+        self._validate_team_users_belong_to_given_level_hierarchy_in_a_team(
             immediate_superior_user_id_with_member_ids_dtos,
             member_level_hierarchy, team_id)
         self.team_member_level_storage.add_members_to_superiors(
@@ -76,7 +76,7 @@ class AddMembersToSuperiorsInteractor:
         )
         return
 
-    def _validate_users_belong_to_given_level_hierarchy_in_a_team(
+    def _validate_team_users_belong_to_given_level_hierarchy_in_a_team(
             self,
             immediate_superior_user_id_with_member_ids_dtos: List[
                 ImmediateSuperiorUserIdWithUserIdsDTO],

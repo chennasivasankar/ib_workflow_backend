@@ -46,11 +46,11 @@ class TestCase01AddMembersToLevelsAPITestCase(TestUtils):
         path_params = {"team_id": team_id}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
 
         from ib_iam.models import TeamUser
         user_team_details = TeamUser.objects.filter(team_id=team_id).values(

@@ -52,8 +52,8 @@ class TestValidateUsersBelongToGivenLevelHierarchyInATeam:
         ]
 
         # Assert
-        from ib_iam.exceptions.custom_exceptions import UsersNotBelongToLevel
-        with pytest.raises(UsersNotBelongToLevel) as err:
+        from ib_iam.exceptions.custom_exceptions import UsersNotBelongToGivenLevelHierarchy
+        with pytest.raises(UsersNotBelongToGivenLevelHierarchy) as err:
             storage.validate_users_belong_to_given_level_hierarchy_in_a_team(
                 team_id=team_id, level_hierarchy=level_hierarchy,
                 user_ids=user_ids
