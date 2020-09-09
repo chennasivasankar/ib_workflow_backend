@@ -10,6 +10,7 @@ from ib_utility_tools.interactors.storage_interfaces \
 
 
 class StopTimerInteractor:
+
     def __init__(self, timer_storage: TimerStorageInterface):
         self.timer_storage = timer_storage
 
@@ -21,7 +22,8 @@ class StopTimerInteractor:
             response = presenter.get_response_for_get_timer_details(
                 timer_details_dto=timer_details_dto)
         except TimerIsAlreadyStopped:
-            response = presenter.response_for_timer_is_already_stopped_exception()
+            response = presenter \
+                .get_response_for_timer_is_already_stopped_exception()
         return response
 
     def stop_timer(self, timer_entity_dto: TimerEntityDTO):
@@ -34,6 +36,7 @@ class StopTimerInteractor:
         duration_in_seconds = \
             timer_details_dto.duration_in_seconds + time_delta.seconds
         timer_details_dto = TimerDetailsDTO(
+            start_datetime=None,
             duration_in_seconds=duration_in_seconds,
             is_running=False)
         self.timer_storage.update_timer(

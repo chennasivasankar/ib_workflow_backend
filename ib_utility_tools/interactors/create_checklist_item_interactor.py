@@ -8,6 +8,7 @@ from ib_utility_tools.interactors.storage_interfaces.dtos import \
 
 
 class CreateChecklistItemInteractor:
+
     def __init__(self, checklist_storage: ChecklistStorageInterface):
         self.checklist_storage = checklist_storage
 
@@ -24,7 +25,7 @@ class CreateChecklistItemInteractor:
 
     def create_checklist_item(
             self, checklist_item_with_entity_dto: ChecklistItemWithEntityDTO
-    ):
+    ) -> str:
         checklist_id = self._get_or_create_checklist_for_given_entity_details(
             entity_id=checklist_item_with_entity_dto.entity_id,
             entity_type=checklist_item_with_entity_dto.entity_type

@@ -6,23 +6,24 @@ from ib_utility_tools.constants.enum import StatusCode
 
 
 class TestUpdateChecklistItemPresenterImplementation:
+
     @pytest.fixture
     def presenter(self):
-        from ib_utility_tools.presenters.update_checklist_item_presenter_implementation import (
+        from ib_utility_tools.presenters \
+            .update_checklist_item_presenter_implementation import \
             UpdateChecklistItemPresenterImplementation
-        )
-        presenter = UpdateChecklistItemPresenterImplementation()
-        return presenter
+        return UpdateChecklistItemPresenterImplementation()
 
     def test_whether_it_gives_empty_checklist_item_id_not_found_response(
             self, presenter
     ):
         # Arrange
-        from ib_utility_tools.constants.exception_messages import (
-            CHECKLIST_ITEM_ID_NOT_FOUND_FOR_UPDATE_CHECKLIST_ITEM as checklist_item_id_not_found
-        )
-        expected_response = checklist_item_id_not_found[0]
-        expected_res_status = checklist_item_id_not_found[1]
+        from ib_utility_tools.constants.exception_messages import \
+            CHECKLIST_ITEM_ID_NOT_FOUND_FOR_UPDATE_CHECKLIST_ITEM
+        expected_response = \
+            CHECKLIST_ITEM_ID_NOT_FOUND_FOR_UPDATE_CHECKLIST_ITEM[0]
+        expected_res_status = \
+            CHECKLIST_ITEM_ID_NOT_FOUND_FOR_UPDATE_CHECKLIST_ITEM[1]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
         # Act

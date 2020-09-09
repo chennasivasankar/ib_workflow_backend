@@ -1,9 +1,8 @@
 import abc
 from typing import List
 
-from ib_utility_tools.interactors.storage_interfaces.dtos import (
+from ib_utility_tools.interactors.storage_interfaces.dtos import \
     ChecklistItemWithIdDTO
-)
 
 
 class DeleteChecklistItemsPresenterInterface(abc.ABC):
@@ -13,24 +12,23 @@ class DeleteChecklistItemsPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def response_for_duplicate_checklist_item_ids_exception(self):
+    def get_response_for_duplicate_checklist_item_ids_exception(self):
         pass
 
     @abc.abstractmethod
-    def response_for_invalid_checklist_item_ids_exception(self):
+    def get_response_for_invalid_checklist_item_ids_exception(self):
         pass
 
 
 class CreateChecklistItemPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_response_for_create_checklist_item(
-            self, checklist_item_id: str
-    ):
+    def get_response_for_create_checklist_item(self, checklist_item_id: str):
         pass
 
 
 class GetChecklistPresenterInterface(abc.ABC):
+
     @abc.abstractmethod
     def get_response_for_get_checklist(
             self, checklist_item_dtos: List[ChecklistItemWithIdDTO]

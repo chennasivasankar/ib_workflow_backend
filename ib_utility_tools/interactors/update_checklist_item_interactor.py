@@ -9,6 +9,7 @@ from ib_utility_tools.interactors.storage_interfaces.dtos import \
 
 
 class UpdateChecklistItemInteractor:
+
     def __init__(self, checklist_storage: ChecklistStorageInterface):
         self.checklist_storage = checklist_storage
 

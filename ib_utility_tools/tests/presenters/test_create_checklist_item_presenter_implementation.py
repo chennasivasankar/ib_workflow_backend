@@ -4,11 +4,12 @@ import pytest
 
 
 class TestCreateChecklistItemPresenterImplementation:
+
     @pytest.fixture
     def presenter(self):
-        from ib_utility_tools.presenters.create_checklist_item_presenter_implementation import (
+        from ib_utility_tools.presenters \
+            .create_checklist_item_presenter_implementation import \
             CreateChecklistItemPresenterImplementation
-        )
         return CreateChecklistItemPresenterImplementation()
 
     def test_with_valid_details_then_returns_checklist_id_response(self,
