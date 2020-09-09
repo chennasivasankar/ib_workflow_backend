@@ -242,3 +242,9 @@ class ProjectRoleDTO:
 class RoleNameAndDescriptionDTO:
     name: str
     description: Optional[str] = None
+
+
+@dataclass
+class UserIdAndTeamIdsDTO:
+    user_id: str
+    team_ids: List[str]

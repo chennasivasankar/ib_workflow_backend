@@ -17,7 +17,10 @@ class TestCase01UpdateProjectDetailsAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.mark.django_db
-    def test_case(self, setup, mocker, snapshot):
+    def test_case(self, setup, api_user, mocker, snapshot):
+        user_id = str(api_user.user_id)
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        UserDetailsFactory(user_id=user_id, is_admin=True)
         from ib_iam.tests.common_fixtures.adapters.uuid_mock import \
             prepare_uuid_mock
         mock = prepare_uuid_mock(mocker)
@@ -45,11 +48,15 @@ class TestCase01UpdateProjectDetailsAPITestCase(TestUtils):
         path_params = {"project_id": "project_1"}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
+        self._additional_checks(snapshot)
+
+    @staticmethod
+    def _additional_checks(snapshot):
         from ib_iam.models import Project, ProjectTeam, ProjectRole
         project_id = "project_1"
         project_details = Project.objects.filter(project_id=project_id) \
@@ -62,6 +69,8 @@ class TestCase01UpdateProjectDetailsAPITestCase(TestUtils):
         project_roles = ProjectRole.objects.filter(project_id=project_id) \
             .values("role_id", "name", "description")
         snapshot.assert_match(list(project_roles), "project_roles")
+        # todo after merging add-validations-pr-of-update-project write a test
+        #  to show the user roles left after deleting some teams
 
     @pytest.fixture
     def setup(self):

@@ -88,7 +88,7 @@
         "res_status": {
           "type": "string",
           "enum": [
-            "USER_DONOT_HAVE_ACCESS"
+            "USER_NOT_HAVE_ACCESS_TO_COLUMN"
           ]
         }
       },
@@ -275,6 +275,28 @@
         "stage_with_actions"
       ]
     },
+    "TaskOverviewWithStageAndActionsListView": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "task_overview_fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaskOverviewFieldsListView"
+          }
+        },
+        "stage_with_actions": {
+          "$ref": "#/definitions/StagesWithActions"
+        }
+      },
+      "required": [
+        "task_id",
+        "task_overview_fields",
+        "stage_with_actions"
+      ]
+    },
     "TaskOverviewFields": {
       "allOf": [
         {
@@ -288,12 +310,69 @@
             },
             "field_response": {
               "type": "string"
+            },
+            "field_id": {
+              "type": "string"
             }
           },
           "required": [
-            "field_display_name"
+            "field_display_name",
+            "field_id"
           ]
         }
+      ]
+    },
+    "TaskOverviewFieldsListView": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/FieldTypeEnum"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "field_display_name": {
+              "type": "string"
+            },
+            "field_response": {
+              "type": "string"
+            },
+            "field_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "field_display_name",
+            "field_id"
+          ]
+        }
+      ]
+    },
+    "AllFieldsInColumn": {
+      "type": "object",
+      "properties": {
+        "field_id": {
+          "type": "string"
+        },
+        "field_display_name": {
+          "type": "string"
+        },
+        "display_order": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "display_status": {
+          "type": "string",
+          "enum": [
+            "HIDE",
+            "SHOW"
+          ]
+        }
+      },
+      "required": [
+        "field_display_name",
+        "display_order",
+        "display_status",
+        "field_id"
       ]
     },
     "Assignee": {
@@ -409,6 +488,28 @@
         "res_status"
       ]
     },
+    "InvalidDisplayOrder": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_DISPLAY_ORDER"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
     "ForbiddenInFieldsOperation": {
       "type": "object",
       "properties": {
@@ -421,9 +522,10 @@
         "res_status": {
           "type": "string",
           "enum": [
-            "USER_DO_NOT_HAVE_ACCESS_COLUMN",
-            "USER_DO_NOT_HAVE_ACCESS_FIELD",
-            "FIELD_NOT_BELONGS_TO_COLUMN"
+            "USER_NOT_HAVE_ACCESS_TO_COLUMN",
+            "USER_DO_NOT_HAVE_ACCESS_FIELDS",
+            "FIELD_NOT_BELONGS_TO_COLUMN",
+            "FIELDS_NOT_BELONGS_TO_COLUMN"
           ]
         }
       },
@@ -519,13 +621,39 @@
         "tasks"
       ]
     },
+    "TaskCompleteDetailsListView": {
+      "type": "object",
+      "properties": {
+        "total_tasks": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaskOverviewWithStageAndActionsListView"
+          }
+        },
+        "all_fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AllFieldsInColumn"
+          }
+        }
+      },
+      "required": [
+        "total_tasks",
+        "tasks",
+        "all_fields"
+      ]
+    },
     "FieldDisplay": {
       "type": "object",
       "properties": {
         "field_id": {
           "type": "string"
         },
-        "display_name": {
+        "field_display_name": {
           "type": "string"
         },
         "display_status": {
@@ -544,7 +672,7 @@
         "display_order",
         "display_status",
         "field_id",
-        "display_name"
+        "field_display_name"
       ]
     }
   },
@@ -607,6 +735,9 @@
       "schema": {
         "type": "object",
         "properties": {
+          "field_id": {
+            "type": "string"
+          },
           "display_status": {
             "type": "string",
             "enum": [
@@ -616,7 +747,8 @@
           }
         },
         "required": [
-          "display_status"
+          "display_status",
+          "field_id"
         ]
       }
     },
@@ -627,6 +759,9 @@
       "schema": {
         "type": "object",
         "properties": {
+          "field_id": {
+            "type": "string"
+          },
           "display_order": {
             "type": "integer",
             "format": "int64"
@@ -639,7 +774,9 @@
           }
         },
         "required": [
-          "display_order"
+          "display_order",
+          "field_id",
+          "field_ids"
         ]
       }
     },
@@ -740,6 +877,12 @@
         "$ref": "#/definitions/ForbiddenInFieldsOperation"
       }
     },
+    "InvalidDisplayOrderResponse": {
+      "description": "invalid starred board response",
+      "schema": {
+        "$ref": "#/definitions/InvalidDisplayOrder"
+      }
+    },
     "GetBoardsResponse": {
       "description": "get boards response",
       "schema": {
@@ -785,6 +928,12 @@
       "description": "tasks details",
       "schema": {
         "$ref": "#/definitions/TaskCompleteDetails"
+      }
+    },
+    "TaskDetailsListViewResponse": {
+      "description": "tasks details",
+      "schema": {
+        "$ref": "#/definitions/TaskCompleteDetailsListView"
       }
     },
     "FieldsDisplayResponse": {
@@ -964,7 +1113,53 @@
         }
       }
     },
-    "/columns/{column_id}/fields/{field_id}/display_status/": {
+    "/columns/{column_id}/tasks/v2/": {
+      "post": {
+        "operationId": "get_column_tasks_for_list_view",
+        "summary": "Get Column Tasks in list view",
+        "description": "get column tasks details",
+        "security": [
+          {
+            "oauth": [
+              "read",
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/ColumnIdParameter"
+          },
+          {
+            "$ref": "#/parameters/ViewTypeParameter"
+          },
+          {
+            "$ref": "#/parameters/SearchQueryParameter"
+          }
+        ],
+        "responses": {
+          "403": {
+            "$ref": "#/responses/InvalidAccessResponse"
+          },
+          "400": {
+            "$ref": "#/responses/InvalidPaginationResponse"
+          },
+          "404": {
+            "$ref": "#/responses/InvalidTasksResponse"
+          },
+          "200": {
+            "$ref": "#/responses/TaskDetailsListViewResponse"
+          }
+        }
+      }
+    },
+    "/columns/{column_id}/fields_display_status/v1/": {
       "post": {
         "summary": "Change the display status of the field in the column",
         "operationId": "change_the_display_status_of_field",
@@ -977,9 +1172,6 @@
           }
         ],
         "parameters": [
-          {
-            "$ref": "#/parameters/FieldIdPathParameter"
-          },
           {
             "$ref": "#/parameters/ColumnIdParameter"
           },
@@ -1000,7 +1192,7 @@
         }
       }
     },
-    "/columns/{column_id}/fields/{field_id}/display_order/": {
+    "/columns/{column_id}/fields_display_order/v1/": {
       "post": {
         "summary": "Change the display order of the field in the column",
         "operationId": "change_the_display_order_of_field",
@@ -1013,9 +1205,6 @@
           }
         ],
         "parameters": [
-          {
-            "$ref": "#/parameters/FieldIdPathParameter"
-          },
           {
             "$ref": "#/parameters/ColumnIdParameter"
           },
@@ -1031,6 +1220,9 @@
             "$ref": "#/responses/InvalidFieldsOperationResponse"
           },
           "403": {
+            "$ref": "#/responses/ForbiddenResponse"
+          },
+          "400": {
             "$ref": "#/responses/ForbiddenResponse"
           }
         }

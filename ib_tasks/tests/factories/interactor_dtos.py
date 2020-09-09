@@ -15,7 +15,8 @@ from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
     UserStagesWithPaginationDTO, StageAssigneeDTO, \
-    StageAssigneeWithTeamDetailsDTO, AssigneeWithTeamDetailsDTO
+    StageAssigneeWithTeamDetailsDTO, AssigneeWithTeamDetailsDTO, \
+    StageWithUserDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -23,7 +24,10 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO
+    TaskWithDbStageIdDTO, AssigneeCurrentTasksCountDTO, StageActionNamesDTO, \
+    StageAssigneeDetailsDTO, CurrentStageDetailsDTO, StageIdWithValueDTO, \
+    CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO, StageActionNamesDTO, CreateStageFlowDTO, \
+    StageFlowWithActionIdDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     TaskDueParametersDTO, \
@@ -52,7 +56,7 @@ class UserDetailsDTOFactory(factory.Factory):
     class Meta:
         model = UserDetailsDTO
 
-    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
+    user_id = factory.Sequence(lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
     user_name = factory.Sequence(lambda n: "name_%d" % n)
     profile_pic_url = "pic_url"
 
@@ -82,6 +86,14 @@ class StageActionDTOFactory(factory.Factory):
         lambda n: "template_%d" % (n + 1))
     button_color = factory.Sequence(lambda n: 'button_color_%d' % (n + 1))
     function_path = "sample_function_path"
+
+
+class StageActionNamesDTOFactory(factory.Factory):
+    class Meta:
+        model = StageActionNamesDTO
+
+    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
+    action_names = factory.Sequence(lambda n: ['action_name_%d' % (n + 1)])
 
 
 class TaskTemplateStageActionDTOFactory(factory.Factory):
@@ -267,7 +279,7 @@ class TaskIdWithStageAssigneeDTOFactory(factory.Factory):
 
     task_id = factory.sequence(lambda n: n + 1)
     db_stage_id = factory.Sequence(lambda n: n + 1)
-    assignee_id = factory.sequence(lambda n: "user_{}".format(n+1))
+    assignee_id = factory.sequence(lambda n: "user_{}".format(n + 1))
     team_id = factory.sequence(lambda n: "team_{}".format(n + 1))
 
 
@@ -338,9 +350,8 @@ class CreateTaskDTOFactory(factory.Factory):
     action_id = factory.Sequence(lambda c: "action_id_{}".format(c))
     title = factory.Sequence(lambda c: "title_{}".format(c))
     description = factory.Sequence(lambda c: "description{}".format(c))
-    start_date = datetime.today().date()
-    due_date = datetime.today().date() + timedelta(days=2)
-    due_time = "12:30:20"
+    start_datetime = datetime.now()
+    due_datetime = datetime.now() + timedelta(days=2)
     priority = Priority.HIGH.value
 
     @factory.lazy_attribute
@@ -362,12 +373,12 @@ class UpdateTaskDTOFactory(factory.Factory):
         model = UpdateTaskDTO
 
     task_id = factory.Sequence(lambda c: c)
+    action_type = None
     created_by_id = "123e4567-e89b-12d3-a456-426614174000"
     title = factory.Sequence(lambda c: "title_{}".format(c))
     description = factory.Sequence(lambda c: "description{}".format(c))
-    start_date = datetime.today().date()
-    due_date = datetime.today().date() + timedelta(days=2)
-    due_time = "12:30:20"
+    start_datetime = datetime.now()
+    due_datetime = datetime.now() + timedelta(days=2)
     priority = Priority.HIGH.value
     stage_assignee = factory.SubFactory(StageIdWithAssigneeDTOFactory)
 
@@ -382,12 +393,12 @@ class UpdateTaskWithTaskDisplayIdDTOFactory(factory.Factory):
 
     task_display_id = factory.Sequence(
         lambda c: "task_display_id_{}".format(c))
+    action_type = None
     created_by_id = "123e4567-e89b-12d3-a456-426614174000"
     title = factory.Sequence(lambda c: "title_{}".format(c))
     description = factory.Sequence(lambda c: "description{}".format(c))
-    start_date = datetime.today().date()
-    due_date = datetime.today().date() + timedelta(days=2)
-    due_time = "12:30:20"
+    start_datetime = datetime.now()
+    due_datetime = datetime.now() + timedelta(days=2)
     priority = Priority.HIGH.value
     stage_assignee = factory.SubFactory(StageIdWithAssigneeDTOFactory)
 
@@ -405,9 +416,8 @@ class SaveAndActOnTaskDTOFactory(factory.Factory):
     action_id = factory.Sequence(lambda c: c)
     title = factory.Sequence(lambda c: "title_{}".format(c))
     description = factory.Sequence(lambda c: "description{}".format(c))
-    start_date = datetime.today().date()
-    due_date = datetime.today().date() + timedelta(days=2)
-    due_time = "12:30:20"
+    start_datetime = datetime.now()
+    due_datetime = datetime.now() + timedelta(days=2)
     priority = Priority.HIGH.value
     stage_assignee = factory.SubFactory(StageIdWithAssigneeDTOFactory)
 
@@ -425,9 +435,8 @@ class SaveAndActOnTaskWithTaskDisplayIdDTOFactory(factory.Factory):
     action_id = factory.Sequence(lambda c: c)
     title = factory.Sequence(lambda c: "title_{}".format(c))
     description = factory.Sequence(lambda c: "description{}".format(c))
-    start_date = datetime.today().date()
-    due_date = datetime.today().date() + timedelta(days=2)
-    due_time = "12:30:20"
+    start_datetime = datetime.now()
+    due_datetime = datetime.now() + timedelta(days=2)
     priority = Priority.HIGH.value
     stage_assignee = factory.SubFactory(StageIdWithAssigneeDTOFactory)
 
@@ -598,3 +607,51 @@ class AssigneesDTOFactory(factory.Factory):
                       "=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw" \
                       "=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
 
+
+class TaskWithDbStageIdDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskWithDbStageIdDTO
+
+    task_id = factory.sequence(lambda counter: counter + 1)
+    db_stage_id = factory.sequence(
+        lambda counter: counter + 1)
+
+
+class AssigneeCurrentTasksCountDTOFactory(factory.Factory):
+    class Meta:
+        model = AssigneeCurrentTasksCountDTO
+
+    assignee_id = factory.sequence(
+        lambda counter: 'assignee_{}'.format(counter + 1))
+    tasks_count = factory.sequence(
+        lambda counter: counter + 1)
+
+
+class StageWithUserDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = StageWithUserDetailsDTO
+
+    db_stage_id = factory.sequence(lambda counter: counter + 1)
+    stage_display_name = factory.sequence(
+        lambda counter: 'stage_{}'.format(counter + 1))
+
+    @factory.lazy_attribute
+    def assignee_details_dto(self):
+        return AssigneeDetailsDTOFactory()
+
+class CreateStageFlowDTOFactory(factory.Factory):
+    class Meta:
+        model = CreateStageFlowDTO
+
+    previous_stage_id = factory.sequence(lambda n: "stage_{}".format(n))
+    action_name = factory.sequence(lambda n: "action_name_{}".format(n))
+    next_stage_id = factory.sequence(lambda n: "stage_{}".format(n+1))
+
+
+class StageFlowWithActionIdDTOFactory(factory.Factory):
+    class Meta:
+        model = StageFlowWithActionIdDTO
+
+    previous_stage_id = factory.sequence(lambda n: "stage_{}".format(n))
+    action_id = factory.sequence(lambda n: n)
+    next_stage_id = factory.sequence(lambda n: "stage_{}".format(n + 1))

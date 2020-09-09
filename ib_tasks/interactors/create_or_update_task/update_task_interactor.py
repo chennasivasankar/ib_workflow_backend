@@ -1,12 +1,12 @@
 import datetime
 from typing import Optional, List, Union
 
-from ib_tasks.constants.config import TIME_FORMAT
-from ib_tasks.constants.enum import ActionTypes, ViewType
+from ib_tasks.constants.enum import ActionTypes, ViewType, Priority
 from ib_tasks.exceptions.datetime_custom_exceptions import \
-    DueTimeHasExpiredForToday, InvalidDueTimeFormat, \
     StartDateIsAheadOfDueDate, \
-    DueDateIsBehindStartDate, DueDateHasExpired
+    DueDateIsBehindStartDate, DueDateTimeHasExpired, \
+    DueDateTimeWithoutStartDateTimeIsNotValid, StartDateTimeIsRequired, \
+    DueDateTimeIsRequired
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField, InvalidPhoneNumberValue, \
     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
@@ -17,9 +17,9 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidUrlForImage, InvalidImageFormat, InvalidUrlForFile, \
     InvalidFileFormat
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
-    DuplicateFieldIdsToGoF
+    DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
-    DuplicateSameGoFOrderForAGoF
+    DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.stage_custom_exceptions import \
@@ -27,7 +27,7 @@ from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId, \
-    TaskDelayReasonIsNotUpdated
+    TaskDelayReasonIsNotUpdated, PriorityIsRequired
 from ib_tasks.interactors.create_or_update_task. \
     template_gofs_fields_base_validations import \
     TemplateGoFsFieldsBaseValidationsInteractor
@@ -63,6 +63,9 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
+    import \
+    TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO, CreateTaskDTO, \
     UpdateTaskWithTaskDisplayIdDTO
 from ib_tasks.interactors.update_task_stage_assignees_interactor import \
@@ -80,6 +83,7 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             elastic_storage: ElasticSearchStorageInterface,
             action_storage: ActionStorageInterface,
             task_stage_storage: TaskStageStorageInterface,
+            task_template_storage: TaskTemplateStorageInterface
     ):
         self.task_stage_storage = task_stage_storage
         self.action_storage = action_storage
@@ -90,6 +94,7 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         self.field_storage = field_storage
         self.stage_storage = stage_storage
         self.elastic_storage = elastic_storage
+        self.task_template_storage = task_template_storage
 
     def update_task_wrapper(
             self, presenter: UpdateTaskPresenterInterface,
@@ -104,14 +109,18 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter.raise_invalid_task_id(err)
         except InvalidStageId as err:
             return presenter.raise_invalid_stage_id(err)
-        except InvalidDueTimeFormat as err:
-            return presenter.raise_invalid_due_time_format(err)
-        except DueDateHasExpired as err:
-            return presenter.raise_due_date_has_expired(err)
+        except PriorityIsRequired as err:
+            return presenter.raise_priority_is_required(err)
+        except DueDateTimeWithoutStartDateTimeIsNotValid as err:
+            return presenter.raise_due_date_time_without_start_datetime(err)
+        except StartDateTimeIsRequired as err:
+            return presenter.raise_start_date_time_is_required(err)
+        except DueDateTimeIsRequired as err:
+            return presenter.raise_due_date_time_is_required(err)
+        except DueDateTimeHasExpired as err:
+            return presenter.raise_due_date_time_has_expired(err)
         except StartDateIsAheadOfDueDate as err:
             return presenter.raise_start_date_is_ahead_of_due_date(err)
-        except DueTimeHasExpiredForToday as err:
-            return presenter.raise_due_time_has_expired_for_today(err)
         except TaskDelayReasonIsNotUpdated as err:
             return presenter.raise_task_delay_reason_not_updated(err)
         except DuplicateSameGoFOrderForAGoF as err:
@@ -204,32 +213,36 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         task_dto_with_db_task_id = UpdateTaskDTO(
             task_id=task_id, created_by_id=task_dto.created_by_id,
             title=task_dto.title, description=task_dto.description,
-            start_date=task_dto.start_date, due_date=task_dto.due_date,
-            due_time=task_dto.due_time, priority=task_dto.priority,
+            start_datetime=task_dto.start_datetime,
+            due_datetime=task_dto.due_datetime, priority=task_dto.priority,
             stage_assignee=task_dto.stage_assignee,
-            gof_fields_dtos=task_dto.gof_fields_dtos
+            gof_fields_dtos=task_dto.gof_fields_dtos,
+            action_type=task_dto.action_type
         )
         all_tasks_overview_details_dto = \
             self.update_task(task_dto_with_db_task_id)
         return all_tasks_overview_details_dto
 
-    def update_task(self, task_dto: UpdateTaskDTO, action_type=None):
+    def update_task(self, task_dto: UpdateTaskDTO):
         task_id = task_dto.task_id
         self._validate_task_id(task_id)
         self._validate_stage_id(task_dto.stage_assignee.stage_id)
         task_template_id = \
             self.create_task_storage.get_template_id_for_given_task(task_id)
-        self._validate_task_details(task_dto, action_type)
+        self._validate_task_details(task_dto, task_dto.action_type)
+        project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
         base_validations_interactor = \
             TemplateGoFsFieldsBaseValidationsInteractor(
                 self.task_storage, self.gof_storage,
                 self.create_task_storage, self.storage,
-                self.field_storage
+                self.field_storage, self.task_template_storage
             )
         base_validations_interactor \
             .perform_base_validations_for_template_gofs_and_fields(
-            task_dto.gof_fields_dtos, task_dto.created_by_id,
-            task_template_id, action_type=action_type)
+            gof_fields_dtos=task_dto.gof_fields_dtos,
+            user_id=task_dto.created_by_id,
+            task_template_id=task_template_id, project_id=project_id,
+            action_type=task_dto.action_type)
         self.create_task_storage.update_task_with_given_task_details(
             task_dto=task_dto)
         existing_gofs = \
@@ -237,8 +250,7 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
                 .get_gof_ids_with_same_gof_order_related_to_a_task(task_id)
         existing_fields = \
             self.create_task_storage \
-                .get_field_ids_with_task_gof_id_related_to_given_task(
-                task_id)
+                .get_field_ids_with_task_gof_id_related_to_given_task(task_id)
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=task_id,
@@ -284,6 +296,9 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             action_storage=self.action_storage,
             task_stage_storage=self.task_stage_storage)
         project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
+        self._update_task_in_elasticsearch(
+            task_id=task_id
+        )
         all_tasks_overview_details_dto = \
             task_overview_interactor.get_filtered_tasks_overview_for_user(
                 user_id=task_dto.created_by_id, task_ids=[task_id],
@@ -419,37 +434,31 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             self, task_dto: Union[CreateTaskDTO, UpdateTaskDTO],
             action_type: Optional[ActionTypes]
     ):
-        start_date = task_dto.start_date
-        due_date = task_dto.due_date
-        due_time = task_dto.due_time
-        dates_validation_is_not_required = False
-        action_type_is_no_validations = action_type == \
-                                        ActionTypes.NO_VALIDATIONS.value
+        start_datetime = task_dto.start_datetime
+        due_datetime = task_dto.due_datetime
+        self._validate_due_datetime_without_start_datetime(
+            start_datetime, due_datetime)
+        action_type_is_no_validations = \
+            action_type == ActionTypes.NO_VALIDATIONS.value
+        self._validate_priority_in_no_validations_case(
+            task_dto.priority, action_type_is_no_validations)
         if action_type_is_no_validations:
-            empty_values_given = (
-                    not start_date or not due_date or not due_time)
-            if empty_values_given:
-                dates_validation_is_not_required = True
-        if dates_validation_is_not_required:
             return
+        start_datetime_is_emtpy = not start_datetime
+        due_datetime_is_empty = not due_datetime
+        if start_datetime_is_emtpy:
+            raise StartDateTimeIsRequired()
+        if due_datetime_is_empty:
+            raise DueDateTimeIsRequired()
         self._validate_start_date_and_due_date_dependencies(
-            start_date, due_date)
-        self._validate_due_time_format(due_time)
-        due_date_is_expired = (due_date < datetime.datetime.today().date())
-        if due_date_is_expired:
-            raise DueDateHasExpired(due_date)
-        due_time_obj = datetime.datetime.strptime(due_time, TIME_FORMAT).time()
-        now_time = datetime.datetime.now().time()
-        due_time_is_expired_if_due_date_is_today = (
-                due_date == datetime.datetime.today().date() and
-                due_time_obj < now_time)
-        if due_time_is_expired_if_due_date_is_today:
-            raise DueTimeHasExpiredForToday(due_time)
-        updated_due_date = datetime.datetime.combine(due_date, due_time_obj)
+            start_datetime, due_datetime)
+        import datetime
+        due_datetime_is_expired = due_datetime <= datetime.datetime.now()
+        if due_datetime_is_expired:
+            raise DueDateTimeHasExpired(due_datetime)
         self._validate_task_delay_reason_is_added_if_due_date_is_changed(
-            updated_due_date=updated_due_date, task_id=task_dto.task_id,
-            stage_id=task_dto.stage_assignee.stage_id
-        )
+            updated_due_date=due_datetime, task_id=task_dto.task_id,
+            stage_id=task_dto.stage_assignee.stage_id)
 
     def _validate_task_delay_reason_is_added_if_due_date_is_changed(
             self, updated_due_date: datetime.datetime, task_id: int,
@@ -481,14 +490,6 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         return
 
     @staticmethod
-    def _validate_due_time_format(due_time: str):
-        import datetime
-        try:
-            datetime.datetime.strptime(due_time, TIME_FORMAT)
-        except ValueError:
-            raise InvalidDueTimeFormat(due_time)
-
-    @staticmethod
     def _validate_start_date_and_due_date_dependencies(start_date,
                                                        due_date):
         start_date_is_ahead_of_due_date = start_date > due_date
@@ -503,3 +504,36 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         if not stage_id_is_valid:
             raise InvalidStageId(stage_id)
         return
+
+    @staticmethod
+    def _validate_due_datetime_without_start_datetime(
+            start_datetime, due_datetime
+    ) -> Optional[DueDateTimeWithoutStartDateTimeIsNotValid]:
+        due_datetime_given_without_start_date = not start_datetime and \
+                                                due_datetime
+        if due_datetime_given_without_start_date:
+            raise DueDateTimeWithoutStartDateTimeIsNotValid(due_datetime)
+        return
+
+    @staticmethod
+    def _validate_priority_in_no_validations_case(
+            priority: Priority, action_type_is_no_validations: bool
+    ) -> Optional[PriorityIsRequired]:
+        priority_is_not_given = not priority
+        if priority_is_not_given and not action_type_is_no_validations:
+            raise PriorityIsRequired()
+        return
+
+    def _update_task_in_elasticsearch(self, task_id: int):
+        from ib_tasks.interactors.create_or_update_tasks_into_elasticsearch_interactor import \
+            CreateOrUpdateDataIntoElasticsearchInteractor
+        interactor = CreateOrUpdateDataIntoElasticsearchInteractor(
+            elasticsearch_storage=self.elastic_storage,
+            storage=self.create_task_storage,
+            task_storage=self.task_storage,
+            stage_storage=self.stage_storage,
+            field_storage=self.field_storage
+        )
+        interactor.create_or_update_task_in_elasticsearch_storage(
+            task_id=task_id
+        )

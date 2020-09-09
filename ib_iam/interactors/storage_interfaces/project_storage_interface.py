@@ -1,14 +1,12 @@
 import abc
-from typing import List
+from typing import List, Optional
 
-from ib_iam.interactors.storage_interfaces.dtos import (
-    ProjectDTO, ProjectTeamIdsDTO, ProjectsWithTotalCountDTO, PaginationDTO,
-    ProjectRoleDTO, ProjectWithoutIdDTO, RoleNameAndDescriptionDTO, RoleDTO,
-    ProjectWithDisplayIdDTO)
-from ib_iam.interactors.storage_interfaces.dtos import ProjectTeamIdsDTO, \
-    ProjectsWithTotalCountDTO, PaginationDTO, ProjectRoleDTO, ProjectDTO
 from ib_iam.interactors.dtos.dtos import UserIdWithProjectIdAndStatusDTO
-from ib_iam.interactors.storage_interfaces.dtos import ProjectDTO
+from ib_iam.interactors.storage_interfaces.dtos import (
+    ProjectWithoutIdDTO, RoleNameAndDescriptionDTO, RoleDTO,
+    ProjectWithDisplayIdDTO, UserIdAndTeamIdsDTO, ProjectTeamIdsDTO,
+    ProjectsWithTotalCountDTO, PaginationDTO, ProjectRoleDTO, ProjectDTO
+)
 
 
 class ProjectStorageInterface(abc.ABC):
@@ -18,18 +16,21 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_project_ids_from_given_project_ids(
-            self, project_ids: List[str]) -> List[str]:
+    def get_valid_project_ids(
+            self, project_ids: List[str]
+    ) -> List[str]:
         pass
 
     @abc.abstractmethod
     def get_projects_with_total_count_dto(
-            self, pagination_dto: PaginationDTO) -> ProjectsWithTotalCountDTO:
+            self, pagination_dto: PaginationDTO
+    ) -> ProjectsWithTotalCountDTO:
         pass
 
     @abc.abstractmethod
     def get_project_team_ids_dtos(
-            self, project_ids: List[str]) -> List[ProjectTeamIdsDTO]:
+            self, project_ids: List[str]
+    ) -> List[ProjectTeamIdsDTO]:
         pass
 
     @abc.abstractmethod
@@ -45,8 +46,7 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_project_dtos_for_given_project_ids(
-            self, project_ids: List[str]) -> List[ProjectDTO]:
+    def get_project_dtos(self, project_ids: List[str]) -> List[ProjectDTO]:
         pass
 
     @abc.abstractmethod
@@ -71,13 +71,16 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def add_project_roles(self, project_id: str,
-                          roles: List[RoleNameAndDescriptionDTO]):
+    def add_project_roles(
+            self, project_id: str,
+            roles: List[RoleNameAndDescriptionDTO]
+    ):
         pass
 
     @abc.abstractmethod
     def is_user_in_a_project(
-            self, user_id: str, project_id: str) -> bool:
+            self, user_id: str, project_id: str
+    ) -> bool:
         pass
 
     @abc.abstractmethod
@@ -85,12 +88,13 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_team_ids_for_given_project(
-            self, project_id: str, team_ids: List[str]) -> List[str]:
+    def get_valid_team_ids(
+            self, project_id: str, team_ids: List[str]
+    ) -> List[str]:
         pass
 
     @abc.abstractmethod
-    def get_valid_team_ids(self, project_id) -> List[str]:
+    def get_team_ids(self, project_id: str) -> List[str]:
         pass
 
     @abc.abstractmethod
@@ -104,7 +108,7 @@ class ProjectStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def remove_teams_from_project(self, project_id: str, team_ids: List[str]):
+    def remove_teams(self, project_id: str, team_ids: List[str]):
         pass
 
     @abc.abstractmethod
@@ -117,4 +121,29 @@ class ProjectStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def delete_project_roles(self, role_ids: List[str]):
+        pass
+
+    @abc.abstractmethod
+    def get_project_id(self, name: str) -> Optional[str]:
+        pass
+
+    @abc.abstractmethod
+    def is_exists_display_id(self, display_id: str) -> Optional[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_valid_role_names(
+            self, role_names: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_user_id_with_teams_ids_dtos(
+            self, project_id: str
+    ) -> List[UserIdAndTeamIdsDTO]:
+        pass
+
+    @abc.abstractmethod
+    def remove_user_roles(
+            self, project_id: str, user_ids: List[str]
+    ):
         pass

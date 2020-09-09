@@ -4,11 +4,16 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.adapters.dtos import ColumnStageDTO, AssigneeDetailsDTO
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.exceptions.fields_custom_exceptions import \
+    UserDidNotFillRequiredFields
+from ib_tasks.exceptions.gofs_custom_exceptions import \
+    UserDidNotFillRequiredGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied, UserBoardPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import \
     InvalidStageIdsListException, StageIdsListEmptyException
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException
+from ib_tasks.exceptions.task_custom_exceptions import (InvalidTaskException,
+                                                        TaskDelayReasonIsNotUpdated)
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO, AllTasksOverviewDetailsDTO
@@ -26,6 +31,34 @@ from ib_tasks.interactors.user_action_on_task_interactor import \
 
 class UserActionOnTaskPresenterImplementation(PresenterInterface,
                                               HTTPResponseMixin):
+
+    def raise_user_did_not_fill_required_fields(
+            self, err: UserDidNotFillRequiredFields):
+        from ib_tasks.constants.exception_messages import \
+            USER_DID_NOT_FILL_REQUIRED_FIELDS
+        field_display_names = [
+            dto.field_display_name for dto in err.unfilled_field_dtos]
+        message = USER_DID_NOT_FILL_REQUIRED_FIELDS[0].format(
+            field_display_names)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": USER_DID_NOT_FILL_REQUIRED_FIELDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_user_did_not_fill_required_gofs(
+            self, err: UserDidNotFillRequiredGoFs):
+        from ib_tasks.constants.exception_messages import \
+            USER_DID_NOT_FILL_REQUIRED_GOFS
+        message = USER_DID_NOT_FILL_REQUIRED_GOFS[0].format(
+            err.gof_display_names)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": USER_DID_NOT_FILL_REQUIRED_GOFS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_stage_ids_list_empty_exception(self,
                                              err: StageIdsListEmptyException):
@@ -49,6 +82,19 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             "res_status": INVALID_STAGE_IDS[1]
         }
         return self.prepare_400_bad_request_response(data)
+
+    def get_response_for_task_delay_reason_not_updated(
+            self, err: TaskDelayReasonIsNotUpdated):
+        from ib_tasks.constants.exception_messages import \
+            TASK_DELAY_REASON_IS_NOT_ADDED
+        message = TASK_DELAY_REASON_IS_NOT_ADDED[0].format(
+            err.task_display_id, err.stage_display_name)
+        data = {
+            "response": message,
+            "http_status_code": 404,
+            "res_status": TASK_DELAY_REASON_IS_NOT_ADDED[1]
+        }
+        return self.prepare_404_not_found_response(data)
 
     def raise_invalid_task_display_id(self, err):
         from ib_tasks.constants.exception_messages import \
@@ -350,9 +396,8 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             for column_dto in column_dtos
         ]
 
-    @staticmethod
     def _get_column_fields_and_actions_dicts(
-            column_stage_dtos: List[ColumnStageDTO],
+            self, column_stage_dtos: List[ColumnStageDTO],
             stage_actions_dict: Dict[str, List[ActionDTO]],
             stage_fields_dict: Dict[str, List[FieldDisplayDTO]]
     ):
@@ -363,9 +408,20 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         for column_stage_dto in column_stage_dtos:
             column_id = column_stage_dto.column_id
             stage_id = column_stage_dto.stage_id
-            column_fields_dict[column_id] += stage_fields_dict[stage_id]
+            self._add_fields_to_column(
+                column_fields_dict, column_id, stage_fields_dict[stage_id]
+            )
             column_actions_dict[column_id] += stage_actions_dict[stage_id]
         return column_fields_dict, column_actions_dict
+
+    @staticmethod
+    def _add_fields_to_column(
+            column_fields_dict: Dict[str, List[FieldDisplayDTO]]
+            , column_id: str, field_dtos: List[FieldDisplayDTO]
+    ):
+        for field_dto in field_dtos:
+            if field_dto not in column_fields_dict[column_id]:
+                column_fields_dict[column_id].append(field_dto)
 
     @staticmethod
     def _get_stage_fields_dict(fields_dto: List[FieldDisplayDTO]):
@@ -425,15 +481,18 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
 
     @staticmethod
     def _get_column_fields(fields_dto: List[FieldDisplayDTO]):
-
-        return [
-            {
-                "field_type": field_dto.field_type,
-                "field_display_name": field_dto.key,
-                "field_response": field_dto.value
-            }
-            for field_dto in fields_dto
-        ]
+        field_ids = []
+        fields = []
+        for field_dto in fields_dto:
+            if field_dto.field_id not in field_ids:
+                field_dict = {
+                    "field_type": field_dto.field_type,
+                    "field_display_name": field_dto.key,
+                    "field_response": field_dto.value
+                }
+                fields.append(field_dict)
+            field_ids.append(field_dto.field_id)
+        return fields
 
     def raise_invalid_key_error(self):
         from ib_tasks.constants.exception_messages import \

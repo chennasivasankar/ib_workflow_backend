@@ -22,14 +22,16 @@ class TestCase01CreateChecklistItemAPITestCase(TestUtils):
             prepare_uuid_mock
         mock = prepare_uuid_mock(mocker)
         mock.return_value = UUID("f2c02d98-f311-4ab2-8673-3daa00757002")
-        body = {'entity_id': "09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5a",
-                'entity_type': EntityType.TASK.value,
-                'text': 'As a developer I should create a checklist item',
-                'is_checked': True}
+        body = {
+            'entity_id': "09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5a",
+            'entity_type': EntityType.TASK.value,
+            'text': 'As a developer I should create a checklist item',
+            'is_checked': True
+        }
         path_params = {}
         query_params = {}
         headers = {}
-        response = self.make_api_call(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

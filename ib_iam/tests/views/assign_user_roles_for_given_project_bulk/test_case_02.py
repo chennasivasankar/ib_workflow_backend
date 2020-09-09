@@ -14,10 +14,61 @@ class TestCase02AssignUserRolesForGivenProjectBulkAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['write']}}
 
+    def _get_or_create_user(self):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_users.models import UserAccount
+        user = UserAccount.objects.create(user_id=user_id)
+        return user
+
+    @pytest.mark.django_db
+    def test_with_user_is_not_admin_return_response(
+            self, create_user_roles, snapshot
+    ):
+        from ib_iam.models import UserDetails
+
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        UserDetails.objects.create(user_id=user_id, is_admin=False)
+        project_id = "project_2"
+        user_id_with_role_ids_list = [
+            {
+                "user_id": "11be920b-7b4c-49e7-8adb-41a0c18da848",
+                "role_ids": [
+                    "ROLE_3", "ROLE_4"
+                ]
+            },
+            {
+                "user_id": "01be920b-7b4c-49e7-8adb-41a0c18da848",
+                "role_ids": []
+            },
+            {
+                "user_id": "77be920b-7b4c-49e7-8adb-41a0c18da848",
+                "role_ids": [
+                    "ROLE_1"
+                ]
+            }
+        ]
+        body = {
+            'users': user_id_with_role_ids_list
+        }
+        path_params = {"project_id": project_id}
+        query_params = {}
+        headers = {}
+        self.make_api_call(
+            body=body,
+            path_params=path_params,
+            query_params=query_params,
+            headers=headers,
+            snapshot=snapshot
+        )
+
     @pytest.mark.django_db
     def test_with_invalid_project_id_return_response(
             self, create_user_roles, snapshot
     ):
+        from ib_iam.models import UserDetails
+
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        UserDetails.objects.create(user_id=user_id, is_admin=True)
         project_id = "project_2"
         user_id_with_role_ids_list = [
             {
@@ -55,6 +106,10 @@ class TestCase02AssignUserRolesForGivenProjectBulkAPITestCase(TestUtils):
     def test_with_invalid_user_ids_for_project(
             self, snapshot, create_user_roles
     ):
+        from ib_iam.models import UserDetails
+
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        UserDetails.objects.create(user_id=user_id, is_admin=True)
         project_id = "project_id"
         user_id_with_role_ids_list = [
             {
@@ -93,6 +148,10 @@ class TestCase02AssignUserRolesForGivenProjectBulkAPITestCase(TestUtils):
             self, snapshot, create_user_roles, create_project_teams,
             create_user_teams
     ):
+        from ib_iam.models import UserDetails
+
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        UserDetails.objects.create(user_id=user_id, is_admin=True)
         project_id = "project_id"
         user_id_with_role_ids_list = [
             {
@@ -159,7 +218,7 @@ class TestCase02AssignUserRolesForGivenProjectBulkAPITestCase(TestUtils):
             {
                 "project_id": project_id,
                 "role_id": "ROLE_4",
-                "name": "NAME_3",
+                "name": "NAME_4",
                 "description": "description"
             }
         ]

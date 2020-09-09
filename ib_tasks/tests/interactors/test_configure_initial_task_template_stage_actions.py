@@ -121,8 +121,8 @@ class TestConfigureInitialTaskTemplateStageActions:
                 stage_id="stage_2"
             )
         ]
-        path = 'ib_tasks.interactors.create_update_delete_stage_actions.CreateUpdateDeleteStageActionsInteractor' \
-               '.create_update_delete_stage_actions'
+        path = 'ib_tasks.interactors.create_or_update_or_delete_stage_actions.CreateOrUpdateOrDeleteStageActions' \
+               '.create_or_update_or_delete_stage_actions'
         mock_obj = mocker.patch(path)
 
         interactor = ConfigureInitialTaskTemplateStageActions(

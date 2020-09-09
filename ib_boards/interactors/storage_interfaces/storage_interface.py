@@ -1,6 +1,6 @@
 import abc
 from dataclasses import dataclass
-from typing import List
+from typing import List, Tuple
 
 from ib_boards.constants.enum import DisplayStatus
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
@@ -76,7 +76,7 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_board_ids(
-            self, user_id: str, project_id: str) -> List[str]:
+            self, user_id: str, project_id: str) -> Tuple[List[str], List[str]]:
         pass
 
     @abc.abstractmethod
@@ -143,7 +143,7 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def validate_field_id_with_column_id(self, column_id: str, field_id: str):
+    def validate_field_id_with_column_id(self, column_id: str, field_id: str, user_id: str):
         pass
 
     @abc.abstractmethod
@@ -156,13 +156,27 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_field_display_status_dtos(self, column_id: str, user_id: str) -> List[FieldDisplayStatusDTO]:
+    def get_field_ids_list_in_order(self, column_id: str, user_id: str) -> List[str]:
         pass
 
     @abc.abstractmethod
-    def get_field_display_order_dtos(self, column_id: str, user_id: str) -> List[FieldOrderDTO]:
+    def get_valid_field_ids(self, column_id: str, field_ids: List[str], user_id: str) -> List[str]:
         pass
 
     @abc.abstractmethod
-    def get_valid_field_ids(self, column_id: str, field_ids: List[str]) -> List[str]:
+    def get_field_display_status_dtos(
+            self, column_id: str, user_id: str) -> List[FieldDisplayStatusDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_present_field_ids(self, column_id: str, user_id: str) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def create_field_ids_order_and_display_status(
+            self, column_id: str, user_id: str, field_ids: List[str]):
+        pass
+
+    @abc.abstractmethod
+    def get_user_permitted_board_ids(self, board_ids: List[str], user_roles: List[str]) -> List[str]:
         pass

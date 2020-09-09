@@ -13,12 +13,19 @@ class TestCase01AssignUserRolesForGivenProjectBulkAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['write']}}
 
+    def _get_or_create_user(self):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_users.models import UserAccount
+        user = UserAccount.objects.create(user_id=user_id)
+        return user
+
     @pytest.mark.django_db
     def test_with_valid_details_then_assign_user_roles_bulk_for_given_project(
             self, snapshot, create_user_roles, create_project_teams,
             create_user_teams
     ):
         project_id = "project_id"
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
         user_id_with_role_ids_list = [
             {
                 "user_id": "40be920b-7b4c-49e7-8adb-41a0c18da848",
@@ -37,6 +44,8 @@ class TestCase01AssignUserRolesForGivenProjectBulkAPITestCase(TestUtils):
                 ]
             }
         ]
+        from ib_iam.models import UserDetails
+        UserDetails.objects.create(user_id=user_id, is_admin=True)
         body = {
             'users': user_id_with_role_ids_list
         }
@@ -92,7 +101,7 @@ class TestCase01AssignUserRolesForGivenProjectBulkAPITestCase(TestUtils):
             {
                 "project_id": project_id,
                 "role_id": "ROLE_4",
-                "name": "NAME_3",
+                "name": "NAME_4",
                 "description": "description"
             }
         ]

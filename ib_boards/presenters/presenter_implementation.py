@@ -1,3 +1,4 @@
+from abc import ABC
 from typing import List
 
 from django.http import response
@@ -11,10 +12,13 @@ from ib_boards.interactors.dtos import ColumnTasksDTO, FieldDTO, ActionDTO, \
     StarredAndOtherBoardsDTO, TaskStageDTO, StageAssigneesDTO, AssigneesDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetBoardsPresenterInterface, \
-    GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO, TaskDisplayIdDTO
+    GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO, TaskDisplayIdDTO, \
+    CompleteTasksDetailsDTO, GetColumnTasksListViewPresenterInterface, \
+    FieldsDisplayStatusPresenterInterface, FieldsDisplayOrderPresenterInterface
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
-from ib_boards.interactors.storage_interfaces.dtos import ColumnCompleteDetails
+from ib_boards.interactors.storage_interfaces.dtos import ColumnCompleteDetails, \
+    AllFieldsDTO
 from ib_boards.interactors.storage_interfaces.dtos import (
     TaskFieldsDTO, TaskActionsDTO)
 
@@ -170,11 +174,21 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
         )
 
     def get_response_for_column_tasks(
-            self, task_fields_dtos: List[FieldDTO],
-            task_actions_dtos: List[ActionDTO],
-            total_tasks: int, task_id_dtos: List[TaskDisplayIdDTO],
-            task_stage_dtos: List[TaskStageDTO],
-            assignees_dtos: List[StageAssigneesDTO]):
+            self, complete_tasks_details_dto: CompleteTasksDetailsDTO):
+        response_dict = self.get_column_tasks_details(
+            complete_tasks_details_dto=complete_tasks_details_dto
+        )
+        return self.prepare_200_success_response(response_dict)
+
+    def get_column_tasks_details(
+            self, complete_tasks_details_dto: CompleteTasksDetailsDTO):
+
+        task_fields_dtos = complete_tasks_details_dto.task_fields_dtos
+        task_actions_dtos = complete_tasks_details_dto.task_actions_dtos
+        total_tasks = complete_tasks_details_dto.total_tasks
+        task_id_dtos = complete_tasks_details_dto.task_id_dtos
+        task_stage_dtos = complete_tasks_details_dto.task_stage_dtos
+        assignees_dtos = complete_tasks_details_dto.assignees_dtos
 
         task_ids = [
             task_id_dto.task_id
@@ -205,12 +219,10 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
             task_ids_map=task_ids_map
         )
 
-        response_dict = {
+        return {
             "total_tasks": total_tasks,
             "tasks": tasks_list
         }
-
-        return self.prepare_200_success_response(response_dict)
 
     def get_task_details_dict_from_dtos(
             self, task_fields_dtos: List[FieldDTO], task_ids_map,
@@ -286,6 +298,7 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
             if field_dto.field_id not in field_ids:
                 task_fields_list.append(
                     {
+                        "field_id": field_dto.field_id,
                         "field_type": field_dto.field_type,
                         "field_display_name": field_dto.key,
                         "field_response": field_dto.value
@@ -311,6 +324,88 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
                 )
                 action_ids.append(action_dto.action_id)
         return task_actions_list
+
+
+class GetColumnTasksListViewPresenterImplementation(
+        HTTPResponseMixin, GetColumnTasksListViewPresenterInterface):
+    def get_response_for_the_invalid_column_id(self):
+        from ib_boards.constants.exception_messages import INVALID_COLUMN_ID
+        response_dict = {
+            "response": INVALID_COLUMN_ID[0],
+            "http_status_code": 404,
+            "res_status": INVALID_COLUMN_ID[1]
+        }
+        return self.prepare_404_not_found_response(
+            response_dict=response_dict
+        )
+
+    def get_response_for_invalid_stage_ids(self, error):
+        pass
+
+    def get_response_for_invalid_offset(self):
+        from ib_boards.constants.exception_messages import INVALID_OFFSET_VALUE
+        response_dict = {
+            "response": INVALID_OFFSET_VALUE[0],
+            "http_status_code": 400,
+            "res_status": INVALID_OFFSET_VALUE[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict
+        )
+
+    def get_response_for_invalid_limit(self):
+        from ib_boards.constants.exception_messages import INVALID_LIMIT_VALUE
+        response_dict = {
+            "response": INVALID_LIMIT_VALUE[0],
+            "http_status_code": 400,
+            "res_status": INVALID_LIMIT_VALUE[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict
+        )
+
+    def get_response_for_offset_exceeds_total_tasks(self):
+        pass
+
+    def get_response_for_user_have_no_access_for_column(self):
+        from ib_boards.constants.exception_messages import \
+            USER_NOT_HAVE_ACCESS_TO_COLUMN
+        response_dict = {
+            "response": USER_NOT_HAVE_ACCESS_TO_COLUMN[0],
+            "http_status_code": 403,
+            "res_status": USER_NOT_HAVE_ACCESS_TO_COLUMN[1]
+        }
+        return self.prepare_403_forbidden_response(
+            response_dict=response_dict
+        )
+
+    def get_response_for_column_tasks_in_list_view(
+            self, complete_tasks_details_dto: CompleteTasksDetailsDTO, all_fields: List[AllFieldsDTO]):
+        presenter = GetColumnTasksPresenterImplementation()
+        column_tasks_details_dict = presenter.get_column_tasks_details(
+            complete_tasks_details_dto=complete_tasks_details_dto
+        )
+        all_fields_dict = self._get_all_fields_dict(
+            all_fields=all_fields
+        )
+        column_tasks_details_dict.update(all_fields_dict)
+        return self.prepare_200_success_response(column_tasks_details_dict)
+
+    @staticmethod
+    def _get_all_fields_dict(all_fields: List[AllFieldsDTO]):
+        all_fields_dict = [
+            {
+                "field_id": all_fields_dto.field_id,
+                "field_display_name": all_fields_dto.display_name,
+                "display_order": all_fields_dto.display_order,
+                "display_status": all_fields_dto.display_status
+            }
+            for all_fields_dto in all_fields
+        ]
+        new_all_fields_dict = sorted(all_fields_dict, key=lambda x: x['display_order'])
+        return {
+            "all_fields": new_all_fields_dict
+        }
 
 
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
@@ -451,3 +546,110 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             "total_tasks": column_dto.total_tasks,
             "tasks": task_details_list
         }
+
+
+class FieldsDisplayStatusPresenterImplementation(
+        FieldsDisplayStatusPresenterInterface, HTTPResponseMixin):
+
+    def get_response_for_the_invalid_column_id(self):
+        from ib_boards.constants.exception_messages import INVALID_COLUMN_ID
+        response_dict = {
+            "response": INVALID_COLUMN_ID[0],
+            "http_status_code": 404,
+            "res_status": INVALID_COLUMN_ID[1]
+        }
+        return self.prepare_404_not_found_response(
+            response_dict=response_dict
+        )
+
+    def get_response_for_user_have_no_access_for_column(self):
+        from ib_boards.constants.exception_messages import \
+            USER_NOT_HAVE_ACCESS_TO_COLUMN
+        response_dict = {
+            "response": USER_NOT_HAVE_ACCESS_TO_COLUMN[0],
+            "http_status_code": 403,
+            "res_status": USER_NOT_HAVE_ACCESS_TO_COLUMN[1]
+        }
+        return self.prepare_403_forbidden_response(
+            response_dict=response_dict
+        )
+
+    def get_response_for_field_not_belongs_to_column(self):
+        from ib_boards.constants.exception_messages import \
+            FIELD_NOT_BELONGS_TO_COLUMN
+        response_dict = {
+            "response": FIELD_NOT_BELONGS_TO_COLUMN[0],
+            "http_status_code": 403,
+            "res_status": FIELD_NOT_BELONGS_TO_COLUMN[1]
+        }
+        return self.prepare_403_forbidden_response(
+            response_dict=response_dict
+        )
+
+
+class FieldsDisplayOrderPresenterImplementation(
+        FieldsDisplayOrderPresenterInterface, HTTPResponseMixin):
+
+    def get_response_for_the_invalid_column_id(self):
+        from ib_boards.constants.exception_messages import INVALID_COLUMN_ID
+        response_dict = {
+            "response": INVALID_COLUMN_ID[0],
+            "http_status_code": 404,
+            "res_status": INVALID_COLUMN_ID[1]
+        }
+        return self.prepare_404_not_found_response(
+            response_dict=response_dict
+        )
+
+    def get_response_for_user_have_no_access_for_column(self):
+        from ib_boards.constants.exception_messages import \
+            USER_NOT_HAVE_ACCESS_TO_COLUMN
+        response_dict = {
+            "response": USER_NOT_HAVE_ACCESS_TO_COLUMN[0],
+            "http_status_code": 403,
+            "res_status": USER_NOT_HAVE_ACCESS_TO_COLUMN[1]
+        }
+        return self.prepare_403_forbidden_response(
+            response_dict=response_dict
+        )
+
+    def get_response_for_field_not_belongs_to_column(self, error):
+        from ib_boards.constants.exception_messages import \
+            FIELDS_NOT_BELONGS_TO_COLUMN
+        response_dict = {
+            "response": FIELDS_NOT_BELONGS_TO_COLUMN[0].format(error.invalid_field_ids),
+            "http_status_code": 403,
+            "res_status": FIELDS_NOT_BELONGS_TO_COLUMN[1]
+        }
+        return self.prepare_403_forbidden_response(
+            response_dict=response_dict
+        )
+
+    def get_response_for_the_invalid_display_order(self):
+        from ib_boards.constants.exception_messages import \
+            INVALID_DISPLAY_ORDER
+        response_dict = {
+            "response": INVALID_DISPLAY_ORDER[0],
+            "http_status_code": 400,
+            "res_status": INVALID_DISPLAY_ORDER[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict
+        )
+
+    def get_response_for_field_order_in_column(
+            self, all_fields: List[AllFieldsDTO]):
+        response_dict = [
+            {
+                "field_id": all_fields_dto.field_id,
+                "field_display_name": all_fields_dto.display_name,
+                "display_order": all_fields_dto.display_order,
+                "display_status": all_fields_dto.display_status
+            }
+            for all_fields_dto in all_fields
+        ]
+        new_all_fields_dict = sorted(response_dict,
+                                     key=lambda x: x['display_order'])
+        return self.prepare_200_success_response(new_all_fields_dict)
+
+

@@ -1,9 +1,11 @@
 from ib_iam.exceptions.custom_exceptions import InvalidEmail, \
     InvalidNameLength, NameShouldNotContainsNumbersSpecCharacters, \
-    UserAccountDoesNotExist, UserAccountAlreadyExistWithThisEmail
+    UserAccountAlreadyExistWithThisEmail
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
     CreateUserAccountPresenterInterface
+from ib_iam.interactors.storage_interfaces.elastic_storage_interface import \
+    ElasticSearchStorageInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 
@@ -18,27 +20,30 @@ class InvalidDomainException(Exception):
 
 class SignupInteractor(ValidationMixin):
 
-    def __init__(self, user_storage: UserStorageInterface):
+    def __init__(
+            self, user_storage: UserStorageInterface,
+            elastic_storage: ElasticSearchStorageInterface
+    ):
         self.user_storage = user_storage
+        self.elastic_storage = elastic_storage
 
-    def signup_wrapper(self, presenter: CreateUserAccountPresenterInterface,
-                       email: str, name: str, password: str):
-
+    def signup_wrapper(
+            self, presenter: CreateUserAccountPresenterInterface,
+            email: str, name: str, password: str
+    ):
         try:
             self.create_user_account(email=email, name=name, password=password)
             response = presenter.get_response_for_create_user_account()
         except UserAccountAlreadyExistWithThisEmail:
             response = presenter.raise_account_already_exists_exception()
         except PasswordDoesNotMatchedWithCriteriaException:
-            response = presenter. \
-                raise_password_not_matched_with_criteria_exception()
+            response = presenter.raise_password_not_matched_with_criteria_exception()
         except InvalidEmail:
             response = presenter.raise_invalid_email_exception()
         except InvalidDomainException:
             response = presenter.raise_invalid_domain_exception()
         except InvalidNameLength:
-            response = presenter \
-                .raise_invalid_name_length_exception()
+            response = presenter.raise_invalid_name_length_exception()
         except NameShouldNotContainsNumbersSpecCharacters:
             response = presenter. \
                 raise_name_should_not_contain_special_characters_exception()
@@ -59,12 +64,29 @@ class SignupInteractor(ValidationMixin):
         #     else:
         #         raise AccountWithThisEmailAlreadyExistsException
         # except UserAccountDoesNotExist:
-        user_id = self._create_user_account(email=email, password=password,
-                                            name=name)
+        user_id = self._create_user_account(
+            email=email, password=password, name=name
+        )
         adapter.auth_service.update_is_email_verified_value_in_ib_user_profile_details(
-            user_id=user_id, is_email_verified=False)
-        self.user_storage.create_user(user_id=user_id, is_admin=False,
-                                      name=name)
+            user_id=user_id, is_email_verified=False
+        )
+        self.user_storage.create_user(
+            user_id=user_id, is_admin=False, name=name
+        )
+        self._create_elastic_user(user_id=user_id, name=name)
+        self._send_email_verify_link(
+            user_id=user_id, name=name, email=email)
+
+    def _create_elastic_user(self, user_id: str, name: str):
+        elastic_user_id = self.elastic_storage.create_elastic_user(
+            user_id=user_id, name=name
+        )
+        self.elastic_storage.create_elastic_user_intermediary(
+            elastic_user_id=elastic_user_id, user_id=user_id
+        )
+
+    @staticmethod
+    def _send_email_verify_link(user_id: str, name: str, email: str):
         from ib_iam.interactors.send_verify_email_link_interactor import \
             SendVerifyEmailLinkInteractor
         interactor = SendVerifyEmailLinkInteractor()

@@ -3,30 +3,34 @@ from typing import List, Optional, Dict
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.exceptions.custom_exceptions import InvalidProjectId
 from ib_tasks.exceptions.datetime_custom_exceptions import \
-    InvalidDueTimeFormat, StartDateIsAheadOfDueDate, \
-    DueDateIsBehindStartDate, \
-    DueTimeHasExpiredForToday, DueDateHasExpired
+    StartDateIsAheadOfDueDate, \
+    DueTimeHasExpiredForToday, DueDateTimeHasExpired, DueDateTimeIsRequired, \
+    StartDateTimeIsRequired, DueDateTimeWithoutStartDateTimeIsNotValid
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidUrlForFile, InvalidFileFormat, InvalidImageFormat, \
-    InvalidUrlForImage, InvalidTimeFormat, InvalidDateFormat, \
-    IncorrectMultiSelectLabelsSelected, IncorrectMultiSelectOptionsSelected, \
+    InvalidUrlForImage, InvalidTimeFormat, \
+    IncorrectMultiSelectLabelsSelected, \
+    IncorrectMultiSelectOptionsSelected, \
     IncorrectCheckBoxOptionsSelected, IncorrectRadioGroupChoice, \
     IncorrectNameInGoFSelectorField, InvalidValueForDropdownField, \
     InvalidFloatValue, InvalidNumberValue, NotAStrongPassword, \
     InvalidURLValue, \
-    InvalidEmailFieldValue, InvalidPhoneNumberValue, EmptyValueForRequiredField
+    InvalidEmailFieldValue, InvalidPhoneNumberValue, \
+    EmptyValueForRequiredField, InvalidDateFormat
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
-    DuplicateFieldIdsToGoF
+    DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
-    DuplicateSameGoFOrderForAGoF
+    DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserBoardPermissionDenied, UserActionPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import \
     InvalidStageIdsListException, StageIdsListEmptyException
 from ib_tasks.exceptions.task_custom_exceptions import \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId, \
+    PriorityIsRequired, InvalidTaskJson
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.dtos import \
@@ -41,8 +45,121 @@ class CreateTaskPresenterImplementation(
     CreateTaskPresenterInterface, HTTPResponseMixin
 ):
 
-    def raise_stage_ids_list_empty_exception(self,
-                                             err: StageIdsListEmptyException):
+    def raise_invalid_project_id(self, err: InvalidProjectId):
+        from ib_tasks.constants.exception_messages import INVALID_PROJECT_ID
+        message = INVALID_PROJECT_ID[0].format(err.project_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_PROJECT_ID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_task_json(self, err: InvalidTaskJson):
+        from ib_tasks.constants.exception_messages import INVALID_TASK_JSON
+        data = {
+            "response": INVALID_TASK_JSON[0],
+            "http_status_code": 400,
+            "res_status": INVALID_TASK_JSON[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_user_did_not_fill_required_fields(
+            self, err: UserDidNotFillRequiredFields):
+        from ib_tasks.constants.exception_messages import \
+            USER_DID_NOT_FILL_REQUIRED_FIELDS
+        field_display_names = [
+            dto.field_display_name for dto in err.unfilled_field_dtos]
+        message = USER_DID_NOT_FILL_REQUIRED_FIELDS[0].format(
+            field_display_names)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": USER_DID_NOT_FILL_REQUIRED_FIELDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_user_did_not_fill_required_gofs(
+            self, err: UserDidNotFillRequiredGoFs):
+        from ib_tasks.constants.exception_messages import \
+            USER_DID_NOT_FILL_REQUIRED_GOFS
+        message = USER_DID_NOT_FILL_REQUIRED_GOFS[0].format(
+            err.gof_display_names)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": USER_DID_NOT_FILL_REQUIRED_GOFS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_exception_for_invalid_date_format(self, err: InvalidDateFormat):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_DATE_FORMAT
+        message = INVALID_DATE_FORMAT[0].format(err.field_value, err.field_id,
+                                                err.expected_format)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_DATE_FORMAT[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_priority_is_required(self, err: PriorityIsRequired):
+        from ib_tasks.constants.exception_messages import \
+            PRIORITY_IS_REQUIRED
+        data = {
+            "response": PRIORITY_IS_REQUIRED[0],
+            "http_status_code": 400,
+            "res_status": PRIORITY_IS_REQUIRED[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_due_date_time_without_start_datetime(
+            self, err: DueDateTimeWithoutStartDateTimeIsNotValid):
+        from ib_tasks.constants.exception_messages import \
+            DUE_DATE_TIME_WITHOUT_START_DATE_TIME
+        message = DUE_DATE_TIME_WITHOUT_START_DATE_TIME[0].format(
+            err.due_datetime)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": DUE_DATE_TIME_WITHOUT_START_DATE_TIME[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_start_date_time_is_required(self, err: StartDateTimeIsRequired):
+        from ib_tasks.constants.exception_messages import \
+            START_DATE_TIME_IS_REQUIRED
+        data = {
+            "response": START_DATE_TIME_IS_REQUIRED[0],
+            "http_status_code": 400,
+            "res_status": START_DATE_TIME_IS_REQUIRED[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_due_date_time_is_required(self, err: DueDateTimeIsRequired):
+        from ib_tasks.constants.exception_messages import \
+            DUE_DATE_TIME_IS_REQUIRED
+        data = {
+            "response": DUE_DATE_TIME_IS_REQUIRED[0],
+            "http_status_code": 400,
+            "res_status": DUE_DATE_TIME_IS_REQUIRED[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_due_date_time_has_expired(self, err: DueDateTimeHasExpired):
+        from ib_tasks.constants.exception_messages import \
+            DUE_DATE_TIME_HAS_EXPIRED
+        message = DUE_DATE_TIME_HAS_EXPIRED[0].format(err.due_datetime)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": DUE_DATE_TIME_HAS_EXPIRED[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_stage_ids_list_empty_exception(
+            self, err: StageIdsListEmptyException):
         from ib_tasks.constants.exception_messages import \
             EMPTY_STAGE_IDS_ARE_INVALID
         data = {
@@ -84,28 +201,6 @@ class CreateTaskPresenterImplementation(
             "response": message,
             "http_status_code": 400,
             "res_status": INVALID_PRESENT_STAGE_ACTION[1]
-        }
-        return self.prepare_400_bad_request_response(data)
-
-    def raise_due_date_has_expired(self, err: DueDateHasExpired):
-        from ib_tasks.constants.exception_messages import \
-            DUE_DATE_HAS_EXPIRED
-        message = DUE_DATE_HAS_EXPIRED[0].format(err.due_date)
-        data = {
-            "response": message,
-            "http_status_code": 400,
-            "res_status": DUE_DATE_HAS_EXPIRED[1]
-        }
-        return self.prepare_400_bad_request_response(data)
-
-    def raise_invalid_due_time_format(self, err: InvalidDueTimeFormat):
-        from ib_tasks.constants.exception_messages import \
-            INVALID_DUE_TIME_FORMAT
-        message = INVALID_DUE_TIME_FORMAT[0].format(err.due_time)
-        data = {
-            "response": message,
-            "http_status_code": 400,
-            "res_status": INVALID_DUE_TIME_FORMAT[1]
         }
         return self.prepare_400_bad_request_response(data)
 
@@ -623,18 +718,6 @@ class CreateTaskPresenterImplementation(
             "response": response_message,
             "http_status_code": 400,
             "res_status": INCORRECT_MULTI_SELECT_LABELS_SELECTED[1]
-        }
-        return self.prepare_400_bad_request_response(data)
-
-    def raise_exception_for_invalid_date_format(self, err: InvalidDateFormat):
-        from ib_tasks.constants.exception_messages import INVALID_DATE_FORMAT
-        response_message = INVALID_DATE_FORMAT[0].format(
-            err.field_value, err.field_id, err.expected_format
-        )
-        data = {
-            "response": response_message,
-            "http_status_code": 400,
-            "res_status": INVALID_DATE_FORMAT[1]
         }
         return self.prepare_400_bad_request_response(data)
 

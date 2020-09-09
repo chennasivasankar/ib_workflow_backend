@@ -51,6 +51,22 @@ class TestCase01UserSignupAPITestCase(TestUtils):
         )
 
     @staticmethod
+    def elastic_storage_create_elastic_user_mock(mocker):
+        mock = mocker.patch(
+            "ib_iam.storages.elastic_storage_implementation.ElasticStorageImplementation.create_elastic_user"
+        )
+        mock.create_elastic_user.return_value = "elastic_user1"
+        return mock
+
+    @staticmethod
+    def elastic_storage_create_elastic_user_intermediary_mock(mocker):
+        mock = mocker.patch(
+            "ib_iam.storages.elastic_storage_implementation.ElasticStorageImplementation.create_elastic_user_intermediary"
+        )
+        mock.create_elastic_user_intermediary.return_value = None
+        return mock
+
+    @staticmethod
     def send_verification_email_mock(mocker):
         mock = mocker.patch(
             "ib_iam.interactors.send_verify_email_link_interactor.SendVerifyEmailLinkInteractor.send_verification_email"
@@ -81,6 +97,9 @@ class TestCase01UserSignupAPITestCase(TestUtils):
         update_is_email_verified_value_mock = update_is_email_verified_value_mock(
             mocker=mocker)
         update_is_email_verified_value_mock.return_value = None
+        self.elastic_storage_create_elastic_user_mock(mocker=mocker)
+        self.elastic_storage_create_elastic_user_intermediary_mock(
+            mocker=mocker)
         send_verification_email_mock = self.send_verification_email_mock(
             mocker=mocker)
         send_verification_email_mock.return_value = None
@@ -104,6 +123,9 @@ class TestCase01UserSignupAPITestCase(TestUtils):
         from ib_iam.tests.common_fixtures.adapters.user_service import \
             update_user_profile_success_adapter_mock
         update_user_profile_success_adapter_mock(mocker=mocker)
+        self.elastic_storage_create_elastic_user_mock(mocker=mocker)
+        self.elastic_storage_create_elastic_user_intermediary_mock(
+            mocker=mocker)
         send_verification_mock = self.send_verification_email_mock(
             mocker=mocker)
         send_verification_mock.return_value = None
