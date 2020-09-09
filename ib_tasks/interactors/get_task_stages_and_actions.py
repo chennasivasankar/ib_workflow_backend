@@ -47,7 +47,7 @@ class GetTaskStagesAndActions:
         permitted_action_ids = user_roles_interactor. \
             get_permitted_action_ids_for_given_user_id(
                 action_storage=self.action_storage, user_id=user_id,
-                stage_ids=stage_ids, project_id=project_id)
+                stage_ids=premitted_stage_ids, project_id=project_id)
 
         stage_actions_dtos = self.action_storage.get_actions_details(
             permitted_action_ids)
