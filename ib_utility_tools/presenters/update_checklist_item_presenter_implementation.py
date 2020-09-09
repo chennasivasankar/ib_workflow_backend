@@ -10,7 +10,7 @@ class UpdateChecklistItemPresenterImplementation(
     UpdateChecklistItemPresenterInterface, HTTPResponseMixin
 ):
 
-    def get_success_response_for_update_checklist_item(self):
+    def get_response_for_update_checklist_item(self):
         return self.prepare_200_success_response(response_dict={})
 
     def get_checklist_item_id_not_found_response(self):

@@ -69,4 +69,4 @@ class TestUpdateChecklistItemInteractor:
         storage_mock.update_checklist_item.assert_called_once_with(
             checklist_item_with_id_dto=checklist_item_with_id_dto
         )
-        presenter_mock.get_success_response_for_update_checklist_item.assert_called_once()
+        presenter_mock.get_response_for_update_checklist_item.assert_called_once()

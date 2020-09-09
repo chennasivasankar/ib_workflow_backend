@@ -45,7 +45,7 @@ class TestUpdateChecklistItemPresenterImplementation:
         expected_response = {}
 
         # Act
-        result = presenter.get_success_response_for_update_checklist_item()
+        result = presenter.get_response_for_update_checklist_item()
 
         # Assert
         actual_response = json.loads(result.content)
