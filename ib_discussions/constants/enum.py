@@ -19,6 +19,7 @@ class StatusCode(Enum):
 
 class SortByEnum(Enum):
     LATEST = "LATEST"
+    TOP = "TOP"
 
 
 class FilterByEnum(Enum):

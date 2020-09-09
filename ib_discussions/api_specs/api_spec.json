@@ -320,7 +320,8 @@
               "sort_by": {
                 "type": "string",
                 "enum": [
-                  "LATEST"
+                  "LATEST",
+                  "TOP"
                 ]
               }
             },
