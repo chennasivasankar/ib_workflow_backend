@@ -303,8 +303,8 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_template_storage=self.task_template_storage
         )
         task_complete_details_dto, task_current_stage_details_dto, \
-            all_tasks_overview_details_dto, stage_ids = \
-            act_on_task_interactor.user_action_on_task(
+            all_tasks_overview_details_dto = act_on_task_interactor.\
+            user_action_on_task_and_set_random_assignees(
                 task_id=task_dto.task_id)
 
         return task_current_stage_details_dto, \
