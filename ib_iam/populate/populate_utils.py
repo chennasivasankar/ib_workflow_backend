@@ -433,9 +433,9 @@ def populate_users_to_team_member_levels_for_tech_team():
         TeamMemberLevelStorageImplementation
     team_member_level_storage = TeamMemberLevelStorageImplementation()
 
-    from ib_iam.interactors.add_members_to_levels_interactor import \
-        AddMembersToLevelsInteractor
-    interactor = AddMembersToLevelsInteractor(
+    from ib_iam.interactors.add_members_to_team_member_levels_interactor import \
+        AddMembersToTeamMemberLevelsInteractor
+    interactor = AddMembersToTeamMemberLevelsInteractor(
         team_member_level_storage=team_member_level_storage
     )
     interactor.add_members_to_team_member_levels(

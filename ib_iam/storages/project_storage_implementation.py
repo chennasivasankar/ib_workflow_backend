@@ -296,3 +296,26 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             name__in=role_names
         ).values_list("name", flat=True)
         return list(valid_role_names)
+
+    def get_user_project_dtos(self, user_id: str):
+        from ib_iam.models import TeamUser
+        team_ids = TeamUser.objects.filter(
+            user_id=user_id
+        ).values_list(
+            "team_id", flat=True
+        )
+
+        project_ids = ProjectTeam.objects.filter(
+            team_id__in=team_ids
+        ).values_list(
+            "project", flat=True
+        )
+        project_objects = Project.objects.filter(
+            project_id__in=project_ids
+        )
+        project_dtos = [
+            self._convert_to_project_with_display_id_dto(
+                project_object=project_object)
+            for project_object in project_objects
+        ]
+        return project_dtos
