@@ -15,10 +15,10 @@ snapshots['TestCase02GetTeamMemberLevelsAPITestCase.test_invalid_team_id_return_
     'response': 'Please send valid team id to get team member level details'
 }
 
-snapshots['TestCase02GetTeamMemberLevelsAPITestCase.test_with_user_not_admin_return_response status_code'] = '400'
+snapshots['TestCase02GetTeamMemberLevelsAPITestCase.test_with_user_not_admin_return_response status_code'] = '403'
 
 snapshots['TestCase02GetTeamMemberLevelsAPITestCase.test_with_user_not_admin_return_response body'] = {
-    'http_status_code': 400,
+    'http_status_code': 403,
     'res_status': 'USER_DOES_NOT_HAVE_ACCESS',
     'response': 'User does not have provision to access'
 }

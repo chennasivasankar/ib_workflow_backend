@@ -2696,7 +2696,30 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_TEAM_ID",
+                  "INVALID_TEAM_ID"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "AddMembersToTeamMemberLevelsForbiddenResponse": {
+      "description": "add members to team member levels forbidden response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
                   "USER_DOES_NOT_HAVE_ACCESS"
                 ]
               }
@@ -3661,6 +3684,9 @@
           },
           "400": {
             "$ref": "#/responses/AddMembersToTeamMemberLevelsBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/AddMembersToTeamMemberLevelsForbiddenResponse"
           },
           "404": {
             "$ref": "#/responses/AddMembersToTeamMemberLevelsNotFoundResponse"
