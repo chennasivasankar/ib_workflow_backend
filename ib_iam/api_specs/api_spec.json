@@ -2454,7 +2454,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "USER_DOES_NOT_ACCESS"
+                  "USER_DOES_NOT_HAVE_ACCESS"
                 ]
               }
             },
