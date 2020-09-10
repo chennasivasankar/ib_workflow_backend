@@ -12,14 +12,14 @@ class TestGetUserTeamId:
         from ib_tasks.tests.factories.models import StageModelFactory
         stage = StageModelFactory()
         TaskStageHistoryFactory.reset_sequence()
-        TaskStageHistoryFactory(task=task, stage=stage, team_id="TEAM_ID_0")
-        TaskStageHistoryFactory(task=task, stage=stage, team_id="TEAM_ID_0")
+        TaskStageHistoryFactory(task=task, stage=stage)
+        TaskStageHistoryFactory(task=task, stage=stage)
 
     def test_get_user_team_id(self, populate_data_for_user_team):
         # Arrange
         stage_id = 1
         task_id = 1
-        expected_output = "TEAM_ID_0"
+        expected_output = "TEAM_ID_1"
 
         from ib_tasks.storages.tasks_storage_implementation import \
             TasksStorageImplementation
