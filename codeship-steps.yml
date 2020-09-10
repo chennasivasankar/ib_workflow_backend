@@ -1,4 +1,5 @@
 - type: serial
+  tag: ^(alpha|beta|gamma)$
   services:
     - app
   steps:
