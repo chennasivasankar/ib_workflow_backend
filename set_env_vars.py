@@ -13,14 +13,14 @@ def get_stage_vars(function_name, environment_variables,
     lambda_client = session.client('lambda', region_name=aws_region)
     print(environment_variables)
     #
-    # response = lambda_client.update_function_configuration(
-    #     FunctionName=function_name,
-    #     Environment={
-    #         'Variables': environment_variables
-    #     }
-    # )
+    response = lambda_client.update_function_configuration(
+        FunctionName=function_name,
+        Environment={
+            'Variables': environment_variables
+        }
+    )
 
-    return
+    return response
 
 
 args = argparse.ArgumentParser(add_help=False)
