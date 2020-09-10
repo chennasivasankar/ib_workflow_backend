@@ -25,7 +25,7 @@ USER_ACCOUNT_DOES_NOT_EXIST = (
 class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
                                             HTTPResponseMixin):
 
-    def raise_exception_for_invalid_user_id(self):
+    def response_for_invalid_user_id_exception(self):
         response_dict = {
             "response": INVALID_USER_ID[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
@@ -35,7 +35,7 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
             response_dict=response_dict
         )
 
-    def raise_exception_for_user_account_does_not_exist(self):
+    def response_for_user_account_does_not_exist_exception(self):
         response_dict = {
             "response": USER_ACCOUNT_DOES_NOT_EXIST[0],
             "http_status_code": StatusCode.NOT_FOUND.value,

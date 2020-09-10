@@ -16,7 +16,8 @@ class RolesInteractor:
     def __init__(self, storage: RolesStorageInterface):
         self.storage = storage
 
-    def add_project_roles_wrapper(self, role_dtos: List[RoleDTO], project_id: str,
+    def add_project_roles_wrapper(self, role_dtos: List[RoleDTO],
+                                  project_id: str,
                                   presenter: AddRolesPresenterInterface):
         response = None
         try:
@@ -84,7 +85,7 @@ class RolesInteractor:
 
     # TODO: CE
     def get_valid_role_ids(self, role_ids: List[str]):
-        role_ids = list(set(role_ids))
+        role_ids = sorted(list(set(role_ids)))
         valid_role_ids = self.storage.get_valid_role_ids(role_ids=role_ids)
         from ib_iam.constants.config import ALL_ROLES_ID
         if ALL_ROLES_ID in role_ids:

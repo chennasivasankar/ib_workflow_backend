@@ -25,10 +25,10 @@ class GetUserProfileInteractor:
             response = presenter.prepare_response_for_get_user_profile(
                 user_with_extra_details_dto=user_with_extra_details_dto)
         except InvalidUserId:
-            response = presenter.raise_exception_for_invalid_user_id()
+            response = presenter.response_for_invalid_user_id_exception()
         except UserAccountDoesNotExist:
             response \
-                = presenter.raise_exception_for_user_account_does_not_exist()
+                = presenter.response_for_user_account_does_not_exist_exception()
         return response
 
     def get_user_profile(self, user_id: str) -> UserWithExtraDetailsDTO:
