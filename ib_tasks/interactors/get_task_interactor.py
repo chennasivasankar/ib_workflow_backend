@@ -137,10 +137,9 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_details_dto, user_roles
         )
         stages_and_actions_details_dtos = \
-            self._get_stages_and_actions_details_dtos(task_id, user_id)
+            self._get_stages_and_actions_details_dtos(
+                task_id, user_id, user_roles)
         stage_ids = self._get_stage_ids(stages_and_actions_details_dtos)
-        self._validate_user_have_permission_for_at_least_one_stage(stage_ids,
-                                                                   user_roles)
         stage_assignee_details_dtos = \
             self._stage_assignee_with_team_details_dtos(
                 task_id, stage_ids, project_id
@@ -377,7 +376,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         return field_searchable_dtos
 
     def _get_stages_and_actions_details_dtos(
-            self, task_id: int, user_id: str
+            self, task_id: int, user_id: str, user_roles: str
     ) -> List[StageAndActionsDetailsDTO]:
 
         from ib_tasks.interactors.get_task_stages_and_actions \
@@ -390,6 +389,10 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         )
         stages_and_actions_details_dtos = \
             interactor.get_task_stages_and_actions(task_id, user_id)
+
+        stage_ids = self._get_stage_ids(stages_and_actions_details_dtos)
+        self._validate_user_have_permission_for_at_least_one_stage(stage_ids,
+                                                                   user_roles)
         filtered_stages_and_actions_details_dtos = \
             self._get_filtered_stages_and_actions_details_dtos(
                 stages_and_actions_details_dtos)
