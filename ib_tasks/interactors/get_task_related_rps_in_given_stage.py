@@ -1,5 +1,7 @@
 import datetime
+from typing import List
 
+from ib_tasks.adapters.dtos import UserDetailsDTO
 from ib_tasks.adapters.service_adapter import get_service_adapter
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageIdException
 from ib_tasks.exceptions.task_custom_exceptions import (InvalidTaskDisplayId,
@@ -27,7 +29,8 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
         self.task_storage = task_storage
 
     def get_task_rps_wrapper(self, presenter: GetTaskRpsPresenterInterface,
-                             parameters: GetTaskRPsParametersDTO):
+                             parameters: GetTaskRPsParametersDTO) -> List[
+            UserDetailsDTO]:
         try:
             rps_dtos = self.get_task_rps(parameters)
         except InvalidTaskDisplayId as err:
@@ -115,7 +118,7 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
             assignee_id = rp_id
         superior_id = \
             service_adapter.auth_service.get_immediate_superior_user_id(
-                user_id=assignee_id, team_id=user_team_id)
+                    user_id=assignee_id, team_id=user_team_id)
         if superior_id:
             self.storage.add_superior_to_db(
                     superior_id=superior_id,
@@ -128,7 +131,8 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def _validate_if_task_is_assigned_to_user(self, task_id: int, user_id: str,
                                               stage_id: int):
-        # is_assigned = self.storage.validate_if_task_is_assigned_to_user_in_given_stage(
+        # is_assigned =
+        # self.storage.validate_if_task_is_assigned_to_user_in_given_stage(
         #     task_id, user_id, stage_id
         # )
         # is_not_assigned = not is_assigned
