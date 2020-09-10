@@ -29,3 +29,19 @@ RESPONSE_200_JSON = """
 }
 """
 
+RESPONSE_400_JSON = """
+{
+    "response": "string",
+    "http_status_code": 1,
+    "res_status": "INVALID_OFFSET_VALUE"
+}
+"""
+
+RESPONSE_403_JSON = """
+{
+    "response": "string",
+    "http_status_code": 1,
+    "res_status": "USER_HAS_NO_ACCESS_TO_GET_PROJECTS"
+}
+"""
+

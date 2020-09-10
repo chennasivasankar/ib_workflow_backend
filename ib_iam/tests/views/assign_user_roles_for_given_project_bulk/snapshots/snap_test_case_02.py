@@ -31,7 +31,7 @@ snapshots['TestCase02AssignUserRolesForGivenProjectBulkAPITestCase.test_with_inv
     'response': "Please send valid role ids for project, invalid role ids are ['ROLE_10']"
 }
 
-snapshots['TestCase02AssignUserRolesForGivenProjectBulkAPITestCase.test_with_user_is_not_admin_return_response status_code'] = '400'
+snapshots['TestCase02AssignUserRolesForGivenProjectBulkAPITestCase.test_with_user_is_not_admin_return_response status_code'] = '403'
 
 snapshots['TestCase02AssignUserRolesForGivenProjectBulkAPITestCase.test_with_user_is_not_admin_return_response body'] = {
     'http_status_code': 400,
