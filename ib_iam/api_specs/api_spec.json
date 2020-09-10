@@ -2819,7 +2819,30 @@
                 "type": "string",
                 "enum": [
                   "INVALID_TEAM_ID",
-                  "INVALID_LEVEL_HIERARCHY",
+                  "INVALID_LEVEL_HIERARCHY"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "AddMembersToSuperiorsForbiddenResponse": {
+      "description": "add members to superiors forbidden response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
                   "USER_DOES_NOT_HAVE_ACCESS"
                 ]
               }
@@ -3777,6 +3800,9 @@
           },
           "400": {
             "$ref": "#/responses/AddMembersToSuperiorsBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/AddMembersToSuperiorsForbiddenResponse"
           },
           "404": {
             "$ref": "#/responses/AddMembersToSuperiorsNotFoundResponse"
