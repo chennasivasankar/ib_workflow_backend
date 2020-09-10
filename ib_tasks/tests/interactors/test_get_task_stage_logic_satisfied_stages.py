@@ -1,5 +1,7 @@
 import pytest
 
+from ib_tasks.tests.factories.interactor_dtos import StageDisplayLogicDTOFactory, StatusOperandStageDTOFactory
+
 
 class TestGetTaskStageLogicSatisfiedStages:
 
@@ -80,10 +82,9 @@ class TestGetTaskStageLogicSatisfiedStages:
         storage.get_task_template_stage_logic_to_task\
             .return_value = stage_display_value
         storage.validate_task_id.return_value = True
-        from ib_tasks.tests.factories.interactor_dtos \
-            import StatusOperandStageDTOFactory
         StatusOperandStageDTOFactory.reset_sequence()
-        status_stage_dtos = StatusOperandStageDTOFactory.create_batch(3)
+        StageDisplayLogicDTOFactory.reset_sequence()
+        status_stage_dtos = StageDisplayLogicDTOFactory.create_batch(3)
         mock_obj = self.stage_display_mock(mocker)
         mock_obj.return_value = status_stage_dtos
 
@@ -114,10 +115,9 @@ class TestGetTaskStageLogicSatisfiedStages:
         storage.get_task_template_stage_logic_to_task\
             .return_value = stage_display_value
         storage.validate_task_id.return_value = True
-        from ib_tasks.tests.factories.interactor_dtos \
-            import StatusOperandStageDTOFactory
         StatusOperandStageDTOFactory.reset_sequence()
-        status_stage_dtos = StatusOperandStageDTOFactory.create_batch(3)
+        StageDisplayLogicDTOFactory.reset_sequence()
+        status_stage_dtos = StageDisplayLogicDTOFactory.create_batch(3)
         mock_obj = self.stage_display_mock(mocker)
         mock_obj.return_value = status_stage_dtos
 
@@ -152,13 +152,14 @@ class TestGetTaskStageLogicSatisfiedStages:
         storage.get_task_template_stage_logic_to_task\
             .return_value = stage_mixed_value
         storage.validate_task_id.return_value = True
-        from ib_tasks.tests.factories.interactor_dtos \
-            import StatusOperandStageDTOFactory
         StatusOperandStageDTOFactory.reset_sequence()
+        StageDisplayLogicDTOFactory.reset_sequence()
         status_stage_dtos = [
-            StatusOperandStageDTOFactory(),
-            StatusOperandStageDTOFactory(operator=">="),
-            StatusOperandStageDTOFactory(operator="<=", stage='stage_1')
+            StageDisplayLogicDTOFactory(display_logic_dto=StatusOperandStageDTOFactory()),
+            StageDisplayLogicDTOFactory(
+                display_logic_dto=StatusOperandStageDTOFactory(operator=">=")),
+            StageDisplayLogicDTOFactory(
+                display_logic_dto=StatusOperandStageDTOFactory(operator="<=", stage='stage_1'))
         ]
         mock_obj = self.stage_display_mock(mocker)
         mock_obj.return_value = status_stage_dtos
