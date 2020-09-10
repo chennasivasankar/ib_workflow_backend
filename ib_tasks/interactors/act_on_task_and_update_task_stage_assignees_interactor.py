@@ -18,7 +18,6 @@ from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     VirtualStageIdsException
 from ib_tasks.exceptions.task_custom_exceptions import (
     InvalidTaskException, InvalidTaskDisplayId, TaskDelayReasonIsNotUpdated)
-from ib_tasks.interactors.act_on_task_interactor import InvalidBoardIdException
 from ib_tasks.interactors \
     .call_action_logic_function_and_update_task_status_variables_interactor \
     import InvalidMethodFound
@@ -55,6 +54,8 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
+from ib_tasks.interactors.user_action_on_task_interactor import \
+    InvalidBoardIdException
 
 
 class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
@@ -88,7 +89,8 @@ class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
         self.task_template_storage = task_template_storage
 
     def act_on_task_interactor_and_update_task_stage_assignees_wrapper(
-            self, presenter: ActOnTaskAndUpdateTaskStageAssigneesPresenterInterface,
+            self,
+            presenter: ActOnTaskAndUpdateTaskStageAssigneesPresenterInterface,
             task_display_id: str,
             stage_assignee_dtos: List[StageAssigneeDTO]):
 
@@ -162,8 +164,13 @@ class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
     def act_on_task_interactor_and_update_task_stage_assignees(
             self, task_id: int, stage_assignee_dtos: List[StageAssigneeDTO]):
         task_complete_details_dto, task_current_stage_details_dto, \
-        all_tasks_overview_details_dto = self._act_on_task_and_get_required_dtos(
+        all_tasks_overview_details_dto, stage_ids = self._act_on_task_and_get_required_dtos(
             task_id=task_id)
+        stage_ids_excluding_virtual_stages = self.stage_storage. \
+            get_stage_ids_excluding_virtual_stages(stage_ids)
+        self._create_task_stage_history_records_for_virtual_stages(
+            task_id=task_id, stage_ids_excluding_virtual_stages=
+            stage_ids_excluding_virtual_stages, stage_ids=stage_ids)
         task_id_with_stage_assignees_dto = TaskIdWithStageAssigneesDTO(
             task_id=task_id,
             stage_assignees=stage_assignee_dtos)
@@ -187,9 +194,10 @@ class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
         return
 
     def _act_on_task_and_get_required_dtos(self, task_id: int):
-        from ib_tasks.interactors.act_on_task_interactor import \
-            ActOnTaskInteractor
-        act_on_task_interactor = ActOnTaskInteractor(
+
+        from ib_tasks.interactors.user_action_on_task_interactor import \
+            UserActionOnTaskInteractor
+        act_on_task_interactor = UserActionOnTaskInteractor(
             action_id=self.action_id, board_id=self.board_id,
             user_id=self.user_id, action_storage=self.action_storage,
             create_task_storage=self.create_task_storage,
@@ -201,8 +209,28 @@ class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
             task_storage=self.task_storage,
             task_template_storage=self.task_template_storage)
         task_complete_details_dto, task_current_stage_details_dto, \
-        all_tasks_overview_details_dto = act_on_task_interactor.act_on_task(
-            task_id=task_id)
+        all_tasks_overview_details_dto, stage_ids = act_on_task_interactor.\
+            user_action_on_task(task_id=task_id)
         return (
             task_complete_details_dto, task_current_stage_details_dto,
-            all_tasks_overview_details_dto)
+            all_tasks_overview_details_dto, stage_ids)
+
+    def _create_task_stage_history_records_for_virtual_stages(
+            self, task_id: int, stage_ids_excluding_virtual_stages: List[str],
+            stage_ids: List[str]):
+        stage_ids_having_virtual_stages = \
+            [stage_id for stage_id in stage_ids
+             if stage_id not in stage_ids_excluding_virtual_stages]
+        virtual_stages_already_having_task = self.stage_storage. \
+            get_virtual_stages_already_having_in_task(
+            task_id, stage_ids_having_virtual_stages)
+        virtual_stages_not_in_task = [stage_id for stage_id in
+                                      stage_ids_having_virtual_stages if
+                                      stage_id not in
+                                      virtual_stages_already_having_task]
+        virtual_stage_db_stage_ids_not_in_task = self.stage_storage. \
+            get_db_stage_ids_for_given_stage_ids(virtual_stages_not_in_task)
+        self.task_stage_storage. \
+            create_task_stage_history_records_for_virtual_stages(
+            stage_ids=virtual_stage_db_stage_ids_not_in_task, task_id=task_id)
+        return

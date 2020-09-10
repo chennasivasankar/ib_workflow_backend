@@ -257,7 +257,7 @@ class StagesStorageImplementation(StageStorageInterface):
         TaskTemplateInitialStage.objects.bulk_create(list_of_task_stages)
 
     def get_task_id_with_stage_details_dtos_based_on_stage_value(
-            self, stage_values: List[int],
+            self, stage_values: List[int], stage_ids: List[str],
             task_ids_group_by_stage_value_dtos: List[
                 StageValueWithTaskIdsDTO]
     ) -> List[TaskIdWithStageDetailsDTO]:
@@ -273,7 +273,7 @@ class StagesStorageImplementation(StageStorageInterface):
         if query is None:
             return []
         current_stage_objects = CurrentTaskStage.objects.filter(
-            query
+            query, stage__stage_id__in=stage_ids
         ).values(
             "task_id", "task__task_display_id",
             "stage__stage_id", "stage__display_name",

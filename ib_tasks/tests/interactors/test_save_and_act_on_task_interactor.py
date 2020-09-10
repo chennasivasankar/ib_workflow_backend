@@ -103,7 +103,7 @@ class TestSaveAndActOnATaskInteractor:
     @pytest.fixture
     def user_action_on_task_mock(self, mocker):
         path = "ib_tasks.interactors.user_action_on_task_interactor" \
-               ".UserActionOnTaskInteractor.act_on_task"
+               ".UserActionOnTaskInteractor.user_action_on_task_and_set_random_assignees"
         return mocker.patch(path)
 
     @pytest.fixture
