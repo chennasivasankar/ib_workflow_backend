@@ -2395,7 +2395,7 @@
       }
     },
     "GetListOfUserRolesForGivenProjectBadRequestResponse": {
-      "description": "Bad request Response",
+      "description": "Bad request response",
       "schema": {
         "allOf": [
           {
@@ -2418,8 +2418,32 @@
         ]
       }
     },
+    "GetListOfUserRolesForGivenProjectForbiddenResponse": {
+      "description": "Forbidden request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_HAS_NO_ACCESS_TO_GET_USERS_WITH_ROLES"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
     "AssignUserRolesForGivenProjectBulkBadRequestResponse": {
-      "description": "Add specific project details bad request response",
+      "description": "bad request response",
       "schema": {
         "allOf": [
           {
@@ -2433,7 +2457,30 @@
                 "enum": [
                   "INVALID_PROJECT_ID",
                   "INVALID_ROLE_IDS_FOR_PROJECT",
-                  "INVALID_USER_IDS_FOR_PROJECT",
+                  "INVALID_USER_IDS_FOR_PROJECT"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "AssignUserRolesForGivenProjectBulkForbiddenResponse": {
+      "description": "forbidden response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
                   "USER_DOES_NOT_ACCESS"
                 ]
               }
@@ -3679,6 +3726,9 @@
           },
           "400": {
             "$ref": "#/responses/GetListOfUserRolesForGivenProjectBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/GetListOfUserRolesForGivenProjectForbiddenResponse"
           }
         }
       }
@@ -3709,6 +3759,9 @@
           },
           "400": {
             "$ref": "#/responses/AssignUserRolesForGivenProjectBulkBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/AssignUserRolesForGivenProjectBulkForbiddenResponse"
           }
         }
       }

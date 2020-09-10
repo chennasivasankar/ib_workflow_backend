@@ -293,3 +293,8 @@ USER_HAS_NO_ACCESS_TO_GET_PROJECTS = (
     "User has no access to get projects",
     "USER_HAS_NO_ACCESS_TO_GET_PROJECTS"
 )
+
+USER_HAS_NO_ACCESS_TO_GET_USERS_WITH_ROLES = (
+    "User has no access to get users with roles",
+    "USER_HAS_NO_ACCESS_TO_GET_USERS_WITH_ROLES"
+)
