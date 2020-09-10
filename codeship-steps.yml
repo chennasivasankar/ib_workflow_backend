@@ -22,7 +22,7 @@
 #                - command: /bin/bash -c "source set_env.sh && sentry-cli releases deploys $CI_BUILD_ID new -e $SENTRY_ENV_BRANCH"
             - type: serial
               steps:
-                - command: /bin/bash -c "source /_ib_venv/bin/activate && zappa deploy $CI_BRANCH"
+                - command: /bin/bash -c "source /_ib_venv/bin/activate && zappa update $CI_BRANCH"
                 - command: /bin/bash -c "source /_ib_venv/bin/activate && zappa manage $CI_BRANCH 'migrate --no-input'"
                 - command: /bin/bash -c "source /_ib_venv/bin/activate && zappa manage $CI_BRANCH 'collectstatic --no-input'"
         - command: echo "Deployed $CI_BUILD_NUMBER"
