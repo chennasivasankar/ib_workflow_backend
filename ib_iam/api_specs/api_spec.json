@@ -690,24 +690,6 @@
         }
       ]
     },
-    "ProjectsWithTotalProjectsCount": {
-      "type": "object",
-      "properties": {
-        "total_projects_count": {
-          "type": "integer"
-        },
-        "projects": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ProjectWithExtraFields"
-          }
-        }
-      },
-      "required": [
-        "total_projects_count",
-        "projects"
-      ]
-    },
     "ProjectWithTeamIds": {
       "allOf": [
         {
@@ -2302,7 +2284,22 @@
     "SuccessForGetProjectsResponse": {
       "description": "returns all Projects",
       "schema": {
-        "$ref": "#/definitions/ProjectsWithTotalProjectsCount"
+        "type": "object",
+        "properties": {
+          "total_projects_count": {
+            "type": "integer"
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/ProjectWithExtraFields"
+            }
+          }
+        },
+        "required": [
+          "total_projects_count",
+          "projects"
+        ]
       }
     },
     "GetProjectsForbiddenResponse": {
