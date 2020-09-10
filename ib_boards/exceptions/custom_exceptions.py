@@ -102,9 +102,6 @@ class InvalidUserRoles(Exception):
     def __init__(self, user_role_ids: List[str]):
         self.user_role_ids = user_role_ids
 
-    def __str__(self):
-        return self.user_role_ids
-
 
 class ColumnIdsAssignedToDifferentBoard(Exception):
     def __init__(self, column_id: str):
