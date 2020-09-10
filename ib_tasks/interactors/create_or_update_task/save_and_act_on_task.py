@@ -253,7 +253,7 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         )
         task_current_stage_details_dto, all_tasks_overview_details_dto, \
             task_complete_details_dto = self.save_and_act_on_task(
-                task_dto_with_db_task_id, board_id=board_id)
+                task_dto_with_db_task_id, board_id)
         from ib_tasks.interactors.task_log_interactor import TaskLogInteractor
         task_log_interactor = TaskLogInteractor(
             storage=self.storage, task_storage=self.task_storage)
@@ -303,8 +303,9 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_template_storage=self.task_template_storage
         )
         task_complete_details_dto, task_current_stage_details_dto, \
-            all_tasks_overview_details_dto = act_on_task_interactor.\
-            user_action_on_task(task_id=task_dto.task_id)
+            all_tasks_overview_details_dto, stage_ids = \
+            act_on_task_interactor.user_action_on_task(
+                task_id=task_dto.task_id)
 
         return task_current_stage_details_dto, \
             all_tasks_overview_details_dto, task_complete_details_dto
