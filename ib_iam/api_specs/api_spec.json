@@ -663,32 +663,6 @@
       ]
     },
     "ProjectWithExtraFields": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/Project"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "project_display_id": {
-              "type": "string"
-            },
-            "teams": {
-              "$ref": "#/definitions/Teams"
-            },
-            "roles": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Role"
-              }
-            }
-          },
-          "required": [
-            "teams",
-            "roles"
-          ]
-        }
-      ]
     },
     "ProjectWithTeamIds": {
       "allOf": [
@@ -2292,7 +2266,32 @@
           "projects": {
             "type": "array",
             "items": {
-              "$ref": "#/definitions/ProjectWithExtraFields"
+              "allOf": [
+                {
+                  "$ref": "#/definitions/Project"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "project_display_id": {
+                      "type": "string"
+                    },
+                    "teams": {
+                      "$ref": "#/definitions/Teams"
+                    },
+                    "roles": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/Role"
+                      }
+                    }
+                  },
+                  "required": [
+                    "teams",
+                    "roles"
+                  ]
+                }
+              ]
             }
           }
         },
