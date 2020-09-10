@@ -20,7 +20,7 @@ class GetUserOptionsDetails(ValidationMixin):
             response = presenter.get_user_options_details_response(
                 configuration_details_dto)
         except UserIsNotAdmin:
-            response = presenter.raise_user_is_not_admin_exception()
+            response = presenter.response_for_user_is_not_admin_exception()
         return response
 
     def get_configuration_details(self, user_id: str):

@@ -39,14 +39,15 @@ class SignupInteractor(ValidationMixin):
         except PasswordDoesNotMatchedWithCriteriaException:
             response = presenter.raise_password_not_matched_with_criteria_exception()
         except InvalidEmail:
-            response = presenter.raise_invalid_email_exception()
+            response = presenter.response_for_invalid_email_exception()
+
         except InvalidDomainException:
             response = presenter.raise_invalid_domain_exception()
         except InvalidNameLength:
-            response = presenter.raise_invalid_name_length_exception()
+            response = presenter.response_for_invalid_name_length_exception()
         except NameShouldNotContainsNumbersSpecCharacters:
             response = presenter. \
-                raise_name_should_not_contain_special_characters_exception()
+                response_for_name_contains_special_character_exception()
         return response
 
     def create_user_account(self, email: str, password: str, name: str):

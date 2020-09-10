@@ -7,7 +7,7 @@ class DeleteUserPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_user_is_not_admin_exception(self):
+    def response_for_user_is_not_admin_exception(self):
         pass
 
     @abc.abstractmethod

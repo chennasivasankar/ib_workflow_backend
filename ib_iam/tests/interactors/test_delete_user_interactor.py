@@ -131,24 +131,27 @@ class TestDeleteUserInteractor:
         presenter_mock.get_delete_user_response.assert_called_once()
 
     def test_delete_user_given_valid_delete_user_id_and_invalid_admin_user_id_then_raise_exception(
-            self, storage_mock, user_storage_mock,
-            presenter_mock, elastic_storage):
+            self, storage_mock, user_storage_mock, presenter_mock,
+            elastic_storage
+    ):
         invalid_admin_user_id = "1"
         delete_user_id = "2"
-        interactor = DeleteUserInteractor(storage=storage_mock,
-                                          user_storage=user_storage_mock,
-                                          elastic_storage=elastic_storage)
+        interactor = DeleteUserInteractor(
+            storage=storage_mock, user_storage=user_storage_mock,
+            elastic_storage=elastic_storage
+        )
 
         user_storage_mock.is_user_admin.return_value = False
         presenter_mock.get_delete_user_response.return_value = Mock()
 
-        interactor.delete_user_wrapper(user_id=invalid_admin_user_id,
-                                       delete_user_id=delete_user_id,
-                                       presenter=presenter_mock)
+        interactor.delete_user_wrapper(
+            user_id=invalid_admin_user_id, delete_user_id=delete_user_id,
+            presenter=presenter_mock
+        )
 
         user_storage_mock.is_user_admin.assert_called_once_with(
             user_id=invalid_admin_user_id)
-        presenter_mock.raise_user_is_not_admin_exception.assert_called_once()
+        presenter_mock.response_for_user_is_not_admin_exception.assert_called_once()
 
     def test_delete_user_given_invalid_delete_user_id_then_raise_exception(
             self, storage_mock, user_storage_mock,

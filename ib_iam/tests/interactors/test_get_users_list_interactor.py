@@ -97,7 +97,7 @@ class TestGetUsersDetailsInteractor:
         )
         interactor = GetListOfUsersInteractor(user_storage=storage_mock)
         storage_mock.is_user_admin.return_value = False
-        presenter_mock.raise_user_is_not_admin_exception.return_value = Mock()
+        presenter_mock.response_for_user_is_not_admin_exception.return_value = Mock()
         # Act
         interactor.get_list_of_users_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
@@ -108,7 +108,7 @@ class TestGetUsersDetailsInteractor:
         # Assert
         storage_mock.is_user_admin.assert_called_once_with(
             user_id=user_id)
-        presenter_mock.raise_user_is_not_admin_exception.assert_called_once()
+        presenter_mock.response_for_user_is_not_admin_exception.assert_called_once()
 
     def test_get_users_when_offset_value_is_less_than_0_then_throw_exception(
             self, storage_mock, presenter_mock):

@@ -100,7 +100,7 @@ class CreateUserAccountPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_email_exception(self):
+    def response_for_invalid_email_exception(self):
         pass
 
     @abc.abstractmethod
@@ -112,11 +112,11 @@ class CreateUserAccountPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_name_length_exception(self):
+    def response_for_invalid_name_length_exception(self):
         pass
 
     @abc.abstractmethod
-    def raise_name_should_not_contain_special_characters_exception(self):
+    def response_for_name_contains_special_character_exception(self):
         pass
 
 
