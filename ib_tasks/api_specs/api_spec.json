@@ -41,6 +41,9 @@
                "properties":{
                   "action_id":{
                      "type":"string"
+                  },
+                  "board_id": {
+                    "type": "string"
                   }
                }
             },
