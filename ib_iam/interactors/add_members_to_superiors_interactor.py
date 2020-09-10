@@ -6,8 +6,8 @@ from ib_iam.interactors.dtos.dtos import ImmediateSuperiorUserIdWithUserIdsDTO
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
     AddMembersToSuperiorsPresenterInterface
-from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface import \
-    TeamMemberLevelStorageInterface
+from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface \
+    import TeamMemberLevelStorageInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 
@@ -94,18 +94,21 @@ class AddMembersToSuperiorsInteractor(ValidationMixin):
     ):
         subordinate_user_ids = []
         immediate_superior_user_ids = []
-        for immediate_superior_user_id_with_member_ids_dto in immediate_superior_user_id_with_member_ids_dtos:
+        for immediate_superior_user_id_with_member_ids_dto in \
+                immediate_superior_user_id_with_member_ids_dtos:
             subordinate_user_ids.extend(
                 immediate_superior_user_id_with_member_ids_dto.member_ids
             )
             immediate_superior_user_ids.append(
                 immediate_superior_user_id_with_member_ids_dto.immediate_superior_user_id
             )
-        self.team_member_level_storage.validate_users_belong_to_given_level_hierarchy_in_a_team(
+        self.team_member_level_storage. \
+            validate_users_belong_to_given_level_hierarchy_in_a_team(
             user_ids=subordinate_user_ids, team_id=team_id,
             level_hierarchy=member_level_hierarchy
         )
-        self.team_member_level_storage.validate_users_belong_to_given_level_hierarchy_in_a_team(
+        self.team_member_level_storage. \
+            validate_users_belong_to_given_level_hierarchy_in_a_team(
             user_ids=immediate_superior_user_ids, team_id=team_id,
             level_hierarchy=member_level_hierarchy + 1
         )
@@ -116,21 +119,34 @@ class AddMembersToSuperiorsInteractor(ValidationMixin):
             team_id: str
     ):
         team_member_ids_in_database = self.team_member_level_storage.get_team_member_ids(
-            team_id=team_id)
-        team_member_ids = []
-        for immediate_superior_user_id_with_member_ids_dto in immediate_superior_user_id_with_member_ids_dtos:
-            team_member_ids.extend(
-                immediate_superior_user_id_with_member_ids_dto.member_ids)
-            team_member_ids.append(
-                immediate_superior_user_id_with_member_ids_dto.immediate_superior_user_id)
-
+            team_id=team_id
+        )
+        team_member_ids = self._get_team_member_ids_from_dto(
+            immediate_superior_user_id_with_member_ids_dtos
+        )
         member_ids_not_found_in_team = [
-            team_member_id
-            for team_member_id in team_member_ids
+            team_member_id for team_member_id in team_member_ids
             if team_member_id not in team_member_ids_in_database
         ]
         from ib_iam.exceptions.custom_exceptions import \
             MemberIdsNotFoundInTeam
         if member_ids_not_found_in_team:
             raise MemberIdsNotFoundInTeam(
-                team_member_ids=member_ids_not_found_in_team)
+                team_member_ids=member_ids_not_found_in_team
+            )
+
+    @staticmethod
+    def _get_team_member_ids_from_dto(
+            immediate_superior_user_id_with_member_ids_dtos: List[
+                ImmediateSuperiorUserIdWithUserIdsDTO]
+    ) -> List[str]:
+        team_member_ids = []
+        for immediate_superior_user_id_with_member_ids_dto in \
+                immediate_superior_user_id_with_member_ids_dtos:
+            team_member_ids.extend(
+                immediate_superior_user_id_with_member_ids_dto.member_ids
+            )
+            team_member_ids.append(
+                immediate_superior_user_id_with_member_ids_dto.immediate_superior_user_id
+            )
+        return team_member_ids

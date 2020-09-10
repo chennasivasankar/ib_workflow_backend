@@ -13,6 +13,7 @@ from ib_iam.interactors.storage_interfaces.user_storage_interface import \
 
 
 class TeamMemberLevelIdsNotFound(Exception):
+
     def __init__(self, team_member_level_ids: List[str]):
         self.team_member_level_ids = team_member_level_ids
 
@@ -44,9 +45,12 @@ class AddMembersToTeamMemberLevelsInteractor(ValidationMixin):
             response = presenter.response_for_invalid_team_id()
         except TeamMemberLevelIdsNotFound as err:
             response = presenter.response_for_team_member_level_ids_not_found(
-                err)
+                err
+            )
         except MemberIdsNotFoundInTeam as err:
-            response = presenter.response_for_team_member_ids_not_found(err)
+            response = presenter.response_for_team_member_ids_not_found(
+                err
+            )
         return response
 
     def _add_members_to_team_member_levels_response(
@@ -89,12 +93,11 @@ class AddMembersToTeamMemberLevelsInteractor(ValidationMixin):
                 TeamMemberLevelIdWithMemberIdsDTO],
             team_id: str
     ):
-        team_member_ids_in_database = self.team_member_level_storage.get_team_member_ids(
-            team_id=team_id)
-        team_member_ids = []
-        for team_member_level_id_with_member_ids_dto in team_member_level_id_with_member_ids_dtos:
-            team_member_ids.extend(
-                team_member_level_id_with_member_ids_dto.member_ids)
+        team_member_ids_in_database = self.team_member_level_storage. \
+            get_team_member_ids(team_id=team_id)
+        team_member_ids = self._get_team_member_ids_from_dto(
+            team_member_level_id_with_member_ids_dtos
+        )
         member_ids_not_found_in_team = [
             team_member_id
             for team_member_id in team_member_ids
@@ -104,24 +107,38 @@ class AddMembersToTeamMemberLevelsInteractor(ValidationMixin):
             raise MemberIdsNotFoundInTeam(
                 team_member_ids=member_ids_not_found_in_team)
 
+    @staticmethod
+    def _get_team_member_ids_from_dto(
+            team_member_level_id_with_member_ids_dtos: List[
+                TeamMemberLevelIdWithMemberIdsDTO]
+    ) -> List[str]:
+        team_member_ids = []
+        for team_member_level_id_with_member_ids_dto in \
+                team_member_level_id_with_member_ids_dtos:
+            team_member_ids.extend(
+                team_member_level_id_with_member_ids_dto.member_ids
+            )
+        return team_member_ids
+
     def _validate_team_member_level_ids(
             self, team_id: str,
             team_member_level_id_with_member_ids_dtos: List[
                 TeamMemberLevelIdWithMemberIdsDTO]
     ):
-        team_member_level_ids_in_database = \
+        valid_team_member_level_ids = \
             self.team_member_level_storage.get_team_member_level_ids(
-                team_id=team_id)
-        team_member_level_ids = [
+                team_id=team_id
+            )
+        invalid_team_member_level_ids = [
             team_member_level_id_with_member_ids_dto.team_member_level_id
             for team_member_level_id_with_member_ids_dto in
             team_member_level_id_with_member_ids_dtos
+            if
+            (
+                team_member_level_id_with_member_ids_dto.team_member_level_id
+            ) not in valid_team_member_level_ids
         ]
-        team_member_level_ids_not_found = [
-            team_member_level_id
-            for team_member_level_id in team_member_level_ids
-            if team_member_level_id not in team_member_level_ids_in_database
-        ]
-        if team_member_level_ids_not_found:
+        if invalid_team_member_level_ids:
             raise TeamMemberLevelIdsNotFound(
-                team_member_level_ids=team_member_level_ids_not_found)
+                team_member_level_ids=invalid_team_member_level_ids
+            )
