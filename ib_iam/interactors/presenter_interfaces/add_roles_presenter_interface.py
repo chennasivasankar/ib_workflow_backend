@@ -20,5 +20,5 @@ class AddRolesPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_duplicate_role_ids_exception(self, err):
+    def response_for_duplicate_role_ids_exception(self, err):
         pass

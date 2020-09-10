@@ -97,3 +97,24 @@ class TestAddMembersToTeamMemberLevelsPresenterImplementation:
         assert response_data["response"] == expected_response
         assert response_data["http_status_code"] == expected_http_status_code
         assert response_data["res_status"] == expected_res_status
+
+    def test_response_for_user_is_not_admin(self, presenter):
+        # Arrange
+        team_member_ids = ["1", "2"]
+        from ib_iam.presenters.add_members_to_team_member_levels_presenter_implementation import \
+            USER_DOES_NOT_HAVE_ACCESS
+        expected_response = USER_DOES_NOT_HAVE_ACCESS[0].format(
+            team_member_ids=team_member_ids
+        )
+        expected_http_status_code = StatusCode.FORBIDDEN.value
+        expected_res_status = USER_DOES_NOT_HAVE_ACCESS[1]
+
+        # Act
+        response_obj = presenter.response_for_user_is_not_admin()
+
+        # Assert
+        response_data = json.loads(response_obj.content)
+
+        assert response_data["response"] == expected_response
+        assert response_data["http_status_code"] == expected_http_status_code
+        assert response_data["res_status"] == expected_res_status

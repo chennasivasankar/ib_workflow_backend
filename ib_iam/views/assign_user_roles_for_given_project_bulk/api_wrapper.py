@@ -10,9 +10,9 @@ def api_wrapper(*args, **kwargs):
     request_data = kwargs["request_data"]
     user_object = kwargs["user"]
 
+    user_id = user_object.user_id
     project_id = str(path_params["project_id"])
     users = request_data["users"]
-    user_id = user_object.user_id
 
     from ib_iam.tests.factories.interactor_dtos import \
         UserIdWithRoleIdsDTOFactory

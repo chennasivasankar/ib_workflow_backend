@@ -19,7 +19,7 @@ class TestResponseAddNewUser:
 
         # Act
         response_object = presenter. \
-            raise_name_should_not_contain_special_characters_exception()
+            response_for_name_contains_special_character_exception()
 
         # Assert
         response = json.loads(response_object.content)
@@ -39,7 +39,7 @@ class TestResponseAddNewUser:
 
         # Act
         response_object = \
-            presenter.raise_invalid_name_length_exception_for_update_user_profile()
+            presenter.response_for_invalid_name_length_exception()
 
         # Assert
         response = json.loads(response_object.content)
@@ -55,7 +55,7 @@ class TestResponseAddNewUser:
         response_status_code = INVALID_EMAIL[1]
 
         # Act
-        response_object = presenter.raise_invalid_email_exception()
+        response_object = presenter.response_for_invalid_email_exception()
 
         # Assert
         response = json.loads(response_object.content)
@@ -73,7 +73,7 @@ class TestResponseAddNewUser:
 
         # Act
         response_object = presenter. \
-            raise_user_account_already_exist_with_this_email_exception()
+            response_for_user_account_already_exists_exception()
 
         # Assert
         response = json.loads(response_object.content)
@@ -90,7 +90,7 @@ class TestResponseAddNewUser:
         response_status_code = CREATE_USER_SUCCESSFULLY[1]
 
         # Act
-        response_object = presenter.user_created_response()
+        response_object = presenter.response_for_add_user_response()
 
         # Assert
         response = json.loads(response_object.content)

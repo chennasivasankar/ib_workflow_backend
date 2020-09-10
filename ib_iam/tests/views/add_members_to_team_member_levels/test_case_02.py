@@ -14,8 +14,58 @@ class TestCase02AddMembersToLevelsAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['write']}}
 
+    def _get_or_create_user(self):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_users.models import UserAccount
+        user = UserAccount.objects.create(user_id=user_id)
+        return user
+
+    @pytest.mark.django_db
+    def test_with_user_is_not_admin_return_response(self, snapshot):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_iam.models import UserDetails
+        UserDetails.objects.create(user_id=user_id, is_admin=False)
+
+        team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        team_member_level_id_with_member_ids_list = [
+            {
+                "team_member_level_id": "00be920b-7b4c-49e7-8adb-41a0c18da848",
+                "member_ids": [
+                    "31be920b-7b4c-49e7-8adb-41a0c18da848",
+                    "01be920b-7b4c-49e7-8adb-41a0c18da848",
+                ]
+            },
+            {
+                "team_member_level_id": "01be920b-7b4c-49e7-8adb-41a0c18da848",
+                "member_ids": [
+                    "77be920b-7b4c-49e7-8adb-41a0c18da848",
+                    "17be920b-7b4c-49e7-8adb-41a0c18da848",
+                    "27be920b-7b4c-49e7-8adb-41a0c18da848",
+                ]
+            },
+            {
+                "team_member_level_id": "02be920b-7b4c-49e7-8adb-41a0c18da848",
+                "member_ids": []
+            }
+        ]
+        body = {
+            'members': team_member_level_id_with_member_ids_list
+        }
+        path_params = {"team_id": team_id}
+        query_params = {}
+        headers = {}
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
+
     @pytest.mark.django_db
     def test_invalid_team_id_return_response(self, snapshot):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_iam.models import UserDetails
+        UserDetails.objects.create(user_id=user_id, is_admin=True)
+
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         team_member_level_id_with_member_ids_list = [
             {
@@ -55,6 +105,10 @@ class TestCase02AddMembersToLevelsAPITestCase(TestUtils):
             self, snapshot, create_team, create_users_team,
             create_team_member_levels
     ):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_iam.models import UserDetails
+        UserDetails.objects.create(user_id=user_id, is_admin=True)
+
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         team_member_level_id_with_member_ids_list = [
             {
@@ -93,6 +147,10 @@ class TestCase02AddMembersToLevelsAPITestCase(TestUtils):
     def test_team_member_ids_not_found_return_response(
             self, create_team, create_users_team,
             create_team_member_levels, snapshot):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_iam.models import UserDetails
+        UserDetails.objects.create(user_id=user_id, is_admin=True)
+
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         team_member_level_id_with_member_ids_list = [
             {

@@ -14,8 +14,18 @@ class TestCase01GetTeamMemberLevelsAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['write']}}
 
+    def _get_or_create_user(self):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_users.models import UserAccount
+        user = UserAccount.objects.create(user_id=user_id)
+        return user
+
     @pytest.fixture()
     def prepare_team_member_levels_setup(self):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_iam.models import UserDetails
+        UserDetails.objects.create(user_id=user_id, is_admin=True)
+
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         team_member_level_list = [
             {

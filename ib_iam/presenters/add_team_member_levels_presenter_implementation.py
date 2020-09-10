@@ -24,6 +24,11 @@ DUPLICATE_TEAM_MEMBER_LEVEL_NAMES = (
     "DUPLICATE_TEAM_MEMBER_LEVEL_NAMES"
 )
 
+USER_DOES_NOT_HAVE_ACCESS = (
+    "User does not have provision to access",
+    "USER_DOES_NOT_HAVE_ACCESS"
+)
+
 
 class AddTeamMemberLevelsPresenterImplementation(
     AddTeamMemberLevelsPresenterInterface, HTTPResponseMixin
@@ -39,7 +44,8 @@ class AddTeamMemberLevelsPresenterImplementation(
             "res_status": INVALID_TEAM_ID[1]
         }
         return self.prepare_400_bad_request_response(
-            response_dict=response_dict)
+            response_dict=response_dict
+        )
 
     def response_for_duplicate_level_hierarchies(self, err):
         response_dict = {
@@ -50,7 +56,8 @@ class AddTeamMemberLevelsPresenterImplementation(
             "res_status": DUPLICATE_LEVEL_HIERARCHIES[1]
         }
         return self.prepare_400_bad_request_response(
-            response_dict=response_dict)
+            response_dict=response_dict
+        )
 
     def response_for_negative_level_hierarchies(self, err):
         response_dict = {
@@ -61,7 +68,8 @@ class AddTeamMemberLevelsPresenterImplementation(
             "res_status": NEGATIVE_LEVEL_HIERARCHIES[1]
         }
         return self.prepare_400_bad_request_response(
-            response_dict=response_dict)
+            response_dict=response_dict
+        )
 
     def response_for_duplicate_team_member_level_names(self, err):
         response_dict = {
@@ -72,4 +80,15 @@ class AddTeamMemberLevelsPresenterImplementation(
             "res_status": DUPLICATE_TEAM_MEMBER_LEVEL_NAMES[1]
         }
         return self.prepare_400_bad_request_response(
-            response_dict=response_dict)
+            response_dict=response_dict
+        )
+
+    def response_for_user_is_not_admin(self):
+        response_dict = {
+            "response": USER_DOES_NOT_HAVE_ACCESS[0],
+            "http_status_code": StatusCode.FORBIDDEN.value,
+            "res_status": USER_DOES_NOT_HAVE_ACCESS[1]
+        }
+        return self.prepare_403_forbidden_response(
+            response_dict=response_dict
+        )

@@ -147,3 +147,7 @@ class ProjectStorageInterface(abc.ABC):
             self, project_id: str, user_ids: List[str]
     ):
         pass
+
+    @abc.abstractmethod
+    def get_user_project_dtos(self, user_id: str):
+        pass

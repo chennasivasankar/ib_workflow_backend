@@ -25,9 +25,9 @@ class AssignUserRolesForGivenProjectBulkInteractor:
                 project_id=project_id, presenter=presenter, user_id=user_id
             )
         except UserIsNotAdmin:
-            response = presenter.response_for_user_is_not_admin()
+            response = presenter.response_for_user_is_not_admin_exception()
         except InvalidProjectId:
-            response = presenter.response_for_invalid_project_id()
+            response = presenter.response_for_invalid_project_id_exception()
         except InvalidUserIdsForProject as err:
             response = presenter.response_for_invalid_user_ids_for_project(err)
         except InvalidRoleIdsForProject as err:
