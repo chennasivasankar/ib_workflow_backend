@@ -208,24 +208,6 @@
         "roles"
       ]
     },
-    "CompleteUserDetails": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/UserDetails"
-        },
-        {
-          "$ref": "#/definitions/ListOfTeams"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "company": {
-              "$ref": "#/definitions/CompanyDetails"
-            }
-          }
-        }
-      ]
-    },
     "ListOfUsers": {
       "type": "object",
       "properties": {
@@ -661,8 +643,6 @@
           "$ref": "#/definitions/ProjectId"
         }
       ]
-    },
-    "ProjectWithExtraFields": {
     },
     "ProjectWithTeamIds": {
       "allOf": [
@@ -2268,7 +2248,10 @@
             "items": {
               "allOf": [
                 {
-                  "$ref": "#/definitions/Project"
+                  "$ref": "#/definitions/ProjectDetails"
+                },
+                {
+                  "$ref": "#/definitions/ProjectId"
                 },
                 {
                   "type": "object",
@@ -2348,12 +2331,6 @@
             ]
           }
         ]
-      }
-    },
-    "SuccessfullyCreatedForAddProjectResponse": {
-      "description": "Project Created successfully",
-      "schema": {
-        "$ref": "#/definitions/ProjectId"
       }
     },
     "GetListOfUserRolesForGivenProjectSuccessResponse": {
