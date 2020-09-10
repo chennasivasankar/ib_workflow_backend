@@ -78,9 +78,9 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         except InvalidTaskIdException as err:
             response = presenter.raise_exception_for_invalid_task_id(err)
             return response
-        # except InvalidStageIdsForTask as err:
-        #     response = presenter.raise_invalid_stage_ids_for_task(err)
-        #     return response
+        except InvalidStageIdsForTask as err:
+            response = presenter.raise_invalid_stage_ids_for_task(err)
+            return response
         except InvalidTaskDisplayId as err:
             response = presenter.raise_invalid_task_display_id(err)
             return response
