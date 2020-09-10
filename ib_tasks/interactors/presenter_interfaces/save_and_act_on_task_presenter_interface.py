@@ -15,6 +15,8 @@ from ib_tasks.exceptions.task_custom_exceptions import \
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    TaskCompleteDetailsDTO
 
 
 class SaveAndActOnATaskPresenterInterface(abc.ABC):
@@ -22,7 +24,8 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def get_save_and_act_on_task_response(
             self, task_current_stage_details_dto: TaskCurrentStageDetailsDTO,
-            all_tasks_overview_details_dto: AllTasksOverviewDetailsDTO
+            all_tasks_overview_details_dto: AllTasksOverviewDetailsDTO,
+            task_complete_details_dto: TaskCompleteDetailsDTO
     ):
         pass
 
