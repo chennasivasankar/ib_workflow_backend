@@ -3,7 +3,7 @@ from typing import List, Optional, Dict
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
-from ib_tasks.exceptions.custom_exceptions import InvalidProjectId
+from ib_tasks.exceptions.custom_exceptions import InvalidProjectId, InvalidModulePathFound
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     StartDateIsAheadOfDueDate, \
     DueTimeHasExpiredForToday, DueDateTimeHasExpired, DueDateTimeIsRequired, \
@@ -27,10 +27,11 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserBoardPermissionDenied, UserActionPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import \
-    InvalidStageIdsListException, StageIdsListEmptyException
+    InvalidStageIdsListException, StageIdsListEmptyException, DuplicateStageIds, InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId, \
     PriorityIsRequired, InvalidTaskJson
+from ib_tasks.interactors.call_action_logic_function_and_update_task_status_variables_interactor import InvalidMethodFound
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.dtos import \
@@ -92,7 +93,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_date_format(self, err: InvalidDateFormat):
+    def raise_invalid_date_format(self, err: InvalidDateFormat):
         from ib_tasks.constants.exception_messages import \
             INVALID_DATE_FORMAT
         message = INVALID_DATE_FORMAT[0].format(err.field_value, err.field_id,
@@ -158,7 +159,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_stage_ids_list_empty_exception(
+    def raise_stage_ids_list_empty(
             self, err: StageIdsListEmptyException):
         from ib_tasks.constants.exception_messages import \
             EMPTY_STAGE_IDS_ARE_INVALID
@@ -169,8 +170,8 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_invalid_stage_ids_list_exception(self,
-                                               err:
+    def raise_invalid_stage_ids_list(self,
+                                     err:
                                                InvalidStageIdsListException):
         from ib_tasks.constants.exception_messages import INVALID_STAGE_IDS
         message = INVALID_STAGE_IDS[0].format(err.invalid_stage_ids)
@@ -193,7 +194,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_present_stage_actions(self, err):
+    def raise_invalid_present_stage_actions(self, err):
         from ib_tasks.constants.exception_messages import \
             INVALID_PRESENT_STAGE_ACTION
         message = INVALID_PRESENT_STAGE_ACTION[0].format(err.action_id)
@@ -240,7 +241,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_invalid_custom_logic_function_exception(self):
+    def raise_invalid_custom_logic_function(self):
         from ib_tasks.constants.exception_messages import \
             INVALID_CUSTOM_LOGIC
         data = {
@@ -250,7 +251,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_invalid_path_not_found_exception(self, path_name):
+    def raise_invalid_path_not_found(self, err: InvalidModulePathFound):
         from ib_tasks.constants.exception_messages import \
             PATH_NOT_FOUND
         data = {
@@ -260,7 +261,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_invalid_method_not_found_exception(self, method_name):
+    def raise_invalid_method_not_found(self, err: InvalidMethodFound):
         from ib_tasks.constants.exception_messages import \
             METHOD_NOT_FOUND
         data = {
@@ -270,41 +271,42 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_duplicate_stage_ids_not_valid(self, duplicate_stage_ids):
+    def raise_duplicate_stage_ids_not_valid(self, err: DuplicateStageIds):
         from ib_tasks.constants.exception_messages import \
             DUPLICATE_STAGE_IDS
         data = {
-            "response": DUPLICATE_STAGE_IDS[0].format(duplicate_stage_ids),
+            "response": DUPLICATE_STAGE_IDS[0].format(err.duplicate_stage_ids),
             "http_status_code": 400,
             "res_status": DUPLICATE_STAGE_IDS[1]
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_invalid_stage_ids_exception(self, invalid_stage_ids):
+    def raise_invalid_stage_ids(self, err: InvalidDbStageIdsListException):
         from ib_tasks.constants.exception_messages import \
             INVALID_STAGE_IDS
         data = {
-            "response": INVALID_STAGE_IDS[0].format(invalid_stage_ids),
+            "response": INVALID_STAGE_IDS[0].format(err.invalid_stage_ids),
             "http_status_code": 400,
             "res_status": INVALID_STAGE_IDS[1]
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_stage_ids_with_invalid_permission_for_assignee_exception(self,
-                                                                       invalid_stage_ids):
+    def raise_stage_ids_with_invalid_permission_for_assignee(
+            self, err: StageIdsWithInvalidPermissionForAssignee
+    ):
         from ib_tasks.constants.exception_messages import \
             STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE
+        message = STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[0].format(err.invalid_stage_ids)
         data = {
-            "response": STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[
-                0].format(invalid_stage_ids),
+            "response": message,
             "http_status_code": 400,
             "res_status": STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[1]
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_duplicate_same_gof_orders_for_a_gof(self,
-                                                  err:
-                                                  DuplicateSameGoFOrderForAGoF):
+    def raise_duplicate_same_gof_orders_for_a_gof(
+            self, err: DuplicateSameGoFOrderForAGoF
+    ):
         from ib_tasks.constants.exception_messages import \
             DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF
         response_message = DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF[0].format(
@@ -543,7 +545,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_empty_value_in_required_field(
+    def raise_empty_value_in_required_field(
             self, err: EmptyValueForRequiredField):
         from ib_tasks.constants.exception_messages import \
             EMPTY_VALUE_FOR_REQUIRED_FIELD
@@ -557,7 +559,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_phone_number_value(
+    def raise_invalid_phone_number_value(
             self, err: InvalidPhoneNumberValue):
         from ib_tasks.constants.exception_messages import \
             INVALID_PHONE_NUMBER_VALUE
@@ -571,8 +573,8 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_email_address(self,
-                                                  err: InvalidEmailFieldValue):
+    def raise_invalid_email_address(self,
+                                    err: InvalidEmailFieldValue):
         from ib_tasks.constants.exception_messages import \
             INVALID_EMAIL
         response_message = INVALID_EMAIL[0].format(
@@ -585,7 +587,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_url_address(self, err: InvalidURLValue):
+    def raise_invalid_url_address(self, err: InvalidURLValue):
         from ib_tasks.constants.exception_messages import INVALID_URL
         response_message = INVALID_URL[0].format(
             err.field_value, err.field_id
@@ -597,7 +599,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(response_dict=data)
 
-    def raise_exception_for_weak_password(self, err: NotAStrongPassword):
+    def raise_weak_password(self, err: NotAStrongPassword):
         from ib_tasks.constants.exception_messages import NOT_A_STRONG_PASSWORD
         response_message = NOT_A_STRONG_PASSWORD[0].format(
             err.field_value, err.field_id
@@ -609,8 +611,8 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_number_value(self,
-                                                 err: InvalidNumberValue):
+    def raise_invalid_number_value(self,
+                                   err: InvalidNumberValue):
         from ib_tasks.constants.exception_messages import INVALID_NUMBER_VALUE
         response_message = INVALID_NUMBER_VALUE[0].format(
             err.field_value, err.field_id
@@ -622,7 +624,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_float_value(self, err: InvalidFloatValue):
+    def raise_invalid_float_value(self, err: InvalidFloatValue):
         from ib_tasks.constants.exception_messages import INVALID_FLOAT_VALUE
         response_message = INVALID_FLOAT_VALUE[0].format(
             err.field_value, err.field_id
@@ -634,7 +636,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_dropdown_value(
+    def raise_invalid_dropdown_value(
             self, err: InvalidValueForDropdownField):
         from ib_tasks.constants.exception_messages import \
             INVALID_VALUE_FOR_DROPDOWN
@@ -648,7 +650,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_name_in_gof_selector_field_value(
+    def raise_invalid_name_in_gof_selector_field_value(
             self, err: IncorrectNameInGoFSelectorField):
         from ib_tasks.constants.exception_messages import \
             INCORRECT_NAME_IN_GOF_SELECTOR_FIELD
@@ -662,7 +664,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_choice_in_radio_group_field(
+    def raise_invalid_choice_in_radio_group_field(
             self, err: IncorrectRadioGroupChoice):
         from ib_tasks.constants.exception_messages import \
             INCORRECT_RADIO_GROUP_CHOICE
@@ -676,7 +678,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_checkbox_group_options_selected(
+    def raise_invalid_checkbox_group_options_selected(
             self, err: IncorrectCheckBoxOptionsSelected):
         from ib_tasks.constants.exception_messages import \
             INCORRECT_CHECK_BOX_OPTIONS_SELECTED
@@ -691,7 +693,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_multi_select_options_selected(
+    def raise_invalid_multi_select_options_selected(
             self, err: IncorrectMultiSelectOptionsSelected):
         from ib_tasks.constants.exception_messages import \
             INCORRECT_MULTI_SELECT_OPTIONS_SELECTED
@@ -706,7 +708,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_multi_select_labels_selected(
+    def raise_invalid_multi_select_labels_selected(
             self, err: IncorrectMultiSelectLabelsSelected):
         from ib_tasks.constants.exception_messages import \
             INCORRECT_MULTI_SELECT_LABELS_SELECTED
@@ -721,7 +723,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_time_format(self, err: InvalidTimeFormat):
+    def raise_invalid_time_format(self, err: InvalidTimeFormat):
         from ib_tasks.constants.exception_messages import INVALID_TIME_FORMAT
         response_message = INVALID_TIME_FORMAT[0].format(
             err.field_value, err.field_id, err.expected_format
@@ -733,7 +735,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_image_url(self, err: InvalidUrlForImage):
+    def raise_invalid_image_url(self, err: InvalidUrlForImage):
         from ib_tasks.constants.exception_messages import INVALID_IMAGE_URL
         response_message = INVALID_IMAGE_URL[0].format(
             err.image_url, err.field_id
@@ -745,7 +747,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_not_acceptable_image_format(
+    def raise_not_acceptable_image_format(
             self, err: InvalidImageFormat):
         from ib_tasks.constants.exception_messages import INVALID_IMAGE_FORMAT
         response_message = INVALID_IMAGE_FORMAT[0].format(
@@ -758,7 +760,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_file_url(self, err: InvalidUrlForFile):
+    def raise_invalid_file_url(self, err: InvalidUrlForFile):
         from ib_tasks.constants.exception_messages import INVALID_FILE_URL
         response_message = INVALID_FILE_URL[0].format(
             err.file_url, err.field_id
@@ -770,8 +772,8 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_not_acceptable_file_format(self,
-                                                       err: InvalidFileFormat):
+    def raise_not_acceptable_file_format(self,
+                                         err: InvalidFileFormat):
         from ib_tasks.constants.exception_messages import \
             INVALID_FILE_FORMAT
         response_message = INVALID_FILE_FORMAT[0].format(
@@ -784,7 +786,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_user_action_permission_denied(
+    def raise_user_action_permission_denied(
             self, error_obj: UserActionPermissionDenied):
         from ib_tasks.constants.exception_messages import \
             USER_DO_NOT_HAVE_ACCESS

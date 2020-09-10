@@ -2305,6 +2305,55 @@
         "$ref": "#/definitions/ProjectsWithTotalProjectsCount"
       }
     },
+    "GetProjectsForbiddenResponse": {
+      "description": "User not have permission for get projects",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_HAS_NO_ACCESS_TO_GET_PROJECTS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetProjectsBadRequestResponse": {
+      "description": "Bad request response for get projects",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_OFFSET_VALUE",
+                  "INVALID_LIMIT_VALUE"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
     "SuccessfullyCreatedForAddProjectResponse": {
       "description": "Project Created successfully",
       "schema": {
@@ -2703,6 +2752,63 @@
                 "type": "string",
                 "enum": [
                   "INVALID_TEAM_ID"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "SuccessForGetProjectBriefInfoResponse": {
+      "description": "Success for get project brief info response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "projects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "project_id": {
+                  "type": "string"
+                },
+                "project_display_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "logo_url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "project_id",
+                "project_display_id",
+                "name"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "BadRequestForGetProjectBriefInfoResponse": {
+      "description": "Bad request for get project brief info response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_DOES_NOT_EXIST"
                 ]
               }
             },
@@ -3570,6 +3676,12 @@
         "responses": {
           "200": {
             "$ref": "#/responses/SuccessForGetProjectsResponse"
+          },
+          "400": {
+            "$ref": "#/responses/GetProjectsBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/GetProjectsForbiddenResponse"
           }
         }
       }
@@ -3723,6 +3835,29 @@
           },
           "404": {
             "$ref": "#/responses/NotFoundForUpdateProjectResponse"
+          }
+        }
+      }
+    },
+    "/get_project_brief_info/v1/": {
+      "get": {
+        "summary": "Get Project Brief Info",
+        "operationId": "get_project_brief_info",
+        "description": "Get project brief info for access user projects",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/SuccessForGetProjectBriefInfoResponse"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForGetProjectBriefInfoResponse"
           }
         }
       }
