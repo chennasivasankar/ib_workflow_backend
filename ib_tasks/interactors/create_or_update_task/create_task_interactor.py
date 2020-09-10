@@ -308,7 +308,7 @@ class CreateTaskInteractor:
             create_task_storage=self.create_task_storage,
             task_template_storage=self.task_template_storage
         )
-        act_on_task_interactor.user_action_on_task(task_id=created_task_id)
+        act_on_task_interactor.user_action_on_task_and_set_random_assignees(task_id=created_task_id)
         from ib_tasks.interactors.get_task_current_stages_interactor import \
             GetTaskCurrentStagesInteractor
         get_task_current_stages_interactor = GetTaskCurrentStagesInteractor(
