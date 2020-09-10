@@ -13,9 +13,11 @@ class GetSheetDataForTaskCreationConfig:
         from ib_tasks.populate.get_data_from_sheet import GetDataFromSheet
         return GetDataFromSheet()
 
-    def get_data_from_task_creation_config_sub_sheet(self):
+    def get_data_from_task_creation_config_sub_sheet(self,
+                                                     spread_sheet_name: str):
         from ib_tasks.constants.constants import TASK_CREATION_CONFIG_SUB_SHEET
         field_records = self.data_sheet.get_data_from_sub_sheet(
+            spread_sheet_name=spread_sheet_name,
             sub_sheet_name=TASK_CREATION_CONFIG_SUB_SHEET
         )
         self._validation_for_task_creation_config_dict(field_records)
@@ -40,9 +42,11 @@ class GetSheetDataForTaskCreationConfig:
                 "Role": str,
                 "Logic": str,
                 "Button Text": str,
-                Optional("Button Colour"): str
-
-            }]
+                Optional("Button Colour"): str,
+                Optional("Action Type"): str,
+                Optional("Transition Template ID"): str
+            }],
+            ignore_extra_keys=True
         )
         try:
             schema.validate(tasks_dict)
@@ -59,7 +63,9 @@ class GetSheetDataForTaskCreationConfig:
             "action_name": field_record["Action name"],
             "roles": field_record["Role"],
             "button_text": field_record["Button Text"],
-            "button_color": field_record["Button Colour"]
+            "button_color": field_record["Button Colour"],
+            "action_type": field_record["Action Type"],
+            "transition_template_id": field_record["Transition Template ID"]
         }
 
     def _raise_exception_for_valid_task_creation_format(self):

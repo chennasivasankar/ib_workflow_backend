@@ -22,3 +22,9 @@ class EmptyValueForPermissions(Exception):
 
     def __init__(self, message: str):
         self.message = message
+
+
+class InvalidStageRolesException(Exception):
+
+    def __init__(self, invalid_roles_ids: List[str]):
+        self.invalid_roles_ids = invalid_roles_ids

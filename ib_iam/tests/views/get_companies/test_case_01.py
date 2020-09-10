@@ -2,10 +2,11 @@
 Gives all available companies if accessed by an admin
 """
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from django_swagger_utils.utils.test_utils import TestUtils
+
 from ib_iam.tests.common_fixtures.adapters.user_service_mocks import (
     prepare_user_profile_dtos_mock)
+from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
 class TestCase01GetCompaniesAPITestCase(TestUtils):
@@ -33,7 +34,7 @@ class TestCase01GetCompaniesAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
-        response = self.default_test_case(
+        response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
@@ -48,12 +49,14 @@ class TestCase01GetCompaniesAPITestCase(TestUtils):
         companies = [
             {
                 "company_id": "f2c02d98-f311-4ab2-8673-3daa00757002",
+                "name": "Proyuga",
                 "employees_ids": ['2bdb417e-4632-419a-8ddd-085ea272c6eb',
                                   '548a803c-7b48-47ba-a700-24f2ea0d1280',
                                   '4b8fb6eb-fa7d-47c1-8726-cd917901104e']
             },
             {
-                "company_id": "aa66c40f-6d93-484a-b418-984716514c7b",
+                "company_id": "f2c02d98-f311-4ab2-8673-3daa00757003",
+                "name": "Arogya",
                 "employees_ids": ['2bdb417e-4632-419a-8ddd-085ea272c6eb',
                                   '7ee2c7b4-34c8-4d65-a83a-f87da75db24e']
             }
@@ -61,6 +64,6 @@ class TestCase01GetCompaniesAPITestCase(TestUtils):
         CompanyFactory.reset_sequence(1)
         for company in companies:
             company_object = CompanyFactory.create(
-                company_id=company["company_id"])
+                company_id=company["company_id"], name=company["name"])
             for employee_id in company["employees_ids"]:
                 UserDetailsFactory(user_id=employee_id, company=company_object)

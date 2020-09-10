@@ -1,38 +1,11 @@
 import pytest
 
-from ib_iam.models import UserDetails, UserRole, UserTeam
+from ib_iam.models import UserDetails, UserRole, TeamUser
 from ib_iam.storages.delete_user_storage_implementation import \
     DeleteUserStorageImplementation
 
 
 class TestDeleteUSerStorageImplementation:
-
-    @pytest.mark.django_db
-    def test_check_is_admin_user_given_user_is_admin_then_return_true(self):
-        from ib_iam.tests.factories.models import UserDetailsFactory
-        user_id = "1234"
-        is_admin = True
-        UserDetailsFactory.create(user_id=user_id, is_admin=is_admin)
-        expected_result = is_admin
-        storage = DeleteUserStorageImplementation()
-
-        actual_result = storage.check_is_admin_user(user_id=user_id)
-
-        assert actual_result == expected_result
-
-    @pytest.mark.django_db
-    def test_check_is_admin_user_given_user_is_not_admin_then_return_false(
-            self):
-        from ib_iam.tests.factories.models import UserDetailsFactory
-        user_id = "1234"
-        is_admin = False
-        UserDetailsFactory.create(user_id=user_id, is_admin=is_admin)
-        expected_result = is_admin
-        storage = DeleteUserStorageImplementation()
-
-        actual_result = storage.check_is_admin_user(user_id=user_id)
-
-        assert actual_result == expected_result
 
     @pytest.mark.django_db
     def test_delete_user_from_user_details_db(self):
@@ -54,10 +27,10 @@ class TestDeleteUSerStorageImplementation:
         is_admin = False
         UserDetailsFactory.create(user_id=user_id, is_admin=is_admin)
         from ib_iam.tests.factories.models import UserRoleFactory
-        from ib_iam.tests.factories.models import RoleFactory
+        from ib_iam.tests.factories.models import ProjectRoleFactory
         for _ in range(4):
-            role = RoleFactory.create()
-            UserRoleFactory.create(user_id=user_id, role=role)
+            role = ProjectRoleFactory.create()
+            UserRoleFactory.create(user_id=user_id, project_role=role)
         storage = DeleteUserStorageImplementation()
 
         storage.delete_user_roles(user_id=user_id)
@@ -71,16 +44,16 @@ class TestDeleteUSerStorageImplementation:
         user_id = "1234"
         is_admin = False
         UserDetailsFactory.create(user_id=user_id, is_admin=is_admin)
-        from ib_iam.tests.factories.models import UserTeamFactory
+        from ib_iam.tests.factories.models import TeamUserFactory
         from ib_iam.tests.factories.models import TeamFactory
         for _ in range(4):
             team = TeamFactory.create()
-            UserTeamFactory.create(user_id=user_id, team=team)
+            TeamUserFactory.create(user_id=user_id, team=team)
         storage = DeleteUserStorageImplementation()
 
         storage.delete_user_teams(user_id=user_id)
 
-        user_roles = UserTeam.objects.filter(user_id=user_id)
+        user_roles = TeamUser.objects.filter(user_id=user_id)
         assert len(user_roles) == 0
 
     @pytest.mark.django_db

@@ -6,12 +6,15 @@ Author: Pavankumar Pamuru
 
 import factory
 
+from ib_boards.constants.enum import DisplayStatus
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
     TaskTemplateStagesDTO, TaskSummaryFieldsDTO, \
     TaskStatusDTO, FieldDetailsDTO, ActionDetailsDTO, TaskIdStageDTO, \
-    ColumnTaskIdsDTO
+    ColumnTaskIdsDTO, StageAssigneesDTO, AssigneesDTO, ProjectBoardDTO, \
+    FieldNameDTO
 from ib_boards.interactors.dtos import ColumnTasksDTO
-from ib_boards.interactors.storage_interfaces.dtos import ColumnStageIdsDTO
+from ib_boards.interactors.storage_interfaces.dtos import ColumnStageIdsDTO, \
+    AllFieldsDTO
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, \
     GetTaskDetailsDTO
 
@@ -21,7 +24,8 @@ class TaskColumnDTOFactory(factory.Factory):
         model = ColumnTasksDTO
 
     column_id = factory.Sequence(lambda n: f"COLUMN_ID_{n + 1}")
-    task_id = factory.Sequence(lambda n: "task_id_%d" % n)
+    task_display_id = factory.Sequence(lambda n: "task_id_%d" % n)
+    task_id = factory.Sequence(lambda n: n)
     stage_id = factory.Sequence(lambda n: f'stage_id_{n}')
 
 
@@ -114,7 +118,8 @@ class TaskStageIdDTOFactory(factory.Factory):
         model = TaskIdStageDTO
 
     stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
-    task_id = factory.Sequence(lambda n: f'TASK_ID_{n + 1}')
+    task_display_id = factory.Sequence(lambda n: f'TASK_ID_{n + 1}')
+    task_id = factory.Sequence(lambda n: n + 1)
 
 
 class ColumnTaskIdsDTOFactory(factory.Factory):
@@ -140,6 +145,9 @@ class TaskDetailsConfigDTOFactory(factory.Factory):
     )
     offset = 0
     limit = 10
+    user_id = 'user_id_1'
+    project_id = factory.Sequence(lambda n: f'project_id_{n + 1}')
+    search_query = "hello"
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -148,3 +156,47 @@ class GetTaskDetailsDTOFactory(factory.Factory):
 
     stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
     task_id = factory.Sequence(lambda n: f'TASK_ID_{n + 1}')
+
+
+class AssigneeDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = AssigneesDTO
+
+    assignee_id = factory.sequence(lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(counter))
+    name = factory.sequence(lambda counter: "name_{}".format(counter))
+    profile_pic_url = "https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
+
+
+class StageAssigneesDTOFactory(factory.Factory):
+    class Meta:
+        model = StageAssigneesDTO
+
+    stage_id = factory.Sequence(lambda n: f'stage_id_{n}')
+    task_id = factory.Sequence(lambda n: f'task_id_{n}')
+    assignees_details = factory.SubFactory(AssigneeDetailsDTOFactory)
+
+
+class ProjectBoardDTOFactory(factory.Factory):
+    class Meta:
+        model = ProjectBoardDTO
+
+    project_id = factory.Sequence(lambda n: f'PROJECT_ID_{n}')
+    board_id = factory.Sequence(lambda n: f'BOARD_ID_{n}')
+
+
+class FieldNameDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldNameDTO
+
+    display_name = factory.Sequence(lambda n: "display_name_%d" % n)
+    field_id = factory.Sequence(lambda n: "field_id_%d" % n)
+
+
+class AllFieldsDTOFactory(factory.Factory):
+    class Meta:
+        model = AllFieldsDTO
+
+    display_name = factory.Sequence(lambda n: "display_name_%d" % n)
+    field_id = factory.Sequence(lambda n: "field_id_%d" % n)
+    display_status = DisplayStatus.SHOW.value
+    display_order = factory.Sequence(lambda n: n)

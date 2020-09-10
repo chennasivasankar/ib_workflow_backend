@@ -1,5 +1,9 @@
 from dataclasses import dataclass
-from typing import List
+from datetime import datetime
+from typing import List, Optional, Union
+
+from ib_tasks.adapters.dtos import ProjectDetailsDTO
+from ib_tasks.constants.enum import Priority, Searchable
 
 
 @dataclass
@@ -15,9 +19,23 @@ class TaskGoFFieldDTO:
     field_id: str
     field_response: str
 
+
+@dataclass
+class TaskBaseDetailsDTO:
+    template_id: str
+    project_id: str
+    task_display_id: str
+    title: str
+    description: Optional[str]
+    start_date: datetime
+    due_date: datetime
+    priority: Priority
+
+
 @dataclass
 class TaskDetailsDTO:
-    template_id: str
+    project_details_dto: ProjectDetailsDTO
+    task_base_details_dto: TaskBaseDetailsDTO
     task_gof_dtos: List[TaskGoFDTO]
     task_gof_field_dtos: List[TaskGoFFieldDTO]
 
@@ -26,3 +44,10 @@ class TaskDetailsDTO:
 class TemplateFieldsDTO:
     task_template_id: str
     field_ids: List[str]
+
+
+@dataclass
+class FieldSearchableDTO:
+    field_id: str
+    field_value: Searchable
+    field_response: Union[int, str]

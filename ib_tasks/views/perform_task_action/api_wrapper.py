@@ -1,6 +1,17 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
+
 from .validator_class import ValidatorClass
+from ...storages.action_storage_implementation import \
+    ActionsStorageImplementation
+from ...storages.elasticsearch_storage_implementation import \
+    ElasticSearchStorageImplementation
+from ...storages.gof_storage_implementation import GoFStorageImplementation
+from ...storages.task_stage_storage_implementation import \
+    TaskStageStorageImplementation
+from ...storages.task_template_storage_implementation import \
+    TaskTemplateStorageImplementation
+from ...storages.tasks_storage_implementation import TasksStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -8,9 +19,10 @@ def api_wrapper(*args, **kwargs):
     user = kwargs['user']
     user_id = user.user_id
     request_dict = kwargs['request_data']
-    task_id = int(request_dict['task_id'])
+    task_id = request_dict['task_id']
     action_id = int(request_dict['action_id'])
     board_id = request_dict['board_id']
+    view_type = request_dict.get('view_type', None)
     from ib_tasks.storages.create_or_update_task_storage_implementation \
         import CreateOrUpdateTaskStorageImplementation
     from ib_tasks.storages.fields_storage_implementation \
@@ -25,14 +37,25 @@ def api_wrapper(*args, **kwargs):
     field_storage = FieldsStorageImplementation()
     storage = StorageImplementation()
     stage_storage = StagesStorageImplementation()
-    gof_storage = CreateOrUpdateTaskStorageImplementation()
+    gof_storage = GoFStorageImplementation()
+    create_task_storage = CreateOrUpdateTaskStorageImplementation()
+    task_storage = TasksStorageImplementation()
+    action_storage = ActionsStorageImplementation()
+    task_stage_storage = TaskStageStorageImplementation()
+    elastic_search_storage = ElasticSearchStorageImplementation()
+    task_template_storage = TaskTemplateStorageImplementation()
+
     interactor = UserActionOnTaskInteractor(
-        user_id=user_id, task_id=task_id, action_id=action_id,
+        user_id=user_id, action_id=action_id,
         board_id=board_id, storage=storage, gof_storage=gof_storage,
-        stage_storage=stage_storage, field_storage=field_storage
+        stage_storage=stage_storage, field_storage=field_storage,
+        task_storage=task_storage, action_storage=action_storage,
+        task_stage_storage=task_stage_storage, view_type=view_type,
+        elasticsearch_storage=elastic_search_storage,
+        create_task_storage=create_task_storage,
+        task_template_storage=task_template_storage
     )
 
     response = interactor.user_action_on_task_wrapper(
-        presenter=presenter
-    )
+        presenter=presenter, task_display_id=task_id)
     return response

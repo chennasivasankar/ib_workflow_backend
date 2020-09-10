@@ -24,9 +24,9 @@ class TestPopulateGoFs:
     def interactor(self):
         from ib_tasks.interactors.create_or_update_gofs import \
             CreateOrUpdateGoFsInteractor
-        from ib_tasks.storages.tasks_storage_implementation import \
-            TasksStorageImplementation
-        storage = TasksStorageImplementation()
+        from ib_tasks.storages.gof_storage_implementation import \
+            GoFStorageImplementation
+        storage = GoFStorageImplementation()
         interactor = CreateOrUpdateGoFsInteractor(storage)
         return interactor
 
@@ -240,7 +240,7 @@ class TestPopulateGoFs:
                 )
                 snapshot.assert_match(
                     name="gof_read_permission_role {}".format(read_permission_role_counter),
-                    value=gof_role_object.role
+                    value=gof_role_object.project_role
                 )
                 snapshot.assert_match(
                     name="read_role_permission_type {}".format(
@@ -261,7 +261,7 @@ class TestPopulateGoFs:
                 )
                 snapshot.assert_match(
                     name="gof_write_permission_role {}".format(write_permission_role_counter),
-                    value=gof_role_object.role
+                    value=gof_role_object.project_role
                 )
                 snapshot.assert_match(
                     name="write_role_permission_type {}".format(
@@ -334,7 +334,7 @@ class TestPopulateGoFs:
                 )
                 snapshot.assert_match(
                     name="gof_read_permission_role {}".format(read_permission_role_counter),
-                    value=gof_role_object.role
+                    value=gof_role_object.project_role
                 )
                 snapshot.assert_match(
                     name="read_role_permission_type {}".format(
@@ -355,7 +355,7 @@ class TestPopulateGoFs:
                 )
                 snapshot.assert_match(
                     name="gof_write_permission_role {}".format(write_permission_role_counter),
-                    value=gof_role_object.role
+                    value=gof_role_object.project_role
                 )
                 snapshot.assert_match(
                     name="write_role_permission_type {}".format(

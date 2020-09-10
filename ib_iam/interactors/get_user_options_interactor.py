@@ -1,14 +1,15 @@
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin
+from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.get_user_options_presenter_interface \
     import GetUserOptionsPresenterInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface \
     import UserStorageInterface
 
 
-class GetUserOptionsDetails:
+class GetUserOptionsDetails(ValidationMixin):
 
-    def __init__(self, storage: UserStorageInterface):
-        self.storage = storage
+    def __init__(self, user_storage: UserStorageInterface):
+        self.user_storage = user_storage
 
     def get_configuration_details_wrapper(
             self, user_id: str,
@@ -23,10 +24,10 @@ class GetUserOptionsDetails:
         return response
 
     def get_configuration_details(self, user_id: str):
-        self._check_and_throw_user_is_admin(user_id=user_id)
-        companies = self.storage.get_companies()
-        teams = self.storage.get_teams()
-        roles = self.storage.get_roles()
+        self._validate_is_user_admin(user_id=user_id)
+        companies = self.user_storage.get_companies()
+        teams = self.user_storage.get_team_id_and_name_dtos()
+        roles = self.user_storage.get_roles()
         return self._create_configuration_details_dto(
             companies=companies, teams=teams, roles=roles)
 
@@ -40,9 +41,3 @@ class GetUserOptionsDetails:
             teams=teams
         )
         return configuration_details_dto
-
-    def _check_and_throw_user_is_admin(self, user_id: str):
-        is_admin = self.storage.check_is_admin_user(user_id=user_id)
-        is_not_admin = not is_admin
-        if is_not_admin:
-            raise UserIsNotAdmin()

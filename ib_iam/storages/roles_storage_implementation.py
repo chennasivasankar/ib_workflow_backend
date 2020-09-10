@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_iam.interactors.DTOs.common_dtos import UserIdWithRoleIdsDTO
+from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
 from ib_iam.interactors.storage_interfaces.roles_storage_interface import \
     RolesStorageInterface
@@ -8,22 +8,21 @@ from ib_iam.interactors.storage_interfaces.roles_storage_interface import \
 
 class RolesStorageImplementation(RolesStorageInterface):
 
-    def check_is_admin_user(self, user_id: str) -> bool:
-        from ib_iam.models.user import UserDetails
-        user = UserDetails.objects.get(user_id=user_id)
-        return user.is_admin
-
-    def create_roles(self, role_dtos: List[RoleDTO]):
-        from ib_iam.models import Role
+    def create_roles(self, role_dtos: List[RoleDTO], project_id: str):
+        from ib_iam.models import ProjectRole
+        # TODO If break the entire project then need to change the back step
         role_objects = [
-            Role(role_id=role_dto.role_id, name=role_dto.name,
-                 description=role_dto.description)
+            ProjectRole(
+                role_id=role_dto.role_id, name=role_dto.name,
+                description=role_dto.description,
+                project_id=project_id
+            )
             for role_dto in role_dtos]
-        Role.objects.bulk_create(role_objects)
+        ProjectRole.objects.bulk_create(role_objects)
 
     def get_valid_role_ids(self, role_ids: List[str]):
-        from ib_iam.models import Role
-        valid_role_ids = Role.objects.filter(role_id__in=role_ids). \
+        from ib_iam.models import ProjectRole
+        valid_role_ids = ProjectRole.objects.filter(role_id__in=role_ids). \
             values_list("role_id", flat=True)
         return list(valid_role_ids)
 
@@ -45,7 +44,7 @@ class RolesStorageImplementation(RolesStorageInterface):
         from ib_iam.models import UserRole
         user_id_and_role_ids = UserRole.objects.filter(
             user_id__in=user_ids
-        ).values_list("user_id", "role__role_id")
+        ).values_list("user_id", "project_role__role_id")
 
         for user_id, role_id in user_id_and_role_ids:
             user_id_and_role_ids_dict[user_id].append(str(role_id))
@@ -66,7 +65,7 @@ class RolesStorageImplementation(RolesStorageInterface):
 
     @staticmethod
     def _prepare_user_id_with_role_ids_dto(user_id, role_ids):
-        from ib_iam.interactors.DTOs.common_dtos import UserIdWithRoleIdsDTO
+        from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
         user_id_with_role_ids_dto = UserIdWithRoleIdsDTO(
             user_id=user_id,
             role_ids=role_ids
@@ -77,7 +76,7 @@ class RolesStorageImplementation(RolesStorageInterface):
         from ib_iam.models import UserRole
         role_ids = UserRole.objects.filter(
             user_id=user_id
-        ).values_list("role__role_id", flat=True)
+        ).values_list("project_role__role_id", flat=True)
         return list(role_ids)
 
     def validate_user_ids(self, user_ids: List[str]):

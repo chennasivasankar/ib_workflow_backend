@@ -15,7 +15,6 @@ def api_wrapper(*args, **kwargs):
     search_query = params['search_query']
     offset = params['offset']
     limit = params['limit']
-
     searchable_field_type_dto = SearchableFieldTypeDTO(
         searchable_type=searchable_type,
         offset=offset,

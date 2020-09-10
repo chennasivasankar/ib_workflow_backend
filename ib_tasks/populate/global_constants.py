@@ -1,31 +1,25 @@
 from typing import List
+
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO, \
     GlobalConstantsWithTemplateIdDTO
-
-from ib_tasks.constants.constants import GOOGLE_SHEET_NAME
-from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO, GlobalConstantsWithTemplateIdDTO
-from ib_tasks.utils.get_google_sheet import get_google_sheet
-from ib_tasks.constants.constants import GOOGLE_SHEET_NAME, \
-    GLOBAL_CONSTANTS_SUB_SHEET_TITLE
 
 
 class PopulateGlobalConstantsToTemplate:
 
-    def populate_global_constants_to_template(self):
-        sheet = get_google_sheet(GOOGLE_SHEET_NAME)
-        sheet = get_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
+    def populate_global_constants_to_template(self, spread_sheet_name: str):
+        from ib_tasks.utils.get_google_sheet import get_google_sheet
+        sheet = get_google_sheet(sheet_name=spread_sheet_name)
+
+        from ib_tasks.constants.constants import \
+            GLOBAL_CONSTANTS_SUB_SHEET_TITLE
         global_constants_with_template_ids_dicts = \
             sheet.worksheet(GLOBAL_CONSTANTS_SUB_SHEET_TITLE).get_all_records()
 
         import collections
         group_by_template_id_dict = collections.defaultdict(list)
         for item in global_constants_with_template_ids_dicts:
-            group_by_template_id_dict[item['Template ID']].\
+            group_by_template_id_dict[item['Template ID']]. \
                 append([item['Constant name'], item['Value']])
-
-        group_by_template_id_dict = collections.OrderedDict(
-            sorted(dict.items(group_by_template_id_dict))
-        )
 
         for template_id, group in group_by_template_id_dict.items():
             global_constants_with_template_id_dto = \
@@ -34,7 +28,8 @@ class PopulateGlobalConstantsToTemplate:
                     global_constants_list=group
                 )
             self._populate_global_constants_to_template_in_db(
-                global_constants_with_template_id_dto=global_constants_with_template_id_dto
+                global_constants_with_template_id_dto
+                =global_constants_with_template_id_dto
             )
 
     def _get_global_constants_with_template_id_dto(
@@ -48,7 +43,7 @@ class PopulateGlobalConstantsToTemplate:
         global_constants_with_template_id_dto = \
             GlobalConstantsWithTemplateIdDTO(
                 template_id=template_id,
-                global_constants_dtos = global_constants_dtos
+                global_constants_dtos=global_constants_dtos
             )
         return global_constants_with_template_id_dto
 
@@ -59,7 +54,8 @@ class PopulateGlobalConstantsToTemplate:
         global_constants_dtos = []
         for global_constant in global_constants_list:
             constant_name = global_constant[0]
-            from ib_tasks.exceptions.constants_custom_exceptions import InvalidTypeForValue
+            from ib_tasks.exceptions.constants_custom_exceptions import \
+                InvalidTypeForValue
             from ib_tasks.constants.exception_messages import \
                 INVALID_TYPE_FOR_VALUE
 
@@ -78,15 +74,18 @@ class PopulateGlobalConstantsToTemplate:
 
     @staticmethod
     def _populate_global_constants_to_template_in_db(
-            global_constants_with_template_id_dto: GlobalConstantsWithTemplateIdDTO
-        ):
-        from ib_tasks.storages.tasks_storage_implementation import \
-            TasksStorageImplementation
-        task_storage = TasksStorageImplementation()
+            global_constants_with_template_id_dto:
+            GlobalConstantsWithTemplateIdDTO
+    ):
+        from ib_tasks.storages.task_template_storage_implementation import \
+            TaskTemplateStorageImplementation
+        task_template_storage = TaskTemplateStorageImplementation()
 
         from ib_tasks.interactors.global_constants_interactor import \
             GlobalConstantsInteractor
-        interactor = GlobalConstantsInteractor(task_storage=task_storage)
+        interactor = GlobalConstantsInteractor(
+            task_template_storage=task_template_storage)
         interactor.create_global_constants_to_template_wrapper(
-            global_constants_with_template_id_dto=global_constants_with_template_id_dto
+            global_constants_with_template_id_dto
+            =global_constants_with_template_id_dto
         )

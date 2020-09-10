@@ -11,7 +11,7 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_200_JSON = """
 {
-    "task_id": 1,
+    "task_id": "string",
     "current_board_details": {
         "board_id": "string",
         "board_name": "string",
@@ -19,19 +19,34 @@ RESPONSE_200_JSON = """
             {
                 "column_id": "string",
                 "column_name": "string",
-                "actions": [
-                    {
-                        "action_id": "string",
+                "stage_with_actions": {
+                    "stage_id": 1,
+                    "stage_display_name": "string",
+                    "stage_color": "string",
+                    "assignee": {
+                        "assignee_id": "string",
                         "name": "string",
-                        "button_text": "string",
-                        "button_color": "string"
-                    }
-                ],
-                "fields": [
+                        "profile_pic_url": "string",
+                        "team_info": {
+                            "team_id": "string",
+                            "team_name": "string"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "action_id": 1,
+                            "action_type": "NO_VALIDATIONS",
+                            "transition_template_id": "string",
+                            "button_text": "string",
+                            "button_color": "string"
+                        }
+                    ]
+                },
+                "task_overview_fields": [
                     {
-                        "field_type": "string",
-                        "key": "string",
-                        "value": "string"
+                        "field_type": "PLAIN_TEXT",
+                        "field_display_name": "string",
+                        "field_response": "string"
                     }
                 ]
             }
@@ -48,7 +63,50 @@ RESPONSE_200_JSON = """
                 }
             ]
         }
-    ]
+    ],
+    "task_current_stages_details": {
+        "task_id": "string",
+        "stages": [
+            {
+                "stage_id": "string",
+                "stage_display_name": "string"
+            }
+        ],
+        "user_has_permission": true
+    },
+    "task_details": {
+        "task_id": "string",
+        "task_overview_fields": [
+            {
+                "field_type": "PLAIN_TEXT",
+                "field_display_name": "string",
+                "field_response": "string"
+            }
+        ],
+        "stage_with_actions": {
+            "stage_id": 1,
+            "stage_display_name": "string",
+            "stage_color": "string",
+            "assignee": {
+                "assignee_id": "string",
+                "name": "string",
+                "profile_pic_url": "string",
+                "team_info": {
+                    "team_id": "string",
+                    "team_name": "string"
+                }
+            },
+            "actions": [
+                {
+                    "action_id": 1,
+                    "action_type": "NO_VALIDATIONS",
+                    "transition_template_id": "string",
+                    "button_text": "string",
+                    "button_color": "string"
+                }
+            ]
+        }
+    }
 }
 """
 
@@ -56,7 +114,7 @@ RESPONSE_403_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "USER_DONOT_HAVE_ACCESS"
+    "res_status": "USER_DO_NOT_HAVE_ACCESS"
 }
 """
 
@@ -65,6 +123,14 @@ RESPONSE_404_JSON = """
     "response": "string",
     "http_status_code": 1,
     "res_status": "INVALID_ACTION_ID"
+}
+"""
+
+RESPONSE_400_JSON = """
+{
+    "response": "string",
+    "http_status_code": 1,
+    "res_status": "string"
 }
 """
 

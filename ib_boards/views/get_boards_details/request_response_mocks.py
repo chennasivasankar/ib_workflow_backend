@@ -1,6 +1,14 @@
 
 
 
+RESPONSE_403_JSON = """
+{
+    "response": "string",
+    "http_status_code": 1,
+    "res_status": "USER_IS_NOT_IN_PROJECT"
+}
+"""
+
 RESPONSE_400_JSON = """
 {
     "response": "string",
@@ -9,18 +17,24 @@ RESPONSE_400_JSON = """
 }
 """
 
-RESPONSE_403_JSON = """
+RESPONSE_404_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "USER_DONOT_HAVE_ACCESS"
+    "res_status": "INVALID_PROJECT_ID"
 }
 """
 
 RESPONSE_200_JSON = """
 {
     "total_boards_count": 1,
-    "boards_details": [
+    "starred_boards": [
+        {
+            "board_id": "string",
+            "name": "string"
+        }
+    ],
+    "all_boards": [
         {
             "board_id": "string",
             "name": "string"

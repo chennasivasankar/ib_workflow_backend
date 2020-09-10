@@ -1,13 +1,16 @@
 from typing import List
+
+from ib_tasks.interactors.storage_interfaces.field_config_storage_interface \
+    import \
+    FieldConfigStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_dtos \
     import FieldDTO, FieldRolesDTO, FieldRoleDTO
-
-from ib_tasks.interactors.storage_interfaces.task_storage_interface \
-    import TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 
-from ib_tasks.interactors.multi_values_input_fileds_validation_interactor \
+from ib_tasks.interactors.multi_values_input_fields_validation_interactor \
     import MultiValuesInputFieldsValidationInteractor
 
 from ib_tasks.interactors.gof_selector_validations_interactor \
@@ -24,8 +27,12 @@ from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS, UPLOADERS
 
 class CreateOrUpdateFieldsInteractor:
 
-    def __init__(self, storage: TaskStorageInterface):
+    def __init__(
+            self, storage: FieldConfigStorageInterface,
+            gof_storage: GoFStorageInterface
+    ):
         self.storage = storage
+        self.gof_storage = gof_storage
 
     def create_or_update_fields(
             self, field_dtos: List[FieldDTO],
@@ -46,33 +53,14 @@ class CreateOrUpdateFieldsInteractor:
             self.storage.update_fields(existing_field_dtos)
         self.storage.create_fields_roles(field_role_dtos)
 
-    @staticmethod
-    def _get_field_ids(existing_field_dtos):
-        field_ids = [
-            existing_field_dto.field_id
-            for existing_field_dto in existing_field_dtos
-        ]
-        return field_ids
-
     def _check_for_base_validations(self, field_dtos: List[FieldDTO]):
-
         from ib_tasks.interactors.\
             create_or_update_fields_base_validations_interactor \
             import CreateOrUpdateFieldsBaseValidationInteractor
         base_validation_interactor = \
-            CreateOrUpdateFieldsBaseValidationInteractor(storage=self.storage)
+            CreateOrUpdateFieldsBaseValidationInteractor(
+                gof_storage=self.gof_storage)
         base_validation_interactor.fields_base_validations(field_dtos)
-
-    def _check_for_field_roles_validations(
-            self, field_roles_dtos: List[FieldRolesDTO]
-    ):
-        from ib_tasks.interactors.fields_roles_validations_interactor \
-            import FieldsRolesValidationsInteractor
-
-        field_roles_validation_interactor = FieldsRolesValidationsInteractor()
-        field_roles_validation_interactor.fields_roles_validations(
-            field_roles_dtos
-        )
 
     def _validate_field_values_based_on_field_types(
             self, field_dtos: List[FieldDTO]
@@ -97,36 +85,6 @@ class CreateOrUpdateFieldsInteractor:
                     write_permission_field_role_dtos
             )
         return field_role_dtos
-
-    def _get_read_permission_field_role_dtos(
-            self, field_roles_dto: FieldRolesDTO
-    ) -> List[FieldRoleDTO]:
-
-        read_permission_field_role_dtos = []
-        field_id = field_roles_dto.field_id
-        read_permission_roles = field_roles_dto.read_permission_roles
-        for role in read_permission_roles:
-            field_role_dto = FieldRoleDTO(
-                field_id=field_id, role=role,
-                permission_type=PermissionTypes.READ.value
-            )
-            read_permission_field_role_dtos.append(field_role_dto)
-        return read_permission_field_role_dtos
-
-    def _get_write_permission_field_role_dtos(
-            self, field_roles_dto: FieldRolesDTO
-    ) -> List[FieldRoleDTO]:
-
-        write_permission_field_role_dtos = []
-        field_id = field_roles_dto.field_id
-        write_permission_roles = field_roles_dto.write_permission_roles
-        for role in write_permission_roles:
-            field_role_dto = FieldRoleDTO(
-                field_id=field_id, role=role,
-                permission_type=PermissionTypes.WRITE.value
-            )
-            write_permission_field_role_dtos.append(field_role_dto)
-        return write_permission_field_role_dtos
 
     def _get_field_dtos(self, field_dtos: List[FieldDTO]):
         field_ids = [field_dto.field_id for field_dto in field_dtos]
@@ -157,7 +115,7 @@ class CreateOrUpdateFieldsInteractor:
 
         if field_type == FieldTypes.GOF_SELECTOR.value:
             interactor = GoFSelectorValidationsInteractor(
-                storage=self.storage
+                gof_storage=self.gof_storage
             )
             interactor.gof_selector_validations(field_dto)
         if field_type in UPLOADERS:
@@ -167,3 +125,55 @@ class CreateOrUpdateFieldsInteractor:
         if field_type == FieldTypes.SEARCHABLE.value:
             interactor = FieldTypeSearchableValidationsInteractor()
             interactor.field_type_searcahble_validations(field_dto)
+
+    @staticmethod
+    def _check_for_field_roles_validations(
+            field_roles_dtos: List[FieldRolesDTO]
+    ):
+        from ib_tasks.interactors.fields_roles_validations_interactor \
+            import FieldsRolesValidationsInteractor
+
+        field_roles_validation_interactor = FieldsRolesValidationsInteractor()
+        field_roles_validation_interactor.fields_roles_validations(
+            field_roles_dtos
+        )
+
+    @staticmethod
+    def _get_field_ids(existing_field_dtos):
+        field_ids = [
+            existing_field_dto.field_id
+            for existing_field_dto in existing_field_dtos
+        ]
+        return field_ids
+
+    @staticmethod
+    def _get_read_permission_field_role_dtos(
+            field_roles_dto: FieldRolesDTO
+    ) -> List[FieldRoleDTO]:
+
+        read_permission_field_role_dtos = []
+        field_id = field_roles_dto.field_id
+        read_permission_roles = field_roles_dto.read_permission_roles
+        for role in read_permission_roles:
+            field_role_dto = FieldRoleDTO(
+                field_id=field_id, role=role,
+                permission_type=PermissionTypes.READ.value
+            )
+            read_permission_field_role_dtos.append(field_role_dto)
+        return read_permission_field_role_dtos
+
+    @staticmethod
+    def _get_write_permission_field_role_dtos(
+            field_roles_dto: FieldRolesDTO
+    ) -> List[FieldRoleDTO]:
+
+        write_permission_field_role_dtos = []
+        field_id = field_roles_dto.field_id
+        write_permission_roles = field_roles_dto.write_permission_roles
+        for role in write_permission_roles:
+            field_role_dto = FieldRoleDTO(
+                field_id=field_id, role=role,
+                permission_type=PermissionTypes.WRITE.value
+            )
+            write_permission_field_role_dtos.append(field_role_dto)
+        return write_permission_field_role_dtos

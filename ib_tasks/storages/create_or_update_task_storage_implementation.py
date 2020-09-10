@@ -1,32 +1,62 @@
+import datetime
+from typing import Union, List, Optional
+
 from django.db.models import Q
 
+from ib_tasks.constants.config import TIME_FORMAT
+from ib_tasks.exceptions.task_custom_exceptions \
+    import InvalidTaskIdException
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
-from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrder
+from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
 from ib_tasks.interactors.storage_interfaces. \
     create_or_update_task_storage_interface \
     import CreateOrUpdateTaskStorageInterface
-from typing import Union, List, Optional
-from ib_tasks.exceptions.task_custom_exceptions \
-    import InvalidTaskIdException
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    TaskGoFFieldDTO, TaskGoFDTO, TaskBaseDetailsDTO, FieldSearchableDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import (
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO)
-from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
-    TaskGoFFieldDTO, TaskGoFDTO
+from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO
+from ib_tasks.models.field_role import FieldRole
+from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.models.task import Task
 from ib_tasks.models.task_gof import TaskGoF
 from ib_tasks.models.task_gof_field import TaskGoFField
-from ib_tasks.models.gof_role import GoFRole
-from ib_tasks.models.field_role import FieldRole
 
 
 class CreateOrUpdateTaskStorageImplementation(
     CreateOrUpdateTaskStorageInterface
 ):
 
+    def get_task_display_id_for_task_id(self, task_id: int):
+        task_display_id = Task.objects.get(id=task_id).task_display_id
+        return task_display_id
+
+    def check_task_delay_reason_updated_or_not(
+            self, task_id: int, stage_id: int,
+            updated_due_date: datetime.datetime):
+        from ib_tasks.models import UserTaskDelayReason
+        due_date_updated_status = UserTaskDelayReason.objects.filter(
+            task_id=task_id, stage_id=stage_id, due_datetime=updated_due_date
+        ).exists()
+        return due_date_updated_status
+
+    def get_existing_task_due_date(self, task_id):
+        task_due_date = Task.objects.get(id=task_id).due_date
+        return task_due_date
+
+    def update_task_with_given_task_details(self, task_dto: UpdateTaskDTO):
+        task_obj = Task.objects.get(id=task_dto.task_id)
+        task_obj.title = task_dto.title
+        task_obj.description = task_dto.description
+        task_obj.start_date = task_dto.start_datetime
+        task_obj.due_date = task_dto.due_datetime
+        task_obj.priority = task_dto.priority
+        task_obj.save()
+
     def create_initial_task_stage(self, task_id: int, template_id: str):
-        from ib_tasks.models import TaskStage
+        from ib_tasks.models import CurrentTaskStage
         from ib_tasks.models import TaskTemplateInitialStage
-        TaskStage.objects.get_or_create(
+        CurrentTaskStage.objects.get_or_create(
             task_id=task_id,
             stage=TaskTemplateInitialStage.objects.get(
                 task_template_id=template_id
@@ -35,11 +65,12 @@ class CreateOrUpdateTaskStorageImplementation(
 
     def get_all_gof_ids_related_to_a_task_template(self,
                                                    task_template_id: str) -> \
-    List[str]:
+            List[str]:
         from ib_tasks.models import TaskTemplateGoFs
         gof_ids = list(
-            TaskTemplateGoFs.objects.filter(task_template_id=task_template_id)\
-            .values_list('gof_id', flat=True)
+            TaskTemplateGoFs.objects.filter(
+                task_template_id=task_template_id) \
+                .values_list('gof_id', flat=True)
         )
         return gof_ids
 
@@ -99,7 +130,7 @@ class CreateOrUpdateTaskStorageImplementation(
 
         task_gof_field_objs = TaskGoFField.objects.filter(
             task_gof_id__in=task_gof_ids
-        )
+        ).exclude(field_response='')
         task_gof_field_dtos = []
         for task_gof_field_obj in task_gof_field_objs:
             task_gof_field_dto = TaskGoFFieldDTO(
@@ -128,12 +159,12 @@ class CreateOrUpdateTaskStorageImplementation(
         return task_existence
 
     def get_gof_ids_with_same_gof_order_related_to_a_task(
-            self, task_id: int) -> List[GoFIdWithSameGoFOrder]:
+            self, task_id: int) -> List[GoFIdWithSameGoFOrderDTO]:
         gof_dicts = list(
             TaskGoF.objects.filter(task_id=task_id).values(
-                'gof_id', 'same_gof_order'))
+                'gof_id', 'same_gof_order', 'id'))
         gof_id_with_same_gof_order_dtos = [
-            GoFIdWithSameGoFOrder(
+            GoFIdWithSameGoFOrderDTO(
                 gof_id=gof_dict['gof_id'],
                 same_gof_order=gof_dict['same_gof_order']
             )
@@ -163,8 +194,7 @@ class CreateOrUpdateTaskStorageImplementation(
         task_gof_objects = TaskGoF.objects.filter(task_id=task_id)
         for task_gof_object in task_gof_objects:
             task_gof_dto = self._get_matching_task_gof_dto(
-                task_gof_object, task_gof_dtos
-            )
+                task_gof_object, task_gof_dtos)
             task_gof_object.same_gof_order = task_gof_dto.same_gof_order
         TaskGoF.objects.bulk_update(task_gof_objects, ['same_gof_order'])
         task_gof_ids = [
@@ -215,8 +245,10 @@ class CreateOrUpdateTaskStorageImplementation(
     ) -> Optional[TaskGoFFieldDTO]:
         for task_gof_field_dto in task_gof_field_dtos:
             dto_matched = (
-                    task_gof_field_dto.task_gof_id == task_gof_field_object.task_gof_id and
-                    task_gof_field_dto.field_id == task_gof_field_object.field_id
+                    task_gof_field_dto.task_gof_id ==
+                    task_gof_field_object.task_gof_id and
+                    task_gof_field_dto.field_id ==
+                    task_gof_field_object.field_id
             )
             if dto_matched:
                 return task_gof_field_dto
@@ -224,20 +256,43 @@ class CreateOrUpdateTaskStorageImplementation(
 
     def validate_task_id(
             self, task_id: int
-    ) -> Union[str, InvalidTaskIdException]:
+    ) -> Union[TaskBaseDetailsDTO, InvalidTaskIdException]:
+
         try:
             task_obj = Task.objects.get(id=task_id)
         except Task.DoesNotExist:
             raise InvalidTaskIdException(task_id)
-        template_id = task_obj.template_id
-        return template_id
+        task_base_details_dto = self._get_task_base_details_dto(task_obj)
+        return task_base_details_dto
 
-    def create_task_with_template_id(self, template_id: str,
-                                     created_by_id: str) -> int:
+    @staticmethod
+    def _get_task_base_details_dto(task_obj: Task):
+        task_base_details_dto = TaskBaseDetailsDTO(
+            template_id=task_obj.template_id,
+            project_id=task_obj.project_id,
+            task_display_id=task_obj.task_display_id,
+            title=task_obj.title,
+            description=task_obj.description,
+            start_date=task_obj.start_date,
+            due_date=task_obj.due_date,
+            priority=task_obj.priority
+        )
+        return task_base_details_dto
+
+    def create_task_with_given_task_details(self,
+                                            task_dto: CreateTaskDTO) -> int:
         from ib_tasks.models.task import Task
         task_object = Task.objects.create(
-            template_id=template_id, created_by=created_by_id
-        )
+            task_display_id=None,
+            project_id=task_dto.project_id,
+            template_id=task_dto.task_template_id,
+            created_by=task_dto.created_by_id,
+            title=task_dto.title, description=task_dto.description,
+            start_date=task_dto.start_datetime, due_date=task_dto.due_datetime,
+            priority=task_dto.priority)
+        from ib_tasks.constants.constants import TASK_DISPLAY_ID
+        task_object.task_display_id = TASK_DISPLAY_ID.format(task_object.id)
+        task_object.save()
         return task_object.id
 
     def create_task_gofs(
@@ -267,8 +322,9 @@ class CreateOrUpdateTaskStorageImplementation(
         for task_gof_object in task_gof_objects:
             for task_gof in task_gofs:
                 task_gof_matched = (
-                    task_gof.gof_id == task_gof_object.gof_id and
-                    task_gof.same_gof_order == task_gof_object.same_gof_order
+                        task_gof.gof_id == task_gof_object.gof_id and
+                        task_gof.same_gof_order ==
+                        task_gof_object.same_gof_order
                 )
                 if task_gof_matched:
                     refined_task_gof_objects.append(task_gof_object)
@@ -294,3 +350,31 @@ class CreateOrUpdateTaskStorageImplementation(
             for task_gof_field_dto in task_gof_field_dtos
         ]
         TaskGoFField.objects.bulk_create(task_gof_field_objects)
+
+    def get_initial_stage_for_task_template(self, template_id: str) -> str:
+        pass
+
+    def get_field_searchable_dtos(
+            self, field_ids: List[str], task_gof_ids: List[int],
+    ) -> List[FieldSearchableDTO]:
+
+        from ib_tasks.constants.enum import FieldTypes
+        field_searchable_values = TaskGoFField.objects.filter(
+            field_id__in=field_ids,
+            task_gof_id__in=task_gof_ids,
+            field__field_type=FieldTypes.SEARCHABLE.value
+        ).values_list('field_id', 'field__field_values', 'field_response')
+
+        field_searchable_dtos = [
+            FieldSearchableDTO(
+                field_id=field_searchable_value[0],
+                field_value=field_searchable_value[1],
+                field_response=field_searchable_value[2]
+            )
+            for field_searchable_value in field_searchable_values
+        ]
+        return field_searchable_dtos
+
+    @staticmethod
+    def get_task_ids() -> List[int]:
+        return list(Task.objects.values_list('id', flat=True))

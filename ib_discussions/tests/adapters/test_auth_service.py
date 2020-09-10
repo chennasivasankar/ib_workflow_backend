@@ -4,11 +4,15 @@ import pytest
 
 
 class TestAuthService:
-    @patch(
-        "ib_users.interfaces.service_interface.ServiceInterface.get_user_profile_bulk"
-    )
+
+    def prepare_get_user_profile_bulk_mock(self, mocker):
+        mock = mocker.patch(
+            "ib_users.interfaces.service_interface.ServiceInterface.get_user_profile_bulk"
+        )
+        return mock
+
     def test_with_empty_user_id_raise_exception(
-            self, get_user_profile_dtos_mock
+            self, mocker
     ):
         # Arrange
         user_ids = [
@@ -20,6 +24,8 @@ class TestAuthService:
         from ib_users.constants.user_profile.error_types import \
             EMPTY_USER_ID_ERROR_TYPE
         from ib_users.constants.user_profile.error_messages import EMPTY_USER_ID
+        get_user_profile_dtos_mock = self.prepare_get_user_profile_bulk_mock(
+            mocker=mocker)
         get_user_profile_dtos_mock.side_effect = InvalidUserException(
             message=EMPTY_USER_ID, exception_type=EMPTY_USER_ID_ERROR_TYPE
         )
@@ -29,18 +35,12 @@ class TestAuthService:
         auth_service = serice_adapter.auth_service
 
         # Assert
-        from ib_discussions.interactors.discussion_interactor import \
-            InvalidUserId
+        from ib_discussions.exceptions.custom_exceptions import InvalidUserId
 
         with pytest.raises(InvalidUserId):
             auth_service.get_user_profile_dtos(user_ids=user_ids)
 
-    @patch(
-        "ib_users.interfaces.service_interface.ServiceInterface.get_user_profile_bulk"
-    )
-    def test_with_invalid_user_id_raise_exception(
-            self, get_user_profile_dtos_mock
-    ):
+    def test_with_invalid_user_id_raise_exception(self, mocker):
         # Arrange
         user_ids = [
             "9cc22e39-2390-4d96-b7ac-6bb27816461f",
@@ -53,6 +53,8 @@ class TestAuthService:
             INVALID_USER_ID
         from ib_users.constants.user_profile.error_types import \
             INVALID_USER_ID_ERROR_TYPE
+        get_user_profile_dtos_mock = self.prepare_get_user_profile_bulk_mock(
+            mocker=mocker)
         get_user_profile_dtos_mock.side_effect = InvalidUserException(
             message=INVALID_USER_ID, exception_type=INVALID_USER_ID_ERROR_TYPE
         )
@@ -62,18 +64,12 @@ class TestAuthService:
         auth_service = serice_adapter.auth_service
 
         # Assert
-        from ib_discussions.interactors.discussion_interactor import \
-            InvalidUserId
+        from ib_discussions.exceptions.custom_exceptions import InvalidUserId
 
         with pytest.raises(InvalidUserId):
             auth_service.get_user_profile_dtos(user_ids=user_ids)
 
-    @patch(
-        "ib_users.interfaces.service_interface.ServiceInterface.get_user_profile_bulk"
-    )
-    def test_with_valid_user_ids(
-            self, get_user_profile_dtos_mock
-    ):
+    def test_with_valid_user_ids(self, mocker):
         # Arrange
         user_ids = [
             "9cc22e39-2390-4d96-b7ac-6bb27816461f",
@@ -95,6 +91,8 @@ class TestAuthService:
 
         from ib_users.interactors.user_profile_interactor import \
             GetUserProfileDTO
+        get_user_profile_dtos_mock = self.prepare_get_user_profile_bulk_mock(
+            mocker=mocker)
         get_user_profile_dtos_mock.return_value = [
             GetUserProfileDTO(
                 user_id=user_ids[0],

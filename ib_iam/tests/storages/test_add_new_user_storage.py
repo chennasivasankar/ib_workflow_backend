@@ -2,68 +2,92 @@ import pytest
 
 from ib_iam.storages.user_storage_implementation \
     import UserStorageImplementation
-from ib_iam.tests.factories.models import CompanyFactory, TeamFactory, RoleFactory
+from ib_iam.tests.factories.models import CompanyFactory, TeamFactory, \
+    ProjectRoleFactory
 
 
-@pytest.fixture()
-def reset_sequence_for_model_factories():
-    CompanyFactory.reset_sequence(0)
-    RoleFactory.reset_sequence(0)
-    TeamFactory.reset_sequence(0)
-
-
-@pytest.fixture()
-def companies():
-    company_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
-                   "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
-    companies = [CompanyFactory.create(company_id=company_id)
-                 for company_id in company_ids]
-    return companies
-
-
-@pytest.fixture()
-def teams():
-    team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
-                "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
-    teams = [TeamFactory.create(team_id=team_id)
-             for team_id in team_ids]
-    return teams
-
-
-@pytest.fixture()
-def roles():
-    role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
-                "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
-    roles = [RoleFactory.create(id=role_id) for role_id in role_ids]
-    return roles
 
 
 class TestAddNewUserStorage:
+    @pytest.fixture()
+    def reset_sequence_for_model_factories(self):
+        CompanyFactory.reset_sequence(0)
+        ProjectRoleFactory.reset_sequence(0)
+        TeamFactory.reset_sequence(0)
+
+    @pytest.fixture()
+    def companies(self):
+        company_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+                       "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+        companies = [CompanyFactory.create(company_id=company_id)
+                     for company_id in company_ids]
+        return companies
+
+    @pytest.fixture()
+    def teams(self):
+        team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+                    "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+        teams = [TeamFactory.create(team_id=team_id)
+                 for team_id in team_ids]
+        return teams
+
+    @pytest.fixture()
+    def roles(self):
+        role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+                    "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+        roles = [ProjectRoleFactory.create(role_id=role_id) for role_id in
+                 role_ids]
+        return roles
+
     @pytest.mark.django_db
-    def test_add_new_user_create_new_user_with_given_details(
-            self, reset_sequence_for_model_factories, companies, roles, teams):
+    def test_create_user(self):
         # Arrange
         user_id = "user_1"
         name = "test_name"
         is_admin = True
-        team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
-                    "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
-        role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
-                    "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
-        company_id = 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
+        company_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8331"
         storage = UserStorageImplementation()
+        CompanyFactory(company_id=company_id)
 
         # Act
-        storage.add_new_user(
-            user_id=user_id, is_admin=is_admin,
-            company_id=company_id, role_ids=role_ids, team_ids=team_ids,
+        storage.create_user(
+            company_id=company_id, is_admin=is_admin, user_id=user_id,
             name=name
         )
 
         # Assert
         from ib_iam.models import UserDetails
-        user = UserDetails.objects.get(user_id=user_id)
-        assert str(user.company_id) == company_id
+        user_object = UserDetails.objects.get(user_id=user_id)
+
+        assert str(user_object.company_id) == company_id
+        assert user_object.name == name
+        assert user_object.user_id == user_id
+        assert user_object.is_admin == is_admin
+
+    @pytest.mark.django_db
+    def test_create_user(self):
+        # Arrange
+        user_id = "user_1"
+        name = "test_name"
+        is_admin = True
+        company_id = None
+        storage = UserStorageImplementation()
+        CompanyFactory(company_id=company_id)
+
+        # Act
+        storage.create_user(
+            company_id=company_id, is_admin=is_admin, user_id=user_id,
+            name=name
+        )
+
+        # Assert
+        from ib_iam.models import UserDetails
+        user_object = UserDetails.objects.get(user_id=user_id)
+
+        assert user_object.company_id == company_id
+        assert user_object.name == name
+        assert user_object.user_id == user_id
+        assert user_object.is_admin == is_admin
 
     @pytest.mark.django_db
     def test_validate_role_ids_when_invalid_then_returns_false(

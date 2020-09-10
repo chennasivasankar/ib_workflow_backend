@@ -20,7 +20,7 @@ class Discussion(models.Model):
     discussion_set = models.ForeignKey(
         DiscussionSet, on_delete=models.CASCADE
     )
-    user_id = models.UUIDField(editable=False)
+    user_id = models.CharField(max_length=36)
     description = models.TextField()
     title = models.TextField()
     created_at = models.DateTimeField(default=get_datetime_now)

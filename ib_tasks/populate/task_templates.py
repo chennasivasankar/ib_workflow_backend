@@ -1,35 +1,24 @@
-class PopulateTaskTemplates:
+from ib_tasks.interactors.task_template_dtos import \
+    CreateTemplateDTO
+from ib_tasks.populate.populate_template import PopulateTemplate
 
-    def populate_task_templates(self):
+
+class PopulateTaskTemplates(PopulateTemplate):
+
+    def populate_task_templates(self, spread_sheet_name: str):
         from ib_tasks.utils.get_google_sheet import get_google_sheet
-        from ib_tasks.constants.constants import GOOGLE_SHEET_NAME
-        sheet = get_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
+        sheet = get_google_sheet(sheet_name=spread_sheet_name)
 
         from ib_tasks.constants.constants import TASK_TEMPLATE_SUB_SHEET_TITLE
         task_templates_dicts = \
             sheet.worksheet(TASK_TEMPLATE_SUB_SHEET_TITLE).get_all_records()
 
         for task_templates_dict in task_templates_dicts:
-            self._populate_task_template_in_db(
+            create_template_dto = CreateTemplateDTO(
                 template_id=task_templates_dict['Template ID'].strip(),
-                template_name=task_templates_dict['Template Name'].strip()
+                template_name=task_templates_dict['Template Name'].strip(),
+                is_transition_template=False
             )
-
-    @staticmethod
-    def _populate_task_template_in_db(template_id: str, template_name: str):
-
-        from ib_tasks.storages.tasks_storage_implementation import \
-            TasksStorageImplementation
-        task_storage = TasksStorageImplementation()
-
-        from ib_tasks.interactors.create_task_template_interactor import \
-            CreateTaskTemplateInteractor
-        interactor = CreateTaskTemplateInteractor(task_storage=task_storage)
-
-        from ib_tasks.interactors.task_template_dtos import CreateTaskTemplateDTO
-        create_task_template_dto = CreateTaskTemplateDTO(
-            template_id=template_id, template_name=template_name
-        )
-        interactor.create_task_template(
-            create_task_template_dto=create_task_template_dto
-        )
+            self._populate_template_in_db(
+                create_template_dto=create_template_dto
+            )

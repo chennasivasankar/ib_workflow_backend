@@ -1,8 +1,12 @@
 import factory
 
-from ib_iam.interactors.storage_interfaces.dtos \
-    import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO, \
-    CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, EmployeeDTO
+from ib_iam.constants.enums import Searchable
+from ib_iam.interactors.storage_interfaces.dtos import (
+    TeamWithUserIdDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO,
+    CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, MemberDTO,
+    TeamMemberLevelDetailsDTO, UserProfileDTO, SearchableDetailsDTO,
+    ProjectDTO, MemberIdWithSubordinateMemberIdsDTO, ProjectRoleDTO,
+    ProjectWithoutIdDTO, ProjectWithDisplayIdDTO)
 
 
 class UserDTOFactory(factory.Factory):
@@ -12,11 +16,12 @@ class UserDTOFactory(factory.Factory):
     user_id = factory.sequence(lambda number: "team%s" % number)
     is_admin = True
     company_id = factory.sequence(lambda number: "company%s" % number)
+    cover_page_url = factory.sequence(lambda n: "url%d" % n)
 
 
 class UserTeamDTOFactory(factory.Factory):
     class Meta:
-        model = UserTeamDTO
+        model = TeamWithUserIdDTO
 
     user_id = factory.sequence(lambda number: "user%s" % number)
     team_id = factory.sequence(lambda number: "team%s" % number)
@@ -37,9 +42,9 @@ class UserRoleDTOFactory(factory.Factory):
         model = UserRoleDTO
 
     user_id = factory.sequence(lambda number: "team%s" % number)
-    role_id = factory.Sequence(lambda n: 'PAYMENT%s' % n)
-    name = factory.Sequence(lambda n: 'payment %s' % n)
-    description = factory.Sequence(lambda n: 'payment_description%s' % n)
+    role_id = factory.Sequence(lambda n: 'ROLE_%s' % n)
+    name = factory.Sequence(lambda n: 'role %s' % n)
+    description = factory.Sequence(lambda n: 'role description %s' % n)
 
 
 class CompanyIdAndNameDTOFactory(factory.Factory):
@@ -73,13 +78,13 @@ from ib_iam.interactors.storage_interfaces.dtos import (
     TeamNameAndDescriptionDTO,
     PaginationDTO,
     TeamsWithTotalTeamsCountDTO,
-    TeamDetailsWithUserIdsDTO,
     TeamWithUserIdsDTO,
+    TeamWithTeamIdAndUserIdsDTO,
     CompanyDTO,
     CompanyIdWithEmployeeIdsDTO,
     CompanyNameLogoAndDescriptionDTO,
-    CompanyDetailsWithUserIdsDTO,
-    CompanyWithUserIdsDTO
+    CompanyWithUserIdsDTO,
+    CompanyWithCompanyIdAndUserIdsDTO
 )
 
 team_ids = [
@@ -123,15 +128,15 @@ class TeamNameAndDescriptionDTOFactory(factory.Factory):
     class Meta:
         model = TeamNameAndDescriptionDTO
 
-    name = factory.sequence(lambda n: "team%d" % n)
+    name = factory.sequence(lambda n: "name%d" % n)
     description = factory.sequence(lambda n: "team_description%d" % n)
 
 
-class TeamDetailsWithUserIdsDTOFactory(
+class TeamWithUserIdsDTOFactory(
     TeamNameAndDescriptionDTOFactory, factory.Factory
 ):
     class Meta:
-        model = TeamDetailsWithUserIdsDTO
+        model = TeamWithUserIdsDTO
 
     user_ids = factory.Iterator([
         [user_ids[0], user_ids[2]],
@@ -140,10 +145,10 @@ class TeamDetailsWithUserIdsDTOFactory(
     ])
 
 
-class TeamWithUserIdsDTOFactory(TeamDetailsWithUserIdsDTOFactory,
-                                factory.Factory):
+class TeamWithTeamIdAndUserIdsDTOFactory(TeamWithUserIdsDTOFactory,
+                                         factory.Factory):
     class Meta:
-        model = TeamWithUserIdsDTO
+        model = TeamWithTeamIdAndUserIdsDTO
 
     team_id = factory.sequence(lambda n: "team%d" % n)
 
@@ -219,11 +224,11 @@ class CompanyIdWithEmployeeIdsDTOFactory(factory.Factory):
     ])
 
 
-class CompanyDetailsWithUserIdsDTOFactory(
+class CompanyWithUserIdsDTOFactory(
     CompanyNameLogoAndDescriptionDTOFactory, factory.Factory
 ):
     class Meta:
-        model = CompanyDetailsWithUserIdsDTO
+        model = CompanyWithUserIdsDTO
 
     user_ids = factory.Iterator([
         [user_ids[0], user_ids[2]],
@@ -232,19 +237,105 @@ class CompanyDetailsWithUserIdsDTOFactory(
     ])
 
 
-class CompanyWithUserIdsDTOFactory(
-    CompanyDetailsWithUserIdsDTOFactory, factory.Factory
+class CompanyWithCompanyIdAndUserIdsDTOFactory(
+    CompanyWithUserIdsDTOFactory, factory.Factory
 ):
     class Meta:
-        model = CompanyWithUserIdsDTO
+        model = CompanyWithCompanyIdAndUserIdsDTO
 
     company_id = factory.Faker("uuid4")
 
 
-class EmployeeDTOFactory(factory.Factory):
+class UserIdNameEmailAndProfilePicUrlDTOFactory(factory.Factory):
     class Meta:
-        model = EmployeeDTO
+        model = UserProfileDTO
 
-    employee_id = factory.sequence(lambda n: "user%d" % n)
-    name = factory.sequence(lambda n: "name%d" % n)
+    user_id = factory.Faker("uuid4")
+    name = factory.Iterator(["username", "testuser", "dummyuser"])
+    email = factory.sequence(lambda n: "email%d@gmail.com" % n)
     profile_pic_url = factory.sequence(lambda n: "url%d" % n)
+
+
+class TeamMemberLevelDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TeamMemberLevelDetailsDTO
+
+    team_member_level_id = factory.Faker("uuid4")
+    team_member_level_name = factory.Faker("name")
+    level_hierarchy = factory.Iterator([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+
+class MemberDTOFactory(factory.Factory):
+    class Meta:
+        model = MemberDTO
+
+    member_id = factory.Faker("uuid4")
+    immediate_superior_team_user_id = factory.Faker("uuid4")
+
+
+class ProjectDTOFactory(factory.Factory):
+    class Meta:
+        model = ProjectDTO
+
+    project_id = factory.Sequence(lambda n: 'project %s' % n)
+    name = factory.Sequence(lambda n: 'name %s' % n)
+    description = factory.Sequence(lambda n: 'description %s' % n)
+    logo_url = factory.Sequence(lambda n: 'logo %s' % n)
+
+
+class ProjectWithDisplayIdDTOFactory(factory.Factory):
+    class Meta:
+        model = ProjectWithDisplayIdDTO
+
+    project_id = factory.Sequence(lambda n: 'project %s' % n)
+    display_id = factory.Sequence(lambda n: 'display_id %s' % n)
+    name = factory.Sequence(lambda n: 'name %s' % n)
+    description = factory.Sequence(lambda n: 'description %s' % n)
+    logo_url = factory.Sequence(lambda n: 'logo %s' % n)
+
+
+class ProjectWithoutIdDTOFactory(factory.Factory):
+    class Meta:
+        model = ProjectWithoutIdDTO
+
+    name = factory.Sequence(lambda n: 'name %s' % n)
+    display_id = factory.Sequence(lambda n: 'display_id %s' % n)
+    description = factory.Sequence(lambda n: 'description %s' % n)
+    logo_url = factory.Sequence(lambda n: 'logo %s' % n)
+
+
+class SearchableDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchableDetailsDTO
+
+    search_type = factory.Iterator(
+        [
+            Searchable.CITY.value,
+            Searchable.STATE.value,
+            Searchable.COUNTRY.value,
+            Searchable.USER.value
+        ]
+    )
+    id = factory.sequence(lambda counter: counter)
+    value = factory.sequence(lambda counter: "name{}".format(counter))
+
+
+class MemberIdWithSubordinateMemberIdsDTOFactory(factory.Factory):
+    class Meta:
+        model = MemberIdWithSubordinateMemberIdsDTO
+
+    member_id = factory.Faker("uuid4")
+    subordinate_member_ids = factory.Iterator(
+        [factory.Faker("uuid4"), factory.Faker("uuid4"),
+         factory.Faker("uuid4")]
+    )
+
+
+class ProjectRoleDTOFactory(factory.Factory):
+    class Meta:
+        model = ProjectRoleDTO
+
+    project_id = factory.Sequence(lambda n: 'project %s' % n)
+    role_id = factory.sequence(lambda number: "ROLE_%s" % number)
+    name = factory.sequence(lambda number: "role %s" % number)
+    description = factory.Sequence(lambda n: 'role description %s' % n)

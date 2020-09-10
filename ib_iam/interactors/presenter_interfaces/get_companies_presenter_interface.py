@@ -1,28 +1,29 @@
-from abc import ABC
-from abc import abstractmethod
+import abc
+
 from dataclasses import dataclass
 from typing import List
 
+from ib_iam.interactors.storage_interfaces.dtos import BasicUserDetailsDTO
 from ib_iam.interactors.storage_interfaces.dtos import (
     CompanyDTO, CompanyIdWithEmployeeIdsDTO, EmployeeDTO
 )
 
 
 @dataclass
-class CompanyWithEmployeesDetailsDTO:
+class CompanyWithEmployeeIdsAndUserDetailsDTO:
     company_dtos: List[CompanyDTO]
     company_id_with_employee_ids_dtos: List[CompanyIdWithEmployeeIdsDTO]
-    employee_dtos: List[EmployeeDTO]
+    user_dtos: List[BasicUserDetailsDTO]
 
 
-class GetCompaniesPresenterInterface(ABC):
+class GetCompaniesPresenterInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_user_has_no_access_response_for_get_companies(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_response_for_get_companies(
-            self, company_details_dtos: CompanyWithEmployeesDetailsDTO
+            self, company_details_dtos: CompanyWithEmployeeIdsAndUserDetailsDTO
     ):
         pass

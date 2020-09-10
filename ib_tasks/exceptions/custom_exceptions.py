@@ -309,3 +309,28 @@ class EmptyValuesForAllowedFormats(Exception):
 class InvalidValueForSearchable(Exception):
     def __init__(self, message: str):
         self.message = message
+
+
+class InvalidDueDateTimeException(Exception):
+    pass
+
+
+class InvalidModulePathFound(Exception):
+    def __init__(self, path_name: str):
+        self.path_name = path_name
+
+
+class InvalidMethodFound(Exception):
+    def __init__(self, method_name: str):
+        self.method_name = method_name
+
+
+class InvalidProjectId(Exception):
+    def __init__(self, project_id: str):
+        self.project_id = project_id
+
+
+class DuplicateTaskTemplateIdsGivenToAProject(Exception):
+    def __init__(self, task_template_ids: List[str]):
+        self.task_template_ids = task_template_ids
+

@@ -1,4 +1,3 @@
-import json
 from typing import Dict, Any, List
 
 
@@ -13,9 +12,12 @@ def populate_stages_values(list_of_stages_dict: List[Dict]):
         TasksStorageImplementation
     from ib_tasks.storages.storage_implementation import \
         StagesStorageImplementation
+    from ib_tasks.storages.task_template_storage_implementation import \
+        TaskTemplateStorageImplementation
     interactor = CreateOrUpdateStagesInteractor(
         stage_storage=StagesStorageImplementation(),
-        task_storage=TasksStorageImplementation()
+        task_storage=TasksStorageImplementation(),
+        task_template_storage=TaskTemplateStorageImplementation()
     )
     interactor.create_or_update_stages(stages_details=stages_dtos)
 
@@ -26,9 +28,10 @@ def append_stage_dto(stage_dict: Dict[str, Any]):
         stage_id=stage_dict['stage_id'].strip('\n'),
         task_template_id=stage_dict['task_template_id'],
         value=stage_dict['value'],
-        id=None,
         card_info_kanban=stage_dict['card_info_kanban'],
         card_info_list=stage_dict['card_info_list'],
+        stage_color=stage_dict['stage_color'],
+        roles=stage_dict['roles'].replace("\r", ""),
         stage_display_name=stage_dict['stage_display_name'],
         stage_display_logic=stage_dict['stage_display_logic']
     )
@@ -46,8 +49,11 @@ def validation_for_list_of_stages_dict(stages_dict: List[Dict]):
             "card_info_kanban": str,
             "card_info_list": str,
             "stage_display_name": str,
-            "stage_display_logic": str
-        }]
+            "stage_display_logic": str,
+            "roles": str,
+            "stage_color": str
+        }],
+        ignore_extra_keys=True
 
     )
 
@@ -64,8 +70,11 @@ def raise_exception_for_invalid_format():
         "value": 1,
         "card_info_kanban": '["field_id_1", "field_id_2"]',
         "card_info_list": '["field_id_1", "field_id_2"]',
+        "stage_color": "blue",
+        "roles": "ALL_ROLES\nFIN_PAYMENT_REQUESTER",
         "stage_display_name": "stage_name",
         "stage_display_logic": "status_1==stage_id_1"
+
     }
 
     import json

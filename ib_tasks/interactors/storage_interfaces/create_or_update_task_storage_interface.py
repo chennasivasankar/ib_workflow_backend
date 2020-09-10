@@ -1,17 +1,18 @@
 import abc
-
-from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
-from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrder
-from ib_tasks.interactors.storage_interfaces.task_dtos import \
-    TaskGoFDetailsDTO, TaskGoFWithTaskIdDTO
+import datetime
 from typing import Union, List
+
+from ib_tasks.exceptions.gofs_custom_exceptions import \
+    InvalidSameGoFOrderForAGoF
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException
-from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
-    TaskGoFDTO
-)
-from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
-    TaskGoFFieldDTO
+from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
+from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import TaskGoFDTO, \
+    TaskGoFFieldDTO, TaskBaseDetailsDTO, FieldSearchableDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import \
+    TaskGoFDetailsDTO, TaskGoFWithTaskIdDTO
+from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO
 
 
 class CreateOrUpdateTaskStorageInterface(abc.ABC):
@@ -19,7 +20,7 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def validate_task_id(
             self, task_id: int
-    ) -> Union[str, InvalidTaskIdException]:
+    ) -> Union[str, TaskBaseDetailsDTO, InvalidTaskIdException]:
         pass
 
     @abc.abstractmethod
@@ -49,9 +50,8 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_task_with_template_id(
-            self, template_id: str, created_by_id: str
-    ) -> int:
+    def create_task_with_given_task_details(
+            self, task_dto: CreateTaskDTO) -> int:
         pass
 
     @abc.abstractmethod
@@ -62,13 +62,13 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_task_gof_fields(
-        self, task_gof_field_dtos: List[TaskGoFFieldDTO]
+            self, task_gof_field_dtos: List[TaskGoFFieldDTO]
     ):
         pass
 
     @abc.abstractmethod
     def get_gof_ids_with_same_gof_order_related_to_a_task(
-            self, task_id: int) -> List[GoFIdWithSameGoFOrder]:
+            self, task_id: int) -> List[GoFIdWithSameGoFOrderDTO]:
         pass
 
     @abc.abstractmethod
@@ -80,7 +80,7 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def update_task_gofs(
             self, task_gof_dtos: List[TaskGoFWithTaskIdDTO]
-    ) -> List[TaskGoFDetailsDTO]:
+    ) -> Union[List[TaskGoFDetailsDTO], InvalidSameGoFOrderForAGoF]:
         pass
 
     @abc.abstractmethod
@@ -106,4 +106,36 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_initial_task_stage(self, task_id: int, template_id: str):
+        pass
+
+    @abc.abstractmethod
+    def get_initial_stage_for_task_template(self, template_id: str) -> str:
+        pass
+
+    @abc.abstractmethod
+    def update_task_with_given_task_details(self, task_dto: UpdateTaskDTO):
+        pass
+
+    @abc.abstractmethod
+    def get_field_searchable_dtos(
+            self, field_ids: List[str], task_gof_ids: List[int]
+    ) -> List[FieldSearchableDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_task_ids(self) -> List[int]:
+        pass
+
+    @abc.abstractmethod
+    def get_existing_task_due_date(self, task_id):
+        pass
+
+    @abc.abstractmethod
+    def check_task_delay_reason_updated_or_not(
+            self, task_id: int, stage_id: int,
+            updated_due_date: datetime.datetime):
+        pass
+
+    @abc.abstractmethod
+    def get_task_display_id_for_task_id(self, task_id: int):
         pass

@@ -10,7 +10,7 @@ snapshots = Snapshot()
 snapshots['TestCase01AddUserAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase01AddUserAPITestCase.test_case body'] = {
-    'name': [
-        'This field may not be blank.'
-    ]
+    'http_status_code': 400,
+    'res_status': 'NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS',
+    'response': 'name should not contains special characters and numbers'
 }

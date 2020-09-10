@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import pytest
 
 from ib_iam.interactors.get_users_list_interactor import \
-    GetUsersDetailsInteractor
+    GetListOfUsersInteractor
 from ib_iam.tests.factories.storage_dtos import UserDTOFactory
 
 USER_ID = "dd67ab82-ab8a-4253-98ae-bef82b8013a8"
@@ -89,17 +89,24 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = 10
         offset = 0
-        interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = False
+        name_search_query = ""
+        from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+        pagination_dto = PaginationDTO(
+            offset=offset,
+            limit=limit
+        )
+        interactor = GetListOfUsersInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = False
         presenter_mock.raise_user_is_not_admin_exception.return_value = Mock()
         # Act
-        interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
-            presenter=presenter_mock
+        interactor.get_list_of_users_wrapper(
+            user_id=user_id, pagination_dto=pagination_dto,
+            presenter=presenter_mock,
+            name_search_query=name_search_query
         )
 
         # Assert
-        storage_mock.check_is_admin_user.assert_called_once_with(
+        storage_mock.is_user_admin.assert_called_once_with(
             user_id=user_id)
         presenter_mock.raise_user_is_not_admin_exception.assert_called_once()
 
@@ -109,13 +116,20 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = 10
         offset = -1
-        interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = True
+        name_search_query = ""
+        from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+        pagination_dto = PaginationDTO(
+            offset=offset,
+            limit=limit
+        )
+        interactor = GetListOfUsersInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = True
 
         # Act
-        interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
-            presenter=presenter_mock
+        interactor.get_list_of_users_wrapper(
+            user_id=user_id, pagination_dto=pagination_dto,
+            presenter=presenter_mock,
+            name_search_query=name_search_query
         )
 
         # Assert
@@ -127,27 +141,41 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = -10
         offset = 0
-        interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = True
+        name_search_query = ""
+        from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+        pagination_dto = PaginationDTO(
+            offset=offset,
+            limit=limit
+        )
+        interactor = GetListOfUsersInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = True
 
         # Act
-        interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
-            presenter=presenter_mock
+        interactor.get_list_of_users_wrapper(
+            user_id=user_id, pagination_dto=pagination_dto,
+            presenter=presenter_mock,
+            name_search_query=name_search_query
         )
 
         # Assert
         presenter_mock.raise_invalid_limit_value_exception.assert_called_once()
 
     def test_get_users_returns_user_dtos(
-            self, storage_mock, presenter_mock, user_dtos, mocker):
+            self, storage_mock, presenter_mock, user_dtos, mocker
+    ):
         # Arrange
         user_id = USER_ID
         limit = 10
         offset = 0
-        interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = True
-        storage_mock.get_users_who_are_not_admins.return_value = user_dtos
+        name_search_query = ""
+        from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+        pagination_dto = PaginationDTO(
+            offset=offset,
+            limit=limit
+        )
+        interactor = GetListOfUsersInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = True
+        storage_mock.get_all_user_dtos.return_value = user_dtos
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import get_users_adapter_mock
         adapter_mock = get_users_adapter_mock(
@@ -156,13 +184,14 @@ class TestGetUsersDetailsInteractor:
         )
 
         # Act
-        interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
-            presenter=presenter_mock
+        interactor.get_list_of_users_wrapper(
+            user_id=user_id, pagination_dto=pagination_dto,
+            presenter=presenter_mock,
+            name_search_query=name_search_query
         )
 
         # Assert
-        storage_mock.get_users_who_are_not_admins.assert_called_once()
+        storage_mock.get_all_user_dtos.assert_called_once()
         adapter_mock.assert_called_once()
 
     def test_get_users_team_details_returns_team_details_of_users(
@@ -171,10 +200,16 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = 10
         offset = 0
+        name_search_query = ""
+        from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+        pagination_dto = PaginationDTO(
+            offset=offset,
+            limit=limit
+        )
         user_ids = ["user1", "user2", "user3"]
-        interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = True
-        storage_mock.get_users_who_are_not_admins.return_value = user_dtos
+        interactor = GetListOfUsersInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = True
+        storage_mock.get_all_user_dtos.return_value = user_dtos
         storage_mock.get_team_details_of_users_bulk.return_value = user_team_dtos
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import get_users_adapter_mock
@@ -184,13 +219,14 @@ class TestGetUsersDetailsInteractor:
         )
 
         # Act
-        interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
-            presenter=presenter_mock
+        interactor.get_list_of_users_wrapper(
+            user_id=user_id, pagination_dto=pagination_dto,
+            presenter=presenter_mock,
+            name_search_query=name_search_query
         )
 
         # Assert
-        storage_mock.get_users_who_are_not_admins.assert_called_once()
+        storage_mock.get_all_user_dtos.assert_called_once()
         storage_mock.get_team_details_of_users_bulk.assert_called_once_with(
             user_ids)
         adapter_mock.assert_called_once()
@@ -201,10 +237,16 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = 10
         offset = 0
+        name_search_query = ""
+        from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+        pagination_dto = PaginationDTO(
+            offset=offset,
+            limit=limit
+        )
         user_ids = ["user1", "user2", "user3"]
-        interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = True
-        storage_mock.get_users_who_are_not_admins.return_value = user_dtos
+        interactor = GetListOfUsersInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = True
+        storage_mock.get_all_user_dtos.return_value = user_dtos
         storage_mock.get_role_details_of_users_bulk.return_value = user_role_dtos
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import get_users_adapter_mock
@@ -214,14 +256,15 @@ class TestGetUsersDetailsInteractor:
         )
 
         # Act
-        interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
-            presenter=presenter_mock
+        interactor.get_list_of_users_wrapper(
+            user_id=user_id, pagination_dto=pagination_dto,
+            presenter=presenter_mock,
+            name_search_query=name_search_query
         )
         adapter_mock.assert_called_once()
 
         # Assert
-        storage_mock.get_users_who_are_not_admins.assert_called_once()
+        storage_mock.get_all_user_dtos.assert_called_once()
         storage_mock.get_role_details_of_users_bulk.assert_called_once_with(
             user_ids)
 
@@ -231,10 +274,16 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = 10
         offset = 0
-        interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = True
+        name_search_query = ""
+        from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+        pagination_dto = PaginationDTO(
+            offset=offset,
+            limit=limit
+        )
+        interactor = GetListOfUsersInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = True
 
-        storage_mock.get_users_who_are_not_admins.return_value = user_dtos
+        storage_mock.get_all_user_dtos.return_value = user_dtos
         storage_mock.get_company_details_of_users_bulk.return_value = user_company_dtos
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import get_users_adapter_mock
@@ -244,27 +293,35 @@ class TestGetUsersDetailsInteractor:
         )
 
         # Act
-        interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
-            presenter=presenter_mock
+        interactor.get_list_of_users_wrapper(
+            user_id=user_id, pagination_dto=pagination_dto,
+            presenter=presenter_mock,
+            name_search_query=name_search_query
         )
 
         # Assert
-        storage_mock.get_users_who_are_not_admins.assert_called_once()
+        storage_mock.get_all_user_dtos.assert_called_once()
         storage_mock.get_company_details_of_users_bulk.assert_called_once()
         adapter_mock.assert_called_once()
 
     def test_get_users_from_adapter_return_user_deails(
-            self, user_profile_dtos, storage_mock, presenter_mock, mocker):
+            self, user_profile_dtos, storage_mock, presenter_mock, mocker
+    ):
         user_id = USER_ID
         limit = 10
         offset = 0
+        name_search_query = ""
         user_ids = ["user1", "user2", "user3"]
-        interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = True
+        from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+        pagination_dto = PaginationDTO(
+            offset=offset,
+            limit=limit
+        )
+        interactor = GetListOfUsersInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = True
         user_dtos = [UserDTOFactory.create(user_id=user_id)
                      for user_id in user_ids]
-        storage_mock.get_users_who_are_not_admins.return_value = user_dtos
+        storage_mock.get_all_user_dtos.return_value = user_dtos
 
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import get_users_adapter_mock
@@ -274,9 +331,10 @@ class TestGetUsersDetailsInteractor:
         )
 
         # Act
-        interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
-            presenter=presenter_mock
+        interactor.get_list_of_users_wrapper(
+            user_id=user_id, pagination_dto=pagination_dto,
+            presenter=presenter_mock,
+            name_search_query=name_search_query
         )
 
         # Assert
@@ -285,13 +343,20 @@ class TestGetUsersDetailsInteractor:
     def test_get_users_complete_details(
             self, user_dtos, user_team_dtos,
             user_role_dtos, user_company_dtos, user_profile_dtos,
-            storage_mock, presenter_mock, mocker):
+            storage_mock, presenter_mock, mocker
+    ):
         user_id = USER_ID
         limit = 10
         offset = 0
-        interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = True
-        storage_mock.get_users_who_are_not_admins.return_value = user_dtos
+        name_search_query = ""
+        from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+        pagination_dto = PaginationDTO(
+            offset=offset,
+            limit=limit
+        )
+        interactor = GetListOfUsersInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = True
+        storage_mock.get_all_user_dtos.return_value = user_dtos
 
         storage_mock.get_team_details_of_users_bulk.return_value = user_team_dtos
         storage_mock.get_company_details_of_users_bulk.return_value = \
@@ -306,9 +371,10 @@ class TestGetUsersDetailsInteractor:
         )
 
         # Act
-        interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
-            presenter=presenter_mock
+        interactor.get_list_of_users_wrapper(
+            user_id=user_id, pagination_dto=pagination_dto,
+            presenter=presenter_mock,
+            name_search_query=name_search_query
         )
 
         # Assert
@@ -317,7 +383,8 @@ class TestGetUsersDetailsInteractor:
         presenter_mock.response_for_get_users.assert_called_once()
 
     def test_get_user_dtos_return_response(self, mocker, storage_mock,
-                                           user_profile_dtos):
+                                           user_profile_dtos
+                                           ):
         # Arrange
         user_ids = ["user1", "user2", "user3"]
 
@@ -328,7 +395,7 @@ class TestGetUsersDetailsInteractor:
             user_profile_dtos=user_profile_dtos
         )
 
-        interactor = GetUsersDetailsInteractor(storage=storage_mock)
+        interactor = GetListOfUsersInteractor(user_storage=storage_mock)
 
         # Act
         response = interactor.get_user_dtos(user_ids=user_ids)
@@ -343,10 +410,105 @@ class TestGetUsersDetailsInteractor:
 
         storage_mock.get_valid_user_ids.return_value = valid_user_ids
 
-        interactor = GetUsersDetailsInteractor(storage=storage_mock)
+        interactor = GetListOfUsersInteractor(user_storage=storage_mock)
 
         # Act
         response = interactor.get_valid_user_ids(user_ids=user_ids)
 
         # Assert
         assert response == valid_user_ids
+
+    def test_get_user_details_for_given_role_ids_based_on_query(
+            self, storage_mock, mocker):
+        # Arrange
+        project_id = "FA"
+        user_role_ids = ["role1", "role2", "role3"]
+        expected_user_ids = ['user_1', 'user_2']
+
+        from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
+        search_query_with_pagination_dto = SearchQueryWithPaginationDTO(
+            offset=1, limit=0, search_query="iB"
+        )
+
+        storage_mock.get_user_ids_for_given_role_ids.return_value = \
+            expected_user_ids
+        storage_mock.get_user_ids_based_on_given_query.return_value = \
+            expected_user_ids
+        from ib_iam.tests.common_fixtures.adapters.user_service \
+            import get_users_adapter_mock
+        get_users_adapter_mock_method = get_users_adapter_mock(
+            mocker=mocker,
+            user_profile_dtos=user_profile_dtos
+        )
+
+        interactor = GetListOfUsersInteractor(user_storage=storage_mock)
+
+        # Act
+        response = \
+            interactor.get_user_details_for_given_role_ids_based_on_query(
+                role_ids=user_role_ids,
+                search_query_with_pagination_dto=search_query_with_pagination_dto,
+                project_id=project_id
+            )
+
+        # Assert
+        assert response == user_profile_dtos
+        storage_mock.get_user_ids_for_given_role_ids.assert_called_once_with(
+            role_ids=user_role_ids
+        )
+        storage_mock.get_user_ids_based_on_given_query.assert_called_once_with(
+            user_ids=expected_user_ids,
+            search_query_with_pagination_dto=search_query_with_pagination_dto
+        )
+        get_users_adapter_mock_method.assert_called_once()
+
+    def test_get_user_details_for_given_role_ids_based_on_query_when_given_all_roles(
+            self, storage_mock, mocker):
+        # Arrange
+        project_id = "FA"
+        from ib_iam.constants.config import ALL_ROLES_ID
+        user_role_ids = [ALL_ROLES_ID]
+        expected_user_role_ids = ["role_1", "role_2"]
+        expected_user_ids = ['user_1', 'user_2']
+
+        from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
+        search_query_with_pagination_dto = SearchQueryWithPaginationDTO(
+            offset=1, limit=0, search_query="iB"
+        )
+
+        storage_mock.get_all_distinct_project_role_ids.return_value = \
+            expected_user_role_ids
+        storage_mock.get_user_ids_for_given_role_ids.return_value = \
+            expected_user_ids
+        storage_mock.get_user_ids_based_on_given_query.return_value = \
+            expected_user_ids
+        from ib_iam.tests.common_fixtures.adapters.user_service \
+            import get_users_adapter_mock
+        get_users_adapter_mock_method = get_users_adapter_mock(
+            mocker=mocker,
+            user_profile_dtos=user_profile_dtos
+        )
+
+        interactor = GetListOfUsersInteractor(user_storage=storage_mock)
+
+        # Act
+        response = \
+            interactor.get_user_details_for_given_role_ids_based_on_query(
+                role_ids=user_role_ids,
+                search_query_with_pagination_dto=search_query_with_pagination_dto,
+                project_id=project_id
+            )
+
+        # Assert
+        assert response == user_profile_dtos
+        storage_mock.get_all_distinct_project_role_ids.assert_called_once()
+        storage_mock.get_user_ids_for_given_role_ids.assert_called_once_with(
+            role_ids=expected_user_role_ids
+        )
+        storage_mock.get_user_ids_based_on_given_query.assert_called_once_with(
+            user_ids=expected_user_ids,
+            search_query_with_pagination_dto=search_query_with_pagination_dto
+        )
+        get_users_adapter_mock_method.assert_called_once()
+
+    # TODO need to check the project id is invalid or not test case

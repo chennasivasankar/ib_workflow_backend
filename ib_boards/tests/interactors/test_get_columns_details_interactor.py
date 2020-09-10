@@ -1,23 +1,25 @@
 from unittest.mock import create_autospec, patch, Mock
 
-import pytest
 import factory
+import pytest
 
+from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import ColumnParametersDTO, \
-    PaginationParametersDTO
-from ib_boards.interactors.dtos import TaskStageIdDTO
+    PaginationParametersDTO, TaskStageIdDTO
 from ib_boards.interactors.get_column_details_interactor import \
     GetColumnDetailsInteractor
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
-from ib_boards.tests.factories.interactor_dtos import ColumnTaskIdsDTOFactory, \
-    TaskColumnDTOFactory, ColumnStageIdsDTOFactory, TaskDetailsConfigDTOFactory, \
-    GetTaskDetailsDTOFactory, TaskStageIdDTOFactory
+from ib_boards.tests.factories.interactor_dtos import \
+    ColumnTaskIdsDTOFactory, \
+    TaskColumnDTOFactory, ColumnStageIdsDTOFactory, \
+    TaskDetailsConfigDTOFactory, \
+    GetTaskDetailsDTOFactory, TaskStageIdDTOFactory, StageAssigneesDTOFactory
 from ib_boards.tests.factories.storage_dtos import (
     ColumnDetailsDTOFactory, TaskActionsDTOFactory, TaskFieldsDTOFactory,
-    ColumnCompleteDetailsDTOFactory)
+    ColumnCompleteDetailsDTOFactory, TaskStageDTOFactory)
 
 
 class TestGetColumnDetailsInteractor:
@@ -25,11 +27,11 @@ class TestGetColumnDetailsInteractor:
     @classmethod
     def setup_class(cls):
         ColumnDetailsDTOFactory.reset_sequence()
+        TaskStageDTOFactory.reset_sequence()
         ColumnTaskIdsDTOFactory.reset_sequence()
         ColumnStageIdsDTOFactory.reset_sequence()
         ColumnCompleteDetailsDTOFactory.reset_sequence()
         TaskStageIdDTOFactory.reset_sequence()
-
 
     @classmethod
     def teardown_class(cls):
@@ -63,6 +65,7 @@ class TestGetColumnDetailsInteractor:
 
     @pytest.fixture
     def column_tasks_ids(self):
+        TaskStageIdDTOFactory.reset_sequence()
         return ColumnTaskIdsDTOFactory.create_batch(3)
 
     @pytest.fixture
@@ -73,6 +76,15 @@ class TestGetColumnDetailsInteractor:
         return ColumnTaskIdsDTOFactory.create_batch(
             3, task_stage_ids=factory.Iterator(task_stage_ids)
         )
+
+    @pytest.fixture
+    def task_stage_color_dtos(self):
+        return TaskStageDTOFactory.create_batch(size=4)
+
+    @pytest.fixture
+    def assignee_dtos(self):
+        StageAssigneesDTOFactory.reset_sequence()
+        return StageAssigneesDTOFactory.create_batch(3)
 
     @pytest.fixture
     def column_task_stage_ids(self):
@@ -120,6 +132,8 @@ class TestGetColumnDetailsInteractor:
 
     @pytest.fixture
     def column_stage_dtos(self):
+        ColumnStageIdsDTOFactory.reset_sequence()
+        ColumnStageIdsDTOFactory.stage_ids.reset()
         return ColumnStageIdsDTOFactory.create_batch(3)
 
     @pytest.fixture
@@ -130,7 +144,9 @@ class TestGetColumnDetailsInteractor:
 
     @pytest.fixture
     def task_ids_config(self):
-        return TaskDetailsConfigDTOFactory.create_batch(3)
+        TaskDetailsConfigDTOFactory.reset_sequence()
+        return TaskDetailsConfigDTOFactory.create_batch(3,
+                                                        project_id="project_id_2")
 
     @pytest.fixture
     def task_ids_stage_id(self):
@@ -151,11 +167,12 @@ class TestGetColumnDetailsInteractor:
 
     def test_with_invalid_board_id_raises_exception(self):
         # Arrange
-
         board_id = "board_id_1"
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
-            user_id="user_id_1"
+            user_id="user_id_1",
+            view_type=ViewType.LIST.value,
+            search_query="hello"
         )
         pagination_parameters = PaginationParametersDTO(
             offset=2,
@@ -180,13 +197,21 @@ class TestGetColumnDetailsInteractor:
         storage.validate_board_id.assert_called_once_with(board_id=board_id)
         presenter.response_for_invalid_board_id.assert_called_once()
 
-    def test_with_invalid_offset_raises_exception(self):
+    @patch("ib_boards.adapters.service_adapter.ServiceAdapter.iam_service")
+    def test_with_invalid_offset_raises_exception(self, user_roles_service):
         # Arrange
-
         board_id = "board_id_1"
+        user_roles = ["FIN_PAYMENT_REQUESTER",
+                      "FIN_PAYMENT_POC",
+                      "FIN_PAYMENT_APPROVER",
+                      "FIN_PAYMENTS_LEVEL1_VERIFIER",
+                      "FIN_PAYMENTS_LEVEL2_VERIFIER",
+                      "FIN_PAYMENTS_LEVEL3_VERIFIER"]
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
-            user_id="user_id_1"
+            user_id="user_id_1",
+            view_type=ViewType.LIST.value,
+            search_query="hello"
         )
         pagination_parameters = PaginationParametersDTO(
             offset=-1,
@@ -198,6 +223,10 @@ class TestGetColumnDetailsInteractor:
         interactor = GetColumnDetailsInteractor(
             storage=storage
         )
+        user_roles_service.get_user_role_ids_based_on_project.return_value = user_roles
+        board_permitted_user_roles = ["FIN_PAYMENT_POC"]
+
+        storage.get_permitted_user_roles_for_board.return_value = board_permitted_user_roles
 
         # Act
         interactor.get_column_details_wrapper(
@@ -206,14 +235,25 @@ class TestGetColumnDetailsInteractor:
             pagination_parameters=pagination_parameters)
 
         # Assert
+
         presenter.response_for_invalid_offset_value.assert_called_once()
 
-    def test_with_invalid_limit_raises_exception(self):
+    @patch("ib_boards.adapters.service_adapter.ServiceAdapter.iam_service")
+    def test_with_invalid_limit_raises_exception(self, user_roles_service):
         # Arrange
         board_id = "board_id_1"
+        user_roles = ["FIN_PAYMENT_REQUESTER",
+                      "FIN_PAYMENT_POC",
+                      "FIN_PAYMENT_APPROVER",
+                      "FIN_PAYMENTS_LEVEL1_VERIFIER",
+                      "FIN_PAYMENTS_LEVEL2_VERIFIER",
+                      "FIN_PAYMENTS_LEVEL3_VERIFIER"]
         columns_parameters = ColumnParametersDTO(
+
             board_id=board_id,
-            user_id="user_id_1"
+            user_id="user_id_1",
+            view_type=ViewType.LIST.value,
+            search_query="hello"
         )
         pagination_parameters = PaginationParametersDTO(
             offset=2,
@@ -225,6 +265,10 @@ class TestGetColumnDetailsInteractor:
         interactor = GetColumnDetailsInteractor(
             storage=storage
         )
+        user_roles_service.get_user_role_ids_based_on_project.return_value = user_roles
+        board_permitted_user_roles = ["FIN_PAYMENT_POC"]
+
+        storage.get_permitted_user_roles_for_board.return_value = board_permitted_user_roles
 
         # Act
         interactor.get_column_details_wrapper(
@@ -244,8 +288,11 @@ class TestGetColumnDetailsInteractor:
         board_id = "board_id_1"
         user_id = "user_id_1"
         columns_parameters = ColumnParametersDTO(
+
             board_id=board_id,
-            user_id=user_id
+            user_id=user_id,
+            view_type=ViewType.LIST.value,
+            search_query="hello"
         )
         pagination_parameters = PaginationParametersDTO(
             offset=2,
@@ -287,7 +334,7 @@ class TestGetColumnDetailsInteractor:
             get_task_actions_dtos, get_task_fields_dtos, mock_storage,
             mock_presenter, column_tasks_ids, column_task_stage_ids,
             column_stage_dtos, column_complete_details, task_ids_config,
-            task_ids_stage_id):
+            task_ids_stage_id, task_stage_color_dtos, assignee_dtos):
         # Arrange
         storage = mock_storage
         presenter = mock_presenter
@@ -297,8 +344,11 @@ class TestGetColumnDetailsInteractor:
         task_fields_dto = get_task_fields_dtos
         task_actions_dto = get_task_actions_dtos
         columns_parameters = ColumnParametersDTO(
+
             board_id=board_id,
-            user_id=user_id
+            user_id=user_id,
+            view_type=ViewType.LIST.value,
+            search_query="hello"
         )
         pagination_parameters = PaginationParametersDTO(
             offset=0,
@@ -315,16 +365,18 @@ class TestGetColumnDetailsInteractor:
         tasks_dtos = [TaskStageIdDTO(task_id="task_id_1",
                                      stage_id="stage_id_1")]
 
+        storage.get_project_id_for_board.return_value = "project_id_2"
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             prepare_task_details_dtos
         task_details_dto = prepare_task_details_dtos(mocker, tasks_dtos,
-                                                     user_id=user_id)
+                                                     user_id=user_id,
+                                                     view_type=ViewType.LIST.value)
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             get_task_ids_mock
 
         task_ids_mock = get_task_ids_mock(mocker, column_tasks_ids)
-        task_details_dto.return_value = task_fields_dto, task_actions_dto
-        user_roles_service.get_user_roles.return_value = user_roles
+        task_details_dto.return_value = task_fields_dto, task_actions_dto, task_stage_color_dtos
+        user_roles_service.get_user_role_ids_based_on_project.return_value = user_roles
         board_permitted_user_roles = ["FIN_PAYMENT_POC"]
 
         storage.get_column_ids_for_board.return_value = column_ids
@@ -335,6 +387,10 @@ class TestGetColumnDetailsInteractor:
         interactor = GetColumnDetailsInteractor(
             storage=storage
         )
+        from ib_boards.tests.common_fixtures.interactors import \
+            get_assignee_details_mock
+        mock = get_assignee_details_mock(mocker=mocker)
+        mock.return_value = assignee_dtos
 
         # Act
         actual_response = interactor.get_column_details_wrapper(
@@ -352,13 +408,15 @@ class TestGetColumnDetailsInteractor:
             task_config_dtos=task_ids_config
         )
         task_details_dto.assert_called_once_with(
-            task_ids_stage_id, user_id=user_id
+            task_ids_stage_id, user_id=user_id, view_type=ViewType.LIST.value
         )
         presenter.get_response_for_column_details.assert_called_once_with(
             column_tasks=column_task_stage_ids,
             task_actions_dtos=task_actions_dto,
             task_fields_dtos=task_fields_dto,
-            column_details=column_complete_details
+            column_details=column_complete_details,
+            task_stage_dtos=task_stage_color_dtos,
+            assignees_dtos=assignee_dtos
         )
         assert actual_response == expected_response
 
@@ -367,9 +425,9 @@ class TestGetColumnDetailsInteractor:
             self, user_roles_service, get_column_details_dto, mocker,
             get_task_actions_dtos, get_task_fields_dtos, mock_storage,
             mock_presenter, column_tasks_ids_no_duplicates,
-            column_task_stage_ids_no_duplicates,
+            column_task_stage_ids_no_duplicates, assignee_dtos,
             column_stage_dtos, column_complete_details, task_ids_config,
-            task_ids_stage_id_no_duplicates):
+            task_ids_stage_id_no_duplicates, task_stage_color_dtos):
         # Arrange
         storage = mock_storage
         presenter = mock_presenter
@@ -379,9 +437,13 @@ class TestGetColumnDetailsInteractor:
         task_fields_dto = get_task_fields_dtos
         task_actions_dto = get_task_actions_dtos
         columns_parameters = ColumnParametersDTO(
+
             board_id=board_id,
-            user_id=user_id
+            user_id=user_id,
+            view_type=ViewType.LIST.value,
+            search_query="hello"
         )
+        storage.get_project_id_for_board.return_value = "project_id_2"
         pagination_parameters = PaginationParametersDTO(
             offset=0,
             limit=10
@@ -400,13 +462,15 @@ class TestGetColumnDetailsInteractor:
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             prepare_task_details_dtos
         task_details_dto = prepare_task_details_dtos(mocker, tasks_dtos,
-                                                     user_id=user_id)
+                                                     user_id=user_id,
+                                                     view_type=ViewType.LIST.value)
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             get_task_ids_mock
 
         task_ids_mock = get_task_ids_mock(mocker, column_tasks_ids_no_duplicates)
-        task_details_dto.return_value = task_fields_dto, task_actions_dto
-        user_roles_service.get_user_roles.return_value = user_roles
+
+        task_details_dto.return_value = task_fields_dto, task_actions_dto, task_stage_color_dtos
+        user_roles_service.get_user_role_ids_based_on_project.return_value = user_roles
         board_permitted_user_roles = ["FIN_PAYMENT_POC"]
 
         storage.get_column_ids_for_board.return_value = column_ids
@@ -417,6 +481,10 @@ class TestGetColumnDetailsInteractor:
         interactor = GetColumnDetailsInteractor(
             storage=storage
         )
+        from ib_boards.tests.common_fixtures.interactors import \
+            get_assignee_details_mock
+        mock = get_assignee_details_mock(mocker=mocker)
+        mock.return_value = assignee_dtos
 
         # Act
         actual_response = interactor.get_column_details_wrapper(
@@ -427,19 +495,19 @@ class TestGetColumnDetailsInteractor:
         # Assert
         storage.get_columns_details.assert_called_once_with(
             column_ids=column_ids)
-        storage.get_columns_stage_ids.assert_called_once_with(
-            column_ids=column_ids
-        )
         task_ids_mock.assert_called_once_with(
             task_config_dtos=task_ids_config
         )
         task_details_dto.assert_called_once_with(
-            task_ids_stage_id_no_duplicates, user_id=user_id
+            task_ids_stage_id_no_duplicates, user_id=user_id,
+            view_type=ViewType.LIST.value
         )
         presenter.get_response_for_column_details.assert_called_once_with(
             column_tasks=column_task_stage_ids_no_duplicates,
             task_actions_dtos=task_actions_dto,
             task_fields_dtos=task_fields_dto,
-            column_details=column_complete_details
+            column_details=column_complete_details,
+            task_stage_dtos=task_stage_color_dtos,
+            assignees_dtos=assignee_dtos
         )
         assert actual_response == expected_response

@@ -7,13 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase05GetTaskAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase05GetTaskAPITestCase.test_case status_code'] = '404'
 
 snapshots['TestCase05GetTaskAPITestCase.test_case body'] = {
-    'gofs': [
-    ],
-    'stages_with_actions': [
-    ],
-    'task_id': 1,
-    'template_id': 'template_0'
+    'http_status_code': 404,
+    'res_status': 'SEARCHABLE_RECORDS_NOT_FOUND',
+    'response': 'Something went wrong contact Admin'
 }

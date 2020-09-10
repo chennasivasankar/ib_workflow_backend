@@ -1,28 +1,70 @@
-from typing import List, Optional
+from collections import defaultdict
+from typing import List, Dict
 
-from django.db.models import Q
-from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO, StageTaskFieldsDTO, \
-    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId, FieldIdWithGoFIdDTO
-from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskTemplateStageDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import GetTaskStageCompleteDetailsDTO, TaskTemplateStageDTO, \
-    StageDetailsDTO
-from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionDetailsDTO
+from django.db.models import F, Q
+
+from ib_tasks.constants.constants import ALL_ROLES_ID
+from ib_tasks.constants.enum import PermissionTypes, ViewType
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldDetailsDTO, StageTaskFieldsDTO, \
-    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId
+    FieldCompleteDetailsDTO, FieldDTO, UserFieldPermissionDTO, \
+    FieldIdWithGoFIdDTO, StageTaskFieldsDTO, \
+    FieldDisplayNameDTO, \
+    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId, FieldNameDTO, \
+    FieldIdWithFieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
-    FieldsStorageInterface
+    FieldsStorageInterface, FieldTypeDTO
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (
     TaskTemplateStageDTO, StageDetailsDTO)
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-from ib_tasks.models import Field
-from ib_tasks.models import TaskStage, StageAction, Stage, Task, TaskGoFField
+from ib_tasks.interactors.storage_interfaces.task_dtos import \
+    TaskProjectRolesDTO
+from ib_tasks.models import CurrentTaskStage, Stage, TaskGoFField, FieldRole, \
+    TaskTemplateGoFs, Field
 
 
 class FieldsStorageImplementation(FieldsStorageInterface):
+
+    def get_user_write_permitted_field_ids_for_given_gof_ids(
+            self, user_roles, gof_ids: List[str]
+    ) -> List[FieldIdWithFieldDisplayNameDTO]:
+        field_dicts = FieldRole.objects.filter(
+            Q(role__in=user_roles) | Q(role=ALL_ROLES_ID),
+            field__gof_id__in=gof_ids,
+            permission_type=PermissionTypes.WRITE.value
+        ).values(
+            "field_id", "field__gof__display_name", "field__display_name")
+        field_id_with_display_name_dtos = [
+            FieldIdWithFieldDisplayNameDTO(
+                field_id=field_dict['field_id'],
+                gof_display_name=field_dict['field__gof__display_name'],
+                field_display_name=field_dict['field__display_name']
+            ) for field_dict in field_dicts
+        ]
+        return field_id_with_display_name_dtos
+
+    def get_gof_ids_for_given_field_ids(
+            self, field_ids: List[str]) -> List[FieldIdWithGoFIdDTO]:
+        field_gofs_dicts = Field.objects.filter(field_id__in=field_ids).values(
+            "field_id", "gof_id")
+        return self._prepare_field_id_with_gof_id_dto(field_gofs_dicts)
+
+    @staticmethod
+    def _prepare_field_id_with_gof_id_dto(
+            field_gofs_dicts) -> List[FieldIdWithGoFIdDTO]:
+        field_id_with_gof_id_dtos = [
+            FieldIdWithGoFIdDTO(
+                field_id=field_gof_dict['field_id'],
+                gof_id=field_gof_dict['gof_id'])
+            for field_gof_dict in field_gofs_dicts
+        ]
+        return field_id_with_gof_id_dtos
+
+    def get_virtual_stage_ids_in_given_stage_ids(self, db_stage_ids):
+        virtual_stage_ids = Stage.objects.filter(
+            id__in=db_stage_ids, value=-1).values_list('id', flat=True)
+        return virtual_stage_ids
+
     def get_field_ids_related_to_given_gof_ids(self, gof_ids: List[str]) -> \
             List[FieldIdWithGoFIdDTO]:
         field_objects = Field.objects.filter(gof_id__in=gof_ids)
@@ -43,63 +85,61 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         ]
         return field_id_with_gof_id_dtos
 
-    def get_stage_details(self, task_dtos: List[GetTaskDetailsDTO]) -> \
-            List[TaskTemplateStageDTO]:
-        task_ids = [task.task_id for task in task_dtos]
-        task_objs = Task.objects.filter(id__in=task_ids).values(
-            'id', 'template_id')
-        template_stage_ids_list = []
-        task_stages_dict = {}
-        for item in task_dtos:
-            task_stages_dict[item.task_id] = item.stage_id
-        for task in task_objs:
-            template_stage_ids_list.append(
-                TaskTemplateStageDTO(task_id=task['id'],
-                                     task_template_id=task['template_id'],
-                                     stage_id=task_stages_dict[task['id']]))
-        return template_stage_ids_list
+    def get_fields_of_gofs_in_dtos(self, gof_ids: List[str]) -> List[FieldDTO]:
+        field_objs = Field.objects.filter(gof_id__in=gof_ids)
+        field_dtos = self._convert_field_objs_to_field_dtos(
+            field_objs=field_objs)
+        return field_dtos
 
-    def get_actions_details(self,
-                            stage_ids: List[str],
-                            user_roles: List[str]) -> \
-            List[ActionDetailsDTO]:
-        action_objs = (StageAction.objects
-                       .filter(stage__stage_id__in=stage_ids)
-                       .filter(Q(actionpermittedroles__role_id="ALL_ROLES") |
-                               Q(actionpermittedroles__role_id__in=user_roles)
-                               ))
-        unique_action_objs = list(set(action_objs))
-        action_dtos = self._convert_action_objs_to_dtos(unique_action_objs)
-        return action_dtos
+    def get_user_permitted_gof_field_dtos(
+            self, user_roles: List[str], gof_ids: List[str]
+    ) -> List[FieldNameDTO]:
 
-    @staticmethod
-    def _convert_action_objs_to_dtos(action_objs):
-        action_dtos = []
-        for action in action_objs:
-            action_dtos.append(
-                ActionDetailsDTO(
-                    action_id=action.id,
-                    name=action.name,
-                    stage_id=action.stage.stage_id,
-                    button_text=action.button_text,
-                    button_color=action.button_color
-                )
+        field_ids = FieldRole.objects.filter(
+            Q(field__gof_id__in=gof_ids),
+            (Q(role__in=user_roles) | Q(role=ALL_ROLES_ID))
+        ).values_list('field_id', flat=True)
+
+        field_objs = Field.objects.filter(field_id__in=field_ids)
+
+        return [
+            FieldNameDTO(
+                field_id=field_obj.field_id,
+                gof_id=field_obj.gof_id,
+                field_display_name=field_obj.display_name
             )
-        return action_dtos
+            for field_obj in field_objs
+        ]
+
+    def get_field_details_for_given_field_ids(self, field_ids: List[str]) -> \
+            List[FieldCompleteDetailsDTO]:
+        field_objects = list(
+            Field.objects.filter(field_id__in=field_ids)
+        )
+        field_details_dtos = self._prepare_field_details_dtos(field_objects)
+        return field_details_dtos
+
+    def get_field_ids_for_given_task_template_ids(self,
+                                                  task_template_ids: List[
+                                                      str]) -> \
+            List[TemplateFieldsDTO]:
+        task_field_objs = TaskTemplateGoFs.objects.filter(
+            task_template_id__in=task_template_ids).values('task_template_id',
+                                                           'gof__field')
+        task_fields_dtos = self._convert_task_template_fields_to_dtos(
+            task_field_objs)
+        return task_fields_dtos
 
     def get_fields_details(self,
-                           task_fields_dtos: List[StageTaskFieldsDTO],
-                           user_roles: List[str]) -> \
+                           task_fields_dtos: List[StageTaskFieldsDTO]) -> \
             List[FieldDetailsDTOWithTaskId]:
         q = None
         for counter, item in enumerate(task_fields_dtos):
             current_queue = Q(task_gof__task_id=item.task_id,
-                              field_id__in=item.field_ids,
-                              field__fieldrole__role="ALL_ROLES") | Q(
-                        task_gof__task_id=item.task_id,
-                        field_id__in=item.field_ids,
-                        field__fieldrole__role__in=user_roles
-                    )
+                              field_id__in=item.field_ids) | Q(
+                task_gof__task_id=item.task_id,
+                field_id__in=item.field_ids
+            )
             if counter == 0:
                 q = current_queue
             else:
@@ -128,13 +168,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             )
         return task_fields_dtos
 
-    def get_valid_task_ids(self, task_ids: List[str]) -> Optional[List[str]]:
-        valid_task_ids = (
-            Task.objects.filter(id__in=task_ids)
-                .values_list('id', flat=True))
-        return list(valid_task_ids)
-
-    def get_field_ids(self, task_dtos: List[TaskTemplateStageDTO]) -> \
+    def get_field_ids(self, task_dtos: List[TaskTemplateStageDTO],
+                      view_type: ViewType) -> \
             List[TaskTemplateStageFieldsDTO]:
         from collections import defaultdict
         task_stages_dict = defaultdict(list)
@@ -150,7 +185,20 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                 q = q | current_queue
         if q is None:
             return []
-        stage_objs = Stage.objects.filter(q)
+
+        if view_type == ViewType.LIST.value:
+            stage_objs = (Stage.objects.filter(q)
+                          .annotate(view_type=F('card_info_list'))
+                          .values('task_template_id', 'stage_id',
+                                  'view_type', 'stage_color', 'id',
+                                  'display_name'))
+        else:
+            stage_objs = (Stage.objects.filter(q)
+                          .annotate(view_type=F('card_info_kanban'))
+                          .values('task_template_id', 'stage_id',
+                                  'view_type', 'stage_color', 'id',
+                                  'display_name'))
+
         task_fields_dtos = self._convert_stage_objs_to_dtos(stage_objs,
                                                             task_stages_dict)
 
@@ -161,59 +209,251 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         task_fields_dtos = []
         import json
         for stage in stage_objs:
-            fields = stage.card_info_kanban
+            fields = stage['view_type']
+            if not fields:
+                continue
             field_ids = json.loads(fields)
-            for task_id in task_stages_dict[stage.stage_id]:
+            for task_id in task_stages_dict[stage['stage_id']]:
                 task_fields_dtos.append(
                     TaskTemplateStageFieldsDTO(
-                        task_template_id=stage.task_template_id,
+                        task_template_id=stage['task_template_id'],
                         task_id=task_id,
-                        stage_id=stage.stage_id,
+                        stage_color=stage['stage_color'],
+                        stage_id=stage['stage_id'],
+                        display_name=stage['display_name'],
+                        db_stage_id=stage['id'],
                         field_ids=field_ids))
         return task_fields_dtos
 
-    def validate_task_related_stage_ids(self,
-                                        task_dtos: List[GetTaskDetailsDTO]
-                                        ) -> List[GetTaskDetailsDTO]:
+    def get_task_stages(self, task_id: int) -> List[str]:
+        stage_ids = CurrentTaskStage.objects.filter(
+            task_id=task_id).values_list(
+            'stage__stage_id', flat=True)
+        return list(stage_ids)
+
+    def get_stage_complete_details(self, stage_ids: List[str]) -> \
+            List[StageDetailsDTO]:
+        stage_objs = Stage.objects.filter(
+            stage_id__in=stage_ids
+        ).values(
+            'id', 'stage_id', 'display_name',
+            'stage_color'
+        )
+        stage_dtos = []
+        for stage in stage_objs:
+            stage_dtos.append(
+                StageDetailsDTO(
+                    stage_id=stage['stage_id'],
+                    name=stage['display_name'],
+                    db_stage_id=stage['id'],
+                    color=stage['stage_color']
+                )
+            )
+        return stage_dtos
+
+    @staticmethod
+    def _convert_field_objs_to_field_dtos(
+            field_objs: List[Field]) -> List[FieldDTO]:
+        field_dtos = [
+            FieldDTO(
+                gof_id=field_obj.gof_id,
+                field_id=field_obj.field_id,
+                field_display_name=field_obj.display_name,
+                field_type=field_obj.field_type,
+                field_values=field_obj.field_values,
+                required=field_obj.required,
+                help_text=field_obj.help_text,
+                tooltip=field_obj.tooltip,
+                placeholder_text=field_obj.placeholder_text,
+                error_message=field_obj.error_messages,
+                allowed_formats=field_obj.allowed_formats,
+                validation_regex=field_obj.validation_regex,
+                order=field_obj.order
+            )
+            for field_obj in field_objs
+        ]
+        return field_dtos
+
+    @staticmethod
+    def _prepare_field_details_dtos(
+            field_objects: List[Field]) -> List[FieldCompleteDetailsDTO]:
+        field_details_dtos = [
+            FieldCompleteDetailsDTO(
+                field_id=field_object.field_id,
+                field_type=field_object.field_type,
+                required=field_object.required,
+                field_values=field_object.field_values,
+                allowed_formats=field_object.allowed_formats,
+                validation_regex=field_object.validation_regex
+            )
+            for field_object in field_objects
+        ]
+        return field_details_dtos
+
+    @staticmethod
+    def _convert_task_template_fields_to_dtos(task_field_objs):
+        task_fields_dict = defaultdict(list)
+        for task in task_field_objs:
+            task_fields_dict[task['task_template_id']].append(
+                task['gof__field'])
+
+        task_fields_dtos = []
+        for template_id, field_ids in task_fields_dict.items():
+            task_fields_dtos.append(
+                TemplateFieldsDTO(
+                    task_template_id=template_id,
+                    field_ids=field_ids
+                )
+            )
+        return task_fields_dtos
+
+    def get_user_field_permission_dtos(
+            self, roles: List[str],
+            field_ids: List[str]) -> List[UserFieldPermissionDTO]:
+
+        user_field_permission_details = FieldRole.objects.filter(
+            Q(field_id__in=field_ids),
+            (Q(role__in=roles) | Q(role=ALL_ROLES_ID))
+        ).values('field_id', 'permission_type')
+        user_field_permission_dtos = \
+            self._convert_user_field_permission_details_to_dtos(
+                user_field_permission_details=user_field_permission_details)
+        return user_field_permission_dtos
+
+    def get_field_ids_having_read_permission_for_user(
+            self, user_roles: List[str], field_ids: List[str]) -> List[str]:
+
+        field_ids_queryset = FieldRole.objects.filter(
+            (
+                    Q(permission_type=PermissionTypes.READ.value) |
+                    Q(permission_type=PermissionTypes.WRITE.value)
+            ),
+            (
+                    Q(role__in=user_roles) | Q(role=ALL_ROLES_ID)
+            ),
+            Q(field_id__in=field_ids)
+        ).values_list('field_id', flat=True)
+
+        field_ids_list = list(field_ids_queryset)
+        return field_ids_list
+
+    def get_field_ids_having_write_permission_for_user(
+            self, user_roles: List[str], field_ids: List[str]) -> List[str]:
+
+        field_ids_queryset = FieldRole.objects.filter(
+            Q(permission_type=PermissionTypes.WRITE.value),
+            (Q(role__in=user_roles) | Q(role=ALL_ROLES_ID)),
+            Q(field_id__in=field_ids)
+        ).values_list('field_id', flat=True)
+
+        field_ids_list = list(field_ids_queryset)
+        return field_ids_list
+
+    def get_field_ids_permissions_for_user_in_projects(
+            self, task_project_roles: List[TaskProjectRolesDTO],
+            field_ids: List[str]) -> List[str]:
         q = None
-        for counter, item in enumerate(task_dtos):
-            current_queue = Q(stage__stage_id=item.stage_id,
-                              task_id=item.task_id)
+        for counter, item in enumerate(task_project_roles):
+            current_queue = Q(role__in=item.roles) | Q(role=ALL_ROLES_ID) & \
+                            Q(
+                                field__taskgoffield__task_gof__task_id=item.task_id)
             if counter == 0:
                 q = current_queue
             else:
                 q = q | current_queue
         if q is None:
             return []
-        task_objs = TaskStage.objects.filter(q).values('task_id',
-                                                       'stage__stage_id')
 
-        task_stage_dtos = self._convert_task_objs_to_dtos(task_objs)
-        return task_stage_dtos
+        field_ids_queryset = (FieldRole.objects.filter(q)
+                              .values_list('field_id', flat=True))
+        field_ids_list = list(set(field_ids_queryset))
+        return field_ids_list
+
+    def check_is_user_has_read_permission_for_field(
+            self, field_id: str, user_roles: List[str]) -> bool:
+
+        is_user_has_read_permission = FieldRole.objects.filter(
+            (
+                    Q(permission_type=PermissionTypes.READ.value) |
+                    Q(permission_type=PermissionTypes.WRITE.value)
+            ),
+            (Q(role__in=user_roles) | Q(role=ALL_ROLES_ID)),
+            Q(field_id=field_id)).exists()
+
+        return is_user_has_read_permission
+
+    def check_is_user_has_write_permission_for_field(
+            self, field_id: str, user_roles: List[str]) -> bool:
+
+        is_user_has_write_permission = FieldRole.objects.filter(
+            Q(permission_type=PermissionTypes.WRITE.value),
+            (Q(role__in=user_roles) | Q(role=ALL_ROLES_ID)),
+            Q(field_id=field_id)).exists()
+
+        return is_user_has_write_permission
+
+    def get_field_ids_for_given_gofs(self, gof_ids: List[str]) -> List[str]:
+        field_ids_queryset = Field.objects.filter(
+            gof_id__in=gof_ids).values_list('field_id', flat=True)
+        field_ids_list = list(field_ids_queryset)
+        return field_ids_list
+
+    def get_field_dtos(self, field_ids: List[str]) -> List[FieldDTO]:
+        field_objs = Field.objects.filter(field_id__in=field_ids)
+        field_dtos = self._convert_field_objs_to_field_dtos(
+            field_objs=field_objs)
+        return field_dtos
 
     @staticmethod
-    def _convert_task_objs_to_dtos(task_objs):
-        valid_task_stages_dtos = [
-            GetTaskDetailsDTO(task_id=task_obj['task_id'],
-                              stage_id=task_obj['stage__stage_id'])
-            for task_obj in task_objs
-        ]
-        return valid_task_stages_dtos
-
-    def get_task_stages(self, task_id: int) -> List[str]:
-        stage_ids = TaskStage.objects.filter(task_id=task_id).values_list('stage__stage_id', flat=True)
-        return list(stage_ids)
-
-    def get_stage_complete_details(self, stage_ids: List[str]) -> \
-            List[StageDetailsDTO]:
-        stage_objs = Stage.objects.filter(stage_id__in=stage_ids
-                                          ).values('stage_id', 'display_name')
-        stage_dtos = []
-        for stage in stage_objs:
-            stage_dtos.append(
-                StageDetailsDTO(
-                    stage_id=stage['stage_id'],
-                    name=stage['display_name']
-                )
+    def _convert_user_field_permission_details_to_dtos(
+            user_field_permission_details: List[Dict]
+    ) -> List[UserFieldPermissionDTO]:
+        user_field_permission_dtos = [
+            UserFieldPermissionDTO(
+                field_id=user_field_permission['field_id'],
+                permission_type=user_field_permission['permission_type']
             )
-        return stage_dtos
+            for user_field_permission in user_field_permission_details
+        ]
+        return user_field_permission_dtos
+
+    def get_field_type_dtos(self, field_ids: List[str]) -> List[FieldTypeDTO]:
+        field_types = Field.objects.filter(
+            field_id__in=field_ids
+        ).values('field_id', 'field_type')
+
+        return [
+            FieldTypeDTO(
+                field_id=field_type['field_id'],
+                field_type=field_type['field_type']
+            )
+            for field_type in field_types
+        ]
+
+    def validate_user_roles_with_field_ids_roles(
+            self, user_roles, field_ids):
+        fields_user_roles = FieldRole.objects.values_list(
+            'role', flat=True
+        ).filter(field_id__in=field_ids)
+        user_roles = sorted(list(set(user_roles)))
+        from ib_tasks.constants.constants import ALL_ROLES_ID
+        updated_user_role = user_roles + [ALL_ROLES_ID]
+        fields_user_roles = sorted(list(set(fields_user_roles)))
+        invalid_user = not (updated_user_role == fields_user_roles or set(fields_user_roles).issubset(
+                    set(updated_user_role)))
+        if invalid_user:
+            from ib_tasks.exceptions.filter_exceptions import \
+                UserNotHaveAccessToFields
+            raise UserNotHaveAccessToFields
+
+    def get_field_display_names(self, field_ids: List[str]) -> List[FieldDisplayNameDTO]:
+        field_display_names = Field.objects.filter(
+            field_id__in=field_ids
+        ).values('field_id', 'display_name')
+        return [
+            FieldDisplayNameDTO(
+                field_id=field_display_name['field_id'],
+                field_display_name=field_display_name['display_name']
+            )
+            for field_display_name in field_display_names
+        ]

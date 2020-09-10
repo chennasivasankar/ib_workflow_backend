@@ -56,33 +56,6 @@ class TestStorageImplementation:
         return storage
 
     @pytest.mark.django_db
-    def test_validate_entity_id(self, create_entity_objects,
-                                storage_implementation):
-        # Arrange
-        entity_id = "13be920b-7b4c-49e7-8adb-41a0c18da848"
-
-        # Assert
-        from ib_discussions.exceptions.custom_exceptions import EntityIdNotFound
-        with pytest.raises(EntityIdNotFound):
-            storage_implementation.validate_entity_id(entity_id=entity_id)
-
-    @pytest.mark.django_db
-    def test_validate_entity_type_for_entity_id(self, create_entity_objects,
-                                                storage_implementation):
-        # Arrange
-        entity_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
-        from ib_discussions.constants.enum import EntityType
-        entity_type = EntityType.COLUMN.value
-
-        # Assert
-        from ib_discussions.exceptions.custom_exceptions import \
-            InvalidEntityTypeForEntityId
-        with pytest.raises(InvalidEntityTypeForEntityId):
-            storage_implementation.validate_entity_type_for_entity_id(
-                entity_id=entity_id, entity_type=entity_type
-            )
-
-    @pytest.mark.django_db
     def test_get_discussion_set_id_if_exists_return_id(
             self, create_entity_objects, create_discussion_set_objects,
             storage_implementation):
@@ -110,7 +83,7 @@ class TestStorageImplementation:
         entity_type = EntityType.TASK.value
 
         # Assert
-        from ib_discussions.interactors.discussion_interactor import \
+        from ib_discussions.exceptions.custom_exceptions import \
             DiscussionSetNotFound
         with pytest.raises(DiscussionSetNotFound):
             storage_implementation.get_discussion_set_id_if_exists(
@@ -150,9 +123,9 @@ class TestStorageImplementation:
         user_id = "e1ed4b2d-f5d5-4b20-a5c4-8536130e704d"
         title = "interactor"
         description = "test for interactor"
-        from ib_discussions.tests.factories.common_dtos import \
-            DiscussionDTOFactory
-        discussion_dto = DiscussionDTOFactory(
+        from ib_discussions.tests.factories.interactor_dtos import \
+            DiscussionWithEntityDetailsDTOFactory
+        discussion_with_entity_details_dto = DiscussionWithEntityDetailsDTOFactory(
             user_id=user_id,
             entity_id=entity_id,
             entity_type=entity_type,
@@ -163,7 +136,9 @@ class TestStorageImplementation:
 
         # Act
         storage_implementation.create_discussion(
-            discussion_dto=discussion_dto, discussion_set_id=discussion_set_id
+            discussion_with_entity_details_dto\
+                =discussion_with_entity_details_dto,
+            discussion_set_id=discussion_set_id
         )
 
         # Assert
@@ -181,7 +156,7 @@ class TestStorageImplementation:
             self, create_entity_objects, create_discussion_set_objects,
             storage_implementation):
         # Arrange
-        from ib_discussions.interactors.DTOs.common_dtos import FilterByDTO
+        from ib_discussions.interactors.dtos.dtos import FilterByDTO
         from ib_discussions.constants.enum import FilterByEnum
         filter_by_dto = FilterByDTO(
             filter_by=FilterByEnum.CLARIFIED.value,
@@ -218,9 +193,9 @@ class TestStorageImplementation:
         # Arrange
         discussion_set_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
         from ib_discussions.tests.factories.storage_dtos import \
-            CompleteDiscussionFactory
+            DiscussionDTOFactory
         expected_complete_discussion_dtos = [
-            CompleteDiscussionFactory(
+            DiscussionDTOFactory(
                 user_id='9cc22e39-2390-4d96-b7ac-6bb27816461f',
                 discussion_id='829db67d-0663-4e71-a103-826706ab5678',
                 discussion_set_id='641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
@@ -230,7 +205,7 @@ class TestStorageImplementation:
                                              tzinfo=datetime.timezone.utc),
                 is_clarified=True
             ),
-            CompleteDiscussionFactory(
+            DiscussionDTOFactory(
                 user_id='9cc22e39-2390-4d96-b7ac-6bb27816461f',
                 discussion_id='c0091084-1d34-4e8c-b813-464e14cb152c',
                 discussion_set_id='641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
@@ -247,21 +222,21 @@ class TestStorageImplementation:
         for i in range(size):
             DiscussionFactory(discussion_set_id=discussion_set_id)
 
-        from ib_discussions.interactors.DTOs.common_dtos import FilterByDTO
+        from ib_discussions.interactors.dtos.dtos import FilterByDTO
         from ib_discussions.constants.enum import FilterByEnum
         filter_by_dto = FilterByDTO(
             filter_by=FilterByEnum.POSTED_BY_ME.value,
             value=True
         )
 
-        from ib_discussions.interactors.discussion_interactor import \
+        from ib_discussions.interactors.dtos.dtos import \
             OffsetAndLimitDTO
         offset_and_limit_dto = OffsetAndLimitDTO(
             offset=1,
             limit=2
         )
 
-        from ib_discussions.interactors.DTOs.common_dtos import SortByDTO
+        from ib_discussions.interactors.dtos.dtos import SortByDTO
         from ib_discussions.constants.enum import SortByEnum
         from ib_discussions.constants.enum import OrderByEnum
         sort_by_dto = SortByDTO(
@@ -269,7 +244,7 @@ class TestStorageImplementation:
             order=OrderByEnum.ASC.value
         )
         # Act
-        response = storage_implementation.get_complete_discussion_dtos(
+        response = storage_implementation.get_discussion_dtos(
             discussion_set_id=discussion_set_id, filter_by_dto=filter_by_dto,
             sort_by_dto=sort_by_dto, offset_and_limit_dto=offset_and_limit_dto
         )
@@ -287,9 +262,9 @@ class TestStorageImplementation:
         # Arrange
         discussion_set_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
         from ib_discussions.tests.factories.storage_dtos import \
-            CompleteDiscussionFactory
+            DiscussionDTOFactory
         expected_complete_discussion_dtos = [
-            CompleteDiscussionFactory(
+            DiscussionDTOFactory(
                 user_id='cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a',
                 discussion_id='cc38d53c-679c-4924-b110-69b697a1b888',
                 discussion_set_id='641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
@@ -299,7 +274,7 @@ class TestStorageImplementation:
                                              tzinfo=datetime.timezone.utc),
                 is_clarified=False
             ),
-            CompleteDiscussionFactory(
+            DiscussionDTOFactory(
                 user_id='e597ab2f-a10c-4164-930e-23af375741cb',
                 discussion_id='85b72743-aeaf-4000-be5f-6764807b90a1',
                 discussion_set_id='641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
@@ -316,21 +291,21 @@ class TestStorageImplementation:
         for i in range(size):
             DiscussionFactory(discussion_set_id=discussion_set_id)
 
-        from ib_discussions.interactors.DTOs.common_dtos import FilterByDTO
+        from ib_discussions.interactors.dtos.dtos import FilterByDTO
         from ib_discussions.constants.enum import FilterByEnum
         filter_by_dto = FilterByDTO(
             filter_by=FilterByEnum.ALL.value,
             value=FilterByEnum.ALL.value
         )
 
-        from ib_discussions.interactors.discussion_interactor import \
+        from ib_discussions.interactors.dtos.dtos import \
             OffsetAndLimitDTO
         offset_and_limit_dto = OffsetAndLimitDTO(
             offset=0,
             limit=2
         )
 
-        from ib_discussions.interactors.DTOs.common_dtos import SortByDTO
+        from ib_discussions.interactors.dtos.dtos import SortByDTO
         from ib_discussions.constants.enum import SortByEnum
         from ib_discussions.constants.enum import OrderByEnum
         sort_by_dto = SortByDTO(
@@ -338,7 +313,7 @@ class TestStorageImplementation:
             order=OrderByEnum.ASC.value
         )
         # Act
-        response = storage_implementation.get_complete_discussion_dtos(
+        response = storage_implementation.get_discussion_dtos(
             discussion_set_id=discussion_set_id, filter_by_dto=filter_by_dto,
             sort_by_dto=sort_by_dto, offset_and_limit_dto=offset_and_limit_dto
         )
@@ -356,9 +331,9 @@ class TestStorageImplementation:
         # Arrange
         discussion_set_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
         from ib_discussions.tests.factories.storage_dtos import \
-            CompleteDiscussionFactory
+            DiscussionDTOFactory
         expected_complete_discussion_dtos = [
-            CompleteDiscussionFactory(
+            DiscussionDTOFactory(
                 user_id='cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a',
                 discussion_id='b7c61479-d9c3-4fbe-b08b-c7069c72f5a7',
                 discussion_set_id='641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
@@ -375,21 +350,21 @@ class TestStorageImplementation:
         for i in range(size):
             DiscussionFactory(discussion_set_id=discussion_set_id)
 
-        from ib_discussions.interactors.DTOs.common_dtos import FilterByDTO
+        from ib_discussions.interactors.dtos.dtos import FilterByDTO
         from ib_discussions.constants.enum import FilterByEnum
         filter_by_dto = FilterByDTO(
             filter_by=FilterByEnum.POSTED_BY_ME.value,
             value="cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a"
         )
 
-        from ib_discussions.interactors.discussion_interactor import \
+        from ib_discussions.interactors.dtos.dtos import \
             OffsetAndLimitDTO
         offset_and_limit_dto = OffsetAndLimitDTO(
             offset=0,
             limit=2
         )
 
-        from ib_discussions.interactors.DTOs.common_dtos import SortByDTO
+        from ib_discussions.interactors.dtos.dtos import SortByDTO
         from ib_discussions.constants.enum import SortByEnum
         from ib_discussions.constants.enum import OrderByEnum
         sort_by_dto = SortByDTO(
@@ -397,7 +372,7 @@ class TestStorageImplementation:
             order=OrderByEnum.ASC.value
         )
         # Act
-        response = storage_implementation.get_complete_discussion_dtos(
+        response = storage_implementation.get_discussion_dtos(
             discussion_set_id=discussion_set_id, filter_by_dto=filter_by_dto,
             sort_by_dto=sort_by_dto, offset_and_limit_dto=offset_and_limit_dto
         )

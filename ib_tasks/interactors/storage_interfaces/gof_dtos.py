@@ -52,6 +52,24 @@ class GoFToTaskTemplateDTO:
 
 
 @dataclass
+class TaskTemplateGofsDTO:
+    template_id: str
+    gof_ids: List[str]
+
+
+@dataclass
 class GoFWritePermissionRolesDTO:
     gof_id: str
     write_permission_roles: List[str]
+
+
+@dataclass
+class GoFIdWithGoFDisplayNameDTO:
+    gof_id: str
+    gof_display_name: str
+
+
+@dataclass
+class GoFIdWithTaskGoFIdDTO:
+    gof_id: str
+    task_gof_id: int

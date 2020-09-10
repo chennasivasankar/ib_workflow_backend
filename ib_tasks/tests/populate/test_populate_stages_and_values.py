@@ -3,7 +3,8 @@ import json
 import pytest
 
 from ib_tasks.models import Stage
-from ib_tasks.tests.factories.models import TaskStatusVariableFactory, GoFFactory, TaskTemplateFactory, \
+from ib_tasks.tests.factories.models import TaskTemplateStatusVariableFactory, \
+    GoFFactory, TaskTemplateFactory, \
     GoFToTaskTemplateFactory, FieldFactory, StageModelFactory
 
 
@@ -18,6 +19,8 @@ class TestPopulateStagesAndValues:
             "value": 1,
             "card_info_kanban": json.dumps(["field_id_1", "field_id_2"]),
             "card_info_list": json.dumps(["field_id_1", "field_id_2"]),
+            "stage_color": "blue",
+            "roles": "ALL_ROLES\nFIN_PAYMENT_REQUESTER",
             "stage_display_name": "stage_name",
             "stage_display_logic": "status_1==stage_id_1"
         }
@@ -35,8 +38,8 @@ class TestPopulateStagesAndValues:
     def create_data(self):
         StageModelFactory.reset_sequence(1)
         StageModelFactory()
-        TaskStatusVariableFactory.reset_sequence()
-        TaskStatusVariableFactory.create_batch(size=15)
+        TaskTemplateStatusVariableFactory.reset_sequence()
+        TaskTemplateStatusVariableFactory.create_batch(size=15)
         GoFFactory.reset_sequence()
         gof_obj = GoFFactory()
         TaskTemplateFactory.reset_sequence()
@@ -60,6 +63,8 @@ class TestPopulateStagesAndValues:
                 "invalid_field_name": 1,
                 "card_info_kanban": json.dumps(["field_id_1", "field_id_2"]),
                 "card_info_list": json.dumps(["field_id_1", "field_id_2"]),
+                "stage_color": "blue",
+                "roles": "ALL_ROLES\nFIN_PAYMENT_REQUESTER",
                 "stage_display_name": "stage_name",
                 "stage_display_logic": "status_1==stage_id_1"
             },
@@ -69,6 +74,8 @@ class TestPopulateStagesAndValues:
                 "values": -1,
                 "card_info_kanban": json.dumps(["field_id_1", "field_id_2"]),
                 "card_info_list": json.dumps(["field_id_1", "field_id_2"]),
+                "stage_color": "blue",
+                "roles": "ALL_ROLES\nFIN_PAYMENT_REQUESTER",
                 "stage_display_name": "stage_name",
                 "stage_display_logic": "status_2==stage_id_2"
             }
@@ -103,6 +110,8 @@ class TestPopulateStagesAndValues:
                 "value": 1,
                 "card_info_kanban": json.dumps(["field_id_1", "field_id_2"]),
                 "card_info_list": json.dumps(["field_id_1", "field_id_2"]),
+                "stage_color": "blue",
+                "roles": "role_id_0\nrole_id_1",
                 "stage_display_name": "name_1",
                 "stage_display_logic": "status_id_1==stage_id"
             },
@@ -112,10 +121,16 @@ class TestPopulateStagesAndValues:
                 "value": 2,
                 "card_info_kanban": json.dumps(["field_id_1", "field_id_2"]),
                 "card_info_list": json.dumps(["field_id_1", "field_id_2"]),
+                "stage_color": "blue",
+                "roles": "role_id_0\nrole_id_1",
                 "stage_display_name": "name_2",
                 "stage_display_logic": "status_id_2==stage_id"
             }
         ]
+        from ib_tasks.tests.common_fixtures.adapters.roles_service \
+            import get_valid_role_ids_in_given_role_ids
+        mocker_obj = get_valid_role_ids_in_given_role_ids(mocker)
+        mocker_obj.return_value = ["role_id_1", "role_id_2", "role_id_0"]
         from ib_tasks.tests.common_fixtures.storages import mock_storage
         mock_storage(mocker, ['task_template_id_1', 'task_template_id_2'])
 

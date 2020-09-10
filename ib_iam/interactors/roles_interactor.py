@@ -3,7 +3,7 @@ from typing import List
 from ib_iam.exceptions.custom_exceptions import DuplicateRoleIds, \
     RoleIdFormatIsInvalid, \
     RoleNameIsEmpty, RoleDescriptionIsEmpty
-from ib_iam.interactors.DTOs.common_dtos import UserIdWithRoleIdsDTO
+from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.presenter_interfaces.add_roles_presenter_interface \
     import AddRolesPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
@@ -16,13 +16,13 @@ class RolesInteractor:
     def __init__(self, storage: RolesStorageInterface):
         self.storage = storage
 
-    def add_roles_wrapper(self, roles: List[dict],
-                          presenter: AddRolesPresenterInterface):
+    def add_project_roles_wrapper(self, role_dtos: List[RoleDTO], project_id: str,
+                                  presenter: AddRolesPresenterInterface):
         response = None
         try:
-            self.add_roles(roles=roles)
-        except DuplicateRoleIds:
-            response = presenter.raise_duplicate_role_ids_exception()
+            self.add_project_roles(role_dtos=role_dtos, project_id=project_id)
+        except DuplicateRoleIds as err:
+            response = presenter.raise_duplicate_role_ids_exception(err)
         except RoleIdFormatIsInvalid:
             response = presenter.raise_role_id_format_is_invalid_exception()
         except RoleNameIsEmpty:
@@ -31,25 +31,19 @@ class RolesInteractor:
             response = presenter.raise_role_description_should_not_be_empty_exception()
         return response
 
-    def add_roles(self, roles: List[dict]):
-        role_dtos = []
-        role_ids = [role['role_id'] for role in roles]
+    def add_project_roles(self, role_dtos: List[RoleDTO], project_id: str):
+        # TODO project id is valid or not
+        role_ids = [role_dto.role_id for role_dto in role_dtos]
         self._validate_role_ids(role_ids=role_ids)
-        for role in roles:
-            self._validate_role_details(role=role)
-            role_dto = RoleDTO(
-                role_id=role['role_id'],
-                name=role['role_name'],
-                description=role['description']
-            )
-            role_dtos.append(role_dto)
-        self.storage.create_roles(role_dtos)
+        for role_dto in role_dtos:
+            self._validate_role_details(role_dto=role_dto)
+        self.storage.create_roles(role_dtos, project_id=project_id)
 
-    def _validate_role_details(self, role: dict):
-        self._validate_role_id_format(role_id=role['role_id'])
-        self._validate_role_name(role_name=role['role_name'])
+    def _validate_role_details(self, role_dto: RoleDTO):
+        self._validate_role_id_format(role_id=role_dto.role_id)
+        self._validate_role_name(role_name=role_dto.name)
         self._validate_role_description(
-            role_description=role['description'])
+            role_description=role_dto.description)
 
     @staticmethod
     def _is_invalid_string(value):
@@ -75,14 +69,22 @@ class RolesInteractor:
             raise RoleIdFormatIsInvalid()
 
     @staticmethod
-    def _validate_role_ids(role_ids: List[int]):
-        unique_role_ids = list(set(role_ids))
-        if len(unique_role_ids) != len(role_ids):
-            raise DuplicateRoleIds()
+    def _validate_role_ids(role_ids: List[str]):
+        from collections import Counter
+        frequency_of_role_ids = Counter(role_ids)
+        duplicte_role_ids = [
+            role_id
+            for role_id, count in frequency_of_role_ids.items() if count != 1
+        ]
+        if duplicte_role_ids:
+            raise DuplicateRoleIds(role_ids=duplicte_role_ids)
 
     def get_valid_role_ids(self, role_ids: List[str]):
         role_ids = list(set(role_ids))
         valid_role_ids = self.storage.get_valid_role_ids(role_ids=role_ids)
+        from ib_iam.constants.config import ALL_ROLES_ID
+        if ALL_ROLES_ID in role_ids:
+            valid_role_ids.append(ALL_ROLES_ID)
         return valid_role_ids
 
     def get_user_role_ids(self, user_id: str) -> List[str]:

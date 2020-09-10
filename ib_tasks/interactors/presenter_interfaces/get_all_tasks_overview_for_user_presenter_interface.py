@@ -1,9 +1,8 @@
 import abc
-from typing import List
 
+from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
 class GetAllTasksOverviewForUserPresenterInterface(abc.ABC):
@@ -18,7 +17,6 @@ class GetAllTasksOverviewForUserPresenterInterface(abc.ABC):
             self):
         pass
 
-
     @abc.abstractmethod
     def raise_stage_ids_empty_exception(
             self):
@@ -27,4 +25,27 @@ class GetAllTasksOverviewForUserPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def all_tasks_overview_details_response(
             self, all_tasks_overview_details_dto: AllTasksOverviewDetailsDTO):
+        pass
+
+
+class GetFilteredTasksOverviewForUserPresenterInterface(GetAllTasksOverviewForUserPresenterInterface):
+
+    @abc.abstractmethod
+    def get_response_for_filtered_tasks_overview_details_response(
+            self,
+            filtered_tasks_overview_details_dto: AllTasksOverviewDetailsDTO,
+            total_tasks: int):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_project_id(
+            self, err: InvalidProjectIdsException):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_user_not_in_project(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_filter_condition(self, error):
         pass

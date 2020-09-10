@@ -1,3 +1,5 @@
+from unittest.mock import Mock
+
 import pytest
 
 
@@ -21,9 +23,9 @@ class TestCreateDiscussionInteractor:
 
     @pytest.fixture()
     def discussion_dto(self):
-        from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO
+        from ib_discussions.interactors.dtos.dtos import DiscussionWithEntityDetailsDTO
         from ib_discussions.constants.enum import EntityType
-        discussion_dto = DiscussionDTO(
+        discussion_dto = DiscussionWithEntityDetailsDTO(
             user_id="1",
             entity_id="6a76277b-fb73-4920-a79d-4c65814f9de5",
             entity_type=EntityType.TASK.value,
@@ -32,68 +34,34 @@ class TestCreateDiscussionInteractor:
         )
         return discussion_dto
 
-    # def test_validate_entity_id_raise_exception(
-    #         self, storage_mock, presenter_mock, discussion_dto
-    # ):
-    #     # Arrange
-    #     from unittest.mock import Mock
-    #     expected_presenter_entity_id_not_found_mock = Mock()
-    #
-    #     from ib_discussions.exceptions.custom_exceptions import EntityIdNotFound
-    #     storage_mock.validate_entity_id.side_effect \
-    #         = EntityIdNotFound
-    #
-    #     presenter_mock.raise_exception_for_entity_id_not_found.return_value \
-    #         = expected_presenter_entity_id_not_found_mock
-    #
-    #     from ib_discussions.interactors.discussion_interactor import \
-    #         DiscussionInteractor
-    #     interactor = DiscussionInteractor(storage=storage_mock)
-    #
-    #     # Act
-    #     response = interactor.create_discussion_wrapper(
-    #         discussion_dto=discussion_dto, presenter=presenter_mock
-    #     )
-    #
-    #     # Assert
-    #     assert response == expected_presenter_entity_id_not_found_mock
-    #     presenter_mock.raise_exception_for_entity_id_not_found. \
-    #         assert_called_once()
-    #
-    # def test_validate_entity_type_for_entity_id_raise_exception(
-    #         self, storage_mock, presenter_mock, discussion_dto
-    # ):
-    #     # Arrange
-    #     from unittest.mock import Mock
-    #     expected_presenter_invalid_entity_type_mock = Mock()
-    #
-    #     from ib_discussions.exceptions.custom_exceptions import \
-    #         InvalidEntityTypeForEntityId
-    #     storage_mock.validate_entity_type_for_entity_id.side_effect \
-    #         = InvalidEntityTypeForEntityId
-    #
-    #     presenter_mock.raise_exception_for_invalid_entity_type_for_entity_id \
-    #         .return_value = expected_presenter_invalid_entity_type_mock
-    #
-    #     from ib_discussions.interactors.discussion_interactor import \
-    #         DiscussionInteractor
-    #     interactor = DiscussionInteractor(storage=storage_mock)
-    #
-    #     # Act
-    #     response = interactor.create_discussion_wrapper(
-    #         discussion_dto=discussion_dto, presenter=presenter_mock
-    #     )
-    #
-    #     # Assert
-    #     assert response == expected_presenter_invalid_entity_type_mock
-    #     presenter_mock.raise_exception_for_invalid_entity_type_for_entity_id. \
-    #         assert_called_once()
+    def test_empty_title_return_reponse(self, storage_mock, presenter_mock,
+                                        discussion_dto):
+        # Arrange
+        discussion_dto.title = ""
+        expected_presenter_response_for_empty_title_mock = Mock()
+
+        presenter_mock.response_for_empty_title.return_value = \
+            expected_presenter_response_for_empty_title_mock
+
+        from ib_discussions.interactors.discussion_interactor import \
+            DiscussionInteractor
+        interactor = DiscussionInteractor(storage=storage_mock)
+
+        # Act
+        response = interactor.create_discussion_wrapper(
+            discussion_with_entity_details_dto=discussion_dto,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == expected_presenter_response_for_empty_title_mock
+        presenter_mock.response_for_empty_title.assert_called_once()
 
     def test_create_discussion_set_when_does_not_exists(
             self, storage_mock, presenter_mock, discussion_dto
     ):
         # Arrange
-        from ib_discussions.interactors.discussion_interactor import \
+        from ib_discussions.exceptions.custom_exceptions import \
             DiscussionSetNotFound
         storage_mock.get_discussion_set_id_if_exists.side_effect \
             = DiscussionSetNotFound
@@ -104,7 +72,7 @@ class TestCreateDiscussionInteractor:
 
         # Act
         response = interactor.create_discussion_wrapper(
-            discussion_dto=discussion_dto, presenter=presenter_mock
+            discussion_with_entity_details_dto=discussion_dto, presenter=presenter_mock
         )
 
         # Assert
@@ -132,7 +100,7 @@ class TestCreateDiscussionInteractor:
 
         # Act
         response = interactor.create_discussion_wrapper(
-            discussion_dto=discussion_dto, presenter=presenter_mock
+            discussion_with_entity_details_dto=discussion_dto, presenter=presenter_mock
         )
 
         # Assert

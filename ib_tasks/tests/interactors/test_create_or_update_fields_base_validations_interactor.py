@@ -1,17 +1,19 @@
 import pytest
-from ib_tasks.tests.factories.storage_dtos import FieldDTOFactory
+
 from ib_tasks.interactors.create_or_update_fields_base_validations_interactor \
     import CreateOrUpdateFieldsBaseValidationInteractor
+from ib_tasks.tests.factories.storage_dtos import FieldDTOFactory
 
 
 class TestCreateOrUpdateFieldsBaseValidationInteractor:
 
     @pytest.fixture
     def storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces.task_storage_interface \
-            import TaskStorageInterface
+        from ib_tasks.interactors.storage_interfaces.gof_storage_interface \
+            import \
+            GoFStorageInterface
         from unittest.mock import create_autospec
-        storage = create_autospec(TaskStorageInterface)
+        storage = create_autospec(GoFStorageInterface)
         return storage
 
     def test_given_field_ids_empty_raise_exception(self, storage_mock):
@@ -23,7 +25,7 @@ class TestCreateOrUpdateFieldsBaseValidationInteractor:
         from ib_tasks.exceptions.fields_custom_exceptions \
             import FieldIdEmptyValueException
         interactor = CreateOrUpdateFieldsBaseValidationInteractor(
-            storage=storage_mock
+            gof_storage=storage_mock
         )
 
         # Act
@@ -52,7 +54,7 @@ class TestCreateOrUpdateFieldsBaseValidationInteractor:
             duplication_of_field_ids
         )
         interactor = CreateOrUpdateFieldsBaseValidationInteractor(
-            storage=storage_mock
+            gof_storage=storage_mock
         )
 
         # Act
@@ -80,7 +82,7 @@ class TestCreateOrUpdateFieldsBaseValidationInteractor:
         field_ids = ["field2", "field3"]
         exception_message = INVALID_FIELDS_DISPLAY_NAMES.format(field_ids)
         interactor = CreateOrUpdateFieldsBaseValidationInteractor(
-            storage=storage_mock
+            gof_storage=storage_mock
         )
 
         # Act
@@ -111,13 +113,11 @@ class TestCreateOrUpdateFieldsBaseValidationInteractor:
         field_ids = ["field1", "field2"]
 
         interactor = CreateOrUpdateFieldsBaseValidationInteractor(
-            storage=storage_mock
+            gof_storage=storage_mock
         )
         error_message = INVALID_VALUES_FOR_FIELD_TYPES.format(
             FIELD_TYPES_LIST, field_ids
         )
-        existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
-        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
         # Act
         with pytest.raises(InvalidValueForFieldType) as err:
@@ -139,7 +139,7 @@ class TestCreateOrUpdateFieldsBaseValidationInteractor:
             FieldDTOFactory(gof_id="")
         ]
         interactor = CreateOrUpdateFieldsBaseValidationInteractor(
-            storage=storage_mock
+            gof_storage=storage_mock
         )
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         invalid_gof_ids = ["Hello", ""]
@@ -154,3 +154,62 @@ class TestCreateOrUpdateFieldsBaseValidationInteractor:
 
         # Arrange
         assert str(err.value) == error_message
+
+    def test_given_negative_order_for_fields_raises_exception(
+            self, storage_mock
+    ):
+        # Arrange
+        from ib_tasks.constants.exception_messages \
+            import ORDER_FOR_FIELD_SHOULD_NOT_BE_NEGATIVE
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import OrderForFieldShouldNotBeNegativeException
+
+        field_dtos = [
+            FieldDTOFactory(field_id="FIN_SALUTATION", order=-1),
+            FieldDTOFactory(field_id="FIN_PR", order=-2)
+        ]
+        negative_ordered_fields = ["FIN_SALUTATION", "FIN_PR"]
+        expected_exception_message = \
+            ORDER_FOR_FIELD_SHOULD_NOT_BE_NEGATIVE.format(
+                negative_ordered_fields)
+
+        interactor = CreateOrUpdateFieldsBaseValidationInteractor(
+            gof_storage=storage_mock
+        )
+
+        # Act
+        with pytest.raises(OrderForFieldShouldNotBeNegativeException) as err:
+            interactor.fields_base_validations(field_dtos=field_dtos)
+
+        # Assert
+        assert str(err.value) == expected_exception_message
+
+    def test_given_duplicate_order_for_fields_of_same_gof_raises_exception(
+            self, storage_mock
+    ):
+        # Arrange
+        from ib_tasks.constants.exception_messages \
+            import DUPLICATE_ORDER_FOR_FIELDS_OF_SAME_GOF
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import DuplicateOrdersForFieldsOfGoFException
+
+        field_dtos = [
+            FieldDTOFactory(gof_id="gof_1", order=1),
+            FieldDTOFactory(gof_id="gof_1", order=1)
+        ]
+        duplicate_orders = [1]
+        duplicate_ordered_fields_gof = "gof_1"
+        expected_exception_message = \
+            DUPLICATE_ORDER_FOR_FIELDS_OF_SAME_GOF.format(
+                duplicate_orders, duplicate_ordered_fields_gof)
+
+        interactor = CreateOrUpdateFieldsBaseValidationInteractor(
+            gof_storage=storage_mock
+        )
+
+        # Act
+        with pytest.raises(DuplicateOrdersForFieldsOfGoFException) as err:
+            interactor.fields_base_validations(field_dtos=field_dtos)
+
+        # Assert
+        assert str(err.value) == expected_exception_message

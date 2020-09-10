@@ -1,7 +1,10 @@
 
 from typing import Dict, Any, List
 
-from ib_tasks.interactors.storage_interfaces.status_dtos import TaskTemplateStatusDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import \
+    TaskTemplateStatusDTO
+from ib_tasks.storages.task_template_storage_implementation import \
+    TaskTemplateStorageImplementation
 
 
 def populate_status_variables(list_of_status_dict: List[Dict]):
@@ -15,7 +18,8 @@ def populate_status_variables(list_of_status_dict: List[Dict]):
     from ib_tasks.storages.tasks_storage_implementation import \
         TasksStorageImplementation
     interactor = CreateTaskStatusInteractor(
-        status_storage=TasksStorageImplementation()
+        status_storage=TasksStorageImplementation(),
+        template_storage=TaskTemplateStorageImplementation()
     )
     interactor.create_task_status(task_status_details_dtos=status_dtos)
 
@@ -35,8 +39,8 @@ def validation_for_list_of_status_dict(status_dict: List[Dict]):
         [{
             "task_template_id": str,
             "status_variable_id": str
-        }]
-
+        }],
+        ignore_extra_keys=True
     )
 
     try:

@@ -9,5 +9,8 @@ class TaskGoF(models.Model):
     gof = models.ForeignKey(GoF, on_delete=models.CASCADE)
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = ['task', 'gof', 'same_gof_order']
+
     def __str__(self):
         return "{} of order {}".format(self.gof_id, self.same_gof_order)

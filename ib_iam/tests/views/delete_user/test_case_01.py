@@ -2,7 +2,7 @@
 # Success case for delete user
 """
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -22,25 +22,34 @@ class TestCase01DeleteUserAPITestCase(TestUtils):
     @pytest.fixture
     def set_up(self):
         from ib_iam.tests.factories.models import UserDetailsFactory, \
-            CompanyFactory, UserRoleFactory, UserTeamFactory
+            CompanyFactory, UserRoleFactory, TeamUserFactory
         user_id = "413642ff-1272-4990-b878-6607a5e02bc2"
         delete_user_id = "413642ff-1272-4990-b878-6607a5e02bc1"
         UserDetailsFactory.create(user_id=user_id, is_admin=True)
 
         company = CompanyFactory.create()
         UserDetailsFactory.create(user_id=delete_user_id, company=company)
-        from ib_iam.tests.factories.models import RoleFactory
+        from ib_iam.tests.factories.models import ProjectRoleFactory
         [UserRoleFactory.create(
-            user_id=delete_user_id, role=RoleFactory.create()
+            user_id=delete_user_id, project_role=ProjectRoleFactory.create()
         ) for _ in range(4)]
         from ib_iam.tests.factories.models import TeamFactory
-        [UserTeamFactory.create(
+        [TeamUserFactory.create(
             user_id=delete_user_id, team=TeamFactory.create()) for _ in
             range(4)]
         return delete_user_id, user_id
 
+    @staticmethod
+    def elastic_search_delete_user_mock(mocker):
+        mock = mocker.patch(
+            "ib_iam.storages.elastic_storage_implementation.ElasticStorageImplementation.delete_elastic_user"
+        )
+        mock.delete_elastic_user.return_value = None
+        return mock
+
     @pytest.mark.django_db
-    def test_case(self, set_up, snapshot):
+    def test_case(self, set_up, snapshot, mocker):
+        self.elastic_search_delete_user_mock(mocker=mocker)
         delete_user_id, user_id = set_up
 
         body = {}
@@ -54,7 +63,7 @@ class TestCase01DeleteUserAPITestCase(TestUtils):
 
         from ib_iam.models import UserDetails
         before_delete_users_count = UserDetails.objects.count()
-        self.default_test_case(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

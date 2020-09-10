@@ -2,7 +2,7 @@
 # TODO: Update test case description
 """
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -24,14 +24,16 @@ class TestCase01AddUserAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, user_set_up, snapshot):
-        body = {'name': '', 'email': 'parker@string.com',
-                'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
-                'team_ids': ['ef6d1fc6-ac3f-4d2d-a983-752c992e8331'],
-                'role_ids': ['ef6d1fc6-ac3f-4d2d-a983-752c992e8331']}
+        body = {
+            'name': '1234567#$', 'email': 'parker@string.com',
+            'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
+            'team_ids': ['ef6d1fc6-ac3f-4d2d-a983-752c992e8331'],
+            'role_ids': ['ef6d1fc6-ac3f-4d2d-a983-752c992e8331']
+        }
         path_params = {}
         query_params = {}
         headers = {}
-        self.default_test_case(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

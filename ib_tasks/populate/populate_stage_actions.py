@@ -4,20 +4,24 @@ from typing import Dict, Any, List
 def populate_stage_actions(action_dicts: List[Dict]):
     actions_dtos = []
     validation_for_action_dict(action_dicts)
-    writing_data_to_task_actions_logic(action_dicts)
     actions_dict = _remove_white_spaces_and_apply_replaces_to_roles(
         action_dicts)
     for action_dict in actions_dict:
         actions_dtos.append(append_action_dict(action_dict))
-    from ib_tasks.interactors.create_update_delete_stage_actions import \
-        CreateUpdateDeleteStageActionsInteractor
+    from ib_tasks.interactors.create_or_update_or_delete_stage_actions import \
+        CreateOrUpdateOrDeleteStageActions
     from ib_tasks.storages.action_storage_implementation import \
         ActionsStorageImplementation
-    interactor = CreateUpdateDeleteStageActionsInteractor(
+    from ib_tasks.storages.task_template_storage_implementation import \
+        TaskTemplateStorageImplementation
+
+    interactor = CreateOrUpdateOrDeleteStageActions(
         storage=ActionsStorageImplementation(),
-        actions_dto=actions_dtos
+        template_storage=TaskTemplateStorageImplementation()
     )
-    interactor.create_update_delete_stage_actions()
+    interactor.create_or_update_or_delete_stage_actions(
+        action_dtos=actions_dtos
+    )
 
 
 def _remove_white_spaces_and_apply_replaces_to_roles(
@@ -29,33 +33,6 @@ def _remove_white_spaces_and_apply_replaces_to_roles(
         roles = roles.split(",")
         action_dict["roles"] = roles
     return action_dicts
-
-
-def writing_data_to_task_actions_logic(action_dicts: List[Dict]):
-    with open('ib_tasks/populate/stage_actions_logic.py', "a") as file:
-        for action_dict in action_dicts:
-            _define_single_method(file=file, action_dict=action_dict)
-        file.close()
-
-
-def _define_single_method(file, action_dict: Dict[str, str]):
-    stage_id = action_dict["stage_id"]
-    action_name = action_dict["action_name"]
-    action_logic = action_dict['action_logic']
-    function_name = f'{stage_id}_{action_name}'
-    function_name = function_name.replace(' ', '_').replace('-', '_').replace('\n', '')
-    file.write(
-        f"\n\ndef {function_name}(task_dict, global_constants, stage_value_dict):\n")
-
-    action_logic_lines = action_logic.split("\n")
-    new_lines = []
-    for line in action_logic_lines:
-        line = '\t' + line
-        new_lines.append(line)
-
-    new_action_logic = "\n".join(new_lines)
-    file.write(new_action_logic + "\n")
-    file.write("\t" + "return task_dict\n")
 
 
 def _validate_action_logic(action_logic: str):
@@ -83,7 +60,9 @@ def append_action_dict(action_dict: Dict[str, Any]):
         roles=action_dict['roles'],
         function_path=function_path,
         button_text=action_dict['button_text'],
-        button_color=action_dict.get("button_color")
+        button_color=action_dict.get("button_color"),
+        action_type=action_dict['action_type'],
+        transition_template_id=action_dict['transition_template_id']
     )
 
 
@@ -96,8 +75,11 @@ def validation_for_action_dict(actions_dict: List[Dict]):
             "action_name": str,
             "roles": str,
             "button_text": str,
-            Optional("button_color"): str
-        }]
+            Optional("button_color"): str,
+            "action_type": str,
+            "transition_template_id": str
+        }],
+        ignore_extra_keys=True
     )
     try:
         schema.validate(actions_dict)
@@ -114,7 +96,9 @@ def raise_exception_for_valid_format():
         "action_name": "action_name_1",
         "roles": "ROLE_1, ROLE_2",
         "button_text": "button_text_1",
-        "button_color": "button_color_1"
+        "button_color": "button_color_1",
+        "action_type": "NO VALIDATIONS",
+        "transition_template_id": "transition_id"
     }
     import json
     json_valid_format = json.dumps(valid_format)

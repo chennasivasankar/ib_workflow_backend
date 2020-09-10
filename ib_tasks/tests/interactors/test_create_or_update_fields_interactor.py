@@ -13,10 +13,21 @@ class TestCreateOrUpdateFieldsInteractor:
 
     @pytest.fixture
     def storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces.task_storage_interface \
-            import TaskStorageInterface
+        from ib_tasks.interactors.storage_interfaces \
+            .field_config_storage_interface \
+            import \
+            FieldConfigStorageInterface
         from unittest.mock import create_autospec
-        storage = create_autospec(TaskStorageInterface)
+        storage = create_autospec(FieldConfigStorageInterface)
+        return storage
+
+    @pytest.fixture
+    def gof_storage(self):
+        from ib_tasks.interactors.storage_interfaces.gof_storage_interface \
+            import \
+            GoFStorageInterface
+        from unittest.mock import create_autospec
+        storage = create_autospec(GoFStorageInterface)
         return storage
 
     @pytest.fixture
@@ -25,7 +36,7 @@ class TestCreateOrUpdateFieldsInteractor:
         FieldRolesDTOFactory.reset_sequence(1)
 
     def test_given_new_field_ids_populate_fields(
-            self, storage_mock, mocker, reset_sequence
+            self, storage_mock, mocker, reset_sequence, gof_storage
     ):
         # Arrange
 
@@ -72,10 +83,11 @@ class TestCreateOrUpdateFieldsInteractor:
             FieldDTOFactory()
         ]
         existing_field_ids = []
-        interactor = CreateOrUpdateFieldsInteractor(storage=storage_mock)
+        interactor = CreateOrUpdateFieldsInteractor(storage=storage_mock,
+                                                    gof_storage=gof_storage)
         storage_mock.get_existing_field_ids.return_value = existing_field_ids
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
-        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
+        gof_storage.get_existing_gof_ids.return_value = existing_gof_ids
 
         # Act
         interactor.create_or_update_fields(
@@ -90,7 +102,7 @@ class TestCreateOrUpdateFieldsInteractor:
         get_valid_role_ids_mock_method.assert_called_once()
 
     def test_given_field_ids_already_exist_in_database_then_update_fields(
-            self, storage_mock, mocker, reset_sequence
+            self, storage_mock, mocker, reset_sequence, gof_storage
     ):
         # Arrange
         field_roles_dtos = [
@@ -103,10 +115,11 @@ class TestCreateOrUpdateFieldsInteractor:
             mocker)
 
         existing_field_ids = ["FIN_FIRST NAME"]
-        interactor = CreateOrUpdateFieldsInteractor(storage=storage_mock)
+        interactor = CreateOrUpdateFieldsInteractor(storage=storage_mock,
+                                                    gof_storage=gof_storage)
         storage_mock.get_existing_field_ids.return_value = existing_field_ids
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
-        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
+        gof_storage.get_existing_gof_ids.return_value = existing_gof_ids
 
         # Act
         interactor.create_or_update_fields(
@@ -120,7 +133,7 @@ class TestCreateOrUpdateFieldsInteractor:
         get_valid_role_ids_mock_method.assert_called_once()
 
     def test_new_and_already_existing_field_ids_in_database_are_given_then_create_and_update_fields(
-            self, storage_mock, mocker, reset_sequence
+            self, storage_mock, mocker, reset_sequence, gof_storage
     ):
         # Arrange
         field_dtos = [
@@ -135,13 +148,15 @@ class TestCreateOrUpdateFieldsInteractor:
         new_field_dtos = [
             FieldDTOFactory(
                 field_id="FIN_SALUATION",
-                field_values='["Mr", "Mrs", "Ms"]'
+                field_values='["Mr", "Mrs", "Ms"]',
+                order=2
             )
         ]
         existing_field_dtos = [
             FieldDTOFactory(
                 field_id="field1",
-                field_values='["Mr", "Mrs", "Ms"]'
+                field_values='["Mr", "Mrs", "Ms"]',
+                order=1
             )
         ]
 
@@ -192,9 +207,10 @@ class TestCreateOrUpdateFieldsInteractor:
             mocker)
 
         storage_mock.get_existing_field_ids.return_value = existing_field_ids
-        interactor = CreateOrUpdateFieldsInteractor(storage=storage_mock)
+        interactor = CreateOrUpdateFieldsInteractor(storage=storage_mock,
+                                                    gof_storage=gof_storage)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
-        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
+        gof_storage.get_existing_gof_ids.return_value = existing_gof_ids
 
         # Act
         interactor.create_or_update_fields(

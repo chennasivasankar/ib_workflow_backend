@@ -14,62 +14,6 @@ class TestGetDiscussionsPresenterImplementation:
         presenter = GetDiscussionPresenterImplementation()
         return presenter
 
-    def test_raise_exception_for_entity_id_not_found(self, presenter):
-        # Arrange
-        from ib_discussions.presenters.get_discussion_presenter_implementation import \
-            ENTITY_ID_NOT_FOUND
-        expected_response = ENTITY_ID_NOT_FOUND[0]
-        expected_http_status_code = StatusCode.NOT_FOUND.value
-        expected_res_status = ENTITY_ID_NOT_FOUND[1]
-
-        # Act
-        response_obj = presenter.raise_exception_for_entity_id_not_found()
-
-        # Assert
-        response_data = json.loads(response_obj.content)
-
-        assert response_data["response"] == expected_response
-        assert response_data["http_status_code"] == expected_http_status_code
-        assert response_data["res_status"] == expected_res_status
-
-    def test_raise_exception_for_discussion_set_not_found(self, presenter):
-        # Arrange
-        from ib_discussions.presenters.get_discussion_presenter_implementation import \
-            DISCUSSION_SET_NOT_FOUND
-        expected_response = DISCUSSION_SET_NOT_FOUND[0]
-        expected_http_status_code = StatusCode.NOT_FOUND.value
-        expected_res_status = DISCUSSION_SET_NOT_FOUND[1]
-
-        # Act
-        response_obj = presenter.raise_exception_for_discussion_set_not_found()
-
-        # Assert
-        response_data = json.loads(response_obj.content)
-
-        assert response_data["response"] == expected_response
-        assert response_data["http_status_code"] == expected_http_status_code
-        assert response_data["res_status"] == expected_res_status
-
-    def test_raise_exception_for_invalid_entity_type_for_entity_id(self,
-                                                                   presenter):
-        # Arrange
-        from ib_discussions.presenters.get_discussion_presenter_implementation import \
-            INVALID_ENTITY_TYPE_FOR_ENTITY_ID
-        expected_response = INVALID_ENTITY_TYPE_FOR_ENTITY_ID[0]
-        expected_http_status_code = StatusCode.BAD_REQUEST.value
-        expected_res_status = INVALID_ENTITY_TYPE_FOR_ENTITY_ID[1]
-
-        # Act
-        response_obj \
-            = presenter.raise_exception_for_invalid_entity_type_for_entity_id()
-
-        # Assert
-        response_data = json.loads(response_obj.content)
-
-        assert response_data["response"] == expected_response
-        assert response_data["http_status_code"] == expected_http_status_code
-        assert response_data["res_status"] == expected_res_status
-
     def test_raise_exception_for_invalid_user_id(self,
                                                  presenter):
         # Arrange
@@ -146,9 +90,9 @@ class TestGetDiscussionsPresenterImplementation:
             'ed10c17c-8995-4d84-9807-189a54a2049d'
         ]
         from ib_discussions.tests.factories.storage_dtos import \
-            CompleteDiscussionFactory
-        complete_discussion_dtos = [
-            CompleteDiscussionFactory(
+            DiscussionDTOFactory
+        discussion_dtos = [
+            DiscussionDTOFactory(
                 discussion_set_id=discussion_set_id,
                 user_id=user_profile_dtos[i].user_id,
                 discussion_id=discussion_ids[i]
@@ -156,20 +100,72 @@ class TestGetDiscussionsPresenterImplementation:
             for i in range(0, 3)
         ]
         from ib_discussions.interactors.presenter_interfaces.dtos import \
-            DiscussionsDetailsDTO
-        discussions_details_dto = DiscussionsDetailsDTO(
-            complete_discussion_dtos=complete_discussion_dtos,
+            DiscussionsWithUsersAndDiscussionCountDTO
+        discussions_details_dto = DiscussionsWithUsersAndDiscussionCountDTO(
+            discussion_dtos=discussion_dtos,
             user_profile_dtos=user_profile_dtos,
-            total_count=len(complete_discussion_dtos)
+            total_count=len(discussion_dtos)
         )
         return discussions_details_dto
 
+    @pytest.fixture()
+    def get_discussion_id_with_editable_status_dtos(self):
+        discussion_ids = [
+            'c5a444ea-589a-4e8f-b006-cfac3c1c0b78',
+            '5ce6581b-86ce-4246-8551-2c8a8ed4df87',
+            'ed10c17c-8995-4d84-9807-189a54a2049d'
+        ]
+        from ib_discussions.tests.factories.presenter_dtos import \
+            DiscussionIdWithEditableStatusDTOFactory
+        DiscussionIdWithEditableStatusDTOFactory.is_editable.reset()
+        return [
+            DiscussionIdWithEditableStatusDTOFactory(
+                discussion_id=discussion_id
+            )
+            for discussion_id in discussion_ids
+        ]
+
+    @pytest.fixture()
+    def get_comments_for_discussion_dtos(self):
+        discussion_id_with_comments_count_list = [
+            {
+                "discussion_id": 'c5a444ea-589a-4e8f-b006-cfac3c1c0b78',
+                "comments_count": 2
+            },
+            {
+                "discussion_id": '5ce6581b-86ce-4246-8551-2c8a8ed4df87',
+                "comments_count": 1
+            },
+            {
+                "discussion_id": 'ed10c17c-8995-4d84-9807-189a54a2049d',
+                "comments_count": 0
+            }
+        ]
+        from ib_discussions.tests.factories.storage_dtos import \
+            DiscussionIdWithCommentsCountDTOFactory
+        discussion_with_comments_count_dtos = [
+            DiscussionIdWithCommentsCountDTOFactory(
+                discussion_id=discussion_id_with_comments_count_dict[
+                    "discussion_id"],
+                comments_count=discussion_id_with_comments_count_dict[
+                    "comments_count"]
+            )
+            for discussion_id_with_comments_count_dict in
+            discussion_id_with_comments_count_list
+        ]
+        return discussion_with_comments_count_dtos
+
     def test_prepare_response_for_discussions_details_dto(
-            self, presenter, get_discussions_details_dto, snapshot
+            self, presenter, get_discussions_details_dto,
+            get_discussion_id_with_editable_status_dtos, snapshot,
+            get_comments_for_discussion_dtos
     ):
         # Act
         response_object = presenter.prepare_response_for_discussions_details_dto(
-            get_discussions_details_dto)
+            discussions_with_users_and_discussion_count_dto=get_discussions_details_dto,
+            discussion_id_with_editable_status_dtos=get_discussion_id_with_editable_status_dtos,
+            discussion_id_with_comments_count_dtos=get_comments_for_discussion_dtos
+        )
 
         # Assert
         response_dict = json.loads(response_object.content)
