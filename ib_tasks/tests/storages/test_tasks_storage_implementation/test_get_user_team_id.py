@@ -8,8 +8,12 @@ class TestGetUserTeamId:
         from ib_tasks.tests.factories.models import TaskFactory
         TaskFactory.reset_sequence()
         from ib_tasks.tests.factories.models import TaskStageHistoryFactory
+        task = TaskFactory()
+        from ib_tasks.tests.factories.models import StageModelFactory
+        stage = StageModelFactory()
         TaskStageHistoryFactory.reset_sequence()
-        TaskStageHistoryFactory()
+        TaskStageHistoryFactory(task=task, stage=stage, team_id="TEAM_ID_0")
+        TaskStageHistoryFactory(task=task, stage=stage, team_id="TEAM_ID_0")
 
     def test_get_user_team_id(self, populate_data_for_user_team):
         # Arrange
