@@ -22,7 +22,7 @@ class RolesInteractor:
         try:
             self.add_project_roles(role_dtos=role_dtos, project_id=project_id)
         except DuplicateRoleIds as err:
-            response = presenter.raise_duplicate_role_ids_exception(err)
+            response = presenter.response_for_duplicate_role_ids_exception(err)
         except RoleIdFormatIsInvalid:
             response = presenter.raise_role_id_format_is_invalid_exception()
         except RoleNameIsEmpty:

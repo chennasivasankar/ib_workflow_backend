@@ -41,6 +41,10 @@ class TestCase01AddProjectAPITestCase(TestUtils):
                                       query_params=query_params,
                                       headers=headers,
                                       snapshot=snapshot)
+        self._additional_checks(snapshot)
+
+    @staticmethod
+    def _additional_checks(snapshot):
         from ib_iam.models import Project, ProjectTeam, ProjectRole
         project_id = "project_7eb737be810f458083eaff4fa67edd22"
         project_details = Project.objects.filter(
@@ -56,8 +60,10 @@ class TestCase01AddProjectAPITestCase(TestUtils):
 
     # TODO: Don't use underscore readability is missing.
     @pytest.fixture
-    def setup(self):
+    def setup(self, api_user):
+        from ib_iam.tests.factories.models import \
+            UserDetailsFactory, TeamFactory
+        UserDetailsFactory(user_id=str(api_user.user_id), is_admin=True)
         team_ids = ['f2c02d98-f311-4ab2-8673-3daa00757003']
-        from ib_iam.tests.factories.models import TeamFactory
         _ = [TeamFactory(team_id=team_id) for team_id in team_ids]
         return team_ids

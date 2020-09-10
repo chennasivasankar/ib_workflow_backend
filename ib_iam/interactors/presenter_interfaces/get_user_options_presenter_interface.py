@@ -4,7 +4,7 @@ import abc
 class GetUserOptionsPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def raise_user_is_not_admin_exception(self):
+    def response_for_user_is_not_admin_exception(self):
         pass
 
     # TODO: typing

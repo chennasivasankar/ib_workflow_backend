@@ -1,7 +1,12 @@
 import abc
 
+from ib_tasks.exceptions.fields_custom_exceptions import \
+    UserDidNotFillRequiredFields
+from ib_tasks.exceptions.gofs_custom_exceptions import \
+    UserDidNotFillRequiredGoFs
 
-class CreateTransitionChecklistTemplatePresenterInterface(abc.ABC):
+
+class CreateOrUpdateTransitionChecklistTemplatePresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_create_transition_checklist_response(self):
@@ -140,3 +145,14 @@ class CreateTransitionChecklistTemplatePresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_invalid_task_display_id(self, err):
         pass
+
+    @abc.abstractmethod
+    def raise_user_did_not_fill_required_gofs(self,
+                                              err: UserDidNotFillRequiredGoFs):
+        pass
+
+    @abc.abstractmethod
+    def raise_user_did_not_fill_required_fields(
+            self, err: UserDidNotFillRequiredFields):
+        pass
+

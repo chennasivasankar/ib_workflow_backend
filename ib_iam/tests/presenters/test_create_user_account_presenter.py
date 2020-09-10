@@ -53,7 +53,7 @@ class TestCreateUserAccountPresenter:
             "res_status": INVALID_EMAIL[1]
         }
 
-        response = presenter_mock.raise_invalid_email_exception()
+        response = presenter_mock.response_for_invalid_email_exception()
 
         actual_response_content = json.loads(response.content)
         assert response_dict == actual_response_content
@@ -91,7 +91,7 @@ class TestCreateUserAccountPresenter:
             "res_status": INVALID_NAME_LENGTH[1]
         }
 
-        response = presenter_mock.raise_invalid_name_length_exception()
+        response = presenter_mock.response_for_invalid_name_length_exception()
 
         actual_response_content = json.loads(response.content)
         assert response_dict == actual_response_content
@@ -109,7 +109,7 @@ class TestCreateUserAccountPresenter:
                 NAME_SHOULD_NOT_CONTAIN_SPECIAL_CHARACTERS_AND_NUMBERS[1]
         }
 
-        response = presenter_mock.raise_name_should_not_contain_special_characters_exception()
+        response = presenter_mock.response_for_name_contains_special_character_exception()
 
         actual_response_content = json.loads(response.content)
         assert response_dict == actual_response_content

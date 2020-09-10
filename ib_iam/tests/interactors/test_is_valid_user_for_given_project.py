@@ -44,7 +44,7 @@ class TestIsValidUserForGivenProject:
         project_id = "1"
         interactor = init_interactor
         user_storage_mock.is_user_exist.return_value = True
-        project_storage_mock.get_valid_project_ids_from_given_project_ids. \
+        project_storage_mock.get_valid_project_ids. \
             return_value = [project_id]
         project_storage_mock.is_user_exist_given_project.return_value = True
 
@@ -53,7 +53,7 @@ class TestIsValidUserForGivenProject:
 
         user_storage_mock.is_user_exist.assert_called_once_with(
             user_id=user_id)
-        project_storage_mock.get_valid_project_ids_from_given_project_ids. \
+        project_storage_mock.get_valid_project_ids. \
             assert_called_once_with(project_ids=[project_id])
         project_storage_mock.is_user_exist_given_project. \
             assert_called_once_with(user_id=user_id, project_id=project_id)
@@ -65,7 +65,7 @@ class TestIsValidUserForGivenProject:
         invalid_project_id = "1"
         interactor = init_interactor
         user_storage_mock.is_user_exist.return_value = True
-        project_storage_mock.get_valid_project_ids_from_given_project_ids. \
+        project_storage_mock.get_valid_project_ids. \
             return_value = []
 
         from ib_iam.exceptions.custom_exceptions import InvalidProjectId
@@ -75,7 +75,7 @@ class TestIsValidUserForGivenProject:
 
         user_storage_mock.is_user_exist.assert_called_once_with(
             user_id=user_id)
-        project_storage_mock.get_valid_project_ids_from_given_project_ids. \
+        project_storage_mock.get_valid_project_ids. \
             assert_called_once_with(project_ids=[invalid_project_id])
 
     def test_check_is_valid_user_id_given_invalid_user_id__then_raise_exception(

@@ -81,9 +81,9 @@ class TestUpdateCompanyDetails:
             company_with_company_id_and_user_ids_dto=company_with_company_id_and_user_ids_dto,
             presenter=presenter)
 
-        call_obj = \
+        call_args = \
             presenter.get_duplicate_users_response_for_update_company.call_args
-        error_obj = call_obj.args[0]
+        error_obj = call_args[0][0]
         actual_user_ids_from_exception = error_obj.user_ids
         assert actual_user_ids_from_exception == \
                expected_user_ids_from_exception
@@ -113,9 +113,9 @@ class TestUpdateCompanyDetails:
 
         user_storage.get_valid_user_ids_among_the_given_user_ids \
                .assert_called_once_with(user_ids=user_ids)
-        call_obj = \
+        call_args = \
             presenter.get_invalid_users_response_for_update_company.call_args
-        error_obj = call_obj.args[0]
+        error_obj = call_args[0][0]
         actual_user_ids_from_exception = error_obj.user_ids
         assert actual_user_ids_from_exception == \
                expected_user_ids_from_exception
@@ -147,9 +147,9 @@ class TestUpdateCompanyDetails:
 
         company_storage.get_company_id_if_company_name_already_exists \
             .assert_called_once_with(name=company_name)
-        call_obj = presenter \
+        call_args = presenter \
             .get_company_name_already_exists_response_for_update_company.call_args
-        error_obj = call_obj.args[0]
+        error_obj = call_args[0][0]
         actual_company_name_from_error = error_obj.company_name
         assert actual_company_name_from_error == expected_company_name_from_error
 

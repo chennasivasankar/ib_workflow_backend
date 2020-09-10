@@ -58,7 +58,7 @@ class TestGetUserOptionsInteractor:
         # Arrange
         interactor = GetUserOptionsDetails(user_storage=storage_mock)
         storage_mock.is_user_admin.return_value = False
-        presenter_mock.raise_user_is_not_admin_exception.return_value = Mock()
+        presenter_mock.response_for_user_is_not_admin_exception.return_value = Mock()
 
         # Act
         interactor.get_configuration_details_wrapper(presenter=presenter_mock,
@@ -66,7 +66,7 @@ class TestGetUserOptionsInteractor:
 
         # Assert
         storage_mock.is_user_admin.assert_called_once_with(user_id="user0")
-        presenter_mock.raise_user_is_not_admin_exception.assert_called_once()
+        presenter_mock.response_for_user_is_not_admin_exception.assert_called_once()
 
     # TODO: user assert_called_with
     def test_get_companies_details(

@@ -203,7 +203,7 @@ class CreateUserAccountPresenterImplementation(
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
 
-    def raise_invalid_email_exception(self):
+    def response_for_invalid_email_exception(self):
         response_dict = {
             "response": INVALID_EMAIL[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
@@ -224,7 +224,7 @@ class CreateUserAccountPresenterImplementation(
     def get_response_for_create_user_account(self):
         return self.prepare_200_success_response(response_dict={})
 
-    def raise_invalid_name_length_exception(self):
+    def response_for_invalid_name_length_exception(self):
         from ib_iam.constants.exception_messages import \
             INVALID_NAME_LENGTH
         from ib_iam.constants.config import MINIMUM_USER_NAME_LENGTH
@@ -238,7 +238,7 @@ class CreateUserAccountPresenterImplementation(
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
 
-    def raise_name_should_not_contain_special_characters_exception(self):
+    def response_for_name_contains_special_character_exception(self):
         from ib_iam.constants.exception_messages import \
             NAME_SHOULD_NOT_CONTAIN_SPECIAL_CHARACTERS_AND_NUMBERS
         response_dict = {

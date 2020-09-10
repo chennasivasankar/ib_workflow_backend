@@ -71,7 +71,7 @@ class TestAddNewUserIneractor:
             user_storage=storage_mock, elastic_storage=elastic_storage
         )
         storage_mock.is_user_admin.return_value = False
-        presenter_mock.raise_user_is_not_admin_exception.return_value = Mock()
+        presenter_mock.response_for_user_is_not_admin_exception.return_value = Mock()
 
         interactor.add_new_user_wrapper(
             user_id=invalid_user_id,
@@ -80,7 +80,7 @@ class TestAddNewUserIneractor:
 
         storage_mock.is_user_admin.assert_called_once_with(
             user_id=invalid_user_id)
-        presenter_mock.raise_user_is_not_admin_exception.assert_called_once()
+        presenter_mock.response_for_user_is_not_admin_exception.assert_called_once()
 
     def test_validate_name_when_contains_special_characters_and_numbers_throw_exception(
             self, storage_mock, presenter_mock, elastic_storage, set_up
@@ -94,7 +94,7 @@ class TestAddNewUserIneractor:
         )
         storage_mock.is_user_admin.return_value = True
         presenter_mock \
-            .raise_name_should_not_contain_special_characters_exception \
+            .response_for_name_contains_special_character_exception \
             .return_value = Mock()
 
         interactor.add_new_user_wrapper(
@@ -104,7 +104,7 @@ class TestAddNewUserIneractor:
 
         storage_mock.is_user_admin.assert_called_once_with(user_id=user_id)
         presenter_mock. \
-            raise_name_should_not_contain_special_characters_exception. \
+            response_for_name_contains_special_character_exception. \
             assert_called_once()
 
     def test_validate_name_returns_should_contain_minimum_5_characters_exception(
@@ -119,7 +119,7 @@ class TestAddNewUserIneractor:
             user_storage=storage_mock, elastic_storage=elastic_storage
         )
         storage_mock.is_user_admin.return_value = True
-        presenter_mock.raise_invalid_name_length_exception_for_update_user_profile \
+        presenter_mock.response_for_invalid_name_length_exception \
             .return_value = Mock()
 
         # Act
@@ -130,7 +130,7 @@ class TestAddNewUserIneractor:
 
         # Assert
         storage_mock.is_user_admin.assert_called_once_with(user_id=user_id)
-        presenter_mock.raise_invalid_name_length_exception_for_update_user_profile. \
+        presenter_mock.response_for_invalid_name_length_exception. \
             assert_called_once()
 
     def test_validate_email_and_throw_exception(
@@ -145,7 +145,7 @@ class TestAddNewUserIneractor:
             user_storage=storage_mock, elastic_storage=elastic_storage
         )
         storage_mock.is_user_admin.return_value = True
-        presenter_mock.raise_invalid_email_exception.return_value = Mock()
+        presenter_mock.response_for_invalid_email_exception.return_value = Mock()
 
         # Act
         interactor.add_new_user_wrapper(
@@ -156,7 +156,7 @@ class TestAddNewUserIneractor:
 
         # Assert
         storage_mock.is_user_admin.assert_called_once_with(user_id=user_id)
-        presenter_mock.raise_invalid_email_exception.assert_called_once()
+        presenter_mock.response_for_invalid_email_exception.assert_called_once()
 
     # def test_validate_roles_and_throw_exception(
     #         self, storage_mock, presenter_mock, elastic_storage, set_up):
@@ -168,7 +168,7 @@ class TestAddNewUserIneractor:
     #     )
     #     storage_mock.is_user_admin.return_value = True
     #     storage_mock.check_are_valid_role_ids.return_value = False
-    #     presenter_mock.raise_role_ids_are_invalid.return_value = Mock()
+    #     presenter_mock.response_for_invalid_role_ids_exception.return_value = Mock()
     #
     #     # Act
     #     interactor.add_new_user_wrapper(
@@ -180,7 +180,7 @@ class TestAddNewUserIneractor:
     #     storage_mock.is_user_admin.assert_called_once_with(user_id=user_id)
     #     storage_mock.check_are_valid_role_ids.assert_called_once_with(
     #         role_ids=add_user_details_dto.role_ids)
-    #     presenter_mock.raise_role_ids_are_invalid.assert_called_once()
+    #     presenter_mock.response_for_invalid_role_ids_exception.assert_called_once()
 
     def test_validate_teams_and_throw_exception(
             self, storage_mock, presenter_mock, elastic_storage, set_up
@@ -194,7 +194,7 @@ class TestAddNewUserIneractor:
         storage_mock.is_user_admin.return_value = True
         storage_mock.check_are_valid_team_ids.return_value = False
         # storage_mock.check_are_valid_role_ids.return_value = True
-        presenter_mock.raise_team_ids_are_invalid.return_value = Mock()
+        presenter_mock.response_for_invalid_team_ids_exception.return_value = Mock()
 
         # Act
         interactor.add_new_user_wrapper(
@@ -208,7 +208,7 @@ class TestAddNewUserIneractor:
         storage_mock.is_user_admin.assert_called_once_with(user_id=user_id)
         # storage_mock.check_are_valid_role_ids.assert_called_once_with(
         #     role_ids=add_user_details_dto.role_ids)
-        presenter_mock.raise_team_ids_are_invalid.assert_called_once()
+        presenter_mock.response_for_invalid_team_ids_exception.assert_called_once()
 
     def test_validate_company_id_and_throw_exception(
             self, storage_mock, presenter_mock, elastic_storage, set_up
@@ -223,7 +223,7 @@ class TestAddNewUserIneractor:
         storage_mock.check_are_valid_team_ids.return_value = True
         # storage_mock.check_are_valid_role_ids.return_value = True
         storage_mock.check_is_exists_company_id.return_value = False
-        presenter_mock.raise_company_ids_is_invalid.return_value = Mock()
+        presenter_mock.response_for_invalid_company_ids_exception.return_value = Mock()
 
         # Act
         interactor.add_new_user_wrapper(
@@ -239,7 +239,7 @@ class TestAddNewUserIneractor:
         #     role_ids=add_user_details_dto.role_ids)
         storage_mock.check_is_exists_company_id.assert_called_once_with(
             company_id=add_user_details_dto.company_id)
-        presenter_mock.raise_company_ids_is_invalid.assert_called_once()
+        presenter_mock.response_for_invalid_company_ids_exception.assert_called_once()
 
     def test_create_user_account_with_email_already_exist_throws_exception(
             self, storage_mock, presenter_mock, mocker, elastic_storage,
@@ -252,7 +252,7 @@ class TestAddNewUserIneractor:
             user_storage=storage_mock, elastic_storage=elastic_storage
         )
         storage_mock.is_user_admin.return_value = True
-        presenter_mock.raise_user_account_already_exist_with_this_email_exception. \
+        presenter_mock.response_for_user_account_already_exists_exception. \
             return_value = Mock()
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import email_exist_adapter_mock
@@ -266,7 +266,7 @@ class TestAddNewUserIneractor:
         # Assert
         storage_mock.is_user_admin.assert_called_once_with(user_id=user_id)
         adapter_mock.assert_called_once_with(email=add_user_details_dto.email)
-        presenter_mock.raise_user_account_already_exist_with_this_email_exception. \
+        presenter_mock.response_for_user_account_already_exists_exception. \
             assert_called_once()
 
     # def test_get_role_objs_ids_returns_ids_of_role(

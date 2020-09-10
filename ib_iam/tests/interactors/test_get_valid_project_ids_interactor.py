@@ -45,7 +45,7 @@ class TestGetValidProjectIdsInteractor:
         interactor = init_interactor
         project_ids = ["1", "2", "3"]
         valid_project_ids = ["1", "2"]
-        project_storage_mock.get_valid_project_ids_from_given_project_ids \
+        project_storage_mock.get_valid_project_ids \
             .return_value = valid_project_ids
         expected_response = valid_project_ids
 
@@ -53,6 +53,6 @@ class TestGetValidProjectIdsInteractor:
         response = interactor.get_valid_project_ids(project_ids=project_ids)
 
         # Assert
-        project_storage_mock.get_valid_project_ids_from_given_project_ids \
+        project_storage_mock.get_valid_project_ids \
             .assert_called_once_with(project_ids=project_ids)
         assert response == expected_response

@@ -12,8 +12,8 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
     @pytest.fixture
     def presenter(self):
         from ib_tasks.presenters.create_transition_checklist_presenter import \
-            CreateTransitionChecklistTemplatePresenterImplementation
-        return CreateTransitionChecklistTemplatePresenterImplementation()
+            CreateOrUpdateTransitionChecklistTemplatePresenterImplementation
+        return CreateOrUpdateTransitionChecklistTemplatePresenterImplementation()
 
     def test_with_invalid_task_display_id(self, presenter, snapshot):
         # Arrange

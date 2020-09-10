@@ -8,14 +8,17 @@ from ib_utility_tools.interactors.storage_interfaces.dtos import \
 class ChecklistStorageInterface(abc.ABC):
 
     @abc.abstractmethod
-    def create_checklist_item(self,
-                              checklist_item_with_checklist_id_dto:
-                              ChecklistItemWithChecklistIdDTO):
+    def create_checklist_item(
+            self,
+            checklist_item_with_checklist_id_dto:
+            ChecklistItemWithChecklistIdDTO
+    ) -> str:
         pass
 
     @abc.abstractmethod
-    def get_checklist_id_if_exists(self,
-                                   entity_dto: EntityDTO) -> Optional[str]:
+    def get_checklist_id_if_exists(
+            self, entity_dto: EntityDTO
+    ) -> Optional[str]:
         pass
 
     @abc.abstractmethod
@@ -32,8 +35,9 @@ class ChecklistStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_checklist_item_dtos(self, checklist_id: str) -> \
-            List[ChecklistItemWithIdDTO]:
+    def get_checklist_item_dtos(
+            self, checklist_id: str
+    ) -> List[ChecklistItemWithIdDTO]:
         pass
 
     @abc.abstractmethod
@@ -41,6 +45,7 @@ class ChecklistStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_checklist_item_ids(self, checklist_item_ids: List[str]) \
-            -> List[str]:
+    def get_valid_checklist_item_ids(
+            self, checklist_item_ids: List[str]
+    ) -> List[str]:
         pass

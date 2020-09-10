@@ -11,9 +11,9 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidURLValue, \
     InvalidEmailFieldValue, InvalidPhoneNumberValue, EmptyValueForRequiredField
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
-    DuplicateFieldIdsToGoF
+    DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
-    DuplicateSameGoFOrderForAGoF
+    DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId, \
@@ -24,12 +24,41 @@ from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTransitionChecklistTemplateId
 from ib_tasks.interactors.presenter_interfaces \
     .create_transition_checklist_presenter_interface import \
-    CreateTransitionChecklistTemplatePresenterInterface
+    CreateOrUpdateTransitionChecklistTemplatePresenterInterface
 
 
-class CreateTransitionChecklistTemplatePresenterImplementation(
-    CreateTransitionChecklistTemplatePresenterInterface, HTTPResponseMixin
+class CreateOrUpdateTransitionChecklistTemplatePresenterImplementation(
+    CreateOrUpdateTransitionChecklistTemplatePresenterInterface,
+    HTTPResponseMixin
 ):
+    def raise_user_did_not_fill_required_fields(
+            self, err: UserDidNotFillRequiredFields):
+        from ib_tasks.constants.exception_messages import \
+            USER_DID_NOT_FILL_REQUIRED_FIELDS
+        field_display_names = [
+            dto.field_display_name for dto in err.unfilled_field_dtos]
+        message = USER_DID_NOT_FILL_REQUIRED_FIELDS[0].format(
+            field_display_names)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": USER_DID_NOT_FILL_REQUIRED_FIELDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_user_did_not_fill_required_gofs(
+            self, err: UserDidNotFillRequiredGoFs):
+        from ib_tasks.constants.exception_messages import \
+            USER_DID_NOT_FILL_REQUIRED_GOFS
+        message = USER_DID_NOT_FILL_REQUIRED_GOFS[0].format(
+            err.gof_display_names)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": USER_DID_NOT_FILL_REQUIRED_GOFS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
     def raise_invalid_task_display_id(self, err):
         from ib_tasks.constants.exception_messages import \
             INVALID_TASK_DISPLAY_ID
@@ -97,8 +126,9 @@ class CreateTransitionChecklistTemplatePresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION
         response_message = \
-        TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION[0].format(
-            err.transition_checklist_template_id, err.stage_id, err.action_id)
+            TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION[0].format(
+                err.transition_checklist_template_id, err.stage_id,
+                err.action_id)
         data = {
             "response": response_message,
             "http_status_code": 400,

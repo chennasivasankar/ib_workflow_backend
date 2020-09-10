@@ -26,7 +26,7 @@ class TestDeleteUserPresenter:
         expected_response = USER_DOES_NOT_HAVE_PERMISSION[0]
         response_status_code = USER_DOES_NOT_HAVE_PERMISSION[1]
 
-        actual_response = presenter.raise_user_is_not_admin_exception()
+        actual_response = presenter.response_for_user_is_not_admin_exception()
 
         response_dict = json.loads(actual_response.content)
         assert response_dict['http_status_code'] == StatusCode.FORBIDDEN.value

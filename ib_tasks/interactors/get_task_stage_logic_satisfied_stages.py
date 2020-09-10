@@ -1,11 +1,11 @@
 from typing import List, Any, Dict
 
-from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDisplayValueDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDisplayValueDTO, StageDisplayDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 from ib_tasks.interactors.storage_interfaces.status_dtos \
     import StatusVariableDTO
-from ib_tasks.interactors.task_dtos import StatusOperandStageDTO
+from ib_tasks.interactors.task_dtos import StageDisplayLogicDTO
 
 
 class GetTaskStageLogicSatisfiedStages:
@@ -21,18 +21,18 @@ class GetTaskStageLogicSatisfiedStages:
             .get_task_template_stage_logic_to_task(
                 task_id=self.task_id
             )
-        stage_display_logics = self._get_stage_display_logics(
+        stage_display_dtos = self._get_stage_display_dtos(
             stage_display_value_dtos=stage_display_value_dtos
         )
-        status_stage_dtos = self._get_status_operand_stage_dtos(
-            stage_display_logics=stage_display_logics
+        stage_display_logic_dtos = self._get_status_operand_stage_dtos(
+            stage_display_dtos=stage_display_dtos
         )
         status_variable_dict = self._get_task_status_variable_dict(
             task_id=self.task_id
         )
         stage_value_dict = self._get_stage_values_dict(stage_display_value_dtos)
         return self._get_stage_logic_satisfied_stages(
-            status_stage_dtos, status_variable_dict, stage_value_dict
+            stage_display_logic_dtos, status_variable_dict, stage_value_dict
         )
 
     def _validate_task_id(self, task_id: int):
@@ -46,11 +46,15 @@ class GetTaskStageLogicSatisfiedStages:
             raise InvalidTaskException(task_id=task_id)
 
     @staticmethod
-    def _get_stage_display_logics(
-            stage_display_value_dtos: List[StageDisplayValueDTO]):
+    def _get_stage_display_dtos(
+            stage_display_value_dtos: List[StageDisplayValueDTO]
+    ) -> List[StageDisplayDTO]:
 
         return [
-            stage_display_value_dto.display_logic
+            StageDisplayDTO(
+                stage_id=stage_display_value_dto.stage_id,
+                display_value=stage_display_value_dto.display_logic
+            )
             for stage_display_value_dto in stage_display_value_dtos
         ]
 
@@ -66,12 +70,12 @@ class GetTaskStageLogicSatisfiedStages:
         return stage_value_dict
 
     def _get_stage_logic_satisfied_stages(
-            self, status_stage_dtos: List[StatusOperandStageDTO],
+            self, stage_display_logic_dtos: List[StageDisplayLogicDTO],
             status_variable_dict: Dict[str, str],
             stage_value_dict: Dict[str, int]):
 
         logic_satisfied_stages = []
-        for status_stage_dto in status_stage_dtos:
+        for status_stage_dto in stage_display_logic_dtos:
             self._calculate_display_logic(
                 status_stage_dto, status_variable_dict,
                 logic_satisfied_stages, stage_value_dict
@@ -80,48 +84,51 @@ class GetTaskStageLogicSatisfiedStages:
         return logic_satisfied_stages
 
     def _calculate_display_logic(
-            self, status_stage_dto: StatusOperandStageDTO,
+            self, stage_display_logic_dto: StageDisplayLogicDTO,
             status_variable_dict: Dict[str, Any],
             logic_satisfied_stages: List[str],
             stage_value_dict: Dict[str, int]
     ):
-
-        if status_stage_dto.operator == "==":
+        stage_display_dto = stage_display_logic_dto.display_logic_dto
+        if stage_display_dto.operator == "==":
             self._calculate_direct_logic(
-                status_stage_dto, status_variable_dict, logic_satisfied_stages
+                stage_display_logic_dto, status_variable_dict, logic_satisfied_stages
             )
         else:
             self._calculate_indirect_logic(
-                status_stage_dto, status_variable_dict,
+                stage_display_logic_dto, status_variable_dict,
                 logic_satisfied_stages, stage_value_dict
             )
 
-    def _calculate_direct_logic(self, status_stage_dto: StatusOperandStageDTO,
+    def _calculate_direct_logic(self, stage_display_logic_dto: StageDisplayLogicDTO,
                                 status_variable_dict: Dict[str, Any],
                                 logic_satisfied_stages: List[str]):
         operator_dict = self._get_operator_dict()
-        variable = status_stage_dto.variable
-        stage = status_stage_dto.stage
-        func = operator_dict[status_stage_dto.operator]
+        stage_display_dto = stage_display_logic_dto.display_logic_dto
+        current_stage = stage_display_logic_dto.current_stage
+        variable = stage_display_dto.variable
+        stage = stage_display_dto.stage
+        func = operator_dict[stage_display_dto.operator]
         if func(status_variable_dict[variable], stage):
-            logic_satisfied_stages.append(stage)
+            logic_satisfied_stages.append(current_stage)
 
     def _calculate_indirect_logic(
-            self, status_stage_dto: StatusOperandStageDTO,
+            self, stage_display_logic_dto: StageDisplayLogicDTO,
             status_variable_dict: Dict[str, Any],
             logic_satisfied_stages: List[str],
             stage_value_dict: Dict[str, int]
     ):
         operator_dict = self._get_operator_dict()
-        val_of_stage = status_variable_dict[status_stage_dto.variable]
+        stage_display_dto = stage_display_logic_dto.display_logic_dto
+        left_stage = status_variable_dict[stage_display_dto.variable]
 
-        right_stage = status_stage_dto.stage
-
-        func = operator_dict[status_stage_dto.operator]
-        left_stage_value = stage_value_dict[val_of_stage]
+        right_stage = stage_display_dto.stage
+        current_stage = stage_display_logic_dto.current_stage
+        func = operator_dict[stage_display_dto.operator]
+        left_stage_value = stage_value_dict[left_stage]
         right_stage_value = stage_value_dict[right_stage]
         if func(left_stage_value, right_stage_value):
-            logic_satisfied_stages.append(right_stage)
+            logic_satisfied_stages.append(current_stage)
 
     @staticmethod
     def _get_operator_dict():
@@ -130,8 +137,8 @@ class GetTaskStageLogicSatisfiedStages:
             "==": operator.eq,
             ">=": operator.ge,
             "<=": operator.le,
-            ">": operator.le,
-            "<": operator.ge,
+            ">": operator.gt,
+            "<": operator.lt,
             "!=": operator.ne
         }
 
@@ -143,13 +150,15 @@ class GetTaskStageLogicSatisfiedStages:
         return status_variables_dict
 
     @staticmethod
-    def _get_status_operand_stage_dtos(stage_display_logics: List[str]):
+    def _get_status_operand_stage_dtos(
+            stage_display_dtos: List[StageDisplayDTO]
+    ) -> List[StageDisplayLogicDTO]:
         from ib_tasks.interactors.get_stage_display_logic_interactor \
             import StageDisplayLogicInteractor
         interactor = StageDisplayLogicInteractor()
-        status_operand_stage_dtos = interactor\
-            .get_stage_display_logic_condition(stage_display_logics)
-        return status_operand_stage_dtos
+        stage_display_logic_dtos = interactor\
+            .get_stage_display_logic_condition(stage_display_dtos)
+        return stage_display_logic_dtos
 
     @staticmethod
     def _get_status_variables_dict(status_variables_dto: List[StatusVariableDTO]):

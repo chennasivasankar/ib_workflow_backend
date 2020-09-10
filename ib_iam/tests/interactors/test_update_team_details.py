@@ -142,9 +142,9 @@ class TestUpdateTeamDetails:
 
         team_storage.get_team_id_if_team_name_already_exists \
             .assert_called_once_with(name=team_name)
-        call_obj = presenter \
+        call_args = presenter \
             .get_team_name_already_exists_response_for_update_team.call_args
-        error_obj = call_obj.args[0]
+        error_obj = call_args[0][0]
         actual_team_name_from_error = error_obj.team_name
         assert actual_team_name_from_error == expected_team_name_from_error
 

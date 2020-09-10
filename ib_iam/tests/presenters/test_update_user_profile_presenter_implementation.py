@@ -10,7 +10,7 @@ class TestUpdateUserProfilePresenterImplementation:
         json_presenter = UpdateUserProfilePresenterImplementation()
         expected_response = {}
 
-        result = json_presenter.get_success_response_for_update_user_profile()
+        result = json_presenter.get_response_for_update_user_profile()
 
         actual_response = json.loads(result.content)
         assert actual_response == expected_response
@@ -26,7 +26,7 @@ class TestUpdateUserProfilePresenterImplementation:
         expected_res_status = INVALID_NAME_LENGTH[1]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
-        result = json_presenter.raise_invalid_name_length_exception_for_update_user_profile()
+        result = json_presenter.response_for_invalid_name_length_exception()
 
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]
@@ -48,7 +48,7 @@ class TestUpdateUserProfilePresenterImplementation:
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
         result = json_presenter \
-            .raise_name_should_not_contain_special_chars_and_numbers_exception_for_update_user_profile()
+            .response_for_name_contains_special_character_exception()
 
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]
@@ -65,7 +65,7 @@ class TestUpdateUserProfilePresenterImplementation:
         expected_res_status = INVALID_EMAIL[1]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
-        result = json_presenter.raise_invalid_email_exception_for_update_user_profile()
+        result = json_presenter.response_for_invalid_email_exception()
 
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]
@@ -82,7 +82,7 @@ class TestUpdateUserProfilePresenterImplementation:
         expected_res_status = EMAIL_ALREADY_IN_USE[1]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
-        result = json_presenter.raise_email_already_in_use_exception_for_update_user_profile()
+        result = json_presenter.response_for_email_already_exists_exception()
 
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]
@@ -99,7 +99,7 @@ class TestUpdateUserProfilePresenterImplementation:
         expected_res_status = INVALID_ROLE_IDS[1]
         expected_http_status_code = StatusCode.NOT_FOUND.value
 
-        result = json_presenter.raise_invalid_role_ids_exception()
+        result = json_presenter.response_for_invalid_role_ids_exception()
 
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]
@@ -117,7 +117,7 @@ class TestUpdateUserProfilePresenterImplementation:
         expected_res_status = DUPLICATE_ROLE_IDS[1]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
-        result = json_presenter.raise_duplicate_role_ids_exception()
+        result = json_presenter.response_for_duplicate_role_ids_exception()
 
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]

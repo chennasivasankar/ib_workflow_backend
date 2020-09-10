@@ -19,7 +19,8 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldCompleteDetailsDTO, FieldRolesDTO, FieldRoleDTO, \
     UserFieldPermissionDTO, FieldDetailsDTOWithTaskId, FieldDetailsDTO, \
-    StageTaskFieldsDTO, FieldPermissionDTO, FieldValueDTO, FieldNameDTO
+    StageTaskFieldsDTO, FieldPermissionDTO, FieldValueDTO, FieldNameDTO, \
+    FieldIdWithFieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
     TaskGoFFieldDTO,
     TaskGoFDTO, TaskDetailsDTO, TaskBaseDetailsDTO, FieldSearchableDTO
@@ -32,7 +33,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDetailsDTO, StageDisplayValueDTO, StageIdWithTemplateIdDTO, \
     StageRoleDTO, TaskStagesDTO, \
     TaskTemplateStageDTO, TaskStageAssigneeDTO, TaskStageHavingAssigneeIdDTO, \
-    CurrentStageDetailsDTO
+    CurrentStageDetailsDTO, StageIdActionNameDTO, StageActionIdDTO, StageDisplayDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO, TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
@@ -418,16 +419,20 @@ class GoFToTaskTemplateDTOFactory(factory.Factory):
 class TaskTemplateGofsDTOFactory(factory.Factory):
     class Meta:
         model = TaskTemplateGofsDTO
+
     template_id = factory.Sequence(lambda n: 'template_{}'.format(n))
-    gof_ids = factory.Sequence(lambda n: ['gof_{}'.format(n), 'gof_{}'.format(n+1)])
+    gof_ids = factory.Sequence(
+        lambda n: ['gof_{}'.format(n), 'gof_{}'.format(n + 1)])
 
 
 class FieldNameDTOFactory(factory.Factory):
     class Meta:
         model = FieldNameDTO
+
     field_id = factory.Sequence(lambda n: 'field_{}'.format(n))
     gof_id = factory.Sequence(lambda n: 'gof_{}'.format(n))
-    field_display_name = factory.Sequence(lambda n: 'display_name_{}'.format(n))
+    field_display_name = factory.Sequence(
+        lambda n: 'display_name_{}'.format(n))
 
 
 class TaskGoFDTOFactory(factory.Factory):
@@ -514,6 +519,14 @@ class StageDisplayValueDTOFactory(factory.Factory):
     value = factory.sequence(lambda n: (n + 1))
 
 
+class StageDisplayDTOFactory(factory.Factory):
+    class Meta:
+        model = StageDisplayDTO
+    stage_id = factory.sequence(lambda n: "stage_{}".format(n + 1))
+    display_value = factory.sequence(
+        lambda n: "variable_{} == stage_{}".format((n + 1), (n + 1)))
+
+
 class FieldPermissionDTOFactory(factory.Factory):
     class Meta:
         model = FieldPermissionDTO
@@ -564,7 +577,8 @@ class TaskBaseDetailsDTOFactory(factory.Factory):
 
     template_id = factory.sequence(
         lambda counter: "template_{}".format(counter))
-    project_id = factory.sequence(lambda counter: "project_id{}".format(counter))
+    project_id = factory.sequence(
+        lambda counter: "project_id{}".format(counter))
     task_display_id = factory.sequence(
         lambda counter: "IBWF-{}".format(counter + 1))
     title = factory.sequence(lambda counter: "title_{}".format(counter))
@@ -625,7 +639,8 @@ class UserDetailsDTOFactory(factory.Factory):
     class Meta:
         model = UserDetailsDTO
 
-    user_id = factory.Sequence(lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % (n + 1))
+    user_id = factory.Sequence(
+        lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % (n + 1))
     user_name = factory.Sequence(lambda n: "user_name_%d" % (n + 1))
     profile_pic_url = factory.Sequence(lambda n: "profile_pic_%d" % (n + 1))
 
@@ -727,3 +742,31 @@ class ProjectIdWithTaskTemplateIdDTOFactory(factory.Factory):
     project_id = factory.sequence(lambda counter: "project_{}".format(counter))
     task_template_id = factory.sequence(
         lambda counter: "template_{}".format(counter))
+
+
+class FieldIdWithFieldDisplayNameDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldIdWithFieldDisplayNameDTO
+
+    field_id = factory.Sequence(lambda c: "field_id_{}".format(c))
+    gof_display_name = factory.Sequence(
+        lambda c: "gof_display_name{}".format(c))
+    field_display_name = factory.Sequence(
+        lambda c: "field_display_name_{}".format(c))
+
+
+class StageIdActionNameDTOFactory(factory.Factory):
+    class Meta:
+        model = StageIdActionNameDTO
+
+    stage_id = factory.sequence(lambda counter: "stage_{}".format(counter))
+    action_name = factory.sequence(lambda counter: "action_name_{}".format(counter))
+
+
+class StageActionIdDTOFactory(factory.Factory):
+    class Meta:
+        model = StageActionIdDTO
+
+    action_id = factory.sequence(lambda counter: counter)
+    stage_id = factory.sequence(lambda counter: "stage_{}".format(counter))
+    action_name = factory.sequence(lambda counter: "action_name_{}".format(counter))

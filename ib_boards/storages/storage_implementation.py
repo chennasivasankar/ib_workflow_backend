@@ -11,6 +11,7 @@ from ib_boards.interactors.storage_interfaces.dtos import ColumnBoardDTO, \
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface, FieldDisplayStatusDTO, FieldOrderDTO
 from ib_boards.models import Board, ColumnPermission, Column, UserStarredBoard
+from ib_boards.models.fields_in_list_view import FieldOrder, FieldDisplayStatus
 
 
 class StorageImplementation(StorageInterface):
@@ -248,13 +249,25 @@ class StorageImplementation(StorageInterface):
 
     def get_board_ids(self, user_id: str, project_id: str) -> \
             Tuple[List[str], List[str]]:
-        starred_board_ids = list(UserStarredBoard.objects.filter(user_id=user_id,
-                                                                 board__project_id=project_id)
-                                 .values_list('board_id', flat=True))
+        starred_board_ids = list(
+            UserStarredBoard.objects.filter(user_id=user_id,
+                                            board__project_id=project_id)
+            .values_list('board_id', flat=True))
         board_ids = list(Board.objects.filter(project_id=project_id)
                          .exclude(board_id__in=starred_board_ids)
                          .values_list('board_id', flat=True))
         return board_ids, starred_board_ids
+
+    def get_user_permitted_board_ids(self, user_roles: List[str], board_ids: List[str]) -> List[str]:
+        from ib_boards.constants.constants import ALL_ROLES_ID
+        user_roles.append(ALL_ROLES_ID)
+        column_ids = list(ColumnPermission.objects.filter(
+            user_role_id__in=user_roles
+        ).values_list('column_id', flat=True))
+        board_ids = Column.objects.filter(
+            column_id__in=column_ids, board_id__in=board_ids
+        ).values_list('board_id', flat=True)
+        return sorted(list(set(board_ids)))
 
     def get_board_details(self, board_ids: List[str]) -> List[BoardDTO]:
         board_objects = Board.objects.filter(
@@ -288,7 +301,8 @@ class StorageImplementation(StorageInterface):
         )
         return stage_ids
 
-    def validate_user_role_with_column_roles(self, user_role: List[str], column_id: str):
+    def validate_user_role_with_column_roles(self, user_role: List[str],
+                                             column_id: str):
         user_roles = list(ColumnPermission.objects.filter(
             column_id=column_id
         ).values_list('user_role_id', flat=True))
@@ -448,23 +462,163 @@ class StorageImplementation(StorageInterface):
         UserStarredBoard.objects.get_or_create(
             board_id=board_id, user_id=user_id)
 
-    def validate_field_id_with_column_id(self, column_id: str, field_id: str):
-        pass
+    def validate_field_id_with_column_id(self, column_id: str, field_id: str, user_id: str):
+        is_field_status_present = not FieldDisplayStatus.objects.filter(
+            user_id=user_id,
+            column_id=column_id,
+            field_id=field_id
+        ).exists()
+        if is_field_status_present:
+            from ib_boards.exceptions.custom_exceptions import \
+                FieldNotBelongsToColumn
+            raise FieldNotBelongsToColumn
 
     def change_display_status_of_field(
             self, field_display_status_parameter: ChangeFieldsStatusParameter):
-        pass
+        field_status_object = FieldDisplayStatus.objects.get(
+            user_id=field_display_status_parameter.user_id,
+            column_id=field_display_status_parameter.column_id,
+            field_id=field_display_status_parameter.field_id
+        )
+        field_status_object.display_status = field_display_status_parameter.display_status
+        field_status_object.save()
 
-    def change_display_order_of_field(self, field_order_parameter: ChangeFieldsOrderParameter):
-        pass
+    def change_display_order_of_field(self,
+                                      field_order_parameter: ChangeFieldsOrderParameter):
+        fields_order_object = FieldOrder.objects.get(
+            column_id=field_order_parameter.column_id,
+            user_id=field_order_parameter.user_id
+        )
+        import json
+        field_ids = json.loads(fields_order_object.fields_order)['field_ids']
+        field_ids.remove(field_order_parameter.field_id)
+        field_ids.insert(field_order_parameter.display_order, field_order_parameter.field_id)
+        new_fields_ids = json.dumps(
+            {
+                "field_ids": field_ids
+            }
+        )
+        fields_order_object.fields_order = new_fields_ids
+        fields_order_object.save()
+
+    def get_valid_field_ids(
+            self, column_id: str, field_ids: List[str], user_id: str) -> List[str]:
+        return list(FieldDisplayStatus.objects.filter(
+            user_id=user_id,
+            column_id=column_id,
+            field_id__in=field_ids
+        ).values_list('field_id', flat=True))
+
+    def get_field_ids_list_in_order(
+            self, column_id: str, user_id: str) -> List[str]:
+        try:
+            field_ids = FieldOrder.objects.get(
+                column_id=column_id,
+                user_id=user_id
+            ).fields_order
+        except FieldOrder.DoesNotExist:
+            return []
+        import json
+        field_ids = json.loads(field_ids)['field_ids']
+        return field_ids
 
     def get_field_display_status_dtos(
             self, column_id: str, user_id: str) -> List[FieldDisplayStatusDTO]:
-        pass
+        field_status_objects = FieldDisplayStatus.objects.filter(
+            user_id=user_id,
+            column_id=column_id,
+        )
+        return [
+            FieldDisplayStatusDTO(
+                field_id=field_status_object.field_id,
+                display_status=field_status_object.display_status
+            )
+            for field_status_object in field_status_objects
+        ]
 
-    def get_field_display_order_dtos(
-            self, column_id: str, user_id: str) -> List[FieldOrderDTO]:
-        pass
+    def get_present_field_ids(self, column_id: str, user_id: str) -> List[str]:
+        field_ids = FieldDisplayStatus.objects.filter(
+            user_id=user_id,
+            column_id=column_id,
+        ).values_list('field_id', flat=True)
+        return list(field_ids)
 
-    def get_valid_field_ids(self, column_id: str, field_ids: List[str]) -> List[str]:
-        pass
+    def create_field_ids_order_and_display_status(
+            self, column_id: str, user_id: str, field_ids: List[str]):
+        self._create_fields_display_status(
+            column_id=column_id,
+            user_id=user_id,
+            field_ids=field_ids
+        )
+        self._create_fields_order(
+            column_id=column_id,
+            user_id=user_id,
+            field_ids=field_ids
+        )
+
+    @staticmethod
+    def _create_fields_display_status(
+            column_id: str, user_id: str, field_ids: List[str]):
+        from ib_boards.models.fields_in_list_view import FieldDisplayStatus
+        fields_display_statuses_list = [
+            FieldDisplayStatus(
+                column_id=column_id,
+                user_id=user_id,
+                field_id=field_id
+            )
+            for field_id in field_ids
+        ]
+        FieldDisplayStatus.objects.bulk_create(fields_display_statuses_list)
+
+    def _create_fields_order(
+            self, column_id: str, user_id: str, field_ids: List[str]):
+        try:
+            field_ids_object = FieldOrder.objects.get(
+                column_id=column_id,
+                user_id=user_id
+            )
+        except FieldOrder.DoesNotExist:
+            self._create_fields_order_with_all_field_ids(
+                column_id=column_id,
+                user_id=user_id,
+                field_ids=field_ids
+            )
+            return
+        self._add_extra_fields(
+            field_ids=field_ids,
+            field_ids_object=field_ids_object
+        )
+
+    @staticmethod
+    def _create_fields_order_with_all_field_ids(
+            column_id: str, user_id: str, field_ids: List[str]):
+        import json
+        field_ids = json.dumps(
+            {
+                "field_ids": field_ids
+            }
+        )
+        FieldOrder.objects.create(
+            column_id=column_id,
+            user_id=user_id,
+            fields_order=field_ids
+        )
+
+    @staticmethod
+    def _add_extra_fields(field_ids: List[str], field_ids_object: FieldOrder):
+        import json
+        present_field_ids = json.loads(field_ids_object.fields_order)['field_ids']
+        extra_field_ids = [
+            field_id
+            for field_id in field_ids
+            if field_id not in present_field_ids
+        ]
+        new_field_ids = present_field_ids + extra_field_ids
+        field_ids = json.dumps(
+            {
+                "field_ids": present_field_ids
+            }
+        )
+        field_ids_object.fields_order = new_field_ids
+        field_ids_object.save()
+

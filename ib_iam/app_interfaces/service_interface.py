@@ -1,10 +1,8 @@
 from typing import List, Optional
 
 from ib_iam.adapters.dtos import UserProfileDTO, SearchQueryWithPaginationDTO
-from ib_iam.app_interfaces.dtos import SearchableDTO, UserTeamsDTO, \
-    ProjectTeamsAndUsersDTO
-from ib_iam.app_interfaces.dtos import SearchableDTO, ProjectTeamUserDTO, \
-    UserIdWithTeamIDAndNameDTO
+from ib_iam.app_interfaces.dtos import UserTeamsDTO, ProjectTeamsAndUsersDTO, \
+    SearchableDTO, ProjectTeamUserDTO, UserIdWithTeamIDAndNameDTO
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO, \
     UserIdWithProjectIdAndStatusDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserIdAndNameDTO, \
@@ -204,15 +202,19 @@ class ServiceInterface:
         from ib_iam.storages.team_member_level_storage_implementation import \
             TeamMemberLevelStorageImplementation
         team_member_level_storage = TeamMemberLevelStorageImplementation()
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        user_storage = UserStorageImplementation()
         from ib_iam.interactors.get_team_members_of_level_hierarchy_interactor import \
             GetTeamMembersOfLevelHierarchyInteractor
         interactor = GetTeamMembersOfLevelHierarchyInteractor(
-            team_member_level_storage=team_member_level_storage
+            team_member_level_storage=team_member_level_storage,
+            user_storage=user_storage
         )
-        immediate_superion_user_id = interactor.get_immediate_superior_user_id(
+        immediate_superior_user_id = interactor.get_immediate_superior_user_id(
             team_id=team_id, user_id=user_id
         )
-        return immediate_superion_user_id
+        return immediate_superior_user_id
 
     @staticmethod
     def get_searchable_details_dtos(
@@ -421,3 +423,24 @@ class ServiceInterface:
         )
         return interactor.get_user_status_for_given_projects(
             user_id=user_id, project_ids=project_ids)
+
+    @staticmethod
+    def get_project_role_ids(project_id: str) -> List[str]:
+        from ib_iam.interactors.project_interactor import ProjectInteractor
+        from ib_iam.storages.project_storage_implementation import \
+            ProjectStorageImplementation
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        from ib_iam.storages.team_storage_implementation import \
+            TeamStorageImplementation
+        user_storage = UserStorageImplementation()
+        team_storage = TeamStorageImplementation()
+        project_storage = ProjectStorageImplementation()
+        interactor = ProjectInteractor(
+            project_storage=project_storage,
+            user_storage=user_storage,
+            team_storage=team_storage
+        )
+        project_role_ids = interactor.get_project_role_ids(
+            project_id=project_id)
+        return project_role_ids

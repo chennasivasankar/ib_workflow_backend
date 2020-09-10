@@ -30,7 +30,7 @@ class GetListOfUsersInteractor(ValidationMixin):
             response = presenter.response_for_get_users(
                 complete_user_details_dtos)
         except UserIsNotAdmin:
-            response = presenter.raise_user_is_not_admin_exception()
+            response = presenter.response_for_user_is_not_admin_exception()
         except InvalidOffsetValue:
             response = presenter.raise_invalid_offset_value_exception()
         except InvalidLimitValue:

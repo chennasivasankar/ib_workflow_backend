@@ -88,7 +88,7 @@
         "res_status": {
           "type": "string",
           "enum": [
-            "USER_DONOT_HAVE_ACCESS"
+            "USER_NOT_HAVE_ACCESS_TO_COLUMN"
           ]
         }
       },
@@ -310,10 +310,14 @@
             },
             "field_response": {
               "type": "string"
+            },
+            "field_id": {
+              "type": "string"
             }
           },
           "required": [
-            "field_display_name"
+            "field_display_name",
+            "field_id"
           ]
         }
       ]
@@ -484,6 +488,28 @@
         "res_status"
       ]
     },
+    "InvalidDisplayOrder": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_DISPLAY_ORDER"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
     "ForbiddenInFieldsOperation": {
       "type": "object",
       "properties": {
@@ -496,9 +522,10 @@
         "res_status": {
           "type": "string",
           "enum": [
-            "USER_DO_NOT_HAVE_ACCESS_COLUMN",
-            "USER_DO_NOT_HAVE_ACCESS_FIELD",
-            "FIELD_NOT_BELONGS_TO_COLUMN"
+            "USER_NOT_HAVE_ACCESS_TO_COLUMN",
+            "USER_DO_NOT_HAVE_ACCESS_FIELDS",
+            "FIELD_NOT_BELONGS_TO_COLUMN",
+            "FIELDS_NOT_BELONGS_TO_COLUMN"
           ]
         }
       },
@@ -626,7 +653,7 @@
         "field_id": {
           "type": "string"
         },
-        "display_name": {
+        "field_display_name": {
           "type": "string"
         },
         "display_status": {
@@ -645,7 +672,7 @@
         "display_order",
         "display_status",
         "field_id",
-        "display_name"
+        "field_display_name"
       ]
     }
   },
@@ -708,6 +735,9 @@
       "schema": {
         "type": "object",
         "properties": {
+          "field_id": {
+            "type": "string"
+          },
           "display_status": {
             "type": "string",
             "enum": [
@@ -717,7 +747,8 @@
           }
         },
         "required": [
-          "display_status"
+          "display_status",
+          "field_id"
         ]
       }
     },
@@ -728,6 +759,9 @@
       "schema": {
         "type": "object",
         "properties": {
+          "field_id": {
+            "type": "string"
+          },
           "display_order": {
             "type": "integer",
             "format": "int64"
@@ -740,7 +774,9 @@
           }
         },
         "required": [
-          "display_order"
+          "display_order",
+          "field_id",
+          "field_ids"
         ]
       }
     },
@@ -839,6 +875,12 @@
       "description": "invalid starred board response",
       "schema": {
         "$ref": "#/definitions/ForbiddenInFieldsOperation"
+      }
+    },
+    "InvalidDisplayOrderResponse": {
+      "description": "invalid starred board response",
+      "schema": {
+        "$ref": "#/definitions/InvalidDisplayOrder"
       }
     },
     "GetBoardsResponse": {
@@ -1117,7 +1159,7 @@
         }
       }
     },
-    "/columns/{column_id}/fields/{field_id}/display_status/": {
+    "/columns/{column_id}/fields_display_status/v1/": {
       "post": {
         "summary": "Change the display status of the field in the column",
         "operationId": "change_the_display_status_of_field",
@@ -1130,9 +1172,6 @@
           }
         ],
         "parameters": [
-          {
-            "$ref": "#/parameters/FieldIdPathParameter"
-          },
           {
             "$ref": "#/parameters/ColumnIdParameter"
           },
@@ -1153,7 +1192,7 @@
         }
       }
     },
-    "/columns/{column_id}/fields/{field_id}/display_order/": {
+    "/columns/{column_id}/fields_display_order/v1/": {
       "post": {
         "summary": "Change the display order of the field in the column",
         "operationId": "change_the_display_order_of_field",
@@ -1166,9 +1205,6 @@
           }
         ],
         "parameters": [
-          {
-            "$ref": "#/parameters/FieldIdPathParameter"
-          },
           {
             "$ref": "#/parameters/ColumnIdParameter"
           },
@@ -1184,6 +1220,9 @@
             "$ref": "#/responses/InvalidFieldsOperationResponse"
           },
           "403": {
+            "$ref": "#/responses/ForbiddenResponse"
+          },
+          "400": {
             "$ref": "#/responses/ForbiddenResponse"
           }
         }

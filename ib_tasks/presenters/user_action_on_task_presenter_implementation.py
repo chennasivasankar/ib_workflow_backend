@@ -4,6 +4,10 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.adapters.dtos import ColumnStageDTO, AssigneeDetailsDTO
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.exceptions.fields_custom_exceptions import \
+    UserDidNotFillRequiredFields
+from ib_tasks.exceptions.gofs_custom_exceptions import \
+    UserDidNotFillRequiredGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied, UserBoardPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import \
@@ -28,6 +32,34 @@ from ib_tasks.interactors.user_action_on_task_interactor import \
 class UserActionOnTaskPresenterImplementation(PresenterInterface,
                                               HTTPResponseMixin):
 
+    def raise_user_did_not_fill_required_fields(
+            self, err: UserDidNotFillRequiredFields):
+        from ib_tasks.constants.exception_messages import \
+            USER_DID_NOT_FILL_REQUIRED_FIELDS
+        field_display_names = [
+            dto.field_display_name for dto in err.unfilled_field_dtos]
+        message = USER_DID_NOT_FILL_REQUIRED_FIELDS[0].format(
+            field_display_names)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": USER_DID_NOT_FILL_REQUIRED_FIELDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_user_did_not_fill_required_gofs(
+            self, err: UserDidNotFillRequiredGoFs):
+        from ib_tasks.constants.exception_messages import \
+            USER_DID_NOT_FILL_REQUIRED_GOFS
+        message = USER_DID_NOT_FILL_REQUIRED_GOFS[0].format(
+            err.gof_display_names)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": USER_DID_NOT_FILL_REQUIRED_GOFS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
     def raise_stage_ids_list_empty_exception(self,
                                              err: StageIdsListEmptyException):
         from ib_tasks.constants.exception_messages import \
@@ -46,21 +78,21 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         message = INVALID_STAGE_IDS[0].format(err.invalid_stage_ids)
         data = {
             "response": message,
-            "http_status_code": 400,
+            "http_status_code": 404,
             "res_status": INVALID_STAGE_IDS[1]
         }
-        return self.prepare_400_bad_request_response(data)
+        return self.prepare_404_not_found_response(data)
 
     def get_response_for_task_delay_reason_not_updated(
             self, err: TaskDelayReasonIsNotUpdated):
         from ib_tasks.constants.exception_messages import \
             TASK_DELAY_REASON_IS_NOT_ADDED
         message = TASK_DELAY_REASON_IS_NOT_ADDED[0].format(
-                err.task_display_id, err.stage_display_name)
+            err.task_display_id, err.stage_display_name)
         data = {
-                "response": message,
-                "http_status_code": 404,
-                "res_status": TASK_DELAY_REASON_IS_NOT_ADDED[1]
+            "response": message,
+            "http_status_code": 404,
+            "res_status": TASK_DELAY_REASON_IS_NOT_ADDED[1]
         }
         return self.prepare_404_not_found_response(data)
 
@@ -517,10 +549,10 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             INVALID_STAGE_IDS
         data = {
             "response": INVALID_STAGE_IDS[0].format(invalid_stage_ids),
-            "http_status_code": 400,
+            "http_status_code": 404,
             "res_status": INVALID_STAGE_IDS[1]
         }
-        return self.prepare_400_bad_request_response(data)
+        return self.prepare_404_not_found_response(data)
 
     def raise_stage_ids_with_invalid_permission_for_assignee_exception(
             self, invalid_stage_ids):

@@ -13,11 +13,12 @@ def get_datetime_now():
 
 
 class ChecklistItem(models.Model):
-    checklist_item_id = models.UUIDField(primary_key=True,
-                                         default=generate_uuid,
-                                         editable=False)
-    checklist = models.ForeignKey("Checklist", on_delete=models.CASCADE,
-                                  related_name="checklist_items")
+    checklist_item_id = models.UUIDField(
+        primary_key=True, default=generate_uuid, editable=False
+    )
+    checklist = models.ForeignKey(
+        "Checklist", on_delete=models.CASCADE, related_name="checklist_items"
+    )
     text = models.TextField()
     is_checked = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=get_datetime_now)

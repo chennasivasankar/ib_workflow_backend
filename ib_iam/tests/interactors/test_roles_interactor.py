@@ -42,7 +42,7 @@ class TestAddRolesInteractor:
         storage = create_autospec(RolesStorageInterface)
         presenter = create_autospec(AddRolesPresenterInterface)
         interactor = RolesInteractor(storage=storage)
-        presenter.raise_duplicate_role_ids_exception.return_value = \
+        presenter.response_for_duplicate_role_ids_exception.return_value = \
             Mock()
 
         # Act
@@ -51,10 +51,10 @@ class TestAddRolesInteractor:
         )
 
         # Assert
-        call_obj = presenter.raise_duplicate_role_ids_exception.call_args
+        call_args = presenter.response_for_duplicate_role_ids_exception.call_args
 
-        assert call_obj[0][0].role_ids == duplicate_role_ids
-        presenter.raise_duplicate_role_ids_exception.assert_called_once()
+        assert call_args[0][0].role_ids == duplicate_role_ids
+        presenter.response_for_duplicate_role_ids_exception.assert_called_once()
 
     def test_given_role_name_is_empty_then_raise_exception(self):
         # Arrange

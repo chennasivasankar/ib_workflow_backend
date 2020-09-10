@@ -40,7 +40,7 @@ class AddRolesPresenterImplementation(AddRolesPresenterInterface, HTTPResponseMi
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
 
-    def raise_duplicate_role_ids_exception(self, err):
+    def response_for_duplicate_role_ids_exception(self, err):
         from ib_iam.constants.exception_messages \
             import DUPLICATE_ROLE_IDS
         response_dict = {

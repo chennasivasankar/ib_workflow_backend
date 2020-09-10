@@ -54,7 +54,7 @@ class TestGetUsersListPresenter:
         response_status_code = USER_DOES_NOT_HAVE_PERMISSION[1]
 
         # Act
-        response_object = presenter.raise_user_is_not_admin_exception()
+        response_object = presenter.response_for_user_is_not_admin_exception()
 
         # Assert
         response = json.loads(response_object.content)

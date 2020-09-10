@@ -1,8 +1,8 @@
 from collections import defaultdict
 from datetime import datetime
-from typing import List, Optional, Dict, Tuple
+from typing import List, Optional, Dict
 
-from django.db.models import Q, Count
+from django.db.models import Q
 
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
@@ -15,8 +15,7 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO, TaskStageIdsDTO, \
-    StageIdWithTemplateIdDTO, \
+    GetTaskStageCompleteDetailsDTO, StageIdWithTemplateIdDTO, \
     TaskIdWithStageValueDTO, TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
@@ -191,28 +190,6 @@ class TasksStorageImplementation(TaskStorageInterface):
             fields_dto=stage_fields_dtos,
             actions_dto=stage_actions_dtos
         )
-
-    def get_task_ids_for_the_stage_ids(
-            self, stage_ids: List[str],
-            offset: int, limit: int) -> Tuple[List[TaskStageIdsDTO], int]:
-        total_tasks = TaskStage.objects.aggregate(
-            tasks_count=Count(
-                'task',
-                filter=Q(stage__stage_id__in=stage_ids),
-                distinct=True
-            )
-        )['tasks_count']
-        task_stage_ids = TaskStage.objects.filter(
-            stage__stage_id__in=stage_ids
-        ).values('task_id', 'stage__stage_id')
-        task_stage_dtos = [
-            TaskStageIdsDTO(
-                task_id=task_stage_id['task_id'],
-                stage_id=task_stage_id['stage__stage_id']
-            )
-            for task_stage_id in task_stage_ids
-        ]
-        return task_stage_dtos, total_tasks
 
     @staticmethod
     def _get_task_tempalate_and_stage_ids(task_dtos, task_objs):
@@ -527,18 +504,20 @@ class TasksStorageImplementation(TaskStorageInterface):
         task_obj = Task.objects.get(id=task_id)
         return task_obj.project_id
 
-    def get_user_team_id(self, user_id: str, task_id: int) -> str:
-        task = TaskStageHistory.objects.filter(
-            assignee_id=user_id, task_id=task_id
-        )
-        return task[0].team_id
+    def get_team_id(self, stage_id: int, task_id: int) -> str:
+        return TaskStageHistory.objects.get(
+            task_id=task_id, stage_id=stage_id
+        ).team_id
 
-    def get_user_missed_the_task_due_time(
-            self, task_id: int, user_id: str, stage_id: int) -> datetime:
-        task_due_time = TaskStageHistory.objects.filter(
-            task_id=task_id, assignee_id=user_id, stage_id=stage_id
-        ).values_list('task__due_date', flat=True)
-        return task_due_time[0]
+    def get_task_due_datetime(
+            self, task_id: int) -> \
+            Optional[datetime]:
+        task_due_time = Task.objects.filter(
+                id=task_id
+        ).values_list('due_date', flat=True)
+        if task_due_time:
+            return task_due_time[0]
+        return None
 
     def get_valid_task_ids_from_the_project(self, task_ids: List[int],
                                             project_id: str):

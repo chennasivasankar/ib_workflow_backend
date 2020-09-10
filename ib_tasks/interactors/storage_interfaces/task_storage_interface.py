@@ -60,12 +60,6 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_ids_for_the_stage_ids(
-            self, stage_ids: List[str], task_ids: List[int]) -> List[
-        TaskStageIdsDTO]:
-        pass
-
-    @abc.abstractmethod
     def get_field_ids_for_given_task_template_ids(self,
                                                   task_template_ids: List[
                                                       str]) -> \
@@ -143,13 +137,11 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_user_team_id(self, user_id: str, task_id: int) -> str:
+    def get_team_id(self, stage_id: int, task_id: int) -> str:
         pass
 
     @abc.abstractmethod
-    def get_user_missed_the_task_due_time(self, task_id: int,
-                                          user_id: str,
-                                          stage_id: int) -> datetime:
+    def get_task_due_datetime(self, task_id: int) -> Optional[datetime]:
         pass
 
     @abc.abstractmethod

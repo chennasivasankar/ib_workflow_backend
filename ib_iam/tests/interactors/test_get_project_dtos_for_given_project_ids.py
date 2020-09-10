@@ -47,7 +47,7 @@ class TestGetProjectDTOs:
         project_dtos = [
             ProjectDTOFactory.create(project_id=project_id)
             for project_id in project_ids]
-        project_storage_mock.get_project_dtos_for_given_project_ids.return_value = \
+        project_storage_mock.get_project_dtos.return_value = \
             project_dtos
 
         # Act
@@ -55,7 +55,7 @@ class TestGetProjectDTOs:
             project_ids=project_ids)
 
         # Assert
-        project_storage_mock.get_project_dtos_for_given_project_ids.\
+        project_storage_mock.get_project_dtos.\
             assert_called_once_with(project_ids=project_ids)
 
     # TODO: write assert statements for storage and presenter
@@ -65,7 +65,7 @@ class TestGetProjectDTOs:
         project_ids = ["1", "2"]
         interactor = init_interactor
         from ib_iam.exceptions.custom_exceptions import InvalidProjectIds
-        project_storage_mock.get_project_dtos_for_given_project_ids.side_effect = \
+        project_storage_mock.get_project_dtos.side_effect = \
             InvalidProjectIds(project_ids=project_ids)
 
         with pytest.raises(InvalidProjectIds):

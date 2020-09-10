@@ -101,3 +101,9 @@ class DuplicateSameGoFOrderForAGoF(Exception):
 
 class InvalidSameGoFOrderForAGoF(Exception):
     pass
+
+
+class UserDidNotFillRequiredGoFs(Exception):
+
+    def __init__(self, gof_display_names: List[str]):
+        self.gof_display_names = gof_display_names

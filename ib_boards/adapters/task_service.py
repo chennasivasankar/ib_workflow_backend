@@ -8,7 +8,7 @@ from typing import List, Tuple
 from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import TaskTemplateStagesDTO, \
     TaskSummaryFieldsDTO, TaskStatusDTO, FieldDTO, ColumnTaskIdsDTO, ActionDTO, \
-    TaskStageDTO, StageAssigneesDTO, AssigneesDTO
+    TaskStageDTO, StageAssigneesDTO, AssigneesDTO, FieldNameDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
@@ -168,7 +168,8 @@ class TaskService:
         ]
 
     def get_tasks_assignees_details(
-            self, task_stage_ids: List[GetTaskDetailsDTO]) -> List[StageAssigneesDTO]:
+            self, task_stage_ids: List[GetTaskDetailsDTO]) -> List[
+        StageAssigneesDTO]:
 
         stage_assignees_dtos = self.interface.get_assignees_for_task_stages(
             task_stage_dtos=task_stage_ids
@@ -185,12 +186,26 @@ class TaskService:
         ]
 
     @staticmethod
-    def _get_assignee_details_dto(assignee_details: AssigneeDetailsDTO) -> AssigneesDTO:
+    def _get_assignee_details_dto(
+            assignee_details: AssigneeDetailsDTO) -> AssigneesDTO:
         return AssigneesDTO(
             assignee_id=assignee_details.assignee_id,
             name=assignee_details.name,
             profile_pic_url=assignee_details.profile_pic_url
         )
 
-    def get_field_display_name(self, field_ids: List[str]):
-        pass
+    def get_field_display_name(
+            self, field_ids: List[str], user_id: str,
+            project_id: str) -> List[FieldNameDTO]:
+        field_display_name_dtos = self.interface.get_field_display_names(
+            user_id=user_id,
+            project_id=project_id,
+            field_ids=field_ids
+        )
+        return [
+            FieldNameDTO(
+                field_id=field_display_name_dto.field_id,
+                display_name=field_display_name_dto.field_display_name
+            )
+            for field_display_name_dto in field_display_name_dtos
+        ]

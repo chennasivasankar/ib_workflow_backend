@@ -39,7 +39,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 class UpdateTaskPresenterImplementation(
     UpdateTaskPresenterInterface, HTTPResponseMixin
 ):
-    
+
     def raise_priority_is_required(self, err: PriorityIsRequired):
         from ib_tasks.constants.exception_messages import \
             PRIORITY_IS_REQUIRED
@@ -99,7 +99,7 @@ class UpdateTaskPresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             TASK_DELAY_REASON_NOT_UPDATED
         message = TASK_DELAY_REASON_NOT_UPDATED[0].format(
-            err.task_display_id, err.stage_display_name, err.due_date)
+            err.due_date, err.task_display_id, err.stage_display_name)
         data = {
             "response": message,
             "http_status_code": 400,

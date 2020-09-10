@@ -6,6 +6,8 @@ from .validator_class import ValidatorClass
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
+    user_obj = kwargs["user"]
+    user_id = str(user_obj.user_id)
     query_params = kwargs["query_params"]
     offset = query_params.get("offset")
     limit = query_params.get("limit")
@@ -21,9 +23,15 @@ def api_wrapper(*args, **kwargs):
     from ib_iam.storages.team_storage_implementation import \
         TeamStorageImplementation
     team_storage = TeamStorageImplementation()
+    from ib_iam.storages.user_storage_implementation import \
+        UserStorageImplementation
+    user_storage = UserStorageImplementation()
     presenter = GetProjectsPresenterImplementation()
-    interactor = GetProjectsInteractor(project_storage=project_storage,
-                                       team_storage=team_storage)
-    response = interactor.get_projects_wrapper(presenter=presenter,
-                                               pagination_dto=pagination_dto)
+    interactor = GetProjectsInteractor(
+        project_storage=project_storage, team_storage=team_storage,
+        user_storage=user_storage
+    )
+    response = interactor.get_projects_wrapper(
+        presenter=presenter, user_id=user_id, pagination_dto=pagination_dto
+    )
     return response

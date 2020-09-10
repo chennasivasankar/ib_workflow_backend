@@ -6,7 +6,7 @@ from ib_iam.interactors.storage_interfaces.dtos import (
     CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, MemberDTO,
     TeamMemberLevelDetailsDTO, UserProfileDTO, SearchableDetailsDTO,
     ProjectDTO, MemberIdWithSubordinateMemberIdsDTO, ProjectRoleDTO,
-    ProjectWithoutIdDTO, ProjectWithDisplayIdDTO)
+    ProjectWithoutIdDTO, ProjectWithDisplayIdDTO, RoleNameAndDescriptionDTO)
 
 
 class UserDTOFactory(factory.Factory):
@@ -153,6 +153,7 @@ class TeamWithTeamIdAndUserIdsDTOFactory(TeamWithUserIdsDTOFactory,
     team_id = factory.sequence(lambda n: "team%d" % n)
 
 
+# TODO: move to interactor_dtos
 class PaginationDTOFactory(factory.Factory):
     class Meta:
         model = PaginationDTO
@@ -337,5 +338,13 @@ class ProjectRoleDTOFactory(factory.Factory):
 
     project_id = factory.Sequence(lambda n: 'project %s' % n)
     role_id = factory.sequence(lambda number: "ROLE_%s" % number)
+    name = factory.sequence(lambda number: "role %s" % number)
+    description = factory.Sequence(lambda n: 'role description %s' % n)
+
+
+class RoleNameAndDescriptionDTOFactory(factory.Factory):
+    class Meta:
+        model = RoleNameAndDescriptionDTO
+
     name = factory.sequence(lambda number: "role %s" % number)
     description = factory.Sequence(lambda n: 'role description %s' % n)
