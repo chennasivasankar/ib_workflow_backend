@@ -2739,8 +2739,7 @@
               "required": [
                 "project_id",
                 "project_display_id",
-                "name",
-                "logo_url"
+                "name"
               ]
             }
           }
