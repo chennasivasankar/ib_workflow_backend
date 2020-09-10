@@ -78,9 +78,9 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         except InvalidTaskIdException as err:
             response = presenter.raise_exception_for_invalid_task_id(err)
             return response
-        except InvalidStageIdsForTask as err:
-            response = presenter.raise_invalid_stage_ids_for_task(err)
-            return response
+        # except InvalidStageIdsForTask as err:
+        #     response = presenter.raise_invalid_stage_ids_for_task(err)
+        #     return response
         except InvalidTaskDisplayId as err:
             response = presenter.raise_invalid_task_display_id(err)
             return response
@@ -171,8 +171,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         return user_roles
 
     def _validate_user_have_permission_for_at_least_one_stage(
-            self, stage_ids: List[int], user_roles: List[str]
-    ) -> bool:
+            self, stage_ids: List[int], user_roles: List[str]) -> bool:
         is_user_has_permission = \
             self.task_stage_storage \
                 .is_user_has_permission_for_at_least_one_stage(
