@@ -304,6 +304,6 @@ class TestGetTeamMemberLevelsWithMembersPresenterImplementation:
         # Assert
         response = json.loads(response_object.content)
 
-        assert response['http_status_code'] == StatusCode.BAD_REQUEST.value
+        assert response['http_status_code'] == StatusCode.FORBIDDEN.value
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
