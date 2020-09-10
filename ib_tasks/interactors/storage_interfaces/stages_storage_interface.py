@@ -72,7 +72,7 @@ class StageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_task_id_with_stage_details_dtos_based_on_stage_value(
-            self, stage_values: List[int],
+            self, stage_values: List[int], stage_ids: List[str],
             task_ids_group_by_stage_value_dtos: List[
                 StageValueWithTaskIdsDTO]) \
             -> List[TaskIdWithStageDetailsDTO]:

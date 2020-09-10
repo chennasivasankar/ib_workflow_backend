@@ -426,8 +426,8 @@ class ActOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         filled_field_ids = \
             self.gof_storage.get_filled_field_ids_of_given_task_gof_ids(
                 task_gof_ids)
-        self._validate_all_user_permitted_gof_ids_are_filled_or_not(
-            gof_id_with_display_name_dtos, filled_gof_ids)
+        # self._validate_all_user_permitted_gof_ids_are_filled_or_not(
+        #     gof_id_with_display_name_dtos, filled_gof_ids)
         self._validate_all_user_permitted_field_ids_are_filled_or_not(
             field_id_with_display_name_dtos, filled_field_ids)
 
