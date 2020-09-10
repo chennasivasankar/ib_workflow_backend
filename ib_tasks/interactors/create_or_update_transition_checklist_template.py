@@ -26,11 +26,13 @@ from ib_tasks.exceptions.task_custom_exceptions import \
 from ib_tasks.interactors.create_or_update_task \
     .template_gofs_fields_base_validations import \
     TemplateGoFsFieldsBaseValidationsInteractor
+from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
+from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.presenter_interfaces \
     .create_transition_checklist_presenter_interface import \
-    CreateTransitionChecklistTemplatePresenterInterface
+    CreateOrUpdateTransitionChecklistTemplatePresenterInterface
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces \
@@ -57,7 +59,7 @@ from ib_tasks.interactors.task_template_dtos import \
     CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
 
 
-class CreateTransitionChecklistTemplateInteractor(
+class CreateOrUpdateTransitionChecklistTemplateInteractor(
     GetTaskIdForTaskDisplayIdMixin
 ):
 
@@ -84,7 +86,7 @@ class CreateTransitionChecklistTemplateInteractor(
             self,
             transition_template_dto:
             CreateTransitionChecklistTemplateWithTaskDisplayIdDTO,
-            presenter: CreateTransitionChecklistTemplatePresenterInterface
+            presenter: CreateOrUpdateTransitionChecklistTemplatePresenterInterface
     ):
         try:
             return self._prepare_create_transition_checklist_response(
@@ -179,7 +181,7 @@ class CreateTransitionChecklistTemplateInteractor(
             self,
             transition_template_dto:
             CreateTransitionChecklistTemplateWithTaskDisplayIdDTO,
-            presenter: CreateTransitionChecklistTemplatePresenterInterface
+            presenter: CreateOrUpdateTransitionChecklistTemplatePresenterInterface
     ):
         task_id = self.get_task_id_for_task_display_id(
             transition_template_dto.task_display_id)
@@ -236,6 +238,14 @@ class CreateTransitionChecklistTemplateInteractor(
             self._validate_all_user_template_permitted_fields_are_filled_or_not(
                 transition_template_dto.created_by_id,
                 transition_template_dto.task_id, project_id)
+        existing_gofs = \
+            self.create_or_update_task_storage \
+                .get_gof_ids_with_same_gof_order_related_to_a_task(
+                transition_template_dto.task_id)
+        existing_fields = \
+            self.create_or_update_task_storage \
+                .get_field_ids_with_task_gof_id_related_to_given_task(
+                transition_template_dto.task_id)
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=transition_template_dto.task_id,
@@ -245,16 +255,23 @@ class CreateTransitionChecklistTemplateInteractor(
             for gof_fields_dto in
             transition_template_dto.transition_checklist_gofs
         ]
-        task_gof_details_dtos = \
-            self.create_or_update_task_storage.create_task_gofs(
-                task_gof_dtos=task_gof_dtos
-            )
-        task_gof_field_dtos = self._prepare_task_gof_fields_dtos(
-            transition_template_dto.transition_checklist_gofs,
-            task_gof_details_dtos
-        )
-        self.create_or_update_task_storage.create_task_gof_fields(
-            task_gof_field_dtos)
+        task_gof_dtos_for_updation, task_gof_dtos_for_creation = [], []
+        for task_gof_dto in task_gof_dtos:
+            gof_already_exists = \
+                self._is_gof_already_exists(
+                    task_gof_dto.gof_id, task_gof_dto.same_gof_order,
+                    existing_gofs)
+            if gof_already_exists:
+                task_gof_dtos_for_updation.append(task_gof_dto)
+            else:
+                task_gof_dtos_for_creation.append(task_gof_dto)
+        if task_gof_dtos_for_updation:
+            self._update_task_gofs(
+                task_gof_dtos_for_updation, transition_template_dto,
+                existing_fields)
+        if task_gof_dtos_for_creation:
+            self._create_task_gofs(task_gof_dtos_for_creation,
+                                   transition_template_dto)
 
     def _validate_task_id(self, task_id) -> Optional[InvalidTaskIdException]:
         is_valid_task_id = self.create_or_update_task_storage.is_valid_task_id(
@@ -420,3 +437,85 @@ class CreateTransitionChecklistTemplateInteractor(
             ]
             raise UserDidNotFillRequiredFields(unfilled_field_dtos)
         return
+
+    def _update_task_gofs(
+            self, task_gof_dtos_for_updation: List[TaskGoFWithTaskIdDTO],
+            transition_template_dto: CreateTransitionChecklistTemplateDTO,
+            existing_fields: List[FieldIdWithTaskGoFIdDTO]
+    ):
+        task_gof_details_dtos = \
+            self.create_or_update_task_storage.update_task_gofs(
+                task_gof_dtos_for_updation)
+        task_gof_field_dtos = self._prepare_task_gof_fields_dtos(
+            transition_template_dto.transition_checklist_gofs,
+            task_gof_details_dtos)
+        task_gof_field_dtos_for_updation, task_gof_field_dtos_for_creation = \
+            self._filter_task_gof_field_dtos(
+                task_gof_field_dtos, existing_fields)
+        if task_gof_field_dtos_for_updation:
+            self.create_or_update_task_storage.update_task_gof_fields(
+                task_gof_field_dtos_for_updation)
+
+        if task_gof_field_dtos_for_creation:
+            self.create_or_update_task_storage.create_task_gof_fields(
+                task_gof_field_dtos_for_creation)
+
+    def _create_task_gofs(
+            self, task_gof_dtos_for_creation: List[TaskGoFWithTaskIdDTO],
+            transition_template_dto: CreateTransitionChecklistTemplateDTO
+    ):
+        task_gof_details_dtos = \
+            self.create_or_update_task_storage.create_task_gofs(
+                task_gof_dtos_for_creation)
+        task_gof_field_dtos = \
+            self._prepare_task_gof_fields_dtos(
+                transition_template_dto.transition_checklist_gofs,
+                task_gof_details_dtos)
+        self.create_or_update_task_storage.create_task_gof_fields(
+            task_gof_field_dtos
+        )
+
+    def _filter_task_gof_field_dtos(
+            self, task_gof_field_dtos: List[TaskGoFFieldDTO],
+            existing_fields: List[FieldIdWithTaskGoFIdDTO]
+    ) -> (List[TaskGoFFieldDTO], List[TaskGoFFieldDTO]):
+        task_gof_field_dtos_for_updation, task_gof_field_dtos_for_creation = \
+            [], []
+        for task_gof_field_dto in task_gof_field_dtos:
+            field_id_already_exists = self._is_field_already_exists(
+                task_gof_field_dto.field_id, task_gof_field_dto.task_gof_id,
+                existing_fields
+            )
+            if field_id_already_exists:
+                task_gof_field_dtos_for_updation.append(task_gof_field_dto)
+            else:
+                task_gof_field_dtos_for_creation.append(task_gof_field_dto)
+        return (
+            task_gof_field_dtos_for_updation, task_gof_field_dtos_for_creation
+        )
+
+    @staticmethod
+    def _is_field_already_exists(
+            field_id: str, task_gof_id: int,
+            existing_fields: List[FieldIdWithTaskGoFIdDTO]
+    ) -> bool:
+        for existing_field in existing_fields:
+            field_already_exists = (
+                    field_id == existing_field.field_id and
+                    task_gof_id == existing_field.task_gof_id)
+            if field_already_exists:
+                return True
+        return False
+
+    @staticmethod
+    def _is_gof_already_exists(
+            gof_id: str, same_gof_order: int,
+            existing_gofs_with_same_gof_order: List[GoFIdWithSameGoFOrderDTO]
+    ) -> bool:
+        for existing_gof in existing_gofs_with_same_gof_order:
+            gof_already_exists = (
+                    gof_id == existing_gof.gof_id and
+                    same_gof_order == existing_gof.same_gof_order)
+            if gof_already_exists:
+                return True
+        return False

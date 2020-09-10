@@ -36,7 +36,7 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeDTO, \
     SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
     TaskDelayParametersDTO, UpdateTaskWithTaskDisplayIdDTO, \
-    SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO, SearchQueryDTO
+    SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO, SearchQueryDTO, StageDisplayLogicDTO
 from ib_tasks.interactors.task_template_dtos import \
     CreateTransitionChecklistTemplateDTO, \
     CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
@@ -261,6 +261,17 @@ class StatusOperandStageDTOFactory(factory.Factory):
     variable = factory.sequence(lambda n: "variable_{}".format(n + 1))
     operator = "=="
     stage = factory.sequence(lambda n: "stage_{}".format(n + 1))
+
+
+class StageDisplayLogicDTOFactory(factory.Factory):
+    class Meta:
+        model = StageDisplayLogicDTO
+
+    current_stage = factory.sequence(lambda n: "stage_{}".format(n + 1))
+
+    @factory.lazy_attribute
+    def display_logic_dto(self):
+        return StatusOperandStageDTOFactory()
 
 
 class CreateTaskLogDTOFactory(factory.Factory):

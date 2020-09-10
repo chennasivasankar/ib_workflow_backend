@@ -393,7 +393,7 @@ class CreateTaskInteractor:
             action_type == ActionTypes.NO_VALIDATIONS.value
         self._validate_priority_in_no_validations_case(
             task_dto.priority, action_type_is_no_validations)
-        if action_type_is_no_validations:
+        if action_type_is_no_validations and due_datetime is None:
             return
         start_datetime_is_emtpy = not start_datetime
         due_datetime_is_empty = not due_datetime
