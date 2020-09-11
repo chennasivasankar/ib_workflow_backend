@@ -248,6 +248,7 @@ class AddOrDeleteColumnsForBoardInteractor:
         ]
         if invalid_user_roles:
             raise InvalidUserRoles(user_role_ids=invalid_user_roles)
+        return
 
     @staticmethod
     def _find_duplicates(values: List):

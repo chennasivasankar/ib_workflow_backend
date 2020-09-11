@@ -18,16 +18,17 @@ from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     VirtualStageIdsException
 from ib_tasks.exceptions.task_custom_exceptions import (
     InvalidTaskException, InvalidTaskDisplayId, TaskDelayReasonIsNotUpdated)
-from ib_tasks.interactors \
-    .call_action_logic_function_and_update_task_status_variables_interactor \
-    import InvalidMethodFound
+from ib_tasks.interactors.\
+    call_action_logic_function_and_get_or_update_task_status_variables_interactor import \
+    InvalidMethodFound
 from ib_tasks.interactors \
     .get_next_stages_random_assignees_of_a_task_interactor import \
     InvalidModulePathFound
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
-from ib_tasks.interactors.presenter_interfaces.act_on_task_and_upadte_task_stage_assignees_presenter_interface import \
+from ib_tasks.interactors.presenter_interfaces.\
+    act_on_task_and_upadte_task_stage_assignees_presenter_interface import \
     ActOnTaskAndUpdateTaskStageAssigneesPresenterInterface
 from ib_tasks.interactors.stages_dtos import \
     TaskIdWithStageAssigneesDTO, \
