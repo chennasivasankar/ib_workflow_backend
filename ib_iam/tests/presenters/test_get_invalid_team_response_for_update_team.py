@@ -13,7 +13,7 @@ class TestRaiseExceptionForInvalidTeamIdForUpdateTeam:
         from ib_iam.constants.enums import StatusCode
         expected_http_status_code = StatusCode.NOT_FOUND.value
 
-        result = json_presenter.get_invalid_team_response_for_update_team()
+        result = json_presenter.response_for_invalid_team_id_exception()
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]
         actual_res_status = response_dict["res_status"]

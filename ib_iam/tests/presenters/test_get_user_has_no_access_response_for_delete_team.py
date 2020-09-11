@@ -16,7 +16,7 @@ class TestRaiseExceptionForUserHasNoAccessForDeleteTeam:
         expected_http_status_code = StatusCode.UNAUTHORIZED.value
 
         result = \
-            json_presenter.get_user_has_no_access_response_for_delete_team()
+            json_presenter.response_for_user_has_no_access_exception()
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]
         actual_res_status = response_dict["res_status"]

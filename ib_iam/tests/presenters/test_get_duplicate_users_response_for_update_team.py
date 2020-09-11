@@ -13,8 +13,8 @@ class TestRaiseExceptionForDuplicateUserIdsForUpdateTeam:
         expected_http_status_code = 400
 
         from ib_iam.exceptions.custom_exceptions import DuplicateUserIds
-        result = json_presenter.get_duplicate_users_response_for_update_team(
-            exception=DuplicateUserIds(user_ids=user_ids)
+        result = json_presenter.response_for_duplicate_user_ids_exception(
+            err=DuplicateUserIds(user_ids=user_ids)
         )
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]

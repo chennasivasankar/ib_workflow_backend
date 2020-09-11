@@ -20,9 +20,10 @@ class LoginInteractor:
     def __init__(self, storage: UserStorageInterface):
         self.storage = storage
 
-    def login_wrapper(self, presenter: AuthPresenterInterface,
-                      email_and_password_dto: EmailAndPasswordDTO
-                      ):
+    def login_wrapper(
+            self, presenter: AuthPresenterInterface,
+            email_and_password_dto: EmailAndPasswordDTO
+    ):
         try:
             response = self._get_login_response(
                 email_and_password_dto=email_and_password_dto,
@@ -38,7 +39,6 @@ class LoginInteractor:
             response = presenter.raise_exception_for_login_with_not_verify_email()
         return response
 
-    # TODO: CE
     def _get_login_response(
             self, email_and_password_dto: EmailAndPasswordDTO,
             presenter: AuthPresenterInterface
@@ -47,10 +47,13 @@ class LoginInteractor:
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
         user_id = service_adapter.user_service.get_user_id_for_given_email(
-            email=email_and_password_dto.email)
+            email=email_and_password_dto.email
+        )
         user_profile_dto = service_adapter.user_service.get_user_profile_dto(
-            user_id=user_id)
-        if not user_profile_dto.is_email_verify:
+            user_id=user_id
+        )
+        is_email_not_verified = not user_profile_dto.is_email_verify
+        if is_email_not_verified:
             raise EmailIsNotVerify
         user_tokens_dto, is_admin = self.get_user_tokens_dto_and_is_admin(
             email_and_password_dto=email_and_password_dto
@@ -66,18 +69,17 @@ class LoginInteractor:
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
         user_tokens_dto = service_adapter.auth_service.get_user_tokens_dto_for_given_email_and_password_dto(
-            email_and_password_dto=email_and_password_dto,
+            email_and_password_dto=email_and_password_dto
         )
-        user_id = user_tokens_dto.user_id
-        is_admin = self.storage.is_user_admin(user_id=user_id)
+        is_admin = self.storage.is_user_admin(user_id=user_tokens_dto.user_id)
 
         return user_tokens_dto, is_admin
 
-    # TODO: CE
     @staticmethod
     def _validate_email(email: str):
         import re
         from ib_iam.constants.config import EMAIL_DOMAIN_VALIDATION_EXPRESSION
         pattern = EMAIL_DOMAIN_VALIDATION_EXPRESSION
-        if not re.search(pattern, email):
+        is_invalid_email = not re.search(pattern, email)
+        if is_invalid_email:
             raise InvalidEmail

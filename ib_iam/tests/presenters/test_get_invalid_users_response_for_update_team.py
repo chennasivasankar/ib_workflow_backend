@@ -14,8 +14,8 @@ class TestRaiseExceptionForInvalidUsersForUpdateTeam:
         expected_http_status_code = StatusCode.NOT_FOUND.value
 
         from ib_iam.exceptions.custom_exceptions import InvalidUserIds
-        result = json_presenter.get_invalid_users_response_for_update_team(
-            exception=InvalidUserIds(user_ids=user_ids)
+        result = json_presenter.response_for_invalid_user_ids_exception(
+            err=InvalidUserIds(user_ids=user_ids)
         )
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]

@@ -8,21 +8,21 @@ class UpdateTeamPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_user_has_no_access_response_for_update_team(self):
+    def response_for_user_has_no_access_exception(self):
         pass
 
     @abc.abstractmethod
-    def get_invalid_team_response_for_update_team(self):
+    def response_for_invalid_team_id_exception(self):
         pass
 
     @abc.abstractmethod
-    def get_team_name_already_exists_response_for_update_team(self, exception):
+    def response_for_team_name_already_exists_exception(self, err):
         pass
 
     @abc.abstractmethod
-    def get_duplicate_users_response_for_update_team(self, exception):
+    def response_for_duplicate_user_ids_exception(self, err):
         pass
 
     @abc.abstractmethod
-    def get_invalid_users_response_for_update_team(self, exception):
+    def response_for_invalid_user_ids_exception(self, err):
         pass

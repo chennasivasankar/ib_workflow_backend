@@ -76,7 +76,8 @@ class SignupInteractor(ValidationMixin):
         )
         self._create_elastic_user(user_id=user_id, name=name)
         self._send_email_verify_link(
-            user_id=user_id, name=name, email=email)
+            user_id=user_id, name=name, email=email
+        )
 
     def _create_elastic_user(self, user_id: str, name: str):
         elastic_user_id = self.elastic_storage.create_elastic_user(
@@ -92,31 +93,35 @@ class SignupInteractor(ValidationMixin):
             SendVerifyEmailLinkInteractor
         interactor = SendVerifyEmailLinkInteractor()
         interactor.send_verification_email(
-            user_id=user_id, name=name, email=email)
+            user_id=user_id, name=name, email=email
+        )
 
     @staticmethod
-    def _create_user_account(email: str, password: str,
-                             name: str) -> str:
+    def _create_user_account(
+            email: str, password: str, name: str
+    ) -> str:
         from ib_iam.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         user_id = service_adapter.user_service.create_user_account_with_email(
-            email=email, password=password)
-
+            email=email, password=password
+        )
         from ib_users.interactors.user_profile_interactor import \
             CreateUserProfileDTO
         user_profile_dto = CreateUserProfileDTO(
-            name=name, email=email, is_email_verified=False)
+            name=name, email=email, is_email_verified=False
+        )
         service_adapter.user_service.create_user_profile(
-            user_id=user_id, user_profile_dto=user_profile_dto)
+            user_id=user_id, user_profile_dto=user_profile_dto
+        )
         return user_id
 
     def _validate_create_user_account_details(
-            self, name: str, email: str, password: str):
+            self, name: str, email: str, password: str
+    ):
         self._validate_name_and_throw_exception(name=name)
         self._validate_email(email=email)
         self._validate_password_criteria(password=password)
 
-    # TODO: CE
     @staticmethod
     def _validate_email(email: str):
         import re
@@ -126,14 +131,17 @@ class SignupInteractor(ValidationMixin):
         from ib_iam.constants.config import VALID_EMAIL_DOMAINS
         valid_domains = VALID_EMAIL_DOMAINS
         domain = re.search(pattern, email).group(1)
-        if domain not in valid_domains:
+        is_invalid_domain = domain not in valid_domains
+        if is_invalid_domain:
             raise InvalidDomainException()
 
-    # TODO: CE
     @staticmethod
     def _validate_password_criteria(password: str):
         from ib_iam.constants.config import PASSWORD_VALIDATION_EXPRESSION
         pattern = PASSWORD_VALIDATION_EXPRESSION
         import re
-        if not re.match(pattern, password):
+        does_not_matched_with_password_criteria = not re.match(
+            pattern, password
+        )
+        if does_not_matched_with_password_criteria:
             raise PasswordDoesNotMatchedWithCriteriaException

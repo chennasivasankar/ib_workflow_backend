@@ -18,8 +18,8 @@ class TestRaiseExceptionIfTeamNameAlreadyExistsForUpdateTeam:
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
         result = json_presenter \
-            .get_team_name_already_exists_response_for_update_team(
-                exception=TeamNameAlreadyExists(team_name=team_name)
+            .response_for_team_name_already_exists_exception(
+                err=TeamNameAlreadyExists(team_name=team_name)
             )
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]

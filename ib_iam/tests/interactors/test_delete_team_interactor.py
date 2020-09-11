@@ -19,14 +19,14 @@ class TestDeleteTeam:
                                     user_storage=user_storage)
         user_id = "1"
         user_storage.is_user_admin.return_value = False
-        presenter.get_user_has_no_access_response_for_delete_team \
+        presenter.response_for_user_has_no_access_exception \
                  .side_effect = Mock()
 
         interactor.delete_team_wrapper(
             user_id=user_id, team_id="1", presenter=presenter)
 
         user_storage.is_user_admin.assert_called_once_with(user_id=user_id)
-        presenter.get_user_has_no_access_response_for_delete_team \
+        presenter.response_for_user_has_no_access_exception \
                  .assert_called_once()
 
     def test_if_invalid_team_id_raises_not_found_exception(self):
@@ -40,7 +40,7 @@ class TestDeleteTeam:
         team_id = "1"
         team_storage.raise_exception_if_team_not_exists.side_effect = \
             InvalidTeamId
-        presenter.get_invalid_team_response_for_delete_team \
+        presenter.response_for_invalid_team_id_exception \
                  .side_effect = Mock()
 
         interactor.delete_team_wrapper(
@@ -48,7 +48,7 @@ class TestDeleteTeam:
 
         team_storage.raise_exception_if_team_not_exists \
             .assert_called_once_with(team_id=team_id)
-        presenter.get_invalid_team_response_for_delete_team \
+        presenter.response_for_invalid_team_id_exception \
                  .assert_called_once()
 
     def test_given_valid_details_deletion_will_happen(self):
