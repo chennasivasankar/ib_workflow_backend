@@ -44,7 +44,7 @@ def api_wrapper(*args, **kwargs):
     request_data['start_datetime'] = str(request_data['start_datetime'])
     request_data['due_datetime'] = str(request_data['due_datetime'])
     task_request_json = json.dumps(request_data)
-    board_id = request_data.get('board_id')
+    board_id = request_data.get('board_id', None)
 
     from ib_tasks.interactors.task_dtos import GoFFieldsDTO
 
