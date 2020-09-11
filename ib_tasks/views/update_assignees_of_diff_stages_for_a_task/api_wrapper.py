@@ -2,14 +2,14 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
 from .validator_class import ValidatorClass
-from ...interactors.stages_dtos import StageAssigneeDTO, \
+from ib_tasks.interactors.stages_dtos import StageAssigneeDTO, \
     TaskDisplayIdWithStageAssigneesDTO
-from ...interactors.update_task_stage_assignees_interactor import \
+from ib_tasks.interactors.update_task_stage_assignees_interactor import \
     UpdateTaskStageAssigneesInteractor
-from ...presenters.update_task_stage_assignees_presenter_impl import \
+from ib_tasks.presenters.update_task_stage_assignees_presenter_impl import \
     UpdateTaskStageAssigneesPresenterImplementation
-from ...storages.storage_implementation import StagesStorageImplementation
-from ...storages.tasks_storage_implementation import TasksStorageImplementation
+from ib_tasks.storages.storage_implementation import StagesStorageImplementation
+from ib_tasks.storages.tasks_storage_implementation import TasksStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
