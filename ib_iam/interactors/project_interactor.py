@@ -1,7 +1,6 @@
 from typing import List, Tuple, Optional
 from ib_iam.app_interfaces.dtos import (
-    ProjectTeamUserDTO, UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO,
-    UserTeamsDTO
+    ProjectTeamUserDTO, ProjectTeamsAndUsersDTO, UserTeamsDTO
 )
 from ib_iam.exceptions.custom_exceptions import (
     ProjectNameAlreadyExists, ProjectDisplayIdAlreadyExists, DuplicateTeamIds,
@@ -101,15 +100,20 @@ class ProjectInteractor(ValidationMixin):
         self._validate_project(project_id=project_team_user_dto.project_id)
         self._validate_team(team_id=project_team_user_dto.team_id)
         self._validate_team_existence_in_project(
-            project_team_user_dto=project_team_user_dto)
+            project_team_user_dto=project_team_user_dto
+        )
         self._validate_user(user_id=project_team_user_dto.user_id)
         self._validate_user_existence_in_given_team(
-            project_team_user_dto=project_team_user_dto)
+            project_team_user_dto=project_team_user_dto
+        )
         team_name = self.project_storage.get_team_name(
-            team_id=project_team_user_dto.team_id)
-        return TeamWithUserIdDTO(user_id=project_team_user_dto.user_id,
-                                 team_id=project_team_user_dto.team_id,
-                                 team_name=team_name)
+            team_id=project_team_user_dto.team_id
+        )
+        return TeamWithUserIdDTO(
+            user_id=project_team_user_dto.user_id,
+            team_id=project_team_user_dto.team_id,
+            team_name=team_name
+        )
 
     def _validate_user(self, user_id: str):
         is_user_exist = self.user_storage.is_user_exist(user_id=user_id)
@@ -412,7 +416,6 @@ class ProjectInteractor(ValidationMixin):
             complete_project_details_dto: CompleteProjectDetailsDTO
     ):
         self._validate_is_user_admin(user_id=user_id)
-        # todo have to know whether we can do any better here
         project_role_ids = self.project_storage.get_project_role_ids(
             project_id=complete_project_details_dto.project_id
         )
