@@ -40,7 +40,8 @@ def api_wrapper(*args, **kwargs):
         import FieldsStorageImplementation
     from ib_tasks.storages.storage_implementation \
         import StorageImplementation, StagesStorageImplementation
-    from ...presenters.act_on_task_and_upadte_task_stage_assignees_presenter import \
+    from ib_tasks.presenters.\
+        act_on_task_and_upadte_task_stage_assignees_presenter import \
         ActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation
     presenter = ActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation()
 
@@ -66,7 +67,8 @@ def api_wrapper(*args, **kwargs):
         task_template_storage=task_template_storage
     )
 
-    response = interactor.act_on_task_interactor_and_update_task_stage_assignees_wrapper(
+    response = interactor.\
+        act_on_task_interactor_and_update_task_stage_assignees_wrapper(
         presenter=presenter, task_display_id=task_display_id,
         stage_assignee_dtos=stage_assignee_dtos)
     return response
