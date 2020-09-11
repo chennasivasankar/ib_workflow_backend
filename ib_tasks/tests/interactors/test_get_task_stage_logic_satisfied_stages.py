@@ -45,13 +45,22 @@ class TestGetTaskStageLogicSatisfiedStages:
 
     @staticmethod
     @pytest.fixture()
-    def interactor(storage):
+    def stage_storage():
+        from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
+            StageStorageInterface
+        from unittest.mock import create_autospec
+        storage = create_autospec(StageStorageInterface)
+        return storage
+
+    @staticmethod
+    @pytest.fixture()
+    def interactor(storage, stage_storage):
         task_id = 1
 
         from ib_tasks.interactors.get_task_stage_logic_satisfied_stages \
-            import GetTaskStageLogicSatisfiedStages
-        interactor = GetTaskStageLogicSatisfiedStages(
-            task_id=task_id, storage=storage
+            import GetTaskStageLogicSatisfiedStagesInteractor
+        interactor = GetTaskStageLogicSatisfiedStagesInteractor(
+            task_id=task_id, storage=storage, stage_storage=stage_storage
         )
         return interactor
 
