@@ -231,6 +231,7 @@ class TestGetTaskStageLogicSatisfiedStages:
     @pytest.mark.parametrize(
         ("operator", "display_logic"),
         [
+            ("!=", "value[variable_1]!=value[stage_1]"),
             (">", "value[variable_1]>value[stage_1]"),
             ("<", "value[variable_1]<value[stage_1]")
         ]
