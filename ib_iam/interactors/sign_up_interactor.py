@@ -74,7 +74,7 @@ class SignupInteractor(ValidationMixin):
         self.user_storage.create_user(
             user_id=user_id, is_admin=False, name=name
         )
-        self._create_elastic_user(user_id=user_id, name=name)
+        self._create_elastic_user(user_id=user_id, name=name, email=email)
         self._send_email_verify_link(
             user_id=user_id, name=name, email=email)
 
