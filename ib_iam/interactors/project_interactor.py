@@ -1,4 +1,5 @@
 from typing import List, Tuple, Optional
+
 from ib_iam.app_interfaces.dtos import (
     ProjectTeamUserDTO, ProjectTeamsAndUsersDTO, UserTeamsDTO
 )
@@ -153,14 +154,12 @@ class ProjectInteractor(ValidationMixin):
             raise UsersNotExistsForGivenTeams(user_ids=invalid_user_ids)
         return team_user_dtos
 
-    @staticmethod
     def _get_invalid_user_ids_for_given_team_ids(
-            user_ids: List[str], team_user_dtos: List[TeamWithUserIdDTO]
+            self, user_ids: List[str], team_user_dtos: List[TeamWithUserIdDTO]
     ) -> List[str]:
-        for team_user_dto in team_user_dtos:
-            if team_user_dto.user_id in user_ids:
-                user_ids.remove(team_user_dto.user_id)
-        return user_ids
+        valid_user_ids = self._get_user_ids(user_team_dtos=team_user_dtos)
+        invalid_user_ids = list(set(user_ids) - set(valid_user_ids))
+        return invalid_user_ids
 
     @staticmethod
     def _fetch_user_ids_and_team_ids(
@@ -260,15 +259,23 @@ class ProjectInteractor(ValidationMixin):
         user_team_dtos = self.team_storage.get_team_user_dtos(
             user_ids=user_ids, team_ids=team_ids
         )
-        for user_team_dto in user_team_dtos:
-            if user_team_dto.user_id in user_ids:
-                user_ids.remove(user_team_dto.user_id)
-        not_exists_users_in_given_project = user_ids
-        if not_exists_users_in_given_project:
+        invalid_user_ids = self._get_invalid_user_ids_for_given_team_ids(
+            user_ids=user_ids, team_user_dtos=user_team_dtos
+        )
+        if invalid_user_ids:
             raise UsersNotExistsForGivenProject(
-                user_ids=not_exists_users_in_given_project
+                user_ids=invalid_user_ids
             )
         return user_team_dtos
+
+    @staticmethod
+    def _get_user_ids(
+            user_team_dtos: List[TeamWithUserIdDTO]
+    ) -> List[str]:
+        return [
+            user_team_dto.user_id
+            for user_team_dto in user_team_dtos
+        ]
 
     def _fetch_user_teams_for_each_user(
             self, user_team_dtos: List[TeamWithUserIdDTO]
