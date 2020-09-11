@@ -320,7 +320,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         update_status_variable_obj = \
             CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
                 action_id=self.action_id, storage=self.storage,
-                task_id=task_id, create_task_storage=self.create_task_storage)
+                task_id=task_id, create_task_storage=self.create_task_storage,
+                field_storage=self.field_storage)
         task_dto = update_status_variable_obj \
             .call_action_logic_function_and_update_task_status_variables(
             task_dto=task_dto)

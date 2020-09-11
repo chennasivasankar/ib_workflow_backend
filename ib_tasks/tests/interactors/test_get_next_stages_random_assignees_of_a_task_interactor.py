@@ -36,6 +36,13 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         storage = create_autospec(CreateOrUpdateTaskStorageInterface)
         return storage
 
+    @pytest.fixture()
+    def field_storage(self):
+        from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+            FieldsStorageInterface
+        field_storage = create_autospec(FieldsStorageInterface)
+        return field_storage
+
     @pytest.fixture
     def stage_storage_mock(self):
         from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
@@ -103,7 +110,8 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         mock_object = Mock()
         return mock_object
 
-    def test_given_invalid_task_display_id_raise_exception(self, mock_object,
+    def test_given_invalid_task_display_id_raise_exception(
+            self, mock_object,field_storage,
                                                            storage_mock,
                                                            stage_storage_mock,
                                                            action_storage_mock,
@@ -124,7 +132,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             storage=storage_mock, action_storage=action_storage_mock,
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
             task_stage_storage=task_stage_storage_mock,
-            create_task_storage=create_task_storage
+            create_task_storage=create_task_storage, field_storage=field_storage
         )
 
         # Act
@@ -144,7 +152,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
     def test_given_invalid_action_id_raise_exception(
             self, mock_object, storage_mock, stage_storage_mock,
             action_storage_mock, task_storage_mock, presenter_mock,
-            task_stage_storage_mock, create_task_storage):
+            task_stage_storage_mock, create_task_storage, field_storage):
         # Arrange
         task_display_id = "IBWF-1"
         action_id = 1
@@ -158,7 +166,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             storage=storage_mock, action_storage=action_storage_mock,
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
             task_stage_storage=task_stage_storage_mock,
-            create_task_storage=create_task_storage
+            create_task_storage=create_task_storage, field_storage=field_storage
         )
 
         # Act
@@ -183,7 +191,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
                                                  task_storage_mock,
                                                  presenter_mock,
                                                  task_stage_storage_mock,
-                                                 create_task_storage):
+                                                 create_task_storage, field_storage):
         # Arrange
         task_display_id = "IBWF-1"
         action_id = 1
@@ -194,7 +202,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             storage=storage_mock, action_storage=action_storage_mock,
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
             task_stage_storage=task_stage_storage_mock,
-            create_task_storage=create_task_storage
+            create_task_storage=create_task_storage, field_storage=field_storage
         )
 
         # Act
@@ -218,7 +226,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
                                                         task_storage_mock,
                                                         presenter_mock,
                                                         task_stage_storage_mock,
-                                                        create_task_storage):
+                                                        create_task_storage, field_storage):
         # Arrange
         task_display_id = "IBWF-1"
         action_id = 1
@@ -232,7 +240,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             storage=storage_mock, action_storage=action_storage_mock,
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
             task_stage_storage=task_stage_storage_mock,
-            create_task_storage=create_task_storage
+            create_task_storage=create_task_storage, field_storage=field_storage
         )
 
         # Act
@@ -257,7 +265,8 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
                                                          action_storage_mock,
                                                          task_storage_mock,
                                                          task_stage_storage_mock,
-                                                         create_task_storage):
+                                                         create_task_storage,
+                                                         field_storage):
         # Arrange
         action_id = 1
         task_display_id = "IBWF-1"
@@ -270,7 +279,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             storage=storage_mock, action_storage=action_storage_mock,
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
             task_stage_storage=task_stage_storage_mock,
-            create_task_storage=create_task_storage
+            create_task_storage=create_task_storage, field_storage=field_storage
         )
 
         # Act
@@ -292,7 +301,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         'call_action_logic_function_and_get_status_variables_dtos_of_task')
     def test_given_valid_details_get_next_stage_assignees(
             self, action_logic_mock, next_stages_mock,
-            users_with_less_tasks_mock, storage_mock,
+            users_with_less_tasks_mock, storage_mock,field_storage,
             presenter_mock, stage_storage_mock, action_storage_mock,
             task_storage_mock, task_stage_storage_mock, create_task_storage):
         # Arrange
@@ -329,7 +338,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             storage=storage_mock, action_storage=action_storage_mock,
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
             task_stage_storage=task_stage_storage_mock,
-            create_task_storage=create_task_storage
+            create_task_storage=create_task_storage, field_storage=field_storage
         )
 
         # Act

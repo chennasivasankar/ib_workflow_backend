@@ -12,11 +12,15 @@ from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
 from ib_tasks.storages.create_or_update_task_storage_implementation import \
     CreateOrUpdateTaskStorageImplementation
-from ib_tasks.storages.storage_implementation import StagesStorageImplementation, \
+from ib_tasks.storages.storage_implementation import \
+    StagesStorageImplementation, \
     StorageImplementation
 from ib_tasks.storages.task_stage_storage_implementation import \
     TaskStageStorageImplementation
-from ib_tasks.storages.tasks_storage_implementation import TasksStorageImplementation
+from ib_tasks.storages.tasks_storage_implementation import \
+    TasksStorageImplementation
+from ib_tasks.storages.fields_storage_implementation import \
+    FieldsStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -31,15 +35,16 @@ def api_wrapper(*args, **kwargs):
     presenter = GetNextStagesRandomAssigneesOfATaskPresenterImpl()
     task_stage_storage = TaskStageStorageImplementation()
     create_task_storage = CreateOrUpdateTaskStorageImplementation()
+    field_storage = FieldsStorageImplementation()
 
     interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
         stage_storage=stage_storage, task_storage=task_storage,
         storage=storage, action_storage=action_storage,
         task_stage_storage=task_stage_storage,
-        create_task_storage=create_task_storage
+        create_task_storage=create_task_storage, field_storage=field_storage
     )
     response = interactor. \
         get_next_stages_random_assignees_of_a_task_wrapper(
-            presenter=presenter, action_id=action_id, task_display_id=task_id
-        )
+        presenter=presenter, action_id=action_id, task_display_id=task_id
+    )
     return response
