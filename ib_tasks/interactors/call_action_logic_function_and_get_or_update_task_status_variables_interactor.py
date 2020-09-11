@@ -41,7 +41,7 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
             -> List[StatusVariableDTO]:
         task_dto = self._get_task_dto(self.task_id)
         status_dict, status_variables_dto, task_gof_dtos, task_gof_fields_dto = \
-            self.call_action_logic_function(task_dto=task_dto)
+            self._call_action_logic_function(task_dto=task_dto)
         updated_status_variable_dtos = self._get_updated_status_variable_dto(
             status_dict, status_variables_dto)
         return updated_status_variable_dtos
@@ -49,13 +49,13 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
     def call_action_logic_function_and_update_task_status_variables(
             self, task_dto: TaskDetailsDTO) -> TaskDetailsDTO:
         status_dict, status_variables_dto, task_gof_dtos, task_gof_fields_dto = \
-            self.call_action_logic_function(task_dto=task_dto)
+            self._call_action_logic_function(task_dto=task_dto)
         self._update_task_status_variables(status_dict, status_variables_dto)
         task_dto.task_gof_dtos = task_gof_dtos
         task_dto.task_gof_field_dtos = task_gof_fields_dto
         return task_dto
 
-    def call_action_logic_function(
+    def _call_action_logic_function(
             self, task_dto: TaskDetailsDTO):
         task_gof_dtos = task_dto.task_gof_dtos
         gof_multiple_enable_dict = self._get_gof_multiple_enable_dict(
