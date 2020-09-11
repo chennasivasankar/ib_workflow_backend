@@ -29,8 +29,8 @@ from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId, \
     TaskDelayReasonIsNotUpdated, PriorityIsRequired
 from ib_tasks.interactors.create_or_update_task. \
-    template_gofs_fields_base_validations import \
-    TemplateGoFsFieldsBaseValidationsInteractor
+    gofs_details_validations_interactor import \
+    GoFsDetailsValidationsInteractor
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
 from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
@@ -232,13 +232,13 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         self._validate_task_details(task_dto, task_dto.action_type)
         project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
         base_validations_interactor = \
-            TemplateGoFsFieldsBaseValidationsInteractor(
+            GoFsDetailsValidationsInteractor(
                 self.task_storage, self.gof_storage,
                 self.create_task_storage, self.storage,
                 self.field_storage, self.task_template_storage
             )
         base_validations_interactor \
-            .perform_base_validations_for_template_gofs_and_fields(
+            .perform_gof_details_validations(
             gof_fields_dtos=task_dto.gof_fields_dtos,
             user_id=task_dto.created_by_id,
             task_template_id=task_template_id, project_id=project_id,

@@ -2391,7 +2391,7 @@ class TestCreateTaskInteractor:
         task_template_storage_mock.get_project_templates.return_value = [
             task_dto.task_template_id]
         storage_mock.validate_action.return_value = True
-        create_task_storage_mock.create_task_with_given_task_details \
+        create_task_storage_mock.create_task \
             .return_value = created_task_id
         create_task_storage_mock.create_task_gofs.return_value = \
             expected_task_gof_details_dtos
@@ -2410,7 +2410,7 @@ class TestCreateTaskInteractor:
             presenter_mock, task_dto, task_request_json=task_request_json)
 
         # Assert
-        create_task_storage_mock.create_task_with_given_task_details \
+        create_task_storage_mock.create_task \
             .assert_called_once_with(task_dto)
         create_task_storage_mock.create_task_gofs.assert_called_once_with(
             task_gof_dtos=expected_task_gof_dtos)
@@ -2891,7 +2891,7 @@ class TestCreateTaskInteractor:
         task_template_storage_mock.get_project_templates.return_value = [
             task_dto.task_template_id]
         storage_mock.validate_action.return_value = True
-        create_task_storage_mock.create_task_with_given_task_details \
+        create_task_storage_mock.create_task \
             .return_value = created_task_id
         create_task_storage_mock.create_task_gofs.return_value = \
             expected_task_gof_details_dtos
@@ -2942,7 +2942,7 @@ class TestCreateTaskInteractor:
         task_template_storage_mock.get_project_templates.return_value = [
             task_dto.task_template_id]
         storage_mock.validate_action.return_value = True
-        create_task_storage_mock.create_task_with_given_task_details \
+        create_task_storage_mock.create_task \
             .return_value = created_task_id
         create_task_storage_mock.create_task_gofs.return_value = \
             expected_task_gof_details_dtos

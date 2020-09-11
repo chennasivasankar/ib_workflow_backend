@@ -26,7 +26,7 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, FieldValuesDTO
 
 
-class TemplateGoFsFieldsBaseValidationsInteractor:
+class GoFsDetailsValidationsInteractor:
 
     def __init__(
             self, task_storage: TaskStorageInterface,
@@ -42,7 +42,7 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
         self.storage = storage
         self.task_template_storage = task_template_storage
 
-    def perform_base_validations_for_template_gofs_and_fields(
+    def perform_gof_details_validations(
             self, gof_fields_dtos: List[GoFFieldsDTO], user_id: str,
             task_template_id: str, project_id: str,
             action_type: Optional[ActionTypes]):

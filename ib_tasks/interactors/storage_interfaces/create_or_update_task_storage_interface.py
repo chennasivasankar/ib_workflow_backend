@@ -12,7 +12,8 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import TaskGoFDTO, \
     TaskGoFFieldDTO, TaskBaseDetailsDTO, FieldSearchableDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFDetailsDTO, TaskGoFWithTaskIdDTO
-from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO
+from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO, \
+    BasicTaskDetailsDTO
 
 
 class CreateOrUpdateTaskStorageInterface(abc.ABC):
@@ -50,8 +51,7 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_task_with_given_task_details(
-            self, task_dto: CreateTaskDTO) -> int:
+    def create_task(self, task_details_dto: BasicTaskDetailsDTO) -> int:
         pass
 
     @abc.abstractmethod

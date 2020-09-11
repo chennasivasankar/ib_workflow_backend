@@ -24,8 +24,8 @@ from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTransitionChecklistTemplateId, InvalidGoFsOfTaskTemplate, \
     InvalidFieldsOfGoF, InvalidTaskDisplayId
 from ib_tasks.interactors.create_or_update_task \
-    .template_gofs_fields_base_validations import \
-    TemplateGoFsFieldsBaseValidationsInteractor
+    .gofs_details_validations_interactor import \
+    GoFsDetailsValidationsInteractor
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
 from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
@@ -214,7 +214,7 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
         self._validate_same_gof_order(
             transition_template_dto.transition_checklist_gofs)
         template_gofs_fields_validation_interactor = \
-            TemplateGoFsFieldsBaseValidationsInteractor(
+            GoFsDetailsValidationsInteractor(
                 task_storage=self.task_storage, gof_storage=self.gof_storage,
                 create_task_storage=self.create_or_update_task_storage,
                 storage=self.storage, field_storage=self.field_storage,
@@ -227,7 +227,7 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
         project_id = self.task_storage.get_project_id_for_the_task_id(
             transition_template_dto.task_id)
         template_gofs_fields_validation_interactor \
-            .perform_base_validations_for_template_gofs_and_fields(
+            .perform_gof_details_validations(
             transition_template_dto.transition_checklist_gofs,
             transition_template_dto.created_by_id,
             transition_template_dto.transition_checklist_template_id,

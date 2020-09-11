@@ -22,7 +22,7 @@ class GoFFieldsDTO:
 
 
 @dataclass
-class CreateTaskDTO:
+class BasicTaskDetailsDTO:
     project_id: str
     task_template_id: str
     created_by_id: str
@@ -32,6 +32,11 @@ class CreateTaskDTO:
     start_datetime: datetime.datetime
     due_datetime: datetime.datetime
     priority: Priority
+
+
+@dataclass
+class CreateTaskDTO:
+    basic_task_details_dto: BasicTaskDetailsDTO
     gof_fields_dtos: List[GoFFieldsDTO]
 
 

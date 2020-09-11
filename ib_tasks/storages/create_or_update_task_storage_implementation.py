@@ -15,7 +15,8 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TaskGoFFieldDTO, TaskGoFDTO, TaskBaseDetailsDTO, FieldSearchableDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import (
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO)
-from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO
+from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO, \
+    BasicTaskDetailsDTO
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.models.task import Task
@@ -279,17 +280,19 @@ class CreateOrUpdateTaskStorageImplementation(
         )
         return task_base_details_dto
 
-    def create_task_with_given_task_details(self,
-                                            task_dto: CreateTaskDTO) -> int:
+    def create_task(self, task_details_dto: BasicTaskDetailsDTO) -> int:
         from ib_tasks.models.task import Task
         task_object = Task.objects.create(
             task_display_id=None,
-            project_id=task_dto.project_id,
-            template_id=task_dto.task_template_id,
-            created_by=task_dto.created_by_id,
-            title=task_dto.title, description=task_dto.description,
-            start_date=task_dto.start_datetime, due_date=task_dto.due_datetime,
-            priority=task_dto.priority)
+            project_id=task_details_dto.project_id,
+            template_id=task_details_dto.task_template_id,
+            created_by=task_details_dto.created_by_id,
+            title=task_details_dto.title,
+            description=task_details_dto.description,
+            start_date=task_details_dto.start_datetime,
+            due_date=task_details_dto.due_datetime,
+            priority=task_details_dto.priority
+        )
         from ib_tasks.constants.constants import TASK_DISPLAY_ID
         task_object.task_display_id = TASK_DISPLAY_ID.format(task_object.id)
         task_object.save()
