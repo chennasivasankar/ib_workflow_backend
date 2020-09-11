@@ -165,8 +165,8 @@ class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
     def act_on_task_interactor_and_update_task_stage_assignees(
             self, task_id: int, stage_assignee_dtos: List[StageAssigneeDTO]):
         task_complete_details_dto, task_current_stage_details_dto, \
-        all_tasks_overview_details_dto, stage_ids = self._act_on_task_and_get_required_dtos(
-            task_id=task_id)
+        all_tasks_overview_details_dto, stage_ids = self.\
+            _act_on_task_and_get_required_dtos(task_id=task_id)
         stage_ids_excluding_virtual_stages = self.stage_storage. \
             get_stage_ids_excluding_virtual_stages(stage_ids)
         self._create_task_stage_history_records_for_virtual_stages(

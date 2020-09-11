@@ -106,8 +106,9 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         try:
             task_id = self.get_task_id_for_task_display_id(task_display_id)
             task_complete_details_dto, task_current_stage_details_dto, \
-            all_tasks_overview_dto =\
-                self.user_action_on_task_and_set_random_assignees(task_id=task_id)
+            all_tasks_overview_dto = \
+                self.user_action_on_task_and_set_random_assignees(
+                    task_id=task_id)
 
 
         except InvalidTaskDisplayId as err:
@@ -175,7 +176,6 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         )
         return (task_complete_details_dto, task_current_stage_details_dto,
                 all_tasks_overview_dto)
-
 
     def user_action_on_task(self, task_id: int):
         self._validate_task_id(task_id)

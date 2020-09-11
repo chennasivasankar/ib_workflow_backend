@@ -45,7 +45,8 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
 
         stage_with_user_details_and_team_details_dto = \
             StageWithUserDetailsAndTeamDetailsDTO(
-                stages_with_user_details_dtos=user_details_dtos_having_less_tasks_for_given_stages,
+                stages_with_user_details_dtos=
+                user_details_dtos_having_less_tasks_for_given_stages,
                 user_with_team_details_dtos=user_id_with_team_details_dtos)
 
         return stage_with_user_details_and_team_details_dto
