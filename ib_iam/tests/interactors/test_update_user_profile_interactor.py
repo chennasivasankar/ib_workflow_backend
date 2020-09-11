@@ -32,13 +32,13 @@ class TestUpdateUserProfileInteractor:
         interactor = UpdateUserProfileInteractor(user_storage=storage_mock)
         return interactor
 
-    @pytest.mark.parametrize("name", [("user"), ("u")])
+    @pytest.mark.parametrize("name", ["user", "u"])
     def test_validate_name_minimum_name_length_exception(
             self, presenter_mock, interactor, name):
         # Arrange
         role_ids = ["1"]
         user_profile_dto = CompleteUserProfileDTOFactory(name=name)
-        presenter_mock.raise_invalid_name_length_exception_for_update_user_profile \
+        presenter_mock.response_for_invalid_name_length_exception \
             .return_value = mock.Mock()
 
         # Act
@@ -48,7 +48,7 @@ class TestUpdateUserProfileInteractor:
             presenter=presenter_mock)
 
         # Assert
-        presenter_mock.raise_invalid_name_length_exception_for_update_user_profile \
+        presenter_mock.response_for_invalid_name_length_exception \
             .assert_called_once()
 
     @pytest.mark.parametrize("name", [("user@"), ("_user"), ("user_name"),
@@ -59,7 +59,7 @@ class TestUpdateUserProfileInteractor:
         role_ids = ["1"]
         user_profile_dto = CompleteUserProfileDTOFactory(name=name)
         presenter_mock \
-            .raise_name_should_not_contain_special_chars_and_numbers_exception_for_update_user_profile \
+            .response_for_name_contains_special_character_exception \
             .return_value = mock.Mock()
 
         # Act
@@ -70,7 +70,7 @@ class TestUpdateUserProfileInteractor:
 
         # Assert
         presenter_mock \
-            .raise_name_should_not_contain_special_chars_and_numbers_exception_for_update_user_profile \
+            .response_for_name_contains_special_character_exception \
             .assert_called_once()
 
     def test_given_admin_and_duplicate_role_ids_returns_duplicate_role_ids_response(
@@ -81,7 +81,7 @@ class TestUpdateUserProfileInteractor:
         user_profile_dto = CompleteUserProfileDTOFactory(
             user_id=user_id, name="username")
         storage_mock.is_user_admin.return_value = True
-        presenter_mock.raise_duplicate_role_ids_exception.return_value = mock.Mock()
+        presenter_mock.response_for_duplicate_role_ids_exception.return_value = mock.Mock()
 
         # Act
         interactor.update_user_profile_wrapper(
@@ -91,7 +91,7 @@ class TestUpdateUserProfileInteractor:
 
         # Assert
         storage_mock.is_user_admin.assert_called_once_with(user_id=user_id)
-        presenter_mock.raise_duplicate_role_ids_exception.assert_called_once()
+        presenter_mock.response_for_duplicate_role_ids_exception.assert_called_once()
 
     def test_given_admin_and_invalid_role_ids_returns_invalid_role_ids_response(
             self, storage_mock, presenter_mock, interactor):
@@ -102,7 +102,7 @@ class TestUpdateUserProfileInteractor:
                                                          name="username")
         storage_mock.is_user_admin.return_value = True
         storage_mock.check_are_valid_role_ids.return_value = False
-        presenter_mock.raise_invalid_role_ids_exception.return_value = mock.Mock()
+        presenter_mock.response_for_invalid_role_ids_exception.return_value = mock.Mock()
 
         # Act
         interactor.update_user_profile_wrapper(
@@ -114,7 +114,7 @@ class TestUpdateUserProfileInteractor:
         storage_mock.is_user_admin.assert_called_once_with(user_id=user_id)
         storage_mock.check_are_valid_role_ids.assert_called_once_with(
             role_ids=role_ids)
-        presenter_mock.raise_invalid_role_ids_exception.assert_called_once()
+        presenter_mock.response_for_invalid_role_ids_exception.assert_called_once()
 
     def test_given_invalid_email_returns_invalid_email_exception_response(
             self, mocker, presenter_mock, interactor):
@@ -126,7 +126,7 @@ class TestUpdateUserProfileInteractor:
         adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
         from ib_iam.exceptions.custom_exceptions import InvalidEmail
         adapter_mock.side_effect = InvalidEmail
-        presenter_mock.raise_invalid_email_exception_for_update_user_profile \
+        presenter_mock.response_for_invalid_email_exception \
             .return_value = mock.Mock()
 
         # Act
@@ -136,7 +136,7 @@ class TestUpdateUserProfileInteractor:
             presenter=presenter_mock)
 
         # Assert
-        presenter_mock.raise_invalid_email_exception_for_update_user_profile \
+        presenter_mock.response_for_invalid_email_exception \
             .assert_called_once()
 
     def test_given_email_already_in_use_returns_email_already_in_use_response(
@@ -150,7 +150,7 @@ class TestUpdateUserProfileInteractor:
         from ib_iam.exceptions.custom_exceptions import \
             UserAccountAlreadyExistWithThisEmail
         adapter_mock.side_effect = UserAccountAlreadyExistWithThisEmail
-        presenter_mock.raise_email_already_in_use_exception_for_update_user_profile \
+        presenter_mock.response_for_email_already_exists_exception \
             .return_value = mock.Mock()
 
         # Act
@@ -160,7 +160,7 @@ class TestUpdateUserProfileInteractor:
             presenter=presenter_mock)
 
         # Assert
-        presenter_mock.raise_email_already_in_use_exception_for_update_user_profile \
+        presenter_mock.response_for_email_already_exists_exception \
             .assert_called_once()
 
     def test_given_valid_details_returns_success_response_for_user(
@@ -175,7 +175,7 @@ class TestUpdateUserProfileInteractor:
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import prepare_update_user_profile_adapter_mock
         adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
-        presenter_mock.get_success_response_for_update_user_profile \
+        presenter_mock.get_response_for_update_user_profile \
             .return_value = mock.Mock()
         UserProfileDTOFactory.reset_sequence(1)
         user_profile_dto_of_ib_user = UserProfileDTOFactory(
@@ -194,7 +194,7 @@ class TestUpdateUserProfileInteractor:
         storage_mock.update_user_name_and_cover_page_url.assert_called_once_with(
             name=name, user_id=user_id,
             cover_page_url=user_profile_dto.cover_page_url)
-        presenter_mock.get_success_response_for_update_user_profile \
+        presenter_mock.get_response_for_update_user_profile \
             .assert_called_once()
 
     # def test_given_valid_details_returns_success_response_for_admin(
@@ -215,7 +215,7 @@ class TestUpdateUserProfileInteractor:
     #     adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
     #     storage_mock.is_user_admin.return_value = True
     #     storage_mock.get_role_objs_ids.return_value = ids_of_role_objects
-    #     presenter_mock.get_success_response_for_update_user_profile \
+    #     presenter_mock.get_response_for_update_user_profile \
     #         .return_value = mock.Mock()
     #
     #     # Act
@@ -236,5 +236,5 @@ class TestUpdateUserProfileInteractor:
     #     storage_mock.update_user_name_and_cover_page_url.assert_called_once_with(
     #         name=name, user_id=user_id,
     #         cover_page_url=user_profile_dto.cover_page_url)
-    #     presenter_mock.get_success_response_for_update_user_profile \
+    #     presenter_mock.get_response_for_update_user_profile \
     #         .assert_called_once()

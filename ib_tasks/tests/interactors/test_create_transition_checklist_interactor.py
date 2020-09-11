@@ -2,8 +2,8 @@ import factory
 import mock
 import pytest
 
-from ib_tasks.interactors.create_transition_checklist_template import \
-    CreateTransitionChecklistTemplateInteractor
+from ib_tasks.interactors.create_or_update_transition_checklist_template import \
+    CreateOrUpdateTransitionChecklistTemplateInteractor
 from ib_tasks.tests.factories.interactor_dtos import \
     CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory, \
     GoFFieldsDTOFactory, FieldValuesDTOFactory
@@ -80,9 +80,9 @@ class TestCreateTransitionChecklistInteractor:
     def presenter_mock(self):
         from ib_tasks.interactors.presenter_interfaces \
             .create_transition_checklist_presenter_interface import \
-            CreateTransitionChecklistTemplatePresenterInterface
+            CreateOrUpdateTransitionChecklistTemplatePresenterInterface
         return mock.create_autospec(
-            CreateTransitionChecklistTemplatePresenterInterface)
+            CreateOrUpdateTransitionChecklistTemplatePresenterInterface)
 
     @pytest.fixture
     def perform_base_validations_for_template_gofs_and_fields_mock(self,
@@ -104,7 +104,7 @@ class TestCreateTransitionChecklistInteractor:
             CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
                 task_display_id=given_task_display_id)
         task_storage_mock.check_is_valid_task_display_id.return_value = False
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -143,7 +143,7 @@ class TestCreateTransitionChecklistInteractor:
             task_id
         create_or_update_task_storage_mock.is_valid_task_id.return_value = \
             False
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -192,7 +192,7 @@ class TestCreateTransitionChecklistInteractor:
         template_storage_mock.validate_transition_template_id.side_effect = \
             InvalidTransitionChecklistTemplateId(
                 given_transition_checklist_template_id)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -242,7 +242,7 @@ class TestCreateTransitionChecklistInteractor:
             InvalidActionException
         stage_action_storage_mock.validate_action_id.side_effect = \
             InvalidActionException(given_action_id)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -285,7 +285,7 @@ class TestCreateTransitionChecklistInteractor:
         from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId
         stage_action_storage_mock.validate_stage_id.side_effect = \
             InvalidStageId(given_stage_id)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -336,7 +336,7 @@ class TestCreateTransitionChecklistInteractor:
             stage_id=given_stage_id, action_id=given_action_id,
             transition_checklist_template_id=given_transition_template_id
         )
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -391,7 +391,7 @@ class TestCreateTransitionChecklistInteractor:
             task_id
         create_or_update_task_storage_mock.is_valid_task_id.return_value = \
             True
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -442,7 +442,7 @@ class TestCreateTransitionChecklistInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = \
             InvalidGoFIds(given_gof_ids)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -493,7 +493,7 @@ class TestCreateTransitionChecklistInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidGoFsOfTaskTemplate(given_gof_ids,
                                                      given_task_template_id)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -550,7 +550,7 @@ class TestCreateTransitionChecklistInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidFieldIds(given_field_ids)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -604,7 +604,7 @@ class TestCreateTransitionChecklistInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = DuplicateFieldIdsToGoF(given_gof_id,
                                                   given_duplicate_field_ids)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -659,7 +659,7 @@ class TestCreateTransitionChecklistInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidFieldsOfGoF(given_gof_id, given_field_ids)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -716,7 +716,7 @@ class TestCreateTransitionChecklistInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = UserNeedsGoFWritablePermission(
             given_created_by_id, given_gof_id, given_required_user_roles)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -778,7 +778,7 @@ class TestCreateTransitionChecklistInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = UserNeedsFieldWritablePermission(
             given_created_by_id, given_field_id, given_required_user_roles)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -838,7 +838,7 @@ class TestCreateTransitionChecklistInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = EmptyValueForRequiredField(given_field_id)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -896,7 +896,7 @@ class TestCreateTransitionChecklistInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidPhoneNumberValue(given_field_id,
                                                    given_field_response)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -955,7 +955,7 @@ class TestCreateTransitionChecklistInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidEmailFieldValue(given_field_id,
                                                   given_field_response)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -1015,7 +1015,7 @@ class TestCreateTransitionChecklistInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidURLValue(given_field_id,
                                            given_field_response)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -1074,7 +1074,7 @@ class TestCreateTransitionChecklistInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = NotAStrongPassword(given_field_id,
                                               given_field_response)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -1133,7 +1133,7 @@ class TestCreateTransitionChecklistInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidNumberValue(given_field_id,
                                               given_field_response)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -1192,7 +1192,7 @@ class TestCreateTransitionChecklistInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidFloatValue(given_field_id,
                                              given_field_response)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -1254,7 +1254,7 @@ class TestCreateTransitionChecklistInteractor:
             .side_effect = InvalidValueForDropdownField(
             given_field_id, given_field_response, valid_choices
         )
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -1319,7 +1319,7 @@ class TestCreateTransitionChecklistInteractor:
             .side_effect = IncorrectNameInGoFSelectorField(
             given_field_id, given_field_response, valid_choices
         )
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -1386,7 +1386,7 @@ class TestCreateTransitionChecklistInteractor:
             .side_effect = IncorrectRadioGroupChoice(
             given_field_id, given_field_response, valid_choices
         )
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -1453,7 +1453,7 @@ class TestCreateTransitionChecklistInteractor:
             .side_effect = IncorrectCheckBoxOptionsSelected(
             given_field_id, invalid_checkbox_options_selected, valid_choices
         )
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -1521,7 +1521,7 @@ class TestCreateTransitionChecklistInteractor:
             given_field_id, invalid_multi_select_options_selected,
             valid_choices
         )
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -1590,7 +1590,7 @@ class TestCreateTransitionChecklistInteractor:
             .side_effect = IncorrectMultiSelectLabelsSelected(
             given_field_id, invalid_multi_select_labels_selected, valid_choices
         )
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -1660,7 +1660,7 @@ class TestCreateTransitionChecklistInteractor:
             .side_effect = InvalidDateFormat(
             given_field_id, given_field_response, expected_format
         )
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -1728,7 +1728,7 @@ class TestCreateTransitionChecklistInteractor:
             .side_effect = InvalidTimeFormat(
             given_field_id, given_field_response, expected_format
         )
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -1793,7 +1793,7 @@ class TestCreateTransitionChecklistInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidUrlForImage(given_field_id,
                                               given_field_response)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -1857,7 +1857,7 @@ class TestCreateTransitionChecklistInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidImageFormat(given_field_id, given_format,
                                               allowed_formats)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -1922,7 +1922,7 @@ class TestCreateTransitionChecklistInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidUrlForFile(given_field_id,
                                              given_field_response)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -1987,7 +1987,7 @@ class TestCreateTransitionChecklistInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidFileFormat(given_field_id, given_format,
                                              allowed_formats)
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
@@ -2060,7 +2060,7 @@ class TestCreateTransitionChecklistInteractor:
             size=len(expected_task_gof_ids),
             task_gof_id=factory.Iterator(expected_task_gof_ids)
         )
-        interactor = CreateTransitionChecklistTemplateInteractor(
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,

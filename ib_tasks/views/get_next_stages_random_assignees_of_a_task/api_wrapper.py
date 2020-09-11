@@ -10,6 +10,7 @@ from ...presenters.get_next_stages_random_assignees_of_a_task_presenter_impl \
     GetNextStagesRandomAssigneesOfATaskPresenterImpl
 from ...storages.action_storage_implementation import \
     ActionsStorageImplementation
+from ...storages.create_or_update_task_storage_implementation import CreateOrUpdateTaskStorageImplementation
 from ...storages.storage_implementation import StagesStorageImplementation, \
     StorageImplementation
 from ...storages.task_stage_storage_implementation import \
@@ -28,13 +29,16 @@ def api_wrapper(*args, **kwargs):
     storage = StorageImplementation()
     presenter = GetNextStagesRandomAssigneesOfATaskPresenterImpl()
     task_stage_storage = TaskStageStorageImplementation()
+    create_task_storage = CreateOrUpdateTaskStorageImplementation()
 
     interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
         stage_storage=stage_storage, task_storage=task_storage,
         storage=storage, action_storage=action_storage,
-        task_stage_storage=task_stage_storage
+        task_stage_storage=task_stage_storage,
+        create_task_storage=create_task_storage
     )
     response = interactor. \
         get_next_stages_random_assignees_of_a_task_wrapper(
-            presenter=presenter, action_id=action_id, task_display_id=task_id)
+            presenter=presenter, action_id=action_id, task_display_id=task_id
+        )
     return response

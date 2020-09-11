@@ -14,9 +14,33 @@ class TestCase02GetListOfUserRolesForGivenProjectAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['read']}}
 
+    @pytest.fixture
+    def setup(self, api_user):
+        user_id = api_user.user_id
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        UserDetailsFactory.reset_sequence(0)
+        user_object = UserDetailsFactory.create(user_id=user_id)
+        return user_object
+
     @pytest.mark.django_db
     def test_with_invalid_project_id_return_response(
-            self, snapshot
+            self, snapshot, setup
+    ):
+        user_object = setup
+        user_object.is_admin = True
+        project_id = "project_1"
+        body = {}
+        path_params = {"project_id": project_id}
+        query_params = {}
+        headers = {}
+        self.make_api_call(
+            body=body, path_params=path_params, query_params=query_params,
+            headers=headers, snapshot=snapshot
+        )
+
+    @pytest.mark.django_db
+    def test_with_user_is_not_admin_then_raise_exception(
+            self, snapshot, setup
     ):
         project_id = "project_1"
         body = {}
@@ -24,9 +48,6 @@ class TestCase02GetListOfUserRolesForGivenProjectAPITestCase(TestUtils):
         query_params = {}
         headers = {}
         self.make_api_call(
-            body=body,
-            path_params=path_params,
-            query_params=query_params,
-            headers=headers,
-            snapshot=snapshot
+            body=body, path_params=path_params, query_params=query_params,
+            headers=headers, snapshot=snapshot
         )

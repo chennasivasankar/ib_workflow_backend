@@ -6,7 +6,7 @@ RESPONSE_200_JSON = """
     "team_member_levels_with_members": [
         {
             "level_details": {
-                "team_member_level_id": "89d96f4b-c19d-4e69-8eae-e818f3123b09",
+                "team_member_level_id": "097d3429-fc1e-43d5-83d5-8d691b895ae0",
                 "team_member_level_name": "string",
                 "level_hierarchy": 1
             },
@@ -27,6 +27,22 @@ RESPONSE_200_JSON = """
             ]
         }
     ]
+}
+"""
+
+RESPONSE_400_JSON = """
+{
+    "response": "string",
+    "http_status_code": 1,
+    "res_status": "INVALID_TEAM_ID"
+}
+"""
+
+RESPONSE_403_JSON = """
+{
+    "response": "string",
+    "http_status_code": 1,
+    "res_status": "USER_DOES_NOT_HAVE_ACCESS"
 }
 """
 

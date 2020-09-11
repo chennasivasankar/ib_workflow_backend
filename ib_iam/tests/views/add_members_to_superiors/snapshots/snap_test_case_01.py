@@ -7,12 +7,12 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01AddMembersToSuperiorsAPITestCase.test_case status_code'] = '201'
+snapshots['TestCase01AddMembersToSuperiorsAPITestCase.test_add_members_to_superiors status_code'] = '201'
 
-snapshots['TestCase01AddMembersToSuperiorsAPITestCase.test_case body'] = {
+snapshots['TestCase01AddMembersToSuperiorsAPITestCase.test_add_members_to_superiors body'] = {
 }
 
-snapshots['TestCase01AddMembersToSuperiorsAPITestCase.test_case user_team'] = [
+snapshots['TestCase01AddMembersToSuperiorsAPITestCase.test_add_members_to_superiors user_team'] = [
     {
         'id': 1,
         'immediate_superior_team_user_id': None,

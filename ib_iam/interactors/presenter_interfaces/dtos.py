@@ -43,7 +43,7 @@ class TeamWithUsersDetailsDTO:
 
 
 @dataclass
-class ProjectWithTeamsDTO:
+class ProjectsWithTeamsAndRolesDTO:
     total_projects_count: int
     project_dtos: List[ProjectWithDisplayIdDTO]
     project_team_ids_dtos: List[ProjectTeamIdsDTO]

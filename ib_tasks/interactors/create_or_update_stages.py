@@ -13,7 +13,7 @@ from ib_tasks.exceptions.task_custom_exceptions import \
 from ib_tasks.interactors.get_stage_display_logic_interactor import \
     StageDisplayLogicInteractor
 from ib_tasks.interactors.stages_dtos import StageDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageDisplayDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -21,7 +21,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
-from ib_tasks.interactors.task_dtos import StatusOperandStageDTO
+from ib_tasks.interactors.task_dtos import StatusOperandStageDTO, StageDisplayLogicDTO
 
 
 class CreateOrUpdateStagesInteractor:
@@ -140,33 +140,41 @@ class CreateOrUpdateStagesInteractor:
             self.stage_storage.create_stages(
                 create_stages_details)
 
-    def _validate_stage_display_logic(self, stages_details):
+    def _validate_stage_display_logic(self, stages_details: List[StageDTO]):
         list_of_stage_display_logics = [
-            stage.stage_display_logic for stage in stages_details
+            StageDisplayDTO(
+                stage_id=stage.stage_id,
+                display_value=stage.stage_display_logic
+            )
+            for stage in stages_details
             if not stage.stage_display_logic == ""
         ]
 
         logic_interactor = StageDisplayLogicInteractor()
-        stage_logic_attributes_dto = logic_interactor.get_stage_display_logic_condition(
-            list_of_stage_display_logics
-        )
+        stage_logic_attributes_dto = logic_interactor\
+            .get_stage_display_logic_condition(
+                list_of_stage_display_logics
+            )
 
         self._validate_stage_display_logic_attributes(stage_logic_attributes_dto)
 
     def _validate_stage_display_logic_attributes(
-            self, list_of_logic_attributes: List[StatusOperandStageDTO]):
+            self, list_of_logic_attributes: List[StageDisplayLogicDTO]):
 
         invalid_stage_display_logic_stages = []
 
-        list_of_status_ids = [attribute.variable
-                              for attribute in list_of_logic_attributes]
+        list_of_status_ids = [
+            attribute.display_logic_dto.variable
+            for attribute in list_of_logic_attributes
+        ]
 
         valid_status_ids = self.stage_storage.get_existing_status_ids(
             list(set(list_of_status_ids)))
 
         for attribute in list_of_logic_attributes:
-            if attribute.variable not in valid_status_ids and attribute.variable != "":
-                invalid_stage_display_logic_stages.append(attribute.stage)
+            display_logic_dto = attribute.display_logic_dto
+            if display_logic_dto.variable not in valid_status_ids:
+                invalid_stage_display_logic_stages.append(attribute.current_stage)
 
         if invalid_stage_display_logic_stages:
             raise InvalidStageDisplayLogic(list(set(invalid_stage_display_logic_stages)))

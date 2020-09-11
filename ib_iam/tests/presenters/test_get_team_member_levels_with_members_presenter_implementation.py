@@ -2,6 +2,8 @@ import json
 
 import pytest
 
+from ib_iam.constants.enums import StatusCode
+
 
 class TestGetTeamMemberLevelsWithMembersPresenterImplementation:
 
@@ -270,3 +272,38 @@ class TestGetTeamMemberLevelsWithMembersPresenterImplementation:
                 member_id_with_subordinate_member_ids_dtos=prepare_member_id_with_subordinate_member_ids_dtos
             )
         return complete_team_member_levels_details_dto
+
+    def test_response_for_invalid_team_id(self, presenter):
+        # Arrange
+        from ib_iam.presenters.get_team_member_levels_with_members_presenter_implementation import \
+            INVALID_TEAM_ID
+        expected_response = INVALID_TEAM_ID[0]
+        expected_http_status_code = StatusCode.BAD_REQUEST.value
+        expected_res_status = INVALID_TEAM_ID[1]
+
+        # Act
+        response_obj = presenter.response_for_invalid_team_id()
+
+        # Assert
+        response_data = json.loads(response_obj.content)
+
+        assert response_data["response"] == expected_response
+        assert response_data["http_status_code"] == expected_http_status_code
+        assert response_data["res_status"] == expected_res_status
+
+    def test_response_for_user_is_not_admin(self, presenter):
+        # Arrange
+        from ib_iam.presenters.assign_user_roles_for_given_project_bulk_presenter_implementation import \
+            USER_DOES_NOT_HAVE_ACCESS
+        expected_response = USER_DOES_NOT_HAVE_ACCESS[0]
+        response_status_code = USER_DOES_NOT_HAVE_ACCESS[1]
+
+        # Act
+        response_object = presenter.response_for_user_is_not_admin()
+
+        # Assert
+        response = json.loads(response_object.content)
+
+        assert response['http_status_code'] == StatusCode.FORBIDDEN.value
+        assert response['res_status'] == response_status_code
+        assert response['response'] == expected_response

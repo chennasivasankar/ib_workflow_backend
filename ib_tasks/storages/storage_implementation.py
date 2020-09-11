@@ -54,6 +54,15 @@ class StagesStorageImplementation(StageStorageInterface):
             stages, stage_information)
         StagePermittedRoles.objects.bulk_create(list_of_permitted_roles)
 
+    def get_permitted_stage_ids_given_stage_ids(self, user_roles: List[str],
+                                                stage_ids: List[str]) -> \
+            List[str]:
+        permitted_stage_ids = StagePermittedRoles.objects.filter(
+                Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID),
+                stage__stage_id__in=stage_ids
+        ).values_list('stage__stage_id', flat=True)
+        return permitted_stage_ids
+
     def get_existing_status_ids(self, status_ids: List[str]):
         status = TaskTemplateStatusVariable.objects.filter(
             variable__in=status_ids
@@ -104,7 +113,6 @@ class StagesStorageImplementation(StageStorageInterface):
             (Q(role_id__in=user_role_ids) | Q(role_id=ALL_ROLES_ID)) &
             Q(stage__task_template_id__in=project_template_ids)
         ).values_list('stage__stage_id', flat=True)
-
         return list(stage_ids)
 
     @staticmethod
@@ -249,7 +257,7 @@ class StagesStorageImplementation(StageStorageInterface):
         TaskTemplateInitialStage.objects.bulk_create(list_of_task_stages)
 
     def get_task_id_with_stage_details_dtos_based_on_stage_value(
-            self, stage_values: List[int],
+            self, stage_values: List[int], stage_ids: List[str],
             task_ids_group_by_stage_value_dtos: List[
                 StageValueWithTaskIdsDTO]
     ) -> List[TaskIdWithStageDetailsDTO]:
@@ -265,7 +273,7 @@ class StagesStorageImplementation(StageStorageInterface):
         if query is None:
             return []
         current_stage_objects = CurrentTaskStage.objects.filter(
-            query
+            query, stage__stage_id__in=stage_ids
         ).values(
             "task_id", "task__task_display_id",
             "stage__stage_id", "stage__display_name",
@@ -419,8 +427,7 @@ class StagesStorageImplementation(StageStorageInterface):
         stage_ids = ActionPermittedRoles.objects \
             .filter(
             Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
-        ) \
-            .values_list('action__stage_id', flat=True)
+        ).values_list('action__stage_id', flat=True).distinct()
         stage_ids = StagePermittedRoles.objects.filter(
             stage_id__in=stage_ids) \
             .filter(
@@ -832,7 +839,7 @@ class StorageImplementation(StorageInterface):
         stage_id = due_details.stage_id
         updated_due_datetime = due_details.due_date_time
         count = UserTaskDelayReason.objects.filter(
-            task_id=task_id, user_id=user_id).count()
+            task_id=task_id, user_id=user_id, stage_id=stage_id).count()
 
         UserTaskDelayReason.objects.create(user_id=user_id, task_id=task_id,
                                            due_datetime=updated_due_datetime,

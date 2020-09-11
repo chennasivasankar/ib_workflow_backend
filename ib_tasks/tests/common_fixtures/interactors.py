@@ -23,7 +23,6 @@ def prepare_task_gof_and_fields_dto():
 
 def prepare_mock_for_next_stage_random_assignees(mocker):
     path = "ib_tasks.interactors" \
-           ".get_random_assignees_of_next_stages_and_update_in_db_interactor" \
            ".GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor" \
            ".get_random_assignees_of_next_stages_and_update_in_db"
     mock_obj = mocker.patch(path)
@@ -184,7 +183,7 @@ def prepare_fields_dto():
 def mock_user_action_on_task_method(mocker, mock_object):
     mock_method = mocker.patch(
             "ib_tasks.interactors.user_action_on_task_interactor"
-            ".UserActionOnTaskInteractor.user_action_on_task"
+            ".UserActionOnTaskInteractor.act_on_task"
     )
     mock_method.return_value = mock_object
     return mock_method
@@ -225,7 +224,7 @@ def prepare_assignees_interactor_mock(mocker):
             '.GetStagesAssigneesDetailsInteractor'
             '.get_stages_assignee_details_by_given_task_ids'
     )
-    return mock.return_value
+    return mock
 
 
 def prepare_fields_for_get_task_fields_and_actions(mocker, fields_dtos,

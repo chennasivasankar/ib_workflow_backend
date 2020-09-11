@@ -1,6 +1,6 @@
 """
-# user is not assigned to task raises exception # TODO: This case is not
-being validated.
+# user is not assigned to task raises exception
+# TODO: This case is not being validated.
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils

@@ -7,9 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01GetTeamMemberLevelsWithMembersAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase01GetTeamMemberLevelsWithMembersAPITestCase.test_with_valid_details_return_response status_code'] = '200'
 
-snapshots['TestCase01GetTeamMemberLevelsWithMembersAPITestCase.test_case body'] = {
+snapshots['TestCase01GetTeamMemberLevelsWithMembersAPITestCase.test_with_valid_details_return_response body'] = {
     'team_member_levels_with_members': [
         {
             'level_details': {
@@ -44,7 +44,7 @@ snapshots['TestCase01GetTeamMemberLevelsWithMembersAPITestCase.test_case body'] 
                             'profile_pic_url': 'https://graph.ib_users.com/'
                         }
                     ],
-                    'immediate_superior_team_user_id': '1',
+                    'immediate_superior_team_user_id': '10be920b-7b4c-49e7-8adb-41a0c18da848',
                     'member_id': '20be920b-7b4c-49e7-8adb-41a0c18da848',
                     'name': 'name',
                     'profile_pic_url': 'https://graph.ib_users.com/'
@@ -52,7 +52,7 @@ snapshots['TestCase01GetTeamMemberLevelsWithMembersAPITestCase.test_case body'] 
                 {
                     'immediate_subordinate_team_members': [
                     ],
-                    'immediate_superior_team_user_id': '1',
+                    'immediate_superior_team_user_id': '10be920b-7b4c-49e7-8adb-41a0c18da848',
                     'member_id': '30be920b-7b4c-49e7-8adb-41a0c18da848',
                     'name': 'name',
                     'profile_pic_url': 'https://graph.ib_users.com/'
@@ -77,7 +77,7 @@ snapshots['TestCase01GetTeamMemberLevelsWithMembersAPITestCase.test_case body'] 
                 {
                     'immediate_subordinate_team_members': [
                     ],
-                    'immediate_superior_team_user_id': '2',
+                    'immediate_superior_team_user_id': '20be920b-7b4c-49e7-8adb-41a0c18da848',
                     'member_id': '50be920b-7b4c-49e7-8adb-41a0c18da848',
                     'name': 'name',
                     'profile_pic_url': 'https://graph.ib_users.com/'

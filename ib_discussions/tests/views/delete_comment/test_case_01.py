@@ -26,11 +26,10 @@ class TestCase01DeleteCommentAPITestCase(TestUtils):
         path_params = {"comment_id": comment_id}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(
+            body=body, path_params=path_params,
+            query_params=query_params, headers=headers, snapshot=snapshot
+        )
 
     @pytest.mark.django_db
     def test_with_user_id_cannot_edit_the_comment(self, snapshot):
@@ -44,8 +43,7 @@ class TestCase01DeleteCommentAPITestCase(TestUtils):
         path_params = {"comment_id": comment_id}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(
+            body=body, path_params=path_params,
+            query_params=query_params, headers=headers, snapshot=snapshot
+        )

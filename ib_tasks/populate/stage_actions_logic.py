@@ -228,12 +228,12 @@ def PR_PENDING_PAYMENTS_LEVEL5_APPROVAL_Approve(task_dict, global_constants,
 
 def PR_PENDING_PAYMENTS_LEVEL5_APPROVAL_Reject(task_dict, global_constants,
                                                stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "PR_REJECTION LIST"
-    task_dict["status_variables"]["Status2"] = "PR_REJECTION LIST"
-    task_dict["status_variables"]["Status3"] = "PR_REJECTION LIST"
-    task_dict["status_variables"]["Status4"] = "PR_REJECTION LIST"
-    task_dict["status_variables"]["Status5"] = "PR_REJECTION LIST"
-    task_dict["status_variables"]["Status6"] = "PR_REJECTION LIST"
+    task_dict["status_variables"]["Status1"] = "PR_REJECTION_LIST"
+    task_dict["status_variables"]["Status2"] = "PR_REJECTION_LIST"
+    task_dict["status_variables"]["Status3"] = "PR_REJECTION_LIST"
+    task_dict["status_variables"]["Status4"] = "PR_REJECTION_LIST"
+    task_dict["status_variables"]["Status5"] = "PR_REJECTION_LIST"
+    task_dict["status_variables"]["Status6"] = "PR_REJECTION_LIST"
     return task_dict
 
 

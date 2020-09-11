@@ -82,6 +82,11 @@ INVALID_TEAM_IDS = (
     "INVALID_TEAM_IDS"
 )
 
+DUPLICATE_TEAM_IDS = (
+    "Given team ids has duplicate entries",
+    "DUPLICATE_TEAM_IDS"
+)
+
 INVALID_COMPANY_ID = (
     "given company id is invalid",
     "INVALID_COMPANY_ID"
@@ -247,4 +252,49 @@ INVALID_CURRENT_PASSWORD = (
 CURRENT_PASSWORD_MISMATCH = (
     "Given current password is not matching with the current password",
     "CURRENT_PASSWORD_MISMATCH"
+)
+
+INVALID_PROJECT_ID = (
+    "Given project is not found",
+    "INVALID_PROJECT_ID"
+)
+
+PROJECT_NAME_ALREADY_EXISTS = (
+    "Given project name already exists, choose another",
+    "PROJECT_NAME_ALREADY_EXISTS"
+)
+
+PROJECT_DISPLAY_ID_ALREADY_EXISTS = (
+    "Given project display id already exists, choose another",
+    "PROJECT_DISPLAY_ID_ALREADY_EXISTS"
+)
+
+USER_HAS_NO_ACCESS_TO_ADD_PROJECT = (
+    "User has no access to add project",
+    "USER_HAS_NO_ACCESS"
+)
+
+DUPLICATE_ROLE_IDS_FOR_UPDATE_PROJECT = (
+    "Duplicate roles has been given",
+    "DUPLICATE_ROLE_IDS"
+)
+
+DUPLICATE_ROLE_NAMES = (
+    "Duplicate role names has been given",
+    "DUPLICATE_ROLE_NAMES"
+)
+
+ROLE_NAMES_ALREADY_EXISTS = (
+    "Role names {role_names} already exist",
+    "ROLE_NAMES_ALREADY_EXISTS"
+)
+
+USER_HAS_NO_ACCESS_TO_GET_PROJECTS = (
+    "User has no access to get projects",
+    "USER_HAS_NO_ACCESS_TO_GET_PROJECTS"
+)
+
+USER_HAS_NO_ACCESS_TO_GET_USERS_WITH_ROLES = (
+    "User has no access to get users with roles",
+    "USER_HAS_NO_ACCESS_TO_GET_USERS_WITH_ROLES"
 )

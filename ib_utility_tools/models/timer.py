@@ -18,9 +18,9 @@ def validate_timer_entity_type(value):
 
 
 class Timer(models.Model):
-    timer_id = models.UUIDField(primary_key=True,
-                                default=generate_uuid,
-                                editable=False)
+    timer_id = models.UUIDField(
+        primary_key=True, default=generate_uuid, editable=False
+    )
     entity_id = models.CharField(max_length=200)
     entity_type = models.CharField(
         max_length=25, validators=[validate_timer_entity_type]

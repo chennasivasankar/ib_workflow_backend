@@ -22,6 +22,11 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_permitted_stage_ids_given_stage_ids(self, user_roles: List[str],
+                                                stage_ids: List[str]):
+        pass
+
+    @abc.abstractmethod
     def create_stages(self, stage_details: List[StageDTO]):
         pass
 
@@ -67,7 +72,7 @@ class StageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_task_id_with_stage_details_dtos_based_on_stage_value(
-            self, stage_values: List[int],
+            self, stage_values: List[int], stage_ids: List[str],
             task_ids_group_by_stage_value_dtos: List[
                 StageValueWithTaskIdsDTO]) \
             -> List[TaskIdWithStageDetailsDTO]:

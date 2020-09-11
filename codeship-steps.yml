@@ -1,4 +1,5 @@
 - type: serial
+  tag: ^(alpha|beta|gamma)$
   services:
     - app
   steps:
@@ -6,7 +7,7 @@
     - command: /bin/bash -c "source /_ib_venv/bin/activate && python manage.py build -at"
 #    - command: /bin/bash -c "source /_ib_venv/bin/activate && python -m pytest"
     - type: serial
-      tag: ^(alpha|beta)$
+      tag: ^(alpha|beta|gamma)$
       steps:
         - type: parallel
           steps:

@@ -67,24 +67,6 @@
         "entity_type"
       ]
     },
-    "TimerEntityDetails": {
-      "type": "object",
-      "properties": {
-        "entity_id": {
-          "type": "string"
-        },
-        "entity_type": {
-          "type": "string",
-          "enum": [
-            "STAGE_TASK"
-          ]
-        }
-      },
-      "required": [
-        "entity_id",
-        "entity_type"
-      ]
-    },
     "ChecklistItemDetails": {
       "type": "object",
       "properties": {
@@ -117,37 +99,6 @@
           ]
         }
       ]
-    },
-    "ChecklistItemWithEntityDetails": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/EntityDetails"
-        },
-        {
-          "$ref": "#/definitions/ChecklistItemDetails"
-        }
-      ]
-    },
-    "EmptyChecklistItemTextException": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/CommonHttpExceptionFields"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "res_status": {
-              "type": "string",
-              "enum": [
-                "EMPTY_CHECKLIST_ITEM_TEXT"
-              ]
-            }
-          },
-          "required": [
-            "res_status"
-          ]
-        }
-      ]
     }
   },
   "parameters": {
@@ -157,7 +108,14 @@
       "in": "body",
       "required": true,
       "schema": {
-        "$ref": "#/definitions/ChecklistItemWithEntityDetails"
+        "allOf": [
+          {
+            "$ref": "#/definitions/EntityDetails"
+          },
+          {
+            "$ref": "#/definitions/ChecklistItemDetails"
+          }
+        ]
       }
     },
     "UpdateChecklistItemParameter": {
@@ -169,13 +127,6 @@
         "$ref": "#/definitions/ChecklistItemDetails"
       }
     },
-    "ChecklistItemIdPathParameter": {
-      "name": "checklist_item_id",
-      "in": "path",
-      "required": true,
-      "type": "string",
-      "format": "uuid"
-    },
     "GetChecklistParameter": {
       "name": "GetChecklistParameter",
       "description": "get checklist",
@@ -183,15 +134,6 @@
       "required": true,
       "schema": {
         "$ref": "#/definitions/EntityDetails"
-      }
-    },
-    "TimerEntityParameter": {
-      "name": "TimerEntityParameter",
-      "description": "timer entity details",
-      "in": "body",
-      "required": true,
-      "schema": {
-        "$ref": "#/definitions/TimerEntityDetails"
       }
     },
     "DeleteChecklistItemsParameter": {
@@ -211,6 +153,37 @@
           }
         }
       }
+    },
+    "ChecklistItemIdPathParameter": {
+      "name": "checklist_item_id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "format": "uuid"
+    },
+    "TimerEntityParameter": {
+      "name": "TimerEntityParameter",
+      "description": "timer entity details",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "entity_id": {
+            "type": "string"
+          },
+          "entity_type": {
+            "type": "string",
+            "enum": [
+              "STAGE_TASK"
+            ]
+          }
+        },
+        "required": [
+          "entity_id",
+          "entity_type"
+        ]
+      }
     }
   },
   "responses": {
@@ -226,18 +199,6 @@
         "required": [
           "checklist_item_id"
         ]
-      }
-    },
-    "CreateChecklistItemBadRequestResponse": {
-      "description": "create checklist item bad request response",
-      "schema": {
-        "$ref": "#/definitions/EmptyChecklistItemTextException"
-      }
-    },
-    "UpdateChecklistItemBadRequestResponse": {
-      "description": "create checklist item bad request response",
-      "schema": {
-        "$ref": "#/definitions/EmptyChecklistItemTextException"
       }
     },
     "UpdateChecklistItemNotFoundResponse": {
@@ -397,8 +358,8 @@
     "/checklist/item/create/v1/": {
       "post": {
         "operationId": "create_checklist_item",
-        "summary": "create checklist item ",
-        "description": "create the checklist item with given description",
+        "summary": "Create Checklist Item ",
+        "description": "Create the checklist item",
         "security": [
           {
             "oauth": [
@@ -414,9 +375,6 @@
         "responses": {
           "201": {
             "$ref": "#/responses/SuccessForCreateChecklistItemResponse"
-          },
-          "400": {
-            "$ref": "#/responses/CreateChecklistItemBadRequestResponse"
           }
         }
       }
@@ -424,8 +382,8 @@
     "/checklist/item/{checklist_item_id}/v1/": {
       "put": {
         "operationId": "update_checklist_item",
-        "summary": "update checklist item ",
-        "description": "update the checklist item with given details",
+        "summary": "Update Checklist Item ",
+        "description": "Update the checklist item",
         "security": [
           {
             "oauth": [
@@ -445,9 +403,6 @@
           "200": {
             "description": "Success response for update checklist item"
           },
-          "400": {
-            "$ref": "#/responses/UpdateChecklistItemBadRequestResponse"
-          },
           "404": {
             "$ref": "#/responses/UpdateChecklistItemNotFoundResponse"
           }
@@ -457,8 +412,8 @@
     "/checklist/v1/": {
       "post": {
         "operationId": "get_checklist",
-        "summary": "get checklist",
-        "description": "get checklist for given entity details",
+        "summary": "Get Checklist",
+        "description": "Get checklist for given entity details",
         "security": [
           {
             "oauth": [
@@ -481,8 +436,8 @@
     "/timer/start/v1/": {
       "post": {
         "operationId": "start_timer",
-        "summary": "start timer",
-        "description": "start the timer",
+        "summary": "Start Timer",
+        "description": "Start the timer",
         "security": [
           {
             "oauth": [
@@ -508,8 +463,8 @@
     "/timer/stop/v1/": {
       "post": {
         "operationId": "stop_timer",
-        "summary": "stop timer",
-        "description": "stops the timer",
+        "summary": "Stop Timer",
+        "description": "Stop the timer",
         "security": [
           {
             "oauth": [
@@ -535,8 +490,8 @@
     "/timer/v1/": {
       "post": {
         "operationId": "get_timer",
-        "summary": "get timer",
-        "description": "gets the timer duration",
+        "summary": "Get Timer",
+        "description": "Gets the timer duration",
         "security": [
           {
             "oauth": [

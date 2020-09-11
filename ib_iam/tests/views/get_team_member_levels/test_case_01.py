@@ -1,8 +1,9 @@
 """
-# TODO: Update test case description
+Get team member levels
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -13,8 +14,18 @@ class TestCase01GetTeamMemberLevelsAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['write']}}
 
+    def _get_or_create_user(self):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_users.models import UserAccount
+        user = UserAccount.objects.create(user_id=user_id)
+        return user
+
     @pytest.fixture()
     def prepare_team_member_levels_setup(self):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_iam.models import UserDetails
+        UserDetails.objects.create(user_id=user_id, is_admin=True)
+
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         team_member_level_list = [
             {
@@ -62,15 +73,17 @@ class TestCase01GetTeamMemberLevelsAPITestCase(TestUtils):
         return team_object
 
     @pytest.mark.django_db
-    def test_case(self, snapshot, prepare_team_setup,
-                  prepare_team_member_levels_setup):
+    def test_get_team_members_levels(
+            self, snapshot, prepare_team_setup,
+            prepare_team_member_levels_setup
+    ):
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         body = {}
         path_params = {"team_id": team_id}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)

@@ -30,25 +30,55 @@ class TestAssignUserRolesForGivenProjectBulkInteractor:
             user_storage=storage_mock)
         return interactor
 
+    def test_with_user_is_not_admin_return_response(
+            self, storage_mock, presenter_mock, interactor,
+            prepare_user_id_with_role_ids_dtos
+    ):
+        # Arrange
+        project_id = "project_1"
+        user_id = "00be920b-7b4c-49e7-8adb-41a0c18da848"
+        user_id_with_role_ids_dtos = prepare_user_id_with_role_ids_dtos
+
+        expected_presenter_response_for_user_is_not_admin_mock = Mock()
+
+        presenter_mock.response_for_user_is_not_admin_exception.return_value = \
+            expected_presenter_response_for_user_is_not_admin_mock
+        storage_mock.is_user_admin.return_value = False
+
+        # Act
+        response = interactor.assign_user_roles_for_given_project_bulk_wrapper(
+            project_id=project_id, presenter=presenter_mock, user_id=user_id,
+            user_id_with_role_ids_dtos=user_id_with_role_ids_dtos
+        )
+
+        # Assert
+        assert response == \
+               expected_presenter_response_for_user_is_not_admin_mock
+
+        presenter_mock.response_for_user_is_not_admin_exception.assert_called_once()
+        storage_mock.is_user_admin.assert_called_once_with(
+            user_id=user_id)
+
     def test_with_invalid_project_id_return_response(
             self, storage_mock, presenter_mock, interactor,
             prepare_user_id_with_role_ids_dtos
     ):
         # Arrange
         project_id = "project_1"
+        user_id = "00be920b-7b4c-49e7-8adb-41a0c18da848"
         user_id_with_role_ids_dtos = prepare_user_id_with_role_ids_dtos
 
         expected_presenter_response_for_invalid_project_id_mock = Mock()
-
-        presenter_mock.response_for_invalid_project_id.return_value = \
+        presenter_mock.response_for_invalid_project_id_exception.return_value = \
             expected_presenter_response_for_invalid_project_id_mock
 
         from ib_iam.exceptions.custom_exceptions import InvalidProjectId
         storage_mock.validate_project_id.side_effect = InvalidProjectId
+        storage_mock.is_user_admin.return_value = True
 
         # Act
         response = interactor.assign_user_roles_for_given_project_bulk_wrapper(
-            project_id=project_id, presenter=presenter_mock,
+            project_id=project_id, presenter=presenter_mock, user_id=user_id,
             user_id_with_role_ids_dtos=user_id_with_role_ids_dtos
         )
 
@@ -56,7 +86,7 @@ class TestAssignUserRolesForGivenProjectBulkInteractor:
         assert response == \
                expected_presenter_response_for_invalid_project_id_mock
 
-        presenter_mock.response_for_invalid_project_id.assert_called_once()
+        presenter_mock.response_for_invalid_project_id_exception.assert_called_once()
         storage_mock.validate_project_id.assert_called_once_with(
             project_id=project_id)
 
@@ -66,6 +96,7 @@ class TestAssignUserRolesForGivenProjectBulkInteractor:
     ):
         # Arrange
         project_id = "project_1"
+        user_id = "00be920b-7b4c-49e7-8adb-41a0c18da848"
         user_id_with_role_ids_dtos = prepare_user_id_with_role_ids_dtos
         expected_user_ids = [
             "31be920b-7b4c-49e7-8adb-41a0c18da848",
@@ -87,11 +118,12 @@ class TestAssignUserRolesForGivenProjectBulkInteractor:
             InvalidUserIdsForProject
         storage_mock.validate_users_for_project.side_effect = \
             InvalidUserIdsForProject(user_ids=invalid_user_ids)
+        storage_mock.is_user_admin.return_value = True
 
         # Act
         response = interactor.assign_user_roles_for_given_project_bulk_wrapper(
             user_id_with_role_ids_dtos=user_id_with_role_ids_dtos,
-            project_id=project_id, presenter=presenter_mock
+            project_id=project_id, presenter=presenter_mock, user_id=user_id
         )
 
         # Assert
@@ -101,9 +133,9 @@ class TestAssignUserRolesForGivenProjectBulkInteractor:
         storage_mock.validate_users_for_project.assert_called_with(
             user_ids=expected_user_ids, project_id=project_id
         )
-        call_obj = \
+        call_args = \
             presenter_mock.response_for_invalid_user_ids_for_project.call_args
-        assert call_obj[0][0].user_ids == invalid_user_ids
+        assert call_args[0][0].user_ids == invalid_user_ids
 
     def test_with_invalid_role_ids_for_project_return_response(
             self, storage_mock, presenter_mock, interactor,
@@ -111,6 +143,7 @@ class TestAssignUserRolesForGivenProjectBulkInteractor:
     ):
         # Arrange
         project_id = "project_1"
+        user_id = "00be920b-7b4c-49e7-8adb-41a0c18da848"
         user_id_with_role_ids_dtos = prepare_user_id_with_role_ids_dtos
         expected_role_ids = [
             "ROLE_1", "ROLE_2", "ROLE_3"
@@ -129,11 +162,12 @@ class TestAssignUserRolesForGivenProjectBulkInteractor:
             InvalidRoleIdsForProject
         storage_mock.validate_role_ids_for_project.side_effect = \
             InvalidRoleIdsForProject(role_ids=invalid_role_ids)
+        storage_mock.is_user_admin.return_value = True
 
         # Act
         response = interactor.assign_user_roles_for_given_project_bulk_wrapper(
             user_id_with_role_ids_dtos=user_id_with_role_ids_dtos,
-            project_id=project_id, presenter=presenter_mock
+            project_id=project_id, presenter=presenter_mock, user_id=user_id
         )
 
         # Assert
@@ -143,9 +177,9 @@ class TestAssignUserRolesForGivenProjectBulkInteractor:
         storage_mock.validate_role_ids_for_project.assert_called_with(
             role_ids=expected_role_ids, project_id=project_id
         )
-        call_obj = \
+        call_args = \
             presenter_mock.response_for_invalid_role_ids_for_project.call_args
-        assert call_obj[0][0].role_ids == invalid_role_ids
+        assert call_args[0][0].role_ids == invalid_role_ids
 
     def test_with_valid_details_return_response(
             self, storage_mock, presenter_mock, interactor,
@@ -153,6 +187,7 @@ class TestAssignUserRolesForGivenProjectBulkInteractor:
     ):
         # Arrange
         project_id = "project_1"
+        user_id = "00be920b-7b4c-49e7-8adb-41a0c18da848"
         user_id_with_role_ids_dtos = prepare_user_id_with_role_ids_dtos
 
         expected_presenter_prepare_success_response_for_add_specific_project_details = \
@@ -160,10 +195,12 @@ class TestAssignUserRolesForGivenProjectBulkInteractor:
         presenter_mock.prepare_success_response_for_assign_user_roles_for_given_project. \
             return_value = expected_presenter_prepare_success_response_for_add_specific_project_details
 
+        storage_mock.is_user_admin.return_value = True
+
         # Act
         response = interactor.assign_user_roles_for_given_project_bulk_wrapper(
             user_id_with_role_ids_dtos=user_id_with_role_ids_dtos,
-            project_id=project_id, presenter=presenter_mock
+            project_id=project_id, presenter=presenter_mock, user_id=user_id
         )
 
         # Assert

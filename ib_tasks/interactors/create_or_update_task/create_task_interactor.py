@@ -2,35 +2,47 @@ from typing import List, Optional
 
 from ib_tasks.constants.enum import ActionTypes, ViewType, Priority
 from ib_tasks.exceptions.action_custom_exceptions import \
-    InvalidActionException, InvalidKeyError, InvalidCustomLogicException, \
-    InvalidPresentStageAction
+    (InvalidActionException, InvalidKeyError, InvalidCustomLogicException,
+     InvalidPresentStageAction
+     )
 from ib_tasks.exceptions.custom_exceptions import InvalidProjectId
 from ib_tasks.exceptions.datetime_custom_exceptions import \
-    StartDateIsAheadOfDueDate, \
-    DueDateTimeHasExpired, DueDateTimeWithoutStartDateTimeIsNotValid, \
-    StartDateTimeIsRequired, DueDateTimeIsRequired
+    (StartDateIsAheadOfDueDate,
+     DueDateTimeHasExpired, DueDateTimeWithoutStartDateTimeIsNotValid,
+     StartDateTimeIsRequired, DueDateTimeIsRequired
+     )
 from ib_tasks.exceptions.field_values_custom_exceptions import \
-    EmptyValueForRequiredField, InvalidPhoneNumberValue, \
-    InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
-    InvalidNumberValue, InvalidFloatValue, InvalidValueForDropdownField, \
-    IncorrectNameInGoFSelectorField, IncorrectRadioGroupChoice, \
-    IncorrectCheckBoxOptionsSelected, IncorrectMultiSelectOptionsSelected, \
-    IncorrectMultiSelectLabelsSelected, InvalidDateFormat, InvalidTimeFormat, \
-    InvalidUrlForImage, InvalidImageFormat, InvalidUrlForFile, \
-    InvalidFileFormat
-from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
-    DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
-from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
-    DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs
+    (EmptyValueForRequiredField, InvalidPhoneNumberValue,
+     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword,
+     InvalidNumberValue, InvalidFloatValue, InvalidValueForDropdownField,
+     IncorrectNameInGoFSelectorField, IncorrectRadioGroupChoice,
+     IncorrectCheckBoxOptionsSelected, IncorrectMultiSelectOptionsSelected,
+     IncorrectMultiSelectLabelsSelected, InvalidDateFormat, InvalidTimeFormat,
+     InvalidUrlForImage, InvalidImageFormat, InvalidUrlForFile,
+     InvalidFileFormat
+     )
+from ib_tasks.exceptions.fields_custom_exceptions import (InvalidFieldIds,
+                                                          DuplicateFieldIdsToGoF,
+                                                          UserDidNotFillRequiredFields
+                                                          )
+from ib_tasks.exceptions.gofs_custom_exceptions import (InvalidGoFIds,
+                                                        DuplicateSameGoFOrderForAGoF,
+                                                        UserDidNotFillRequiredGoFs
+                                                        )
 from ib_tasks.exceptions.permission_custom_exceptions import \
-    UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
-    UserActionPermissionDenied
-from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
-    InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee, \
-    StageIdsListEmptyException, InvalidStageIdsListException
+    (UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission,
+     UserActionPermissionDenied
+     )
+from ib_tasks.exceptions.stage_custom_exceptions import (DuplicateStageIds,
+                                                         InvalidDbStageIdsListException,
+                                                         StageIdsWithInvalidPermissionForAssignee,
+                                                         StageIdsListEmptyException,
+                                                         InvalidStageIdsListException
+                                                         )
 from ib_tasks.exceptions.task_custom_exceptions import \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId, \
-    InvalidTaskTemplateOfProject, PriorityIsRequired, InvalidTaskJson
+    (InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId,
+     InvalidTaskTemplateOfProject, PriorityIsRequired, InvalidTaskJson
+     )
 from ib_tasks.interactors \
     .call_action_logic_function_and_update_task_status_variables_interactor \
     import \
@@ -61,7 +73,8 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
-    TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
+    (TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
+     )
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
     TaskStageStorageInterface
@@ -70,8 +83,9 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
-from ib_tasks.interactors.task_dtos import CreateTaskDTO, CreateTaskLogDTO, \
-    GoFFieldsDTO
+from ib_tasks.interactors.task_dtos import (CreateTaskDTO, CreateTaskLogDTO,
+                                            GoFFieldsDTO
+                                            )
 from ib_tasks.interactors.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
 
@@ -148,84 +162,67 @@ class CreateTaskInteractor:
         except UserDidNotFillRequiredFields as err:
             return presenter.raise_user_did_not_fill_required_fields(err)
         except EmptyValueForRequiredField as err:
-            return presenter. \
-                raise_exception_for_empty_value_in_required_field(err)
+            return presenter.raise_empty_value_in_required_field(err)
         except InvalidPhoneNumberValue as err:
-            return presenter.raise_exception_for_invalid_phone_number_value(
-                err)
+            return presenter.raise_invalid_phone_number_value(err)
         except InvalidEmailFieldValue as err:
-            return presenter.raise_exception_for_invalid_email_address(err)
+            return presenter.raise_invalid_email_address(err)
         except InvalidURLValue as err:
-            return presenter.raise_exception_for_invalid_url_address(err)
+            return presenter.raise_invalid_url_address(err)
         except NotAStrongPassword as err:
-            return presenter.raise_exception_for_weak_password(err)
+            return presenter.raise_weak_password(err)
         except InvalidNumberValue as err:
-            return presenter.raise_exception_for_invalid_number_value(err)
+            return presenter.raise_invalid_number_value(err)
         except InvalidFloatValue as err:
-            return presenter.raise_exception_for_invalid_float_value(err)
+            return presenter.raise_invalid_float_value(err)
         except InvalidValueForDropdownField as err:
-            return presenter.raise_exception_for_invalid_dropdown_value(err)
+            return presenter.raise_invalid_dropdown_value(err)
         except IncorrectNameInGoFSelectorField as err:
-            return presenter. \
-                raise_exception_for_invalid_name_in_gof_selector_field_value(
+            return presenter.raise_invalid_name_in_gof_selector_field_value(
                 err)
         except IncorrectRadioGroupChoice as err:
-            return presenter. \
-                raise_exception_for_invalid_choice_in_radio_group_field(err)
+            return presenter.raise_invalid_choice_in_radio_group_field(err)
         except IncorrectCheckBoxOptionsSelected as err:
-            return presenter. \
-                raise_exception_for_invalid_checkbox_group_options_selected(
-                err)
+            return presenter.raise_invalid_checkbox_group_options_selected(err)
         except IncorrectMultiSelectOptionsSelected as err:
-            return presenter. \
-                raise_exception_for_invalid_multi_select_options_selected(err)
+            return presenter.raise_invalid_multi_select_options_selected(err)
         except IncorrectMultiSelectLabelsSelected as err:
-            return presenter. \
-                raise_exception_for_invalid_multi_select_labels_selected(err)
+            return presenter.raise_invalid_multi_select_labels_selected(err)
         except InvalidDateFormat as err:
-            return presenter.raise_exception_for_invalid_date_format(err)
+            return presenter.raise_invalid_date_format(err)
         except InvalidTimeFormat as err:
-            return presenter.raise_exception_for_invalid_time_format(err)
+            return presenter.raise_invalid_time_format(err)
         except InvalidUrlForImage as err:
-            return presenter.raise_exception_for_invalid_image_url(err)
+            return presenter.raise_invalid_image_url(err)
         except InvalidImageFormat as err:
-            return presenter.raise_exception_for_not_acceptable_image_format(
-                err)
+            return presenter.raise_not_acceptable_image_format(err)
         except InvalidUrlForFile as err:
-            return presenter.raise_exception_for_invalid_file_url(err)
+            return presenter.raise_invalid_file_url(err)
         except InvalidFileFormat as err:
-            return presenter.raise_exception_for_not_acceptable_file_format(
-                err)
+            return presenter.raise_not_acceptable_file_format(err)
         except UserActionPermissionDenied as err:
-            return presenter.raise_exception_for_user_action_permission_denied(
-                error_obj=err)
+            return presenter.raise_user_action_permission_denied(err)
         except InvalidPresentStageAction as err:
-            return presenter.raise_exception_for_invalid_present_stage_actions(
-                err)
+            return presenter.raise_invalid_present_stage_actions(err)
         except InvalidKeyError:
             return presenter.raise_invalid_key_error()
         except InvalidCustomLogicException:
-            return presenter.raise_invalid_custom_logic_function_exception()
+            return presenter.raise_invalid_custom_logic_function()
         except InvalidModulePathFound as err:
-            return presenter.raise_invalid_path_not_found_exception(
-                path_name=err.path_name)
+            return presenter.raise_invalid_path_not_found(err)
         except InvalidMethodFound as err:
-            return presenter.raise_invalid_method_not_found_exception(
-                method_name=err.method_name)
+            return presenter.raise_invalid_method_not_found(err)
         except DuplicateStageIds as err:
-            return presenter.raise_duplicate_stage_ids_not_valid(
-                duplicate_stage_ids=err.duplicate_stage_ids)
+            return presenter.raise_duplicate_stage_ids_not_valid(err)
         except InvalidDbStageIdsListException as err:
-            return presenter.raise_invalid_stage_ids_exception(
-                invalid_stage_ids=err.invalid_stage_ids)
+            return presenter.raise_invalid_stage_ids(err)
         except StageIdsWithInvalidPermissionForAssignee as err:
-            return presenter. \
-                raise_stage_ids_with_invalid_permission_for_assignee_exception(
-                invalid_stage_ids=err.invalid_stage_ids)
+            return presenter.raise_stage_ids_with_invalid_permission_for_assignee(
+                err)
         except StageIdsListEmptyException as err:
-            return presenter.raise_stage_ids_list_empty_exception(err)
+            return presenter.raise_stage_ids_list_empty(err)
         except InvalidStageIdsListException as err:
-            return presenter.raise_invalid_stage_ids_list_exception(err)
+            return presenter.raise_invalid_stage_ids_list(err)
         except InvalidTaskJson as err:
             return presenter.raise_invalid_task_json(err)
 
@@ -311,7 +308,7 @@ class CreateTaskInteractor:
             create_task_storage=self.create_task_storage,
             task_template_storage=self.task_template_storage
         )
-        act_on_task_interactor.user_action_on_task(task_id=created_task_id)
+        act_on_task_interactor.user_action_on_task_and_set_random_assignees(task_id=created_task_id)
         from ib_tasks.interactors.get_task_current_stages_interactor import \
             GetTaskCurrentStagesInteractor
         get_task_current_stages_interactor = GetTaskCurrentStagesInteractor(
@@ -393,7 +390,7 @@ class CreateTaskInteractor:
             action_type == ActionTypes.NO_VALIDATIONS.value
         self._validate_priority_in_no_validations_case(
             task_dto.priority, action_type_is_no_validations)
-        if action_type_is_no_validations:
+        if action_type_is_no_validations and due_datetime is None:
             return
         start_datetime_is_emtpy = not start_datetime
         due_datetime_is_empty = not due_datetime
@@ -485,8 +482,8 @@ class CreateTaskInteractor:
                 field_value_dto.field_id
                 for field_value_dto in gof_fields_dto.field_values_dtos
             ]
-        self._validate_all_user_permitted_gof_ids_are_filled_or_not(
-            gof_id_with_display_name_dtos, filled_gof_ids)
+        # self._validate_all_user_permitted_gof_ids_are_filled_or_not(
+        #     gof_id_with_display_name_dtos, filled_gof_ids)
         self._validate_all_user_permitted_field_ids_are_filled_or_not(
             field_id_with_display_name_dtos, filled_field_ids)
 

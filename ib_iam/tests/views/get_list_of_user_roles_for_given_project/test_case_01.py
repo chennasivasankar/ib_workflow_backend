@@ -17,7 +17,7 @@ class TestCase01GetListOfUserRolesForGivenProjectAPITestCase(TestUtils):
     @pytest.mark.django_db
     def test_with_valid_project_id_return_response(
             self, snapshot, create_project_teams, create_user_roles,
-            create_user_teams, create_user_details
+            create_user_teams, create_user_details, setup
     ):
         project_id = "FA"
         body = {}
@@ -25,12 +25,17 @@ class TestCase01GetListOfUserRolesForGivenProjectAPITestCase(TestUtils):
         query_params = {}
         headers = {}
         self.make_api_call(
-            body=body,
-            path_params=path_params,
-            query_params=query_params,
-            headers=headers,
-            snapshot=snapshot
+            body=body, path_params=path_params, query_params=query_params,
+            headers=headers, snapshot=snapshot
         )
+
+    @pytest.fixture
+    def setup(self, api_user):
+        user_id = api_user.user_id
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        UserDetailsFactory.reset_sequence(0)
+        user_object = UserDetailsFactory.create(user_id=user_id, is_admin=True)
+        return user_object
 
     @pytest.fixture()
     def create_teams(self):

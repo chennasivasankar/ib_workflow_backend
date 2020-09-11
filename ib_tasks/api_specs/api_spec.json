@@ -63,7 +63,11 @@
                "enum":[
                   "INVALID_ACTION_ID",
                   "INVALID_TASK_ID",
-                  "REASON_NOT_ADDED_FOR_TASK_DELAY"
+                  "REASON_NOT_ADDED_FOR_TASK_DELAY",
+                  "INVALID_TASK_DISPLAY_ID",
+                  "INVALID_BOARD_ID",
+                  "INVALID_STAGE_IDS",
+                  "TASK_DELAY_REASON_IS_NOT_ADDED"
                ]
             }
          },
@@ -130,7 +134,9 @@
                "type":"string",
                "enum":[
                   "USER_DO_NOT_HAVE_ACCESS",
-                  "INVALID_PRESENT_STAGE_ACTION"
+                  "INVALID_PRESENT_STAGE_ACTION",
+                  "USER_DO_NOT_HAVE_BOARD_ACCESS",
+                  "USER_NOT_IN_PROJECT"
                ]
             }
          },
@@ -533,6 +539,26 @@
             },
             "action_id":{
                "type":"string"
+            }
+         }
+      },
+      "ActOnTaskAndUpdateTaskStageAssigneesRequestBody":{
+         "type":"object",
+         "properties":{
+            "board_id":{
+               "type":"string"
+            },
+            "task_id":{
+               "type":"string"
+            },
+            "action_id":{
+               "type":"string"
+            },
+            "stage_assignees":{
+               "type":"array",
+               "items":{
+                  "$ref":"#/definitions/StageWithAssignee"
+               }
             }
          }
       },
@@ -994,7 +1020,17 @@
                "type":"integer"
             },
             "res_status":{
-               "type":"string"
+               "type":"string",
+               "enum":[
+                  "USER_DID_NOT_FILL_REQUIRED_GOFS",
+                  "USER_DID_NOT_FILL_REQUIRED_FIELDS",
+                  "INVALID_KEY_ERROR",
+                  "INVALID_CUSTOM_LOGIC",
+                  "PATH_NOT_FOUND", "METHOD_NOT_FOUND",
+                  "DUPLICATE_STAGE_IDS",
+                  "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE",
+                  "EMPTY_STAGE_IDS_ARE_INVALID"
+               ]
             }
          },
          "required":[
@@ -1580,6 +1616,15 @@
             "$ref":"#/definitions/PerformActionRequestBody"
          }
       },
+      "ActOnTaskAndUpdateTaskStageAssigneesBodyParameter":{
+         "in":"body",
+         "name":"ActOnTaskAndUpdateTaskStageAssigneesRequestBody",
+         "description":"give valid details",
+         "required":true,
+         "schema":{
+            "$ref":"#/definitions/ActOnTaskAndUpdateTaskStageAssigneesRequestBody"
+         }
+      },
       "TaskParameterize":{
          "name":"task_id",
          "in":"path",
@@ -1987,7 +2032,8 @@
                      "USERS_NOT_EXISTS_FOR_TEAMS",
                      "INVALID_USER",
                      "INVALID_PROJECT_ID",
-                     "USER_NOT_A_MEMBER_OF_PROJECT"
+                     "USER_NOT_A_MEMBER_OF_PROJECT",
+                     "INVALID_STAGE_IDS_FOR_TASK"
                   ]
                }
             }
@@ -2347,7 +2393,9 @@
                      "LIMIT_SHOULD_BE_GREATER_THAN_ZERO",
                      "OFFSET_SHOULD_BE_GREATER_THAN_ZERO",
                      "EMPTY_STAGE_IDS_ARE_INVALID",
-                     "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE"
+                     "FILTER_CONDITION_NOT_APPLICABLE_FOR_VALUE",
+                     "USER_NOT_IN_PROJECT",
+                     "INVALID_PROJECT_ID"
                   ]
                }
             },
@@ -3091,6 +3139,12 @@
                },
                "400":{
                   "$ref":"#/responses/AllTasksOverviewFailureResponse"
+               },
+               "403": {
+                  "$ref":"#/responses/AllTasksOverviewFailureResponse"
+               },
+               "404": {
+                  "$ref":"#/responses/AllTasksOverviewFailureResponse"
                }
             }
          }
@@ -3123,6 +3177,12 @@
                   "$ref":"#/responses/AllTasksOverviewResponse"
                },
                "400":{
+                  "$ref":"#/responses/AllTasksOverviewFailureResponse"
+               },
+               "403": {
+                  "$ref":"#/responses/AllTasksOverviewFailureResponse"
+               },
+               "404": {
                   "$ref":"#/responses/AllTasksOverviewFailureResponse"
                }
             }
@@ -3667,6 +3727,48 @@
                },
                "403": {
                   "$ref":"#/responses/UserNotInProjectResponse"
+               }
+            }
+         }
+      },
+      "/act_on_task_and_update_task_stage_assignees/v1/":{
+         "post":{
+            "operationId":"act_on_task_and_update_task_stage_assignees",
+            "summary":"Act on Task And Update Task Stage Assignees",
+            "description":"User Submitting Response by acting on a task and Update task stage assignees given transition template",
+            "parameters":[
+               {
+                  "$ref":"#/parameters/ActOnTaskAndUpdateTaskStageAssigneesBodyParameter"
+               }
+            ],
+            "security":[
+               {
+                  "oauth":[
+                     "write"
+                  ]
+               }
+            ],
+            "responses":{
+               "200":{
+                  "description":"successful",
+                  "schema":{
+                     "$ref":"#/definitions/TaskActionResponseBody"
+                  }
+               },
+               "403":{
+                  "description":"Forbidden",
+                  "schema":{
+                     "$ref":"#/definitions/AccessUnauthorized"
+                  }
+               },
+               "404":{
+                  "description":"Not Found",
+                  "schema":{
+                     "$ref":"#/definitions/InvalidTaskActionDetails"
+                  }
+               },
+               "400":{
+                  "$ref":"#/responses/UserActionOnTaskFailureResponse"
                }
             }
          }

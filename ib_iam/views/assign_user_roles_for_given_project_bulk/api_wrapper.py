@@ -8,7 +8,9 @@ from .validator_class import ValidatorClass
 def api_wrapper(*args, **kwargs):
     path_params = kwargs["path_params"]
     request_data = kwargs["request_data"]
+    user_object = kwargs["user"]
 
+    user_id = user_object.user_id
     project_id = str(path_params["project_id"])
     users = request_data["users"]
 
@@ -37,7 +39,7 @@ def api_wrapper(*args, **kwargs):
     )
 
     response = interactor.assign_user_roles_for_given_project_bulk_wrapper(
-        project_id=project_id, presenter=presenter,
+        project_id=project_id, presenter=presenter, user_id=user_id,
         user_id_with_role_ids_dtos=user_id_with_role_ids_dtos
     )
     return response

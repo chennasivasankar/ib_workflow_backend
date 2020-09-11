@@ -75,53 +75,66 @@ class GetAllTasksOverviewForUserPresenterImpl(
             task_with_complete_stage_details_dtos
         task_fields_and_action_details_dtos = all_tasks_overview_details_dto. \
             task_fields_and_action_details_dtos
+        task_fields_and_actions_dict = {}
+        for task_fields_and_action_details_dto in task_fields_and_action_details_dtos:
+            task_fields_and_actions_dict[
+                task_fields_and_action_details_dto.stage_id
+                + str(task_fields_and_action_details_dto.task_id)
+            ] = task_fields_and_action_details_dto
+
         task_overview_details = []
-        for task_with_complete_stage_details_dto in \
-                task_with_complete_stage_details_dtos:
+        task_ids = []
+        for task_with_complete_stage_details_dto in task_with_complete_stage_details_dtos:
             each_task_id_with_stage_details_dto = \
-                task_with_complete_stage_details_dto\
-                    .task_with_stage_details_dto
-            task_overview_fields_details, actions_details = self. \
-                task_fields_and_actions_details(
-                each_task_id_with_stage_details_dto.task_id,
-                task_fields_and_action_details_dtos
-            )
-            assignee = self._get_assignee_details(
-                task_with_complete_stage_details_dto.stage_assignee_dto
-            )
-            task_overview_details_dict = {
-                "task_id": each_task_id_with_stage_details_dto.task_display_id,
-                "task_overview_fields": task_overview_fields_details,
-                "stage_with_actions": {
-                    "stage_id":
-                        each_task_id_with_stage_details_dto.db_stage_id,
-                    "stage_display_name":
-                        each_task_id_with_stage_details_dto.stage_display_name,
-                    "stage_color":
-                        each_task_id_with_stage_details_dto.stage_color,
-                    "assignee": assignee,
-                    "actions": actions_details
-                }
-            }
-            task_overview_details.append(task_overview_details_dict)
+                task_with_complete_stage_details_dto.task_with_stage_details_dto
+            task_id = each_task_id_with_stage_details_dto.task_id
+            task_fields_and_action_details_dto = task_fields_and_actions_dict[
+                each_task_id_with_stage_details_dto.stage_id
+                + str(each_task_id_with_stage_details_dto.task_id)
+            ]
+            if task_id not in task_ids:
+                task_overview_details_dict = self._get_task_overview_details_dict(
+                    each_task_id_with_stage_details_dto,
+                    task_fields_and_action_details_dto,
+                    task_with_complete_stage_details_dto)
+                task_ids.append(task_id)
+                task_overview_details.append(task_overview_details_dict)
         return task_overview_details
 
+    def _get_task_overview_details_dict(self,
+                                        each_task_id_with_stage_details_dto,
+                                        task_fields_and_action_details_dto,
+                                        task_with_complete_stage_details_dto):
+        task_overview_fields_details, actions_details = self. \
+            task_fields_and_actions_details(
+            task_fields_and_action_details_dto
+        )
+        assignee = self._get_assignee_details(
+            task_with_complete_stage_details_dto.stage_assignee_dto
+        )
+        task_overview_details_dict = {
+            "task_id": each_task_id_with_stage_details_dto.task_display_id,
+            "task_overview_fields": task_overview_fields_details,
+            "stage_with_actions": {
+                "stage_id":
+                    each_task_id_with_stage_details_dto.db_stage_id,
+                "stage_display_name":
+                    each_task_id_with_stage_details_dto.stage_display_name,
+                "stage_color":
+                    each_task_id_with_stage_details_dto.stage_color,
+                "assignee": assignee,
+                "actions": actions_details
+            }
+        }
+        return task_overview_details_dict
+
     def task_fields_and_actions_details(
-            self, given_task_id: int,
-            task_fields_and_action_details_dtos: List[
-                GetTaskStageCompleteDetailsDTO]):
-        for each_task_fields_and_action_details_dto in \
-                task_fields_and_action_details_dtos:
-            if given_task_id == \
-                    each_task_fields_and_action_details_dto.task_id:
-                task_overview_fields_details = self. \
-                    _get_task_overview_fields_details(
-                    each_task_fields_and_action_details_dto
-                )
-                action_details = self._get_actions_details_of_task_stage(
-                    each_task_fields_and_action_details_dto)
-                return task_overview_fields_details, action_details
-        return [], []
+            self, task_fields_and_action_details_dto: GetTaskStageCompleteDetailsDTO):
+        task_overview_fields_details = self. \
+            _get_task_overview_fields_details(task_fields_and_action_details_dto)
+        action_details = self._get_actions_details_of_task_stage(
+            task_fields_and_action_details_dto)
+        return task_overview_fields_details, action_details
 
     @staticmethod
     def _get_task_overview_fields_details(
