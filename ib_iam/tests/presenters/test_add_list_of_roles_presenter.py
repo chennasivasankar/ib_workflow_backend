@@ -39,7 +39,7 @@ class TestAddListOfRolesPresenter:
         )
 
         # Act
-        response_object = presenter.raise_duplicate_role_ids_exception(
+        response_object = presenter.response_for_duplicate_role_ids_exception(
             err=duplicate_ids_err_object
         )
 

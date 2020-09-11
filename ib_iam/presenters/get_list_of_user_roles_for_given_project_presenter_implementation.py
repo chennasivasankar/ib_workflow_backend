@@ -18,7 +18,20 @@ class GetListOfUserRolesForGivenProjectPresenterImplementation(
     GetListOfUserRolesForGivenProjectPresenterInterface, HTTPResponseMixin
 ):
 
-    def prepare_success_response_for_get_specific_project_details(
+    def response_for_user_not_have_permission_exception(self):
+        from ib_iam.constants.exception_messages import (
+            USER_HAS_NO_ACCESS_TO_GET_USERS_WITH_ROLES
+        )
+        response_dict = {
+            "response": USER_HAS_NO_ACCESS_TO_GET_USERS_WITH_ROLES[0],
+            "http_status_code": StatusCode.FORBIDDEN.value,
+            "res_status": USER_HAS_NO_ACCESS_TO_GET_USERS_WITH_ROLES[1]
+        }
+        return self.prepare_403_forbidden_response(
+            response_dict=response_dict
+        )
+
+    def get_response_for_get_users_with_roles(
             self, basic_user_details_dtos: List[BasicUserDetailsDTO],
             user_role_dtos: List[UserRoleDTO]
     ):
@@ -57,7 +70,7 @@ class GetListOfUserRolesForGivenProjectPresenterImplementation(
         }
         return role_dict
 
-    def response_for_invalid_project_id(self):
+    def response_for_invalid_project_id_exception(self):
         response_dict = {
             "response": INVALID_PROJECT_ID[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,

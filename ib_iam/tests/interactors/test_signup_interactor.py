@@ -112,13 +112,13 @@
 #         create_user_account_adapter_mock = create_user_account_adapter_mock(
 #             mocker=mocker)
 #         create_user_account_adapter_mock.side_effect = InvalidEmail
-#         presenter_mock.raise_invalid_email_exception.return_value = Mock()
+#         presenter_mock.response_for_invalid_email_exception.return_value = Mock()
 #
 #         interactor.signup_wrapper(email=email, password=password, name=name,
 #                                   presenter=presenter_mock)
 #
 #         get_user_id_for_given_email_mock.assert_called_once_with(email=email)
-#         presenter_mock.raise_invalid_email_exception.assert_called_once()
+#         presenter_mock.response_for_invalid_email_exception.assert_called_once()
 #         create_user_account_adapter_mock.assert_called_once_with(
 #             email=email, password=password)
 #

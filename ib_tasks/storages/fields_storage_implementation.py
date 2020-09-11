@@ -30,7 +30,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
     ) -> List[FieldIdWithFieldDisplayNameDTO]:
         field_dicts = FieldRole.objects.filter(
             Q(role__in=user_roles) | Q(role=ALL_ROLES_ID),
-            field__gof_id__in=gof_ids,
+            field__gof_id__in=gof_ids, field__required=True,
             permission_type=PermissionTypes.WRITE.value
         ).values(
             "field_id", "field__gof__display_name", "field__display_name")

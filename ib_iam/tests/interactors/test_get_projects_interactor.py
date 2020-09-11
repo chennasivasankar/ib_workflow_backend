@@ -12,6 +12,12 @@ class TestAddProjectsInteractor:
         return project_storage
 
     @pytest.fixture
+    def user_storage(self):
+        from ib_iam.interactors.storage_interfaces.user_storage_interface import \
+            UserStorageInterface
+        return mock.create_autospec(UserStorageInterface)
+
+    @pytest.fixture
     def team_storage(self):
         from ib_iam.interactors.storage_interfaces \
             .team_storage_interface import TeamStorageInterface
@@ -27,11 +33,13 @@ class TestAddProjectsInteractor:
         return presenter
 
     @pytest.fixture
-    def interactor(self, project_storage, team_storage):
+    def interactor(self, project_storage, team_storage, user_storage):
         from ib_iam.interactors.get_projects_interactor import \
             GetProjectsInteractor
-        interactor = GetProjectsInteractor(project_storage=project_storage,
-                                           team_storage=team_storage)
+        interactor = GetProjectsInteractor(
+            project_storage=project_storage, team_storage=team_storage,
+            user_storage=user_storage
+        )
         return interactor
 
     @pytest.fixture
@@ -63,28 +71,38 @@ class TestAddProjectsInteractor:
         project_role_dtos = [ProjectRoleDTOFactory() for _ in range(2)]
         return project_role_dtos
 
+    @pytest.fixture
+    def pagination_dto(self):
+        from ib_iam.tests.factories.storage_dtos import PaginationDTOFactory
+        return PaginationDTOFactory()
+
     def test_get_projects_returns_projects_response(
             self, project_storage, interactor, presenter, team_storage,
             expected_list_of_project_dtos, expected_project_team_ids_dtos,
-            expected_list_of_team_dtos, expected_project_role_dtos):
+            expected_list_of_team_dtos, expected_project_role_dtos,
+            pagination_dto, user_storage
+    ):
         # Arrange
-        from ib_iam.tests.factories.storage_dtos import PaginationDTOFactory
-        pagination_dto = PaginationDTOFactory()
         project_ids = ["1"]
         team_ids = ["2"]
+        user_id = "1"
         total_projects_count = 1
-        from ib_iam.interactors.storage_interfaces.dtos import \
+        from ib_iam.interactors.storage_interfaces.dtos import (
             ProjectsWithTotalCountDTO
+        )
         project_storage.get_projects_with_total_count_dto.return_value = \
-            ProjectsWithTotalCountDTO(projects=expected_list_of_project_dtos,
-                                      total_projects_count=total_projects_count)
+            ProjectsWithTotalCountDTO(
+                projects=expected_list_of_project_dtos,
+                total_projects_count=total_projects_count
+            )
+        user_storage.is_user_admin.return_value = True
         project_storage.get_project_team_ids_dtos \
             .return_value = expected_project_team_ids_dtos
         team_storage.get_team_dtos.return_value = expected_list_of_team_dtos
         project_storage.get_all_project_roles.return_value = expected_project_role_dtos
         from ib_iam.interactors.presenter_interfaces.dtos import \
-            ProjectWithTeamsDTO
-        project_with_teams_dto = ProjectWithTeamsDTO(
+            ProjectsWithTeamsAndRolesDTO
+        project_with_teams_dto = ProjectsWithTeamsAndRolesDTO(
             total_projects_count=total_projects_count,
             project_dtos=expected_list_of_project_dtos,
             project_team_ids_dtos=expected_project_team_ids_dtos,
@@ -93,8 +111,9 @@ class TestAddProjectsInteractor:
         presenter.get_response_for_get_projects.return_value = mock.Mock()
 
         # Act
-        interactor.get_projects_wrapper(presenter=presenter,
-                                        pagination_dto=pagination_dto)
+        interactor.get_projects_wrapper(
+            presenter=presenter, pagination_dto=pagination_dto, user_id=user_id
+        )
 
         # Assert
         project_storage.get_projects_with_total_count_dto \
@@ -105,3 +124,58 @@ class TestAddProjectsInteractor:
         project_storage.get_all_project_roles.assert_called_once()
         presenter.get_response_for_get_projects.assert_called_once_with(
             project_with_teams_dto=project_with_teams_dto)
+
+    def test_with_user_not_admin_returns_unauthorized_response(
+            self, project_storage, interactor, presenter, team_storage,
+            user_storage, pagination_dto
+    ):
+        # Arrange
+        user_id = "1"
+        user_storage.is_user_admin.return_value = False
+        presenter.response_for_user_have_not_permission_exception \
+            .return_value = mock.Mock()
+
+        # Act
+        interactor.get_projects_wrapper(
+            user_id=user_id, pagination_dto=pagination_dto, presenter=presenter
+        )
+
+        # Assert
+        user_storage.is_user_admin.assert_called_once_with(
+            user_id=user_id)
+        presenter.response_for_user_have_not_permission_exception \
+            .assert_called_once()
+
+    def test_invalid_limit_returns_invalid_limit_response(
+            self, project_storage, interactor, presenter, team_storage,
+            user_storage, pagination_dto
+    ):
+        # Arrange
+        pagination_dto.limit = -1
+        user_id = "1"
+        presenter.response_for_invalid_limit_exception.return_value = mock.Mock()
+
+        # Act
+        interactor.get_projects_wrapper(
+            user_id=user_id, pagination_dto=pagination_dto, presenter=presenter
+        )
+
+        # Arrange
+        presenter.response_for_invalid_limit_exception.assert_called_once()
+
+    def test_invalid_offset_returns_invalid_offset_response(
+            self, project_storage, interactor, presenter, team_storage,
+            user_storage, pagination_dto
+    ):
+        # Arrange
+        pagination_dto.offset = -1
+        user_id = "1"
+        presenter.response_for_invalid_offset_exception.return_value = mock.Mock()
+
+        # Act
+        interactor.get_projects_wrapper(
+            user_id=user_id, pagination_dto=pagination_dto, presenter=presenter
+        )
+
+        # Arrange
+        presenter.response_for_invalid_offset_exception.assert_called_once()

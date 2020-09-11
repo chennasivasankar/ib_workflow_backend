@@ -26,20 +26,19 @@ class UpdateUserProfileInteractor(ValidationMixin):
         try:
             self.update_user_profile(user_profile_dto=user_profile_dto,
                                      role_ids=role_ids)
-            response = presenter.get_success_response_for_update_user_profile()
+            response = presenter.get_response_for_update_user_profile()
         except InvalidNameLength:
-            response = presenter.raise_invalid_name_length_exception_for_update_user_profile()
+            response = presenter.response_for_invalid_name_length_exception()
         except NameShouldNotContainsNumbersSpecCharacters:
-            response = presenter \
-                .raise_name_should_not_contain_special_chars_and_numbers_exception_for_update_user_profile()
+            response = presenter.response_for_name_contains_special_character_exception()
         except RoleIdsAreDuplicated:
-            response = presenter.raise_duplicate_role_ids_exception()
+            response = presenter.response_for_duplicate_role_ids_exception()
         except RoleIdsAreInvalid:
-            response = presenter.raise_invalid_role_ids_exception()
+            response = presenter.response_for_invalid_role_ids_exception()
         except InvalidEmail:
-            response = presenter.raise_invalid_email_exception_for_update_user_profile()
+            response = presenter.response_for_invalid_email_exception()
         except UserAccountAlreadyExistWithThisEmail:
-            response = presenter.raise_email_already_in_use_exception_for_update_user_profile()
+            response = presenter.response_for_email_already_exists_exception()
         return response
 
     def update_user_profile(
