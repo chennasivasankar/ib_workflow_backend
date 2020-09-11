@@ -4,7 +4,7 @@ from ib_tasks.storages.task_template_storage_implementation import \
     TaskTemplateStorageImplementation
 
 
-def populate_tasks(tasks: List[Dict]):
+def populate_tasks(project_id: str, tasks: List[Dict]):
     tasks_dto = []
     validation_for_tasks_dict(tasks)
     tasks = _remove_white_spaces_and_apply_replaces_to_roles(
@@ -21,7 +21,9 @@ def populate_tasks(tasks: List[Dict]):
         tasks_dto=tasks_dto,
         template_storage=TaskTemplateStorageImplementation()
     )
-    interactor.create_update_delete_stage_actions_to_task_template()
+    interactor.create_update_delete_stage_actions_to_task_template(
+        project_id=project_id
+    )
 
 
 def _remove_white_spaces_and_apply_replaces_to_roles(

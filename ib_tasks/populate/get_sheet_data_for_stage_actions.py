@@ -13,8 +13,9 @@ class GetSheetDataForStageActions:
         from ib_tasks.populate.get_data_from_sheet import GetDataFromSheet
         return GetDataFromSheet()
 
-    def get_data_from_stages_and_actions_sub_sheet(self,
-                                                   spread_sheet_name: str):
+    def get_data_from_stages_and_actions_sub_sheet(
+            self, spread_sheet_name: str, project_id: str
+    ):
         from ib_tasks.constants.constants import STAGES_AND_ACTIONS_SUB_SHEET
         field_records = self.data_sheet.get_data_from_sub_sheet(
             spread_sheet_name=spread_sheet_name,
@@ -30,7 +31,7 @@ class GetSheetDataForStageActions:
         ]
         from ib_tasks.populate.populate_stage_actions import \
             populate_stage_actions
-        populate_stage_actions(stage_actions_dict)
+        populate_stage_actions(stage_actions_dict, project_id)
 
     @staticmethod
     def _convert_stage_action_sheet_data_dict_to_our_format(field_record: Dict):

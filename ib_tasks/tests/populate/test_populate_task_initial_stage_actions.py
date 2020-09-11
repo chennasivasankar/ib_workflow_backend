@@ -7,6 +7,7 @@ class TestCasePopulateTasks:
     def test_given_invalid_key_raises_exception():
 
         # Arrange
+        project_id = "FINMAN"
         valid_format = {
             "task_template_id": "task_template_1",
             "stage_id": "stage_1",
@@ -41,7 +42,7 @@ class TestCasePopulateTasks:
 
         # Act
         with pytest.raises(InvalidFormatException) as err:
-            populate_tasks(tasks=tasks)
+            populate_tasks(tasks=tasks, project_id=project_id)
 
         # Assert
         assert err.value.valid_format == json_valid_format
@@ -49,6 +50,7 @@ class TestCasePopulateTasks:
     @staticmethod
     def test_given_invalid_python_code_in_action_logic_raises_exception():
         # Arrange
+        project_id = "FINMAN"
         tasks = [
             {
                 "task_template_id": "task_template_1",
@@ -70,11 +72,12 @@ class TestCasePopulateTasks:
 
         # Act
         with pytest.raises(InvalidPythonCodeException):
-            populate_tasks(tasks=tasks)
+            populate_tasks(tasks=tasks, project_id=project_id)
 
     @staticmethod
     def test_given_valid_key_creates_dtos(mocker):
         # Arrange
+        project_id = "FINMAN"
         tasks = [
             {
                 "task_template_id": "task_template_1",
@@ -108,7 +111,7 @@ class TestCasePopulateTasks:
         mock_obj = mocker.patch(path)
 
         # Act
-        response = populate_tasks(tasks=tasks)
+        response = populate_tasks(tasks=tasks, project_id=project_id)
 
         # Assert
         mock_obj.called_once()

@@ -1,7 +1,7 @@
 from typing import Dict, Any, List
 
 
-def populate_stage_actions(action_dicts: List[Dict]):
+def populate_stage_actions(action_dicts: List[Dict], project_id: str):
     actions_dtos = []
     validation_for_action_dict(action_dicts)
     actions_dict = _remove_white_spaces_and_apply_replaces_to_roles(
@@ -20,7 +20,7 @@ def populate_stage_actions(action_dicts: List[Dict]):
         template_storage=TaskTemplateStorageImplementation()
     )
     interactor.create_or_update_or_delete_stage_actions(
-        action_dtos=actions_dtos
+        action_dtos=actions_dtos, project_id=project_id
     )
 
 

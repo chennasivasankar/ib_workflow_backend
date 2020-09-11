@@ -22,7 +22,8 @@ class ConfigureInitialTaskTemplateStageActions:
         self.template_storage = template_storage
         self.tasks_dto = tasks_dto
 
-    def create_update_delete_stage_actions_to_task_template(self):
+    def create_update_delete_stage_actions_to_task_template(
+            self, project_id: str):
 
         tasks_dto = self.tasks_dto
         self._validations_for_initial_task_template_stages(tasks_dto)
@@ -33,7 +34,7 @@ class ConfigureInitialTaskTemplateStageActions:
             storage=self.storage, template_storage=self.template_storage
         )
         interactor_obj.create_or_update_or_delete_stage_actions(
-            action_dtos=actions_dto
+            project_id=project_id, action_dtos=actions_dto
         )
         task_template_stage_dtos = \
             self._get_initial_stage_dto_to_tasks_templates(tasks_dto)
