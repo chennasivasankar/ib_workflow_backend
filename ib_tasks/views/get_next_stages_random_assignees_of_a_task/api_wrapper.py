@@ -2,20 +2,21 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
 from .validator_class import ValidatorClass
-from ...interactors.get_next_stages_random_assignees_of_a_task_interactor \
+from ib_tasks.interactors.get_next_stages_random_assignees_of_a_task_interactor \
     import \
     GetNextStagesRandomAssigneesOfATaskInteractor
-from ...presenters.get_next_stages_random_assignees_of_a_task_presenter_impl \
+from ib_tasks.presenters.get_next_stages_random_assignees_of_a_task_presenter_impl \
     import \
     GetNextStagesRandomAssigneesOfATaskPresenterImpl
-from ...storages.action_storage_implementation import \
+from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
-from ...storages.create_or_update_task_storage_implementation import CreateOrUpdateTaskStorageImplementation
-from ...storages.storage_implementation import StagesStorageImplementation, \
+from ib_tasks.storages.create_or_update_task_storage_implementation import \
+    CreateOrUpdateTaskStorageImplementation
+from ib_tasks.storages.storage_implementation import StagesStorageImplementation, \
     StorageImplementation
-from ...storages.task_stage_storage_implementation import \
+from ib_tasks.storages.task_stage_storage_implementation import \
     TaskStageStorageImplementation
-from ...storages.tasks_storage_implementation import TasksStorageImplementation
+from ib_tasks.storages.tasks_storage_implementation import TasksStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)

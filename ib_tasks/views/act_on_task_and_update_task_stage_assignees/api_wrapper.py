@@ -2,19 +2,19 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
 from .validator_class import ValidatorClass
-from ...interactors.act_on_task_and_update_task_stage_assignees_interactor import \
+from ib_tasks.interactors.act_on_task_and_update_task_stage_assignees_interactor import \
     ActOnTaskAndUpdateTaskStageAssigneesInteractor
 
-from ...storages.action_storage_implementation import \
+from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
-from ...storages.elasticsearch_storage_implementation import \
+from ib_tasks.storages.elasticsearch_storage_implementation import \
     ElasticSearchStorageImplementation
-from ...storages.gof_storage_implementation import GoFStorageImplementation
-from ...storages.task_stage_storage_implementation import \
+from ib_tasks.storages.gof_storage_implementation import GoFStorageImplementation
+from ib_tasks.storages.task_stage_storage_implementation import \
     TaskStageStorageImplementation
-from ...storages.task_template_storage_implementation import \
+from ib_tasks.storages.task_template_storage_implementation import \
     TaskTemplateStorageImplementation
-from ...storages.tasks_storage_implementation import TasksStorageImplementation
+from ib_tasks.storages.tasks_storage_implementation import TasksStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
