@@ -7,6 +7,8 @@ from unittest.mock import Mock, create_autospec
 
 import pytest
 
+from ib_tasks.build.serializers.definitions.Field.FieldSerializer import \
+    FieldType
 from ib_tasks.exceptions.filter_exceptions import InvalidFilterId, \
     UserNotHaveAccessToFilter, UserNotHaveAccessToFields
 from ib_tasks.interactors.filters.create_or_update_or_delete_filters import CreateOrUpdateOrDeleteFiltersInteractor
@@ -56,6 +58,26 @@ class TestFiltersInteractor:
         return CreateConditionDTOFactory.create_batch(3)
 
     @pytest.fixture
+    def condition_dtos_with_invalid_operation(self):
+        from ib_tasks.tests.factories.filter_dtos import \
+            CreateConditionDTOFactory
+        CreateConditionDTOFactory.reset_sequence()
+        from ib_tasks.constants.enum import Operators
+        return CreateConditionDTOFactory.create_batch(
+            3, operator=Operators.LTE.value
+        )
+
+    @pytest.fixture
+    def condition_dtos_with_invalid_operation_for_integer(self):
+        from ib_tasks.tests.factories.filter_dtos import \
+            CreateConditionDTOFactory
+        CreateConditionDTOFactory.reset_sequence()
+        from ib_tasks.constants.enum import Operators
+        return CreateConditionDTOFactory.create_batch(
+            3, operator=Operators.CONTAINS.value
+        )
+
+    @pytest.fixture
     def new_filter_dto(self):
         from ib_tasks.tests.factories.filter_dtos import FilterDTOFactory
         FilterDTOFactory.reset_sequence()
@@ -73,6 +95,15 @@ class TestFiltersInteractor:
         from ib_tasks.tests.factories.filter_dtos import FieldTypeDTOFactory
         FieldTypeDTOFactory.reset_sequence()
         return FieldTypeDTOFactory.create_batch(5)
+
+    @pytest.fixture
+    def field_type_dtos_with_type_number(self):
+        from ib_tasks.tests.factories.filter_dtos import FieldTypeDTOFactory
+        FieldTypeDTOFactory.reset_sequence()
+        from ib_tasks.constants.enum import FieldTypes
+        return FieldTypeDTOFactory.create_batch(
+            5, field_type=FieldTypes.NUMBER.value
+        )
 
     def test_with_invalid_template_id_return_error_message(
             self, storage_mock, presenter_mock, filter_dto, condition_dtos,
@@ -157,7 +188,7 @@ class TestFiltersInteractor:
             template_id=template_id, field_ids=field_ids
         )
         calls = presenter_mock.get_response_for_invalid_field_ids.call_args
-        # assert calls['error'].field_ids == invalid_field_ids
+        assert calls[1]['error'].field_ids == invalid_field_ids
         assert actual_response == expected_response
 
     def test_with_fields_not_have_access_to_user_return_error_message(
@@ -217,6 +248,96 @@ class TestFiltersInteractor:
             assert_called_once_with()
         assert actual_response == expected_response
 
+    def test_create_filter_with_invalid_condition_type_for_strings(
+            self, storage_mock, presenter_mock, filter_dto, condition_dtos_with_invalid_operation,
+            field_storage, field_type_dtos,
+            mocker, new_filter_dto, new_condition_dtos):
+        # Arrange
+        user_roles = [
+            "FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"
+        ]
+        from ib_tasks.constants.enum import Operators
+        invalid_condition = Operators.LTE.value
+        expected_response = Mock()
+        prepare_get_field_ids__user(mocker, user_roles)
+        interactor = CreateOrUpdateOrDeleteFiltersInteractor(
+            filter_storage=storage_mock,
+            presenter=presenter_mock,
+            field_storage=field_storage
+        )
+        field_storage.get_field_type_dtos.return_value = field_type_dtos
+        presenter_mock.get_response_for_invalid_filter_condition. \
+            return_value = expected_response
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids
+        get_user_role_ids(mocker)
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_valid_project_ids_mock
+        get_valid_project_ids_mock(
+            mocker=mocker, project_ids=[filter_dto.project_id]
+        )
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            validate_if_user_is_in_project_mock
+        validate_if_user_is_in_project_mock(
+            mocker=mocker, is_user_in_project=True
+        )
+        # Act
+        actual_response = interactor.create_filter_wrapper(
+            filter_dto=filter_dto,
+            condition_dtos=condition_dtos_with_invalid_operation
+        )
+
+        # Assert
+        presenter_mock.get_response_for_invalid_filter_condition.assert_called_once()
+        calls = presenter_mock.get_response_for_invalid_filter_condition.call_args
+        assert calls[1]['error'].condition == invalid_condition
+        assert actual_response == expected_response
+
+    def test_create_filter_with_invalid_condition_type_for_integers(
+            self, storage_mock, presenter_mock, filter_dto,
+            field_storage, field_type_dtos_with_type_number, condition_dtos_with_invalid_operation_for_integer,
+            mocker, new_filter_dto, new_condition_dtos):
+        # Arrange
+        user_roles = [
+            "FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"
+        ]
+        from ib_tasks.constants.enum import Operators
+        invalid_condition = Operators.CONTAINS.value
+        expected_response = Mock()
+        prepare_get_field_ids__user(mocker, user_roles)
+        interactor = CreateOrUpdateOrDeleteFiltersInteractor(
+            filter_storage=storage_mock,
+            presenter=presenter_mock,
+            field_storage=field_storage
+        )
+        field_storage.get_field_type_dtos.return_value = field_type_dtos_with_type_number
+        presenter_mock.get_response_for_invalid_filter_condition. \
+            return_value = expected_response
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids
+        get_user_role_ids(mocker)
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_valid_project_ids_mock
+        get_valid_project_ids_mock(
+            mocker=mocker, project_ids=[filter_dto.project_id]
+        )
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            validate_if_user_is_in_project_mock
+        validate_if_user_is_in_project_mock(
+            mocker=mocker, is_user_in_project=True
+        )
+        # Act
+        actual_response = interactor.create_filter_wrapper(
+            filter_dto=filter_dto,
+            condition_dtos=condition_dtos_with_invalid_operation_for_integer
+        )
+
+        # Assert
+        presenter_mock.get_response_for_invalid_filter_condition.assert_called_once()
+        calls = presenter_mock.get_response_for_invalid_filter_condition.call_args
+        assert calls[1]['error'].condition == invalid_condition
+        assert actual_response == expected_response
+
     def test_create_filter_with_valid_details_create_filter(
             self, storage_mock, presenter_mock, filter_dto, condition_dtos,
             field_storage, field_type_dtos,
@@ -227,8 +348,7 @@ class TestFiltersInteractor:
         ]
         field_ids = [condition_dto.field_id for condition_dto in condition_dtos]
         expected_response = Mock()
-        prepare_get_field_ids__user(mocker,
-                                                               user_roles)
+        prepare_get_field_ids__user(mocker, user_roles)
         interactor = CreateOrUpdateOrDeleteFiltersInteractor(
             filter_storage=storage_mock,
             presenter=presenter_mock,
@@ -458,7 +578,6 @@ class TestFiltersInteractor:
 
         filter_id = 1
         user_id = 'user_id_0'
-        expected_response = Mock()
         interactor = CreateOrUpdateOrDeleteFiltersInteractor(
             filter_storage=storage_mock,
             presenter=presenter_mock,
