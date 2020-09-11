@@ -16,8 +16,8 @@ class TestGetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
     @pytest.fixture()
     def stage_storage_mock():
         from unittest.mock import create_autospec
-        from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
-            StageStorageInterface
+        from ib_tasks.interactors.storage_interfaces.stages_storage_interface \
+            import StageStorageInterface
         storage = create_autospec(StageStorageInterface)
         return storage
 
@@ -86,21 +86,20 @@ class TestGetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
 
         storage_mock.validate_task_id.return_value = False
 
-        from ib_tasks.interactors. \
-            get_task_stage_logic_satisfied_next_stages_given_status_vars \
-            import \
-            GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor
-
+        from ib_tasks.interactors.get_task_stage_logic_satisfied_stages import \
+            GetTaskStageLogicSatisfiedStagesInteractor
         interactor = \
-            GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor(
-                storage=storage_mock, stage_storage=stage_storage_mock)
+            GetTaskStageLogicSatisfiedStagesInteractor(
+                storage=storage_mock, stage_storage=stage_storage_mock,
+                task_id=task_id)
 
         # Act
         from ib_tasks.exceptions.task_custom_exceptions \
             import InvalidTaskException
         with pytest.raises(InvalidTaskException) as err:
-            interactor.get_task_stage_logic_satisfied_next_stages(
-                task_id=task_id, status_variable_dtos=status_variable_dtos)
+            interactor. \
+                get_task_stage_logic_satisfied_next_stages_given_status_variable_dtos(
+                status_variable_dtos=status_variable_dtos)
 
         # Assert
         assert err.value.task_id == task_id
@@ -118,17 +117,16 @@ class TestGetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
         mock_obj = self.stage_display_mock(mocker)
         mock_obj.return_value = status_stage_dtos
 
-        from ib_tasks.interactors. \
-            get_task_stage_logic_satisfied_next_stages_given_status_vars \
-            import \
-            GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor
-
+        from ib_tasks.interactors.get_task_stage_logic_satisfied_stages import \
+            GetTaskStageLogicSatisfiedStagesInteractor
         interactor = \
-            GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor(
-                storage=storage_mock, stage_storage=stage_storage_mock)
+            GetTaskStageLogicSatisfiedStagesInteractor(
+                storage=storage_mock, stage_storage=stage_storage_mock,
+                task_id=task_id)
+
         # Act
-        response = interactor.get_task_stage_logic_satisfied_next_stages(
-            task_id=task_id, status_variable_dtos=status_variable_dtos)
+        response = interactor.get_task_stage_logic_satisfied_next_stages_given_status_variable_dtos(
+            status_variable_dtos=status_variable_dtos)
 
         # Assert
         assert response == ['stage_1', 'stage_2', 'stage_3']
@@ -153,18 +151,18 @@ class TestGetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
             StatusVariableDTOFactory(value='stage_1')
         ]
 
-        from ib_tasks.interactors. \
-            get_task_stage_logic_satisfied_next_stages_given_status_vars \
-            import \
-            GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor
-
+        from ib_tasks.interactors.get_task_stage_logic_satisfied_stages import \
+            GetTaskStageLogicSatisfiedStagesInteractor
         interactor = \
-            GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor(
-                storage=storage_mock, stage_storage=stage_storage_mock)
+            GetTaskStageLogicSatisfiedStagesInteractor(
+                storage=storage_mock, stage_storage=stage_storage_mock,
+                task_id=task_id)
+
 
         # Act
-        response = interactor.get_task_stage_logic_satisfied_next_stages(
-            task_id=task_id, status_variable_dtos=status_variable_dtos)
+        response = interactor.\
+            get_task_stage_logic_satisfied_next_stages_given_status_variable_dtos(
+            status_variable_dtos=status_variable_dtos)
 
         # Assert
         assert response == []
@@ -180,29 +178,31 @@ class TestGetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
         from ib_tasks.tests.factories.interactor_dtos \
             import StatusOperandStageDTOFactory
         StatusOperandStageDTOFactory.reset_sequence()
-        from ib_tasks.tests.factories.interactor_dtos import StageDisplayLogicDTOFactory
+        from ib_tasks.tests.factories.interactor_dtos import \
+            StageDisplayLogicDTOFactory
         StageDisplayLogicDTOFactory.reset_sequence()
         status_stage_dtos = [
-            StageDisplayLogicDTOFactory(display_logic_dto=StatusOperandStageDTOFactory()),
+            StageDisplayLogicDTOFactory(
+                display_logic_dto=StatusOperandStageDTOFactory()),
             StageDisplayLogicDTOFactory(
                 display_logic_dto=StatusOperandStageDTOFactory(operator=">=")),
             StageDisplayLogicDTOFactory(
-                display_logic_dto=StatusOperandStageDTOFactory(operator="<=", stage='stage_1'))
+                display_logic_dto=StatusOperandStageDTOFactory(operator="<=",
+                                                               stage='stage_1'))
         ]
         mock_obj = self.stage_display_mock(mocker)
         mock_obj.return_value = status_stage_dtos
-        from ib_tasks.interactors. \
-            get_task_stage_logic_satisfied_next_stages_given_status_vars \
-            import \
-            GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor
-
+        from ib_tasks.interactors.get_task_stage_logic_satisfied_stages import \
+            GetTaskStageLogicSatisfiedStagesInteractor
         interactor = \
-            GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor(
-                storage=storage_mock, stage_storage=stage_storage_mock)
+            GetTaskStageLogicSatisfiedStagesInteractor(
+                storage=storage_mock, stage_storage=stage_storage_mock,
+                task_id=task_id)
 
         # Act
-        response = interactor.get_task_stage_logic_satisfied_next_stages(
-            task_id=task_id, status_variable_dtos=status_variable_dtos)
+        response = interactor.\
+            get_task_stage_logic_satisfied_next_stages_given_status_variable_dtos(
+            status_variable_dtos=status_variable_dtos)
 
         # Assert
         assert response == ['stage_1', 'stage_2']

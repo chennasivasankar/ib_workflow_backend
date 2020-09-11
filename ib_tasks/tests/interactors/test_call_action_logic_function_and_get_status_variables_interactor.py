@@ -1,11 +1,11 @@
 import pytest
 from mock import create_autospec
 
-from ib_tasks.exceptions.custom_exceptions import InvalidModulePathFound, \
-    InvalidMethodFound
-from ib_tasks.interactors.call_action_logic_function_and_get_status_variables_interactor import \
-    CallActionLogicFunctionAndGetTaskStatusVariablesInteractor
-from ib_tasks.tests.factories.storage_dtos import StatusVariableDTOFactory, TaskDetailsDTOFactory, TaskGoFDTOFactory, \
+from ib_tasks.interactors.call_action_logic_function_and_get_or_update_task_status_variables_interactor import \
+    CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor, \
+    InvalidModulePathFound, InvalidMethodFound
+from ib_tasks.tests.factories.storage_dtos import StatusVariableDTOFactory, \
+    TaskDetailsDTOFactory, TaskGoFDTOFactory, \
     TaskGoFFieldDTOFactory, GOFMultipleStatusDTOFactory
 
 
@@ -114,15 +114,14 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
         StatusVariableDTOFactory.reset_sequence()
         statuses = [StatusVariableDTOFactory()]
         storage_mock.get_status_variables_to_task.return_value = statuses
-        interactor = CallActionLogicFunctionAndGetTaskStatusVariablesInteractor(
-            storage=storage_mock, task_storage=task_storage_mock,
-            action_storage=action_storage_mock, create_task_storage=create_task_storage
-        )
+        interactor = \
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
+                storage=storage_mock, create_task_storage=create_task_storage,
+                action_id=action_id, task_id=task_id)
 
         # Act
         interactor \
-            .get_status_variables_dtos_of_task_based_on_action(
-            action_id=action_id, task_id=task_id)
+            .call_action_logic_function_and_get_status_variables_dtos_of_task()
 
         # Assert
         storage_mock.get_path_name_to_action.assert_called_once_with(
@@ -130,10 +129,6 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
         mock_obj.assert_called_once_with(
             task_dict=mock_task_dict, global_constants={},
             stage_value_dict={})
-        task_storage_mock.check_is_task_exists.assert_called_once_with(
-            task_id=task_id)
-        action_storage_mock.validate_action.assert_called_once_with(
-            action_id=action_id)
         storage_mock.get_global_constants_to_task \
             .assert_called_once_with(task_id=task_id)
         storage_mock.get_stage_dtos_to_task \
@@ -166,23 +161,23 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
             task_gof_field_dtos=gof_field_dtos
         )
         self.gof_and_fields_mock(mocker, task_dto)
-        interactor = CallActionLogicFunctionAndGetTaskStatusVariablesInteractor(
-            storage=storage_mock, task_storage=task_storage_mock,
-            action_storage=action_storage_mock, create_task_storage=create_task_storage
-        )
+        interactor = \
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
+                storage=storage_mock, create_task_storage=create_task_storage,
+                action_id=action_id, task_id=task_id)
 
         # Act
         with pytest.raises(InvalidModulePathFound) as error:
             interactor \
-                .get_status_variables_dtos_of_task_based_on_action(
-                action_id=action_id, task_id=task_id)
+                .call_action_logic_function_and_get_status_variables_dtos_of_task()
 
         # Assert
         assert error.value.path_name == path_name
         storage_mock.get_path_name_to_action.assert_called_once_with(
             action_id=action_id)
 
-    def test_given_invalid_method_name_raises_exception(self, mocker, storage_mock,
+    def test_given_invalid_method_name_raises_exception(self, mocker,
+                                                        storage_mock,
                                                         task_storage_mock,
                                                         action_storage_mock,
                                                         create_task_storage,
@@ -214,26 +209,27 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
         )
         self.gof_and_fields_mock(mocker, task_dto)
 
-        interactor = CallActionLogicFunctionAndGetTaskStatusVariablesInteractor(
-            storage=storage_mock, task_storage=task_storage_mock,
-            action_storage=action_storage_mock, create_task_storage=create_task_storage
-        )
+        interactor = \
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
+                storage=storage_mock, create_task_storage=create_task_storage,
+                action_id=action_id, task_id=task_id)
 
         # Act
         with pytest.raises(InvalidMethodFound) as error:
             interactor \
-                .get_status_variables_dtos_of_task_based_on_action(
-                action_id=action_id, task_id=task_id)
+                .call_action_logic_function_and_get_status_variables_dtos_of_task()
 
         # Assert
         assert error.value.method_name == "stage_1_action_name_1"
         storage_mock.get_path_name_to_action.assert_called_once_with(
             action_id=action_id)
 
-    def test_access_invalid_key_raises_invalid_key_error(self, mocker, storage_mock,
+    def test_access_invalid_key_raises_invalid_key_error(self, mocker,
+                                                         storage_mock,
                                                          action_storage_mock,
                                                          task_storage_mock,
-                                                         create_task_storage, task_gof_dtos):
+                                                         create_task_storage,
+                                                         task_gof_dtos):
         # Arrange
         action_id = 1
         task_id = 1
@@ -258,18 +254,17 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
             task_gof_field_dtos=gof_field_dtos
         )
         self.gof_and_fields_mock(mocker, task_dto)
-        interactor = CallActionLogicFunctionAndGetTaskStatusVariablesInteractor(
-            storage=storage_mock, task_storage=task_storage_mock,
-            action_storage=action_storage_mock, create_task_storage=create_task_storage
-        )
+        interactor = \
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
+                storage=storage_mock, create_task_storage=create_task_storage,
+                task_id=task_id, action_id=action_id)
         from ib_tasks.exceptions.action_custom_exceptions import \
             InvalidKeyError
 
         # Act
         with pytest.raises(InvalidKeyError):
             interactor \
-                .get_status_variables_dtos_of_task_based_on_action(
-                action_id=action_id, task_id=task_id)
+                .call_action_logic_function_and_get_status_variables_dtos_of_task()
         # Assert
         storage_mock.get_path_name_to_action.assert_called_once_with(
             action_id=action_id
