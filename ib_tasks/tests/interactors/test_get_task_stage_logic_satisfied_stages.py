@@ -1,9 +1,18 @@
 import pytest
-
-from ib_tasks.tests.factories.interactor_dtos import StageDisplayLogicDTOFactory, StatusOperandStageDTOFactory
+from ib_tasks.tests.factories.interactor_dtos import \
+    StageDisplayLogicDTOFactory, StatusOperandStageDTOFactory
 
 
 class TestGetTaskStageLogicSatisfiedStages:
+
+    @staticmethod
+    @pytest.fixture()
+    def stage_storage():
+        from unittest.mock import create_autospec
+        from ib_tasks.interactors.storage_interfaces.\
+            stages_storage_interface import StageStorageInterface
+        stage_storage = create_autospec(StageStorageInterface)
+        return stage_storage
 
     @staticmethod
     @pytest.fixture()
@@ -48,19 +57,18 @@ class TestGetTaskStageLogicSatisfiedStages:
         mock_obj = mocker.patch(path)
         return mock_obj
 
-    def test_given_invalid_task_raises_exception(self, storage):
+    def test_given_invalid_task_raises_exception(self, storage, stage_storage):
 
         # Arrange
 
         from ib_tasks.interactors.get_task_stage_logic_satisfied_stages \
-            import GetTaskStageLogicSatisfiedStages
+            import GetTaskStageLogicSatisfiedStagesInteractor
         task_id = 1
 
         storage.validate_task_id.return_value = False
 
-        interactor = GetTaskStageLogicSatisfiedStages(
-            task_id=task_id, storage=storage
-        )
+        interactor = GetTaskStageLogicSatisfiedStagesInteractor(
+            task_id=task_id, storage=storage, stage_storage=stage_storage)
         from ib_tasks.exceptions.task_custom_exceptions \
             import InvalidTaskException
 
@@ -72,12 +80,12 @@ class TestGetTaskStageLogicSatisfiedStages:
         assert err.value.task_id == task_id
 
     def test_given_variable_stage_returns_all_stage_ids(
-            self, storage, mocker, stage_display_value):
+            self, storage, mocker, stage_display_value, stage_storage):
 
         # Arrange
 
         from ib_tasks.interactors.get_task_stage_logic_satisfied_stages \
-            import GetTaskStageLogicSatisfiedStages
+            import GetTaskStageLogicSatisfiedStagesInteractor
         task_id = 1
         storage.get_task_template_stage_logic_to_task\
             .return_value = stage_display_value
@@ -94,8 +102,8 @@ class TestGetTaskStageLogicSatisfiedStages:
         status_variables_dtos = StatusVariableDTOFactory.create_batch(3)
         storage.get_status_variables_to_task.return_value = \
             status_variables_dtos
-        interactor = GetTaskStageLogicSatisfiedStages(
-            task_id=task_id, storage=storage
+        interactor = GetTaskStageLogicSatisfiedStagesInteractor(
+            task_id=task_id, storage=storage, stage_storage=stage_storage
         )
 
         # Act
@@ -105,12 +113,12 @@ class TestGetTaskStageLogicSatisfiedStages:
         assert response == ['stage_1', 'stage_2', 'stage_3']
 
     def test_given_variable_stage_returns_empty_stages(
-            self, storage, mocker, stage_display_value):
+            self, storage, mocker, stage_display_value, stage_storage):
 
         # Arrange
 
         from ib_tasks.interactors.get_task_stage_logic_satisfied_stages \
-            import GetTaskStageLogicSatisfiedStages
+            import GetTaskStageLogicSatisfiedStagesInteractor
         task_id = 1
         storage.get_task_template_stage_logic_to_task\
             .return_value = stage_display_value
@@ -131,8 +139,8 @@ class TestGetTaskStageLogicSatisfiedStages:
         ]
         storage.get_status_variables_to_task.return_value = \
             status_variables_dtos
-        interactor = GetTaskStageLogicSatisfiedStages(
-            task_id=task_id, storage=storage
+        interactor = GetTaskStageLogicSatisfiedStagesInteractor(
+            task_id=task_id, storage=storage, stage_storage=stage_storage
         )
 
         # Act
@@ -142,12 +150,12 @@ class TestGetTaskStageLogicSatisfiedStages:
         assert response == []
 
     def test_given_variable_stage_returns_mixed_stages(
-            self, storage, mocker, stage_mixed_value):
+            self, storage, mocker, stage_mixed_value, stage_storage):
 
         # Arrange
 
         from ib_tasks.interactors.get_task_stage_logic_satisfied_stages \
-            import GetTaskStageLogicSatisfiedStages
+            import GetTaskStageLogicSatisfiedStagesInteractor
         task_id = 1
         storage.get_task_template_stage_logic_to_task\
             .return_value = stage_mixed_value
@@ -170,8 +178,8 @@ class TestGetTaskStageLogicSatisfiedStages:
         status_variables_dtos = StatusVariableDTOFactory.create_batch(3)
         storage.get_status_variables_to_task.return_value = \
             status_variables_dtos
-        interactor = GetTaskStageLogicSatisfiedStages(
-            task_id=task_id, storage=storage
+        interactor = GetTaskStageLogicSatisfiedStagesInteractor(
+            task_id=task_id, storage=storage, stage_storage=stage_storage
         )
 
         # Act

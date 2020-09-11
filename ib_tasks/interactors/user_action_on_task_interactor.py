@@ -308,10 +308,10 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
     def _get_task_stage_display_satisfied_stage_ids(self, task_id: int) -> \
             List[str]:
         from ib_tasks.interactors.get_task_stage_logic_satisfied_stages \
-            import GetTaskStageLogicSatisfiedStages
-        interactor = GetTaskStageLogicSatisfiedStages(
-            task_id=task_id, storage=self.storage
-        )
+            import GetTaskStageLogicSatisfiedStagesInteractor
+        interactor = GetTaskStageLogicSatisfiedStagesInteractor(
+            task_id=task_id, storage=self.storage,
+            stage_storage=self.stage_storage)
         stage_ids = interactor.get_task_stage_logic_satisfied_stages()
         return stage_ids
 

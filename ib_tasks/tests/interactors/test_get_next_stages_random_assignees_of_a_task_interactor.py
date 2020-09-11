@@ -2,14 +2,14 @@ from unittest.mock import create_autospec, patch
 
 import pytest
 
-from ib_tasks.interactors.\
+from ib_tasks.interactors. \
     call_action_logic_function_and_get_or_update_task_status_variables_interactor import \
     CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor
 from ib_tasks.interactors.get_next_stages_random_assignees_of_a_task_interactor import \
     GetNextStagesRandomAssigneesOfATaskInteractor, InvalidModulePathFound, \
     InvalidMethodFound
-from ib_tasks.interactors.get_task_stage_logic_satisfied_next_stages_given_status_vars import \
-    GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor
+from ib_tasks.interactors.get_task_stage_logic_satisfied_stages import \
+    GetTaskStageLogicSatisfiedStagesInteractor
 from ib_tasks.interactors.get_users_with_less_tasks_for_stages import \
     GetUsersWithLessTasksInGivenStagesInteractor
 from ib_tasks.tests.factories.adapter_dtos import \
@@ -285,8 +285,8 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
     @patch.object(GetUsersWithLessTasksInGivenStagesInteractor,
                   'get_users_with_less_tasks_in_given_stages')
     @patch.object(
-        GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor,
-        'get_task_stage_logic_satisfied_next_stages')
+        GetTaskStageLogicSatisfiedStagesInteractor,
+        'get_task_stage_logic_satisfied_next_stages_given_status_variable_dtos')
     @patch.object(
         CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor,
         'call_action_logic_function_and_get_status_variables_dtos_of_task')
