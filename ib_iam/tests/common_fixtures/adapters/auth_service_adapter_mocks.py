@@ -48,6 +48,6 @@ def create_auth_tokens_for_user_mock(mocker):
 
 def update_is_email_verified_value_mock(mocker):
     mock = mocker.patch(
-        "ib_iam.adapters.auth_service.AuthService.update_is_email_verified_value_in_ib_user_profile_details"
+        "ib_iam.adapters.auth_service.AuthService.update_is_email_verified_value_in_ib_user"
     )
     return mock

@@ -68,7 +68,7 @@ class SignupInteractor(ValidationMixin):
         user_id = self._create_user_account(
             email=email, password=password, name=name
         )
-        adapter.auth_service.update_is_email_verified_value_in_ib_user_profile_details(
+        adapter.auth_service.update_is_email_verified_value_in_ib_user(
             user_id=user_id, is_email_verified=False
         )
         self.user_storage.create_user(

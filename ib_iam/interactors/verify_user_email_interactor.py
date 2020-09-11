@@ -31,7 +31,7 @@ class VerifyEmailInteractor:
             email=user_profile_dto.email,
             is_email_verified=user_profile_dto.is_email_verify
         )
-        adapter.auth_service.update_is_email_verified_value_in_ib_user_profile_details(
+        adapter.auth_service.update_is_email_verified_value_in_ib_user(
             user_id=user_id, is_email_verified=True)
 
     # TODO: CE
