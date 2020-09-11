@@ -3,12 +3,11 @@ from unittest.mock import create_autospec
 import pytest
 
 from ib_tasks \
-    .interactors\
-    .call_action_logic_function_and_update_task_status_variables_interactor \
+    .interactors \
+    .call_action_logic_function_and_get_or_update_task_status_variables_interactor \
     import (
-    CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor,
-    InvalidModulePathFound, InvalidMethodFound
-)
+    CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor,
+    InvalidModulePathFound, InvalidMethodFound)
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 from ib_tasks.tests.factories.storage_dtos import (
@@ -39,8 +38,18 @@ class TestUpdateTaskStatusVariablesInteractor:
         ]
         return task_gof_dtos
 
+    @pytest.fixture()
+    def create_task_storage(self):
+        from ib_tasks.interactors.storage_interfaces. \
+            create_or_update_task_storage_interface import \
+            CreateOrUpdateTaskStorageInterface
+        create_task_storage = create_autospec(
+            CreateOrUpdateTaskStorageInterface)
+        return create_task_storage
+
     @staticmethod
-    def test_given_invalid_path_raises_exception(task_gof_dtos):
+    def test_given_invalid_path_raises_exception(task_gof_dtos,
+                                                 create_task_storage):
         # Arrange
         task_id = 1
         action_id = 1
@@ -63,16 +72,16 @@ class TestUpdateTaskStatusVariablesInteractor:
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
         )
-        interactor = CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor(
-            storage=storage, action_id=action_id, task_id=task_id
-        )
-
+        interactor = \
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
+                storage=storage, action_id=action_id, task_id=task_id,
+                create_task_storage=create_task_storage)
         # Act
         with pytest.raises(InvalidModulePathFound) as error:
             interactor \
                 .call_action_logic_function_and_update_task_status_variables(
-                    task_dto=task_dto
-                )
+                task_dto=task_dto
+            )
 
         # Assert
         assert error.value.path_name == path_name
@@ -81,7 +90,8 @@ class TestUpdateTaskStatusVariablesInteractor:
         )
 
     @staticmethod
-    def test_given_invalid_method_name_raises_exception(mocker, task_gof_dtos):
+    def test_given_invalid_method_name_raises_exception(mocker, task_gof_dtos,
+                                                        create_task_storage):
         # Arrange
         task_id = 1
         action_id = 1
@@ -96,7 +106,8 @@ class TestUpdateTaskStatusVariablesInteractor:
         ]
         path_name = "ib_tasks.populate.stage_actions_logic.stage_1_action_name_1"
         mock_obj = mocker.patch("importlib.import_module")
-        mock_obj.side_effect = InvalidMethodFound(method_name="stage_1_action_name_1")
+        mock_obj.side_effect = InvalidMethodFound(
+            method_name="stage_1_action_name_1")
         storage.get_path_name_to_action.return_value = path_name
         StatusVariableDTOFactory.reset_sequence()
         statuses = [StatusVariableDTOFactory()]
@@ -106,16 +117,17 @@ class TestUpdateTaskStatusVariablesInteractor:
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
         )
-        interactor = CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor(
-            storage=storage, action_id=action_id, task_id=task_id
-        )
+        interactor = \
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
+                storage=storage, action_id=action_id, task_id=task_id,
+                create_task_storage=create_task_storage)
 
         # Act
         with pytest.raises(InvalidMethodFound) as error:
             interactor \
                 .call_action_logic_function_and_update_task_status_variables(
-                    task_dto=task_dto
-                )
+                task_dto=task_dto
+            )
 
         # Assert
         assert error.value.method_name == "stage_1_action_name_1"
@@ -124,7 +136,8 @@ class TestUpdateTaskStatusVariablesInteractor:
         )
 
     @staticmethod
-    def test_assert_called_with_expected_arguments(mocker, task_gof_dtos):
+    def test_assert_called_with_expected_arguments(mocker, task_gof_dtos,
+                                                   create_task_storage):
         # Arrange
         mock_task_dict = {'gof2': [{'field2': 'field_response2'},
                                    {'field3': 'field_response3'}],
@@ -152,15 +165,16 @@ class TestUpdateTaskStatusVariablesInteractor:
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
         )
-        interactor = CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor(
-            storage=storage, action_id=action_id, task_id=task_id
-        )
+        interactor = \
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
+                storage=storage, action_id=action_id, task_id=task_id,
+                create_task_storage=create_task_storage)
 
         # Act
         interactor \
             .call_action_logic_function_and_update_task_status_variables(
-                task_dto=task_dto
-            )
+            task_dto=task_dto
+        )
 
         # Assert
         storage.get_path_name_to_action.assert_called_once_with(
@@ -179,7 +193,9 @@ class TestUpdateTaskStatusVariablesInteractor:
             .assert_called_once_with(task_id=task_id)
 
     @staticmethod
-    def test_assert_called_with_eliminates_transition_gofs(mocker, task_gof_dtos):
+    def test_assert_called_with_eliminates_transition_gofs(mocker,
+                                                           task_gof_dtos,
+                                                           create_task_storage):
         # Arrange
         mock_task_dict = {'gof2': [{'field2': 'field_response2'},
                                    {'field3': 'field_response3'}],
@@ -206,9 +222,10 @@ class TestUpdateTaskStatusVariablesInteractor:
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
         )
-        interactor = CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor(
-            storage=storage, action_id=action_id, task_id=task_id
-        )
+        interactor = \
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
+                storage=storage, action_id=action_id, task_id=task_id,
+                create_task_storage=create_task_storage)
 
         # Act
         interactor \
@@ -233,7 +250,8 @@ class TestUpdateTaskStatusVariablesInteractor:
             .assert_called_once_with(task_id=task_id)
 
     @staticmethod
-    def test_given_all_multiple_gofs(mocker, task_gof_dtos):
+    def test_given_all_multiple_gofs(mocker, task_gof_dtos,
+                                     create_task_storage):
         # Arrange
         mock_task_dict = {'gof2': [{'field2': 'field_response2'},
                                    {'field3': 'field_response3'}],
@@ -261,15 +279,16 @@ class TestUpdateTaskStatusVariablesInteractor:
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
         )
-        interactor = CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor(
-            storage=storage, action_id=action_id, task_id=task_id
-        )
+        interactor = \
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
+                storage=storage, action_id=action_id, task_id=task_id,
+                create_task_storage=create_task_storage)
 
         # Act
         interactor \
             .call_action_logic_function_and_update_task_status_variables(
-                task_dto=task_dto
-            )
+            task_dto=task_dto
+        )
 
         # Assert
         storage.get_path_name_to_action.assert_called_once_with(
@@ -281,7 +300,8 @@ class TestUpdateTaskStatusVariablesInteractor:
         )
 
     @staticmethod
-    def test_given_all_single_gofs(mocker, single_task_gof_dtos):
+    def test_given_all_single_gofs(mocker, single_task_gof_dtos,
+                                   create_task_storage):
         # Arrange
         mock_task_dict = {'gof2': {'field2': 'field_response2'},
                           'gof3': {'field3': 'field_response3'},
@@ -309,15 +329,16 @@ class TestUpdateTaskStatusVariablesInteractor:
             task_gof_dtos=single_task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
         )
-        interactor = CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor(
-            storage=storage, action_id=action_id, task_id=task_id
-        )
+        interactor = \
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
+                storage=storage, action_id=action_id, task_id=task_id,
+                create_task_storage=create_task_storage)
 
         # Act
         interactor \
             .call_action_logic_function_and_update_task_status_variables(
-                task_dto=task_dto
-            )
+            task_dto=task_dto
+        )
 
         # Assert
         storage.get_path_name_to_action.assert_called_once_with(
@@ -329,7 +350,8 @@ class TestUpdateTaskStatusVariablesInteractor:
         )
 
     @staticmethod
-    def test_access_invalid_key_raises_invalid_key_error(task_gof_dtos):
+    def test_access_invalid_key_raises_invalid_key_error(task_gof_dtos,
+                                                         create_task_storage):
         # Arrange
         action_id = 1
         task_id = 1
@@ -352,17 +374,19 @@ class TestUpdateTaskStatusVariablesInteractor:
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
         )
-        interactor = CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor(
-            storage=storage, action_id=action_id, task_id=task_id
-        )
-        from ib_tasks.exceptions.action_custom_exceptions import InvalidKeyError
+        interactor = \
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
+                storage=storage, action_id=action_id, task_id=task_id,
+                create_task_storage=create_task_storage)
+        from ib_tasks.exceptions.action_custom_exceptions import \
+            InvalidKeyError
 
         # Act
         with pytest.raises(InvalidKeyError):
             interactor \
                 .call_action_logic_function_and_update_task_status_variables(
-                    task_dto=task_dto
-                )
+                task_dto=task_dto
+            )
 
         # Assert
         storage.get_path_name_to_action.assert_called_once_with(
@@ -370,7 +394,8 @@ class TestUpdateTaskStatusVariablesInteractor:
         )
 
     @staticmethod
-    def test_do_bad_function_invalid_custom_logic_exception(task_gof_dtos):
+    def test_do_bad_function_invalid_custom_logic_exception(task_gof_dtos,
+                                                            create_task_storage):
         # Arrange
         action_id = 1
         task_id = 1
@@ -394,9 +419,10 @@ class TestUpdateTaskStatusVariablesInteractor:
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
         )
-        interactor = CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor(
-            storage=storage, action_id=action_id, task_id=task_id
-        )
+        interactor = \
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
+                storage=storage, action_id=action_id, task_id=task_id,
+                create_task_storage=create_task_storage)
         from ib_tasks.exceptions.action_custom_exceptions \
             import InvalidCustomLogicException
 
@@ -404,8 +430,8 @@ class TestUpdateTaskStatusVariablesInteractor:
         with pytest.raises(InvalidCustomLogicException):
             interactor \
                 .call_action_logic_function_and_update_task_status_variables(
-                    task_dto=task_dto
-                )
+                task_dto=task_dto
+            )
 
         # Assert
         storage.get_path_name_to_action.assert_called_once_with(
@@ -413,7 +439,8 @@ class TestUpdateTaskStatusVariablesInteractor:
         )
 
     @staticmethod
-    def test_given_valid_details_updates_statuses(mocker, single_task_gof_dtos):
+    def test_given_valid_details_updates_statuses(mocker, single_task_gof_dtos,
+                                                  create_task_storage):
         # Arrange
         action_id = 1
         task_id = 1
@@ -428,24 +455,27 @@ class TestUpdateTaskStatusVariablesInteractor:
         storage.get_path_name_to_action.return_value = path_name
         StatusVariableDTOFactory.reset_sequence()
         statuses = [StatusVariableDTOFactory()]
-        from ib_tasks.interactors.storage_interfaces.status_dtos import StatusVariableDTO
+        from ib_tasks.interactors.storage_interfaces.status_dtos import \
+            StatusVariableDTO
         expected_status = [
-            StatusVariableDTO(status_id=1, status_variable='variable_1', value='stage_2')
+            StatusVariableDTO(status_id=1, status_variable='variable_1',
+                              value='stage_2')
         ]
         storage.get_status_variables_to_task.return_value = statuses
         task_dto = TaskDetailsDTOFactory(
             task_gof_dtos=single_task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
         )
-        interactor = CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor(
-            storage=storage, action_id=action_id, task_id=task_id
-        )
+        interactor = \
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
+                storage=storage, action_id=action_id, task_id=task_id,
+                create_task_storage=create_task_storage)
 
         # Act
         interactor \
             .call_action_logic_function_and_update_task_status_variables(
-                task_dto=task_dto
-            )
+            task_dto=task_dto
+        )
 
         # Assert
         storage.get_path_name_to_action.assert_called_once_with(

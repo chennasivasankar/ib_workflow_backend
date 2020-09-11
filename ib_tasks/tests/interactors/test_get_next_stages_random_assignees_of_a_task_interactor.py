@@ -2,8 +2,9 @@ from unittest.mock import create_autospec, patch
 
 import pytest
 
-from ib_tasks.interactors.call_action_logic_function_and_get_status_variables_interactor import \
-    CallActionLogicFunctionAndGetTaskStatusVariablesInteractor
+from ib_tasks.interactors.\
+    call_action_logic_function_and_get_or_update_task_status_variables_interactor import \
+    CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor
 from ib_tasks.interactors.get_next_stages_random_assignees_of_a_task_interactor import \
     GetNextStagesRandomAssigneesOfATaskInteractor, InvalidModulePathFound, \
     InvalidMethodFound
@@ -173,8 +174,8 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         presenter_mock.raise_exception_for_invalid_action.assert_called_once_with(
             action_id=action_id)
 
-    @patch.object(CallActionLogicFunctionAndGetTaskStatusVariablesInteractor,
-                  'get_status_variables_dtos_of_task_based_on_action')
+    @patch.object(CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor,
+                  'call_action_logic_function_and_get_status_variables_dtos_of_task')
     def test_given_invalid_path_raises_exception(self, action_logic_mock,
                                                  storage_mock,
                                                  stage_storage_mock,
@@ -207,8 +208,9 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             assert_called_once_with(path_name=path_name)
 
     @staticmethod
-    @patch.object(CallActionLogicFunctionAndGetTaskStatusVariablesInteractor,
-                  'get_status_variables_dtos_of_task_based_on_action')
+    @patch.object(
+        CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor,
+        'call_action_logic_function_and_get_status_variables_dtos_of_task')
     def test_given_invalid_method_name_raises_exception(action_logic_mock,
                                                         storage_mock,
                                                         stage_storage_mock,
@@ -245,8 +247,9 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             assert_called_once_with(method_name=method_name)
 
     @staticmethod
-    @patch.object(CallActionLogicFunctionAndGetTaskStatusVariablesInteractor,
-                  'get_status_variables_dtos_of_task_based_on_action')
+    @patch.object(
+        CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor,
+        'call_action_logic_function_and_get_status_variables_dtos_of_task')
     def test_access_invalid_key_raises_invalid_key_error(action_logic_mock,
                                                          storage_mock,
                                                          presenter_mock,
@@ -284,8 +287,9 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
     @patch.object(
         GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor,
         'get_task_stage_logic_satisfied_next_stages')
-    @patch.object(CallActionLogicFunctionAndGetTaskStatusVariablesInteractor,
-                  'get_status_variables_dtos_of_task_based_on_action')
+    @patch.object(
+        CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor,
+        'call_action_logic_function_and_get_status_variables_dtos_of_task')
     def test_given_valid_details_get_next_stage_assignees(
             self, action_logic_mock, next_stages_mock,
             users_with_less_tasks_mock, storage_mock,

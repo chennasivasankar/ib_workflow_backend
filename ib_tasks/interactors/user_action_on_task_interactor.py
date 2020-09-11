@@ -18,8 +18,8 @@ from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
 from ib_tasks.exceptions.task_custom_exceptions import (
     InvalidTaskException, InvalidTaskDisplayId, TaskDelayReasonIsNotUpdated)
 from ib_tasks.interactors \
-    .call_action_logic_function_and_update_task_status_variables_interactor \
-    import CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor, \
+    .call_action_logic_function_and_get_or_update_task_status_variables_interactor \
+    import CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor, \
     InvalidMethodFound
 from ib_tasks.interactors \
     .get_all_task_overview_with_filters_and_searches_for_user import \
@@ -318,14 +318,12 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
     def _call_logic_and_update_status_variables_and_get_stage_ids(
             self, task_dto: TaskDetailsDTO, task_id: int) -> TaskDetailsDTO:
         update_status_variable_obj = \
-            CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor(
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
                 action_id=self.action_id, storage=self.storage,
-                task_id=task_id
-            )
+                task_id=task_id, create_task_storage=self.create_task_storage)
         task_dto = update_status_variable_obj \
             .call_action_logic_function_and_update_task_status_variables(
-            task_dto=task_dto
-        )
+            task_dto=task_dto)
         return task_dto
 
     def _get_task_dto(self, task_id: int):

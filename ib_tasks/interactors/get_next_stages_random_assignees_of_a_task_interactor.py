@@ -115,18 +115,18 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
     def _get_status_variables_dtos_of_task_based_on_action(self, task_id: int,
                                                           action_id: int) -> \
             List[StatusVariableDTO]:
-        from ib_tasks.interactors. \
-            call_action_logic_function_and_get_status_variables_interactor \
-            import CallActionLogicFunctionAndGetTaskStatusVariablesInteractor
+
+        from ib_tasks.interactors.\
+            call_action_logic_function_and_get_or_update_task_status_variables_interactor import \
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor
         call_action_logic_function_interactor = \
-            CallActionLogicFunctionAndGetTaskStatusVariablesInteractor(
-                action_storage=self.action_storage,
-                task_storage=self.task_storage, storage=self.storage,
-                create_task_storage=self.create_task_storage
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
+                storage=self.storage,
+                create_task_storage=self.create_task_storage, task_id=task_id,
+                action_id=action_id
             )
         updated_status_variable_dtos = call_action_logic_function_interactor. \
-            get_status_variables_dtos_of_task_based_on_action(
-            task_id, action_id)
+            call_action_logic_function_and_get_status_variables_dtos_of_task()
         return updated_status_variable_dtos
 
     def _get_next_stages_of_task(self, task_id: int,
