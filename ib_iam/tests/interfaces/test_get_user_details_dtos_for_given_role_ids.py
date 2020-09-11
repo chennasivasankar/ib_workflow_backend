@@ -47,9 +47,9 @@ class TestGetUserDetailsBulkForGivenRoleIds:
             self, user_profile_dtos, set_up, mocker):
         role_ids = set_up
         project_id = "FA"
-        from ib_iam.tests.common_fixtures.adapters.user_service_mocks import \
-            prepare_user_profile_dtos_mock
-        get_user_profile_mock = prepare_user_profile_dtos_mock(mocker)
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
+            get_basic_user_profile_dtos_mock
+        get_user_profile_mock = get_basic_user_profile_dtos_mock(mocker)
         get_user_profile_mock.return_value = user_profile_dtos
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         service_interface = ServiceInterface()
@@ -110,9 +110,9 @@ class TestGetUserDetailsBulkForGivenRoleIds:
         user_profile_dtos = [
             UserProfileDTOFactory.create(user_id=user_id)
             for user_id in actual_user_ids]
-        from ib_iam.tests.common_fixtures.adapters.user_service_mocks import \
-            prepare_user_profile_dtos_mock
-        get_user_profile_mock = prepare_user_profile_dtos_mock(mocker)
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
+            get_basic_user_profile_dtos_mock
+        get_user_profile_mock = get_basic_user_profile_dtos_mock(mocker)
         get_user_profile_mock.return_value = user_profile_dtos
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         service_interface = ServiceInterface()

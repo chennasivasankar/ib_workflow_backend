@@ -22,8 +22,8 @@ class TestUpdateUserProfileInteractor:
     @pytest.fixture
     def adapter_mock(self, mocker):
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_update_user_password
-        update_user_password_mock = prepare_update_user_password(mocker)
+            update_user_password_mock
+        update_user_password_mock = update_user_password_mock(mocker)
         return update_user_password_mock
 
     def test_given_invalid_new_password_raises_invalid_new_password_exception(

@@ -53,9 +53,9 @@ class TestLoginInteractor:
         )
         from ib_iam.interactors.user_login_interactor import IncorrectPassword
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock
+            get_user_tokens_dto_for_given_email_and_password_dto_mock
         get_tokens_dto_for_given_email_and_password_dto_mock \
-            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(
+            = get_user_tokens_dto_for_given_email_and_password_dto_mock(
             mocker)
         get_tokens_dto_for_given_email_and_password_dto_mock.side_effect \
             = IncorrectPassword
@@ -136,9 +136,9 @@ class TestLoginInteractor:
             user_id=user_id, is_email_verify=True
         )
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock
+            get_user_tokens_dto_for_given_email_and_password_dto_mock
         get_tokens_dto_for_given_email_and_password_dto_mock \
-            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(
+            = get_user_tokens_dto_for_given_email_and_password_dto_mock(
             mocker)
         get_tokens_dto_for_given_email_and_password_dto_mock.return_value \
             = tokens_dto
@@ -182,9 +182,9 @@ class TestLoginInteractor:
         )
         from ib_iam.exceptions.custom_exceptions import InvalidEmail
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock
+            get_user_tokens_dto_for_given_email_and_password_dto_mock
         get_tokens_dto_for_given_email_and_password_dto_mock \
-            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(
+            = get_user_tokens_dto_for_given_email_and_password_dto_mock(
             mocker)
         get_tokens_dto_for_given_email_and_password_dto_mock.side_effect \
             = InvalidEmail

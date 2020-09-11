@@ -1,38 +1,52 @@
-def prepare_get_reset_password_token_mock(mocker):
+def get_basic_user_profile_dtos_mock(mocker):
+    mock = mocker.patch(
+        "ib_iam.adapters.user_service.UserService.get_basic_user_dtos"
+    )
+    return mock
+
+
+def get_user_profile_bulk_mock(mocker):
+    mock = mocker.patch(
+        "ib_iam.adapters.user_service.UserService.get_user_profile_bulk"
+    )
+    return mock
+
+
+def get_reset_password_token_mock(mocker):
     mock = mocker.patch(
         "ib_iam.adapters.auth_service.AuthService.get_reset_password_token"
     )
     return mock
 
 
-def prepare_user_log_out_from_a_device_mock(mocker):
+def user_log_out_from_a_device_mock(mocker):
     mock = mocker.patch(
         "ib_iam.adapters.auth_service.AuthService.user_log_out_from_a_device"
     )
     return mock
 
 
-def prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(mocker):
+def get_user_tokens_dto_for_given_email_and_password_dto_mock(mocker):
     mock = mocker.patch(
         "ib_iam.adapters.auth_service.AuthService.get_user_tokens_dto_for_given_email_and_password_dto"
     )
     return mock
 
 
-def prepare_update_user_password_with_reset_password_token_mock(mocker):
+def update_user_password_with_reset_password_token_mock(mocker):
     mock = mocker.patch(
         "ib_iam.adapters.auth_service.AuthService.update_user_password_with_reset_password_token"
     )
     return mock
 
 
-def prepare_update_user_password(mocker):
+def update_user_password_mock(mocker):
     mock = mocker.patch(
         "ib_iam.adapters.auth_service.AuthService.update_user_password")
     return mock
 
 
-def prepare_get_refresh_auth_tokens_dto_mock(mocker):
+def get_refresh_auth_tokens_dto_mock(mocker):
     mock = mocker.patch(
         "ib_iam.adapters.auth_service.AuthService.get_refresh_auth_tokens_dto"
     )

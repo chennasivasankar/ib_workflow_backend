@@ -100,8 +100,8 @@ class TestGetListOfTeamsInteractor:
             mocker, expected_list_of_teams_dtos, expected_team_user_ids_dtos,
             expected_list_of_user_dtos):
         # Arrange or Setup
-        from ib_iam.tests.common_fixtures.adapters.user_service_mocks import \
-            prepare_user_profile_dtos_mock
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
+            get_basic_user_profile_dtos_mock
         team_storage = create_autospec(TeamStorageInterface)
         user_storage = create_autospec(UserStorageInterface)
         presenter = create_autospec(TeamPresenterInterface)
@@ -124,7 +124,7 @@ class TestGetListOfTeamsInteractor:
         team_storage.get_team_user_ids_dtos.return_value = \
             expected_team_user_ids_dtos
         presenter.get_response_for_get_list_of_teams.return_value = Mock()
-        mock = prepare_user_profile_dtos_mock(mocker)
+        mock = get_basic_user_profile_dtos_mock(mocker)
         mock.return_value = expected_list_of_user_dtos
 
         # Act

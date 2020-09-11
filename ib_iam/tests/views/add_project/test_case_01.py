@@ -19,8 +19,8 @@ class TestCase01AddProjectAPITestCase(TestUtils):
     @pytest.mark.django_db
     def test_case(self, setup, mocker, snapshot):
         from ib_iam.tests.common_fixtures.adapters.uuid_mock import \
-            prepare_uuid_mock
-        mock = prepare_uuid_mock(mocker)
+            uuid_mock
+        mock = uuid_mock(mocker)
         mock.return_value = UUID("7eb737be-810f-4580-83ea-ff4fa67edd22")
         body = {
             'name': 'project_1',

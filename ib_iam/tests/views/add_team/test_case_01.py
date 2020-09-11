@@ -7,7 +7,7 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...common_fixtures.adapters.uuid_mock import prepare_uuid_mock
+from ...common_fixtures.adapters.uuid_mock import uuid_mock
 
 
 class TestCase01AddTeamAPITestCase(TestUtils):
@@ -20,7 +20,7 @@ class TestCase01AddTeamAPITestCase(TestUtils):
     # TODO: remove the response. Because we are not asserting anywhere.
     @pytest.mark.django_db
     def test_case(self, mocker, snapshot, setup):
-        mock = prepare_uuid_mock(mocker)
+        mock = uuid_mock(mocker)
         mock.return_value = UUID("f2c02d98-f311-4ab2-8673-3daa00757002")
         body = {'name': 'team_name1', 'description': '', 'user_ids': ["2", "3"]}
         path_params = {}

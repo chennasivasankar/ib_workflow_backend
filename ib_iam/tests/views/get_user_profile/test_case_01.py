@@ -56,8 +56,8 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
     @pytest.fixture
     def adapters_mock_setup(self, users_set_up,  mocker):
         login_user_id = '217abeb3-6466-4440-96e7-bf02ee941bf8'
-        from ib_iam.tests.common_fixtures.adapters.user_service_mocks import (
-            prepare_user_profile_dtos_mock)
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import (
+            get_basic_user_profile_dtos_mock)
         from ib_iam.tests.common_fixtures.adapters.user_service import \
             prepare_get_user_profile_dto_mock
         user_ids = self._get_user_ids_from_objects(user_objects=users_set_up)
@@ -70,7 +70,7 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
                 login_user_profile_dto = user_dto
         get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
         get_user_profile_dto_mock.return_value = login_user_profile_dto
-        get_basic_user_dtos_mock = prepare_user_profile_dtos_mock(mocker)
+        get_basic_user_dtos_mock = get_basic_user_profile_dtos_mock(mocker)
         get_basic_user_dtos_mock.return_value = user_dtos
 
     @pytest.fixture()
