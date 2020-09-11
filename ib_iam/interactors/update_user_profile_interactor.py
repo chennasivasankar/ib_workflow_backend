@@ -88,7 +88,7 @@ class UpdateUserProfileInteractor(ValidationMixin):
 
     def _validate_roles(self, role_ids: List[str]):
         self._validate_duplicate_role_ids(role_ids=role_ids)
-        self._validate_invalid_role_ids(role_ids=role_ids)
+        self._validate_role_ids(role_ids=role_ids)
 
     @staticmethod
     def _validate_duplicate_role_ids(role_ids):
@@ -97,9 +97,9 @@ class UpdateUserProfileInteractor(ValidationMixin):
             raise RoleIdsAreDuplicated()
 
     # TODO: Intense revealing names(are_valid)
-    def _validate_invalid_role_ids(self, role_ids):
-        are_valid = self.user_storage.check_are_valid_role_ids(
-            role_ids=role_ids)
-        are_not_valid = not are_valid
-        if are_not_valid:
+    def _validate_role_ids(self, role_ids):
+        are_exists_invalid_role_ids = not self.user_storage.check_are_valid_role_ids(
+            role_ids=role_ids
+        )
+        if are_exists_invalid_role_ids:
             raise RoleIdsAreInvalid()

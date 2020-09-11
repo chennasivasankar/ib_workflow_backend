@@ -27,7 +27,9 @@ class TestUpdateUserProfileInteractor:
         return update_user_password_mock
 
     def test_given_invalid_new_password_raises_invalid_new_password_exception(
-            self, interactor, presenter_mock, adapter_mock):
+            self, interactor, presenter_mock, adapter_mock
+    ):
+        # Arrange
         from ib_iam.exceptions.custom_exceptions import InvalidNewPassword
         from ib_iam.tests.factories.interactor_dtos import \
             CurrentAndNewPasswordDTOFactory
@@ -35,21 +37,26 @@ class TestUpdateUserProfileInteractor:
         current_and_new_password_dto = CurrentAndNewPasswordDTOFactory()
         adapter_mock.side_effect = InvalidNewPassword
         presenter_mock.raise_invalid_new_password_exception \
-            .return_value = mock.Mock(())
+            .return_value = mock.Mock()
 
+        # Act
         interactor.update_user_password_wrapper(
-            user_id=user_id,
+            user_id=user_id, presenter=presenter_mock,
             current_and_new_password_dto=current_and_new_password_dto,
-            presenter=presenter_mock)
+        )
 
+        # Assert
         adapter_mock.assert_called_once_with(
             user_id=user_id,
-            current_and_new_password_dto=current_and_new_password_dto)
+            current_and_new_password_dto=current_and_new_password_dto
+        )
         presenter_mock.raise_invalid_new_password_exception \
             .assert_called_once()
 
     def test_given_invalid_current_password_raises_invalid_current_password_exception(
-            self, interactor, presenter_mock, adapter_mock):
+            self, interactor, presenter_mock, adapter_mock
+    ):
+        # Arrange
         from ib_iam.exceptions.custom_exceptions import InvalidCurrentPassword
         from ib_iam.tests.factories.interactor_dtos import \
             CurrentAndNewPasswordDTOFactory
@@ -59,11 +66,13 @@ class TestUpdateUserProfileInteractor:
         presenter_mock.raise_invalid_new_password_exception \
             .return_value = mock.Mock(())
 
+        # Act
         interactor.update_user_password_wrapper(
-            user_id=user_id,
+            user_id=user_id, presenter=presenter_mock,
             current_and_new_password_dto=current_and_new_password_dto,
-            presenter=presenter_mock)
+        )
 
+        # Assert
         adapter_mock.assert_called_once_with(
             user_id=user_id,
             current_and_new_password_dto=current_and_new_password_dto)
@@ -71,7 +80,9 @@ class TestUpdateUserProfileInteractor:
             .assert_called_once()
 
     def test_given_mismatching_current_password_raises_current_password_mismatch_exception(
-            self, interactor, presenter_mock, adapter_mock):
+            self, interactor, presenter_mock, adapter_mock
+    ):
+        # Arrange
         from ib_iam.exceptions.custom_exceptions import CurrentPasswordMismatch
         from ib_iam.tests.factories.interactor_dtos import \
             CurrentAndNewPasswordDTOFactory
@@ -79,35 +90,43 @@ class TestUpdateUserProfileInteractor:
         current_and_new_password_dto = CurrentAndNewPasswordDTOFactory()
         adapter_mock.side_effect = CurrentPasswordMismatch
         presenter_mock.raise_invalid_new_password_exception \
-            .return_value = mock.Mock(())
+            .return_value = mock.Mock()
 
+        # Act
         interactor.update_user_password_wrapper(
-            user_id=user_id,
+            user_id=user_id, presenter=presenter_mock,
             current_and_new_password_dto=current_and_new_password_dto,
-            presenter=presenter_mock)
+        )
 
+        # Assert
         adapter_mock.assert_called_once_with(
             user_id=user_id,
-            current_and_new_password_dto=current_and_new_password_dto)
+            current_and_new_password_dto=current_and_new_password_dto
+        )
         presenter_mock.raise_current_password_mismatch_exception \
             .assert_called_once()
 
     def test_given_valid_details_returns_success_response(
-            self, interactor, presenter_mock, adapter_mock):
+            self, interactor, presenter_mock, adapter_mock
+    ):
+        # Arrange
         from ib_iam.tests.factories.interactor_dtos import \
             CurrentAndNewPasswordDTOFactory
         user_id = "1"
         current_and_new_password_dto = CurrentAndNewPasswordDTOFactory()
         presenter_mock.get_success_response_for_update_user_password \
-            .return_value = mock.Mock(())
+            .return_value = mock.Mock()
 
+        # Act
         interactor.update_user_password_wrapper(
-            user_id=user_id,
+            user_id=user_id, presenter=presenter_mock,
             current_and_new_password_dto=current_and_new_password_dto,
-            presenter=presenter_mock)
+        )
 
+        # Assert
         adapter_mock.assert_called_once_with(
             user_id=user_id,
-            current_and_new_password_dto=current_and_new_password_dto)
+            current_and_new_password_dto=current_and_new_password_dto
+        )
         presenter_mock.get_success_response_for_update_user_password \
             .assert_called_once()
