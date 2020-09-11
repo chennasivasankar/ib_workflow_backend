@@ -153,6 +153,7 @@ class TeamWithTeamIdAndUserIdsDTOFactory(TeamWithUserIdsDTOFactory,
     team_id = factory.sequence(lambda n: "team%d" % n)
 
 
+# TODO: move to interactor_dtos
 class PaginationDTOFactory(factory.Factory):
     class Meta:
         model = PaginationDTO

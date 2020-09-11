@@ -5,11 +5,17 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
     GetTeamMemberLevelsPresenterInterface
-from ib_iam.interactors.storage_interfaces.dtos import TeamMemberLevelDetailsDTO
+from ib_iam.interactors.storage_interfaces.dtos import \
+    TeamMemberLevelDetailsDTO
 
 INVALID_TEAM_ID = (
     "Please send valid team id to get team member level details",
     "INVALID_TEAM_ID"
+)
+
+USER_DOES_NOT_HAVE_ACCESS = (
+    "User does not have provision to access",
+    "USER_DOES_NOT_HAVE_ACCESS"
 )
 
 
@@ -45,3 +51,13 @@ class GetTeamMemberLevelsPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
+
+    def response_for_user_is_not_admin(self):
+        response_dict = {
+            "response": USER_DOES_NOT_HAVE_ACCESS[0],
+            "http_status_code": StatusCode.FORBIDDEN.value,
+            "res_status": USER_DOES_NOT_HAVE_ACCESS[1]
+        }
+        return self.prepare_403_forbidden_response(
+            response_dict=response_dict
+        )

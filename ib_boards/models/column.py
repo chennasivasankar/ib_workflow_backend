@@ -22,3 +22,7 @@ class Column(models.Model):
 class ColumnPermission(models.Model):
     column = models.ForeignKey(Column, on_delete=models.CASCADE)
     user_role_id = models.CharField(max_length=200)
+
+    def __str__(self):
+        return "{} with {} for {}".format(self.id, self.column_id,
+                                          self.user_role_id)

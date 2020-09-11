@@ -1,6 +1,5 @@
 from typing import List
 
-from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.adapters.service_adapter import get_service_adapter
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \

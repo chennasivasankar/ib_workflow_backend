@@ -3,37 +3,37 @@ import abc
 
 class AddUserPresenterInterface(abc.ABC):
     @abc.abstractmethod
-    def raise_user_is_not_admin_exception(self):
+    def response_for_user_is_not_admin_exception(self):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_name_length_exception_for_update_user_profile(self):
+    def response_for_invalid_name_length_exception(self):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_email_exception(self):
+    def response_for_invalid_email_exception(self):
         pass
 
     @abc.abstractmethod
-    def raise_user_account_already_exist_with_this_email_exception(self):
+    def response_for_user_account_already_exists_exception(self):
         pass
 
     @abc.abstractmethod
-    def raise_name_should_not_contain_special_characters_exception(self):
+    def response_for_name_contains_special_character_exception(self):
         pass
 
     @abc.abstractmethod
-    def raise_role_ids_are_invalid(self):
+    def response_for_invalid_role_ids_exception(self):
         pass
 
     @abc.abstractmethod
-    def raise_company_ids_is_invalid(self):
+    def response_for_invalid_company_ids_exception(self):
         pass
 
     @abc.abstractmethod
-    def raise_team_ids_are_invalid(self):
+    def response_for_invalid_team_ids_exception(self):
         pass
 
     @abc.abstractmethod
-    def user_created_response(self):
+    def response_for_add_user_response(self):
         pass

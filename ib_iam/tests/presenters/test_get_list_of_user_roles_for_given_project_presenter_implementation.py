@@ -22,11 +22,28 @@ class TestGetListOfUserRolesForGivenProjectPresenterImplementation:
         response_status_code = INVALID_PROJECT_ID[1]
 
         # Act
-        response_object = presenter.response_for_invalid_project_id()
+        response_object = presenter.response_for_invalid_project_id_exception()
 
         # Assert
         response = json.loads(response_object.content)
         assert response['http_status_code'] == StatusCode.BAD_REQUEST.value
+        assert response['res_status'] == response_status_code
+        assert response['response'] == expected_response
+
+    def test_response_for_user_not_have_permission_exception(self, presenter):
+        # Arrange
+        from ib_iam.constants.exception_messages import (
+            USER_HAS_NO_ACCESS_TO_GET_USERS_WITH_ROLES
+        )
+        expected_response = USER_HAS_NO_ACCESS_TO_GET_USERS_WITH_ROLES[0]
+        response_status_code = USER_HAS_NO_ACCESS_TO_GET_USERS_WITH_ROLES[1]
+
+        # Act
+        response_object = presenter.response_for_user_not_have_permission_exception()
+
+        # Assert
+        response = json.loads(response_object.content)
+        assert response['http_status_code'] == StatusCode.FORBIDDEN.value
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
@@ -39,7 +56,7 @@ class TestGetListOfUserRolesForGivenProjectPresenterImplementation:
         user_role_dtos = prepare_user_role_dtos
 
         # Act
-        response = presenter.prepare_success_response_for_get_specific_project_details(
+        response = presenter.get_response_for_get_users_with_roles(
             user_role_dtos=user_role_dtos,
             basic_user_details_dtos=basic_user_details_dtos
         )
@@ -51,32 +68,18 @@ class TestGetListOfUserRolesForGivenProjectPresenterImplementation:
 
     @pytest.fixture()
     def prepare_basic_user_details_dtos(self):
-        basic_user_details_list = [
-            {
-                "user_id": "31be920b-7b4c-49e7-8adb-41a0c18da848",
-                "name": "user_1",
-                "profile_pic_url": None
-            },
-            {
-                "user_id": "01be920b-7b4c-49e7-8adb-41a0c18da848",
-                "name": "user_2",
-                "profile_pic_url": None
-            },
-            {
-                "user_id": "77be920b-7b4c-49e7-8adb-41a0c18da848",
-                "name": "user_3",
-                "profile_pic_url": None
-            }
+        user_ids = [
+            "31be920b-7b4c-49e7-8adb-41a0c18da848",
+            "01be920b-7b4c-49e7-8adb-41a0c18da848",
+            "77be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
-        from ib_iam.tests.factories.storage_dtos import \
+        from ib_iam.tests.factories.storage_dtos import (
             BasicUserDetailsDTOFactory
+        )
+        BasicUserDetailsDTOFactory.reset_sequence(1)
         basic_user_details_dtos = [
-            BasicUserDetailsDTOFactory(
-                user_id=basic_user_details_dict["user_id"],
-                name=basic_user_details_dict["name"],
-                profile_pic_url=basic_user_details_dict["profile_pic_url"]
-            )
-            for basic_user_details_dict in basic_user_details_list
+            BasicUserDetailsDTOFactory(user_id=user_id)
+            for user_id in user_ids
         ]
         return basic_user_details_dtos
 
@@ -85,30 +88,23 @@ class TestGetListOfUserRolesForGivenProjectPresenterImplementation:
         user_roles_list = [
             {
                 "user_id": "31be920b-7b4c-49e7-8adb-41a0c18da848",
-                "role_id": "ROLE_1",
-                "name": "NAME_1",
-                "description": "description"
+                "role_id": "ROLE_1"
             },
             {
                 "user_id": "31be920b-7b4c-49e7-8adb-41a0c18da848",
-                "role_id": "ROLE_2",
-                "name": "NAME_2",
-                "description": "description"
+                "role_id": "ROLE_2"
             },
             {
                 "user_id": "01be920b-7b4c-49e7-8adb-41a0c18da848",
-                "role_id": "ROLE_3",
-                "name": "NAME_3",
-                "description": "description"
+                "role_id": "ROLE_3"
             }
         ]
         from ib_iam.tests.factories.storage_dtos import UserRoleDTOFactory
+        UserRoleDTOFactory.reset_sequence(1)
         user_roles_dtos = [
             UserRoleDTOFactory(
                 user_id=user_roles_dict["user_id"],
-                role_id=user_roles_dict["role_id"],
-                name=user_roles_dict["name"],
-                description=user_roles_dict["description"]
+                role_id=user_roles_dict["role_id"]
             )
             for user_roles_dict in user_roles_list
         ]

@@ -7,7 +7,9 @@ from .validator_class import ValidatorClass
 def api_wrapper(*args, **kwargs):
     path_params = kwargs["path_params"]
     request_data = kwargs["request_data"]
+    user_object = kwargs["user"]
 
+    user_id = user_object.user_id
     team_id = path_params["team_id"]
     members = request_data["members"]
 
@@ -24,6 +26,10 @@ def api_wrapper(*args, **kwargs):
         TeamMemberLevelStorageImplementation
     team_member_level_storage = TeamMemberLevelStorageImplementation()
 
+    from ib_iam.storages.user_storage_implementation import \
+        UserStorageImplementation
+    user_storage = UserStorageImplementation()
+
     from ib_iam.presenters.add_members_to_team_member_levels_presenter_implementation import \
         AddMembersToTeamMemberLevelsPresenterImplementation
     presenter = AddMembersToTeamMemberLevelsPresenterImplementation()
@@ -31,11 +37,12 @@ def api_wrapper(*args, **kwargs):
     from ib_iam.interactors.add_members_to_team_member_levels_interactor import \
         AddMembersToTeamMemberLevelsInteractor
     interactor = AddMembersToTeamMemberLevelsInteractor(
-        team_member_level_storage=team_member_level_storage
+        team_member_level_storage=team_member_level_storage,
+        user_storage=user_storage
     )
 
     response = interactor.add_members_to_team_member_levels_wrapper(
-        team_id=team_id, presenter=presenter,
+        team_id=team_id, presenter=presenter, user_id=user_id,
         team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos
     )
     return response

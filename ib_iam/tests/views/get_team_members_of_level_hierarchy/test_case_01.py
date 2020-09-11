@@ -14,10 +14,20 @@ class TestCase01GetTeamMembersOfLevelHierarchyAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['read']}}
 
+    def _get_or_create_user(self):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_users.models import UserAccount
+        user = UserAccount.objects.create(user_id=user_id)
+        return user
+
     @pytest.mark.django_db
     def test_with_members_in_a_team(
             self, snapshot, prepare_user_teams_setup,
             prepare_user_profile_dtos_setup):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_iam.models import UserDetails
+        UserDetails.objects.create(user_id=user_id, is_admin=True)
+
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         level_hierarchy = 0
         body = {}

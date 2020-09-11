@@ -392,30 +392,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         stage_ids = self._get_stage_ids(stages_and_actions_details_dtos)
         self._validate_user_have_permission_for_at_least_one_stage(stage_ids,
                                                                    user_roles)
-        filtered_stages_and_actions_details_dtos = \
-            self._get_filtered_stages_and_actions_details_dtos(
-                stages_and_actions_details_dtos)
-        return filtered_stages_and_actions_details_dtos
-
-    def _get_filtered_stages_and_actions_details_dtos(
-            self,
-            stages_and_actions_details_dtos: List[StageAndActionsDetailsDTO]
-    ) -> List[StageAndActionsDetailsDTO]:
-        db_stage_ids = [
-            dto.db_stage_id
-            for dto in stages_and_actions_details_dtos
-        ]
-        virtual_stage_ids = \
-            self.fields_storage.get_virtual_stage_ids_in_given_stage_ids(
-                db_stage_ids)
-
-        filtered_stages_and_actions_details_dtos = []
-        for dto in stages_and_actions_details_dtos:
-            stage_is_virtual = dto.db_stage_id in virtual_stage_ids
-            if stage_is_virtual:
-                continue
-            filtered_stages_and_actions_details_dtos.append(dto)
-        return filtered_stages_and_actions_details_dtos
+        return stages_and_actions_details_dtos
 
     @staticmethod
     def _get_task_gof_field_dtos(

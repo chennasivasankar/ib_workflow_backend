@@ -5,8 +5,9 @@ from .validator_class import ValidatorClass
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
+    user_obj = kwargs["user"]
+    user_id = str(user_obj.user_id)
     path_params = kwargs["path_params"]
-
     project_id = str(path_params["project_id"])
 
     from ib_iam.storages.user_storage_implementation import \
@@ -24,6 +25,6 @@ def api_wrapper(*args, **kwargs):
     )
 
     response = interactor.get_list_of_user_roles_for_given_project_wrapper(
-        project_id=project_id, presenter=presenter
+        project_id=project_id, presenter=presenter, user_id=user_id
     )
     return response

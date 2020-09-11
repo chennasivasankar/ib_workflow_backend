@@ -6,11 +6,19 @@ import pytest
 class TestAddTeamMemberLevelsInteractor:
 
     @pytest.fixture()
-    def storage_mock(self):
+    def team_member_level_storage_mock(self):
         from unittest.mock import create_autospec
         from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface import \
             TeamMemberLevelStorageInterface
         storage = create_autospec(TeamMemberLevelStorageInterface)
+        return storage
+
+    @pytest.fixture()
+    def user_storage_mock(self):
+        from unittest.mock import create_autospec
+        from ib_iam.interactors.storage_interfaces.user_storage_interface import \
+            UserStorageInterface
+        storage = create_autospec(UserStorageInterface)
         return storage
 
     @pytest.fixture()
@@ -23,11 +31,13 @@ class TestAddTeamMemberLevelsInteractor:
         return presenter
 
     @pytest.fixture()
-    def interactor(self, storage_mock):
+    def interactor(self, team_member_level_storage_mock, user_storage_mock):
         from ib_iam.interactors.add_team_member_levels_interactor import \
             AddTeamMemberLevelsInteractor
         interactor = AddTeamMemberLevelsInteractor(
-            team_member_level_storage=storage_mock)
+            team_member_level_storage=team_member_level_storage_mock,
+            user_storage=user_storage_mock
+        )
         return interactor
 
     @pytest.fixture()
@@ -63,16 +73,19 @@ class TestAddTeamMemberLevelsInteractor:
         return team_member_level_dtos
 
     def test_with_invalid_team_id_return_response(
-            self, storage_mock, presenter_mock, interactor,
-            prepare_team_member_level_dtos
+            self, team_member_level_storage_mock, presenter_mock, interactor,
+            prepare_team_member_level_dtos, user_storage_mock
     ):
         # Arrange
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         team_member_level_dtos = prepare_team_member_level_dtos
         expected_presenter_response_for_invalid_team_id_mock = Mock()
+        user_id = "00be920b-7b4c-49e7-8adb-41a0c18da848"
 
         from ib_iam.exceptions.custom_exceptions import InvalidTeamId
-        storage_mock.validate_team_id.side_effect = InvalidTeamId
+        team_member_level_storage_mock.validate_team_id.side_effect = \
+            InvalidTeamId
+        user_storage_mock.is_user_admin.return_value = True
 
         presenter_mock.response_for_invalid_team_id.return_value \
             = expected_presenter_response_for_invalid_team_id_mock
@@ -80,18 +93,46 @@ class TestAddTeamMemberLevelsInteractor:
         # Act
         response = interactor.add_team_member_levels_wrapper(
             team_id=team_id, team_member_level_dtos=team_member_level_dtos,
-            presenter=presenter_mock
+            presenter=presenter_mock, user_id=user_id
         )
 
         # Assert
         assert response == \
                expected_presenter_response_for_invalid_team_id_mock
-        storage_mock.validate_team_id.assert_called_with(team_id=team_id)
+        team_member_level_storage_mock.validate_team_id.assert_called_with(
+            team_id=team_id)
         presenter_mock.response_for_invalid_team_id.assert_called_once()
 
+    def test_with_user_not_admin_return_response(
+            self, team_member_level_storage_mock, presenter_mock, interactor,
+            prepare_team_member_level_dtos, user_storage_mock
+    ):
+        # Arrange
+        team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        team_member_level_dtos = prepare_team_member_level_dtos
+        expected_presenter_response_for_invalid_project_id_mock = Mock()
+        user_id = "00be920b-7b4c-49e7-8adb-41a0c18da848"
+
+        user_storage_mock.is_user_admin.return_value = False
+
+        presenter_mock.response_for_user_is_not_admin.return_value \
+            = expected_presenter_response_for_invalid_project_id_mock
+
+        # Act
+        response = interactor.add_team_member_levels_wrapper(
+            team_id=team_id, team_member_level_dtos=team_member_level_dtos,
+            presenter=presenter_mock, user_id=user_id
+        )
+
+        # Assert
+        assert response == \
+               expected_presenter_response_for_invalid_project_id_mock
+        user_storage_mock.is_user_admin.assert_called_with(user_id=user_id)
+        presenter_mock.response_for_user_is_not_admin.assert_called_once()
+
     def test_with_duplicate_level_hierarchies_return_response(
-            self, storage_mock, presenter_mock, interactor,
-            prepare_team_member_level_dtos
+            self, team_member_level_storage_mock, presenter_mock, interactor,
+            prepare_team_member_level_dtos, user_storage_mock
     ):
         # Arrange
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
@@ -99,6 +140,7 @@ class TestAddTeamMemberLevelsInteractor:
         team_member_level_dtos[0].level_hierarchy = 2
         team_member_level_dtos[3].level_hierarchy = 1
         expected_duplicate_level_hierarchies = [1, 2]
+        user_id = "00be920b-7b4c-49e7-8adb-41a0c18da848"
 
         expected_presenter_response_for_duplicate_level_hierarchies_mock = Mock()
 
@@ -108,7 +150,7 @@ class TestAddTeamMemberLevelsInteractor:
         # Act
         response = interactor.add_team_member_levels_wrapper(
             team_id=team_id, team_member_level_dtos=team_member_level_dtos,
-            presenter=presenter_mock
+            presenter=presenter_mock, user_id=user_id
         )
 
         # Assert
@@ -125,8 +167,8 @@ class TestAddTeamMemberLevelsInteractor:
                sorted(expected_duplicate_level_hierarchies)
 
     def test_with_negative_level_hierarchies_return_response(
-            self, storage_mock, presenter_mock, interactor,
-            prepare_team_member_level_dtos
+            self, team_member_level_storage_mock, presenter_mock, interactor,
+            prepare_team_member_level_dtos, user_storage_mock
     ):
         # Arrange
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
@@ -134,6 +176,7 @@ class TestAddTeamMemberLevelsInteractor:
         team_member_level_dtos[0].level_hierarchy = -2
         team_member_level_dtos[3].level_hierarchy = -1
         expected_negative_level_hierarchies = [-1, -2]
+        user_id = "00be920b-7b4c-49e7-8adb-41a0c18da848"
 
         expected_presenter_response_for_negative_level_hierarchies_mock = Mock()
 
@@ -143,7 +186,7 @@ class TestAddTeamMemberLevelsInteractor:
         # Act
         response = interactor.add_team_member_levels_wrapper(
             team_id=team_id, team_member_level_dtos=team_member_level_dtos,
-            presenter=presenter_mock
+            presenter=presenter_mock, user_id=user_id
         )
 
         # Assert
@@ -160,8 +203,8 @@ class TestAddTeamMemberLevelsInteractor:
                sorted(expected_negative_level_hierarchies)
 
     def test_with_duplicate_team_member_level_names_return_response(
-            self, storage_mock, presenter_mock, interactor,
-            prepare_team_member_level_dtos
+            self, team_member_level_storage_mock, presenter_mock, interactor,
+            prepare_team_member_level_dtos, user_storage_mock
     ):
         # Arrange
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
@@ -172,6 +215,7 @@ class TestAddTeamMemberLevelsInteractor:
             "Developer",
             "Engineer Manager"
         ]
+        user_id = "00be920b-7b4c-49e7-8adb-41a0c18da848"
 
         expected_presenter_response_for_duplicate_team_member_levels_mock = \
             Mock()
@@ -182,7 +226,7 @@ class TestAddTeamMemberLevelsInteractor:
         # Act
         response = interactor.add_team_member_levels_wrapper(
             team_id=team_id, team_member_level_dtos=team_member_level_dtos,
-            presenter=presenter_mock
+            presenter=presenter_mock, user_id=user_id
         )
 
         # Assert
@@ -199,11 +243,12 @@ class TestAddTeamMemberLevelsInteractor:
                sorted(expected_duplicate_team_member_level_names)
 
     def test_with_valid_details_return_response(
-            self, storage_mock, presenter_mock, interactor,
+            self, team_member_level_storage_mock, presenter_mock, interactor,
             prepare_team_member_level_dtos):
         # Arrange
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         team_member_level_dtos = prepare_team_member_level_dtos
+        user_id = "00be920b-7b4c-49e7-8adb-41a0c18da848"
 
         expected_presenter_response_for_add_levels_to_team_mock = Mock()
 
@@ -213,7 +258,7 @@ class TestAddTeamMemberLevelsInteractor:
         # Act
         response = interactor.add_team_member_levels_wrapper(
             team_id=team_id, team_member_level_dtos=team_member_level_dtos,
-            presenter=presenter_mock
+            presenter=presenter_mock, user_id=user_id
         )
 
         # Assert
@@ -222,6 +267,6 @@ class TestAddTeamMemberLevelsInteractor:
 
         presenter_mock.prepare_success_response_for_add_team_member_levels_to_team. \
             assert_called_once()
-        storage_mock.add_team_member_levels.assert_called_once_with(
+        team_member_level_storage_mock.add_team_member_levels.assert_called_once_with(
             team_id=team_id, team_member_level_dtos=team_member_level_dtos
         )

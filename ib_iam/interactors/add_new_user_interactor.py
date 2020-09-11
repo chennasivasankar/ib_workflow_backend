@@ -1,5 +1,3 @@
-from typing import List
-
 from ib_iam.exceptions.custom_exceptions import (
     UserIsNotAdmin, InvalidEmailAddress,
     UserAccountAlreadyExistWithThisEmail,
@@ -17,39 +15,42 @@ from ib_iam.interactors.storage_interfaces.user_storage_interface \
 
 
 class AddNewUserInteractor(ValidationMixin):
-    def __init__(self, user_storage: UserStorageInterface,
-                 elastic_storage: ElasticSearchStorageInterface):
+
+    def __init__(
+            self, user_storage: UserStorageInterface,
+            elastic_storage: ElasticSearchStorageInterface
+    ):
         self.user_storage = user_storage
         self.elastic_storage = elastic_storage
 
     def add_new_user_wrapper(
-            self, user_id: str,
-            add_user_details_dto: AddUserDetailsDTO,
-            presenter: AddUserPresenterInterface):
+            self, user_id: str, add_user_details_dto: AddUserDetailsDTO,
+            presenter: AddUserPresenterInterface
+    ):
         try:
             self.add_new_user(
-                user_id=user_id,
-                add_user_details_dto=add_user_details_dto)
-            response = presenter.user_created_response()
+                user_id=user_id, add_user_details_dto=add_user_details_dto
+            )
+            response = presenter.response_for_add_user_response()
         except UserIsNotAdmin:
-            response = presenter.raise_user_is_not_admin_exception()
+            response = presenter.response_for_user_is_not_admin_exception()
         except InvalidNameLength:
             response = presenter \
-                .raise_invalid_name_length_exception_for_update_user_profile()
+                .response_for_invalid_name_length_exception()
         except InvalidEmailAddress:
-            response = presenter.raise_invalid_email_exception()
+            response = presenter.response_for_invalid_email_exception()
         except UserAccountAlreadyExistWithThisEmail:
             response = presenter. \
-                raise_user_account_already_exist_with_this_email_exception()
+                response_for_user_account_already_exists_exception()
         except NameShouldNotContainsNumbersSpecCharacters:
             response = presenter. \
-                raise_name_should_not_contain_special_characters_exception()
+                response_for_name_contains_special_character_exception()
         except RoleIdsAreInvalid:
-            response = presenter.raise_role_ids_are_invalid()
+            response = presenter.response_for_invalid_role_ids_exception()
         except InvalidCompanyId:
-            response = presenter.raise_company_ids_is_invalid()
+            response = presenter.response_for_invalid_company_ids_exception()
         except TeamIdsAreInvalid:
-            response = presenter.raise_team_ids_are_invalid()
+            response = presenter.response_for_invalid_team_ids_exception()
         return response
 
     def add_new_user(self, user_id: str,
