@@ -55,7 +55,7 @@ class TestSendLinkToUserMail:
         )
 
         create_auth_tokens_for_user_mock.assert_called_once_with(
-            user_id=user_id, expiry_in_seconds=1800)
+            user_id=user_id, expiry_in_seconds=3600)
         get_user_id_for_given_email_mock.assert_called_once_with(email=email)
 
     def test_given_invalid_email_then_raises_exception(
