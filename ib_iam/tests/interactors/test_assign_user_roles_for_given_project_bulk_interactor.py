@@ -41,9 +41,8 @@ class TestAssignUserRolesForGivenProjectBulkInteractor:
 
         expected_presenter_response_for_user_is_not_admin_mock = Mock()
 
-        presenter_mock.response_for_user_is_not_admin.return_value = \
+        presenter_mock.response_for_user_is_not_admin_exception.return_value = \
             expected_presenter_response_for_user_is_not_admin_mock
-
         storage_mock.is_user_admin.return_value = False
 
         # Act
@@ -56,7 +55,7 @@ class TestAssignUserRolesForGivenProjectBulkInteractor:
         assert response == \
                expected_presenter_response_for_user_is_not_admin_mock
 
-        presenter_mock.response_for_user_is_not_admin.assert_called_once()
+        presenter_mock.response_for_user_is_not_admin_exception.assert_called_once()
         storage_mock.is_user_admin.assert_called_once_with(
             user_id=user_id)
 
@@ -70,8 +69,7 @@ class TestAssignUserRolesForGivenProjectBulkInteractor:
         user_id_with_role_ids_dtos = prepare_user_id_with_role_ids_dtos
 
         expected_presenter_response_for_invalid_project_id_mock = Mock()
-
-        presenter_mock.response_for_invalid_project_id.return_value = \
+        presenter_mock.response_for_invalid_project_id_exception.return_value = \
             expected_presenter_response_for_invalid_project_id_mock
 
         from ib_iam.exceptions.custom_exceptions import InvalidProjectId
@@ -88,7 +86,7 @@ class TestAssignUserRolesForGivenProjectBulkInteractor:
         assert response == \
                expected_presenter_response_for_invalid_project_id_mock
 
-        presenter_mock.response_for_invalid_project_id.assert_called_once()
+        presenter_mock.response_for_invalid_project_id_exception.assert_called_once()
         storage_mock.validate_project_id.assert_called_once_with(
             project_id=project_id)
 

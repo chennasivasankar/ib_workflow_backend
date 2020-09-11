@@ -10,7 +10,7 @@ class DeleteUserPresenterImplementation(DeleteUserPresenterInterface,
     def get_delete_user_response(self):
         return self.prepare_200_success_response(response_dict={})
 
-    def raise_user_is_not_admin_exception(self):
+    def response_for_user_is_not_admin_exception(self):
         from ib_iam.constants.exception_messages import \
             USER_DOES_NOT_HAVE_PERMISSION
         response_dict = {

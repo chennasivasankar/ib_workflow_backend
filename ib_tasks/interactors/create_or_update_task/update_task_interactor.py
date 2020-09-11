@@ -17,9 +17,9 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidUrlForImage, InvalidImageFormat, InvalidUrlForFile, \
     InvalidFileFormat
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
-    DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
+    DuplicateFieldIdsToGoF
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
-    DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs
+    DuplicateSameGoFOrderForAGoF
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.stage_custom_exceptions import \
@@ -466,6 +466,9 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
     ) -> Optional[TaskDelayReasonIsNotUpdated]:
         existing_due_date = \
             self.create_task_storage.get_existing_task_due_date(task_id)
+        existing_due_date_is_not_expired = existing_due_date > datetime.datetime.now()
+        if existing_due_date_is_not_expired:
+            return
         due_date_has_changed = existing_due_date != updated_due_date and \
                                existing_due_date is not None
         if due_date_has_changed:

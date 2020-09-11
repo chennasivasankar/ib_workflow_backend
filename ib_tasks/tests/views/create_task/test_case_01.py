@@ -6,6 +6,8 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ...common_fixtures.adapters.roles_service import \
+    get_user_role_ids_based_on_project_mock
 
 
 class TestCase01CreateTaskAPITestCase(TestUtils):
@@ -66,6 +68,7 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         get_valid_project_ids_mock(mocker, [project_id])
         get_projects_info_for_given_ids_mock(mocker)
         get_team_info_for_given_user_ids_mock(mocker)
+        get_user_role_ids_based_on_project_mock(mocker)
         prepare_permitted_user_details_mock_method = \
             prepare_permitted_user_details_mock(mocker)
         assignee_details_dtos_mock_method = assignee_details_dtos_mock(mocker)
@@ -124,11 +127,8 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
             "action_id": 1,
             "title": "task_title",
             "description": "task_description",
-            "start_date": "2099-12-31",
-            "due_date": {
-                "date": "2099-12-31",
-                "time": "12:00:00"
-            },
+            "start_datetime": "2020-09-20 00:00:00",
+            "due_datetime": "2020-10-31 00:00:00",
             "priority": "HIGH",
             "task_gofs": [
                 {

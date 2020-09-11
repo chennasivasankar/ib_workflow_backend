@@ -208,24 +208,6 @@
         "roles"
       ]
     },
-    "CompleteUserDetails": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/UserDetails"
-        },
-        {
-          "$ref": "#/definitions/ListOfTeams"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "company": {
-              "$ref": "#/definitions/CompanyDetails"
-            }
-          }
-        }
-      ]
-    },
     "ListOfUsers": {
       "type": "object",
       "properties": {
@@ -660,52 +642,6 @@
         {
           "$ref": "#/definitions/ProjectId"
         }
-      ]
-    },
-    "ProjectWithExtraFields": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/Project"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "project_display_id": {
-              "type": "string"
-            },
-            "teams": {
-              "$ref": "#/definitions/Teams"
-            },
-            "roles": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Role"
-              }
-            }
-          },
-          "required": [
-            "teams",
-            "roles"
-          ]
-        }
-      ]
-    },
-    "ProjectsWithTotalProjectsCount": {
-      "type": "object",
-      "properties": {
-        "total_projects_count": {
-          "type": "integer"
-        },
-        "projects": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ProjectWithExtraFields"
-          }
-        }
-      },
-      "required": [
-        "total_projects_count",
-        "projects"
       ]
     },
     "ProjectWithTeamIds": {
@@ -2302,13 +2238,99 @@
     "SuccessForGetProjectsResponse": {
       "description": "returns all Projects",
       "schema": {
-        "$ref": "#/definitions/ProjectsWithTotalProjectsCount"
+        "type": "object",
+        "properties": {
+          "total_projects_count": {
+            "type": "integer"
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/ProjectDetails"
+                },
+                {
+                  "$ref": "#/definitions/ProjectId"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "project_display_id": {
+                      "type": "string"
+                    },
+                    "teams": {
+                      "$ref": "#/definitions/Teams"
+                    },
+                    "roles": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/Role"
+                      }
+                    }
+                  },
+                  "required": [
+                    "teams",
+                    "roles"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "total_projects_count",
+          "projects"
+        ]
       }
     },
-    "SuccessfullyCreatedForAddProjectResponse": {
-      "description": "Project Created successfully",
+    "GetProjectsForbiddenResponse": {
+      "description": "User not have permission for get projects",
       "schema": {
-        "$ref": "#/definitions/ProjectId"
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_HAS_NO_ACCESS_TO_GET_PROJECTS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetProjectsBadRequestResponse": {
+      "description": "Bad request response for get projects",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_OFFSET_VALUE",
+                  "INVALID_LIMIT_VALUE"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
       }
     },
     "GetListOfUserRolesForGivenProjectSuccessResponse": {
@@ -2346,7 +2368,7 @@
       }
     },
     "GetListOfUserRolesForGivenProjectBadRequestResponse": {
-      "description": "Bad request Response",
+      "description": "Bad request response",
       "schema": {
         "allOf": [
           {
@@ -2369,8 +2391,32 @@
         ]
       }
     },
+    "GetListOfUserRolesForGivenProjectForbiddenResponse": {
+      "description": "Forbidden request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_HAS_NO_ACCESS_TO_GET_USERS_WITH_ROLES"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
     "AssignUserRolesForGivenProjectBulkBadRequestResponse": {
-      "description": "Add specific project details bad request response",
+      "description": "bad request response",
       "schema": {
         "allOf": [
           {
@@ -2384,8 +2430,31 @@
                 "enum": [
                   "INVALID_PROJECT_ID",
                   "INVALID_ROLE_IDS_FOR_PROJECT",
-                  "INVALID_USER_IDS_FOR_PROJECT",
-                  "USER_DOES_NOT_ACCESS"
+                  "INVALID_USER_IDS_FOR_PROJECT"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "AssignUserRolesForGivenProjectBulkForbiddenResponse": {
+      "description": "forbidden response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_DOES_NOT_HAVE_ACCESS"
                 ]
               }
             },
@@ -2530,7 +2599,32 @@
                   "INVALID_TEAM_ID",
                   "DUPLICATE_LEVEL_HIERARCHIES",
                   "NEGATIVE_LEVEL_HIERARCHIES",
-                  "DUPLICATE_TEAM_MEMBER_LEVEL_NAMES"
+                  "DUPLICATE_TEAM_MEMBER_LEVEL_NAMES",
+                  "USER_DOES_NOT_HAVE_ACCESS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "AddTeamMemberLevelsForbiddenResponse": {
+      "description": "Add team members levels forbidden response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_DOES_NOT_HAVE_ACCESS"
                 ]
               }
             },
@@ -2565,6 +2659,30 @@
         ]
       }
     },
+    "GetTeamMemberLevelsForbiddenResponse": {
+      "description": "Get team members levels forbidden response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_DOES_NOT_HAVE_ACCESS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
     "AddMembersToTeamMemberLevelsBadRequestResponse": {
       "description": "add members to team member levels bad request response",
       "schema": {
@@ -2579,6 +2697,30 @@
                 "type": "string",
                 "enum": [
                   "INVALID_TEAM_ID"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "AddMembersToTeamMemberLevelsForbiddenResponse": {
+      "description": "add members to team member levels forbidden response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_DOES_NOT_HAVE_ACCESS"
                 ]
               }
             },
@@ -2639,6 +2781,30 @@
         ]
       }
     },
+    "GetTeamMembersOfLevelHierarchyForbiddenResponse": {
+      "description": "get team members of level hierarchy forbidden response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_DOES_NOT_HAVE_ACCESS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
     "AddMembersToSuperiorsBadRequestResponse": {
       "description": "add members to superiors bad request response",
       "schema": {
@@ -2654,6 +2820,30 @@
                 "enum": [
                   "INVALID_TEAM_ID",
                   "INVALID_LEVEL_HIERARCHY"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "AddMembersToSuperiorsForbiddenResponse": {
+      "description": "add members to superiors forbidden response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_DOES_NOT_HAVE_ACCESS"
                 ]
               }
             },
@@ -2703,6 +2893,87 @@
                 "type": "string",
                 "enum": [
                   "INVALID_TEAM_ID"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetTeamMemberLevelsWithMembersForbiddenResponse": {
+      "description": "get team members with levels forbidden response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_DOES_NOT_HAVE_ACCESS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "SuccessForGetProjectBriefInfoResponse": {
+      "description": "Success for get project brief info response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "projects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "project_id": {
+                  "type": "string"
+                },
+                "project_display_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "logo_url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "project_id",
+                "project_display_id",
+                "name"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "BadRequestForGetProjectBriefInfoResponse": {
+      "description": "Bad request for get project brief info response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_DOES_NOT_EXIST"
                 ]
               }
             },
@@ -3421,6 +3692,9 @@
           },
           "400": {
             "$ref": "#/responses/AddTeamMemberLevelsBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/AddTeamMemberLevelsForbiddenResponse"
           }
         }
       },
@@ -3446,6 +3720,9 @@
           },
           "400": {
             "$ref": "#/responses/GetTeamMemberLevelsBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/GetTeamMemberLevelsForbiddenResponse"
           }
         }
       }
@@ -3476,6 +3753,9 @@
           },
           "400": {
             "$ref": "#/responses/AddMembersToTeamMemberLevelsBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/AddMembersToTeamMemberLevelsForbiddenResponse"
           },
           "404": {
             "$ref": "#/responses/AddMembersToTeamMemberLevelsNotFoundResponse"
@@ -3509,6 +3789,9 @@
           },
           "400": {
             "$ref": "#/responses/GetTeamMembersOfLevelHierarchyBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/GetTeamMembersOfLevelHierarchyForbiddenResponse"
           }
         }
       },
@@ -3541,6 +3824,9 @@
           "400": {
             "$ref": "#/responses/AddMembersToSuperiorsBadRequestResponse"
           },
+          "403": {
+            "$ref": "#/responses/AddMembersToSuperiorsForbiddenResponse"
+          },
           "404": {
             "$ref": "#/responses/AddMembersToSuperiorsNotFoundResponse"
           }
@@ -3570,6 +3856,12 @@
         "responses": {
           "200": {
             "$ref": "#/responses/SuccessForGetProjectsResponse"
+          },
+          "400": {
+            "$ref": "#/responses/GetProjectsBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/GetProjectsForbiddenResponse"
           }
         }
       }
@@ -3597,6 +3889,9 @@
           },
           "400": {
             "$ref": "#/responses/GetTeamMemberLevelsWithMembersBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/GetTeamMemberLevelsWithMembersForbiddenResponse"
           }
         }
       }
@@ -3624,6 +3919,9 @@
           },
           "400": {
             "$ref": "#/responses/GetListOfUserRolesForGivenProjectBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/GetListOfUserRolesForGivenProjectForbiddenResponse"
           }
         }
       }
@@ -3654,6 +3952,9 @@
           },
           "400": {
             "$ref": "#/responses/AssignUserRolesForGivenProjectBulkBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/AssignUserRolesForGivenProjectBulkForbiddenResponse"
           }
         }
       }
@@ -3723,6 +4024,29 @@
           },
           "404": {
             "$ref": "#/responses/NotFoundForUpdateProjectResponse"
+          }
+        }
+      }
+    },
+    "/get_project_brief_info/v1/": {
+      "get": {
+        "summary": "Get Project Brief Info",
+        "operationId": "get_project_brief_info",
+        "description": "Get project brief info for access user projects",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/SuccessForGetProjectBriefInfoResponse"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForGetProjectBriefInfoResponse"
           }
         }
       }

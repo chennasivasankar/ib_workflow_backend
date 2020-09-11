@@ -7,9 +7,13 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase36CreateTaskAPITestCase.test_case status_code'] = '501'
+snapshots['TestCase36CreateTaskAPITestCase.test_case status_code'] = '403'
 
-snapshots['TestCase36CreateTaskAPITestCase.test_case body'] = b'Response for Status Code: 403, Not Defined'
+snapshots['TestCase36CreateTaskAPITestCase.test_case body'] = {
+    'http_status_code': 403,
+    'res_status': 'USER_DO_NOT_HAVE_ACCESS',
+    'response': 'User do not have access to the action: 1'
+}
 
 snapshots['TestCase36CreateTaskAPITestCase.test_case task_id'] = 1
 
@@ -19,9 +23,9 @@ snapshots['TestCase36CreateTaskAPITestCase.test_case task_title'] = 'task_title'
 
 snapshots['TestCase36CreateTaskAPITestCase.test_case task_description'] = 'task_description'
 
-snapshots['TestCase36CreateTaskAPITestCase.test_case task_start_date'] = '2099-12-31 00:00:00'
+snapshots['TestCase36CreateTaskAPITestCase.test_case task_start_date'] = '2020-09-20 00:00:00'
 
-snapshots['TestCase36CreateTaskAPITestCase.test_case task_due_date'] = '2099-12-31 12:00:00'
+snapshots['TestCase36CreateTaskAPITestCase.test_case task_due_date'] = '2020-10-31 00:00:00'
 
 snapshots['TestCase36CreateTaskAPITestCase.test_case task_priority'] = 'HIGH'
 

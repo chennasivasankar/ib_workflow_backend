@@ -24,8 +24,11 @@ class TestCase01AssignUserRolesForGivenProjectBulkAPITestCase(TestUtils):
             self, snapshot, create_user_roles, create_project_teams,
             create_user_teams
     ):
-        project_id = "project_id"
         user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_iam.models import UserDetails
+        UserDetails.objects.create(user_id=user_id, is_admin=True)
+
+        project_id = "project_id"
         user_id_with_role_ids_list = [
             {
                 "user_id": "40be920b-7b4c-49e7-8adb-41a0c18da848",
@@ -44,8 +47,6 @@ class TestCase01AssignUserRolesForGivenProjectBulkAPITestCase(TestUtils):
                 ]
             }
         ]
-        from ib_iam.models import UserDetails
-        UserDetails.objects.create(user_id=user_id, is_admin=True)
         body = {
             'users': user_id_with_role_ids_list
         }

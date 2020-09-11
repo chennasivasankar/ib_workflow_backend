@@ -29,6 +29,10 @@ class AddTeamMemberLevelsPresenterInterface(abc.ABC):
     def response_for_duplicate_team_member_level_names(self, err):
         pass
 
+    @abc.abstractmethod
+    def response_for_user_is_not_admin(self):
+        pass
+
 
 class GetTeamMemberLevelsPresenterInterface(abc.ABC):
 
@@ -40,6 +44,10 @@ class GetTeamMemberLevelsPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def response_for_invalid_team_id(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_user_is_not_admin(self):
         pass
 
 
@@ -61,6 +69,10 @@ class AddMembersToTeamMemberLevelsPresenterInterface(abc.ABC):
     def response_for_team_member_ids_not_found(self, err):
         pass
 
+    @abc.abstractmethod
+    def response_for_user_is_not_admin(self):
+        pass
+
 
 class GetTeamMembersOfLevelHierarchyPresenterInterface(abc.ABC):
 
@@ -77,6 +89,10 @@ class GetTeamMembersOfLevelHierarchyPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def response_for_invalid_level_hierarchy_of_team(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_user_is_not_admin(self):
         pass
 
 
@@ -102,6 +118,10 @@ class AddMembersToSuperiorsPresenterInterface(abc.ABC):
     def response_for_users_not_belong_to_team_member_level(self, err):
         pass
 
+    @abc.abstractmethod
+    def response_for_user_is_not_admin(self):
+        pass
+
 
 class GetTeamMemberLevelsWithMembersPresenterInterface(abc.ABC):
 
@@ -114,4 +134,8 @@ class GetTeamMemberLevelsWithMembersPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def response_for_invalid_team_id(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_user_is_not_admin(self):
         pass

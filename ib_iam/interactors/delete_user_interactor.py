@@ -25,7 +25,7 @@ class DeleteUserInteractor(ValidationMixin):
             self.delete_user(user_id=user_id, delete_user_id=delete_user_id)
             response = presenter.get_delete_user_response()
         except UserIsNotAdmin:
-            response = presenter.raise_user_is_not_admin_exception()
+            response = presenter.response_for_user_is_not_admin_exception()
         except UserNotFound:
             response = presenter.raise_user_is_not_found_exception()
         except UserDoesNotHaveDeletePermission:

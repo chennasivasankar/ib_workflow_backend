@@ -18,7 +18,7 @@ class EditUserPresenterImplementation(EditUserPresenterInterface,
         return self.prepare_200_success_response(
             response_dict=response_dict)
 
-    def raise_user_is_not_admin_exception(self):
+    def response_for_user_is_not_admin_exception(self):
         from ib_iam.constants.exception_messages import \
             USER_DOES_NOT_HAVE_PERMISSION
         response_dict = {
@@ -29,7 +29,7 @@ class EditUserPresenterImplementation(EditUserPresenterInterface,
         return self.prepare_403_forbidden_response(
             response_dict=response_dict)
 
-    def raise_invalid_name_length_exception_for_update_user_profile(self):
+    def response_for_invalid_name_length_exception(self):
         from ib_iam.constants.exception_messages \
             import INVALID_NAME_LENGTH
         from ib_iam.constants.config import MINIMUM_USER_NAME_LENGTH
@@ -44,7 +44,7 @@ class EditUserPresenterImplementation(EditUserPresenterInterface,
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
 
-    def raise_invalid_email_exception(self):
+    def response_for_invalid_email_exception(self):
         from ib_iam.constants.exception_messages import INVALID_EMAIL
         response_dict = {
             "response": INVALID_EMAIL[0],
@@ -54,7 +54,7 @@ class EditUserPresenterImplementation(EditUserPresenterInterface,
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
 
-    def raise_name_should_not_contain_special_characters_exception(self):
+    def response_for_name_contains_special_character_exception(self):
         from ib_iam.constants.exception_messages \
             import NAME_SHOULD_NOT_CONTAIN_SPECIAL_CHARACTERS_AND_NUMBERS
         response = NAME_SHOULD_NOT_CONTAIN_SPECIAL_CHARACTERS_AND_NUMBERS[0]
@@ -79,7 +79,7 @@ class EditUserPresenterImplementation(EditUserPresenterInterface,
             response_dict=response_dict
         )
 
-    def raise_company_ids_is_invalid(self):
+    def response_for_invalid_company_ids_exception(self):
         from ib_iam.constants.exception_messages import INVALID_COMPANY_ID
         response_dict = {
             "response": INVALID_COMPANY_ID[0],
@@ -90,7 +90,7 @@ class EditUserPresenterImplementation(EditUserPresenterInterface,
             response_dict=response_dict
         )
 
-    def raise_team_ids_are_invalid(self):
+    def response_for_invalid_team_ids_exception(self):
         from ib_iam.constants.exception_messages import INVALID_TEAM_IDS
         response_dict = {
             "response": INVALID_TEAM_IDS[0],

@@ -13,10 +13,62 @@ class TestCase02AddMembersToSuperiorsAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['write']}}
 
+    def _get_or_create_user(self):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_users.models import UserAccount
+        user = UserAccount.objects.create(user_id=user_id)
+        return user
+
+    @pytest.mark.django_db
+    def test_with_user_is_not_admin_return_response(
+            self, snapshot, prepare_user_teams_setup
+    ):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_iam.models import UserDetails
+        UserDetails.objects.create(user_id=user_id, is_admin=False)
+
+        team_id = "01be920b-7b4c-49e7-8adb-41a0c18da848"
+        member_level_hierarchy = 0
+        user_team_objects_of_level_one = prepare_user_teams_setup
+        add_members_to_superior = [{
+            "immediate_superior_user_id": user_team_objects_of_level_one[
+                0].user_id,
+            "member_ids": [
+                "40be920b-7b4c-49e7-8adb-41a0c18da848",
+                "50be920b-7b4c-49e7-8adb-41a0c18da848"
+            ]
+        }, {
+            "immediate_superior_user_id": user_team_objects_of_level_one[
+                1].user_id,
+            "member_ids": [
+                "60be920b-7b4c-49e7-8adb-41a0c18da848"
+            ]
+        }]
+
+        body = {
+            'add_members_to_superior': add_members_to_superior
+        }
+        path_params = {
+            "team_id": team_id,
+            "level_hierarchy": member_level_hierarchy
+        }
+        query_params = {}
+        headers = {}
+        self.make_api_call(
+            body=body,
+            path_params=path_params,
+            query_params=query_params,
+            headers=headers,
+            snapshot=snapshot)
+
     @pytest.mark.django_db
     def test_with_invalid_team_id_return_response(
             self, snapshot, prepare_user_teams_setup
     ):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_iam.models import UserDetails
+        UserDetails.objects.create(user_id=user_id, is_admin=True)
+
         team_id = "01be920b-7b4c-49e7-8adb-41a0c18da848"
         member_level_hierarchy = 0
         user_team_objects_of_level_one = prepare_user_teams_setup
@@ -53,6 +105,10 @@ class TestCase02AddMembersToSuperiorsAPITestCase(TestUtils):
     def test_invalid_level_hierarchy_of_team_return_response(
             self, snapshot, prepare_user_teams_setup
     ):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_iam.models import UserDetails
+        UserDetails.objects.create(user_id=user_id, is_admin=True)
+
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         member_level_hierarchy = 3
         user_team_objects_of_level_one = prepare_user_teams_setup
@@ -91,6 +147,10 @@ class TestCase02AddMembersToSuperiorsAPITestCase(TestUtils):
     def test_team_member_ids_not_found_return_response(
             self, snapshot, prepare_user_teams_setup
     ):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_iam.models import UserDetails
+        UserDetails.objects.create(user_id=user_id, is_admin=True)
+
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         member_level_hierarchy = 0
         user_team_objects_of_level_one = prepare_user_teams_setup
@@ -129,6 +189,10 @@ class TestCase02AddMembersToSuperiorsAPITestCase(TestUtils):
     def test_subordinate_users_not_belong_to_team_member_level_return_response(
             self, snapshot, prepare_user_teams_setup
     ):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_iam.models import UserDetails
+        UserDetails.objects.create(user_id=user_id, is_admin=True)
+
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         member_level_hierarchy = 1
         user_team_objects_of_level_one = prepare_user_teams_setup
@@ -167,6 +231,10 @@ class TestCase02AddMembersToSuperiorsAPITestCase(TestUtils):
     def test_superior_users_not_belong_to_team_member_level_return_response(
             self, snapshot, prepare_user_teams_setup
     ):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        from ib_iam.models import UserDetails
+        UserDetails.objects.create(user_id=user_id, is_admin=True)
+
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         member_level_hierarchy = 0
         user_team_objects_of_level_one = prepare_user_teams_setup
