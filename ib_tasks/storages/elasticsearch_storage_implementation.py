@@ -145,7 +145,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         query = Q('term', project_id__keyword=project_id) \
                 & Q('terms', stages__stage_id__keyword=stage_ids)
         if search_query:
-            query = query & Q("match", title={"query": search_query, "fuzziness": "AUTO"})
+            query = query & Q("match", title={"query": search_query, "fuzziness": "5"})
         search = search.query(query)
         total_tasks_count = search.count()
         task_ids = [
@@ -177,7 +177,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
                     "match",
                     title={
                         "query": search_query,
-                        "fuzziness": "AUTO"
+                        "fuzziness": "5"
                     }
                 )
         search = search.query(
