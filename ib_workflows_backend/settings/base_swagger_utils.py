@@ -117,14 +117,17 @@ ELASTICSEARCH_DSL = {
 }
 
 # *********************  Authentication **************
-USER_VERIFICATION_EMAIL_EXPIRY_IN_SECONDS = 1800
+RESET_PASSWORD_LINK_EXPIRY_IN_SECONDS = \
+      int(os.environ.get("RESET_PASSWORD_LINK_EXPIRY_IN_SECONDS", '3600'))
+
+USER_VERIFICATION_EMAIL_EXPIRY_IN_SECONDS = \
+    int(os.environ.get("USER_VERIFICATION_EMAIL_EXPIRY_IN_SECONDS", '3600'))
 
 FRONTEND_URL = os.environ.get(
     "FRONTEND_URL",
     'https://ib-workflows-web-alpha.apigateway.in'
 )
 
-RESET_PASSWORD_LINK_EXPIRY_IN_SECONDS = USER_VERIFICATION_EMAIL_EXPIRY_IN_SECONDS
 RESET_PASSWORD_LINK = '{frontend_url}?token='.format(frontend_url=FRONTEND_URL)
 
 USER_VERIFICATION_EMAIL_LINK = "{frontend_url}/verify-email?token=".format(
