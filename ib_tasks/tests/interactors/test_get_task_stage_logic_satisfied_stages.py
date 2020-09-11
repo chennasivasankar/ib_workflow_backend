@@ -25,6 +25,24 @@ class TestGetTaskStageLogicSatisfiedStages:
         storage = create_autospec(StorageInterface)
         return storage
 
+    def setup_storage(self, storage, operator, display_logic):
+        self.setup()
+        storage.validate_task_id.return_value = True
+        status_variables_dtos = StatusVariableDTOFactory.create_batch(3)
+        storage.get_status_variables_to_task.return_value = \
+            status_variables_dtos
+        stage_values = [
+            StageDisplayValueDTOFactory(display_logic=display_logic)
+        ]
+        storage.get_task_template_stage_logic_to_task \
+            .return_value = stage_values
+        status_stage_dtos = [
+            StageDisplayLogicDTOFactory(
+                display_logic_dto=StatusOperandStageDTOFactory(operator=operator)
+            )
+        ]
+        return status_stage_dtos
+
     @staticmethod
     @pytest.fixture()
     def interactor(storage):
@@ -64,6 +82,7 @@ class TestGetTaskStageLogicSatisfiedStages:
         return stage_values
 
     @staticmethod
+    @pytest.fixture()
     def stage_display_mock(mocker):
 
         path = 'ib_tasks.interactors.get_stage_display_logic_interactor.StageDisplayLogicInteractor' \
@@ -87,15 +106,14 @@ class TestGetTaskStageLogicSatisfiedStages:
         assert err.value.task_id == task_id
 
     def test_given_variable_stage_returns_all_stage_ids(
-            self, storage, mocker, stage_display_value, interactor):
+            self, storage, stage_display_value, interactor, stage_display_mock):
 
         # Arrange
         storage.get_task_template_stage_logic_to_task\
             .return_value = stage_display_value
         storage.validate_task_id.return_value = True
         status_stage_dtos = StageDisplayLogicDTOFactory.create_batch(3)
-        mock_obj = self.stage_display_mock(mocker)
-        mock_obj.return_value = status_stage_dtos
+        stage_display_mock.return_value = status_stage_dtos
         status_variables_dtos = StatusVariableDTOFactory.create_batch(3)
         storage.get_status_variables_to_task.return_value = \
             status_variables_dtos
@@ -107,15 +125,14 @@ class TestGetTaskStageLogicSatisfiedStages:
         assert response == ['stage_1', 'stage_2', 'stage_3']
 
     def test_given_variable_stage_returns_empty_stages(
-            self, storage, mocker, stage_display_value, interactor):
+            self, storage, stage_display_mock, stage_display_value, interactor):
 
         # Arrange
         storage.get_task_template_stage_logic_to_task\
             .return_value = stage_display_value
         storage.validate_task_id.return_value = True
         status_stage_dtos = StageDisplayLogicDTOFactory.create_batch(3)
-        mock_obj = self.stage_display_mock(mocker)
-        mock_obj.return_value = status_stage_dtos
+        stage_display_mock.return_value = status_stage_dtos
         status_variables_dtos = [
             StatusVariableDTOFactory(value='stage_2'),
             StatusVariableDTOFactory(value='stage_3'),
@@ -131,12 +148,17 @@ class TestGetTaskStageLogicSatisfiedStages:
         assert response == []
 
     def test_given_variable_stage_returns_mixed_stages(
-            self, storage, mocker, stage_mixed_value, interactor):
+            self, storage, mocker, stage_mixed_value,
+            interactor
+    ):
 
         # Arrange
+        storage.validate_task_id.return_value = True
+        status_variables_dtos = StatusVariableDTOFactory.create_batch(3)
+        storage.get_status_variables_to_task.return_value = \
+            status_variables_dtos
         storage.get_task_template_stage_logic_to_task\
             .return_value = stage_mixed_value
-        storage.validate_task_id.return_value = True
         status_stage_dtos = [
             StageDisplayLogicDTOFactory(display_logic_dto=StatusOperandStageDTOFactory()),
             StageDisplayLogicDTOFactory(
@@ -146,9 +168,6 @@ class TestGetTaskStageLogicSatisfiedStages:
         ]
         mock_obj = self.stage_display_mock(mocker)
         mock_obj.return_value = status_stage_dtos
-        status_variables_dtos = StatusVariableDTOFactory.create_batch(3)
-        storage.get_status_variables_to_task.return_value = \
-            status_variables_dtos
 
         # Act
         response = interactor.get_task_stage_logic_satisfied_stages()
@@ -165,25 +184,13 @@ class TestGetTaskStageLogicSatisfiedStages:
         ]
     )
     def test_given_variable_stage_returns_mixed_stages(
-            self, operator, display_logic, storage, mocker, interactor):
+            self, operator, display_logic, storage,
+            interactor, stage_display_mock
+    ):
 
         # Arrange
-        stage_values = [
-            StageDisplayValueDTOFactory(display_logic=display_logic)
-        ]
-        storage.get_task_template_stage_logic_to_task\
-            .return_value = stage_values
-        storage.validate_task_id.return_value = True
-        status_stage_dtos = [
-            StageDisplayLogicDTOFactory(
-                display_logic_dto=StatusOperandStageDTOFactory(operator=operator)
-            )
-        ]
-        mock_obj = self.stage_display_mock(mocker)
-        mock_obj.return_value = status_stage_dtos
-        status_variables_dtos = StatusVariableDTOFactory.create_batch(3)
-        storage.get_status_variables_to_task.return_value = \
-            status_variables_dtos
+        status_stage_dtos = self.setup_storage(storage, operator, display_logic)
+        stage_display_mock.return_value = status_stage_dtos
 
         # Act
         response = interactor.get_task_stage_logic_satisfied_stages()
@@ -194,30 +201,17 @@ class TestGetTaskStageLogicSatisfiedStages:
     @pytest.mark.parametrize(
         ("operator", "display_logic"),
         [
-            ("!=", "value[variable_1]!=value[stage_1]"),
             (">", "value[variable_1]>value[stage_1]"),
             ("<", "value[variable_1]<value[stage_1]")
         ]
     )
     def test_given_variable_stage_returns_mixed_stages(
-            self, operator, display_logic, storage, mocker, interactor):
+            self, operator, display_logic, storage,
+            interactor, stage_display_mock
+    ):
         # Arrange
-        stage_values = [
-            StageDisplayValueDTOFactory(display_logic=display_logic)
-        ]
-        storage.get_task_template_stage_logic_to_task \
-            .return_value = stage_values
-        storage.validate_task_id.return_value = True
-        status_stage_dtos = [
-            StageDisplayLogicDTOFactory(
-                display_logic_dto=StatusOperandStageDTOFactory(operator=operator)
-            )
-        ]
-        mock_obj = self.stage_display_mock(mocker)
-        mock_obj.return_value = status_stage_dtos
-        status_variables_dtos = StatusVariableDTOFactory.create_batch(3)
-        storage.get_status_variables_to_task.return_value = \
-            status_variables_dtos
+        status_stage_dtos = self.setup_storage(storage, operator, display_logic)
+        stage_display_mock.return_value = status_stage_dtos
 
         # Act
         response = interactor.get_task_stage_logic_satisfied_stages()
