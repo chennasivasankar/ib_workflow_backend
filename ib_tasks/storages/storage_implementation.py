@@ -61,7 +61,7 @@ class StagesStorageImplementation(StageStorageInterface):
                 Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID),
                 stage__stage_id__in=stage_ids
         ).values_list('stage__stage_id', flat=True)
-        return permitted_stage_ids
+        return list(permitted_stage_ids)
 
     def get_existing_status_ids(self, status_ids: List[str]):
         status = TaskTemplateStatusVariable.objects.filter(

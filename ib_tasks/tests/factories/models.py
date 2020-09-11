@@ -65,7 +65,7 @@ class UserRpInTaskStageFactory(factory.django.DjangoModelFactory):
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
     rp_id = factory.Sequence(
-        lambda n: "123e4567-e89b-12d3-a456-42661417405%d" % n)
+        lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
 
 
 class TaskStageModelFactory(factory.django.DjangoModelFactory):
