@@ -2,6 +2,12 @@ from typing import List
 
 from django.db import transaction
 
+from ib_iam.models import UserDetails
+
+
+def get_admin_user_id():
+    return UserDetails.objects.first().user_id
+
 
 def get_team_ids(team_names):
     from ib_iam.models import Team
@@ -386,14 +392,20 @@ def populate_team_member_levels_for_tech_team():
     from ib_iam.storages.team_member_level_storage_implementation import \
         TeamMemberLevelStorageImplementation
     team_member_level_storage = TeamMemberLevelStorageImplementation()
+    from ib_iam.storages.user_storage_implementation import \
+        UserStorageImplementation
+    user_storage = UserStorageImplementation()
 
     from ib_iam.interactors.add_team_member_levels_interactor import \
         AddTeamMemberLevelsInteractor
     interactor = AddTeamMemberLevelsInteractor(
-        team_member_level_storage=team_member_level_storage
+        team_member_level_storage=team_member_level_storage,
+        user_storage=user_storage
     )
     interactor.add_team_member_levels(
-        team_id=team_id, team_member_level_dtos=team_member_level_dtos)
+        team_id=team_id, team_member_level_dtos=team_member_level_dtos,
+        user_id=get_admin_user_id()
+    )
 
 
 def populate_users_to_team_member_levels_for_tech_team():
@@ -432,14 +444,18 @@ def populate_users_to_team_member_levels_for_tech_team():
     from ib_iam.storages.team_member_level_storage_implementation import \
         TeamMemberLevelStorageImplementation
     team_member_level_storage = TeamMemberLevelStorageImplementation()
+    from ib_iam.storages.user_storage_implementation import \
+        UserStorageImplementation
+    user_storage = UserStorageImplementation()
 
     from ib_iam.interactors.add_members_to_team_member_levels_interactor import \
         AddMembersToTeamMemberLevelsInteractor
     interactor = AddMembersToTeamMemberLevelsInteractor(
-        team_member_level_storage=team_member_level_storage
+        team_member_level_storage=team_member_level_storage,
+        user_storage=user_storage
     )
     interactor.add_members_to_team_member_levels(
-        team_id=team_id,
+        team_id=team_id, user_id=get_admin_user_id(),
         team_member_level_id_with_member_ids_dtos=levels_wise_users)
 
 
@@ -490,14 +506,18 @@ def populate_superior_users_and_subordinate_users_with_level_hierarchy_for_tech_
         from ib_iam.storages.team_member_level_storage_implementation import \
             TeamMemberLevelStorageImplementation
         team_member_level_storage = TeamMemberLevelStorageImplementation()
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        user_storage = UserStorageImplementation()
 
         from ib_iam.interactors.add_members_to_superiors_interactor import \
             AddMembersToSuperiorsInteractor
         interactor = AddMembersToSuperiorsInteractor(
-            team_member_level_storage=team_member_level_storage
+            team_member_level_storage=team_member_level_storage,
+            user_storage=user_storage
         )
         interactor.add_members_to_superiors(
-            team_id=team_id,
+            team_id=team_id, user_id=get_admin_user_id(),
             immediate_superior_user_id_with_member_ids_dtos=immediate_superior_user_id_with_member_ids_dtos,
             member_level_hierarchy=superior_with_subordinate_users[
                 "level_hierarchy"]
