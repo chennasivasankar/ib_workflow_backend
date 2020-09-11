@@ -52,7 +52,7 @@ class TestAddNewUserIneractor:
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         user_profile_dto = UserProfileDTOFactory(
             user_id=new_user_id, name=name, profile_pic_url=None, email=email,
-            is_email_verify=None)
+            is_email_verified=None)
         add_user_details_dto = AddUserDetailsDTOFactory(
             name=name, email=email, team_ids=user_teams_ids,
             # role_ids=user_role_ids,

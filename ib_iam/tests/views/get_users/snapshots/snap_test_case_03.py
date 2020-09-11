@@ -18,6 +18,7 @@ snapshots['TestCase03GetUsersAPITestCase.test_case body'] = {
                 'company_name': 'company 0'
             },
             'email': 'durga@gmail.com',
+            'is_email_verified': 'True',
             'name': 'durga',
             'roles': [
                 {
@@ -39,6 +40,7 @@ snapshots['TestCase03GetUsersAPITestCase.test_case body'] = {
                 'company_name': 'company 0'
             },
             'email': 'devi@gmail.com',
+            'is_email_verified': 'True',
             'name': 'devi',
             'roles': [
                 {

@@ -18,6 +18,7 @@ snapshots['TestCase04GetUsersAPITestCase.test_case body'] = {
                 'company_name': 'company 0'
             },
             'email': 'name0@gmail.com',
+            'is_email_verified': 'True',
             'name': 'name0',
             'roles': [
                 {
@@ -39,6 +40,7 @@ snapshots['TestCase04GetUsersAPITestCase.test_case body'] = {
                 'company_name': 'company 1'
             },
             'email': 'name1@gmail.com',
+            'is_email_verified': 'True',
             'name': 'name1',
             'roles': [
                 {
@@ -60,6 +62,7 @@ snapshots['TestCase04GetUsersAPITestCase.test_case body'] = {
                 'company_name': 'company 0'
             },
             'email': 'name2@gmail.com',
+            'is_email_verified': 'True',
             'name': 'name2',
             'roles': [
             ],
@@ -78,6 +81,7 @@ snapshots['TestCase04GetUsersAPITestCase.test_case body'] = {
         {
             'company': None,
             'email': 'name3@gmail.com',
+            'is_email_verified': 'True',
             'name': 'name3',
             'roles': [
                 {

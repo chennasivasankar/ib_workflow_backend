@@ -14,7 +14,7 @@ class UserProfileDTOFactory(factory.Factory):
     name = factory.sequence(lambda number: "name%s" % number)
     email = factory.LazyAttribute(lambda user: "%s@gmail.com" % user.name)
     profile_pic_url = factory.sequence(lambda n: "url%d" % n)
-    is_email_verify = True
+    is_email_verified = True
 
 
 class UserTokensDTOFactory(factory.Factory):

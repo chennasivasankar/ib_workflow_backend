@@ -70,13 +70,13 @@ class AddNewUserInteractor(ValidationMixin):
             user_id=new_user_id, name=name)
         self.user_storage.add_user_to_the_teams(
             user_id=new_user_id, team_ids=team_ids)
-        self._create_elastic_user(user_id=new_user_id, name=name)
+        self._create_elastic_user(user_id=new_user_id, name=name, email=email)
         self._send_email_verify_link(
             user_id=new_user_id, name=name, email=email)
 
-    def _create_elastic_user(self, user_id: str, name: str):
+    def _create_elastic_user(self, user_id: str, name: str, email: str):
         elastic_user_id = self.elastic_storage.create_elastic_user(
-            user_id=user_id, name=name
+            user_id=user_id, name=name, email=email
         )
         self.elastic_storage.create_elastic_user_intermediary(
             elastic_user_id=elastic_user_id, user_id=user_id

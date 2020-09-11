@@ -28,7 +28,7 @@ class SendVerifyEmailLinkInteractor:
         user_id = adapter.user_service.get_user_id_for_given_email(email=email)
         user_profile_dto = adapter.user_service.get_user_profile_dto(
             user_id=user_id)
-        self._validate_email_verification(user_profile_dto.is_email_verify)
+        self._validate_email_verification(user_profile_dto.is_email_verified)
         self.send_verification_email(user_id=user_id, email=email,
                                      name=user_profile_dto.name)
 
