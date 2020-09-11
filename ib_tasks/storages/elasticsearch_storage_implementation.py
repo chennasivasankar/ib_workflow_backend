@@ -16,8 +16,7 @@ from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ApplyFilterDTO
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
-from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
-    FieldTypeDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, SearchQueryDTO
 

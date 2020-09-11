@@ -1,13 +1,13 @@
 from typing import List, Tuple, Optional
+
 from ib_iam.app_interfaces.dtos import (
-    ProjectTeamUserDTO, UserIdWithTeamIDAndNameDTO, ProjectTeamsAndUsersDTO,
-    UserTeamsDTO
+    ProjectTeamUserDTO, ProjectTeamsAndUsersDTO, UserTeamsDTO
 )
 from ib_iam.exceptions.custom_exceptions import (
     ProjectNameAlreadyExists, ProjectDisplayIdAlreadyExists, DuplicateTeamIds,
     TeamIdsAreInvalid, UserIsNotAdmin, InvalidProjectId, RoleIdsAreDuplicated,
     RoleIdsAreInvalid, InvalidUserIds, InvalidUserId, InvalidProjectIds,
-    DuplicateRoleNamesExists, RoleNamesAlreadyExists
+    DuplicateRoleNamesExists, RoleNamesAlreadyExists, InvalidTeamId
 )
 from ib_iam.interactors.dtos.dtos import (
     ProjectWithTeamIdsAndRolesDTO, CompleteProjectDetailsDTO,
@@ -97,24 +97,36 @@ class ProjectInteractor(ValidationMixin):
 
     def get_team_details_for_given_project_team_user_details_dto(
             self, project_team_user_dto: ProjectTeamUserDTO
-    ) -> UserIdWithTeamIDAndNameDTO:
-        # todo confirm and add invalid team and user exceptions
+    ) -> TeamWithUserIdDTO:
         self._validate_project(project_id=project_team_user_dto.project_id)
+        self._validate_team(team_id=project_team_user_dto.team_id)
         self._validate_team_existence_in_project(
             project_team_user_dto=project_team_user_dto
         )
+        self._validate_user(user_id=project_team_user_dto.user_id)
         self._validate_user_existence_in_given_team(
             project_team_user_dto=project_team_user_dto
         )
-        name = self.project_storage.get_team_name(
+        team_name = self.project_storage.get_team_name(
             team_id=project_team_user_dto.team_id
         )
-        from ib_iam.app_interfaces.dtos import UserIdWithTeamIDAndNameDTO
-        user_id_with_team_id_and_name_dto = UserIdWithTeamIDAndNameDTO(
+        return TeamWithUserIdDTO(
             user_id=project_team_user_dto.user_id,
-            team_id=project_team_user_dto.team_id, name=name
+            team_id=project_team_user_dto.team_id,
+            team_name=team_name
         )
-        return user_id_with_team_id_and_name_dto
+
+    def _validate_user(self, user_id: str):
+        is_user_exist = self.user_storage.is_user_exist(user_id=user_id)
+        is_user_not_exist = not is_user_exist
+        if is_user_not_exist:
+            raise InvalidUserId
+
+    def _validate_team(self, team_id: str):
+        is_team_exists = self.team_storage.is_team_exist(team_id=team_id)
+        is_team_not_exists = not is_team_exists
+        if is_team_not_exists:
+            raise InvalidTeamId
 
     def get_user_team_dtos_for_given_project_teams_and_users_details_dto(
             self, project_teams_and_users_dto: ProjectTeamsAndUsersDTO
@@ -142,14 +154,12 @@ class ProjectInteractor(ValidationMixin):
             raise UsersNotExistsForGivenTeams(user_ids=invalid_user_ids)
         return team_user_dtos
 
-    @staticmethod
     def _get_invalid_user_ids_for_given_team_ids(
-            user_ids: List[str], team_user_dtos: List[TeamWithUserIdDTO]
+            self, user_ids: List[str], team_user_dtos: List[TeamWithUserIdDTO]
     ) -> List[str]:
-        for team_user_dto in team_user_dtos:
-            if team_user_dto.user_id in user_ids:
-                user_ids.remove(team_user_dto.user_id)
-        return user_ids
+        valid_user_ids = self._get_user_ids(user_team_dtos=team_user_dtos)
+        invalid_user_ids = list(set(user_ids) - set(valid_user_ids))
+        return invalid_user_ids
 
     @staticmethod
     def _fetch_user_ids_and_team_ids(
@@ -249,15 +259,23 @@ class ProjectInteractor(ValidationMixin):
         user_team_dtos = self.team_storage.get_team_user_dtos(
             user_ids=user_ids, team_ids=team_ids
         )
-        for user_team_dto in user_team_dtos:
-            if user_team_dto.user_id in user_ids:
-                user_ids.remove(user_team_dto.user_id)
-        not_exists_users_in_given_project = user_ids
-        if not_exists_users_in_given_project:
+        invalid_user_ids = self._get_invalid_user_ids_for_given_team_ids(
+            user_ids=user_ids, team_user_dtos=user_team_dtos
+        )
+        if invalid_user_ids:
             raise UsersNotExistsForGivenProject(
-                user_ids=not_exists_users_in_given_project
+                user_ids=invalid_user_ids
             )
         return user_team_dtos
+
+    @staticmethod
+    def _get_user_ids(
+            user_team_dtos: List[TeamWithUserIdDTO]
+    ) -> List[str]:
+        return [
+            user_team_dto.user_id
+            for user_team_dto in user_team_dtos
+        ]
 
     def _fetch_user_teams_for_each_user(
             self, user_team_dtos: List[TeamWithUserIdDTO]
@@ -405,7 +423,6 @@ class ProjectInteractor(ValidationMixin):
             complete_project_details_dto: CompleteProjectDetailsDTO
     ):
         self._validate_is_user_admin(user_id=user_id)
-        # todo have to know whether we can do any better here
         project_role_ids = self.project_storage.get_project_role_ids(
             project_id=complete_project_details_dto.project_id
         )

@@ -2,13 +2,14 @@ from unittest.mock import create_autospec, patch
 
 import pytest
 
-from ib_tasks.interactors.call_action_logic_function_and_get_status_variables_interactor import \
-    CallActionLogicFunctionAndGetTaskStatusVariablesInteractor
+from ib_tasks.interactors. \
+    call_action_logic_function_and_get_or_update_task_status_variables_interactor import \
+    CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor
 from ib_tasks.interactors.get_next_stages_random_assignees_of_a_task_interactor import \
     GetNextStagesRandomAssigneesOfATaskInteractor, InvalidModulePathFound, \
     InvalidMethodFound
-from ib_tasks.interactors.get_task_stage_logic_satisfied_next_stages_given_status_vars import \
-    GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor
+from ib_tasks.interactors.get_task_stage_logic_satisfied_stages import \
+    GetTaskStageLogicSatisfiedStagesInteractor
 from ib_tasks.interactors.get_users_with_less_tasks_for_stages import \
     GetUsersWithLessTasksInGivenStagesInteractor
 from ib_tasks.tests.factories.adapter_dtos import \
@@ -34,6 +35,13 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             CreateOrUpdateTaskStorageInterface
         storage = create_autospec(CreateOrUpdateTaskStorageInterface)
         return storage
+
+    @pytest.fixture()
+    def field_storage(self):
+        from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+            FieldsStorageInterface
+        field_storage = create_autospec(FieldsStorageInterface)
+        return field_storage
 
     @pytest.fixture
     def stage_storage_mock(self):
@@ -102,7 +110,8 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         mock_object = Mock()
         return mock_object
 
-    def test_given_invalid_task_display_id_raise_exception(self, mock_object,
+    def test_given_invalid_task_display_id_raise_exception(
+            self, mock_object,field_storage,
                                                            storage_mock,
                                                            stage_storage_mock,
                                                            action_storage_mock,
@@ -123,7 +132,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             storage=storage_mock, action_storage=action_storage_mock,
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
             task_stage_storage=task_stage_storage_mock,
-            create_task_storage=create_task_storage
+            create_task_storage=create_task_storage, field_storage=field_storage
         )
 
         # Act
@@ -143,7 +152,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
     def test_given_invalid_action_id_raise_exception(
             self, mock_object, storage_mock, stage_storage_mock,
             action_storage_mock, task_storage_mock, presenter_mock,
-            task_stage_storage_mock, create_task_storage):
+            task_stage_storage_mock, create_task_storage, field_storage):
         # Arrange
         task_display_id = "IBWF-1"
         action_id = 1
@@ -157,7 +166,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             storage=storage_mock, action_storage=action_storage_mock,
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
             task_stage_storage=task_stage_storage_mock,
-            create_task_storage=create_task_storage
+            create_task_storage=create_task_storage, field_storage=field_storage
         )
 
         # Act
@@ -173,8 +182,8 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         presenter_mock.raise_exception_for_invalid_action.assert_called_once_with(
             action_id=action_id)
 
-    @patch.object(CallActionLogicFunctionAndGetTaskStatusVariablesInteractor,
-                  'get_status_variables_dtos_of_task_based_on_action')
+    @patch.object(CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor,
+                  'call_action_logic_function_and_get_status_variables_dtos_of_task')
     def test_given_invalid_path_raises_exception(self, action_logic_mock,
                                                  storage_mock,
                                                  stage_storage_mock,
@@ -182,7 +191,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
                                                  task_storage_mock,
                                                  presenter_mock,
                                                  task_stage_storage_mock,
-                                                 create_task_storage):
+                                                 create_task_storage, field_storage):
         # Arrange
         task_display_id = "IBWF-1"
         action_id = 1
@@ -193,7 +202,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             storage=storage_mock, action_storage=action_storage_mock,
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
             task_stage_storage=task_stage_storage_mock,
-            create_task_storage=create_task_storage
+            create_task_storage=create_task_storage, field_storage=field_storage
         )
 
         # Act
@@ -207,8 +216,9 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             assert_called_once_with(path_name=path_name)
 
     @staticmethod
-    @patch.object(CallActionLogicFunctionAndGetTaskStatusVariablesInteractor,
-                  'get_status_variables_dtos_of_task_based_on_action')
+    @patch.object(
+        CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor,
+        'call_action_logic_function_and_get_status_variables_dtos_of_task')
     def test_given_invalid_method_name_raises_exception(action_logic_mock,
                                                         storage_mock,
                                                         stage_storage_mock,
@@ -216,7 +226,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
                                                         task_storage_mock,
                                                         presenter_mock,
                                                         task_stage_storage_mock,
-                                                        create_task_storage):
+                                                        create_task_storage, field_storage):
         # Arrange
         task_display_id = "IBWF-1"
         action_id = 1
@@ -230,7 +240,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             storage=storage_mock, action_storage=action_storage_mock,
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
             task_stage_storage=task_stage_storage_mock,
-            create_task_storage=create_task_storage
+            create_task_storage=create_task_storage, field_storage=field_storage
         )
 
         # Act
@@ -245,8 +255,9 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             assert_called_once_with(method_name=method_name)
 
     @staticmethod
-    @patch.object(CallActionLogicFunctionAndGetTaskStatusVariablesInteractor,
-                  'get_status_variables_dtos_of_task_based_on_action')
+    @patch.object(
+        CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor,
+        'call_action_logic_function_and_get_status_variables_dtos_of_task')
     def test_access_invalid_key_raises_invalid_key_error(action_logic_mock,
                                                          storage_mock,
                                                          presenter_mock,
@@ -254,7 +265,8 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
                                                          action_storage_mock,
                                                          task_storage_mock,
                                                          task_stage_storage_mock,
-                                                         create_task_storage):
+                                                         create_task_storage,
+                                                         field_storage):
         # Arrange
         action_id = 1
         task_display_id = "IBWF-1"
@@ -267,7 +279,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             storage=storage_mock, action_storage=action_storage_mock,
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
             task_stage_storage=task_stage_storage_mock,
-            create_task_storage=create_task_storage
+            create_task_storage=create_task_storage, field_storage=field_storage
         )
 
         # Act
@@ -282,13 +294,14 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
     @patch.object(GetUsersWithLessTasksInGivenStagesInteractor,
                   'get_users_with_less_tasks_in_given_stages')
     @patch.object(
-        GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor,
-        'get_task_stage_logic_satisfied_next_stages')
-    @patch.object(CallActionLogicFunctionAndGetTaskStatusVariablesInteractor,
-                  'get_status_variables_dtos_of_task_based_on_action')
+        GetTaskStageLogicSatisfiedStagesInteractor,
+        'get_task_stage_logic_satisfied_next_stages_given_status_variable_dtos')
+    @patch.object(
+        CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor,
+        'call_action_logic_function_and_get_status_variables_dtos_of_task')
     def test_given_valid_details_get_next_stage_assignees(
             self, action_logic_mock, next_stages_mock,
-            users_with_less_tasks_mock, storage_mock,
+            users_with_less_tasks_mock, storage_mock,field_storage,
             presenter_mock, stage_storage_mock, action_storage_mock,
             task_storage_mock, task_stage_storage_mock, create_task_storage):
         # Arrange
@@ -325,7 +338,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             storage=storage_mock, action_storage=action_storage_mock,
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
             task_stage_storage=task_stage_storage_mock,
-            create_task_storage=create_task_storage
+            create_task_storage=create_task_storage, field_storage=field_storage
         )
 
         # Act

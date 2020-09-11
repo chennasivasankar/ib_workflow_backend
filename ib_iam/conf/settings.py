@@ -22,4 +22,3 @@ Verify your email by using below link,
 Thank you
 """
 
-USER_VERIFICATION_EMAIL_EXPIRY_IN_SECONDS = 1800
