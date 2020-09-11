@@ -18,7 +18,7 @@ from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     VirtualStageIdsException
 from ib_tasks.exceptions.task_custom_exceptions import (
     InvalidTaskException, InvalidTaskDisplayId, TaskDelayReasonIsNotUpdated)
-from ib_tasks.interactors.\
+from ib_tasks.interactors. \
     call_action_logic_function_and_get_or_update_task_status_variables_interactor import \
     InvalidMethodFound
 from ib_tasks.interactors \
@@ -27,7 +27,7 @@ from ib_tasks.interactors \
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
-from ib_tasks.interactors.presenter_interfaces.\
+from ib_tasks.interactors.presenter_interfaces. \
     act_on_task_and_upadte_task_stage_assignees_presenter_interface import \
     ActOnTaskAndUpdateTaskStageAssigneesPresenterInterface
 from ib_tasks.interactors.stages_dtos import \
@@ -210,7 +210,7 @@ class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
             task_storage=self.task_storage,
             task_template_storage=self.task_template_storage)
         task_complete_details_dto, task_current_stage_details_dto, \
-        all_tasks_overview_details_dto, stage_ids = act_on_task_interactor.\
+        all_tasks_overview_details_dto, stage_ids = act_on_task_interactor. \
             user_action_on_task(task_id=task_id)
         return (
             task_complete_details_dto, task_current_stage_details_dto,
