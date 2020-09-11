@@ -66,7 +66,8 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
     # Todo: Typing
     @staticmethod
     def _get_user_profile_dict_from_user_profile_dto(
-            user_profile_dto: CompleteUserProfileDTO, teams, company, roles):
+            user_profile_dto: CompleteUserProfileDTO, teams, company, roles
+    ):
         cover_page_url = user_profile_dto.cover_page_url
         if cover_page_url is None:
             cover_page_url = ""

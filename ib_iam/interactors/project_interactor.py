@@ -74,20 +74,20 @@ class ProjectInteractor(ValidationMixin):
         )
         return valid_project_ids
 
-    # TODO: it is better to do validation of project ids before getting project dtos
     def get_project_dtos_bulk(
             self, project_ids: List[str]
     ) -> List[ProjectDTO]:
-        project_dtos = self.project_storage. \
-            get_project_dtos(project_ids=project_ids)
+        project_dtos = self.project_storage.get_project_dtos(
+            project_ids=project_ids
+        )
         invalid_project_ids = self._get_invalid_project_ids(
-            project_dtos=project_dtos, project_ids=project_ids)
+            project_dtos=project_dtos, project_ids=project_ids
+        )
         if invalid_project_ids:
             from ib_iam.exceptions.custom_exceptions import InvalidProjectIds
             raise InvalidProjectIds(project_ids=project_ids)
         return project_dtos
 
-    # TODO: condition encapsulation
     @staticmethod
     def _get_invalid_project_ids(
             project_dtos: List[ProjectDTO], project_ids: List[str]
@@ -144,7 +144,6 @@ class ProjectInteractor(ValidationMixin):
             raise UsersNotExistsForGivenTeams(user_ids=invalid_user_ids)
         return team_user_dtos
 
-    # TODO: condition encapsulation
     @staticmethod
     def _get_invalid_user_ids_for_given_team_ids(
             user_ids: List[str], team_user_dtos: List[TeamWithUserIdDTO]
@@ -245,7 +244,6 @@ class ProjectInteractor(ValidationMixin):
             user_team_dtos=user_team_dtos
         )
 
-    # TODO: CE
     def _validate_user_ids_and_get_user_team_dtos_for_given_project(
             self, project_id: str, user_ids: List[str]
     ) -> Optional[List[TeamWithUserIdDTO]]:
@@ -409,7 +407,6 @@ class ProjectInteractor(ValidationMixin):
             complete_project_details_dto: CompleteProjectDetailsDTO
     ):
         self._validate_is_user_admin(user_id=user_id)
-        # todo have to know whether we can do any better here
         project_role_ids = self.project_storage.get_project_role_ids(
             project_id=complete_project_details_dto.project_id
         )
@@ -653,7 +650,6 @@ class ProjectInteractor(ValidationMixin):
         if is_invalid_role_ids_exist:
             raise RoleIdsAreInvalid
 
-    # TODO: CE
     def get_user_status_for_given_projects(
             self, user_id: str, project_ids: List[str]
     ) -> List[UserIdWithProjectIdAndStatusDTO]:

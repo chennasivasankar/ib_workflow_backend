@@ -44,17 +44,16 @@ class RolesInteractor:
         self._validate_role_id_format(role_id=role_dto.role_id)
         self._validate_role_name(role_name=role_dto.name)
         self._validate_role_description(
-            role_description=role_dto.description)
+            role_description=role_dto.description
+        )
 
-    # TODO: CE, Ty
     @staticmethod
-    def _is_invalid_string(value):
+    def _is_invalid_string(value: str):
         if value == '' or not isinstance(value, str):
             return True
         return False
 
-    # TODO: Typing
-    def _validate_role_name(self, role_name):
+    def _validate_role_name(self, role_name: str):
         is_invalid_string = self._is_invalid_string(value=role_name)
         if is_invalid_string:
             raise RoleNameIsEmpty()
@@ -64,27 +63,26 @@ class RolesInteractor:
         if is_invalid_string:
             raise RoleDescriptionIsEmpty()
 
-    # TODO: CE
     @staticmethod
     def _validate_role_id_format(role_id: str):
         import re
         valid_format_pattern = '^([A-Z]+[A-Z0-9_]*)*[A-Z0-9]$'
-        if not re.match(valid_format_pattern, role_id):
+        invalid_role_id_format = not re.match(valid_format_pattern, role_id)
+        if invalid_role_id_format:
             raise RoleIdFormatIsInvalid()
 
     @staticmethod
     def _validate_role_ids(role_ids: List[str]):
         from collections import Counter
         frequency_of_role_ids = Counter(role_ids)
-        duplicte_role_ids = [
+        duplicate_role_ids = [
             role_id
             for role_id, count in frequency_of_role_ids.items() if count != 1
         ]
-        if duplicte_role_ids:
-            raise DuplicateRoleIds(role_ids=duplicte_role_ids)
+        if duplicate_role_ids:
+            raise DuplicateRoleIds(role_ids=duplicate_role_ids)
 
-    # TODO: CE
-    def get_valid_role_ids(self, role_ids: List[str]):
+    def get_valid_role_ids(self, role_ids: List[str]) -> List[str]:
         role_ids = sorted(list(set(role_ids)))
         valid_role_ids = self.storage.get_valid_role_ids(role_ids=role_ids)
         from ib_iam.constants.config import ALL_ROLES_ID
@@ -97,8 +95,9 @@ class RolesInteractor:
         role_ids = self.storage.get_user_role_ids(user_id=user_id)
         return role_ids
 
-    def get_role_ids_for_each_user_id(self, user_ids: List[str]) \
-            -> List[UserIdWithRoleIdsDTO]:
+    def get_role_ids_for_each_user_id(
+            self, user_ids: List[str]
+    ) -> List[UserIdWithRoleIdsDTO]:
         self.storage.validate_user_ids(user_ids=user_ids)
         user_id_with_role_ids_dtos \
             = self.storage.get_user_id_with_role_ids_dtos(user_ids=user_ids)

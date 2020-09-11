@@ -12,9 +12,8 @@ class RolesStorageInterface(abc.ABC):
     def create_roles(self, role_dtos: List[RoleDTO], project_id: str):
         pass
 
-    # TODO: Typing
     @abc.abstractmethod
-    def get_valid_role_ids(self, role_ids: List[str]):
+    def get_valid_role_ids(self, role_ids: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod

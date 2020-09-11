@@ -265,7 +265,8 @@ ACCOUNT_DOES_NOT_EXISTS = (
 
 # TODO: Write in a different file
 class SendVerifyEmailLinkPresenterImplementation(
-    SendVerifyEmailLinkPresenterInterface, HTTPResponseMixin):
+    SendVerifyEmailLinkPresenterInterface, HTTPResponseMixin
+):
     def get_response_send_verify_email_link(self):
         return self.prepare_200_success_response(response_dict={})
 
@@ -289,7 +290,8 @@ class SendVerifyEmailLinkPresenterImplementation(
 
 # TODO: Write in a different file
 class VerifyEmailPresenterImplementation(
-    VerifyEmailPresenterInterface, HTTPResponseMixin):
+    VerifyEmailPresenterInterface, HTTPResponseMixin
+):
     def raise_email_does_not_exist_to_verify_exception(self):
         response_dict = {
             "response": ACCOUNT_DOES_NOT_EXISTS[0],

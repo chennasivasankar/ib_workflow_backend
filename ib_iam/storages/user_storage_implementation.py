@@ -135,7 +135,9 @@ class UserStorageImplementation(UserStorageInterface):
                 company_id=str(user_object.company_id))
         return user_dto
 
-    def get_total_count_of_users_for_query(self, name_search_query: str):
+    def get_total_count_of_users_for_query(
+            self, name_search_query: str
+    ) -> int:
         from ib_iam.models import UserDetails
         total_count_of_users = \
             UserDetails.objects.filter(
@@ -219,8 +221,7 @@ class UserStorageImplementation(UserStorageInterface):
             name=role_object['name']) for role_object in role_query_set]
         return role_dtos
 
-    # TODO: typing
-    def validate_user_id(self, user_id):
+    def validate_user_id(self, user_id: str):
         from ib_iam.models import UserDetails
         user_details_object = UserDetails.objects.filter(user_id=user_id)
         is_user_details_object_not_exist = not user_details_object.exists()
@@ -340,7 +341,12 @@ class UserStorageImplementation(UserStorageInterface):
     def get_user_related_team_dtos(self, user_id: str) -> List[TeamDTO]:
         from ib_iam.models import Team
         team_objects = Team.objects.filter(users__user_id=user_id)
-        team_dtos = self._get_team_dtos(team_objects=team_objects)
+        team_dtos = [
+            TeamDTO(
+                team_id=str(team_object.team_id), name=team_object.name,
+                description=team_object.description
+            ) for team_object in team_objects
+        ]
         return team_dtos
 
     def get_team_user_ids_dtos(self, team_ids: List[str]) -> \
@@ -447,29 +453,18 @@ class UserStorageImplementation(UserStorageInterface):
             logo_url=company_object.logo_url)
         return company_dto
 
-    # TODO: Typing
-    @staticmethod
-    def _get_team_dtos(team_objects):
-        team_dtos = [
-            TeamDTO(
-                team_id=str(team_object.team_id),
-                name=team_object.name,
-                description=team_object.description
-            )
-            for team_object in team_objects
-        ]
-        return team_dtos
-
     def get_user_ids_for_given_project(self, project_id: str) -> List[str]:
         # TODO need to optimize the storage calls
         from ib_iam.models import ProjectTeam
         team_ids = list(
             ProjectTeam.objects.filter(project_id=project_id).values_list(
-                'team_id', flat=True))
+                'team_id', flat=True)
+        )
         from ib_iam.models import TeamUser
         user_ids = list(
             TeamUser.objects.filter(team_id__in=team_ids).values_list(
-                'user_id', flat=True))
+                'user_id', flat=True)
+        )
         return user_ids
 
     def assign_user_roles_for_given_project(

@@ -42,9 +42,8 @@ class TeamStorageInterface(abc.ABC):
     def update_team_details(self, team_dto: TeamDTO):
         pass
 
-    # TODO: Typing
     @abc.abstractmethod
-    def get_member_ids_of_team(self, team_id: str):
+    def get_member_ids_of_team(self, team_id: str) -> List[str]:
         pass
 
     @abc.abstractmethod

@@ -1,5 +1,7 @@
 import abc
 
+from ib_iam.interactors.presenter_interfaces.dtos import UserOptionsDetailsDTO
+
 
 class GetUserOptionsPresenterInterface(abc.ABC):
 
@@ -7,7 +9,8 @@ class GetUserOptionsPresenterInterface(abc.ABC):
     def response_for_user_is_not_admin_exception(self):
         pass
 
-    # TODO: typing
     @abc.abstractmethod
-    def get_user_options_details_response(self, configuration_details):
+    def get_user_options_details_response(
+            self, configuration_details_dto: UserOptionsDetailsDTO
+    ):
         pass

@@ -17,8 +17,11 @@ from ib_iam.interactors.storage_interfaces.user_storage_interface \
 
 
 class EditUserInteractor(ValidationMixin):
-    def __init__(self, user_storage: UserStorageInterface,
-                 elastic_storage: ElasticSearchStorageInterface):
+
+    def __init__(
+            self, user_storage: UserStorageInterface,
+            elastic_storage: ElasticSearchStorageInterface
+    ):
         self.elastic_storage = elastic_storage
         self.user_storage = user_storage
 
@@ -53,7 +56,6 @@ class EditUserInteractor(ValidationMixin):
             response = presenter.response_for_invalid_team_ids_exception()
         return response
 
-    # TODO: Typing
     def edit_user(
             self, admin_user_id: str, user_id: str,
             add_user_details_dto: AddUserDetailsDTO
@@ -83,19 +85,11 @@ class EditUserInteractor(ValidationMixin):
     @staticmethod
     def _validate_email_and_throw_exception(email: str):
         import re
-        email_valid_pattern = \
-            r"(^[a-zA-Z]+[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]*[a-zA-Z]+$)"
-        if not bool(re.match(email_valid_pattern, email)):
+        from ib_iam.constants.config import EMAIL_VALIDATION_PATTERN
+        email_valid_pattern = EMAIL_VALIDATION_PATTERN
+        is_invalid_email = not bool(re.match(email_valid_pattern, email))
+        if is_invalid_email:
             raise InvalidEmailAddress()
-
-    # TODO: Typing
-    @staticmethod
-    def _create_user_profile_dto(name, email, user_id):
-        from ib_iam.adapters.dtos import UserProfileDTO
-        user_profile_dto = UserProfileDTO(
-            name=name, email=email, user_id=user_id
-        )
-        return user_profile_dto
 
     def _validate_values(
             self, team_ids: List[str], company_id: str
@@ -131,13 +125,16 @@ class EditUserInteractor(ValidationMixin):
         if is_not_exist:
             raise UserDoesNotExist
 
+    @staticmethod
     def _update_user_profile_in_ib_users(
-            self, user_id: str, email: str, name: str
+            user_id: str, email: str, name: str
     ):
         from ib_iam.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
-        user_profile_dto = self._create_user_profile_dto(
-            name=name, email=email, user_id=user_id)
+        from ib_iam.adapters.dtos import UserProfileDTO
+        user_profile_dto = UserProfileDTO(
+            name=name, email=email, user_id=user_id
+        )
         service_adapter.user_service.update_user_profile(
             user_id=user_id, user_profile_dto=user_profile_dto)
 
