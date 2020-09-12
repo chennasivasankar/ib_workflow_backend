@@ -231,12 +231,12 @@ COMPANY_NAME_ALREADY_EXISTS_FOR_UPDATE_COMPANY = (
 )
 
 DUPLICATE_USER_IDS_FOR_UPDATE_COMPANY = (
-    "Given users '%s' are duplicated, so update is not possible",
+    "Duplicate user are sent, try again",
     "DUPLICATE_USER_IDS"
 )
 
 INVALID_USER_IDS_FOR_UPDATE_COMPANY = (
-    "Given users '%s' invalid(not found), so update is not possible",
+    "Given users are not found, try again",
     "INVALID_USER_IDS"
 )
 
