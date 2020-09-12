@@ -57,7 +57,7 @@ class TestCase01UpdateProjectDetailsAPITestCase(TestUtils):
 
     @staticmethod
     def _additional_checks(snapshot):
-        from ib_iam.models import Project, ProjectTeam, ProjectRole
+        from ib_iam.models import Project, ProjectTeam, ProjectRole, UserRole
         project_id = "project_1"
         project_details = Project.objects.filter(project_id=project_id) \
             .values()
@@ -69,8 +69,10 @@ class TestCase01UpdateProjectDetailsAPITestCase(TestUtils):
         project_roles = ProjectRole.objects.filter(project_id=project_id) \
             .values("role_id", "name", "description")
         snapshot.assert_match(list(project_roles), "project_roles")
-        # todo after merging add-validations-pr-of-update-project write a test
-        #  to show the user roles left after deleting some teams
+        user_roles = UserRole.objects.filter(
+            project_role__project_id=project_id
+        ).values("user_id", "project_role_id")
+        snapshot.assert_match(list(user_roles), "user_roles")
 
     @pytest.fixture
     def setup(self):
@@ -79,17 +81,38 @@ class TestCase01UpdateProjectDetailsAPITestCase(TestUtils):
                     '89d96f4b-c19d-4e69-8eae-e818f3123b08',
                     '89d96f4b-c19d-4e69-8eae-e818f3123b00']
         role_ids = ["pay_role", "allocation_role"]
+        user_ids = ['89d96f4b-c19d-4e69-8eae-e818f3123b18',
+                    '89d96f4b-c19d-4e69-8eae-e818f3123b19']
         from ib_iam.tests.factories.models import (
-            ProjectFactory, TeamFactory, ProjectTeamFactory, ProjectRoleFactory
+            ProjectFactory, TeamFactory, ProjectTeamFactory,
+            ProjectRoleFactory, TeamUserFactory, UserRoleFactory
         )
         ProjectFactory.reset_sequence(1)
         project_object = ProjectFactory(project_id=project_id)
         team_objects = [TeamFactory(team_id=team_id) for team_id in team_ids]
-        team_objects_for_project = team_objects[0:2]
-        project_team_objects = [
+        # team_objects_for_project = team_objects[0:2]
+        for team_object in team_objects:
             ProjectTeamFactory(project=project_object, team=team_object)
-            for team_object in team_objects
+        project_role_objects = [
+            ProjectRoleFactory(project=project_object, role_id=role_id)
+            for role_id in role_ids
         ]
-        project_role_objects = [ProjectRoleFactory(project=project_object,
-                                                   role_id=role_id)
-                                for role_id in role_ids]
+        team_users_details = [
+            {"team": team_objects[0], "user_id": user_ids[0]},
+            {"team": team_objects[1], "user_id": user_ids[0]},
+            {"team": team_objects[0], "user_id": user_ids[1]}
+        ]
+        for team_user in team_users_details:
+            TeamUserFactory(
+                team=team_user["team"], user_id=team_user["user_id"]
+            )
+        user_role_details = [
+            {"user_id": user_ids[0], "project_role": project_role_objects[0]},
+            {"user_id": user_ids[0], "project_role": project_role_objects[1]},
+            {"user_id": user_ids[1], "project_role": project_role_objects[0]}
+        ]
+        for user_role in user_role_details:
+            UserRoleFactory(
+                user_id=user_role["user_id"],
+                project_role=user_role["project_role"]
+            )
