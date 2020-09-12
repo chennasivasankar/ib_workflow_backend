@@ -21,9 +21,9 @@ class UpdateTeamPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_duplicate_users_response_for_update_team(self, exception):
+    def get_duplicate_users_response_for_update_team(self):
         pass
 
     @abc.abstractmethod
-    def get_invalid_users_response_for_update_team(self, exception):
+    def get_invalid_users_response_for_update_team(self):
         pass

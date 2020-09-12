@@ -162,12 +162,12 @@ TEAM_NAME_ALREADY_EXISTS_FOR_UPDATE_TEAM = (
 )
 
 DUPLICATE_USER_IDS_FOR_UPDATE_TEAM = (
-    "Given users '%s' are duplicated, so update is not possible",
+    "Duplicate user are sent, try again",
     "DUPLICATE_USER_IDS"
 )
 
 INVALID_USER_IDS_FOR_UPDATE_TEAM = (
-    "Given users '%s' are invalid(not found), so update is not possible",
+    "Given users are not found, try again",
     "INVALID_USER_IDS"
 )
 

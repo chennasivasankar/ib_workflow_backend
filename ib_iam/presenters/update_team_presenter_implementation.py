@@ -53,10 +53,9 @@ class UpdateTeamPresenterImplementation(
             response_dict=response_dict
         )
 
-    def get_duplicate_users_response_for_update_team(self, exception):
+    def get_duplicate_users_response_for_update_team(self):
         response_dict = {
-            "response": DUPLICATE_USER_IDS_FOR_UPDATE_TEAM[0] %
-                        exception.user_ids,
+            "response": DUPLICATE_USER_IDS_FOR_UPDATE_TEAM[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": DUPLICATE_USER_IDS_FOR_UPDATE_TEAM[1]
         }
@@ -64,10 +63,9 @@ class UpdateTeamPresenterImplementation(
             response_dict=response_dict
         )
 
-    def get_invalid_users_response_for_update_team(self, exception):
+    def get_invalid_users_response_for_update_team(self):
         response_dict = {
-            "response": INVALID_USER_IDS_FOR_UPDATE_TEAM[0] %
-                        exception.user_ids,
+            "response": INVALID_USER_IDS_FOR_UPDATE_TEAM[0],
             "http_status_code": StatusCode.NOT_FOUND.value,
             "res_status": INVALID_USER_IDS_FOR_UPDATE_TEAM[1]
         }
