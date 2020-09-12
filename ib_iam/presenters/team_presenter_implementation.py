@@ -2,9 +2,8 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.dtos import \
     TeamWithUsersDetailsDTO
-from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
+from ib_iam.interactors.presenter_interfaces.team_presenter_interface import \
     TeamPresenterInterface
-)
 from ib_iam.constants.exception_messages import (
     USER_HAS_NO_ACCESS_FOR_GET_LIST_OF_TEAMS,
     INVALID_LIMIT_FOR_GET_LIST_OF_TEAMS,
@@ -82,9 +81,9 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
             response_dict=response_dict
         )
 
-    def get_duplicate_users_response_for_add_team(self, exception):
+    def get_duplicate_users_response_for_add_team(self):
         response_dict = {
-            "response": DUPLICATE_USER_IDS_FOR_ADD_TEAM[0] % exception.user_ids,
+            "response": DUPLICATE_USER_IDS_FOR_ADD_TEAM[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": DUPLICATE_USER_IDS_FOR_ADD_TEAM[1]
         }
@@ -92,9 +91,9 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
             response_dict=response_dict
         )
 
-    def get_invalid_users_response_for_add_team(self, exception):
+    def get_invalid_users_response_for_add_team(self):
         response_dict = {
-            "response": INVALID_USER_IDS_FOR_ADD_TEAM[0] % exception.user_ids,
+            "response": INVALID_USER_IDS_FOR_ADD_TEAM[0],
             "http_status_code": StatusCode.NOT_FOUND.value,
             "res_status": INVALID_USER_IDS_FOR_ADD_TEAM[1]
         }

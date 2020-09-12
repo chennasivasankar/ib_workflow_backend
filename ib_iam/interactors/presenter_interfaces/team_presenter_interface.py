@@ -1,9 +1,7 @@
 import abc
 
-
-from ib_iam.interactors.presenter_interfaces.dtos import (
+from ib_iam.interactors.presenter_interfaces.dtos import \
     TeamWithUsersDetailsDTO
-)
 
 
 class TeamPresenterInterface(abc.ABC):
@@ -31,11 +29,11 @@ class TeamPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_invalid_users_response_for_add_team(self, exception):
+    def get_invalid_users_response_for_add_team(self):
         pass
 
     @abc.abstractmethod
-    def get_duplicate_users_response_for_add_team(self, exception):
+    def get_duplicate_users_response_for_add_team(self):
         pass
 
     @abc.abstractmethod
@@ -45,4 +43,3 @@ class TeamPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def get_response_for_add_team(self, team_id: str):
         pass
-

@@ -3,7 +3,7 @@ from typing import List
 from ib_iam.app_interfaces.dtos import UserTeamsDTO
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
     TeamNameAlreadyExists, InvalidUserIds, DuplicateUserIds, InvalidTeamId, \
-    InvalidTeamIds
+    InvalidTeamIds, UserIdsAreInvalid
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
     .delete_team_presenter_interface import DeleteTeamPresenterInterface
@@ -41,12 +41,10 @@ class TeamInteractor(ValidationMixin):
         except TeamNameAlreadyExists as exception:
             response = presenter \
                 .get_team_name_already_exists_response_for_add_team(exception)
-        except DuplicateUserIds as exception:
-            response = \
-                presenter.get_duplicate_users_response_for_add_team(exception)
-        except InvalidUserIds as exception:
-            response = \
-                presenter.get_invalid_users_response_for_add_team(exception)
+        except DuplicateUserIds:
+            response = presenter.get_duplicate_users_response_for_add_team()
+        except UserIdsAreInvalid:
+            response = presenter.get_invalid_users_response_for_add_team()
         return response
 
     def add_team(self, user_id: str,
