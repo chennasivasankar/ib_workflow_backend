@@ -1,6 +1,8 @@
 from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
     SendVerifyEmailLinkPresenterInterface
 from ib_iam.adapters.user_service import UserAccountDoesNotExist
+from ib_workflows_backend.settings.base_swagger_utils import \
+    USER_VERIFICATION_EMAIL_LINK
 
 
 class EmailAlreadyVerifiedException(Exception):
@@ -39,7 +41,7 @@ class SendVerifyEmailLinkInteractor:
         adapter = get_service_adapter()
 
         expiry_in_seconds = settings.USER_VERIFICATION_EMAIL_EXPIRY_IN_SECONDS
-        verification_link = settings.USER_VERIFICATION_EMAIL_LINK
+        verification_link = USER_VERIFICATION_EMAIL_LINK
         auth_token_dto = adapter.auth_service.create_auth_tokens_for_user(
             user_id=user_id, expiry_in_seconds=expiry_in_seconds
         )

@@ -23,6 +23,8 @@ class TestSendLinkToUserMail:
         interactor = init_interactor
         email = "example@gmail.com"
         user_id = "1"
+        from django.conf import settings
+        expiry_in_seconds = settings.USER_VERIFICATION_EMAIL_EXPIRY_IN_SECONDS
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             create_auth_tokens_for_user_mock
         from ib_iam.tests.common_fixtures.adapters.user_service import \
@@ -55,7 +57,7 @@ class TestSendLinkToUserMail:
         )
 
         create_auth_tokens_for_user_mock.assert_called_once_with(
-            user_id=user_id, expiry_in_seconds=1800)
+            user_id=user_id, expiry_in_seconds=expiry_in_seconds)
         get_user_id_for_given_email_mock.assert_called_once_with(email=email)
 
     def test_given_invalid_email_then_raises_exception(
