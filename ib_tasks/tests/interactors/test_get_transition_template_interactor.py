@@ -361,7 +361,8 @@ class TestGetTransitionTemplateInteractor:
 
         transition_template_dto = TaskTemplateDTOFactory.create()
         gof_dtos = GoFDTOFactory.create_batch(size=2)
-        field_dtos = []
+        expected_field_dtos = []
+        expected_gofs_of_transition_template_dtos = []
         gof_to_template_dtos = \
             GoFToTaskTemplateDTOFactory.create_batch(size=2)
 
@@ -388,15 +389,16 @@ class TestGetTransitionTemplateInteractor:
         task_template_storage_mock. \
             get_gofs_to_template_from_permitted_gofs. \
             return_value = gof_to_template_dtos
-        field_storage_mock.get_field_dtos.return_value = field_dtos
+        field_storage_mock.get_field_dtos.return_value = expected_field_dtos
         presenter_mock.get_transition_template_response.return_value = \
             presenter_response_mock
 
         complete_transition_template_dto = CompleteTransitionTemplateDTO(
             transition_template_dto=transition_template_dto,
             gof_dtos=gof_dtos,
-            gofs_of_transition_template_dtos=gof_to_template_dtos,
-            field_dtos=field_dtos
+            gofs_of_transition_template_dtos=
+            expected_gofs_of_transition_template_dtos,
+            field_dtos=expected_field_dtos
         )
 
         transition_template_interactor = GetTransitionTemplateInteractor(
