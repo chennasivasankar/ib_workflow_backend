@@ -1,9 +1,6 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
+
 from ib_iam.constants.enums import StatusCode
-from ib_iam.interactors.presenter_interfaces.dtos import \
-    TeamWithUsersDetailsDTO
-from ib_iam.interactors.presenter_interfaces.team_presenter_interface import \
-    TeamPresenterInterface
 from ib_iam.constants.exception_messages import (
     USER_HAS_NO_ACCESS_FOR_GET_LIST_OF_TEAMS,
     INVALID_LIMIT_FOR_GET_LIST_OF_TEAMS,
@@ -13,6 +10,10 @@ from ib_iam.constants.exception_messages import (
     INVALID_USER_IDS_FOR_ADD_TEAM,
     DUPLICATE_USER_IDS_FOR_ADD_TEAM
 )
+from ib_iam.interactors.presenter_interfaces.dtos import \
+    TeamWithUsersDetailsDTO
+from ib_iam.interactors.presenter_interfaces.team_presenter_interface import \
+    TeamPresenterInterface
 
 
 class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
@@ -72,8 +73,8 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
 
     def get_team_name_already_exists_response_for_add_team(self, exception):
         response_dict = {
-            "response":
-                TEAM_NAME_ALREADY_EXISTS_FOR_ADD_TEAM[0] % exception.team_name,
+            "response": TEAM_NAME_ALREADY_EXISTS_FOR_ADD_TEAM[
+                0].format(team_name=exception.team_name),
             "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": TEAM_NAME_ALREADY_EXISTS_FOR_ADD_TEAM[1]
         }

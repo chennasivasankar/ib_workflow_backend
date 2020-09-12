@@ -42,10 +42,9 @@ class UpdateTeamPresenterImplementation(
         )
 
     def get_team_name_already_exists_response_for_update_team(self, exception):
-        team_name = exception.team_name
         response_dict = {
-            "response":
-                TEAM_NAME_ALREADY_EXISTS_FOR_UPDATE_TEAM[0] % team_name,
+            "response": TEAM_NAME_ALREADY_EXISTS_FOR_UPDATE_TEAM[
+                0].format(team_name=exception.team_name),
             "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": TEAM_NAME_ALREADY_EXISTS_FOR_UPDATE_TEAM[1]
         }

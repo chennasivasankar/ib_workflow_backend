@@ -36,12 +36,12 @@ class UpdateCompanyPresenterImplementation(UpdateCompanyPresenterInterface,
         return self.prepare_404_not_found_response(
             response_dict=response_dict)
 
-    def get_company_name_already_exists_response_for_update_company(self,
-                                                                    exception):
-        company_name = exception.company_name
+    def get_company_name_already_exists_response_for_update_company(
+            self, exception
+    ):
         response_dict = {
             "response": COMPANY_NAME_ALREADY_EXISTS_FOR_UPDATE_COMPANY[
-                            0] % company_name,
+                0].format(company_name=exception.company_name),
             "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": COMPANY_NAME_ALREADY_EXISTS_FOR_UPDATE_COMPANY[1]
         }

@@ -133,7 +133,7 @@ USER_HAS_NO_ACCESS_FOR_ADD_TEAM = (
 )
 
 TEAM_NAME_ALREADY_EXISTS_FOR_ADD_TEAM = (
-    "Given '%s' is already exists, so choose another",
+    "Given '{team_name}' is already exists, so choose another",
     "TEAM_NAME_ALREADY_EXISTS"
 )
 INVALID_USER_IDS_FOR_ADD_TEAM = (
@@ -157,7 +157,7 @@ INVALID_TEAM_ID_FOR_UPDATE_TEAM = (
 )
 
 TEAM_NAME_ALREADY_EXISTS_FOR_UPDATE_TEAM = (
-    "Given '%s' is already exists, so updating name is not possible.",
+    "Given '{team_name}' is already exists, so updating name is not possible.",
     "TEAM_NAME_ALREADY_EXISTS"
 )
 
@@ -192,7 +192,7 @@ USER_HAS_NO_ACCESS_FOR_ADD_COMPANY = (
 )
 
 COMPANY_NAME_ALREADY_EXISTS_FOR_ADD_COMPANY = (
-    "Given '%s' is already exists, so choose another",
+    "Given '{company_name}' is already exists, so choose another",
     "COMPANY_NAME_ALREADY_EXISTS"
 )
 INVALID_USER_IDS_FOR_ADD_COMPANY = (
@@ -226,7 +226,7 @@ INVALID_COMPANY_ID_FOR_UPDATE_COMPANY = (
 )
 
 COMPANY_NAME_ALREADY_EXISTS_FOR_UPDATE_COMPANY = (
-    "Given '%s' name is already exists, so updating name is not possible.",
+    "Given '{company_name}' name is already exists, so updating name is not possible.",
     "COMPANY_NAME_ALREADY_EXISTS"
 )
 
