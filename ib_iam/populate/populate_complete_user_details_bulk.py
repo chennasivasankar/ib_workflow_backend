@@ -257,7 +257,9 @@ def populate_complete_user_details_bulk(users: List[dict]):
             company_id=company_id, email=user["email"],
             name=user["name"], is_admin=user["is_admin"], password=password
         )
-        assign_user_roles(user_id=user_id, roles=user["roles"])
+        assign_user_roles(
+            user_id=user_id, roles=user["roles"], project_id=user["project_id"]
+        )
         team_ids = get_team_ids(team_names=user["teams"])
         assign_user_teams(user_id=user_id, team_ids=team_ids)
         assign_project_teams(project_id=user["project_id"], team_ids=team_ids)
@@ -290,7 +292,17 @@ def create_user(
     return user_id
 
 
-def assign_user_roles(user_id: str, roles: List[str]):
+def get_role_names_bulk(project_id: str) -> List[str]:
+    from ib_iam.models import ProjectRole
+    role_names = list(ProjectRole.objects.filter(
+        project_id=project_id
+    ).values_list('name', flat=True))
+    return role_names
+
+
+def assign_user_roles(user_id: str, roles: List[str], project_id: str):
+    if "ALL_ROLES" in roles:
+        roles = get_role_names_bulk(project_id=project_id)
     from ib_iam.models import UserRole
     role_ids = get_role_ids(role_names=roles)
     UserRole.objects.filter(

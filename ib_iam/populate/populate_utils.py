@@ -6,15 +6,6 @@ from ib_iam.models import UserDetails
 from ib_iam.populate.populate_complete_user_details_bulk import get_team_ids, \
     populate_complete_user_details_bulk
 
-
-def get_role_names_bulk(project_id: str):
-    from ib_iam.models import ProjectRole
-    role_names = list(ProjectRole.objects.filter(
-        project_id=project_id
-    ).values_list('name', flat=True))
-    return role_names
-
-
 TEAMS = [
     {
         "name": "Tech Team",
@@ -69,7 +60,7 @@ INITIAL_USERS = [
             "Assert Management Team"
         ],
         "company": "iBHubs",
-        "roles": get_role_names_bulk(project_id="FIN_MAN"),
+        "roles": ["ALL_ROLES"],
         "project_id": "FIN_MAN"
     },
     {
@@ -84,7 +75,7 @@ INITIAL_USERS = [
             "Assert Management Team"
         ],
         "company": "CyberEye",
-        "roles": get_role_names_bulk(project_id="FIN_MAN"),
+        "roles": ["ALL_ROLES"],
         "project_id": "FIN_MAN"
     }, {
         "email": "vasanth@ibhubs.co",
@@ -94,7 +85,7 @@ INITIAL_USERS = [
         "teams": [
             "Tech Team"
         ],
-        "roles": get_role_names_bulk(project_id="FIN_MAN"),
+        "roles": ["ALL_ROLES"],
         "project_id": "FIN_MAN"
     },
     {
@@ -105,7 +96,7 @@ INITIAL_USERS = [
         "teams": [
             "Tech Team"
         ],
-        "roles": get_role_names_bulk(project_id="FIN_MAN"),
+        "roles": ["ALL_ROLES"],
         "project_id": "FIN_MAN"
     },
     {
@@ -116,7 +107,7 @@ INITIAL_USERS = [
         "teams": [
             "Tech Team", "Discovery Team"
         ],
-        "roles": get_role_names_bulk(project_id="FIN_MAN"),
+        "roles": ["ALL_ROLES"],
         "project_id": "FIN_MAN"
     },
     {
@@ -127,7 +118,7 @@ INITIAL_USERS = [
         "teams": [
             "Tech Team"
         ],
-        "roles": get_role_names_bulk(project_id="FIN_MAN"),
+        "roles": ["ALL_ROLES"],
         "project_id": "FIN_MAN"
     },
     {
@@ -138,7 +129,7 @@ INITIAL_USERS = [
         "teams": [
             "iB Studio Team", "Tech Team"
         ],
-        "roles": get_role_names_bulk(project_id="FIN_MAN"),
+        "roles": ["ALL_ROLES"],
         "project_id": "FIN_MAN"
     },
     {
@@ -149,7 +140,7 @@ INITIAL_USERS = [
         "teams": [
             "Discovery Team", "Tech Team"
         ],
-        "roles": get_role_names_bulk(project_id="FIN_MAN"),
+        "roles": ["ALL_ROLES"],
         "project_id": "FIN_MAN"
     },
     {
@@ -160,7 +151,7 @@ INITIAL_USERS = [
         "teams": [
             "iB Studio Team"
         ],
-        "roles": get_role_names_bulk(project_id="FIN_MAN"),
+        "roles": ["ALL_ROLES"],
         "project_id": "FIN_MAN"
     },
     {
@@ -171,7 +162,7 @@ INITIAL_USERS = [
         "teams": [
             "Tech Team"
         ],
-        "roles": get_role_names_bulk(project_id="FIN_MAN"),
+        "roles": ["ALL_ROLES"],
         "project_id": "FIN_MAN"
     },
     {
@@ -182,7 +173,7 @@ INITIAL_USERS = [
         "teams": [
             "Tech Team"
         ],
-        "roles": get_role_names_bulk(project_id="FIN_MAN"),
+        "roles": ["ALL_ROLES"],
         "project_id": "FIN_MAN"
     },
     {
@@ -193,7 +184,7 @@ INITIAL_USERS = [
         "teams": [
             "Tech Team"
         ],
-        "roles": get_role_names_bulk(project_id="FIN_MAN"),
+        "roles": ["ALL_ROLES"],
         "project_id": "FIN_MAN"
     },
     {
@@ -204,7 +195,7 @@ INITIAL_USERS = [
         "teams": [
             "Tech Team"
         ],
-        "roles": get_role_names_bulk(project_id="FIN_MAN"),
+        "roles": ["ALL_ROLES"],
         "project_id": "FIN_MAN"
     },
     {
@@ -215,7 +206,7 @@ INITIAL_USERS = [
         "teams": [
             "Tech Team"
         ],
-        "roles": get_role_names_bulk(project_id="FIN_MAN"),
+        "roles": ["ALL_ROLES"],
         "project_id": "FIN_MAN"
     }
 ]
@@ -405,7 +396,7 @@ def populate_users_to_team_user_levels(
                 level_name=level_wise_users["level_name"], team_id=team_id
             ),
             member_ids=get_user_ids_for_given_emails(
-                user_emails=level_wise_users["users"]
+                user_emails=level_wise_users["user_emails"]
             )
         )
         for level_wise_users in levels_wise_users

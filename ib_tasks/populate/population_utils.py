@@ -38,7 +38,8 @@ def populate_projects_for_task_templates(spread_sheet_name: str):
 def populate_project_roles(spread_sheet_name: str):
     project_roles = ProjectRoleDetails()
     project_roles.add_project_roles_details_to_database(
-        spread_sheet_name=spread_sheet_name, sub_sheet_name=ROLES_SUB_SHEET)
+        spread_sheet_name=spread_sheet_name, sub_sheet_name=ROLES_SUB_SHEET
+    )
 
 
 @transaction.atomic()
