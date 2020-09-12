@@ -1,4 +1,7 @@
 from typing import List
+
+from django.db import transaction
+
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.models import ProjectRole, ProjectTeam
 
@@ -245,6 +248,7 @@ USERS = [
 ]
 
 
+@transaction.atomic()
 def populate_complete_user_details_bulk(users: List[dict]):
     for user in users:
         company_id = get_company_id(company_name=user["company"])
