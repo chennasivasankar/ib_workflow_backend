@@ -82,9 +82,9 @@ class TeamInteractor(ValidationMixin):
             response = presenter.response_for_user_has_no_access_exception()
         except InvalidTeamId:
             response = presenter.response_for_invalid_team_id_exception()
-        except DuplicateUserIds as err:
+        except DuplicateUserIds:
             response = presenter.response_for_duplicate_user_ids_exception()
-        except InvalidUserIds as err:
+        except UserIdsAreInvalid:
             response = presenter.response_for_invalid_user_ids_exception()
         except TeamNameAlreadyExists as err:
             response = presenter.response_for_team_name_already_exists_exception(
