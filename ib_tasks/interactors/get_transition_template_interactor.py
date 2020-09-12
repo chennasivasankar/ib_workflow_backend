@@ -85,7 +85,7 @@ class GetTransitionTemplateInteractor:
             _remove_gof_ids_from_gof_selector_if_user_having_no_read_permission(
                 field_dtos=field_dtos,
                 gof_ids_having_user_read_permissions=
-                gof_ids_of_transition_template
+                gof_ids_with_at_least_one_field
             )
 
         gofs_details_dtos = \
