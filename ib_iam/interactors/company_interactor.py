@@ -2,7 +2,8 @@ from ib_iam.exceptions.custom_exceptions import (CompanyNameAlreadyExists,
                                                  DuplicateUserIds,
                                                  InvalidCompanyId,
                                                  InvalidUserIds,
-                                                 UserIsNotAdmin)
+                                                 UserIsNotAdmin,
+                                                 UserIdsAreInvalid)
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
     .add_company_presenter_interface import AddCompanyPresenterInterface
@@ -44,12 +45,10 @@ class CompanyInteractor(ValidationMixin):
             response = presenter \
                 .get_company_name_already_exists_response_for_add_company(
                 exception)
-        except DuplicateUserIds as exception:
-            response = presenter \
-                .get_duplicate_users_response_for_add_company(exception)
-        except InvalidUserIds as exception:
-            response = \
-                presenter.get_invalid_users_response_for_add_company(exception)
+        except DuplicateUserIds:
+            response = presenter.get_duplicate_users_response_for_add_company()
+        except UserIdsAreInvalid:
+            response = presenter.get_invalid_users_response_for_add_company()
         return response
 
     def add_company(

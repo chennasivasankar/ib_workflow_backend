@@ -196,12 +196,12 @@ COMPANY_NAME_ALREADY_EXISTS_FOR_ADD_COMPANY = (
     "COMPANY_NAME_ALREADY_EXISTS"
 )
 INVALID_USER_IDS_FOR_ADD_COMPANY = (
-    "Given users '%s' are invalid(not found), please check it",
+    "Given users are not found, try again",
     "INVALID_USER_IDS"
 )
 
 DUPLICATE_USER_IDS_FOR_ADD_COMPANY = (
-    "Given users '%s' are duplicated, please check it",
+    "Duplicate user are sent, try again",
     "DUPLICATE_USER_IDS"
 )
 

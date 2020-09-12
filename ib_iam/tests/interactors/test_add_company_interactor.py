@@ -1,15 +1,15 @@
 from mock import create_autospec, Mock
+
 from ib_iam.interactors.company_interactor import CompanyInteractor
 from ib_iam.interactors.presenter_interfaces \
     .add_company_presenter_interface import AddCompanyPresenterInterface
+from ib_iam.interactors.storage_interfaces.company_storage_interface import \
+    CompanyStorageInterface
 from ib_iam.interactors.storage_interfaces.dtos import \
     CompanyNameLogoAndDescriptionDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
-from ib_iam.tests.factories.storage_dtos import \
-    CompanyWithUserIdsDTOFactory
-from ib_iam.interactors.storage_interfaces.company_storage_interface import \
-    CompanyStorageInterface
+from ib_iam.tests.factories.storage_dtos import CompanyWithUserIdsDTOFactory
 
 
 class TestAddCompanyInteractor:
@@ -44,13 +44,10 @@ class TestAddCompanyInteractor:
                                        user_storage=user_storage)
         user_id = "1"
         user_ids = ["2", "2", "3", "1"]
-        expected_user_ids_from_exception = ["2"]
         company_with_user_ids_dto = CompanyWithUserIdsDTOFactory(
             name="company1", user_ids=user_ids)
-        company_storage.get_company_id_if_company_name_already_exists\
-            .return_value\
-            = \
-            None
+        company_storage.get_company_id_if_company_name_already_exists \
+            .return_value = None
         presenter.get_duplicate_users_response_for_add_company \
             .return_value = Mock()
 
@@ -59,12 +56,8 @@ class TestAddCompanyInteractor:
             company_with_user_ids_dto=company_with_user_ids_dto,
             presenter=presenter)
 
-        call_args = \
-            presenter.get_duplicate_users_response_for_add_company.call_args
-        error_obj = call_args[0][0]
-        actual_user_ids_from_exception = error_obj.user_ids
-        assert actual_user_ids_from_exception == \
-               expected_user_ids_from_exception
+        presenter.get_duplicate_users_response_for_add_company \
+            .assert_called_once()
 
     def test_given_invalid_users_returns_invalid_users_response(self):
         user_storage = create_autospec(UserStorageInterface)
@@ -75,10 +68,9 @@ class TestAddCompanyInteractor:
         user_id = "1"
         valid_user_ids = ["2", "3"]
         invalid_user_ids = ["2", "3", "4"]
-        expected_user_ids_from_exception = ["4"]
         company_with_user_ids_dto = CompanyWithUserIdsDTOFactory(
             name="company1", user_ids=invalid_user_ids)
-        company_storage.get_company_id_if_company_name_already_exists\
+        company_storage.get_company_id_if_company_name_already_exists \
             .return_value = None
         user_storage.get_valid_user_ids_among_the_given_user_ids \
             .return_value = valid_user_ids
@@ -91,12 +83,8 @@ class TestAddCompanyInteractor:
 
         user_storage.get_valid_user_ids_among_the_given_user_ids \
             .assert_called_once_with(user_ids=invalid_user_ids)
-        call_args = \
-            presenter.get_invalid_users_response_for_add_company.call_args
-        error_obj = call_args[0][0]
-        actual_user_ids_from_exception = error_obj.user_ids
-        assert actual_user_ids_from_exception == \
-               expected_user_ids_from_exception
+        presenter.get_invalid_users_response_for_add_company \
+            .assert_called_once()
 
     def test_company_name_exists_returns_company_name_already_exists_response(
             self):
@@ -113,7 +101,7 @@ class TestAddCompanyInteractor:
             .return_value = user_ids
         company_with_user_ids_dto = CompanyWithUserIdsDTOFactory(
             name="company1", user_ids=user_ids)
-        company_storage.get_company_id_if_company_name_already_exists\
+        company_storage.get_company_id_if_company_name_already_exists \
             .return_value = "1"
         presenter.get_company_name_already_exists_response_for_add_company \
             .return_value = Mock()
@@ -148,7 +136,7 @@ class TestAddCompanyInteractor:
                 name=company_with_user_ids_dto.name,
                 description=company_with_user_ids_dto.description,
                 logo_url=company_with_user_ids_dto.logo_url)
-        company_storage.get_company_id_if_company_name_already_exists\
+        company_storage.get_company_id_if_company_name_already_exists \
             .return_value = None
         user_storage.get_valid_user_ids_among_the_given_user_ids \
             .return_value = user_ids

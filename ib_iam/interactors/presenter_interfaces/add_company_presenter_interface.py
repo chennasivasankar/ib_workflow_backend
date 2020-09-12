@@ -18,9 +18,9 @@ class AddCompanyPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_duplicate_users_response_for_add_company(self, exception):
+    def get_duplicate_users_response_for_add_company(self):
         pass
 
     @abc.abstractmethod
-    def get_invalid_users_response_for_add_company(self, exception):
+    def get_invalid_users_response_for_add_company(self):
         pass
