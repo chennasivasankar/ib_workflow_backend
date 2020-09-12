@@ -14,15 +14,13 @@ class TestCase02DeleteTeamAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['delete']}}
 
-    # TODO: why here setup is assign to team_id. Observe in other test cases also.
     @pytest.mark.django_db
     def test_case(self, setup, snapshot):
-        team_id = setup
         body = {}
         path_params = {"team_id": "413642ff-1272-4990-b878-6607a5e02bc1"}
         query_params = {}
         headers = {}
-        response = self.make_api_call(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
