@@ -264,9 +264,6 @@ def assign_project_teams(project_id: str, team_ids: List[str]):
     ).values_list('team_id', flat=True)
     valid_team_ids = list(map(str, valid_project_team_ids))
     remaining_team_ids = list(set(team_ids) - set(valid_team_ids))
-    print(remaining_team_ids, "hai")
-    print(team_ids)
-    print(valid_team_ids)
     if remaining_team_ids:
         project_team_objects = [
             ProjectTeam(project_id=project_id, team_id=team_id)
