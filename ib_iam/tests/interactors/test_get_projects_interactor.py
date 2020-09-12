@@ -76,7 +76,6 @@ class TestAddProjectsInteractor:
         from ib_iam.tests.factories.storage_dtos import PaginationDTOFactory
         return PaginationDTOFactory()
 
-    # TODO: Use assert_called_with
     def test_get_projects_returns_projects_response(
             self, project_storage, interactor, presenter, team_storage,
             expected_list_of_project_dtos, expected_project_team_ids_dtos,

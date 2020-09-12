@@ -41,10 +41,11 @@ class TestGetUserDetailsBulkForGivenRoleIds:
                 project_role=role_object, user_id=user_role["user_id"])
         return role_ids
 
-    # TODO: No need to check the len of user_dtos length
     @pytest.mark.django_db
     def test_get_user_details_dtos_for_given_valid_role_ids(
-            self, user_profile_dtos, set_up, mocker):
+            self, user_profile_dtos, set_up, mocker
+    ):
+        # Arrange
         role_ids = set_up
         project_id = "FA"
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
@@ -54,30 +55,37 @@ class TestGetUserDetailsBulkForGivenRoleIds:
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         service_interface = ServiceInterface()
 
-        expected_result = service_interface. \
-            get_user_details_for_given_role_ids(
-            role_ids=role_ids, project_id=project_id)
+        # Act
+        expected_result = service_interface.get_user_details_for_given_role_ids(
+            role_ids=role_ids, project_id=project_id
+        )
 
+        # Assert
         assert len(expected_result) == len(user_profile_dtos)
         self._check_are_valid_user_dtos(
-            expected_result=expected_result, actual_result=user_profile_dtos)
+            expected_result=expected_result, actual_result=user_profile_dtos
+        )
 
     @pytest.mark.django_db
     def test_given_invalid_role_ids_then_raise_exception(self):
+        # Arrange
         invalid_role_ids = ["1", "2", "3"]
         project_id = "FA"
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         service_interface = ServiceInterface()
 
+        # Assert
         from ib_iam.exceptions.custom_exceptions import RoleIdsAreInvalid
         with pytest.raises(RoleIdsAreInvalid):
             service_interface.get_user_details_for_given_role_ids(
-                role_ids=invalid_role_ids, project_id=project_id)
+                role_ids=invalid_role_ids, project_id=project_id
+            )
 
-    # TODO: No need to check the len of user_dtos length
     @pytest.mark.django_db
     def test_given_valid_role_ids_with_all_role_id_then_return_all_users(
-            self, mocker):
+            self, mocker
+    ):
+        # Arrange
         role_ids = ["ALL_ROLES", "1", "2"]
         users = [
             {
@@ -117,10 +125,12 @@ class TestGetUserDetailsBulkForGivenRoleIds:
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         service_interface = ServiceInterface()
 
-        expected_result = service_interface. \
-            get_user_details_for_given_role_ids(
-            role_ids=role_ids, project_id=project_id)
+        # Act
+        expected_result = service_interface.get_user_details_for_given_role_ids(
+            role_ids=role_ids, project_id=project_id
+        )
 
+        # Assert
         assert len(expected_result) == len(user_profile_dtos)
         self._check_are_valid_user_dtos(
             expected_result=expected_result, actual_result=user_profile_dtos)

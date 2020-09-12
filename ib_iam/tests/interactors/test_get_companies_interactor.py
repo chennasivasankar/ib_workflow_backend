@@ -94,6 +94,8 @@ class TestGetCompaniesInteractor:
 
         company_storage.get_company_dtos.assert_called_once()
         company_storage.get_company_employee_ids_dtos.assert_called_once_with(
-            company_ids=company_ids)
+            company_ids=company_ids
+        )
         presenter.get_response_for_get_companies.assert_called_once_with(
-            company_details_dtos=company_details_dto)
+            company_details_dtos=company_details_dto
+        )

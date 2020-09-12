@@ -1,5 +1,5 @@
 import pytest
-
+import json
 from ib_iam.constants.enums import StatusCode
 
 
@@ -12,7 +12,7 @@ class TestSendVerifyEmailLinkPresenter:
         return presenter
 
     def test_raise_account_does_not_exist_exception(self, presenter_mock):
-        import json
+        # Arrange
         from ib_iam.presenters.auth_presenter_implementation import \
             ACCOUNT_DOES_NOT_EXISTS
         response_dict = {
@@ -21,13 +21,15 @@ class TestSendVerifyEmailLinkPresenter:
             "res_status": ACCOUNT_DOES_NOT_EXISTS[1]
         }
 
+        # Act
         response = presenter_mock.raise_account_does_not_exist_exception()
 
+        # Assert
         actual_response_content = json.loads(response.content)
         assert response_dict == actual_response_content
 
     def test_raise_email_already_verified_exception(self, presenter_mock):
-        import json
+        # Arrange
         from ib_iam.presenters.auth_presenter_implementation import \
             EMAIL_ALREADY_VERIFIED
         response_dict = {
@@ -36,13 +38,16 @@ class TestSendVerifyEmailLinkPresenter:
             "res_status": EMAIL_ALREADY_VERIFIED[1]
         }
 
+        # Act
         response = presenter_mock.raise_email_already_verified_exception()
 
+        # Assert
         actual_response_content = json.loads(response.content)
         assert response_dict == actual_response_content
 
-    # TODO: For 200 use the ENUM
     def test_get_response_send_verify_email_link(self, presenter_mock):
+        # Act
         response = presenter_mock.get_response_send_verify_email_link()
 
-        assert 200 == response.status_code
+        # Assert
+        assert StatusCode.SUCCESS.value == response.status_code

@@ -147,7 +147,6 @@ class TestAddTeamInteractor:
         assert actual_team_name_from_team_name_already_exists_error == \
                expected_team_name_from_team_name_already_exists_error
 
-    # TODO: verify line 157. why it is their
     def test_given_valid_details_then_returns_team_id(
             self, interactor, team_storage_mock, user_storage_mock, presenter
     ):
