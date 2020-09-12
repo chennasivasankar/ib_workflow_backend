@@ -1,8 +1,9 @@
 """
-# TODO: Update test case description
+As requested user does not exist returns user not exist response
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -29,9 +30,10 @@ class TestCase02EditUserAPITestCase(TestUtils):
         TeamFactory.create(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8343')
         ProjectRoleFactory.create(role_id='ROLE_1')
 
-    # TODO: give proper name to test method in all files.
     @pytest.mark.django_db
-    def test_case(self, user_set_up, snapshot):
+    def test_given_user_not_exist_returns_user_not_exists_response(
+            self, user_set_up, snapshot
+    ):
         body = {'name': 'parker', 'email': 'parker2020@gmail.com',
                 'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
                 'team_ids': ['ef6d1fc6-ac3f-4d2d-a983-752c992e8344',
