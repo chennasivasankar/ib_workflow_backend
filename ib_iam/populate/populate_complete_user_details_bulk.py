@@ -245,7 +245,7 @@ USERS = [
 ]
 
 
-def populate_users_with_roles(users: List[dict]):
+def populate_complete_user_details_bulk(users: List[dict]):
     for user in users:
         company_id = get_company_id(company_name=user["company"])
         user_id = create_user(
