@@ -20,9 +20,9 @@ class UpdateTeamPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def response_for_duplicate_user_ids_exception(self, err):
+    def response_for_duplicate_user_ids_exception(self):
         pass
 
     @abc.abstractmethod
-    def response_for_invalid_user_ids_exception(self, err):
+    def response_for_invalid_user_ids_exception(self):
         pass

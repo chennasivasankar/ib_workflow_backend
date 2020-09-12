@@ -65,7 +65,6 @@ class TestAddCompanyInteractor:
         # Arrange
         user_id = "1"
         user_ids = ["2", "2", "3", "1"]
-        expected_user_ids_from_exception = ["2"]
         company_with_user_ids_dto = CompanyWithUserIdsDTOFactory(
             name="company1", user_ids=user_ids)
         company_storage_mock.get_company_id_if_company_name_already_exists \
@@ -80,12 +79,7 @@ class TestAddCompanyInteractor:
         )
 
         # Assert
-        call_args = \
-            presenter.get_duplicate_users_response_for_add_company.call_args
-        error_obj = call_args[0][0]
-        actual_user_ids_from_exception = error_obj.user_ids
-        assert actual_user_ids_from_exception == \
-               expected_user_ids_from_exception
+        presenter.get_duplicate_users_response_for_add_company.assert_called_once()
 
     def test_given_invalid_users_returns_invalid_users_response(
             self, interactor, company_storage_mock, user_storage_mock,
@@ -95,7 +89,6 @@ class TestAddCompanyInteractor:
         user_id = "1"
         valid_user_ids = ["2", "3"]
         invalid_user_ids = ["2", "3", "4"]
-        expected_user_ids_from_exception = ["4"]
         company_with_user_ids_dto = CompanyWithUserIdsDTOFactory(
             name="company1", user_ids=invalid_user_ids)
         company_storage_mock.get_company_id_if_company_name_already_exists \
@@ -113,12 +106,8 @@ class TestAddCompanyInteractor:
         # Assert
         user_storage_mock.get_valid_user_ids_among_the_given_user_ids \
             .assert_called_once_with(user_ids=invalid_user_ids)
-        call_args = \
-            presenter.get_invalid_users_response_for_add_company.call_args
-        error_obj = call_args[0][0]
-        actual_user_ids_from_exception = error_obj.user_ids
-        assert actual_user_ids_from_exception == \
-               expected_user_ids_from_exception
+        presenter.get_invalid_users_response_for_add_company \
+            .assert_called_once()
 
     def test_company_name_exists_returns_company_name_already_exists_response(
             self, interactor, company_storage_mock, user_storage_mock,

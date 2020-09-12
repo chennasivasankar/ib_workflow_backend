@@ -43,12 +43,10 @@ class CompanyInteractor(ValidationMixin):
             response = presenter \
                 .get_company_name_already_exists_response_for_add_company(
                 exception)
-        except DuplicateUserIds as exception:
-            response = presenter \
-                .get_duplicate_users_response_for_add_company(exception)
-        except InvalidUserIds as exception:
-            response = \
-                presenter.get_invalid_users_response_for_add_company(exception)
+        except DuplicateUserIds:
+            response = presenter.get_duplicate_users_response_for_add_company()
+        except UserIdsAreInvalid:
+            response = presenter.get_invalid_users_response_for_add_company()
         return response
 
     def add_company(
@@ -107,12 +105,12 @@ class CompanyInteractor(ValidationMixin):
         except InvalidCompanyId:
             response = \
                 presenter.get_invalid_company_response_for_update_company()
-        except DuplicateUserIds as exception:
-            response = presenter \
-                .get_duplicate_users_response_for_update_company(exception)
-        except InvalidUserIds as exception:
-            response = presenter \
-                .get_invalid_users_response_for_update_company(exception)
+        except DuplicateUserIds:
+            response = \
+                presenter.get_duplicate_users_response_for_update_company()
+        except UserIdsAreInvalid:
+            response = \
+                presenter.get_invalid_users_response_for_update_company()
         except CompanyNameAlreadyExists as exception:
             response = presenter \
                 .get_company_name_already_exists_response_for_update_company(
