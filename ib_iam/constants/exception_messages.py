@@ -137,12 +137,12 @@ TEAM_NAME_ALREADY_EXISTS_FOR_ADD_TEAM = (
     "TEAM_NAME_ALREADY_EXISTS"
 )
 INVALID_USER_IDS_FOR_ADD_TEAM = (
-    "Given users are not found",
+    "Given users are not found, try again",
     "INVALID_USER_IDS"
 )
 
 DUPLICATE_USER_IDS_FOR_ADD_TEAM = (
-    "Duplicate Users has sent, please check it",
+    "Duplicate Users has sent, try again",
     "DUPLICATE_USER_IDS"
 )
 
