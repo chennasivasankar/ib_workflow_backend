@@ -68,12 +68,6 @@ class ValidationMixin:
     def _validate_is_duplicate_users_exists(user_ids: List[str]):
         is_duplicate_user_ids_exist = len(user_ids) != len(set(user_ids))
         if is_duplicate_user_ids_exist:
-            # user_ids_with_count_dict = collections.Counter(user_ids)
-            # duplicate_user_ids_list = [
-            #     user_id
-            #     for user_id, user_id_count in user_ids_with_count_dict.items()
-            #     if user_id_count > 1
-            # ]
             from ib_iam.exceptions.custom_exceptions import DuplicateUserIds
             raise DuplicateUserIds
 
@@ -84,5 +78,4 @@ class ValidationMixin:
         is_invalid_users_found = len(user_ids) != len(user_ids_from_db)
         if is_invalid_users_found:
             from ib_iam.exceptions.custom_exceptions import UserIdsAreInvalid
-            # invalid_user_ids_list = list(set(user_ids) - set(user_ids_from_db))
             raise UserIdsAreInvalid
