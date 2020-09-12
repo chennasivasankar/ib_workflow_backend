@@ -252,9 +252,10 @@ USERS = [
 def populate_complete_user_details_bulk(users: List[dict]):
     for user in users:
         company_id = get_company_id(company_name=user["company"])
+        password = user.get("password", None)
         user_id = create_user(
             company_id=company_id, email=user["email"],
-            name=user["name"], is_admin=user["is_admin"]
+            name=user["name"], is_admin=user["is_admin"], password=password
         )
         assign_user_roles(user_id=user_id, roles=user["roles"])
         team_ids = get_team_ids(team_names=user["teams"])
@@ -276,8 +277,13 @@ def assign_project_teams(project_id: str, team_ids: List[str]):
         ProjectTeam.objects.bulk_create(project_team_objects)
 
 
-def create_user(email: str, name: str, is_admin: bool, company_id: str):
-    user_id = create_user_in_ib_users(email=email, name=name)
+def create_user(
+        email: str, name: str, is_admin: bool, company_id: str,
+        password: str = None
+):
+    user_id = create_user_in_ib_users(
+        email=email, name=name, password=password
+    )
     create_user_in_ib_iam(
         name=name, user_id=user_id, is_admin=is_admin, company_id=company_id
     )
@@ -338,17 +344,19 @@ def get_team_ids(team_names: List[str]) -> List[str]:
     return team_ids
 
 
-def create_user_in_ib_users(email: str, name: str):
-    new_user_id = create_user_account_with_email(email=email)
+def create_user_in_ib_users(email: str, name: str, password: str = None):
+    new_user_id = create_user_account_with_email(
+        email=email, password=password
+    )
     create_user_profile(user_id=new_user_id, email=email, name=name)
     return new_user_id
 
 
-def create_user_account_with_email(email: str) -> str:
+def create_user_account_with_email(email: str, password: str = None) -> str:
     from ib_iam.adapters.service_adapter import get_service_adapter
     service_adapter = get_service_adapter()
     user_id = service_adapter.user_service.create_user_account_with_email(
-        email=email
+        email=email, password=password
     )
     return str(user_id)
 
