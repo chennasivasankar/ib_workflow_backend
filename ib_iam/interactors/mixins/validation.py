@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_iam.exceptions.custom_exceptions import InvalidOffsetValue, \
-    InvalidLimitValue
+    InvalidLimitValue, UserIdsAreInvalid
 
 
 class ValidationMixin:
@@ -68,15 +68,14 @@ class ValidationMixin:
     def _validate_is_duplicate_users_exists(user_ids: List[str]):
         is_duplicate_user_ids_exist = len(user_ids) != len(set(user_ids))
         if is_duplicate_user_ids_exist:
-            import collections
-            user_ids_with_count_dict = collections.Counter(user_ids)
-            duplicate_user_ids_list = [
-                user_id
-                for user_id, user_id_count in user_ids_with_count_dict.items()
-                if user_id_count > 1
-            ]
+            # user_ids_with_count_dict = collections.Counter(user_ids)
+            # duplicate_user_ids_list = [
+            #     user_id
+            #     for user_id, user_id_count in user_ids_with_count_dict.items()
+            #     if user_id_count > 1
+            # ]
             from ib_iam.exceptions.custom_exceptions import DuplicateUserIds
-            raise DuplicateUserIds(user_ids=duplicate_user_ids_list)
+            raise DuplicateUserIds
 
     def _validate_is_invalid_users_exists(self, user_ids: List[str]):
         user_ids_from_db = \
@@ -84,6 +83,6 @@ class ValidationMixin:
                 user_ids=user_ids)
         is_invalid_users_found = len(user_ids) != len(user_ids_from_db)
         if is_invalid_users_found:
-            invalid_user_ids_list = list(set(user_ids) - set(user_ids_from_db))
-            from ib_iam.exceptions.custom_exceptions import InvalidUserIds
-            raise InvalidUserIds(user_ids=invalid_user_ids_list)
+            from ib_iam.exceptions.custom_exceptions import UserIdsAreInvalid
+            # invalid_user_ids_list = list(set(user_ids) - set(user_ids_from_db))
+            raise UserIdsAreInvalid
