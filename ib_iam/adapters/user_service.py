@@ -16,7 +16,8 @@ class UserService:
         return service_interface
 
     def get_user_profile_bulk(
-            self, user_ids: List[str]) -> List[UserProfileDTO]:
+            self, user_ids: List[str]
+    ) -> List[UserProfileDTO]:
         from ib_users.interactors.exceptions.user_profile \
             import InvalidUserException
         from ib_iam.exceptions.custom_exceptions import InvalidUserId

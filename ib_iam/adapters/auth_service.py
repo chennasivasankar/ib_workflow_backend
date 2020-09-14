@@ -219,8 +219,9 @@ class AuthService:
             user_auth_tokens_dto)
         return converted_user_tokens_dto
 
-    def update_is_email_verified_value_in_ib_user_profile_details(
-            self, user_id: str, is_email_verified: bool):
+    def update_is_email_verified_value_in_ib_user(
+            self, user_id: str, is_email_verified: bool
+    ):
         from ib_users.interactors.user_profile_interactor import UserProfileDTO
         user_profile = UserProfileDTO(
             is_email_verified=is_email_verified

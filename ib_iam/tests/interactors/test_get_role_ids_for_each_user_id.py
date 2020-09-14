@@ -41,6 +41,9 @@ class TestGetRoleIdsForEachUserId:
 
         # Assert
         assert response == user_id_with_role_ids_dtos
+        storage_mock.get_user_id_with_role_ids_dtos.assert_called_with(
+            user_ids=user_ids
+        )
 
     def test_invalid_user_id_raise_exception(self, storage_mock):
         # Arrange
@@ -62,3 +65,4 @@ class TestGetRoleIdsForEachUserId:
             interactor.get_role_ids_for_each_user_id(user_ids=user_ids)
 
         assert invalid_user_ids == err.value.user_ids
+        storage_mock.validate_user_ids.assert_called_with(user_ids=user_ids)

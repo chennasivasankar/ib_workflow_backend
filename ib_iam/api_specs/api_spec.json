@@ -3236,13 +3236,6 @@
         "summary": "Reset User Password",
         "description": "Reset user password using token which we provided",
         "operationId": "reset_user_password",
-        "security": [
-          {
-            "oauth": [
-              "write"
-            ]
-          }
-        ],
         "parameters": [
           {
             "name": "token",

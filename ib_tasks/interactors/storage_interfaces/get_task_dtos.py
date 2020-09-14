@@ -48,6 +48,7 @@ class TemplateFieldsDTO:
 
 @dataclass
 class FieldSearchableDTO:
+    task_gof_id: int
     field_id: str
     field_value: Searchable
     field_response: Union[int, str]

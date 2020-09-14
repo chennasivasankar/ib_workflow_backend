@@ -80,5 +80,3 @@ class TestCase01GetUsersAPITestCase(TestUtils):
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
-
-    # TODO: Have to write a test for invalid user_id
