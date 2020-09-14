@@ -15,20 +15,22 @@ class GetUserProfileInteractor:
     def __init__(self, user_storage: UserStorageInterface):
         self.user_storage = user_storage
 
-    def get_user_profile_wrapper(self, user_id: str,
-                                 presenter: GetUserProfilePresenterInterface):
+    def get_user_profile_wrapper(
+            self, user_id: str, presenter: GetUserProfilePresenterInterface
+    ):
         from ib_iam.exceptions.custom_exceptions import InvalidUserId
         from ib_iam.adapters.user_service import UserAccountDoesNotExist
         try:
             user_with_extra_details_dto = self.get_user_profile(
-                user_id=user_id)
+                user_id=user_id
+            )
             response = presenter.prepare_response_for_get_user_profile(
-                user_with_extra_details_dto=user_with_extra_details_dto)
+                user_with_extra_details_dto=user_with_extra_details_dto
+            )
         except InvalidUserId:
             response = presenter.response_for_invalid_user_id_exception()
         except UserAccountDoesNotExist:
-            response \
-                = presenter.response_for_user_account_does_not_exist_exception()
+            response = presenter.response_for_user_account_does_not_exist_exception()
         return response
 
     def get_user_profile(self, user_id: str) -> UserWithExtraDetailsDTO:
@@ -37,10 +39,12 @@ class GetUserProfileInteractor:
         team_ids = self._get_team_ids_from_team_dtos(team_dtos=team_dtos)
         team_user_ids_dtos = self.user_storage.get_team_user_ids_dtos(team_ids)
         role_dtos = self.user_storage.get_role_details_of_users_bulk(
-            user_ids=[user_id])
+            user_ids=[user_id]
+        )
         company_dto = self.user_storage.get_user_related_company_dto(user_id)
-        company_id_with_employee_ids_dto = \
-            self._get_company_id_with_employee_ids_dto(company_dto)
+        company_id_with_employee_ids_dto = self._get_company_id_with_employee_ids_dto(
+            company_dto
+        )
         user_dtos = self._get_all_user_dtos(
             team_user_ids_dtos=team_user_ids_dtos,
             company_id_with_employee_ids_dto=company_id_with_employee_ids_dto
@@ -56,7 +60,6 @@ class GetUserProfileInteractor:
     def _get_all_user_dtos(
             self, team_user_ids_dtos: List[TeamUserIdsDTO],
             company_id_with_employee_ids_dto: CompanyIdWithEmployeeIdsDTO
-
     ) -> List[UserProfileDTO]:
         user_ids = self._get_all_user_ids_from_teams_and_companies(
             team_user_ids_dtos=team_user_ids_dtos,
@@ -122,8 +125,9 @@ class GetUserProfileInteractor:
         return unique_user_ids
 
     @staticmethod
-    def _get_user_ids_from_teams(team_user_ids_dtos: List[TeamUserIdsDTO]) -> \
-            List[str]:
+    def _get_user_ids_from_teams(
+            team_user_ids_dtos: List[TeamUserIdsDTO]
+    ) -> List[str]:
         user_ids = []
         for team_user_ids_dto in team_user_ids_dtos:
             user_ids.extend(team_user_ids_dto.user_ids)
@@ -131,8 +135,9 @@ class GetUserProfileInteractor:
         return unique_user_ids
 
     @staticmethod
-    def _get_user_dtos_from_service(user_ids: List[str]) -> \
-            List[UserProfileDTO]:
+    def _get_user_dtos_from_service(
+            user_ids: List[str]
+    ) -> List[UserProfileDTO]:
         from ib_iam.adapters.service_adapter import get_service_adapter
         service = get_service_adapter()
         user_dtos = service.user_service.get_basic_user_dtos(user_ids=user_ids)

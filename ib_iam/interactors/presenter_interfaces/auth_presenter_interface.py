@@ -85,8 +85,8 @@ class GetUserProfilePresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def prepare_response_for_get_user_profile(
-            self,
-            user_with_extra_details_dto: UserWithExtraDetailsDTO):
+            self, user_with_extra_details_dto: UserWithExtraDetailsDTO
+    ):
         pass
 
 
