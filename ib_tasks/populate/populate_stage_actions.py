@@ -30,7 +30,7 @@ def _remove_white_spaces_and_apply_replaces_to_roles(
     for action_dict in action_dicts:
         roles = action_dict['roles']
         roles = roles.replace(" ", "")
-        roles = roles.split(",")
+        roles = roles.split("\n")
         action_dict["roles"] = roles
     return action_dicts
 
