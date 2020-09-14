@@ -188,6 +188,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             task_id=task_id, project_id=project_id
         )
         self._validate_task_delay_reason_updated_or_not(task_id)
+        self._validate_present_task_stage_actions(task_id=task_id)
         task_dto = self._get_task_dto(task_id)
         updated_task_dto = \
             self._call_logic_and_update_status_variables_and_get_stage_ids(
@@ -346,7 +347,6 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         if is_invalid_action:
             raise InvalidActionException(action_id=self.action_id)
         action_roles = self.storage.get_action_roles(action_id=self.action_id)
-        self._validate_present_task_stage_actions(task_id=task_id)
         self._validate_user_permission_to_user(
             self.user_id, action_roles, self.action_id, project_id=project_id
         )
