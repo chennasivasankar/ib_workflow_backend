@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
@@ -36,7 +36,7 @@ class GetDiscussionPresenterImplementation(
     GetDiscussionsPresenterInterface, HTTPResponseMixin
 ):
 
-    def raise_exception_for_invalid_offset(self):
+    def response_for_invalid_offset(self):
         response_dict = {
             "response": INVALID_OFFSET[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
@@ -46,7 +46,7 @@ class GetDiscussionPresenterImplementation(
             response_dict=response_dict
         )
 
-    def raise_exception_for_invalid_limit(self):
+    def response_for_invalid_limit(self):
         response_dict = {
             "response": INVALID_LIMIT[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
@@ -56,7 +56,7 @@ class GetDiscussionPresenterImplementation(
             response_dict=response_dict
         )
 
-    def raise_exception_for_invalid_user_id(self):
+    def response_for_invalid_user_id(self):
         response_dict = {
             "response": INVALID_USER_ID[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
@@ -66,7 +66,7 @@ class GetDiscussionPresenterImplementation(
             response_dict=response_dict
         )
 
-    def raise_exception_for_discussion_set_not_found(self):
+    def response_for_discussion_set_not_found(self):
         response_dict = {
             "response": DISCUSSION_SET_NOT_FOUND[0],
             "http_status_code": StatusCode.NOT_FOUND.value,
@@ -83,12 +83,13 @@ class GetDiscussionPresenterImplementation(
                 DiscussionIdWithCommentsCountDTO]
 
     ):
-        user_profiles_dtos_with_user_id_key = self._convert_to_dict_with_key_user_id(
+        user_id_wise_user_profile_dtos = self._convert_to_dict_with_key_user_id(
             discussions_with_users_and_discussion_count_dto.user_profile_dtos
         )
-        discussion_id_with_editable_status_dtos_with_discussion_key = self._convert_to_dict_with_key_discussion_id(
-            discussion_id_with_editable_status_dtos
-        )
+        discussion_id_wise_discussion_id_with_editable_status_dtos = \
+            self._convert_to_dict_with_key_discussion_id(
+                discussion_id_with_editable_status_dtos
+            )
         discussion_id_wise_comments_count_dto_dict = {
             discussion_id_with_comments_count_dto.discussion_id: discussion_id_with_comments_count_dto
             for discussion_id_with_comments_count_dto in
@@ -97,11 +98,11 @@ class GetDiscussionPresenterImplementation(
         discussions_list = [
             self._convert_discussion_dto_to_dict_with_user_profile(
                 discussion_dto=discussion_dto,
-                user_profile_dto=user_profiles_dtos_with_user_id_key[
+                user_profile_dto=user_id_wise_user_profile_dtos[
                     str(discussion_dto.user_id)
                 ],
                 discussion_id_with_editable_status_dto=
-                discussion_id_with_editable_status_dtos_with_discussion_key[
+                discussion_id_wise_discussion_id_with_editable_status_dtos[
                     discussion_dto.discussion_id],
                 comments_count=discussion_id_wise_comments_count_dto_dict[
                     str(discussion_dto.discussion_id)].comments_count
@@ -141,7 +142,9 @@ class GetDiscussionPresenterImplementation(
         return complete_discussion_dict
 
     @staticmethod
-    def _convert_to_dict_with_key_user_id(user_profile_dtos):
+    def _convert_to_dict_with_key_user_id(
+            user_profile_dtos: List[UserProfileDTO]
+    ) -> Dict[str, UserProfileDTO]:
         user_profiles_dict = {
             user_profile_dto.user_id: user_profile_dto
             for user_profile_dto in user_profile_dtos
@@ -149,7 +152,9 @@ class GetDiscussionPresenterImplementation(
         return user_profiles_dict
 
     @staticmethod
-    def _prepare_user_profile_dict(user_profile_dto):
+    def _prepare_user_profile_dict(
+            user_profile_dto: UserProfileDTO
+    ) -> Dict[str, str]:
         user_profile_dict = {
             "user_id": user_profile_dto.user_id,
             "name": user_profile_dto.name,

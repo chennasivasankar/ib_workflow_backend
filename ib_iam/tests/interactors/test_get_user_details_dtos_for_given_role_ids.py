@@ -18,9 +18,9 @@ class TestGetUserDetailsForGivenRoleIds:
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         user_profile_dtos = [UserProfileDTOFactory(user_id=user_id) for user_id
                              in user_ids]
-        from ib_iam.tests.common_fixtures.adapters.user_service_mocks import \
-            prepare_user_profile_dtos_mock
-        get_user_profile_mock = prepare_user_profile_dtos_mock(mocker)
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
+            get_basic_user_profile_dtos_mock
+        get_user_profile_mock = get_basic_user_profile_dtos_mock(mocker)
 
         get_user_profile_mock.return_value = user_profile_dtos
         user_storage_mock.get_valid_role_ids.return_value = role_ids
@@ -43,8 +43,9 @@ class TestGetUserDetailsForGivenRoleIds:
         interactor = self.interactor_init(user_storage_mock=user_storage_mock)
         user_storage_mock.get_valid_role_ids.return_value = []
 
-        from ib_iam.exceptions.custom_exceptions import RoleIdsAreInvalid
-        with pytest.raises(RoleIdsAreInvalid):
+        from ib_iam.exceptions.custom_exceptions import \
+            InvalidRoleIdsForProject
+        with pytest.raises(InvalidRoleIdsForProject):
             interactor.get_user_details_for_given_role_ids(
                 role_ids=invalid_role_ids, project_id=project_id)
         user_storage_mock.get_valid_role_ids.assert_called_once_with(
@@ -58,9 +59,9 @@ class TestGetUserDetailsForGivenRoleIds:
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         user_profile_dtos = [UserProfileDTOFactory(user_id=user_id) for user_id
                              in user_ids]
-        from ib_iam.tests.common_fixtures.adapters.user_service_mocks import \
-            prepare_user_profile_dtos_mock
-        get_user_profile_mock = prepare_user_profile_dtos_mock(mocker)
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
+            get_basic_user_profile_dtos_mock
+        get_user_profile_mock = get_basic_user_profile_dtos_mock(mocker)
 
         get_user_profile_mock.return_value = user_profile_dtos
         user_storage_mock.get_user_ids_for_given_project.return_value = user_ids
@@ -80,4 +81,4 @@ class TestGetUserDetailsForGivenRoleIds:
         interactor = GetListOfUsersInteractor(user_storage=user_storage_mock)
         return interactor
 
-    # TODO check the projec id is invalid or not test case
+    # TODO check the project id is invalid or not test case
