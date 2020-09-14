@@ -1,4 +1,5 @@
 import mock
+from unittest.mock import patch
 import pytest
 
 from ib_tasks.tests.factories.interactor_dtos import StageAssigneeDTOFactory
