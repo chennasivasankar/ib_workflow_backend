@@ -95,8 +95,7 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_name_in_gof_selector_field_value(self,
-                                                       err):
+    def raise_invalid_name_in_gof_selector(self, err):
         pass
 
     @abc.abstractmethod
@@ -148,9 +147,8 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_stage_ids_with_invalid_permission_for_assignee_exception(
-            self, err: StageIdsWithInvalidPermissionForAssignee
-    ):
+    def raise_invalid_stage_assignees(
+            self, err: StageIdsWithInvalidPermissionForAssignee):
         pass
 
     @abc.abstractmethod
@@ -208,8 +206,8 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_task_delay_reason_not_updated(self,
-                                            err: TaskDelayReasonIsNotUpdated):
+    def raise_task_delay_reason_not_updated(
+            self, err: TaskDelayReasonIsNotUpdated):
         pass
 
     @abc.abstractmethod
@@ -234,8 +232,8 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_user_did_not_fill_required_gofs(self,
-                                              err: UserDidNotFillRequiredGoFs):
+    def raise_user_did_not_fill_required_gofs(
+            self, err: UserDidNotFillRequiredGoFs):
         pass
 
     @abc.abstractmethod

@@ -508,7 +508,7 @@ class TestSaveAndActOnATaskPresenterImplementation:
 
         # Act
         response = presenter. \
-            raise_invalid_name_in_gof_selector_field_value(err)
+            raise_invalid_name_in_gof_selector(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -904,7 +904,7 @@ class TestSaveAndActOnATaskPresenterImplementation:
 
         # Act
         response = presenter. \
-            raise_stage_ids_with_invalid_permission_for_assignee_exception(
+            raise_invalid_stage_assignees(
             err)
 
         # Assert

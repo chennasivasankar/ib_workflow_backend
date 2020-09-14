@@ -1009,7 +1009,7 @@ class TestSaveAndActOnATaskInteractor:
             task_stage_storage=task_stage_storage_mock,
             task_template_storage=task_template_storage_mock
         )
-        presenter_mock.raise_empty_value_in_required_field \
+        presenter_mock.raise_invalid_phone_number_value \
             .return_value = mock_object
 
         # Act
@@ -1018,10 +1018,10 @@ class TestSaveAndActOnATaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_empty_value_in_required_field \
+        presenter_mock.raise_invalid_phone_number_value \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_empty_value_in_required_field \
+            presenter_mock.raise_invalid_phone_number_value \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -2179,7 +2179,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage=task_template_storage_mock
         )
         presenter_mock \
-            .raise_stage_ids_with_invalid_permission_for_assignee_exception \
+            .raise_invalid_stage_assignees \
             .return_value = mock_object
 
         # Act
@@ -2189,10 +2189,10 @@ class TestSaveAndActOnATaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_stage_ids_with_invalid_permission_for_assignee_exception \
+            .raise_invalid_stage_assignees \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_stage_ids_with_invalid_permission_for_assignee_exception \
+            raise_invalid_stage_assignees \
             .call_args
         error_object = call_args[0][0]
         stage_ids = error_object.invalid_stage_ids

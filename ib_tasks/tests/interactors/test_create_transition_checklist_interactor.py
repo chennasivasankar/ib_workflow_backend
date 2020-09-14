@@ -845,7 +845,7 @@ class TestCreateTransitionChecklistInteractor:
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock
         )
-        presenter_mock.raise_empty_value_in_required_field \
+        presenter_mock.raise_invalid_phone_number_value \
             .return_value = mock_object
 
         # Act
@@ -854,10 +854,10 @@ class TestCreateTransitionChecklistInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_empty_value_in_required_field \
+        presenter_mock.raise_invalid_phone_number_value \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_empty_value_in_required_field \
+            presenter_mock.raise_invalid_phone_number_value \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id

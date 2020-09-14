@@ -19,7 +19,8 @@ from ib_tasks.interactors.create_or_update_task \
     GoFsDetailsValidationsInteractor
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.create_or_update_task_storage_interface import \
+from ib_tasks.interactors.storage_interfaces \
+    .create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
@@ -29,8 +30,8 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import \
-    TaskTemplateStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
+    import TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import CreateTaskDTO, GoFFieldsDTO
 
 
@@ -119,8 +120,7 @@ class TaskDetailsValidationsInteractor:
         return
 
     def _validate_task_template_id(
-            self, task_template_id: str
-    ) -> Optional[InvalidTaskTemplateDBId]:
+            self, task_template_id: str) -> Optional[InvalidTaskTemplateDBId]:
         task_template_existence = \
             self.task_template_storage.check_is_template_exists(
                 template_id=task_template_id)
@@ -150,8 +150,7 @@ class TaskDetailsValidationsInteractor:
     def _validate_task_dates_and_priority(
             self, start_datetime: datetime.datetime,
             due_datetime: datetime.datetime, priority: Priority,
-            action_type: Optional[ActionTypes]
-    ) -> Optional[Exception]:
+            action_type: Optional[ActionTypes]) -> Optional[Exception]:
         self._validate_due_datetime_without_start_datetime(
             start_datetime, due_datetime)
         action_type_is_no_validations = \
@@ -202,8 +201,7 @@ class TaskDetailsValidationsInteractor:
 
     def _validate_all_user_permitted_fields_are_filled_or_not(
             self, user_id: str, project_id: str, task_template_id: str,
-            gof_fields_dtos: List[GoFFieldsDTO]
-    ):
+            gof_fields_dtos: List[GoFFieldsDTO]):
         user_roles = self._get_user_roles_of_project(user_id, project_id)
         permitted_gof_ids = self._get_user_writable_gof_ids_of_template(
             task_template_id, user_roles)

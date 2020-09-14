@@ -75,8 +75,7 @@ class GoFsDetailsValidationsInteractor:
 
     def _validate_that_fields_gofs_and_template_are_related(
             self, task_template_id: str, gof_ids: List[str],
-            gof_fields_dtos: List[GoFFieldsDTO]
-    ):
+            gof_fields_dtos: List[GoFFieldsDTO]):
         self._validate_for_given_gofs_are_related_to_given_task_template(
             task_template_id, gof_ids)
         self._validate_for_given_fields_are_related_to_given_gofs(
@@ -84,8 +83,7 @@ class GoFsDetailsValidationsInteractor:
 
     def _validate_given_field_responses(
             self, gof_fields_dots: List[GoFFieldsDTO],
-            action_type: ActionTypes
-    ):
+            action_type: ActionTypes):
         from ib_tasks.interactors.create_or_update_task. \
             validate_field_responses import ValidateFieldResponsesInteractor
         field_validation_interactor = ValidateFieldResponsesInteractor(
@@ -221,8 +219,7 @@ class GoFsDetailsValidationsInteractor:
         return field_values_dtos
 
     def _validate_for_invalid_gof_ids(
-            self, gof_ids: List[str]
-    ) -> Optional[InvalidGoFIds]:
+            self, gof_ids: List[str]) -> Optional[InvalidGoFIds]:
         valid_gof_ids = self.gof_storage.get_existing_gof_ids(gof_ids)
         invalid_gof_ids = sorted(list(set(gof_ids) - set(valid_gof_ids)))
         if invalid_gof_ids:
@@ -230,8 +227,7 @@ class GoFsDetailsValidationsInteractor:
         return
 
     def _validate_for_invalid_field_ids(
-            self, field_ids: List[str]
-    ) -> Optional[InvalidFieldIds]:
+            self, field_ids: List[str]) -> Optional[InvalidFieldIds]:
         valid_field_ids = self.task_storage.get_existing_field_ids(field_ids)
         invalid_field_ids = sorted(list(set(field_ids) - set(valid_field_ids)))
         if invalid_field_ids:

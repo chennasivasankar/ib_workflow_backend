@@ -143,11 +143,9 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         except UserDidNotFillRequiredFields as err:
             return presenter.raise_user_did_not_fill_required_fields(err)
         except EmptyValueForRequiredField as err:
-            return presenter. \
-                raise_empty_value_in_required_field(err)
+            return presenter.raise_empty_value_in_required_field(err)
         except InvalidPhoneNumberValue as err:
-            return presenter.raise_invalid_phone_number_value(
-                err)
+            return presenter.raise_invalid_phone_number_value(err)
         except InvalidEmailFieldValue as err:
             return presenter.raise_invalid_email_address(err)
         except InvalidURLValue as err:
@@ -161,22 +159,15 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         except InvalidValueForDropdownField as err:
             return presenter.raise_invalid_dropdown_value(err)
         except IncorrectNameInGoFSelectorField as err:
-            return presenter. \
-                raise_invalid_name_in_gof_selector_field_value(
-                err)
+            return presenter.raise_invalid_name_in_gof_selector(err)
         except IncorrectRadioGroupChoice as err:
-            return presenter. \
-                raise_invalid_choice_in_radio_group_field(err)
+            return presenter.raise_invalid_choice_in_radio_group_field(err)
         except IncorrectCheckBoxOptionsSelected as err:
-            return presenter. \
-                raise_invalid_checkbox_group_options_selected(
-                err)
+            return presenter.raise_invalid_checkbox_group_options_selected(err)
         except IncorrectMultiSelectOptionsSelected as err:
-            return presenter. \
-                raise_invalid_multi_select_options_selected(err)
+            return presenter.raise_invalid_multi_select_options_selected(err)
         except IncorrectMultiSelectLabelsSelected as err:
-            return presenter. \
-                raise_invalid_multi_select_labels_selected(err)
+            return presenter.raise_invalid_multi_select_labels_selected(err)
         except InvalidDateFormat as err:
             return presenter.raise_invalid_date_format(err)
         except InvalidTimeFormat as err:
@@ -184,13 +175,11 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         except InvalidUrlForImage as err:
             return presenter.raise_invalid_image_url(err)
         except InvalidImageFormat as err:
-            return presenter.raise_not_acceptable_image_format(
-                err)
+            return presenter.raise_not_acceptable_image_format(err)
         except InvalidUrlForFile as err:
             return presenter.raise_invalid_file_url(err)
         except InvalidFileFormat as err:
-            return presenter.raise_not_acceptable_file_format(
-                err)
+            return presenter.raise_not_acceptable_file_format(err)
         except UserActionPermissionDenied as err:
             return presenter.raise_exception_for_user_action_permission_denied(
                 error_obj=err)
@@ -214,9 +203,7 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter.raise_invalid_stage_ids_exception(
                 invalid_stage_ids=exception.invalid_stage_ids)
         except StageIdsWithInvalidPermissionForAssignee as err:
-            return presenter. \
-                raise_stage_ids_with_invalid_permission_for_assignee_exception(
-                err)
+            return presenter.raise_invalid_stage_assignees(err)
         except StageIdsListEmptyException as err:
             return presenter.raise_stage_ids_list_empty_exception(err)
         except InvalidStageIdsListException as err:

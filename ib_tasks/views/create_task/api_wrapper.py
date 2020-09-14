@@ -25,17 +25,17 @@ from ...storages.task_template_storage_implementation import \
 def api_wrapper(*args, **kwargs):
     user_id = kwargs['user'].user_id
     request_data = kwargs['request_data']
-    project_id = request_data['project_id']
-    task_template_id = request_data['task_template_id']
-    action_id = request_data['action_id']
-    title = request_data['title']
-    description = request_data['description']
-    start_datetime = request_data['start_datetime']
-    due_datetime = request_data['due_datetime']
-    priority = request_data['priority']
-    task_gofs = request_data['task_gofs']
-    request_data['start_datetime'] = str(request_data['start_datetime'])
-    request_data['due_datetime'] = str(request_data['due_datetime'])
+    project_id = request_data.get('project_id')
+    task_template_id = request_data.get('task_template_id')
+    action_id = request_data.get('action_id')
+    title = request_data.get('title')
+    description = request_data.get('description')
+    start_datetime = request_data.get('start_datetime')
+    due_datetime = request_data.get('due_datetime')
+    priority = request_data.get('priority')
+    task_gofs = request_data.get('task_gofs')
+    request_data['start_datetime'] = str(request_data.get('start_datetime'))
+    request_data['due_datetime'] = str(request_data.get('due_datetime'))
     task_request_json = json.dumps(request_data)
 
     from ib_tasks.interactors.task_dtos import GoFFieldsDTO, CreateTaskDTO

@@ -86,16 +86,14 @@ class SaveAndActOnATaskPresenterImplementation(
     def raise_invalid_dropdown_value(self, err):
         return self.raise_invalid_dropdown_value_exception(err)
 
-    def raise_invalid_name_in_gof_selector_field_value(self, err):
-        return \
-            self.raise_invalid_name_in_gof_selector_field_value_exception(err)
+    def raise_invalid_name_in_gof_selector(self, err):
+        return self.raise_invalid_name_in_gof_selector_exception(err)
 
     def raise_invalid_choice_in_radio_group_field(self, err):
         return self.raise_invalid_choice_in_radio_group_field_exception(err)
 
     def raise_invalid_checkbox_group_options_selected(self, err):
-        return self.raise_invalid_checkbox_group_options_selected_exception(
-            err)
+        return self.raise_invalid_checkbox_group_options_exception(err)
 
     def raise_invalid_multi_select_options_selected(self, err):
         return self.raise_invalid_multi_select_options_selected_exception(err)
@@ -367,14 +365,14 @@ class SaveAndActOnATaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_stage_ids_with_invalid_permission_for_assignee_exception(
+    def raise_invalid_stage_assignees(
             self, err: StageIdsWithInvalidPermissionForAssignee
     ):
         from ib_tasks.constants.exception_messages import \
             STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE
         response_dict = {
-            "response": STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[0].
-                format(err.invalid_stage_ids),
+            "response": STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[
+                0].format(err.invalid_stage_ids),
             "http_status_code": 400,
             "res_status": STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[1]
         }
@@ -463,9 +461,9 @@ class SaveAndActOnATaskPresenterImplementation(
                 task_fields_and_action_details_dtos:
             if given_task_id == \
                     each_task_fields_and_action_details_dto.task_id:
-                task_overview_fields_details = self. \
-                    _get_task_overview_fields_details(
-                    each_task_fields_and_action_details_dto)
+                task_overview_fields_details = \
+                    self._get_task_overview_fields_details(
+                        each_task_fields_and_action_details_dto)
                 action_details = self._get_actions_details_of_task_stage(
                     each_task_fields_and_action_details_dto)
                 return task_overview_fields_details, action_details

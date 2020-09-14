@@ -103,8 +103,7 @@ class CreateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_name_in_gof_selector(self,
-                                           err):
+    def raise_invalid_name_in_gof_selector(self, err):
         pass
 
     @abc.abstractmethod
@@ -121,6 +120,10 @@ class CreateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_invalid_multi_select_labels_selected(self, err):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_date_format(self, err: InvalidDateFormat):
         pass
 
     @abc.abstractmethod
@@ -225,10 +228,6 @@ class CreateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_priority_is_required(self, err: PriorityIsRequired):
-        pass
-
-    @abc.abstractmethod
-    def raise_invalid_date_format(self, err: InvalidDateFormat):
         pass
 
     @abc.abstractmethod

@@ -6,6 +6,8 @@ from ib_tasks.exceptions.datetime_custom_exceptions import \
     StartDateIsAheadOfDueDate, \
     DueDateTimeHasExpired, DueDateTimeIsRequired, \
     StartDateTimeIsRequired, DueDateTimeWithoutStartDateTimeIsNotValid
+from ib_tasks.exceptions.field_values_custom_exceptions import \
+    InvalidDateFormat
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
     InvalidStageIdsListException, StageIdsListEmptyException
@@ -28,6 +30,83 @@ class UpdateTaskPresenterImplementation(
     UpdateTaskPresenterInterface, HTTPResponseMixin,
     GoFsFieldsValidationPresenterMixin
 ):
+    def raise_invalid_gof_ids(self, err):
+        return self.raise_invalid_gof_ids_exception(err)
+
+    def raise_invalid_field_ids(self, err):
+        return self.raise_invalid_field_ids_exception(err)
+
+    def raise_invalid_gofs_given_to_a_task_template(self, err):
+        return self.raise_invalid_gofs_given_to_a_task_template_exception(err)
+
+    def raise_duplicate_field_ids_to_a_gof(self, err):
+        return self.raise_duplicate_field_ids_to_a_gof_exception(err)
+
+    def raise_invalid_fields_given_to_a_gof(self, err):
+        return self.raise_invalid_fields_given_to_a_gof_exception(err)
+
+    def raise_user_needs_gof_writable_permission(self, err):
+        return self.raise_user_needs_gof_writable_permission_exception(err)
+
+    def raise_user_needs_field_writable_permission(self, err):
+        return self.raise_user_needs_field_writable_permission_exception(err)
+
+    def raise_empty_value_in_required_field(self, err):
+        return self.raise_empty_value_in_required_field_exception(err)
+
+    def raise_invalid_phone_number_value(self, err):
+        return self.raise_invalid_phone_number_value_exception(err)
+
+    def raise_invalid_email_address(self, err):
+        return self.raise_invalid_email_address_exception(err)
+
+    def raise_invalid_url_address(self, err):
+        return self.raise_invalid_url_address_exception(err)
+
+    def raise_weak_password(self, err):
+        return self.raise_weak_password_exception(err)
+
+    def raise_invalid_number_value(self, err):
+        return self.raise_invalid_number_value_exception(err)
+
+    def raise_invalid_float_value(self, err):
+        return self.raise_invalid_float_value_exception(err)
+
+    def raise_invalid_dropdown_value(self, err):
+        return self.raise_invalid_dropdown_value_exception(err)
+
+    def raise_invalid_name_in_gof_selector(self, err):
+        return self.raise_invalid_name_in_gof_selector_exception(err)
+
+    def raise_invalid_choice_in_radio_group_field(self, err):
+        return self.raise_invalid_choice_in_radio_group_field_exception(err)
+
+    def raise_invalid_checkbox_group_options_selected(self, err):
+        return self.raise_invalid_checkbox_group_options_exception(err)
+
+    def raise_invalid_multi_select_options_selected(self, err):
+        return self.raise_invalid_multi_select_options_selected_exception(err)
+
+    def raise_invalid_multi_select_labels_selected(self, err):
+        return self.raise_invalid_multi_select_labels_selected_exception(err)
+
+    def raise_invalid_date_format(self, err: InvalidDateFormat):
+        return self.raise_invalid_date_format_exception(err)
+
+    def raise_invalid_time_format(self, err):
+        return self.raise_invalid_time_format_exception(err)
+
+    def raise_invalid_image_url(self, err):
+        return self.raise_invalid_image_url_exception(err)
+
+    def raise_not_acceptable_image_format(self, err):
+        return self.raise_not_acceptable_image_format_exception(err)
+
+    def raise_invalid_file_url(self, err):
+        return self.raise_invalid_file_url_exception(err)
+
+    def raise_not_acceptable_file_format(self, err):
+        return self.raise_not_acceptable_file_format_exception(err)
 
     def raise_priority_is_required(self, err: PriorityIsRequired):
         from ib_tasks.constants.exception_messages import \
@@ -167,7 +246,7 @@ class UpdateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_stage_ids_with_invalid_permission_for_assignee_exception(
+    def raise_invalid_stage_assignees(
             self, err: StageIdsWithInvalidPermissionForAssignee):
         from ib_tasks.constants.exception_messages import \
             STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE

@@ -207,7 +207,7 @@ class GoFsFieldsValidationPresenterMixin:
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_invalid_name_in_gof_selector_field_value_exception(
+    def raise_invalid_name_in_gof_selector_exception(
             self, err: IncorrectNameInGoFSelectorField):
         from ib_tasks.constants.exception_messages import \
             INCORRECT_NAME_IN_GOF_SELECTOR_FIELD
@@ -235,7 +235,7 @@ class GoFsFieldsValidationPresenterMixin:
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_invalid_checkbox_group_options_selected_exception(
+    def raise_invalid_checkbox_group_options_exception(
             self, err: IncorrectCheckBoxOptionsSelected):
         from ib_tasks.constants.exception_messages import \
             INCORRECT_CHECK_BOX_OPTIONS_SELECTED

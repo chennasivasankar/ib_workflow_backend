@@ -91,13 +91,13 @@ class CreateTaskPresenterImplementation(
 
     def raise_invalid_name_in_gof_selector(self, err):
         return \
-            self.raise_invalid_name_in_gof_selector_field_value_exception(err)
+            self.raise_invalid_name_in_gof_selector_exception(err)
 
     def raise_invalid_choice_in_radio_group_field(self, err):
         return self.raise_invalid_choice_in_radio_group_field_exception(err)
 
     def raise_invalid_checkbox_group_options_selected(self, err):
-        return self.raise_invalid_checkbox_group_options_selected_exception(
+        return self.raise_invalid_checkbox_group_options_exception(
             err)
 
     def raise_invalid_multi_select_options_selected(self, err):
