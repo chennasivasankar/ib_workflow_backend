@@ -108,8 +108,6 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             task_complete_details_dto, task_current_stage_details_dto, \
             all_tasks_overview_dto =\
                 self.user_action_on_task_and_set_random_assignees(task_id=task_id)
-
-
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
         except InvalidTaskException as err:
@@ -176,34 +174,29 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         return (task_complete_details_dto, task_current_stage_details_dto,
                 all_tasks_overview_dto)
 
-
     def user_action_on_task(self, task_id: int):
         self._validate_task_id(task_id)
         project_id = \
             self.task_storage.get_project_id_for_the_task_id(task_id=task_id)
         self.validate_if_user_is_in_project(
             project_id=project_id, user_id=self.user_id)
-        self._validations_for_task_action(task_id, project_id)
         self._validation_all_user_template_permitted_fields_are_filled_or_not(
             task_id=task_id, project_id=project_id
         )
-        self._validate_task_delay_reason_updated_or_not(task_id)
+        self._validations_for_task_action(task_id, project_id)
         self._validate_present_task_stage_actions(task_id=task_id)
-        task_dto = self._get_task_dto(task_id)
         updated_task_dto = \
             self._call_logic_and_update_status_variables_and_get_stage_ids(
-                task_dto=task_dto, task_id=task_id
+                task_id=task_id
             )
         stage_ids = self._get_task_stage_display_satisfied_stage_ids(task_id)
         self._update_task_stages(stage_ids=stage_ids, task_id=task_id)
         self._create_or_update_task_in_elasticsearch(
             task_dto=updated_task_dto, task_id=task_id, stage_ids=stage_ids
         )
-        task_complete_details_dto = \
-            self._get_task_current_board_complete_details(
-                task_id=task_id, stage_ids=stage_ids
-            )
-
+        task_complete_details_dto = self._get_task_current_board_complete_details(
+            task_id=task_id, stage_ids=stage_ids
+        )
         task_current_stage_details_dto = \
             self._get_task_current_stage_details(task_id=task_id)
         all_tasks_overview_details_dto = self._get_tasks_overview_for_users(
@@ -211,15 +204,16 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         )
         return (
             task_complete_details_dto, task_current_stage_details_dto,
-            all_tasks_overview_details_dto, stage_ids)
+            all_tasks_overview_details_dto, stage_ids
+        )
 
     def _validation_all_user_template_permitted_fields_are_filled_or_not(
             self, task_id: int, project_id: str
     ):
         action_type = self.action_storage.get_action_type_for_given_action_id(
             self.action_id)
-        action_type_is_not_no_validations = action_type != \
-                                            ActionTypes.NO_VALIDATIONS.value
+        action_type_is_not_no_validations = \
+            action_type != ActionTypes.NO_VALIDATIONS.value
         if action_type_is_not_no_validations:
             self._validate_all_user_template_permitted_fields_are_filled_or_not(
                 self.user_id, task_id, project_id)
@@ -317,25 +311,14 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         return stage_ids
 
     def _call_logic_and_update_status_variables_and_get_stage_ids(
-            self, task_dto: TaskDetailsDTO, task_id: int) -> TaskDetailsDTO:
+            self, task_id: int) -> TaskDetailsDTO:
         update_status_variable_obj = \
             CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
                 action_id=self.action_id, storage=self.storage,
                 task_id=task_id, create_task_storage=self.create_task_storage,
                 field_storage=self.field_storage)
         task_dto = update_status_variable_obj \
-            .call_action_logic_function_and_update_task_status_variables(
-            task_dto=task_dto)
-        return task_dto
-
-    def _get_task_dto(self, task_id: int):
-
-        from ib_tasks.interactors.get_task_base_interactor \
-            import GetTaskBaseInteractor
-        gof_and_status_obj = \
-            GetTaskBaseInteractor(storage=self.create_task_storage)
-        task_dto = gof_and_status_obj \
-            .get_task(task_id=task_id)
+            .call_action_logic_function_and_update_task_status_variables()
         return task_dto
 
     def _validations_for_task_action(self, task_id: int, project_id: str):
@@ -350,6 +333,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         self._validate_user_permission_to_user(
             self.user_id, action_roles, self.action_id, project_id=project_id
         )
+        self._validate_task_delay_reason_updated_or_not(task_id)
 
     def _validate_present_task_stage_actions(self, task_id: int):
 
@@ -425,11 +409,11 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             self.create_task_storage.check_task_delay_reason_updated_or_not(
                 task_id, stage_id, updated_due_date)
         task_delay_reason_is_not_updated = not is_task_delay_reason_updated
-        task_display_id = \
-            self.create_task_storage.get_task_display_id_for_task_id(task_id)
-        stage_display_name = \
-            self.stage_storage.get_stage_display_name_for_stage_id(stage_id)
         if task_delay_reason_is_not_updated:
+            task_display_id = \
+                self.create_task_storage.get_task_display_id_for_task_id(task_id)
+            stage_display_name = \
+                self.stage_storage.get_stage_display_name_for_stage_id(stage_id)
             raise TaskDelayReasonIsNotUpdated(
                 updated_due_date, task_display_id, stage_display_name)
         return
