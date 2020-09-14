@@ -37,7 +37,7 @@ class TeamPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_team_name_already_exists_response_for_add_team(self, exception):
+    def get_team_name_already_exists_response_for_add_team(self, err):
         pass
 
     @abc.abstractmethod

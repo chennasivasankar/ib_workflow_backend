@@ -16,9 +16,10 @@ class RolesInteractor:
     def __init__(self, storage: RolesStorageInterface):
         self.storage = storage
 
-    def add_project_roles_wrapper(self, role_dtos: List[RoleDTO],
-                                  project_id: str,
-                                  presenter: AddRolesPresenterInterface):
+    def add_project_roles_wrapper(
+            self, role_dtos: List[RoleDTO],
+            project_id: str, presenter: AddRolesPresenterInterface
+    ):
         response = None
         try:
             self.add_project_roles(role_dtos=role_dtos, project_id=project_id)

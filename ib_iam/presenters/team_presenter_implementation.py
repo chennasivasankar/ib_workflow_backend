@@ -71,10 +71,10 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
             response_dict=response_dict
         )
 
-    def get_team_name_already_exists_response_for_add_team(self, exception):
+    def get_team_name_already_exists_response_for_add_team(self, err):
         response_dict = {
             "response": TEAM_NAME_ALREADY_EXISTS_FOR_ADD_TEAM[
-                0].format(team_name=exception.team_name),
+                0].format(team_name=err.team_name),
             "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": TEAM_NAME_ALREADY_EXISTS_FOR_ADD_TEAM[1]
         }

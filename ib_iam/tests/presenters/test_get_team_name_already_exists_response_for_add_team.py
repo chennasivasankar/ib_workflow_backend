@@ -23,7 +23,7 @@ class TestRaiseExceptionIfTeamNameAlreadyExistsForAddTeam:
         # Act
         result = json_presenter \
             .get_team_name_already_exists_response_for_add_team(
-            exception=TeamNameAlreadyExists(team_name=team_name)
+            err=TeamNameAlreadyExists(team_name=team_name)
         )
 
         # Assert

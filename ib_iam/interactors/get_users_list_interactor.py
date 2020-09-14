@@ -96,10 +96,8 @@ class GetListOfUsersInteractor(ValidationMixin):
             user_ids=user_ids)
         user_profile_dtos = self._get_user_profile_dtos(user_ids)
         return ListOfCompleteUsersWithRolesDTO(
-            users=user_profile_dtos,
-            teams=user_team_dtos,
-            roles=user_role_dtos,
-            companies=user_company_dtos,
+            users=user_profile_dtos, teams=user_team_dtos,
+            roles=user_role_dtos, companies=user_company_dtos,
             total_no_of_users=total_count
         )
 
