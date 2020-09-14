@@ -7,9 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase02EditUserAPITestCase.test_case status_code'] = '404'
+snapshots['TestCase02EditUserAPITestCase.test_given_user_not_exist_returns_user_not_exists_response status_code'] = '404'
 
-snapshots['TestCase02EditUserAPITestCase.test_case body'] = {
+snapshots['TestCase02EditUserAPITestCase.test_given_user_not_exist_returns_user_not_exists_response body'] = {
     'http_status_code': 404,
     'res_status': 'USER_DOES_NOT_EXIST',
     'response': 'user is not exist'

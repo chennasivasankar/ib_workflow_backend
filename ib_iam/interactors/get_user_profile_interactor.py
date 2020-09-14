@@ -6,7 +6,7 @@ from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
     GetUserProfilePresenterInterface, \
     UserWithExtraDetailsDTO
 from ib_iam.interactors.storage_interfaces.dtos import \
-    TeamDTO, TeamUserIdsDTO, CompanyIdWithEmployeeIdsDTO, UserDTO
+    TeamDTO, TeamUserIdsDTO, CompanyIdWithEmployeeIdsDTO, UserDTO, CompanyDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 
@@ -25,10 +25,10 @@ class GetUserProfileInteractor:
             response = presenter.prepare_response_for_get_user_profile(
                 user_with_extra_details_dto=user_with_extra_details_dto)
         except InvalidUserId:
-            response = presenter.raise_exception_for_invalid_user_id()
+            response = presenter.response_for_invalid_user_id_exception()
         except UserAccountDoesNotExist:
             response \
-                = presenter.raise_exception_for_user_account_does_not_exist()
+                = presenter.response_for_user_account_does_not_exist_exception()
         return response
 
     def get_user_profile(self, user_id: str) -> UserWithExtraDetailsDTO:
@@ -43,42 +43,31 @@ class GetUserProfileInteractor:
             self._get_company_id_with_employee_ids_dto(company_dto)
         user_dtos = self._get_all_user_dtos(
             team_user_ids_dtos=team_user_ids_dtos,
-            company_id_with_employee_ids_dto=company_id_with_employee_ids_dto)
-        user_with_extra_details_dto = self._prepare_complete_user_profile_dto(
-            company_dto=company_dto,
-            team_dtos=team_dtos, team_user_ids_dtos=team_user_ids_dtos,
-            user_dtos=user_dtos, user_profile_dto=user_profile_dto,
-            company_id_with_employee_ids_dto=company_id_with_employee_ids_dto,
-            role_dtos=role_dtos
+            company_id_with_employee_ids_dto=company_id_with_employee_ids_dto
+        )
+        user_with_extra_details_dto = UserWithExtraDetailsDTO(
+            user_profile_dto=user_profile_dto, company_dto=company_dto,
+            team_dtos=team_dtos, team_user_ids_dto=team_user_ids_dtos,
+            user_dtos=user_dtos, role_dtos=role_dtos,
+            company_id_with_employee_ids_dto=company_id_with_employee_ids_dto
         )
         return user_with_extra_details_dto
 
-    def _get_all_user_dtos(self, company_id_with_employee_ids_dto,
-                           team_user_ids_dtos) -> List[UserProfileDTO]:
+    def _get_all_user_dtos(
+            self, team_user_ids_dtos: List[TeamUserIdsDTO],
+            company_id_with_employee_ids_dto: CompanyIdWithEmployeeIdsDTO
+
+    ) -> List[UserProfileDTO]:
         user_ids = self._get_all_user_ids_from_teams_and_companies(
             team_user_ids_dtos=team_user_ids_dtos,
-            company_id_with_employee_ids_dto=company_id_with_employee_ids_dto)
+            company_id_with_employee_ids_dto=company_id_with_employee_ids_dto
+        )
         user_dtos = self._get_user_dtos_from_service(user_ids=user_ids)
         return user_dtos
 
-    @staticmethod
-    def _prepare_complete_user_profile_dto(
-            company_dto, team_dtos, team_user_ids_dtos, role_dtos,
-            user_dtos, user_profile_dto, company_id_with_employee_ids_dto) \
-            -> UserWithExtraDetailsDTO:
-        user_with_extra_details_dto = UserWithExtraDetailsDTO(
-            user_profile_dto=user_profile_dto,
-            company_dto=company_dto,
-            team_dtos=team_dtos,
-            team_user_ids_dto=team_user_ids_dtos,
-            user_dtos=user_dtos,
-            company_id_with_employee_ids_dto=company_id_with_employee_ids_dto,
-            role_dtos=role_dtos
-        )
-        return user_with_extra_details_dto
-
-    def _get_company_id_with_employee_ids_dto(self, company_dto) -> \
-            CompanyIdWithEmployeeIdsDTO:
+    def _get_company_id_with_employee_ids_dto(
+            self, company_dto: CompanyDTO
+    ) -> CompanyIdWithEmployeeIdsDTO:
         company_id_with_employee_ids_dto = None
         if company_dto is not None:
             company_id = company_dto.company_id
@@ -86,13 +75,15 @@ class GetUserProfileInteractor:
                 .get_company_employee_ids_dto(company_id=company_id)
         return company_id_with_employee_ids_dto
 
-    def _get_user_profile_dto(self, user_id) -> CompleteUserProfileDTO:
+    def _get_user_profile_dto(self, user_id: str) -> CompleteUserProfileDTO:
         from ib_iam.adapters.service_adapter import get_service_adapter
         user_service = get_service_adapter().user_service
         user_profile_dto_from_ib_user = user_service.get_user_profile_dto(
-            user_id=user_id)
+            user_id=user_id
+        )
         user_details_dto_from_ib_iam = self.user_storage.get_user_details(
-            user_id=user_id)
+            user_id=user_id
+        )
         complete_user_profile_dto = self._convert_to_complete_user_profile_dto(
             user_profile_dto_from_ib_user, user_details_dto_from_ib_iam
         )
@@ -101,7 +92,8 @@ class GetUserProfileInteractor:
     @staticmethod
     def _convert_to_complete_user_profile_dto(
             ib_user_user_profile: UserProfileDTO,
-            ib_iam_user_details: UserDTO) -> CompleteUserProfileDTO:
+            ib_iam_user_details: UserDTO
+    ) -> CompleteUserProfileDTO:
         complete_user_profile_dto = CompleteUserProfileDTO(
             user_id=ib_iam_user_details.user_id,
             name=ib_user_user_profile.name,
@@ -122,7 +114,8 @@ class GetUserProfileInteractor:
             company_id_with_employee_ids_dto: CompanyIdWithEmployeeIdsDTO
     ) -> List[str]:
         user_ids = self._get_user_ids_from_teams(
-            team_user_ids_dtos=team_user_ids_dtos)
+            team_user_ids_dtos=team_user_ids_dtos
+        )
         if company_id_with_employee_ids_dto is not None:
             user_ids.extend(company_id_with_employee_ids_dto.employee_ids)
         unique_user_ids = list(set(user_ids))

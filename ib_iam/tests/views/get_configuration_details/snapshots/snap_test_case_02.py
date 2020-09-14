@@ -7,9 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase02GetConfigurationDetailsAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase02GetConfigurationDetailsAPITestCase.test_given_valid_details_returns_configuration_details_of_user status_code'] = '200'
 
-snapshots['TestCase02GetConfigurationDetailsAPITestCase.test_case body'] = {
+snapshots['TestCase02GetConfigurationDetailsAPITestCase.test_given_valid_details_returns_configuration_details_of_user body'] = {
     'companies': [
         {
             'company_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb200',

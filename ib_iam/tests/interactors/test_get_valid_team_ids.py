@@ -9,6 +9,7 @@ from ib_iam.interactors.team_interactor import TeamInteractor
 
 class TestGetValidTeamIds:
 
+    # TODO: assert the storage calls
     def test_get_valid_team_ids_returns_team_ids(self):
         team_storage = create_autospec(TeamStorageInterface)
         user_storage = create_autospec(UserStorageInterface)

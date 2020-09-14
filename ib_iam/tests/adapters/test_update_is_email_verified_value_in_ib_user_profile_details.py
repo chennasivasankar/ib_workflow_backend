@@ -1,5 +1,6 @@
 class TestUpdateIsEmailVerifiedValueInIbUsers:
-    def update_user_profile_mock(self, mocker):
+    @staticmethod
+    def update_user_profile_mock(mocker):
         mock = mocker.patch(
             "ib_users.interfaces.service_interface.ServiceInterface.update_user_profile"
         )
@@ -18,7 +19,7 @@ class TestUpdateIsEmailVerifiedValueInIbUsers:
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
         auth_service = service_adapter.auth_service
-        auth_service.update_is_email_verified_value_in_ib_user_profile_details(
+        auth_service.update_is_email_verified_value_in_ib_user(
             user_id=user_id, is_email_verified=is_email_verified)
 
         update_user_profile_mock.assert_called_once_with(
@@ -37,7 +38,7 @@ class TestUpdateIsEmailVerifiedValueInIbUsers:
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
         auth_service = service_adapter.auth_service
-        auth_service.update_is_email_verified_value_in_ib_user_profile_details(
+        auth_service.update_is_email_verified_value_in_ib_user(
             user_id=user_id, is_email_verified=is_email_verified)
 
         update_user_profile_mock.assert_called_once_with(

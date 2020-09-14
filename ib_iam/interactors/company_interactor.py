@@ -1,8 +1,7 @@
-from ib_iam.exceptions.custom_exceptions import (CompanyNameAlreadyExists,
-                                                 DuplicateUserIds,
-                                                 InvalidCompanyId,
-                                                 InvalidUserIds,
-                                                 UserIsNotAdmin)
+from ib_iam.exceptions.custom_exceptions import (
+    CompanyNameAlreadyExists, DuplicateUserIds, InvalidCompanyId,
+    InvalidUserIds, UserIsNotAdmin,
+    UserIdsAreInvalid)
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
     .add_company_presenter_interface import AddCompanyPresenterInterface
@@ -40,16 +39,14 @@ class CompanyInteractor(ValidationMixin):
         except UserIsNotAdmin:
             response = \
                 presenter.get_user_has_no_access_response_for_add_company()
-        except CompanyNameAlreadyExists as exception:
-            response = presenter \
-                .get_company_name_already_exists_response_for_add_company(
-                exception)
-        except DuplicateUserIds as exception:
-            response = presenter \
-                .get_duplicate_users_response_for_add_company(exception)
-        except InvalidUserIds as exception:
-            response = \
-                presenter.get_invalid_users_response_for_add_company(exception)
+        except CompanyNameAlreadyExists as err:
+            response = presenter.get_company_name_already_exists_response_for_add_company(
+                err
+            )
+        except DuplicateUserIds:
+            response = presenter.get_duplicate_users_response_for_add_company()
+        except UserIdsAreInvalid:
+            response = presenter.get_invalid_users_response_for_add_company()
         return response
 
     def add_company(
@@ -108,12 +105,12 @@ class CompanyInteractor(ValidationMixin):
         except InvalidCompanyId:
             response = \
                 presenter.get_invalid_company_response_for_update_company()
-        except DuplicateUserIds as exception:
-            response = presenter \
-                .get_duplicate_users_response_for_update_company(exception)
-        except InvalidUserIds as exception:
-            response = presenter \
-                .get_invalid_users_response_for_update_company(exception)
+        except DuplicateUserIds:
+            response = \
+                presenter.get_duplicate_users_response_for_update_company()
+        except UserIdsAreInvalid:
+            response = \
+                presenter.get_invalid_users_response_for_update_company()
         except CompanyNameAlreadyExists as exception:
             response = presenter \
                 .get_company_name_already_exists_response_for_update_company(

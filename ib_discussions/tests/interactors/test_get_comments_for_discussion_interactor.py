@@ -115,6 +115,7 @@ class TestGetCommentsForDiscussionInteractor:
         # Assert
         assert response \
                == expected_presenter_return_response_for_comments_with_users_dtos_mock
+
         presenter_mock.prepare_response_for_comments_with_users_dtos. \
             assert_called_once()
         storage_mock.get_comments_for_discussion_dtos.assert_called_once_with(

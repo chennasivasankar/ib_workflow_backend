@@ -16,8 +16,8 @@ class TestCase01UpdateUserPasswordAPITestCase(TestUtils):
     @pytest.mark.django_db
     def test_case(self, mocker, api_user, snapshot):
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_update_user_password
-        prepare_update_user_password(mocker)
+            update_user_password_mock
+        update_user_password_mock(mocker)
         body = {'current_password': 'password@1', 'new_password': 'p@ssword#1'}
         path_params = {}
         query_params = {}
