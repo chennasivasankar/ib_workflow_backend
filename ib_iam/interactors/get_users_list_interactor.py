@@ -2,10 +2,11 @@ from typing import List
 
 from ib_iam.adapters.dtos import UserProfileDTO, SearchQueryWithPaginationDTO
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
-    InvalidOffsetValue, InvalidLimitValue, InvalidUserId, RoleIdsAreInvalid
+    InvalidOffsetValue, InvalidLimitValue, InvalidUserId, \
+    InvalidRoleIdsForProject
 from ib_iam.interactors.mixins.validation import ValidationMixin
-from ib_iam.interactors.presenter_interfaces.dtos \
-    import ListOfCompleteUsersDTO, ListOfCompleteUsersWithRolesDTO
+from ib_iam.interactors.presenter_interfaces.dtos import \
+    ListOfCompleteUsersWithRolesDTO
 from ib_iam.interactors.presenter_interfaces.get_users_list_presenter_interface \
     import GetUsersListPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
@@ -167,15 +168,15 @@ class GetListOfUsersInteractor(ValidationMixin):
         self._validate_pagination_details(offset=offset, limit=limit)
         user_details_dtos = \
             self.user_storage.get_user_details_dtos_based_on_limit_offset_and_search_query(
-            limit=limit, offset=offset, search_query=search_query
-        )
+                limit=limit, offset=offset, search_query=search_query
+            )
         return user_details_dtos
 
     def get_all_user_dtos_based_on_query(self, search_query: str):
         user_details_dtos = \
             self.user_storage.get_user_details_dtos_based_on_search_query(
-            search_query=search_query
-        )
+                search_query=search_query
+            )
         return user_details_dtos
 
     def get_user_details_for_given_role_ids(
@@ -196,6 +197,10 @@ class GetListOfUsersInteractor(ValidationMixin):
 
     def _validate_role_ids(self, role_ids: List[str]):
         valid_role_ids = self.user_storage.get_valid_role_ids(
-            role_ids=role_ids)
-        if len(role_ids) != len(valid_role_ids):
-            raise RoleIdsAreInvalid
+            role_ids=role_ids
+        )
+        invalid_role_ids = list(
+            set(role_ids) - set(valid_role_ids)
+        )
+        if invalid_role_ids:
+            raise InvalidRoleIdsForProject(role_ids=invalid_role_ids)
