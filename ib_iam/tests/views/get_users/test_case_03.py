@@ -1,11 +1,15 @@
+"""
+Success case of get_users
+gives list of users and their details
+"""
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_iam.tests.common_fixtures.reset_fixture import \
     reset_sequence_for_user_profile_dto_factory
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...factories.models import UserDetailsFactory, CompanyFactory, \
+from ib_iam.tests.factories.models import UserDetailsFactory, CompanyFactory, \
     TeamUserFactory, TeamFactory, UserRoleFactory, ProjectRoleFactory
+from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
 class TestCase03GetUsersAPITestCase(TestUtils):
