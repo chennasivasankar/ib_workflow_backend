@@ -83,8 +83,8 @@ def prepare_get_permitted_action_ids_for_project(mocker, action_ids):
 
 def prepare_call_action_logic_update_stages_mock(mocker):
     path = "ib_tasks.interactors" \
-           ".call_action_logic_function_and_update_task_status_variables_interactor" \
-           ".CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor" \
+           ".call_action_logic_function_and_get_or_update_task_status_variables_interactor" \
+           ".CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor" \
            ".call_action_logic_function_and_update_task_status_variables"
     mock_obj = mocker.patch(path)
     return mock_obj
@@ -92,7 +92,7 @@ def prepare_call_action_logic_update_stages_mock(mocker):
 
 def prepare_stage_display_satisfied_stage_ids(mocker):
     path = 'ib_tasks.interactors.get_task_stage_logic_satisfied_stages' \
-           '.GetTaskStageLogicSatisfiedStages' \
+           '.GetTaskStageLogicSatisfiedStagesInteractor' \
            '.get_task_stage_logic_satisfied_stages'
     mock_obj = mocker.patch(path)
     return mock_obj
