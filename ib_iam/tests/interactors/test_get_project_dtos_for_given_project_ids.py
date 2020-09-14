@@ -28,7 +28,7 @@ class TestGetProjectDTOs:
         return team_storage_mock
 
     @pytest.fixture
-    def init_interactor(
+    def interactor(
             self, project_storage_mock, user_storage_mock, team_storage_mock):
         interactor = ProjectInteractor(
             project_storage=project_storage_mock,
@@ -38,35 +38,37 @@ class TestGetProjectDTOs:
         return interactor
 
     def test_get_project_dtos_for_give_project_ids(
-            self, init_interactor, project_storage_mock, user_storage_mock,
+            self, interactor, project_storage_mock, user_storage_mock,
             team_storage_mock):
         # Arrange
-        interactor = init_interactor
         project_ids = ["1"]
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
         project_dtos = [
             ProjectDTOFactory.create(project_id=project_id)
-            for project_id in project_ids]
-        project_storage_mock.get_project_dtos.return_value = \
-            project_dtos
+            for project_id in project_ids
+        ]
+        project_storage_mock.get_project_dtos.return_value = project_dtos
 
         # Act
-        interactor.get_project_dtos_bulk(
-            project_ids=project_ids)
+        interactor.get_project_dtos_bulk(project_ids=project_ids)
 
         # Assert
-        project_storage_mock.get_project_dtos.\
+        project_storage_mock.get_project_dtos. \
             assert_called_once_with(project_ids=project_ids)
 
-    # TODO: write assert statements for storage and presenter
     def test_get_project_dtos_for_give_invalid_project_ids_then_raise_exception(
-            self, init_interactor, project_storage_mock, user_storage_mock,
-            team_storage_mock):
+            self, interactor, project_storage_mock, user_storage_mock,
+            team_storage_mock
+    ):
+        # Arrange
         project_ids = ["1", "2"]
-        interactor = init_interactor
         from ib_iam.exceptions.custom_exceptions import InvalidProjectIds
         project_storage_mock.get_project_dtos.side_effect = \
             InvalidProjectIds(project_ids=project_ids)
 
+        # Assert
         with pytest.raises(InvalidProjectIds):
             interactor.get_project_dtos_bulk(project_ids=project_ids)
+        project_storage_mock.get_project_dtos.assert_called_once_with(
+            project_ids=project_ids
+        )
