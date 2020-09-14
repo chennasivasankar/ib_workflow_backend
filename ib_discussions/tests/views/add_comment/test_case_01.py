@@ -43,8 +43,6 @@ class TestCase01AddCommentAPITestCase(TestUtils):
         comment_content = "content"
         mention_user_ids = prepare_users_setup
         multimedia = prepare_multimedia_setup
-        print("*******************")
-        print(multimedia)
 
         body = {
             'comment_content': comment_content,
