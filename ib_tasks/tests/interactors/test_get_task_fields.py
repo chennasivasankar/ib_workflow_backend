@@ -104,6 +104,17 @@ class TestGetFieldsAndActionsInteractor:
                         field_ids=['FIELD-ID-3', 'FIELD-ID-4'])]
         return fields, stage_fields_dtos
 
+    @pytest.fixture
+    def get_user_roles_mock(self):
+        user_roles = [ProjectRolesDTO(
+                project_id="project_id_1",
+                roles=["FIN_PAYMENT_REQUESTER",
+                       "FIN_PAYMENT_POC",
+                       "FIN_PAYMENT_APPROVER",
+                       "FIN_PAYMENTS_RP",
+                       "FIN_FINANCE_RP"])]
+        return user_roles
+
     @pytest.fixture()
     def get_field_ids(self):
         return [TaskTemplateStageFieldsDTO(
@@ -143,6 +154,45 @@ class TestGetFieldsAndActionsInteractor:
         return TaskTemplateStagesDTOFactory.create_batch(
                 size=2, task_template_id="task_template_id_1", task_id=1)
 
+    def test_get_fields_when_invalid_task_id_raises_exception(
+            self,
+            mocker,
+            field_storage_mock,
+            get_fields_dtos,
+            get_field_ids,
+            task_storage_mock,
+            get_user_roles_mock,
+            get_task_dtos,
+            expected_output,
+            get_task_template_stage_dtos):
+        # Arrange
+        view_type = ViewType.KANBAN.value
+        field_dtos = get_fields_dtos
+        user_id = "user_id_1"
+        task_ids = [1, 2]
+        user_roles = get_user_roles_mock
+        user_roles_mock = get_user_role_ids_based_on_projects_mock(mocker)
+        user_roles_mock.return_value = user_roles
+        field_ids = ['FIELD-ID-1', 'FIELD-ID-2', 'FIELD-ID-3', 'FIELD-ID-4']
+        task_storage_mock.get_valid_task_ids.return_value = [1]
+        prepare_get_field_ids_having_permission_for_user_projects(mocker,
+                                                                  field_ids)
+        field_storage_mock.get_fields_details.return_value = field_dtos
+        interactor = GetTaskFieldsInteractor(field_storage_mock,
+                                             task_storage_mock
+                                             )
+
+        # Act
+        with pytest.raises(InvalidTaskIds) as err:
+            interactor.get_task_fields(
+                    task_stage_dtos=get_task_template_stage_dtos,
+                    view_type=view_type,
+                    user_id=user_id,
+                    task_ids=task_ids)
+
+        # Assert
+        task_storage_mock.get_valid_task_ids.assert_called_once_with(task_ids)
+
     def test_get_fields_given_task_stage_details(self,
                                                  mocker,
                                                  field_storage_mock,
@@ -150,6 +200,7 @@ class TestGetFieldsAndActionsInteractor:
                                                  get_field_ids,
                                                  task_storage_mock,
                                                  expected_output,
+                                                 get_user_roles_mock,
                                                  get_task_dtos,
                                                  get_task_template_stage_dtos):
         # Arrange
@@ -157,13 +208,8 @@ class TestGetFieldsAndActionsInteractor:
         field_dtos = get_fields_dtos
         user_id = "user_id_1"
         task_ids = [1, 2]
-        user_roles = [ProjectRolesDTO(
-                project_id="project_id_1",
-                roles=["FIN_PAYMENT_REQUESTER",
-                       "FIN_PAYMENT_POC",
-                       "FIN_PAYMENT_APPROVER",
-                       "FIN_PAYMENTS_RP",
-                       "FIN_FINANCE_RP"])]
+
+        user_roles = get_user_roles_mock
         user_roles_mock = get_user_role_ids_based_on_projects_mock(mocker)
         user_roles_mock.return_value = user_roles
         field_ids = ['FIELD-ID-1', 'FIELD-ID-2', 'FIELD-ID-3', 'FIELD-ID-4']
@@ -189,27 +235,20 @@ class TestGetFieldsAndActionsInteractor:
                 get_task_template_stage_dtos, view_type)
         assert response == expected_output
 
-    def test_get_fields_given_task_is_in_two_stages(self,
-                                                    mocker,
-                                                    field_storage_mock,
-                                                    get_fields_dtos,
-                                                    get_field_ids,
-                                                    task_storage_mock,
-                                                    get_task_dtos,
-                                                    expected_output_for_task_in_two_stages,
-                                                    get_task_template_stage_dtos):
+    def test_get_fields_given_task_is_in_two_stages(
+            self,
+            mocker, field_storage_mock, get_fields_dtos,
+            get_field_ids,
+            get_user_roles_mock,
+            task_storage_mock,
+            get_task_dtos, expected_output_for_task_in_two_stages,
+            get_task_template_stage_dtos):
         # Arrange
         view_type = ViewType.KANBAN.value
         field_dtos = get_fields_dtos
         user_id = "user_id_1"
         task_ids = [1, 2]
-        user_roles = [ProjectRolesDTO(
-                project_id="project_id_1",
-                roles=["FIN_PAYMENT_REQUESTER",
-                       "FIN_PAYMENT_POC",
-                       "FIN_PAYMENT_APPROVER",
-                       "FIN_PAYMENTS_RP",
-                       "FIN_FINANCE_RP"])]
+        user_roles = get_user_roles_mock
         user_roles_mock = get_user_role_ids_based_on_projects_mock(mocker)
         user_roles_mock.return_value = user_roles
         field_ids = ['FIELD-ID-1', 'FIELD-ID-2', 'FIELD-ID-3', 'FIELD-ID-4']
@@ -234,47 +273,3 @@ class TestGetFieldsAndActionsInteractor:
         field_storage_mock.get_field_ids.assert_called_once_with(
                 get_task_template_stage_dtos, view_type)
         assert response == expected_output_for_task_in_two_stages
-
-    def test_get_fields_when_invalid_task_id_raises_exception(
-            self,
-            mocker,
-            field_storage_mock,
-            get_fields_dtos,
-            get_field_ids,
-            task_storage_mock,
-            get_task_dtos,
-            expected_output,
-            get_task_template_stage_dtos):
-        # Arrange
-        view_type = ViewType.KANBAN.value
-        field_dtos = get_fields_dtos
-        user_id = "user_id_1"
-        task_ids = [1, 2]
-        user_roles = [ProjectRolesDTO(
-                project_id="project_id_1",
-                roles=["FIN_PAYMENT_REQUESTER",
-                       "FIN_PAYMENT_POC",
-                       "FIN_PAYMENT_APPROVER",
-                       "FIN_PAYMENTS_RP",
-                       "FIN_FINANCE_RP"])]
-        user_roles_mock = get_user_role_ids_based_on_projects_mock(mocker)
-        user_roles_mock.return_value = user_roles
-        field_ids = ['FIELD-ID-1', 'FIELD-ID-2', 'FIELD-ID-3', 'FIELD-ID-4']
-        task_storage_mock.get_valid_task_ids.return_value = [1]
-        prepare_get_field_ids_having_permission_for_user_projects(mocker,
-                                                                  field_ids)
-        field_storage_mock.get_fields_details.return_value = field_dtos
-        interactor = GetTaskFieldsInteractor(field_storage_mock,
-                                             task_storage_mock
-                                             )
-
-        # Act
-        with pytest.raises(InvalidTaskIds) as err:
-            interactor.get_task_fields(
-                task_stage_dtos=get_task_template_stage_dtos,
-                view_type=view_type,
-                user_id=user_id,
-                task_ids=task_ids)
-
-        # Assert
-        task_storage_mock.get_valid_task_ids.assert_called_once_with(task_ids)

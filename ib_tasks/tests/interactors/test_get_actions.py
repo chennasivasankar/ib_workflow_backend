@@ -23,7 +23,7 @@ from ib_tasks.tests.factories.storage_dtos import (
     StageActionDetailsDTOFactory)
 
 
-class TestGetFieldsAndActionsInteractor:
+class TestGetActionsInteractor:
 
     @pytest.fixture
     def action_storage_mock(self):
@@ -77,18 +77,8 @@ class TestGetFieldsAndActionsInteractor:
                                       action_type=ActionTypes.NO_VALIDATIONS.value,
                                       transition_template_id='template_id_4')]
 
-    def test_get_actions_given_stage_details(self,
-                                             mocker,
-                                             task_storage_mock,
-                                             stage_storage_mock,
-                                             action_storage_mock,
-                                             get_actions_dtos,
-                                             expected_output):
-        # Arrange
-        action_dtos = get_actions_dtos
-        user_id = "user_id_1"
-        task_ids = [1, 2]
-        stage_ids = ["stage_id_1", "stage_id_2"]
+    @pytest.fixture
+    def get_user_roles_mock(self):
         user_roles = [ProjectRolesDTO(
                 project_id="project_id_1",
                 roles=["FIN_PAYMENT_REQUESTER",
@@ -96,30 +86,13 @@ class TestGetFieldsAndActionsInteractor:
                        "FIN_PAYMENT_APPROVER",
                        "FIN_PAYMENTS_RP",
                        "FIN_FINANCE_RP"])]
-        user_roles_mock = get_user_role_ids_based_on_projects_mock(mocker)
-        user_roles_mock.return_value = user_roles
-        task_storage_mock.get_valid_task_ids.return_value = [1, 2]
-        stage_storage_mock.get_existing_stage_ids.return_value = stage_ids
-        action_storage_mock.get_actions_details.return_value = action_dtos
-        interactor = GetTaskActionsInteractor(action_storage_mock,
-                                              task_storage_mock,
-                                              stage_storage_mock)
-
-        # Act
-        response = interactor.get_task_actions(stage_ids=stage_ids,
-                                               user_id=user_id,
-                                               task_ids=task_ids)
-
-        # Assert
-        task_storage_mock.get_valid_task_ids.assert_called_once_with(task_ids)
-        stage_storage_mock.get_existing_stage_ids.assert_called_once_with(
-                stage_ids)
-        assert response == expected_output
+        return user_roles
 
     def test_when_task_ids_is_invalid_raises_exception(self,
                                                        mocker,
                                                        task_storage_mock,
                                                        stage_storage_mock,
+                                                       get_user_roles_mock,
                                                        action_storage_mock,
                                                        get_actions_dtos,
                                                        expected_output):
@@ -132,13 +105,7 @@ class TestGetFieldsAndActionsInteractor:
                                             task_id=2)]
         task_ids = [1, 2]
         stage_ids = ["stage_id_1", "stage_id_2"]
-        user_roles = [ProjectRolesDTO(
-                project_id="project_id_1",
-                roles=["FIN_PAYMENT_REQUESTER",
-                       "FIN_PAYMENT_POC",
-                       "FIN_PAYMENT_APPROVER",
-                       "FIN_PAYMENTS_RP",
-                       "FIN_FINANCE_RP"])]
+        user_roles = get_user_roles_mock
         user_roles_mock = get_user_role_ids_based_on_projects_mock(mocker)
         user_roles_mock.return_value = user_roles
         task_storage_mock.get_valid_task_ids.return_value = [1]
@@ -160,6 +127,7 @@ class TestGetFieldsAndActionsInteractor:
                                                         mocker,
                                                         task_storage_mock,
                                                         stage_storage_mock,
+                                                        get_user_roles_mock,
                                                         action_storage_mock,
                                                         get_actions_dtos,
                                                         expected_output):
@@ -168,13 +136,7 @@ class TestGetFieldsAndActionsInteractor:
         user_id = "user_id_1"
         task_ids = [1, 2]
         stage_ids = ["stage_id_1", "stage_id_2"]
-        user_roles = [ProjectRolesDTO(
-                project_id="project_id_1",
-                roles=["FIN_PAYMENT_REQUESTER",
-                       "FIN_PAYMENT_POC",
-                       "FIN_PAYMENT_APPROVER",
-                       "FIN_PAYMENTS_RP",
-                       "FIN_FINANCE_RP"])]
+        user_roles = get_user_roles_mock
         user_roles_mock = get_user_role_ids_based_on_projects_mock(mocker)
         stage_storage_mock.get_existing_stage_ids.return_values = [
                 "stage_id_1"]
@@ -198,6 +160,7 @@ class TestGetFieldsAndActionsInteractor:
             self,
             mocker,
             task_storage_mock,
+            get_user_roles_mock,
             stage_storage_mock,
             action_storage_mock):
         # Arrange
@@ -205,13 +168,7 @@ class TestGetFieldsAndActionsInteractor:
         user_id = "user_id_1"
         task_ids = [1, 2]
         stage_ids = ["stage_id_1", "stage_id_2"]
-        user_roles = [ProjectRolesDTO(
-                project_id="project_id_1",
-                roles=["FIN_PAYMENT_REQUESTER",
-                       "FIN_PAYMENT_POC",
-                       "FIN_PAYMENT_APPROVER",
-                       "FIN_PAYMENTS_RP",
-                       "FIN_FINANCE_RP"])]
+        user_roles = get_user_roles_mock
         user_roles_mock = get_user_role_ids_based_on_projects_mock(mocker)
         user_roles_mock.return_value = user_roles
         task_storage_mock.get_valid_task_ids.return_value = [1, 2]
@@ -227,4 +184,38 @@ class TestGetFieldsAndActionsInteractor:
                                                task_ids=task_ids)
 
         # Assert
+        assert response == expected_output
+
+    def test_get_actions_given_stage_details(self,
+                                             mocker,
+                                             task_storage_mock,
+                                             stage_storage_mock,
+                                             get_user_roles_mock,
+                                             action_storage_mock,
+                                             get_actions_dtos,
+                                             expected_output):
+        # Arrange
+        action_dtos = get_actions_dtos
+        user_id = "user_id_1"
+        task_ids = [1, 2]
+        stage_ids = ["stage_id_1", "stage_id_2"]
+        user_roles = get_user_roles_mock
+        user_roles_mock = get_user_role_ids_based_on_projects_mock(mocker)
+        user_roles_mock.return_value = user_roles
+        task_storage_mock.get_valid_task_ids.return_value = [1, 2]
+        stage_storage_mock.get_existing_stage_ids.return_value = stage_ids
+        action_storage_mock.get_actions_details.return_value = action_dtos
+        interactor = GetTaskActionsInteractor(action_storage_mock,
+                                              task_storage_mock,
+                                              stage_storage_mock)
+
+        # Act
+        response = interactor.get_task_actions(stage_ids=stage_ids,
+                                               user_id=user_id,
+                                               task_ids=task_ids)
+
+        # Assert
+        task_storage_mock.get_valid_task_ids.assert_called_once_with(task_ids)
+        stage_storage_mock.get_existing_stage_ids.assert_called_once_with(
+                stage_ids)
         assert response == expected_output
