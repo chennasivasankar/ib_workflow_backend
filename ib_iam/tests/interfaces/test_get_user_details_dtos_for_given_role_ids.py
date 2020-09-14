@@ -68,8 +68,9 @@ class TestGetUserDetailsBulkForGivenRoleIds:
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         service_interface = ServiceInterface()
 
-        from ib_iam.exceptions.custom_exceptions import RoleIdsAreInvalid
-        with pytest.raises(RoleIdsAreInvalid):
+        from ib_iam.exceptions.custom_exceptions import \
+            InvalidRoleIdsForProject
+        with pytest.raises(InvalidRoleIdsForProject):
             service_interface.get_user_details_for_given_role_ids(
                 role_ids=invalid_role_ids, project_id=project_id)
 

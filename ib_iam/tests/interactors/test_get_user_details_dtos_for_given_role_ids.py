@@ -43,8 +43,9 @@ class TestGetUserDetailsForGivenRoleIds:
         interactor = self.interactor_init(user_storage_mock=user_storage_mock)
         user_storage_mock.get_valid_role_ids.return_value = []
 
-        from ib_iam.exceptions.custom_exceptions import RoleIdsAreInvalid
-        with pytest.raises(RoleIdsAreInvalid):
+        from ib_iam.exceptions.custom_exceptions import \
+            InvalidRoleIdsForProject
+        with pytest.raises(InvalidRoleIdsForProject):
             interactor.get_user_details_for_given_role_ids(
                 role_ids=invalid_role_ids, project_id=project_id)
         user_storage_mock.get_valid_role_ids.assert_called_once_with(
