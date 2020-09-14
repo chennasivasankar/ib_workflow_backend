@@ -191,6 +191,8 @@ class StagesStorageImplementation(StageStorageInterface):
         list_of_stage_ids = [stage.stage_id
                              for stage in update_stages_information]
         stages = Stage.objects.filter(stage_id__in=list_of_stage_ids)
+        StagePermittedRoles.objects.filter(
+                stage__stage_id__in=stage_ids).delete()
         list_of_permitted_roles = self._get_list_of_permitted_roles_objs(
             stages, update_stages_information)
         StagePermittedRoles.objects.bulk_create(list_of_permitted_roles)

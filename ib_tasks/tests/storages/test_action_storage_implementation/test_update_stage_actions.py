@@ -1,3 +1,4 @@
+import factory
 import pytest
 
 from ib_tasks.models import StageAction, ActionPermittedRoles
@@ -5,8 +6,11 @@ from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
 from ib_tasks.tests.factories.interactor_dtos import ActionDTOFactory, \
     StageActionDTOFactory
-from ib_tasks.tests.factories.models import StageActionFactory, \
-    StageModelFactory, TaskTemplateWithTransitionFactory, TaskTemplateFactory
+from ib_tasks.tests.factories.models import (StageActionFactory,
+                                             StageModelFactory,
+                                             TaskTemplateWithTransitionFactory,
+                                             TaskTemplateFactory,
+                                             ActionPermittedRolesFactory)
 
 
 @pytest.mark.django_db
@@ -29,7 +33,10 @@ class TestUpdateStageActions:
 
     @pytest.fixture()
     def create_stage_actions(self):
-        StageActionFactory.create_batch(size=40)
+        action_objs = StageActionFactory.create_batch(size=40)
+        ActionPermittedRolesFactory.create_batch(40,
+                                                 action=factory.Iterator(
+                                                         action_objs))
 
     @staticmethod
     def _validate(expected, returned):

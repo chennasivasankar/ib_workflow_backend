@@ -151,6 +151,9 @@ class ActionsStorageImplementation(ActionStorageInterface):
                 )
             )
 
+        action_ids = [action.id for action in action_objs]
+        ActionPermittedRoles.objects.filter(
+                action_id__in=action_ids).delete()
         list_of_permitted_roles = self._get_list_of_permitted_roles_objs(
             action_objs, stage_actions)
 
@@ -197,13 +200,11 @@ class ActionsStorageImplementation(ActionStorageInterface):
         for item in stages:
             list_of_stages[item['stage_id']] = item['id']
 
-        list_of_task_stages = []
         for task in task_template_stage_dtos:
-            list_of_task_stages.append(TaskTemplateInitialStage(
+            TaskTemplateInitialStage.objects.update_or_create(
                 task_template_id=task.task_template_id,
                 stage_id=list_of_stages[task.stage_id]
-            ))
-        TaskTemplateInitialStage.objects.bulk_create(list_of_task_stages)
+            )
 
     def get_valid_task_template_ids(self, task_template_ids: List[str]):
         from ib_tasks.models.task_template import TaskTemplate

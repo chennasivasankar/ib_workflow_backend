@@ -4,44 +4,57 @@ import factory
 
 from ib_tasks.adapters.dtos import UserDTO, AssigneeDetailsDTO
 from ib_tasks.constants.enum import Searchable, Priority
-from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
-    SearchableFieldDetailDTO
+from ib_tasks.interactors.field_dtos import (SearchableFieldTypeDTO,
+                                             SearchableFieldDetailDTO)
 from ib_tasks.interactors.filter_dtos import SearchQueryWithPaginationDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
-    import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
-from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
-    TaskStageAssigneeDetailsDTO
-from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
-    StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
-    UserStagesWithPaginationDTO, StageAssigneeDTO, \
-    StageAssigneeWithTeamDetailsDTO, AssigneeWithTeamDetailsDTO, \
-    StageWithUserDetailsDTO
+    import (GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO,
+            FieldDisplayDTO)
+from ib_tasks.interactors.stage_dtos import (TaskStageDTO,
+                                             TaskStageAssigneeDetailsDTO)
+from ib_tasks.interactors.stages_dtos import (TaskTemplateStageActionDTO,
+                                              StageActionDTO, StagesActionDTO,
+                                              TaskIdWithStageAssigneeDTO,
+                                              UserStagesWithPaginationDTO,
+                                              StageAssigneeDTO,
+                                              StageAssigneeWithTeamDetailsDTO,
+                                              AssigneeWithTeamDetailsDTO,
+                                              StageWithUserDetailsDTO,
+                                              TemplateStageDTO)
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldDetailsDTO, FieldWritePermissionRolesDTO
+    (FieldDetailsDTO, FieldWritePermissionRolesDTO)
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskWithDbStageIdDTO, AssigneeCurrentTasksCountDTO, StageActionNamesDTO, \
-    StageAssigneeDetailsDTO, CurrentStageDetailsDTO, StageIdWithValueDTO, \
-    CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO, StageActionNamesDTO, CreateStageFlowDTO, \
-    StageFlowWithActionIdDTO
+    (TaskWithDbStageIdDTO, AssigneeCurrentTasksCountDTO, StageActionNamesDTO,
+     StageAssigneeDetailsDTO, CurrentStageDetailsDTO, StageIdWithValueDTO,
+     CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO,
+     StageActionNamesDTO, CreateStageFlowDTO,
+     StageFlowWithActionIdDTO)
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
-from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
-    TaskDueParametersDTO, \
-    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, \
-    CreateTaskLogDTO, \
-    CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeDTO, \
-    SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
-    TaskDelayParametersDTO, UpdateTaskWithTaskDisplayIdDTO, \
-    SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO, SearchQueryDTO, StageDisplayLogicDTO
+from ib_tasks.interactors.task_dtos import (GoFFieldsDTO,
+                                            TaskDueParametersDTO,
+                                            FieldValuesDTO, GetTaskDetailsDTO,
+                                            StatusOperandStageDTO,
+                                            CreateTaskLogDTO,
+                                            CreateTaskDTO, UpdateTaskDTO,
+                                            StageIdWithAssigneeDTO,
+                                            SaveAndActOnTaskDTO,
+                                            TaskCurrentStageDetailsDTO,
+                                            TaskDelayParametersDTO,
+                                            UpdateTaskWithTaskDisplayIdDTO,
+                                            SaveAndActOnTaskWithTaskDisplayIdDTO,
+                                            SearchableDTO, SearchQueryDTO,
+                                            StageDisplayLogicDTO)
 from ib_tasks.interactors.task_template_dtos import \
-    CreateTransitionChecklistTemplateDTO, \
-    CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
-from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, \
-    UserDetailsDTO, TeamInfoDTOFactory
+    (CreateTransitionChecklistTemplateDTO,
+     CreateTransitionChecklistTemplateWithTaskDisplayIdDTO)
+from ib_tasks.tests.factories.adapter_dtos import (AssigneeDetailsDTOFactory,
+                                                   UserDetailsDTO,
+                                                   TeamInfoDTOFactory)
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -56,7 +69,8 @@ class UserDetailsDTOFactory(factory.Factory):
     class Meta:
         model = UserDetailsDTO
 
-    user_id = factory.Sequence(lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
+    user_id = factory.Sequence(
+        lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
     user_name = factory.Sequence(lambda n: "name_%d" % n)
     profile_pic_url = "pic_url"
 
@@ -83,7 +97,7 @@ class StageActionDTOFactory(factory.Factory):
     button_text = factory.Sequence(lambda n: 'button_text_%d' % (n + 1))
     action_type = "action_type"
     transition_template_id = factory.Sequence(
-        lambda n: "template_%d" % (n + 1))
+            lambda n: "template_%d" % (n + 1))
     button_color = factory.Sequence(lambda n: 'button_color_%d' % (n + 1))
     function_path = "sample_function_path"
 
@@ -110,7 +124,7 @@ class TaskTemplateStageActionDTOFactory(factory.Factory):
     function_path = "sample_function_path"
     action_type = "action_type"
     transition_template_id = factory.Sequence(
-        lambda n: "transition_template_id_%d" % (n + 1))
+            lambda n: "transition_template_id_%d" % (n + 1))
 
 
 class TaskStageDTOFactory(factory.Factory):
@@ -202,7 +216,7 @@ class FieldValuesDTOFactory(factory.Factory):
 
     field_id = factory.Sequence(lambda counter: "field{}".format(counter))
     field_response = factory.Sequence(
-        lambda counter: "field_response{}".format(counter))
+            lambda counter: "field_response{}".format(counter))
 
 
 class GoFFieldsDTOFactory(factory.Factory):
@@ -351,6 +365,14 @@ class TaskDelayParametersDTOFactory(factory.Factory):
     reason = "reason"
 
 
+class TemplateStageDTOFactory(factory.Factory):
+    class Meta:
+        model = TemplateStageDTO
+
+    task_template_id = factory.Sequence(lambda n: "template_%d" % n)
+    stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
+
+
 class CreateTaskDTOFactory(factory.Factory):
     class Meta:
         model = CreateTaskDTO
@@ -403,7 +425,7 @@ class UpdateTaskWithTaskDisplayIdDTOFactory(factory.Factory):
         model = UpdateTaskWithTaskDisplayIdDTO
 
     task_display_id = factory.Sequence(
-        lambda c: "task_display_id_{}".format(c))
+            lambda c: "task_display_id_{}".format(c))
     action_type = None
     created_by_id = "123e4567-e89b-12d3-a456-426614174000"
     title = factory.Sequence(lambda c: "title_{}".format(c))
@@ -471,7 +493,7 @@ class CurrentStageDetailsDTOFactory(factory.Factory):
 
     stage_id = factory.Sequence(lambda c: "stage_{}".format(c))
     stage_display_name = factory.Sequence(
-        lambda c: "stage_display_name_{}".format(c))
+            lambda c: "stage_display_name_{}".format(c))
 
 
 class TaskCurrentStageDetailsDTOFactory(factory.Factory):
@@ -510,7 +532,7 @@ class CreateTransitionChecklistTemplateDTOFactory(factory.Factory):
     task_id = factory.Sequence(lambda c: c)
     created_by_id: str
     transition_checklist_template_id: factory.Sequence(
-        lambda c: "transition_checklist_template_".format(c))
+            lambda c: "transition_checklist_template_".format(c))
     action_id: factory.Sequence(lambda c: c)
     stage_id: factory.Sequence(lambda c: c)
 
@@ -520,16 +542,16 @@ class CreateTransitionChecklistTemplateDTOFactory(factory.Factory):
 
 
 class CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
-    factory.Factory
+        factory.Factory
 ):
     class Meta:
         model = CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
 
     task_display_id = factory.Sequence(
-        lambda c: "task_display_id_{}".format(c))
+            lambda c: "task_display_id_{}".format(c))
     created_by_id = "123e4567-e89b-12d3-a456-426614174000"
     transition_checklist_template_id = factory.Sequence(
-        lambda c: "transition_checklist_template_".format(c))
+            lambda c: "transition_checklist_template_".format(c))
     action_id = factory.Sequence(lambda c: c)
     stage_id = factory.Sequence(lambda c: c)
 
@@ -580,8 +602,8 @@ class AssigneeWithTeamDetailsDTOFactory(factory.Factory):
         model = AssigneeWithTeamDetailsDTO
 
     assignee_id = factory.sequence(
-        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
-            counter))
+            lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+                    counter))
     name = factory.sequence(lambda counter: "name_{}".format(counter))
     profile_pic_url = "https://www.google.com/search?q=ibhubs&client=ubuntu" \
                       "&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved" \
@@ -610,8 +632,8 @@ class AssigneesDTOFactory(factory.Factory):
         model = AssigneeDetailsDTO
 
     assignee_id = factory.sequence(
-        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
-            counter))
+            lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+                    counter))
     name = factory.sequence(lambda counter: "name_{}".format(counter))
     profile_pic_url = "https://www.google.com/search?q=ibhubs&client=ubuntu" \
                       "&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved" \
@@ -625,7 +647,7 @@ class TaskWithDbStageIdDTOFactory(factory.Factory):
 
     task_id = factory.sequence(lambda counter: counter + 1)
     db_stage_id = factory.sequence(
-        lambda counter: counter + 1)
+            lambda counter: counter + 1)
 
 
 class AssigneeCurrentTasksCountDTOFactory(factory.Factory):
@@ -633,9 +655,9 @@ class AssigneeCurrentTasksCountDTOFactory(factory.Factory):
         model = AssigneeCurrentTasksCountDTO
 
     assignee_id = factory.sequence(
-        lambda counter: 'assignee_{}'.format(counter + 1))
+            lambda counter: 'assignee_{}'.format(counter + 1))
     tasks_count = factory.sequence(
-        lambda counter: counter + 1)
+            lambda counter: counter + 1)
 
 
 class StageWithUserDetailsDTOFactory(factory.Factory):
@@ -644,11 +666,12 @@ class StageWithUserDetailsDTOFactory(factory.Factory):
 
     db_stage_id = factory.sequence(lambda counter: counter + 1)
     stage_display_name = factory.sequence(
-        lambda counter: 'stage_{}'.format(counter + 1))
+            lambda counter: 'stage_{}'.format(counter + 1))
 
     @factory.lazy_attribute
     def assignee_details_dto(self):
         return AssigneeDetailsDTOFactory()
+
 
 class CreateStageFlowDTOFactory(factory.Factory):
     class Meta:
@@ -656,7 +679,7 @@ class CreateStageFlowDTOFactory(factory.Factory):
 
     previous_stage_id = factory.sequence(lambda n: "stage_{}".format(n))
     action_name = factory.sequence(lambda n: "action_name_{}".format(n))
-    next_stage_id = factory.sequence(lambda n: "stage_{}".format(n+1))
+    next_stage_id = factory.sequence(lambda n: "stage_{}".format(n + 1))
 
 
 class StageFlowWithActionIdDTOFactory(factory.Factory):
