@@ -89,7 +89,7 @@ class CreateTaskPresenterImplementation(
     def raise_invalid_dropdown_value(self, err):
         return self.raise_invalid_dropdown_value_exception(err)
 
-    def raise_invalid_name_in_gof_selector_field_value(self, err):
+    def raise_invalid_name_in_gof_selector(self, err):
         return \
             self.raise_invalid_name_in_gof_selector_field_value_exception(err)
 
@@ -107,7 +107,7 @@ class CreateTaskPresenterImplementation(
         return self.raise_invalid_multi_select_labels_selected_exception(err)
 
     def raise_invalid_date_format(self, err: InvalidDateFormat):
-        self.raise_invalid_date_format_exception(err)
+        return self.raise_invalid_date_format_exception(err)
 
     def raise_invalid_time_format(self, err):
         return self.raise_invalid_time_format_exception(err)
@@ -356,7 +356,7 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_stage_ids_with_invalid_permission_for_assignee(
+    def raise_invalid_stage_assignees(
             self, err: StageIdsWithInvalidPermissionForAssignee
     ):
         from ib_tasks.constants.exception_messages import \

@@ -177,8 +177,7 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
         except InvalidValueForDropdownField as err:
             return presenter.raise_invalid_dropdown_value(err)
         except IncorrectNameInGoFSelectorField as err:
-            return presenter.raise_invalid_name_in_gof_selector_field_value(
-                err)
+            return presenter.raise_invalid_name_in_gof_selector(err)
         except IncorrectRadioGroupChoice as err:
             return presenter.raise_invalid_choice_in_radio_group_field(err)
         except IncorrectCheckBoxOptionsSelected as err:
@@ -216,8 +215,7 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
         except InvalidDbStageIdsListException as err:
             return presenter.raise_invalid_stage_ids(err)
         except StageIdsWithInvalidPermissionForAssignee as err:
-            return presenter.raise_stage_ids_with_invalid_permission_for_assignee(
-                err)
+            return presenter.raise_invalid_stage_assignees(err)
         except StageIdsListEmptyException as err:
             return presenter.raise_stage_ids_list_empty(err)
         except InvalidStageIdsListException as err:

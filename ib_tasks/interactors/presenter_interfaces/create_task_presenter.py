@@ -103,8 +103,8 @@ class CreateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_name_in_gof_selector_field_value(self,
-                                                       err):
+    def raise_invalid_name_in_gof_selector(self,
+                                           err):
         pass
 
     @abc.abstractmethod
@@ -180,7 +180,7 @@ class CreateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_stage_ids_with_invalid_permission_for_assignee(
+    def raise_invalid_stage_assignees(
             self, err: StageIdsWithInvalidPermissionForAssignee):
         pass
 

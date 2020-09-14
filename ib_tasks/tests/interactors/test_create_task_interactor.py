@@ -1673,7 +1673,7 @@ class TestCreateTaskInteractor:
             task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
-            .raise_invalid_name_in_gof_selector_field_value \
+            .raise_invalid_name_in_gof_selector \
             .return_value = mock_object
 
         # Act
@@ -1683,10 +1683,10 @@ class TestCreateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_invalid_name_in_gof_selector_field_value \
+            .raise_invalid_name_in_gof_selector \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_invalid_name_in_gof_selector_field_value \
+            raise_invalid_name_in_gof_selector \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
