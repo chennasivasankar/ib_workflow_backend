@@ -1,4 +1,6 @@
-from typing import Optional, List
+import datetime as datetime
+from dataclasses import dataclass
+from typing import Optional, List, Union
 
 from ib_tasks.constants.enum import ActionTypes, Priority
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
@@ -12,12 +14,35 @@ from ib_tasks.exceptions.fields_custom_exceptions import \
 from ib_tasks.exceptions.task_custom_exceptions import (
     InvalidTaskTemplateDBId, InvalidTaskTemplateOfProject, PriorityIsRequired
 )
-from ib_tasks.interactors.create_or_update_task.create_task_interactor import \
-    TaskDetailsValidationsStorages
 from ib_tasks.interactors.create_or_update_task \
     .gofs_details_validations_interactor import \
     GoFsDetailsValidationsInteractor
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
+    ActionStorageInterface
+from ib_tasks.interactors.storage_interfaces.create_or_update_task_storage_interface import \
+    CreateOrUpdateTaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+    FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
+from ib_tasks.interactors.storage_interfaces.storage_interface import \
+    StorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+    TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import \
+    TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import CreateTaskDTO, GoFFieldsDTO
+
+
+@dataclass
+class TaskDetailsValidationsStorages:
+    task_template_storage: TaskTemplateStorageInterface
+    storage: StorageInterface
+    action_storage: ActionStorageInterface
+    task_storage: TaskStorageInterface
+    gof_storage: GoFStorageInterface
+    create_task_storage: CreateOrUpdateTaskStorageInterface
+    field_storage: FieldsStorageInterface
 
 
 class TaskDetailsValidationsInteractor:
@@ -32,14 +57,44 @@ class TaskDetailsValidationsInteractor:
         self.field_storage = storages_dto.field_storage
 
     def perform_task_details_validations(self, task_dto: CreateTaskDTO):
-        self._validate_project_id(task_dto.project_id)
-        self._validate_task_template_id(task_dto.task_template_id)
-        self._validate_task_template_project_id(
-            task_dto.project_id, task_dto.task_template_id)
-        self._validate_action_id(task_dto.action_id)
-        action_type = self.action_storage.get_action_type_for_given_action_id(
-            action_id=task_dto.action_id)
-        self._validate_task_details(task_dto, action_type)
+        action_id = task_dto.basic_task_details_dto.action_id
+        task_template_id = task_dto.basic_task_details_dto.task_template_id
+        action_type = self._validate_action_id_and_get_action_type(action_id)
+
+        self._validate_task_basic_details(task_dto, action_type)
+        self._validate_gofs_details()
+
+        action_type_is_not_no_validations = \
+            action_type != ActionTypes.NO_VALIDATIONS.value
+        if action_type_is_not_no_validations:
+            self._validate_all_user_template_permitted_fields_are_filled_or_not(
+                user_id=task_dto.basic_task_details_dto.created_by_id,
+                project_id=task_dto.basic_task_details_dto.project_id,
+                task_template_id=task_template_id,
+                gof_fields_dtos=task_dto.gof_fields_dtos
+            )
+
+    def _validate_action_id_and_get_action_type(
+            self, action_id: int) -> Union[ActionTypes, InvalidActionException]:
+        self._validate_action_id(action_id)
+        action_type = \
+            self.action_storage.get_action_type_for_given_action_id(action_id)
+        return action_type
+
+    def _validate_task_basic_details(
+            self, task_dto: CreateTaskDTO, action_type: ActionTypes):
+        project_id = task_dto.basic_task_details_dto.project_id
+        task_template_id = task_dto.basic_task_details_dto.task_template_id
+
+        self._validate_project_id(project_id)
+        self._validate_task_template_id(task_template_id)
+        self._validate_task_template_project_id(project_id, task_template_id)
+        self._validate_task_dates_and_priority(
+            task_dto.basic_task_details_dto.start_datetime,
+            task_dto.basic_task_details_dto.due_datetime,
+            task_dto.basic_task_details_dto.priority, action_type)
+
+    def _validate_gofs_details(self):
         gofs_details_validation_interactor = GoFsDetailsValidationsInteractor(
             self.task_storage, self.gof_storage,
             self.create_task_storage, self.storage,
@@ -47,17 +102,10 @@ class TaskDetailsValidationsInteractor:
         )
         gofs_details_validation_interactor.perform_gof_details_validations(
             gof_fields_dtos=task_dto.gof_fields_dtos,
-            user_id=task_dto.created_by_id,
-            task_template_id=task_dto.task_template_id,
-            project_id=task_dto.project_id, action_type=action_type)
-        action_type_is_not_no_validations = \
-            action_type != ActionTypes.NO_VALIDATIONS.value
-        if action_type_is_not_no_validations:
-            self._validate_all_user_template_permitted_fields_are_filled_or_not(
-                user_id=task_dto.created_by_id, project_id=task_dto.project_id,
-                task_template_id=task_dto.task_template_id,
-                gof_fields_dtos=task_dto.gof_fields_dtos
-            )
+            user_id=task_dto.basic_task_details_dto.created_by_id,
+            task_template_id=task_dto.basic_task_details_dto.task_template_id,
+            project_id=task_dto.basic_task_details_dto.project_id,
+            action_type=action_type)
 
     @staticmethod
     def _validate_project_id(project_id: str) -> Optional[InvalidProjectId]:
@@ -99,18 +147,17 @@ class TaskDetailsValidationsInteractor:
             raise InvalidActionException(action_id)
         return None
 
-    def _validate_task_details(
-            self, task_dto: CreateTaskDTO,
+    def _validate_task_dates_and_priority(
+            self, start_datetime: datetime.datetime,
+            due_datetime: datetime.datetime, priority: Priority,
             action_type: Optional[ActionTypes]
     ) -> Optional[Exception]:
-        start_datetime = task_dto.start_datetime
-        due_datetime = task_dto.due_datetime
         self._validate_due_datetime_without_start_datetime(
             start_datetime, due_datetime)
         action_type_is_no_validations = \
             action_type == ActionTypes.NO_VALIDATIONS.value
         self._validate_priority_in_no_validations_case(
-            task_dto.priority, action_type_is_no_validations)
+            priority, action_type_is_no_validations)
         if action_type_is_no_validations and due_datetime is None:
             return
         start_datetime_is_emtpy = not start_datetime
@@ -160,8 +207,7 @@ class TaskDetailsValidationsInteractor:
             get_roles_service_adapter
         roles_service_adapter = get_roles_service_adapter()
         user_roles = roles_service_adapter.roles_service \
-            .get_user_role_ids_based_on_project(
-            user_id=user_id, project_id=project_id)
+            .get_user_role_ids_based_on_project(user_id, project_id)
         template_gof_ids = self.task_template_storage.get_gof_ids_of_template(
             template_id=task_template_id)
         gof_id_with_display_name_dtos = \

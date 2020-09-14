@@ -4,7 +4,7 @@ from typing import List, Dict
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
-from ib_tasks.interactors.task_dtos import FieldValuesDTO
+from ib_tasks.interactors.task_dtos import FieldValuesDTO, BasicTaskDetailsDTO
 from .validator_class import ValidatorClass
 from ...presenters.create_task_presenter import \
     CreateTaskPresenterImplementation
@@ -50,11 +50,14 @@ def api_wrapper(*args, **kwargs):
         )
         task_gofs_dtos.append(gof_field_dto)
 
-    task_dto = CreateTaskDTO(
+    basic_task_details_dto = BasicTaskDetailsDTO(
         project_id=project_id, task_template_id=task_template_id,
         created_by_id=user_id, action_id=action_id, title=title,
         description=description, start_datetime=start_datetime,
-        due_datetime=due_datetime, priority=priority,
+        due_datetime=due_datetime, priority=priority
+    )
+    task_dto = CreateTaskDTO(
+        basic_task_details_dto=basic_task_details_dto,
         gof_fields_dtos=task_gofs_dtos)
 
     from ib_tasks.storages.tasks_storage_implementation \

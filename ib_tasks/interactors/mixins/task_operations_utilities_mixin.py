@@ -1,5 +1,8 @@
 from typing import List, Optional
 
+from ib_tasks.constants.enum import ViewType
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TaskGoFFieldDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
@@ -54,3 +57,21 @@ class TaskOperationsUtilitiesMixin:
             if gof_matched:
                 return task_gof_details_dto.task_gof_id
         return
+
+    def _get_task_overview_details_dto(
+            self, task_id: int, user_id: str, project_id: str
+    ) -> AllTasksOverviewDetailsDTO:
+        from ib_tasks.interactors \
+            .get_all_task_overview_with_filters_and_searches_for_user import \
+            GetTasksOverviewForUserInteractor
+        task_overview_interactor = GetTasksOverviewForUserInteractor(
+            stage_storage=self.stage_storage, task_storage=self.task_storage,
+            field_storage=self.field_storage,
+            action_storage=self.action_storage,
+            task_stage_storage=self.task_stage_storage
+        )
+        all_tasks_overview_details_dto = \
+            task_overview_interactor.get_filtered_tasks_overview_for_user(
+                user_id=user_id, task_ids=[task_id],
+                view_type=ViewType.KANBAN.value, project_id=project_id)
+        return all_tasks_overview_details_dto

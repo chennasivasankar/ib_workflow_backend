@@ -1,7 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Optional
 
-from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.action_custom_exceptions import (
     InvalidActionException, InvalidKeyError, InvalidCustomLogicException,
     InvalidPresentStageAction
@@ -45,9 +43,13 @@ from ib_tasks.interactors \
     import InvalidMethodFound
 from ib_tasks.interactors.create_or_update_task.task_crud_operations_interactor import \
     TaskCrudOperationsInteractor
+from ib_tasks.interactors.create_or_update_task.task_details_validations_interactor import \
+    TaskDetailsValidationsInteractor, TaskDetailsValidationsStorages
 from ib_tasks.interactors \
     .get_next_stages_random_assignees_of_a_task_interactor import \
     InvalidModulePathFound
+from ib_tasks.interactors.mixins.task_operations_utilities_mixin import \
+    TaskOperationsUtilitiesMixin
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.dtos import \
@@ -61,16 +63,12 @@ from ib_tasks.interactors.storage_interfaces.elastic_storage_interface \
     import ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
-from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
-    TaskGoFFieldDTO
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
-from ib_tasks.interactors.storage_interfaces.task_dtos import \
-    TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -78,21 +76,10 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import (
-    CreateTaskDTO, CreateTaskLogDTO, GoFFieldsDTO, TaskCurrentStageDetailsDTO
+    CreateTaskDTO, CreateTaskLogDTO, TaskCurrentStageDetailsDTO
 )
 from ib_tasks.interactors.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
-
-
-@dataclass
-class TaskDetailsValidationsStorages:
-    task_template_storage: TaskTemplateStorageInterface
-    storage: StorageInterface
-    action_storage: ActionStorageInterface
-    task_storage: TaskStorageInterface
-    gof_storage: GoFStorageInterface
-    create_task_storage: CreateOrUpdateTaskStorageInterface
-    field_storage: FieldsStorageInterface
 
 
 @dataclass
@@ -102,7 +89,7 @@ class CompleteTaskDetailsDTO:
     all_tasks_overview_details_dto: AllTasksOverviewDetailsDTO
 
 
-class CreateTaskInteractor:
+class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
 
     def __init__(
             self, task_storage: TaskStorageInterface,
@@ -253,8 +240,10 @@ class CreateTaskInteractor:
             user_id=task_dto.basic_task_details_dto.created_by_id,
             action_id=task_dto.basic_task_details_dto.action_id)
         task_log_interactor.create_task_log(create_task_log_dto)
-        return presenter.get_create_task_response(
-            task_current_stage_details_dto, all_tasks_overview_dto)
+        response = presenter.get_create_task_response(
+            complete_task_details_dto.task_current_stages_details_dto,
+            complete_task_details_dto.all_tasks_overview_details_dto)
+        return response
 
     def create_task(self, task_dto: CreateTaskDTO) -> CompleteTaskDetailsDTO:
         project_id = task_dto.basic_task_details_dto.project_id
@@ -262,6 +251,7 @@ class CreateTaskInteractor:
         action_id = task_dto.basic_task_details_dto.action_id
         task_template_id = task_dto.basic_task_details_dto.task_template_id
 
+        self._validate_task_details(task_dto)
         task_id = self._create_task_gofs_and_fields(task_dto)
         self._set_status_variables_and_create_initial_task_stages(
             task_id, task_template_id)
@@ -275,6 +265,19 @@ class CreateTaskInteractor:
             task_current_stages_details_dto=task_current_stages_details_dto,
             all_tasks_overview_details_dto=all_tasks_overview_details_dto)
         return complete_task_details_dto
+
+    def _validate_task_details(self, task_dto: CreateTaskDTO):
+        storages_dto = TaskDetailsValidationsStorages(
+            task_template_storage=self.task_template_storage,
+            storage=self.storage, action_storage=self.action_storage,
+            task_storage=self.task_storage, gof_storage=self.gof_storage,
+            create_task_storage=self.create_task_storage,
+            field_storage=self.field_storage
+        )
+        task_details_validation_interactor = TaskDetailsValidationsInteractor(
+            storages_dto)
+        task_details_validation_interactor.perform_task_details_validations(
+            task_dto)
 
     def _create_task_gofs_and_fields(self, task_dto: CreateTaskDTO) -> int:
         task_crud_interactor = TaskCrudOperationsInteractor(
@@ -322,22 +325,3 @@ class CreateTaskInteractor:
             get_task_current_stages_interactor.get_task_current_stages_details(
                 task_id=task_id, user_id=user_id)
         return task_current_stages_details_dto
-
-    def _get_task_overview_details_dto(
-            self, task_id: int, user_id: str, project_id: str
-    ) -> AllTasksOverviewDetailsDTO:
-        from ib_tasks.interactors \
-            .get_all_task_overview_with_filters_and_searches_for_user import \
-            GetTasksOverviewForUserInteractor
-        task_overview_interactor = GetTasksOverviewForUserInteractor(
-            stage_storage=self.stage_storage, task_storage=self.task_storage,
-            field_storage=self.field_storage,
-            action_storage=self.action_storage,
-            task_stage_storage=self.task_stage_storage
-        )
-        all_tasks_overview_details_dto = \
-            task_overview_interactor.get_filtered_tasks_overview_for_user(
-                user_id=user_id, task_ids=[task_id],
-                view_type=ViewType.KANBAN.value, project_id=project_id)
-        return all_tasks_overview_details_dto
-
