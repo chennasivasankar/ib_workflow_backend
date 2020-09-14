@@ -77,10 +77,12 @@ class ProjectInteractor(ValidationMixin):
     def get_project_dtos_bulk(
             self, project_ids: List[str]
     ) -> List[ProjectDTO]:
-        project_dtos = self.project_storage. \
-            get_project_dtos(project_ids=project_ids)
+        project_dtos = self.project_storage.get_project_dtos(
+            project_ids=project_ids
+        )
         invalid_project_ids = self._get_invalid_project_ids(
-            project_dtos=project_dtos, project_ids=project_ids)
+            project_dtos=project_dtos, project_ids=project_ids
+        )
         if invalid_project_ids:
             from ib_iam.exceptions.custom_exceptions import InvalidProjectIds
             raise InvalidProjectIds(project_ids=project_ids)
@@ -405,7 +407,6 @@ class ProjectInteractor(ValidationMixin):
             complete_project_details_dto: CompleteProjectDetailsDTO
     ):
         self._validate_is_user_admin(user_id=user_id)
-        # todo have to know whether we can do any better here
         project_role_ids = self.project_storage.get_project_role_ids(
             project_id=complete_project_details_dto.project_id
         )

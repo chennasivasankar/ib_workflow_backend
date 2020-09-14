@@ -96,7 +96,8 @@ class CreateReplyPresenterImplementation(
     def _prepare_mention_users_list(
             comment_id_with_mention_user_id_dtos: List[
                 CommentIdWithMentionUserIdDTO],
-            user_id_wise_user_details_dict: Dict[str, Dict[str, str]]):
+            user_id_wise_user_details_dict: Dict[str, Dict[str, str]]
+    ):
         mention_users = [
             user_id_wise_user_details_dict[
                 comment_id_with_mention_user_id_dto.mention_user_id
@@ -108,7 +109,8 @@ class CreateReplyPresenterImplementation(
 
     @staticmethod
     def _prepare_multimedia_list(
-            comment_id_with_multimedia_dtos: List[CommentIdWithMultiMediaDTO]):
+            comment_id_with_multimedia_dtos: List[CommentIdWithMultiMediaDTO]
+    ):
         multimedia_list = [
             {
                 "multimedia_id": str(multimedia_dto.multimedia_id),

@@ -3,8 +3,10 @@ from mock import create_autospec, Mock
 
 from ib_iam.interactors.get_companies_interactor import GetCompaniesInteractor
 from ib_iam.interactors.presenter_interfaces \
-    .get_companies_presenter_interface import (GetCompaniesPresenterInterface,
-                                               CompanyWithEmployeeIdsAndUserDetailsDTO)
+    .get_companies_presenter_interface import (
+    GetCompaniesPresenterInterface,
+    CompanyWithEmployeeIdsAndUserDetailsDTO
+)
 from ib_iam.interactors.storage_interfaces.company_storage_interface import \
     CompanyStorageInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
@@ -40,6 +42,8 @@ def expected_company_employee_ids_dtos():
 
 
 class TestGetCompaniesInteractor:
+
+    # TODO: write repeated lines in a fixtures.
     def test_if_user_is_not_admin_returns_user_has_no_access_response(self):
         company_storage = create_autospec(CompanyStorageInterface)
         user_storage = create_autospec(UserStorageInterface)
@@ -58,14 +62,15 @@ class TestGetCompaniesInteractor:
         presenter.get_user_has_no_access_response_for_get_companies \
             .assert_called_once()
 
+    # TODO: Use assert_called_once_with
     def test_if_user_is_admin_it_returns_companies_details_response(
             self,
             mocker,
             expected_company_dtos,
             expected_company_employee_ids_dtos,
             expected_user_dtos):
-        from ib_iam.tests.common_fixtures.adapters.user_service_mocks import (
-            prepare_user_profile_dtos_mock)
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import (
+            get_basic_user_profile_dtos_mock)
         company_storage = create_autospec(CompanyStorageInterface)
         user_storage = create_autospec(UserStorageInterface)
         presenter = create_autospec(GetCompaniesPresenterInterface)
@@ -76,7 +81,7 @@ class TestGetCompaniesInteractor:
         company_storage.get_company_dtos.return_value = expected_company_dtos
         company_storage.get_company_employee_ids_dtos \
             .return_value = expected_company_employee_ids_dtos
-        mock = prepare_user_profile_dtos_mock(mocker)
+        mock = get_basic_user_profile_dtos_mock(mocker)
         mock.return_value = expected_user_dtos
         company_details_dto = CompanyWithEmployeeIdsAndUserDetailsDTO(
             company_dtos=expected_company_dtos,
@@ -89,6 +94,8 @@ class TestGetCompaniesInteractor:
 
         company_storage.get_company_dtos.assert_called_once()
         company_storage.get_company_employee_ids_dtos.assert_called_once_with(
-            company_ids=company_ids)
+            company_ids=company_ids
+        )
         presenter.get_response_for_get_companies.assert_called_once_with(
-            company_details_dtos=company_details_dto)
+            company_details_dtos=company_details_dto
+        )

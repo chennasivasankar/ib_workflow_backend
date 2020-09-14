@@ -20,8 +20,8 @@ class TestCase02SendUserResetPasswordLinkAPITestCase(TestUtils):
         body = {'email': 'test@gmail.com'}
         from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_get_reset_password_token_mock
-        get_reset_password_token_mock = prepare_get_reset_password_token_mock(
+            get_reset_password_token_mock
+        get_reset_password_token_mock = get_reset_password_token_mock(
             mocker)
         get_reset_password_token_mock.side_effect = UserAccountDoesNotExist
         path_params = {}

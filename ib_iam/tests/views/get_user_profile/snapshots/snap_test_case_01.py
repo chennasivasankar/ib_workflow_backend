@@ -15,9 +15,9 @@ snapshots['TestCase01GetUserProfileAPITestCase.test_user_account_does_not_exist 
     'response': 'Please send valid user id'
 }
 
-snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id status_code'] = '200'
+snapshots['TestCase01GetUserProfileAPITestCase.test_given_valid_user_id_returns_user_profile_data status_code'] = '200'
 
-snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id body'] = {
+snapshots['TestCase01GetUserProfileAPITestCase.test_given_valid_user_id_returns_user_profile_data body'] = {
     'company': {
         'company_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb200',
         'description': 'description 0',

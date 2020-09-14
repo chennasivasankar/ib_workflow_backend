@@ -76,11 +76,11 @@ class AuthPresenterInterface(abc.ABC):
 
 class GetUserProfilePresenterInterface(abc.ABC):
     @abc.abstractmethod
-    def raise_exception_for_invalid_user_id(self):
+    def response_for_invalid_user_id_exception(self):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_user_account_does_not_exist(self):
+    def response_for_user_account_does_not_exist_exception(self):
         pass
 
     @abc.abstractmethod

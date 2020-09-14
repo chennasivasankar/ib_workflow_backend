@@ -51,13 +51,13 @@ class GetSearchableDetailsInteractor:
         if is_searchable_type_user_dtos_empty:
             return []
 
-        ids = [
+        user_ids = [
             searchable_type_user_dto.id
             for searchable_type_user_dto in searchable_type_user_dtos
         ]
-        valid_user_ids = self.storage.get_valid_user_ids(ids)
-        self._validate_user_ids(ids, valid_user_ids)
-        user_details_dtos = self._get_user_details_dtos(ids)
+        valid_user_ids = self.storage.get_valid_user_ids(user_ids)
+        self._validate_user_ids(user_ids, valid_user_ids)
+        user_details_dtos = self._get_user_details_dtos(user_ids)
         searchable_type_user_details_dtos = []
         for user_details_dto in user_details_dtos:
             searchable_type_user_details_dto = \
@@ -71,12 +71,12 @@ class GetSearchableDetailsInteractor:
 
     @staticmethod
     def _validate_user_ids(
-            ids: List[str], valid_user_ids: List[str]
-    ) -> Optional[InvalidUserIds]:
+            user_ids: List[str], valid_user_ids: List[str]
+    ):
         invalid_user_ids = []
-        for id in ids:
-            if id not in valid_user_ids:
-                invalid_user_ids.append(id)
+        for user_id in user_ids:
+            if user_id not in valid_user_ids:
+                invalid_user_ids.append(user_id)
         if invalid_user_ids:
             raise InvalidUserIds(invalid_user_ids)
         return

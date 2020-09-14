@@ -38,9 +38,9 @@ class TestCase02UserLoginAPITestCase(TestUtils):
         )
         from ib_iam.interactors.user_login_interactor import IncorrectPassword
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock
+            get_user_tokens_dto_for_given_email_and_password_dto_mock
         get_tokens_dto_for_given_email_and_password_dto \
-            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(
+            = get_user_tokens_dto_for_given_email_and_password_dto_mock(
             mocker)
         get_tokens_dto_for_given_email_and_password_dto.side_effect \
             = IncorrectPassword
@@ -58,9 +58,9 @@ class TestCase02UserLoginAPITestCase(TestUtils):
     def test_case_for_invalid_email(self, mocker, snapshot):
         from ib_iam.exceptions.custom_exceptions import InvalidEmail
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock
+            get_user_tokens_dto_for_given_email_and_password_dto_mock
         get_tokens_dto_for_given_email_and_password_dto \
-            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(
+            = get_user_tokens_dto_for_given_email_and_password_dto_mock(
             mocker)
         get_tokens_dto_for_given_email_and_password_dto.side_effect \
             = InvalidEmail
