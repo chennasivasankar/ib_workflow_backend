@@ -22,9 +22,7 @@ class TestCase01UpdateUserPasswordAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
-
+        self.make_api_call(
+            body=body, path_params=path_params, query_params=query_params,
+            headers=headers, snapshot=snapshot
+        )
