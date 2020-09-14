@@ -25,7 +25,7 @@ from ib_tasks.models import CurrentTaskStage, Stage, TaskGoFField, FieldRole, \
 
 class FieldsStorageImplementation(FieldsStorageInterface):
 
-    def get_user_write_permitted_field_ids_for_given_gof_ids(
+    def get_user_writable_fields_for_given_gof_ids(
             self, user_roles, gof_ids: List[str]
     ) -> List[FieldIdWithFieldDisplayNameDTO]:
         field_dicts = FieldRole.objects.filter(

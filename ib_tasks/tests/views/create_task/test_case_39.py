@@ -54,8 +54,6 @@ class TestCase39CreateTaskAPITestCase(TestUtils):
             get_valid_project_ids_mock
         get_valid_project_ids_mock(mocker, [project_id])
 
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
         from ib_tasks.tests.common_fixtures.adapters.auth_service import \
             validate_if_user_is_in_project_mock, \
             get_valid_project_ids_mock, get_projects_info_for_given_ids_mock, \
@@ -65,7 +63,6 @@ class TestCase39CreateTaskAPITestCase(TestUtils):
             adapters.assignees_details_service import \
             assignee_details_dtos_mock
 
-        get_user_role_ids(mocker)
         is_user_in_project = True
         validate_if_user_is_in_project_mock(mocker, is_user_in_project)
         get_valid_project_ids_mock(mocker, [project_id])

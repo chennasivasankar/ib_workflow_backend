@@ -128,7 +128,7 @@ class FieldsStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_user_write_permitted_field_ids_for_given_gof_ids(
+    def get_user_writable_fields_for_given_gof_ids(
             self, user_roles, gof_ids: List[str]
     ) -> List[FieldIdWithFieldDisplayNameDTO]:
         pass

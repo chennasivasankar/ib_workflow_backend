@@ -6,7 +6,7 @@ from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
     DuplicateSameGoFOrderForAGoF
 from ib_tasks.exceptions.permission_custom_exceptions import \
-    UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
+    UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
 from ib_tasks.interactors.storage_interfaces. \
@@ -21,8 +21,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
-    import \
-    TaskTemplateStorageInterface
+    import TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, FieldValuesDTO
 
 
@@ -42,34 +41,57 @@ class GoFsDetailsValidationsInteractor:
         self.storage = storage
         self.task_template_storage = task_template_storage
 
-    def perform_gof_details_validations(
+    def perform_gofs_details_validations(
             self, gof_fields_dtos: List[GoFFieldsDTO], user_id: str,
             task_template_id: str, project_id: str,
             action_type: Optional[ActionTypes]):
+        gof_ids = self._validate_gof_details_and_get_gof_ids(gof_fields_dtos)
+        field_ids = self._validate_fields(gof_fields_dtos)
+        self._validate_that_fields_gofs_and_template_are_related(
+            task_template_id, gof_ids, gof_fields_dtos)
+        self._validate_user_permission_on_given_fields(
+            field_ids, user_id, project_id)
+        self._validate_given_field_responses(gof_fields_dtos, action_type)
+
+    def _validate_gof_details_and_get_gof_ids(
+            self, gof_fields_dtos: List[GoFFieldsDTO]) -> List[str]:
         self._validate_same_gof_order(gof_fields_dtos)
         gof_ids = [
             gof_fields_dto.gof_id
             for gof_fields_dto in gof_fields_dtos
         ]
+        self._validate_for_invalid_gof_ids(gof_ids)
+        return gof_ids
+
+    def _validate_fields(
+            self, gof_fields_dtos: List[GoFFieldsDTO]) -> List[str]:
         field_values_dtos = self._get_field_values_dtos(gof_fields_dtos)
         field_ids = [
             field_values_dto.field_id
             for field_values_dto in field_values_dtos
         ]
-        self._validate_for_invalid_gof_ids(gof_ids)
         self._validate_for_invalid_field_ids(field_ids)
+        return field_ids
+
+    def _validate_that_fields_gofs_and_template_are_related(
+            self, task_template_id: str, gof_ids: List[str],
+            gof_fields_dtos: List[GoFFieldsDTO]
+    ):
         self._validate_for_given_gofs_are_related_to_given_task_template(
             task_template_id, gof_ids)
         self._validate_for_given_fields_are_related_to_given_gofs(
             gof_fields_dtos, gof_ids)
-        self._validate_user_permission_on_given_fields_and_gofs(
-            gof_ids, field_ids, user_id)
+
+    def _validate_given_field_responses(
+            self, gof_fields_dots: List[GoFFieldsDTO],
+            action_type: ActionTypes
+    ):
         from ib_tasks.interactors.create_or_update_task. \
             validate_field_responses import ValidateFieldResponsesInteractor
         field_validation_interactor = ValidateFieldResponsesInteractor(
             self.field_storage)
         field_values_dtos = \
-            self._get_field_values_dtos(gof_fields_dtos)
+            self._get_field_values_dtos(gof_fields_dots)
         field_validation_interactor.validate_field_responses(
             field_values_dtos, action_type)
 
@@ -102,31 +124,35 @@ class GoFsDetailsValidationsInteractor:
         duplicate_values.sort()
         return duplicate_values
 
-    def _validate_user_permission_on_given_fields_and_gofs(
-            self, gof_ids: List[str], field_ids: List[str], user_id: str
-    ) -> Union[None, UserNeedsGoFWritablePermission,
-               UserNeedsFieldWritablePermission]:
-        from ib_tasks.adapters.roles_service_adapter import \
-            get_roles_service_adapter
-        roles_service_adapter = get_roles_service_adapter()
-        user_roles = roles_service_adapter.roles_service.get_user_role_ids(
-            user_id)
+    def _validate_user_permission_on_given_fields(
+            self, field_ids: List[str], user_id: str, project_id: str
+    ) -> Union[None, Exception]:
+        from ib_tasks.constants.constants import ALL_ROLES_ID
+        user_roles = self._get_user_roles_of_project(user_id, project_id)
         field_write_permission_roles_dtos = \
             self.storage.get_write_permission_roles_for_given_field_ids(
                 field_ids)
         for field_roles_dto in field_write_permission_roles_dtos:
             required_roles = field_roles_dto.write_permission_roles
-            from ib_tasks.constants.constants import ALL_ROLES_ID
             required_roles_has_all_roles = ALL_ROLES_ID in required_roles
             if required_roles_has_all_roles:
                 continue
             user_permitted = self.any_in(user_roles, required_roles)
             required_roles_are_empty = not required_roles
             if not user_permitted or required_roles_are_empty:
-                raise UserNeedsFieldWritablePermission(user_id,
-                                                       field_roles_dto.field_id,
-                                                       required_roles)
+                raise UserNeedsFieldWritablePermission(
+                    user_id, field_roles_dto.field_id, required_roles)
         return
+
+    @staticmethod
+    def _get_user_roles_of_project(
+            user_id: str, project_id: str) -> List[str]:
+        from ib_tasks.adapters.roles_service_adapter import \
+            get_roles_service_adapter
+        roles_service_adapter = get_roles_service_adapter()
+        user_roles = roles_service_adapter.roles_service \
+            .get_user_role_ids_based_on_project(user_id, project_id)
+        return user_roles
 
     @staticmethod
     def any_in(user_roles: List[str], required_roles: List[str]) -> bool:

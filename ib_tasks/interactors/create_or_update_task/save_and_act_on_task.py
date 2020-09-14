@@ -144,52 +144,52 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter.raise_user_did_not_fill_required_fields(err)
         except EmptyValueForRequiredField as err:
             return presenter. \
-                raise_exception_for_empty_value_in_required_field(err)
+                raise_empty_value_in_required_field(err)
         except InvalidPhoneNumberValue as err:
-            return presenter.raise_exception_for_invalid_phone_number_value(
+            return presenter.raise_invalid_phone_number_value(
                 err)
         except InvalidEmailFieldValue as err:
-            return presenter.raise_exception_for_invalid_email_address(err)
+            return presenter.raise_invalid_email_address(err)
         except InvalidURLValue as err:
-            return presenter.raise_exception_for_invalid_url_address(err)
+            return presenter.raise_invalid_url_address(err)
         except NotAStrongPassword as err:
-            return presenter.raise_exception_for_weak_password(err)
+            return presenter.raise_weak_password(err)
         except InvalidNumberValue as err:
-            return presenter.raise_exception_for_invalid_number_value(err)
+            return presenter.raise_invalid_number_value(err)
         except InvalidFloatValue as err:
-            return presenter.raise_exception_for_invalid_float_value(err)
+            return presenter.raise_invalid_float_value(err)
         except InvalidValueForDropdownField as err:
-            return presenter.raise_exception_for_invalid_dropdown_value(err)
+            return presenter.raise_invalid_dropdown_value(err)
         except IncorrectNameInGoFSelectorField as err:
             return presenter. \
-                raise_exception_for_invalid_name_in_gof_selector_field_value(
+                raise_invalid_name_in_gof_selector_field_value(
                 err)
         except IncorrectRadioGroupChoice as err:
             return presenter. \
-                raise_exception_for_invalid_choice_in_radio_group_field(err)
+                raise_invalid_choice_in_radio_group_field(err)
         except IncorrectCheckBoxOptionsSelected as err:
             return presenter. \
-                raise_exception_for_invalid_checkbox_group_options_selected(
+                raise_invalid_checkbox_group_options_selected(
                 err)
         except IncorrectMultiSelectOptionsSelected as err:
             return presenter. \
-                raise_exception_for_invalid_multi_select_options_selected(err)
+                raise_invalid_multi_select_options_selected(err)
         except IncorrectMultiSelectLabelsSelected as err:
             return presenter. \
-                raise_exception_for_invalid_multi_select_labels_selected(err)
+                raise_invalid_multi_select_labels_selected(err)
         except InvalidDateFormat as err:
-            return presenter.raise_exception_for_invalid_date_format(err)
+            return presenter.raise_invalid_date_format(err)
         except InvalidTimeFormat as err:
-            return presenter.raise_exception_for_invalid_time_format(err)
+            return presenter.raise_invalid_time_format(err)
         except InvalidUrlForImage as err:
-            return presenter.raise_exception_for_invalid_image_url(err)
+            return presenter.raise_invalid_image_url(err)
         except InvalidImageFormat as err:
-            return presenter.raise_exception_for_not_acceptable_image_format(
+            return presenter.raise_not_acceptable_image_format(
                 err)
         except InvalidUrlForFile as err:
-            return presenter.raise_exception_for_invalid_file_url(err)
+            return presenter.raise_invalid_file_url(err)
         except InvalidFileFormat as err:
-            return presenter.raise_exception_for_not_acceptable_file_format(
+            return presenter.raise_not_acceptable_file_format(
                 err)
         except UserActionPermissionDenied as err:
             return presenter.raise_exception_for_user_action_permission_denied(

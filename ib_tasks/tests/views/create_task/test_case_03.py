@@ -5,6 +5,8 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ...factories.models import StageActionFactory, ProjectTaskTemplateFactory, \
+    TaskTemplateFactory
 
 
 class TestCase03CreateTaskAPITestCase(TestUtils):
@@ -15,13 +17,13 @@ class TestCase03CreateTaskAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.fixture(autouse=True)
-    def setup(self, mocker):
-        from ib_tasks.tests.factories.models import \
-            ProjectTaskTemplateFactory, TaskTemplateFactory
-
+    def reset_sequence(self):
+        StageActionFactory.reset_sequence()
         ProjectTaskTemplateFactory.reset_sequence()
         TaskTemplateFactory.reset_sequence()
 
+    @pytest.fixture(autouse=True)
+    def setup(self, mocker):
         template_id = 'template_1'
         project_id = "project_1"
         from ib_tasks.tests.common_fixtures.adapters.auth_service import \
@@ -30,6 +32,7 @@ class TestCase03CreateTaskAPITestCase(TestUtils):
         TaskTemplateFactory.create(template_id=template_id)
         ProjectTaskTemplateFactory.create(
             task_template_id=template_id, project_id=project_id)
+        StageActionFactory.create(id=1)
 
     @pytest.mark.django_db
     def test_case(self, snapshot):

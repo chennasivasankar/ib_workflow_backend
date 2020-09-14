@@ -1196,7 +1196,7 @@ class TestCreateTaskInteractor:
             elastic_storage=elastic_storage_mock,
             task_stage_storage=task_stage_storage_mock
         )
-        presenter_mock.raise_exception_for_empty_value_in_required_field \
+        presenter_mock.raise_empty_value_in_required_field \
             .return_value = mock_object
 
         # Act
@@ -1205,10 +1205,10 @@ class TestCreateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_empty_value_in_required_field \
+        presenter_mock.raise_empty_value_in_required_field \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_empty_value_in_required_field \
+            presenter_mock.raise_empty_value_in_required_field \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1253,7 +1253,7 @@ class TestCreateTaskInteractor:
             elastic_storage=elastic_storage_mock,
             task_stage_storage=task_stage_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_phone_number_value \
+        presenter_mock.raise_invalid_phone_number_value \
             .return_value = mock_object
 
         # Act
@@ -1262,10 +1262,10 @@ class TestCreateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_invalid_phone_number_value \
+        presenter_mock.raise_invalid_phone_number_value \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_phone_number_value \
+            presenter_mock.raise_invalid_phone_number_value \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1311,7 +1311,7 @@ class TestCreateTaskInteractor:
             elastic_storage=elastic_storage_mock,
             task_stage_storage=task_stage_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_email_address \
+        presenter_mock.raise_invalid_email_address \
             .return_value = mock_object
 
         # Act
@@ -1320,10 +1320,10 @@ class TestCreateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_invalid_email_address \
+        presenter_mock.raise_invalid_email_address \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_email_address \
+            presenter_mock.raise_invalid_email_address \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1370,7 +1370,7 @@ class TestCreateTaskInteractor:
             elastic_storage=elastic_storage_mock,
             task_stage_storage=task_stage_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_url_address \
+        presenter_mock.raise_invalid_url_address \
             .return_value = mock_object
 
         # Act
@@ -1379,10 +1379,10 @@ class TestCreateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_invalid_url_address \
+        presenter_mock.raise_invalid_url_address \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_url_address \
+            presenter_mock.raise_invalid_url_address \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1429,7 +1429,7 @@ class TestCreateTaskInteractor:
             elastic_storage=elastic_storage_mock,
             task_stage_storage=task_stage_storage_mock
         )
-        presenter_mock.raise_exception_for_weak_password \
+        presenter_mock.raise_weak_password \
             .return_value = mock_object
 
         # Act
@@ -1438,10 +1438,10 @@ class TestCreateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_weak_password \
+        presenter_mock.raise_weak_password \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_weak_password \
+            presenter_mock.raise_weak_password \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1488,7 +1488,7 @@ class TestCreateTaskInteractor:
             elastic_storage=elastic_storage_mock,
             task_stage_storage=task_stage_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_number_value \
+        presenter_mock.raise_invalid_number_value \
             .return_value = mock_object
 
         # Act
@@ -1497,10 +1497,10 @@ class TestCreateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_invalid_number_value \
+        presenter_mock.raise_invalid_number_value \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_number_value \
+            presenter_mock.raise_invalid_number_value \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1547,7 +1547,7 @@ class TestCreateTaskInteractor:
             elastic_storage=elastic_storage_mock,
             task_stage_storage=task_stage_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_float_value \
+        presenter_mock.raise_invalid_float_value \
             .return_value = mock_object
 
         # Act
@@ -1556,10 +1556,10 @@ class TestCreateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_invalid_float_value \
+        presenter_mock.raise_invalid_float_value \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_float_value \
+            presenter_mock.raise_invalid_float_value \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1608,7 +1608,7 @@ class TestCreateTaskInteractor:
             elastic_storage=elastic_storage_mock,
             task_stage_storage=task_stage_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_dropdown_value \
+        presenter_mock.raise_invalid_dropdown_value \
             .return_value = mock_object
 
         # Act
@@ -1617,10 +1617,10 @@ class TestCreateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_invalid_dropdown_value \
+        presenter_mock.raise_invalid_dropdown_value \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_dropdown_value \
+            presenter_mock.raise_invalid_dropdown_value \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1673,7 +1673,7 @@ class TestCreateTaskInteractor:
             task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_name_in_gof_selector_field_value \
+            .raise_invalid_name_in_gof_selector_field_value \
             .return_value = mock_object
 
         # Act
@@ -1683,10 +1683,10 @@ class TestCreateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_name_in_gof_selector_field_value \
+            .raise_invalid_name_in_gof_selector_field_value \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_name_in_gof_selector_field_value \
+            raise_invalid_name_in_gof_selector_field_value \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1739,7 +1739,7 @@ class TestCreateTaskInteractor:
             task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_choice_in_radio_group_field \
+            .raise_invalid_choice_in_radio_group_field \
             .return_value = mock_object
 
         # Act
@@ -1749,10 +1749,10 @@ class TestCreateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_choice_in_radio_group_field \
+            .raise_invalid_choice_in_radio_group_field \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_choice_in_radio_group_field \
+            raise_invalid_choice_in_radio_group_field \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1805,7 +1805,7 @@ class TestCreateTaskInteractor:
             task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_checkbox_group_options_selected \
+            .raise_invalid_checkbox_group_options_selected \
             .return_value = mock_object
 
         # Act
@@ -1815,10 +1815,10 @@ class TestCreateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_checkbox_group_options_selected \
+            .raise_invalid_checkbox_group_options_selected \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_checkbox_group_options_selected \
+            raise_invalid_checkbox_group_options_selected \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1872,7 +1872,7 @@ class TestCreateTaskInteractor:
             task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_multi_select_options_selected \
+            .raise_invalid_multi_select_options_selected \
             .return_value = mock_object
 
         # Act
@@ -1882,10 +1882,10 @@ class TestCreateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_multi_select_options_selected \
+            .raise_invalid_multi_select_options_selected \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_multi_select_options_selected \
+            raise_invalid_multi_select_options_selected \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1940,7 +1940,7 @@ class TestCreateTaskInteractor:
             task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_multi_select_labels_selected \
+            .raise_invalid_multi_select_labels_selected \
             .return_value = mock_object
 
         # Act
@@ -1950,10 +1950,10 @@ class TestCreateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_multi_select_labels_selected \
+            .raise_invalid_multi_select_labels_selected \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_multi_select_labels_selected \
+            raise_invalid_multi_select_labels_selected \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -2009,7 +2009,7 @@ class TestCreateTaskInteractor:
             task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_date_format \
+            .raise_invalid_date_format \
             .return_value = mock_object
 
         # Act
@@ -2019,10 +2019,10 @@ class TestCreateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_date_format \
+            .raise_invalid_date_format \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_date_format \
+            raise_invalid_date_format \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -2076,7 +2076,7 @@ class TestCreateTaskInteractor:
             task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_time_format \
+            .raise_invalid_time_format \
             .return_value = mock_object
 
         # Act
@@ -2086,10 +2086,10 @@ class TestCreateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_time_format \
+            .raise_invalid_time_format \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_time_format \
+            raise_invalid_time_format \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -2139,7 +2139,7 @@ class TestCreateTaskInteractor:
             elastic_storage=elastic_storage_mock,
             task_stage_storage=task_stage_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_image_url.return_value = \
+        presenter_mock.raise_invalid_image_url.return_value = \
             mock_object
 
         # Act
@@ -2149,10 +2149,10 @@ class TestCreateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_image_url \
+            .raise_invalid_image_url \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_image_url \
+            raise_invalid_image_url \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -2203,7 +2203,7 @@ class TestCreateTaskInteractor:
             task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_not_acceptable_image_format \
+            .raise_not_acceptable_image_format \
             .return_value = mock_object
 
         # Act
@@ -2213,10 +2213,10 @@ class TestCreateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_not_acceptable_image_format \
+            .raise_not_acceptable_image_format \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_not_acceptable_image_format \
+            raise_not_acceptable_image_format \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -2267,7 +2267,7 @@ class TestCreateTaskInteractor:
             task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_file_url \
+            .raise_invalid_file_url \
             .return_value = mock_object
 
         # Act
@@ -2277,10 +2277,10 @@ class TestCreateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_file_url \
+            .raise_invalid_file_url \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_file_url \
+            raise_invalid_file_url \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -2331,7 +2331,7 @@ class TestCreateTaskInteractor:
             task_stage_storage=task_stage_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_not_acceptable_file_format \
+            .raise_not_acceptable_file_format \
             .return_value = mock_object
 
         # Act
@@ -2341,10 +2341,10 @@ class TestCreateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_not_acceptable_file_format \
+            .raise_not_acceptable_file_format \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_not_acceptable_file_format \
+            raise_not_acceptable_file_format \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id

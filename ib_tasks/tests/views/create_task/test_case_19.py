@@ -42,8 +42,8 @@ class TestCase19CreateTaskAPITestCase(TestUtils):
         stage_id = "stage_1"
 
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        get_user_role_ids(mocker)
+            get_user_role_ids_based_on_project_mock
+        get_user_role_ids_based_on_project_mock(mocker)
         from ib_tasks.tests.common_fixtures.adapters.auth_service import \
             get_valid_project_ids_mock
         get_valid_project_ids_mock(mocker, [project_id])

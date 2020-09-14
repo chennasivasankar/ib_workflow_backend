@@ -227,7 +227,7 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
         project_id = self.task_storage.get_project_id_for_the_task_id(
             transition_template_dto.task_id)
         template_gofs_fields_validation_interactor \
-            .perform_gof_details_validations(
+            .perform_gofs_details_validations(
             transition_template_dto.transition_checklist_gofs,
             transition_template_dto.created_by_id,
             transition_template_dto.transition_checklist_template_id,
@@ -389,7 +389,7 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
             dto.gof_id for dto in gof_id_with_display_name_dtos]
         field_id_with_display_name_dtos = \
             self.field_storage \
-                .get_user_write_permitted_field_ids_for_given_gof_ids(
+                .get_user_writable_fields_for_given_gof_ids(
                 user_roles, user_permitted_gof_ids)
         filled_gofs_with_task_gof_ids = \
             self.gof_storage.get_filled_task_gofs_with_gof_id(task_id)

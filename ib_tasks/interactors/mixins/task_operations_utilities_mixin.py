@@ -75,3 +75,4 @@ class TaskOperationsUtilitiesMixin:
                 user_id=user_id, task_ids=[task_id],
                 view_type=ViewType.KANBAN.value, project_id=project_id)
         return all_tasks_overview_details_dto
+

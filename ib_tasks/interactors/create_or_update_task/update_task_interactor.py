@@ -238,7 +238,7 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
                 self.field_storage, self.task_template_storage
             )
         base_validations_interactor \
-            .perform_gof_details_validations(
+            .perform_gofs_details_validations(
             gof_fields_dtos=task_dto.gof_fields_dtos,
             user_id=task_dto.created_by_id,
             task_template_id=task_template_id, project_id=project_id,

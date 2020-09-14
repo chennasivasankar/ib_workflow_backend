@@ -455,7 +455,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             dto.gof_id for dto in gof_id_with_display_name_dtos]
         field_id_with_display_name_dtos = \
             self.field_storage \
-                .get_user_write_permitted_field_ids_for_given_gof_ids(
+                .get_user_writable_fields_for_given_gof_ids(
                 user_roles, user_permitted_gof_ids)
         filled_gofs_with_task_gof_ids = \
             self.gof_storage.get_filled_task_gofs_with_gof_id(task_id)

@@ -155,7 +155,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
         # Act
         with pytest.raises(InvalidGoFIds) as err:
-            interactor.perform_gof_details_validations(
+            interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
                 task_template_id=task_template_id, action_type=action_type)
 
@@ -194,7 +194,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
         # Act
         with pytest.raises(InvalidFieldIds) as err:
-            interactor.perform_gof_details_validations(
+            interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
                 task_template_id=task_template_id, action_type=action_type)
 
@@ -229,7 +229,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
         # Act
         with pytest.raises(InvalidGoFsOfTaskTemplate) as err:
-            interactor.perform_gof_details_validations(
+            interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
                 task_template_id=task_template_id, action_type=action_type)
 
@@ -279,7 +279,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
         # Act
         with pytest.raises(InvalidFieldsOfGoF) as err:
-            interactor.perform_gof_details_validations(
+            interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
                 task_template_id=task_template_id, action_type=action_type)
 
@@ -328,7 +328,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
         # Act
         with pytest.raises(DuplicateFieldIdsToGoF) as err:
-            interactor.perform_gof_details_validations(
+            interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
                 task_template_id=task_template_id, action_type=action_type)
 
@@ -380,7 +380,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
         # Act
         with pytest.raises(UserNeedsGoFWritablePermission) as err:
-            interactor.perform_gof_details_validations(
+            interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
                 task_template_id=task_template_id, action_type=action_type)
 
@@ -436,7 +436,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
         # Act
         with pytest.raises(UserNeedsFieldWritablePermission) as err:
-            interactor.perform_gof_details_validations(
+            interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
                 task_template_id=task_template_id, action_type=action_type)
 
@@ -480,7 +480,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
             .return_value = field_write_permission_roles_dtos
 
         # Act
-        interactor.perform_gof_details_validations(
+        interactor.perform_gofs_details_validations(
             gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
             task_template_id=task_template_id, action_type=action_type)
 
