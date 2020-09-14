@@ -273,8 +273,7 @@ class CreateTaskInteractor:
         complete_task_details_dto = CompleteTaskDetailsDTO(
             task_id=task_id,
             task_current_stages_details_dto=task_current_stages_details_dto,
-            all_tasks_overview_details_dto=all_tasks_overview_details_dto
-        )
+            all_tasks_overview_details_dto=all_tasks_overview_details_dto)
         return complete_task_details_dto
 
     def _create_task_gofs_and_fields(self, task_dto: CreateTaskDTO) -> int:
@@ -287,7 +286,7 @@ class CreateTaskInteractor:
         task_gof_details_dtos = task_crud_interactor.create_task_gofs(
             task_gof_dtos)
         task_gof_field_dtos = self._prepare_task_gof_fields_dtos(
-            task_dto, task_gof_details_dtos)
+            task_dto.gof_fields_dtos, task_gof_details_dtos)
         task_crud_interactor.create_task_gof_fields(task_gof_field_dtos)
         return task_id
 
@@ -342,48 +341,3 @@ class CreateTaskInteractor:
                 view_type=ViewType.KANBAN.value, project_id=project_id)
         return all_tasks_overview_details_dto
 
-    @staticmethod
-    def _prepare_task_gof_dtos(
-            task_id: int, gof_field_dtos: List[GoFFieldsDTO]
-    ) -> List[TaskGoFWithTaskIdDTO]:
-        task_gof_dtos = [
-            TaskGoFWithTaskIdDTO(
-                task_id=task_id, gof_id=gof_fields_dto.gof_id,
-                same_gof_order=gof_fields_dto.same_gof_order)
-            for gof_fields_dto in gof_field_dtos
-        ]
-        return task_gof_dtos
-
-    def _prepare_task_gof_fields_dtos(
-            self, task_dto: CreateTaskDTO,
-            task_gof_details_dtos: List[TaskGoFDetailsDTO]
-    ) -> List[TaskGoFFieldDTO]:
-        task_gof_field_dtos = []
-        for gof_fields_dto in task_dto.gof_fields_dtos:
-            task_gof_id = self._get_gof_id_for_field_in_task_gof_details(
-                gof_fields_dto.gof_id, gof_fields_dto.same_gof_order,
-                task_gof_details_dtos
-            )
-            task_gof_field_dtos += [
-                TaskGoFFieldDTO(
-                    field_id=field_values_dto.field_id,
-                    field_response=field_values_dto.field_response,
-                    task_gof_id=task_gof_id
-                )
-                for field_values_dto in gof_fields_dto.field_values_dtos
-            ]
-        return task_gof_field_dtos
-
-    @staticmethod
-    def _get_gof_id_for_field_in_task_gof_details(
-            gof_id: str, same_gof_order: int,
-            task_gof_details_dtos: List[TaskGoFDetailsDTO]
-    ) -> Optional[int]:
-        for task_gof_details_dto in task_gof_details_dtos:
-            gof_matched = (
-                    task_gof_details_dto.gof_id == gof_id and
-                    task_gof_details_dto.same_gof_order == same_gof_order
-            )
-            if gof_matched:
-                return task_gof_details_dto.task_gof_id
-        return
