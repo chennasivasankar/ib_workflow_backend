@@ -9,8 +9,6 @@ class ServiceAdapter:
         from .auth_service import AuthService
         return AuthService()
 
-    ##TODO implement elastic_service
-
 
 def get_service_adapter():
     return ServiceAdapter()

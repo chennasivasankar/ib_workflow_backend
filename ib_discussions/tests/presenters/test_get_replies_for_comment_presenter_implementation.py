@@ -43,14 +43,10 @@ class TestGetRepliesForCommentPresenterImplementation:
             UserProfileDTOFactory
         user_profile_dtos = [
             UserProfileDTOFactory(
-                user_id=user_ids[0],
-                name='name ',
-                profile_pic_url='https://graph.ib_users.com/'
+                user_id=user_ids[0]
             ),
             UserProfileDTOFactory(
-                user_id=user_ids[1],
-                name='name ',
-                profile_pic_url='https://graph.ib_users.com/'
+                user_id=user_ids[1]
             ),
         ]
 

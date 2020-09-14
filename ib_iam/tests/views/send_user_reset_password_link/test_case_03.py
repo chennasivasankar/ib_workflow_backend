@@ -20,14 +20,14 @@ class TestCase03SendUserResetPasswordLinkAPITestCase(TestUtils):
         body = {'email': 'test@gmail.com'}
         user_reset_password_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_get_reset_password_token_mock
-        get_reset_password_token_mock = prepare_get_reset_password_token_mock(mocker)
+            get_reset_password_token_mock
+        get_reset_password_token_mock = get_reset_password_token_mock(mocker)
         get_reset_password_token_mock.return_value = user_reset_password_token
 
         from ib_iam.tests.common_fixtures.adapters.email_service_adapter_mocks import \
-            prepare_send_email_to_user_mock
+            send_email_to_user_mock
 
-        send_email_to_user_mock = prepare_send_email_to_user_mock(mocker)
+        send_email_to_user_mock = send_email_to_user_mock(mocker)
 
         path_params = {}
         query_params = {"token": user_reset_password_token}

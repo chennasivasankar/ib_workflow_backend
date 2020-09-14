@@ -1,10 +1,6 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
+
 from ib_iam.constants.enums import StatusCode
-from ib_iam.interactors.presenter_interfaces.dtos import \
-    TeamWithUsersDetailsDTO
-from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
-    TeamPresenterInterface
-)
 from ib_iam.constants.exception_messages import (
     USER_HAS_NO_ACCESS_FOR_GET_LIST_OF_TEAMS,
     INVALID_LIMIT_FOR_GET_LIST_OF_TEAMS,
@@ -14,6 +10,10 @@ from ib_iam.constants.exception_messages import (
     INVALID_USER_IDS_FOR_ADD_TEAM,
     DUPLICATE_USER_IDS_FOR_ADD_TEAM
 )
+from ib_iam.interactors.presenter_interfaces.dtos import \
+    TeamWithUsersDetailsDTO
+from ib_iam.interactors.presenter_interfaces.team_presenter_interface import \
+    TeamPresenterInterface
 
 
 class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
@@ -71,10 +71,10 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
             response_dict=response_dict
         )
 
-    def get_team_name_already_exists_response_for_add_team(self, exception):
+    def get_team_name_already_exists_response_for_add_team(self, err):
         response_dict = {
-            "response":
-                TEAM_NAME_ALREADY_EXISTS_FOR_ADD_TEAM[0] % exception.team_name,
+            "response": TEAM_NAME_ALREADY_EXISTS_FOR_ADD_TEAM[
+                0].format(team_name=err.team_name),
             "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": TEAM_NAME_ALREADY_EXISTS_FOR_ADD_TEAM[1]
         }
@@ -82,9 +82,9 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
             response_dict=response_dict
         )
 
-    def get_duplicate_users_response_for_add_team(self, exception):
+    def get_duplicate_users_response_for_add_team(self):
         response_dict = {
-            "response": DUPLICATE_USER_IDS_FOR_ADD_TEAM[0] % exception.user_ids,
+            "response": DUPLICATE_USER_IDS_FOR_ADD_TEAM[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": DUPLICATE_USER_IDS_FOR_ADD_TEAM[1]
         }
@@ -92,9 +92,9 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
             response_dict=response_dict
         )
 
-    def get_invalid_users_response_for_add_team(self, exception):
+    def get_invalid_users_response_for_add_team(self):
         response_dict = {
-            "response": INVALID_USER_IDS_FOR_ADD_TEAM[0] % exception.user_ids,
+            "response": INVALID_USER_IDS_FOR_ADD_TEAM[0],
             "http_status_code": StatusCode.NOT_FOUND.value,
             "res_status": INVALID_USER_IDS_FOR_ADD_TEAM[1]
         }
@@ -127,6 +127,7 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
         ]
         return teams_details_dict_list
 
+    # TODO: Typing
     def _convert_to_team_details_dictionary(
             self,
             team_user_ids_dict,
@@ -143,6 +144,7 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
         )
         return team_dictionary
 
+    # TODO: Typing
     @staticmethod
     def _convert_to_team_dictionary(team_dto, team_members_dict_list):
         team_details_dict = {
@@ -154,6 +156,7 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
         }
         return team_details_dict
 
+    # TODO: Typing
     @staticmethod
     def _get_members(members_ids, members_dictionary):
         members_dict_list = [
@@ -161,6 +164,7 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
         ]
         return members_dict_list
 
+    # TODO: Typing
     @staticmethod
     def _get_members_dictionary(member_dtos):
         from collections import defaultdict
@@ -173,6 +177,7 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
             }
         return members_dict
 
+    # TODO: Typing
     @staticmethod
     def _get_team_members_dict_from_team_user_ids_dtos(
             team_user_ids_dtos

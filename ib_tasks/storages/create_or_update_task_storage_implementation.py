@@ -363,13 +363,16 @@ class CreateOrUpdateTaskStorageImplementation(
             field_id__in=field_ids,
             task_gof_id__in=task_gof_ids,
             field__field_type=FieldTypes.SEARCHABLE.value
-        ).values_list('field_id', 'field__field_values', 'field_response')
+        ).values_list(
+            'field_id', 'field__field_values', 'field_response', 'task_gof_id'
+        )
 
         field_searchable_dtos = [
             FieldSearchableDTO(
                 field_id=field_searchable_value[0],
                 field_value=field_searchable_value[1],
-                field_response=field_searchable_value[2]
+                field_response=field_searchable_value[2],
+                task_gof_id=field_searchable_value[3]
             )
             for field_searchable_value in field_searchable_values
         ]

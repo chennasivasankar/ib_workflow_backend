@@ -25,7 +25,7 @@ USER_ACCOUNT_DOES_NOT_EXIST = (
 class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
                                             HTTPResponseMixin):
 
-    def raise_exception_for_invalid_user_id(self):
+    def response_for_invalid_user_id_exception(self):
         response_dict = {
             "response": INVALID_USER_ID[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
@@ -35,7 +35,7 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
             response_dict=response_dict
         )
 
-    def raise_exception_for_user_account_does_not_exist(self):
+    def response_for_user_account_does_not_exist_exception(self):
         response_dict = {
             "response": USER_ACCOUNT_DOES_NOT_EXIST[0],
             "http_status_code": StatusCode.NOT_FOUND.value,
@@ -63,9 +63,11 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
             company=company_dictionary)
         return self.prepare_200_success_response(response_dict=response_dict)
 
+    # Todo: Typing
     @staticmethod
     def _get_user_profile_dict_from_user_profile_dto(
-            user_profile_dto: CompleteUserProfileDTO, teams, company, roles):
+            user_profile_dto: CompleteUserProfileDTO, teams, company, roles
+    ):
         cover_page_url = user_profile_dto.cover_page_url
         if cover_page_url is None:
             cover_page_url = ""
@@ -85,6 +87,7 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
             user_profile_dictionary["company"] = None
         return user_profile_dictionary
 
+    # Todo: Typing
     @staticmethod
     def _get_roles(role_dtos):
         roles = [{"role_id": role_dto.role_id, "role_name": role_dto.name}
@@ -104,6 +107,7 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
             teams.append(team_dictionary)
         return teams
 
+    # Todo: Typing
     def _get_team_members(self, team_dto, team_user_ids_dtos, user_dtos):
         members = []
         for team_user_ids_dto in team_user_ids_dtos:
@@ -124,6 +128,7 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
         }
         return member_dictionary
 
+    # Todo: Typing
     @staticmethod
     def _convert_to_team_dictionary(team_dto):
         team_details_dict = {
@@ -133,6 +138,7 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
         }
         return team_details_dict
 
+    # TODO: conditional encapsulation, decrease indent depth
     def _get_company_dictionary(
             self, company_dto: CompanyDTO,
             user_dtos: List[UserProfileDTO],

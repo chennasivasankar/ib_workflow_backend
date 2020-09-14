@@ -94,10 +94,10 @@ class TestCase02GetTaskAPITestCase(TestUtils):
                                                       stage_objs))
         TaskStageHistoryModelFactory.create_batch(
             size=3, task=task_obj, stage=factory.Iterator(stage_objs),
-            assignee_id=factory.Iterator(assignee_ids)
+            assignee_id=factory.Iterator(assignee_ids), left_at=None
         )
         TaskStageHistoryModelFactory.create(
-            task=task_obj, stage=stage_objs[3], assignee_id=None
+            task=task_obj, stage=stage_objs[3], assignee_id=None, left_at=None
         )
         StagePermittedRolesFactory.create_batch(
             size=3,
