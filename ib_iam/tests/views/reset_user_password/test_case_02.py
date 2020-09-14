@@ -12,7 +12,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
-    SECURITY = {'oauth': {'scopes': ['write']}}
+    SECURITY = {'oauth': {'scopes': []}}
 
     @pytest.mark.django_db
     def test_token_does_not_exist(self, mocker, snapshot):
