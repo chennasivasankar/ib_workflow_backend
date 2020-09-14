@@ -24,7 +24,9 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_gof_dtos(self, task_id: int) -> List[TaskGoFDTO]:
+    def get_task_gof_dtos(
+            self, task_id: int, gof_ids: List[str]
+    ) -> List[TaskGoFDTO]:
         pass
 
     @abc.abstractmethod
