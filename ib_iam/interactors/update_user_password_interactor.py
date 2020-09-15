@@ -11,18 +11,20 @@ class CurrentAndNewPasswordDTO:
     new_password: str
 
 
-class UpdateUserPassword:
+class UpdateUserPasswordInteractor:
 
     def update_user_password_wrapper(
             self, user_id: str,
             current_and_new_password_dto: CurrentAndNewPasswordDTO,
-            presenter: UpdateUserPasswordPresenterInterface):
+            presenter: UpdateUserPasswordPresenterInterface
+    ):
         from ib_iam.exceptions.custom_exceptions import InvalidNewPassword, \
             InvalidCurrentPassword, CurrentPasswordMismatch
         try:
             self.update_user_password(
                 user_id=user_id,
-                current_and_new_password_dto=current_and_new_password_dto)
+                current_and_new_password_dto=current_and_new_password_dto
+            )
             response = presenter.get_success_response_for_update_user_password()
         except InvalidNewPassword:
             response = presenter.raise_invalid_new_password_exception()
@@ -35,9 +37,11 @@ class UpdateUserPassword:
     @staticmethod
     def update_user_password(
             user_id: str,
-            current_and_new_password_dto: CurrentAndNewPasswordDTO):
-        from ib_iam.adapters.service_adapter import ServiceAdapter
-        service_adapter = ServiceAdapter()
+            current_and_new_password_dto: CurrentAndNewPasswordDTO
+    ):
+        from ib_iam.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
         service_adapter.auth_service.update_user_password(
             user_id=user_id,
-            current_and_new_password_dto=current_and_new_password_dto)
+            current_and_new_password_dto=current_and_new_password_dto
+        )

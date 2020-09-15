@@ -1,8 +1,9 @@
 """
-# TODO: Update test case description
+Success case returns companies, roles and teams of user
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 COMPANY_ID = "b9d000c7-c14f-4909-8c5a-6a6c02abb200"
@@ -53,7 +54,9 @@ class TestCase02GetConfigurationDetailsAPITestCase(TestUtils):
             UserRoleFactory.create(user_id=user_id, project_role=roles[count])
 
     @pytest.mark.django_db
-    def test_case(self, set_up, user_set_up, snapshot):
+    def test_given_valid_details_returns_configuration_details_of_user(
+            self, set_up, user_set_up, snapshot
+    ):
         body = {}
         path_params = {}
         query_params = {}

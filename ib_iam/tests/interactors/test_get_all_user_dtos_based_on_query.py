@@ -55,4 +55,4 @@ class TestGetAllUserDTOsBasedOnQuery:
         # Assert
         assert response_user_details_dtos == expected_user_details_dtos
         storage_mock.get_user_details_dtos_based_on_search_query. \
-            assert_called_once()
+            assert_called_once_with(search_query=search_query)

@@ -16,16 +16,18 @@ class RolesService:
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         return ServiceInterface()
 
-    def get_db_roles(self):
-        # TODO: call service interface
-        return ['FIN_PAYMENT_APPROVER', 'FIN_FINANCE_RP',
-                'FIN_ACCOUNTS_LEVEL4_VERIFIER', 'FIN_PAYMENTS_RP',
-                'FIN_COMPLIANCE_APPROVER', 'FIN_PAYMENTS_LEVEL3_VERIFIER',
-                'FIN_PAYMENTS_LEVEL2_VERIFIER', 'FIN_PAYMENTS_LEVEL1_VERIFIER',
-                'PR_PENDING_ACCOUNTS_LEVEL1_VERIFICATION',
-                'FIN_ACCOUNTS_LEVEL1_VERIFIER', 'FIN_ACCOUNTS_LEVEL2_VERIFIER',
-                'FIN_ACCOUNTS_LEVEL3_VERIFIER'
-                ]
+    def get_project_roles(self, project_id: str):
+
+        from ib_iam.exceptions.custom_exceptions import InvalidProjectId
+        try:
+            project_roles = self.interface.get_project_role_ids(
+                project_id=project_id
+            )
+        except InvalidProjectId:
+            from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException
+            raise InvalidProjectIdsException(invalid_project_ids=[project_id])
+
+        return project_roles
 
     def get_user_roles(self, user_id):
         pass

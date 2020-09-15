@@ -6,6 +6,7 @@ from ib_iam.tests.factories.models import UserDetailsFactory, CompanyFactory
 
 
 class TestGetUserIdsWhoAreNotAdmin:
+    # TODO: no need to assert the length
     @pytest.mark.django_db
     def test_get_user_ids_who_are_not_admin(self):
         # Arrange

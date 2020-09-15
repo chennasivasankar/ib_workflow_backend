@@ -1,9 +1,3 @@
-'''
-validate offset
-validate limit
-get user objects based on serch query
-return user dtos
-'''
 import pytest
 
 

@@ -18,9 +18,9 @@ from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     VirtualStageIdsException
 from ib_tasks.exceptions.task_custom_exceptions import (
     InvalidTaskException, InvalidTaskDisplayId, TaskDelayReasonIsNotUpdated)
-from ib_tasks.interactors. \
-    call_action_logic_function_and_get_or_update_task_status_variables_interactor import \
-    InvalidMethodFound
+from ib_tasks.interactors.user_action_on_task\
+    .call_action_logic_function_and_get_or_update_task_status_variables_interactor \
+    import InvalidMethodFound
 from ib_tasks.interactors \
     .get_next_stages_random_assignees_of_a_task_interactor import \
     InvalidModulePathFound
@@ -55,7 +55,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
-from ib_tasks.interactors.user_action_on_task_interactor import \
+from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor import \
     InvalidBoardIdException
 
 
@@ -196,7 +196,7 @@ class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
 
     def _act_on_task_and_get_required_dtos(self, task_id: int):
 
-        from ib_tasks.interactors.user_action_on_task_interactor import \
+        from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor import \
             UserActionOnTaskInteractor
         act_on_task_interactor = UserActionOnTaskInteractor(
             action_id=self.action_id, board_id=self.board_id,

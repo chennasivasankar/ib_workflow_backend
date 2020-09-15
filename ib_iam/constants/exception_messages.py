@@ -133,16 +133,16 @@ USER_HAS_NO_ACCESS_FOR_ADD_TEAM = (
 )
 
 TEAM_NAME_ALREADY_EXISTS_FOR_ADD_TEAM = (
-    "Given '%s' is already exists, so choose another",
+    "Given '{team_name}' is already exists, so choose another",
     "TEAM_NAME_ALREADY_EXISTS"
 )
 INVALID_USER_IDS_FOR_ADD_TEAM = (
-    "Given user ids '%s' are not found",
+    "Given users are not found, try again",
     "INVALID_USER_IDS"
 )
 
 DUPLICATE_USER_IDS_FOR_ADD_TEAM = (
-    "Given user ids '%s' are duplicated, please check it",
+    "Duplicate Users has sent, try again",
     "DUPLICATE_USER_IDS"
 )
 
@@ -157,17 +157,17 @@ INVALID_TEAM_ID_FOR_UPDATE_TEAM = (
 )
 
 TEAM_NAME_ALREADY_EXISTS_FOR_UPDATE_TEAM = (
-    "Given '%s' is already exists, so updating name is not possible.",
+    "Given '{team_name}' is already exists, so updating name is not possible.",
     "TEAM_NAME_ALREADY_EXISTS"
 )
 
 DUPLICATE_USER_IDS_FOR_UPDATE_TEAM = (
-    "Given users '%s' are duplicated, so update is not possible",
+    "Duplicate user are sent, try again",
     "DUPLICATE_USER_IDS"
 )
 
 INVALID_USER_IDS_FOR_UPDATE_TEAM = (
-    "Given users '%s' are invalid(not found), so update is not possible",
+    "Given users are not found, try again",
     "INVALID_USER_IDS"
 )
 
@@ -192,16 +192,16 @@ USER_HAS_NO_ACCESS_FOR_ADD_COMPANY = (
 )
 
 COMPANY_NAME_ALREADY_EXISTS_FOR_ADD_COMPANY = (
-    "Given '%s' is already exists, so choose another",
+    "Given '{company_name}' is already exists, so choose another",
     "COMPANY_NAME_ALREADY_EXISTS"
 )
 INVALID_USER_IDS_FOR_ADD_COMPANY = (
-    "Given users '%s' are invalid(not found), please check it",
+    "Given users are not found, try again",
     "INVALID_USER_IDS"
 )
 
 DUPLICATE_USER_IDS_FOR_ADD_COMPANY = (
-    "Given users '%s' are duplicated, please check it",
+    "Duplicate user are sent, try again",
     "DUPLICATE_USER_IDS"
 )
 
@@ -226,17 +226,17 @@ INVALID_COMPANY_ID_FOR_UPDATE_COMPANY = (
 )
 
 COMPANY_NAME_ALREADY_EXISTS_FOR_UPDATE_COMPANY = (
-    "Given '%s' name is already exists, so updating name is not possible.",
+    "Given '{company_name}' name is already exists, so updating name is not possible.",
     "COMPANY_NAME_ALREADY_EXISTS"
 )
 
 DUPLICATE_USER_IDS_FOR_UPDATE_COMPANY = (
-    "Given users '%s' are duplicated, so update is not possible",
+    "Duplicate user are sent, try again",
     "DUPLICATE_USER_IDS"
 )
 
 INVALID_USER_IDS_FOR_UPDATE_COMPANY = (
-    "Given users '%s' invalid(not found), so update is not possible",
+    "Given users are not found, try again",
     "INVALID_USER_IDS"
 )
 
