@@ -50,6 +50,7 @@ class TestCreateDiscussion:
             entity_id=discussion_dto.entity_id,
             entity_type=discussion_dto.entity_type
         )
+
         from ib_discussions.models import Discussion
         discussion_object = Discussion.objects.filter(
             discussion_set_id=discussion_set_object.id

@@ -1203,6 +1203,31 @@
         ]
       }
     },
+    "BadRequestForGetUsersResponse": {
+      "description": "given limit or offset is not valid",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_LIMIT_VALUE",
+                  "INVALID_OFFSET_VALUE"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
     "AddUserBadRequestResponse": {
       "description": "Failed to add user",
       "schema": {
@@ -1576,6 +1601,9 @@
             "$ref": "#/definitions/UserDetails"
           },
           {
+            "$ref": "#/definitions/ListOfRoles"
+          },
+          {
             "type": "object",
             "properties": {
               "profile_pic_url": {
@@ -1607,9 +1635,6 @@
                     "items": {
                       "$ref": "#/definitions/EmployeeDetails"
                     }
-                  },
-                  "roles": {
-                    "$ref": "#/definitions/ListOfRoles"
                   }
                 }
               },
@@ -3046,7 +3071,7 @@
             "$ref": "#/responses/UserDoesNotHavePermissionResponse"
           },
           "400": {
-            "$ref": "#/responses/BadRequestForGetListOfTeamsResponse"
+            "$ref": "#/responses/BadRequestForGetUsersResponse"
           }
         }
       }
@@ -3218,13 +3243,6 @@
         "summary": "Reset User Password",
         "description": "Reset user password using token which we provided",
         "operationId": "reset_user_password",
-        "security": [
-          {
-            "oauth": [
-              "write"
-            ]
-          }
-        ],
         "parameters": [
           {
             "name": "token",

@@ -3,6 +3,7 @@ InvalidTeam Response will be given as the does not exist
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -15,12 +16,11 @@ class TestCase03DeleteTeamAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, setup, snapshot):
-        team_id = setup
         body = {}
         path_params = {"team_id": "413642ff-1272-4990-b878-6607a5e02bc1"}
         query_params = {}
         headers = {}
-        response = self.make_api_call(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

@@ -730,6 +730,7 @@ class FieldSearchableDTOFactory(factory.Factory):
     class Meta:
         model = FieldSearchableDTO
 
+    task_gof_id = factory.sequence(lambda counter: counter)
     field_id = factory.sequence(lambda counter: "field{}".format(counter))
     field_value = Searchable.CITY.value
     field_response = "1"

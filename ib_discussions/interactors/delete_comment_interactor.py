@@ -13,6 +13,7 @@ class DeleteCommentInteractor:
                                presenter: DeleteCommentPresenterInterface):
         from ib_discussions.exceptions.custom_exceptions import \
             CommentIdNotFound, UserCannotEditComment
+
         try:
             self.delete_comment(comment_id=comment_id,
                                 user_id=user_id)
@@ -26,6 +27,7 @@ class DeleteCommentInteractor:
     def delete_comment(self, comment_id: str, user_id: str):
         from ib_discussions.exceptions.custom_exceptions import \
             CommentIdNotFound, UserCannotEditComment
+
         is_comment_id_not_exists = \
             not self.comment_storage.is_comment_id_exists(comment_id=comment_id)
         if is_comment_id_not_exists:

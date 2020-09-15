@@ -2,6 +2,8 @@ from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist, \
     InvalidEmail
 from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
     AuthPresenterInterface
+from ib_workflows_backend.settings.base_swagger_utils import \
+    RESET_PASSWORD_LINK
 
 
 class SendResetPasswordLinkToEmailInteractor:
@@ -35,11 +37,12 @@ class SendResetPasswordLinkToEmailInteractor:
         )
 
     @staticmethod
-    def send_reset_password_mail_to_user_email(email: str,
-                                               reset_password_token: str):
+    def send_reset_password_mail_to_user_email(
+            email: str, reset_password_token: str
+    ):
 
         from django.conf import settings
-        reset_password_link = settings.RESET_PASSWORD_LINK
+        reset_password_link = RESET_PASSWORD_LINK
         email_subject = settings.EMAIL_SUBJECT
         email_body_template = settings.RESET_PASSWORD_EMAIL_BODY_TEMPLATE
         final_reset_password_link = reset_password_link + reset_password_token

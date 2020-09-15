@@ -27,9 +27,9 @@ class TestCase02RefreshTokensAPITestCase(TestUtils):
         )
 
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks \
-            import prepare_get_refresh_auth_tokens_dto_mock
+            import get_refresh_auth_tokens_dto_mock
         get_refresh_auth_tokens_dto_mock = \
-            prepare_get_refresh_auth_tokens_dto_mock(mocker)
+            get_refresh_auth_tokens_dto_mock(mocker)
 
         get_refresh_auth_tokens_dto_mock.return_value = user_tokens_dto
 

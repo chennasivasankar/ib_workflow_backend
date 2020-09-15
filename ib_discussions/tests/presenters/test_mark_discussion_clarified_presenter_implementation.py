@@ -23,7 +23,7 @@ class TestMarkDiscussionClarifiedPresenterImplementation:
         expected_res_status = DISCUSSION_ID_NOT_FOUND[1]
 
         # Act
-        response_obj = presenter.raise_exception_for_discussion_id_not_found()
+        response_obj = presenter.response_for_discussion_id_not_found()
 
         # Assert
         response_data = json.loads(response_obj.content)
@@ -43,7 +43,7 @@ class TestMarkDiscussionClarifiedPresenterImplementation:
 
         # Act
         response_obj \
-            = presenter.raise_exception_for_user_cannot_mark_as_clarified()
+            = presenter.response_for_user_cannot_mark_as_clarified()
 
         # Assert
         response_data = json.loads(response_obj.content)
@@ -56,7 +56,7 @@ class TestMarkDiscussionClarifiedPresenterImplementation:
                                                                      presenter):
         # Act
         response_obj \
-            = presenter.raise_success_response_for_mark_discussion_as_clarified()
+            = presenter.prepare_success_response_for_mark_discussion_as_clarified()
 
         # Assert
         assert response_obj.status_code == StatusCode.CREATED.value

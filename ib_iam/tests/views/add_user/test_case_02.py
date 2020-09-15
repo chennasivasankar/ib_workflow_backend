@@ -1,5 +1,5 @@
 """
-# TODO: Update test case description
+Given invalid email returns invalid email response
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils

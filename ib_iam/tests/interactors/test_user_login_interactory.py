@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import patch, Mock
+from unittest.mock import Mock
 
 
 class TestLoginInteractor:
@@ -53,9 +53,9 @@ class TestLoginInteractor:
         )
         from ib_iam.interactors.user_login_interactor import IncorrectPassword
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock
+            get_user_tokens_dto_for_given_email_and_password_dto_mock
         get_tokens_dto_for_given_email_and_password_dto_mock \
-            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(
+            = get_user_tokens_dto_for_given_email_and_password_dto_mock(
             mocker)
         get_tokens_dto_for_given_email_and_password_dto_mock.side_effect \
             = IncorrectPassword
@@ -117,8 +117,7 @@ class TestLoginInteractor:
         from ib_iam.adapters.auth_service import UserTokensDTO
         tokens_dto = UserTokensDTO(
             access_token="asdfaldskfjdfdlsdkf",
-            refresh_token="sadfenkljkdfeller",
-            expires_in_seconds=1000,
+            refresh_token="sadfenkljkdfeller", expires_in_seconds=1000,
             user_id=user_id
         )
         email_and_password_dto.password = "Test12345@"
@@ -137,9 +136,9 @@ class TestLoginInteractor:
             user_id=user_id, is_email_verified=True
         )
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock
+            get_user_tokens_dto_for_given_email_and_password_dto_mock
         get_tokens_dto_for_given_email_and_password_dto_mock \
-            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(
+            = get_user_tokens_dto_for_given_email_and_password_dto_mock(
             mocker)
         get_tokens_dto_for_given_email_and_password_dto_mock.return_value \
             = tokens_dto
@@ -155,7 +154,8 @@ class TestLoginInteractor:
         # Act
         response = interactor.login_wrapper(
             email_and_password_dto=email_and_password_dto,
-            presenter=presenter_mock)
+            presenter=presenter_mock
+        )
 
         # Assert
         assert response == expected_presenter_mock_response
@@ -182,9 +182,9 @@ class TestLoginInteractor:
         )
         from ib_iam.exceptions.custom_exceptions import InvalidEmail
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock
+            get_user_tokens_dto_for_given_email_and_password_dto_mock
         get_tokens_dto_for_given_email_and_password_dto_mock \
-            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(
+            = get_user_tokens_dto_for_given_email_and_password_dto_mock(
             mocker)
         get_tokens_dto_for_given_email_and_password_dto_mock.side_effect \
             = InvalidEmail
@@ -199,7 +199,8 @@ class TestLoginInteractor:
         # Act
         response = interactor.login_wrapper(
             email_and_password_dto=email_and_password_dto,
-            presenter=presenter_mock)
+            presenter=presenter_mock
+        )
 
         # Assert
         assert response == expected_raise_invalid_email_mock
@@ -207,7 +208,8 @@ class TestLoginInteractor:
 
     def test_with_not_verify_email_then_raise_exception_email_not_verify(
             self, mocker, email_and_password_dto, presenter_mock_setup,
-            storage_mock_setup):
+            storage_mock_setup
+    ):
         # Arrange
         user_id = "1"
         expected_raise_invalid_email_mock = Mock()
@@ -234,7 +236,8 @@ class TestLoginInteractor:
         # Act
         response = interactor.login_wrapper(
             email_and_password_dto=email_and_password_dto,
-            presenter=presenter_mock)
+            presenter=presenter_mock
+        )
 
         # Assert
         assert response == expected_raise_invalid_email_mock
@@ -246,7 +249,9 @@ class TestLoginInteractor:
 
     def test_with_invalid_email_then_raise_invalid_email_exception(
             self, email_and_password_dto, presenter_mock_setup,
-            storage_mock_setup):
+            storage_mock_setup
+    ):
+        # Arrange
         expected_raise_invalid_email_mock = Mock()
         email_and_password_dto.email = "123"
         presenter_mock = presenter_mock_setup
@@ -259,7 +264,8 @@ class TestLoginInteractor:
         # Act
         response = interactor.login_wrapper(
             email_and_password_dto=email_and_password_dto,
-            presenter=presenter_mock)
+            presenter=presenter_mock
+        )
 
         # Assert
         assert response == expected_raise_invalid_email_mock

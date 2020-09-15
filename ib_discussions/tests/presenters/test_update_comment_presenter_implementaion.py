@@ -109,7 +109,6 @@ class TestUpdateCommentPresenterImplementation:
         comment_id = '91be920b-7b4c-49e7-8adb-41a0c18da848'
         comment_with_replies_count_and_editable_dto = CommentWithRepliesCountAndEditableDTOFactory(
             comment_id=comment_id,
-            comment_content='content',
             user_id='31be920b-7b4c-49e7-8adb-41a0c18da848',
             replies_count=0,
             is_editable=True
@@ -127,9 +126,7 @@ class TestUpdateCommentPresenterImplementation:
             UserProfileDTOFactory
         user_profile_dtos = [
             UserProfileDTOFactory(
-                user_id=user_id,
-                name='name ',
-                profile_pic_url='https://graph.ib_users.com/'
+                user_id=user_id
             )
             for user_id in user_ids
         ]

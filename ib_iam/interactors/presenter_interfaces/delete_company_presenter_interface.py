@@ -1,7 +1,6 @@
 import abc
 
 
-
 class DeleteCompanyPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
