@@ -20,7 +20,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldCompleteDetailsDTO, FieldRolesDTO, FieldRoleDTO, \
     UserFieldPermissionDTO, FieldDetailsDTOWithTaskId, FieldDetailsDTO, \
     StageTaskFieldsDTO, FieldPermissionDTO, FieldValueDTO, FieldNameDTO, \
-    FieldIdWithFieldDisplayNameDTO
+    FieldIdWithFieldDisplayNameDTO, FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
     TaskGoFFieldDTO,
     TaskGoFDTO, TaskDetailsDTO, TaskBaseDetailsDTO, FieldSearchableDTO
@@ -342,9 +342,9 @@ class TaskStatusVariableDTOFactory(factory.Factory):
 
 class FieldTypeDTOFactory(factory.Factory):
     class Meta:
-        model = FieldCompleteDetailsDTO
+        model = FieldTypeDTO
 
-    field_id = factory.Sequence(lambda counter: "FIELD_ID-{}".format(counter))
+    field_id = factory.Sequence(lambda counter: "field{}".format(counter))
     field_type = factory.Iterator(VALID_FIELD_TYPES)
 
 

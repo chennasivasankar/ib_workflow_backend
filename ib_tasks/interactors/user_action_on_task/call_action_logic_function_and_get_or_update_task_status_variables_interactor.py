@@ -1,5 +1,6 @@
 from typing import List, Any, Dict
 
+from ib_tasks.constants.enum import FieldTypes
 from ib_tasks.interactors.storage_interfaces.fields_dtos \
     import FieldValueDTO, FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
@@ -45,7 +46,7 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
     def call_action_logic_function_and_get_status_variables_dtos_of_task(self) \
             -> List[StatusVariableDTO]:
         task_dto = self._get_task_dto(self.task_id)
-        status_dict, status_variables_dto, task_gof_dtos, task_gof_fields_dto = \
+        status_dict, status_variables_dto = \
             self._call_action_logic_function(task_dto=task_dto)
         updated_status_variable_dtos = self._get_updated_status_variable_dto(
             status_dict, status_variables_dto)
@@ -54,11 +55,9 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
     def call_action_logic_function_and_update_task_status_variables(
             self) -> TaskDetailsDTO:
         task_dto = self._get_task_dto(self.task_id)
-        status_dict, status_variables_dto, task_gof_dtos, task_gof_fields_dto = \
+        status_dict, status_variables_dto = \
             self._call_action_logic_function(task_dto=task_dto)
         self._update_task_status_variables(status_dict, status_variables_dto)
-        task_dto.task_gof_dtos = task_gof_dtos
-        task_dto.task_gof_field_dtos = task_gof_fields_dto
         return task_dto
 
     def _call_action_logic_function(
@@ -67,10 +66,6 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
         gof_multiple_enable_dict = self._get_gof_multiple_enable_dict(
             template_id=task_dto.task_base_details_dto.template_id)
         task_gof_fields_dto = task_dto.task_gof_field_dtos
-        task_gof_dtos, task_gof_fields_dto = \
-            self._get_updated_task_gof_and_filed_dtos(
-                gof_multiple_enable_dict, task_gof_dtos, task_gof_fields_dto
-            )
         field_ids = self._get_field_ids(task_gof_fields_dto)
         field_type_dtos = self.field_storage.get_field_type_dtos(field_ids)
         task_gof_fields_dto_dict = \
@@ -83,8 +78,8 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
         # TODO update fields
         status_dict = task_dict.get("status_variables", {})
         return (
-            status_dict, status_variables_dto, task_gof_dtos,
-            task_gof_fields_dto)
+            status_dict, status_variables_dto
+        )
 
     @staticmethod
     def _get_field_ids(
@@ -95,30 +90,6 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
             for dto in task_gof_fields_dto
         ]
         return field_ids
-
-    def _get_updated_task_gof_and_filed_dtos(
-            self, gof_multiple_enable_dict: Dict[str, bool],
-            task_gof_dtos: List[TaskGoFDTO],
-            task_gof_fields_dto: List[TaskGoFFieldDTO]
-    ):
-        updated_task_gofs = []
-        for task_gof_dto in task_gof_dtos:
-            gof_id = task_gof_dto.gof_id
-            if gof_id in gof_multiple_enable_dict:
-                updated_task_gofs.append(task_gof_dto)
-
-        updated_task_fields = []
-
-        task_gof_ids = [
-            task_gof_dto.task_gof_id
-            for task_gof_dto in updated_task_gofs
-        ]
-
-        for task_gof_field_dto in task_gof_fields_dto:
-            task_gof_id = task_gof_field_dto.task_gof_id
-            if task_gof_id in task_gof_ids:
-                updated_task_fields.append(task_gof_field_dto)
-        return updated_task_gofs, updated_task_fields
 
     def _get_updated_task_dict(
             self, task_dict: Dict[str, Any]) -> Dict[str, Any]:
@@ -276,34 +247,38 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
     ) -> Dict[int, Dict[str, Any]]:
         from collections import defaultdict
         task_gof_fields_dict = defaultdict(dict)
+        field_type_dict = self._get_field_type_dict(field_type_dtos)
         for field_dto in fields_dto:
             field_id = field_dto.field_id
             response = field_dto.field_response
             task_gof_id = field_dto.task_gof_id
-            is_field_type_number_or_float = \
-                self._check_field_type_number_or_float(
-                    field_id, field_type_dtos
-                )
-            if is_field_type_number_or_float:
-                response = float(response)
+            if self._check_field_type_number_or_float(
+                    field_type_dict[field_id]):
+                response = float(field_dto.field_response)
             task_gof_fields_dict[task_gof_id][field_id] = response
 
         return task_gof_fields_dict
 
     @staticmethod
+    def _get_field_type_dict(
+            field_type_dtos: List[FieldTypeDTO]
+    ) -> Dict[str, FieldTypes]:
+
+        return {
+            field_type_dto.field_id: field_type_dto.field_type
+            for field_type_dto in field_type_dtos
+        }
+
+    @staticmethod
     def _check_field_type_number_or_float(
-            field_id: str, field_type_dtos: List[FieldTypeDTO]
+            field_type: FieldTypes
     ) -> bool:
-        from ib_tasks.constants.enum import FieldTypes
-        for dto in field_type_dtos:
-            is_field_type_number_or_float = field_id == dto.field_id and \
-                                            (
-                                                    dto.field_type ==
-                                                    FieldTypes.NUMBER.value or
-                                                    dto.field_type ==
-                                                    FieldTypes.FLOAT.value)
-            if is_field_type_number_or_float:
-                return True
+        is_number_or_float = (
+                field_type == FieldTypes.NUMBER.value
+                or field_type == FieldTypes.FLOAT.value
+        )
+        if is_number_or_float:
+            return True
         return False
 
     def _get_task_dto(self, task_id: int):

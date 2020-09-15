@@ -198,7 +198,6 @@ class GetTaskStageLogicSatisfiedStagesInteractor:
             status_variables_dict[variable] = value
         return status_variables_dict
 
-
     def _get_task_status_variable_dict_given_status_variable_dtos(
             self, status_variable_dtos: List[StatusVariableDTO]):
         status_variables_dict = \
