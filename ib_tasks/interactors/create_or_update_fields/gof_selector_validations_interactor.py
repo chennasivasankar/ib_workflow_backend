@@ -27,15 +27,23 @@ class GoFSelectorValidationsInteractor:
         field_values = self._eliminate_duplication_of_gof_ids(field_values)
         field_dto.field_values = json.dumps(field_values)
 
-    @staticmethod
     def _eliminate_duplication_of_gof_ids(
-            field_values: List[Dict]
+            self, field_values: List[Dict]
     ) -> List[Dict]:
 
         for field_value_dict in field_values:
             gof_ids = field_value_dict["gof_ids"]
-            field_value_dict["gof_ids"] = sorted(list(set(gof_ids)))
+            unique_gof_ids = self._get_unique_gof_ids(gof_ids)
+            field_value_dict["gof_ids"] = unique_gof_ids
         return field_values
+
+    @staticmethod
+    def _get_unique_gof_ids(gof_ids: List[str]) -> List[str]:
+        unique_gof_ids = []
+        for gof_id in gof_ids:
+            if gof_id not in unique_gof_ids:
+                unique_gof_ids.append(gof_id)
+        return unique_gof_ids
 
     @staticmethod
     def _check_for_valid_json(
