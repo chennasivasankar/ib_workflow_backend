@@ -21,6 +21,7 @@ from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
 from ib_tasks.storages.fields_storage_implementation import \
     FieldsStorageImplementation
+from ...storages.gof_storage_implementation import GoFStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -36,12 +37,14 @@ def api_wrapper(*args, **kwargs):
     task_stage_storage = TaskStageStorageImplementation()
     create_task_storage = CreateOrUpdateTaskStorageImplementation()
     field_storage = FieldsStorageImplementation()
+    gof_storage = GoFStorageImplementation()
 
     interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
         stage_storage=stage_storage, task_storage=task_storage,
         storage=storage, action_storage=action_storage,
         task_stage_storage=task_stage_storage,
-        create_task_storage=create_task_storage, field_storage=field_storage
+        create_task_storage=create_task_storage, field_storage=field_storage,
+        gof_storage=gof_storage
     )
     response = interactor. \
         get_next_stages_random_assignees_of_a_task_wrapper(
