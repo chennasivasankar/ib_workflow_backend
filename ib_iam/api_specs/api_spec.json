@@ -1594,6 +1594,9 @@
             "$ref": "#/definitions/UserDetails"
           },
           {
+            "$ref": "#/definitions/ListOfRoles"
+          },
+          {
             "type": "object",
             "properties": {
               "profile_pic_url": {
@@ -1625,9 +1628,6 @@
                     "items": {
                       "$ref": "#/definitions/EmployeeDetails"
                     }
-                  },
-                  "roles": {
-                    "$ref": "#/definitions/ListOfRoles"
                   }
                 }
               },

@@ -30,7 +30,7 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
         get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
         from ib_iam.adapters.user_service import UserAccountDoesNotExist
         get_user_profile_dto_mock.side_effect = UserAccountDoesNotExist
-        response = self.make_api_call(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
