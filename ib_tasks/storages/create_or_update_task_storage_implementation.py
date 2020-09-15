@@ -99,8 +99,12 @@ class CreateOrUpdateTaskStorageImplementation(
         ]
         TaskStatusVariable.objects.bulk_create(task_status_variables)
 
-    def get_task_gof_dtos(self, task_id: int) -> List[TaskGoFDTO]:
-        task_gof_objs = TaskGoF.objects.filter(task_id=task_id)
+    def get_task_gof_dtos(
+            self, task_id: int, gof_ids: List[str]
+    ) -> List[TaskGoFDTO]:
+        task_gof_objs = TaskGoF.objects.filter(
+            task_id=task_id, gof_id__in=gof_ids
+        )
         task_gof_dtos = []
         for task_gof_obj in task_gof_objs:
             task_gof_dto = TaskGoFDTO(

@@ -153,7 +153,9 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def _get_task_details_dto(self, task_id: int) -> TaskDetailsDTO:
         get_task_base_interactor = GetTaskBaseInteractor(
-            storage=self.task_crud_storage)
+            storage=self.task_crud_storage,
+            gof_storage=self.gof_storage,
+        )
         task_details_dto = get_task_base_interactor.get_task(task_id)
         return task_details_dto
 
@@ -306,7 +308,6 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
                 return field_searchable_dto.field_response
 
         return field_response
-
 
     def _get_updated_field_response_for_field_searchable_dtos(
             self, field_searchable_dtos: List[FieldSearchableDTO],
