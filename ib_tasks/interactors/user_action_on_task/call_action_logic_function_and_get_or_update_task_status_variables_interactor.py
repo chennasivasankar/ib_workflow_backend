@@ -66,10 +66,8 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
         gof_multiple_enable_dict = self._get_gof_multiple_enable_dict(
             template_id=task_dto.task_base_details_dto.template_id)
         task_gof_fields_dto = task_dto.task_gof_field_dtos
-        field_ids = self._get_field_ids(task_gof_fields_dto)
-        field_type_dtos = self.field_storage.get_field_type_dtos(field_ids)
         task_gof_fields_dto_dict = \
-            self._get_task_gof_fields_dict(task_gof_fields_dto, field_type_dtos)
+            self._get_task_gof_fields_dict(task_gof_fields_dto, task_gof_fields_dto)
         status_variables_dto = self._get_task_status_dtos(self.task_id)
         task_dict = self._get_task_dict(
             task_gof_dtos, gof_multiple_enable_dict,
@@ -243,8 +241,10 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
 
     def _get_task_gof_fields_dict(
             self, fields_dto: List[TaskGoFFieldDTO],
-            field_type_dtos: List[FieldTypeDTO]
+            task_gof_fields_dto: List[TaskGoFFieldDTO]
     ) -> Dict[int, Dict[str, Any]]:
+        field_ids = self._get_field_ids(task_gof_fields_dto)
+        field_type_dtos = self.field_storage.get_field_type_dtos(field_ids)
         from collections import defaultdict
         task_gof_fields_dict = defaultdict(dict)
         field_type_dict = self._get_field_type_dict(field_type_dtos)
