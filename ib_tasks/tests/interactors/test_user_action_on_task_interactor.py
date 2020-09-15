@@ -509,7 +509,7 @@ class TestUserActionOnTaskInteractor:
         mock_obj.called_once()
         user_roles_mock.called_once()
         dict_obj = \
-            presenter.raise_exception_for_user_action_permission_denied \
+            presenter.raise_user_action_permission_denied \
                 .call_args.kwargs
         expected_action_id = dict_obj['error_obj'].action_id
         assert action_id == expected_action_id

@@ -779,7 +779,7 @@ class TestSaveAndActOnATaskPresenterImplementation:
 
         # Act
         response = \
-            presenter.raise_exception_for_user_action_permission_denied(err)
+            presenter.raise_user_action_permission_denied(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -799,7 +799,7 @@ class TestSaveAndActOnATaskPresenterImplementation:
 
         # Act
         response = \
-            presenter.raise_exception_for_invalid_present_stage_actions(err)
+            presenter.raise_invalid_present_stage_actions(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -837,7 +837,7 @@ class TestSaveAndActOnATaskPresenterImplementation:
         expected_path_name = "home"
 
         # Act
-        response = presenter.raise_invalid_path_not_found_exception(
+        response = presenter.raise_path_not_found_exception(
             expected_path_name)
 
         # Assert
@@ -854,7 +854,7 @@ class TestSaveAndActOnATaskPresenterImplementation:
 
         # Act
         response = \
-            presenter.raise_invalid_method_not_found_exception(expected_method)
+            presenter.raise_method_not_found(expected_method)
 
         # Assert
         json_response = json.loads(response.content)

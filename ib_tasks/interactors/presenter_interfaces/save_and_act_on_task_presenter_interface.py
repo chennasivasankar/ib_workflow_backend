@@ -1,5 +1,6 @@
 import abc
 
+from ib_tasks.exceptions.custom_exceptions import InvalidMethodFound
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueDateTimeWithoutStartDateTimeIsNotValid, StartDateTimeIsRequired, \
     DueDateTimeIsRequired, DueDateTimeHasExpired
@@ -9,9 +10,12 @@ from ib_tasks.exceptions.gofs_custom_exceptions import \
     UserDidNotFillRequiredGoFs
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
-    StageIdsListEmptyException, InvalidStageIdsListException
+    StageIdsListEmptyException, InvalidStageIdsListException, \
+    DuplicateStageIds, InvalidDbStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import \
     TaskDelayReasonIsNotUpdated, PriorityIsRequired, InvalidTaskJson
+from ib_tasks.interactors.call_action_logic_function_and_update_task_status_variables_interactor import \
+    InvalidModulePathFound
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
@@ -139,7 +143,7 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_user_action_permission_denied(self, error_obj):
+    def raise_user_action_permission_denied(self, error_obj):
         pass
 
     @abc.abstractmethod
@@ -156,7 +160,7 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_present_stage_actions(self, err):
+    def raise_invalid_present_stage_actions(self, err):
         pass
 
     @abc.abstractmethod
@@ -168,19 +172,20 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_path_not_found_exception(self, path_name):
+    def raise_path_not_found_exception(self, err: InvalidModulePathFound):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_method_not_found_exception(self, method_name):
+    def raise_method_not_found(self, err: InvalidMethodFound):
         pass
 
     @abc.abstractmethod
-    def raise_duplicate_stage_ids_not_valid(self, duplicate_stage_ids):
+    def raise_duplicate_stage_ids_not_valid(self, err: DuplicateStageIds):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_stage_ids_exception(self, invalid_stage_ids):
+    def raise_invalid_stage_ids_exception(
+            self, err: InvalidDbStageIdsListException):
         pass
 
     @abc.abstractmethod

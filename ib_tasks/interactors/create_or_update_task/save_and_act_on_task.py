@@ -105,8 +105,7 @@ class SaveAndActOnATaskInteractor(
     def save_and_act_on_task_wrapper(
             self, presenter: SaveAndActOnATaskPresenterInterface,
             task_dto: SaveAndActOnTaskWithTaskDisplayIdDTO,
-            task_request_json: str
-    ):
+            task_request_json: str):
         try:
             return self._prepare_save_and_act_response(
                 presenter, task_dto, task_request_json)
@@ -191,27 +190,21 @@ class SaveAndActOnATaskInteractor(
         except InvalidFileFormat as err:
             return presenter.raise_not_acceptable_file_format(err)
         except UserActionPermissionDenied as err:
-            return presenter.raise_exception_for_user_action_permission_denied(
-                error_obj=err)
+            return presenter.raise_user_action_permission_denied(err)
         except InvalidPresentStageAction as err:
-            return presenter.raise_exception_for_invalid_present_stage_actions(
-                err)
+            return presenter.raise_invalid_present_stage_actions(err)
         except InvalidKeyError:
             return presenter.raise_invalid_key_error()
         except InvalidCustomLogicException:
             return presenter.raise_invalid_custom_logic_function_exception()
-        except InvalidModulePathFound as exception:
-            return presenter.raise_invalid_path_not_found_exception(
-                path_name=exception.path_name)
-        except InvalidMethodFound as exception:
-            return presenter.raise_invalid_method_not_found_exception(
-                method_name=exception.method_name)
-        except DuplicateStageIds as exception:
-            return presenter.raise_duplicate_stage_ids_not_valid(
-                duplicate_stage_ids=exception.duplicate_stage_ids)
-        except InvalidDbStageIdsListException as exception:
-            return presenter.raise_invalid_stage_ids_exception(
-                invalid_stage_ids=exception.invalid_stage_ids)
+        except InvalidModulePathFound as err:
+            return presenter.raise_path_not_found_exception(err)
+        except InvalidMethodFound as err:
+            return presenter.raise_method_not_found(err)
+        except DuplicateStageIds as err:
+            return presenter.raise_duplicate_stage_ids_not_valid(err)
+        except InvalidDbStageIdsListException as err:
+            return presenter.raise_invalid_stage_ids_exception(err)
         except StageIdsWithInvalidPermissionForAssignee as err:
             return presenter.raise_invalid_stage_assignees(err)
         except StageIdsListEmptyException as err:

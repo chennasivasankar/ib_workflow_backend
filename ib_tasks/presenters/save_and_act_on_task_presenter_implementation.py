@@ -3,6 +3,7 @@ from typing import List, Optional, Dict
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.exceptions.custom_exceptions import InvalidMethodFound
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     StartDateIsAheadOfDueDate, \
     DueDateTimeHasExpired, \
@@ -18,11 +19,15 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     UserBoardPermissionDenied, UserActionPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
-    InvalidStageIdsListException, StageIdsListEmptyException
+    InvalidStageIdsListException, StageIdsListEmptyException, \
+    DuplicateStageIds, InvalidDbStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
     TaskDelayReasonIsNotUpdated, \
     PriorityIsRequired, InvalidTaskJson
+from ib_tasks.interactors \
+    .call_action_logic_function_and_update_task_status_variables_interactor \
+    import InvalidModulePathFound
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.presenter_interfaces \
@@ -300,7 +305,7 @@ class SaveAndActOnATaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_invalid_path_not_found_exception(self, path_name):
+    def raise_path_not_found_exception(self, err: InvalidModulePathFound):
         from ib_tasks.constants.exception_messages import \
             PATH_NOT_FOUND
         data = {
@@ -310,7 +315,7 @@ class SaveAndActOnATaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_invalid_method_not_found_exception(self, method_name):
+    def raise_method_not_found(self, err: InvalidMethodFound):
         from ib_tasks.constants.exception_messages import \
             METHOD_NOT_FOUND
         data = {
@@ -320,27 +325,28 @@ class SaveAndActOnATaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_duplicate_stage_ids_not_valid(self, duplicate_stage_ids):
+    def raise_duplicate_stage_ids_not_valid(self, err: DuplicateStageIds):
         from ib_tasks.constants.exception_messages import \
             DUPLICATE_STAGE_IDS
         data = {
-            "response": DUPLICATE_STAGE_IDS[0].format(duplicate_stage_ids),
+            "response": DUPLICATE_STAGE_IDS[0].format(err.duplicate_stage_ids),
             "http_status_code": 400,
             "res_status": DUPLICATE_STAGE_IDS[1]
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_invalid_stage_ids_exception(self, invalid_stage_ids):
+    def raise_invalid_stage_ids_exception(
+            self, err: InvalidDbStageIdsListException):
         from ib_tasks.constants.exception_messages import \
             INVALID_STAGE_IDS
         data = {
-            "response": INVALID_STAGE_IDS[0].format(invalid_stage_ids),
+            "response": INVALID_STAGE_IDS[0].format(err.invalid_stage_ids),
             "http_status_code": 400,
             "res_status": INVALID_STAGE_IDS[1]
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_invalid_present_stage_actions(self, err):
+    def raise_invalid_present_stage_actions(self, err):
         from ib_tasks.constants.exception_messages import \
             INVALID_PRESENT_STAGE_ACTION
         message = INVALID_PRESENT_STAGE_ACTION[0].format(err.action_id)
@@ -531,7 +537,7 @@ class SaveAndActOnATaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_exception_for_user_action_permission_denied(
+    def raise_user_action_permission_denied(
             self, error_obj: UserActionPermissionDenied):
         from ib_tasks.constants.exception_messages import \
             USER_DO_NOT_HAVE_ACCESS

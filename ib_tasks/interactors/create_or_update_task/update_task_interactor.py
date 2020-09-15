@@ -221,7 +221,6 @@ class UpdateTaskInteractor(
         task_id = task_dto.task_basic_details.task_id
         self._validate_task_details(task_dto)
         self._update_task_details(task_dto)
-
         self._update_stage_assignee(task_id, task_dto.stage_assignee)
         all_tasks_overview_details_dto = self._get_task_overview_details(
             task_id, task_dto.task_basic_details.created_by_id)

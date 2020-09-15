@@ -203,7 +203,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             presenter=presenter_mock)
 
         # Assert
-        presenter_mock.raise_invalid_path_not_found_exception. \
+        presenter_mock.raise_path_not_found_exception. \
             assert_called_once_with(path_name=path_name)
 
     @staticmethod
@@ -241,7 +241,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         )
 
         # Assert
-        presenter_mock.raise_invalid_method_not_found_exception. \
+        presenter_mock.raise_method_not_found. \
             assert_called_once_with(method_name=method_name)
 
     @staticmethod

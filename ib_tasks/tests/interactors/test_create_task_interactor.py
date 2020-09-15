@@ -2455,7 +2455,7 @@ class TestCreateTaskInteractor:
             UserActionPermissionDenied
         user_action_on_task_mock.side_effect = UserActionPermissionDenied(
             task_dto.action_id)
-        presenter_mock.raise_exception_for_user_action_permission_denied \
+        presenter_mock.raise_user_action_permission_denied \
             .return_value = \
             mock_object
 
@@ -2466,10 +2466,10 @@ class TestCreateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_user_action_permission_denied \
+            .raise_user_action_permission_denied \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_user_action_permission_denied \
+            raise_user_action_permission_denied \
             .call_args
         error_object = call_args.kwargs['error_obj']
         invalid_action_id = error_object.action_id
@@ -2507,7 +2507,7 @@ class TestCreateTaskInteractor:
             InvalidPresentStageAction
         user_action_on_task_mock.side_effect = InvalidPresentStageAction(
             given_action_id)
-        presenter_mock.raise_exception_for_invalid_present_stage_actions \
+        presenter_mock.raise_invalid_present_stage_actions \
             .return_value = mock_object
 
         # Act
@@ -2517,10 +2517,10 @@ class TestCreateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_present_stage_actions \
+            .raise_invalid_present_stage_actions \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_present_stage_actions \
+            presenter_mock.raise_invalid_present_stage_actions \
                 .call_args
         error_object = call_args[0][0]
         invalid_action_id = error_object.action_id
@@ -2643,7 +2643,7 @@ class TestCreateTaskInteractor:
             InvalidModulePathFound
         user_action_on_task_mock.side_effect = InvalidModulePathFound(
             given_module_path)
-        presenter_mock.raise_invalid_path_not_found_exception \
+        presenter_mock.raise_path_not_found_exception \
             .return_value = \
             mock_object
 
@@ -2654,10 +2654,10 @@ class TestCreateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_invalid_path_not_found_exception \
+            .raise_path_not_found_exception \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_invalid_path_not_found_exception \
+            raise_path_not_found_exception \
             .call_args
         invalid_path_name = call_args.kwargs['path_name']
         assert invalid_path_name == given_module_path
@@ -2696,7 +2696,7 @@ class TestCreateTaskInteractor:
             InvalidMethodFound
         user_action_on_task_mock.side_effect = InvalidMethodFound(
             given_method_name)
-        presenter_mock.raise_invalid_method_not_found_exception \
+        presenter_mock.raise_method_not_found \
             .return_value = \
             mock_object
 
@@ -2706,10 +2706,10 @@ class TestCreateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_invalid_method_not_found_exception \
+        presenter_mock.raise_method_not_found \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_invalid_method_not_found_exception \
+            raise_method_not_found \
             .call_args
         invalid_method_name = call_args.kwargs['method_name']
         assert invalid_method_name == given_method_name

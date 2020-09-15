@@ -96,8 +96,7 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
         gofs_details_validation_interactor = GoFsDetailsValidationsInteractor(
             self.task_storage, self.gof_storage,
             self.create_task_storage, self.storage,
-            self.field_storage, self.task_template_storage
-        )
+            self.field_storage, self.task_template_storage)
         gofs_details_validation_interactor.perform_gofs_details_validations(
             gof_fields_dtos=task_dto.gof_fields_dtos,
             user_id=task_dto.basic_task_details_dto.created_by_id,

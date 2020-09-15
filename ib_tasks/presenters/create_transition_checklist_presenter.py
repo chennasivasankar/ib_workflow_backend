@@ -1,6 +1,8 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.exceptions.field_values_custom_exceptions import \
+    InvalidDateFormat
 from ib_tasks.exceptions.fields_custom_exceptions import \
     UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import \
@@ -12,13 +14,13 @@ from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTransitionChecklistTemplateId
 from ib_tasks.interactors.presenter_interfaces \
     .create_transition_checklist_presenter_interface import \
-    CreateOrUpdateTransitionChecklistTemplatePresenterInterface
+    CreateOrUpdateTransitionChecklistPresenterInterface
 from ib_tasks.presenters.mixins.gofs_fields_validation_presenter_mixin import \
     GoFsFieldsValidationPresenterMixin
 
 
-class CreateOrUpdateTransitionChecklistTemplatePresenterImplementation(
-    CreateOrUpdateTransitionChecklistTemplatePresenterInterface,
+class CreateOrUpdateTransitionChecklistPresenterImplementation(
+    CreateOrUpdateTransitionChecklistPresenterInterface,
     HTTPResponseMixin, GoFsFieldsValidationPresenterMixin
 ):
     def raise_invalid_gof_ids(self, err):
@@ -66,22 +68,23 @@ class CreateOrUpdateTransitionChecklistTemplatePresenterImplementation(
     def raise_invalid_dropdown_value(self, err):
         return self.raise_invalid_dropdown_value_exception(err)
 
-    def raise_invalid_name_in_gof_selector_field_value(self, err):
-        return \
-            self.raise_invalid_name_in_gof_selector_exception(err)
+    def raise_invalid_name_in_gof_selector(self, err):
+        return self.raise_invalid_name_in_gof_selector_exception(err)
 
     def raise_invalid_choice_in_radio_group_field(self, err):
         return self.raise_invalid_choice_in_radio_group_field_exception(err)
 
     def raise_invalid_checkbox_group_options_selected(self, err):
-        return self.raise_invalid_checkbox_group_options_exception(
-            err)
+        return self.raise_invalid_checkbox_group_options_exception(err)
 
     def raise_invalid_multi_select_options_selected(self, err):
         return self.raise_invalid_multi_select_options_selected_exception(err)
 
     def raise_invalid_multi_select_labels_selected(self, err):
         return self.raise_invalid_multi_select_labels_selected_exception(err)
+
+    def raise_invalid_date_format(self, err: InvalidDateFormat):
+        return self.raise_invalid_date_format_exception(err)
 
     def raise_invalid_time_format(self, err):
         return self.raise_invalid_time_format_exception(err)
@@ -187,7 +190,7 @@ class CreateOrUpdateTransitionChecklistTemplatePresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_transition_template_is_not_related_to_given_stage_action(
+    def raise_transition_template_is_not_linked_to_action(
             self, err: TransitionTemplateIsNotRelatedToGivenStageAction
     ):
         from ib_tasks.constants.exception_messages import \

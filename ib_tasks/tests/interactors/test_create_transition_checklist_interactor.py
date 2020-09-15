@@ -80,9 +80,9 @@ class TestCreateTransitionChecklistInteractor:
     def presenter_mock(self):
         from ib_tasks.interactors.presenter_interfaces \
             .create_transition_checklist_presenter_interface import \
-            CreateOrUpdateTransitionChecklistTemplatePresenterInterface
+            CreateOrUpdateTransitionChecklistPresenterInterface
         return mock.create_autospec(
-            CreateOrUpdateTransitionChecklistTemplatePresenterInterface)
+            CreateOrUpdateTransitionChecklistPresenterInterface)
 
     @pytest.fixture
     def perform_base_validations_for_template_gofs_and_fields_mock(self,
@@ -114,7 +114,7 @@ class TestCreateTransitionChecklistInteractor:
         presenter_mock.raise_invalid_task_display_id.return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -153,7 +153,7 @@ class TestCreateTransitionChecklistInteractor:
         presenter_mock.raise_invalid_task_id.return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -203,7 +203,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -253,7 +253,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -295,7 +295,7 @@ class TestCreateTransitionChecklistInteractor:
         presenter_mock.raise_invalid_stage_id.return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -344,11 +344,11 @@ class TestCreateTransitionChecklistInteractor:
             storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
-            .raise_transition_template_is_not_related_to_given_stage_action \
+            .raise_transition_template_is_not_linked_to_action \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -359,10 +359,10 @@ class TestCreateTransitionChecklistInteractor:
             given_transition_template_id, given_action_id, given_stage_id
         )
         presenter_mock \
-            .raise_transition_template_is_not_related_to_given_stage_action \
+            .raise_transition_template_is_not_linked_to_action \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_transition_template_is_not_related_to_given_stage_action \
+            raise_transition_template_is_not_linked_to_action \
             .call_args
         error_object = call_args[0][0]
         stage_id = error_object.stage_id
@@ -402,7 +402,7 @@ class TestCreateTransitionChecklistInteractor:
             mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -452,7 +452,7 @@ class TestCreateTransitionChecklistInteractor:
         presenter_mock.raise_invalid_gof_ids.return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -504,7 +504,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -560,7 +560,7 @@ class TestCreateTransitionChecklistInteractor:
         presenter_mock.raise_invalid_field_ids.return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -615,7 +615,7 @@ class TestCreateTransitionChecklistInteractor:
             mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -670,7 +670,7 @@ class TestCreateTransitionChecklistInteractor:
             mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -728,7 +728,7 @@ class TestCreateTransitionChecklistInteractor:
             mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -790,7 +790,7 @@ class TestCreateTransitionChecklistInteractor:
             = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -849,7 +849,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -907,7 +907,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -966,7 +966,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -1026,7 +1026,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -1085,7 +1085,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -1144,7 +1144,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -1203,7 +1203,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -1265,7 +1265,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -1331,7 +1331,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -1398,7 +1398,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -1465,7 +1465,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -1533,7 +1533,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -1602,7 +1602,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -1672,7 +1672,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -1740,7 +1740,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -1804,7 +1804,7 @@ class TestCreateTransitionChecklistInteractor:
             mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -1869,7 +1869,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -1934,7 +1934,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -1999,7 +1999,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -2071,7 +2071,7 @@ class TestCreateTransitionChecklistInteractor:
             = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert

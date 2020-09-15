@@ -2089,7 +2089,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage=task_template_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_user_action_permission_denied \
+            .raise_user_action_permission_denied \
             .return_value = mock_object
 
         # Act
@@ -2099,10 +2099,10 @@ class TestSaveAndActOnATaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_user_action_permission_denied \
+            .raise_user_action_permission_denied \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_user_action_permission_denied.call_args
+            raise_user_action_permission_denied.call_args
         error_object = call_args.kwargs['error_obj']
         action_id = error_object.action_id
 
@@ -2135,7 +2135,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage=task_template_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_present_stage_actions \
+            .raise_invalid_present_stage_actions \
             .return_value = mock_object
 
         # Act
@@ -2145,10 +2145,10 @@ class TestSaveAndActOnATaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_present_stage_actions \
+            .raise_invalid_present_stage_actions \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_present_stage_actions.call_args
+            raise_invalid_present_stage_actions.call_args
         error_object = call_args[0][0]
         action_id = error_object.action_id
         assert action_id == given_action_id
