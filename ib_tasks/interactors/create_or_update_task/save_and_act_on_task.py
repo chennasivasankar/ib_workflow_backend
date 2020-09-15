@@ -1,3 +1,6 @@
+from typing import Union, Optional
+
+from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.action_custom_exceptions import \
     InvalidActionException, InvalidPresentStageAction, InvalidKeyError, \
     InvalidCustomLogicException
@@ -35,6 +38,10 @@ from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
     UpdateTaskInteractor
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
+from ib_tasks.interactors.mixins.task_operations_utilities_mixin import \
+    TaskOperationsUtilitiesMixin
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.presenter_interfaces \
     .save_and_act_on_task_presenter_interface import \
     SaveAndActOnATaskPresenterInterface
@@ -58,17 +65,20 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO, \
     SaveAndActOnTaskDTO, \
-    SaveAndActOnTaskWithTaskDisplayIdDTO, CreateTaskLogDTO
+    SaveAndActOnTaskWithTaskDisplayIdDTO, UpdateTaskBasicDetailsDTO, \
+    TaskCurrentStageDetailsDTO
 from ib_tasks.interactors.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
 
 
-class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
+class SaveAndActOnATaskInteractor(
+    GetTaskIdForTaskDisplayIdMixin, TaskOperationsUtilitiesMixin
+):
 
     def __init__(
             self, task_storage: TaskStorageInterface,
@@ -224,6 +234,8 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             self, task_dto: SaveAndActOnTaskWithTaskDisplayIdDTO,
             task_request_json: str
     ):
+        from ib_tasks.interactors.dtos.dtos import TaskLogDTO
+
         task_db_id = self.get_task_id_for_task_display_id(
             task_dto.task_display_id)
         task_dto_with_db_task_id = SaveAndActOnTaskDTO(
@@ -233,25 +245,29 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             start_datetime=task_dto.start_datetime,
             due_datetime=task_dto.due_datetime,
             priority=task_dto.priority, stage_assignee=task_dto.stage_assignee,
-            gof_fields_dtos=task_dto.gof_fields_dtos
-        )
+            gof_fields_dtos=task_dto.gof_fields_dtos)
         task_current_stage_details_dto, all_tasks_overview_details_dto = \
             self.save_and_act_on_task(task_dto_with_db_task_id)
-        from ib_tasks.interactors.task_log_interactor import TaskLogInteractor
-        task_log_interactor = TaskLogInteractor(
-            storage=self.storage, task_storage=self.task_storage)
-        create_task_log_dto = CreateTaskLogDTO(
-            task_json=task_request_json, task_id=task_db_id,
-            user_id=task_dto.created_by_id, action_id=task_dto.action_id)
-        task_log_interactor.create_task_log(create_task_log_dto)
+        task_log_dto = TaskLogDTO(
+            task_id=task_db_id, user_id=task_dto.created_by_id,
+            action_id=task_dto.action_id, task_request_json=task_request_json)
+        self.create_task_log(task_log_dto)
         return task_current_stage_details_dto, all_tasks_overview_details_dto
 
     def save_and_act_on_task(self, task_dto: SaveAndActOnTaskDTO):
-        is_valid_action_id = self.storage.validate_action(task_dto.action_id)
-        if not is_valid_action_id:
-            raise InvalidActionException(task_dto.action_id)
-        action_type = self.action_storage.get_action_type_for_given_action_id(
-            action_id=task_dto.action_id)
+        action_id = task_dto.action_id
+
+        action_type = self._validate_action_id_and_get_action_type(action_id)
+        task_overview_details_dto = self._update_task(task_dto, action_type)
+        self._perform_user_action_on_task(
+            task_dto.task_id, task_dto.action_id, task_dto.created_by_id)
+        task_current_stage_details_dto = self._get_task_current_stages_info(
+            task_dto.task_id, task_dto.created_by_id)
+        return task_current_stage_details_dto, task_overview_details_dto
+
+    def _update_task(
+            self, task_dto: SaveAndActOnTaskDTO, action_type: ActionTypes
+    ) -> AllTasksOverviewDetailsDTO:
         update_task_interactor = UpdateTaskInteractor(
             task_storage=self.task_storage, gof_storage=self.gof_storage,
             create_task_storage=self.create_task_storage,
@@ -260,36 +276,57 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             elastic_storage=self.elastic_storage,
             action_storage=self.action_storage,
             task_stage_storage=self.task_stage_storage,
-            task_template_storage=self.task_template_storage
-        )
-        update_task_dto = UpdateTaskDTO(
-            task_id=task_dto.task_id, created_by_id=task_dto.created_by_id,
+            task_template_storage=self.task_template_storage)
+        task_basic_details = UpdateTaskBasicDetailsDTO(
+            task_id=task_dto.task_id,
+            created_by_id=task_dto.created_by_id,
             title=task_dto.title, description=task_dto.description,
             start_datetime=task_dto.start_datetime,
             due_datetime=task_dto.due_datetime, priority=task_dto.priority,
+            action_type=action_type)
+        update_task_dto = UpdateTaskDTO(
+            task_basic_details=task_basic_details,
             stage_assignee=task_dto.stage_assignee,
-            gof_fields_dtos=task_dto.gof_fields_dtos,
-            action_type=action_type
-        )
-        all_tasks_overview_details_dto = \
-            update_task_interactor.update_task(update_task_dto)
+            gof_fields_dtos=task_dto.gof_fields_dtos)
+        return update_task_interactor.update_task(update_task_dto)
+
+    def _perform_user_action_on_task(
+            self, task_id: int, action_id: int, user_id: str):
         act_on_task_interactor = UserActionOnTaskInteractor(
-            user_id=task_dto.created_by_id, board_id=None,
-            task_storage=self.task_storage,
-            action_storage=self.action_storage, action_id=task_dto.action_id,
+            user_id=user_id, board_id=None, task_storage=self.task_storage,
+            action_storage=self.action_storage, action_id=action_id,
             storage=self.storage, gof_storage=self.gof_storage,
             field_storage=self.field_storage, stage_storage=self.stage_storage,
             task_stage_storage=self.task_stage_storage,
             elasticsearch_storage=self.elastic_storage,
             create_task_storage=self.create_task_storage,
-            task_template_storage=self.task_template_storage
-        )
-        act_on_task_interactor.user_action_on_task_and_set_random_assignees(task_id=task_dto.task_id)
+            task_template_storage=self.task_template_storage)
+        act_on_task_interactor.user_action_on_task_and_set_random_assignees(
+            task_id=task_id)
+
+    def _get_task_current_stages_info(
+            self, task_id: int, user_id: str) -> TaskCurrentStageDetailsDTO:
         from ib_tasks.interactors.get_task_current_stages_interactor import \
             GetTaskCurrentStagesInteractor
         get_task_current_stages_interactor = GetTaskCurrentStagesInteractor(
             task_stage_storage=self.task_stage_storage)
         task_current_stage_details_dto = \
             get_task_current_stages_interactor.get_task_current_stages_details(
-                task_id=task_dto.task_id, user_id=task_dto.created_by_id)
-        return task_current_stage_details_dto, all_tasks_overview_details_dto
+                task_id=task_id, user_id=user_id)
+        return task_current_stage_details_dto
+
+    def _validate_action_id_and_get_action_type(
+            self, action_id: int
+    ) -> Union[ActionTypes, InvalidActionException]:
+        self._validate_action_id(action_id)
+        action_type = \
+            self.action_storage.get_action_type_for_given_action_id(action_id)
+        return action_type
+
+    def _validate_action_id(
+            self, action_id: int) -> Optional[InvalidActionException]:
+        is_valid_action_id = self.storage.validate_action(action_id)
+        action_id_is_invalid = not is_valid_action_id
+        if action_id_is_invalid:
+            raise InvalidActionException(action_id)
+        return None

@@ -39,6 +39,8 @@ from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.mixins.task_operations_utilities_mixin import \
     TaskOperationsUtilitiesMixin
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
     UpdateTaskPresenterInterface
 from ib_tasks.interactors.stages_dtos import StageAssigneeDTO, \
@@ -214,7 +216,8 @@ class UpdateTaskInteractor(
             gof_fields_dtos=task_dto.gof_fields_dtos)
         return self.update_task(task_dto_with_db_task_id)
 
-    def update_task(self, task_dto: UpdateTaskDTO):
+    def update_task(
+            self, task_dto: UpdateTaskDTO) -> AllTasksOverviewDetailsDTO:
         task_id = task_dto.task_basic_details.task_id
         self._validate_task_details(task_dto)
         self._update_task_details(task_dto)

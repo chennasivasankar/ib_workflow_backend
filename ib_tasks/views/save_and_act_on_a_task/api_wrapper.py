@@ -30,19 +30,19 @@ from ...storages.task_template_storage_implementation import \
 def api_wrapper(*args, **kwargs):
     user_id = kwargs['user'].user_id
     request_data = kwargs['request_data']
-    task_id = request_data['task_id']
-    action_id = request_data['action_id']
-    title = request_data['title']
-    description = request_data['description']
-    start_datetime = request_data['start_datetime']
-    due_datetime = request_data['due_datetime']
-    priority = request_data['priority']
-    task_gofs = request_data['task_gofs']
-    stage_assignee_stage_id = request_data['stage_assignee']['stage_id']
-    stage_assignee_assignee_id = request_data['stage_assignee']['assignee_id']
-    assignee_team_id = request_data['stage_assignee']['team_id']
-    request_data['start_datetime'] = str(request_data['start_datetime'])
-    request_data['due_datetime'] = str(request_data['due_datetime'])
+    task_id = request_data.get('task_id')
+    action_id = request_data.get('action_id')
+    title = request_data.get('title')
+    description = request_data.get('description')
+    start_datetime = request_data.get('start_datetime')
+    due_datetime = request_data.get('due_datetime')
+    priority = request_data.get('priority')
+    task_gofs = request_data.get('task_gofs')
+    stage_id = request_data.get('stage_assignee').get('stage_id')
+    assignee_id = request_data.get('stage_assignee').get('assignee_id')
+    assignee_team_id = request_data.get('stage_assignee').get('team_id')
+    request_data['start_datetime'] = str(start_datetime)
+    request_data['due_datetime'] = str(due_datetime)
     task_request_json = json.dumps(request_data)
 
     from ib_tasks.interactors.task_dtos import GoFFieldsDTO
@@ -58,8 +58,8 @@ def api_wrapper(*args, **kwargs):
         task_gofs_dtos.append(gof_field_dto)
 
     stage_assignee = StageIdWithAssigneeDTO(
-        stage_id=stage_assignee_stage_id,
-        assignee_id=stage_assignee_assignee_id,
+        stage_id=stage_id,
+        assignee_id=assignee_id,
         team_id=assignee_team_id
     )
 
