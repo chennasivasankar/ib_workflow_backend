@@ -133,7 +133,7 @@ class TestUpdateTaskStatusVariablesInteractor:
     ):
         # Arrange
         action_id = 1
-        path_name = "ib_tasks.tests.interactors.file_for_call_action_logic_testing.stage_1_action_name_9"
+        path_name = "ib_tasks.tests.interactors.call_action_logic_testing_file.stage_1_action_name_9"
         mock_obj = mocker.patch("importlib.import_module")
         mock_obj.side_effect = \
             InvalidMethodFound(method_name="stage_1_action_name_1")
@@ -162,7 +162,7 @@ class TestUpdateTaskStatusVariablesInteractor:
                                    {'field3': 'field_response3'}],
                           'gof1': {'field1': 'field_response1'},
                           'status_variables': {'variable_1': 'stage_1'}}
-        path_name = "ib_tasks.tests.interactors.file_for_call_action_logic_testing.stage_1_action_name_3"
+        path_name = "ib_tasks.tests.interactors.call_action_logic_testing_file.stage_1_action_name_3"
         mock_obj = mocker.patch(path_name)
         storage.get_path_name_to_action.return_value = path_name
         task_dto_mock.return_value = task_dto
@@ -197,7 +197,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         # Arrange
         mock_task_dict = {'gof1': [{'field1': 'field_response1'}],
                           'status_variables': {'variable_1': 'stage_1'}}
-        path_name = "ib_tasks.tests.interactors.file_for_call_action_logic_testing.stage_1_action_name_3"
+        path_name = "ib_tasks.tests.interactors.call_action_logic_testing_file.stage_1_action_name_3"
         mock_obj = mocker.patch(path_name)
         storage.get_path_name_to_action.return_value = path_name
         task_dto_mock.return_value = task_dto
@@ -234,7 +234,7 @@ class TestUpdateTaskStatusVariablesInteractor:
                                    {'field3': 'field_response3'}],
                           'gof1': [{'field1': 'field_response1'}],
                           'status_variables': {'variable_1': 'stage_1'}}
-        path_name = "ib_tasks.tests.interactors.file_for_call_action_logic_testing.stage_1_action_name_3"
+        path_name = "ib_tasks.tests.interactors.call_action_logic_testing_file.stage_1_action_name_3"
         mock_obj = mocker.patch(path_name)
         storage.get_path_name_to_action.return_value = path_name
         task_dto_mock.return_value = task_dto
@@ -278,7 +278,7 @@ class TestUpdateTaskStatusVariablesInteractor:
                           'gof3': {'field3': 'field_response3'},
                           'gof1': {'field1': 'field_response1'},
                           'status_variables': {'variable_1': 'stage_1'}}
-        path_name = "ib_tasks.tests.interactors.file_for_call_action_logic_testing.stage_1_action_name_1"
+        path_name = "ib_tasks.tests.interactors.call_action_logic_testing_file.stage_1_action_name_1"
         mock_obj = mocker.patch(path_name)
         storage.get_path_name_to_action.return_value = path_name
         task_dto_mock.return_value = set_up_storage_for_all_single_gofs
@@ -301,7 +301,7 @@ class TestUpdateTaskStatusVariablesInteractor:
     ):
         # Arrange
         action_id = 1
-        path_name = "ib_tasks.tests.interactors.file_for_call_action_logic_testing.stage_1_action_name_1"
+        path_name = "ib_tasks.tests.interactors.call_action_logic_testing_file.stage_1_action_name_1"
         storage.get_path_name_to_action.return_value = path_name
         task_dto_mock.return_value = task_dto
         from ib_tasks.exceptions.action_custom_exceptions import \
@@ -324,7 +324,7 @@ class TestUpdateTaskStatusVariablesInteractor:
     ):
         # Arrange
         action_id = 1
-        path_name = "ib_tasks.tests.interactors.file_for_call_action_logic_testing.stage_1_action_name_2"
+        path_name = "ib_tasks.tests.interactors.call_action_logic_testing_file.stage_1_action_name_2"
         storage.get_path_name_to_action.return_value = path_name
 
         task_dto_mock.return_value = task_dto
@@ -346,7 +346,7 @@ class TestUpdateTaskStatusVariablesInteractor:
                                                   interactor, storage, task_dto_mock):
         # Arrange
         action_id = 1
-        path_name = "ib_tasks.tests.interactors.file_for_call_action_logic_testing.stage_1_action_name_3"
+        path_name = "ib_tasks.tests.interactors.call_action_logic_testing_file.stage_1_action_name_3"
         storage.get_path_name_to_action.return_value = path_name
         StatusVariableDTOFactory.reset_sequence()
         expected_status = [
