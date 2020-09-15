@@ -413,7 +413,9 @@ class TestAddNewUserIneractor:
         # storage_mock.check_are_valid_role_ids.assert_called_once_with(
         #     role_ids=add_user_details_dto.role_ids)
         elastic_storage.create_elastic_user.assert_called_once_with(
-            user_id=new_user_id, name=add_user_details_dto.name)
+            user_id=new_user_id, name=add_user_details_dto.name,
+            email=add_user_details_dto.email
+        )
         elastic_storage.create_elastic_user_intermediary.assert_called_once_with(
             elastic_user_id=elastic_user_id, user_id=new_user_id)
 
@@ -467,6 +469,8 @@ class TestAddNewUserIneractor:
         storage_mock.check_is_exists_company_id.assert_called_once_with(
             company_id=add_user_details_dto.company_id)
         elastic_storage.create_elastic_user.assert_called_once_with(
-            user_id=new_user_id, name=add_user_details_dto.name)
+            user_id=new_user_id, name=add_user_details_dto.name,
+            email=add_user_details_dto.email
+        )
         elastic_storage.create_elastic_user_intermediary.assert_called_once_with(
             elastic_user_id=elastic_user_id, user_id=new_user_id)

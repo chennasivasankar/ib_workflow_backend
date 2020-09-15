@@ -225,7 +225,7 @@ class TestUpdateUserProfileInteractor:
         user_profile_dto = CompleteUserProfileDTOFactory(
             user_id=user_id, name=name)
         user_profile_dto_of_ib_user = UserProfileDTOFactory(
-            user_id=user_id, name=name, is_email_verify=None)
+            user_id=user_id, name=name, is_email_verified=None)
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import prepare_update_user_profile_adapter_mock
         adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
