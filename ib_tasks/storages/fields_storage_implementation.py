@@ -156,14 +156,15 @@ class FieldsStorageImplementation(FieldsStorageInterface):
     @staticmethod
     def _convert_field_objs_to_dtos(field_objs):
         task_fields_dtos = []
-        for field in field_objs:
+        for field_obj in field_objs:
             task_fields_dtos.append(
                 FieldDetailsDTOWithTaskId(
-                    task_id=field.task_gof.task_id,
-                    field_id=field.field_id,
-                    value=field.field_response,
-                    key=field.field.display_name,
-                    field_type=field.field.field_type
+                    task_id=field_obj.task_gof.task_id,
+                    field_id=field_obj.field_id,
+                    field_values=field_obj.field.field_values,
+                    value=field_obj.field_response,
+                    key=field_obj.field.display_name,
+                    field_type=field_obj.field.field_type
                 )
             )
         return task_fields_dtos

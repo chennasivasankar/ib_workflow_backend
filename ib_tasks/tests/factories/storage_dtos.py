@@ -460,9 +460,11 @@ class FieldDetailsDTOWithTaskIdFactory(factory.Factory):
 
     field_id = factory.Sequence(lambda n: "FIELD-ID-%d" % (n + 1))
     task_id = factory.Sequence(lambda n: (n + 1))
-    field_type = "Drop down"
+    field_type = factory.Iterator([FieldTypes.DROPDOWN.value,
+                                   FieldTypes.SEARCHABLE.value])
     key = "key"
     value = "value"
+    field_values = Searchable.USER.value
 
 
 class TaskGoFWithTaskIdDTOFactory(factory.Factory):

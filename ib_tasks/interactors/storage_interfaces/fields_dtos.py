@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Optional, Union, List
 
-from ib_tasks.constants.enum import FieldTypes, PermissionTypes
+from ib_tasks.constants.enum import FieldTypes, PermissionTypes, Searchable
 
 
 @dataclass
@@ -76,6 +76,7 @@ class FieldDetailsDTO:
 
 @dataclass
 class FieldDetailsDTOWithTaskId(FieldDetailsDTO):
+    field_values: Searchable.USER
     task_id: int
 
 
