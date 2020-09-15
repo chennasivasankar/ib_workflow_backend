@@ -1,24 +1,16 @@
 import datetime
 from typing import List, Optional
 from ib_tasks.constants.enum import ViewType, ActionTypes
-from ib_tasks.exceptions.action_custom_exceptions import InvalidKeyError, \
-    InvalidCustomLogicException, InvalidActionException, \
-    InvalidPresentStageAction
+from ib_tasks.exceptions.action_custom_exceptions import (
+    InvalidActionException, InvalidPresentStageAction
+)
 from ib_tasks.exceptions.adapter_exceptions import UserIsNotInProjectException
 from ib_tasks.exceptions.fields_custom_exceptions import \
     UserDidNotFillRequiredFields
-from ib_tasks.exceptions.gofs_custom_exceptions import \
-    UserDidNotFillRequiredGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
-    UserActionPermissionDenied, UserBoardPermissionDenied
-from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
-    InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee, \
-    StageIdsListEmptyException, InvalidStageIdsListException
+    UserActionPermissionDenied
 from ib_tasks.exceptions.task_custom_exceptions import (
     InvalidTaskException, InvalidTaskDisplayId, TaskDelayReasonIsNotUpdated)
-from ib_tasks.interactors \
-    .get_next_stages_random_assignees_of_a_task_interactor import \
-    InvalidModulePathFound
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
@@ -49,9 +41,6 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import TaskTemplateStorageInterface
-from ib_tasks.interactors.user_action_on_task\
-    .call_action_logic_function_and_get_or_update_task_status_variables_interactor \
-    import InvalidMethodFound
 
 
 class InvalidBoardIdException(Exception):
@@ -97,18 +86,14 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         try:
             task_id = self.get_task_id_for_task_display_id(task_display_id)
             task_complete_details_dto, task_current_stage_details_dto, \
-            all_tasks_overview_dto =\
+            all_tasks_overview_dto = \
                 self.user_action_on_task_and_set_random_assignees(task_id=task_id)
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
-        except InvalidTaskException as err:
-            return presenter.raise_exception_for_invalid_task(error_obj=err)
         except InvalidBoardIdException as err:
             return presenter.raise_exception_for_invalid_board(error_obj=err)
         except InvalidActionException as err:
             return presenter.raise_exception_for_invalid_action(error_obj=err)
-        except UserDidNotFillRequiredGoFs as err:
-            return presenter.raise_user_did_not_fill_required_gofs(err)
         except UserDidNotFillRequiredFields as err:
             return presenter.raise_user_did_not_fill_required_fields(err)
         except UserActionPermissionDenied as err:
@@ -117,35 +102,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         except InvalidPresentStageAction as err:
             return presenter.raise_exception_for_invalid_present_actions(
                 error_obj=err)
-        except UserBoardPermissionDenied as err:
-            return presenter.raise_exception_for_user_board_permission_denied(
-                error_obj=err)
-        except InvalidKeyError:
-            return presenter.raise_invalid_key_error()
-        except InvalidCustomLogicException:
-            return presenter.raise_invalid_custom_logic_function_exception()
-        except InvalidModulePathFound as exception:
-            return presenter.raise_invalid_path_not_found_exception(
-                path_name=exception.path_name)
         except UserIsNotInProjectException:
             return presenter.get_response_for_user_not_in_project()
-        except InvalidMethodFound as exception:
-            return presenter.raise_invalid_method_not_found_exception(
-                method_name=exception.method_name)
-        except DuplicateStageIds as exception:
-            return presenter.raise_duplicate_stage_ids_not_valid(
-                duplicate_stage_ids=exception.duplicate_stage_ids)
-        except InvalidDbStageIdsListException as exception:
-            return presenter.raise_invalid_stage_ids_exception(
-                invalid_stage_ids=exception.invalid_stage_ids)
-        except StageIdsWithInvalidPermissionForAssignee as exception:
-            return presenter. \
-                raise_stage_ids_with_invalid_permission_for_assignee_exception(
-                invalid_stage_ids=exception.invalid_stage_ids)
-        except StageIdsListEmptyException as err:
-            return presenter.raise_stage_ids_list_empty_exception(err)
-        except InvalidStageIdsListException as err:
-            return presenter.raise_invalid_stage_ids_list_exception(err)
         except TaskDelayReasonIsNotUpdated as err:
             return presenter.get_response_for_task_delay_reason_not_updated(
                 err)
@@ -296,7 +254,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
 
     def _get_task_stage_display_satisfied_stage_ids(self, task_id: int) -> \
             List[str]:
-        from ib_tasks.interactors.user_action_on_task\
+        from ib_tasks.interactors.user_action_on_task \
             .get_task_stage_logic_satisfied_stages \
             import GetTaskStageLogicSatisfiedStagesInteractor
         interactor = GetTaskStageLogicSatisfiedStagesInteractor(
@@ -307,7 +265,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
 
     def _call_logic_and_update_status_variables_and_get_stage_ids(
             self, task_id: int) -> TaskDetailsDTO:
-        from ib_tasks.interactors.user_action_on_task\
+        from ib_tasks.interactors.user_action_on_task \
             .call_action_logic_function_and_get_or_update_task_status_variables_interactor \
             import CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor
         update_status_variable_obj = \
@@ -440,33 +398,13 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
                 user_roles, user_permitted_gof_ids)
         filled_gofs_with_task_gof_ids = \
             self.gof_storage.get_filled_task_gofs_with_gof_id(task_id)
-        filled_gof_ids = [dto.gof_id for dto in filled_gofs_with_task_gof_ids]
         task_gof_ids = [
             dto.task_gof_id for dto in filled_gofs_with_task_gof_ids]
         filled_field_ids = \
             self.gof_storage.get_filled_field_ids_of_given_task_gof_ids(
                 task_gof_ids)
-        # self._validate_all_user_permitted_gof_ids_are_filled_or_not(
-        #     gof_id_with_display_name_dtos, filled_gof_ids)
         self._validate_all_user_permitted_field_ids_are_filled_or_not(
             field_id_with_display_name_dtos, filled_field_ids)
-
-    @staticmethod
-    def _validate_all_user_permitted_gof_ids_are_filled_or_not(
-            permitted_gofs, filled_gof_ids
-    ) -> Optional[UserDidNotFillRequiredGoFs]:
-        permitted_gof_ids = [
-            permitted_gof.gof_id for permitted_gof in permitted_gofs]
-        unfilled_gof_ids = list(sorted(
-            set(permitted_gof_ids) - set(filled_gof_ids)))
-        if unfilled_gof_ids:
-            gof_display_names = [
-                permitted_gof.gof_display_name
-                for permitted_gof in permitted_gofs
-                if permitted_gof.gof_id in unfilled_gof_ids
-            ]
-            raise UserDidNotFillRequiredGoFs(gof_display_names)
-        return
 
     @staticmethod
     def _validate_all_user_permitted_field_ids_are_filled_or_not(
