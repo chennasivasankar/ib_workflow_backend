@@ -25,7 +25,6 @@ class TestConfigureInitialTaskTemplateStageActions:
         storage = create_autospec(TaskTemplateStorageInterface)
         return storage
 
-
     @staticmethod
     def test_given_invalid_task_template_ids_raises_exception(
             action_storage, template_storage):
@@ -33,7 +32,6 @@ class TestConfigureInitialTaskTemplateStageActions:
         # Arrange
         import pytest
         import json
-        project_id = "FINMAN"
         expected_task_template_ids = ["task_template_2"]
         expected_task_template_ids_dict = json.dumps(
             {"invalid_task_template_ids": expected_task_template_ids}
@@ -55,9 +53,7 @@ class TestConfigureInitialTaskTemplateStageActions:
         # Act
         with pytest.raises(InvalidTaskTemplateIdsException) as err:
             assert interactor\
-                .create_update_delete_stage_actions_to_task_template(
-                project_id=project_id
-            )
+                .create_update_delete_stage_actions_to_task_template()
 
         # Assert
         assert \
@@ -69,7 +65,6 @@ class TestConfigureInitialTaskTemplateStageActions:
     def test_given_more_than_one_stage_to_task_template_raises_exception(
             action_storage, template_storage):
         # Arrange
-        project_id = "FINMAN"
         import pytest
         import json
         expected_task_template_stages_dict = json.dumps(
@@ -96,9 +91,7 @@ class TestConfigureInitialTaskTemplateStageActions:
         # Act
         with pytest.raises(ManyStagesToInitialTaskTemplate) as err:
             assert interactor\
-                .create_update_delete_stage_actions_to_task_template(
-                project_id=project_id
-            )
+                .create_update_delete_stage_actions_to_task_template()
 
         # Assert
         assert err.value.task_template_stages_dict == \
@@ -111,7 +104,7 @@ class TestConfigureInitialTaskTemplateStageActions:
             mocker, action_storage, template_storage):
 
         # Arrange
-        project_id = "FINMAN"
+        
         TaskTemplateStageActionDTOFactory.reset_sequence(0)
         tasks_dto = TaskTemplateStageActionDTOFactory.create_batch(size=2)
 
@@ -139,9 +132,7 @@ class TestConfigureInitialTaskTemplateStageActions:
         )
 
         # Act
-        interactor.create_update_delete_stage_actions_to_task_template(
-            project_id=project_id
-        )
+        interactor.create_update_delete_stage_actions_to_task_template()
 
         # Assert
 

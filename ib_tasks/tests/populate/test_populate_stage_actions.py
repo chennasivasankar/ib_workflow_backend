@@ -6,7 +6,7 @@ class TestCasePopulateStageActions:
     @staticmethod
     def test_given_invalid_key_raises_exception():
         # Arrange
-        project_id = "FINMAN"
+        
         valid_format = {
             "stage_id": "stage_1",
             "action_logic": "logic_1",
@@ -39,7 +39,7 @@ class TestCasePopulateStageActions:
 
         # Act
         with pytest.raises(InvalidFormatException) as err:
-            populate_stage_actions(action_dicts=actions, project_id=project_id)
+            populate_stage_actions(action_dicts=actions)
 
         # Assert
         assert err.value.valid_format == json_valid_format
@@ -47,7 +47,7 @@ class TestCasePopulateStageActions:
     @staticmethod
     def test_given_invalid_python_code_raises_exception():
         # Arrange
-        project_id = "FINMAN"
+        
         actions = [
             {
                 "stage_id": "stage_1",
@@ -68,18 +68,18 @@ class TestCasePopulateStageActions:
 
         # Act
         with pytest.raises(InvalidPythonCodeException):
-            populate_stage_actions(action_dicts=actions, project_id=project_id)
+            populate_stage_actions(action_dicts=actions)
 
     @staticmethod
     def test_given_valid_key_creates_dtos(mocker):
         # Arrange
-        project_id = "FINMAN"
+        
         actions = [
             {
                 "stage_id": "stage_1",
                 "action_logic": "logic_1",
                 "action_name": "action_name_1",
-                "roles": "ROLE_1, ROLE_2",
+                "roles": "ROLE_1\nROLE_2",
                 "button_text": "button_text_1",
                 "button_color": "button_color_1",
                 "action_type": "NO VALIDATIONS",
@@ -105,9 +105,9 @@ class TestCasePopulateStageActions:
         mock_obj = mocker.patch(path)
 
         # Act
-        populate_stage_actions(action_dicts=actions, project_id=project_id)
+        populate_stage_actions(action_dicts=actions)
 
         # Assert
         mock_obj.assert_called_once_with(
-            project_id=project_id, action_dtos=expected_action_dto
+            action_dtos=expected_action_dto
         )

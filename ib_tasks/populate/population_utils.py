@@ -42,7 +42,7 @@ def populate_project_roles(spread_sheet_name: str):
 
 
 @transaction.atomic()
-def populate_data(project_id: str, spread_sheet_name: str):
+def populate_data(spread_sheet_name: str):
 
     task_template = PopulateTaskTemplates()
     task_template.populate_task_templates(spread_sheet_name=spread_sheet_name)
@@ -79,12 +79,13 @@ def populate_data(project_id: str, spread_sheet_name: str):
 
     stage_actions = GetSheetDataForStageActions()
     stage_actions.get_data_from_stages_and_actions_sub_sheet(
-        spread_sheet_name=spread_sheet_name, project_id=project_id
+        spread_sheet_name=spread_sheet_name
     )
 
     task_creation_config = GetSheetDataForTaskCreationConfig()
     task_creation_config.get_data_from_task_creation_config_sub_sheet(
-        spread_sheet_name=spread_sheet_name, project_id=project_id)
+        spread_sheet_name=spread_sheet_name
+    )
 
     stage_flows = GetSheetDataForStageFlows()
     stage_flows.get_data_from_stage_flows_sub_sheet(

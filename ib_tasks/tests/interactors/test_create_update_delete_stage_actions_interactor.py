@@ -20,7 +20,6 @@ class TestCreateUpdateDeleteStageActionsInteractor:
     @staticmethod
     def test_given_invalid_stage_ids_raises_exception():
         # Arrange
-        project_id = "FINMAN"
         expected_stage_ids = ["stage_id_2"]
         expected_stage_ids_dict = json.dumps(
             {"invalid_stage_ids": expected_stage_ids}
@@ -41,7 +40,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         # Act
         with pytest.raises(InvalidStageIdsException) as err:
             interactor.create_or_update_or_delete_stage_actions(
-                action_dtos=actions_dto, project_id=project_id
+                action_dtos=actions_dto
             )
 
         # Assert
@@ -52,7 +51,6 @@ class TestCreateUpdateDeleteStageActionsInteractor:
     @staticmethod
     def test_given_invalid_transition_template_ids_raises_exception():
         # Arrange
-        project_id = "FINMAN"
         StageActionDTOFactory.reset_sequence(0)
         actions_dto = StageActionDTOFactory.create_batch(size=2)
         stage_ids = ["stage_id_1", "stage_id_2"]
@@ -69,7 +67,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         # Act
         with pytest.raises(InvalidTransitionTemplateIds) as err:
             interactor.create_or_update_or_delete_stage_actions(
-                action_dtos=actions_dto, project_id=project_id
+                action_dtos=actions_dto
             )
         # Assert
 
@@ -82,8 +80,6 @@ class TestCreateUpdateDeleteStageActionsInteractor:
     def test_given_invalid_roles_raises_exception(mocker):
 
         # Arrange
-        project_id = "FINMAN"
-        stage_ids = ["stage_id_1", "stage_id_2", "stage_id_3"]
         expected_stage_roles = {
             "stage_id_1": ["ROLE_1", "ROLE_2"],
             "stage_id_2": ["ROLE_2"],
@@ -111,7 +107,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         # Act
         with pytest.raises(InvalidRolesException) as err:
             interactor.create_or_update_or_delete_stage_actions(
-                action_dtos=actions_dto, project_id=project_id
+                action_dtos=actions_dto
             )
 
         # Assert
@@ -146,7 +142,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         # Act
         with pytest.raises(EmptyStageDisplayLogic) as err:
             interactor.create_or_update_or_delete_stage_actions(
-                action_dtos=actions_dto, project_id=project_id
+                action_dtos=actions_dto
             )
 
         assert err.value.stage_ids_dict == expected_stage_ids_dict
@@ -156,7 +152,6 @@ class TestCreateUpdateDeleteStageActionsInteractor:
     def test_given_empty_stage_button_text_raises_exception(mocker):
 
         # Arrange
-        project_id = "FINMAN"
         expected_stage_ids = {"stage_ids": ["stage_id_3"]}
         expected_stage_ids_dict = json.dumps(expected_stage_ids)
         StageActionDTOFactory.reset_sequence(0)
@@ -182,7 +177,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         # Act
         with pytest.raises(EmptyStageButtonText) as err:
             interactor.create_or_update_or_delete_stage_actions(
-                action_dtos=actions_dto, project_id=project_id
+                action_dtos=actions_dto
             )
 
         assert err.value.stage_ids_dict == expected_stage_ids_dict
@@ -192,7 +187,6 @@ class TestCreateUpdateDeleteStageActionsInteractor:
     def test_given_duplicate_stage_buttons_raises_exception(mocker):
 
         # Arrange
-        project_id = "FINMAN"
         expected_stage_buttons = {
             "stage_id_1": ["add"]
         }
@@ -222,7 +216,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         # Act
         with pytest.raises(DuplicateStageButtonsException) as err:
             interactor.create_or_update_or_delete_stage_actions(
-                action_dtos=actions_dto, project_id=project_id
+                action_dtos=actions_dto
             )
 
         assert err.value.stage_buttons_dict == expected_stage_buttons_dict
@@ -232,7 +226,6 @@ class TestCreateUpdateDeleteStageActionsInteractor:
     def test_given_duplicate_stage_action_names_raises_exception(mocker):
 
         # Arrange
-        project_id = "FINMAN"
         expected_stage_actions = {
             "stage_id_1": ["action_name_1"]
         }
@@ -262,7 +255,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         # Act
         with pytest.raises(DuplicateStageActionNamesException) as err:
             interactor.create_or_update_or_delete_stage_actions(
-                action_dtos=actions_dto, project_id=project_id
+                action_dtos=actions_dto
             )
 
         assert err.value.stage_actions == expected_stage_actions_dict
@@ -288,7 +281,6 @@ class TestCreateUpdateDeleteStageActionsInteractor:
             mocker, create_update_mock, delete_stage_action_mock):
 
         # Arrange
-        project_id = "FINMAN"
         StageActionDTOFactory.reset_sequence(0)
         actions_dto = StageActionDTOFactory.create_batch(size=2)
         stage_actions_dto = []
@@ -312,7 +304,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
         # Act
         interactor.create_or_update_or_delete_stage_actions(
-            action_dtos=actions_dto, project_id=project_id
+            action_dtos=actions_dto
         )
 
         # Assert

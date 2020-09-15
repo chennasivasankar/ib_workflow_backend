@@ -35,7 +35,7 @@ def get_user_details_for_given_role_ids_mock(mocker):
 
 def prepare_get_roles_for_invalid_mock(mocker):
     mock = mocker.patch(
-        'ib_tasks.adapters.roles_service.RolesService.get_project_roles'
+        'ib_tasks.adapters.roles_service.RolesService.get_valid_role_ids_in_given_role_ids'
     )
     roles = ["ROLE_3"]
     mock.return_value = roles
@@ -44,7 +44,7 @@ def prepare_get_roles_for_invalid_mock(mocker):
 
 def prepare_get_roles_for_valid_mock(mocker):
     mock = mocker.patch(
-        'ib_tasks.adapters.roles_service.RolesService.get_project_roles'
+        'ib_tasks.adapters.roles_service.RolesService.get_valid_role_ids_in_given_role_ids'
     )
     roles = ["ROLE_1", "ROLE_2", "ROLE_3", "ROLE_4", "ROLE_5"]
     mock.return_value = roles
