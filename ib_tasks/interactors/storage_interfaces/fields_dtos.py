@@ -76,7 +76,7 @@ class FieldDetailsDTO:
 
 @dataclass
 class FieldDetailsDTOWithTaskId(FieldDetailsDTO):
-    field_values: Searchable.USER
+    field_values: Searchable
     task_id: int
 
 
