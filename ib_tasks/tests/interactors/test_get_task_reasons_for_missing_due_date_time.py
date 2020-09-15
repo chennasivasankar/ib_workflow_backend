@@ -126,14 +126,12 @@ class TestGetTaskReasons:
         storage_mock.get_task_due_details.assert_called_once_with(
                 task_id, stage_id)
         assignee_details_dtos.assert_called_once_with(user_ids)
-        presenter_mock.get_response_for_get_task_due_details\
+        presenter_mock.get_response_for_get_task_due_details \
             .assert_called_once()
 
-    def test_given_valid_details_get_task_due_missing_details(self, mocker,
-                                                              task_storage_mock,
-                                                              presenter_mock,
-                                                              storage_mock,
-                                                              get_due_missing_details):
+    def test_given_valid_details_get_task_due_missing_details(
+            self, mocker, task_storage_mock, presenter_mock,
+            storage_mock, get_due_missing_details):
         # Arrange
         task_display_id = "iBWF-1"
         task_id = 1
@@ -168,4 +166,5 @@ class TestGetTaskReasons:
         storage_mock.get_task_due_details.assert_called_once_with(
                 task_id, stage_id)
         assignee_details_dtos.assert_called_once_with(user_ids)
-        presenter_mock.get_response_for_get_task_due_details.assert_called_once()
+        presenter_mock.get_response_for_get_task_due_details \
+            .assert_called_once()
