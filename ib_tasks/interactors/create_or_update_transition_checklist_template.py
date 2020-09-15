@@ -51,8 +51,7 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
-    import \
-    TaskTemplateStorageInterface
+    import TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO
 from ib_tasks.interactors.task_template_dtos import \
     CreateTransitionChecklistTemplateDTO, \
@@ -86,10 +85,9 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
             self,
             transition_template_dto:
             CreateTransitionChecklistTemplateWithTaskDisplayIdDTO,
-            presenter: CreateOrUpdateTransitionChecklistPresenterInterface
-    ):
+            presenter: CreateOrUpdateTransitionChecklistPresenterInterface):
         try:
-            return self._prepare_create_transition_checklist_response(
+            return self._prepare_create_or_update_transition_checklist_response(
                 transition_template_dto, presenter)
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
@@ -104,7 +102,7 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
             return presenter.raise_invalid_stage_id(err)
         except TransitionTemplateIsNotRelatedToGivenStageAction as err:
             return presenter.raise_transition_template_is_not_linked_to_action(
-                    err)
+                err)
         except DuplicateSameGoFOrderForAGoF as err:
             return presenter.raise_same_gof_order_for_a_gof(err)
         except InvalidGoFIds as err:
@@ -164,12 +162,11 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
         except InvalidFileFormat as err:
             return presenter.raise_not_acceptable_file_format(err)
 
-    def _prepare_create_transition_checklist_response(
+    def _prepare_create_or_update_transition_checklist_response(
             self,
             transition_template_dto:
             CreateTransitionChecklistTemplateWithTaskDisplayIdDTO,
-            presenter: CreateOrUpdateTransitionChecklistPresenterInterface
-    ):
+            presenter: CreateOrUpdateTransitionChecklistPresenterInterface):
         task_id = self.get_task_id_for_task_display_id(
             transition_template_dto.task_display_id)
         template_id = transition_template_dto.transition_checklist_template_id

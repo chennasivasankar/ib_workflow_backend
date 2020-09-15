@@ -32,7 +32,7 @@ snapshots['TestCase01CreateTaskAPITestCase.test_case body'] = {
                 }
             ],
             'assignee': None,
-            'stage_color': 'blue',
+            'stage_color': 'green',
             'stage_display_name': 'name_0',
             'stage_id': 1
         },
