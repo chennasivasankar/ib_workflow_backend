@@ -7,7 +7,8 @@ from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.stage_custom_exceptions import \
     InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
-from ib_tasks.interactors.get_task_actions import GetTaskActionsInteractor
+from ib_tasks.interactors.get_task_fields_and_actions.get_task_actions import \
+    GetTaskActionsInteractor
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \

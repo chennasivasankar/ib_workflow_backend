@@ -5,7 +5,8 @@ import pytest
 from ib_tasks.adapters.dtos import ProjectRolesDTO
 from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
-from ib_tasks.interactors.get_task_fields import GetTaskFieldsInteractor
+from ib_tasks.interactors.get_task_fields_and_actions.get_task_fields import \
+    GetTaskFieldsInteractor
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     (FieldDetailsDTOWithTaskId, TaskTemplateStageFieldsDTO)
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \

@@ -238,13 +238,14 @@ def prepare_assignees_interactor_mock(mocker):
 
 def prepare_fields_for_get_task_fields_and_actions(mocker, fields_dtos,
                                                    task_stage_dtos):
-    mock = mocker.patch('ib_tasks.interactors.get_task_fields'
+    mock = mocker.patch('ib_tasks.interactors.get_task_fields_and_actions.get_task_fields'
                         '.GetTaskFieldsInteractor.get_task_fields')
     mock.return_value = fields_dtos, task_stage_dtos
 
 
 def prepare_actions_for_get_task_fields_and_actions(mocker, action_dtos):
     mock = mocker.patch(
-            'ib_tasks.interactors.get_task_actions.GetTaskActionsInteractor'
+            'ib_tasks.interactors.get_task_fields_and_actions.get_task_actions'
+            '.GetTaskActionsInteractor'
             '.get_task_actions')
     mock.return_value = action_dtos
