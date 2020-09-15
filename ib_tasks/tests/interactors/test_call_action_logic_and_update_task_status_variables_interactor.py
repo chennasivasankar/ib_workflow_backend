@@ -2,18 +2,20 @@ from unittest.mock import create_autospec
 
 import pytest
 
-from ib_tasks.interactors.user_action_on_task.call_action_logic_function_and_get_or_update_task_status_variables_interactor \
+from ib_tasks.interactors.user_action_on_task\
+    .call_action_logic_function_and_get_or_update_task_status_variables_interactor \
     import (
     CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor,
-    InvalidModulePathFound, InvalidMethodFound)
-
+    InvalidModulePathFound, InvalidMethodFound
+)
 from ib_tasks.tests.factories.storage_dtos import (
     StatusVariableDTOFactory, GOFMultipleStatusDTOFactory,
     TaskGoFFieldDTOFactory, TaskGoFDTOFactory, TaskDetailsDTOFactory
 )
+from ib_tasks.tests.interactors.super_storage_mock_class import StorageMockClass
 
 
-class TestUpdateTaskStatusVariablesInteractor:
+class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
 
     @pytest.fixture()
     def task_gof_dtos(self):
@@ -41,14 +43,6 @@ class TestUpdateTaskStatusVariablesInteractor:
         return task_gof_dtos
 
     @pytest.fixture()
-    def field_storage(self):
-        from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
-            FieldsStorageInterface
-        field_storage = create_autospec(
-            FieldsStorageInterface)
-        return field_storage
-
-    @pytest.fixture()
     def create_task_storage(self):
         from ib_tasks.interactors.storage_interfaces. \
             create_or_update_task_storage_interface import \
@@ -57,21 +51,15 @@ class TestUpdateTaskStatusVariablesInteractor:
             CreateOrUpdateTaskStorageInterface)
         return create_task_storage
 
-    @pytest.fixture()
-    def storage(self):
-        from ib_tasks.interactors.storage_interfaces.storage_interface \
-            import StorageInterface
-        storage = create_autospec(StorageInterface)
-        return storage
-
     @staticmethod
     @pytest.fixture()
-    def interactor(storage, create_task_storage, field_storage):
+    def interactor(storage, create_task_storage, field_storage, gof_storage):
         task_id = 1
         action_id = 1
         interactor = CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
-            storage=storage, action_id=action_id, task_id=task_id,
-            create_task_storage=create_task_storage, field_storage=field_storage)
+            storage=storage, action_id=action_id, task_id=task_id, gof_storage=gof_storage,
+            create_task_storage=create_task_storage, field_storage=field_storage
+        )
         return interactor
 
     @classmethod
