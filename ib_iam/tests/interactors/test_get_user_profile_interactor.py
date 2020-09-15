@@ -177,7 +177,7 @@ class TestGetUserProfileInteractor:
         storage_mock.get_user_related_team_dtos.return_value = expected_team_dtos
         storage_mock.get_team_user_ids_dtos.return_value = expected_team_user_ids_dtos
         storage_mock.get_role_details_of_users_bulk.return_value = expected_role_dtos
-        storage_mock.get_user_related_company_dtos.return_value = expected_company_dto
+        storage_mock.get_user_related_company_dto.return_value = expected_company_dto
         storage_mock.get_company_employee_ids_dto.return_value = expected_company_employee_ids_dto
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             get_basic_user_profile_dtos_mock
