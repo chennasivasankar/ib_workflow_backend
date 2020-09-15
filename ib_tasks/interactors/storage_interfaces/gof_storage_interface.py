@@ -90,3 +90,7 @@ class GoFStorageInterface(abc.ABC):
     def get_filled_field_ids_of_given_task_gof_ids(
             self, task_gof_ids: List[int]) -> List[str]:
         pass
+
+    @abc.abstractmethod
+    def get_gof_ids_for_given_template(self, template_id: str) -> List[str]:
+        pass

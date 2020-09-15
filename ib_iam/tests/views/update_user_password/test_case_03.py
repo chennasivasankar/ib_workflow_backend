@@ -17,16 +17,16 @@ class TestCase03UpdateUserPasswordAPITestCase(TestUtils):
     @pytest.mark.django_db
     def test_case(self, mocker, api_user, snapshot):
         from ib_iam.tests.common_fixtures.adapters \
-            .auth_service_adapter_mocks import prepare_update_user_password
-        update_user_password_mock = prepare_update_user_password(mocker)
+            .auth_service_adapter_mocks import update_user_password_mock
+        update_user_password_mock = update_user_password_mock(mocker)
         from ib_iam.exceptions.custom_exceptions import InvalidCurrentPassword
         update_user_password_mock.side_effect = InvalidCurrentPassword
         body = {'current_password': 'password@1', 'new_password': 'p@ssword#1'}
         path_params = {}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+
+        self.make_api_call(
+            body=body, path_params=path_params, query_params=query_params,
+            headers=headers, snapshot=snapshot
+        )
