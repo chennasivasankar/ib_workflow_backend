@@ -2,7 +2,7 @@ import pytest
 import datetime
 from unittest.mock import create_autospec
 from ib_tasks.constants.enum import ActionTypes, ViewType
-from ib_tasks.interactors.user_action_on_task_interactor \
+from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor \
     import UserActionOnTaskInteractor
 from ib_tasks.tests.factories.interactor_dtos import \
     TaskCurrentStageDetailsDTOFactory, FieldDisplayDTOFactory

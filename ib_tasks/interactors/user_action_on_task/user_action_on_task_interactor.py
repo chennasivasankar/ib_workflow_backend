@@ -1,6 +1,5 @@
 import datetime
 from typing import List, Optional
-
 from ib_tasks.constants.enum import ViewType, ActionTypes
 from ib_tasks.exceptions.action_custom_exceptions import InvalidKeyError, \
     InvalidCustomLogicException, InvalidActionException, \
@@ -17,16 +16,6 @@ from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import (
     InvalidTaskException, InvalidTaskDisplayId, TaskDelayReasonIsNotUpdated)
-from ib_tasks.interactors \
-    .call_action_logic_function_and_get_or_update_task_status_variables_interactor \
-    import CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor, \
-    InvalidMethodFound
-from ib_tasks.interactors \
-    .get_all_task_overview_with_filters_and_searches_for_user import \
-    GetTasksOverviewForUserInteractor
-from ib_tasks.interactors \
-    .get_and_update_assignees_having_less_tasks_counts_for_next_stages_interactor import \
-    GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor
 from ib_tasks.interactors \
     .get_next_stages_random_assignees_of_a_task_interactor import \
     InvalidModulePathFound
@@ -59,8 +48,10 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
-    import \
-    TaskTemplateStorageInterface
+    import TaskTemplateStorageInterface
+from ib_tasks.interactors.user_action_on_task\
+    .call_action_logic_function_and_get_or_update_task_status_variables_interactor \
+    import InvalidMethodFound
 
 
 class InvalidBoardIdException(Exception):
@@ -237,6 +228,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
     def _get_tasks_overview_for_users(
             self, task_id: int, project_id: str
     ) -> AllTasksOverviewDetailsDTO:
+        from ib_tasks.interactors.get_all_task_overview_with_filters_and_searches_for_user \
+            import GetTasksOverviewForUserInteractor
         task_overview_interactor = GetTasksOverviewForUserInteractor(
             stage_storage=self.stage_storage, task_storage=self.task_storage,
             field_storage=self.field_storage,
@@ -253,8 +246,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
     def _get_task_current_board_complete_details(
             self, task_id: int, stage_ids: List[str]
     ) -> TaskCompleteDetailsDTO:
-        from ib_tasks.interactors \
-            .get_task_current_board_complete_details_interactor \
+        from ib_tasks.interactors.user_action_on_task.get_task_current_board_complete_details_interactor \
             import GetTaskCurrentBoardCompleteDetailsInteractor
         interactor = GetTaskCurrentBoardCompleteDetailsInteractor(
             task_stage_storage=self.task_stage_storage,
@@ -282,6 +274,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
     def _set_next_stage_assignees_to_task_and_update_in_db(
             self, task_id: int, stage_ids: List[str]
     ):
+        from ib_tasks.interactors.get_and_update_assignees_having_less_tasks_counts_for_next_stages_interactor \
+            import GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor
         set_stage_assignees_interactor = \
             GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor(
                 storage=self.storage, stage_storage=self.stage_storage,
@@ -302,7 +296,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
 
     def _get_task_stage_display_satisfied_stage_ids(self, task_id: int) -> \
             List[str]:
-        from ib_tasks.interactors.get_task_stage_logic_satisfied_stages \
+        from ib_tasks.interactors.user_action_on_task\
+            .get_task_stage_logic_satisfied_stages \
             import GetTaskStageLogicSatisfiedStagesInteractor
         interactor = GetTaskStageLogicSatisfiedStagesInteractor(
             task_id=task_id, storage=self.storage,
@@ -312,6 +307,9 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
 
     def _call_logic_and_update_status_variables_and_get_stage_ids(
             self, task_id: int) -> TaskDetailsDTO:
+        from ib_tasks.interactors.user_action_on_task\
+            .call_action_logic_function_and_get_or_update_task_status_variables_interactor \
+            import CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor
         update_status_variable_obj = \
             CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
                 action_id=self.action_id, storage=self.storage,

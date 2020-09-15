@@ -2,8 +2,7 @@ from unittest.mock import create_autospec
 
 import pytest
 
-from ib_tasks.interactors \
-    .call_action_logic_function_and_get_or_update_task_status_variables_interactor \
+from ib_tasks.interactors.user_action_on_task.call_action_logic_function_and_get_or_update_task_status_variables_interactor \
     import (
     CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor,
     InvalidModulePathFound, InvalidMethodFound)
