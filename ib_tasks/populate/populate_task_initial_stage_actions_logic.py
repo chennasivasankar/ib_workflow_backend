@@ -11,7 +11,7 @@ def populate_tasks(tasks: List[Dict]):
         tasks)
     for action_dict in tasks:
         tasks_dto.append(append_action_dict(action_dict))
-    from ib_tasks.interactors.configur_initial_task_template_stage_actions \
+    from ib_tasks.interactors.configure_initial_task_template_stage_actions \
         import ConfigureInitialTaskTemplateStageActions
 
     from ib_tasks.storages.action_storage_implementation import \

@@ -1,7 +1,7 @@
 import pytest
 from mock import create_autospec
 
-from ib_tasks.interactors.call_action_logic_function_and_get_or_update_task_status_variables_interactor import \
+from ib_tasks.interactors.user_action_on_task.call_action_logic_function_and_get_or_update_task_status_variables_interactor import \
     CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor, \
     InvalidModulePathFound, InvalidMethodFound
 from ib_tasks.tests.factories.storage_dtos import StatusVariableDTOFactory, \

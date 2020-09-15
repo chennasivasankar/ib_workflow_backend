@@ -52,7 +52,8 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
         return updated_status_variable_dtos
 
     def call_action_logic_function_and_update_task_status_variables(
-            self, task_dto: TaskDetailsDTO) -> TaskDetailsDTO:
+            self) -> TaskDetailsDTO:
+        task_dto = self._get_task_dto(self.task_id)
         status_dict, status_variables_dto, task_gof_dtos, task_gof_fields_dto = \
             self._call_action_logic_function(task_dto=task_dto)
         self._update_task_status_variables(status_dict, status_variables_dto)
@@ -198,13 +199,16 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
     @staticmethod
     def _get_updated_status_variable_dto(
             status_dict: Dict[str, str],
-            status_variables_dto: List[StatusVariableDTO]) -> \
+            status_variable_dtos: List[StatusVariableDTO]) -> \
             List[StatusVariableDTO]:
-        lst = []
-        for status_dto in status_variables_dto:
-            status_dto.value = status_dict[status_dto.status_variable]
-            lst.append(status_dto)
-        return lst
+        return [
+            StatusVariableDTO(
+                status_id=status_dto.status_id,
+                status_variable=status_dto.status_variable,
+                value=status_dict[status_dto.status_variable]
+            )
+            for status_dto in status_variable_dtos
+        ]
 
     def _get_task_dict(
             self, task_gof_dtos: List[TaskGoFDTO],

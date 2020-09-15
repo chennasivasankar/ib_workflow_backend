@@ -1,7 +1,7 @@
 
 import pytest
 from unittest.mock import create_autospec
-from ib_tasks.interactors.configur_initial_task_template_stage_actions import (
+from ib_tasks.interactors.configure_initial_task_template_stage_actions import (
     ConfigureInitialTaskTemplateStageActions, InvalidTaskTemplateIdsException
 )
 from ib_tasks.interactors.stages_dtos import TemplateStageDTO
