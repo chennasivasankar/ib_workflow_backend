@@ -53,7 +53,7 @@ class GetTaskFieldsInteractor:
         searchable_dtos = []
         for field_dto in field_dtos:
             if field_dto.field_type == FieldTypes.SEARCHABLE.value and \
-                    field_dto.field_values == Searchable.USER:
+                    field_dto.field_values == Searchable.USER.value:
                 searchable_dtos.append(SearchableDTO(
                         search_type=field_dto.field_values,
                         id=field_dto.value
