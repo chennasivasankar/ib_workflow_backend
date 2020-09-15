@@ -66,17 +66,18 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
         gof_multiple_enable_dict = self._get_gof_multiple_enable_dict(
             template_id=task_dto.task_base_details_dto.template_id)
         task_gof_fields_dto = task_dto.task_gof_field_dtos
-        task_gof_fields_dto_dict = \
-            self._get_task_gof_fields_dict(task_gof_fields_dto, task_gof_fields_dto)
-        status_variables_dto = self._get_task_status_dtos(self.task_id)
+        task_gof_fields_dto_dict = self._get_task_gof_fields_dict(
+            task_gof_fields_dto, task_gof_fields_dto)
+        status_variable_dtos = self.storage\
+            .get_status_variables_to_task(task_id=self.task_id)
         task_dict = self._get_task_dict(
             task_gof_dtos, gof_multiple_enable_dict,
-            task_gof_fields_dto_dict, status_variables_dto)
+            task_gof_fields_dto_dict, status_variable_dtos)
         task_dict = self._get_updated_task_dict(task_dict)
         # TODO update fields
         status_dict = task_dict.get("status_variables", {})
         return (
-            status_dict, status_variables_dto
+            status_dict, status_variable_dtos
         )
 
     @staticmethod
@@ -119,12 +120,6 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
         self.storage.update_status_variables_to_task(
             task_id=self.task_id,
             status_variables_dto=updated_status_variables_dto)
-
-    def _get_task_status_dtos(self, task_id: int) -> List[StatusVariableDTO]:
-
-        status_variable_dtos = \
-            self.storage.get_status_variables_to_task(task_id=task_id)
-        return status_variable_dtos
 
     def _get_global_constants_to_task(self, task_id: int) -> Dict[str, Any]:
 
