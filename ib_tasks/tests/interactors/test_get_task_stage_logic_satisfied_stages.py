@@ -95,8 +95,8 @@ class TestGetTaskStageLogicSatisfiedStages:
     @pytest.fixture()
     def stage_display_mock(mocker):
 
-        path = 'ib_tasks.interactors.get_stage_display_logic_interactor.StageDisplayLogicInteractor' \
-               '.get_stage_display_logic_condition'
+        path = 'ib_tasks.interactors.user_action_on_task.get_stage_display_logic_interactor' \
+               '.StageDisplayLogicInteractor.get_stage_display_logic_condition'
         mock_obj = mocker.patch(path)
         return mock_obj
 
