@@ -429,7 +429,7 @@ class TestUserActionOnTaskInteractor:
     @pytest.fixture()
     def current_board_mock(self, mocker):
         path = \
-            'ib_tasks.interactors' \
+            'ib_tasks.interactors.user_action_on_task' \
             '.get_task_current_board_complete_details_interactor' \
             '.GetTaskCurrentBoardCompleteDetailsInteractor' \
             '.get_task_current_board_complete_details'
@@ -510,7 +510,7 @@ class TestUserActionOnTaskInteractor:
     @staticmethod
     @pytest.fixture()
     def call_action_mock(mocker):
-        path = "ib_tasks.interactors" \
+        path = "ib_tasks.interactors.user_action_on_task" \
                ".call_action_logic_function_and_get_or_update_task_status_variables_interactor" \
                ".CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor" \
                ".call_action_logic_function_and_update_task_status_variables"
@@ -532,7 +532,6 @@ class TestUserActionOnTaskInteractor:
         )
         return task_dto
 
-    @staticmethod
     @pytest.fixture()
     def task_complete_details(self, assignees):
         task_display_id = "task_1"
@@ -546,32 +545,33 @@ class TestUserActionOnTaskInteractor:
     @staticmethod
     @pytest.fixture()
     def satisfied_stages_mock(mocker):
-        path = 'ib_tasks.interactors.get_task_stage_logic_satisfied_stages' \
+        path = 'ib_tasks.interactors.user_action_on_task.get_task_stage_logic_satisfied_stages' \
                '.GetTaskStageLogicSatisfiedStagesInteractor' \
                '.get_task_stage_logic_satisfied_stages'
         mock_obj = mocker.patch(path)
         return mock_obj
 
-    def given_valid_details_returns_task_complete_details(
-            self, presenter, interactor, mocker,
+    def test_given_valid_details_returns_task_complete_details(
+            self, presenter, interactor,
             valid_board_mock, storage,
-            set_up_storage_for_due_date_missed,
+            set_up_storage_for_valid_case,
             valid_action_roles_mock, assignees,
             get_task_current_stages_mock, filtered_task_overview_user,
             current_board_mock, random_assignee_mock,
             call_action_mock, task_dto, task_complete_details,
-            satisfied_stages_mock
+            satisfied_stages_mock, create_task_storage
     ):
         # Arrange
-        user_id = "1"
+        user_id = "user_1"
         task_display_id = "task_1"
         task_id = 1
         project_id = "FIN_MAN"
         view_type = ViewType.KANBAN.value
+        create_task_storage.get_existing_task_due_date.return_value = \
+            datetime.datetime.now() + datetime.timedelta(days=1)
         task_current_stages_details = TaskCurrentStageDetailsDTOFactory()
         get_task_current_stages_mock.return_value = \
             task_current_stages_details
-        gof_and_fields_mock = self.gof_and_fields_mock(mocker, task_dto)
         filtered_task_overview_user.return_value = None
         current_board_mock.return_value = task_complete_details
         stage_ids = ['stage_1', 'stage_2']
@@ -583,7 +583,6 @@ class TestUserActionOnTaskInteractor:
         )
 
         # Assert
-        gof_and_fields_mock.assert_called_once_with(task_id=task_id)
         call_action_mock.assert_called_once()
         storage.update_task_stages.assert_called_once_with(
             stage_ids=stage_ids, task_id=task_id
