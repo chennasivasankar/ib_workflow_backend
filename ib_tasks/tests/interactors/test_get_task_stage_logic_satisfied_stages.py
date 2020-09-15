@@ -57,7 +57,7 @@ class TestGetTaskStageLogicSatisfiedStages:
     def interactor(storage, stage_storage):
         task_id = 1
 
-        from ib_tasks.interactors.get_task_stage_logic_satisfied_stages \
+        from ib_tasks.interactors.user_action_on_task.get_task_stage_logic_satisfied_stages \
             import GetTaskStageLogicSatisfiedStagesInteractor
         interactor = GetTaskStageLogicSatisfiedStagesInteractor(
             task_id=task_id, storage=storage, stage_storage=stage_storage
