@@ -48,7 +48,7 @@ class StageIdWithAssigneeDTO:
 
 
 @dataclass
-class UpdateTaskDTO:
+class UpdateTaskBasicDetailsDTO:
     task_id: int
     action_type: Optional[ActionTypes]
     created_by_id: str
@@ -57,6 +57,11 @@ class UpdateTaskDTO:
     start_datetime: datetime.datetime
     due_datetime: datetime.datetime
     priority: Priority
+
+
+@dataclass
+class UpdateTaskDTO:
+    task_basic_details: UpdateTaskBasicDetailsDTO
     stage_assignee: StageIdWithAssigneeDTO
     gof_fields_dtos: List[GoFFieldsDTO]
 

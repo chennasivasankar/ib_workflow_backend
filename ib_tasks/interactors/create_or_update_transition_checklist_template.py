@@ -240,11 +240,11 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
                 transition_template_dto.task_id, project_id)
         existing_gofs = \
             self.create_or_update_task_storage \
-                .get_gof_ids_with_same_gof_order_related_to_a_task(
+                .get_gofs_details_of_task(
                 transition_template_dto.task_id)
         existing_fields = \
             self.create_or_update_task_storage \
-                .get_field_ids_with_task_gof_id_related_to_given_task(
+                .get_fields_details_of_task(
                 transition_template_dto.task_id)
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(

@@ -7,7 +7,8 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TaskGoFFieldDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
-from ib_tasks.interactors.task_dtos import BasicTaskDetailsDTO
+from ib_tasks.interactors.task_dtos import BasicTaskDetailsDTO, \
+    UpdateTaskBasicDetailsDTO
 
 
 class TaskCrudOperationsInteractor:
@@ -29,3 +30,13 @@ class TaskCrudOperationsInteractor:
 
     def create_task_gof_fields(self, gof_field_dtos: List[TaskGoFFieldDTO]):
         self.storage.create_task_gof_fields(gof_field_dtos)
+
+    def update_task(self, task_basic_details: UpdateTaskBasicDetailsDTO):
+        self.storage.update_task(task_basic_details)
+
+    def update_task_gofs(self, task_gof_dtos: List[TaskGoFWithTaskIdDTO]):
+        task_gof_details_dtos = self.storage.update_task_gofs(task_gof_dtos)
+        return task_gof_details_dtos
+
+    def update_task_gof_fields(self, gof_field_dtos: List[TaskGoFFieldDTO]):
+        self.storage.update_task_gof_fields(gof_field_dtos)

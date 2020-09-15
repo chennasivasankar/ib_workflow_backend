@@ -1,6 +1,11 @@
+import datetime as datetime
 from typing import List, Optional
 
-from ib_tasks.constants.enum import ViewType
+from ib_tasks.constants.enum import ViewType, Priority, ActionTypes
+from ib_tasks.exceptions.datetime_custom_exceptions import \
+    StartDateTimeIsRequired, DueDateTimeIsRequired, DueDateTimeHasExpired, \
+    DueDateTimeWithoutStartDateTimeIsNotValid, StartDateIsAheadOfDueDate
+from ib_tasks.exceptions.task_custom_exceptions import PriorityIsRequired
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
@@ -13,7 +18,7 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO
 class TaskOperationsUtilitiesMixin:
 
     @staticmethod
-    def _prepare_task_gof_dtos(
+    def prepare_task_gof_dtos(
             task_id: int, gof_field_dtos: List[GoFFieldsDTO]
     ) -> List[TaskGoFWithTaskIdDTO]:
         task_gof_dtos = [
@@ -24,7 +29,7 @@ class TaskOperationsUtilitiesMixin:
         ]
         return task_gof_dtos
 
-    def _prepare_task_gof_fields_dtos(
+    def prepare_task_gof_fields_dtos(
             self, gof_fields_dtos: List[GoFFieldsDTO],
             task_gof_details_dtos: List[TaskGoFDetailsDTO]
     ) -> List[TaskGoFFieldDTO]:
@@ -76,3 +81,56 @@ class TaskOperationsUtilitiesMixin:
                 view_type=ViewType.KANBAN.value, project_id=project_id)
         return all_tasks_overview_details_dto
 
+    def validate_task_dates_and_priority(
+            self, start_datetime: datetime.datetime,
+            due_datetime: datetime.datetime, priority: Priority,
+            action_type: Optional[ActionTypes]) -> Optional[Exception]:
+        self._validate_due_datetime_without_start_datetime(
+            start_datetime, due_datetime)
+        action_type_is_no_validations = \
+            action_type == ActionTypes.NO_VALIDATIONS.value
+        self._validate_priority_in_no_validations_case(
+            priority, action_type_is_no_validations)
+        if action_type_is_no_validations and due_datetime is None:
+            return
+        start_datetime_is_emtpy = not start_datetime
+        due_datetime_is_empty = not due_datetime
+        if start_datetime_is_emtpy:
+            raise StartDateTimeIsRequired()
+        if due_datetime_is_empty:
+            raise DueDateTimeIsRequired()
+        self._validate_start_date_and_due_date_dependencies(
+            start_datetime, due_datetime)
+        import datetime
+        due_datetime_is_expired = due_datetime <= datetime.datetime.now()
+        if due_datetime_is_expired:
+            raise DueDateTimeHasExpired(due_datetime)
+        return
+
+    @staticmethod
+    def _validate_due_datetime_without_start_datetime(
+            start_datetime, due_datetime
+    ) -> Optional[DueDateTimeWithoutStartDateTimeIsNotValid]:
+        due_datetime_given_without_start_date = not start_datetime and \
+                                                due_datetime
+        if due_datetime_given_without_start_date:
+            raise DueDateTimeWithoutStartDateTimeIsNotValid(due_datetime)
+        return
+
+    @staticmethod
+    def _validate_priority_in_no_validations_case(
+            priority: Priority, action_type_is_no_validations: bool
+    ) -> Optional[PriorityIsRequired]:
+        priority_is_not_given = not priority
+        if priority_is_not_given and not action_type_is_no_validations:
+            raise PriorityIsRequired()
+        return
+
+    @staticmethod
+    def _validate_start_date_and_due_date_dependencies(
+            start_date: datetime.datetime, due_date: datetime.datetime
+    ) -> Optional[StartDateIsAheadOfDueDate]:
+        start_date_is_ahead_of_due_date = start_date > due_date
+        if start_date_is_ahead_of_due_date:
+            raise StartDateIsAheadOfDueDate(start_date, due_date)
+        return

@@ -1,10 +1,10 @@
 import datetime
-from typing import Optional, List, Union
+from typing import Optional, List, Tuple
 
-from ib_tasks.constants.enum import ActionTypes, ViewType, Priority
+from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     StartDateIsAheadOfDueDate, \
-    DueDateIsBehindStartDate, DueDateTimeHasExpired, \
+    DueDateTimeHasExpired, \
     DueDateTimeWithoutStartDateTimeIsNotValid, StartDateTimeIsRequired, \
     DueDateTimeIsRequired
 from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -31,10 +31,14 @@ from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
 from ib_tasks.interactors.create_or_update_task. \
     gofs_details_validations_interactor import \
     GoFsDetailsValidationsInteractor
+from ib_tasks.interactors.create_or_update_task \
+    .task_crud_operations_interactor import TaskCrudOperationsInteractor
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
 from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
+from ib_tasks.interactors.mixins.task_operations_utilities_mixin import \
+    TaskOperationsUtilitiesMixin
 from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
     UpdateTaskPresenterInterface
 from ib_tasks.interactors.stages_dtos import StageAssigneeDTO, \
@@ -66,13 +70,16 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
-from ib_tasks.interactors.task_dtos import UpdateTaskDTO, CreateTaskDTO, \
-    UpdateTaskWithTaskDisplayIdDTO
+from ib_tasks.interactors.task_dtos import UpdateTaskDTO, \
+    UpdateTaskWithTaskDisplayIdDTO, GoFFieldsDTO, StageIdWithAssigneeDTO, \
+    UpdateTaskBasicDetailsDTO
 from ib_tasks.interactors.update_task_stage_assignees_interactor import \
     UpdateTaskStageAssigneesInteractor
 
 
-class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
+class UpdateTaskInteractor(
+    GetTaskIdForTaskDisplayIdMixin, TaskOperationsUtilitiesMixin
+):
 
     def __init__(
             self, task_storage: TaskStorageInterface,
@@ -185,94 +192,107 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def _prepare_update_task_response(
             self, task_dto: UpdateTaskWithTaskDisplayIdDTO,
-            presenter: UpdateTaskPresenterInterface
-    ):
-        all_tasks_overview_details_dto = \
-            self.update_task_with_task_display_id(task_dto)
+            presenter: UpdateTaskPresenterInterface):
+        all_tasks_overview_details_dto = self.update_task_with_task_display_id(
+            task_dto)
         return presenter.get_update_task_response(
             all_tasks_overview_details_dto)
 
     def update_task_with_task_display_id(
             self, task_dto: UpdateTaskWithTaskDisplayIdDTO):
-        task_id = self.get_task_id_for_task_display_id(
-            task_dto.task_display_id)
-        task_dto_with_db_task_id = UpdateTaskDTO(
+        task_display_id = task_dto.task_display_id
+        task_id = self.get_task_id_for_task_display_id(task_display_id)
+        task_basic_details = UpdateTaskBasicDetailsDTO(
             task_id=task_id, created_by_id=task_dto.created_by_id,
             title=task_dto.title, description=task_dto.description,
             start_datetime=task_dto.start_datetime,
             due_datetime=task_dto.due_datetime, priority=task_dto.priority,
+            action_type=task_dto.action_type)
+        task_dto_with_db_task_id = UpdateTaskDTO(
+            task_basic_details=task_basic_details,
             stage_assignee=task_dto.stage_assignee,
-            gof_fields_dtos=task_dto.gof_fields_dtos,
-            action_type=task_dto.action_type
-        )
-        all_tasks_overview_details_dto = \
-            self.update_task(task_dto_with_db_task_id)
-        return all_tasks_overview_details_dto
+            gof_fields_dtos=task_dto.gof_fields_dtos)
+        return self.update_task(task_dto_with_db_task_id)
 
     def update_task(self, task_dto: UpdateTaskDTO):
-        task_id = task_dto.task_id
+        task_id = task_dto.task_basic_details.task_id
+        self._validate_task_details(task_dto)
+        self._update_task_details(task_dto)
+
+        self._update_stage_assignee(task_id, task_dto.stage_assignee)
+        all_tasks_overview_details_dto = self._get_task_overview_details(
+            task_id, task_dto.task_basic_details.created_by_id)
+        return all_tasks_overview_details_dto
+
+    def _validate_task_details(self, task_dto: UpdateTaskDTO):
+        task_id = task_dto.task_basic_details.task_id
+        self.validate_task_dates_and_priority(
+            task_dto.task_basic_details.start_datetime,
+            task_dto.task_basic_details.due_datetime,
+            task_dto.task_basic_details.priority,
+            task_dto.task_basic_details.action_type)
         self._validate_task_id(task_id)
         self._validate_stage_id(task_dto.stage_assignee.stage_id)
         task_template_id = \
             self.create_task_storage.get_template_id_for_given_task(task_id)
-        self._validate_task_details(task_dto, task_dto.action_type)
+        self._validate_task_delay_reason_is_added_if_due_date_is_changed(
+            updated_due_date=task_dto.task_basic_details.due_datetime,
+            task_id=task_dto.task_basic_details.task_id,
+            stage_id=task_dto.stage_assignee.stage_id)
         project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
-        base_validations_interactor = \
-            GoFsDetailsValidationsInteractor(
-                self.task_storage, self.gof_storage,
-                self.create_task_storage, self.storage,
-                self.field_storage, self.task_template_storage
-            )
-        base_validations_interactor \
-            .perform_gofs_details_validations(
+        base_validations_interactor = GoFsDetailsValidationsInteractor(
+            self.task_storage, self.gof_storage,
+            self.create_task_storage, self.storage,
+            self.field_storage, self.task_template_storage)
+        base_validations_interactor.perform_gofs_details_validations(
             gof_fields_dtos=task_dto.gof_fields_dtos,
-            user_id=task_dto.created_by_id,
+            user_id=task_dto.task_basic_details.created_by_id,
             task_template_id=task_template_id, project_id=project_id,
-            action_type=task_dto.action_type)
-        self.create_task_storage.update_task_with_given_task_details(
-            task_dto=task_dto)
-        existing_gofs = \
-            self.create_task_storage \
-                .get_gof_ids_with_same_gof_order_related_to_a_task(task_id)
-        existing_fields = \
-            self.create_task_storage \
-                .get_field_ids_with_task_gof_id_related_to_given_task(task_id)
-        task_gof_dtos = [
-            TaskGoFWithTaskIdDTO(
-                task_id=task_id,
-                gof_id=gof_fields_dto.gof_id,
-                same_gof_order=gof_fields_dto.same_gof_order
-            )
-            for gof_fields_dto in task_dto.gof_fields_dtos
-        ]
-        task_gof_dtos_for_updation, task_gof_dtos_for_creation = [], []
-        for task_gof_dto in task_gof_dtos:
-            gof_already_exists = \
-                self._is_gof_already_exists(
-                    task_gof_dto.gof_id, task_gof_dto.same_gof_order,
-                    existing_gofs)
-            if gof_already_exists:
-                task_gof_dtos_for_updation.append(task_gof_dto)
-            else:
-                task_gof_dtos_for_creation.append(task_gof_dto)
-        if task_gof_dtos_for_updation:
-            self._update_task_gofs(
-                task_gof_dtos_for_updation, task_dto, existing_fields)
-        if task_gof_dtos_for_creation:
-            self._create_task_gofs(task_gof_dtos_for_creation, task_dto)
+            action_type=task_dto.task_basic_details.action_type)
+
+    def _update_task_details(self, task_dto: UpdateTaskDTO):
+        task_crud_interactor = TaskCrudOperationsInteractor(
+            self.create_task_storage)
+        task_crud_interactor.update_task(task_dto.task_basic_details)
+        self._update_existing_fields_and_create_new_fields_of_task(
+            task_dto, task_crud_interactor)
+
+    def _update_existing_fields_and_create_new_fields_of_task(
+            self, task_dto: UpdateTaskDTO,
+            task_crud_interactor: TaskCrudOperationsInteractor
+    ):
+        task_id = task_dto.task_basic_details.task_id
+        gof_fields_dtos = task_dto.gof_fields_dtos
+        existing_gofs = self.create_task_storage.get_gofs_details_of_task(
+            task_id)
+        existing_fields = self.create_task_storage.get_fields_details_of_task(
+            task_id)
+        task_gof_dtos = self.prepare_task_gof_dtos(task_id, gof_fields_dtos)
+        gofs_for_updation, gofs_for_creation = \
+            self._get_updation_and_creation_gofs(task_gof_dtos, existing_gofs)
+        if gofs_for_updation:
+            self._update_task_gofs_and_fields(
+                gofs_for_updation, gof_fields_dtos,
+                existing_fields, task_crud_interactor)
+        if gofs_for_creation:
+            self._create_task_gofs_and_fields(
+                gofs_for_creation, task_dto, task_crud_interactor)
+
+    def _update_stage_assignee(
+            self, task_id: int, stage_assignee: StageIdWithAssigneeDTO):
         update_stage_assignee_interactor = UpdateTaskStageAssigneesInteractor(
             stage_storage=self.stage_storage, task_storage=self.task_storage)
         stage_assignees = [
             StageAssigneeDTO(
-                db_stage_id=task_dto.stage_assignee.stage_id,
-                assignee_id=task_dto.stage_assignee.assignee_id,
-                team_id=task_dto.stage_assignee.team_id
-            )
-        ]
+                db_stage_id=stage_assignee.stage_id,
+                assignee_id=stage_assignee.assignee_id,
+                team_id=stage_assignee.team_id)]
         task_stage_assignee_dto = TaskIdWithStageAssigneesDTO(
-            task_id=task_dto.task_id, stage_assignees=stage_assignees)
+            task_id=task_id, stage_assignees=stage_assignees)
         update_stage_assignee_interactor.update_task_stage_assignees(
             task_stage_assignee_dto)
+
+    def _get_task_overview_details(self, task_id: int, user_id: str):
         from ib_tasks.interactors \
             .get_all_task_overview_with_filters_and_searches_for_user import \
             GetTasksOverviewForUserInteractor
@@ -282,15 +302,28 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             action_storage=self.action_storage,
             task_stage_storage=self.task_stage_storage)
         project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
-        self._update_task_in_elasticsearch(
-            task_id=task_id
-        )
+        self._update_task_in_elasticsearch(task_id=task_id)
         all_tasks_overview_details_dto = \
             task_overview_interactor.get_filtered_tasks_overview_for_user(
-                user_id=task_dto.created_by_id, task_ids=[task_id],
+                user_id=user_id, task_ids=[task_id],
                 view_type=ViewType.KANBAN.value,
                 project_id=project_id)
         return all_tasks_overview_details_dto
+
+    def _get_updation_and_creation_gofs(
+            self, task_gof_dtos: List[TaskGoFWithTaskIdDTO],
+            existing_gofs: List[GoFIdWithSameGoFOrderDTO]
+    ):
+        gofs_for_updation, gofs_for_creation = [], []
+        for task_gof_dto in task_gof_dtos:
+            gof_already_exists = self._is_gof_already_exists(
+                task_gof_dto.gof_id, task_gof_dto.same_gof_order,
+                existing_gofs)
+            if gof_already_exists:
+                gofs_for_updation.append(task_gof_dto)
+            else:
+                gofs_for_creation.append(task_gof_dto)
+        return gofs_for_updation, gofs_for_creation
 
     def _validate_task_id(
             self, task_id: int) -> Optional[InvalidTaskException]:
@@ -299,26 +332,6 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         if invalid_task_id:
             raise InvalidTaskException(task_id)
         return
-
-    def _prepare_task_gof_fields_dtos(
-            self, task_dto: UpdateTaskDTO,
-            task_gof_details_dtos: List[TaskGoFDetailsDTO]
-    ) -> List[TaskGoFFieldDTO]:
-        task_gof_field_dtos = []
-        for gof_fields_dto in task_dto.gof_fields_dtos:
-            task_gof_id = self._get_task_gof_id_for_field_in_task_gof_details(
-                gof_fields_dto.gof_id, gof_fields_dto.same_gof_order,
-                task_gof_details_dtos)
-            if task_gof_id is not None:
-                task_gof_field_dtos += [
-                    TaskGoFFieldDTO(
-                        field_id=field_values_dto.field_id,
-                        field_response=field_values_dto.field_response,
-                        task_gof_id=task_gof_id
-                    )
-                    for field_values_dto in gof_fields_dto.field_values_dtos
-                ]
-        return task_gof_field_dtos
 
     @staticmethod
     def _get_task_gof_id_for_field_in_task_gof_details(
@@ -337,64 +350,53 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
     def _filter_task_gof_field_dtos(
             self, task_gof_field_dtos: List[TaskGoFFieldDTO],
             existing_fields: List[FieldIdWithTaskGoFIdDTO]
-    ) -> (List[TaskGoFFieldDTO], List[TaskGoFFieldDTO]):
-        task_gof_field_dtos_for_updation, task_gof_field_dtos_for_creation = \
-            [], []
+    ) -> Tuple[List[TaskGoFFieldDTO], List[TaskGoFFieldDTO]]:
+        fields_for_updation, fields_for_creation = [], []
         for task_gof_field_dto in task_gof_field_dtos:
             field_id_already_exists = self._is_field_already_exists(
                 task_gof_field_dto.field_id, task_gof_field_dto.task_gof_id,
-                existing_fields
-            )
+                existing_fields)
             if field_id_already_exists:
-                task_gof_field_dtos_for_updation.append(task_gof_field_dto)
+                fields_for_updation.append(task_gof_field_dto)
             else:
-                task_gof_field_dtos_for_creation.append(task_gof_field_dto)
-        return (
-            task_gof_field_dtos_for_updation, task_gof_field_dtos_for_creation
-        )
+                fields_for_creation.append(task_gof_field_dto)
+        return fields_for_updation, fields_for_creation
 
-    def _update_task_gofs(
+    def _update_task_gofs_and_fields(
             self, task_gof_dtos_for_updation: List[TaskGoFWithTaskIdDTO],
-            task_dto: UpdateTaskDTO,
-            existing_fields: List[FieldIdWithTaskGoFIdDTO]
+            gof_fields_dtos: List[GoFFieldsDTO],
+            existing_fields: List[FieldIdWithTaskGoFIdDTO],
+            task_crud_interactor: TaskCrudOperationsInteractor
     ):
-        task_gof_details_dtos = \
-            self.create_task_storage.update_task_gofs(
-                task_gof_dtos_for_updation)
-        task_gof_field_dtos = self._prepare_task_gof_fields_dtos(
-            task_dto, task_gof_details_dtos)
+        task_gof_details_dtos = task_crud_interactor.update_task_gofs(
+            task_gof_dtos=task_gof_dtos_for_updation)
+        task_gof_field_dtos = self.prepare_task_gof_fields_dtos(
+            gof_fields_dtos, task_gof_details_dtos)
         task_gof_field_dtos_for_updation, task_gof_field_dtos_for_creation = \
             self._filter_task_gof_field_dtos(
                 task_gof_field_dtos, existing_fields)
         if task_gof_field_dtos_for_updation:
-            self.create_task_storage.update_task_gof_fields(
+            task_crud_interactor.update_task_gof_fields(
                 task_gof_field_dtos_for_updation)
-
         if task_gof_field_dtos_for_creation:
-            self.create_task_storage.create_task_gof_fields(
+            task_crud_interactor.create_task_gof_fields(
                 task_gof_field_dtos_for_creation)
 
-    def _create_task_gofs(
+    def _create_task_gofs_and_fields(
             self, task_gof_dtos_for_creation: List[TaskGoFWithTaskIdDTO],
-            task_dto: UpdateTaskDTO
+            task_dto: UpdateTaskDTO,
+            task_crud_interactor: TaskCrudOperationsInteractor
     ):
-        task_gof_details_dtos = \
-            self.create_task_storage.create_task_gofs(
-                task_gof_dtos_for_creation
-            )
-        task_gof_field_dtos = \
-            self._prepare_task_gof_fields_dtos(
-                task_dto, task_gof_details_dtos
-            )
-        self.create_task_storage.create_task_gof_fields(
-            task_gof_field_dtos
-        )
+        task_gof_details_dtos = task_crud_interactor.create_task_gofs(
+            task_gof_dtos=task_gof_dtos_for_creation)
+        task_gof_field_dtos = self.prepare_task_gof_fields_dtos(
+            task_dto.gof_fields_dtos, task_gof_details_dtos)
+        task_crud_interactor.create_task_gof_fields(task_gof_field_dtos)
 
     @staticmethod
     def _is_field_already_exists(
             field_id: str, task_gof_id: int,
-            existing_fields: List[FieldIdWithTaskGoFIdDTO]
-    ) -> bool:
+            existing_fields: List[FieldIdWithTaskGoFIdDTO]) -> bool:
         for existing_field in existing_fields:
             field_already_exists = (
                     field_id == existing_field.field_id and
@@ -416,47 +418,19 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
                 return True
         return False
 
-    def _validate_task_details(
-            self, task_dto: Union[CreateTaskDTO, UpdateTaskDTO],
-            action_type: Optional[ActionTypes]
-    ):
-        start_datetime = task_dto.start_datetime
-        due_datetime = task_dto.due_datetime
-        self._validate_due_datetime_without_start_datetime(
-            start_datetime, due_datetime)
-        action_type_is_no_validations = \
-            action_type == ActionTypes.NO_VALIDATIONS.value
-        self._validate_priority_in_no_validations_case(
-            task_dto.priority, action_type_is_no_validations)
-        if action_type_is_no_validations:
-            return
-        start_datetime_is_emtpy = not start_datetime
-        due_datetime_is_empty = not due_datetime
-        if start_datetime_is_emtpy:
-            raise StartDateTimeIsRequired()
-        if due_datetime_is_empty:
-            raise DueDateTimeIsRequired()
-        self._validate_start_date_and_due_date_dependencies(
-            start_datetime, due_datetime)
-        import datetime
-        due_datetime_is_expired = due_datetime <= datetime.datetime.now()
-        if due_datetime_is_expired:
-            raise DueDateTimeHasExpired(due_datetime)
-        self._validate_task_delay_reason_is_added_if_due_date_is_changed(
-            updated_due_date=due_datetime, task_id=task_dto.task_id,
-            stage_id=task_dto.stage_assignee.stage_id)
-
     def _validate_task_delay_reason_is_added_if_due_date_is_changed(
             self, updated_due_date: datetime.datetime, task_id: int,
             stage_id: int
     ) -> Optional[TaskDelayReasonIsNotUpdated]:
         existing_due_date = \
             self.create_task_storage.get_existing_task_due_date(task_id)
-        existing_due_date_is_not_expired = existing_due_date > datetime.datetime.now()
+        existing_due_date_is_not_expired = \
+            existing_due_date > datetime.datetime.now()
         if existing_due_date_is_not_expired:
             return
-        due_date_has_changed = existing_due_date != updated_due_date and \
-                               existing_due_date is not None
+        due_date_has_changed = (
+                existing_due_date != updated_due_date and existing_due_date
+                is not None)
         if due_date_has_changed:
             self._validate_delay_reason_is_updated_or_not(
                 task_id, stage_id, updated_due_date)
@@ -479,51 +453,20 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
                 updated_due_date, task_display_id, stage_display_name)
         return
 
-    @staticmethod
-    def _validate_start_date_and_due_date_dependencies(start_date,
-                                                       due_date):
-        start_date_is_ahead_of_due_date = start_date > due_date
-        if start_date_is_ahead_of_due_date:
-            raise StartDateIsAheadOfDueDate(start_date, due_date)
-        due_date_is_behind_start_date = due_date < start_date
-        if due_date_is_behind_start_date:
-            raise DueDateIsBehindStartDate(due_date, start_date)
-
     def _validate_stage_id(self, stage_id: int) -> Optional[InvalidStageId]:
         stage_id_is_valid = self.stage_storage.check_is_stage_exists(stage_id)
         if not stage_id_is_valid:
             raise InvalidStageId(stage_id)
         return
 
-    @staticmethod
-    def _validate_due_datetime_without_start_datetime(
-            start_datetime, due_datetime
-    ) -> Optional[DueDateTimeWithoutStartDateTimeIsNotValid]:
-        due_datetime_given_without_start_date = not start_datetime and \
-                                                due_datetime
-        if due_datetime_given_without_start_date:
-            raise DueDateTimeWithoutStartDateTimeIsNotValid(due_datetime)
-        return
-
-    @staticmethod
-    def _validate_priority_in_no_validations_case(
-            priority: Priority, action_type_is_no_validations: bool
-    ) -> Optional[PriorityIsRequired]:
-        priority_is_not_given = not priority
-        if priority_is_not_given and not action_type_is_no_validations:
-            raise PriorityIsRequired()
-        return
-
     def _update_task_in_elasticsearch(self, task_id: int):
-        from ib_tasks.interactors.create_or_update_tasks_into_elasticsearch_interactor import \
+        from ib_tasks.interactors \
+            .create_or_update_tasks_into_elasticsearch_interactor import \
             CreateOrUpdateDataIntoElasticsearchInteractor
         interactor = CreateOrUpdateDataIntoElasticsearchInteractor(
             elasticsearch_storage=self.elastic_storage,
             storage=self.create_task_storage,
             task_storage=self.task_storage,
             stage_storage=self.stage_storage,
-            field_storage=self.field_storage
-        )
-        interactor.create_or_update_task_in_elasticsearch_storage(
-            task_id=task_id
-        )
+            field_storage=self.field_storage)
+        interactor.create_or_update_task_in_elasticsearch_storage(task_id)

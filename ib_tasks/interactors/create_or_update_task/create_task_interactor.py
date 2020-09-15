@@ -291,10 +291,10 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
         task_id = task_crud_interactor.create_task(
             task_dto.basic_task_details_dto)
         gof_field_dtos = task_dto.gof_fields_dtos
-        task_gof_dtos = self._prepare_task_gof_dtos(task_id, gof_field_dtos)
+        task_gof_dtos = self.prepare_task_gof_dtos(task_id, gof_field_dtos)
         task_gof_details_dtos = task_crud_interactor.create_task_gofs(
             task_gof_dtos)
-        task_gof_field_dtos = self._prepare_task_gof_fields_dtos(
+        task_gof_field_dtos = self.prepare_task_gof_fields_dtos(
             task_dto.gof_fields_dtos, task_gof_details_dtos)
         task_crud_interactor.create_task_gof_fields(task_gof_field_dtos)
         return task_id

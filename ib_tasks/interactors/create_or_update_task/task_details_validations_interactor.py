@@ -1,22 +1,19 @@
-import datetime as datetime
 from dataclasses import dataclass
 from typing import Optional, List, Union
 
-from ib_tasks.constants.enum import ActionTypes, Priority
+from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.custom_exceptions import InvalidProjectId
-from ib_tasks.exceptions.datetime_custom_exceptions import (
-    StartDateTimeIsRequired, DueDateTimeIsRequired, DueDateTimeHasExpired,
-    DueDateTimeWithoutStartDateTimeIsNotValid, StartDateIsAheadOfDueDate
-)
 from ib_tasks.exceptions.fields_custom_exceptions import \
     UserDidNotFillRequiredFields
 from ib_tasks.exceptions.task_custom_exceptions import (
-    InvalidTaskTemplateDBId, InvalidTaskTemplateOfProject, PriorityIsRequired
+    InvalidTaskTemplateDBId, InvalidTaskTemplateOfProject
 )
 from ib_tasks.interactors.create_or_update_task \
     .gofs_details_validations_interactor import \
     GoFsDetailsValidationsInteractor
+from ib_tasks.interactors.mixins.task_operations_utilities_mixin import \
+    TaskOperationsUtilitiesMixin
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces \
@@ -30,7 +27,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import CreateTaskDTO, GoFFieldsDTO
 
@@ -46,7 +43,7 @@ class TaskDetailsValidationsStorages:
     field_storage: FieldsStorageInterface
 
 
-class TaskDetailsValidationsInteractor:
+class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
 
     def __init__(self, storages_dto: TaskDetailsValidationsStorages):
         self.task_template_storage = storages_dto.task_template_storage
@@ -89,7 +86,7 @@ class TaskDetailsValidationsInteractor:
         self._validate_project_id(project_id)
         self._validate_task_template_id(task_template_id)
         self._validate_task_template_project_id(project_id, task_template_id)
-        self._validate_task_dates_and_priority(
+        self.validate_task_dates_and_priority(
             task_dto.basic_task_details_dto.start_datetime,
             task_dto.basic_task_details_dto.due_datetime,
             task_dto.basic_task_details_dto.priority, action_type)
@@ -146,58 +143,6 @@ class TaskDetailsValidationsInteractor:
         if action_id_is_invalid:
             raise InvalidActionException(action_id)
         return None
-
-    def _validate_task_dates_and_priority(
-            self, start_datetime: datetime.datetime,
-            due_datetime: datetime.datetime, priority: Priority,
-            action_type: Optional[ActionTypes]) -> Optional[Exception]:
-        self._validate_due_datetime_without_start_datetime(
-            start_datetime, due_datetime)
-        action_type_is_no_validations = \
-            action_type == ActionTypes.NO_VALIDATIONS.value
-        self._validate_priority_in_no_validations_case(
-            priority, action_type_is_no_validations)
-        if action_type_is_no_validations and due_datetime is None:
-            return
-        start_datetime_is_emtpy = not start_datetime
-        due_datetime_is_empty = not due_datetime
-        if start_datetime_is_emtpy:
-            raise StartDateTimeIsRequired()
-        if due_datetime_is_empty:
-            raise DueDateTimeIsRequired()
-        self._validate_start_date_and_due_date_dependencies(
-            start_datetime, due_datetime)
-        import datetime
-        due_datetime_is_expired = due_datetime <= datetime.datetime.now()
-        if due_datetime_is_expired:
-            raise DueDateTimeHasExpired(due_datetime)
-        return
-
-    @staticmethod
-    def _validate_due_datetime_without_start_datetime(
-            start_datetime, due_datetime
-    ) -> Optional[DueDateTimeWithoutStartDateTimeIsNotValid]:
-        due_datetime_given_without_start_date = not start_datetime and \
-                                                due_datetime
-        if due_datetime_given_without_start_date:
-            raise DueDateTimeWithoutStartDateTimeIsNotValid(due_datetime)
-        return
-
-    @staticmethod
-    def _validate_priority_in_no_validations_case(
-            priority: Priority, action_type_is_no_validations: bool
-    ) -> Optional[PriorityIsRequired]:
-        priority_is_not_given = not priority
-        if priority_is_not_given and not action_type_is_no_validations:
-            raise PriorityIsRequired()
-        return
-
-    @staticmethod
-    def _validate_start_date_and_due_date_dependencies(start_date,
-                                                       due_date):
-        start_date_is_ahead_of_due_date = start_date > due_date
-        if start_date_is_ahead_of_due_date:
-            raise StartDateIsAheadOfDueDate(start_date, due_date)
 
     def _validate_all_user_permitted_fields_are_filled_or_not(
             self, user_id: str, project_id: str, task_template_id: str,

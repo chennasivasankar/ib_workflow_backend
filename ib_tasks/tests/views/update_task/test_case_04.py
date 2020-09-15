@@ -38,11 +38,8 @@ class TestCase04UpdateTaskAPITestCase(TestUtils):
             "task_id": "IBWF-1",
             "title": "updated_title",
             "description": "updated_description",
-            "start_date": "2020-08-01",
-            "due_date": {
-                "date": "2020-08-02",
-                "time": "12:00:00"
-            },
+            "start_datetime": "2020-09-01 00:00:00",
+            "due_datetime": "2020-09-08 00:00:00",
             "priority": "HIGH",
             "stage_assignee": {
                 "stage_id": 1,

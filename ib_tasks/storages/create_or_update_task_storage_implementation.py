@@ -16,7 +16,7 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_dtos import (
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO)
 from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO, \
-    BasicTaskDetailsDTO
+    BasicTaskDetailsDTO, UpdateTaskBasicDetailsDTO
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.models.task import Task
@@ -45,13 +45,13 @@ class CreateOrUpdateTaskStorageImplementation(
         task_due_date = Task.objects.get(id=task_id).due_date
         return task_due_date
 
-    def update_task_with_given_task_details(self, task_dto: UpdateTaskDTO):
-        task_obj = Task.objects.get(id=task_dto.task_id)
-        task_obj.title = task_dto.title
-        task_obj.description = task_dto.description
-        task_obj.start_date = task_dto.start_datetime
-        task_obj.due_date = task_dto.due_datetime
-        task_obj.priority = task_dto.priority
+    def update_task(self, task_basic_details: UpdateTaskBasicDetailsDTO):
+        task_obj = Task.objects.get(id=task_basic_details.task_id)
+        task_obj.title = task_basic_details.title
+        task_obj.description = task_basic_details.description
+        task_obj.start_date = task_basic_details.start_datetime
+        task_obj.due_date = task_basic_details.due_datetime
+        task_obj.priority = task_basic_details.priority
         task_obj.save()
 
     def create_initial_task_stage(self, task_id: int, template_id: str):
@@ -159,7 +159,7 @@ class CreateOrUpdateTaskStorageImplementation(
         task_existence = Task.objects.filter(id=task_id).exists()
         return task_existence
 
-    def get_gof_ids_with_same_gof_order_related_to_a_task(
+    def get_gofs_details_of_task(
             self, task_id: int) -> List[GoFIdWithSameGoFOrderDTO]:
         gof_dicts = list(
             TaskGoF.objects.filter(task_id=task_id).values(
@@ -173,7 +173,7 @@ class CreateOrUpdateTaskStorageImplementation(
         ]
         return gof_id_with_same_gof_order_dtos
 
-    def get_field_ids_with_task_gof_id_related_to_given_task(
+    def get_fields_details_of_task(
             self, task_id: int) -> List[FieldIdWithTaskGoFIdDTO]:
         field_dicts = list(
             TaskGoFField.objects.filter(task_gof__task_id=task_id).values(

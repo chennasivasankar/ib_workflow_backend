@@ -2469,7 +2469,7 @@ class TestUpdateTaskInteractor:
             for gof_fields_dto in task_dto.gof_fields_dtos
         ]
         create_task_storage_mock \
-            .get_gof_ids_with_same_gof_order_related_to_a_task.return_value \
+            .get_gofs_details_of_task.return_value \
             = expected_existing_gofs
         field_ids = []
         for gof_fields_dto in task_dto.gof_fields_dtos:
@@ -2481,7 +2481,7 @@ class TestUpdateTaskInteractor:
             task_gof_id=factory.Iterator(task_gof_ids)
         )
         create_task_storage_mock \
-            .get_field_ids_with_task_gof_id_related_to_given_task \
+            .get_fields_details_of_task \
             .return_value = expected_existing_fields
         gof_ids = [gof.gof_id for gof in expected_existing_gofs]
         same_gof_orders = [gof.same_gof_order for gof in
@@ -2546,7 +2546,7 @@ class TestUpdateTaskInteractor:
             for gof_fields_dto in task_dto.gof_fields_dtos
         ]
         create_task_storage_mock \
-            .get_gof_ids_with_same_gof_order_related_to_a_task.return_value \
+            .get_gofs_details_of_task.return_value \
             = expected_existing_gofs
         field_ids = []
         for gof_fields_dto in task_dto.gof_fields_dtos:
@@ -2558,7 +2558,7 @@ class TestUpdateTaskInteractor:
             task_gof_id=factory.Iterator(task_gof_ids)
         )
         create_task_storage_mock \
-            .get_field_ids_with_task_gof_id_related_to_given_task \
+            .get_fields_details_of_task \
             .return_value = expected_existing_fields
         gof_ids = [gof.gof_id for gof in expected_existing_gofs]
         same_gof_orders = [gof.same_gof_order for gof in
@@ -2629,7 +2629,7 @@ class TestUpdateTaskInteractor:
             for gof_fields_dto in task_dto.gof_fields_dtos
         ]
         create_task_storage_mock \
-            .get_gof_ids_with_same_gof_order_related_to_a_task.return_value \
+            .get_gofs_details_of_task.return_value \
             = expected_existing_gofs
         field_ids = []
         for gof_fields_dto in task_dto.gof_fields_dtos:
@@ -2641,7 +2641,7 @@ class TestUpdateTaskInteractor:
             task_gof_id=factory.Iterator(task_gof_ids)
         )
         create_task_storage_mock \
-            .get_field_ids_with_task_gof_id_related_to_given_task \
+            .get_fields_details_of_task \
             .return_value = expected_existing_fields
         expected_task_gof_dtos_for_updation = [
             TaskGoFWithTaskIdDTOFactory(
@@ -2691,10 +2691,10 @@ class TestUpdateTaskInteractor:
             stage_assignee=task_dto.stage_assignee,
             gof_fields_dtos=task_dto.gof_fields_dtos
         )
-        create_task_storage_mock.update_task_with_given_task_details \
+        create_task_storage_mock.update_task \
             .assert_called_once_with(task_dto=update_task_dto_with_task_db_id)
         create_task_storage_mock \
-            .get_gof_ids_with_same_gof_order_related_to_a_task \
+            .get_gofs_details_of_task \
             .assert_called_once_with(task_id)
         create_task_storage_mock.update_task_gofs(
             expected_task_gof_dtos_for_updation)
