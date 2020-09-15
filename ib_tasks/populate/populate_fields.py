@@ -9,7 +9,8 @@ class PopulateFields:
     def create_or_update_fields(self, spread_sheet_name: str):
         from ib_tasks.constants.constants import FIELD_SUB_SHEET_TITLE
 
-        from ib_tasks.interactors.create_or_update_fields_interactor \
+        from ib_tasks.interactors.create_or_update_fields\
+            .create_or_update_fields_interactor \
             import CreateOrUpdateFieldsInteractor
         from ib_tasks.utils.get_google_sheet import get_google_sheet
         sheet = get_google_sheet(sheet_name=spread_sheet_name)
