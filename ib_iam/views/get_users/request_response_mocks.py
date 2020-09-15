@@ -20,7 +20,7 @@ RESPONSE_200_JSON = """
                     "team_name": "string"
                 }
             ],
-            "is_email_verified": "string",
+            "is_email_verified": true,
             "company": {
                 "company_id": "string",
                 "company_name": "string"

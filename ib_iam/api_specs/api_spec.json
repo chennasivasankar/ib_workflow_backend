@@ -228,8 +228,7 @@
                 "type": "object",
                 "properties": {
                   "is_email_verified": {
-                    "type": "string",
-                    "format": "bool"
+                    "type": "boolean"
                   },
                   "company": {
                     "$ref": "#/definitions/CompanyDetails"
