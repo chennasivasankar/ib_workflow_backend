@@ -12,7 +12,8 @@ class TestResetUserPasswordInteractor:
         return presenter
 
     def test_with_token_which_does_not_exist_raise_exception(
-            self, presenter_mock, mocker):
+            self, presenter_mock, mocker
+    ):
         # Arrange
         token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
         password = "sankar123"
@@ -44,7 +45,8 @@ class TestResetUserPasswordInteractor:
         presenter.raise_exception_for_token_does_not_exists.assert_called_once()
 
     def test_with_token_expired_raise_exception(
-            self, presenter_mock, mocker):
+            self, presenter_mock, mocker
+    ):
         # Arrange
         token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
         password = "sankar123"
@@ -68,14 +70,16 @@ class TestResetUserPasswordInteractor:
 
         # Act
         response = interactor.reset_user_password_wrapper(
-            reset_password_token=token, password=password, presenter=presenter)
+            reset_password_token=token, password=password, presenter=presenter
+        )
 
         # Assert
         assert response == expected_presenter_token_expired_mock
         presenter.raise_exception_for_token_has_expired.assert_called_once()
 
     def test_with_valid_details_update_password(
-            self, mocker, presenter_mock):
+            self, mocker, presenter_mock
+    ):
         # Arrange
         token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
         password = "sankar123"
@@ -94,7 +98,8 @@ class TestResetUserPasswordInteractor:
 
         # Act
         response = interactor.reset_user_password_wrapper(
-            reset_password_token=token, password=password, presenter=presenter)
+            reset_password_token=token, password=password, presenter=presenter
+        )
 
         # Assert
         assert response == expected_presenter_success_response_mock
@@ -102,7 +107,8 @@ class TestResetUserPasswordInteractor:
         update_user_password_mock.assert_called_once()
 
     def test_validate_password_min_length_raise_exception(
-            self, mocker, presenter_mock):
+            self, mocker, presenter_mock
+    ):
         # Arrange
         expected_raise_password_min_length_mock = Mock()
         token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
@@ -129,7 +135,8 @@ class TestResetUserPasswordInteractor:
         # Act
         response = interactor.reset_user_password_wrapper(
             reset_password_token=token, password=password,
-            presenter=presenter_mock)
+            presenter=presenter_mock
+        )
 
         # Assert
         assert response == expected_raise_password_min_length_mock
@@ -163,7 +170,8 @@ class TestResetUserPasswordInteractor:
         # Act
         response = interactor.reset_user_password_wrapper(
             reset_password_token=token, password=password,
-            presenter=presenter_mock)
+            presenter=presenter_mock
+        )
 
         # Assert
         assert response \

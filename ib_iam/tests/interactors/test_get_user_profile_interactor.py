@@ -1,7 +1,8 @@
 import pytest
 
 from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
-from ib_iam.tests.factories.interactor_dtos import CompleteUserProfileDTOFactory
+from ib_iam.tests.factories.interactor_dtos import \
+    CompleteUserProfileDTOFactory
 from ib_iam.tests.factories.storage_dtos import UserDTOFactory
 
 
@@ -173,16 +174,11 @@ class TestGetUserProfileInteractor:
         get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
         get_user_profile_dto_mock.return_value = user_profile_dto
         storage_mock.get_user_details.return_value = user_detail_dto
-        storage_mock.get_user_related_team_dtos \
-            .return_value = expected_team_dtos
-        storage_mock.get_team_user_ids_dtos \
-            .return_value = expected_team_user_ids_dtos
-        storage_mock.get_role_details_of_users_bulk \
-            .return_value = expected_role_dtos
-        storage_mock.get_user_related_company_dto \
-            .return_value = expected_company_dto
-        storage_mock.get_company_employee_ids_dto \
-            .return_value = expected_company_employee_ids_dto
+        storage_mock.get_user_related_team_dtos.return_value = expected_team_dtos
+        storage_mock.get_team_user_ids_dtos.return_value = expected_team_user_ids_dtos
+        storage_mock.get_role_details_of_users_bulk.return_value = expected_role_dtos
+        storage_mock.get_user_related_company_dtos.return_value = expected_company_dto
+        storage_mock.get_company_employee_ids_dto.return_value = expected_company_employee_ids_dto
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             get_basic_user_profile_dtos_mock
         user_profile_dtos_mock = get_basic_user_profile_dtos_mock(mocker)
@@ -200,16 +196,21 @@ class TestGetUserProfileInteractor:
 
         # Assert
         storage_mock.get_user_details.assert_called_once_with(user_id=user_id)
-        storage_mock.get_user_related_team_dtos \
-            .assert_called_once_with(user_id=user_id)
-        storage_mock.get_team_user_ids_dtos \
-            .assert_called_once_with(team_ids=["1"])
-        storage_mock.get_role_details_of_users_bulk \
-            .assert_called_once_with(user_ids=[user_id])
-        storage_mock.get_user_related_company_dto \
-            .assert_called_once_with(user_id=user_id)
-        storage_mock.get_company_employee_ids_dto \
-            .assert_called_once_with(company_id="1")
-        presenter_mock.prepare_response_for_get_user_profile. \
-            assert_called_once_with(
-            user_with_extra_details_dto=user_with_extra_details_dto)
+        storage_mock.get_user_related_team_dtos.assert_called_once_with(
+            user_id=user_id
+        )
+        storage_mock.get_team_user_ids_dtos.assert_called_once_with(
+            team_ids=["1"]
+        )
+        storage_mock.get_role_details_of_users_bulk.assert_called_once_with(
+            user_ids=[user_id]
+        )
+        storage_mock.get_user_related_company_dto.assert_called_once_with(
+            user_id=user_id
+        )
+        storage_mock.get_company_employee_ids_dto.assert_called_once_with(
+            company_id="1"
+        )
+        presenter_mock.prepare_response_for_get_user_profile.assert_called_once_with(
+            user_with_extra_details_dto=user_with_extra_details_dto
+        )

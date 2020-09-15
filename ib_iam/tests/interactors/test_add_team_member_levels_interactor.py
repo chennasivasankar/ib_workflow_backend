@@ -244,7 +244,8 @@ class TestAddTeamMemberLevelsInteractor:
 
     def test_with_valid_details_return_response(
             self, team_member_level_storage_mock, presenter_mock, interactor,
-            prepare_team_member_level_dtos):
+            prepare_team_member_level_dtos
+    ):
         # Arrange
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         team_member_level_dtos = prepare_team_member_level_dtos

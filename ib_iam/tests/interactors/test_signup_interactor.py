@@ -30,7 +30,7 @@
 #         return presenter_mock
 #
 #     @pytest.fixture
-#     def init_interactor(self, user_storage_mock, elastic_storage_mock):
+#     def interactor(self, user_storage_mock, elastic_storage_mock):
 #         interactor = SignupInteractor(
 #             user_storage=user_storage_mock,
 #             elastic_storage=elastic_storage_mock
@@ -52,7 +52,7 @@
 #         return mock
 #
 #     def test_create_user_given_valid_details_and_send_verification_link_to_email(
-#             self, init_interactor, presenter_mock, set_up, mocker):
+#             self, interactor, presenter_mock, set_up, mocker):
 #         user_id = "1"
 #         email, password, name = set_up
 #         elastic_user_id = "elastic_user1"
@@ -63,7 +63,7 @@
 #             mocker=mocker)
 #         from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
 #         get_user_id_for_given_email_mock.side_effect = UserAccountDoesNotExist
-#         interactor, user_storage_mock, elastic_storage = init_interactor
+#         interactor, user_storage_mock, elastic_storage = interactor
 #         from ib_iam.tests.common_fixtures.adapters.user_service import \
 #             create_user_account_adapter_mock
 #         create_user_account_adapter_mock = create_user_account_adapter_mock(
@@ -98,7 +98,7 @@
 #         presenter_mock.get_response_for_create_user_account.assert_called_once()
 #
 #     def test_given_invalid_email_raises_exception(
-#             self, init_interactor, presenter_mock, set_up, mocker):
+#             self, interactor, presenter_mock, set_up, mocker):
 #         email, password, name = set_up
 #         from ib_iam.tests.common_fixtures.adapters.user_service import \
 #             get_user_id_for_given_email_mock
@@ -106,7 +106,7 @@
 #             mocker=mocker)
 #         from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
 #         get_user_id_for_given_email_mock.side_effect = UserAccountDoesNotExist
-#         interactor, user_storage_mock, elastic_storage = init_interactor
+#         interactor, user_storage_mock, elastic_storage = interactor
 #         from ib_iam.tests.common_fixtures.adapters.user_service import \
 #             create_user_account_adapter_mock
 #         create_user_account_adapter_mock = create_user_account_adapter_mock(
@@ -123,7 +123,7 @@
 #             email=email, password=password)
 #
 #     def test_given_already_exists_email__and_email_is_active_then_raises_exception(
-#             self, init_interactor, presenter_mock, set_up, mocker):
+#             self, interactor, presenter_mock, set_up, mocker):
 #         email, password, name = set_up
 #         user_id = "1"
 #         from ib_iam.tests.common_fixtures.adapters.user_service import \
@@ -136,7 +136,7 @@
 #         is_active_user_account_mock = is_active_user_account_mock(
 #             mocker=mocker)
 #         is_active_user_account_mock.return_value = True
-#         interactor, user_storage_mock, elastic_storage = init_interactor
+#         interactor, user_storage_mock, elastic_storage = interactor
 #         presenter_mock.raise_account_already_exists_exception.return_value = \
 #             Mock()
 #
@@ -148,10 +148,10 @@
 #         is_active_user_account_mock.assert_called_once_with(email=email)
 #
 #     def test_given_invalid_password_then_raises_exception(
-#             self, init_interactor, presenter_mock, set_up):
+#             self, interactor, presenter_mock, set_up):
 #         email, password, name = set_up
 #         password = "123"
-#         interactor, user_storage_mock, elastic_storage = init_interactor
+#         interactor, user_storage_mock, elastic_storage = interactor
 #         presenter_mock.raise_password_not_matched_with_criteria_exception. \
 #             return_value = Mock()
 #
@@ -162,10 +162,10 @@
 #             assert_called_once()
 #
 #     def test_given_invalid_email_domain_raises_exception(
-#             self, init_interactor, presenter_mock, set_up):
+#             self, interactor, presenter_mock, set_up):
 #         email, password, name = set_up
 #         email = "sample@youtube.com"
-#         interactor, user_storage_mock, elastic_storage = init_interactor
+#         interactor, user_storage_mock, elastic_storage = interactor
 #         presenter_mock.raise_invalid_domain_exception. \
 #             return_value = Mock()
 #
@@ -176,7 +176,7 @@
 #             assert_called_once()
 #
 #     def test_given_valid_details_and_user_account_is_deactivated_then_activate_account_and_update_details(
-#             self, init_interactor, presenter_mock, set_up, mocker):
+#             self, interactor, presenter_mock, set_up, mocker):
 #         user_id = "1"
 #         elastic_user_id = "elastic_user1"
 #         email, password, name = set_up
@@ -185,7 +185,7 @@
 #         get_user_id_for_given_email_mock = get_user_id_for_given_email_mock(
 #             mocker=mocker)
 #         get_user_id_for_given_email_mock.return_value = user_id
-#         interactor, user_storage_mock, elastic_storage = init_interactor
+#         interactor, user_storage_mock, elastic_storage = interactor
 #         from ib_iam.tests.common_fixtures.adapters.user_service import \
 #             is_active_user_account_mock
 #         is_active_user_account_mock = is_active_user_account_mock(

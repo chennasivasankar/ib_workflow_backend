@@ -161,7 +161,8 @@ class TestAddTeamInteractor:
         # Assert
         team_storage_mock.add_team.assert_called_once_with(
             user_id=user_id,
-            team_name_and_description_dto=team_name_and_description_dto)
+            team_name_and_description_dto=team_name_and_description_dto
+        )
         team_storage_mock.add_users_to_team(team_id=team_id, user_ids=user_ids)
         presenter.get_response_for_add_team \
             .assert_called_once_with(team_id=team_id)

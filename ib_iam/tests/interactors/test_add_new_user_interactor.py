@@ -52,18 +52,21 @@ class TestAddNewUserIneractor:
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         user_profile_dto = UserProfileDTOFactory(
             user_id=new_user_id, name=name, profile_pic_url=None, email=email,
-            is_email_verify=None)
+            is_email_verify=None
+        )
         add_user_details_dto = AddUserDetailsDTOFactory(
             name=name, email=email, team_ids=user_teams_ids,
-            # role_ids=user_role_ids,
             company_id=user_company_id
         )
-        return user_profile_dto, email, user_teams_ids, user_role_ids, \
-               user_company_id, add_user_details_dto
+        return (
+            user_profile_dto, email, user_teams_ids, user_role_ids,
+            user_company_id, add_user_details_dto
+        )
 
     def test_create_user_when_user_is_not_admin_then_throw_exception(
             self, storage_mock, presenter_mock, elastic_storage, set_up,
     ):
+        # Arrange
         invalid_user_id = "user_1"
         add_user_details_dto = set_up[5]
 
@@ -73,18 +76,22 @@ class TestAddNewUserIneractor:
         storage_mock.is_user_admin.return_value = False
         presenter_mock.response_for_user_is_not_admin_exception.return_value = Mock()
 
+        # Act
         interactor.add_new_user_wrapper(
-            user_id=invalid_user_id,
-            add_user_details_dto=add_user_details_dto,
-            presenter=presenter_mock)
+            user_id=invalid_user_id, add_user_details_dto=add_user_details_dto,
+            presenter=presenter_mock
+        )
 
+        # Assert
         storage_mock.is_user_admin.assert_called_once_with(
-            user_id=invalid_user_id)
+            user_id=invalid_user_id
+        )
         presenter_mock.response_for_user_is_not_admin_exception.assert_called_once()
 
     def test_validate_name_when_contains_special_characters_and_numbers_throw_exception(
             self, storage_mock, presenter_mock, elastic_storage, set_up
     ):
+        # Arrange
         user_id = "user_1"
         invalid_name = "user@1"
         add_user_details_dto = set_up[5]
@@ -97,14 +104,15 @@ class TestAddNewUserIneractor:
             .response_for_name_contains_special_character_exception \
             .return_value = Mock()
 
+        # Act
         interactor.add_new_user_wrapper(
-            user_id=user_id,
-            add_user_details_dto=add_user_details_dto,
-            presenter=presenter_mock)
+            user_id=user_id, add_user_details_dto=add_user_details_dto,
+            presenter=presenter_mock
+        )
 
+        # Assert
         storage_mock.is_user_admin.assert_called_once_with(user_id=user_id)
-        presenter_mock. \
-            response_for_name_contains_special_character_exception. \
+        presenter_mock.response_for_name_contains_special_character_exception. \
             assert_called_once()
 
     def test_validate_name_returns_should_contain_minimum_5_characters_exception(
@@ -124,9 +132,9 @@ class TestAddNewUserIneractor:
 
         # Act
         interactor.add_new_user_wrapper(
-            user_id=user_id,
-            add_user_details_dto=add_user_details_dto,
-            presenter=presenter_mock)
+            user_id=user_id, add_user_details_dto=add_user_details_dto,
+            presenter=presenter_mock
+        )
 
         # Assert
         storage_mock.is_user_admin.assert_called_once_with(user_id=user_id)
@@ -149,8 +157,7 @@ class TestAddNewUserIneractor:
 
         # Act
         interactor.add_new_user_wrapper(
-            user_id=user_id,
-            add_user_details_dto=add_user_details_dto,
+            user_id=user_id, add_user_details_dto=add_user_details_dto,
             presenter=presenter_mock
         )
 
@@ -193,7 +200,6 @@ class TestAddNewUserIneractor:
         )
         storage_mock.is_user_admin.return_value = True
         storage_mock.check_are_valid_team_ids.return_value = False
-        # storage_mock.check_are_valid_role_ids.return_value = True
         presenter_mock.response_for_invalid_team_ids_exception.return_value = Mock()
 
         # Act
@@ -204,10 +210,9 @@ class TestAddNewUserIneractor:
 
         # Assert
         storage_mock.check_are_valid_team_ids.assert_called_once_with(
-            team_ids=add_user_details_dto.team_ids)
+            team_ids=add_user_details_dto.team_ids
+        )
         storage_mock.is_user_admin.assert_called_once_with(user_id=user_id)
-        # storage_mock.check_are_valid_role_ids.assert_called_once_with(
-        #     role_ids=add_user_details_dto.role_ids)
         presenter_mock.response_for_invalid_team_ids_exception.assert_called_once()
 
     def test_validate_company_id_and_throw_exception(
@@ -221,29 +226,27 @@ class TestAddNewUserIneractor:
         )
         storage_mock.is_user_admin.return_value = True
         storage_mock.check_are_valid_team_ids.return_value = True
-        # storage_mock.check_are_valid_role_ids.return_value = True
         storage_mock.check_is_exists_company_id.return_value = False
         presenter_mock.response_for_invalid_company_ids_exception.return_value = Mock()
 
         # Act
         interactor.add_new_user_wrapper(
-            user_id=user_id,
-            add_user_details_dto=add_user_details_dto,
-            presenter=presenter_mock)
+            user_id=user_id, add_user_details_dto=add_user_details_dto,
+            presenter=presenter_mock
+        )
 
         # Assert
         storage_mock.check_are_valid_team_ids.assert_called_once_with(
-            team_ids=add_user_details_dto.team_ids)
+            team_ids=add_user_details_dto.team_ids
+        )
         storage_mock.is_user_admin.assert_called_once_with(user_id=user_id)
-        # storage_mock.check_are_valid_role_ids.assert_called_once_with(
-        #     role_ids=add_user_details_dto.role_ids)
         storage_mock.check_is_exists_company_id.assert_called_once_with(
-            company_id=add_user_details_dto.company_id)
+            company_id=add_user_details_dto.company_id
+        )
         presenter_mock.response_for_invalid_company_ids_exception.assert_called_once()
 
     def test_create_user_account_with_email_already_exist_throws_exception(
-            self, storage_mock, presenter_mock, mocker, elastic_storage,
-            set_up
+            self, storage_mock, presenter_mock, mocker, elastic_storage, set_up
     ):
         # Arrange
         user_id = "user_1"
@@ -257,6 +260,7 @@ class TestAddNewUserIneractor:
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import email_exist_adapter_mock
         adapter_mock = email_exist_adapter_mock(mocker=mocker)
+
         # Act
         interactor.add_new_user_wrapper(
             user_id=user_id,
@@ -456,17 +460,21 @@ class TestAddNewUserIneractor:
 
         # Assert
         user_account_adapter_mock.assert_called_once_with(
-            email=add_user_details_dto.email)
+            email=add_user_details_dto.email
+        )
         user_profile_adapter_mock.assert_called_once_with(
-            user_id=new_user_id, user_profile_dto=user_profile_dto)
+            user_id=new_user_id, user_profile_dto=user_profile_dto
+        )
         storage_mock.check_are_valid_team_ids.assert_called_once_with(
-            team_ids=add_user_details_dto.team_ids)
+            team_ids=add_user_details_dto.team_ids
+        )
         storage_mock.is_user_admin.assert_called_once_with(user_id=user_id)
-        # storage_mock.check_are_valid_role_ids.assert_called_once_with(
-        #     role_ids=add_user_details_dto.role_ids)
         storage_mock.check_is_exists_company_id.assert_called_once_with(
-            company_id=add_user_details_dto.company_id)
+            company_id=add_user_details_dto.company_id
+        )
         elastic_storage.create_elastic_user.assert_called_once_with(
-            user_id=new_user_id, name=add_user_details_dto.name)
+            user_id=new_user_id, name=add_user_details_dto.name
+        )
         elastic_storage.create_elastic_user_intermediary.assert_called_once_with(
-            elastic_user_id=elastic_user_id, user_id=new_user_id)
+            elastic_user_id=elastic_user_id, user_id=new_user_id
+        )

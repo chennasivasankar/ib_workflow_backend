@@ -2,8 +2,7 @@ import pytest
 from mock import create_autospec, Mock
 
 from ib_iam.interactors.get_companies_interactor import GetCompaniesInteractor
-from ib_iam.interactors.presenter_interfaces \
-    .get_companies_presenter_interface import (
+from ib_iam.interactors.presenter_interfaces.get_companies_presenter_interface import (
     GetCompaniesPresenterInterface,
     CompanyWithEmployeeIdsAndUserDetailsDTO
 )
@@ -13,35 +12,36 @@ from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 
 
-@pytest.fixture
-def expected_company_dtos():
-    from ib_iam.tests.factories.storage_dtos import CompanyDTOFactory
-    CompanyDTOFactory.reset_sequence(1, force=True)
-    company_dtos = [CompanyDTOFactory(company_id=str(i)) for i in range(1, 3)]
-    return company_dtos
 
-
-@pytest.fixture
-def expected_user_dtos():
-    from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
-    UserProfileDTOFactory.reset_sequence(1)
-    user_profile_dtos = [UserProfileDTOFactory() for _ in range(3)]
-    return user_profile_dtos
-
-
-@pytest.fixture
-def expected_company_employee_ids_dtos():
-    from ib_iam.tests.factories.storage_dtos import \
-        CompanyIdWithEmployeeIdsDTOFactory
-    CompanyIdWithEmployeeIdsDTOFactory.reset_sequence(1)
-    expected_company_id_with_employee_id_dtos = [
-        CompanyIdWithEmployeeIdsDTOFactory(company_id=str(i))
-        for i in range(1, 3)
-    ]
-    return expected_company_id_with_employee_id_dtos
 
 
 class TestGetCompaniesInteractor:
+
+    @pytest.fixture
+    def expected_company_dtos(self):
+        from ib_iam.tests.factories.storage_dtos import CompanyDTOFactory
+        CompanyDTOFactory.reset_sequence(1, force=True)
+        company_dtos = [CompanyDTOFactory(company_id=str(i)) for i in
+                        range(1, 3)]
+        return company_dtos
+
+    @pytest.fixture
+    def expected_user_dtos(self):
+        from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
+        UserProfileDTOFactory.reset_sequence(1)
+        user_profile_dtos = [UserProfileDTOFactory() for _ in range(3)]
+        return user_profile_dtos
+
+    @pytest.fixture
+    def expected_company_employee_ids_dtos(self):
+        from ib_iam.tests.factories.storage_dtos import \
+            CompanyIdWithEmployeeIdsDTOFactory
+        CompanyIdWithEmployeeIdsDTOFactory.reset_sequence(1)
+        expected_company_id_with_employee_id_dtos = [
+            CompanyIdWithEmployeeIdsDTOFactory(company_id=str(i))
+            for i in range(1, 3)
+        ]
+        return expected_company_id_with_employee_id_dtos
 
     # TODO: write repeated lines in a fixtures.
     def test_if_user_is_not_admin_returns_user_has_no_access_response(self):
@@ -64,11 +64,9 @@ class TestGetCompaniesInteractor:
 
     # TODO: Use assert_called_once_with
     def test_if_user_is_admin_it_returns_companies_details_response(
-            self,
-            mocker,
-            expected_company_dtos,
-            expected_company_employee_ids_dtos,
-            expected_user_dtos):
+            self, mocker, expected_company_dtos, expected_user_dtos,
+            expected_company_employee_ids_dtos
+    ):
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import (
             get_basic_user_profile_dtos_mock)
         company_storage = create_autospec(CompanyStorageInterface)

@@ -27,7 +27,8 @@ class TestAddMembersToLevelsInteractor:
         from unittest.mock import create_autospec
         from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
             AddMembersToTeamMemberLevelsPresenterInterface
-        presenter = create_autospec(AddMembersToTeamMemberLevelsPresenterInterface)
+        presenter = create_autospec(
+            AddMembersToTeamMemberLevelsPresenterInterface)
         return presenter
 
     @pytest.fixture()
@@ -44,19 +45,25 @@ class TestAddMembersToLevelsInteractor:
     def prepare_level_id_with_member_ids_dtos(self):
         level_id_with_member_ids_list = [{
             'level_id': 'b52d31f3-7359-4a5a-b81d-579acd460942',
-            'member_ids': ['2b8f68ed-82cb-47ea-bf92-5a970d0c1109',
-                           'e5fd217b-a1c6-4b43-aea0-6e9cf17117a4',
-                           '221f0318-7231-428a-9bd5-1e68c2b41672']
+            'member_ids': [
+                '2b8f68ed-82cb-47ea-bf92-5a970d0c1109',
+                'e5fd217b-a1c6-4b43-aea0-6e9cf17117a4',
+                '221f0318-7231-428a-9bd5-1e68c2b41672'
+            ]
         }, {
             'level_id': '5aba9060-0714-4857-bd78-8689ec585b10',
-            'member_ids': ['bc96292f-0e09-46ec-b90f-bf28c09e9365',
-                           '86de39e4-e85d-4650-b78e-65f9bdc69719']
+            'member_ids': [
+                'bc96292f-0e09-46ec-b90f-bf28c09e9365',
+                '86de39e4-e85d-4650-b78e-65f9bdc69719'
+            ]
         }, {
             'level_id': '4fb31acf-c73e-43db-b561-60ee38597608',
-            'member_ids': ['4b5fd9ba-64a2-4ee2-8868-5e1d00bd83c8',
-                           'a7178219-7559-45c4-8c90-d25807820f20',
-                           'd17f65b0-9c9a-4a0a-8280-bfc278ff3c13',
-                           '216cc13f-5446-493b-a2f7-90aaaeecaef1' ]
+            'member_ids': [
+                '4b5fd9ba-64a2-4ee2-8868-5e1d00bd83c8',
+                'a7178219-7559-45c4-8c90-d25807820f20',
+                'd17f65b0-9c9a-4a0a-8280-bfc278ff3c13',
+                '216cc13f-5446-493b-a2f7-90aaaeecaef1'
+            ]
         }]
 
         from ib_iam.tests.factories.interactor_dtos import \
@@ -125,7 +132,8 @@ class TestAddMembersToLevelsInteractor:
         # Assert
         assert response == \
                expected_presenter_response_for_invalid_team_id_mock
-        team_member_level_storage_mock.validate_team_id.assert_called_with(team_id=team_id)
+        team_member_level_storage_mock.validate_team_id.assert_called_with(
+            team_id=team_id)
         presenter_mock.response_for_invalid_team_id.assert_called_once()
 
     def test_invalid_team_member_level_ids_return_response(
@@ -170,7 +178,7 @@ class TestAddMembersToLevelsInteractor:
 
         assert error_object.team_member_level_ids == \
                expected_team_member_level_ids_not_found
-        presenter_mock.response_for_team_member_level_ids_not_found.\
+        presenter_mock.response_for_team_member_level_ids_not_found. \
             assert_called_once()
         team_member_level_storage_mock.get_team_member_level_ids.assert_called_once_with(
             team_id=team_id
@@ -223,15 +231,16 @@ class TestAddMembersToLevelsInteractor:
 
         # Assert
         assert response == \
-            expected_presenter_response_for_team_member_ids_not_found_mock
+               expected_presenter_response_for_team_member_ids_not_found_mock
 
         call_args = presenter_mock.response_for_team_member_ids_not_found.call_args
         error_object = call_args[0][0]
 
         assert error_object.team_member_ids == team_member_ids_not_found
-        presenter_mock.response_for_team_member_ids_not_found.\
+        presenter_mock.response_for_team_member_ids_not_found. \
             assert_called_once()
-        team_member_level_storage_mock.get_team_member_ids.assert_called_with(team_id=team_id)
+        team_member_level_storage_mock.get_team_member_ids.assert_called_with(
+            team_id=team_id)
 
     def test_with_valid_details_return_response(
             self, team_member_level_storage_mock, presenter_mock, interactor,

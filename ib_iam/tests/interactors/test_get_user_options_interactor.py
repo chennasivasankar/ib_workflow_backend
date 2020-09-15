@@ -108,14 +108,17 @@ class TestGetUserOptionsInteractor:
 
     # TODO: user assert_called_with
     def test_get_roles_details(
-            self, role_dtos, user_storage_mock, presenter_mock):
+            self, role_dtos, user_storage_mock, presenter_mock
+    ):
         # Arrange
+        user_id = "user0"
         user_storage_mock.get_roles.return_value = role_dtos
         interactor = GetUserOptionsDetails(user_storage=user_storage_mock)
 
         # Act
-        interactor.get_configuration_details_wrapper(presenter=presenter_mock,
-                                                     user_id="user0")
+        interactor.get_configuration_details_wrapper(
+            presenter=presenter_mock, user_id=user_id
+        )
 
         # Assert
         user_storage_mock.get_roles.assert_called_once()
@@ -123,8 +126,10 @@ class TestGetUserOptionsInteractor:
     # TODO: user assert_called_with
     def test_get_configuration_details_returns_response(
             self, role_dtos, team_dtos, company_dtos, user_storage_mock,
-            presenter_mock):
+            presenter_mock
+    ):
         # Arrange
+        user_id = "user0"
         user_storage_mock.get_companies.return_value = company_dtos
         user_storage_mock.get_team_id_and_name_dtos.return_value = team_dtos
         user_storage_mock.get_roles.return_value = role_dtos
@@ -132,8 +137,9 @@ class TestGetUserOptionsInteractor:
         presenter_mock.return_value = Mock()
 
         # Act
-        interactor.get_configuration_details_wrapper(presenter=presenter_mock,
-                                                     user_id="user0")
+        interactor.get_configuration_details_wrapper(
+            presenter=presenter_mock, user_id=user_id
+        )
 
         # Assert
         presenter_mock.get_user_options_details_response.assert_called_once()
