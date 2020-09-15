@@ -321,7 +321,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
                 action_id=self.action_id, storage=self.storage,
                 task_id=task_id, create_task_storage=self.create_task_storage,
-                field_storage=self.field_storage)
+                field_storage=self.field_storage, gof_storage=self.gof_storage
+            )
         task_dto = update_status_variable_obj \
             .call_action_logic_function_and_update_task_status_variables(
             task_dto=task_dto)
@@ -332,7 +333,10 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         from ib_tasks.interactors.get_task_base_interactor \
             import GetTaskBaseInteractor
         gof_and_status_obj = \
-            GetTaskBaseInteractor(storage=self.create_task_storage)
+            GetTaskBaseInteractor(
+                storage=self.create_task_storage,
+                gof_storage=self.gof_storage
+            )
         task_dto = gof_and_status_obj \
             .get_task(task_id=task_id)
         return task_dto

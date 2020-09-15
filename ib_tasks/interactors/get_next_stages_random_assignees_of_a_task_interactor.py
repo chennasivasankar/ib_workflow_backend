@@ -22,6 +22,8 @@ from ib_tasks.interactors.storage_interfaces.create_or_update_task_storage_inter
     CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
@@ -42,7 +44,9 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
                  action_storage: ActionStorageInterface,
                  task_stage_storage: TaskStageStorageInterface,
                  field_storage: FieldsStorageInterface,
-                 create_task_storage: CreateOrUpdateTaskStorageInterface):
+                 create_task_storage: CreateOrUpdateTaskStorageInterface,
+                 gof_storage: GoFStorageInterface
+                 ):
         self.stage_storage = stage_storage
         self.task_storage = task_storage
         self.action_storage = action_storage
@@ -50,6 +54,7 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
         self.create_task_storage = create_task_storage
         self.task_stage_storage = task_stage_storage
         self.field_storage = field_storage
+        self.gof_storage = gof_storage
 
     def get_next_stages_random_assignees_of_a_task_wrapper(
             self, task_display_id: str, action_id: int,
@@ -128,7 +133,9 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
                 storage=self.storage,
                 create_task_storage=self.create_task_storage, task_id=task_id,
-                action_id=action_id, field_storage=self.field_storage)
+                action_id=action_id, field_storage=self.field_storage,
+                gof_storage=self.gof_storage
+            )
         updated_status_variable_dtos = call_action_logic_function_interactor. \
             call_action_logic_function_and_get_status_variables_dtos_of_task()
         return updated_status_variable_dtos

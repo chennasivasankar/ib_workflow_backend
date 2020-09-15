@@ -122,6 +122,9 @@ def create_tasks_in_elasticsearch_data(task_ids=None):
     from ib_tasks.storages.storage_implementation import \
         StagesStorageImplementation
     stage_storage = StagesStorageImplementation()
+    from ib_tasks.storages.gof_storage_implementation import \
+        GoFStorageImplementation
+    gof_storage = GoFStorageImplementation()
     if task_ids is None:
         task_ids = storage.get_task_ids()
     from ib_tasks.interactors.create_or_update_tasks_into_elasticsearch_interactor import \
@@ -131,7 +134,8 @@ def create_tasks_in_elasticsearch_data(task_ids=None):
         storage=storage,
         task_storage=task_storage,
         stage_storage=stage_storage,
-        field_storage=field_storage
+        field_storage=field_storage,
+        gof_storage=gof_storage
     )
     for task_id in task_ids:
         interactor.create_or_update_task_in_elasticsearch_storage(
