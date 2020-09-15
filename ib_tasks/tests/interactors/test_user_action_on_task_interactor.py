@@ -11,9 +11,10 @@ from ib_tasks.tests.factories.storage_dtos import (
     TaskDetailsDTOFactory,
     TaskGoFDTOFactory, TaskGoFFieldDTOFactory
 )
+from ib_tasks.tests.interactors.super_storage_mock_class import StorageMockClass
 
 
-class TestUserActionOnTaskInteractor:
+class TestUserActionOnTaskInteractor(StorageMockClass):
 
     @classmethod
     def set_up(cls):
@@ -25,60 +26,6 @@ class TestUserActionOnTaskInteractor:
         FieldDisplayDTOFactory.reset_sequence()
         TaskGoFDTOFactory.reset_sequence()
         TaskGoFFieldDTOFactory.reset_sequence()
-
-    @staticmethod
-    @pytest.fixture()
-    def storage():
-        from ib_tasks.interactors.storage_interfaces.storage_interface \
-            import StorageInterface
-        storage = create_autospec(StorageInterface)
-        return storage
-
-    @staticmethod
-    @pytest.fixture()
-    def gof_storage():
-        from ib_tasks.interactors.storage_interfaces \
-            .create_or_update_task_storage_interface import \
-            CreateOrUpdateTaskStorageInterface
-        storage = create_autospec(CreateOrUpdateTaskStorageInterface)
-        return storage
-
-    @staticmethod
-    @pytest.fixture()
-    def field_storage():
-        from ib_tasks.interactors.storage_interfaces \
-            .fields_storage_interface import FieldsStorageInterface
-        storage = create_autospec(FieldsStorageInterface)
-        return storage
-
-    @staticmethod
-    @pytest.fixture()
-    def stage_storage():
-        from ib_tasks.interactors.storage_interfaces \
-            .stages_storage_interface import StageStorageInterface
-        storage = create_autospec(StageStorageInterface)
-        return storage
-
-    @pytest.fixture
-    def elasticsearch_storage(self):
-        from ib_tasks.interactors.storage_interfaces \
-            .elastic_storage_interface import \
-            ElasticSearchStorageInterface
-        return create_autospec(ElasticSearchStorageInterface)
-
-    @pytest.fixture
-    def task_stage_storage(self):
-        from ib_tasks.interactors.storage_interfaces \
-            .task_stage_storage_interface import \
-            TaskStageStorageInterface
-        return create_autospec(TaskStageStorageInterface)
-
-    @pytest.fixture
-    def task_stage_storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces \
-            .task_stage_storage_interface import \
-            TaskStageStorageInterface
-        return create_autospec(TaskStageStorageInterface)
 
     @staticmethod
     @pytest.fixture()
@@ -105,30 +52,6 @@ class TestUserActionOnTaskInteractor:
                '.get_display_boards_and_column_details'
         mock_obj = mocker.patch(path)
         return mock_obj
-
-    @pytest.fixture
-    def task_storage_mock(self):
-        from mock import create_autospec
-        from ib_tasks.interactors.storage_interfaces.task_storage_interface \
-            import \
-            TaskStorageInterface
-        return create_autospec(TaskStorageInterface)
-
-    @pytest.fixture
-    def action_storage_mock(self):
-        from mock import create_autospec
-        from ib_tasks.interactors.storage_interfaces \
-            .action_storage_interface import \
-            ActionStorageInterface
-        return create_autospec(ActionStorageInterface)
-
-    @pytest.fixture
-    def elasticsearch_storage_mock(self):
-        from mock import create_autospec
-        from ib_tasks.interactors.storage_interfaces \
-            .elastic_storage_interface import \
-            ElasticSearchStorageInterface
-        return create_autospec(ElasticSearchStorageInterface)
 
     @staticmethod
     def task_boards_mock(mocker, task_board_details):
@@ -274,25 +197,31 @@ class TestUserActionOnTaskInteractor:
         invalid_task_display_id = error_obj.task_display_id
         assert invalid_task_display_id == task_display_id
 
-    def test_invalid_task_raises_exception(
-            self, presenter, task_storage_mock, interactor, storage
+    def test_user_not_in_project_exception(
+            self, presenter, task_storage_mock, interactor, storage,
+            user_in_project_mock
     ):
         # Arrange
         task_display_id = "task_1"
         task_id = 1
+        user_id = "user_1"
+        project_id = "FIN_MAN"
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        storage.validate_task_id.return_value = False
+        task_storage_mock.get_project_id_for_the_task_id.return_value = project_id
+        storage.validate_task_id.return_value = True
+        user_in_project_mock.return_value = False
 
         # Act
         interactor.user_action_on_task_wrapper(presenter=presenter,
                                                task_display_id=task_display_id)
 
         # Assert
-        dict_obj = presenter.raise_exception_for_invalid_task.call_args.kwargs
-        expected_task_id = dict_obj['error_obj'].task_id
-        assert expected_task_id == task_id
+        presenter.get_response_for_user_not_in_project.assert_called_once()
+        user_in_project_mock.assert_called_once_with(
+            user_id=user_id, project_id=project_id
+        )
 
     def test_invalid_template_fields(self):
         pass

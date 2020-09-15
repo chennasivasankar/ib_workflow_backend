@@ -90,17 +90,18 @@ class GetPermittedTemplateStageFlowToUser(ValidationMixin):
     def _validations_for_input_data(self, template_id: str,
                                     project_id: str,
                                     user_id: str):
+        valid_template = self.template_storage.check_is_template_exists(
+            template_id=template_id
+        )
+        invalid_template = not valid_template
+        if invalid_template:
+            raise InvalidTaskTemplateDBId(invalid_task_template_id=template_id)
         self.validate_given_project_ids(
             project_ids=[project_id]
         )
         self.validate_if_user_is_in_project(
             user_id=user_id, project_id=project_id
         )
-        invalid_template = not self.template_storage.check_is_template_exists(
-            template_id=template_id
-        )
-        if invalid_template:
-            raise InvalidTaskTemplateDBId(invalid_task_template_id=template_id)
 
     def get_template_stage_flow_to_user_wrapper(
             self, user_id: str, project_id: str,

@@ -127,3 +127,13 @@ class UserIdWIthTeamDetailsDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def team_details(self):
         return TeamDetailsDTOFactory.create_batch(size=2)
+
+
+class UserProjectStatusDTOFactory(factory.Factory):
+
+    class Meta:
+        model = UserProjectStatusDTO
+
+    user_id = factory.Sequence(lambda counter: "user_{}".format(counter))
+    project_id = factory.Sequence(lambda counter: "project_{}".format(counter))
+    is_exists = True
