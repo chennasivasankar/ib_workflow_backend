@@ -57,15 +57,20 @@ class GetTaskFieldsInteractor:
         list_of_stage_fields = []
         for task in task_stage_dtos:
             for stage in stage_fields_dtos:
-                template_condition = stage.task_template_id == \
-                                     task.task_template_id
-                stage_condition = stage.stage_id == task.stage_id
-                if task.task_id == stage.task_id and stage_condition and \
-                        template_condition:
+                condition = self._check_conditions(stage, task)
+                if condition:
                     list_of_stage_fields.append(
                             self._get_task_fields(stage, task,
                                                   permitted_field_ids))
         return list_of_stage_fields
+
+    @staticmethod
+    def _check_conditions(stage, task):
+        template_condition = stage.task_template_id == \
+                             task.task_template_id
+        stage_condition = stage.stage_id == task.stage_id
+        task_condition = task.task_id == stage.task_id
+        return template_condition and stage_condition and task_condition
 
     @staticmethod
     def _get_task_fields(stage, task, permitted_field_ids: List[str]):
