@@ -52,7 +52,6 @@ class TestAddProjectForBoards:
                                                        project_board_dtos,
                                                        storage_mock):
         # Arrange
-        board_ids = ["BOARD_ID_0", "BOARD_ID_1", "BOARD_ID_2"]
         project_ids = ["PROJECT_ID_0", "PROJECT_ID_1", "PROJECT_ID_2"]
         valid_project_ids = ["PROJECT_ID_1", "PROJECT_ID_2"]
         from ib_boards.tests.common_fixtures.adapters.iam_service import \

@@ -87,8 +87,8 @@ class TestBoardDetailsInteractor:
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             mock_get_user_roles
 
-        user_roles_mock = mock_get_user_roles(mocker, user_id)
-        user_roles_mock.return_value = user_roles
+        user_roles_mock = mock_get_user_roles(mocker, user_roles)
+
         storage.validate_board_id.return_value = True
         storage.get_permitted_user_roles_for_board. \
             return_value = ["FIN_PAYMENTS_LEVEL4_VERIFIER",
@@ -102,6 +102,7 @@ class TestBoardDetailsInteractor:
 
         # Assert
         storage.validate_board_id.assert_called_once_with(board_id)
+        user_roles_mock.assert_called_once_with(user_id)
 
     def test_get_columns_details_given_valid_board_id(self,
                                                       mocker,
@@ -123,8 +124,7 @@ class TestBoardDetailsInteractor:
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             mock_get_user_roles
 
-        user_roles_mock = mock_get_user_roles(mocker, user_id)
-        user_roles_mock.return_value = user_roles
+        user_roles_mock = mock_get_user_roles(mocker, user_roles)
 
         storage.validate_board_id.return_value = True
         storage.get_permitted_user_roles_for_board. \
@@ -135,6 +135,8 @@ class TestBoardDetailsInteractor:
 
         # Assert
         assert board_details == response
+        user_roles_mock.assert_called_once_with(user_id)
+
 
     def test_get_columns_details_given_valid_board_id_but_board_has_no_columns(
             self, mocker, storage, response_with_no_columns_and_stages):
@@ -155,8 +157,7 @@ class TestBoardDetailsInteractor:
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             mock_get_user_roles
 
-        user_roles_mock = mock_get_user_roles(mocker, user_id)
-        user_roles_mock.return_value = user_roles
+        user_roles_mock = mock_get_user_roles(mocker, user_roles)
 
         storage.validate_board_id.return_value = True
         storage.get_permitted_user_roles_for_board. \
@@ -167,3 +168,4 @@ class TestBoardDetailsInteractor:
 
         # Assert
         assert board_details == response_with_no_columns_and_stages
+        user_roles_mock.assert_called_once_with(user_id)
