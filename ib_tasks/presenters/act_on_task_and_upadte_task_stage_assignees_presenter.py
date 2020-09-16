@@ -15,7 +15,7 @@ from ib_tasks.exceptions.stage_custom_exceptions import \
 from ib_tasks.exceptions.task_custom_exceptions import (InvalidTaskException,
                                                         TaskDelayReasonIsNotUpdated)
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
-from ib_tasks.interactors.presenter_interfaces.\
+from ib_tasks.interactors.presenter_interfaces. \
     act_on_task_and_upadte_task_stage_assignees_presenter_interface import \
     ActOnTaskAndUpdateTaskStageAssigneesPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.dtos import \
@@ -143,6 +143,48 @@ class ActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation(
         }
 
         response_object = self.prepare_403_forbidden_response(response_dict)
+        return response_object
+
+    def raise_duplicate_stage_ids_not_valid(self, duplicate_stage_ids):
+        from ib_tasks.constants.exception_messages import \
+            DUPLICATE_STAGE_IDS
+        data = {
+            "response": DUPLICATE_STAGE_IDS[0].format(duplicate_stage_ids),
+            "http_status_code": 400,
+            "res_status": DUPLICATE_STAGE_IDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_stage_ids_exception(self, invalid_stage_ids):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_STAGE_IDS
+        data = {
+            "response": INVALID_STAGE_IDS[0].format(invalid_stage_ids),
+            "http_status_code": 400,
+            "res_status": INVALID_STAGE_IDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_stage_ids_with_invalid_permission_for_assignee_exception(
+            self, invalid_stage_ids):
+        from ib_tasks.constants.exception_messages import \
+            STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE
+        data = {
+            "response": STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[
+                0].format(invalid_stage_ids),
+            "http_status_code": 400,
+            "res_status": STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_virtual_stage_ids_exception(self, virtual_stage_ids: List[int]):
+        from ib_tasks.constants.exception_messages import VIRTUAL_STAGE_IDS
+        response_dict = {
+            "response": VIRTUAL_STAGE_IDS[0].format(virtual_stage_ids),
+            "http_status_code": 400,
+            "res_status": VIRTUAL_STAGE_IDS[1]
+        }
+        response_object = self.prepare_400_bad_request_response(response_dict)
         return response_object
 
     def get_response_for_user_action_on_task(
@@ -424,38 +466,6 @@ class ActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation(
             field_ids.append(field_dto.field_id)
         return fields
 
-    def raise_duplicate_stage_ids_not_valid(self, duplicate_stage_ids):
-        from ib_tasks.constants.exception_messages import \
-            DUPLICATE_STAGE_IDS
-        data = {
-            "response": DUPLICATE_STAGE_IDS[0].format(duplicate_stage_ids),
-            "http_status_code": 400,
-            "res_status": DUPLICATE_STAGE_IDS[1]
-        }
-        return self.prepare_400_bad_request_response(data)
-
-    def raise_invalid_stage_ids_exception(self, invalid_stage_ids):
-        from ib_tasks.constants.exception_messages import \
-            INVALID_STAGE_IDS
-        data = {
-            "response": INVALID_STAGE_IDS[0].format(invalid_stage_ids),
-            "http_status_code": 400,
-            "res_status": INVALID_STAGE_IDS[1]
-        }
-        return self.prepare_400_bad_request_response(data)
-
-    def raise_stage_ids_with_invalid_permission_for_assignee_exception(
-            self, invalid_stage_ids):
-        from ib_tasks.constants.exception_messages import \
-            STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE
-        data = {
-            "response": STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[
-                0].format(invalid_stage_ids),
-            "http_status_code": 400,
-            "res_status": STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[1]
-        }
-        return self.prepare_400_bad_request_response(data)
-
     @staticmethod
     def _get_stage_details_and_assignees_details_dict(
             column_stage_dtos: List[ColumnStageDTO],
@@ -483,12 +493,4 @@ class ActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation(
             task_stages_dtos_dict[column_id] = task_stages_dict[stage_id]
         return assignees_dict, task_stages_dtos_dict
 
-    def raise_virtual_stage_ids_exception(self, virtual_stage_ids: List[int]):
-        from ib_tasks.constants.exception_messages import VIRTUAL_STAGE_IDS
-        response_dict = {
-            "response": VIRTUAL_STAGE_IDS[0].format(virtual_stage_ids),
-            "http_status_code": 400,
-            "res_status": VIRTUAL_STAGE_IDS[1]
-        }
-        response_object = self.prepare_400_bad_request_response(response_dict)
-        return response_object
+

@@ -75,8 +75,8 @@ class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
         self.gof_storage = gof_storage
         self.field_storage = field_storage
         self.stage_storage = stage_storage
-        self.task_storage = task_storage
         self.action_storage = action_storage
+        self.task_storage = task_storage
         self.view_type = view_type
         self.task_template_storage = task_template_storage
 

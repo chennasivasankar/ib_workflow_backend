@@ -838,9 +838,7 @@ class TestActOnTaskAndUpdateTaskStageAssigneesInteractor:
             raise_stage_ids_with_invalid_permission_for_assignee_exception. \
             assert_called_once_with(invalid_stage_ids=stage_ids)
 
-
-    @patch.object(UserActionOnTaskInteractor,
-                  'user_action_on_task')
+    @patch.object(UserActionOnTaskInteractor, 'user_action_on_task')
     def test_given_valid_details(
             self, user_action_on_task_mock,
             field_storage_mock, storage_mock, mock_object,
@@ -850,7 +848,7 @@ class TestActOnTaskAndUpdateTaskStageAssigneesInteractor:
             task_complete_details):
         # Arrange
         task_display_id = "IBWF-1"
-        task_id=1
+        task_id = 1
         action_id = 1
         board_id = "board_1"
         user_id = "user_1"
@@ -892,5 +890,5 @@ class TestActOnTaskAndUpdateTaskStageAssigneesInteractor:
         # Assert
 
         task_stage_storage_mock. \
-            create_task_stage_history_records_for_virtual_stages.\
+            create_task_stage_history_records_for_virtual_stages. \
             assert_called_once_with(stage_ids=[3], task_id=task_id)
