@@ -33,7 +33,8 @@ class AddMembersToSuperiorsInteractor(ValidationMixin):
             response = self._add_members_to_superiors_response(
                 team_id=team_id, member_level_hierarchy=member_level_hierarchy,
                 presenter=presenter, user_id=user_id,
-                immediate_superior_user_id_with_member_ids_dtos=immediate_superior_user_id_with_member_ids_dtos
+                immediate_superior_user_id_with_member_ids_dtos=
+                immediate_superior_user_id_with_member_ids_dtos
             )
         except UserIsNotAdmin:
             response = presenter.response_for_user_is_not_admin()
@@ -56,7 +57,8 @@ class AddMembersToSuperiorsInteractor(ValidationMixin):
     ):
         self.add_members_to_superiors(
             team_id=team_id, member_level_hierarchy=member_level_hierarchy,
-            immediate_superior_user_id_with_member_ids_dtos=immediate_superior_user_id_with_member_ids_dtos,
+            immediate_superior_user_id_with_member_ids_dtos=
+            immediate_superior_user_id_with_member_ids_dtos,
             user_id=user_id
         )
         response = \
@@ -74,7 +76,8 @@ class AddMembersToSuperiorsInteractor(ValidationMixin):
             team_id=team_id, level_hierarchy=member_level_hierarchy
         )
         self._validate_team_member_ids(
-            immediate_superior_user_id_with_member_ids_dtos=immediate_superior_user_id_with_member_ids_dtos,
+            immediate_superior_user_id_with_member_ids_dtos=
+            immediate_superior_user_id_with_member_ids_dtos,
             team_id=team_id
         )
         self._validate_team_users_belong_to_given_level_hierarchy_in_a_team(
@@ -82,7 +85,8 @@ class AddMembersToSuperiorsInteractor(ValidationMixin):
             member_level_hierarchy, team_id)
         self.team_member_level_storage.add_members_to_superiors(
             team_id=team_id, member_level_hierarchy=member_level_hierarchy,
-            immediate_superior_user_id_with_member_ids_dtos=immediate_superior_user_id_with_member_ids_dtos
+            immediate_superior_user_id_with_member_ids_dtos=
+            immediate_superior_user_id_with_member_ids_dtos
         )
         return
 
