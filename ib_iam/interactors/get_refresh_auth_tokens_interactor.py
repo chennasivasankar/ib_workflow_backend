@@ -1,3 +1,4 @@
+from ib_iam.adapters.auth_service import UserTokensDTO
 from ib_iam.interactors.presenter_interfaces.get_refresh_auth_tokens_presenter_interface import \
     GetRefreshTokensPresenterInterface
 
@@ -39,7 +40,9 @@ class GetRefreshTokensInteractor:
         return response
 
     @staticmethod
-    def get_refresh_auth_tokens(access_token: str, refresh_token: str):
+    def get_refresh_auth_tokens(
+            access_token: str, refresh_token: str
+    ) -> UserTokensDTO:
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
         user_tokens_dto = \

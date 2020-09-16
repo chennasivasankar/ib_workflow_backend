@@ -40,7 +40,6 @@ class SendResetPasswordLinkToEmailInteractor:
     def send_reset_password_mail_to_user_email(
             email: str, reset_password_token: str
     ):
-
         from django.conf import settings
         reset_password_link = RESET_PASSWORD_LINK
         email_subject = settings.EMAIL_SUBJECT

@@ -22,19 +22,21 @@ from ib_iam.interactors.storage_interfaces.user_storage_interface import \
 
 class TeamInteractor(ValidationMixin):
 
-    def __init__(self,
-                 team_storage: TeamStorageInterface,
-                 user_storage: UserStorageInterface):
+    def __init__(
+            self, team_storage: TeamStorageInterface,
+            user_storage: UserStorageInterface
+    ):
         self.user_storage = user_storage
         self.team_storage = team_storage
 
-    def add_team_wrapper(self, user_id: str,
-                         team_with_user_ids_dto: TeamWithUserIdsDTO,
-                         presenter: TeamPresenterInterface):
+    def add_team_wrapper(
+            self, user_id: str, team_with_user_ids_dto: TeamWithUserIdsDTO,
+            presenter: TeamPresenterInterface
+    ):
         try:
             team_id = self.add_team(
-                user_id=user_id,
-                team_with_user_ids_dto=team_with_user_ids_dto)
+                user_id=user_id, team_with_user_ids_dto=team_with_user_ids_dto
+            )
             response = presenter.get_response_for_add_team(team_id=team_id)
         except UserIsNotAdmin:
             response = presenter.get_user_has_no_access_response_for_add_team()

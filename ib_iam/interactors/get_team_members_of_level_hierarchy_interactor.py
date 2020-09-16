@@ -20,7 +20,8 @@ class GetTeamMembersOfLevelHierarchyInteractor(ValidationMixin):
 
     def get_team_members_of_level_hierarchy_wrapper(
             self, team_id: str, level_hierarchy: int, user_id: str,
-            presenter: GetTeamMembersOfLevelHierarchyPresenterInterface):
+            presenter: GetTeamMembersOfLevelHierarchyPresenterInterface
+    ):
         from ib_iam.exceptions.custom_exceptions import InvalidTeamId
         try:
             response = self._get_team_members_of_level_hierarchy_response(

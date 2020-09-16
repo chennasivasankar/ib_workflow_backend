@@ -19,8 +19,10 @@ class TokenHasExpired(Exception):
 
 
 class ResetUserPasswordInteractor:
-    def reset_user_password_wrapper(self, presenter: AuthPresenterInterface,
-                                    reset_password_token: str, password: str):
+    def reset_user_password_wrapper(
+            self, presenter: AuthPresenterInterface,
+            reset_password_token: str, password: str
+    ):
         try:
             response = self.reset_user_password_response(
                 password=password, presenter=presenter,
@@ -38,18 +40,21 @@ class ResetUserPasswordInteractor:
 
     def reset_user_password_response(
             self, password: str, reset_password_token: str,
-            presenter: AuthPresenterInterface):
+            presenter: AuthPresenterInterface
+    ):
         self.reset_user_password_with_reset_password_token(
-            reset_password_token=reset_password_token,
-            password=password)
+            reset_password_token=reset_password_token, password=password
+        )
         return presenter.get_update_user_password_success_response()
 
     @staticmethod
     def reset_user_password_with_reset_password_token(
-            reset_password_token: str, password: str):
+            reset_password_token: str, password: str
+    ):
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
 
         service_adapter.auth_service. \
             update_user_password_with_reset_password_token(
-            reset_password_token=reset_password_token, password=password)
+            reset_password_token=reset_password_token, password=password
+        )

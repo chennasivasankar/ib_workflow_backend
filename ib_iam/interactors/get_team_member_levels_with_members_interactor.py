@@ -5,7 +5,8 @@ from ib_iam.interactors.dtos.dtos import CompleteTeamMemberLevelsDetailsDTO, \
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
     GetTeamMemberLevelsWithMembersPresenterInterface
-from ib_iam.interactors.storage_interfaces.dtos import TeamMemberLevelDetailsDTO
+from ib_iam.interactors.storage_interfaces.dtos import \
+    TeamMemberLevelDetailsDTO
 from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface import \
     TeamMemberLevelStorageInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
@@ -103,14 +104,19 @@ class GetTeamMemberLevelsWithMembersInteractor(ValidationMixin):
                 )
             team_member_dtos.extend(member_dtos)
             team_user_profile_dtos.extend(user_profile_dtos)
-            team_member_ids = [member_dto.member_id for member_dto in member_dtos]
+            team_member_ids = [
+                member_dto.member_id for member_dto in member_dtos
+            ]
             team_member_level_id_with_member_ids_dtos.append(
                 TeamMemberLevelIdWithMemberIdsDTO(
                     team_member_level_id=team_member_level_details_dto.team_member_level_id,
                     member_ids=team_member_ids
                 )
             )
-        return team_member_dtos, team_member_level_id_with_member_ids_dtos, team_user_profile_dtos
+        return (
+            team_member_dtos, team_member_level_id_with_member_ids_dtos,
+            team_user_profile_dtos
+        )
 
     def _get_team_member_level_details_dtos(
             self, team_id: str, user_id: str

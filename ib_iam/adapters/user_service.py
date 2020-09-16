@@ -132,7 +132,9 @@ class UserService:
         )
         return converted_user_profile_dto
 
-    def get_basic_user_dtos(self, user_ids: List[str]):
+    def get_basic_user_dtos(
+            self, user_ids: List[str]
+    ) -> List[BasicUserDetailsDTO]:
         user_dtos_from_service = self.interface.get_user_profile_bulk(
             user_ids=user_ids)
         basic_user_profile_dto = [
