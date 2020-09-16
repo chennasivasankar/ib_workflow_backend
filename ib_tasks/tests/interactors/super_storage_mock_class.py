@@ -76,15 +76,6 @@ class StorageMockClass:
         return create_autospec(TaskStageStorageInterface)
 
     @staticmethod
-    @pytest.fixture()
-    def presenter():
-        from unittest.mock import create_autospec
-        from ib_tasks.interactors.presenter_interfaces.presenter_interface \
-            import PresenterInterface
-        presenter = create_autospec(PresenterInterface)
-        return presenter
-
-    @staticmethod
     def gof_and_fields_mock(mocker, task_dto):
         path = 'ib_tasks.interactors.get_task_base_interactor' \
                '.GetTaskBaseInteractor.get_task'
