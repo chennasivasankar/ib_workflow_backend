@@ -1,10 +1,12 @@
+import factory
 import pytest
 
 from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.models import Stage, StagePermittedRoles
 from ib_tasks.storages.storage_implementation import \
     StagesStorageImplementation
-from ib_tasks.tests.factories.models import StageModelFactory
+from ib_tasks.tests.factories.models import (StageModelFactory,
+                                             StagePermittedRolesFactory)
 from ib_tasks.tests.factories.storage_dtos import StageDTOFactory
 
 
@@ -19,7 +21,12 @@ class TestUpdateStages:
     @pytest.fixture()
     def create_stages(self):
         StageModelFactory.reset_sequence(51)
-        StageModelFactory.create_batch(size=4)
+        objs = StageModelFactory.create_batch(size=4)
+        StagePermittedRolesFactory.reset_sequence()
+        StagePermittedRolesFactory(stage=objs[0])
+        StagePermittedRolesFactory(stage=objs[1])
+        StagePermittedRolesFactory(stage=objs[2])
+        StagePermittedRolesFactory(stage=objs[3])
 
     def test_update_stages_stage_details(self, snapshot,
                                          stage_dtos, create_stages):
