@@ -146,10 +146,7 @@ class TestAddGoFsToTaskTemplates:
                                                      task_template_storage_mock,
                                                      gof_storage_mock):
         # Arrange
-        from ib_tasks.constants.exception_messages import \
-            DUPLICATE_GOF_IDS
-        expected_exception_message = \
-            DUPLICATE_GOF_IDS.format(["gof_1"])
+        expected_duplicate_gof_ids = ["gof_1"]
 
         gof_dtos = GoFWithOrderAndAddAnotherDTOFactory.create_batch(
             size=2, gof_id="gof_1"
@@ -169,7 +166,7 @@ class TestAddGoFsToTaskTemplates:
             interactor.add_gofs_to_template_wrapper(
                 gofs_with_template_id_dto=gofs_with_template_id_dto
             )
-        assert err.value.args[0] == expected_exception_message
+        assert err.value.args[0] == expected_duplicate_gof_ids
 
     def test_with_invalid_template_id_raises_exception(
             self, task_template_storage_mock, gof_storage_mock):
