@@ -130,3 +130,7 @@ class TaskTemplateStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_project_templates(self, project_id: str) -> List[str]:
         pass
+
+    @abc.abstractmethod
+    def get_project_id_to_template_stages(self, stage_ids: List[str]) -> List[str]:
+        pass
