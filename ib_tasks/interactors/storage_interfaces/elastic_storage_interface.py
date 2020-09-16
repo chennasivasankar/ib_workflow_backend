@@ -9,8 +9,7 @@ from typing import List, Tuple
 from typing import Union
 
 from ib_tasks.constants.enum import Operators
-from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
-    FieldTypeDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, SearchQueryDTO
 

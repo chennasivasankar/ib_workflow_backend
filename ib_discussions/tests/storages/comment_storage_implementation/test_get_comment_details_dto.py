@@ -1,6 +1,3 @@
-import datetime
-from uuid import UUID
-
 import pytest
 
 
@@ -17,10 +14,8 @@ class TestGetCommentDetailsDTO:
         from ib_discussions.tests.factories.storage_dtos import \
             CommentDTOFactory
         expected_comment_dto = CommentDTOFactory(
-            comment_id=UUID('91be920b-7b4c-49e7-8adb-41a0c18da848'),
-            comment_content='content',
+            comment_id='91be920b-7b4c-49e7-8adb-41a0c18da848',
             user_id='31be920b-7b4c-49e7-8adb-41a0c18da848',
-            created_at=datetime.datetime(2008, 1, 1, 0, 0),
             parent_comment_id=None
         )
 

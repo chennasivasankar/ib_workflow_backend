@@ -54,7 +54,9 @@ class TestGetUserTeamsForEachProjectUser:
 
     @pytest.mark.django_db
     def test_get_user_teams_for_each_project_user_given_valid_details_then_return_response(
-            self, set_up):
+            self, set_up
+    ):
+        # Arrange
         user_ids = ["123"]
         project_id = "FA"
         team_id = "89d96f4b-c19d-4e69-8eae-e818f3123b09"
@@ -63,61 +65,78 @@ class TestGetUserTeamsForEachProjectUser:
         from ib_iam.interactors.storage_interfaces.dtos import TeamIdAndNameDTO
         user_teams = [TeamIdAndNameDTO(team_id=team_id, team_name=team_name)]
         expected_result = [UserTeamsDTO(
-            user_id=user_ids[0], user_teams=user_teams)]
+            user_id=user_ids[0], user_teams=user_teams
+        )]
 
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         service_interface = ServiceInterface()
 
+        # Act
         actual_result = service_interface.get_user_teams_for_each_project_user(
-            user_ids=user_ids, project_id=project_id)
+            user_ids=user_ids, project_id=project_id
+        )
 
+        # Assert
         assert len(actual_result) == len(expected_result)
         assert actual_result == expected_result
 
     @pytest.mark.django_db
     def test_get_user_teams_for_each_project_user_given_invalid_user_ids_then_raise_exceptions(
-            self, project_set_up):
+            self, project_set_up
+    ):
+        # Arrange
         user_ids = ["123"]
         project_id = "FA"
 
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         service_interface = ServiceInterface()
 
+        # Act
         from ib_iam.exceptions.custom_exceptions import InvalidUserIds
         with pytest.raises(InvalidUserIds) as err:
             service_interface.get_user_teams_for_each_project_user(
-                user_ids=user_ids, project_id=project_id)
+                user_ids=user_ids, project_id=project_id
+            )
 
+        # Assert
         assert err.value.user_ids == user_ids
 
     @pytest.mark.django_db
     def test_get_user_teams_for_each_project_user_given_invalid_project_id_then_raise_exceptions(
-            self):
+            self
+    ):
+        # Arrange
         user_ids = ["123"]
         invalid_project_id = "FA"
 
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         service_interface = ServiceInterface()
 
+        # Assert
         from ib_iam.exceptions.custom_exceptions import InvalidProjectId
         with pytest.raises(InvalidProjectId):
             service_interface.get_user_teams_for_each_project_user(
-                user_ids=user_ids, project_id=invalid_project_id)
+                user_ids=user_ids, project_id=invalid_project_id
+            )
 
     @pytest.mark.django_db
     def test_get_user_teams_for_each_project_user_given_invalid_users_for_given_project_then_raise_exceptions(
-            self, project_set_up, user_set_up, team_set_up,
-            project_team_set_up):
+            self, project_set_up, user_set_up, team_set_up, project_team_set_up
+    ):
+        # Arrange
         invalid_project_user_ids = ["123"]
         project_id = "FA"
 
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         service_interface = ServiceInterface()
 
+        # Act
         from ib_iam.interactors.project_interactor import \
             UsersNotExistsForGivenProject
         with pytest.raises(UsersNotExistsForGivenProject) as err:
             service_interface.get_user_teams_for_each_project_user(
-                user_ids=invalid_project_user_ids, project_id=project_id)
+                user_ids=invalid_project_user_ids, project_id=project_id
+            )
 
+        # Assert
         assert err.value.user_ids == invalid_project_user_ids

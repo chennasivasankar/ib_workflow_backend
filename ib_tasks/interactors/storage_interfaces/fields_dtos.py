@@ -76,6 +76,7 @@ class FieldDetailsDTO:
 
 @dataclass
 class FieldDetailsDTOWithTaskId(FieldDetailsDTO):
+    field_values: str
     task_id: int
 
 
@@ -116,12 +117,6 @@ class FieldPermissionDTO:
 
 
 @dataclass
-class FieldTypeDTO:
-    field_id: str
-    field_type: FieldTypes
-
-
-@dataclass
 class FieldIdWithGoFIdDTO:
     field_id: str
     gof_id: str
@@ -138,3 +133,9 @@ class FieldIdWithFieldDisplayNameDTO:
     field_id: str
     gof_display_name: str
     field_display_name: str
+
+
+@dataclass
+class FieldTypeDTO:
+    field_id: str
+    field_type: FieldTypes

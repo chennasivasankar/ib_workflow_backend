@@ -25,7 +25,7 @@ class TestGetDiscussionsPresenterImplementation:
 
         # Act
         response_obj \
-            = presenter.raise_exception_for_invalid_user_id()
+            = presenter.response_for_invalid_user_id()
 
         # Assert
         response_data = json.loads(response_obj.content)
@@ -43,7 +43,7 @@ class TestGetDiscussionsPresenterImplementation:
         expected_res_status = INVALID_OFFSET[1]
 
         # Act
-        response_obj = presenter.raise_exception_for_invalid_offset()
+        response_obj = presenter.response_for_invalid_offset()
 
         # Assert
         response_data = json.loads(response_obj.content)
@@ -61,7 +61,7 @@ class TestGetDiscussionsPresenterImplementation:
         expected_res_status = INVALID_LIMIT[1]
 
         # Act
-        response_obj = presenter.raise_exception_for_invalid_limit()
+        response_obj = presenter.response_for_invalid_limit()
 
         # Assert
         response_data = json.loads(response_obj.content)

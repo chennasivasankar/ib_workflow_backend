@@ -5,7 +5,8 @@ from ib_tasks.exceptions.action_custom_exceptions import \
     (InvalidActionException, InvalidKeyError, InvalidCustomLogicException,
      InvalidPresentStageAction
      )
-from ib_tasks.exceptions.custom_exceptions import InvalidProjectId
+from ib_tasks.exceptions.custom_exceptions import InvalidProjectId, \
+    InvalidMethodFound
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     (StartDateIsAheadOfDueDate,
      DueDateTimeHasExpired, DueDateTimeWithoutStartDateTimeIsNotValid,
@@ -43,10 +44,6 @@ from ib_tasks.exceptions.task_custom_exceptions import \
     (InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId,
      InvalidTaskTemplateOfProject, PriorityIsRequired, InvalidTaskJson
      )
-from ib_tasks.interactors \
-    .call_action_logic_function_and_update_task_status_variables_interactor \
-    import \
-    InvalidMethodFound
 from ib_tasks.interactors.create_or_update_task \
     .template_gofs_fields_base_validations import \
     TemplateGoFsFieldsBaseValidationsInteractor
@@ -86,7 +83,7 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
 from ib_tasks.interactors.task_dtos import (CreateTaskDTO, CreateTaskLogDTO,
                                             GoFFieldsDTO
                                             )
-from ib_tasks.interactors.user_action_on_task_interactor import \
+from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
 
 

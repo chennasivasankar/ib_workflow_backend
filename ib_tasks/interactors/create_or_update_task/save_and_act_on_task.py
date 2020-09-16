@@ -64,7 +64,7 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO, \
     SaveAndActOnTaskDTO, \
     SaveAndActOnTaskWithTaskDisplayIdDTO, CreateTaskLogDTO
-from ib_tasks.interactors.user_action_on_task_interactor import \
+from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
 
 
@@ -95,11 +95,11 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
     def save_and_act_on_task_wrapper(
             self, presenter: SaveAndActOnATaskPresenterInterface,
             task_dto: SaveAndActOnTaskWithTaskDisplayIdDTO,
-            task_request_json: str
+            task_request_json: str, board_id: str
     ):
         try:
             return self._prepare_save_and_act_response(
-                presenter, task_dto, task_request_json)
+                presenter, task_dto, task_request_json, board_id=board_id)
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
         except InvalidActionException as err:
@@ -226,16 +226,19 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def _prepare_save_and_act_response(
             self, presenter, task_dto: SaveAndActOnTaskWithTaskDisplayIdDTO,
-            task_request_json: str):
-        task_current_stage_details_dto, all_tasks_overview_details_dto = \
+            task_request_json: str, board_id: str):
+        task_current_stage_details_dto, all_tasks_overview_details_dto, \
+            task_complete_details_dto = \
             self.save_and_act_on_task_with_task_display_id(
-                task_dto, task_request_json)
+                task_dto, task_request_json, board_id)
         return presenter.get_save_and_act_on_task_response(
-            task_current_stage_details_dto, all_tasks_overview_details_dto)
+            task_current_stage_details_dto, all_tasks_overview_details_dto,
+            task_complete_details_dto
+        )
 
     def save_and_act_on_task_with_task_display_id(
             self, task_dto: SaveAndActOnTaskWithTaskDisplayIdDTO,
-            task_request_json: str
+            task_request_json: str, board_id: str
     ):
         task_db_id = self.get_task_id_for_task_display_id(
             task_dto.task_display_id)
@@ -248,8 +251,9 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             priority=task_dto.priority, stage_assignee=task_dto.stage_assignee,
             gof_fields_dtos=task_dto.gof_fields_dtos
         )
-        task_current_stage_details_dto, all_tasks_overview_details_dto = \
-            self.save_and_act_on_task(task_dto_with_db_task_id)
+        task_current_stage_details_dto, all_tasks_overview_details_dto, \
+            task_complete_details_dto = self.save_and_act_on_task(
+                task_dto_with_db_task_id, board_id)
         from ib_tasks.interactors.task_log_interactor import TaskLogInteractor
         task_log_interactor = TaskLogInteractor(
             storage=self.storage, task_storage=self.task_storage)
@@ -257,9 +261,11 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_json=task_request_json, task_id=task_db_id,
             user_id=task_dto.created_by_id, action_id=task_dto.action_id)
         task_log_interactor.create_task_log(create_task_log_dto)
-        return task_current_stage_details_dto, all_tasks_overview_details_dto
+        return task_current_stage_details_dto, \
+            all_tasks_overview_details_dto, task_complete_details_dto
 
-    def save_and_act_on_task(self, task_dto: SaveAndActOnTaskDTO):
+    def save_and_act_on_task(
+            self, task_dto: SaveAndActOnTaskDTO, board_id: str):
         is_valid_action_id = self.storage.validate_action(task_dto.action_id)
         if not is_valid_action_id:
             raise InvalidActionException(task_dto.action_id)
@@ -284,10 +290,9 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             gof_fields_dtos=task_dto.gof_fields_dtos,
             action_type=action_type
         )
-        all_tasks_overview_details_dto = \
-            update_task_interactor.update_task(update_task_dto)
+        update_task_interactor.update_task(update_task_dto)
         act_on_task_interactor = UserActionOnTaskInteractor(
-            user_id=task_dto.created_by_id, board_id=None,
+            user_id=task_dto.created_by_id, board_id=board_id,
             task_storage=self.task_storage,
             action_storage=self.action_storage, action_id=task_dto.action_id,
             storage=self.storage, gof_storage=self.gof_storage,
@@ -297,12 +302,10 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             create_task_storage=self.create_task_storage,
             task_template_storage=self.task_template_storage
         )
-        act_on_task_interactor.user_action_on_task_and_set_random_assignees(task_id=task_dto.task_id)
-        from ib_tasks.interactors.get_task_current_stages_interactor import \
-            GetTaskCurrentStagesInteractor
-        get_task_current_stages_interactor = GetTaskCurrentStagesInteractor(
-            task_stage_storage=self.task_stage_storage)
-        task_current_stage_details_dto = \
-            get_task_current_stages_interactor.get_task_current_stages_details(
-                task_id=task_dto.task_id, user_id=task_dto.created_by_id)
-        return task_current_stage_details_dto, all_tasks_overview_details_dto
+        task_complete_details_dto, task_current_stage_details_dto, \
+            all_tasks_overview_details_dto = act_on_task_interactor.\
+            user_action_on_task_and_set_random_assignees(
+                task_id=task_dto.task_id)
+
+        return task_current_stage_details_dto, \
+            all_tasks_overview_details_dto, task_complete_details_dto

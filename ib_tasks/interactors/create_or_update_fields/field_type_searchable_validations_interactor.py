@@ -3,7 +3,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO
 
 class FieldTypeSearchableValidationsInteractor:
 
-    def field_type_searcahble_validations(self, field_dto: FieldDTO):
+    def field_type_searchable_validations(self, field_dto: FieldDTO):
         self._validate_field_value(field_dto)
 
     @staticmethod
