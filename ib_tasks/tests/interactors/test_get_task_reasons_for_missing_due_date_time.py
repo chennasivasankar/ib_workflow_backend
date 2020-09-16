@@ -36,16 +36,22 @@ class TestGetTaskReasons:
     def presenter_mock(self):
         return create_autospec(TaskDueDetailsPresenterInterface)
 
+    @pytest.fixture
+    def interactor(self, storage_mock, task_storage_mock):
+        interactor = GetTaskDueMissingReasonsInteractor(
+                storage=storage_mock, task_storage=task_storage_mock
+        )
+        return interactor
+
     def test_given_invalid_task_id_raises_exception(self, storage_mock,
+                                                    interactor,
                                                     task_storage_mock,
                                                     presenter_mock):
         # Arrange
         task_id = "iBWF-1"
         user_id = "user_id_1"
         stage_id = 1
-        interactor = GetTaskDueMissingReasonsInteractor(
-                storage=storage_mock, task_storage=task_storage_mock
-        )
+
         task_storage_mock.check_is_valid_task_display_id.return_value = False
 
         # Act
@@ -64,15 +70,12 @@ class TestGetTaskReasons:
 
     def test_given_invalid_stage_id_raises_exception(self, storage_mock,
                                                      task_storage_mock,
+                                                     interactor,
                                                      presenter_mock):
         # Arrange
         task_display_id = "iBWF-1"
-        task_id = 1
         user_id = "user_id_1"
         stage_id = 1
-        interactor = GetTaskDueMissingReasonsInteractor(
-                storage=storage_mock, task_storage=task_storage_mock
-        )
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = 1
         storage_mock.validate_stage_id.return_value = False
@@ -91,7 +94,7 @@ class TestGetTaskReasons:
 
     def test_given_task_due_missing_details(self, mocker,
                                             storage_mock, presenter_mock,
-                                            task_storage_mock,
+                                            task_storage_mock, interactor,
                                             get_due_missing_details):
         # Arrange
         task_display_id = "iBWF-1"
@@ -101,9 +104,6 @@ class TestGetTaskReasons:
         user_ids = ['123e4567-e89b-12d3-a456-426614174001',
                     '123e4567-e89b-12d3-a456-426614174002']
         expected_response = Mock()
-        interactor = GetTaskDueMissingReasonsInteractor(
-                storage=storage_mock, task_storage=task_storage_mock
-        )
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = 1
         storage_mock.validate_if_task_is_assigned_to_user_in_given_stage \
@@ -130,7 +130,7 @@ class TestGetTaskReasons:
             .assert_called_once()
 
     def test_given_valid_details_get_task_due_missing_details(
-            self, mocker, task_storage_mock, presenter_mock,
+            self, mocker, task_storage_mock, presenter_mock, interactor,
             storage_mock, get_due_missing_details):
         # Arrange
         task_display_id = "iBWF-1"
@@ -140,9 +140,6 @@ class TestGetTaskReasons:
         user_ids = ['123e4567-e89b-12d3-a456-426614174001',
                     '123e4567-e89b-12d3-a456-426614174002']
         expected_response = Mock()
-        interactor = GetTaskDueMissingReasonsInteractor(
-                storage=storage_mock, task_storage=task_storage_mock
-        )
         storage_mock.validate_stage_id.return_value = True
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = 1

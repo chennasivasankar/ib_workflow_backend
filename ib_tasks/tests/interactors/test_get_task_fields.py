@@ -1,5 +1,3 @@
-from unittest.mock import create_autospec
-
 import pytest
 
 from ib_tasks.adapters.dtos import ProjectRolesDTO
@@ -9,10 +7,6 @@ from ib_tasks.interactors.get_task_fields_and_actions.get_task_fields import \
     GetTaskFieldsInteractor
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     (FieldDetailsDTOWithTaskId, TaskTemplateStageFieldsDTO)
-from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
-    FieldsStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
-    TaskStorageInterface
 from ib_tasks.tests.common_fixtures.adapters.roles_service import \
     get_user_role_ids_based_on_projects_mock
 from ib_tasks.tests.common_fixtures.interactors import \
@@ -20,13 +14,10 @@ from ib_tasks.tests.common_fixtures.interactors import \
 from ib_tasks.tests.factories.interactor_dtos import GetTaskDetailsDTOFactory
 from ib_tasks.tests.factories.storage_dtos import (
     FieldDetailsDTOWithTaskIdFactory, TaskTemplateStagesDTOFactory)
+from ib_tasks.tests.interactors.storage_method_mocks import StorageMethodsMock
 
 
-class TestGetFieldsAndActionsInteractor:
-
-    @pytest.fixture
-    def field_storage_mock(self):
-        return create_autospec(FieldsStorageInterface)
+class TestGetFieldsAndActionsInteractor(StorageMethodsMock):
 
     @pytest.fixture()
     def get_fields_dtos(self):
@@ -36,10 +27,6 @@ class TestGetFieldsAndActionsInteractor:
         fields.append(FieldDetailsDTOWithTaskIdFactory(task_id=2))
         fields.append(FieldDetailsDTOWithTaskIdFactory(task_id=2))
         return fields
-
-    @pytest.fixture
-    def task_storage_mock(self):
-        return create_autospec(TaskStorageInterface)
 
     @pytest.fixture
     def expected_output(self):
@@ -156,16 +143,10 @@ class TestGetFieldsAndActionsInteractor:
                 size=2, task_template_id="task_template_id_1", task_id=1)
 
     def test_get_fields_when_invalid_task_id_raises_exception(
-            self,
-            mocker,
-            field_storage_mock,
-            get_fields_dtos,
+            self, mocker, field_storage, get_fields_dtos,
             get_field_ids,
-            task_storage_mock,
-            get_user_roles_mock,
-            get_task_dtos,
-            expected_output,
-            get_task_template_stage_dtos):
+            task_storage, get_user_roles_mock, get_task_dtos,
+            expected_output, get_task_template_stage_dtos):
         # Arrange
         view_type = ViewType.KANBAN.value
         field_dtos = get_fields_dtos
@@ -175,12 +156,12 @@ class TestGetFieldsAndActionsInteractor:
         user_roles_mock = get_user_role_ids_based_on_projects_mock(mocker)
         user_roles_mock.return_value = user_roles
         field_ids = ['FIELD-ID-1', 'FIELD-ID-2', 'FIELD-ID-3', 'FIELD-ID-4']
-        task_storage_mock.get_valid_task_ids.return_value = [1]
+        task_storage.get_valid_task_ids.return_value = [1]
         prepare_get_field_ids_having_permission_for_user_projects(mocker,
                                                                   field_ids)
-        field_storage_mock.get_fields_details.return_value = field_dtos
-        interactor = GetTaskFieldsInteractor(field_storage_mock,
-                                             task_storage_mock
+        field_storage.get_fields_details.return_value = field_dtos
+        interactor = GetTaskFieldsInteractor(field_storage,
+                                             task_storage
                                              )
 
         # Act
@@ -192,14 +173,14 @@ class TestGetFieldsAndActionsInteractor:
                     task_ids=task_ids)
 
         # Assert
-        task_storage_mock.get_valid_task_ids.assert_called_once_with(task_ids)
+        task_storage.get_valid_task_ids.assert_called_once_with(task_ids)
 
     def test_get_fields_given_task_stage_details(self,
                                                  mocker,
-                                                 field_storage_mock,
+                                                 field_storage,
                                                  get_fields_dtos,
                                                  get_field_ids,
-                                                 task_storage_mock,
+                                                 task_storage,
                                                  expected_output,
                                                  get_user_roles_mock,
                                                  get_task_dtos,
@@ -214,13 +195,13 @@ class TestGetFieldsAndActionsInteractor:
         user_roles_mock = get_user_role_ids_based_on_projects_mock(mocker)
         user_roles_mock.return_value = user_roles
         field_ids = ['FIELD-ID-1', 'FIELD-ID-2', 'FIELD-ID-3', 'FIELD-ID-4']
-        field_storage_mock.get_field_ids.return_value = get_field_ids
-        task_storage_mock.get_valid_task_ids.return_value = task_ids
+        field_storage.get_field_ids.return_value = get_field_ids
+        task_storage.get_valid_task_ids.return_value = task_ids
         prepare_get_field_ids_having_permission_for_user_projects(mocker,
                                                                   field_ids)
-        field_storage_mock.get_fields_details.return_value = field_dtos
-        interactor = GetTaskFieldsInteractor(field_storage_mock,
-                                             task_storage_mock
+        field_storage.get_fields_details.return_value = field_dtos
+        interactor = GetTaskFieldsInteractor(field_storage,
+                                             task_storage
                                              )
 
         # Act
@@ -231,17 +212,17 @@ class TestGetFieldsAndActionsInteractor:
                 task_ids=task_ids)
 
         # Assert
-        task_storage_mock.get_valid_task_ids.assert_called_once_with(task_ids)
-        field_storage_mock.get_field_ids.assert_called_once_with(
+        task_storage.get_valid_task_ids.assert_called_once_with(task_ids)
+        field_storage.get_field_ids.assert_called_once_with(
                 get_task_template_stage_dtos, view_type)
         assert response == expected_output
 
     def test_get_fields_given_task_is_in_two_stages(
             self,
-            mocker, field_storage_mock, get_fields_dtos,
+            mocker, field_storage, get_fields_dtos,
             get_field_ids,
             get_user_roles_mock,
-            task_storage_mock,
+            task_storage,
             get_task_dtos, expected_output_for_task_in_two_stages,
             get_task_template_stage_dtos):
         # Arrange
@@ -253,13 +234,13 @@ class TestGetFieldsAndActionsInteractor:
         user_roles_mock = get_user_role_ids_based_on_projects_mock(mocker)
         user_roles_mock.return_value = user_roles
         field_ids = ['FIELD-ID-1', 'FIELD-ID-2', 'FIELD-ID-3', 'FIELD-ID-4']
-        field_storage_mock.get_field_ids.return_value = get_field_ids
-        task_storage_mock.get_valid_task_ids.return_value = task_ids
+        field_storage.get_field_ids.return_value = get_field_ids
+        task_storage.get_valid_task_ids.return_value = task_ids
         prepare_get_field_ids_having_permission_for_user_projects(mocker,
                                                                   field_ids)
-        field_storage_mock.get_fields_details.return_value = field_dtos
-        interactor = GetTaskFieldsInteractor(field_storage_mock,
-                                             task_storage_mock
+        field_storage.get_fields_details.return_value = field_dtos
+        interactor = GetTaskFieldsInteractor(field_storage,
+                                             task_storage
                                              )
 
         # Act
@@ -270,7 +251,7 @@ class TestGetFieldsAndActionsInteractor:
                 task_ids=task_ids)
 
         # Assert
-        task_storage_mock.get_valid_task_ids.assert_called_once_with(task_ids)
-        field_storage_mock.get_field_ids.assert_called_once_with(
+        task_storage.get_valid_task_ids.assert_called_once_with(task_ids)
+        field_storage.get_field_ids.assert_called_once_with(
                 get_task_template_stage_dtos, view_type)
         assert response == expected_output_for_task_in_two_stages

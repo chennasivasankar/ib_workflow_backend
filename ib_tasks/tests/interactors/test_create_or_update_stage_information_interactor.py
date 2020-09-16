@@ -1,4 +1,4 @@
-from unittest.mock import create_autospec, patch
+from unittest.mock import create_autospec
 
 import pytest
 
@@ -13,8 +13,6 @@ from ib_tasks.exceptions.task_custom_exceptions import \
     (InvalidStagesTaskTemplateId, InvalidTaskTemplateIds)
 from ib_tasks.interactors.create_or_update_stages import \
     CreateOrUpdateStagesInteractor
-from ib_tasks.interactors.get_stage_display_logic_interactor import \
-    StageDisplayLogicInteractor
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
@@ -377,7 +375,8 @@ class TestCreateOrUpdateStageInformation:
         task_template_storage \
             .get_valid_task_template_ids_in_given_task_template_ids. \
             return_value = ["FIN_PR"]
-        stage_storage.validate_stages_related_task_template_ids.return_value = []
+        stage_storage.validate_stages_related_task_template_ids.return_value \
+            = []
 
         stage_interactor = CreateOrUpdateStagesInteractor(
                 stage_storage=stage_storage, task_storage=task_storage,
