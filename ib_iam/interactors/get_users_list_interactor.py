@@ -28,9 +28,11 @@ class GetListOfUsersInteractor(ValidationMixin):
             complete_user_details_dtos = self.get_users(
                 user_id=user_id, offset=pagination_dto.offset,
                 limit=pagination_dto.limit,
-                name_search_query=name_search_query)
+                name_search_query=name_search_query
+            )
             response = presenter.response_for_get_users(
-                complete_user_details_dtos)
+                complete_user_details_dtos
+            )
         except UserIsNotAdmin:
             response = presenter.response_for_user_is_not_admin_exception()
         except InvalidOffsetValue:
@@ -130,8 +132,8 @@ class GetListOfUsersInteractor(ValidationMixin):
             self, limit: int, offset: int, search_query: str
     ) -> List[UserIdAndNameDTO]:
         self._validate_pagination_details(offset=offset, limit=limit)
-        user_details_dtos = \
-            self.user_storage.get_user_details_dtos_based_on_limit_offset_and_search_query(
+        user_details_dtos = self.user_storage.\
+            get_user_details_dtos_based_on_limit_offset_and_search_query(
                 limit=limit, offset=offset, search_query=search_query
             )
         return user_details_dtos
@@ -149,7 +151,8 @@ class GetListOfUsersInteractor(ValidationMixin):
         from ib_iam.constants.config import ALL_ROLES_ID
         if ALL_ROLES_ID in role_ids:
             user_ids = self.user_storage.get_user_ids_for_given_project(
-                project_id=project_id)
+                project_id=project_id
+            )
         else:
             self._validate_role_ids(role_ids=role_ids)
             user_ids = self.user_storage.get_user_ids(role_ids=role_ids)
