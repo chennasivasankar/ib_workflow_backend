@@ -33,13 +33,13 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDetailsDTO, StageDisplayValueDTO, StageIdWithTemplateIdDTO, \
     StageRoleDTO, TaskStagesDTO, \
     TaskTemplateStageDTO, TaskStageAssigneeDTO, TaskStageHavingAssigneeIdDTO, \
-    CurrentStageDetailsDTO, StageIdActionNameDTO, StageActionIdDTO, StageDisplayDTO
+    CurrentStageDetailsDTO, StageIdActionNameDTO, StageActionIdDTO, StageDisplayDTO, StageFlowDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO, TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO, TaskDueMissingDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TemplateDTO, ProjectIdWithTaskTemplateIdDTO
+    TemplateDTO, ProjectIdWithTaskTemplateIdDTO, ProjectTemplateDTO
 from ib_tasks.interactors.task_dtos import TaskStatusVariableDTO
 from ib_tasks.models import StageAction
 
@@ -369,11 +369,12 @@ class TaskTemplateDTOFactory(factory.Factory):
 
 class ProjectTemplateDTOFactory(factory.Factory):
     class Meta:
-        model = TemplateDTO
+        model = ProjectTemplateDTO
 
     template_id = factory.Sequence(lambda n: 'template_{}'.format(n))
     template_name = \
         factory.sequence(lambda n: 'Task Template {}'.format(n))
+    project_id = factory.Sequence(lambda n: 'project_{}'.format(n))
 
 
 class ActionWithStageIdDTOFactory(factory.Factory):
@@ -771,3 +772,11 @@ class StageActionIdDTOFactory(factory.Factory):
     action_id = factory.sequence(lambda counter: counter)
     stage_id = factory.sequence(lambda counter: "stage_{}".format(counter))
     action_name = factory.sequence(lambda counter: "action_name_{}".format(counter))
+
+
+class StageFlowDTOFactory(factory.Factory):
+    class Meta:
+        model = StageFlowDTO
+    previous_stage_id = factory.sequence(lambda counter: counter)
+    action_name = factory.sequence(lambda counter: "action_name_{}".format(counter))
+    next_stage_id = factory.sequence(lambda counter: counter + 1)

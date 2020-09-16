@@ -61,12 +61,9 @@ class GetPermittedTemplateStageFlowToUser(ValidationMixin):
             self.action_storage.get_user_permitted_action_ids_given_stage_ids(
                 user_roles=user_roles, stage_ids=stage_ids
             )
-        stage_flow_dtos = self.stage_storage.get_stage_flows_to_user(
-            stage_ids=stage_ids, action_ids=action_ids
-        )
-        return StageFlowCompleteDetailsDTO(
-            stage_dtos=stage_dtos,
-            stage_flow_dtos=stage_flow_dtos
+        return self._get_stage_flow_complete_details_dto(
+            stage_ids=stage_ids, action_ids=action_ids,
+            stage_dtos=stage_dtos
         )
 
     @staticmethod
@@ -137,6 +134,17 @@ class GetPermittedTemplateStageFlowToUser(ValidationMixin):
             self.action_storage.get_action_ids_given_stage_ids(
                 stage_ids=stage_ids
             )
+        return self._get_stage_flow_complete_details_dto(
+            stage_ids=stage_ids, action_ids=action_ids,
+            stage_dtos=stage_dtos
+        )
+
+    def _get_stage_flow_complete_details_dto(
+            self, stage_ids: List[int],
+            action_ids: List[int],
+            stage_dtos: List[StageMinimalDTO]
+    ) -> StageFlowCompleteDetailsDTO:
+
         stage_flow_dtos = self.stage_storage.get_stage_flows_to_user(
             stage_ids=stage_ids, action_ids=action_ids
         )
