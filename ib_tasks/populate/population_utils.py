@@ -8,7 +8,8 @@ from ib_tasks.populate.get_sheet_data_for_creating_or_updating_stages import \
     GetSheetDataForStages
 from ib_tasks.populate.get_sheet_data_for_stage_actions import \
     GetSheetDataForStageActions
-from ib_tasks.populate.get_sheet_data_for_stage_flows import GetSheetDataForStageFlows
+from ib_tasks.populate.get_sheet_data_for_stage_flows import \
+    GetSheetDataForStageFlows
 from ib_tasks.populate.get_sheet_data_for_task_creation_config import \
     GetSheetDataForTaskCreationConfig
 from ib_tasks.populate.get_sheet_data_for_task_status_variables import \
@@ -25,6 +26,7 @@ from ib_tasks.populate.task_templates import PopulateTaskTemplates
 from ib_tasks.populate.transition_template import PopulateTransitionTemplates
 from ib_tasks.populate.populate_projects_for_task_templates import \
     PopulateProjectsForTaskTemplates
+from ib_tasks.populate.populate_stage_gofs import PopulateStageGoFs
 
 
 @transaction.atomic()
@@ -91,6 +93,9 @@ def populate_data(spread_sheet_name: str):
     stage_flows.get_data_from_stage_flows_sub_sheet(
         spread_sheet_name=spread_sheet_name
     )
+
+    stage_gofs = PopulateStageGoFs()
+    stage_gofs.populate_stage_gofs(spread_sheet_name=spread_sheet_name)
 
 
 def delete_elastic_search_data():
