@@ -43,7 +43,7 @@ class TeamStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_member_ids_of_team(self, team_id: str):
+    def get_member_ids_of_team(self, team_id: str) -> List[str]:
         pass
 
     @abc.abstractmethod
@@ -71,4 +71,8 @@ class TeamStorageInterface(abc.ABC):
     def get_team_user_dtos(
             self, user_ids: List[str], team_ids: List[str]
     ) -> List[TeamWithUserIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def is_team_exist(self, team_id: str) -> bool:
         pass

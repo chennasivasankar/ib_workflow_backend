@@ -3,23 +3,6 @@ from ib_tasks.tests.factories.storage_dtos import (TaskDetailsDTOFactory,
                                                    StageActionDetailsDTOFactory)
 
 
-def prepare_task_gof_and_fields_dto():
-    from ib_tasks.tests.factories.storage_dtos import TaskGoFDTOFactory
-    TaskGoFDTOFactory.reset_sequence()
-    task_gof_dtos = [
-            TaskGoFDTOFactory(task_gof_id=1, gof_id="gof1", same_gof_order=1),
-            TaskGoFDTOFactory(task_gof_id=2, gof_id="gof2", same_gof_order=1),
-            TaskGoFDTOFactory(task_gof_id=3, gof_id="gof2", same_gof_order=2),
-    ]
-    from ib_tasks.tests.factories.storage_dtos import TaskGoFFieldDTOFactory
-    TaskGoFFieldDTOFactory.reset_sequence(1)
-    gof_field_dtos = TaskGoFFieldDTOFactory.create_batch(size=3)
-    task_dto = TaskDetailsDTOFactory(
-            task_gof_dtos=task_gof_dtos,
-            task_gof_field_dtos=gof_field_dtos
-    )
-    return task_dto
-
 
 def prepare_mock_for_next_stage_random_assignees(mocker):
     path = "ib_tasks.interactors" \
@@ -87,23 +70,6 @@ def prepare_get_permitted_action_ids_for_project(mocker, action_ids):
            ".get_permitted_action_ids_for_given_user_in_projects"
     mock_obj = mocker.patch(path)
     mock_obj.return_value = action_ids
-    return mock_obj
-
-
-def prepare_call_action_logic_update_stages_mock(mocker):
-    path = "ib_tasks.interactors" \
-           ".call_action_logic_function_and_update_task_status_variables_interactor" \
-           ".CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor" \
-           ".call_action_logic_function_and_update_task_status_variables"
-    mock_obj = mocker.patch(path)
-    return mock_obj
-
-
-def prepare_stage_display_satisfied_stage_ids(mocker):
-    path = 'ib_tasks.interactors.get_task_stage_logic_satisfied_stages' \
-           '.GetTaskStageLogicSatisfiedStages' \
-           '.get_task_stage_logic_satisfied_stages'
-    mock_obj = mocker.patch(path)
     return mock_obj
 
 

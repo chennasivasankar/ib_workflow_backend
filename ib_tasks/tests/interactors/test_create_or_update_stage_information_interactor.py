@@ -13,6 +13,7 @@ from ib_tasks.exceptions.task_custom_exceptions import \
     (InvalidStagesTaskTemplateId, InvalidTaskTemplateIds)
 from ib_tasks.interactors.create_or_update_stages import \
     CreateOrUpdateStagesInteractor
+from ib_tasks.interactors.user_action_on_task.get_stage_display_logic_interactor import StageDisplayLogicInteractor
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
@@ -324,23 +325,14 @@ class TestCreateOrUpdateStageInformation:
         mocker_obj = get_valid_role_ids_in_given_role_ids(mocker)
         mocker_obj.return_value = ["role_id_1", "role_id_2", "role_id_0"]
 
-        stage_logics = [StageDisplayLogicDTO(
-                current_stage="stage_id_1",
-                display_logic_dto=StatusOperandStageDTO(
-                        variable="status1",
-                        operator="==",
-                        stage="stage_id_1"))]
-        get_stage_display_logic_mock(mocker, stage_logics)
-
-        task_storage.get_field_ids_for_given_task_template_ids.return_value = [
-                TemplateFieldsDTO(
-                        task_template_id="task_template_id_1",
-                        field_ids=["field_id_1", "field_id_2"]
-                ),
-                TemplateFieldsDTO(
-                        task_template_id="task_template_id_2",
-                        field_ids=["field_id_1", "field_id_2"]
-                )]
+        task_storage.get_field_ids_for_given_task_template_ids.return_value = [TemplateFieldsDTO(
+            task_template_id="task_template_id_1",
+            field_ids=["field_id_1", "field_id_2"]
+        ),
+            TemplateFieldsDTO(
+                task_template_id="task_template_id_2",
+                field_ids=["field_id_1", "field_id_2"]
+            )]
         stage_interactor = CreateOrUpdateStagesInteractor(
                 stage_storage=stage_storage, task_storage=task_storage,
                 task_template_storage=task_template_storage

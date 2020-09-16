@@ -1,5 +1,6 @@
 """
-test all cases
+1. User does not exist exception test
+2. success test with all details
 """
 from typing import Optional
 
@@ -29,7 +30,7 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
         get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
         from ib_iam.adapters.user_service import UserAccountDoesNotExist
         get_user_profile_dto_mock.side_effect = UserAccountDoesNotExist
-        response = self.make_api_call(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
@@ -40,23 +41,23 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
         return user
 
     @pytest.mark.django_db
-    def test_valid_user_id(
+    def test_given_valid_user_id_returns_user_profile_data(
             self, user_teams_set_up, user_roles_set_up,
             adapters_mock_setup, snapshot):
         body = {}
         path_params = {}
         query_params = {}
         headers = {}
-        response = self.make_api_call(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
 
     @pytest.fixture
-    def adapters_mock_setup(self, users_set_up,  mocker):
+    def adapters_mock_setup(self, users_set_up, mocker):
         login_user_id = '217abeb3-6466-4440-96e7-bf02ee941bf8'
-        from ib_iam.tests.common_fixtures.adapters.user_service_mocks import (
-            prepare_user_profile_dtos_mock)
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import (
+            get_basic_user_profile_dtos_mock)
         from ib_iam.tests.common_fixtures.adapters.user_service import \
             prepare_get_user_profile_dto_mock
         user_ids = self._get_user_ids_from_objects(user_objects=users_set_up)
@@ -64,12 +65,12 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
         UserProfileDTOFactory.reset_sequence(1)
         user_dtos = [UserProfileDTOFactory(user_id=user_id)
                      for user_id in user_ids]
+        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
         for user_dto in user_dtos:
             if user_dto.user_id == login_user_id:
                 login_user_profile_dto = user_dto
-        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
-        get_user_profile_dto_mock.return_value = login_user_profile_dto
-        get_basic_user_dtos_mock = prepare_user_profile_dtos_mock(mocker)
+                get_user_profile_dto_mock.return_value = login_user_profile_dto
+        get_basic_user_dtos_mock = get_basic_user_profile_dtos_mock(mocker)
         get_basic_user_dtos_mock.return_value = user_dtos
 
     @pytest.fixture()
@@ -176,5 +177,3 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
     def _get_user_ids_from_objects(user_objects):
         user_ids = [str(user_object.user_id) for user_object in user_objects]
         return user_ids
-
-

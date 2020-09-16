@@ -26,8 +26,8 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
-from ib_tasks.interactors.user_action_on_task_interactor import \
-    InvalidBoardIdException
+from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor \
+    import InvalidBoardIdException
 
 
 class ActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation(

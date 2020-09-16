@@ -13,7 +13,7 @@ RESPONSE_200_JSON = """
             "project_display_id": "string",
             "teams": [
                 {
-                    "team_id": "91c54360-8119-4eb2-8990-839ec7c470d6",
+                    "team_id": "89d96f4b-c19d-4e69-8eae-e818f3123b09",
                     "team_name": "string"
                 }
             ],
