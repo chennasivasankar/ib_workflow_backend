@@ -694,7 +694,7 @@ class StageFlowDTOFactory(factory.Factory):
         model = StageFlowDTO
     previous_stage_id = factory.sequence(lambda n: n)
     action_name = factory.sequence(lambda n: "action_name_%d" % n)
-    next_stage_id = factory.sequence(lambda n: n)
+    next_stage_id = factory.sequence(lambda n: n+1)
 
 
 class LogDurationDTOFactory(factory.Factory):
