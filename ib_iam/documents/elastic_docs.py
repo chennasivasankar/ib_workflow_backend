@@ -15,11 +15,13 @@ class ElasticUserDTO:
     user_id: str
     name: Optional[str]
     elastic_user_id: Optional[str]
+    email: str = None
 
 
 class ElasticUser(Document):
     user_id = Text()
     name = SearchAsYouType()
+    email = Text()
 
     class Index:
         name = USER_INDEX_NAME
