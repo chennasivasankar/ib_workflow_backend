@@ -8,7 +8,8 @@ from ib_tasks.populate.get_sheet_data_for_creating_or_updating_stages import \
     GetSheetDataForStages
 from ib_tasks.populate.get_sheet_data_for_stage_actions import \
     GetSheetDataForStageActions
-from ib_tasks.populate.get_sheet_data_for_stage_flows import GetSheetDataForStageFlows
+from ib_tasks.populate.get_sheet_data_for_stage_flows import \
+    GetSheetDataForStageFlows
 from ib_tasks.populate.get_sheet_data_for_task_creation_config import \
     GetSheetDataForTaskCreationConfig
 from ib_tasks.populate.get_sheet_data_for_task_status_variables import \
@@ -25,6 +26,7 @@ from ib_tasks.populate.task_templates import PopulateTaskTemplates
 from ib_tasks.populate.transition_template import PopulateTransitionTemplates
 from ib_tasks.populate.populate_projects_for_task_templates import \
     PopulateProjectsForTaskTemplates
+from ib_tasks.populate.populate_stage_gofs import PopulateStageGoFs
 
 
 @transaction.atomic()
@@ -92,6 +94,9 @@ def populate_data(spread_sheet_name: str):
         spread_sheet_name=spread_sheet_name
     )
 
+    stage_gofs = PopulateStageGoFs()
+    stage_gofs.populate_stage_gofs(spread_sheet_name=spread_sheet_name)
+
 
 def delete_elastic_search_data():
     from elasticsearch_dsl import connections
@@ -124,6 +129,9 @@ def create_tasks_in_elasticsearch_data(task_ids=None):
     from ib_tasks.storages.storage_implementation import \
         StagesStorageImplementation
     stage_storage = StagesStorageImplementation()
+    from ib_tasks.storages.gof_storage_implementation import \
+        GoFStorageImplementation
+    gof_storage = GoFStorageImplementation()
     if task_ids is None:
         task_ids = storage.get_task_ids()
     from ib_tasks.interactors.create_or_update_tasks_into_elasticsearch_interactor import \
@@ -133,7 +141,8 @@ def create_tasks_in_elasticsearch_data(task_ids=None):
         storage=storage,
         task_storage=task_storage,
         stage_storage=stage_storage,
-        field_storage=field_storage
+        field_storage=field_storage,
+        gof_storage=gof_storage
     )
     for task_id in task_ids:
         interactor.create_or_update_task_in_elasticsearch_storage(

@@ -6,6 +6,8 @@ from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
     import TaskDetailsDTO, TaskGoFDTO, TaskGoFFieldDTO
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface \
@@ -30,12 +32,15 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
     def __init__(self, storage: StorageInterface,
                  create_task_storage: CreateOrUpdateTaskStorageInterface,
                  field_storage: FieldsStorageInterface,
-                 action_id: int, task_id: int):
+                 action_id: int, task_id: int,
+                 gof_storage: GoFStorageInterface
+                 ):
         self.storage = storage
         self.action_id = action_id
         self.task_id = task_id
         self.create_task_storage = create_task_storage
         self.field_storage = field_storage
+        self.gof_storage = gof_storage
 
     def call_action_logic_function_and_get_status_variables_dtos_of_task(self) \
             -> List[StatusVariableDTO]:
@@ -306,7 +311,10 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
         from ib_tasks.interactors.get_task_base_interactor \
             import GetTaskBaseInteractor
         gof_and_status_obj = \
-            GetTaskBaseInteractor(storage=self.create_task_storage)
+            GetTaskBaseInteractor(
+                storage=self.create_task_storage,
+                gof_storage=self.gof_storage
+            )
         task_dto = gof_and_status_obj \
             .get_task(task_id=task_id)
         return task_dto
