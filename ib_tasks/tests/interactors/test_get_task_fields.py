@@ -3,11 +3,11 @@ from unittest.mock import create_autospec
 import pytest
 
 from ib_tasks.adapters.dtos import ProjectRolesDTO
-from ib_tasks.constants.enum import ViewType, Searchable, FieldTypes
+from ib_tasks.constants.enum import ViewType, FieldTypes
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
 from ib_tasks.interactors.get_task_fields import GetTaskFieldsInteractor
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    (FieldDetailsDTOWithTaskId, TaskTemplateStageFieldsDTO)
+    (TaskTemplateStageFieldsDTO)
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -50,31 +50,23 @@ class TestGetFieldsAndActionsInteractor:
 
     @pytest.fixture
     def expected_output(self):
-        fields = [
-                FieldDetailsDTOWithTaskId(
-                        field_type=FieldTypes.SEARCHABLE.value,
-                        field_id='FIELD-ID-1',
-                        key='key', value='User2',
-                        field_values=Searchable.USER.value,
-                        task_id=1),
-                FieldDetailsDTOWithTaskId(
-                        field_type=FieldTypes.SEARCHABLE.value,
-                        field_id='FIELD-ID-2',
-                        key='key', value='User2',
-                        field_values=Searchable.USER.value,
-                        task_id=1),
-                FieldDetailsDTOWithTaskId(
-                        field_type=FieldTypes.SEARCHABLE.value,
-                        field_id='FIELD-ID-3',
-                        key='key', value='User2',
-                        field_values=Searchable.USER.value,
-                        task_id=2),
-                FieldDetailsDTOWithTaskId(
-                        field_type=FieldTypes.SEARCHABLE.value,
-                        field_id='FIELD-ID-4',
-                        key='key', value='User1',
-                        field_values=Searchable.USER.value,
-                        task_id=2)]
+        FieldDetailsDTOWithTaskIdFactory.reset_sequence()
+        fields = FieldDetailsDTOWithTaskIdFactory.create_batch(
+                2, task_id=1,
+                field_type=FieldTypes.SEARCHABLE.value,
+                value="User1")
+        fields_1 = FieldDetailsDTOWithTaskIdFactory(
+                task_id=2,
+                field_type=FieldTypes.SEARCHABLE.value,
+                value="User1"
+        )
+        field_2 = FieldDetailsDTOWithTaskIdFactory(
+                task_id=2,
+                field_type=FieldTypes.SEARCHABLE.value,
+                value="User0"
+        )
+        fields.append(fields_1)
+        fields.append(field_2)
         stage_fields_dtos = [TaskTemplateStageFieldsDTO(
                 task_template_id='task_template_id_1', task_id=1,
                 stage_id='stage_id_1', display_name='display_name_1',
@@ -90,31 +82,23 @@ class TestGetFieldsAndActionsInteractor:
 
     @pytest.fixture
     def expected_output_for_task_in_two_stages(self):
-        fields = [
-                FieldDetailsDTOWithTaskId(
-                        field_type=FieldTypes.SEARCHABLE.value,
-                        field_id='FIELD-ID-1',
-                        key='key', value='User2',
-                        field_values=Searchable.USER.value,
-                        task_id=1),
-                FieldDetailsDTOWithTaskId(
-                        field_type=FieldTypes.SEARCHABLE.value,
-                        field_id='FIELD-ID-2',
-                        key='key', value='User2',
-                        field_values=Searchable.USER.value,
-                        task_id=1),
-                FieldDetailsDTOWithTaskId(
-                        field_type=FieldTypes.SEARCHABLE.value,
-                        field_id='FIELD-ID-3',
-                        key='key', value='User2',
-                        field_values=Searchable.USER.value,
-                        task_id=2),
-                FieldDetailsDTOWithTaskId(
-                        field_type=FieldTypes.SEARCHABLE.value,
-                        field_id='FIELD-ID-4',
-                        key='key', value='User1',
-                        field_values=Searchable.USER.value,
-                        task_id=2)]
+        FieldDetailsDTOWithTaskIdFactory.reset_sequence()
+        fields = FieldDetailsDTOWithTaskIdFactory.create_batch(
+                2, task_id=1,
+                field_type=FieldTypes.SEARCHABLE.value,
+                value="User1")
+        fields_1 = FieldDetailsDTOWithTaskIdFactory(
+                task_id=2,
+                field_type=FieldTypes.SEARCHABLE.value,
+                value="User1"
+        )
+        field_2 = FieldDetailsDTOWithTaskIdFactory(
+                task_id=2,
+                field_type=FieldTypes.SEARCHABLE.value,
+                value="User0"
+        )
+        fields.append(fields_1)
+        fields.append(field_2)
         stage_fields_dtos = [TaskTemplateStageFieldsDTO(
                 task_template_id='task_template_id_1', task_id=1,
                 stage_id='stage_id_1', display_name='display_name_1',

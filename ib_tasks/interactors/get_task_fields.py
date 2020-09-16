@@ -1,10 +1,11 @@
+import json
 from typing import List
 
 from ib_tasks.adapters.dtos import SearchableDetailsDTO
 from ib_tasks.constants.enum import ViewType, Searchable, FieldTypes
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    (TaskTemplateStageFieldsDTO, StageTaskFieldsDTO, FieldDetailsDTOWithTaskId)
+    (StageTaskFieldsDTO, FieldDetailsDTOWithTaskId, TaskTemplateStageFieldsDTO)
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface \
     import FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
@@ -26,7 +27,6 @@ class GetTaskFieldsInteractor:
                         task_ids: List[int],
                         user_id: str,
                         view_type: ViewType):
-
         task_ids = self._validate_task_ids(task_ids)
         task_project_dtos = self.task_storage.get_task_project_ids(task_ids)
         user_roles_interactor = UserRoleValidationInteractor()
@@ -45,20 +45,26 @@ class GetTaskFieldsInteractor:
         searchable_dtos = self._get_searchable_fields(field_dtos)
         searchable_details_dtos = self._get_searchable_details_dtos(
                 searchable_dtos)
-        field_dtos = self._get_field_details_dtos(field_dtos, searchable_details_dtos)
+        field_dtos = self._get_field_details_dtos(field_dtos,
+                                                  searchable_details_dtos)
         return field_dtos, stage_fields_dtos
 
-    @staticmethod
-    def _get_searchable_fields(field_dtos: List[FieldDetailsDTOWithTaskId]):
-        searchable_dtos = []
-        for field_dto in field_dtos:
-            if field_dto.field_type == FieldTypes.SEARCHABLE.value and \
-                    field_dto.field_values == Searchable.USER.value:
-                searchable_dtos.append(SearchableDTO(
+    def _get_searchable_fields(self, field_dtos: List[
+        FieldDetailsDTOWithTaskId]):
+        searchable_dtos = [
+                SearchableDTO(
                         search_type=field_dto.field_values,
                         id=field_dto.value
-                ))
+                )
+                for field_dto in field_dtos if
+                self._searchable_condition(field_dto)
+        ]
         return searchable_dtos
+
+    @staticmethod
+    def _searchable_condition(field_dto):
+        return field_dto.field_type == FieldTypes.SEARCHABLE.value and \
+               field_dto.field_values == Searchable.USER.value
 
     @staticmethod
     def _get_searchable_details_dtos(
@@ -77,23 +83,21 @@ class GetTaskFieldsInteractor:
         FieldDetailsDTOWithTaskId],
                                 searchable_dtos: List[SearchableDetailsDTO]):
         for field_dto in field_dtos:
-            field_value = field_dto.field_values
-            field_response = field_dto.value
             for searchable_dto in searchable_dtos:
                 self._get_updated_field_response(
-                        field_dto, field_response, field_value, searchable_dto)
+                        field_dto, searchable_dto)
         return field_dtos
 
     @staticmethod
     def _get_updated_field_response(field_dto: FieldDetailsDTOWithTaskId,
-                                    field_response: str,
-                                    field_value: Searchable.USER,
                                     searchable_dto: SearchableDetailsDTO):
         search_type = searchable_dto.search_type
         response_id = searchable_dto.id
-        if field_value == search_type and field_response == \
-                response_id:
-            import json
+        field_response = field_dto.value
+        field_value = field_dto.field_values
+        condition = field_value == search_type and field_response == \
+                    response_id
+        if condition:
             response = json.loads(searchable_dto.value)
             field_dto.value = response['name']
 
