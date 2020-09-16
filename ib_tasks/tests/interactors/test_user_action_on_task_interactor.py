@@ -9,7 +9,7 @@ from ib_tasks.tests.factories.interactor_dtos import \
 from ib_tasks.tests.factories.storage_dtos import (
     ActionDTOFactory, StageActionDetailsDTOFactory,
     TaskDetailsDTOFactory,
-    TaskGoFDTOFactory, TaskGoFFieldDTOFactory
+    TaskGoFDTOFactory, TaskGoFFieldDTOFactory, GoFIdWithGoFDisplayNameDTOFactory, FieldIdWithFieldDisplayNameDTOFactory
 )
 from ib_tasks.tests.interactors.super_storage_mock_class import StorageMockClass
 
@@ -44,6 +44,11 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
         mock_obj = mocker.patch(path)
         mock_obj.return_value = task_dto
         return mock_obj
+
+    @pytest.fixture()
+    def user_project_roles_mock(self, mocker):
+        path = "ib_tasks.adapters.roles_service.RolesService.get_user_role_ids_based_on_project"
+        return mocker.patch(path)
 
     @staticmethod
     @pytest.fixture()
@@ -223,7 +228,47 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
             user_id=user_id, project_id=project_id
         )
 
-    def test_invalid_template_fields(self):
+    @pytest.fixture()
+    def gof_name_dto(self):
+        GoFIdWithGoFDisplayNameDTOFactory.reset_sequence(1)
+        gof_name_dtos = GoFIdWithGoFDisplayNameDTOFactory.create_batch(2)
+        return gof_name_dtos
+
+    @pytest.fixture()
+    def field_name_dtos(self):
+        FieldIdWithFieldDisplayNameDTOFactory.reset_sequence(1)
+        field_dtos = FieldIdWithFieldDisplayNameDTOFactory.create_batch(2)
+        return field_dtos
+
+    def set_up_storage_for_required_fields(
+            self, bool_field, task_storage_mock, action_storage_mock,
+            storage, user_in_project_mock, user_project_roles_mock,
+            user_roles, gof_storage, gof_name_dto, field_storage, field_name_dtos
+    ):
+        task_id = 1
+        project_id = "FINMAN"
+        task_storage_mock.check_is_valid_task_display_id.return_value = bool_field
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        task_storage_mock.get_project_id_for_the_task_id.return_value = project_id
+        storage.validate_task_id.return_value = bool_field
+        user_in_project_mock.return_value = bool_field
+        action_storage_mock.get_action_type_for_given_action_id\
+            .return_value = None
+        user_in_project_mock.return_value = user_roles
+        gof_storage.get_user_write_permitted_gof_ids_in_given_gof_ids\
+            .return_value = gof_name_dto
+        field_storage.get_user_write_permitted_field_ids_for_given_gof_ids\
+            .return_value = field_name_dtos
+
+    def test_invalid_template_fields(
+            self, interactor, presenter, task_storage_mock,
+            action_storage_mock, storage, user_in_project_mock,
+            user_project_roles_mock, create_task_storage,
+            task_template_storage, gof_storage, gof_name_dto,
+            field_storage, field_name_dtos
+    ):
+        # Arrange
         pass
 
     @staticmethod
