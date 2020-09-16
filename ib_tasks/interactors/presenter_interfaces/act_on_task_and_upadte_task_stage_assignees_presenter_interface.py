@@ -17,10 +17,6 @@ from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 class ActOnTaskAndUpdateTaskStageAssigneesPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_task(self, error_obj):
-        pass
-
-    @abc.abstractmethod
     def raise_exception_for_invalid_board(self, error_obj):
         pass
 
@@ -32,9 +28,6 @@ class ActOnTaskAndUpdateTaskStageAssigneesPresenterInterface(abc.ABC):
     def raise_exception_for_user_action_permission_denied(self, error_obj):
         pass
 
-    @abc.abstractmethod
-    def raise_exception_for_user_board_permission_denied(self, error_obj):
-        pass
 
     @abc.abstractmethod
     def get_response_for_user_not_in_project(self):
@@ -50,22 +43,6 @@ class ActOnTaskAndUpdateTaskStageAssigneesPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_exception_for_invalid_present_actions(self, error_obj):
-        pass
-
-    @abc.abstractmethod
-    def raise_invalid_key_error(self):
-        pass
-
-    @abc.abstractmethod
-    def raise_invalid_custom_logic_function_exception(self):
-        pass
-
-    @abc.abstractmethod
-    def raise_invalid_path_not_found_exception(self, path_name):
-        pass
-
-    @abc.abstractmethod
-    def raise_invalid_method_not_found_exception(self, method_name):
         pass
 
     @abc.abstractmethod
@@ -86,24 +63,10 @@ class ActOnTaskAndUpdateTaskStageAssigneesPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_stage_ids_list_empty_exception(
-            self, err: StageIdsListEmptyException):
-        pass
-
-    @abc.abstractmethod
-    def raise_invalid_stage_ids_list_exception(
-            self, err: InvalidStageIdsListException):
-        pass
-
-    @abc.abstractmethod
     def get_response_for_task_delay_reason_not_updated(
             self, err: TaskDelayReasonIsNotUpdated):
         pass
 
-    @abc.abstractmethod
-    def raise_user_did_not_fill_required_gofs(self,
-                                              err: UserDidNotFillRequiredGoFs):
-        pass
 
     @abc.abstractmethod
     def raise_user_did_not_fill_required_fields(
@@ -114,7 +77,4 @@ class ActOnTaskAndUpdateTaskStageAssigneesPresenterInterface(abc.ABC):
     def raise_virtual_stage_ids_exception(self, virtual_stage_ids: List[int]):
         pass
 
-    @abc.abstractmethod
-    def raise_invalid_user_id_exception(self):
-        pass
 

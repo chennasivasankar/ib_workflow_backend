@@ -2,28 +2,19 @@ from typing import Optional, List
 
 from ib_tasks.adapters.roles_service import UserNotAMemberOfAProjectException
 from ib_tasks.constants.enum import ViewType
-from ib_tasks.exceptions.action_custom_exceptions import InvalidKeyError, \
-    InvalidCustomLogicException, InvalidActionException, \
+from ib_tasks.exceptions.action_custom_exceptions import \
+    InvalidActionException, \
     InvalidPresentStageAction
 from ib_tasks.exceptions.adapter_exceptions import UserIsNotInProjectException
 from ib_tasks.exceptions.fields_custom_exceptions import \
     UserDidNotFillRequiredFields
-from ib_tasks.exceptions.gofs_custom_exceptions import \
-    UserDidNotFillRequiredGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
-    UserActionPermissionDenied, UserBoardPermissionDenied
+    UserActionPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee, \
-    StageIdsListEmptyException, InvalidStageIdsListException, \
     VirtualStageIdsException
 from ib_tasks.exceptions.task_custom_exceptions import (
-    InvalidTaskException, InvalidTaskDisplayId, TaskDelayReasonIsNotUpdated)
-from ib_tasks.interactors.user_action_on_task\
-    .call_action_logic_function_and_get_or_update_task_status_variables_interactor \
-    import InvalidMethodFound
-from ib_tasks.interactors \
-    .get_next_stages_random_assignees_of_a_task_interactor import \
-    InvalidModulePathFound
+    InvalidTaskDisplayId, TaskDelayReasonIsNotUpdated)
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
@@ -108,14 +99,10 @@ class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
             )
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
-        except InvalidTaskException as err:
-            return presenter.raise_exception_for_invalid_task(error_obj=err)
         except InvalidBoardIdException as err:
             return presenter.raise_exception_for_invalid_board(error_obj=err)
         except InvalidActionException as err:
             return presenter.raise_exception_for_invalid_action(error_obj=err)
-        except UserDidNotFillRequiredGoFs as err:
-            return presenter.raise_user_did_not_fill_required_gofs(err)
         except UserDidNotFillRequiredFields as err:
             return presenter.raise_user_did_not_fill_required_fields(err)
         except UserActionPermissionDenied as err:
@@ -124,21 +111,8 @@ class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
         except InvalidPresentStageAction as err:
             return presenter.raise_exception_for_invalid_present_actions(
                 error_obj=err)
-        except UserBoardPermissionDenied as err:
-            return presenter.raise_exception_for_user_board_permission_denied(
-                error_obj=err)
-        except InvalidKeyError:
-            return presenter.raise_invalid_key_error()
-        except InvalidCustomLogicException:
-            return presenter.raise_invalid_custom_logic_function_exception()
-        except InvalidModulePathFound as exception:
-            return presenter.raise_invalid_path_not_found_exception(
-                path_name=exception.path_name)
         except UserIsNotInProjectException:
             return presenter.get_response_for_user_not_in_project()
-        except InvalidMethodFound as exception:
-            return presenter.raise_invalid_method_not_found_exception(
-                method_name=exception.method_name)
         except DuplicateStageIds as exception:
             return presenter.raise_duplicate_stage_ids_not_valid(
                 duplicate_stage_ids=exception.duplicate_stage_ids)
@@ -149,15 +123,11 @@ class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
             return presenter.raise_virtual_stage_ids_exception(
                 virtual_stage_ids=exception.virtual_stage_ids)
         except UserNotAMemberOfAProjectException:
-            return presenter.raise_invalid_user_id_exception()
+            return presenter.get_response_for_user_not_in_project()
         except StageIdsWithInvalidPermissionForAssignee as exception:
             return presenter. \
                 raise_stage_ids_with_invalid_permission_for_assignee_exception(
                 invalid_stage_ids=exception.invalid_stage_ids)
-        except StageIdsListEmptyException as err:
-            return presenter.raise_stage_ids_list_empty_exception(err)
-        except InvalidStageIdsListException as err:
-            return presenter.raise_invalid_stage_ids_list_exception(err)
         except TaskDelayReasonIsNotUpdated as err:
             return presenter.get_response_for_task_delay_reason_not_updated(
                 err)
@@ -165,7 +135,7 @@ class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
     def act_on_task_interactor_and_update_task_stage_assignees(
             self, task_id: int, stage_assignee_dtos: List[StageAssigneeDTO]):
         task_complete_details_dto, task_current_stage_details_dto, \
-        all_tasks_overview_details_dto, stage_ids = self.\
+        all_tasks_overview_details_dto, stage_ids = self. \
             _act_on_task_and_get_required_dtos(task_id=task_id)
         stage_ids_excluding_virtual_stages = self.stage_storage. \
             get_stage_ids_excluding_virtual_stages(stage_ids)
@@ -189,8 +159,7 @@ class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
             UpdateTaskStageAssigneesInteractor(
                 stage_storage=self.stage_storage,
                 task_storage=self.task_storage)
-        update_task_stage_assignees_interactor. \
-            validate_and_update_task_stage_assignees(
+        update_task_stage_assignees_interactor.validate_and_update_task_stage_assignees(
             task_id_with_stage_assignees_dto=task_id_with_stage_assignees_dto)
         return
 
