@@ -5,6 +5,9 @@ class InvalidRolesException(Exception):
     def __init__(self, stage_roles_dict: str):
         self.stage_roles_dict = stage_roles_dict
 
+    def __str__(self):
+        return self.stage_roles_dict
+
 
 class InvalidReadPermissionRoles(Exception):
 

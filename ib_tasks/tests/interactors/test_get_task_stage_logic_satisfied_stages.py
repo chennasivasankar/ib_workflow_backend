@@ -10,7 +10,8 @@ from ib_tasks.tests.factories.storage_dtos import (
 
 class TestGetTaskStageLogicSatisfiedStages:
 
-    def setup(cls):
+    @classmethod
+    def setup_class(cls):
         StageDisplayValueDTOFactory.reset_sequence()
         StatusOperandStageDTOFactory.reset_sequence()
         StageDisplayLogicDTOFactory.reset_sequence()
@@ -26,7 +27,7 @@ class TestGetTaskStageLogicSatisfiedStages:
         return storage
 
     def setup_storage(self, storage, operator, display_logic):
-        self.setup()
+        self.setup_class()
         storage.validate_task_id.return_value = True
         status_variables_dtos = StatusVariableDTOFactory.create_batch(3)
         storage.get_status_variables_to_task.return_value = \
