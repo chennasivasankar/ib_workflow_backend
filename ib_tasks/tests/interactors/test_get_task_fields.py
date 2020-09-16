@@ -65,8 +65,8 @@ class TestGetFieldsAndActionsInteractor:
                 field_type=FieldTypes.SEARCHABLE.value,
                 value="User0"
         )
-        fields.append(fields_1)
-        fields.append(field_2)
+        fields += [fields_1, field_2]
+
         stage_fields_dtos = [TaskTemplateStageFieldsDTO(
                 task_template_id='task_template_id_1', task_id=1,
                 stage_id='stage_id_1', display_name='display_name_1',
@@ -97,8 +97,8 @@ class TestGetFieldsAndActionsInteractor:
                 field_type=FieldTypes.SEARCHABLE.value,
                 value="User0"
         )
-        fields.append(fields_1)
-        fields.append(field_2)
+        fields += [fields_1, field_2]
+
         stage_fields_dtos = [TaskTemplateStageFieldsDTO(
                 task_template_id='task_template_id_1', task_id=1,
                 stage_id='stage_id_1', display_name='display_name_1',
