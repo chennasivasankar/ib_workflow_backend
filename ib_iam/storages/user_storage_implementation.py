@@ -117,9 +117,10 @@ class UserStorageImplementation(UserStorageInterface):
             self, offset: int, limit: int, name_search_query: str
     ) -> List[UserDTO]:
         from ib_iam.models import UserDetails
+        from django.db.models.functions import Lower
         users_query_set = UserDetails.objects.filter(
             name__icontains=name_search_query
-        ).order_by('-creation_datetime')[offset: offset + limit]
+        ).order_by(Lower('name'))[offset: offset + limit]
         user_dtos = [
             self._convert_to_user_dto(user_object=user_object)
             for user_object in users_query_set

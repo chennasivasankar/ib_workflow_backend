@@ -1,8 +1,7 @@
 from django.db import models
-from ib_common.models import AbstractDateTimeModel
 
 
-class UserDetails(AbstractDateTimeModel):
+class UserDetails(models.Model):
     user_id = models.CharField(max_length=36)
     name = models.CharField(max_length=100, null=True, blank=True)
     is_admin = models.BooleanField(default=False)
