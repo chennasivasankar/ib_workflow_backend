@@ -1,6 +1,8 @@
 import abc
 from typing import Optional, List
 
+from ib_tasks.interactors.stage_dtos import DBStageIdWithGoFIdsDTO, \
+    DBStageIdWithStageIdDTO
 from ib_tasks.interactors.stages_dtos import StageDTO, \
     TaskIdWithStageAssigneeDTO, StageAssigneeDTO, StageMinimalDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO, \
@@ -192,4 +194,18 @@ class StageStorageInterface(abc.ABC):
     @abc.abstractmethod
     def create_stage_flows(
             self, stage_flow_dtos: List[StageFlowWithActionIdDTO]):
+        pass
+
+    @abc.abstractmethod
+    def get_existing_gof_ids_of_stage(self, stage_id: str) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def create_stage_gofs(
+            self, stage_id_with_gof_ids_dtos: List[DBStageIdWithGoFIdsDTO]):
+        pass
+
+    @abc.abstractmethod
+    def get_db_stage_ids_with_stage_ids_dtos(
+            self, stage_ids: List[str]) -> List[DBStageIdWithStageIdDTO]:
         pass
