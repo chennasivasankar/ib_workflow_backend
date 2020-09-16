@@ -165,8 +165,7 @@ class GetTaskStageLogicSatisfiedStagesInteractor:
             ">=": operator.ge,
             "<=": operator.le,
             ">": operator.gt,
-            "<": operator.lt,
-            "!=": operator.ne
+            "<": operator.lt
         }
 
     def _get_task_status_variable_dict_given_task_id(self, task_id: int):
