@@ -467,8 +467,7 @@ class UpdateTaskInteractor(
             CreateOrUpdateDataIntoElasticsearchInteractor
         interactor = CreateOrUpdateDataIntoElasticsearchInteractor(
             elasticsearch_storage=self.elastic_storage,
-            storage=self.create_task_storage,
-            task_storage=self.task_storage,
-            stage_storage=self.stage_storage,
+            storage=self.create_task_storage, task_storage=self.task_storage,
+            stage_storage=self.stage_storage, gof_storage=self.gof_storage,
             field_storage=self.field_storage)
         interactor.create_or_update_task_in_elasticsearch_storage(task_id)

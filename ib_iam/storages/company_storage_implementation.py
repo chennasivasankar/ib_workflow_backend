@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from ib_iam.interactors.storage_interfaces.company_storage_interface import \
     CompanyStorageInterface
@@ -47,7 +47,9 @@ class CompanyStorageImplementation(CompanyStorageInterface):
             logo_url=company_object.logo_url)
         return company_dto
 
-    def get_company_id_if_company_name_already_exists(self, name: str):
+    def get_company_id_if_company_name_already_exists(
+            self, name: str
+    ) -> Optional[str]:
         try:
             company_object = Company.objects.get(name=name)
             return str(company_object.company_id)

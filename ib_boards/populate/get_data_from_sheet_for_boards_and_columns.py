@@ -95,7 +95,8 @@ class GetBoardsAndColumnsDataFromSheet:
             "column_id": field_record["Column ID*"],
             "column_display_name": field_record["Column Display Name"],
             "display_order": field_record["Column Order For Display"],
-            "user_role_ids": field_record["Visible to RoleIDs"],
+            "user_role_ids":
+                field_record["Visible to RoleIDs"].replace('\r', ''),
             "column_summary": field_record["Column Summary"],
             "column_actions": field_record["Column Actions"],
             "task_template_stages": field_record[

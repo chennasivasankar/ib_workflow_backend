@@ -10,9 +10,9 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldIdWithGoFIdDTO, StageTaskFieldsDTO, \
     FieldDisplayNameDTO, \
     TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId, FieldNameDTO, \
-    FieldIdWithFieldDisplayNameDTO
+    FieldIdWithFieldDisplayNameDTO, FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
-    FieldsStorageInterface, FieldTypeDTO
+    FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (

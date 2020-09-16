@@ -4,7 +4,7 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.custom_exceptions import InvalidProjectId, \
-    InvalidModulePathFound
+    InvalidModulePathFound, InvalidMethodFound
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     StartDateIsAheadOfDueDate, \
     DueTimeHasExpiredForToday, DueDateTimeHasExpired, DueDateTimeIsRequired, \
@@ -24,9 +24,6 @@ from ib_tasks.exceptions.stage_custom_exceptions import \
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateDBId, \
     PriorityIsRequired, InvalidTaskJson
-from ib_tasks.interactors \
-    .call_action_logic_function_and_update_task_status_variables_interactor \
-    import InvalidMethodFound
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.dtos import \

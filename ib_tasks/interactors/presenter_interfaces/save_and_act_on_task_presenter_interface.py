@@ -1,6 +1,7 @@
 import abc
 
-from ib_tasks.exceptions.custom_exceptions import InvalidMethodFound
+from ib_tasks.exceptions.custom_exceptions import InvalidMethodFound, \
+    InvalidModulePathFound
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueDateTimeWithoutStartDateTimeIsNotValid, StartDateTimeIsRequired, \
     DueDateTimeIsRequired, DueDateTimeHasExpired
@@ -14,19 +15,15 @@ from ib_tasks.exceptions.stage_custom_exceptions import \
     DuplicateStageIds, InvalidDbStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import \
     TaskDelayReasonIsNotUpdated, PriorityIsRequired, InvalidTaskJson
-from ib_tasks.interactors.call_action_logic_function_and_update_task_status_variables_interactor import \
-    InvalidModulePathFound
-from ib_tasks.interactors.presenter_interfaces.dtos import \
-    AllTasksOverviewDetailsDTO
-from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
+from ib_tasks.interactors.create_or_update_task.save_and_act_on_task import \
+    TaskOverallCompleteDetailsDTO
 
 
 class SaveAndActOnATaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_save_and_act_on_task_response(
-            self, task_current_stage_details_dto: TaskCurrentStageDetailsDTO,
-            all_tasks_overview_details_dto: AllTasksOverviewDetailsDTO
+            self, task_overview_details_dto: TaskOverallCompleteDetailsDTO
     ):
         pass
 

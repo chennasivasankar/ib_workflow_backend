@@ -44,6 +44,7 @@ def api_wrapper(*args, **kwargs):
     request_data['start_datetime'] = str(start_datetime)
     request_data['due_datetime'] = str(due_datetime)
     task_request_json = json.dumps(request_data)
+    board_id = request_data.get('board_id', None)
 
     from ib_tasks.interactors.task_dtos import GoFFieldsDTO
 
@@ -98,9 +99,10 @@ def api_wrapper(*args, **kwargs):
         task_template_storage=task_template_storage
     )
 
+    # ToDo Refactor Parameters
     response = interactor.save_and_act_on_task_wrapper(
         task_dto=task_dto, presenter=presenter,
-        task_request_json=task_request_json)
+        task_request_json=task_request_json, board_id=board_id)
     return response
 
 

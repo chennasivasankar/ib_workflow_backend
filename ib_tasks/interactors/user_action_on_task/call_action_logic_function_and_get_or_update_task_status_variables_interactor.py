@@ -1,9 +1,13 @@
 from typing import List, Any, Dict
 
 from ib_tasks.interactors.storage_interfaces.fields_dtos \
-    import FieldValueDTO
+    import FieldValueDTO, FieldTypeDTO
+from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+    FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
     import TaskDetailsDTO, TaskGoFDTO, TaskGoFFieldDTO
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface \
@@ -20,16 +24,45 @@ class InvalidMethodFound(Exception):
         self.method_name = method_name
 
 
-class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
+class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
+    from ib_tasks.interactors.storage_interfaces. \
+        create_or_update_task_storage_interface import \
+        CreateOrUpdateTaskStorageInterface
 
     def __init__(self, storage: StorageInterface,
-                 action_id: int, task_id: int):
+                 create_task_storage: CreateOrUpdateTaskStorageInterface,
+                 field_storage: FieldsStorageInterface,
+                 action_id: int, task_id: int,
+                 gof_storage: GoFStorageInterface
+                 ):
         self.storage = storage
         self.action_id = action_id
         self.task_id = task_id
+        self.create_task_storage = create_task_storage
+        self.field_storage = field_storage
+        self.gof_storage = gof_storage
+
+    def call_action_logic_function_and_get_status_variables_dtos_of_task(self) \
+            -> List[StatusVariableDTO]:
+        task_dto = self._get_task_dto(self.task_id)
+        status_dict, status_variables_dto, task_gof_dtos, task_gof_fields_dto = \
+            self._call_action_logic_function(task_dto=task_dto)
+        updated_status_variable_dtos = self._get_updated_status_variable_dto(
+            status_dict, status_variables_dto)
+        return updated_status_variable_dtos
 
     def call_action_logic_function_and_update_task_status_variables(
-            self, task_dto: TaskDetailsDTO) -> TaskDetailsDTO:
+            self) -> TaskDetailsDTO:
+        task_dto = self._get_task_dto(self.task_id)
+        status_dict, status_variables_dto, task_gof_dtos, task_gof_fields_dto = \
+            self._call_action_logic_function(task_dto=task_dto)
+        self._update_task_status_variables(status_dict, status_variables_dto)
+        task_dto.task_gof_dtos = task_gof_dtos
+        task_dto.task_gof_field_dtos = task_gof_fields_dto
+        return task_dto
+
+    def _call_action_logic_function(
+            self, task_dto: TaskDetailsDTO):
         task_gof_dtos = task_dto.task_gof_dtos
         gof_multiple_enable_dict = self._get_gof_multiple_enable_dict(
             template_id=task_dto.task_base_details_dto.template_id)
@@ -38,8 +71,10 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
             self._get_updated_task_gof_and_filed_dtos(
                 gof_multiple_enable_dict, task_gof_dtos, task_gof_fields_dto
             )
+        field_ids = self._get_field_ids(task_gof_fields_dto)
+        field_type_dtos = self.field_storage.get_field_type_dtos(field_ids)
         task_gof_fields_dto_dict = \
-            self._get_task_gof_fields_dict(task_gof_fields_dto)
+            self._get_task_gof_fields_dict(task_gof_fields_dto, field_type_dtos)
         status_variables_dto = self._get_task_status_dtos(self.task_id)
         task_dict = self._get_task_dict(
             task_gof_dtos, gof_multiple_enable_dict,
@@ -47,10 +82,19 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         task_dict = self._get_updated_task_dict(task_dict)
         # TODO update fields
         status_dict = task_dict.get("status_variables", {})
-        self._update_task_status_variables(status_dict, status_variables_dto)
-        task_dto.task_gof_dtos = task_gof_dtos
-        task_dto.task_gof_field_dtos = task_gof_fields_dto
-        return task_dto
+        return (
+            status_dict, status_variables_dto, task_gof_dtos,
+            task_gof_fields_dto)
+
+    @staticmethod
+    def _get_field_ids(
+            task_gof_fields_dto: List[TaskGoFFieldDTO]
+    ) -> List[str]:
+        field_ids = [
+            dto.field_id
+            for dto in task_gof_fields_dto
+        ]
+        return field_ids
 
     def _get_updated_task_gof_and_filed_dtos(
             self, gof_multiple_enable_dict: Dict[str, bool],
@@ -144,6 +188,7 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         try:
             module = import_module(path)
         except ModuleNotFoundError:
+            print("entered")
             raise InvalidModulePathFound(path_name=path_name)
         try:
             method_object = getattr(module, method)
@@ -153,12 +198,17 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
 
     @staticmethod
     def _get_updated_status_variable_dto(
-            status_dict: Dict[str, str], status_variables_dto: List[StatusVariableDTO]):
-        lst = []
-        for status_dto in status_variables_dto:
-            status_dto.value = status_dict[status_dto.status_variable]
-            lst.append(status_dto)
-        return lst
+            status_dict: Dict[str, str],
+            status_variable_dtos: List[StatusVariableDTO]) -> \
+            List[StatusVariableDTO]:
+        return [
+            StatusVariableDTO(
+                status_id=status_dto.status_id,
+                status_variable=status_dto.status_variable,
+                value=status_dict[status_dto.status_variable]
+            )
+            for status_dto in status_variable_dtos
+        ]
 
     def _get_task_dict(
             self, task_gof_dtos: List[TaskGoFDTO],
@@ -211,8 +261,8 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
 
         gof_multiple_enable_dtos = self.storage \
             .get_enable_multiple_gofs_field_to_gof_ids(
-                template_id=template_id
-            )
+            template_id=template_id
+        )
         gof_multiple_enable_dict = {}
         for gof_multiple_enable_dto in gof_multiple_enable_dtos:
             gof_multiple_enable_dict[
@@ -220,14 +270,51 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
                 gof_multiple_enable_dto.multiple_status
         return gof_multiple_enable_dict
 
-    @staticmethod
     def _get_task_gof_fields_dict(
-            fields_dto: List[TaskGoFFieldDTO]) -> Dict[int, Dict[str, Any]]:
+            self, fields_dto: List[TaskGoFFieldDTO],
+            field_type_dtos: List[FieldTypeDTO]
+    ) -> Dict[int, Dict[str, Any]]:
         from collections import defaultdict
         task_gof_fields_dict = defaultdict(dict)
         for field_dto in fields_dto:
             field_id = field_dto.field_id
             response = field_dto.field_response
             task_gof_id = field_dto.task_gof_id
+            is_field_type_number_or_float = \
+                self._check_field_type_number_or_float(
+                    field_id, field_type_dtos
+                )
+            if is_field_type_number_or_float:
+                response = float(response)
             task_gof_fields_dict[task_gof_id][field_id] = response
+
         return task_gof_fields_dict
+
+    @staticmethod
+    def _check_field_type_number_or_float(
+            field_id: str, field_type_dtos: List[FieldTypeDTO]
+    ) -> bool:
+        from ib_tasks.constants.enum import FieldTypes
+        for dto in field_type_dtos:
+            is_field_type_number_or_float = field_id == dto.field_id and \
+                                            (
+                                                    dto.field_type ==
+                                                    FieldTypes.NUMBER.value or
+                                                    dto.field_type ==
+                                                    FieldTypes.FLOAT.value)
+            if is_field_type_number_or_float:
+                return True
+        return False
+
+    def _get_task_dto(self, task_id: int):
+
+        from ib_tasks.interactors.get_task_base_interactor \
+            import GetTaskBaseInteractor
+        gof_and_status_obj = \
+            GetTaskBaseInteractor(
+                storage=self.create_task_storage,
+                gof_storage=self.gof_storage
+            )
+        task_dto = gof_and_status_obj \
+            .get_task(task_id=task_id)
+        return task_dto

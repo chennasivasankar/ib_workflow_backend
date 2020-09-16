@@ -9,8 +9,7 @@ from ib_tasks.constants.constants import VALID_FIELD_TYPES
 from ib_tasks.constants.enum import Operators
 from ib_tasks.interactors.filter_dtos import FilterDTO, \
     CreateConditionDTO, CreateFilterDTO, ConditionDTO, UpdateFilterDTO
-from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
-    FieldTypeDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldTypeDTO
 
 
 class FilterDTOFactory(factory.Factory):

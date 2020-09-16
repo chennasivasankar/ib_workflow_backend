@@ -177,7 +177,7 @@ class CreateOrUpdateOrDeleteFiltersInteractor(ValidationMixin):
             if invalid_field_id not in valid_field_ids
         ]
         if invalid_field_ids:
-            raise FieldIdsNotBelongsToTemplateId(field_ids=field_ids)
+            raise FieldIdsNotBelongsToTemplateId(field_ids=invalid_field_ids)
 
     def _validate_user_fields_permission(self, user_id: str,
                                          field_ids: List[str],
