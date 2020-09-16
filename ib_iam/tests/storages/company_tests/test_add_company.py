@@ -17,7 +17,7 @@ class TestAddTeam:
         mock.return_value = company_id
         company_name = "company1"
         company_description = "company_description1"
-        company_logo_url = "logo_url1"
+        company_logo_url = "http://sample.com"
         expected_company_id = company_id
         CompanyNameLogoAndDescriptionDTOFactory.reset_sequence(1)
         company_name_logo_and_description_dto = CompanyNameLogoAndDescriptionDTOFactory()

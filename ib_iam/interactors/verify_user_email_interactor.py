@@ -32,7 +32,7 @@ class VerifyEmailInteractor:
         )
         self._validate_email_for_link_to_user_account(
             email=user_profile_dto.email,
-            is_email_verified=user_profile_dto.is_email_verified
+            is_email_verified=user_profile_dto.is_email_verify
         )
         adapter.auth_service.update_is_email_verified_value_in_ib_user(
             user_id=user_id, is_email_verified=True

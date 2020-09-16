@@ -206,7 +206,7 @@ def populate_admin_users_with_project_roles_and_teams(project_id: str):
             ElasticStorageImplementation
         elastic_storage = ElasticStorageImplementation()
         elastic_user_id = elastic_storage.create_elastic_user(
-            user_id=user_id, name=admin_user["name"], email=admin_user["email"]
+            user_id=user_id, name=admin_user["name"]
         )
         elastic_storage.create_elastic_user_intermediary(
             elastic_user_id=elastic_user_id, user_id=user_id

@@ -52,7 +52,7 @@ class LoginInteractor:
         user_profile_dto = service_adapter.user_service.get_user_profile_dto(
             user_id=user_id
         )
-        is_email_not_verified = not user_profile_dto.is_email_verified
+        is_email_not_verified = not user_profile_dto.is_email_verify
         if is_email_not_verified:
             raise EmailIsNotVerify
         user_tokens_dto, is_admin = self.get_user_tokens_dto_and_is_admin(

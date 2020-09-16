@@ -34,7 +34,7 @@ class TestCase02UserLoginAPITestCase(TestUtils):
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
-            user_id=user_id, is_email_verified=True
+            user_id=user_id, is_email_verify=True
         )
         from ib_iam.interactors.user_login_interactor import IncorrectPassword
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
@@ -89,7 +89,7 @@ class TestCase02UserLoginAPITestCase(TestUtils):
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
-            user_id=user_id, is_email_verified=False
+            user_id=user_id, is_email_verify=False
         )
         self._create_user()
         body = {'email': 'sasnkar@gmail.com', 'password': 'test123'}

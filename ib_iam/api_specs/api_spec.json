@@ -227,16 +227,10 @@
               {
                 "type": "object",
                 "properties": {
-                  "is_email_verified": {
-                    "type": "boolean"
-                  },
                   "company": {
                     "$ref": "#/definitions/CompanyDetails"
                   }
-                },
-                "required": [
-                  "is_email_verified"
-                ]
+                }
               }
             ]
           }

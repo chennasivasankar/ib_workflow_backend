@@ -43,5 +43,5 @@ class TestCase02VerifyEmailAPITestCase(TestUtils):
             email="example@gmail.com",
             user_id=user_id,
             name="Baba",
-            is_email_verified=True
+            is_email_verify=True
         )

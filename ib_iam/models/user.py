@@ -1,14 +1,16 @@
 from django.db import models
+from ib_common.models import AbstractDateTimeModel
 
 
-class UserDetails(models.Model):
+class UserDetails(AbstractDateTimeModel):
     user_id = models.CharField(max_length=36)
-    name = models.CharField(max_length=100, null=True)
+    name = models.CharField(max_length=100, null=True, blank=True)
     is_admin = models.BooleanField(default=False)
     cover_page_url = models.URLField(null=True, blank=True)
-    company = models.ForeignKey('Company', on_delete=models.SET_NULL,
-                                null=True,
-                                blank=True, related_name="users")
+    company = models.ForeignKey(
+        'Company', on_delete=models.SET_NULL, null=True,
+        blank=True, related_name="users"
+    )
 
 
 # TODO: Link to UserDetails to have flexibility to get user details

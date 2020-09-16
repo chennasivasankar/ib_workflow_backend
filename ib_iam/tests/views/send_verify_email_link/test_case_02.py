@@ -54,7 +54,7 @@ class TestCase02SendVerifyEmailLinkAPITestCase(TestUtils):
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         UserProfileDTOFactory.reset_sequence(0)
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
-            user_id=user_id, is_email_verified=True)
+            user_id=user_id, is_email_verify=True)
 
     @pytest.mark.django_db
     def test_case_already_active_email_and_email_verified_then_raise_account_is_already_verifys_exception(

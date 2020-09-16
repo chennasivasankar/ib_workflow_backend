@@ -49,7 +49,7 @@ class TestLoginInteractor:
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
-            user_id=user_id, is_email_verified=True
+            user_id=user_id, is_email_verify=True
         )
         from ib_iam.interactors.user_login_interactor import IncorrectPassword
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
@@ -133,7 +133,7 @@ class TestLoginInteractor:
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
-            user_id=user_id, is_email_verified=True
+            user_id=user_id, is_email_verify=True
         )
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             get_user_tokens_dto_for_given_email_and_password_dto_mock
@@ -178,7 +178,7 @@ class TestLoginInteractor:
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
-            user_id=user_id, is_email_verified=True
+            user_id=user_id, is_email_verify=True
         )
         from ib_iam.exceptions.custom_exceptions import InvalidEmail
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
@@ -224,7 +224,7 @@ class TestLoginInteractor:
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
-            user_id=user_id, is_email_verified=False
+            user_id=user_id, is_email_verify=False
         )
         presenter_mock = presenter_mock_setup
         presenter_mock.raise_exception_for_login_with_not_verify_email. \
