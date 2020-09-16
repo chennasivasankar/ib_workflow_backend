@@ -48,8 +48,6 @@ class EditUserInteractor(ValidationMixin):
         except NameShouldNotContainsNumbersSpecCharacters:
             response = presenter. \
                 response_for_name_contains_special_character_exception()
-        # except RoleIdsAreInvalid:
-        #     response = presenter.response_for_invalid_role_ids_exception()
         except InvalidCompanyId:
             response = presenter.response_for_invalid_company_ids_exception()
         except TeamIdsAreInvalid:
@@ -62,7 +60,6 @@ class EditUserInteractor(ValidationMixin):
     ):
         name = add_user_details_dto.name
         team_ids = add_user_details_dto.team_ids
-        # role_ids = add_user_details_dto.role_ids
         company_id = add_user_details_dto.company_id
         email = add_user_details_dto.email
 
@@ -94,17 +91,9 @@ class EditUserInteractor(ValidationMixin):
     def _validate_values(
             self, team_ids: List[str], company_id: str
     ):
-        # self._validate_role_ids(role_ids=role_ids)
         self._validate_teams(team_ids=team_ids)
         if company_id is not None:
             self._validate_company(company_id=company_id)
-
-    # def _validate_role_ids(self, role_ids: List[str]):
-    #     are_valid = self.user_storage.check_are_valid_role_ids(
-    #         role_ids=role_ids)
-    #     are_not_valid = not are_valid
-    #     if are_not_valid:
-    #         raise RoleIdsAreInvalid()
 
     def _validate_teams(self, team_ids: List[str]):
         are_invalid_team_ids = not self.user_storage.check_are_valid_team_ids(
@@ -142,7 +131,6 @@ class EditUserInteractor(ValidationMixin):
             self, user_id: str, company_id: str,
             team_ids: List[str], name: str
     ):
-        # self._remove_existing_teams_and_roles_of_user(user_id)
         self.user_storage.remove_teams_for_user(user_id)
         self._assign_teams_and_roles_and_company_to_user(
             company_id, team_ids, user_id, name
@@ -152,9 +140,6 @@ class EditUserInteractor(ValidationMixin):
             self, company_id: str, team_ids: List[str],
             user_id: str, name: str
     ):
-        # db_role_ids = self.user_storage.get_role_objs_ids(role_ids)
-        # self.user_storage.add_roles_to_the_user(
-        #     user_id=user_id, role_ids=db_role_ids)
         self.user_storage.add_user_to_the_teams(
             user_id=user_id, team_ids=team_ids
         )
@@ -162,6 +147,3 @@ class EditUserInteractor(ValidationMixin):
             user_id=user_id, company_id=company_id, name=name
         )
 
-    # def _remove_existing_teams_and_roles_of_user(self, user_id: str):
-    #     self.user_storage.remove_roles_for_user(user_id)
-    #     self.user_storage.remove_teams_for_user(user_id)

@@ -12,15 +12,19 @@ from ib_iam.interactors.storage_interfaces.user_storage_interface import \
 
 
 class DeleteUserInteractor(ValidationMixin):
-    def __init__(self, storage: DeleteUserStorageInterface,
-                 user_storage: UserStorageInterface,
-                 elastic_storage: ElasticSearchStorageInterface):
+    def __init__(
+            self, storage: DeleteUserStorageInterface,
+            user_storage: UserStorageInterface,
+            elastic_storage: ElasticSearchStorageInterface
+    ):
         self.elastic_storage = elastic_storage
         self.user_storage = user_storage
         self.storage = storage
 
-    def delete_user_wrapper(self, user_id: str, delete_user_id: str,
-                            presenter: DeleteUserPresenterInterface):
+    def delete_user_wrapper(
+            self, user_id: str, delete_user_id: str,
+            presenter: DeleteUserPresenterInterface
+    ):
         try:
             self.delete_user(user_id=user_id, delete_user_id=delete_user_id)
             response = presenter.get_delete_user_response()
@@ -33,13 +37,15 @@ class DeleteUserInteractor(ValidationMixin):
         return response
 
     def delete_user(self, user_id: str, delete_user_id: str):
-        self._validate_delete_user_details(user_id=user_id,
-                                           delete_user_id=delete_user_id)
+        self._validate_delete_user_details(
+            user_id=user_id, delete_user_id=delete_user_id
+        )
         self.storage.delete_user(user_id=delete_user_id)
         # self.storage.delete_user_roles(user_id=delete_user_id)
         self.storage.delete_user_teams(user_id=delete_user_id)
         self._deactivate_delete_user_id_in_ib_users(
-            delete_user_id=delete_user_id)
+            delete_user_id=delete_user_id
+        )
         self.elastic_storage.delete_elastic_user(user_id=delete_user_id)
 
     def _validate_delete_user_details(self, user_id: str, delete_user_id: str):
@@ -48,7 +54,8 @@ class DeleteUserInteractor(ValidationMixin):
 
     def _validate_delete_user_id(self, delete_user_id: str):
         user_details_dto = self.storage.get_user_details(
-            user_id=delete_user_id)
+            user_id=delete_user_id
+        )
         if user_details_dto.is_admin:
             raise UserDoesNotHaveDeletePermission
 
