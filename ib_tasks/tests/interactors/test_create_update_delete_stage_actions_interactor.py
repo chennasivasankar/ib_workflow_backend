@@ -78,7 +78,8 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
     @staticmethod
     def test_given_invalid_roles_raises_exception(mocker):
-        stage_ids = ["stage_id_1", "stage_id_2", "stage_id_3"]
+
+        # Arrange
         expected_stage_roles = {
             "stage_id_1": ["ROLE_1", "ROLE_2"],
             "stage_id_2": ["ROLE_2"],
@@ -115,6 +116,9 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
     @staticmethod
     def test_given_empty_stage_display_logic_raises_exception(mocker):
+
+        # Arrange
+        project_id = "FINMAN"
         expected_stage_ids = {"stage_ids": ["stage_id_3"]}
         expected_stage_ids_dict = json.dumps(expected_stage_ids)
         StageActionDTOFactory.reset_sequence(0)
@@ -146,6 +150,8 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
     @staticmethod
     def test_given_empty_stage_button_text_raises_exception(mocker):
+
+        # Arrange
         expected_stage_ids = {"stage_ids": ["stage_id_3"]}
         expected_stage_ids_dict = json.dumps(expected_stage_ids)
         StageActionDTOFactory.reset_sequence(0)
@@ -179,6 +185,8 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
     @staticmethod
     def test_given_duplicate_stage_buttons_raises_exception(mocker):
+
+        # Arrange
         expected_stage_buttons = {
             "stage_id_1": ["add"]
         }
@@ -216,6 +224,8 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
     @staticmethod
     def test_given_duplicate_stage_action_names_raises_exception(mocker):
+
+        # Arrange
         expected_stage_actions = {
             "stage_id_1": ["action_name_1"]
         }
@@ -270,6 +280,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
     def test_given_create_stage_actions_creates_actions(
             mocker, create_update_mock, delete_stage_action_mock):
 
+        # Arrange
         StageActionDTOFactory.reset_sequence(0)
         actions_dto = StageActionDTOFactory.create_batch(size=2)
         stage_actions_dto = []

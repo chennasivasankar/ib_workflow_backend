@@ -79,11 +79,13 @@ def populate_data(spread_sheet_name: str):
 
     stage_actions = GetSheetDataForStageActions()
     stage_actions.get_data_from_stages_and_actions_sub_sheet(
-        spread_sheet_name=spread_sheet_name)
+        spread_sheet_name=spread_sheet_name
+    )
 
     task_creation_config = GetSheetDataForTaskCreationConfig()
     task_creation_config.get_data_from_task_creation_config_sub_sheet(
-        spread_sheet_name=spread_sheet_name)
+        spread_sheet_name=spread_sheet_name
+    )
 
     stage_flows = GetSheetDataForStageFlows()
     stage_flows.get_data_from_stage_flows_sub_sheet(
