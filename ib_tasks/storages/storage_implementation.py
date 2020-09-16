@@ -95,8 +95,8 @@ class StagesStorageImplementation(StageStorageInterface):
                                                 stage_ids: List[str]) -> \
             List[str]:
         permitted_stage_ids = StagePermittedRoles.objects.filter(
-                Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID),
-                stage__stage_id__in=stage_ids
+            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID),
+            stage__stage_id__in=stage_ids
         ).values_list('stage__stage_id', flat=True)
         return permitted_stage_ids
 
@@ -521,7 +521,7 @@ class StagesStorageImplementation(StageStorageInterface):
         ]
 
     def get_stage_flows_to_user(
-        self, stage_ids: List[int], action_ids: List[int]
+            self, stage_ids: List[int], action_ids: List[int]
     ) -> List[StageFlowDTO]:
         from ib_tasks.models import StageFlow
         from django.db.models import F
@@ -550,7 +550,8 @@ class StagesStorageImplementation(StageStorageInterface):
         from ib_tasks.models import StageFlow
         stage_flow_instances = [
             StageFlow(
-                previous_stage_id=stage_id_dict[stage_flow_dto.previous_stage_id],
+                previous_stage_id=stage_id_dict[
+                    stage_flow_dto.previous_stage_id],
                 action_id=stage_flow_dto.action_id,
                 next_stage_id=stage_id_dict[stage_flow_dto.next_stage_id]
             )
@@ -620,6 +621,16 @@ class StagesStorageImplementation(StageStorageInterface):
             stage_ids.append(stage_flow_dto.previous_stage_id)
             stage_ids.append(stage_flow_dto.next_stage_id)
         return stage_ids
+
+    def get_stages_permission_gof_ids(
+            self, stage_ids: List[str], gof_ids: List[str]
+    ) -> List[str]:
+        gof_ids = StageGoF.objects.filter(
+            stage_id__in=stage_ids, gof_id__in=gof_ids
+        ).values_list("gof_id", flat=True)
+        gof_ids = list(gof_ids)
+        return gof_ids
+
 
     @staticmethod
     def _convert_template_id_with_stage_id_dicts_to_dtos(
