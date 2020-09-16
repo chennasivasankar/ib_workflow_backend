@@ -1,7 +1,6 @@
 from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
-from ib_tasks.tests.factories.storage_dtos import (TaskDetailsDTOFactory,
-                                                   StageActionDetailsDTOFactory)
-
+from ib_tasks.tests.factories.storage_dtos import (
+    StageActionDetailsDTOFactory)
 
 
 def prepare_mock_for_next_stage_random_assignees(mocker):
@@ -57,7 +56,8 @@ def prepare_get_permitted_action_ids(mocker, action_ids):
 
 
 def get_stage_display_logic_mock(mocker, stage_logics):
-    path = "ib_tasks.interactors.get_stage_display_logic_interactor" \
+    path = "ib_tasks.interactors" \
+           ".user_action_on_task.get_stage_display_logic_interactor" \
            ".StageDisplayLogicInteractor.get_stage_display_logic_condition"
     mock_obj = mocker.patch(path)
     mock_obj.return_value = stage_logics
@@ -204,8 +204,9 @@ def prepare_assignees_interactor_mock(mocker):
 
 def prepare_fields_for_get_task_fields_and_actions(mocker, fields_dtos,
                                                    task_stage_dtos):
-    mock = mocker.patch('ib_tasks.interactors.get_task_fields_and_actions.get_task_fields'
-                        '.GetTaskFieldsInteractor.get_task_fields')
+    mock = mocker.patch(
+            'ib_tasks.interactors.get_task_fields_and_actions.get_task_fields'
+            '.GetTaskFieldsInteractor.get_task_fields')
     mock.return_value = fields_dtos, task_stage_dtos
 
 
