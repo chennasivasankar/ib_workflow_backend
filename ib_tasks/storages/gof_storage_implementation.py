@@ -134,7 +134,7 @@ class GoFStorageImplementation(GoFStorageInterface):
 
     def get_user_permitted_template_gof_dtos(
             self, user_roles: List[str], template_ids: List[str]
-    ):
+    ) -> List[TaskTemplateGofsDTO]:
         from django.db.models import Q
         from ib_tasks.constants.constants import ALL_ROLES_ID
         gof_ids = GoFRole.objects.filter().filter(
