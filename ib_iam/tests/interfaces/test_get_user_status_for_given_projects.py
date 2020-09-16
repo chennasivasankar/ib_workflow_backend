@@ -106,10 +106,17 @@ class TestGetUserStatusForGivenProjects:
                 is_exist=project_id in valid_user_exist_project_ids
             ) for project_id in project_ids
         ]
+        expected_result = sorted(
+            expected_result,
+            key=lambda user_status_dto: user_status_dto.user_id
+        )
 
         result = service_interface.get_user_status_for_given_projects(
             user_id=user_id, project_ids=project_ids)
 
+        result = sorted(
+            result, key=lambda user_status_dto: user_status_dto.user_id
+        )
         assert expected_result == result
 
     @pytest.mark.django_db
