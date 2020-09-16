@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 from django.db.models import F, Q
 
@@ -129,19 +129,19 @@ class ActionsStorageImplementation(ActionStorageInterface):
             ))
         return list_of_actions
 
+    @staticmethod
+    def _get_stage_action_dto_map(
+            action_dtos: List[StageActionDTO]
+    ) -> Dict[str, StageActionDTO]:
+
+        return {
+            action_dto.stage_id + action_dto.action_name: action_dto
+            for action_dto in action_dtos
+        }
+
     def update_stage_actions(self, stage_actions: List[StageActionDTO]):
-        # TODO: Optimize db hits
-        for stage_action in stage_actions:
-            StageAction.objects.filter(stage__stage_id=stage_action.stage_id,
-                                       name=stage_action.action_name) \
-                .update(
-                logic=stage_action.logic,
-                py_function_import_path=stage_action.function_path,
-                button_text=stage_action.button_text,
-                action_type=stage_action.action_type,
-                transition_template_id=stage_action.transition_template_id,
-                button_color=stage_action.button_color
-            )
+
+        stage_action_dto_map = self._get_stage_action_dto_map(stage_actions)
         q = None
         for counter, item in enumerate(stage_actions):
             current_queue = Q(stage_id__stage_id=item.stage_id,
@@ -150,9 +150,9 @@ class ActionsStorageImplementation(ActionStorageInterface):
                 q = current_queue
             else:
                 q = q | current_queue
-
-        action_objs = StageAction.objects.filter(q)\
+        action_objs = StageAction.objects.filter(q) \
             .annotate(normal_stage=F('stage__stage_id'))
+
         ActionPermittedRoles.objects.filter(action__in=action_objs).delete()
 
         list_of_permitted_roles = self._get_list_of_permitted_roles_objs(
@@ -160,8 +160,23 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
         ActionPermittedRoles.objects.bulk_create(list_of_permitted_roles)
 
+        for action_obj in action_objs:
+            key = action_obj.normal_stage + action_obj.name
+            action_dto = stage_action_dto_map[key]
+            action_obj.logic = action_dto.logic
+            action_obj.py_function_import_path = action_dto.function_path
+            action_obj.button_text = action_dto.button_text
+            action_obj.action_type = action_dto.action_type
+            action_obj.transition_template_id = action_dto.transition_template_id
+            action_obj.button_color = action_dto.button_color
+        attributes = [
+            "logic", "py_function_import_path", "button_text",
+            "action_type", "transition_template_id", "button_color"
+        ]
+        StageAction.objects.bulk_update(action_objs, attributes)
+
     def _get_list_of_permitted_roles_objs(self, action_objs,
-                                          stage_actions):
+                                          stage_actions: List[StageActionDTO]):
 
         stage_id_action_name_roles_map = \
             self._get_stage_id_action_name_roles(stage_actions)
@@ -197,7 +212,6 @@ class ActionsStorageImplementation(ActionStorageInterface):
             key = stage_id + action_name
             stage_id_action_name_map[key] = stage_action.roles
         return stage_id_action_name_map
-
 
     def delete_stage_actions(self, stage_actions: List[StageActionNamesDTO]):
         stage_actions_dict = [{'stage_id': stage.stage_id,
