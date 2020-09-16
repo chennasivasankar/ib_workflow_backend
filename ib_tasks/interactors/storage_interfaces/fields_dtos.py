@@ -109,6 +109,7 @@ class StageTaskFieldsDTO:
     field_ids: List[str]
 
 
+# TODO rename this as FieldWithIsWritableDTO
 @dataclass
 class FieldPermissionDTO:
     field_dto: FieldDTO
