@@ -118,6 +118,17 @@ snapshots['TestCase03GetTaskTemplatesAPITestCase.test_case body'] = [
             }
         ],
         'project_id': 'project_1',
+        'stage_gofs': [
+            {
+                'gof_ids': [
+                    'gof_3'
+                ],
+                'stage_id': 3
+            }
+        ],
+        'task_creation_gof_ids': [
+            'gof_1'
+        ],
         'template_id': 'template_1',
         'template_name': 'Template 1'
     },
@@ -229,6 +240,17 @@ snapshots['TestCase03GetTaskTemplatesAPITestCase.test_case body'] = [
             }
         ],
         'project_id': 'project_2',
+        'stage_gofs': [
+            {
+                'gof_ids': [
+                    'gof_4'
+                ],
+                'stage_id': 4
+            }
+        ],
+        'task_creation_gof_ids': [
+            'gof_2'
+        ],
         'template_id': 'template_2',
         'template_name': 'Template 2'
     }

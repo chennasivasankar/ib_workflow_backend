@@ -43,16 +43,26 @@ from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
 
 class StagesStorageImplementation(StageStorageInterface):
 
-    def get_stage_gof_dtos(self, stage_ids: List[int]
-                           ) -> List[StageIdWithGoFIdDTO]:
+    def get_stage_gof_dtos_for_given_stages_and_gofs(
+            self, stage_ids: List[int], gof_ids: List[str]
+    ) -> List[StageIdWithGoFIdDTO]:
         stage_id_with_gof_id_dicts = StageGoF.objects.filter(
-            stage_id__in=stage_ids
+            stage_id__in=stage_ids, gof_id__in=gof_ids
         ).values('stage_id', 'gof_id')
 
         stage_gof_dtos = self._convert_stage_id_with_gof_id_dicts_to_dtos(
             stage_id_with_gof_id_dicts=stage_id_with_gof_id_dicts
         )
         return stage_gof_dtos
+
+    def get_user_permitted_stage_ids(
+            self, roles: List[str], stage_ids: List[int]) -> List[int]:
+        stage_ids_queryset = StagePermittedRoles.objects.filter(
+            (Q(role_id__in=roles) | Q(role_id=ALL_ROLES_ID)),
+            stage_id__in=stage_ids
+        ).values_list('stage_id', flat=True)
+        stage_ids_list = list(stage_ids_queryset)
+        return stage_ids_list
 
     def get_stage_id_with_template_id_dtos(
             self, task_template_ids: List[str]

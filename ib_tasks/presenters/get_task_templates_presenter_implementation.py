@@ -264,19 +264,20 @@ class GetTaskTemplatesPresenterImplementation(
             stage_gof_with_template_id_dtos_without_initial_stages
         )
 
+        stage_id_task_template_dict = self._make_stage_id_task_template_dict(
+            stage_gof_with_template_id_dtos=
+            stage_gof_with_template_id_dtos_without_initial_stages
+        )
+
         stage_gof_ids_of_templates_dict = collections.defaultdict(list)
-        for stage_gof_with_template_id_dto in \
-                stage_gof_with_template_id_dtos_without_initial_stages:
-            if stage_gof_with_template_id_dto.stage_id not in \
-                    stage_gof_ids_of_templates_dict.keys():
-                stage_gof_ids_of_templates_dict[
-                    stage_gof_with_template_id_dto.task_template_id].append(
-                    {
-                        "stage_id": stage_gof_with_template_id_dto.stage_id,
-                        "gof_ids": stage_gof_ids_dict[
-                            stage_gof_with_template_id_dto.stage_id]
-                    }
-                )
+        for stage_id, gof_ids in stage_gof_ids_dict.items():
+            task_template_id = stage_id_task_template_dict[stage_id]
+            stage_gof_ids_of_templates_dict[task_template_id].append(
+                {
+                    "stage_id": stage_id,
+                    "gof_ids": gof_ids
+                }
+            )
 
         return stage_gof_ids_of_templates_dict
 
@@ -442,3 +443,15 @@ class GetTaskTemplatesPresenterImplementation(
             )
 
         return stage_gofs_dict
+
+    @staticmethod
+    def _make_stage_id_task_template_dict(
+            stage_gof_with_template_id_dtos: List[StageGoFWithTemplateIdDTO]
+    ) -> Dict:
+        stage_id_task_template_dict = {
+            stage_gof_with_template_id_dto.stage_id:
+                stage_gof_with_template_id_dto.task_template_id
+            for stage_gof_with_template_id_dto in
+            stage_gof_with_template_id_dtos
+        }
+        return stage_id_task_template_dict

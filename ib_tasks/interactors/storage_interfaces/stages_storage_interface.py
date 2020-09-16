@@ -218,6 +218,12 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_stage_gof_dtos(self, stage_ids: List[int]
-                           ) -> List[StageIdWithGoFIdDTO]:
+    def get_stage_gof_dtos_for_given_stages_and_gofs(
+            self, stage_ids: List[int], gof_ids: List[str]
+    ) -> List[StageIdWithGoFIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_user_permitted_stage_ids(
+            self, roles: List[str], stage_ids: List[int]) -> List[int]:
         pass

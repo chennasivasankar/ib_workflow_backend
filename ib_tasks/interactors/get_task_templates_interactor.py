@@ -24,6 +24,8 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
+from ib_tasks.interactors.user_role_validation_interactor import \
+    UserRoleValidationInteractor
 
 
 @dataclass
@@ -99,9 +101,15 @@ class GetTaskTemplatesInteractor:
         gof_details_with_field_dto = \
             self._get_gof_details_with_field_dtos_of_task_templates(
                 task_template_ids=task_template_ids, user_roles=user_roles)
+
+        gofs_of_task_templates_dtos = \
+            gof_details_with_field_dto.gofs_of_task_templates_dtos
+        gof_ids = self._get_gof_ids_of_task_templates(
+            gofs_of_task_templates_dtos=gofs_of_task_templates_dtos)
         stage_gof_with_template_id_dtos = \
             self._get_stage_gofs_for_each_task_template_dtos(
-                task_template_ids=task_template_ids)
+                task_template_ids=task_template_ids, gof_ids=gof_ids,
+                user_roles=user_roles)
 
         return CompleteTaskTemplatesDTO(
             task_template_dtos=task_templates_dtos,
@@ -149,8 +157,6 @@ class GetTaskTemplatesInteractor:
     def _get_gof_ids_of_task_templates_having_user_permissions(
             self, task_template_ids: List[str],
             user_roles: List[str]) -> List[str]:
-        from ib_tasks.interactors.user_role_validation_interactor import \
-            UserRoleValidationInteractor
         user_role_validation_interactor = UserRoleValidationInteractor()
 
         gof_ids_of_task_templates = \
@@ -207,8 +213,6 @@ class GetTaskTemplatesInteractor:
 
     def _get_field_ids_having_read_or_write_permission_for_user(
             self, field_ids: List[str], user_roles: List[str]):
-        from ib_tasks.interactors.user_role_validation_interactor import \
-            UserRoleValidationInteractor
         user_role_validation_interactor = UserRoleValidationInteractor()
 
         field_ids_having_write_permission_for_user = \
@@ -243,19 +247,29 @@ class GetTaskTemplatesInteractor:
         return field_dtos
 
     def _get_stage_gofs_for_each_task_template_dtos(
-            self, task_template_ids: List[str]
+            self, task_template_ids: List[str], gof_ids: List[str],
+            user_roles: List[str]
     ) -> List[StageGoFWithTemplateIdDTO]:
         stage_id_with_template_id_dtos = \
             self.stage_storage.get_stage_id_with_template_id_dtos(
                 task_template_ids=task_template_ids
             )
+
+        user_permitted_stage_id_with_template_id_dtos = \
+            self._get_user_permitted_stage_id_with_template_id_dtos(
+                stage_id_with_template_id_dtos=stage_id_with_template_id_dtos,
+                user_roles=user_roles)
+
         stage_ids = self._get_stage_ids(
-            stage_id_with_template_id_dtos=stage_id_with_template_id_dtos)
-        stage_gof_dtos = self.stage_storage.get_stage_gof_dtos(
-            stage_ids=stage_ids)
+            stage_id_with_template_id_dtos=
+            user_permitted_stage_id_with_template_id_dtos)
+        stage_gof_dtos = self.stage_storage.\
+            get_stage_gof_dtos_for_given_stages_and_gofs(
+                stage_ids=stage_ids, gof_ids=gof_ids)
         stage_id_with_template_id_dtos_dict = \
             self._make_stage_id_with_template_id_dtos_dict(
-                stage_id_with_template_id_dtos=stage_id_with_template_id_dtos)
+                stage_id_with_template_id_dtos=
+                user_permitted_stage_id_with_template_id_dtos)
         stage_gof_with_template_id_dtos = [
             StageGoFWithTemplateIdDTO(
                 stage_id=stage_gof_dto.stage_id,
@@ -266,6 +280,27 @@ class GetTaskTemplatesInteractor:
             for stage_gof_dto in stage_gof_dtos
         ]
         return stage_gof_with_template_id_dtos
+
+    def _get_user_permitted_stage_id_with_template_id_dtos(
+            self, user_roles: List[str],
+            stage_id_with_template_id_dtos: List[StageIdWithTemplateIdDTO]
+    ) -> List[StageIdWithTemplateIdDTO]:
+        stage_ids = self._get_stage_ids(
+            stage_id_with_template_id_dtos=stage_id_with_template_id_dtos)
+
+        user_role_validation_interactor = UserRoleValidationInteractor()
+        user_permitted_stage_ids = user_role_validation_interactor.\
+            get_user_permitted_stage_ids_in_given_stage_ids(
+                user_roles=user_roles, stage_ids=stage_ids,
+                stage_storage=self.stage_storage)
+
+        user_permitted_stage_id_with_template_id_dtos = [
+            stage_id_with_template_id_dto
+            for stage_id_with_template_id_dto in stage_id_with_template_id_dtos
+            if stage_id_with_template_id_dto.stage_id in
+            user_permitted_stage_ids
+        ]
+        return user_permitted_stage_id_with_template_id_dtos
 
     @staticmethod
     def _make_stage_id_with_template_id_dtos_dict(
