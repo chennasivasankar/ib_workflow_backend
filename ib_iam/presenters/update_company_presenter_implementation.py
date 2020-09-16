@@ -37,11 +37,11 @@ class UpdateCompanyPresenterImplementation(UpdateCompanyPresenterInterface,
             response_dict=response_dict)
 
     def get_company_name_already_exists_response_for_update_company(
-            self, exception
+            self, err
     ):
         response_dict = {
             "response": COMPANY_NAME_ALREADY_EXISTS_FOR_UPDATE_COMPANY[
-                0].format(company_name=exception.company_name),
+                0].format(company_name=err.company_name),
             "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": COMPANY_NAME_ALREADY_EXISTS_FOR_UPDATE_COMPANY[1]
         }

@@ -25,7 +25,7 @@ class TestRaiseExceptionIfCompanyNameAlreadyExists:
         # Act
         result = json_presenter \
             .get_company_name_already_exists_response_for_update_company(
-            exception=CompanyNameAlreadyExists(company_name=company_name)
+            err=CompanyNameAlreadyExists(company_name=company_name)
         )
 
         # Assert
