@@ -6,12 +6,7 @@ from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
 from ib_tasks.interactors.get_task_fields_and_actions.get_task_fields import \
     GetTaskFieldsInteractor
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    (FieldDetailsDTOWithTaskId, TaskTemplateStageFieldsDTO)
     (TaskTemplateStageFieldsDTO)
-from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
-    FieldsStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
-    TaskStorageInterface
 from ib_tasks.tests.common_fixtures.adapters.roles_service import \
     get_user_role_ids_based_on_projects_mock
 from ib_tasks.tests.common_fixtures.adapters.searchable_details_service \
@@ -50,104 +45,104 @@ class TestGetFieldsAndActionsInteractor(StorageMethodsMock):
     def expected_output(self):
         FieldDetailsDTOWithTaskIdFactory.reset_sequence()
         fields = FieldDetailsDTOWithTaskIdFactory.create_batch(
-                2, task_id=1,
-                field_type=FieldTypes.SEARCHABLE.value,
-                value="User1")
+            2, task_id=1,
+            field_type=FieldTypes.SEARCHABLE.value,
+            value="User1")
         fields_1 = FieldDetailsDTOWithTaskIdFactory(
-                task_id=2,
-                field_type=FieldTypes.SEARCHABLE.value,
-                value="User1"
+            task_id=2,
+            field_type=FieldTypes.SEARCHABLE.value,
+            value="User1"
         )
         field_2 = FieldDetailsDTOWithTaskIdFactory(
-                task_id=2,
-                field_type=FieldTypes.SEARCHABLE.value,
-                value="User0"
+            task_id=2,
+            field_type=FieldTypes.SEARCHABLE.value,
+            value="User0"
         )
         fields += [fields_1, field_2]
 
         stage_fields_dtos = [TaskTemplateStageFieldsDTO(
-                task_template_id='task_template_id_1', task_id=1,
-                stage_id='stage_id_1', display_name='display_name_1',
-                db_stage_id=1, stage_color='blue',
-                field_ids=['FIELD-ID-1', 'FIELD-ID-2']),
-                TaskTemplateStageFieldsDTO(
-                        task_template_id='task_template_id_1',
-                        task_id=1, stage_id='stage_id_2',
-                        display_name='display_name_2',
-                        db_stage_id=2, stage_color='blue',
-                        field_ids=['FIELD-ID-3', 'FIELD-ID-4'])]
+            task_template_id='task_template_id_1', task_id=1,
+            stage_id='stage_id_1', display_name='display_name_1',
+            db_stage_id=1, stage_color='blue',
+            field_ids=['FIELD-ID-1', 'FIELD-ID-2']),
+            TaskTemplateStageFieldsDTO(
+                task_template_id='task_template_id_1',
+                task_id=1, stage_id='stage_id_2',
+                display_name='display_name_2',
+                db_stage_id=2, stage_color='blue',
+                field_ids=['FIELD-ID-3', 'FIELD-ID-4'])]
         return fields, stage_fields_dtos
 
     @pytest.fixture
     def expected_output_for_task_in_two_stages(self):
         FieldDetailsDTOWithTaskIdFactory.reset_sequence()
         fields = FieldDetailsDTOWithTaskIdFactory.create_batch(
-                2, task_id=1,
-                field_type=FieldTypes.SEARCHABLE.value,
-                value="User1")
+            2, task_id=1,
+            field_type=FieldTypes.SEARCHABLE.value,
+            value="User1")
         fields_1 = FieldDetailsDTOWithTaskIdFactory(
-                task_id=2,
-                field_type=FieldTypes.SEARCHABLE.value,
-                value="User1"
+            task_id=2,
+            field_type=FieldTypes.SEARCHABLE.value,
+            value="User1"
         )
         field_2 = FieldDetailsDTOWithTaskIdFactory(
-                task_id=2,
-                field_type=FieldTypes.SEARCHABLE.value,
-                value="User0"
+            task_id=2,
+            field_type=FieldTypes.SEARCHABLE.value,
+            value="User0"
         )
         fields += [fields_1, field_2]
 
         stage_fields_dtos = [TaskTemplateStageFieldsDTO(
-                task_template_id='task_template_id_1', task_id=1,
-                stage_id='stage_id_1', display_name='display_name_1',
-                db_stage_id=1, stage_color='blue',
-                field_ids=['FIELD-ID-1', 'FIELD-ID-2']),
-                TaskTemplateStageFieldsDTO(
-                        task_template_id='task_template_id_1',
-                        task_id=1, stage_id='stage_id_2',
-                        display_name='display_name_2',
-                        db_stage_id=2, stage_color='blue',
-                        field_ids=['FIELD-ID-3', 'FIELD-ID-4'])]
+            task_template_id='task_template_id_1', task_id=1,
+            stage_id='stage_id_1', display_name='display_name_1',
+            db_stage_id=1, stage_color='blue',
+            field_ids=['FIELD-ID-1', 'FIELD-ID-2']),
+            TaskTemplateStageFieldsDTO(
+                task_template_id='task_template_id_1',
+                task_id=1, stage_id='stage_id_2',
+                display_name='display_name_2',
+                db_stage_id=2, stage_color='blue',
+                field_ids=['FIELD-ID-3', 'FIELD-ID-4'])]
         return fields, stage_fields_dtos
 
     @pytest.fixture
     def get_user_roles_mock(self):
         user_roles = [ProjectRolesDTO(
-                project_id="project_id_1",
-                roles=["FIN_PAYMENT_REQUESTER",
-                       "FIN_PAYMENT_POC",
-                       "FIN_PAYMENT_APPROVER",
-                       "FIN_PAYMENTS_RP",
-                       "FIN_FINANCE_RP"])]
+            project_id="project_id_1",
+            roles=["FIN_PAYMENT_REQUESTER",
+                   "FIN_PAYMENT_POC",
+                   "FIN_PAYMENT_APPROVER",
+                   "FIN_PAYMENTS_RP",
+                   "FIN_FINANCE_RP"])]
         return user_roles
 
     @pytest.fixture()
     def get_field_ids(self):
         return [TaskTemplateStageFieldsDTO(
+            task_template_id="task_template_id_1",
+            task_id=1,
+            db_stage_id=1,
+            stage_color="blue",
+            display_name="display_name_1",
+            stage_id="stage_id_1",
+            field_ids=["FIELD-ID-1", "FIELD-ID-2"]
+        ),
+            TaskTemplateStageFieldsDTO(
                 task_template_id="task_template_id_1",
                 task_id=1,
-                db_stage_id=1,
+                db_stage_id=2,
                 stage_color="blue",
-                display_name="display_name_1",
-                stage_id="stage_id_1",
-                field_ids=["FIELD-ID-1", "FIELD-ID-2"]
-        ),
-                TaskTemplateStageFieldsDTO(
-                        task_template_id="task_template_id_1",
-                        task_id=1,
-                        db_stage_id=2,
-                        stage_color="blue",
-                        display_name="display_name_2",
-                        stage_id="stage_id_2",
-                        field_ids=["FIELD-ID-3", "FIELD-ID-4"]
-                )
+                display_name="display_name_2",
+                stage_id="stage_id_2",
+                field_ids=["FIELD-ID-3", "FIELD-ID-4"]
+            )
         ]
 
     @pytest.fixture()
     def get_task_template_stage_dtos(self):
         TaskTemplateStagesDTOFactory.reset_sequence()
         return TaskTemplateStagesDTOFactory.create_batch(
-                size=2, task_template_id="task_template_id_1")
+            size=2, task_template_id="task_template_id_1")
 
     @pytest.fixture()
     def get_task_dtos(self):
@@ -158,7 +153,7 @@ class TestGetFieldsAndActionsInteractor(StorageMethodsMock):
     def get_task_template_stage_dtos_for_two_stages(self):
         TaskTemplateStagesDTOFactory.reset_sequence()
         return TaskTemplateStagesDTOFactory.create_batch(
-                size=2, task_template_id="task_template_id_1", task_id=1)
+            size=2, task_template_id="task_template_id_1", task_id=1)
 
     def test_get_fields_when_invalid_task_id_raises_exception(
             self, mocker, field_storage, get_fields_dtos,
@@ -186,10 +181,10 @@ class TestGetFieldsAndActionsInteractor(StorageMethodsMock):
         # Act
         with pytest.raises(InvalidTaskIds) as err:
             interactor.get_task_fields(
-                    task_stage_dtos=get_task_template_stage_dtos,
-                    view_type=view_type,
-                    user_id=user_id,
-                    task_ids=task_ids)
+                task_stage_dtos=get_task_template_stage_dtos,
+                view_type=view_type,
+                user_id=user_id,
+                task_ids=task_ids)
 
         # Assert
         task_storage.get_valid_task_ids.assert_called_once_with(task_ids)
@@ -226,15 +221,15 @@ class TestGetFieldsAndActionsInteractor(StorageMethodsMock):
 
         # Act
         response = interactor.get_task_fields(
-                task_stage_dtos=get_task_template_stage_dtos,
-                view_type=view_type,
-                user_id=user_id,
-                task_ids=task_ids)
+            task_stage_dtos=get_task_template_stage_dtos,
+            view_type=view_type,
+            user_id=user_id,
+            task_ids=task_ids)
 
         # Assert
         task_storage.get_valid_task_ids.assert_called_once_with(task_ids)
         field_storage.get_field_ids.assert_called_once_with(
-                get_task_template_stage_dtos, view_type)
+            get_task_template_stage_dtos, view_type)
         assert response == expected_output
 
     def test_get_fields_given_task_is_in_two_stages(
@@ -265,13 +260,13 @@ class TestGetFieldsAndActionsInteractor(StorageMethodsMock):
 
         # Act
         response = interactor.get_task_fields(
-                task_stage_dtos=get_task_template_stage_dtos,
-                view_type=view_type,
-                user_id=user_id,
-                task_ids=task_ids)
+            task_stage_dtos=get_task_template_stage_dtos,
+            view_type=view_type,
+            user_id=user_id,
+            task_ids=task_ids)
 
         # Assert
         task_storage.get_valid_task_ids.assert_called_once_with(task_ids)
         field_storage.get_field_ids.assert_called_once_with(
-                get_task_template_stage_dtos, view_type)
+            get_task_template_stage_dtos, view_type)
         assert response == expected_output_for_task_in_two_stages
