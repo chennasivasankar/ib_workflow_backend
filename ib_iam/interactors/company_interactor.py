@@ -20,22 +20,26 @@ from ib_iam.interactors.storage_interfaces.user_storage_interface import \
 
 class CompanyInteractor(ValidationMixin):
 
-    def __init__(self,
-                 company_storage: CompanyStorageInterface,
-                 user_storage: UserStorageInterface):
+    def __init__(
+            self, company_storage: CompanyStorageInterface,
+            user_storage: UserStorageInterface
+    ):
         self.user_storage = user_storage
         self.company_storage = company_storage
 
     def add_company_wrapper(
             self, user_id: str,
             company_with_user_ids_dto: CompanyWithUserIdsDTO,
-            presenter: AddCompanyPresenterInterface):
+            presenter: AddCompanyPresenterInterface
+    ):
         try:
             company_id = self.add_company(
                 user_id=user_id,
-                company_with_user_ids_dto=company_with_user_ids_dto)
+                company_with_user_ids_dto=company_with_user_ids_dto
+            )
             response = presenter.get_response_for_add_company(
-                company_id=company_id)
+                company_id=company_id
+            )
         except UserIsNotAdmin:
             response = \
                 presenter.get_user_has_no_access_response_for_add_company()
