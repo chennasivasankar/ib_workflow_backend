@@ -85,23 +85,23 @@ class TestAddMembersToLevelsInteractor:
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         team_member_level_id_with_member_ids_dtos = \
             prepare_level_id_with_member_ids_dtos
-        expected_presenter_response_for_invalid_project_id_mock = Mock()
+        expected_result = Mock()
         user_id = "00be920b-7b4c-49e7-8adb-41a0c18da848"
 
         user_storage_mock.is_user_admin.return_value = False
 
         presenter_mock.response_for_user_is_not_admin.return_value \
-            = expected_presenter_response_for_invalid_project_id_mock
+            = expected_result
 
         # Act
         response = interactor.add_members_to_team_member_levels_wrapper(
-            team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos,
+            team_member_level_id_with_member_ids_dtos=
+            team_member_level_id_with_member_ids_dtos,
             presenter=presenter_mock, team_id=team_id, user_id=user_id
         )
 
         # Assert
-        assert response == \
-               expected_presenter_response_for_invalid_project_id_mock
+        assert response == expected_result
         user_storage_mock.is_user_admin.assert_called_with(user_id=user_id)
         presenter_mock.response_for_user_is_not_admin.assert_called_once()
 
@@ -113,7 +113,7 @@ class TestAddMembersToLevelsInteractor:
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         team_member_level_id_with_member_ids_dtos = \
             prepare_level_id_with_member_ids_dtos
-        expected_presenter_response_for_invalid_team_id_mock = Mock()
+        expected_result = Mock()
         user_id = "00be920b-7b4c-49e7-8adb-41a0c18da848"
 
         from ib_iam.exceptions.custom_exceptions import InvalidTeamId
@@ -121,17 +121,17 @@ class TestAddMembersToLevelsInteractor:
         user_storage_mock.is_user_admin.return_value = True
 
         presenter_mock.response_for_invalid_team_id.return_value \
-            = expected_presenter_response_for_invalid_team_id_mock
+            = expected_result
 
         # Act
         response = interactor.add_members_to_team_member_levels_wrapper(
-            team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos,
+            team_member_level_id_with_member_ids_dtos=
+            team_member_level_id_with_member_ids_dtos,
             presenter=presenter_mock, team_id=team_id, user_id=user_id
         )
 
         # Assert
-        assert response == \
-               expected_presenter_response_for_invalid_team_id_mock
+        assert response == expected_result
         team_member_level_storage_mock.validate_team_id.assert_called_with(
             team_id=team_id)
         presenter_mock.response_for_invalid_team_id.assert_called_once()
@@ -144,8 +144,7 @@ class TestAddMembersToLevelsInteractor:
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         team_member_level_id_with_member_ids_dtos = \
             prepare_level_id_with_member_ids_dtos
-        expected_presenter_response_for_team_member_level_ids_not_found_mock = \
-            Mock()
+        expected_result = Mock()
         team_member_level_ids_in_database = [
             "b52d31f3-7359-4a5a-b81d-579acd460942"
         ]
@@ -156,7 +155,7 @@ class TestAddMembersToLevelsInteractor:
         user_id = "00be920b-7b4c-49e7-8adb-41a0c18da848"
 
         presenter_mock.response_for_team_member_level_ids_not_found. \
-            return_value = expected_presenter_response_for_team_member_level_ids_not_found_mock
+            return_value = expected_result
 
         team_member_level_storage_mock.get_team_member_level_ids.return_value = \
             team_member_level_ids_in_database
@@ -169,8 +168,7 @@ class TestAddMembersToLevelsInteractor:
         )
 
         # Assert
-        assert response == \
-               expected_presenter_response_for_team_member_level_ids_not_found_mock
+        assert response == expected_result
 
         call_args = \
             presenter_mock.response_for_team_member_level_ids_not_found.call_args
@@ -212,7 +210,7 @@ class TestAddMembersToLevelsInteractor:
         ]
         user_id = "00be920b-7b4c-49e7-8adb-41a0c18da848"
 
-        expected_presenter_response_for_team_member_ids_not_found_mock = Mock()
+        expected_result = Mock()
 
         team_member_level_storage_mock.get_team_member_level_ids.return_value = \
             team_member_level_ids_in_database
@@ -221,17 +219,17 @@ class TestAddMembersToLevelsInteractor:
         user_storage_mock.is_user_admin.return_value = True
 
         presenter_mock.response_for_team_member_ids_not_found.return_value = \
-            expected_presenter_response_for_team_member_ids_not_found_mock
+            expected_result
 
         # Act
         response = interactor.add_members_to_team_member_levels_wrapper(
-            team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos,
+            team_member_level_id_with_member_ids_dtos=
+            team_member_level_id_with_member_ids_dtos,
             presenter=presenter_mock, team_id=team_id, user_id=user_id
         )
 
         # Assert
-        assert response == \
-               expected_presenter_response_for_team_member_ids_not_found_mock
+        assert response == expected_result
 
         call_args = presenter_mock.response_for_team_member_ids_not_found.call_args
         error_object = call_args[0][0]
@@ -268,8 +266,7 @@ class TestAddMembersToLevelsInteractor:
         ]
         user_id = "00be920b-7b4c-49e7-8adb-41a0c18da848"
 
-        expected_presenter_prepare_success_response_for_add_members_to_levels = \
-            Mock()
+        expected_result = Mock()
 
         team_member_level_storage_mock.get_team_member_level_ids.return_value = \
             team_member_level_ids_in_database
@@ -278,7 +275,7 @@ class TestAddMembersToLevelsInteractor:
         user_storage_mock.is_user_admin.return_value = True
 
         presenter_mock.prepare_success_response_for_add_members_to_team_member_levels. \
-            return_value = expected_presenter_prepare_success_response_for_add_members_to_levels
+            return_value = expected_result
 
         # Act
         response = interactor.add_members_to_team_member_levels_wrapper(
@@ -287,8 +284,7 @@ class TestAddMembersToLevelsInteractor:
         )
 
         # Assert
-        assert response == \
-               expected_presenter_prepare_success_response_for_add_members_to_levels
+        assert response == expected_result
 
         presenter_mock.prepare_success_response_for_add_members_to_team_member_levels. \
             assert_called_once()
