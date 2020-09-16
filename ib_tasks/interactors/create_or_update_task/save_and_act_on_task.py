@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import Union, Optional
 
 from ib_tasks.constants.enum import ActionTypes
@@ -38,12 +37,13 @@ from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     TaskDelayReasonIsNotUpdated, PriorityIsRequired, InvalidTaskJson
 from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
     UpdateTaskInteractor
+from ib_tasks.interactors.dtos.dtos import TaskOverallCompleteDetailsDTO
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.mixins.task_operations_utilities_mixin import \
     TaskOperationsUtilitiesMixin
 from ib_tasks.interactors.presenter_interfaces.dtos import \
-    AllTasksOverviewDetailsDTO, TaskCompleteDetailsDTO
+    AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.presenter_interfaces \
     .save_and_act_on_task_presenter_interface import \
     SaveAndActOnATaskPresenterInterface
@@ -72,17 +72,9 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO, \
     SaveAndActOnTaskDTO, \
-    SaveAndActOnTaskWithTaskDisplayIdDTO, UpdateTaskBasicDetailsDTO, \
-    TaskCurrentStageDetailsDTO
+    SaveAndActOnTaskWithTaskDisplayIdDTO, UpdateTaskBasicDetailsDTO
 from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor \
     import UserActionOnTaskInteractor
-
-
-@dataclass
-class TaskOverallCompleteDetailsDTO:
-    task_complete_details_dto: TaskCompleteDetailsDTO
-    task_current_stage_details_dto: TaskCurrentStageDetailsDTO
-    all_tasks_overview_details_dto: AllTasksOverviewDetailsDTO
 
 
 class SaveAndActOnATaskInteractor(

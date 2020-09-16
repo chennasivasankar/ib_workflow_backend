@@ -6,7 +6,6 @@ Author: Pavankumar Pamuru
 import abc
 from typing import List, Optional
 
-from ib_tasks.adapters.dtos import ProjectRolesDTO
 from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId, \
@@ -16,7 +15,8 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO, StageActionIdDTO, StageIdActionNameDTO
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectRolesDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import \
+    TaskProjectRolesDTO
 
 
 class ActionStorageInterface(abc.ABC):
@@ -117,4 +117,8 @@ class ActionStorageInterface(abc.ABC):
     def get_stage_action_name_dtos(
             self, stage_id_action_dtos: List[StageIdActionNameDTO]
     ) -> List[StageActionIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_stage_id_for_action_id(self, action_id: int):
         pass

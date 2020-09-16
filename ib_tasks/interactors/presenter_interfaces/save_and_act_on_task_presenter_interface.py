@@ -15,8 +15,7 @@ from ib_tasks.exceptions.stage_custom_exceptions import \
     DuplicateStageIds, InvalidDbStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import \
     TaskDelayReasonIsNotUpdated, PriorityIsRequired, InvalidTaskJson
-from ib_tasks.interactors.create_or_update_task.save_and_act_on_task import \
-    TaskOverallCompleteDetailsDTO
+from ib_tasks.interactors.dtos.dtos import TaskOverallCompleteDetailsDTO
 
 
 class SaveAndActOnATaskPresenterInterface(abc.ABC):

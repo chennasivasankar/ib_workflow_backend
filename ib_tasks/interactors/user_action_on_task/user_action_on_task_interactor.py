@@ -1,5 +1,6 @@
 import datetime
 from typing import List, Optional
+
 from ib_tasks.constants.enum import ViewType, ActionTypes
 from ib_tasks.exceptions.action_custom_exceptions import (
     InvalidActionException, InvalidPresentStageAction
@@ -394,9 +395,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         user_permitted_gof_ids = [
             dto.gof_id for dto in gof_id_with_display_name_dtos]
         field_id_with_display_name_dtos = \
-            self.field_storage \
-                .get_user_write_permitted_field_ids_for_given_gof_ids(
-                user_roles, user_permitted_gof_ids)
+            self.field_storage.get_user_writable_fields_for_given_gof_ids(
+                    user_roles, user_permitted_gof_ids)
         filled_gofs_with_task_gof_ids = \
             self.gof_storage.get_filled_task_gofs_with_gof_id(task_id)
         task_gof_ids = [

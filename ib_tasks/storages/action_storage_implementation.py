@@ -24,6 +24,10 @@ from ib_tasks.models import (StageAction, Stage, ActionPermittedRoles,
 
 class ActionsStorageImplementation(ActionStorageInterface):
 
+    def get_stage_id_for_action_id(self, action_id: int):
+        stage_id = StageAction.objects.get(id=action_id).stage_id
+        return stage_id
+
     def validate_action_id(
             self, action_id) -> Optional[InvalidActionException]:
         try:
@@ -105,7 +109,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
             else:
                 q = q | current_queue
 
-        action_objs = StageAction.objects.filter(q)\
+        action_objs = StageAction.objects.filter(q) \
             .annotate(normal_stage=F('stage__stage_id'))
 
         list_of_permitted_roles = self._get_list_of_permitted_roles_objs(
@@ -151,7 +155,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
             else:
                 q = q | current_queue
 
-        action_objs = StageAction.objects.filter(q)\
+        action_objs = StageAction.objects.filter(q) \
             .annotate(normal_stage=F('stage__stage_id'))
         ActionPermittedRoles.objects.filter(action__in=action_objs).delete()
 
@@ -170,7 +174,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
         for action_obj in action_objs:
             key = action_obj.normal_stage + action_obj.name
             roles = stage_id_action_name_roles_map[key]
-            self._append_roles_to_permitted_roles(action_obj, roles, action_roles)
+            self._append_roles_to_permitted_roles(action_obj, roles,
+                                                  action_roles)
         return action_roles
 
     @staticmethod
@@ -197,7 +202,6 @@ class ActionsStorageImplementation(ActionStorageInterface):
             key = stage_id + action_name
             stage_id_action_name_map[key] = stage_action.roles
         return stage_id_action_name_map
-
 
     def delete_stage_actions(self, stage_actions: List[StageActionNamesDTO]):
         stage_actions_dict = [{'stage_id': stage.stage_id,

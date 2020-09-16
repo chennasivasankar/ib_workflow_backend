@@ -27,8 +27,7 @@ from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
     TaskDelayReasonIsNotUpdated, \
     PriorityIsRequired, InvalidTaskJson
-from ib_tasks.interactors.create_or_update_task.save_and_act_on_task import \
-    TaskOverallCompleteDetailsDTO
+from ib_tasks.interactors.dtos.dtos import TaskOverallCompleteDetailsDTO
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO

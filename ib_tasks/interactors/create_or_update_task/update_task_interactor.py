@@ -252,7 +252,8 @@ class UpdateTaskInteractor(
             gof_fields_dtos=task_dto.gof_fields_dtos,
             user_id=task_dto.task_basic_details.created_by_id,
             task_template_id=task_template_id, project_id=project_id,
-            action_type=task_dto.task_basic_details.action_type)
+            action_type=task_dto.task_basic_details.action_type,
+            stage_id=task_dto.stage_assignee.stage_id)
 
     def _update_task_details(self, task_dto: UpdateTaskDTO):
         task_crud_interactor = TaskCrudOperationsInteractor(
