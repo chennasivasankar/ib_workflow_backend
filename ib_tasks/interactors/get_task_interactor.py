@@ -144,6 +144,10 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             self._stage_assignee_with_team_details_dtos(
                 task_id, stage_ids, project_id
             )
+        task_gof_dtos = task_details_dto.task_gof_dtos
+        stage_task_gof_dtos = self._get_stage_task_gof_dtos(stage_ids,
+                                                            task_gof_dtos)
+        task_details_dto.task_gof_dtos = stage_task_gof_dtos
         task_complete_details_dto = TaskCompleteDetailsDTO(
             task_details_dto=task_details_dto,
             stages_and_actions_details_dtos=stages_and_actions_details_dtos,
@@ -158,6 +162,24 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         )
         task_details_dto = get_task_base_interactor.get_task(task_id)
         return task_details_dto
+
+    def _get_stage_task_gof_dtos(
+            self, stage_ids: List[str],
+            task_gof_dtos: List[TaskGoFDTO]
+    ) -> List[TaskGoFDTO]:
+
+        gof_ids = [
+            task_gof_dto.gof_id
+            for task_gof_dto in task_gof_dtos
+        ]
+        stage_gof_ids = self.stage_storage.get_stages_permission_gof_ids(
+            stage_ids, gof_ids)
+        stage_task_gof_dtos = [
+            task_gof_dto
+            for task_gof_dto in task_gof_dtos
+            if task_gof_dto.gof_id in stage_gof_ids
+        ]
+        return stage_task_gof_dtos
 
     @staticmethod
     def _get_user_roles_for_the_project(
@@ -302,7 +324,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         field_id = permission_task_gof_field_dto.field_id
         task_gof_id = permission_task_gof_field_dto.task_gof_id
         for field_searchable_dto in field_searchable_dtos:
-            is_field_matches = field_id == field_searchable_dto.field_id and\
+            is_field_matches = field_id == field_searchable_dto.field_id and \
                                task_gof_id == field_searchable_dto.task_gof_id
             if is_field_matches:
                 return field_searchable_dto.field_response

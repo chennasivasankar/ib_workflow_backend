@@ -9,5 +9,5 @@ class StageGoF(models.Model):
 
     def __str__(self):
         return "{} gof in stage {}".format(
-            self.gof_id, self.stage_id
+            self.gof_id, self.stage.stage_id
         )
