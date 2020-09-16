@@ -98,7 +98,10 @@ class TestAddTaskDueDetails:
     ):
         # Arrange
         task_display_id = "iBWF-1"
+        task_id = 1
         due_details.due_date_time = datetime(2020, 8, 10)
+        task_storage_mock.get_task_id_for_task_display_id.return_value = 1
+        task_storage_mock.get_task_due_datetime.return_value = datetime.now()
 
         storage_mock.validate_task_id.return_value = True
 
@@ -109,6 +112,8 @@ class TestAddTaskDueDetails:
                 task_display_id=task_display_id)
 
         # Assert
+        task_storage_mock.get_task_due_datetime.assert_called_once_with(
+                task_id)
         presenter_mock.response_for_invalid_due_datetime.assert_called_once()
 
     def test_given_invalid_reason_id_raises_exception(
@@ -118,6 +123,7 @@ class TestAddTaskDueDetails:
         task_display_id = "iBWF-1"
         due_details.reason_id = 6
         task_storage_mock.get_task_id_for_task_display_id.return_value = 1
+        task_storage_mock.get_task_due_datetime.return_value = datetime.now()
         storage_mock.validate_if_task_is_assigned_to_user_in_given_stage \
             .return_value = True
 
@@ -140,15 +146,18 @@ class TestAddTaskDueDetails:
                                                         task_storage_mock):
         # Arrange
         task_display_id = "iBWF-1"
+        task_id = 1
+        stage_id = due_details.stage_id
         storage_due_details = TaskDelayParametersDTO(
                 task_id=1,
                 user_id=due_details.user_id,
                 reason_id=due_details.reason_id,
                 reason="reason",
-                stage_id=due_details.stage_id,
+                stage_id=stage_id,
                 due_date_time=due_details.due_date_time
         )
         task_storage_mock.get_task_id_for_task_display_id.return_value = 1
+        task_storage_mock.get_task_due_datetime.return_value = datetime.now()
         storage_mock.validate_if_task_is_assigned_to_user_in_given_stage \
             .return_value = True
 
@@ -159,6 +168,8 @@ class TestAddTaskDueDetails:
                 task_display_id=task_display_id)
 
         # Assert
+        task_storage_mock.get_task_due_datetime.assert_called_once_with(
+                task_id)
         storage_mock.add_due_delay_details.assert_called_once_with(
                 storage_due_details)
         storage_mock.update_task_due_datetime.assert_called_once_with(
