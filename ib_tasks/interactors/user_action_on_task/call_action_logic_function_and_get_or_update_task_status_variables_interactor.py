@@ -67,7 +67,7 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
             template_id=task_dto.task_base_details_dto.template_id)
         task_gof_fields_dto = task_dto.task_gof_field_dtos
         task_gof_fields_dto_dict = self._get_task_gof_fields_dict(
-            task_gof_fields_dto, task_gof_fields_dto)
+            task_gof_fields_dto)
         status_variable_dtos = self.storage\
             .get_status_variables_to_task(task_id=self.task_id)
         task_dict = self._get_task_dict(
@@ -235,24 +235,31 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
         return gof_multiple_enable_dict
 
     def _get_task_gof_fields_dict(
-            self, fields_dto: List[TaskGoFFieldDTO],
-            task_gof_fields_dto: List[TaskGoFFieldDTO]
+            self, fields_dto: List[TaskGoFFieldDTO]
     ) -> Dict[int, Dict[str, Any]]:
-        field_ids = self._get_field_ids(task_gof_fields_dto)
+        field_ids = self._get_field_ids(fields_dto)
         field_type_dtos = self.field_storage.get_field_type_dtos(field_ids)
         from collections import defaultdict
         task_gof_fields_dict = defaultdict(dict)
         field_type_dict = self._get_field_type_dict(field_type_dtos)
         for field_dto in fields_dto:
-            field_id = field_dto.field_id
-            response = field_dto.field_response
-            task_gof_id = field_dto.task_gof_id
-            if self._check_field_type_number_or_float(
-                    field_type_dict[field_id]):
-                response = float(field_dto.field_response)
-            task_gof_fields_dict[task_gof_id][field_id] = response
-
+            self._append_field_to_task_gof_field_dict(
+                field_dto, task_gof_fields_dict, field_type_dict
+            )
         return task_gof_fields_dict
+
+    def _append_field_to_task_gof_field_dict(
+            self, field_dto: TaskGoFFieldDTO,
+            task_gof_fields_dict: Dict[int, Dict[str, Any]],
+            field_type_dict: Dict[str, FieldTypes]
+    ):
+        field_id = field_dto.field_id
+        response = field_dto.field_response
+        task_gof_id = field_dto.task_gof_id
+        if self._check_field_type_number_or_float(
+                field_type_dict[field_id]):
+            response = float(field_dto.field_response)
+        task_gof_fields_dict[task_gof_id][field_id] = response
 
     @staticmethod
     def _get_field_type_dict(
