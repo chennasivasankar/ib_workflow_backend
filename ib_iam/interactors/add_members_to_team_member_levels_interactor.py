@@ -36,7 +36,8 @@ class AddMembersToTeamMemberLevelsInteractor(ValidationMixin):
         from ib_iam.exceptions.custom_exceptions import InvalidTeamId
         try:
             response = self._add_members_to_team_member_levels_response(
-                team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos,
+                team_member_level_id_with_member_ids_dtos=
+                team_member_level_id_with_member_ids_dtos,
                 presenter=presenter, team_id=team_id, user_id=user_id
             )
         except UserIsNotAdmin:
@@ -60,11 +61,11 @@ class AddMembersToTeamMemberLevelsInteractor(ValidationMixin):
             team_id: str, user_id: str
     ):
         self.add_members_to_team_member_levels(
-            team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos,
+            team_member_level_id_with_member_ids_dtos=
+            team_member_level_id_with_member_ids_dtos,
             team_id=team_id, user_id=user_id
         )
-        response = \
-            presenter.prepare_success_response_for_add_members_to_team_member_levels()
+        response = presenter.prepare_success_response_for_add_members_to_team_member_levels()
         return response
 
     def add_members_to_team_member_levels(
@@ -77,14 +78,17 @@ class AddMembersToTeamMemberLevelsInteractor(ValidationMixin):
 
         self._validate_team_member_level_ids(
             team_id=team_id,
-            team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos
+            team_member_level_id_with_member_ids_dtos=
+            team_member_level_id_with_member_ids_dtos
         )
         self._validate_team_member_ids(
             team_id=team_id,
-            team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos
+            team_member_level_id_with_member_ids_dtos=
+            team_member_level_id_with_member_ids_dtos
         )
         self.team_member_level_storage.add_members_to_levels_for_a_team(
-            team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos,
+            team_member_level_id_with_member_ids_dtos=
+            team_member_level_id_with_member_ids_dtos,
         )
         return
 
