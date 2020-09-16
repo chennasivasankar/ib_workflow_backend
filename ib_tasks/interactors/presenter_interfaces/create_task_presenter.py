@@ -10,7 +10,7 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
 from ib_tasks.exceptions.fields_custom_exceptions import \
     UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import \
-    UserDidNotFillRequiredGoFs
+    UserDidNotFillRequiredGoFs, InvalidStagePermittedGoFs
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException, InvalidStageIdsListException, \
     DuplicateStageIds, InvalidDbStageIdsListException, \
@@ -243,4 +243,9 @@ class CreateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_invalid_project_id(self, err: InvalidProjectId):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_stage_permitted_gofs(self,
+                                           err: InvalidStagePermittedGoFs):
         pass

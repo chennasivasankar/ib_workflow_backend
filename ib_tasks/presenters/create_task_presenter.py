@@ -14,7 +14,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
 from ib_tasks.exceptions.fields_custom_exceptions import \
     UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import \
-    DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs
+    DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs, \
+    InvalidStagePermittedGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserBoardPermissionDenied, UserActionPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import \
@@ -55,6 +56,10 @@ class CreateTaskPresenterImplementation(
 
     def raise_invalid_fields_given_to_a_gof(self, err):
         return self.raise_invalid_fields_given_to_a_gof_exception(err)
+
+    def raise_invalid_stage_permitted_gofs(
+            self, err: InvalidStagePermittedGoFs):
+        return self.raise_invalid_stage_permitted_gofs_exception(err)
 
     def raise_user_needs_gof_writable_permission(self, err):
         return self.raise_user_needs_gof_writable_permission_exception(err)

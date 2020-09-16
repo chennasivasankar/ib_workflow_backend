@@ -23,7 +23,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
     DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
-    DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs
+    DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs, \
+    InvalidStagePermittedGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserActionPermissionDenied
@@ -151,6 +152,8 @@ class SaveAndActOnATaskInteractor(
             return presenter.raise_duplicate_field_ids_to_a_gof(err)
         except InvalidFieldsOfGoF as err:
             return presenter.raise_invalid_fields_given_to_a_gof(err)
+        except InvalidStagePermittedGoFs as err:
+            return presenter.raise_invalid_stage_permitted_gofs(err)
         except UserNeedsGoFWritablePermission as err:
             return presenter.raise_user_needs_gof_writable_permission(err)
         except UserNeedsFieldWritablePermission as err:

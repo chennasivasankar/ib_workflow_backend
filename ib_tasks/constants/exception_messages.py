@@ -469,3 +469,8 @@ INVALID_TASK_JSON = (
     "Invalid task json object recieved",
     "INVALID_TASK_JSON"
 )
+
+INVALID_STAGE_PERMITTED_GOFS = (
+    "{} gof ids are not permitted for the stage {}",
+    "INVALID_STAGE_PERMITTED_GOFS"
+)

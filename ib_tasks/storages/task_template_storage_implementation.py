@@ -18,6 +18,18 @@ from ib_tasks.models import TaskTemplate, TaskTemplateGoFs, ProjectTaskTemplate
 
 class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
+    def get_stage_permitted_gof_ids(self, stage_id: int) -> List[str]:
+        from ib_tasks.models import StageGoF
+        gof_ids = StageGoF.objects.filter(stage_id=stage_id).values_list(
+            'gof_id', flat=True)
+        return gof_ids
+
+    def get_task_template_initial_stage_id(self, task_template_id: str):
+        from ib_tasks.models import TaskTemplateInitialStage
+        stage_id = TaskTemplateInitialStage.objects.get(
+            task_template_id=task_template_id).stage_id
+        return stage_id
+
     def get_project_templates(self, project_id: str) -> List[str]:
         project_templates = \
             ProjectTaskTemplate.objects.filter(project_id=project_id). \
