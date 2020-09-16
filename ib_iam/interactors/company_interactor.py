@@ -1,7 +1,6 @@
 from ib_iam.exceptions.custom_exceptions import (
     CompanyNameAlreadyExists, DuplicateUserIds, InvalidCompanyId,
-    InvalidUserIds, UserIsNotAdmin,
-    UserIdsAreInvalid)
+    UserIsNotAdmin, UserIdsAreInvalid)
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
     .add_company_presenter_interface import AddCompanyPresenterInterface

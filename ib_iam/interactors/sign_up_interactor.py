@@ -74,14 +74,14 @@ class SignupInteractor(ValidationMixin):
         self.user_storage.create_user(
             user_id=user_id, is_admin=False, name=name
         )
-        self._create_elastic_user(user_id=user_id, name=name)
+        self._create_elastic_user(user_id=user_id, name=name, email=email)
         self._send_email_verify_link(
             user_id=user_id, name=name, email=email
         )
 
-    def _create_elastic_user(self, user_id: str, name: str):
+    def _create_elastic_user(self, user_id: str, name: str, email: str):
         elastic_user_id = self.elastic_storage.create_elastic_user(
-            user_id=user_id, name=name
+            user_id=user_id, name=name, email=email
         )
         self.elastic_storage.create_elastic_user_intermediary(
             elastic_user_id=elastic_user_id, user_id=user_id
