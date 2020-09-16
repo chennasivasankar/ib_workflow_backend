@@ -283,7 +283,7 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
             is_transition_template=True).values_list('template_id', flat=True))
         return transition_ids
 
-    def get_gofs_to_template_from_permitted_gofs(
+    def get_gofs_to_template_from_given_gofs(
             self, gof_ids: List[str],
             template_id: str) -> List[GoFToTaskTemplateDTO]:
         task_template_gofs = TaskTemplateGoFs.objects.filter(
@@ -356,3 +356,12 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
             ).values_list('task_template_id', flat=True)
         ).values_list('project_id', flat=True)
         return list(set(project_ids))
+
+    def get_gof_ids_of_templates(self, template_ids: List[str]) -> List[str]:
+        gof_ids_of_templates_queryset = \
+            TaskTemplateGoFs.objects.filter(
+                task_template_id__in=template_ids
+            ).values_list('gof_id', flat=True)
+
+        gof_ids_of_templates_list = list(gof_ids_of_templates_queryset)
+        return gof_ids_of_templates_list

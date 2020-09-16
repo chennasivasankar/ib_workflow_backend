@@ -234,3 +234,13 @@ class UserRoleValidationInteractor:
                 user_id=user_id, project_id=project_id
         )
         return user_roles
+
+    @staticmethod
+    def get_user_permitted_stage_ids_in_given_stage_ids(
+            user_roles: List[str], stage_ids: List[int],
+            stage_storage: StageStorageInterface) -> List[int]:
+
+        permitted_stage_ids = stage_storage.get_user_permitted_stage_ids(
+                roles=user_roles, stage_ids=stage_ids
+        )
+        return permitted_stage_ids

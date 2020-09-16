@@ -1,6 +1,6 @@
 from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
-from ib_tasks.tests.factories.storage_dtos import (TaskDetailsDTOFactory,
-                                                   StageActionDetailsDTOFactory)
+from ib_tasks.tests.factories.storage_dtos import (
+    StageActionDetailsDTOFactory)
 
 
 
@@ -205,3 +205,23 @@ def prepare_actions_for_get_task_fields_and_actions(mocker, action_dtos):
         'ib_tasks.interactors.get_task_actions.GetTaskActionsInteractor'
         '.get_task_actions')
     mock.return_value = action_dtos
+
+
+def get_gof_ids_having_read_permission_for_user_mock(mocker):
+    mock_method = mocker.patch(
+        "ib_tasks.interactors.user_role_validation_interactor."
+        "UserRoleValidationInteractor."
+        "get_gof_ids_having_read_permission_for_user")
+    gof_ids = ["gof_1", "gof_2"]
+    mock_method.return_value = gof_ids
+    return mock_method
+
+
+def get_field_ids_having_read_permission_for_user_mock(mocker):
+    mock_method = mocker.patch(
+        "ib_tasks.interactors.user_role_validation_interactor."
+        "UserRoleValidationInteractor."
+        "get_field_ids_having_read_permission_for_user")
+    field_ids = ['field0', 'field1', 'field2', 'field3']
+    mock_method.return_value = field_ids
+    return mock_method

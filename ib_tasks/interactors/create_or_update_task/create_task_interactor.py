@@ -80,8 +80,8 @@ from ib_tasks.interactors.task_dtos import (
 from ib_tasks.interactors.user_action_on_task \
     .call_action_logic_function_and_get_or_update_task_status_variables_interactor \
     import InvalidMethodFound
-from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor import \
-    UserActionOnTaskInteractor
+from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor \
+    import UserActionOnTaskInteractor
 
 
 @dataclass
