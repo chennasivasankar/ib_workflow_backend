@@ -117,12 +117,13 @@ class UserStorageImplementation(UserStorageInterface):
             self, offset: int, limit: int, name_search_query: str
     ) -> List[UserDTO]:
         from ib_iam.models import UserDetails
-        users = UserDetails.objects.filter(
+        from django.db.models.functions import Lower
+        users_query_set = UserDetails.objects.filter(
             name__icontains=name_search_query
-        )[offset: offset + limit]
+        ).order_by(Lower('name'))[offset: offset + limit]
         user_dtos = [
             self._convert_to_user_dto(user_object=user_object)
-            for user_object in users
+            for user_object in users_query_set
         ]
         return user_dtos
 
@@ -344,14 +345,6 @@ class UserStorageImplementation(UserStorageInterface):
 
         user_ids_list = list(user_ids_queryset)
         return user_ids_list
-
-    # def get_db_role_ids(self, role_ids: List[str]) -> List[str]:
-    #     from ib_iam.models import ProjectRole
-    #     db_role_ids_queryset = \
-    #         ProjectRole.objects.filter(
-    #             role_id__in=role_ids).values_list('id', flat=True)
-    #     db_role_ids_list = list(db_role_ids_queryset)
-    #     return db_role_ids_list
 
     @staticmethod
     def _convert_to_user_details_dto(user_details_object):
