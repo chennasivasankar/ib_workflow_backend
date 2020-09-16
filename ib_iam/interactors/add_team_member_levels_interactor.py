@@ -58,7 +58,8 @@ class AddTeamMemberLevelsInteractor(ValidationMixin):
             response = presenter.response_for_negative_level_hierarchies(err)
         except DuplicateTeamMemberLevelNames as err:
             response = presenter.response_for_duplicate_team_member_level_names(
-                err)
+                err
+            )
         return response
 
     def _add_team_member_levels_response(
@@ -69,8 +70,7 @@ class AddTeamMemberLevelsInteractor(ValidationMixin):
         self.add_team_member_levels(
             team_id=team_id, user_id=user_id,
             team_member_level_dtos=team_member_level_dtos)
-        response = presenter. \
-            prepare_success_response_for_add_team_member_levels_to_team()
+        response = presenter.prepare_success_response_for_add_team_member_levels_to_team()
         return response
 
     def add_team_member_levels(
@@ -86,9 +86,11 @@ class AddTeamMemberLevelsInteractor(ValidationMixin):
             for team_member_level_dto in team_member_level_dtos
         ]
         self._validate_duplicate_level_hierarchies(
-            level_hierarchies=level_hierarchies)
+            level_hierarchies=level_hierarchies
+        )
         self._validate_negative_level_hierarchies(
-            level_hierarchies=level_hierarchies)
+            level_hierarchies=level_hierarchies
+        )
         self._validate_duplicate_team_member_level_names(
             team_member_level_names=team_member_level_names
         )
@@ -124,7 +126,8 @@ class AddTeamMemberLevelsInteractor(ValidationMixin):
 
     @staticmethod
     def _validate_duplicate_team_member_level_names(
-            team_member_level_names: List[str]):
+            team_member_level_names: List[str]
+    ):
         duplicate_team_member_level_names = [
             team_member_level_name
             for team_member_level_name, count in
