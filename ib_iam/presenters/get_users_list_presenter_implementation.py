@@ -84,6 +84,7 @@ class GetUsersListPresenterImplementation(GetUsersListPresenterInterface,
             "user_id": user_profile_dto.user_id,
             "name": user_profile_dto.name,
             "email": user_profile_dto.email,
+            "is_email_verified": user_profile_dto.is_email_verified,
             "teams": self._convert_to_teams_dict(user_team_dtos),
             "company": self._convert_to_company_dict(user_company_dto),
             "roles": self._convert_to_roles_dict(user_role_dtos)
