@@ -1,11 +1,10 @@
-from unittest.mock import patch
-
 import pytest
 
 
 class TestAuthService:
 
-    def prepare_get_user_profile_bulk_mock(self, mocker):
+    @staticmethod
+    def prepare_get_user_profile_bulk_mock(mocker):
         mock = mocker.patch(
             "ib_users.interfaces.service_interface.ServiceInterface.get_user_profile_bulk"
         )
@@ -19,11 +18,13 @@ class TestAuthService:
             "9cc22e39-2390-4d96-b7ac-6bb27816461f",
             "cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a"
         ]
+
         from ib_users.interactors.exceptions.user_profile import \
             InvalidUserException
         from ib_users.constants.user_profile.error_types import \
             EMPTY_USER_ID_ERROR_TYPE
         from ib_users.constants.user_profile.error_messages import EMPTY_USER_ID
+
         get_user_profile_dtos_mock = self.prepare_get_user_profile_bulk_mock(
             mocker=mocker)
         get_user_profile_dtos_mock.side_effect = InvalidUserException(
@@ -31,8 +32,8 @@ class TestAuthService:
         )
 
         from ib_discussions.adapters.service_adapter import ServiceAdapter
-        serice_adapter = ServiceAdapter()
-        auth_service = serice_adapter.auth_service
+        service_adapter = ServiceAdapter()
+        auth_service = service_adapter.auth_service
 
         # Assert
         from ib_discussions.exceptions.custom_exceptions import InvalidUserId
@@ -60,8 +61,8 @@ class TestAuthService:
         )
 
         from ib_discussions.adapters.service_adapter import ServiceAdapter
-        serice_adapter = ServiceAdapter()
-        auth_service = serice_adapter.auth_service
+        service_adapter = ServiceAdapter()
+        auth_service = service_adapter.auth_service
 
         # Assert
         from ib_discussions.exceptions.custom_exceptions import InvalidUserId

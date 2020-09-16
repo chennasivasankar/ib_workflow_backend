@@ -1,11 +1,13 @@
 import datetime
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 from django.db.models import Q
 
 from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
+from ib_tasks.interactors.stage_dtos import DBStageIdWithGoFIdsDTO, \
+    DBStageIdWithStageIdDTO
 from ib_tasks.interactors.stages_dtos import StageDTO, \
     TaskIdWithStageAssigneeDTO, StageAssigneeDTO, StageMinimalDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
@@ -33,7 +35,8 @@ from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     GlobalConstant, \
     StagePermittedRoles, TaskTemplateInitialStage, Stage, \
     TaskTemplateStatusVariable, ProjectTaskTemplate, ActionPermittedRoles, \
-    StageAction, CurrentTaskStage, FieldRole, TaskStageHistory, TaskStageRp
+    StageAction, CurrentTaskStage, FieldRole, TaskStageHistory, TaskStageRp, \
+    StageGoF
 from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
 
 
@@ -191,8 +194,7 @@ class StagesStorageImplementation(StageStorageInterface):
         list_of_stage_ids = [stage.stage_id
                              for stage in update_stages_information]
         stages = Stage.objects.filter(stage_id__in=list_of_stage_ids)
-        StagePermittedRoles.objects.filter(
-                stage__stage_id__in=stage_ids).delete()
+        StagePermittedRoles.objects.filter(stage__in=stages).delete()
         list_of_permitted_roles = self._get_list_of_permitted_roles_objs(
             stages, update_stages_information)
         StagePermittedRoles.objects.bulk_create(list_of_permitted_roles)
@@ -521,6 +523,60 @@ class StagesStorageImplementation(StageStorageInterface):
             for stage_flow_dto in stage_flow_dtos
         ]
         StageFlow.objects.bulk_create(stage_flow_instances)
+
+    def get_db_stage_ids_with_stage_ids_dtos(
+            self, stage_ids: List[str]) -> List[DBStageIdWithStageIdDTO]:
+        stage_ids_and_db_stage_ids_values = \
+            Stage.objects.filter(
+                stage_id__in=stage_ids).values('id', 'stage_id')
+
+        db_stage_id_with_stage_id_dtos = \
+            self._convert_db_stage_ids_with_stage_id_dtos(
+                stage_ids_and_db_stage_ids_values=
+                stage_ids_and_db_stage_ids_values
+            )
+        return db_stage_id_with_stage_id_dtos
+
+    def create_stage_gofs(
+            self, stage_id_with_gof_ids_dtos: List[DBStageIdWithGoFIdsDTO]):
+        stage_gof_objects = self._get_stage_gof_objects(
+            stage_id_with_gof_ids_dtos=stage_id_with_gof_ids_dtos
+        )
+        StageGoF.objects.bulk_create(stage_gof_objects)
+
+    def get_existing_gof_ids_of_stage(self, stage_id: str) -> List[str]:
+        gof_ids_of_stage_queryset = StageGoF.objects.filter(
+            stage_id=stage_id).values_list('gof_id', flat=True)
+
+        gof_ids_of_stage_list = list(gof_ids_of_stage_queryset)
+        return gof_ids_of_stage_list
+
+    @staticmethod
+    def _get_stage_gof_objects(
+            stage_id_with_gof_ids_dtos: List[DBStageIdWithGoFIdsDTO]):
+        stage_gof_objs = []
+        for stage_id_with_gof_ids_dto in stage_id_with_gof_ids_dtos:
+            for gof_id in stage_id_with_gof_ids_dto.gof_ids:
+                stage_gof_objs.append(
+                    StageGoF(
+                        stage_id=stage_id_with_gof_ids_dto.db_stage_id,
+                        gof_id=gof_id
+                    )
+                )
+        return stage_gof_objs
+
+    @staticmethod
+    def _convert_db_stage_ids_with_stage_id_dtos(
+            stage_ids_and_db_stage_ids_values: List[Dict]
+    ) -> List[DBStageIdWithStageIdDTO]:
+        db_stage_ids_with_stage_id_dtos = [
+            DBStageIdWithStageIdDTO(
+                db_stage_id=stage_id_and_db_stage_id['id'],
+                stage_id=stage_id_and_db_stage_id['stage_id']
+            )
+            for stage_id_and_db_stage_id in stage_ids_and_db_stage_ids_values
+        ]
+        return db_stage_ids_with_stage_id_dtos
 
     @staticmethod
     def _get_stage_ids(stage_flow_dtos: List[StageFlowWithActionIdDTO]):

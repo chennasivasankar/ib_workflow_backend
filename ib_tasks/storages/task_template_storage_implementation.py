@@ -334,3 +334,13 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
         ]
 
         return project_id_with_template_id_dtos
+
+    def get_project_id_to_template_stages(
+            self, stage_ids: List[str]) -> List[str]:
+        from ib_tasks.models import Stage
+        project_ids = ProjectTaskTemplate.objects.filter(
+            task_template_id__in=Stage.objects.filter(
+                stage_id__in=stage_ids
+            ).values_list('task_template_id', flat=True)
+        ).values_list('project_id', flat=True)
+        return list(set(project_ids))
