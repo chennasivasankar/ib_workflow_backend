@@ -58,7 +58,7 @@ class TestVerifyEmailInteractor:
         from ib_iam.adapters.dtos import UserProfileDTO
         get_user_profile_dto_mock.return_value = UserProfileDTO(
             email="example@gmail.com", user_id=user_id, name="Baba",
-            is_email_verify=True
+            is_email_verified=True
         )
         presenter_mock.raise_email_already_verified_exception.return_value \
             = Mock()
@@ -84,7 +84,7 @@ class TestVerifyEmailInteractor:
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
-            name="Baba", user_id=user_id, is_email_verify=False
+            name="Baba", user_id=user_id, is_email_verified=False
         )
 
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
