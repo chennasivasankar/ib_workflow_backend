@@ -40,7 +40,7 @@ class TestCase01VerifyEmailAPITestCase(TestUtils):
             email="example@gmail.com",
             user_id=user_id,
             name="Baba",
-            is_email_verify=False
+            is_email_verified=False
         )
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             update_is_email_verified_value_mock

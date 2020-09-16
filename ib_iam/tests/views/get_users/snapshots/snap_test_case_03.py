@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestCase03GetUsersAPITestCase.test_case status_code'] = '200'
@@ -18,6 +17,7 @@ snapshots['TestCase03GetUsersAPITestCase.test_case body'] = {
                 'company_name': 'company 0'
             },
             'email': 'devi@gmail.com',
+            'is_email_verified': True,
             'name': 'devi',
             'roles': [
                 {
@@ -40,6 +40,7 @@ snapshots['TestCase03GetUsersAPITestCase.test_case body'] = {
             },
             'email': 'durga@gmail.com',
             'name': 'durga',
+            'is_email_verified': True,
             'roles': [
                 {
                     'role_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb211',
