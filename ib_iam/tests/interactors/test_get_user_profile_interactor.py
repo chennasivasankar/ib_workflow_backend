@@ -21,8 +21,9 @@ class TestGetUserProfileInteractor:
             CompanyIdWithEmployeeIdsDTOFactory
         CompanyIdWithEmployeeIdsDTOFactory.reset_sequence(1)
         expected_company_id_with_employee_id_dto = \
-            CompanyIdWithEmployeeIdsDTOFactory(company_id="1",
-                                               employee_ids=["1", "3"])
+            CompanyIdWithEmployeeIdsDTOFactory(
+                company_id="1", employee_ids=["1", "3"]
+            )
         return expected_company_id_with_employee_id_dto
 
     @pytest.fixture
@@ -66,7 +67,7 @@ class TestGetUserProfileInteractor:
             UserWithExtraDetailsDTO
         CompleteUserProfileDTOFactory.reset_sequence(1)
         user_profile_dto = CompleteUserProfileDTOFactory(
-            user_id=user_id, is_admin=True, cover_page_url="url1")
+            user_id=user_id, is_admin=True, cover_page_url="http://sample.com")
         expected_response_dto = UserWithExtraDetailsDTO(
             user_profile_dto=user_profile_dto,
             company_dto=expected_company_dto,
@@ -191,8 +192,9 @@ class TestGetUserProfileInteractor:
         interactor = GetUserProfileInteractor(user_storage=storage_mock)
 
         # Act
-        interactor.get_user_profile_wrapper(user_id=user_id,
-                                            presenter=presenter_mock)
+        interactor.get_user_profile_wrapper(
+            user_id=user_id, presenter=presenter_mock
+        )
 
         # Assert
         storage_mock.get_user_details.assert_called_once_with(user_id=user_id)
@@ -212,5 +214,4 @@ class TestGetUserProfileInteractor:
             company_id="1"
         )
         presenter_mock.prepare_response_for_get_user_profile.assert_called_once_with(
-            user_with_extra_details_dto=user_with_extra_details_dto
-        )
+            user_with_extra_details_dto=user_with_extra_details_dto)
