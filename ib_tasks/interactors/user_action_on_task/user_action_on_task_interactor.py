@@ -205,7 +205,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
     def _get_task_current_board_complete_details(
             self, task_id: int, stage_ids: List[str]
     ) -> TaskCompleteDetailsDTO:
-        from ib_tasks.interactors.user_action_on_task.get_task_current_board_complete_details_interactor \
+        from ib_tasks.interactors.user_action_on_task\
+            .get_task_current_board_complete_details_interactor \
             import GetTaskCurrentBoardCompleteDetailsInteractor
         interactor = GetTaskCurrentBoardCompleteDetailsInteractor(
             task_stage_storage=self.task_stage_storage,
