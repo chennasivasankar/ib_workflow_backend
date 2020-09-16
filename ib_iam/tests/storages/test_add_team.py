@@ -8,6 +8,7 @@ from ib_iam.tests.common_fixtures.adapters.uuid_mock import uuid_mock
 class TestAddTeam:
 
     def test_given_valid_details_return_team_id(self, mocker):
+        # Arrange
         storage = TeamStorageImplementation()
 
         user_id = "155f3fa1-e4eb-4bfa-89e7-ca80edd23a6e"
@@ -20,12 +21,16 @@ class TestAddTeam:
         from ib_iam.interactors.storage_interfaces.dtos import \
             TeamNameAndDescriptionDTO
         team_name_and_description_dto = TeamNameAndDescriptionDTO(
-            name=team_name, description=team_description)
+            name=team_name, description=team_description
+        )
 
+        # Act
         actual_team_id = storage.add_team(
             user_id=user_id,
-            team_name_and_description_dto=team_name_and_description_dto)
+            team_name_and_description_dto=team_name_and_description_dto
+        )
 
+        # Assert
         from ib_iam.models import Team
         team_object = Team.objects.get(team_id=actual_team_id)
         assert actual_team_id == expected_team_id

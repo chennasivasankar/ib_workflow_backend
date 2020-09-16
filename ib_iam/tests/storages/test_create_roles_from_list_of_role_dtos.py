@@ -28,9 +28,9 @@ class TestCreateRoles:
         # Assert
         current_storage_len = ProjectRole.objects.count()
         no_of_objects_created = current_storage_len - previous_storage_len
-        expeected_role_objs = ProjectRole.objects.all()
+        expected_role_objs = ProjectRole.objects.all()
         assert no_of_objects_created == objects_count
-        for role_dto, role_obj in zip(role_dtos, expeected_role_objs):
+        for role_dto, role_obj in zip(role_dtos, expected_role_objs):
             self._compare_role_ids(role_dto.role_id, role_obj.role_id)
 
     @staticmethod

@@ -15,9 +15,9 @@ class TestGetTeamIdsAndName:
             TeamFactory.create(team_id=team_id) for team_id in team_ids
         ]
 
-    # TODO: no need to assert the length and avoid to write the assert in for loop
     @pytest.mark.django_db
     def test_get_team_id_and_name_dtos(self, teams_set_up):
+        # Arrange
         team_ids = [
             "ef6d1fc6-ac3f-4d2d-a983-752c992e8344",
             "ef6d1fc6-ac3f-4d2d-a983-752c992e8345",
@@ -33,9 +33,12 @@ class TestGetTeamIdsAndName:
             TeamStorageImplementation
         team_storage = TeamStorageImplementation()
 
+        # Act
         actual_result = team_storage.get_team_id_and_name_dtos(
-            team_ids=team_ids)
+            team_ids=team_ids
+        )
 
+        # Assert
         assert len(actual_result) == len(expected_result)
         for index, team_id_and_name_dto in enumerate(actual_result):
             assert teams_set_up[index].name == team_id_and_name_dto.team_name
