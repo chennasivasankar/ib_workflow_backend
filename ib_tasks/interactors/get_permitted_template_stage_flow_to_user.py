@@ -7,8 +7,10 @@ from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.presenter_interfaces.get_template_stage_flow_presenter_interface import \
     GetTemplateStageFlowPresenterInterface, StageFlowCompleteDetailsDTO
 from ib_tasks.interactors.stages_dtos import StageMinimalDTO
-from ib_tasks.interactors.storage_interfaces.action_storage_interface import ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
+    ActionStorageInterface
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
+    StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import TaskTemplateStorageInterface
 
@@ -61,12 +63,9 @@ class GetPermittedTemplateStageFlowToUser(ValidationMixin):
             self.action_storage.get_user_permitted_action_ids_given_stage_ids(
                 user_roles=user_roles, stage_ids=stage_ids
             )
-        stage_flow_dtos = self.stage_storage.get_stage_flows_to_user(
-            stage_ids=stage_ids, action_ids=action_ids
-        )
-        return StageFlowCompleteDetailsDTO(
-            stage_dtos=stage_dtos,
-            stage_flow_dtos=stage_flow_dtos
+        return self._get_stage_flow_complete_details_dto(
+            stage_ids=stage_ids, action_ids=action_ids,
+            stage_dtos=stage_dtos
         )
 
     @staticmethod
@@ -90,17 +89,18 @@ class GetPermittedTemplateStageFlowToUser(ValidationMixin):
     def _validations_for_input_data(self, template_id: str,
                                     project_id: str,
                                     user_id: str):
+        valid_template = self.template_storage.check_is_template_exists(
+            template_id=template_id
+        )
+        invalid_template = not valid_template
+        if invalid_template:
+            raise InvalidTaskTemplateDBId(invalid_task_template_id=template_id)
         self.validate_given_project_ids(
             project_ids=[project_id]
         )
         self.validate_if_user_is_in_project(
             user_id=user_id, project_id=project_id
         )
-        invalid_template = not self.template_storage.check_is_template_exists(
-            template_id=template_id
-        )
-        if invalid_template:
-            raise InvalidTaskTemplateDBId(invalid_task_template_id=template_id)
 
     def get_template_stage_flow_to_user_wrapper(
             self, user_id: str, project_id: str,
@@ -137,6 +137,17 @@ class GetPermittedTemplateStageFlowToUser(ValidationMixin):
             self.action_storage.get_action_ids_given_stage_ids(
                 stage_ids=stage_ids
             )
+        return self._get_stage_flow_complete_details_dto(
+            stage_ids=stage_ids, action_ids=action_ids,
+            stage_dtos=stage_dtos
+        )
+
+    def _get_stage_flow_complete_details_dto(
+            self, stage_ids: List[int],
+            action_ids: List[int],
+            stage_dtos: List[StageMinimalDTO]
+    ) -> StageFlowCompleteDetailsDTO:
+
         stage_flow_dtos = self.stage_storage.get_stage_flows_to_user(
             stage_ids=stage_ids, action_ids=action_ids
         )

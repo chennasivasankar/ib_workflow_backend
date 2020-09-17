@@ -142,3 +142,13 @@ class UserSearchableDetailsDTOFactory(factory.Factory):
             "name": "User%d",
             "profile_pic_url": "https:ew.com"
     }) % n)
+
+
+class UserProjectStatusDTOFactory(factory.Factory):
+
+    class Meta:
+        model = UserProjectStatusDTO
+
+    user_id = factory.Sequence(lambda counter: "user_{}".format(counter))
+    project_id = factory.Sequence(lambda counter: "project_{}".format(counter))
+    is_exists = True

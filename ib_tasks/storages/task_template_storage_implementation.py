@@ -116,7 +116,9 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
             task_template_objs=task_template_objs)
         return task_template_dtos
 
-    def get_task_templates_to_project_ids(self, project_ids: List[str]):
+    def get_task_templates_to_project_ids(
+            self, project_ids: List[str]
+    ) -> List[ProjectTemplateDTO]:
 
         task_template_objs = ProjectTaskTemplate.objects.filter(
             (

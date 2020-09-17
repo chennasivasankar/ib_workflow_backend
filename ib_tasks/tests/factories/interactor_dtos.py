@@ -21,10 +21,13 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldDetailsDTO, FieldWritePermissionRolesDTO
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskWithDbStageIdDTO, AssigneeCurrentTasksCountDTO, CurrentStageDetailsDTO, \
+    TaskWithDbStageIdDTO, AssigneeCurrentTasksCountDTO, \
+    CurrentStageDetailsDTO, \
     StageIdWithValueDTO, StageAssigneeDetailsDTO, StageActionNamesDTO, \
     CreateStageFlowDTO, \
     StageFlowWithActionIdDTO
@@ -444,6 +447,16 @@ class SaveAndActOnTaskDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def gof_fields_dtos(self):
         return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
+
+
+class TemplateFieldsDTOFactory(factory.Factory):
+    class Meta:
+        model = TemplateFieldsDTO
+
+    task_template_id = factory.Sequence(
+        lambda c: "task_template_id_{}".format(c))
+    field_ids = factory.Sequence(
+        lambda n: [f"field_id_{n + 1}, field_id_{n + 2}"])
 
 
 class SaveAndActOnTaskWithTaskDisplayIdDTOFactory(factory.Factory):

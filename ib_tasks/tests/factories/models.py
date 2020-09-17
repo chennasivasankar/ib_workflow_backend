@@ -11,7 +11,7 @@ from ib_tasks.models import (
     TaskTemplateGlobalConstants,
     TaskStatusVariable, Filter, FilterCondition, TaskLog,
     StagePermittedRoles, ElasticSearchTask, ProjectTaskTemplate, TaskStageRp,
-    StageGoF)
+    StageGoF, StageFlow)
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -66,7 +66,7 @@ class UserRpInTaskStageFactory(factory.django.DjangoModelFactory):
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
     rp_id = factory.Sequence(
-        lambda n: "123e4567-e89b-12d3-a456-42661417405%d" % n)
+        lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
 
 
 class TaskStageModelFactory(factory.django.DjangoModelFactory):
@@ -381,6 +381,15 @@ class TaskStageHistoryFactory(factory.django.DjangoModelFactory):
         lambda n: "123e4567-e89b-12d3-a456-42661417400{}".format(n))
     joined_at = datetime(2012, 10, 10)
     left_at = datetime(2012, 10, 11)
+
+
+class StageFlowFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = StageFlow
+
+    previous_stage = factory.SubFactory(StageModelFactory)
+    action = factory.SubFactory(StageActionFactory)
+    next_stage = factory.SubFactory(StageModelFactory)
 
 
 class StageGoFFactory(factory.django.DjangoModelFactory):

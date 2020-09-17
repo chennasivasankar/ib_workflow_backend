@@ -26,6 +26,8 @@ from ib_tasks.interactors.storage_interfaces \
     CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldIdWithFieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
@@ -207,7 +209,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
     def _get_task_current_board_complete_details(
             self, task_id: int, stage_ids: List[str]
     ) -> TaskCompleteDetailsDTO:
-        from ib_tasks.interactors.user_action_on_task.get_task_current_board_complete_details_interactor \
+        from ib_tasks.interactors.user_action_on_task\
+            .get_task_current_board_complete_details_interactor \
             import GetTaskCurrentBoardCompleteDetailsInteractor
         interactor = GetTaskCurrentBoardCompleteDetailsInteractor(
             task_stage_storage=self.task_stage_storage,
@@ -412,7 +415,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
 
     @staticmethod
     def _validate_all_user_permitted_field_ids_are_filled_or_not(
-            permitted_fields, filled_field_ids
+            permitted_fields: List[FieldIdWithFieldDisplayNameDTO],
+            filled_field_ids: List[str]
     ) -> Optional[UserDidNotFillRequiredFields]:
         permitted_field_ids = [
             permitted_field.field_id for permitted_field in permitted_fields]
