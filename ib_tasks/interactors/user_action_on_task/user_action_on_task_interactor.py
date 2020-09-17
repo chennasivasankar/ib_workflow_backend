@@ -165,8 +165,10 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         action_type_is_not_no_validations = \
             action_type != ActionTypes.NO_VALIDATIONS.value
         if action_type_is_not_no_validations:
+            stage_id = self.action_storage.get_stage_id_for_given_action_id(
+                self.action_id)
             self._validate_all_user_template_permitted_fields_are_filled_or_not(
-                self.user_id, task_id, project_id)
+                self.user_id, task_id, project_id, stage_id)
 
     def _validate_task_delay_reason_updated_or_not(self, task_id):
 
@@ -377,7 +379,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         return
 
     def _validate_all_user_template_permitted_fields_are_filled_or_not(
-            self, user_id: str, task_id: int, project_id: str
+            self, user_id: str, task_id: int, project_id: str,
+            stage_id: int
     ):
         from ib_tasks.adapters.roles_service_adapter import \
             get_roles_service_adapter
@@ -387,8 +390,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             user_id=user_id, project_id=project_id)
         task_template_id = \
             self.create_task_storage.get_template_id_for_given_task(task_id)
-        template_gof_ids = self.task_template_storage.get_gof_ids_of_template(
-            template_id=task_template_id)
+        template_gof_ids = self.task_template_storage.get_stage_permitted_gof_ids(
+            stage_id=stage_id)
         gof_id_with_display_name_dtos = \
             self.gof_storage.get_user_write_permitted_gof_ids_in_given_gof_ids(
                 user_roles, template_gof_ids)
