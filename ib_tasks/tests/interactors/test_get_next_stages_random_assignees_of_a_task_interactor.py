@@ -2,15 +2,15 @@ from unittest.mock import create_autospec, patch
 
 import pytest
 
-from ib_tasks.interactors.user_action_on_task.call_action_logic_function_and_get_or_update_task_status_variables_interactor import \
-    CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor
 from ib_tasks.interactors.get_next_stages_random_assignees_of_a_task_interactor import \
     GetNextStagesRandomAssigneesOfATaskInteractor, InvalidModulePathFound, \
     InvalidMethodFound
-from ib_tasks.interactors.user_action_on_task.get_task_stage_logic_satisfied_stages import \
-    GetTaskStageLogicSatisfiedStagesInteractor
 from ib_tasks.interactors.get_users_with_less_tasks_for_stages import \
     GetUsersWithLessTasksInGivenStagesInteractor
+from ib_tasks.interactors.user_action_on_task.call_action_logic_function_and_get_or_update_task_status_variables_interactor import \
+    CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor
+from ib_tasks.interactors.user_action_on_task.get_task_stage_logic_satisfied_stages import \
+    GetTaskStageLogicSatisfiedStagesInteractor
 from ib_tasks.tests.factories.adapter_dtos import \
     UserIdWIthTeamDetailsDTOFactory, AssigneeDetailsDTOFactory, \
     TeamDetailsDTOFactory
@@ -211,7 +211,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             presenter=presenter_mock)
 
         # Assert
-        presenter_mock.raise_path_not_found_exception. \
+        presenter_mock.raise_invalid_path_not_found_exception. \
             assert_called_once_with(path_name=path_name)
 
     @staticmethod
@@ -250,7 +250,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         )
 
         # Assert
-        presenter_mock.raise_method_not_found. \
+        presenter_mock.raise_invalid_method_not_found_exception. \
             assert_called_once_with(method_name=method_name)
 
     @staticmethod

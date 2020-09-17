@@ -1,7 +1,7 @@
 import datetime
 from typing import Optional, List, Tuple
 
-from ib_tasks.constants.enum import ViewType
+from ib_tasks.constants.enum import ViewType, ActionTypes
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     StartDateIsAheadOfDueDate, \
     DueDateTimeHasExpired, \
@@ -239,10 +239,14 @@ class UpdateTaskInteractor(
         self._validate_stage_id(task_dto.stage_assignee.stage_id)
         task_template_id = \
             self.create_task_storage.get_template_id_for_given_task(task_id)
-        self._validate_task_delay_reason_is_added_if_due_date_is_changed(
-            updated_due_date=task_dto.task_basic_details.due_datetime,
-            task_id=task_dto.task_basic_details.task_id,
-            stage_id=task_dto.stage_assignee.stage_id)
+        action_type_is_not_no_validations = \
+            task_dto.task_basic_details.action_type != \
+            ActionTypes.NO_VALIDATIONS.value
+        if action_type_is_not_no_validations:
+            self._validate_task_delay_reason_is_added_if_due_date_is_changed(
+                updated_due_date=task_dto.task_basic_details.due_datetime,
+                task_id=task_dto.task_basic_details.task_id,
+                stage_id=task_dto.stage_assignee.stage_id)
         project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
         base_validations_interactor = GoFsDetailsValidationsInteractor(
             self.task_storage, self.gof_storage,

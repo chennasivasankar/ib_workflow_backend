@@ -64,7 +64,8 @@ class GetTaskFieldsInteractor:
     @staticmethod
     def _searchable_condition(field_dto):
         return field_dto.field_type == FieldTypes.SEARCHABLE.value and \
-               field_dto.field_values == Searchable.USER.value
+               field_dto.field_values == Searchable.USER.value and \
+               field_dto.value
 
     @staticmethod
     def _get_searchable_details_dtos(
@@ -75,8 +76,7 @@ class GetTaskFieldsInteractor:
         searchable_details_service = service_adapter.searchable_details_service
         searchable_details_dtos = \
             searchable_details_service.get_searchable_details_dtos(
-                    searchable_dtos
-            )
+                    searchable_dtos)
         return searchable_details_dtos
 
     def _get_field_details_dtos(self, field_dtos: List[
