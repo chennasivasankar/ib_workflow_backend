@@ -3,7 +3,6 @@ from typing import Union, List, Optional
 
 from django.db.models import Q
 
-from ib_tasks.constants.config import TIME_FORMAT
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
@@ -15,8 +14,8 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TaskGoFFieldDTO, TaskGoFDTO, TaskBaseDetailsDTO, FieldSearchableDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import (
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO)
-from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO, \
-    BasicTaskDetailsDTO, UpdateTaskBasicDetailsDTO
+from ib_tasks.interactors.task_dtos import BasicTaskDetailsDTO, \
+    UpdateTaskBasicDetailsDTO
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.models.task import Task
@@ -177,7 +176,7 @@ class CreateOrUpdateTaskStorageImplementation(
         ]
         return gof_id_with_same_gof_order_dtos
 
-    def get_fields_details_of_task(
+    def get_field_id_with_task_gof_id_dtos(
             self, task_id: int) -> List[FieldIdWithTaskGoFIdDTO]:
         field_dicts = list(
             TaskGoFField.objects.filter(task_gof__task_id=task_id).values(

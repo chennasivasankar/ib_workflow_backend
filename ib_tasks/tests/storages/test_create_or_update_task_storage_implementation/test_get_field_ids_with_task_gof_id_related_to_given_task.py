@@ -28,7 +28,7 @@ class TestGetFieldsOfATask:
 
         # Act
         actual_fields_dtos = \
-            storage.get_fields_details_of_task(
+            storage.get_field_id_with_task_gof_id_dtos(
                 task_id)
 
         # Assert

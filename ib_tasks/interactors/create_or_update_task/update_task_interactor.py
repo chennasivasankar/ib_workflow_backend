@@ -274,7 +274,7 @@ class UpdateTaskInteractor(
         gof_fields_dtos = task_dto.gof_fields_dtos
         existing_gofs = self.create_task_storage.get_gofs_details_of_task(
             task_id)
-        existing_fields = self.create_task_storage.get_fields_details_of_task(
+        existing_fields = self.create_task_storage.get_field_id_with_task_gof_id_dtos(
             task_id)
         task_gof_dtos = self.prepare_task_gof_dtos(task_id, gof_fields_dtos)
         gofs_for_updation, gofs_for_creation = \
