@@ -130,5 +130,9 @@ class ActionStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_stage_id_for_action_id(self, action_id: int):
+        pass
+
+    @abc.abstractmethod
     def get_task_present_stage_actions(self, task_id: int):
         pass

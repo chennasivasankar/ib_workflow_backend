@@ -9,7 +9,8 @@ from ib_tasks.interactors.filter_dtos import FilterCompleteDetailsDTO, \
 from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
     import FilterPresenterInterface, ProjectTemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import TaskTemplateGofsDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import \
+    TaskTemplateGofsDTO
 
 
 class FilterPresenterImplementation(FilterPresenterInterface,

@@ -39,8 +39,8 @@ class TestCase32CreateTransitionChecklistAPITestCase(TestUtils):
         field_id = "field_1"
 
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        get_user_role_ids(mocker)
+            get_user_role_ids_based_on_project_mock
+        get_user_role_ids_based_on_project_mock(mocker)
 
         transition_template_obj = TaskTemplateFactory.create(
             template_id=transition_template_id, is_transition_template=True)
@@ -56,8 +56,7 @@ class TestCase32CreateTransitionChecklistAPITestCase(TestUtils):
         action = StageActionFactory(
             stage=stage, py_function_import_path=path,
             transition_template=transition_template_obj,
-            action_type=None
-        )
+            action_type=None)
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
         gof_obj = GoFFactory.create(gof_id=gof_id)

@@ -77,7 +77,6 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
         except UsersNotExistsForGivenProjectException as exception:
             return presenter.raise_users_not_exists_for_given_projects(
                 user_ids=exception.user_ids)
-
         except InvalidKeyError:
             return presenter.raise_invalid_key_error()
         except InvalidModulePathFound as exception:

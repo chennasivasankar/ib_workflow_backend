@@ -1,4 +1,5 @@
 import pytest
+
 from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
 from ib_tasks.tests.factories.models import StageModelFactory, \

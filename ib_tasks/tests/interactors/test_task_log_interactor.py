@@ -1,5 +1,6 @@
-import pytest
 import mock
+import pytest
+
 from ib_tasks.interactors.task_log_interactor import TaskLogInteractor
 from ib_tasks.tests.factories.interactor_dtos import \
     CreateTaskLogDTOFactory
@@ -34,14 +35,14 @@ class TestCreateTaskLogInteractor(StorageMockClass):
             action_storage=action_storage_mock
         )
         from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskJson
-        from ib_tasks.constants.exception_messages import INVALID_TASK_JSON
+        from ib_tasks.constants.exception_messages import EMPTY_TASK_JSON
 
         # Assert
         with pytest.raises(InvalidTaskJson) as err:
             interactor.create_task_log(
                 create_task_log_dto=create_task_log_dto
             )
-        assert err.value.args[0] == INVALID_TASK_JSON
+        assert err.value.args[0] == EMPTY_TASK_JSON
 
     def test_with_invalid_task_id_raises_exception(
             self, task_storage_mock, storage_mock,

@@ -3,6 +3,8 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface \
+    import TaskStorageInterface
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO
 
 
@@ -55,7 +57,7 @@ class TaskLogInteractor:
         is_task_json_empty = not task_json_after_strip
         if is_task_json_empty:
             from ib_tasks.constants.exception_messages \
-                import INVALID_TASK_JSON
+                import EMPTY_TASK_JSON
             from ib_tasks.exceptions.task_custom_exceptions \
                 import InvalidTaskJson
-            raise InvalidTaskJson(INVALID_TASK_JSON)
+            raise InvalidTaskJson(EMPTY_TASK_JSON)

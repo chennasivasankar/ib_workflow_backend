@@ -1,6 +1,5 @@
 from typing import List
 
-
 from ib_tasks.adapters.dtos import UserDetailsDTO, TeamDetailsDTO, \
     UserIdWIthTeamDetailsDTOs, TeamDetailsWithUserIdDTO, \
     ProjectDetailsDTO, ProjectTeamUserIdsDTO, UserProjectStatusDTO

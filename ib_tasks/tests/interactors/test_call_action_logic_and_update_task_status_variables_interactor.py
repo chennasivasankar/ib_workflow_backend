@@ -2,7 +2,7 @@ from unittest.mock import create_autospec
 
 import pytest
 
-from ib_tasks.interactors.user_action_on_task\
+from ib_tasks.interactors.user_action_on_task \
     .call_action_logic_function_and_get_or_update_task_status_variables_interactor \
     import (
     CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor,
@@ -10,9 +10,11 @@ from ib_tasks.interactors.user_action_on_task\
 )
 from ib_tasks.tests.factories.storage_dtos import (
     StatusVariableDTOFactory, GOFMultipleStatusDTOFactory,
-    TaskGoFFieldDTOFactory, TaskGoFDTOFactory, TaskDetailsDTOFactory, FieldTypeDTOFactory
+    TaskGoFFieldDTOFactory, TaskGoFDTOFactory, TaskDetailsDTOFactory,
+    FieldTypeDTOFactory
 )
-from ib_tasks.tests.interactors.super_storage_mock_class import StorageMockClass
+from ib_tasks.tests.interactors.super_storage_mock_class import \
+    StorageMockClass
 
 
 class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):

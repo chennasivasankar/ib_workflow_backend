@@ -24,6 +24,10 @@ from ib_tasks.models import (StageAction, Stage, ActionPermittedRoles,
 
 class ActionsStorageImplementation(ActionStorageInterface):
 
+    def get_stage_id_for_action_id(self, action_id: int):
+        stage_id = StageAction.objects.get(id=action_id).stage_id
+        return stage_id
+
     def get_action_roles(self, action_id: int) -> List[str]:
 
         action_permitted_role_objs = \

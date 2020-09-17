@@ -42,9 +42,9 @@ class TestCase15UpdateTaskAPITestCase(TestUtils):
         field_ids = ["FIELD-1", "FIELD-2", "FIELD-3", "FIELD-4"]
         field_write_permission_role = "FIELD_EDITOR"
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        user_roles_mock_method = get_user_role_ids(mocker)
-        user_roles = user_roles_mock_method.return_value
+            get_user_role_ids_based_on_project_mock
+        mock_method = get_user_role_ids_based_on_project_mock(mocker)
+        user_roles = mock_method.return_value
 
         StageFactory.create(id=stage_id)
         gofs = GoFFactory.create_batch(size=len(gof_ids),
@@ -79,11 +79,8 @@ class TestCase15UpdateTaskAPITestCase(TestUtils):
             "task_id": "IBWF-1",
             "title": "updated_title",
             "description": "updated_description",
-            "start_date": "2020-09-08",
-            "due_date": {
-                "date": "2020-09-09",
-                "time": "11:00:00"
-            },
+            "start_datetime": "2020-09-20 00:00:00",
+            "due_datetime": "2020-10-31 00:00:00",
             "priority": "HIGH",
             "stage_assignee": {
                 "stage_id": 1,

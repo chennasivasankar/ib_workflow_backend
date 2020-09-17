@@ -10,7 +10,8 @@ from ib_tasks.models import (
     UserTaskDelayReason, Task, TaskGoF, TaskGoFField,
     TaskTemplateGlobalConstants,
     TaskStatusVariable, Filter, FilterCondition, TaskLog,
-    StagePermittedRoles, ElasticSearchTask, ProjectTaskTemplate, TaskStageRp, StageFlow)
+    StagePermittedRoles, ElasticSearchTask, ProjectTaskTemplate, TaskStageRp,
+    StageGoF, StageFlow)
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -389,3 +390,11 @@ class StageFlowFactory(factory.django.DjangoModelFactory):
     previous_stage = factory.SubFactory(StageModelFactory)
     action = factory.SubFactory(StageActionFactory)
     next_stage = factory.SubFactory(StageModelFactory)
+
+
+class StageGoFFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = StageGoF
+
+    stage = factory.SubFactory(StageModelFactory)
+    gof = factory.SubFactory(GoFFactory)

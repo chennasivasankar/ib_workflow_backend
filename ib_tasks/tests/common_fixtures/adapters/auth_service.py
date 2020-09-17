@@ -4,7 +4,6 @@ import factory
 
 from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTOFactory, \
     TeamDetailsWithUserIdDTOFactory
-
 from ib_tasks.tests.factories.interactor_dtos import \
     UserDetailsDTOFactory, \
     SearchableFieldUserDetailDTOFactory

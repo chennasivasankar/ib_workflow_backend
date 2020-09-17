@@ -4,10 +4,10 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDisplayValueDTO, StageDisplayDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
-from ib_tasks.interactors.storage_interfaces.storage_interface \
-    import StorageInterface
 from ib_tasks.interactors.storage_interfaces.status_dtos \
     import StatusVariableDTO
+from ib_tasks.interactors.storage_interfaces.storage_interface \
+    import StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
 from ib_tasks.interactors.task_dtos import StageDisplayLogicDTO
 

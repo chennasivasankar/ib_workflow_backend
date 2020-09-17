@@ -32,8 +32,7 @@ class ValidateFieldResponsesInteractor:
 
     def validate_field_responses(
             self, field_values_dtos: List[FieldValuesDTO],
-            action_type: Optional[ActionTypes]
-    ) -> Optional[Exception]:
+            action_type: Optional[ActionTypes]) -> Optional[Exception]:
         field_ids = [
             field_values_dto.field_id
             for field_values_dto in field_values_dtos
@@ -43,8 +42,7 @@ class ValidateFieldResponsesInteractor:
         for field_details_dto in field_details_dtos:
             field_response = self._get_field_response_for_given_field_id(
                 field_id=field_details_dto.field_id,
-                field_values_dtos=field_values_dtos
-            )
+                field_values_dtos=field_values_dtos)
             field_validation_required = \
                 field_response or field_details_dto.required
             if field_validation_required:

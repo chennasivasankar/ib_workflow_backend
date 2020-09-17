@@ -1,6 +1,8 @@
-import pytest
 import datetime
 from unittest.mock import create_autospec
+
+import pytest
+
 from ib_tasks.constants.enum import ActionTypes, ViewType
 from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor \
     import UserActionOnTaskInteractor
@@ -9,9 +11,11 @@ from ib_tasks.tests.factories.interactor_dtos import \
 from ib_tasks.tests.factories.storage_dtos import (
     ActionDTOFactory, StageActionDetailsDTOFactory,
     TaskDetailsDTOFactory,
-    TaskGoFDTOFactory, TaskGoFFieldDTOFactory, GoFIdWithGoFDisplayNameDTOFactory, FieldIdWithFieldDisplayNameDTOFactory
+    TaskGoFDTOFactory, TaskGoFFieldDTOFactory,
+    GoFIdWithGoFDisplayNameDTOFactory, FieldIdWithFieldDisplayNameDTOFactory
 )
-from ib_tasks.tests.interactors.super_storage_mock_class import StorageMockClass
+from ib_tasks.tests.interactors.super_storage_mock_class import \
+    StorageMockClass
 
 
 class TestUserActionOnTaskInteractor(StorageMockClass):

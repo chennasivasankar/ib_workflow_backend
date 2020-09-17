@@ -1,5 +1,3 @@
-from typing import List
-
 from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException, UserIsNotInProjectsException
 from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
     import FilterPresenterInterface, ProjectTemplateFieldsDTO

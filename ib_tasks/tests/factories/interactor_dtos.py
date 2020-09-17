@@ -36,7 +36,8 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeDTO, \
     SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
     TaskDelayParametersDTO, UpdateTaskWithTaskDisplayIdDTO, \
-    SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO, SearchQueryDTO, StageDisplayLogicDTO
+    SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO, SearchQueryDTO, \
+    StageDisplayLogicDTO, BasicTaskDetailsDTO
 from ib_tasks.interactors.task_template_dtos import \
     (CreateTransitionChecklistTemplateDTO,
      CreateTransitionChecklistTemplateWithTaskDisplayIdDTO)
@@ -360,9 +361,9 @@ class TemplateStageDTOFactory(factory.Factory):
     stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
 
 
-class CreateTaskDTOFactory(factory.Factory):
+class BasicTaskDetailsDTOFactory(factory.Factory):
     class Meta:
-        model = CreateTaskDTO
+        model = BasicTaskDetailsDTO
 
     project_id = factory.Sequence(lambda c: "project_id_{}".format(c))
     task_template_id = factory.Sequence(lambda c: "task_template_{}".format(c))
@@ -373,6 +374,13 @@ class CreateTaskDTOFactory(factory.Factory):
     start_datetime = datetime.now()
     due_datetime = datetime.now() + timedelta(days=2)
     priority = Priority.HIGH.value
+
+
+class CreateTaskDTOFactory(factory.Factory):
+    class Meta:
+        model = CreateTaskDTO
+
+    basic_task_details_dto = factory.SubFactory(BasicTaskDetailsDTOFactory)
 
     @factory.lazy_attribute
     def gof_fields_dtos(self):
@@ -444,6 +452,16 @@ class SaveAndActOnTaskDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def gof_fields_dtos(self):
         return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
+
+
+class TemplateFieldsDTOFactory(factory.Factory):
+    class Meta:
+        model = TemplateFieldsDTO
+
+    task_template_id = factory.Sequence(
+        lambda c: "task_template_id_{}".format(c))
+    field_ids = factory.Sequence(
+        lambda n: [f"field_id_{n + 1}, field_id_{n + 2}"])
 
 
 class SaveAndActOnTaskWithTaskDisplayIdDTOFactory(factory.Factory):
@@ -665,7 +683,7 @@ class CreateStageFlowDTOFactory(factory.Factory):
 
     previous_stage_id = factory.sequence(lambda n: "stage_{}".format(n))
     action_name = factory.sequence(lambda n: "action_name_{}".format(n))
-    next_stage_id = factory.sequence(lambda n: "stage_{}".format(n+1))
+    next_stage_id = factory.sequence(lambda n: "stage_{}".format(n + 1))
 
 
 class StageFlowWithActionIdDTOFactory(factory.Factory):

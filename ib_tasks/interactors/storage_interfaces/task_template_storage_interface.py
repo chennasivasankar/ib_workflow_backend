@@ -55,7 +55,7 @@ class TaskTemplateStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_gofs_to_templates_from_permitted_gofs(
+    def get_gofs_to_templates_from_given_gofs(
             self, gof_ids: List[str]) -> List[GoFToTaskTemplateDTO]:
         pass
 
@@ -98,7 +98,7 @@ class TaskTemplateStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_gofs_to_template_from_permitted_gofs(
+    def get_gofs_to_template_from_given_gofs(
             self, gof_ids: List[str],
             template_id: str) -> List[GoFToTaskTemplateDTO]:
         pass
@@ -133,5 +133,18 @@ class TaskTemplateStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_project_id_to_template_stages(self, stage_ids: List[str]) -> List[str]:
+    def get_project_id_to_template_stages(
+            self, stage_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_task_template_initial_stage_id(self, task_template_id: str):
+        pass
+
+    @abc.abstractmethod
+    def get_stage_permitted_gof_ids(self, stage_id: int) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_gof_ids_of_templates(self, template_ids: List[str]) -> List[str]:
         pass
