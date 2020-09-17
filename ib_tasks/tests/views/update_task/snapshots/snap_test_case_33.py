@@ -11,6 +11,6 @@ snapshots['TestCase33UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase33UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'TASK_DELAY_REASON_NOT_UPDATED',
-    'response': 'Task delay reason not updated for task IBWF-1 in stage display_name_0 with missed due date 2020-09-09 11:00:00'
+    'res_status': 'INVALID_TIME_FORMAT',
+    'response': 'given invalid format for time: 2020-09-40 for field: FIELD-1! Try with this format: %Y-%m-%d'
 }

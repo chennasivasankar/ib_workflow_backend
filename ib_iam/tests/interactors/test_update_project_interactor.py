@@ -63,16 +63,21 @@ class TestUpdateProjectInteractor:
 
     @pytest.fixture
     def roles_for_role_names_already_exists(self):
-        roles_dictionary = [{"role_id": "role1", "name": "payment2"},
-                            {"role_id": "role2", "name": "payment3"}]
+        roles_dictionary = [
+            {"role_id": "role1", "name": "payment2"},
+            {"role_id": "role2", "name": "payment3"}
+        ]
         from ib_iam.interactors.storage_interfaces.dtos import RoleIdAndNameDTO
-        roles = [RoleIdAndNameDTO(role_id=role["role_id"], name=role["name"])
-                 for role in roles_dictionary]
+        roles = [
+            RoleIdAndNameDTO(role_id=role["role_id"], name=role["name"])
+            for role in roles_dictionary
+        ]
         return roles
 
     def test_given_user_is_not_admin_returns_user_has_no_access_response(
             self, project_storage, user_storage, interactor, presenter
     ):
+        # Arrange
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
         project_dto = ProjectDTOFactory()
         user_id = "1"
@@ -84,17 +89,20 @@ class TestUpdateProjectInteractor:
             logo_url=project_dto.logo_url, team_ids=[], roles=[]
         )
 
+        # Act
         interactor.update_project_wrapper(
             presenter=presenter, user_id=user_id,
             complete_project_details_dto=complete_project_details_dto
         )
 
+        # Assert
         user_storage.is_user_admin.assert_called_once_with(user_id=user_id)
         presenter.get_user_has_no_access_response.assert_called_once()
 
     def test_given_invalid_project_returns_invalid_project_response(
             self, project_storage, user_storage, interactor, presenter
     ):
+        # Arrange
         user_id = "1"
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
         project_dto = ProjectDTOFactory()
@@ -106,18 +114,22 @@ class TestUpdateProjectInteractor:
             logo_url=project_dto.logo_url, team_ids=[], roles=[]
         )
 
+        # Act
         interactor.update_project_wrapper(
             presenter=presenter, user_id=user_id,
             complete_project_details_dto=complete_project_details_dto
         )
 
+        # Assert
         user_storage.is_valid_project_id.assert_called_once_with(
             project_id=project_dto.project_id
         )
         presenter.get_invalid_project_response.assert_called_once()
 
     def test_given_name_already_exists_returns_name_already_exists_response(
-            self, project_storage, user_storage, interactor, presenter):
+            self, project_storage, user_storage, interactor, presenter
+    ):
+        # Arrange
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
         name = "name 1"
         user_id = "1"
@@ -132,17 +144,20 @@ class TestUpdateProjectInteractor:
             team_ids=[], roles=[]
         )
 
+        # Act
         interactor.update_project_wrapper(
             presenter=presenter, user_id=user_id,
             complete_project_details_dto=complete_project_details_dto
         )
 
+        # Assert
         project_storage.get_project_id.assert_called_once_with(name=name)
         presenter.get_project_name_already_exists_response.assert_called_once()
 
     def test_given_duplicate_team_ids_returns_duplicate_team_ids_response(
             self, project_storage, user_storage, interactor, presenter
     ):
+        # Arrange
         user_id = "1"
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
         project_dto = ProjectDTOFactory()
@@ -154,17 +169,20 @@ class TestUpdateProjectInteractor:
             team_ids=["1", "1"], roles=[]
         )
 
+        # Act
         interactor.update_project_wrapper(
             presenter=presenter, user_id=user_id,
             complete_project_details_dto=complete_project_details_dto
         )
 
+        # Assert
         presenter.get_duplicate_team_ids_response.assert_called_once()
 
     def test_given_invalid_team_ids_returns_invalid_team_ids_response(
             self, project_storage, user_storage, team_storage, interactor,
             presenter
     ):
+        # Arrange
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
         project_dto = ProjectDTOFactory()
         team_ids = ["1", "2"]
@@ -178,11 +196,13 @@ class TestUpdateProjectInteractor:
             team_ids=team_ids, roles=[]
         )
 
+        # Act
         interactor.update_project_wrapper(
             presenter=presenter, user_id="1",
             complete_project_details_dto=complete_project_details_dto
         )
 
+        # Assert
         team_storage.get_valid_team_ids.assert_called_once_with(
             team_ids=team_ids
         )
@@ -192,6 +212,7 @@ class TestUpdateProjectInteractor:
             self, project_storage, user_storage, team_storage, interactor,
             presenter, duplicate_roles
     ):
+        # Arrange
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
         project_dto = ProjectDTOFactory()
         from ib_iam.tests.factories.storage_dtos import RoleDTOFactory
@@ -204,17 +225,20 @@ class TestUpdateProjectInteractor:
             team_ids=[], roles=role_dtos
         )
 
+        # Act
         interactor.update_project_wrapper(
             presenter=presenter, user_id="1",
             complete_project_details_dto=complete_project_details_dto
         )
 
+        # Assert
         presenter.get_duplicate_role_ids_response.assert_called_once()
 
     def test_given_invalid_role_ids_returns_invalid_role_ids_response(
             self, project_storage, user_storage, team_storage, interactor,
             presenter, roles
     ):
+        # Arrange
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
         project_id = "project_1"
         project_dto = ProjectDTOFactory(project_id=project_id)
@@ -228,16 +252,20 @@ class TestUpdateProjectInteractor:
             team_ids=[], roles=roles
         )
 
+        # Act
         interactor.update_project_wrapper(
             presenter=presenter, user_id="1",
             complete_project_details_dto=complete_project_details_dto
         )
 
+        # Assert
         presenter.get_invalid_role_ids_response.assert_called_once()
 
     def test_given_duplicate_role_names_returns_duplicate_role_names_response(
             self, project_storage, user_storage, team_storage, interactor,
-            presenter):
+            presenter
+    ):
+        # Arrange
         from ib_iam.tests.factories.storage_dtos import (
             ProjectDTOFactory, RoleDTOFactory)
         project_id = "project_1"
@@ -259,17 +287,20 @@ class TestUpdateProjectInteractor:
             team_ids=team_ids,
             roles=roles)
 
+        # Act
         interactor.update_project_wrapper(
             presenter=presenter, user_id="1",
             complete_project_details_dto=complete_project_details_dto
         )
 
+        # Assert
         presenter.get_duplicate_role_names_response.assert_called_once()
 
     def test_given_role_names_already_exists_returns_role_names_already_exists_response(
             self, project_storage, user_storage, team_storage, interactor,
             presenter, roles, roles_for_role_names_already_exists
     ):
+        # Arrange
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
         project_id = "project_1"
         project_dto = ProjectDTOFactory(project_id=project_id)
@@ -288,11 +319,13 @@ class TestUpdateProjectInteractor:
             logo_url=project_dto.logo_url, team_ids=team_ids, roles=roles
         )
 
+        # Act
         interactor.update_project_wrapper(
             presenter=presenter, user_id="1",
             complete_project_details_dto=complete_project_details_dto
         )
 
+        # Assert
         user_storage.get_roles.assert_called_once()
         call_args = presenter.get_role_names_already_exists_response.call_args
         error_obj = call_args[0][0]
@@ -302,7 +335,9 @@ class TestUpdateProjectInteractor:
 
     def test_update_project_returns_success_response(
             self, project_storage, user_storage, team_storage, interactor,
-            presenter, roles):
+            presenter, roles
+    ):
+        # Arrange
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
         project_id = "1"
         ProjectDTOFactory.reset_sequence(1)
@@ -344,11 +379,13 @@ class TestUpdateProjectInteractor:
             team_ids=team_ids, roles=roles
         )
 
+        # Act
         interactor.update_project_wrapper(
             presenter=presenter, user_id="1",
             complete_project_details_dto=complete_project_details_dto
         )
 
+        # Assert
         project_storage.update_project.assert_called_once_with(
             project_dto=project_dto
         )

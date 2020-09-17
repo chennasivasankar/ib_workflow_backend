@@ -13,7 +13,7 @@ snapshots['TestCase01GetProjectsAPITestCase.test_case body'] = {
     'projects': [
         {
             'description': 'description 1',
-            'logo_url': 'logo 1',
+            'logo_url': 'http://sample.com',
             'name': 'name 1',
             'project_display_id': 'display_id 1',
             'project_id': '641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',

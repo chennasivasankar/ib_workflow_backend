@@ -39,3 +39,14 @@ snapshots['TestCase01UpdateProjectDetailsAPITestCase.test_case project_roles'] =
         'role_id': 'role_7eb737be-810f-4580-83ea-ff4fa67edd22'
     }
 ]
+
+snapshots['TestCase01UpdateProjectDetailsAPITestCase.test_case user_roles'] = [
+    {
+        'project_role_id': 'pay_role',
+        'user_id': '89d96f4b-c19d-4e69-8eae-e818f3123b18'
+    },
+    {
+        'project_role_id': 'pay_role',
+        'user_id': '89d96f4b-c19d-4e69-8eae-e818f3123b19'
+    }
+]

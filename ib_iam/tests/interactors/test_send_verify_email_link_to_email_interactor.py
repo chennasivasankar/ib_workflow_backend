@@ -1,4 +1,4 @@
-from unittest.mock import patch, Mock, create_autospec
+from unittest.mock import Mock, create_autospec
 
 import pytest
 
@@ -6,7 +6,7 @@ import pytest
 class TestSendLinkToUserMail:
 
     @pytest.fixture
-    def init_interactor(self):
+    def interactor(self):
         from ib_iam.interactors.send_verify_email_link_interactor import \
             SendVerifyEmailLinkInteractor
         return SendVerifyEmailLinkInteractor()
@@ -19,8 +19,8 @@ class TestSendLinkToUserMail:
         return presenter_mock
 
     def test_send_verify_email_link_to_email_given_valid_email(
-            self, presenter_mock, init_interactor, mocker):
-        interactor = init_interactor
+            self, presenter_mock, interactor, mocker
+    ):
         email = "example@gmail.com"
         user_id = "1"
         from django.conf import settings
@@ -39,7 +39,7 @@ class TestSendLinkToUserMail:
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         UserProfileDTOFactory.reset_sequence(0)
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
-            user_id=user_id, is_email_verify=False)
+            user_id=user_id, is_email_verified=False)
         create_auth_tokens_for_user_mock = create_auth_tokens_for_user_mock(
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserTokensDTOFactory
@@ -57,13 +57,14 @@ class TestSendLinkToUserMail:
         )
 
         create_auth_tokens_for_user_mock.assert_called_once_with(
-            user_id=user_id, expiry_in_seconds=expiry_in_seconds)
+            user_id=user_id, expiry_in_seconds=expiry_in_seconds
+        )
         get_user_id_for_given_email_mock.assert_called_once_with(email=email)
 
     def test_given_invalid_email_then_raises_exception(
-            self, presenter_mock, init_interactor, mocker):
+            self, presenter_mock, interactor, mocker
+    ):
         email = "example@gmail.com"
-        interactor = init_interactor
         from ib_iam.tests.common_fixtures.adapters.user_service import \
             get_user_id_for_given_email_mock
         get_user_id_for_given_email_mock = get_user_id_for_given_email_mock(
@@ -80,11 +81,9 @@ class TestSendLinkToUserMail:
         presenter_mock.raise_account_does_not_exist_exception.assert_called_once()
         get_user_id_for_given_email_mock.assert_called_once_with(email=email)
 
-    def test_given_email_is_already_verify_then_raise_exception(self,
-                                                                presenter_mock,
-                                                                init_interactor,
-                                                                mocker):
-        interactor = init_interactor
+    def test_given_email_is_already_verify_then_raise_exception(
+            self, presenter_mock, interactor, mocker
+    ):
         email = "example@gmail.com"
         user_id = "1"
         from ib_iam.tests.common_fixtures.adapters.user_service import \
@@ -99,7 +98,7 @@ class TestSendLinkToUserMail:
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         UserProfileDTOFactory.reset_sequence(0)
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
-            user_id=user_id, is_email_verify=True)
+            user_id=user_id, is_email_verified=True)
         presenter_mock.raise_email_already_verified_exception.return_value = Mock()
 
         interactor.send_verify_email_link_wrapper(

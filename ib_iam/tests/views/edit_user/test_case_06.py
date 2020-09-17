@@ -1,5 +1,5 @@
 # """
-# # TODO: Update test case description
+# # TODO: Look whether this test is needed or not
 # """
 # import pytest
 # from django_swagger_utils.utils.test_utils import TestUtils

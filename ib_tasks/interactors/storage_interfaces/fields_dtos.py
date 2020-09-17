@@ -76,6 +76,7 @@ class FieldDetailsDTO:
 
 @dataclass
 class FieldDetailsDTOWithTaskId(FieldDetailsDTO):
+    field_values: str
     task_id: int
 
 
@@ -109,6 +110,7 @@ class StageTaskFieldsDTO:
     field_ids: List[str]
 
 
+# TODO rename this as FieldWithIsWritableDTO
 @dataclass
 class FieldPermissionDTO:
     field_dto: FieldDTO

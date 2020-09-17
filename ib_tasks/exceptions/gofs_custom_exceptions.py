@@ -2,8 +2,8 @@ from typing import List
 
 
 class DuplicateGoFIds(Exception):
-    def __int__(self, message: str):
-        self.message = message
+    def __int__(self, gof_ids: List[str]):
+        self.gof_ids = gof_ids
 
 
 class GOFIdCantBeEmpty(Exception):
@@ -107,3 +107,10 @@ class UserDidNotFillRequiredGoFs(Exception):
 
     def __init__(self, gof_display_names: List[str]):
         self.gof_display_names = gof_display_names
+
+
+class InvalidStagePermittedGoFs(Exception):
+
+    def __init__(self, gof_ids: List[str], stage_id: int):
+        self.gof_ids = gof_ids
+        self.stage_id = stage_id

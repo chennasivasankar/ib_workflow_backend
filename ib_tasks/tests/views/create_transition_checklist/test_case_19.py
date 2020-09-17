@@ -39,8 +39,8 @@ class TestCase19CreateTransitionChecklistAPITestCase(TestUtils):
         field_id = "field_1"
 
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        get_user_role_ids(mocker)
+            get_user_role_ids_based_on_project_mock
+        get_user_role_ids_based_on_project_mock(mocker)
 
         transition_template_obj = TaskTemplateFactory.create(
             template_id=transition_template_id, is_transition_template=True)

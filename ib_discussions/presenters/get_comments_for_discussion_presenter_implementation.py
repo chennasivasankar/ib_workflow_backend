@@ -38,7 +38,6 @@ class GetCommentsForDiscussionPresenterImplementation(
             comment_id_with_mention_user_id_dtos: List[
                 CommentIdWithMentionUserIdDTO]
     ):
-
         user_id_wise_user_details_dict = \
             self._prepare_user_id_wise_user_details_dict(
                 user_profile_dtos=user_profile_dtos

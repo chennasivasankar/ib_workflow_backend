@@ -12,8 +12,9 @@ class TestGetValidUserIds:
             "1231a0c1-b9ef-4e59-b415-60a28ef17b10"
         ]
         expected_valid_user_ids = ["eca1a0c1-b9ef-4e59-b415-60a28ef17b10"]
-        from ib_iam.models import UserDetails
-        UserDetails.objects.create(user_id=user_ids[0])
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        UserDetailsFactory.reset_sequence(0)
+        UserDetailsFactory.create(user_id=user_ids[0])
 
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         service_interface = ServiceInterface()

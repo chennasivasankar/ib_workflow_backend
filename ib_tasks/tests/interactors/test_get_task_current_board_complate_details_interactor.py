@@ -1,9 +1,7 @@
-from unittest.mock import create_autospec, Mock
+from unittest.mock import create_autospec
 
 import pytest
 
-from ib_tasks.interactors.user_action_on_task_interactor \
-    import UserActionOnTaskInteractor
 from ib_tasks.tests.factories.interactor_dtos import \
     TaskCurrentStageDetailsDTOFactory, FieldDetailsDTOFactory
 from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory, \
@@ -163,7 +161,8 @@ class TestUserActionOnTaskInteractor:
 
     @pytest.fixture()
     def task_fields_actions_mock(self, mocker):
-        path = 'ib_tasks.interactors.get_task_fields_and_actions.GetTaskFieldsAndActionsInteractor' \
+        path = 'ib_tasks.interactors.get_task_fields_and_actions' \
+               '.get_task_fields_and_actions.GetTaskFieldsAndActionsInteractor' \
                '.get_task_fields_and_action'
         mock_obj = mocker.patch(path)
         return mock_obj
@@ -182,7 +181,7 @@ class TestUserActionOnTaskInteractor:
         task_storage_mock.get_task_display_id_for_task_id.return_value = task_display_id
         from ib_tasks.constants.enum import ViewType
         view_type = ViewType.KANBAN.value
-        from ib_tasks.interactors.get_task_current_board_complete_details_interactor import \
+        from ib_tasks.interactors.user_action_on_task.get_task_current_board_complete_details_interactor import \
             GetTaskCurrentBoardCompleteDetailsInteractor
         interactor = GetTaskCurrentBoardCompleteDetailsInteractor(
             user_id=user_id, board_id=board_id,

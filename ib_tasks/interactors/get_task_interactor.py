@@ -144,6 +144,10 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             self._stage_assignee_with_team_details_dtos(
                 task_id, stage_ids, project_id
             )
+        task_gof_dtos = task_details_dto.task_gof_dtos
+        stage_task_gof_dtos = self._get_stage_task_gof_dtos(stage_ids,
+                                                            task_gof_dtos)
+        task_details_dto.task_gof_dtos = stage_task_gof_dtos
         task_complete_details_dto = TaskCompleteDetailsDTO(
             task_details_dto=task_details_dto,
             stages_and_actions_details_dtos=stages_and_actions_details_dtos,
@@ -153,9 +157,29 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def _get_task_details_dto(self, task_id: int) -> TaskDetailsDTO:
         get_task_base_interactor = GetTaskBaseInteractor(
-            storage=self.task_crud_storage)
+            storage=self.task_crud_storage,
+            gof_storage=self.gof_storage,
+        )
         task_details_dto = get_task_base_interactor.get_task(task_id)
         return task_details_dto
+
+    def _get_stage_task_gof_dtos(
+            self, stage_ids: List[str],
+            task_gof_dtos: List[TaskGoFDTO]
+    ) -> List[TaskGoFDTO]:
+
+        gof_ids = [
+            task_gof_dto.gof_id
+            for task_gof_dto in task_gof_dtos
+        ]
+        stage_gof_ids = self.stage_storage.get_stages_permitted_gof_ids(
+            stage_ids, gof_ids)
+        stage_task_gof_dtos = [
+            task_gof_dto
+            for task_gof_dto in task_gof_dtos
+            if task_gof_dto.gof_id in stage_gof_ids
+        ]
+        return stage_task_gof_dtos
 
     @staticmethod
     def _get_user_roles_for_the_project(
@@ -174,8 +198,8 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         is_user_has_permission = \
             self.task_stage_storage \
                 .is_user_has_permission_for_at_least_one_stage(
-                    stage_ids=stage_ids, user_roles=user_roles
-                )
+                stage_ids=stage_ids, user_roles=user_roles
+            )
         is_user_permission_denied = not is_user_has_permission
         if is_user_permission_denied:
             raise UserPermissionDenied()
@@ -285,29 +309,32 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
     ) -> List[TaskGoFFieldDTO]:
 
         for permission_task_gof_field_dto in permission_task_gof_field_dtos:
-            field_id = permission_task_gof_field_dto.field_id
             field_response = self._get_field_response(
-                field_id, field_searchable_dtos)
+                permission_task_gof_field_dto, field_searchable_dtos)
             if field_response:
                 permission_task_gof_field_dto.field_response = field_response
         return permission_task_gof_field_dtos
 
     @staticmethod
     def _get_field_response(
-            field_id: str,
+            permission_task_gof_field_dto: TaskGoFFieldDTO,
             field_searchable_dtos: List[FieldSearchableDTO]
     ) -> str:
         field_response = ""
+        field_id = permission_task_gof_field_dto.field_id
+        task_gof_id = permission_task_gof_field_dto.task_gof_id
         for field_searchable_dto in field_searchable_dtos:
-            if field_id == field_searchable_dto.field_id:
+            is_field_matches = field_id == field_searchable_dto.field_id and \
+                               task_gof_id == field_searchable_dto.task_gof_id
+            if is_field_matches:
                 return field_searchable_dto.field_response
+
         return field_response
 
     def _get_updated_field_response_for_field_searchable_dtos(
             self, field_searchable_dtos: List[FieldSearchableDTO],
             searchable_details_dtos: List[SearchableDetailsDTO]
     ) -> List[FieldSearchableDTO]:
-
         for field_searchable_dto in field_searchable_dtos:
             field_response = self._get_updated_field_response(
                 field_searchable_dto, searchable_details_dtos
@@ -377,7 +404,6 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
     def _get_stages_and_actions_details_dtos(
             self, task_id: int, user_id: str, user_roles: str
     ) -> List[StageAndActionsDetailsDTO]:
-
         from ib_tasks.interactors.get_task_stages_and_actions \
             import GetTaskStagesAndActions
         interactor = GetTaskStagesAndActions(
@@ -399,7 +425,6 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             permission_task_gof_dtos: List[TaskGoFDTO],
             all_task_gof_field_dtos: List[TaskGoFFieldDTO]
     ) -> List[TaskGoFFieldDTO]:
-
         task_gof_ids = [
             permission_task_gof_dto.task_gof_id
             for permission_task_gof_dto in permission_task_gof_dtos
@@ -415,7 +440,6 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             self, task_gof_field_dtos: List[TaskGoFFieldDTO],
             user_roles: List[str]
     ) -> List[TaskGoFFieldDTO]:
-
         field_ids = [
             task_gof_field_dto.field_id
             for task_gof_field_dto in task_gof_field_dtos
@@ -425,7 +449,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         user_role_validation_interactor = UserRoleValidationInteractor()
         permission_field_ids = \
             user_role_validation_interactor \
-            .get_field_ids_having_read_permission_for_user(
+                .get_field_ids_having_read_permission_for_user(
                 user_roles=user_roles, field_ids=field_ids,
                 field_storage=self.fields_storage
             )
@@ -439,7 +463,6 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
     def _get_permission_task_gof_dtos(
             self, task_gof_dtos: List[TaskGoFDTO], user_roles: List[str]
     ) -> List[TaskGoFDTO]:
-
         gof_ids = [
             task_gof_dto.gof_id
             for task_gof_dto in task_gof_dtos
@@ -449,7 +472,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         user_role_validation_interactor = UserRoleValidationInteractor()
         permission_gof_ids = \
             user_role_validation_interactor \
-            .get_gof_ids_having_read_permission_for_user(
+                .get_gof_ids_having_read_permission_for_user(
                 user_roles=user_roles, gof_ids=gof_ids,
                 gof_storage=self.gof_storage
             )

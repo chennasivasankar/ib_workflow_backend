@@ -1,8 +1,9 @@
 """
-# TODO: Update test case description
+Given invalid company id returns invalid company id response
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -33,7 +34,9 @@ class TestCase04EditUserAPITestCase(TestUtils):
         ProjectRoleFactory.create(role_id='ROLE_1')
 
     @pytest.mark.django_db
-    def test_case(self, user_set_up, snapshot):
+    def test_given_invalid_company_returns_invalid_company_response(
+            self, user_set_up, snapshot
+    ):
         body = {'name': 'parker', 'email': 'parker2020@gmail.com',
                 'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8322',
                 'team_ids': ['ef6d1fc6-ac3f-4d2d-a983-752c992e8344',

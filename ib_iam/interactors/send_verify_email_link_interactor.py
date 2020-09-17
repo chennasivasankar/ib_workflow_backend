@@ -13,7 +13,8 @@ class SendVerifyEmailLinkInteractor:
 
     def send_verify_email_link_wrapper(
             self, email: str,
-            presenter: SendVerifyEmailLinkPresenterInterface):
+            presenter: SendVerifyEmailLinkPresenterInterface
+    ):
         try:
             self.send_verify_email_link(email=email)
             return presenter.get_response_send_verify_email_link()
@@ -26,13 +27,14 @@ class SendVerifyEmailLinkInteractor:
     def send_verify_email_link(self, email: str):
         from ib_iam.adapters.service_adapter import get_service_adapter
         adapter = get_service_adapter()
-
         user_id = adapter.user_service.get_user_id_for_given_email(email=email)
         user_profile_dto = adapter.user_service.get_user_profile_dto(
-            user_id=user_id)
-        self._validate_email_verification(user_profile_dto.is_email_verify)
-        self.send_verification_email(user_id=user_id, email=email,
-                                     name=user_profile_dto.name)
+            user_id=user_id
+        )
+        self._validate_email_verification(user_profile_dto.is_email_verified)
+        self.send_verification_email(
+            user_id=user_id, email=email, name=user_profile_dto.name
+        )
 
     @staticmethod
     def send_verification_email(user_id: str, email: str, name: str):

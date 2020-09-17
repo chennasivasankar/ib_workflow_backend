@@ -7,11 +7,10 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_tasks.constants.enum import FieldTypes
-from ib_tasks.models import GoF
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import StageModelFactory, StageActionFactory, \
     ActionPermittedRolesFactory, \
-    TaskTemplateWith2GoFsFactory, CurrentTaskStageModelFactory, TaskStatusVariableFactory, \
+    CurrentTaskStageModelFactory, TaskStatusVariableFactory, \
     StagePermittedRolesFactory
 
 
@@ -170,7 +169,8 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
             snapshot.assert_match(task_gof.same_gof_order,
                                   f'same_gof_order_{counter}')
             snapshot.assert_match(task_gof.gof_id, f'gof_id_{counter}')
-            snapshot.assert_match(task_gof.task_display_id, f'task_id_{counter}')
+            snapshot.assert_match(
+                task_gof.task.task_display_id, f'task_id_{counter}')
 
             counter = counter + 1
 

@@ -9,7 +9,8 @@ from ib_tasks.interactors.filter_dtos import FilterCompleteDetailsDTO, \
 from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
     import FilterPresenterInterface, ProjectTemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import TaskTemplateGofsDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import \
+    TaskTemplateGofsDTO
 
 
 class FilterPresenterImplementation(FilterPresenterInterface,
@@ -33,7 +34,7 @@ class FilterPresenterImplementation(FilterPresenterInterface,
         from ib_tasks.constants.exception_messages import USER_NOT_IN_PROJECT
         response_dict = {
             "response": USER_NOT_IN_PROJECT[0],
-            "http_status_code": 404,
+            "http_status_code": 403,
             "res_status": USER_NOT_IN_PROJECT[1]
         }
 

@@ -17,12 +17,12 @@ snapshots['TestCase01GetListOfTeamsAPITestCase.test_case body'] = {
                 {
                     'member_id': '2bdb417e-4632-419a-8ddd-085ea272c6eb',
                     'name': 'name1',
-                    'profile_pic_url': 'url1'
+                    'profile_pic_url': 'http://sample.com'
                 },
                 {
                     'member_id': '7ee2c7b4-34c8-4d65-a83a-f87da75db24e',
                     'name': 'name4',
-                    'profile_pic_url': 'url4'
+                    'profile_pic_url': 'http://sample.com'
                 }
             ],
             'name': 'Arogya',
@@ -35,17 +35,17 @@ snapshots['TestCase01GetListOfTeamsAPITestCase.test_case body'] = {
                 {
                     'member_id': '548a803c-7b48-47ba-a700-24f2ea0d1280',
                     'name': 'name2',
-                    'profile_pic_url': 'url2'
+                    'profile_pic_url': 'http://sample.com'
                 },
                 {
                     'member_id': '4b8fb6eb-fa7d-47c1-8726-cd917901104e',
                     'name': 'name3',
-                    'profile_pic_url': 'url3'
+                    'profile_pic_url': 'http://sample.com'
                 },
                 {
                     'member_id': '7ee2c7b4-34c8-4d65-a83a-f87da75db24e',
                     'name': 'name4',
-                    'profile_pic_url': 'url4'
+                    'profile_pic_url': 'http://sample.com'
                 }
             ],
             'name': 'Daru',
@@ -58,17 +58,17 @@ snapshots['TestCase01GetListOfTeamsAPITestCase.test_case body'] = {
                 {
                     'member_id': '2bdb417e-4632-419a-8ddd-085ea272c6eb',
                     'name': 'name1',
-                    'profile_pic_url': 'url1'
+                    'profile_pic_url': 'http://sample.com'
                 },
                 {
                     'member_id': '548a803c-7b48-47ba-a700-24f2ea0d1280',
                     'name': 'name2',
-                    'profile_pic_url': 'url2'
+                    'profile_pic_url': 'http://sample.com'
                 },
                 {
                     'member_id': '4b8fb6eb-fa7d-47c1-8726-cd917901104e',
                     'name': 'name3',
-                    'profile_pic_url': 'url3'
+                    'profile_pic_url': 'http://sample.com'
                 }
             ],
             'name': 'Proyuga',

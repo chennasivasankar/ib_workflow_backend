@@ -1,7 +1,6 @@
 from typing import List
 
-from ib_discussions.interactors.dtos.dtos import MultimediaDTO, \
-    UpdateCompleteCommentDTO
+from ib_discussions.interactors.dtos.dtos import UpdateCompleteCommentDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
     UpdateCommentPresenterInterface
 from ib_discussions.interactors.storage_interfaces.comment_storage_interface import \
@@ -19,6 +18,7 @@ class UpdateCommentInteractor:
         from ib_discussions.exceptions.custom_exceptions import \
             CommentIdNotFound, UserCannotEditComment
         from ib_discussions.adapters.auth_service import InvalidUserIds
+
         try:
             response = self._update_comment_response(
                 update_complete_comment_dto=update_complete_comment_dto,
@@ -51,7 +51,7 @@ class UpdateCommentInteractor:
         return response
 
     def update_comment(
-            self,update_complete_comment_dto: UpdateCompleteCommentDTO
+            self, update_complete_comment_dto: UpdateCompleteCommentDTO
     ):
         self._validate_varibles_for_update_comment(
             comment_id=update_complete_comment_dto.comment_id,
@@ -85,7 +85,8 @@ class UpdateCommentInteractor:
 
     def _validate_varibles_for_update_comment(
             self, comment_id: str, mention_user_ids: List[str],
-            user_id: str):
+            user_id: str
+    ):
         from ib_discussions.exceptions.custom_exceptions import \
             CommentIdNotFound, UserCannotEditComment
         from ib_discussions.adapters.service_adapter import ServiceAdapter
@@ -105,3 +106,4 @@ class UpdateCommentInteractor:
         service_adapter = ServiceAdapter()
         service_adapter.auth_service.validate_user_ids(
             user_ids=mention_user_ids)
+        return

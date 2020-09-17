@@ -12,7 +12,8 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import TaskGoFDTO, \
     TaskGoFFieldDTO, TaskBaseDetailsDTO, FieldSearchableDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFDetailsDTO, TaskGoFWithTaskIdDTO
-from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO
+from ib_tasks.interactors.task_dtos import BasicTaskDetailsDTO, \
+    UpdateTaskBasicDetailsDTO
 
 
 class CreateOrUpdateTaskStorageInterface(abc.ABC):
@@ -24,7 +25,9 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_gof_dtos(self, task_id: int) -> List[TaskGoFDTO]:
+    def get_task_gof_dtos(
+            self, task_id: int, gof_ids: List[str]
+    ) -> List[TaskGoFDTO]:
         pass
 
     @abc.abstractmethod
@@ -50,8 +53,7 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_task_with_given_task_details(
-            self, task_dto: CreateTaskDTO) -> int:
+    def create_task(self, task_details_dto: BasicTaskDetailsDTO) -> int:
         pass
 
     @abc.abstractmethod
@@ -67,14 +69,13 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_gof_ids_with_same_gof_order_related_to_a_task(
+    def get_gofs_details_of_task(
             self, task_id: int) -> List[GoFIdWithSameGoFOrderDTO]:
         pass
 
     @abc.abstractmethod
-    def get_field_ids_with_task_gof_id_related_to_given_task(
-            self, task_id: int
-    ) -> List[FieldIdWithTaskGoFIdDTO]:
+    def get_field_id_with_task_gof_id_dtos(
+            self, task_id: int) -> List[FieldIdWithTaskGoFIdDTO]:
         pass
 
     @abc.abstractmethod
@@ -113,7 +114,7 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def update_task_with_given_task_details(self, task_dto: UpdateTaskDTO):
+    def update_task(self, task_basic_details: UpdateTaskBasicDetailsDTO):
         pass
 
     @abc.abstractmethod

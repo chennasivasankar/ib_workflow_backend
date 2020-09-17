@@ -3,6 +3,7 @@
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -28,7 +29,7 @@ class TestCase01GetTaskRpsInGivenStageAPITestCase(TestUtils):
         tasks = TaskFactory.create_batch(size=2)
         from ib_tasks.tests.factories.models import TaskStageHistoryModelFactory
         from ib_tasks.tests.factories.models import UserRpInTaskStageFactory
-        UserRpInTaskStageFactory.reset_sequence()
+        UserRpInTaskStageFactory.reset_sequence(1)
         UserRpInTaskStageFactory.create_batch(size=2, task=tasks[0], stage_id=1)
         TaskStageHistoryModelFactory.reset_sequence()
         TaskStageHistoryModelFactory(task=tasks[0], assignee_id=api_user.user_id, stage_id=1)

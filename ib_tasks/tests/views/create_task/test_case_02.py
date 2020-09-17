@@ -5,6 +5,8 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ...common_fixtures.adapters.auth_service import get_valid_project_ids_mock
+from ...factories.models import StageActionFactory
 
 
 class TestCase02CreateTaskAPITestCase(TestUtils):
@@ -14,6 +16,16 @@ class TestCase02CreateTaskAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['write']}}
 
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        StageActionFactory.reset_sequence()
+
+    @pytest.fixture(autouse=True)
+    def setup(self, mocker):
+        project_id = "project_1"
+        get_valid_project_ids_mock(mocker, [project_id])
+        StageActionFactory.create(id=1)
+
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {
@@ -22,11 +34,8 @@ class TestCase02CreateTaskAPITestCase(TestUtils):
             "action_id": 1,
             "title": "task_title",
             "description": "task_description",
-            "start_date": "2099-12-31",
-            "due_date": {
-                "date": "2099-12-31",
-                "time": "12:00:00"
-            },
+            "start_datetime": "2020-09-20 00:00:00",
+            "due_datetime": "2020-10-31 00:00:00",
             "priority": "HIGH",
             "task_gofs": [
                 {

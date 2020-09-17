@@ -227,10 +227,16 @@
               {
                 "type": "object",
                 "properties": {
+                  "is_email_verified": {
+                    "type": "boolean"
+                  },
                   "company": {
                     "$ref": "#/definitions/CompanyDetails"
                   }
-                }
+                },
+                "required": [
+                  "is_email_verified"
+                ]
               }
             ]
           }
@@ -1594,6 +1600,9 @@
             "$ref": "#/definitions/UserDetails"
           },
           {
+            "$ref": "#/definitions/ListOfRoles"
+          },
+          {
             "type": "object",
             "properties": {
               "profile_pic_url": {
@@ -1625,9 +1634,6 @@
                     "items": {
                       "$ref": "#/definitions/EmployeeDetails"
                     }
-                  },
-                  "roles": {
-                    "$ref": "#/definitions/ListOfRoles"
                   }
                 }
               },
@@ -3236,13 +3242,6 @@
         "summary": "Reset User Password",
         "description": "Reset user password using token which we provided",
         "operationId": "reset_user_password",
-        "security": [
-          {
-            "oauth": [
-              "write"
-            ]
-          }
-        ],
         "parameters": [
           {
             "name": "token",

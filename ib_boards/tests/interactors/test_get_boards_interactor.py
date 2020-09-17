@@ -17,7 +17,8 @@ class TestGetBoardsInteractor:
 
     @pytest.fixture
     def storage_mock(self):
-        from ib_boards.interactors.storage_interfaces.storage_interface import \
+        from ib_boards.interactors.storage_interfaces.storage_interface \
+            import \
             StorageInterface
         from unittest import mock
         storage = mock.create_autospec(StorageInterface)
@@ -26,7 +27,8 @@ class TestGetBoardsInteractor:
     @pytest.fixture
     def presenter_mock(self):
         from unittest import mock
-        from ib_boards.interactors.presenter_interfaces.presenter_interface import \
+        from ib_boards.interactors.presenter_interfaces.presenter_interface \
+            import \
             GetBoardsPresenterInterface
         presenter = mock.create_autospec(GetBoardsPresenterInterface)
         return presenter
@@ -34,50 +36,51 @@ class TestGetBoardsInteractor:
     @pytest.fixture
     def get_boards_dto(self):
         return GetBoardsDTO(
-            project_id="project_id_1",
-            user_id="user_id_1",
-            offset=0,
-            limit=100
+                project_id="project_id_1",
+                user_id="user_id_1",
+                offset=0,
+                limit=100
         )
 
     @pytest.fixture
     def get_boards_dto_invalid_offset(self):
         return GetBoardsDTO(
-            project_id="project_id_1",
-            user_id="user_id_1",
-            offset=-1,
-            limit=1
+                project_id="project_id_1",
+                user_id="user_id_1",
+                offset=-1,
+                limit=1
         )
 
     @pytest.fixture
     def get_boards_dto_invalid_limit(self):
         return GetBoardsDTO(
-            project_id="project_id_1",
-            user_id="user_id_1",
-            offset=1,
-            limit=-2
+                project_id="project_id_1",
+                user_id="user_id_1",
+                offset=1,
+                limit=-2
         )
 
     @pytest.fixture
     def get_boards_dto_with_offset_exceeds(self):
         return GetBoardsDTO(
-            project_id="project_id_1",
-            user_id="user_id_1",
-            offset=10,
-            limit=2
+                project_id="project_id_1",
+                user_id="user_id_1",
+                offset=10,
+                limit=2
         )
 
     def test_with_invalid_offset_value_return_error_message(
-            self, storage_mock, presenter_mock, get_boards_dto_invalid_offset, mocker):
+            self, storage_mock, presenter_mock, get_boards_dto_invalid_offset,
+            mocker):
         # Arrange
         project_id = get_boards_dto_invalid_offset.project_id
         project_ids = [project_id]
         user_id = get_boards_dto_invalid_offset.user_id
         expected_response = Mock()
+
         interactor = GetBoardsInteractor(
-            storage=storage_mock
+                storage=storage_mock
         )
-        user_role = 'User'
         roles = ["role_1"]
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             mock_get_user_roles
@@ -96,36 +99,32 @@ class TestGetBoardsInteractor:
 
         # Act
         actual_response = interactor.get_boards_wrapper(
-            get_boards_dto=get_boards_dto_invalid_offset,
-            presenter=presenter_mock
+                get_boards_dto=get_boards_dto_invalid_offset,
+                presenter=presenter_mock
         )
 
         # Assert
         user_in_project_mock.assert_called_once_with(
-            project_id=project_id, user_id=user_id)
+                project_id=project_id, user_id=user_id)
         project_adapter_mock.assert_called_once_with(
-            project_ids
+                project_ids
         )
         adapter_mock.assert_called_once_with(user_id=user_id)
         presenter_mock.get_response_for_invalid_offset.assert_called_once()
         assert actual_response == expected_response
 
     def test_with_invalid_project_id_return_error_message(
-            self, storage_mock, presenter_mock, get_boards_dto_invalid_offset, mocker):
+            self, storage_mock, presenter_mock, get_boards_dto_invalid_offset,
+            mocker):
         # Arrange
         project_id = get_boards_dto_invalid_offset.project_id
         project_ids = [project_id]
         user_id = get_boards_dto_invalid_offset.user_id
         expected_response = Mock()
         interactor = GetBoardsInteractor(
-            storage=storage_mock
+                storage=storage_mock
         )
-        user_role = 'User'
-        from ib_boards.tests.common_fixtures.adapters.iam_service import \
-            adapter_mock_to_get_user_role
-        adapter_mock = adapter_mock_to_get_user_role(
-            mocker=mocker, user_role=user_role
-        )
+
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             mock_validate_project_ids
         project_adapter_mock = mock_validate_project_ids(mocker, [])
@@ -138,35 +137,33 @@ class TestGetBoardsInteractor:
 
         # Act
         actual_response = interactor.get_boards_wrapper(
-            get_boards_dto=get_boards_dto_invalid_offset,
-            presenter=presenter_mock
+                get_boards_dto=get_boards_dto_invalid_offset,
+                presenter=presenter_mock
         )
 
         # Assert
         project_adapter_mock.assert_called_once_with(
-            project_ids
+                project_ids
         )
-        dict_obj = presenter_mock.get_response_for_invalid_project_id.call_args.kwargs
+        dict_obj = presenter_mock.get_response_for_invalid_project_id\
+            .call_args.kwargs
         expected_project_ids = dict_obj['error'].invalid_project_ids
         assert project_ids == expected_project_ids
         assert actual_response == expected_response
 
+
     def test_when_user_not_in_project_return_error_message(
-            self, storage_mock, presenter_mock, get_boards_dto_invalid_offset, mocker):
+            self, storage_mock, presenter_mock, get_boards_dto_invalid_offset,
+            mocker):
         # Arrange
         project_id = get_boards_dto_invalid_offset.project_id
         project_ids = [project_id]
         user_id = get_boards_dto_invalid_offset.user_id
         expected_response = Mock()
         interactor = GetBoardsInteractor(
-            storage=storage_mock
+                storage=storage_mock
         )
-        user_role = 'User'
-        from ib_boards.tests.common_fixtures.adapters.iam_service import \
-            adapter_mock_to_get_user_role
-        adapter_mock = adapter_mock_to_get_user_role(
-            mocker=mocker, user_role=user_role
-        )
+
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             mock_validate_project_ids
         project_adapter_mock = mock_validate_project_ids(mocker, project_ids)
@@ -179,30 +176,32 @@ class TestGetBoardsInteractor:
 
         # Act
         actual_response = interactor.get_boards_wrapper(
-            get_boards_dto=get_boards_dto_invalid_offset,
-            presenter=presenter_mock
+                get_boards_dto=get_boards_dto_invalid_offset,
+                presenter=presenter_mock
         )
 
         # Assert
         project_adapter_mock.assert_called_once_with(
-            project_ids
+                project_ids
         )
         user_in_project_mock.assert_called_once_with(
-            project_id=project_id, user_id=user_id)
-        presenter_mock.get_response_for_user_is_not_in_project.assert_called_once()
+                project_id=project_id, user_id=user_id)
+        presenter_mock.get_response_for_user_is_not_in_project\
+            .assert_called_once()
         assert actual_response == expected_response
 
     def test_with_invalid_limit_value_return_error_message(
-            self, storage_mock, presenter_mock, get_boards_dto_invalid_limit, mocker):
+            self, storage_mock, presenter_mock, get_boards_dto_invalid_limit,
+            mocker):
         # Arrange
         project_id = get_boards_dto_invalid_limit.project_id
         user_id = get_boards_dto_invalid_limit.user_id
         project_ids = [project_id]
         expected_response = Mock()
         interactor = GetBoardsInteractor(
-            storage=storage_mock
+                storage=storage_mock
         )
-        user_role = 'User'
+
         roles = ["role_1"]
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             mock_get_user_roles
@@ -221,15 +220,15 @@ class TestGetBoardsInteractor:
 
         # Act
         actual_response = interactor.get_boards_wrapper(
-            get_boards_dto=get_boards_dto_invalid_limit,
-            presenter=presenter_mock
+                get_boards_dto=get_boards_dto_invalid_limit,
+                presenter=presenter_mock
         )
 
         # Assert
         user_in_project_mock.assert_called_once_with(
-            project_id=project_id, user_id=user_id)
+                project_id=project_id, user_id=user_id)
         project_adapter_mock.assert_called_once_with(
-            project_ids
+                project_ids
         )
         adapter_mock.assert_called_once_with(user_id=user_id)
         presenter_mock.get_response_for_invalid_limit.assert_called_once()
@@ -250,8 +249,8 @@ class TestGetBoardsInteractor:
         starred_boards_dtos = BoardDTOFactory()
         BoardDTOFactory.reset_sequence()
         all_board_dtos = StarredAndOtherBoardsDTO(
-            starred_boards_dtos=[starred_boards_dtos],
-            other_boards_dtos=board_dtos
+                starred_boards_dtos=[starred_boards_dtos],
+                other_boards_dtos=board_dtos
         )
 
         roles = ["role_1"]
@@ -261,9 +260,9 @@ class TestGetBoardsInteractor:
                 mocker=mocker, roles=roles
         )
         interactor = GetBoardsInteractor(
-            storage=storage_mock
+                storage=storage_mock
         )
-        user_role = "User"
+
         user_id = get_boards_dto.user_id
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             mock_validate_project_ids
@@ -283,28 +282,29 @@ class TestGetBoardsInteractor:
 
         # Act
         actual_response = interactor.get_boards_wrapper(
-            get_boards_dto=get_boards_dto,
-            presenter=presenter_mock
+                get_boards_dto=get_boards_dto,
+                presenter=presenter_mock
         )
 
         # Assert
         storage_mock.get_board_ids.assert_called_once_with(
-            user_id=user_id, project_id=project_id
+                user_id=user_id, project_id=project_id
         )
         storage_mock.get_user_permitted_board_ids.assert_called_once_with(
-            user_roles=roles, board_ids=all_board_ids
+                user_roles=roles, board_ids=all_board_ids
         )
         interactor_mock.assert_called_once_with(
-            board_ids=all_board_ids
+                board_ids=all_board_ids
         )
         user_in_project_mock.assert_called_once_with(
-            project_id=project_id, user_id=user_id)
+                project_id=project_id, user_id=user_id)
         project_adapter_mock.assert_called_once_with(
-            project_ids
+                project_ids
         )
         adapter_mock.assert_called_once_with(user_id=user_id)
         presenter_mock.get_response_for_get_boards.assert_called_once_with(
-            starred_and_other_boards_dto=all_board_dtos, total_boards=total_boards
+                starred_and_other_boards_dto=all_board_dtos,
+                total_boards=total_boards
         )
         assert actual_response == expected_response
 
@@ -320,8 +320,8 @@ class TestGetBoardsInteractor:
         BoardDTOFactory.reset_sequence()
         board_dtos = BoardDTOFactory.create_batch(3)
         all_board_dtos = StarredAndOtherBoardsDTO(
-            starred_boards_dtos=[],
-            other_boards_dtos=board_dtos
+                starred_boards_dtos=[],
+                other_boards_dtos=board_dtos
         )
         BoardDTOFactory.reset_sequence()
         roles = ["role_1"]
@@ -331,7 +331,7 @@ class TestGetBoardsInteractor:
                 mocker=mocker, roles=roles
         )
         interactor = GetBoardsInteractor(
-            storage=storage_mock
+                storage=storage_mock
         )
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             mock_validate_project_ids
@@ -351,28 +351,29 @@ class TestGetBoardsInteractor:
 
         # Act
         actual_response = interactor.get_boards_wrapper(
-            get_boards_dto=get_boards_dto,
-            presenter=presenter_mock
+                get_boards_dto=get_boards_dto,
+                presenter=presenter_mock
         )
 
         # Assert
         storage_mock.get_board_ids.assert_called_once_with(
-            user_id=user_id, project_id=project_id
+                user_id=user_id, project_id=project_id
         )
         interactor_mock.assert_called_once_with(
-            board_ids=board_ids
+                board_ids=board_ids
         )
         storage_mock.get_user_permitted_board_ids.assert_called_once_with(
-            user_roles=roles, board_ids=board_ids
+                user_roles=roles, board_ids=board_ids
         )
         user_in_project_mock.assert_called_once_with(
-            project_id=project_id, user_id=user_id)
+                project_id=project_id, user_id=user_id)
         project_adapter_mock.assert_called_once_with(
-            project_ids
+                project_ids
         )
         adapter_mock.assert_called_once_with(user_id=user_id)
         presenter_mock.get_response_for_get_boards.assert_called_once_with(
-            starred_and_other_boards_dto=all_board_dtos, total_boards=total_boards
+                starred_and_other_boards_dto=all_board_dtos,
+                total_boards=total_boards
         )
         assert actual_response == expected_response
 
@@ -387,24 +388,20 @@ class TestGetBoardsInteractor:
         project_ids = [project_id]
         user_id = get_boards_dto.user_id
 
-        BoardDTOFactory.reset_sequence()
-        board_dtos = BoardDTOFactory.create_batch(2)
-        starred_boards_dtos = BoardDTOFactory()
-        BoardDTOFactory.reset_sequence()
         all_board_dtos = StarredAndOtherBoardsDTO(
-            starred_boards_dtos=[],
-            other_boards_dtos=[]
+                starred_boards_dtos=[],
+                other_boards_dtos=[]
         )
 
         interactor = GetBoardsInteractor(
-            storage=storage_mock
+                storage=storage_mock
         )
-        user_role = "User"
+
         roles = ["role_1"]
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             mock_get_user_roles
         adapter_mock = mock_get_user_roles(
-            mocker=mocker, roles=roles
+                mocker=mocker, roles=roles
         )
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             mock_validate_project_ids
@@ -425,27 +422,28 @@ class TestGetBoardsInteractor:
 
         # Act
         actual_response = interactor.get_boards_wrapper(
-            get_boards_dto=get_boards_dto,
-            presenter=presenter_mock
+                get_boards_dto=get_boards_dto,
+                presenter=presenter_mock
         )
 
         # Assert
         storage_mock.get_board_ids.assert_called_once_with(
-            user_id=user_id, project_id=project_id
+                user_id=user_id, project_id=project_id
         )
         storage_mock.get_user_permitted_board_ids.assert_called_once_with(
-            user_roles=roles, board_ids=all_board_ids
+                user_roles=roles, board_ids=all_board_ids
         )
         interactor_mock.assert_called_once_with(
-            board_ids=[]
+                board_ids=[]
         )
         user_in_project_mock.assert_called_once_with(
-            project_id=project_id, user_id=user_id)
+                project_id=project_id, user_id=user_id)
         project_adapter_mock.assert_called_once_with(
-            project_ids
+                project_ids
         )
         adapter_mock.assert_called_once_with(user_id=user_id)
         presenter_mock.get_response_for_get_boards.assert_called_once_with(
-            starred_and_other_boards_dto=all_board_dtos, total_boards=total_boards
+                starred_and_other_boards_dto=all_board_dtos,
+                total_boards=total_boards
         )
         assert actual_response == expected_response

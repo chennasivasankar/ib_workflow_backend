@@ -12,8 +12,8 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
     @pytest.fixture
     def presenter(self):
         from ib_tasks.presenters.create_transition_checklist_presenter import \
-            CreateOrUpdateTransitionChecklistTemplatePresenterImplementation
-        return CreateOrUpdateTransitionChecklistTemplatePresenterImplementation()
+            CreateOrUpdateTransitionChecklistPresenterImplementation
+        return CreateOrUpdateTransitionChecklistPresenterImplementation()
 
     def test_with_invalid_task_display_id(self, presenter, snapshot):
         # Arrange
@@ -245,7 +245,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
 
         # Act
         response = \
-            presenter.raise_exception_for_empty_value_in_required_field(err)
+            presenter.raise_empty_value_in_required_field(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -266,7 +266,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
 
         # Act
         response = \
-            presenter.raise_exception_for_invalid_phone_number_value(err)
+            presenter.raise_invalid_phone_number_value(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -287,7 +287,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
 
         # Act
         response = \
-            presenter.raise_exception_for_invalid_email_address(err)
+            presenter.raise_invalid_email_address(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -308,7 +308,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
 
         # Act
         response = \
-            presenter.raise_exception_for_invalid_url_address(err)
+            presenter.raise_invalid_url_address(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -327,7 +327,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
         err = NotAStrongPassword(expected_field_id, expected_password)
 
         # Act
-        response = presenter.raise_exception_for_weak_password(err)
+        response = presenter.raise_weak_password(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -348,7 +348,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
 
         # Act
         response = \
-            presenter.raise_exception_for_invalid_number_value(err)
+            presenter.raise_invalid_number_value(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -369,7 +369,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
 
         # Act
         response = \
-            presenter.raise_exception_for_invalid_float_value(err)
+            presenter.raise_invalid_float_value(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -392,7 +392,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
 
         # Act
         response = \
-            presenter.raise_exception_for_invalid_dropdown_value(err)
+            presenter.raise_invalid_dropdown_value(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -415,7 +415,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
 
         # Act
         response = presenter. \
-            raise_exception_for_invalid_name_in_gof_selector_field_value(err)
+            raise_invalid_name_in_gof_selector(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -438,7 +438,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
 
         # Act
         response = presenter. \
-            raise_exception_for_invalid_choice_in_radio_group_field(err)
+            raise_invalid_choice_in_radio_group_field(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -462,7 +462,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
 
         # Act
         response = presenter. \
-            raise_exception_for_invalid_checkbox_group_options_selected(err)
+            raise_invalid_checkbox_group_options_selected(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -486,7 +486,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
 
         # Act
         response = presenter. \
-            raise_exception_for_invalid_multi_select_options_selected(err)
+            raise_invalid_multi_select_options_selected(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -510,7 +510,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
 
         # Act
         response = presenter. \
-            raise_exception_for_invalid_multi_select_labels_selected(err)
+            raise_invalid_multi_select_labels_selected(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -534,7 +534,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
 
         # Act
         response = \
-            presenter.raise_exception_for_invalid_date_format(err)
+            presenter.raise_invalid_date_format(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -558,7 +558,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
 
         # Act
         response = \
-            presenter.raise_exception_for_invalid_time_format(err)
+            presenter.raise_invalid_time_format(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -577,7 +577,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
         err = InvalidUrlForImage(expected_field_id, expected_invalid_image_url)
 
         # Act
-        response = presenter.raise_exception_for_invalid_image_url(err)
+        response = presenter.raise_invalid_image_url(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -601,7 +601,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
 
         # Act
         response = \
-            presenter.raise_exception_for_not_acceptable_image_format(err)
+            presenter.raise_not_acceptable_image_format(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -621,7 +621,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
             expected_field_id, expected_invalid_file_url)
 
         # Act
-        response = presenter.raise_exception_for_invalid_file_url(err)
+        response = presenter.raise_invalid_file_url(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -645,7 +645,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
 
         # Act
         response = \
-            presenter.raise_exception_for_not_acceptable_file_format(err)
+            presenter.raise_not_acceptable_file_format(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -683,7 +683,7 @@ class TestCreateTransitionChecklistTemplatePresenterImplementation:
 
         # Act
         response = \
-            presenter.raise_transition_template_is_not_related_to_given_stage_action(
+            presenter.raise_transition_template_is_not_linked_to_action(
                 err)
 
         # Assert

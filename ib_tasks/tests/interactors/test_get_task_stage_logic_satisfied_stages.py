@@ -10,7 +10,8 @@ from ib_tasks.tests.factories.storage_dtos import (
 
 class TestGetTaskStageLogicSatisfiedStages:
 
-    def setup(cls):
+    @classmethod
+    def setup_class(cls):
         StageDisplayValueDTOFactory.reset_sequence()
         StatusOperandStageDTOFactory.reset_sequence()
         StageDisplayLogicDTOFactory.reset_sequence()
@@ -26,7 +27,7 @@ class TestGetTaskStageLogicSatisfiedStages:
         return storage
 
     def setup_storage(self, storage, operator, display_logic):
-        self.setup()
+        self.setup_class()
         storage.validate_task_id.return_value = True
         status_variables_dtos = StatusVariableDTOFactory.create_batch(3)
         storage.get_status_variables_to_task.return_value = \
@@ -57,7 +58,7 @@ class TestGetTaskStageLogicSatisfiedStages:
     def interactor(storage, stage_storage):
         task_id = 1
 
-        from ib_tasks.interactors.get_task_stage_logic_satisfied_stages \
+        from ib_tasks.interactors.user_action_on_task.get_task_stage_logic_satisfied_stages \
             import GetTaskStageLogicSatisfiedStagesInteractor
         interactor = GetTaskStageLogicSatisfiedStagesInteractor(
             task_id=task_id, storage=storage, stage_storage=stage_storage
@@ -94,8 +95,8 @@ class TestGetTaskStageLogicSatisfiedStages:
     @pytest.fixture()
     def stage_display_mock(mocker):
 
-        path = 'ib_tasks.interactors.get_stage_display_logic_interactor.StageDisplayLogicInteractor' \
-               '.get_stage_display_logic_condition'
+        path = 'ib_tasks.interactors.user_action_on_task.get_stage_display_logic_interactor' \
+               '.StageDisplayLogicInteractor.get_stage_display_logic_condition'
         mock_obj = mocker.patch(path)
         return mock_obj
 

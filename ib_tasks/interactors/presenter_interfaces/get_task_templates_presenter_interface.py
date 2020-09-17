@@ -9,7 +9,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageIdWithTemplateIdDTO
+    StageIdWithTemplateIdDTO, StageGoFWithTemplateIdDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO, ProjectIdWithTaskTemplateIdDTO
 
@@ -19,11 +19,12 @@ class CompleteTaskTemplatesDTO:
     task_template_dtos: List[TemplateDTO]
     project_id_with_task_template_id_dtos: \
         List[ProjectIdWithTaskTemplateIdDTO]
-    stage_id_with_template_id_dtos: List[StageIdWithTemplateIdDTO]
+    initial_stage_id_with_template_id_dtos: List[StageIdWithTemplateIdDTO]
     action_with_stage_id_dtos: List[ActionWithStageIdDTO]
     gof_dtos: List[GoFDTO]
     gofs_of_task_templates_dtos: List[GoFToTaskTemplateDTO]
     field_with_permissions_dtos: List[FieldPermissionDTO]
+    stage_gof_with_template_id_dtos: List[StageGoFWithTemplateIdDTO]
 
 
 class GetTaskTemplatesPresenterInterface(abc.ABC):
