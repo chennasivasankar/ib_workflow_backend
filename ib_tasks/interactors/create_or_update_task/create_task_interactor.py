@@ -240,11 +240,21 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
         task_log_dto = CreateTaskLogDTO(
             task_id=task_id, user_id=user_id, action_id=action_id,
             task_json=task_request_json)
-        self.create_task_log(task_log_dto)
+        self._create_task_log(task_log_dto)
         response = presenter.get_create_task_response(
             complete_task_details_dto.task_current_stages_details_dto,
             complete_task_details_dto.all_tasks_overview_details_dto)
         return response
+
+    def _create_task_log(self, task_log_dto: CreateTaskLogDTO):
+        from ib_tasks.interactors.task_log_interactor import TaskLogInteractor
+        task_log_interactor = TaskLogInteractor(
+            storage=self.storage, task_storage=self.task_storage)
+        create_task_log_dto = CreateTaskLogDTO(
+            task_json=task_log_dto.task_json,
+            task_id=task_log_dto.task_id, user_id=task_log_dto.user_id,
+            action_id=task_log_dto.action_id)
+        task_log_interactor.create_task_log(create_task_log_dto)
 
     def create_task(self, task_dto: CreateTaskDTO) -> CompleteTaskDetailsDTO:
         user_id = task_dto.basic_task_details_dto.created_by_id

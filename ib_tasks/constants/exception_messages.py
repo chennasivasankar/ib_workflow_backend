@@ -213,7 +213,7 @@ EMPTY_VALUE_FOR_REQUIRED_FIELD = [
 TASK_CREATED_SUCCESSFULLY = ("task created or updated successfully",
                              "TASK_CREATED_SUCCESSFULLY")
 
-INVALID_TASK_JSON = ("Task Json should not be empty", "INVALID_TASK_JSON")
+EMPTY_TASK_JSON = ("Task Json should not be empty", "EMPTY_TASK_JSON")
 
 INVALID_GOFS_OF_TASK_TEMPLATE = (
     "invalid gofs {}  given to the task template {}",
@@ -466,8 +466,7 @@ USER_DID_NOT_FILL_REQUIRED_FIELDS = (
 )
 
 INVALID_TASK_JSON = (
-    "Invalid task json object recieved",
-    "INVALID_TASK_JSON"
+    "Invalid task json object received", "INVALID_TASK_JSON"
 )
 
 INVALID_STAGE_PERMITTED_GOFS = (

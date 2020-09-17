@@ -245,8 +245,18 @@ class SaveAndActOnATaskInteractor(
         task_log_dto = CreateTaskLogDTO(
             task_id=task_db_id, user_id=task_dto.created_by_id,
             action_id=task_dto.action_id, task_json=task_request_json)
-        self.create_task_log(task_log_dto)
+        self._create_task_log(task_log_dto)
         return task_overview_dto
+
+    def _create_task_log(self, task_log_dto: CreateTaskLogDTO):
+        from ib_tasks.interactors.task_log_interactor import TaskLogInteractor
+        task_log_interactor = TaskLogInteractor(
+            storage=self.storage, task_storage=self.task_storage)
+        create_task_log_dto = CreateTaskLogDTO(
+            task_json=task_log_dto.task_json,
+            task_id=task_log_dto.task_id, user_id=task_log_dto.user_id,
+            action_id=task_log_dto.action_id)
+        task_log_interactor.create_task_log(create_task_log_dto)
 
     def save_and_act_on_task(
             self, task_dto: SaveAndActOnTaskDTO, board_id: str):
