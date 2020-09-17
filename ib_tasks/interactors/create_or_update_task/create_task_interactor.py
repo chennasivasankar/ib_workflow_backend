@@ -77,7 +77,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import (
-    CreateTaskDTO, CreateTaskLogDTO, TaskCurrentStageDetailsDTO
+    CreateTaskDTO, TaskCurrentStageDetailsDTO
 )
 from ib_tasks.interactors.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
@@ -245,7 +245,6 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
         return response
 
     def create_task(self, task_dto: CreateTaskDTO) -> CompleteTaskDetailsDTO:
-        project_id = task_dto.basic_task_details_dto.project_id
         user_id = task_dto.basic_task_details_dto.created_by_id
         action_id = task_dto.basic_task_details_dto.action_id
         task_template_id = task_dto.basic_task_details_dto.task_template_id
@@ -254,15 +253,8 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
         task_id = self._create_task_gofs_and_fields(task_dto)
         self._set_status_variables_and_create_initial_task_stages(
             task_id, task_template_id)
-        self._perform_user_action_on_task(task_id, action_id, user_id)
-        task_current_stages_details_dto = \
-            self._get_task_current_stages_information(task_id, user_id)
-        all_tasks_overview_details_dto = self._get_task_overview_details_dto(
-            task_id, user_id, project_id)
-        complete_task_details_dto = CompleteTaskDetailsDTO(
-            task_id=task_id,
-            task_current_stages_details_dto=task_current_stages_details_dto,
-            all_tasks_overview_details_dto=all_tasks_overview_details_dto)
+        complete_task_details_dto = self._perform_user_action_on_task(
+            task_id, action_id, user_id)
         return complete_task_details_dto
 
     def _validate_task_details(self, task_dto: CreateTaskDTO):
@@ -311,8 +303,15 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
             create_task_storage=self.create_task_storage,
             task_template_storage=self.task_template_storage
         )
-        act_on_task_interactor.user_action_on_task_and_set_random_assignees(
-            task_id=task_id)
+        task_complete_details_dto, task_current_stage_details_dto, \
+        all_tasks_overview_dto = \
+            act_on_task_interactor.user_action_on_task_and_set_random_assignees(
+                task_id=task_id)
+        complete_task_details_dto = CompleteTaskDetailsDTO(
+            task_id=task_id,
+            task_current_stages_details_dto=task_current_stage_details_dto,
+            all_tasks_overview_details_dto=all_tasks_overview_dto)
+        return complete_task_details_dto
 
     def _get_task_current_stages_information(
             self, task_id: int, user_id: str) -> TaskCurrentStageDetailsDTO:
