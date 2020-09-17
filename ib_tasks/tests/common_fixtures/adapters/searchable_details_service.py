@@ -20,6 +20,11 @@ def searchable_details_dtos_mock(mocker):
             search_type=Searchable.USER.value,
             id="123e4567-e89b-12d3-a456-426614174000",
             value=value
+        ),
+        SearchableDetailsDTO(
+            search_type=Searchable.CITY.value,
+            id=4,
+            value="Delhi"
         )
     ]
     mock.return_value = searchable_details_dtos

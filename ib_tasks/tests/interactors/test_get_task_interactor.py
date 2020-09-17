@@ -287,6 +287,15 @@ class TestGetTaskInteractor:
         return stages_and_actions_details_dtos
 
     @pytest.fixture
+    def stage_ids(self, stages_and_actions_details_dtos):
+        stage_ids = [
+            stages_and_actions_details_dto.db_stage_id
+            for stages_and_actions_details_dto in
+            stages_and_actions_details_dtos
+        ]
+        return stage_ids
+
+    @pytest.fixture
     def assignee_details_dtos(self):
         from ib_tasks.tests.factories.interactor_dtos import \
             AssigneeWithTeamDetailsDTOFactory
@@ -432,7 +441,6 @@ class TestGetTaskInteractor:
         # Arrange
         user_id = "user1"
         task_display_id = "IBWF-1"
-        task_id = 1
         invalid_project_ids = ["project_id1"]
         from ib_tasks.adapters.auth_service import InvalidProjectIdsException
         exception_object = InvalidProjectIdsException(invalid_project_ids)
@@ -610,7 +618,7 @@ class TestGetTaskInteractor:
             permission_task_gof_dtos, field_ids, permission_field_ids,
             permission_task_gof_field_dtos, task_complete_details_dto,
             mock_object, stages_and_actions_details_dtos, permission_gof_ids,
-            reset_sequence, gof_storage_mock
+            reset_sequence, gof_storage_mock, stage_ids
     ):
         # Arrange
         user_roles_mock.return_value = user_roles
@@ -628,6 +636,8 @@ class TestGetTaskInteractor:
         task_stage_storage_mock \
             .is_user_has_permission_for_at_least_one_stage.return_value = True
         task_crud_storage_mock.get_field_searchable_dtos.return_value = []
+        stage_storage_mock.get_stages_permission_gof_ids.return_value = \
+            permission_gof_ids
 
         interactor = GetTaskInteractor(
             storage=storage_mock, fields_storage=fields_storage_mock,
@@ -653,19 +663,30 @@ class TestGetTaskInteractor:
             .is_user_has_permission_for_at_least_one_stage.assert_called_once()
         presenter_mock.get_task_response.assert_called_once_with(
             task_complete_details_dto)
+        stage_storage_mock.get_stages_permission_gof_ids \
+            .assert_called_once_with(
+                stage_ids, permission_gof_ids)
 
     @pytest.fixture
     def field_searchable_dtos(self):
         field_searchable_dtos = [
             FieldSearchableDTOFactory(
+                task_gof_id=0,
                 field_id="field0",
                 field_value=Searchable.CITY.value,
                 field_response="1"
             ),
             FieldSearchableDTOFactory(
+                task_gof_id=1,
                 field_id="field2",
                 field_value=Searchable.USER.value,
                 field_response="123e4567-e89b-12d3-a456-426614174000"
+            ),
+            FieldSearchableDTOFactory(
+                task_gof_id=1,
+                field_id="field0",
+                field_value=Searchable.CITY.value,
+                field_response="4"
             )
         ]
         return field_searchable_dtos
@@ -674,11 +695,13 @@ class TestGetTaskInteractor:
     def field_searchable_dtos_with_invalid_city_ids(self):
         field_searchable_dtos = [
             FieldSearchableDTOFactory(
+                task_gof_id=0,
                 field_id="field0",
                 field_value=Searchable.CITY.value,
                 field_response="100"
             ),
             FieldSearchableDTOFactory(
+                task_gof_id=1,
                 field_id="field2",
                 field_value=Searchable.CITY.value,
                 field_response="110"
@@ -700,7 +723,9 @@ class TestGetTaskInteractor:
             TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field3",
                                    field_response="response3"),
             TaskGoFFieldDTOFactory(task_gof_id=2, field_id="field4",
-                                   field_response="response4")
+                                   field_response="response4"),
+            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field0",
+                                   field_response="4")
         ]
         return task_gof_field_dtos
 
@@ -728,7 +753,10 @@ class TestGetTaskInteractor:
             TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field2",
                                    field_response=field_response_user),
             TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field3",
-                                   field_response="response3")
+                                   field_response="response3"),
+            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field0",
+                                   field_response='{"id": 4, "value": '
+                                                  '"Delhi"}')
         ]
         return permission_task_gof_field_dtos
 
@@ -810,7 +838,7 @@ class TestGetTaskInteractor:
             permission_task_gof_field_dtos_with_field_type_searchable,
             field_searchable_dtos,
             task_complete_details_dto_with_field_type_searchable,
-            gof_storage_mock, stage_storage_mock
+            gof_storage_mock, stage_storage_mock, stage_ids
     ):
         # Arrange
         from ib_tasks.tests.common_fixtures.adapters \
@@ -844,6 +872,8 @@ class TestGetTaskInteractor:
         gof_ids_permission_mock.return_value = permission_gof_ids
         task_crud_storage_mock.get_field_searchable_dtos.return_value = \
             field_searchable_dtos
+        stage_storage_mock.get_stages_permission_gof_ids.return_value = \
+            permission_gof_ids
         presenter_mock.get_task_response.return_value = mock_object
 
         # Act
@@ -859,6 +889,9 @@ class TestGetTaskInteractor:
         task_stage_storage_mock \
             .is_user_has_permission_for_at_least_one_stage.assert_called_once()
         searchable_details_dtos_mock_method.assert_called_once()
+        stage_storage_mock.get_stages_permission_gof_ids\
+            .assert_called_once_with(
+                stage_ids, permission_gof_ids)
         presenter_mock.get_task_response.assert_called_once_with(
             task_complete_details_dto_with_field_type_searchable)
 
@@ -873,8 +906,7 @@ class TestGetTaskInteractor:
     def test_given_valid_task_and_some_of_fields_are_searchable_with_invalid_city_ids_raise_exception(
             self, get_task_mock, get_searchable_details_dtos_mock,
             field_ids_permission_mock, gof_ids_permission_mock,
-            user_roles_mock, mocker,
-            task_details_dto_with_some_fields_searchable_type,
+            user_roles_mock, task_details_dto_with_some_fields_searchable_type,
             stage_assignee_details_dtos, stages_and_actions_details_dtos,
             user_roles, storage_mock, presenter_mock, fields_storage_mock,
             task_storage_mock, task_crud_storage_mock, action_storage_mock,
@@ -1173,7 +1205,7 @@ class TestGetTaskInteractor:
             get_task_stages_and_actions_mock, field_ids_permission_mock,
             gof_ids_permission_mock, user_roles_mock,
             stage_assignee_details_dtos,
-            mocker, storage_mock, presenter_mock, fields_storage_mock,
+            storage_mock, presenter_mock, fields_storage_mock,
             task_storage_mock, task_crud_storage_mock, action_storage_mock,
             task_stage_storage_mock, task_details_dto, user_roles, gof_ids,
             permission_task_gof_dtos, field_ids, permission_field_ids,
@@ -1310,7 +1342,7 @@ class TestGetTaskInteractor:
             get_task_stages_and_actions_mock, field_ids_permission_mock,
             gof_ids_permission_mock, user_role_mock,
             stage_assignee_details_dtos,
-            mocker, storage_mock, presenter_mock, fields_storage_mock,
+            storage_mock, presenter_mock, fields_storage_mock,
             task_storage_mock, task_crud_storage_mock, action_storage_mock,
             task_stage_storage_mock, task_details_dto, user_roles, gof_ids,
             permission_task_gof_dtos, field_ids, permission_field_ids,

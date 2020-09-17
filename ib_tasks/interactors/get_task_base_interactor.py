@@ -47,6 +47,6 @@ class GetTaskBaseInteractor:
         service_adapter = get_service_adapter()
         task_project_details_dtos = service_adapter.auth_service. \
             get_projects_info_for_given_ids(project_ids=[project_id])
-        return task_project_details_dtos[0]
-
-
+        for task_project_details_dto in task_project_details_dtos:
+            if task_project_details_dto.project_id == project_id:
+                return task_project_details_dto

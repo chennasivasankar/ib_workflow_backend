@@ -10,7 +10,8 @@ from ib_tasks.models import (
     UserTaskDelayReason, Task, TaskGoF, TaskGoFField,
     TaskTemplateGlobalConstants,
     TaskStatusVariable, Filter, FilterCondition, TaskLog,
-    StagePermittedRoles, ElasticSearchTask, ProjectTaskTemplate, TaskStageRp)
+    StagePermittedRoles, ElasticSearchTask, ProjectTaskTemplate, TaskStageRp,
+    StageGoF)
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -380,3 +381,12 @@ class TaskStageHistoryFactory(factory.django.DjangoModelFactory):
         lambda n: "123e4567-e89b-12d3-a456-42661417400{}".format(n))
     joined_at = datetime(2012, 10, 10)
     left_at = datetime(2012, 10, 11)
+
+
+class StageGoFFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = StageGoF
+
+    stage = factory.SubFactory(StageFactory)
+    gof = factory.SubFactory(GoFFactory)
+

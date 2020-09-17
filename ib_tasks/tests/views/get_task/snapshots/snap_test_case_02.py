@@ -68,21 +68,21 @@ snapshots['TestCase02GetTaskAPITestCase.test_case body'] = {
                     'action_type': 'NO_VALIDATIONS',
                     'button_color': '#fafafa',
                     'button_text': 'hey',
-                    'transition_template_id': 'template_1'
+                    'transition_template_id': 'template_5'
                 },
                 {
                     'action_id': 5,
                     'action_type': 'NO_VALIDATIONS',
                     'button_color': '#fafafa',
                     'button_text': 'hey',
-                    'transition_template_id': 'template_5'
+                    'transition_template_id': 'template_9'
                 },
                 {
                     'action_id': 9,
                     'action_type': 'NO_VALIDATIONS',
                     'button_color': '#fafafa',
                     'button_text': 'hey',
-                    'transition_template_id': 'template_9'
+                    'transition_template_id': 'template_13'
                 }
             ],
             'assignee': {
@@ -106,21 +106,21 @@ snapshots['TestCase02GetTaskAPITestCase.test_case body'] = {
                     'action_type': 'NO_VALIDATIONS',
                     'button_color': '#fafafa',
                     'button_text': 'hey',
-                    'transition_template_id': 'template_2'
+                    'transition_template_id': 'template_6'
                 },
                 {
                     'action_id': 6,
                     'action_type': 'NO_VALIDATIONS',
                     'button_color': '#fafafa',
                     'button_text': 'hey',
-                    'transition_template_id': 'template_6'
+                    'transition_template_id': 'template_10'
                 },
                 {
                     'action_id': 10,
                     'action_type': 'NO_VALIDATIONS',
                     'button_color': '#fafafa',
                     'button_text': 'hey',
-                    'transition_template_id': 'template_10'
+                    'transition_template_id': 'template_14'
                 }
             ],
             'assignee': {
@@ -144,14 +144,14 @@ snapshots['TestCase02GetTaskAPITestCase.test_case body'] = {
                     'action_type': 'NO_VALIDATIONS',
                     'button_color': '#fafafa',
                     'button_text': 'hey',
-                    'transition_template_id': 'template_3'
+                    'transition_template_id': 'template_7'
                 },
                 {
                     'action_id': 7,
                     'action_type': 'NO_VALIDATIONS',
                     'button_color': '#fafafa',
                     'button_text': 'hey',
-                    'transition_template_id': 'template_7'
+                    'transition_template_id': 'template_11'
                 }
             ],
             'assignee': {
