@@ -172,10 +172,9 @@ class FilterStorageImplementation(FilterStorageInterface):
         filter_object.template_id = filter_dto.template_id
         filter_object.save()
 
-    # TODO: need to update function with condition_id
     def _update_filter_conditions(
             self, condition_dtos: List[CreateConditionDTO], filter_id: int):
-        condition_objects = FilterCondition.objects.filter(
+        FilterCondition.objects.filter(
             filter_id=filter_id
         ).delete()
         self._create_filter_conditions(

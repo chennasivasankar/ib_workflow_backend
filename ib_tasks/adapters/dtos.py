@@ -115,3 +115,10 @@ class TeamDetailsWithUserIdDTO(TeamDetailsDTO):
 class ProjectTeamUserIdsDTO:
     project_id: str
     user_id_with_team_id_dtos: List[UserIdWithTeamIdDTO]
+
+
+@dataclass
+class UserProjectStatusDTO:
+    user_id: str
+    project_id: str
+    is_exists: bool
