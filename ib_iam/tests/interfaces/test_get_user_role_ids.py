@@ -21,8 +21,9 @@ class TestGetUserRoleIds:
             "5e3fc083776b"
         ]
         user_id = "eca1a0c1-b9ef-4e59-b415-60a28ef17b10"
-        from ib_iam.models import UserDetails
-        UserDetails.objects.create(user_id=user_id)
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        UserDetailsFactory.reset_sequence(0)
+        UserDetailsFactory.create(user_id=user_id)
 
         from ib_iam.tests.factories.models import UserRoleFactory, \
             ProjectRoleFactory
