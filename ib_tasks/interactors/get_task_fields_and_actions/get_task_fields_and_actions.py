@@ -1,6 +1,5 @@
 from typing import List
 
-from ib_boards.interactors.dtos import StageActionDetailsDTO
 from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidTaskStageIds
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
@@ -11,7 +10,7 @@ from ib_tasks.interactors.get_task_fields_and_actions.get_task_fields import \
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionDetailsDTO
+    StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     (FieldDetailsDTO, TaskTemplateStageFieldsDTO,
      FieldDetailsDTOWithTaskId)
@@ -110,7 +109,7 @@ class GetTaskFieldsAndActionsInteractor:
 
     def _map_fields_and_actions_based_on_their_stage_and_task_id(
             self,
-            action_dtos: List[ActionDetailsDTO],
+            action_dtos: List[StageActionDetailsDTO],
             field_dtos: List[FieldDetailsDTOWithTaskId],
             task_stage_fields_dtos: List[TaskTemplateStageFieldsDTO]
     ):
