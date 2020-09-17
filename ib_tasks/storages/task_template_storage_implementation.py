@@ -143,7 +143,7 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
         ]
         return task_template_dtos
 
-    def get_gofs_to_templates_from_permitted_gofs(
+    def get_gofs_to_templates_from_given_gofs(
             self, gof_ids: List[str]) -> List[GoFToTaskTemplateDTO]:
         task_template_gofs = \
             TaskTemplateGoFs.objects.filter(gof_id__in=gof_ids)

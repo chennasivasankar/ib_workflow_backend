@@ -1,5 +1,6 @@
 """
-get task templates when no actions exists returns empty actions list
+get task templates when no user permitted stages
+returns empty gof ids and stage gofs
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -7,7 +8,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase03GetTaskTemplatesAPITestCase(TestUtils):
+class TestCase11GetTaskTemplatesAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -22,10 +23,11 @@ class TestCase03GetTaskTemplatesAPITestCase(TestUtils):
 
         import factory
         from ib_tasks.tests.factories.models import TaskTemplateFactory, \
-            StageModelFactory, StageActionFactory, GoFFactory, GoFRoleFactory, \
+            StageModelFactory, StageActionFactory, GoFRoleFactory, \
             FieldFactory, FieldRoleFactory, GoFToTaskTemplateFactory, \
-            TaskTemplateInitialStageFactory, ProjectTaskTemplateFactory, \
-            StageGoFFactory, StagePermittedRolesFactory
+            TaskTemplateInitialStageFactory, \
+            GoFFactory, StageGoFFactory
+        from ib_tasks.constants.enum import ValidationType
 
         TaskTemplateFactory.reset_sequence()
         StageModelFactory.reset_sequence()
@@ -36,24 +38,26 @@ class TestCase03GetTaskTemplatesAPITestCase(TestUtils):
         FieldRoleFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
         TaskTemplateInitialStageFactory.reset_sequence()
-        ProjectTaskTemplateFactory.reset_sequence(1)
         StageGoFFactory.reset_sequence()
-        StagePermittedRolesFactory.reset_sequence()
 
         template_ids = ['template_1', 'template_2']
 
         task_template_objs = TaskTemplateFactory.create_batch(
             size=2, template_id=factory.Iterator(template_ids)
         )
-        ProjectTaskTemplateFactory.create_batch(
-            size=2, task_template=factory.Iterator(task_template_objs))
         gof_objs = GoFFactory.create_batch(size=4)
         GoFToTaskTemplateFactory.create_batch(size=6,
                                               gof=factory.Iterator(gof_objs),
                                               task_template=factory.Iterator(
                                                   task_template_objs))
+
         stage_objs = StageModelFactory.create_batch(
             size=4, task_template_id=factory.Iterator(template_ids)
+        )
+        StageActionFactory.create_batch(
+            size=4, stage=factory.Iterator(stage_objs),
+            action_type=ValidationType.NO_VALIDATIONS.value,
+            transition_template=None
         )
         TaskTemplateInitialStageFactory.create_batch(
             size=2, stage=factory.Iterator(stage_objs),
@@ -63,6 +67,7 @@ class TestCase03GetTaskTemplatesAPITestCase(TestUtils):
             size=4, gof=factory.Iterator(gof_objs),
             role=factory.Iterator(["FIN_PAYMENT_REQUESTER", "ALL_ROLES"])
         )
+
         field_objs = FieldFactory.create_batch(
             size=6, gof=factory.Iterator(gof_objs)
         )
@@ -72,9 +77,6 @@ class TestCase03GetTaskTemplatesAPITestCase(TestUtils):
         StageGoFFactory.create_batch(
             size=4, stage=factory.Iterator(stage_objs),
             gof=factory.Iterator(gof_objs)
-        )
-        StagePermittedRolesFactory.create_batch(
-            size=4, stage=factory.Iterator(stage_objs)
         )
 
     @pytest.mark.django_db

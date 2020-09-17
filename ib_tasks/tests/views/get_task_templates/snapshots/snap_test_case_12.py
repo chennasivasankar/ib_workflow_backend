@@ -6,9 +6,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase09GetTaskTemplatesAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase12GetTaskTemplatesAPITestCase.test_case status_code'] = '200'
 
-snapshots['TestCase09GetTaskTemplatesAPITestCase.test_case body'] = [
+snapshots['TestCase12GetTaskTemplatesAPITestCase.test_case body'] = [
     {
         'actions': [
             {
@@ -33,7 +33,7 @@ snapshots['TestCase09GetTaskTemplatesAPITestCase.test_case body'] = [
                         'field_values': None,
                         'help_text': None,
                         'is_field_required': True,
-                        'is_field_writable': True,
+                        'is_field_writable': False,
                         'placeholder_text': None,
                         'tooltip': None,
                         'validation_regex': None
@@ -48,7 +48,7 @@ snapshots['TestCase09GetTaskTemplatesAPITestCase.test_case body'] = [
                         'field_values': None,
                         'help_text': None,
                         'is_field_required': True,
-                        'is_field_writable': True,
+                        'is_field_writable': False,
                         'placeholder_text': None,
                         'tooltip': None,
                         'validation_regex': None
@@ -72,7 +72,7 @@ snapshots['TestCase09GetTaskTemplatesAPITestCase.test_case body'] = [
                         'field_values': None,
                         'help_text': None,
                         'is_field_required': True,
-                        'is_field_writable': True,
+                        'is_field_writable': False,
                         'placeholder_text': None,
                         'tooltip': None,
                         'validation_regex': None
@@ -87,7 +87,7 @@ snapshots['TestCase09GetTaskTemplatesAPITestCase.test_case body'] = [
                         'field_values': None,
                         'help_text': None,
                         'is_field_required': True,
-                        'is_field_writable': True,
+                        'is_field_writable': False,
                         'placeholder_text': None,
                         'tooltip': None,
                         'validation_regex': None
@@ -111,7 +111,7 @@ snapshots['TestCase09GetTaskTemplatesAPITestCase.test_case body'] = [
                         'field_values': None,
                         'help_text': None,
                         'is_field_required': True,
-                        'is_field_writable': True,
+                        'is_field_writable': False,
                         'placeholder_text': None,
                         'tooltip': None,
                         'validation_regex': None
@@ -123,17 +123,10 @@ snapshots['TestCase09GetTaskTemplatesAPITestCase.test_case body'] = [
                 'order': 2
             }
         ],
-        'project_id': 'project_1',
+        'project_id': None,
         'stage_gofs': [
-            {
-                'gof_ids': [
-                    'gof_3'
-                ],
-                'stage_id': 3
-            }
         ],
         'task_creation_gof_ids': [
-            'gof_1'
         ],
         'template_id': 'template_1',
         'template_name': 'Template 1'
@@ -162,7 +155,7 @@ snapshots['TestCase09GetTaskTemplatesAPITestCase.test_case body'] = [
                         'field_values': None,
                         'help_text': None,
                         'is_field_required': True,
-                        'is_field_writable': True,
+                        'is_field_writable': False,
                         'placeholder_text': None,
                         'tooltip': None,
                         'validation_regex': None
@@ -177,7 +170,7 @@ snapshots['TestCase09GetTaskTemplatesAPITestCase.test_case body'] = [
                         'field_values': None,
                         'help_text': None,
                         'is_field_required': True,
-                        'is_field_writable': True,
+                        'is_field_writable': False,
                         'placeholder_text': None,
                         'tooltip': None,
                         'validation_regex': None
@@ -201,7 +194,7 @@ snapshots['TestCase09GetTaskTemplatesAPITestCase.test_case body'] = [
                         'field_values': None,
                         'help_text': None,
                         'is_field_required': True,
-                        'is_field_writable': True,
+                        'is_field_writable': False,
                         'placeholder_text': None,
                         'tooltip': None,
                         'validation_regex': None
@@ -216,7 +209,7 @@ snapshots['TestCase09GetTaskTemplatesAPITestCase.test_case body'] = [
                         'field_values': None,
                         'help_text': None,
                         'is_field_required': True,
-                        'is_field_writable': True,
+                        'is_field_writable': False,
                         'placeholder_text': None,
                         'tooltip': None,
                         'validation_regex': None
@@ -240,7 +233,7 @@ snapshots['TestCase09GetTaskTemplatesAPITestCase.test_case body'] = [
                         'field_values': None,
                         'help_text': None,
                         'is_field_required': True,
-                        'is_field_writable': True,
+                        'is_field_writable': False,
                         'placeholder_text': None,
                         'tooltip': None,
                         'validation_regex': None
@@ -252,17 +245,10 @@ snapshots['TestCase09GetTaskTemplatesAPITestCase.test_case body'] = [
                 'order': 3
             }
         ],
-        'project_id': 'project_2',
+        'project_id': None,
         'stage_gofs': [
-            {
-                'gof_ids': [
-                    'gof_4'
-                ],
-                'stage_id': 4
-            }
         ],
         'task_creation_gof_ids': [
-            'gof_2'
         ],
         'template_id': 'template_2',
         'template_name': 'Template 2'
