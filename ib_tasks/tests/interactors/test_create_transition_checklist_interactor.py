@@ -80,9 +80,9 @@ class TestCreateTransitionChecklistInteractor:
     def presenter_mock(self):
         from ib_tasks.interactors.presenter_interfaces \
             .create_transition_checklist_presenter_interface import \
-            CreateOrUpdateTransitionChecklistTemplatePresenterInterface
+            CreateOrUpdateTransitionChecklistPresenterInterface
         return mock.create_autospec(
-            CreateOrUpdateTransitionChecklistTemplatePresenterInterface)
+            CreateOrUpdateTransitionChecklistPresenterInterface)
 
     @pytest.fixture
     def perform_base_validations_for_template_gofs_and_fields_mock(self,
@@ -114,7 +114,7 @@ class TestCreateTransitionChecklistInteractor:
         presenter_mock.raise_invalid_task_display_id.return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -153,7 +153,7 @@ class TestCreateTransitionChecklistInteractor:
         presenter_mock.raise_invalid_task_id.return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -203,7 +203,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -253,7 +253,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -295,7 +295,7 @@ class TestCreateTransitionChecklistInteractor:
         presenter_mock.raise_invalid_stage_id.return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -344,11 +344,11 @@ class TestCreateTransitionChecklistInteractor:
             storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
-            .raise_transition_template_is_not_related_to_given_stage_action \
+            .raise_transition_template_is_not_linked_to_action \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -359,10 +359,10 @@ class TestCreateTransitionChecklistInteractor:
             given_transition_template_id, given_action_id, given_stage_id
         )
         presenter_mock \
-            .raise_transition_template_is_not_related_to_given_stage_action \
+            .raise_transition_template_is_not_linked_to_action \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_transition_template_is_not_related_to_given_stage_action \
+            raise_transition_template_is_not_linked_to_action \
             .call_args
         error_object = call_args[0][0]
         stage_id = error_object.stage_id
@@ -402,7 +402,7 @@ class TestCreateTransitionChecklistInteractor:
             mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -452,7 +452,7 @@ class TestCreateTransitionChecklistInteractor:
         presenter_mock.raise_invalid_gof_ids.return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -504,7 +504,7 @@ class TestCreateTransitionChecklistInteractor:
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -560,7 +560,7 @@ class TestCreateTransitionChecklistInteractor:
         presenter_mock.raise_invalid_field_ids.return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -615,7 +615,7 @@ class TestCreateTransitionChecklistInteractor:
             mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -670,7 +670,7 @@ class TestCreateTransitionChecklistInteractor:
             mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -728,7 +728,7 @@ class TestCreateTransitionChecklistInteractor:
             mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -790,7 +790,7 @@ class TestCreateTransitionChecklistInteractor:
             = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
@@ -845,19 +845,19 @@ class TestCreateTransitionChecklistInteractor:
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock
         )
-        presenter_mock.raise_exception_for_empty_value_in_required_field \
+        presenter_mock.raise_invalid_phone_number_value \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_empty_value_in_required_field \
+        presenter_mock.raise_invalid_phone_number_value \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_empty_value_in_required_field \
+            presenter_mock.raise_invalid_phone_number_value \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -903,19 +903,19 @@ class TestCreateTransitionChecklistInteractor:
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_phone_number_value \
+        presenter_mock.raise_invalid_phone_number_value \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_invalid_phone_number_value \
+        presenter_mock.raise_invalid_phone_number_value \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_phone_number_value \
+            presenter_mock.raise_invalid_phone_number_value \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -962,19 +962,19 @@ class TestCreateTransitionChecklistInteractor:
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_email_address \
+        presenter_mock.raise_invalid_email_address \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_invalid_email_address \
+        presenter_mock.raise_invalid_email_address \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_email_address \
+            presenter_mock.raise_invalid_email_address \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1022,19 +1022,19 @@ class TestCreateTransitionChecklistInteractor:
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_url_address \
+        presenter_mock.raise_invalid_url_address \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_invalid_url_address \
+        presenter_mock.raise_invalid_url_address \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_url_address.call_args
+            presenter_mock.raise_invalid_url_address.call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
         invalid_field_response = error_object.field_value
@@ -1081,19 +1081,19 @@ class TestCreateTransitionChecklistInteractor:
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock
         )
-        presenter_mock.raise_exception_for_weak_password \
+        presenter_mock.raise_weak_password \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_weak_password \
+        presenter_mock.raise_weak_password \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_weak_password.call_args
+            presenter_mock.raise_weak_password.call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
         invalid_field_response = error_object.field_value
@@ -1140,19 +1140,19 @@ class TestCreateTransitionChecklistInteractor:
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_number_value \
+        presenter_mock.raise_invalid_number_value \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_invalid_number_value \
+        presenter_mock.raise_invalid_number_value \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_number_value.call_args
+            presenter_mock.raise_invalid_number_value.call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
         invalid_field_response = error_object.field_value
@@ -1199,19 +1199,19 @@ class TestCreateTransitionChecklistInteractor:
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_float_value \
+        presenter_mock.raise_invalid_float_value \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_invalid_float_value \
+        presenter_mock.raise_invalid_float_value \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_float_value \
+            presenter_mock.raise_invalid_float_value \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1261,19 +1261,19 @@ class TestCreateTransitionChecklistInteractor:
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_dropdown_value \
+        presenter_mock.raise_invalid_dropdown_value \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_invalid_dropdown_value \
+        presenter_mock.raise_invalid_dropdown_value \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_dropdown_value \
+            presenter_mock.raise_invalid_dropdown_value \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1327,20 +1327,20 @@ class TestCreateTransitionChecklistInteractor:
             storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_name_in_gof_selector_field_value \
+            .raise_invalid_name_in_gof_selector \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_name_in_gof_selector_field_value \
+            .raise_invalid_name_in_gof_selector \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_name_in_gof_selector_field_value \
+            raise_invalid_name_in_gof_selector \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1394,20 +1394,20 @@ class TestCreateTransitionChecklistInteractor:
             storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_choice_in_radio_group_field \
+            .raise_invalid_choice_in_radio_group_field \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_choice_in_radio_group_field \
+            .raise_invalid_choice_in_radio_group_field \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_choice_in_radio_group_field \
+            raise_invalid_choice_in_radio_group_field \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1461,20 +1461,20 @@ class TestCreateTransitionChecklistInteractor:
             storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_checkbox_group_options_selected \
+            .raise_invalid_checkbox_group_options_selected \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_checkbox_group_options_selected \
+            .raise_invalid_checkbox_group_options_selected \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_checkbox_group_options_selected \
+            raise_invalid_checkbox_group_options_selected \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1529,20 +1529,20 @@ class TestCreateTransitionChecklistInteractor:
             storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_multi_select_options_selected \
+            .raise_invalid_multi_select_options_selected \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_multi_select_options_selected \
+            .raise_invalid_multi_select_options_selected \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_multi_select_options_selected \
+            raise_invalid_multi_select_options_selected \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1598,20 +1598,20 @@ class TestCreateTransitionChecklistInteractor:
             storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_multi_select_labels_selected \
+            .raise_invalid_multi_select_labels_selected \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_multi_select_labels_selected \
+            .raise_invalid_multi_select_labels_selected \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_multi_select_labels_selected \
+            raise_invalid_multi_select_labels_selected \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1668,20 +1668,20 @@ class TestCreateTransitionChecklistInteractor:
             storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_date_format \
+            .raise_invalid_date_format \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_date_format \
+            .raise_invalid_date_format \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_date_format \
+            raise_invalid_date_format \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1736,20 +1736,20 @@ class TestCreateTransitionChecklistInteractor:
             storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_time_format \
+            .raise_invalid_time_format \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_time_format \
+            .raise_invalid_time_format \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_time_format \
+            raise_invalid_time_format \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1800,20 +1800,20 @@ class TestCreateTransitionChecklistInteractor:
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             storage=storage_mock, field_storage=field_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_image_url.return_value = \
+        presenter_mock.raise_invalid_image_url.return_value = \
             mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_image_url \
+            .raise_invalid_image_url \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_image_url \
+            raise_invalid_image_url \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1865,20 +1865,20 @@ class TestCreateTransitionChecklistInteractor:
             storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_not_acceptable_image_format \
+            .raise_not_acceptable_image_format \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_not_acceptable_image_format \
+            .raise_not_acceptable_image_format \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_not_acceptable_image_format \
+            raise_not_acceptable_image_format \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1930,20 +1930,20 @@ class TestCreateTransitionChecklistInteractor:
             storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_file_url \
+            .raise_invalid_file_url \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_file_url \
+            .raise_invalid_file_url \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_file_url \
+            raise_invalid_file_url \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1995,20 +1995,20 @@ class TestCreateTransitionChecklistInteractor:
             storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_not_acceptable_file_format \
+            .raise_not_acceptable_file_format \
             .return_value = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_not_acceptable_file_format \
+            .raise_not_acceptable_file_format \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_not_acceptable_file_format \
+            raise_not_acceptable_file_format \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -2071,7 +2071,7 @@ class TestCreateTransitionChecklistInteractor:
             = mock_object
 
         # Act
-        response = interactor.create_transition_checklist_wrapper(
+        response = interactor.create_or_update_transition_checklist_wrapper(
             transition_checklist_dto, presenter_mock)
 
         # Assert

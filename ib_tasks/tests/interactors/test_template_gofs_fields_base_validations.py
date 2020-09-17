@@ -3,8 +3,8 @@ from mock import create_autospec
 
 from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.interactors.create_or_update_task \
-    .template_gofs_fields_base_validations import \
-    TemplateGoFsFieldsBaseValidationsInteractor
+    .gofs_details_validations_interactor import \
+    GoFsDetailsValidationsInteractor
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldIdWithGoFIdDTO
 from ib_tasks.tests.factories.interactor_dtos import \
@@ -146,7 +146,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         valid_gof_ids = [gof_fields_dtos[1].gof_id, gof_fields_dtos[3].gof_id]
         invalid_gof_ids = [gof_fields_dtos[0].gof_id,
                            gof_fields_dtos[2].gof_id]
-        interactor = TemplateGoFsFieldsBaseValidationsInteractor(
+        interactor = GoFsDetailsValidationsInteractor(
             gof_storage=gof_storage_mock, task_storage=task_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
             field_storage=field_storage_mock
@@ -155,7 +155,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
         # Act
         with pytest.raises(InvalidGoFIds) as err:
-            interactor.perform_base_validations_for_template_gofs_and_fields(
+            interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
                 task_template_id=task_template_id, action_type=action_type)
 
@@ -184,7 +184,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
             field_ids[4], field_ids[5],
             field_ids[6], field_ids[7]
         ]
-        interactor = TemplateGoFsFieldsBaseValidationsInteractor(
+        interactor = GoFsDetailsValidationsInteractor(
             gof_storage=gof_storage_mock, task_storage=task_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
             field_storage=field_storage_mock
@@ -194,7 +194,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
         # Act
         with pytest.raises(InvalidFieldIds) as err:
-            interactor.perform_base_validations_for_template_gofs_and_fields(
+            interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
                 task_template_id=task_template_id, action_type=action_type)
 
@@ -215,7 +215,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         created_by_id = "123e4567-e89b-12d3-a456-426614174000"
         task_template_id = "template1"
         action_type = ActionTypes.NO_VALIDATIONS.value
-        interactor = TemplateGoFsFieldsBaseValidationsInteractor(
+        interactor = GoFsDetailsValidationsInteractor(
             gof_storage=gof_storage_mock, task_storage=task_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
             field_storage=field_storage_mock
@@ -229,7 +229,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
         # Act
         with pytest.raises(InvalidGoFsOfTaskTemplate) as err:
-            interactor.perform_base_validations_for_template_gofs_and_fields(
+            interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
                 task_template_id=task_template_id, action_type=action_type)
 
@@ -252,7 +252,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         created_by_id = "123e4567-e89b-12d3-a456-426614174000"
         task_template_id = "template1"
         action_type = ActionTypes.NO_VALIDATIONS.value
-        interactor = TemplateGoFsFieldsBaseValidationsInteractor(
+        interactor = GoFsDetailsValidationsInteractor(
             gof_storage=gof_storage_mock, task_storage=task_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
             field_storage=field_storage_mock
@@ -279,7 +279,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
         # Act
         with pytest.raises(InvalidFieldsOfGoF) as err:
-            interactor.perform_base_validations_for_template_gofs_and_fields(
+            interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
                 task_template_id=task_template_id, action_type=action_type)
 
@@ -299,7 +299,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         created_by_id = "123e4567-e89b-12d3-a456-426614174000"
         task_template_id = "template1"
         action_type = ActionTypes.NO_VALIDATIONS.value
-        interactor = TemplateGoFsFieldsBaseValidationsInteractor(
+        interactor = GoFsDetailsValidationsInteractor(
             gof_storage=gof_storage_mock, task_storage=task_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
             field_storage=field_storage_mock
@@ -328,7 +328,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
         # Act
         with pytest.raises(DuplicateFieldIdsToGoF) as err:
-            interactor.perform_base_validations_for_template_gofs_and_fields(
+            interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
                 task_template_id=task_template_id, action_type=action_type)
 
@@ -363,7 +363,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         ]
         gof_id = valid_gof_ids[0]
         required_roles = ['FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER']
-        interactor = TemplateGoFsFieldsBaseValidationsInteractor(
+        interactor = GoFsDetailsValidationsInteractor(
             gof_storage=gof_storage_mock, task_storage=task_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
             field_storage=field_storage_mock
@@ -380,7 +380,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
         # Act
         with pytest.raises(UserNeedsGoFWritablePermission) as err:
-            interactor.perform_base_validations_for_template_gofs_and_fields(
+            interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
                 task_template_id=task_template_id, action_type=action_type)
 
@@ -417,7 +417,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         ]
         field_id = field_ids[0]
         required_roles = ['FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER']
-        interactor = TemplateGoFsFieldsBaseValidationsInteractor(
+        interactor = GoFsDetailsValidationsInteractor(
             gof_storage=gof_storage_mock, task_storage=task_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
             field_storage=field_storage_mock
@@ -436,7 +436,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
         # Act
         with pytest.raises(UserNeedsFieldWritablePermission) as err:
-            interactor.perform_base_validations_for_template_gofs_and_fields(
+            interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
                 task_template_id=task_template_id, action_type=action_type)
 
@@ -462,7 +462,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         created_by_id = "123e4567-e89b-12d3-a456-426614174000"
         task_template_id = "template1"
         action_type = ActionTypes.NO_VALIDATIONS.value
-        interactor = TemplateGoFsFieldsBaseValidationsInteractor(
+        interactor = GoFsDetailsValidationsInteractor(
             gof_storage=gof_storage_mock, task_storage=task_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
             field_storage=field_storage_mock
@@ -480,7 +480,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
             .return_value = field_write_permission_roles_dtos
 
         # Act
-        interactor.perform_base_validations_for_template_gofs_and_fields(
+        interactor.perform_gofs_details_validations(
             gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
             task_template_id=task_template_id, action_type=action_type)
 

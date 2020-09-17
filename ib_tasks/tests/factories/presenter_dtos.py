@@ -1,12 +1,16 @@
 import factory
 
-from ib_tasks.interactors.presenter_interfaces.dtos import AllTasksOverviewDetailsDTO
-from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface import ProjectTemplateFieldsDTO
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    AllTasksOverviewDetailsDTO
+from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface import \
+    ProjectTemplateFieldsDTO
+from ib_tasks.interactors.presenter_interfaces.get_template_stage_flow_presenter_interface import \
+    StageFlowCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageDetailsDTO, GetTaskStageCompleteDetailsDTO, \
     TaskWithCompleteStageDetailsDTO
 from ib_tasks.tests.factories.interactor_dtos import \
-    StageAssigneeDetailsWithOneAssigneeDTOFactory, TaskStageAssigneeDetailsDTOFactory
+    TaskStageAssigneeDetailsDTOFactory
 
 
 class TaskIdWithStageDetailsDTOFactory(factory.Factory):
@@ -67,6 +71,23 @@ class ProjectTemplateFieldsDTOFactory(factory.Factory):
     def fields_dto(self):
         from ib_tasks.tests.factories.storage_dtos import FieldNameDTOFactory
         return [FieldNameDTOFactory()]
+
+
+class StageFlowCompleteDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = StageFlowCompleteDetailsDTO
+
+    @factory.lazy_attribute
+    def stage_dtos(self):
+        from ib_tasks.tests.factories.storage_dtos \
+            import StageMinimalDTOFactory
+        return [StageMinimalDTOFactory()]
+
+    @factory.lazy_attribute
+    def stage_flow_dtos(self):
+        from ib_tasks.tests.factories.storage_dtos \
+            import StageFlowDTOFactory
+        return [StageFlowDTOFactory()]
 
 
 class AllTasksOverviewDetailsDTOFactory(factory.Factory):

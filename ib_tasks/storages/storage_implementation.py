@@ -21,8 +21,9 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageDetailsDTO, \
     TaskStagesDTO, StageValueDTO, TaskTemplateStageDTO, StageRoleDTO, \
     StageDetailsDTO, TaskStageHavingAssigneeIdDTO, TaskWithDbStageIdDTO, \
-    StageIdWithValueDTO, StageFlowDTO, \
-    StageIdWithValueDTO, StageFlowWithActionIdDTO
+    StageFlowDTO, \
+    StageIdWithValueDTO, StageFlowWithActionIdDTO, StageIdWithTemplateIdDTO, \
+    StageIdWithGoFIdDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import (
@@ -41,6 +42,39 @@ from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
 
 
 class StagesStorageImplementation(StageStorageInterface):
+
+    def get_stage_gof_dtos_for_given_stages_and_gofs(
+            self, stage_ids: List[int], gof_ids: List[str]
+    ) -> List[StageIdWithGoFIdDTO]:
+        stage_id_with_gof_id_dicts = StageGoF.objects.filter(
+            stage_id__in=stage_ids, gof_id__in=gof_ids
+        ).values('stage_id', 'gof_id')
+
+        stage_gof_dtos = self._convert_stage_id_with_gof_id_dicts_to_dtos(
+            stage_id_with_gof_id_dicts=stage_id_with_gof_id_dicts
+        )
+        return stage_gof_dtos
+
+    def get_user_permitted_stage_ids(
+            self, roles: List[str], stage_ids: List[int]) -> List[int]:
+        stage_ids_queryset = StagePermittedRoles.objects.filter(
+            (Q(role_id__in=roles) | Q(role_id=ALL_ROLES_ID)),
+            stage_id__in=stage_ids
+        ).values_list('stage_id', flat=True)
+        stage_ids_list = list(stage_ids_queryset)
+        return stage_ids_list
+
+    def get_stage_id_with_template_id_dtos(
+            self, task_template_ids: List[str]
+    ) -> List[StageIdWithTemplateIdDTO]:
+        template_id_with_stage_id_dicts = Stage.objects.filter(
+            task_template_id__in=task_template_ids
+        ).values('id', 'task_template_id')
+        stage_id_with_template_id_dtos = \
+            self._convert_template_id_with_stage_id_dicts_to_dtos(
+                template_id_with_stage_id_dicts=template_id_with_stage_id_dicts
+            )
+        return stage_id_with_template_id_dtos
 
     def get_stage_display_name_for_stage_id(self, stage_id: int) -> str:
         stage_display_name = Stage.objects.get(id=stage_id).display_name
@@ -64,7 +98,7 @@ class StagesStorageImplementation(StageStorageInterface):
             Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID),
             stage__stage_id__in=stage_ids
         ).values_list('stage__stage_id', flat=True)
-        return permitted_stage_ids
+        return list(permitted_stage_ids)
 
     def get_existing_status_ids(self, status_ids: List[str]):
         status = TaskTemplateStatusVariable.objects.filter(
@@ -588,7 +622,7 @@ class StagesStorageImplementation(StageStorageInterface):
             stage_ids.append(stage_flow_dto.next_stage_id)
         return stage_ids
 
-    def get_stages_permission_gof_ids(
+    def get_stages_permitted_gof_ids(
             self, stage_ids: List[str], gof_ids: List[str]
     ) -> List[str]:
         gof_ids = StageGoF.objects.filter(
@@ -596,6 +630,35 @@ class StagesStorageImplementation(StageStorageInterface):
         ).values_list("gof_id", flat=True)
         gof_ids = list(gof_ids)
         return gof_ids
+
+
+    @staticmethod
+    def _convert_template_id_with_stage_id_dicts_to_dtos(
+            template_id_with_stage_id_dicts: List[Dict]
+    ) -> List[StageIdWithTemplateIdDTO]:
+        template_id_with_stage_id_dtos = [
+            StageIdWithTemplateIdDTO(
+                template_id=template_id_with_stage_id_dict[
+                    'task_template_id'],
+                stage_id=template_id_with_stage_id_dict['id']
+            )
+            for template_id_with_stage_id_dict in
+            template_id_with_stage_id_dicts
+        ]
+        return template_id_with_stage_id_dtos
+
+    @staticmethod
+    def _convert_stage_id_with_gof_id_dicts_to_dtos(
+            stage_id_with_gof_id_dicts: List[Dict]
+    ) -> List[StageIdWithGoFIdDTO]:
+        stage_id_with_gof_id_dtos = [
+            StageIdWithGoFIdDTO(
+                gof_id=stage_id_with_gof_id_dict['gof_id'],
+                stage_id=stage_id_with_gof_id_dict['stage_id']
+            )
+            for stage_id_with_gof_id_dict in stage_id_with_gof_id_dicts
+        ]
+        return stage_id_with_gof_id_dtos
 
 
 class StorageImplementation(StorageInterface):

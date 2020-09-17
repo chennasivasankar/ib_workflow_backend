@@ -1,5 +1,6 @@
 import datetime
 from typing import List, Optional
+
 from ib_tasks.constants.enum import ViewType, ActionTypes
 from ib_tasks.exceptions.action_custom_exceptions import (
     InvalidActionException, InvalidPresentStageAction
@@ -25,6 +26,8 @@ from ib_tasks.interactors.storage_interfaces \
     CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldIdWithFieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
@@ -164,8 +167,10 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         action_type_is_not_no_validations = \
             action_type != ActionTypes.NO_VALIDATIONS.value
         if action_type_is_not_no_validations:
+            stage_id = self.action_storage.get_stage_id_for_given_action_id(
+                self.action_id)
             self._validate_all_user_template_permitted_fields_are_filled_or_not(
-                self.user_id, task_id, project_id)
+                self.user_id, task_id, project_id, stage_id)
 
     def _validate_task_delay_reason_updated_or_not(self, task_id):
 
@@ -204,7 +209,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
     def _get_task_current_board_complete_details(
             self, task_id: int, stage_ids: List[str]
     ) -> TaskCompleteDetailsDTO:
-        from ib_tasks.interactors.user_action_on_task.get_task_current_board_complete_details_interactor \
+        from ib_tasks.interactors.user_action_on_task\
+            .get_task_current_board_complete_details_interactor \
             import GetTaskCurrentBoardCompleteDetailsInteractor
         interactor = GetTaskCurrentBoardCompleteDetailsInteractor(
             task_stage_storage=self.task_stage_storage,
@@ -376,7 +382,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         return
 
     def _validate_all_user_template_permitted_fields_are_filled_or_not(
-            self, user_id: str, task_id: int, project_id: str
+            self, user_id: str, task_id: int, project_id: str,
+            stage_id: int
     ):
         from ib_tasks.adapters.roles_service_adapter import \
             get_roles_service_adapter
@@ -386,17 +393,16 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             user_id=user_id, project_id=project_id)
         task_template_id = \
             self.create_task_storage.get_template_id_for_given_task(task_id)
-        template_gof_ids = self.task_template_storage.get_gof_ids_of_template(
-            template_id=task_template_id)
+        template_gof_ids = self.task_template_storage.get_stage_permitted_gof_ids(
+            stage_id=stage_id)
         gof_id_with_display_name_dtos = \
             self.gof_storage.get_user_write_permitted_gof_ids_in_given_gof_ids(
                 user_roles, template_gof_ids)
         user_permitted_gof_ids = [
             dto.gof_id for dto in gof_id_with_display_name_dtos]
         field_id_with_display_name_dtos = \
-            self.field_storage \
-                .get_user_write_permitted_field_ids_for_given_gof_ids(
-                user_roles, user_permitted_gof_ids)
+            self.field_storage.get_user_writable_fields_for_given_gof_ids(
+                    user_roles, user_permitted_gof_ids)
         filled_gofs_with_task_gof_ids = \
             self.gof_storage.get_filled_task_gofs_with_gof_id(task_id)
         task_gof_ids = [
@@ -409,7 +415,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
 
     @staticmethod
     def _validate_all_user_permitted_field_ids_are_filled_or_not(
-            permitted_fields, filled_field_ids
+            permitted_fields: List[FieldIdWithFieldDisplayNameDTO],
+            filled_field_ids: List[str]
     ) -> Optional[UserDidNotFillRequiredFields]:
         permitted_field_ids = [
             permitted_field.field_id for permitted_field in permitted_fields]

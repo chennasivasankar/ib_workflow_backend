@@ -41,6 +41,17 @@ RESPONSE_200_JSON = """
                     }
                 ]
             }
+        ],
+        "stage_gofs": [
+            {
+                "stage_id": 1,
+                "gof_ids": [
+                    "string"
+                ]
+            }
+        ],
+        "task_creation_gof_ids": [
+            "string"
         ]
     }
 ]

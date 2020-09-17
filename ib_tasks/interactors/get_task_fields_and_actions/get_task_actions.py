@@ -5,7 +5,6 @@ from ib_tasks.interactors.storage_interfaces.action_storage_interface \
     import ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.user_role_validation_interactor import \

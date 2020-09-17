@@ -22,7 +22,7 @@ class TestGetGoFsOfATask:
 
         # Act
         actual_task_gof_dtos = \
-            storage.get_gof_ids_with_same_gof_order_related_to_a_task(
+            storage.get_gofs_details_of_task(
                 task_id)
 
         # Assert

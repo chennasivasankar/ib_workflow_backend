@@ -1,17 +1,26 @@
 from typing import Optional, List
+
 from ib_tasks.adapters.dtos import ColumnStageDTO
 from ib_tasks.constants.enum import ViewType
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
-from ib_tasks.interactors.presenter_interfaces.dtos import TaskCompleteDetailsDTO
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    TaskCompleteDetailsDTO
 from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
-from ib_tasks.interactors.storage_interfaces.action_storage_interface import ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.actions_dtos import StageActionDetailsDTO, ActionDTO
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
+    ActionStorageInterface
+from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+    StageActionDetailsDTO, ActionDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
-from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
-from ib_tasks.interactors.storage_interfaces.stage_dtos import GetTaskStageCompleteDetailsDTO
-from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import TaskStageStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+    FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    GetTaskStageCompleteDetailsDTO
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
+    StageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+    TaskStageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+    TaskStorageInterface
 
 
 class GetTaskCurrentBoardCompleteDetailsInteractor:
@@ -106,7 +115,7 @@ class GetTaskCurrentBoardCompleteDetailsInteractor:
             )
             for stage_id in stage_ids
         ]
-        from ib_tasks.interactors.get_task_fields_and_actions \
+        from ib_tasks.interactors.get_task_fields_and_actions.get_task_fields_and_actions \
             import GetTaskFieldsAndActionsInteractor
         interactor = GetTaskFieldsAndActionsInteractor(
             field_storage=self.field_storage,

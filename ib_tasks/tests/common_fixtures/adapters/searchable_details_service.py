@@ -1,3 +1,7 @@
+from ib_tasks.tests.factories.adapter_dtos import \
+    UserSearchableDetailsDTOFactory
+
+
 def searchable_details_dtos_mock(mocker):
     path = "ib_tasks.adapters.searchable_details_service" \
            ".SearchableDetailsService.get_searchable_details_dtos"
@@ -6,9 +10,9 @@ def searchable_details_dtos_mock(mocker):
     from ib_tasks.constants.enum import Searchable
     import json
     value = {
-        "name": "User1",
-        "profile_pic_url": "https://ib-workflows-web-alpha.apigateway.in"
-                           "/boards?board=FINB_AV4_VENDOR_VERIFICATION"
+            "name": "User1",
+            "profile_pic_url": "https://ib-workflows-web-alpha.apigateway.in"
+                               "/boards?board=FINB_AV4_VENDOR_VERIFICATION"
     }
     value = json.dumps(value)
     searchable_details_dtos = [
@@ -40,4 +44,14 @@ def searchable_details_dtos_invalid_city_ids_mock(mocker):
     invalid_city_ids = [100, 110]
     exception_object = InvalidCityIdsException(invalid_city_ids)
     mock.side_effect = exception_object
+    return mock
+
+
+def user_searchable_details_dtos_mock(mocker):
+    path = "ib_tasks.adapters.searchable_details_service" \
+           ".SearchableDetailsService.get_searchable_details_dtos"
+    mock = mocker.patch(path)
+    UserSearchableDetailsDTOFactory.reset_sequence()
+    searchable_details_dtos = UserSearchableDetailsDTOFactory.create_batch(2)
+    mock.return_value = searchable_details_dtos
     return mock
