@@ -44,8 +44,8 @@ class TestLoginInteractor:
             mocker=mocker)
         get_user_id_for_given_email_mock.return_value = user_id
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dto_mock
-        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(
+            get_user_profile_dto_mock
+        get_user_profile_dto_mock = get_user_profile_dto_mock(
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
@@ -128,8 +128,8 @@ class TestLoginInteractor:
             mocker=mocker)
         get_user_id_for_given_email_mock.return_value = user_id
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dto_mock
-        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(
+            get_user_profile_dto_mock
+        get_user_profile_dto_mock = get_user_profile_dto_mock(
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
@@ -173,8 +173,8 @@ class TestLoginInteractor:
             mocker=mocker)
         get_user_id_for_given_email_mock.return_value = user_id
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dto_mock
-        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(
+            get_user_profile_dto_mock
+        get_user_profile_dto_mock = get_user_profile_dto_mock(
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
@@ -219,8 +219,8 @@ class TestLoginInteractor:
             mocker=mocker)
         get_user_id_for_given_email_mock.return_value = user_id
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dto_mock
-        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(
+            get_user_profile_dto_mock
+        get_user_profile_dto_mock = get_user_profile_dto_mock(
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(

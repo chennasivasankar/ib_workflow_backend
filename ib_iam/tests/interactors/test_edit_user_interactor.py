@@ -314,8 +314,8 @@ class TestEditNewUserInteractor:
         storage_mock.is_user_exist.return_value = True
         presenter_mock.raise_user_does_not_exist.return_value = Mock()
         from ib_iam.tests.common_fixtures.adapters.user_service \
-            import prepare_update_user_profile_adapter_mock
-        adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
+            import update_user_profile_adapter_mock
+        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
 
         add_user_details_dto = AddUserDetailsDTOFactory(
             name=name, email=email, team_ids=team_ids, company_id=company_id
@@ -349,8 +349,8 @@ class TestEditNewUserInteractor:
             user_storage=storage_mock, elastic_storage=elastic_storage
         )
         from ib_iam.tests.common_fixtures.adapters.user_service \
-            import prepare_update_user_profile_adapter_mock
-        adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
+            import update_user_profile_adapter_mock
+        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
 
         add_user_details_dto = AddUserDetailsDTOFactory(
             name=name, email=email, team_ids=team_ids, company_id=company_id
@@ -383,8 +383,8 @@ class TestEditNewUserInteractor:
             user_storage=storage_mock, elastic_storage=elastic_storage
         )
         from ib_iam.tests.common_fixtures.adapters.user_service \
-            import prepare_update_user_profile_adapter_mock
-        adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
+            import update_user_profile_adapter_mock
+        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
         presenter_mock.edit_user_success_response.return_value = Mock()
 
         add_user_details_dto = AddUserDetailsDTOFactory(
@@ -423,8 +423,8 @@ class TestEditNewUserInteractor:
             user_storage=storage_mock, elastic_storage=elastic_storage
         )
         from ib_iam.tests.common_fixtures.adapters.user_service \
-            import prepare_update_user_profile_adapter_mock
-        adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
+            import update_user_profile_adapter_mock
+        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
         presenter_mock.edit_user_success_response.return_value = Mock()
 
         add_user_details_dto = AddUserDetailsDTOFactory(

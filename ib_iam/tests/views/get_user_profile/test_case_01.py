@@ -26,8 +26,8 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
         headers = {}
 
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dto_mock
-        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
+            get_user_profile_dto_mock
+        get_user_profile_dto_mock = get_user_profile_dto_mock(mocker)
         from ib_iam.adapters.user_service import UserAccountDoesNotExist
         get_user_profile_dto_mock.side_effect = UserAccountDoesNotExist
         self.make_api_call(
@@ -59,13 +59,13 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import (
             get_basic_user_profile_dtos_mock)
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dto_mock
+            get_user_profile_dto_mock
         user_ids = self._get_user_ids_from_objects(user_objects=users_set_up)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         UserProfileDTOFactory.reset_sequence(1)
         user_dtos = [UserProfileDTOFactory(user_id=user_id)
                      for user_id in user_ids]
-        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
+        get_user_profile_dto_mock = get_user_profile_dto_mock(mocker)
         for user_dto in user_dtos:
             if user_dto.user_id == login_user_id:
                 login_user_profile_dto = user_dto

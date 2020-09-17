@@ -48,30 +48,23 @@ def update_user_profile_success_adapter_mock(mocker):
     return mock
 
 
-def prepare_get_user_profile_dto_mock(mocker):
+def get_user_profile_dto_mock(mocker):
     mock = mocker.patch(
         "ib_iam.adapters.user_service.UserService.get_user_profile_dto"
     )
     return mock
 
 
-def prepare_get_user_profile_dtos_mock(mocker):
+def get_user_profile_dtos_mock(mocker):
     mock = mocker.patch(
         "ib_iam.adapters.user_service.UserService.get_user_profile_bulk"
     )
     return mock
 
 
-def prepare_update_user_profile_adapter_mock(mocker):
+def update_user_profile_adapter_mock(mocker):
     mock = mocker.patch(
         'ib_iam.adapters.user_service.UserService.update_user_profile'
-    )
-    return mock
-
-
-def deactivate_user_in_ib_users_mock(mocker):
-    mock = mocker.patch(
-        "ib_users.interfaces.service_interface.ServiceInterface.deactivate_user"
     )
     return mock
 

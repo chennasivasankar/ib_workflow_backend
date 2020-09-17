@@ -2,7 +2,8 @@ import abc
 
 from typing import List, Optional
 from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDTO, CompanyIdWithEmployeeIdsDTO)
+    CompanyDTO, CompanyIdWithEmployeeIdsDTO
+)
 from ib_iam.interactors.storage_interfaces.dtos import \
     CompanyNameLogoAndDescriptionDTO
 

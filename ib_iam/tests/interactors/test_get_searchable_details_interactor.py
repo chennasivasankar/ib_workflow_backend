@@ -13,9 +13,8 @@ class TestGetSearchableDetailsInteractor:
 
     @pytest.fixture
     def storage_mock(self):
-        from ib_iam.interactors.storage_interfaces \
-            .searchable_storage_interface import \
-            SearchableStorageInterface
+        from ib_iam.interactors.storage_interfaces.searchable_storage_interface \
+            import SearchableStorageInterface
         return create_autospec(SearchableStorageInterface)
 
     @pytest.fixture
@@ -111,6 +110,25 @@ class TestGetSearchableDetailsInteractor:
         )
         return searchable_details_dtos
 
+    @staticmethod
+    def get_basic_user_dtos_mock(mocker):
+        mock = mocker.patch(
+            "ib_iam.adapters.user_service.UserService."
+            "get_basic_user_dtos"
+        )
+        from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
+        UserProfileDTOFactory.reset_sequence()
+        user_ids = [
+            "123e4567-e89b-12d3-a456-426614174000",
+            "123e4567-e89b-12d3-a456-426614174001"
+        ]
+        import factory
+        basic_user_details_dtos = UserProfileDTOFactory.create_batch(
+            size=2, user_id=factory.Iterator(user_ids)
+        )
+        mock.return_value = basic_user_details_dtos
+        return mock
+
     def test_given_searchable_dtos_returns_searchable_details_dtos(
             self, searchable_dtos, searchable_type_city_details_dtos,
             searchable_type_state_details_dtos,
@@ -125,9 +143,7 @@ class TestGetSearchableDetailsInteractor:
             "123e4567-e89b-12d3-a456-426614174000",
             "123e4567-e89b-12d3-a456-426614174001"
         ]
-        from ib_iam.tests.common_fixtures.adapters.user_base_details import \
-            get_basic_user_dtos_mock
-        get_basic_user_dtos_mock_method = get_basic_user_dtos_mock(mocker)
+        get_basic_user_dtos_mock_method = self.get_basic_user_dtos_mock(mocker)
         interactor = GetSearchableDetailsInteractor(storage=storage_mock)
         storage_mock.get_valid_city_ids.return_value = city_ids
         storage_mock.get_valid_state_ids.return_value = state_ids
@@ -246,9 +262,7 @@ class TestGetSearchableDetailsInteractor:
             self, storage_mock, mocker
     ):
         # Arrange
-        from ib_iam.tests.common_fixtures.adapters.user_base_details import \
-            get_basic_user_dtos_mock
-        get_basic_user_dtos_mock(mocker)
+        self.get_basic_user_dtos_mock(mocker)
         user_ids = [
             "123e4567-e89b-12d3-a456-426614174000",
             "123e4567-e89b-12d3-a456-426614174001",

@@ -18,8 +18,8 @@ class TestCase01UpdateUserProfileAPITestCase(TestUtils):
     def test_case(self, mocker, setup, snapshot):
         user_id = setup
         from ib_iam.tests.common_fixtures.adapters.user_service \
-            import prepare_update_user_profile_adapter_mock
-        prepare_update_user_profile_adapter_mock(mocker=mocker)
+            import update_user_profile_adapter_mock
+        update_user_profile_adapter_mock(mocker=mocker)
         body = {'name': 'username',
                 'email': 'jaswanthmamidipudi@gmail.com',
                 'profile_pic_url': 'https://sample.com',

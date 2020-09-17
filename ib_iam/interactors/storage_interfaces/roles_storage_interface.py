@@ -25,11 +25,13 @@ class RolesStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def validate_user_ids(self, user_ids: List[str]) \
-            -> Optional[InvalidUserIds]:
+    def validate_user_ids(
+            self, user_ids: List[str]
+    ) -> Optional[InvalidUserIds]:
         pass
 
     @abc.abstractmethod
-    def get_user_id_with_role_ids_dtos(self, user_ids: List[str]) \
-            -> List[UserIdWithRoleIdsDTO]:
+    def get_user_id_with_role_ids_dtos(
+            self, user_ids: List[str]
+    ) -> List[UserIdWithRoleIdsDTO]:
         pass

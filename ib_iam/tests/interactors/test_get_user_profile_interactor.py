@@ -103,8 +103,8 @@ class TestGetUserProfileInteractor:
         expected_presenter_invalid_user_id_mock = Mock()
 
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dto_mock
-        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
+            get_user_profile_dto_mock
+        get_user_profile_dto_mock = get_user_profile_dto_mock(mocker)
         from ib_iam.exceptions.custom_exceptions import InvalidUserId
         get_user_profile_dto_mock.side_effect = InvalidUserId
 
@@ -133,8 +133,8 @@ class TestGetUserProfileInteractor:
         expected_presenter_user_account_does_not_exist_mock = Mock()
 
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dto_mock
-        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
+            get_user_profile_dto_mock
+        get_user_profile_dto_mock = get_user_profile_dto_mock(mocker)
         from ib_iam.adapters.user_service import UserAccountDoesNotExist
         get_user_profile_dto_mock.side_effect = UserAccountDoesNotExist
 
@@ -171,8 +171,8 @@ class TestGetUserProfileInteractor:
         user_profile_dto = UserProfileDTOFactory(user_id=user_id)
         user_detail_dto = UserDTOFactory(user_id=user_id)
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dto_mock
-        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
+            get_user_profile_dto_mock
+        get_user_profile_dto_mock = get_user_profile_dto_mock(mocker)
         get_user_profile_dto_mock.return_value = user_profile_dto
         storage_mock.get_user_details.return_value = user_detail_dto
         storage_mock.get_user_related_team_dtos.return_value = expected_team_dtos

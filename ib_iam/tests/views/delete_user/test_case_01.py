@@ -47,6 +47,13 @@ class TestCase01DeleteUserAPITestCase(TestUtils):
         mock.delete_elastic_user.return_value = None
         return mock
 
+    @staticmethod
+    def deactivate_user_in_ib_users_mock(mocker):
+        mock = mocker.patch(
+            "ib_users.interfaces.service_interface.ServiceInterface.deactivate_user"
+        )
+        return mock
+
     @pytest.mark.django_db
     def test_case(self, set_up, snapshot, mocker):
         self.elastic_search_delete_user_mock(mocker=mocker)
@@ -57,9 +64,7 @@ class TestCase01DeleteUserAPITestCase(TestUtils):
         query_params = {}
         headers = {}
 
-        from ib_iam.tests.common_fixtures.adapters.user_service import \
-            deactivate_user_in_ib_users_mock
-        deactivate_user_in_ib_users_mock.return_value = None
+        self.deactivate_user_in_ib_users_mock.return_value = None
 
         from ib_iam.models import UserDetails
         before_delete_users_count = UserDetails.objects.count()

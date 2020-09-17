@@ -46,8 +46,8 @@ class TestCase01GetTeamMembersOfLevelHierarchyAPITestCase(TestUtils):
     @pytest.fixture()
     def prepare_user_profile_dtos_setup(self, mocker):
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dtos_mock
-        get_user_profile_dtos_mock = prepare_get_user_profile_dtos_mock(mocker)
+            get_user_profile_dtos_mock
+        get_user_profile_dtos_mock = get_user_profile_dtos_mock(mocker)
         user_ids = [
             "40be920b-7b4c-49e7-8adb-41a0c18da848",
             "50be920b-7b4c-49e7-8adb-41a0c18da848",

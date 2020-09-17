@@ -131,8 +131,8 @@ class TestUpdateUserProfileInteractor:
         role_ids = ["1"]
         user_profile_dto = CompleteUserProfileDTOFactory(name="username")
         from ib_iam.tests.common_fixtures.adapters.user_service \
-            import prepare_update_user_profile_adapter_mock
-        adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
+            import update_user_profile_adapter_mock
+        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
         from ib_iam.exceptions.custom_exceptions import InvalidEmail
         adapter_mock.side_effect = InvalidEmail
         presenter_mock.response_for_invalid_email_exception \
@@ -155,8 +155,8 @@ class TestUpdateUserProfileInteractor:
         role_ids = ["1"]
         user_profile_dto = CompleteUserProfileDTOFactory(name="username")
         from ib_iam.tests.common_fixtures.adapters.user_service \
-            import prepare_update_user_profile_adapter_mock
-        adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
+            import update_user_profile_adapter_mock
+        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
         from ib_iam.exceptions.custom_exceptions import \
             UserAccountAlreadyExistWithThisEmail
         adapter_mock.side_effect = UserAccountAlreadyExistWithThisEmail
@@ -186,8 +186,8 @@ class TestUpdateUserProfileInteractor:
         )
         storage_mock.is_user_admin.return_value = False
         from ib_iam.tests.common_fixtures.adapters.user_service \
-            import prepare_update_user_profile_adapter_mock
-        adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
+            import update_user_profile_adapter_mock
+        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
         presenter_mock.get_response_for_update_user_profile \
             .return_value = mock.Mock()
         UserProfileDTOFactory.reset_sequence(1)
@@ -230,8 +230,8 @@ class TestUpdateUserProfileInteractor:
             user_id=user_id, name=name, is_email_verified=None
         )
         from ib_iam.tests.common_fixtures.adapters.user_service \
-            import prepare_update_user_profile_adapter_mock
-        adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
+            import update_user_profile_adapter_mock
+        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
         storage_mock.is_user_admin.return_value = True
         storage_mock.get_role_objs_ids.return_value = ids_of_role_objects
         presenter_mock.get_response_for_update_user_profile \
@@ -268,8 +268,8 @@ class TestUpdateUserProfileInteractor:
     #     user_profile_dto_of_ib_user = UserProfileDTOFactory(
     #         user_id=user_id, name=name, is_email_verified=None)
     #     from ib_iam.tests.common_fixtures.adapters.user_service \
-    #         import prepare_update_user_profile_adapter_mock
-    #     adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
+    #         import update_user_profile_adapter_mock
+    #     adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
     #     storage_mock.is_user_admin.return_value = True
     #     storage_mock.get_role_objs_ids.return_value = ids_of_role_objects
     #     presenter_mock.get_response_for_update_user_profile \
