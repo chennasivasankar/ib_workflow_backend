@@ -127,3 +127,18 @@ class UserIdWIthTeamDetailsDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def team_details(self):
         return TeamDetailsDTOFactory.create_batch(size=2)
+
+
+class TaskBoardsDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskBoardsDetailsDTO
+
+    board_dto = factory.SubFactory(BoardDTOFactory)
+
+    @factory.lazy_attribute
+    def column_stage_dtos(self):
+        return [ColumnStageDTOFactory(), ColumnStageDTOFactory()]
+
+    @factory.lazy_attribute
+    def columns_dtos(self):
+        return [ColumnDTOFactory(), ColumnDTOFactory()]

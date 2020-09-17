@@ -1,16 +1,17 @@
 import factory
 
 from ib_tasks.interactors.presenter_interfaces.dtos import \
-    AllTasksOverviewDetailsDTO
+    AllTasksOverviewDetailsDTO, TaskCompleteDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface import \
     ProjectTemplateFieldsDTO
-from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface import \
-    TaskCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageDetailsDTO, GetTaskStageCompleteDetailsDTO, \
     TaskWithCompleteStageDetailsDTO
+from ib_tasks.tests.factories.adapter_dtos import TaskBoardsDetailsDTOFactory
 from ib_tasks.tests.factories.interactor_dtos import \
-    TaskStageAssigneeDetailsDTOFactory
+    TaskStageAssigneeDetailsDTOFactory, FieldDisplayDTOFactory, \
+    TaskStageDTOFactory
+from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory
 
 
 class TaskIdWithStageDetailsDTOFactory(factory.Factory):
@@ -88,15 +89,30 @@ class AllTasksOverviewDetailsDTOFactory(factory.Factory):
         GetTaskStageCompleteDetailsDTOFactory.reset_sequence()
         return [GetTaskStageCompleteDetailsDTOFactory()]
 
-class TaskCompleteDetailsDTOFactory(factory.Factory):
 
+class TaskCompleteDetailsDTOFactory(factory.Factory):
     class Meta:
         model = TaskCompleteDetailsDTO
 
     task_id = factory.Sequence(lambda c: c)
-    task_display_id
-    task_boards_details
-    actions_dto
-    field_dtos
-    task_stage_details
-    assignees_details
+    task_display_id = factory.Sequence(lambda c: f"task_display_id-{c}")
+    task_boards_details = factory.SubFactory(TaskBoardsDetailsDTOFactory)
+
+    @factory.lazy_attribute
+    def actions_dto(self):
+        return [ActionDTOFactory(), ActionDTOFactory()]
+
+    @factory.lazy_attribute
+    def field_dtos(self):
+        return [FieldDisplayDTOFactory(), FieldDisplayDTOFactory()]
+
+    @factory.lazy_attribute
+    def task_stage_details(self):
+        return [TaskStageDTOFactory(), TaskStageDTOFactory()]
+
+    @factory.lazy_attribute
+    def assignees_details(self):
+        return [
+            TaskStageAssigneeDetailsDTOFactory(),
+            TaskStageAssigneeDetailsDTOFactory()
+        ]
