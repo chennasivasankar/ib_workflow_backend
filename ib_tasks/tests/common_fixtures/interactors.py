@@ -1,3 +1,5 @@
+from typing import List
+
 from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
 from ib_tasks.tests.factories.storage_dtos import (TaskDetailsDTOFactory,
                                                    StageActionDetailsDTOFactory)
@@ -225,3 +227,13 @@ def get_field_ids_having_read_permission_for_user_mock(mocker):
     field_ids = ['field0', 'field1', 'field2', 'field3']
     mock_method.return_value = field_ids
     return mock_method
+
+
+def get_user_permitted_stage_ids_in_given_stage_ids_mock(
+        mocker, stage_ids: List[int]):
+    path = "ib_tasks.interactors.user_role_validation_interactor." \
+           "UserRoleValidationInteractor." \
+           "get_user_permitted_stage_ids_in_given_stage_ids"
+    mock_obj = mocker.patch(path)
+    mock_obj.return_value = stage_ids
+    return mock_obj

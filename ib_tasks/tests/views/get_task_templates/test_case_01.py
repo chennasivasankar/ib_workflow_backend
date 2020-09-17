@@ -25,7 +25,7 @@ class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
             StageModelFactory, StageActionFactory, GoFFactory, \
             GoFRoleFactory, FieldFactory, FieldRoleFactory, StageGoFFactory, \
             GoFToTaskTemplateFactory, TaskTemplateInitialStageFactory, \
-            ProjectTaskTemplateFactory
+            ProjectTaskTemplateFactory, StagePermittedRolesFactory
         from ib_tasks.constants.enum import ValidationType
 
         TaskTemplateFactory.reset_sequence()
@@ -39,6 +39,7 @@ class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
         TaskTemplateInitialStageFactory.reset_sequence()
         ProjectTaskTemplateFactory.reset_sequence(1)
         StageGoFFactory.reset_sequence()
+        StagePermittedRolesFactory.reset_sequence()
 
         template_ids = ['template_1', 'template_2']
 
@@ -79,6 +80,9 @@ class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
         StageGoFFactory.create_batch(
             size=4, stage=factory.Iterator(stage_objs),
             gof=factory.Iterator(gof_objs)
+        )
+        StagePermittedRolesFactory.create_batch(
+            size=4, stage=factory.Iterator(stage_objs)
         )
 
     @pytest.mark.django_db

@@ -7,9 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase10GetTaskTemplatesAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase12GetTaskTemplatesAPITestCase.test_case status_code'] = '200'
 
-snapshots['TestCase10GetTaskTemplatesAPITestCase.test_case body'] = [
+snapshots['TestCase12GetTaskTemplatesAPITestCase.test_case body'] = [
     {
         'actions': [
             {
@@ -126,15 +126,8 @@ snapshots['TestCase10GetTaskTemplatesAPITestCase.test_case body'] = [
         ],
         'project_id': None,
         'stage_gofs': [
-            {
-                'gof_ids': [
-                    'gof_3'
-                ],
-                'stage_id': 3
-            }
         ],
         'task_creation_gof_ids': [
-            'gof_1'
         ],
         'template_id': 'template_1',
         'template_name': 'Template 1'
@@ -255,15 +248,8 @@ snapshots['TestCase10GetTaskTemplatesAPITestCase.test_case body'] = [
         ],
         'project_id': None,
         'stage_gofs': [
-            {
-                'gof_ids': [
-                    'gof_4'
-                ],
-                'stage_id': 4
-            }
         ],
         'task_creation_gof_ids': [
-            'gof_2'
         ],
         'template_id': 'template_2',
         'template_name': 'Template 2'

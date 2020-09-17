@@ -22,9 +22,10 @@ class TestCase10GetTaskTemplatesAPITestCase(TestUtils):
 
         import factory
         from ib_tasks.tests.factories.models import TaskTemplateFactory, \
-            StageModelFactory, StageActionFactory, GoFFactory, GoFRoleFactory, \
+            StageModelFactory, StageActionFactory, GoFRoleFactory, \
             FieldFactory, FieldRoleFactory, GoFToTaskTemplateFactory, \
-            TaskTemplateInitialStageFactory
+            TaskTemplateInitialStageFactory, StagePermittedRolesFactory, \
+            GoFFactory, StageGoFFactory
         from ib_tasks.constants.enum import ValidationType
 
         TaskTemplateFactory.reset_sequence()
@@ -36,6 +37,8 @@ class TestCase10GetTaskTemplatesAPITestCase(TestUtils):
         FieldRoleFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
         TaskTemplateInitialStageFactory.reset_sequence()
+        StageGoFFactory.reset_sequence()
+        StagePermittedRolesFactory.reset_sequence()
 
         template_ids = ['template_1', 'template_2']
 
@@ -57,7 +60,7 @@ class TestCase10GetTaskTemplatesAPITestCase(TestUtils):
             transition_template=None
         )
         TaskTemplateInitialStageFactory.create_batch(
-            size=4, stage=factory.Iterator(stage_objs),
+            size=2, stage=factory.Iterator(stage_objs),
             task_template=factory.Iterator(task_template_objs)
         )
         GoFRoleFactory.create_batch(
@@ -70,6 +73,13 @@ class TestCase10GetTaskTemplatesAPITestCase(TestUtils):
         )
         FieldRoleFactory.create_batch(
             size=6, field=factory.Iterator(field_objs)
+        )
+        StageGoFFactory.create_batch(
+            size=4, stage=factory.Iterator(stage_objs),
+            gof=factory.Iterator(gof_objs)
+        )
+        StagePermittedRolesFactory.create_batch(
+            size=4, stage=factory.Iterator(stage_objs)
         )
 
     @pytest.mark.django_db

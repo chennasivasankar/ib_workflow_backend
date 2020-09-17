@@ -18,13 +18,6 @@ snapshots['TestCase08GetTaskTemplatesAPITestCase.test_case body'] = [
                 'button_color': '#fafafa',
                 'button_text': 'hey',
                 'transition_template_id': None
-            },
-            {
-                'action_id': 3,
-                'action_type': 'NO_VALIDATIONS',
-                'button_color': '#fafafa',
-                'button_text': 'hey',
-                'transition_template_id': None
             }
         ],
         'group_of_fields': [
@@ -132,6 +125,17 @@ snapshots['TestCase08GetTaskTemplatesAPITestCase.test_case body'] = [
             }
         ],
         'project_id': 'project_1',
+        'stage_gofs': [
+            {
+                'gof_ids': [
+                    'gof_3'
+                ],
+                'stage_id': 3
+            }
+        ],
+        'task_creation_gof_ids': [
+            'gof_1'
+        ],
         'template_id': 'template_1',
         'template_name': 'Template 1'
     },
@@ -139,13 +143,6 @@ snapshots['TestCase08GetTaskTemplatesAPITestCase.test_case body'] = [
         'actions': [
             {
                 'action_id': 2,
-                'action_type': 'NO_VALIDATIONS',
-                'button_color': '#fafafa',
-                'button_text': 'hey',
-                'transition_template_id': None
-            },
-            {
-                'action_id': 4,
                 'action_type': 'NO_VALIDATIONS',
                 'button_color': '#fafafa',
                 'button_text': 'hey',
@@ -257,6 +254,17 @@ snapshots['TestCase08GetTaskTemplatesAPITestCase.test_case body'] = [
             }
         ],
         'project_id': 'project_2',
+        'stage_gofs': [
+            {
+                'gof_ids': [
+                    'gof_4'
+                ],
+                'stage_id': 4
+            }
+        ],
+        'task_creation_gof_ids': [
+            'gof_2'
+        ],
         'template_id': 'template_2',
         'template_name': 'Template 2'
     }
