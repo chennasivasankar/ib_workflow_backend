@@ -1,7 +1,9 @@
 import pytest
 
+from ib_tasks.tests.interactors.super_storage_mock_class import StorageMockClass
 
-class TestGetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
+
+class TestGetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor(StorageMockClass):
 
     @staticmethod
     @pytest.fixture()
@@ -79,19 +81,21 @@ class TestGetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
 
     def test_given_invalid_task_raises_exception(self, storage_mock,
                                                  stage_storage_mock,
-                                                 status_variable_dtos):
+                                                 status_variable_dtos,
+                                                 task_storage_mock):
         # Arrange
 
         task_id = 1
 
-        storage_mock.validate_task_id.return_value = False
+        task_storage_mock.check_is_task_exists.return_value = False
 
         from ib_tasks.interactors.user_action_on_task.get_task_stage_logic_satisfied_stages import \
             GetTaskStageLogicSatisfiedStagesInteractor
         interactor = \
             GetTaskStageLogicSatisfiedStagesInteractor(
                 storage=storage_mock, stage_storage=stage_storage_mock,
-                task_id=task_id)
+                task_id=task_id, task_storage=task_storage_mock
+            )
 
         # Act
         from ib_tasks.exceptions.task_custom_exceptions \
@@ -106,13 +110,13 @@ class TestGetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
 
     def test_given_variable_stage_returns_all_stage_ids(
             self, storage_mock, status_variable_dtos, mocker,
-            stage_storage_mock,
+            stage_storage_mock, task_storage_mock,
             stage_display_value, status_stage_dtos):
         # Arrange
         task_id = 1
-        storage_mock.get_task_template_stage_logic_to_task \
+        stage_storage_mock.get_task_template_stage_logic_to_task \
             .return_value = stage_display_value
-        storage_mock.validate_task_id.return_value = True
+        task_storage_mock.check_is_task_exists.return_value = True
 
         mock_obj = self.stage_display_mock(mocker)
         mock_obj.return_value = status_stage_dtos
@@ -122,7 +126,8 @@ class TestGetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
         interactor = \
             GetTaskStageLogicSatisfiedStagesInteractor(
                 storage=storage_mock, stage_storage=stage_storage_mock,
-                task_id=task_id)
+                task_id=task_id, task_storage=task_storage_mock
+            )
 
         # Act
         response = interactor.get_task_stage_logic_satisfied_next_stages_given_status_variable_dtos(
@@ -133,13 +138,13 @@ class TestGetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
 
     def test_given_variable_stage_returns_empty_stages(
             self, storage_mock, mocker, stage_display_value,
-            status_stage_dtos, stage_storage_mock):
+            status_stage_dtos, stage_storage_mock, task_storage_mock):
         # Arrange
 
         task_id = 1
-        storage_mock.get_task_template_stage_logic_to_task \
+        stage_storage_mock.get_task_template_stage_logic_to_task \
             .return_value = stage_display_value
-        storage_mock.validate_task_id.return_value = True
+        task_storage_mock.check_is_task_exists.return_value = True
         mock_obj = self.stage_display_mock(mocker)
         mock_obj.return_value = status_stage_dtos
         from ib_tasks.tests.factories.storage_dtos \
@@ -156,7 +161,8 @@ class TestGetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
         interactor = \
             GetTaskStageLogicSatisfiedStagesInteractor(
                 storage=storage_mock, stage_storage=stage_storage_mock,
-                task_id=task_id)
+                task_id=task_id, task_storage=task_storage_mock
+            )
 
 
         # Act
@@ -169,12 +175,12 @@ class TestGetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
 
     def test_given_variable_stage_returns_mixed_stages(
             self, storage_mock, mocker, stage_mixed_value,
-            status_variable_dtos, stage_storage_mock):
+            status_variable_dtos, stage_storage_mock, task_storage_mock):
         # Arrange
         task_id = 1
-        storage_mock.get_task_template_stage_logic_to_task \
+        stage_storage_mock.get_task_template_stage_logic_to_task \
             .return_value = stage_mixed_value
-        storage_mock.validate_task_id.return_value = True
+        task_storage_mock.check_is_task_exists.return_value = True
         from ib_tasks.tests.factories.interactor_dtos \
             import StatusOperandStageDTOFactory
         StatusOperandStageDTOFactory.reset_sequence()
@@ -197,7 +203,8 @@ class TestGetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
         interactor = \
             GetTaskStageLogicSatisfiedStagesInteractor(
                 storage=storage_mock, stage_storage=stage_storage_mock,
-                task_id=task_id)
+                task_id=task_id, task_storage=task_storage_mock
+            )
 
         # Act
         response = interactor.\

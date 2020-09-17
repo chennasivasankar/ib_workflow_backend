@@ -6,6 +6,7 @@ import pytest
 from ib_tasks.interactors.add_task_due_details_interactor import AddTaskDueDetailsInteractor
 from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presenter import \
     TaskDueDetailsPresenterInterface
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
 from ib_tasks.interactors.task_dtos import TaskDelayParametersDTO
@@ -33,8 +34,10 @@ class TestAddTaskDueDetails:
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(TaskDueDetailsPresenterInterface)
         task_storage = create_autospec(TaskStorageInterface)
+        stage_storage = create_autospec(StageStorageInterface)
         interactor = AddTaskDueDetailsInteractor(storage=storage,
-                                                 task_storage=task_storage)
+                                                 task_storage=task_storage,
+                                                 stage_storage=stage_storage)
         task_storage.check_is_valid_task_display_id.return_value = False
 
         # Act
@@ -55,8 +58,10 @@ class TestAddTaskDueDetails:
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(TaskDueDetailsPresenterInterface)
         task_storage = create_autospec(TaskStorageInterface)
+        stage_storage = create_autospec(StageStorageInterface)
         interactor = AddTaskDueDetailsInteractor(storage=storage,
-                                                 task_storage=task_storage)
+                                                 task_storage=task_storage,
+                                                 stage_storage=stage_storage)
         storage.validate_task_id.return_value = True
 
         # Act
@@ -103,8 +108,10 @@ class TestAddTaskDueDetails:
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(TaskDueDetailsPresenterInterface)
         task_storage = create_autospec(TaskStorageInterface)
+        stage_storage = create_autospec(StageStorageInterface)
         interactor = AddTaskDueDetailsInteractor(storage=storage,
-                                                 task_storage=task_storage)
+                                                 task_storage=task_storage,
+                                                 stage_storage=stage_storage)
         task_storage.get_task_id_for_task_display_id.return_value = 1
         storage.validate_if_task_is_assigned_to_user_in_given_stage.return_value = True
 
@@ -132,8 +139,10 @@ class TestAddTaskDueDetails:
             stage_id=due_details.stage_id,
             due_date_time=due_details.due_date_time
         )
+        stage_storage = create_autospec(StageStorageInterface)
         interactor = AddTaskDueDetailsInteractor(storage=storage,
-                                                 task_storage=task_storage)
+                                                 task_storage=task_storage,
+                                                 stage_storage=stage_storage)
         task_storage.get_task_id_for_task_display_id.return_value = 1
         storage.validate_if_task_is_assigned_to_user_in_given_stage.return_value = True
 
@@ -144,5 +153,5 @@ class TestAddTaskDueDetails:
             task_display_id=task_display_id)
 
         # Assert
-        storage.add_due_delay_details.assert_called_once_with(storage_due_details)
-        storage.update_task_due_datetime.assert_called_once_with(storage_due_details)
+        task_storage.add_due_delay_details.assert_called_once_with(storage_due_details)
+        task_storage.update_task_due_datetime.assert_called_once_with(storage_due_details)

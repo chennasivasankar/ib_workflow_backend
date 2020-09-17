@@ -215,7 +215,7 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
         task_storage_mock.get_project_id_for_the_task_id.return_value = project_id
-        storage.validate_task_id.return_value = True
+        task_storage_mock.check_is_task_exists.return_value = True
         user_in_project_mock.return_value = False
 
         # Act
@@ -251,7 +251,7 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
         task_storage_mock.get_project_id_for_the_task_id.return_value = project_id
-        storage.validate_task_id.return_value = bool_field
+        storage.check_is_task_exists.return_value = bool_field
         user_in_project_mock.return_value = bool_field
         action_storage_mock.get_action_type_for_given_action_id\
             .return_value = None
@@ -280,7 +280,7 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
     ):
         task_id = 1
         project_id = "FIN_MAN"
-        storage.validate_task_id.return_value = True
+        task_storage_mock.check_is_task_exists.return_value = True
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
@@ -332,20 +332,20 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
 
     def test_invalid_action_raises_exception(
             self, presenter, interactor,
-            valid_board_mock, storage,
+            valid_board_mock, action_storage_mock,
             set_up_storage_for_invalid_board
     ):
         # Arrange
         task_display_id = "task_1"
         action_id = 1
-        storage.validate_action.return_value = False
+        action_storage_mock.validate_action.return_value = False
 
         # Act
         interactor.user_action_on_task_wrapper(presenter=presenter,
                                                task_display_id=task_display_id)
 
         # Assert
-        storage.validate_action.assert_called_once_with(action_id=action_id)
+        action_storage_mock.validate_action.assert_called_once_with(action_id=action_id)
         dict_obj = \
             presenter.raise_exception_for_invalid_action.call_args.kwargs
         expected_action_id = dict_obj['error_obj'].action_id
@@ -363,7 +363,7 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
 
     def test_given_user_permission_denied_raises_exception(
             self, presenter, interactor,
-            valid_board_mock, storage,
+            valid_board_mock, action_storage_mock,
             set_up_storage_for_invalid_board,
             invalid_action_roles_mock
     ):
@@ -373,9 +373,9 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
         action_id = 1
         user_id = "user_1"
         project_id = "FIN_MAN"
-        storage.validate_action.return_value = True
+        action_storage_mock.validate_action.return_value = True
         action_roles = ["ROLE_2", "ROLE_4"]
-        storage.get_action_roles.return_value = action_roles
+        action_storage_mock.get_action_roles.return_value = action_roles
 
         # Act
         interactor.user_action_on_task_wrapper(presenter=presenter,
@@ -418,7 +418,7 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
 
     ):
         action_storage_mock.get_stage_id_for_given_action_id.return_value = 1
-        storage.validate_action.return_value = True
+        action_storage_mock.validate_action.return_value = True
 
     def test_when_due_date_is_missed_but_reason_and_due_date_is_not_updated_raises_exception(
             self, presenter, interactor,
@@ -476,11 +476,11 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
     @staticmethod
     @pytest.fixture()
     def set_up_storage_for_valid_case(
-        set_up_invalid_present_stage_action, storage,
+        set_up_invalid_present_stage_action, action_storage_mock,
         get_task_current_stages_mock,
     ):
         action_ids = [1, 2, 3, 4]
-        storage.get_task_present_stage_actions.return_value = action_ids
+        action_storage_mock.get_task_present_stage_actions.return_value = action_ids
 
     @staticmethod
     @pytest.fixture()
@@ -528,13 +528,13 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
 
     def test_given_valid_details_returns_task_complete_details(
             self, presenter, interactor,
-            valid_board_mock, storage,
-            set_up_storage_for_valid_case,
+            valid_board_mock, action_storage_mock,
+            set_up_storage_for_valid_case, task_storage,
             valid_action_roles_mock, assignees,
             get_task_current_stages_mock, filtered_task_overview_user,
             current_board_mock, random_assignee_mock,
             call_action_mock, task_dto, task_complete_details,
-            satisfied_stages_mock, create_task_storage
+            satisfied_stages_mock, create_task_storage, stage_storage
     ):
         # Arrange
         user_id = "user_1"
@@ -559,7 +559,7 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
 
         # Assert
         call_action_mock.assert_called_once()
-        storage.update_task_stages.assert_called_once_with(
+        stage_storage.update_task_stages.assert_called_once_with(
             stage_ids=stage_ids, task_id=task_id
         )
         satisfied_stages_mock.assert_called_once()

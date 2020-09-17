@@ -15,6 +15,14 @@ class StorageMockClass:
 
     @staticmethod
     @pytest.fixture()
+    def task_storage():
+        from ib_tasks.interactors.storage_interfaces.task_storage_interface \
+            import TaskStorageInterface
+        storage = create_autospec(TaskStorageInterface)
+        return storage
+
+    @staticmethod
+    @pytest.fixture()
     def create_or_update_task_storage():
         from ib_tasks.interactors.storage_interfaces \
             .create_or_update_task_storage_interface import \
