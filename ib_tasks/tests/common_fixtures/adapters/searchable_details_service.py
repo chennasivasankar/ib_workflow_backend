@@ -16,15 +16,20 @@ def searchable_details_dtos_mock(mocker):
     }
     value = json.dumps(value)
     searchable_details_dtos = [
-            SearchableDetailsDTO(
-                    search_type=Searchable.CITY.value,
-                    id=1, value="Hyderabad",
-            ),
-            SearchableDetailsDTO(
-                    search_type=Searchable.USER.value,
-                    id="123e4567-e89b-12d3-a456-426614174000",
-                    value=value
-            )
+        SearchableDetailsDTO(
+            search_type=Searchable.CITY.value,
+            id=1, value="Hyderabad",
+        ),
+        SearchableDetailsDTO(
+            search_type=Searchable.USER.value,
+            id="123e4567-e89b-12d3-a456-426614174000",
+            value=value
+        ),
+        SearchableDetailsDTO(
+            search_type=Searchable.CITY.value,
+            id=4,
+            value="Delhi"
+        )
     ]
     mock.return_value = searchable_details_dtos
     return mock

@@ -27,14 +27,16 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
 )
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, GoFToTaskTemplateDTO, \
-    GroupOfFieldsDTO, GOFMultipleEnableDTO, TaskTemplateGofsDTO
+    GroupOfFieldsDTO, GOFMultipleEnableDTO, TaskTemplateGofsDTO, \
+    GoFIdWithGoFDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     (StageActionNamesDTO, ValidStageDTO, TaskStageIdsDTO, StageValueDTO,
      StageDetailsDTO, StageDisplayValueDTO, StageIdWithTemplateIdDTO,
      StageRoleDTO, TaskStagesDTO,
      TaskTemplateStageDTO, TaskStageAssigneeDTO, TaskStageHavingAssigneeIdDTO,
      CurrentStageDetailsDTO, StageIdActionNameDTO, StageActionIdDTO,
-     StageDisplayDTO, StageGoFWithTemplateIdDTO, StageIdWithGoFIdDTO)
+     StageDisplayDTO, StageGoFWithTemplateIdDTO, StageIdWithGoFIdDTO,
+     StageFlowDTO)
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO, TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
