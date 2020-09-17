@@ -34,11 +34,6 @@ class TestGetFieldsAndActionsInteractor(StorageMethodsMock):
         fields.append(FieldDetailsDTOWithTaskIdFactory(
             task_id=2, value="123e4567-e89b-12d3-a456-426614174000",
             field_type=FieldTypes.SEARCHABLE.value))
-        FieldDetailsDTOWithTaskIdFactory.reset_sequence()
-        fields = FieldDetailsDTOWithTaskIdFactory.create_batch(size=2,
-                                                               task_id=1)
-        fields.append(FieldDetailsDTOWithTaskIdFactory(task_id=2))
-        fields.append(FieldDetailsDTOWithTaskIdFactory(task_id=2))
         return fields
 
     @pytest.fixture
@@ -257,6 +252,7 @@ class TestGetFieldsAndActionsInteractor(StorageMethodsMock):
         interactor = GetTaskFieldsInteractor(field_storage,
                                              task_storage
                                              )
+        user_searchable_details_dtos_mock(mocker)
 
         # Act
         response = interactor.get_task_fields(
