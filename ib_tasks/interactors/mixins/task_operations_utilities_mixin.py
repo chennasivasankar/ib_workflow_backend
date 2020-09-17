@@ -6,7 +6,6 @@ from ib_tasks.exceptions.datetime_custom_exceptions import \
     StartDateTimeIsRequired, DueDateTimeIsRequired, DueDateTimeHasExpired, \
     DueDateTimeWithoutStartDateTimeIsNotValid, StartDateIsAheadOfDueDate
 from ib_tasks.exceptions.task_custom_exceptions import PriorityIsRequired
-from ib_tasks.interactors.dtos.dtos import TaskLogDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
@@ -18,7 +17,7 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, CreateTaskLogDTO
 
 class TaskOperationsUtilitiesMixin:
 
-    def create_task_log(self, task_log_dto: TaskLogDTO):
+    def create_task_log(self, task_log_dto: CreateTaskLogDTO):
         from ib_tasks.interactors.task_log_interactor import TaskLogInteractor
         task_log_interactor = TaskLogInteractor(
             storage=self.storage, task_storage=self.task_storage)

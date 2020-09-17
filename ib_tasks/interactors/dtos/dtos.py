@@ -6,14 +6,6 @@ from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 
 
 @dataclass
-class TaskLogDTO:
-    user_id: str
-    task_id: int
-    action_id: int
-    task_request_json: str
-
-
-@dataclass
 class TaskOverallCompleteDetailsDTO:
     task_complete_details_dto: TaskCompleteDetailsDTO
     task_current_stage_details_dto: TaskCurrentStageDetailsDTO

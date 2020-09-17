@@ -72,7 +72,8 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO, \
     SaveAndActOnTaskDTO, \
-    SaveAndActOnTaskWithTaskDisplayIdDTO, UpdateTaskBasicDetailsDTO
+    SaveAndActOnTaskWithTaskDisplayIdDTO, UpdateTaskBasicDetailsDTO, \
+    CreateTaskLogDTO
 from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor \
     import UserActionOnTaskInteractor
 
@@ -228,7 +229,6 @@ class SaveAndActOnATaskInteractor(
             self, task_dto: SaveAndActOnTaskWithTaskDisplayIdDTO,
             task_request_json: str, board_id: str
     ):
-        from ib_tasks.interactors.dtos.dtos import TaskLogDTO
 
         task_db_id = self.get_task_id_for_task_display_id(
             task_dto.task_display_id)
@@ -242,9 +242,9 @@ class SaveAndActOnATaskInteractor(
             gof_fields_dtos=task_dto.gof_fields_dtos)
         task_overview_dto = self.save_and_act_on_task(task_dto_with_db_task_id,
                                                       board_id)
-        task_log_dto = TaskLogDTO(
+        task_log_dto = CreateTaskLogDTO(
             task_id=task_db_id, user_id=task_dto.created_by_id,
-            action_id=task_dto.action_id, task_request_json=task_request_json)
+            action_id=task_dto.action_id, task_json=task_request_json)
         self.create_task_log(task_log_dto)
         return task_overview_dto
 

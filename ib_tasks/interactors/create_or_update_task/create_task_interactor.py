@@ -75,7 +75,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import (
-    CreateTaskDTO, TaskCurrentStageDetailsDTO
+    CreateTaskDTO, TaskCurrentStageDetailsDTO, CreateTaskLogDTO
 )
 from ib_tasks.interactors.user_action_on_task \
     .call_action_logic_function_and_get_or_update_task_status_variables_interactor \
@@ -237,10 +237,9 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
         user_id = task_dto.basic_task_details_dto.created_by_id
         action_id = task_dto.basic_task_details_dto.action_id
 
-        from ib_tasks.interactors.dtos.dtos import TaskLogDTO
-        task_log_dto = TaskLogDTO(
+        task_log_dto = CreateTaskLogDTO(
             task_id=task_id, user_id=user_id, action_id=action_id,
-            task_request_json=task_request_json)
+            task_json=task_request_json)
         self.create_task_log(task_log_dto)
         response = presenter.get_create_task_response(
             complete_task_details_dto.task_current_stages_details_dto,
