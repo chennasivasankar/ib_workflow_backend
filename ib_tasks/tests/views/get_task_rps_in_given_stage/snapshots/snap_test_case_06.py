@@ -7,9 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01GetTaskRpsInGivenStageAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase06GetTaskRpsInGivenStageAPITestCase.test_case status_code'] = '200'
 
-snapshots['TestCase01GetTaskRpsInGivenStageAPITestCase.test_case body'] = [
+snapshots['TestCase06GetTaskRpsInGivenStageAPITestCase.test_case body'] = [
     {
         'name': 'user_name_1',
         'profile_pic_url': 'profile_pic_1',

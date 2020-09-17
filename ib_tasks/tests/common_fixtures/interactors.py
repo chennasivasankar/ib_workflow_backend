@@ -1,7 +1,6 @@
 from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
-from ib_tasks.tests.factories.storage_dtos import (TaskDetailsDTOFactory,
-                                                   StageActionDetailsDTOFactory)
-
+from ib_tasks.tests.factories.storage_dtos import (
+    StageActionDetailsDTOFactory)
 
 
 def prepare_mock_for_next_stage_random_assignees(mocker):
@@ -22,7 +21,8 @@ def prepare_get_field_ids_having_write_permission_for_user(mocker, field_ids):
 
 
 def prepare_get_field_ids__user(mocker, user_roles):
-    path = "ib_tasks.adapters.roles_service.RolesService.get_user_role_ids_based_on_project"
+    path = "ib_tasks.adapters.roles_service.RolesService" \
+           ".get_user_role_ids_based_on_project"
     mock_obj = mocker.patch(path)
     mock_obj.return_value = user_roles
     return mock_obj
@@ -52,6 +52,15 @@ def prepare_get_permitted_action_ids(mocker, action_ids):
            ".get_permitted_action_ids_for_given_user_id"
     mock_obj = mocker.patch(path)
     mock_obj.return_value = action_ids
+    return mock_obj
+
+
+def get_stage_display_logic_mock(mocker, stage_logics):
+    path = "ib_tasks.interactors" \
+           ".user_action_on_task.get_stage_display_logic_interactor" \
+           ".StageDisplayLogicInteractor.get_stage_display_logic_condition"
+    mock_obj = mocker.patch(path)
+    mock_obj.return_value = stage_logics
     return mock_obj
 
 
@@ -190,13 +199,15 @@ def prepare_assignees_interactor_mock(mocker):
 
 def prepare_fields_for_get_task_fields_and_actions(mocker, fields_dtos,
                                                    task_stage_dtos):
-    mock = mocker.patch('ib_tasks.interactors.get_task_fields'
-                        '.GetTaskFieldsInteractor.get_task_fields')
+    mock = mocker.patch(
+            'ib_tasks.interactors.get_task_fields_and_actions.get_task_fields'
+            '.GetTaskFieldsInteractor.get_task_fields')
     mock.return_value = fields_dtos, task_stage_dtos
 
 
 def prepare_actions_for_get_task_fields_and_actions(mocker, action_dtos):
     mock = mocker.patch(
-        'ib_tasks.interactors.get_task_actions.GetTaskActionsInteractor'
-        '.get_task_actions')
+            'ib_tasks.interactors.get_task_fields_and_actions.get_task_actions'
+            '.GetTaskActionsInteractor'
+            '.get_task_actions')
     mock.return_value = action_dtos

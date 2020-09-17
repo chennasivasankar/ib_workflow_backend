@@ -4,51 +4,43 @@ import factory
 
 from ib_tasks.adapters.dtos import UserDTO, AssigneeDetailsDTO
 from ib_tasks.constants.enum import Searchable, Priority
-from ib_tasks.interactors.field_dtos import (SearchableFieldTypeDTO,
-                                             SearchableFieldDetailDTO)
+from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
+    SearchableFieldDetailDTO
 from ib_tasks.interactors.filter_dtos import SearchQueryWithPaginationDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
-    import (GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO,
-            FieldDisplayDTO)
-from ib_tasks.interactors.stage_dtos import (TaskStageDTO,
-                                             TaskStageAssigneeDetailsDTO)
-from ib_tasks.interactors.stages_dtos import (TaskTemplateStageActionDTO,
-                                              StageActionDTO, StagesActionDTO,
-                                              TaskIdWithStageAssigneeDTO,
-                                              UserStagesWithPaginationDTO,
-                                              StageAssigneeDTO,
-                                              StageAssigneeWithTeamDetailsDTO,
-                                              AssigneeWithTeamDetailsDTO,
-                                              StageWithUserDetailsDTO,
-                                              TemplateStageDTO)
+    import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
+from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
+    TaskStageAssigneeDetailsDTO
+from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
+    StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
+    UserStagesWithPaginationDTO, StageAssigneeDTO, \
+    StageAssigneeWithTeamDetailsDTO, AssigneeWithTeamDetailsDTO, \
+    StageWithUserDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    (FieldDetailsDTO, FieldWritePermissionRolesDTO)
+    FieldDetailsDTO, FieldWritePermissionRolesDTO
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    (TaskWithDbStageIdDTO, AssigneeCurrentTasksCountDTO, StageActionNamesDTO,
-     StageAssigneeDetailsDTO, CurrentStageDetailsDTO, StageIdWithValueDTO,
-     CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO,
-     StageActionNamesDTO, CreateStageFlowDTO,
-     StageFlowWithActionIdDTO)
+    TaskWithDbStageIdDTO, AssigneeCurrentTasksCountDTO, \
+    CurrentStageDetailsDTO, \
+    StageIdWithValueDTO, StageAssigneeDetailsDTO, StageActionNamesDTO, \
+    CreateStageFlowDTO, \
+    StageFlowWithActionIdDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
-from ib_tasks.interactors.task_dtos import (GoFFieldsDTO,
-                                            TaskDueParametersDTO,
-                                            FieldValuesDTO, GetTaskDetailsDTO,
-                                            StatusOperandStageDTO,
-                                            CreateTaskLogDTO,
-                                            CreateTaskDTO, UpdateTaskDTO,
-                                            StageIdWithAssigneeDTO,
-                                            SaveAndActOnTaskDTO,
-                                            TaskCurrentStageDetailsDTO,
-                                            TaskDelayParametersDTO,
-                                            UpdateTaskWithTaskDisplayIdDTO,
-                                            SaveAndActOnTaskWithTaskDisplayIdDTO,
-                                            SearchableDTO, SearchQueryDTO,
-                                            StageDisplayLogicDTO)
+from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
+    TaskDueParametersDTO, \
+    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, \
+    CreateTaskLogDTO, \
+    CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeDTO, \
+    SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
+    TaskDelayParametersDTO, UpdateTaskWithTaskDisplayIdDTO, \
+    SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO, SearchQueryDTO, \
+    StageDisplayLogicDTO
 from ib_tasks.interactors.task_template_dtos import \
     (CreateTransitionChecklistTemplateDTO,
      CreateTransitionChecklistTemplateWithTaskDisplayIdDTO)
@@ -457,6 +449,16 @@ class SaveAndActOnTaskDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def gof_fields_dtos(self):
         return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
+
+
+class TemplateFieldsDTOFactory(factory.Factory):
+    class Meta:
+        model = TemplateFieldsDTO
+
+    task_template_id = factory.Sequence(
+        lambda c: "task_template_id_{}".format(c))
+    field_ids = factory.Sequence(
+        lambda n: [f"field_id_{n + 1}, field_id_{n + 2}"])
 
 
 class SaveAndActOnTaskWithTaskDisplayIdDTOFactory(factory.Factory):

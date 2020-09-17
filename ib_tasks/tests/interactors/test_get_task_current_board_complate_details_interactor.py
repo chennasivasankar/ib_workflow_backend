@@ -161,7 +161,8 @@ class TestUserActionOnTaskInteractor:
 
     @pytest.fixture()
     def task_fields_actions_mock(self, mocker):
-        path = 'ib_tasks.interactors.get_task_fields_and_actions.GetTaskFieldsAndActionsInteractor' \
+        path = 'ib_tasks.interactors.get_task_fields_and_actions' \
+               '.get_task_fields_and_actions.GetTaskFieldsAndActionsInteractor' \
                '.get_task_fields_and_action'
         mock_obj = mocker.patch(path)
         return mock_obj

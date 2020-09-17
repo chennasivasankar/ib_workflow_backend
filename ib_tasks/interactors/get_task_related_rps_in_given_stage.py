@@ -30,7 +30,7 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def get_task_rps_wrapper(self, presenter: GetTaskRpsPresenterInterface,
                              parameters: GetTaskRPsParametersDTO) -> List[
-            UserDetailsDTO]:
+        UserDetailsDTO]:
         try:
             rps_dtos = self.get_task_rps(parameters)
         except InvalidTaskDisplayId as err:
@@ -72,7 +72,10 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
             rp_ids = self.storage.get_rp_ids(task_id, stage_id)
 
             if rp_ids:
-                return service_adapter.auth_service.get_user_details(rp_ids)
+                rp_details_dtos = \
+                    service_adapter.auth_service.get_user_details(
+                    rp_ids)
+                return self._get_rps_in_sequence(rp_details_dtos, rp_ids)
             return []
 
         return self._get_rp_details_if_due_date_is_missed(
@@ -97,6 +100,11 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
             return []
 
         rp_details_dtos = service_adapter.auth_service.get_user_details(rp_ids)
+        rp_dtos = self._get_rps_in_sequence(rp_details_dtos, rp_ids)
+
+        return rp_dtos
+
+    def _get_rps_in_sequence(self, rp_details_dtos, rp_ids):
         rp_dict = {}
         for rp_dto in rp_details_dtos:
             rp_dict[rp_dto.user_id] = rp_dto
@@ -104,7 +112,6 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
                 rp_dict[rp_id]
                 for rp_id in rp_ids
         ]
-
         return rp_dtos
 
     def add_rp_when_due_date_is_missed(self, stage_id, task_id, user_id,
