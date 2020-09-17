@@ -90,6 +90,33 @@ class TestGetTaskTemplatesFieldsInteractor:
         obj = presenter.get_response_for_invalid_project_id.call_args.kwargs
         assert obj['err'].invalid_project_ids == project_ids
 
+    @pytest.fixture()
+    def presenter(self):
+        from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
+            import FilterPresenterInterface
+        from unittest.mock import create_autospec
+        presenter = create_autospec(FilterPresenterInterface)
+        return presenter
+
+    def test_user_not_in_project_raises_exception(
+            self, interactor, template_path_mock, presenter
+    ):
+        from ib_tasks.exceptions.adapter_exceptions \
+            import UserIsNotInProjectsException
+        project_id = 'FIN_MAN'
+        project_ids = [project_id]
+        template_path_mock.side_effect = \
+            UserIsNotInProjectsException(project_ids=project_ids)
+        user_id = 'user_1'
+
+        # Act
+        interactor.get_task_templates_fields_wrapper(
+            user_id=user_id, project_id=project_id, presenter=presenter
+        )
+
+        # Assert
+        presenter.get_response_for_user_not_in_project.assert_called_once()
+
     def test_return_task_templates_fields_details(
             self, interactor, interactor_mock_response, template_path_mock):
 

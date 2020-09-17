@@ -27,8 +27,8 @@ class GetListOfUsersInteractor(ValidationMixin):
         try:
             complete_user_details_dtos = self.get_users(
                 user_id=user_id, offset=pagination_dto.offset,
-                limit=pagination_dto.limit,
-                name_search_query=name_search_query)
+                limit=pagination_dto.limit, name_search_query=name_search_query
+            )
             response = presenter.response_for_get_users(
                 complete_user_details_dtos)
         except UserIsNotAdmin:
@@ -42,8 +42,7 @@ class GetListOfUsersInteractor(ValidationMixin):
         return response
 
     def get_users(
-            self, user_id: str, offset: int, limit: int,
-            name_search_query: str
+            self, user_id: str, offset: int, limit: int, name_search_query: str
     ) -> ListOfCompleteUsersWithRolesDTO:
         self._validate_is_user_admin(user_id=user_id)
         self._validate_pagination_details(offset=offset, limit=limit)
@@ -109,7 +108,11 @@ class GetListOfUsersInteractor(ValidationMixin):
         user_profile_dtos = user_service.get_user_profile_bulk(
             user_ids=user_ids
         )
-        return user_profile_dtos
+        sorted_user_profile_dtos = list(sorted(
+            user_profile_dtos,
+            key=lambda user_profile_dto: user_profile_dto.name.lower()
+        ))
+        return sorted_user_profile_dtos
 
     @staticmethod
     def get_user_dtos(user_ids: List[str]) -> List[UserProfileDTO]:

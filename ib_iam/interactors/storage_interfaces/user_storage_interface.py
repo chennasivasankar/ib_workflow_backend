@@ -61,8 +61,8 @@ class UserStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_all_user_dtos(
-            self, offset: int, limit: int,
-            name_search_query: str) -> List[UserDTO]:
+            self, offset: int, limit: int, name_search_query: str
+    ) -> List[UserDTO]:
         pass
 
     @abc.abstractmethod

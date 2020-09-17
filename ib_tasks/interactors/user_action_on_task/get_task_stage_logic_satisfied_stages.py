@@ -165,8 +165,7 @@ class GetTaskStageLogicSatisfiedStagesInteractor:
             ">=": operator.ge,
             "<=": operator.le,
             ">": operator.gt,
-            "<": operator.lt,
-            "!=": operator.ne
+            "<": operator.lt
         }
 
     def _get_task_status_variable_dict_given_task_id(self, task_id: int):
@@ -197,7 +196,6 @@ class GetTaskStageLogicSatisfiedStagesInteractor:
             value = status_variable_dto.value
             status_variables_dict[variable] = value
         return status_variables_dict
-
 
     def _get_task_status_variable_dict_given_status_variable_dtos(
             self, status_variable_dtos: List[StatusVariableDTO]):
