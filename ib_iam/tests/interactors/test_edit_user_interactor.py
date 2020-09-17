@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from ib_iam.interactors.edit_user_interactor import EditUserInteractor
+from ib_iam.interactors.users.edit_user_interactor import EditUserInteractor
 from ib_iam.tests.factories.interactor_dtos import \
     AddUserDetailsDTOFactory
 

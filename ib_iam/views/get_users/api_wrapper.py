@@ -1,7 +1,7 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
-from ib_iam.interactors.get_users_list_interactor \
+from ib_iam.interactors.users.get_users_list_interactor \
     import GetListOfUsersInteractor
 from ib_iam.presenters.get_users_list_presenter_implementation \
     import GetUsersListPresenterImplementation

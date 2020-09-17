@@ -24,7 +24,7 @@ class TestGetListOfUserRolesForGivenProjectInteractor:
 
     @pytest.fixture()
     def interactor(self, storage_mock):
-        from ib_iam.interactors.get_list_of_user_roles_for_given_project_interactor import \
+        from ib_iam.interactors.users.get_list_of_user_roles_for_given_project_interactor import \
             GetListOfUserRolesForGivenProjectInteractor
         interactor = GetListOfUserRolesForGivenProjectInteractor(
             user_storage=storage_mock)

@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import pytest
 
 from ib_iam.exceptions.custom_exceptions import UserNotFound
-from ib_iam.interactors.delete_user_interactor import DeleteUserInteractor
+from ib_iam.interactors.users.delete_user_interactor import DeleteUserInteractor
 
 
 class TestDeleteUserInteractor:

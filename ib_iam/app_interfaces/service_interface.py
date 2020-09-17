@@ -54,7 +54,7 @@ class ServiceInterface:
     def get_user_details_bulk(user_ids: List[str]) -> List[UserProfileDTO]:
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
-        from ib_iam.interactors.get_users_list_interactor import \
+        from ib_iam.interactors.users.get_users_list_interactor import \
             GetListOfUsersInteractor
 
         storage = UserStorageImplementation()
@@ -67,7 +67,7 @@ class ServiceInterface:
     def get_valid_user_ids(user_ids: List[str]) -> List[str]:
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
-        from ib_iam.interactors.get_users_list_interactor import \
+        from ib_iam.interactors.users.get_users_list_interactor import \
             GetListOfUsersInteractor
 
         storage = UserStorageImplementation()
@@ -82,7 +82,7 @@ class ServiceInterface:
     ) -> List[UserIdAndNameDTO]:
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
-        from ib_iam.interactors.get_users_list_interactor import \
+        from ib_iam.interactors.users.get_users_list_interactor import \
             GetListOfUsersInteractor
 
         storage = UserStorageImplementation()
@@ -99,7 +99,7 @@ class ServiceInterface:
     ) -> List[UserIdAndNameDTO]:
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
-        from ib_iam.interactors.get_users_list_interactor import \
+        from ib_iam.interactors.users.get_users_list_interactor import \
             GetListOfUsersInteractor
 
         storage = UserStorageImplementation()
@@ -116,7 +116,7 @@ class ServiceInterface:
     ) -> List[UserProfileDTO]:
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
-        from ib_iam.interactors.get_users_list_interactor import \
+        from ib_iam.interactors.users.get_users_list_interactor import \
             GetListOfUsersInteractor
 
         user_storage = UserStorageImplementation()
@@ -134,7 +134,7 @@ class ServiceInterface:
     ) -> List[UserProfileDTO]:
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
-        from ib_iam.interactors.get_users_list_interactor import \
+        from ib_iam.interactors.users.get_users_list_interactor import \
             GetListOfUsersInteractor
 
         user_storage = UserStorageImplementation()

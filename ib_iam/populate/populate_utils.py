@@ -324,7 +324,7 @@ def populate_test_users_for_given_project(project_id: str):
             ]
         },
     ]
-    from ib_iam.interactors.add_new_user_interactor import \
+    from ib_iam.interactors.users.add_new_user_interactor import \
         AddNewUserInteractor
     from ib_iam.storages.user_storage_implementation import \
         UserStorageImplementation

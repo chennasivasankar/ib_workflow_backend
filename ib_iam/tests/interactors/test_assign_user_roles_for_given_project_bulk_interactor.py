@@ -24,7 +24,7 @@ class TestAssignUserRolesForGivenProjectBulkInteractor:
 
     @pytest.fixture()
     def interactor(self, storage_mock):
-        from ib_iam.interactors.assign_user_roles_for_given_project_bulk_interactor import \
+        from ib_iam.interactors.users.assign_user_roles_for_given_project_bulk_interactor import \
             AssignUserRolesForGivenProjectBulkInteractor
         interactor = AssignUserRolesForGivenProjectBulkInteractor(
             user_storage=storage_mock)

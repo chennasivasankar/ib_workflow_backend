@@ -2,7 +2,7 @@ from unittest.mock import Mock, create_autospec
 
 import pytest
 
-from ib_iam.interactors.get_user_options_interactor \
+from ib_iam.interactors.users.get_user_options_interactor \
     import GetUserOptionsDetails
 
 
