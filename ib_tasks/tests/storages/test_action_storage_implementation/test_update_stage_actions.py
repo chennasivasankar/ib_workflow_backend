@@ -34,9 +34,8 @@ class TestUpdateStageActions:
     @pytest.fixture()
     def create_stage_actions(self):
         action_objs = StageActionFactory.create_batch(size=40)
-        ActionPermittedRolesFactory.create_batch(40,
-                                                 action=factory.Iterator(
-                                                         action_objs))
+        ActionPermittedRolesFactory.create_batch(
+            size=40, action=factory.Iterator(action_objs))
 
     @staticmethod
     def _validate(expected, returned):
