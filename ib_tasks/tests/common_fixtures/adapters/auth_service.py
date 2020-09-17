@@ -89,7 +89,7 @@ def get_user_dtos_given_user_ids_mock(mocker):
         "ib_tasks.adapters.auth_service.AuthService."
         "get_user_details"
     )
-    UserDetailsDTOFactory.reset_sequence()
+    UserDetailsDTOFactory.reset_sequence(50)
     user_dtos = UserDetailsDTOFactory.create_batch(size=2)
     mock.return_value = user_dtos
     return mock

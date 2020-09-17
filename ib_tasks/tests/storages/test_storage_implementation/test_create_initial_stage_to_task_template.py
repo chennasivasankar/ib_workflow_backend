@@ -3,7 +3,7 @@ import pytest
 
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskTemplateStageDTO
-from ib_tasks.models import TaskTemplateInitialStage
+from ib_tasks.models import CurrentTaskStage
 from ib_tasks.storages.storage_implementation import \
     StagesStorageImplementation
 
@@ -30,8 +30,8 @@ class TestCreateInitialStages:
             task_template_stages_dtos)
 
         # Assert
-        task_stages = TaskTemplateInitialStage.objects.filter(
-            task_template_id__in=task_template_ids)
+        task_stages = CurrentTaskStage.objects.filter(
+            task__template_id__in=task_template_ids)
         self._validate_task_stage_objects(
             task_stages, task_template_stages_dtos)
 

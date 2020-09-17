@@ -2,7 +2,7 @@
 # snapshottest: v1 - https://goo.gl/zC4yUc
 from __future__ import unicode_literals
 
-from snapshottest import GenericRepr, Snapshot
+from snapshottest import Snapshot, GenericRepr
 
 
 snapshots = Snapshot()
@@ -31,17 +31,4 @@ snapshots['TestGetTaskStagesAndActions.test_when_user_has_no_permissions_returns
     GenericRepr("StageAndActionsDetailsDTO(db_stage_id=1, stage_id='stage_id_0', color='color0', name='name_0', actions_dtos=[])"),
     GenericRepr("StageAndActionsDetailsDTO(db_stage_id=2, stage_id='stage_id_1', color='color1', name='name_1', actions_dtos=[])"),
     GenericRepr("StageAndActionsDetailsDTO(db_stage_id=3, stage_id='stage_id_2', color='color2', name='name_2', actions_dtos=[])")
-]
-
-snapshots['TestGetTaskStagesAndActions.test_when_user_has_no_permissions_returns_empty_stage_actions response'] = [
-]
-
-snapshots['TestGetTaskStagesAndActions.test_when_user_has_permissions_for_only_some_stages_with_no_permitted_actions_returns_stage_actions response'] = [
-    GenericRepr("StageAndActionsDetailsDTO(db_stage_id=1, stage_id='stage_id_0', color='color0', name='name_0', actions_dtos=[])"),
-    GenericRepr("StageAndActionsDetailsDTO(db_stage_id=2, stage_id='stage_id_1', color='color1', name='name_1', actions_dtos=[])")
-]
-
-snapshots['TestGetTaskStagesAndActions.test_when_user_has_permissions_for_only_some_stages_get_stage_actions response'] = [
-    GenericRepr("StageAndActionsDetailsDTO(db_stage_id=1, stage_id='stage_id_0', color='color0', name='name_0', actions_dtos=[StageActionDetailsDTO(action_id=1, name='name_1', stage_id='stage_id_0', button_text='button_text_1', button_color=None, action_type='action_type_1', transition_template_id='template_id_1'), StageActionDetailsDTO(action_id=2, name='name_2', stage_id='stage_id_0', button_text='button_text_2', button_color=None, action_type='action_type_2', transition_template_id='template_id_2'), StageActionDetailsDTO(action_id=3, name='name_3', stage_id='stage_id_0', button_text='button_text_3', button_color=None, action_type='action_type_3', transition_template_id='template_id_3')])"),
-    GenericRepr("StageAndActionsDetailsDTO(db_stage_id=2, stage_id='stage_id_1', color='color1', name='name_1', actions_dtos=[StageActionDetailsDTO(action_id=4, name='name_4', stage_id='stage_id_1', button_text='button_text_4', button_color=None, action_type='action_type_4', transition_template_id='template_id_4'), StageActionDetailsDTO(action_id=5, name='name_5', stage_id='stage_id_1', button_text='button_text_5', button_color=None, action_type='action_type_5', transition_template_id='template_id_5')])")
 ]

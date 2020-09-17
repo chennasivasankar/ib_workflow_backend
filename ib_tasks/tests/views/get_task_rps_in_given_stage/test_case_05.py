@@ -28,7 +28,7 @@ class TestCase05GetTaskRpsInGivenStageAPITestCase(TestUtils):
         tasks = TaskFactory.create_batch(size=2, due_date=None)
         from ib_tasks.tests.factories.models import TaskStageHistoryModelFactory
         from ib_tasks.tests.factories.models import UserRpInTaskStageFactory
-        UserRpInTaskStageFactory.reset_sequence(1)
+        UserRpInTaskStageFactory.reset_sequence()
         UserRpInTaskStageFactory.create_batch(size=2, task=tasks[0], stage_id=1)
         TaskStageHistoryModelFactory.reset_sequence()
         TaskStageHistoryModelFactory(task=tasks[0], assignee_id=api_user.user_id, stage_id=1)

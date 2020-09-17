@@ -1,21 +1,16 @@
-import datetime
+from datetime import datetime
 
 from ib_tasks.exceptions.custom_exceptions import InvalidDueDateTimeException
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageIdException
-from ib_tasks.exceptions.task_custom_exceptions import (
-    UserIsNotAssigneeToTask,
-    InvalidReasonIdException, InvalidTaskDisplayId)
+from ib_tasks.exceptions.task_custom_exceptions import UserIsNotAssigneeToTask, \
+    InvalidReasonIdException, InvalidTaskDisplayId
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
-from ib_tasks.interactors.presenter_interfaces \
-    .task_due_missing_details_presenter import \
+from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presenter import \
     TaskDueDetailsPresenterInterface
-from ib_tasks.interactors.storage_interfaces.storage_interface import \
-    StorageInterface
-from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
-    TaskStorageInterface
-from ib_tasks.interactors.task_dtos import (TaskDueParametersDTO,
-                                            TaskDelayParametersDTO)
+from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
+from ib_tasks.interactors.task_dtos import TaskDueParametersDTO, TaskDelayParametersDTO
 
 
 class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
@@ -26,10 +21,8 @@ class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
         self.storage = storage
 
     def add_task_due_details_wrapper(self,
-                                     presenter:
-                                     TaskDueDetailsPresenterInterface,
-                                     due_details: TaskDueParametersDTO,
-                                     task_display_id: str):
+                                     presenter: TaskDueDetailsPresenterInterface,
+                                     due_details: TaskDueParametersDTO, task_display_id: str):
 
         try:
             self.add_task_due_details(due_details, task_display_id)
@@ -51,17 +44,12 @@ class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
         user_id = due_details.user_id
         reason_id = due_details.reason_id
         stage_id = due_details.stage_id
+        updated_due_datetime = due_details.due_date_time
         task_id = due_details.task_id
         self._validate_stage_id(stage_id=stage_id)
         self._validate_if_task_is_assigned_to_user(task_id=task_id,
-                                                   user_id=user_id,
-                                                   stage_id=stage_id)
-
-        updated_due_datetime = due_details.due_date_time
-        task_due_date = self.task_storage.get_task_due_datetime(
-                task_id)
-        self._validate_updated_due_datetime(updated_due_datetime,
-                                            task_due_date)
+                                                   user_id=user_id, stage_id=stage_id)
+        self._validate_updated_due_datetime(updated_due_datetime)
         self._validate_reason_id(reason_id)
         self._add_task_due_delay_details(due_details)
 
@@ -69,12 +57,12 @@ class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
     def _get_parameters_dto(due_details: TaskDueParametersDTO,
                             task_id: int):
         return TaskDelayParametersDTO(
-                task_id=task_id,
-                user_id=due_details.user_id,
-                reason=due_details.reason,
-                stage_id=due_details.stage_id,
-                reason_id=due_details.reason_id,
-                due_date_time=due_details.due_date_time
+            task_id=task_id,
+            user_id=due_details.user_id,
+            reason=due_details.reason,
+            stage_id=due_details.stage_id,
+            reason_id=due_details.reason_id,
+            due_date_time=due_details.due_date_time
         )
 
     def _add_task_due_delay_details(self, due_details: TaskDelayParametersDTO):
@@ -100,19 +88,14 @@ class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
             raise InvalidReasonIdException
 
     @staticmethod
-    def _validate_updated_due_datetime(updated_due_datetime, task_due_date):
-        empty_due_date = task_due_date is None
-        invalid_due_date = empty_due_date and updated_due_datetime < \
-                           datetime.datetime.now()
-
-        if updated_due_datetime < task_due_date or invalid_due_date:
+    def _validate_updated_due_datetime(updated_due_datetime):
+        if updated_due_datetime < datetime.now():
             raise InvalidDueDateTimeException()
 
     def _validate_if_task_is_assigned_to_user(self, task_id: int, user_id: str,
                                               stage_id: int):
         # TODO: Remove logic from comments when validation is to be done
-        # is_assigned =
-        # self.storage.validate_if_task_is_assigned_to_user_in_given_stage(
+        # is_assigned = self.storage.validate_if_task_is_assigned_to_user_in_given_stage(
         #     task_id, user_id, stage_id
         # )
         # is_not_assigned = not is_assigned
