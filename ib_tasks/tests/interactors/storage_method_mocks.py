@@ -8,6 +8,8 @@ from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
+from ib_tasks.interactors.storage_interfaces.storage_interface import \
+    StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
@@ -37,8 +39,8 @@ class StorageMethodsMock:
 
     @pytest.fixture
     def storage_mock(self):
-        storage = create_autospec(FieldsStorageInterface)
-        return storage
+        task_storage = create_autospec(StorageInterface)
+        return task_storage
 
     @pytest.fixture()
     def task_template_storage(self):
