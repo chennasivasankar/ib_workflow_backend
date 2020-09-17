@@ -129,10 +129,11 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             self.task_storage.get_project_id_for_the_task_id(task_id=task_id)
         self.validate_if_user_is_in_project(
             project_id=project_id, user_id=self.user_id)
+
+        self._validations_for_task_action(task_id, project_id)
         self._validation_all_user_template_permitted_fields_are_filled_or_not(
             task_id=task_id, project_id=project_id
         )
-        self._validations_for_task_action(task_id, project_id)
         self._validate_present_task_stage_actions(task_id=task_id)
         updated_task_dto = \
             self._call_logic_and_update_status_variables_and_get_stage_ids(

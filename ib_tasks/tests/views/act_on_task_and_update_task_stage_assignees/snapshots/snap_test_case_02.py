@@ -69,9 +69,9 @@ snapshots['TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase.test_case b
             'actions': [
             ],
             'assignee': None,
-            'stage_color': 'green',
-            'stage_display_name': 'name_2',
-            'stage_id': 3
+            'stage_color': 'orange',
+            'stage_display_name': 'name_1',
+            'stage_id': 2
         },
         'task_id': 'IBWF-1',
         'task_overview_fields': [
@@ -80,20 +80,20 @@ snapshots['TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase.test_case b
     'task_id': 'IBWF-1'
 }
 
-snapshots['TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase.test_case stage_1'] = 1
+snapshots['TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase.test_case stage_1'] = 3
 
-snapshots['TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase.test_case assignee_1'] = '123e4567-e89b-12d3-a456-426614174004'
+snapshots['TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase.test_case assignee_1'] = None
 
 snapshots['TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase.test_case left_1'] = None
 
-snapshots['TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase.test_case stage_2'] = 2
+snapshots['TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase.test_case stage_2'] = 1
 
-snapshots['TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase.test_case assignee_2'] = '123e4567-e89b-12d3-a456-427614174008'
+snapshots['TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase.test_case assignee_2'] = '123e4567-e89b-12d3-a456-426614174004'
 
 snapshots['TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase.test_case left_2'] = None
 
-snapshots['TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase.test_case stage_4'] = 3
+snapshots['TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase.test_case stage_4'] = 2
 
-snapshots['TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase.test_case assignee_4'] = '123e4567-e89b-12d3-a476-427614174006'
+snapshots['TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase.test_case assignee_4'] = '123e4567-e89b-12d3-a456-427614174008'
 
 snapshots['TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase.test_case left_4'] = None

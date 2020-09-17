@@ -1,5 +1,5 @@
 """
-# Given Valid details
+# Given virtual db stage ids in updating stage assignees
 """
 import factory
 import pytest
@@ -76,7 +76,8 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
             task_template_id='template_1',
             display_logic="variable2==stage_id_2",
             card_info_kanban=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
-            card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
+            card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
+            value=-1
         )
         stages = [stage1, stage2, stage3]
         path = 'ib_tasks.tests.populate.stage_actions_logic.stage_1_action_name_1'

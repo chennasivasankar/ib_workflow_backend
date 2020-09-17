@@ -1,5 +1,5 @@
 """
-# Given Valid details
+# Given Duplicate stage ids in updating assignees
 """
 import factory
 import pytest
@@ -154,7 +154,7 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
                     "team_id": "123e4567-e89b-12d3-a456-426614174001"
                 },
                 {
-                    "stage_id": 2,
+                    "stage_id": 1,
                     "assignee_id": "123e4567-e89b-12d3-a456-427614174008",
                     "team_id": "123e4567-e89b-12d3-a456-426614174002"
                 },
@@ -173,18 +173,3 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
                            query_params=query_params,
                            headers=headers,
                            snapshot=snapshot)
-
-        from ib_tasks.models import TaskStageHistory
-        task_stage_objs = TaskStageHistory.objects.all()
-        counter = 1
-        for task_stage_obj in task_stage_objs:
-            snapshot.assert_match(
-                name=f'stage_{counter}', value=task_stage_obj.stage_id
-            )
-            snapshot.assert_match(
-                name=f'assignee_{counter}', value=task_stage_obj.assignee_id
-            )
-            snapshot.assert_match(
-                name=f'left_{counter}', value=task_stage_obj.left_at
-            )
-            counter += counter

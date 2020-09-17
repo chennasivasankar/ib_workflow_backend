@@ -1,5 +1,5 @@
 """
-# Given Valid details
+# Given action is which is not in current stage raises exception
 """
 import factory
 import pytest
@@ -78,11 +78,10 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
             card_info_kanban=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
             card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
         )
-        stages = [stage1, stage2, stage3]
-        path = 'ib_tasks.tests.populate.stage_actions_logic.stage_1_action_name_1'
-        action = StageActionFactory(stage=stage1, py_function_import_path=path)
+        stages = [stage1, stage2]
         actions = StageActionFactory.create_batch(6, stage=factory.Iterator(
             stages))
+        action = StageActionFactory(stage=stage3)
 
         task = TaskFactory(template_id='template_1', task_display_id="IBWF-1")
 
@@ -104,7 +103,7 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
             field=factory.Iterator(fields)
         )
         CurrentTaskStageModelFactory.create_batch(
-            3, task=task,
+            2, task=task,
             stage=factory.Iterator(stages)
         )
         ActionPermittedRolesFactory.create_batch(3, action=action)
@@ -145,7 +144,7 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
         board_mock.return_value = task_board_dto
         body = {
             "task_id": "IBWF-1",
-            "action_id": "1",
+            "action_id": "7",
             "board_id": "board_1",
             "stage_assignees": [
                 {

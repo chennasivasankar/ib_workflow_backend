@@ -1,6 +1,8 @@
 """
-# Given Valid details
+# Given due date is expired and delay reason is not updated
 """
+from datetime import datetime
+
 import factory
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -84,7 +86,8 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
         actions = StageActionFactory.create_batch(6, stage=factory.Iterator(
             stages))
 
-        task = TaskFactory(template_id='template_1', task_display_id="IBWF-1")
+        task = TaskFactory(template_id='template_1', task_display_id="IBWF-1",
+                           due_date=datetime(2019, 10, 12, 4, 40))
 
         TaskStatusVariableFactory(task_id=1, variable='variable0',
                                   value="stage_id_0")
@@ -110,7 +113,8 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
         ActionPermittedRolesFactory.create_batch(3, action=action)
         StagePermittedRolesFactory.create_batch(6, stage=factory.Iterator(
             stages), role_id=factory.Iterator(['role_1', 'role_2']))
-        ProjectTaskTemplateFactory(task_template=tts[0], project_id='project_id_1')
+        ProjectTaskTemplateFactory(task_template=tts[0],
+                                   project_id='project_id_1')
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup, mocker):
@@ -152,16 +156,6 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
                     "stage_id": 1,
                     "assignee_id": "123e4567-e89b-12d3-a456-426614174004",
                     "team_id": "123e4567-e89b-12d3-a456-426614174001"
-                },
-                {
-                    "stage_id": 2,
-                    "assignee_id": "123e4567-e89b-12d3-a456-427614174008",
-                    "team_id": "123e4567-e89b-12d3-a456-426614174002"
-                },
-                {
-                    "stage_id": 3,
-                    "assignee_id": "123e4567-e89b-12d3-a476-427614174006",
-                    "team_id": "123e4567-e89b-12d3-a456-426614174003"
                 }
             ]
         }
@@ -173,18 +167,3 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
                            query_params=query_params,
                            headers=headers,
                            snapshot=snapshot)
-
-        from ib_tasks.models import TaskStageHistory
-        task_stage_objs = TaskStageHistory.objects.all()
-        counter = 1
-        for task_stage_obj in task_stage_objs:
-            snapshot.assert_match(
-                name=f'stage_{counter}', value=task_stage_obj.stage_id
-            )
-            snapshot.assert_match(
-                name=f'assignee_{counter}', value=task_stage_obj.assignee_id
-            )
-            snapshot.assert_match(
-                name=f'left_{counter}', value=task_stage_obj.left_at
-            )
-            counter += counter
