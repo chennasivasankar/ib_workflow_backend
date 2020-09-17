@@ -3,7 +3,9 @@ get refresh tokens
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-from ib_iam.tests.views.refresh_auth_tokens import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+
+from ib_iam.tests.views.refresh_auth_tokens import APP_NAME, OPERATION_NAME, \
+    REQUEST_METHOD, URL_SUFFIX
 
 
 class TestCase02RefreshTokensAPITestCase(TestUtils):
@@ -27,9 +29,9 @@ class TestCase02RefreshTokensAPITestCase(TestUtils):
         )
 
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks \
-            import prepare_get_refresh_auth_tokens_dto_mock
+            import get_refresh_auth_tokens_dto_mock
         get_refresh_auth_tokens_dto_mock = \
-            prepare_get_refresh_auth_tokens_dto_mock(mocker)
+            get_refresh_auth_tokens_dto_mock(mocker)
 
         get_refresh_auth_tokens_dto_mock.return_value = user_tokens_dto
 

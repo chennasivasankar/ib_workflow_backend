@@ -1,9 +1,11 @@
 import pytest
+
+from ib_tasks.constants.enum import FieldTypes
+from ib_tasks.interactors.create_or_update_fields \
+    .multi_values_input_fields_validation_interactor \
+    import MultiValuesInputFieldsValidationInteractor
 from ib_tasks.tests.factories.storage_dtos import \
     FieldDTOFactory
-from ib_tasks.interactors.multi_values_input_fields_validation_interactor \
-    import MultiValuesInputFieldsValidationInteractor
-from ib_tasks.constants.enum import FieldTypes
 
 
 class TestMultiValuesInputFieldsValidationInteractor:

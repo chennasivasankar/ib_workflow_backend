@@ -5,21 +5,22 @@ from ib_tasks.models import (Stage, TaskTemplateStatusVariable, StageAction,
                              StagePermittedRoles,
                              TaskStageHistory, UserTaskDelayReason,
                              ProjectTaskTemplate, TaskStageRp)
+from ib_tasks.models.action_permitted_roles import ActionPermittedRoles
+from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
+from ib_tasks.models.filter import Filter
+from ib_tasks.models.filter_condition import FilterCondition
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
+from ib_tasks.models.stage_flow import StageFlow
+from ib_tasks.models.stage_gof import StageGoF
 from ib_tasks.models.task import Task, ElasticSearchTask
 from ib_tasks.models.task_gof import TaskGoF
 from ib_tasks.models.task_gof_field import TaskGoFField
 from ib_tasks.models.task_log import TaskLog
-from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
-from ib_tasks.models.filter import Filter
-from ib_tasks.models.filter_condition import FilterCondition
-from ib_tasks.models.action_permitted_roles import ActionPermittedRoles
-from ib_tasks.models.stage_flow import StageFlow
 
 admin.site.register(StageFlow)
 admin.site.register(ActionPermittedRoles)
@@ -41,6 +42,7 @@ admin.site.register(TaskGoFField)
 admin.site.register(TaskTemplateGoFs)
 admin.site.register(UserTaskDelayReason)
 admin.site.register(ProjectTaskTemplate)
+admin.site.register(StageGoF)
 
 
 class TaskStageInline(admin.StackedInline):

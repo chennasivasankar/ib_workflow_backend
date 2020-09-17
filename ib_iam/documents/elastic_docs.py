@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from django.conf import settings
-from elasticsearch_dsl import Document, Text, Integer, Completion, SearchAsYouType
+from elasticsearch_dsl import Document, Text, Integer, SearchAsYouType
 
 USER_INDEX_NAME = 'user-{}'.format(settings.STAGE)
 COUNTRY_INDEX_NAME = 'country-{}'.format(settings.STAGE)
@@ -15,11 +15,13 @@ class ElasticUserDTO:
     user_id: str
     name: Optional[str]
     elastic_user_id: Optional[str]
+    email: str = None
 
 
 class ElasticUser(Document):
     user_id = Text()
     name = SearchAsYouType()
+    email = Text()
 
     class Index:
         name = USER_INDEX_NAME

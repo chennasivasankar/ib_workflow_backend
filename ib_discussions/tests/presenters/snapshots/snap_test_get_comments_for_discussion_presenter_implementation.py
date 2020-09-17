@@ -4,14 +4,13 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetCommentsForDiscussionPresenterImplementation.test_response_for_comments_with_users_dtos get_comments_for_discussion'] = {
     'comments': [
         {
             'author': {
-                'name': 'name ',
+                'name': 'name',
                 'profile_pic_url': 'https://graph.ib_users.com/',
                 'user_id': '01be920b-7b4c-49e7-8adb-41a0c18da848'
             },
@@ -21,12 +20,12 @@ snapshots['TestGetCommentsForDiscussionPresenterImplementation.test_response_for
             'is_editable': True,
             'mention_users': [
                 {
-                    'name': 'name ',
+                    'name': 'name',
                     'profile_pic_url': 'https://graph.ib_users.com/',
                     'user_id': '01be920b-7b4c-49e7-8adb-41a0c18da848'
                 },
                 {
-                    'name': 'name ',
+                    'name': 'name',
                     'profile_pic_url': 'https://graph.ib_users.com/',
                     'user_id': '91be920b-7b4c-49e7-8adb-41a0c18da848'
                 }
@@ -49,7 +48,7 @@ snapshots['TestGetCommentsForDiscussionPresenterImplementation.test_response_for
         },
         {
             'author': {
-                'name': 'name ',
+                'name': 'name',
                 'profile_pic_url': 'https://graph.ib_users.com/',
                 'user_id': '91be920b-7b4c-49e7-8adb-41a0c18da848'
             },

@@ -78,7 +78,7 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
         self.task_storage = task_storage
         self.stage_action_storage = stage_action_storage
         self.template_storage = template_storage
-        self.create_or_update_task_storage = create_or_update_task_storage
+        self.create_task_storage = create_or_update_task_storage
         self.task_template_storage = task_template_storage
 
     def create_or_update_transition_checklist_wrapper(
@@ -196,38 +196,34 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
         )
         self._validate_same_gof_order(
             transition_template_dto.transition_checklist_gofs)
-        template_gofs_fields_validation_interactor = \
+        gof_details_validation_interactor = \
             GoFsDetailsValidationsInteractor(
                 task_storage=self.task_storage, gof_storage=self.gof_storage,
-                create_task_storage=self.create_or_update_task_storage,
+                create_task_storage=self.create_task_storage,
                 storage=self.storage, field_storage=self.field_storage,
                 task_template_storage=self.task_template_storage
             )
         action_type = \
             self.stage_action_storage.get_action_type_for_given_action_id(
-                action_id=transition_template_dto.action_id
-            )
+                action_id=transition_template_dto.action_id)
+        stage_id = self.stage_action_storage.get_stage_id_for_action_id(
+            transition_template_dto.action_id)
         project_id = self.task_storage.get_project_id_for_the_task_id(
             transition_template_dto.task_id)
-        template_gofs_fields_validation_interactor \
-            .perform_gofs_details_validations(
+        gof_details_validation_interactor.perform_gofs_details_validations(
             transition_template_dto.transition_checklist_gofs,
             transition_template_dto.created_by_id,
             transition_template_dto.transition_checklist_template_id,
-            project_id, action_type)
+            project_id, action_type, stage_id)
         action_type_is_not_no_validations = action_type != \
                                             ActionTypes.NO_VALIDATIONS.value
         if action_type_is_not_no_validations:
             self._validate_all_user_template_permitted_fields_are_filled_or_not(
                 transition_template_dto.created_by_id,
                 transition_template_dto.task_id, project_id)
-        existing_gofs = \
-            self.create_or_update_task_storage \
-                .get_gofs_details_of_task(
+        existing_gofs = self.create_task_storage.get_gofs_details_of_task(
                 transition_template_dto.task_id)
-        existing_fields = \
-            self.create_or_update_task_storage \
-                .get_fields_details_of_task(
+        existing_fields = self.create_task_storage.get_field_id_with_task_gof_id_dtos(
                 transition_template_dto.task_id)
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
@@ -257,7 +253,7 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
                                    transition_template_dto)
 
     def _validate_task_id(self, task_id) -> Optional[InvalidTaskIdException]:
-        is_valid_task_id = self.create_or_update_task_storage.is_valid_task_id(
+        is_valid_task_id = self.create_task_storage.is_valid_task_id(
             task_id)
         invalid_task_id = not is_valid_task_id
         if invalid_task_id:
@@ -361,7 +357,7 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
             .get_user_role_ids_based_on_project(
             user_id=user_id, project_id=project_id)
         task_template_id = \
-            self.create_or_update_task_storage.get_template_id_for_given_task(
+            self.create_task_storage.get_template_id_for_given_task(
                 task_id)
         template_gof_ids = self.task_template_storage.get_gof_ids_of_template(
             template_id=task_template_id)
@@ -425,7 +421,7 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
             existing_fields: List[FieldIdWithTaskGoFIdDTO]
     ):
         task_gof_details_dtos = \
-            self.create_or_update_task_storage.update_task_gofs(
+            self.create_task_storage.update_task_gofs(
                 task_gof_dtos_for_updation)
         task_gof_field_dtos = self._prepare_task_gof_fields_dtos(
             transition_template_dto.transition_checklist_gofs,
@@ -434,11 +430,11 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
             self._filter_task_gof_field_dtos(
                 task_gof_field_dtos, existing_fields)
         if task_gof_field_dtos_for_updation:
-            self.create_or_update_task_storage.update_task_gof_fields(
+            self.create_task_storage.update_task_gof_fields(
                 task_gof_field_dtos_for_updation)
 
         if task_gof_field_dtos_for_creation:
-            self.create_or_update_task_storage.create_task_gof_fields(
+            self.create_task_storage.create_task_gof_fields(
                 task_gof_field_dtos_for_creation)
 
     def _create_task_gofs(
@@ -446,13 +442,13 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
             transition_template_dto: CreateTransitionChecklistTemplateDTO
     ):
         task_gof_details_dtos = \
-            self.create_or_update_task_storage.create_task_gofs(
+            self.create_task_storage.create_task_gofs(
                 task_gof_dtos_for_creation)
         task_gof_field_dtos = \
             self._prepare_task_gof_fields_dtos(
                 transition_template_dto.transition_checklist_gofs,
                 task_gof_details_dtos)
-        self.create_or_update_task_storage.create_task_gof_fields(
+        self.create_task_storage.create_task_gof_fields(
             task_gof_field_dtos
         )
 

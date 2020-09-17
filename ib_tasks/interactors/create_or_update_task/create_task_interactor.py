@@ -23,7 +23,8 @@ from ib_tasks.exceptions.fields_custom_exceptions import (
     InvalidFieldIds, DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
 )
 from ib_tasks.exceptions.gofs_custom_exceptions import (
-    InvalidGoFIds, DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs
+    InvalidGoFIds, DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs,
+    InvalidStagePermittedGoFs
 )
 from ib_tasks.exceptions.permission_custom_exceptions import (
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission,
@@ -38,9 +39,6 @@ from ib_tasks.exceptions.task_custom_exceptions import (
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskTemplateDBId,
     InvalidTaskTemplateOfProject, PriorityIsRequired, InvalidTaskJson
 )
-from ib_tasks.interactors \
-    .call_action_logic_function_and_update_task_status_variables_interactor \
-    import InvalidMethodFound
 from ib_tasks.interactors.create_or_update_task \
     .task_crud_operations_interactor import TaskCrudOperationsInteractor
 from ib_tasks.interactors.create_or_update_task \
@@ -77,10 +75,13 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import (
-    CreateTaskDTO, TaskCurrentStageDetailsDTO
+    CreateTaskDTO, TaskCurrentStageDetailsDTO, CreateTaskLogDTO
 )
-from ib_tasks.interactors.user_action_on_task_interactor import \
-    UserActionOnTaskInteractor
+from ib_tasks.interactors.user_action_on_task \
+    .call_action_logic_function_and_get_or_update_task_status_variables_interactor \
+    import InvalidMethodFound
+from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor \
+    import UserActionOnTaskInteractor
 
 
 @dataclass
@@ -153,6 +154,8 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
             return presenter.raise_duplicate_field_ids_to_a_gof(err)
         except InvalidFieldsOfGoF as err:
             return presenter.raise_invalid_fields_given_to_a_gof(err)
+        except InvalidStagePermittedGoFs as err:
+            return presenter.raise_invalid_stage_permitted_gofs(err)
         except UserNeedsGoFWritablePermission as err:
             return presenter.raise_user_needs_gof_writable_permission(err)
         except UserNeedsFieldWritablePermission as err:
@@ -234,15 +237,24 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
         user_id = task_dto.basic_task_details_dto.created_by_id
         action_id = task_dto.basic_task_details_dto.action_id
 
-        from ib_tasks.interactors.dtos.dtos import TaskLogDTO
-        task_log_dto = TaskLogDTO(
+        task_log_dto = CreateTaskLogDTO(
             task_id=task_id, user_id=user_id, action_id=action_id,
-            task_request_json=task_request_json)
-        self.create_task_log(task_log_dto)
+            task_json=task_request_json)
+        self._create_task_log(task_log_dto)
         response = presenter.get_create_task_response(
             complete_task_details_dto.task_current_stages_details_dto,
             complete_task_details_dto.all_tasks_overview_details_dto)
         return response
+
+    def _create_task_log(self, task_log_dto: CreateTaskLogDTO):
+        from ib_tasks.interactors.task_log_interactor import TaskLogInteractor
+        task_log_interactor = TaskLogInteractor(
+            storage=self.storage, task_storage=self.task_storage)
+        create_task_log_dto = CreateTaskLogDTO(
+            task_json=task_log_dto.task_json,
+            task_id=task_log_dto.task_id, user_id=task_log_dto.user_id,
+            action_id=task_log_dto.action_id)
+        task_log_interactor.create_task_log(create_task_log_dto)
 
     def create_task(self, task_dto: CreateTaskDTO) -> CompleteTaskDetailsDTO:
         user_id = task_dto.basic_task_details_dto.created_by_id
@@ -253,9 +265,7 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
         task_id = self._create_task_gofs_and_fields(task_dto)
         self._set_status_variables_and_create_initial_task_stages(
             task_id, task_template_id)
-        complete_task_details_dto = self._perform_user_action_on_task(
-            task_id, action_id, user_id)
-        return complete_task_details_dto
+        return self._perform_user_action_on_task(task_id, action_id, user_id)
 
     def _validate_task_details(self, task_dto: CreateTaskDTO):
         storages_dto = TaskDetailsValidationsStorages(
@@ -267,8 +277,11 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
         )
         task_details_validation_interactor = TaskDetailsValidationsInteractor(
             storages_dto)
+        stage_id = \
+            self.task_template_storage.get_task_template_initial_stage_id(
+                task_dto.basic_task_details_dto.task_template_id)
         task_details_validation_interactor.perform_task_details_validations(
-            task_dto)
+            task_dto, stage_id)
 
     def _create_task_gofs_and_fields(self, task_dto: CreateTaskDTO) -> int:
         task_crud_interactor = TaskCrudOperationsInteractor(
@@ -312,14 +325,3 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
             task_current_stages_details_dto=task_current_stage_details_dto,
             all_tasks_overview_details_dto=all_tasks_overview_dto)
         return complete_task_details_dto
-
-    def _get_task_current_stages_information(
-            self, task_id: int, user_id: str) -> TaskCurrentStageDetailsDTO:
-        from ib_tasks.interactors.get_task_current_stages_interactor import \
-            GetTaskCurrentStagesInteractor
-        get_task_current_stages_interactor = GetTaskCurrentStagesInteractor(
-            task_stage_storage=self.task_stage_storage)
-        task_current_stages_details_dto = \
-            get_task_current_stages_interactor.get_task_current_stages_details(
-                task_id=task_id, user_id=user_id)
-        return task_current_stages_details_dto

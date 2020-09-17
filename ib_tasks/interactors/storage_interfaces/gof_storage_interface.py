@@ -3,7 +3,7 @@ from typing import List
 
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRoleDTO, GoFToTaskTemplateDTO, GoFIdWithGoFDisplayNameDTO, \
-    GoFIdWithTaskGoFIdDTO
+    GoFIdWithTaskGoFIdDTO, TaskTemplateGofsDTO
 
 
 class GoFStorageInterface(abc.ABC):
@@ -51,7 +51,7 @@ class GoFStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_user_permitted_template_gof_dtos(
             self, user_roles: List[str], template_ids: List[str]
-    ):
+    ) -> List[TaskTemplateGofsDTO]:
         pass
 
     @abc.abstractmethod
@@ -89,4 +89,8 @@ class GoFStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_filled_field_ids_of_given_task_gof_ids(
             self, task_gof_ids: List[int]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_gof_ids_for_given_template(self, template_id: str) -> List[str]:
         pass

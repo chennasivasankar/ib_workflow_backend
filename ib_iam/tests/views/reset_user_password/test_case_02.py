@@ -4,6 +4,7 @@ All Exception in the user update password
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -12,16 +13,16 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
-    SECURITY = {'oauth': {'scopes': ['write']}}
+    SECURITY = {'oauth': {'scopes': []}}
 
     @pytest.mark.django_db
     def test_token_does_not_exist(self, mocker, snapshot):
         from ib_iam.interactors.reset_user_password_interactor import \
             TokenDoesNotExist
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_update_user_password_with_reset_password_token_mock
+            update_user_password_with_reset_password_token_mock
         update_user_password_mock \
-            = prepare_update_user_password_with_reset_password_token_mock(
+            = update_user_password_with_reset_password_token_mock(
             mocker)
         update_user_password_mock.side_effect = TokenDoesNotExist()
         body = {'password': 'string'}
@@ -38,9 +39,9 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         from ib_iam.interactors.reset_user_password_interactor import \
             TokenHasExpired
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_update_user_password_with_reset_password_token_mock
+            update_user_password_with_reset_password_token_mock
         update_user_password_mock \
-            = prepare_update_user_password_with_reset_password_token_mock(
+            = update_user_password_with_reset_password_token_mock(
             mocker)
         update_user_password_mock.side_effect = TokenHasExpired()
         body = {'password': 'string'}
@@ -59,9 +60,9 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         from ib_iam.interactors.reset_user_password_interactor import \
             PasswordMinLength
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_update_user_password_with_reset_password_token_mock
+            update_user_password_with_reset_password_token_mock
         update_user_password_mock \
-            = prepare_update_user_password_with_reset_password_token_mock(
+            = update_user_password_with_reset_password_token_mock(
             mocker)
         update_user_password_mock.side_effect \
             = PasswordMinLength
@@ -82,9 +83,9 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         from ib_iam.interactors.reset_user_password_interactor import \
             PasswordAtLeastOneSpecialCharacter
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_update_user_password_with_reset_password_token_mock
+            update_user_password_with_reset_password_token_mock
         update_user_password_mock \
-            = prepare_update_user_password_with_reset_password_token_mock(
+            = update_user_password_with_reset_password_token_mock(
             mocker)
         update_user_password_mock.side_effect \
             = PasswordAtLeastOneSpecialCharacter

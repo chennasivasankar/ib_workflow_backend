@@ -1,7 +1,7 @@
 import abc
 
 from ib_tasks.exceptions.custom_exceptions import InvalidProjectId, \
-    InvalidModulePathFound
+    InvalidModulePathFound, InvalidMethodFound
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueDateTimeHasExpired, DueDateTimeWithoutStartDateTimeIsNotValid, \
     StartDateTimeIsRequired, DueDateTimeIsRequired
@@ -10,16 +10,13 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
 from ib_tasks.exceptions.fields_custom_exceptions import \
     UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import \
-    UserDidNotFillRequiredGoFs
+    UserDidNotFillRequiredGoFs, InvalidStagePermittedGoFs
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException, InvalidStageIdsListException, \
     DuplicateStageIds, InvalidDbStageIdsListException, \
     StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import PriorityIsRequired, \
     InvalidTaskJson
-from ib_tasks.interactors \
-    .call_action_logic_function_and_update_task_status_variables_interactor \
-    import InvalidMethodFound
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
@@ -246,4 +243,9 @@ class CreateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_invalid_project_id(self, err: InvalidProjectId):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_stage_permitted_gofs(self,
+                                           err: InvalidStagePermittedGoFs):
         pass

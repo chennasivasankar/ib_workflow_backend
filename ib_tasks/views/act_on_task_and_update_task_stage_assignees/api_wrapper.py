@@ -1,20 +1,21 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
-from .validator_class import ValidatorClass
-from ...interactors.act_on_task_and_update_task_stage_assignees_interactor import \
+from ib_tasks.interactors.act_on_task_and_update_task_stage_assignees_interactor import \
     ActOnTaskAndUpdateTaskStageAssigneesInteractor
-
-from ...storages.action_storage_implementation import \
+from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
-from ...storages.elasticsearch_storage_implementation import \
+from ib_tasks.storages.elasticsearch_storage_implementation import \
     ElasticSearchStorageImplementation
-from ...storages.gof_storage_implementation import GoFStorageImplementation
-from ...storages.task_stage_storage_implementation import \
+from ib_tasks.storages.gof_storage_implementation import \
+    GoFStorageImplementation
+from ib_tasks.storages.task_stage_storage_implementation import \
     TaskStageStorageImplementation
-from ...storages.task_template_storage_implementation import \
+from ib_tasks.storages.task_template_storage_implementation import \
     TaskTemplateStorageImplementation
-from ...storages.tasks_storage_implementation import TasksStorageImplementation
+from ib_tasks.storages.tasks_storage_implementation import \
+    TasksStorageImplementation
+from .validator_class import ValidatorClass
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -40,7 +41,8 @@ def api_wrapper(*args, **kwargs):
         import FieldsStorageImplementation
     from ib_tasks.storages.storage_implementation \
         import StorageImplementation, StagesStorageImplementation
-    from ...presenters.act_on_task_and_upadte_task_stage_assignees_presenter import \
+    from ib_tasks.presenters.\
+        act_on_task_and_upadte_task_stage_assignees_presenter import \
         ActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation
     presenter = ActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation()
 
@@ -66,7 +68,8 @@ def api_wrapper(*args, **kwargs):
         task_template_storage=task_template_storage
     )
 
-    response = interactor.act_on_task_interactor_and_update_task_stage_assignees_wrapper(
+    response = interactor.\
+        act_on_task_interactor_and_update_task_stage_assignees_wrapper(
         presenter=presenter, task_display_id=task_display_id,
         stage_assignee_dtos=stage_assignee_dtos)
     return response

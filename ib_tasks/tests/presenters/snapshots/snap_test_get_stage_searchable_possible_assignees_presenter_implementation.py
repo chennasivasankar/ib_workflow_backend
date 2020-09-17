@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetStageSearchablePossibleAssigneesPresenterImplementation.test_raise_invalid_offset_exception http_status_code'] = 400
@@ -33,7 +32,7 @@ snapshots['TestGetStageSearchablePossibleAssigneesPresenterImplementation.test_r
 
 snapshots['TestGetStageSearchablePossibleAssigneesPresenterImplementation.test_get_stage_assignee_details_response user_details'] = [
     {
-        'id': 'user_1',
+        'id': '123e4567-e89b-12d3-a456-426614174001',
         'name': 'user_name_1',
         'profile_pic_url': 'profile_pic_1',
         'team_info': [
@@ -48,7 +47,7 @@ snapshots['TestGetStageSearchablePossibleAssigneesPresenterImplementation.test_g
         ]
     },
     {
-        'id': 'user_2',
+        'id': '123e4567-e89b-12d3-a456-426614174002',
         'name': 'user_name_2',
         'profile_pic_url': 'profile_pic_2',
         'team_info': [

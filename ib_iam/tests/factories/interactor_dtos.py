@@ -8,7 +8,8 @@ from ib_iam.interactors.update_user_password_interactor import \
     CurrentAndNewPasswordDTO
 from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
 from ib_iam.tests.factories.storage_dtos import MemberDTOFactory, \
-    TeamMemberLevelDetailsDTOFactory, MemberIdWithSubordinateMemberIdsDTOFactory
+    TeamMemberLevelDetailsDTOFactory, \
+    MemberIdWithSubordinateMemberIdsDTOFactory
 
 
 class AddUserDetailsDTOFactory(factory.Factory):
@@ -37,8 +38,8 @@ class CompleteUserProfileDTOFactory(factory.Factory):
     user_id = factory.sequence(lambda number: "user%s" % number)
     name = factory.sequence(lambda number: "name%s" % number)
     email = factory.LazyAttribute(lambda user: "%s@gmail.com" % user.name)
-    profile_pic_url = factory.sequence(lambda n: "url%d" % n)
-    cover_page_url = factory.sequence(lambda n: "url%d" % n)
+    profile_pic_url = "http://sample.com"
+    cover_page_url = "http://sample.com"
 
 
 class TeamMemberLevelDTOFactory(factory.Factory):

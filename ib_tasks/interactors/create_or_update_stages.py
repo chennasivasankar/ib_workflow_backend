@@ -10,10 +10,9 @@ from ib_tasks.exceptions.stage_custom_exceptions import (
     InvalidStagesDisplayName)
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidStagesTaskTemplateId, InvalidTaskTemplateIds
-from ib_tasks.interactors.get_stage_display_logic_interactor import \
-    StageDisplayLogicInteractor
 from ib_tasks.interactors.stages_dtos import StageDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageDisplayDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
+    StageDisplayDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -21,7 +20,9 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
-from ib_tasks.interactors.task_dtos import StatusOperandStageDTO, StageDisplayLogicDTO
+from ib_tasks.interactors.task_dtos import StageDisplayLogicDTO
+from ib_tasks.interactors.user_action_on_task.get_stage_display_logic_interactor import \
+    StageDisplayLogicInteractor
 
 
 class CreateOrUpdateStagesInteractor:

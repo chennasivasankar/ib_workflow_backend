@@ -7,13 +7,12 @@ from typing import List, Tuple
 
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface, ApplyFilterDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
-    FieldsStorageInterface, FieldTypeDTO
+    FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.filter_storage_interface import \
     FilterStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
-from ib_tasks.models import Stage
-
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \

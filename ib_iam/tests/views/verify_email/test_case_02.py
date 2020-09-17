@@ -4,6 +4,7 @@ For All exceptions
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -43,5 +44,5 @@ class TestCase02VerifyEmailAPITestCase(TestUtils):
             email="example@gmail.com",
             user_id=user_id,
             name="Baba",
-            is_email_verify=True
+            is_email_verified=True
         )

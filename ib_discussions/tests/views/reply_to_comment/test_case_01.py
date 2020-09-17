@@ -67,15 +67,11 @@ class TestCase01ReplyToCommentAPITestCase(TestUtils):
         multimedia_dtos = [
             CommentIdWithMultiMediaDTOFactory(
                 comment_id=comment_reply_id,
-                multimedia_id=multimedia_ids[0],
-                format_type=multimedia[0]["format_type"],
-                url=multimedia[0]["url"]
+                multimedia_id=multimedia_ids[0]
             ),
             CommentIdWithMultiMediaDTOFactory(
                 comment_id=comment_reply_id,
-                multimedia_id=multimedia_ids[1],
-                format_type=multimedia[1]["format_type"],
-                url=multimedia[1]["url"]
+                multimedia_id=multimedia_ids[1]
             )
         ]
         from ib_discussions.tests.common_fixtures.storages import \

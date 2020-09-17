@@ -8,6 +8,8 @@ from ib_tasks.exceptions.datetime_custom_exceptions import \
     StartDateTimeIsRequired, DueDateTimeWithoutStartDateTimeIsNotValid
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidDateFormat
+from ib_tasks.exceptions.gofs_custom_exceptions import \
+    InvalidStagePermittedGoFs
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
     InvalidStageIdsListException, StageIdsListEmptyException
@@ -44,6 +46,10 @@ class UpdateTaskPresenterImplementation(
 
     def raise_invalid_fields_given_to_a_gof(self, err):
         return self.raise_invalid_fields_given_to_a_gof_exception(err)
+
+    def raise_invalid_stage_permitted_gofs(
+            self, err: InvalidStagePermittedGoFs):
+        return self.raise_invalid_stage_permitted_gofs_exception(err)
 
     def raise_user_needs_gof_writable_permission(self, err):
         return self.raise_user_needs_gof_writable_permission_exception(err)

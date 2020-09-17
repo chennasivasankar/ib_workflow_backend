@@ -4,14 +4,15 @@ Author: Pavankumar Pamuru
 
 """
 from dataclasses import dataclass
-from typing import List, Tuple, Optional
+from typing import List, Optional
 
 from ib_tasks.documents.elastic_task import QueryTasksDTO
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface, ApplyFilterDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
-    FieldsStorageInterface, FieldTypeDTO
+    FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.filter_storage_interface import \
     FilterStorageInterface
 from ib_tasks.interactors.task_dtos import SearchQueryDTO

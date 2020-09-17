@@ -7,6 +7,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     NotAStrongPassword, InvalidURLValue, InvalidEmailFieldValue, \
     InvalidPhoneNumberValue, EmptyValueForRequiredField, InvalidDateFormat
 from ib_tasks.exceptions.fields_custom_exceptions import DuplicateFieldIdsToGoF
+from ib_tasks.exceptions.gofs_custom_exceptions import \
+    InvalidStagePermittedGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsFieldWritablePermission, UserNeedsGoFWritablePermission
 from ib_tasks.exceptions.task_custom_exceptions import InvalidFieldsOfGoF, \
@@ -74,6 +76,19 @@ class GoFsFieldsValidationPresenterMixin:
             "response": response_message,
             "http_status_code": 400,
             "res_status": INVALID_FIELDS_OF_GOF[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_stage_permitted_gofs_exception(
+            self, err: InvalidStagePermittedGoFs):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_STAGE_PERMITTED_GOFS
+        response_message = INVALID_STAGE_PERMITTED_GOFS[0].format(
+            str(err.gof_ids), err.stage_id)
+        data = {
+            "response": response_message,
+            "http_status_code": 400,
+            "res_status": INVALID_STAGE_PERMITTED_GOFS[1]
         }
         return self.prepare_400_bad_request_response(data)
 

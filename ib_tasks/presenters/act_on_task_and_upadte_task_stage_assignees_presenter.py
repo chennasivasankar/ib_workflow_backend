@@ -15,7 +15,7 @@ from ib_tasks.exceptions.stage_custom_exceptions import \
 from ib_tasks.exceptions.task_custom_exceptions import (InvalidTaskException,
                                                         TaskDelayReasonIsNotUpdated)
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
-from ib_tasks.interactors.presenter_interfaces.\
+from ib_tasks.interactors.presenter_interfaces. \
     act_on_task_and_upadte_task_stage_assignees_presenter_interface import \
     ActOnTaskAndUpdateTaskStageAssigneesPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.dtos import \
@@ -26,8 +26,8 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
-from ib_tasks.interactors.user_action_on_task_interactor import \
-    InvalidBoardIdException
+from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor \
+    import InvalidBoardIdException
 
 
 class ActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation(

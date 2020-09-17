@@ -22,7 +22,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
     DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
-    DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs
+    DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs, \
+    InvalidStagePermittedGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserActionPermissionDenied
@@ -36,6 +37,7 @@ from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     TaskDelayReasonIsNotUpdated, PriorityIsRequired, InvalidTaskJson
 from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
     UpdateTaskInteractor
+from ib_tasks.interactors.dtos.dtos import TaskOverallCompleteDetailsDTO
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.mixins.task_operations_utilities_mixin import \
@@ -71,9 +73,9 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO, \
     SaveAndActOnTaskDTO, \
     SaveAndActOnTaskWithTaskDisplayIdDTO, UpdateTaskBasicDetailsDTO, \
-    TaskCurrentStageDetailsDTO
-from ib_tasks.interactors.user_action_on_task_interactor import \
-    UserActionOnTaskInteractor
+    CreateTaskLogDTO
+from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor \
+    import UserActionOnTaskInteractor
 
 
 class SaveAndActOnATaskInteractor(
@@ -105,10 +107,10 @@ class SaveAndActOnATaskInteractor(
     def save_and_act_on_task_wrapper(
             self, presenter: SaveAndActOnATaskPresenterInterface,
             task_dto: SaveAndActOnTaskWithTaskDisplayIdDTO,
-            task_request_json: str):
+            task_request_json: str, board_id: str):
         try:
             return self._prepare_save_and_act_response(
-                presenter, task_dto, task_request_json)
+                presenter, task_dto, task_request_json, board_id)
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
         except InvalidActionException as err:
@@ -143,6 +145,8 @@ class SaveAndActOnATaskInteractor(
             return presenter.raise_duplicate_field_ids_to_a_gof(err)
         except InvalidFieldsOfGoF as err:
             return presenter.raise_invalid_fields_given_to_a_gof(err)
+        except InvalidStagePermittedGoFs as err:
+            return presenter.raise_invalid_stage_permitted_gofs(err)
         except UserNeedsGoFWritablePermission as err:
             return presenter.raise_user_needs_gof_writable_permission(err)
         except UserNeedsFieldWritablePermission as err:
@@ -216,18 +220,15 @@ class SaveAndActOnATaskInteractor(
 
     def _prepare_save_and_act_response(
             self, presenter, task_dto: SaveAndActOnTaskWithTaskDisplayIdDTO,
-            task_request_json: str):
-        task_current_stage_details_dto, all_tasks_overview_details_dto = \
-            self.save_and_act_on_task_with_task_display_id(
-                task_dto, task_request_json)
-        return presenter.get_save_and_act_on_task_response(
-            task_current_stage_details_dto, all_tasks_overview_details_dto)
+            task_request_json: str, board_id: str):
+        task_overview_dto = self.save_and_act_on_task_with_task_display_id(
+            task_dto, task_request_json, board_id)
+        return presenter.get_save_and_act_on_task_response(task_overview_dto)
 
     def save_and_act_on_task_with_task_display_id(
             self, task_dto: SaveAndActOnTaskWithTaskDisplayIdDTO,
-            task_request_json: str
+            task_request_json: str, board_id: str
     ):
-        from ib_tasks.interactors.dtos.dtos import TaskLogDTO
 
         task_db_id = self.get_task_id_for_task_display_id(
             task_dto.task_display_id)
@@ -239,24 +240,34 @@ class SaveAndActOnATaskInteractor(
             due_datetime=task_dto.due_datetime,
             priority=task_dto.priority, stage_assignee=task_dto.stage_assignee,
             gof_fields_dtos=task_dto.gof_fields_dtos)
-        task_current_stage_details_dto, all_tasks_overview_details_dto = \
-            self.save_and_act_on_task(task_dto_with_db_task_id)
-        task_log_dto = TaskLogDTO(
+        task_overview_dto = self.save_and_act_on_task(task_dto_with_db_task_id,
+                                                      board_id)
+        task_log_dto = CreateTaskLogDTO(
             task_id=task_db_id, user_id=task_dto.created_by_id,
-            action_id=task_dto.action_id, task_request_json=task_request_json)
-        self.create_task_log(task_log_dto)
-        return task_current_stage_details_dto, all_tasks_overview_details_dto
+            action_id=task_dto.action_id, task_json=task_request_json)
+        self._create_task_log(task_log_dto)
+        return task_overview_dto
 
-    def save_and_act_on_task(self, task_dto: SaveAndActOnTaskDTO):
+    def _create_task_log(self, task_log_dto: CreateTaskLogDTO):
+        from ib_tasks.interactors.task_log_interactor import TaskLogInteractor
+        task_log_interactor = TaskLogInteractor(
+            storage=self.storage, task_storage=self.task_storage)
+        create_task_log_dto = CreateTaskLogDTO(
+            task_json=task_log_dto.task_json,
+            task_id=task_log_dto.task_id, user_id=task_log_dto.user_id,
+            action_id=task_log_dto.action_id)
+        task_log_interactor.create_task_log(create_task_log_dto)
+
+    def save_and_act_on_task(
+            self, task_dto: SaveAndActOnTaskDTO, board_id: str):
         action_id = task_dto.action_id
 
         action_type = self._validate_action_id_and_get_action_type(action_id)
-        task_overview_details_dto = self._update_task(task_dto, action_type)
-        self._perform_user_action_on_task(
-            task_dto.task_id, task_dto.action_id, task_dto.created_by_id)
-        task_current_stage_details_dto = self._get_task_current_stages_info(
-            task_dto.task_id, task_dto.created_by_id)
-        return task_current_stage_details_dto, task_overview_details_dto
+        self._update_task(task_dto, action_type)
+        task_overview_dto = self._perform_user_action_on_task(
+            task_dto.task_id, task_dto.action_id, task_dto.created_by_id,
+            board_id)
+        return task_overview_dto
 
     def _update_task(
             self, task_dto: SaveAndActOnTaskDTO, action_type: ActionTypes
@@ -284,9 +295,11 @@ class SaveAndActOnATaskInteractor(
         return update_task_interactor.update_task(update_task_dto)
 
     def _perform_user_action_on_task(
-            self, task_id: int, action_id: int, user_id: str):
+            self, task_id: int, action_id: int, user_id: str,
+            board_id: str
+    ):
         act_on_task_interactor = UserActionOnTaskInteractor(
-            user_id=user_id, board_id=None, task_storage=self.task_storage,
+            user_id=user_id, board_id=board_id, task_storage=self.task_storage,
             action_storage=self.action_storage, action_id=action_id,
             storage=self.storage, gof_storage=self.gof_storage,
             field_storage=self.field_storage, stage_storage=self.stage_storage,
@@ -294,19 +307,16 @@ class SaveAndActOnATaskInteractor(
             elasticsearch_storage=self.elastic_storage,
             create_task_storage=self.create_task_storage,
             task_template_storage=self.task_template_storage)
-        act_on_task_interactor.user_action_on_task_and_set_random_assignees(
-            task_id=task_id)
-
-    def _get_task_current_stages_info(
-            self, task_id: int, user_id: str) -> TaskCurrentStageDetailsDTO:
-        from ib_tasks.interactors.get_task_current_stages_interactor import \
-            GetTaskCurrentStagesInteractor
-        get_task_current_stages_interactor = GetTaskCurrentStagesInteractor(
-            task_stage_storage=self.task_stage_storage)
-        task_current_stage_details_dto = \
-            get_task_current_stages_interactor.get_task_current_stages_details(
-                task_id=task_id, user_id=user_id)
-        return task_current_stage_details_dto
+        task_complete_details_dto, task_current_stage_details_dto, \
+        all_tasks_overview_dto = \
+            act_on_task_interactor.user_action_on_task_and_set_random_assignees(
+                task_id=task_id)
+        task_overview_dto = TaskOverallCompleteDetailsDTO(
+            task_complete_details_dto=task_complete_details_dto,
+            task_current_stage_details_dto=task_current_stage_details_dto,
+            all_tasks_overview_details_dto=all_tasks_overview_dto
+        )
+        return task_overview_dto
 
     def _validate_action_id_and_get_action_type(
             self, action_id: int

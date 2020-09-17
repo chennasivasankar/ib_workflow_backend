@@ -4,7 +4,7 @@ from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
     DuplicateFieldIdsToGoF
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
-    DuplicateSameGoFOrderForAGoF
+    DuplicateSameGoFOrderForAGoF, InvalidStagePermittedGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.task_custom_exceptions import \
@@ -44,11 +44,11 @@ class GoFsDetailsValidationsInteractor:
     def perform_gofs_details_validations(
             self, gof_fields_dtos: List[GoFFieldsDTO], user_id: str,
             task_template_id: str, project_id: str,
-            action_type: Optional[ActionTypes]):
+            action_type: Optional[ActionTypes], stage_id: int):
         gof_ids = self._validate_gof_details_and_get_gof_ids(gof_fields_dtos)
         field_ids = self._validate_fields(gof_fields_dtos)
         self._validate_that_fields_gofs_and_template_are_related(
-            task_template_id, gof_ids, gof_fields_dtos)
+            task_template_id, gof_ids, gof_fields_dtos, stage_id)
         self._validate_user_permission_on_given_fields(
             field_ids, user_id, project_id)
         self._validate_given_field_responses(gof_fields_dtos, action_type)
@@ -75,11 +75,17 @@ class GoFsDetailsValidationsInteractor:
 
     def _validate_that_fields_gofs_and_template_are_related(
             self, task_template_id: str, gof_ids: List[str],
-            gof_fields_dtos: List[GoFFieldsDTO]):
+            gof_fields_dtos: List[GoFFieldsDTO], stage_id: int):
         self._validate_for_given_gofs_are_related_to_given_task_template(
             task_template_id, gof_ids)
         self._validate_for_given_fields_are_related_to_given_gofs(
             gof_fields_dtos, gof_ids)
+        task_template_is_transition_template = \
+            self.task_template_storage.check_is_transition_template_exists(
+                task_template_id)
+        if task_template_is_transition_template:
+            return
+        self._validate_stage_permitted_gofs(gof_ids, stage_id)
 
     def _validate_given_field_responses(
             self, gof_fields_dots: List[GoFFieldsDTO],
@@ -232,4 +238,15 @@ class GoFsDetailsValidationsInteractor:
         invalid_field_ids = sorted(list(set(field_ids) - set(valid_field_ids)))
         if invalid_field_ids:
             raise InvalidFieldIds(invalid_field_ids)
+        return
+
+    def _validate_stage_permitted_gofs(
+            self, gof_ids: List[str], stage_id: int
+    ) -> Optional[InvalidStagePermittedGoFs]:
+        permitted_gof_ids = \
+            self.task_template_storage.get_stage_permitted_gof_ids(stage_id)
+        not_permitted_gof_ids = list(
+            sorted(set(gof_ids) - set(permitted_gof_ids)))
+        if not_permitted_gof_ids:
+            raise InvalidStagePermittedGoFs(not_permitted_gof_ids, stage_id)
         return

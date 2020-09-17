@@ -12,7 +12,7 @@ class TestGetValidRoleIds:
 
     def test_get_valid_role_ids_return_valid_ids(self, storage_mock):
         # Arrange
-        role_ids = ["12233442", "12312323", "4141264557", "12312323"]
+        role_ids = ["12233442", "12312323", "4141264557"]
         expected_valid_ids = ["12233442", "12312323"]
 
         storage_mock.get_valid_role_ids.return_value = expected_valid_ids
@@ -25,3 +25,5 @@ class TestGetValidRoleIds:
 
         # Assert
         assert valid_ids == expected_valid_ids
+        storage_mock.get_valid_role_ids.assert_called_once_with(
+            role_ids=role_ids)

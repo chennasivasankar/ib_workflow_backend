@@ -1,10 +1,10 @@
 """
     Invalid Email -- Empty string
 """
-from unittest.mock import patch
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -20,8 +20,8 @@ class TestCase01SendUserResetPasswordLinkAPITestCase(TestUtils):
         body = {'email': 'saa'}
         from ib_iam.exceptions.custom_exceptions import InvalidEmail
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_get_reset_password_token_mock
-        prepare_get_reset_password_token_mock(mocker).side_effect = InvalidEmail
+            get_reset_password_token_mock
+        get_reset_password_token_mock(mocker).side_effect = InvalidEmail
         path_params = {}
         query_params = {}
         headers = {}

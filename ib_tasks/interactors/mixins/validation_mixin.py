@@ -47,17 +47,18 @@ class ValidationMixin:
 
     def validate_if_user_is_in_projects(self, user_id: str, project_ids):
 
-        bool_field = True
         adapter = self.get_service_adapter()
-        for project_id in project_ids:
-            if not adapter.auth_service.validate_if_user_is_in_project(
-                    user_id=user_id, project_id=project_id):
-                bool_field = False
-                break
-
-        is_user_not_in_projects = not bool_field
-        if is_user_not_in_projects:
-            raise UserIsNotInProjectsException
+        user_project_status_dtos = adapter.auth_service\
+            .validate_if_user_is_in_projects(
+                user_id=user_id, project_ids=project_ids
+            )
+        user_not_in_projects = [
+            user_project_status_dto.project_id
+            for user_project_status_dto in user_project_status_dtos
+            if not user_project_status_dto.is_exists
+        ]
+        if user_not_in_projects:
+            raise UserIsNotInProjectsException(project_ids=project_ids)
 
     def validate_if_user_is_in_project(self, user_id: str,
                                        project_id: str):

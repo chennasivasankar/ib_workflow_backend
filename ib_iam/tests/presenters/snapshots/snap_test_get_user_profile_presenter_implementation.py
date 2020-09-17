@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetUserProfilePresenterImplementation.test_prepare_response_for_user_profile_dto get_user_profile_response'] = {
@@ -15,22 +14,22 @@ snapshots['TestGetUserProfilePresenterImplementation.test_prepare_response_for_u
             {
                 'employee_id': 'eca1a0c1-b9ef-4e59-b415-60a28ef17b10',
                 'name': 'name1',
-                'profile_pic_url': 'url1'
+                'profile_pic_url': 'http://sample.com'
             },
             {
                 'employee_id': '548a803c-7b48-47ba-a700-24f2ea0d1280',
                 'name': 'name3',
-                'profile_pic_url': 'url3'
+                'profile_pic_url': 'http://sample.com'
             }
         ],
-        'logo_url': 'logo_url1',
+        'logo_url': 'http://sample.com',
         'name': 'company1'
     },
-    'cover_page_url': 'url1',
+    'cover_page_url': 'http://sample.com',
     'email': 'name1@gmail.com',
     'is_admin': False,
     'name': 'name1',
-    'profile_pic_url': 'url1',
+    'profile_pic_url': 'http://sample.com',
     'roles': [
         {
             'role_id': 'ROLE_1',
@@ -48,12 +47,12 @@ snapshots['TestGetUserProfilePresenterImplementation.test_prepare_response_for_u
                 {
                     'member_id': 'eca1a0c1-b9ef-4e59-b415-60a28ef17b10',
                     'name': 'name1',
-                    'profile_pic_url': 'url1'
+                    'profile_pic_url': 'http://sample.com'
                 },
                 {
                     'member_id': '4b8fb6eb-fa7d-47c1-8726-cd917901104e',
                     'name': 'name2',
-                    'profile_pic_url': 'url2'
+                    'profile_pic_url': 'http://sample.com'
                 }
             ],
             'name': 'team 1',

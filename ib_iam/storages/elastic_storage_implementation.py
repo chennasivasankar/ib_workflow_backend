@@ -15,12 +15,14 @@ class ElasticStorageImplementation(ElasticSearchStorageInterface):
             user_id=user_id, elastic_user_id=elastic_user_id
         )
 
-    def create_elastic_user(self, user_id: str, name: str) -> str:
+    def create_elastic_user(self, user_id: str, name: str, email: str) -> str:
         from elasticsearch_dsl import connections
         from django.conf import settings
         connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
                                       timeout=20)
-        elastic_user_obj = ElasticUser(user_id=str(user_id), name=name)
+        elastic_user_obj = ElasticUser(
+            user_id=str(user_id), name=name, email=email
+        )
         elastic_user_obj.save()
         elastic_user_id = elastic_user_obj.meta.id
         return elastic_user_id

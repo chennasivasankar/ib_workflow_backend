@@ -4,6 +4,7 @@ Valid email and password return response
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -38,13 +39,13 @@ class TestCase01UserLoginAPITestCase(TestUtils):
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
-            user_id=user_id, is_email_verify=True
+            user_id=user_id, is_email_verified=True
         )
 
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock
+            get_user_tokens_dto_for_given_email_and_password_dto_mock
         get_tokens_dto_for_given_email_and_password_dto_mock \
-            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(
+            = get_user_tokens_dto_for_given_email_and_password_dto_mock(
             mocker)
         get_tokens_dto_for_given_email_and_password_dto_mock.return_value \
             = tokens_dto

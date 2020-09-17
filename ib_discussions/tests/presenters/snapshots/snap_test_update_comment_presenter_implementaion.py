@@ -4,12 +4,11 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestUpdateCommentPresenterImplementation.test_prepare_response_for_update_comment update_comment'] = {
     'author': {
-        'name': 'name ',
+        'name': 'name',
         'profile_pic_url': 'https://graph.ib_users.com/',
         'user_id': '31be920b-7b4c-49e7-8adb-41a0c18da848'
     },
@@ -19,12 +18,12 @@ snapshots['TestUpdateCommentPresenterImplementation.test_prepare_response_for_up
     'is_editable': True,
     'mention_users': [
         {
-            'name': 'name ',
+            'name': 'name',
             'profile_pic_url': 'https://graph.ib_users.com/',
             'user_id': '01be920b-7b4c-49e7-8adb-41a0c18da848'
         },
         {
-            'name': 'name ',
+            'name': 'name',
             'profile_pic_url': 'https://graph.ib_users.com/',
             'user_id': '91be920b-7b4c-49e7-8adb-41a0c18da848'
         }

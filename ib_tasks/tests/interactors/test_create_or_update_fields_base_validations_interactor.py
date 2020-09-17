@@ -1,6 +1,7 @@
 import pytest
 
-from ib_tasks.interactors.create_or_update_fields_base_validations_interactor \
+from ib_tasks.interactors.create_or_update_fields \
+    .create_or_update_fields_base_validations_interactor \
     import CreateOrUpdateFieldsBaseValidationInteractor
 from ib_tasks.tests.factories.storage_dtos import FieldDTOFactory
 

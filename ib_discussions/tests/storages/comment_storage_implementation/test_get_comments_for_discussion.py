@@ -1,5 +1,4 @@
 import datetime
-from uuid import UUID
 
 import pytest
 
@@ -14,22 +13,19 @@ class TestGetCommentsForDiscussion:
 
         comment_list = [
             {
-                "comment_id": UUID('91be920b-7b4c-49e7-8adb-41a0c18da848'),
-                "comment_content": 'content',
+                "comment_id": '91be920b-7b4c-49e7-8adb-41a0c18da848',
                 "user_id": '31be920b-7b4c-49e7-8adb-41a0c18da848',
                 "created_at": datetime.datetime(2008, 1, 1, 0, 0),
                 "parent_comment_id": None
             },
             {
-                "comment_id": UUID('11be920b-7b4c-49e7-8adb-41a0c18da848'),
-                "comment_content": 'content',
+                "comment_id": '11be920b-7b4c-49e7-8adb-41a0c18da848',
                 "user_id": '01be920b-7b4c-49e7-8adb-41a0c18da848',
                 "created_at": datetime.datetime(2020, 5, 1, 0, 0),
                 "parent_comment_id": None
             },
             {
-                "comment_id": UUID('21be920b-7b4c-49e7-8adb-41a0c18da848'),
-                "comment_content": 'content',
+                "comment_id": '21be920b-7b4c-49e7-8adb-41a0c18da848',
                 "user_id": '77be920b-7b4c-49e7-8adb-41a0c18da848',
                 "created_at": datetime.datetime(2020, 1, 20, 0, 0),
                 "parent_comment_id": None
@@ -41,7 +37,6 @@ class TestGetCommentsForDiscussion:
         expected_comment_dtos = [
             CommentDTOFactory(
                 comment_id=comment_dict["comment_id"],
-                comment_content=comment_dict["comment_content"],
                 user_id=comment_dict["user_id"],
                 created_at=comment_dict["created_at"],
                 parent_comment_id=comment_dict["parent_comment_id"]

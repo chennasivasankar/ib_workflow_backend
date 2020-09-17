@@ -1,5 +1,4 @@
 import datetime
-from uuid import UUID
 
 import pytest
 
@@ -10,12 +9,12 @@ class TestStorageImplementation:
     def create_entity_objects(self):
         from ib_discussions.tests.factories.models import EntityFactory
         entity_ids = [
-            UUID('31be920b-7b4c-49e7-8adb-41a0c18da848'),
-            UUID('4c28801f-7084-4b93-a938-f261aedf8f29'),
-            UUID('64eade81-86d0-43d4-9575-d3482aaa30e5'),
-            UUID('9cbbe720-9244-441e-b910-1c695b3a7cd1'),
-            UUID('da145a02-e164-4203-9317-1d42bb68e3ce'),
-            UUID('5c27801f-9084-7b93-a038-f261aedf8f29')
+            '31be920b-7b4c-49e7-8adb-41a0c18da848',
+            '4c28801f-7084-4b93-a938-f261aedf8f29',
+            '64eade81-86d0-43d4-9575-d3482aaa30e5',
+            '9cbbe720-9244-441e-b910-1c695b3a7cd1',
+            'da145a02-e164-4203-9317-1d42bb68e3ce',
+            '5c27801f-9084-7b93-a038-f261aedf8f29'
         ]
         for entity_id in entity_ids:
             EntityFactory(id=entity_id)
@@ -25,18 +24,18 @@ class TestStorageImplementation:
         from ib_discussions.tests.factories.models import \
             DiscussionSetFactory
         entity_ids = [
-            UUID('31be920b-7b4c-49e7-8adb-41a0c18da848'),
-            UUID('4c28801f-7084-4b93-a938-f261aedf8f29'),
-            UUID('64eade81-86d0-43d4-9575-d3482aaa30e5'),
-            UUID('9cbbe720-9244-441e-b910-1c695b3a7cd1'),
-            UUID('da145a02-e164-4203-9317-1d42bb68e3ce')
+            '31be920b-7b4c-49e7-8adb-41a0c18da848',
+            '4c28801f-7084-4b93-a938-f261aedf8f29',
+            '64eade81-86d0-43d4-9575-d3482aaa30e5',
+            '9cbbe720-9244-441e-b910-1c695b3a7cd1',
+            'da145a02-e164-4203-9317-1d42bb68e3ce'
         ]
         discussion_set_ids = [
-            UUID('641bfcc5-e1ea-4231-b482-f7f34fb5c7c4'),
-            UUID('94557db1-c123-4e16-a69d-98a6a4850b84'),
-            UUID('98ec9bf6-c83c-4f40-9f8c-bd1998b7e452'),
-            UUID('e12c2408-fc30-4e55-8f9a-6847d915481e'),
-            UUID('f032383d-ea21-4da3-8194-a676be299987')
+            '641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
+            '94557db1-c123-4e16-a69d-98a6a4850b84',
+            '98ec9bf6-c83c-4f40-9f8c-bd1998b7e452',
+            'e12c2408-fc30-4e55-8f9a-6847d915481e',
+            'f032383d-ea21-4da3-8194-a676be299987'
         ]
         for entity_id, discussion_set_id in list(
                 zip(entity_ids, discussion_set_ids)):
@@ -199,8 +198,6 @@ class TestStorageImplementation:
                 user_id='9cc22e39-2390-4d96-b7ac-6bb27816461f',
                 discussion_id='829db67d-0663-4e71-a103-826706ab5678',
                 discussion_set_id='641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
-                description='description',
-                title='title',
                 created_at=datetime.datetime(2020, 1, 20, 0, 0,
                                              tzinfo=datetime.timezone.utc),
                 is_clarified=True
@@ -209,8 +206,6 @@ class TestStorageImplementation:
                 user_id='9cc22e39-2390-4d96-b7ac-6bb27816461f',
                 discussion_id='c0091084-1d34-4e8c-b813-464e14cb152c',
                 discussion_set_id='641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
-                description='description',
-                title='title',
                 created_at=datetime.datetime(2008, 1, 1, 0, 0,
                                              tzinfo=datetime.timezone.utc),
                 is_clarified=True
@@ -268,8 +263,6 @@ class TestStorageImplementation:
                 user_id='cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a',
                 discussion_id='cc38d53c-679c-4924-b110-69b697a1b888',
                 discussion_set_id='641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
-                description='description',
-                title='title',
                 created_at=datetime.datetime(2020, 5, 1, 0, 0,
                                              tzinfo=datetime.timezone.utc),
                 is_clarified=False
@@ -278,8 +271,6 @@ class TestStorageImplementation:
                 user_id='e597ab2f-a10c-4164-930e-23af375741cb',
                 discussion_id='85b72743-aeaf-4000-be5f-6764807b90a1',
                 discussion_set_id='641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
-                description='description',
-                title='title',
                 created_at=datetime.datetime(2020, 1, 20, 0, 0,
                                              tzinfo=datetime.timezone.utc),
                 is_clarified=True
@@ -337,8 +328,6 @@ class TestStorageImplementation:
                 user_id='cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a',
                 discussion_id='b7c61479-d9c3-4fbe-b08b-c7069c72f5a7',
                 discussion_set_id='641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
-                description='description',
-                title='title',
                 created_at=datetime.datetime(2008, 1, 1, 0, 0,
                                              tzinfo=datetime.timezone.utc),
                 is_clarified=True

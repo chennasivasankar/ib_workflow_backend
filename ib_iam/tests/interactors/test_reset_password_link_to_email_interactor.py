@@ -1,4 +1,4 @@
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 import pytest
 
@@ -18,8 +18,8 @@ class TestSendResetPasswordLinkToEmailInteractor:
         email = "ss"
         from ib_iam.exceptions.custom_exceptions import InvalidEmail
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_get_reset_password_token_mock
-        prepare_get_reset_password_token_mock(mocker).side_effect = InvalidEmail
+            get_reset_password_token_mock
+        get_reset_password_token_mock(mocker).side_effect = InvalidEmail
         expected_presenter_raise_invalid_email_mock = Mock()
 
         presenter_mock.raise_exception_for_invalid_email.return_value \
@@ -45,8 +45,8 @@ class TestSendResetPasswordLinkToEmailInteractor:
         email = "test@gmail.com"
         from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_get_reset_password_token_mock
-        prepare_get_reset_password_token_mock(mocker).side_effect \
+            get_reset_password_token_mock
+        get_reset_password_token_mock(mocker).side_effect \
             = UserAccountDoesNotExist
 
         expected_presenter_raise_user_account_does_not_exist_mock = Mock()
@@ -76,14 +76,14 @@ class TestSendResetPasswordLinkToEmailInteractor:
         email = "test@gmail.com"
         user_reset_password_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_get_reset_password_token_mock
-        prepare_get_reset_password_token_mock(mocker).return_value \
+            get_reset_password_token_mock
+        get_reset_password_token_mock(mocker).return_value \
             = user_reset_password_token
 
         from ib_iam.tests.common_fixtures.adapters.email_service_adapter_mocks import \
-            prepare_send_email_to_user_mock
+            send_email_to_user_mock
 
-        send_email_to_user_mock = prepare_send_email_to_user_mock(mocker)
+        send_email_to_user_mock = send_email_to_user_mock(mocker)
 
         expected_presenter_success_response_mock = Mock()
 

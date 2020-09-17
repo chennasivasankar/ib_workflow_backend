@@ -14,13 +14,14 @@ from .filter_condition import FilterCondition, FilterCondition
 from .project_task_template import ProjectTaskTemplate
 from .stage import Stage
 from .stage_actions import StageAction
+from .stage_flow import StageFlow
+from .stage_gof import StageGoF
 from .stage_permitted_roles import StagePermittedRoles
 from .task import Task
-from .task_stage_rp import TaskStageRp
-from .user_task_delay_reason import UserTaskDelayReason
 from .task_gof import TaskGoF
 from .task_gof_field import TaskGoFField
 from .task_log import TaskLog
+from .task_stage_rp import TaskStageRp
 from .task_status_variable import TaskStatusVariable, TaskStatusVariable
 from .task_template import TaskTemplate, TaskTemplate
 from .task_template_global_constants import TaskTemplateGlobalConstants, \
@@ -28,7 +29,7 @@ from .task_template_global_constants import TaskTemplateGlobalConstants, \
 from .task_template_initial_stages import TaskTemplateInitialStage
 from .task_template_status_variable import TaskTemplateStatusVariable
 from .template_status_variables import TaskTemplateStatusVariables
-from .stage_flow import StageFlow
+from .user_task_delay_reason import UserTaskDelayReason
 
 __all__ = [
     "StageFlow",
@@ -56,5 +57,5 @@ __all__ = [
     "TaskTemplateInitialStage",
     "StagePermittedRoles",
     "UserTaskDelayReason", "ProjectTaskTemplate",
-    "TaskStageRp"
+    "TaskStageRp", "StageGoF"
 ]

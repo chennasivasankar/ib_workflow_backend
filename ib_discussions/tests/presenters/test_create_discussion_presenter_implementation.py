@@ -6,6 +6,7 @@ from ib_discussions.constants.enum import StatusCode
 
 
 class TestCreateDiscussionPresenterImplementation:
+
     @pytest.fixture()
     def presenter(self):
         from ib_discussions.presenters.create_discussion_presenter_implementation import \

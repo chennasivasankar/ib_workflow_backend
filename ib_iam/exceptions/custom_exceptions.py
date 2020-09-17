@@ -105,8 +105,11 @@ class InvalidUserId(Exception):
 
 
 class DuplicateUserIds(Exception):
-    def __init__(self, user_ids):
-        self.user_ids = user_ids
+    pass
+
+
+class UserIdsAreInvalid(Exception):
+    pass
 
 
 class InvalidUserIds(Exception):
@@ -207,6 +210,7 @@ class UsersNotBelongToGivenLevelHierarchy(Exception):
     def __init__(self, user_ids: List[str], level_hierarchy: int):
         self.user_ids = user_ids
         self.level_hierarchy = level_hierarchy
+
 
 class UserNotBelongToTeam(Exception):
     pass

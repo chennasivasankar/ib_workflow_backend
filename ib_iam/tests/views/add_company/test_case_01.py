@@ -5,8 +5,9 @@ from uuid import UUID
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
+from ib_iam.tests.common_fixtures.adapters.uuid_mock import uuid_mock
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ib_iam.tests.common_fixtures.adapters.uuid_mock import prepare_uuid_mock
 
 
 class TestCase01AddCompanyAPITestCase(TestUtils):
@@ -18,13 +19,13 @@ class TestCase01AddCompanyAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, mocker, snapshot, setup):
-        mock = prepare_uuid_mock(mocker)
+        mock = uuid_mock(mocker)
         mock.return_value = UUID("f2c02d98-f311-4ab2-8673-3daa00757002")
         body = {'name': 'string', 'description': 'string', 'logo_url': 'string', 'employee_ids': ["2", "3"]}
         path_params = {}
         query_params = {}
         headers = {}
-        response = self.make_api_call(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

@@ -3,6 +3,8 @@ import abc
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueDateTimeHasExpired, DueDateTimeWithoutStartDateTimeIsNotValid, \
     StartDateTimeIsRequired, DueDateTimeIsRequired
+from ib_tasks.exceptions.gofs_custom_exceptions import \
+    InvalidStagePermittedGoFs
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
     StageIdsListEmptyException, InvalidStageIdsListException
@@ -182,4 +184,9 @@ class UpdateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_priority_is_required(self, err: PriorityIsRequired):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_stage_permitted_gofs(self,
+                                           err: InvalidStagePermittedGoFs):
         pass

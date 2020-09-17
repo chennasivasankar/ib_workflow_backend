@@ -85,7 +85,7 @@ class GetTransitionTemplateInteractor:
             _remove_gof_ids_from_gof_selector_if_user_having_no_read_permission(
                 field_dtos=field_dtos,
                 gof_ids_having_user_read_permissions=
-                gof_ids_of_transition_template
+                gof_ids_with_at_least_one_field
             )
 
         gofs_details_dtos = \
@@ -125,7 +125,7 @@ class GetTransitionTemplateInteractor:
                 gof_storage=self.gof_storage)
         gofs_of_transition_template_permitted_for_user_dtos = \
             self.task_template_storage. \
-            get_gofs_to_template_from_permitted_gofs(
+            get_gofs_to_template_from_given_gofs(
                 gof_ids=gof_ids_having_read_permission_for_user,
                 template_id=transition_template_id
             )

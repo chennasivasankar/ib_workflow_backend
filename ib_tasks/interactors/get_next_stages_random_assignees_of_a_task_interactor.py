@@ -20,6 +20,10 @@ from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+    FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
@@ -39,13 +43,18 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
                  task_storage: TaskStorageInterface,
                  action_storage: ActionStorageInterface,
                  task_stage_storage: TaskStageStorageInterface,
-                 create_task_storage: CreateOrUpdateTaskStorageInterface):
+                 field_storage: FieldsStorageInterface,
+                 create_task_storage: CreateOrUpdateTaskStorageInterface,
+                 gof_storage: GoFStorageInterface
+                 ):
         self.stage_storage = stage_storage
         self.task_storage = task_storage
         self.action_storage = action_storage
         self.storage = storage
         self.create_task_storage = create_task_storage
         self.task_stage_storage = task_stage_storage
+        self.field_storage = field_storage
+        self.gof_storage = gof_storage
 
     def get_next_stages_random_assignees_of_a_task_wrapper(
             self, task_display_id: str, action_id: int,
@@ -68,7 +77,6 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
         except UsersNotExistsForGivenProjectException as exception:
             return presenter.raise_users_not_exists_for_given_projects(
                 user_ids=exception.user_ids)
-
         except InvalidKeyError:
             return presenter.raise_invalid_key_error()
         except InvalidModulePathFound as exception:
@@ -87,8 +95,9 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             _get_status_variables_dtos_of_task_based_on_action(
             task_id=task_id, action_id=action_id)
         next_stage_ids_of_task = \
-            self._get_next_stages_of_task(task_id=task_id, status_variable_dtos=
-            status_variable_dtos)
+            self._get_next_stages_of_task(task_id=task_id,
+                                          status_variable_dtos=
+                                          status_variable_dtos)
         valid_next_stage_ids_of_task = self.stage_storage. \
             get_stage_ids_excluding_virtual_stages(
             next_stage_ids_of_task)
@@ -113,31 +122,32 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
         return stage_with_user_details_and_team_details_dto
 
     def _get_status_variables_dtos_of_task_based_on_action(self, task_id: int,
-                                                          action_id: int) -> \
+                                                           action_id: int) -> \
             List[StatusVariableDTO]:
-        from ib_tasks.interactors. \
-            call_action_logic_function_and_get_status_variables_interactor \
-            import CallActionLogicFunctionAndGetTaskStatusVariablesInteractor
+
+        from ib_tasks.interactors.user_action_on_task.call_action_logic_function_and_get_or_update_task_status_variables_interactor import \
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor
         call_action_logic_function_interactor = \
-            CallActionLogicFunctionAndGetTaskStatusVariablesInteractor(
-                action_storage=self.action_storage,
-                task_storage=self.task_storage, storage=self.storage,
-                create_task_storage=self.create_task_storage
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
+                storage=self.storage,
+                create_task_storage=self.create_task_storage, task_id=task_id,
+                action_id=action_id, field_storage=self.field_storage,
+                gof_storage=self.gof_storage
             )
         updated_status_variable_dtos = call_action_logic_function_interactor. \
-            get_status_variables_dtos_of_task_based_on_action(
-            task_id, action_id)
+            call_action_logic_function_and_get_status_variables_dtos_of_task()
         return updated_status_variable_dtos
 
     def _get_next_stages_of_task(self, task_id: int,
-                                status_variable_dtos) -> List[str]:
-        from ib_tasks.interactors. \
-            get_task_stage_logic_satisfied_next_stages_given_status_vars import \
-            GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor
+                                 status_variable_dtos) -> List[str]:
+
+        from ib_tasks.interactors.user_action_on_task.get_task_stage_logic_satisfied_stages import \
+            GetTaskStageLogicSatisfiedStagesInteractor
         get_task_stage_logic_satisfied_next_stages_interactor = \
-            GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor(
-                storage=self.storage, stage_storage=self.stage_storage)
+            GetTaskStageLogicSatisfiedStagesInteractor(
+                storage=self.storage, stage_storage=self.stage_storage,
+                task_id=task_id)
         next_stage_ids = get_task_stage_logic_satisfied_next_stages_interactor. \
-            get_task_stage_logic_satisfied_next_stages(
-            task_id=task_id, status_variable_dtos=status_variable_dtos)
+            get_task_stage_logic_satisfied_next_stages_given_status_variable_dtos(
+            status_variable_dtos=status_variable_dtos)
         return next_stage_ids

@@ -3,6 +3,7 @@ Add project specific details
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -171,19 +172,11 @@ class TestCase01AssignUserRolesForGivenProjectBulkAPITestCase(TestUtils):
     def create_project_teams(self, create_teams, create_project):
         project_object = create_project
         team_objects = create_teams
-        from ib_iam.models import ProjectTeam
-        # TODO:  user factory for project team
+        from ib_iam.tests.factories.models import ProjectTeamFactory
         project_teams = [
-            ProjectTeam(
-                project=project_object,
-                team_id=team_objects[0].team_id
-            ),
-            ProjectTeam(
-                project=project_object,
-                team_id=team_objects[1].team_id
-            )
+            ProjectTeamFactory(project=project_object, team=team_objects[0]),
+            ProjectTeamFactory(project=project_object, team=team_objects[1])
         ]
-        ProjectTeam.objects.bulk_create(project_teams)
         return project_teams
 
     @pytest.fixture()
@@ -196,10 +189,7 @@ class TestCase01AssignUserRolesForGivenProjectBulkAPITestCase(TestUtils):
         ]
         from ib_iam.tests.factories.models import TeamUserFactory
         user_team_objects = [
-            TeamUserFactory(
-                user_id=user_id,
-                team=team_objects[0]
-            )
+            TeamUserFactory(user_id=user_id, team=team_objects[0])
             for user_id in user_ids
         ]
         return user_team_objects

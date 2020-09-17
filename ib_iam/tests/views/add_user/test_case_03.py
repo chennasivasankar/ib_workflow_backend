@@ -1,9 +1,8 @@
 """
-# TODO: Update test case description
+Given valid details user will be added successfully
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-from mock import patch, create_autospec
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 

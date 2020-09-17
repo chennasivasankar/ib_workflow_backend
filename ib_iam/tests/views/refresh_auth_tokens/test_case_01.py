@@ -4,7 +4,8 @@ All exceptions
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from ib_iam.tests.views.refresh_auth_tokens import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ib_iam.tests.views.refresh_auth_tokens import APP_NAME, OPERATION_NAME, \
+    REQUEST_METHOD, URL_SUFFIX
 
 
 class TestCase01RefreshTokensAPITestCase(TestUtils):
@@ -20,9 +21,9 @@ class TestCase01RefreshTokensAPITestCase(TestUtils):
         refresh_token = "pNYAlle5thjiWD5MIt63GkhAws5suQ"
 
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks \
-            import prepare_get_refresh_auth_tokens_dto_mock
+            import get_refresh_auth_tokens_dto_mock
         get_refresh_auth_tokens_dto_mock = \
-            prepare_get_refresh_auth_tokens_dto_mock(mocker)
+            get_refresh_auth_tokens_dto_mock(mocker)
 
         from ib_iam.adapters.auth_service import AccessTokenNotFound
         get_refresh_auth_tokens_dto_mock.side_effect = AccessTokenNotFound
@@ -46,9 +47,9 @@ class TestCase01RefreshTokensAPITestCase(TestUtils):
         refresh_token = "pNYAlle5thjiWD5MIt63GkhAws5suQ"
 
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks \
-            import prepare_get_refresh_auth_tokens_dto_mock
+            import get_refresh_auth_tokens_dto_mock
         get_refresh_auth_tokens_dto_mock = \
-            prepare_get_refresh_auth_tokens_dto_mock(mocker)
+            get_refresh_auth_tokens_dto_mock(mocker)
 
         from ib_iam.adapters.auth_service import RefreshTokenHasExpired
         get_refresh_auth_tokens_dto_mock.side_effect = RefreshTokenHasExpired
@@ -73,9 +74,9 @@ class TestCase01RefreshTokensAPITestCase(TestUtils):
         refresh_token = "pNYAlle5thjiWD5MIt63GkhAws5suQ"
 
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks \
-            import prepare_get_refresh_auth_tokens_dto_mock
+            import get_refresh_auth_tokens_dto_mock
         get_refresh_auth_tokens_dto_mock = \
-            prepare_get_refresh_auth_tokens_dto_mock(mocker)
+            get_refresh_auth_tokens_dto_mock(mocker)
 
         from ib_iam.adapters.auth_service import RefreshTokenHasNotFound
         get_refresh_auth_tokens_dto_mock.side_effect = RefreshTokenHasNotFound
@@ -100,9 +101,9 @@ class TestCase01RefreshTokensAPITestCase(TestUtils):
         refresh_token = "pNYAlle5thjiWD5MIt63GkhAws5suQ"
 
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks \
-            import prepare_get_refresh_auth_tokens_dto_mock
+            import get_refresh_auth_tokens_dto_mock
         get_refresh_auth_tokens_dto_mock = \
-            prepare_get_refresh_auth_tokens_dto_mock(mocker)
+            get_refresh_auth_tokens_dto_mock(mocker)
 
         from ib_iam.adapters.auth_service import UserAccountNotFound
         get_refresh_auth_tokens_dto_mock.side_effect = UserAccountNotFound

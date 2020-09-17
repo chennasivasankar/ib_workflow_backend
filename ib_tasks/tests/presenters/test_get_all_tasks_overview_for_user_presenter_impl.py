@@ -1,5 +1,3 @@
-import pytest
-
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.presenters.get_all_tasks_overview_for_user_presenter_impl import \
@@ -70,81 +68,8 @@ class TestGetAllTasksOverviewForUserPresenterImpl:
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
-    @pytest.fixture
-    def all_tasks_overview_details_response_dict(self):
-        all_tasks_overview_details_response_dict = {
-            "tasks": [{
-                "task_id":
-                    'iBWF-1',
-                "task_overview_fields": [{
-                    "field_type": "Drop down",
-                    "field_display_name": "key",
-                    "field_response": "value"
-                }],
-                "stage_with_actions": {
-                    "stage_id": 1,
-                    "stage_display_name":
-                        "stage_display_1",
-                    "stage_color": "color_1",
-                    "assignee": {
-                        "assignee_id": "123e4567-e89b-12d3-a456-426614174000",
-                        "name": "name_0",
-                        "profile_pic_url": "https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
-                    },
-                    "actions": [{
-                        "action_id": 1,
-                        "button_text": "button_text_1",
-                        'action_type': 'action_type_1',
-                        'transition_template_id': 'template_id_1',
-                        "button_color": None
-                    }, {
-                        "action_id": 2,
-                        "button_text": "button_text_2",
-                        'action_type': 'action_type_2',
-                        'transition_template_id': 'template_id_2',
-                        "button_color": None
-                    }]
-                }
-            }, {
-                "task_id":
-                    'iBWF-2',
-                "task_overview_fields": [{
-                    "field_type": "Drop down",
-                    "field_display_name": "key",
-                    "field_response": "value"
-                }],
-                "stage_with_actions": {
-                    "stage_id": 2,
-                    "stage_display_name":
-                        "stage_display_2",
-                    "stage_color": "color_2",
-                    "assignee": {
-                        "assignee_id": "123e4567-e89b-12d3-a456-426614174001",
-                        "name": "name_1",
-                        "profile_pic_url": "https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
-                    },
-                    "actions": [{
-                        "action_id": 1,
-                        'action_type': 'action_type_1',
-                        'transition_template_id': 'template_id_1',
-                        "button_text": "button_text_1",
-                        "button_color": None
-                    }, {
-                        "action_id": 2,
-                        'action_type': 'action_type_2',
-                        'transition_template_id': 'template_id_2',
-                        "button_text": "button_text_2",
-                        "button_color": None
-                    }]
-                }
-            }],
-            "total_tasks":
-                2
-        }
-        return all_tasks_overview_details_response_dict
-
     def test_given_valid_details_get_all_tasks_overview_details_response(
-            self, all_tasks_overview_details_response_dict):
+            self, snapshot):
         # Arrange
         TaskIdWithStageDetailsDTOFactory.reset_sequence()
         GetTaskStageCompleteDetailsDTOFactory.reset_sequence()
@@ -153,9 +78,10 @@ class TestGetAllTasksOverviewForUserPresenterImpl:
         TaskWithCompleteStageDetailsDTOFactory.reset_sequence()
         task_with_complete_stage_details_dtos = \
             TaskWithCompleteStageDetailsDTOFactory.create_batch(2)
+        import factory
         task_fields_and_action_details_dtos = \
             GetTaskStageCompleteDetailsDTOFactory.create_batch(
-                2, field_dtos=[FieldDetailsDTOFactory()],
+                2, field_dtos=[FieldDetailsDTOFactory()], task_id=factory.Iterator([1, 2]),
                 action_dtos=StageActionDetailsDTOFactory.create_batch(2))
 
         all_tasks_overview_details_dto = AllTasksOverviewDetailsDTO(
@@ -172,4 +98,4 @@ class TestGetAllTasksOverviewForUserPresenterImpl:
         # Assert
         import json
         response = json.loads(response_object.content)
-        assert response == all_tasks_overview_details_response_dict
+        snapshot.assert_match(response, 'response')

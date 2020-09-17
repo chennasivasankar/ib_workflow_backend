@@ -1,3 +1,5 @@
+import json
+
 import factory
 
 from ib_tasks.adapters.dtos import *
@@ -37,7 +39,7 @@ class ColumnFieldDTOFactory(factory.Factory):
 
     column_id = factory.Sequence(lambda n: 'column_%d' % (n + 1))
     field_ids = factory.Sequence(
-        lambda n: [f"field_{n + 1}", f"field_{n + 3}"])
+            lambda n: [f"field_{n + 1}", f"field_{n + 3}"])
 
 
 class AssigneeDetailsDTOFactory(factory.Factory):
@@ -45,8 +47,8 @@ class AssigneeDetailsDTOFactory(factory.Factory):
         model = AssigneeDetailsDTO
 
     assignee_id = factory.sequence(
-        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
-            counter))
+            lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+                    counter))
     name = factory.sequence(lambda counter: "name_{}".format(counter))
     profile_pic_url = "https://www.google.com/search?q=ibhubs&client=ubuntu" \
                       "&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved" \
@@ -94,8 +96,8 @@ class TeamDetailsWithUserIdDTOFactory(factory.Factory):
         model = TeamDetailsWithUserIdDTO
 
     user_id = factory.sequence(
-        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
-            counter))
+            lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+                    counter))
     team_id = factory.sequence(lambda counter: "team_{}".format(counter))
     name = factory.sequence(lambda counter: "team_name{}".format(counter))
 
@@ -121,13 +123,35 @@ class UserIdWIthTeamDetailsDTOFactory(factory.Factory):
         model = UserIdWIthTeamDetailsDTOs
 
     user_id = factory.sequence(
-        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
-            counter))
+            lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+                    counter))
 
     @factory.lazy_attribute
     def team_details(self):
         return TeamDetailsDTOFactory.create_batch(size=2)
 
+
+class UserSearchableDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchableDetailsDTO
+
+    search_type = Searchable.USER.value
+    id = factory.Sequence(lambda n: "123e4567-e89b-12d3-a456-42661417400%d"
+                                    % n)
+    value = factory.Sequence(lambda n: json.dumps({
+            "name": "User%d",
+            "profile_pic_url": "https:ew.com"
+    }) % n)
+
+
+class UserProjectStatusDTOFactory(factory.Factory):
+
+    class Meta:
+        model = UserProjectStatusDTO
+
+    user_id = factory.Sequence(lambda counter: "user_{}".format(counter))
+    project_id = factory.Sequence(lambda counter: "project_{}".format(counter))
+    is_exists = True
 
 class TaskBoardsDetailsDTOFactory(factory.Factory):
     class Meta:

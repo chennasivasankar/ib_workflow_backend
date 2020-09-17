@@ -2437,9 +2437,7 @@ class TestCreateTaskInteractor:
         )
         given_method_name = "invalid method"
 
-        from ib_tasks.interactors \
-            .call_action_logic_function_and_update_task_status_variables_interactor import \
-            InvalidMethodFound
+        from ib_tasks.exceptions.custom_exceptions import InvalidMethodFound
         user_action_on_task_mock.side_effect = InvalidMethodFound(
             given_method_name)
         presenter_mock.raise_invalid_method_not_found.return_value = mock_object

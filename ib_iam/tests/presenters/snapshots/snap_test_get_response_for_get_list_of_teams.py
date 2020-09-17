@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetResponseForGetListOfTeams.test_given_valid_team_with_members_details_dto_returns_http_response response'] = {
@@ -15,12 +14,12 @@ snapshots['TestGetResponseForGetListOfTeams.test_given_valid_team_with_members_d
                 {
                     'member_id': '548a803c-7b48-47ba-a700-24f2ea0d1280',
                     'name': 'name2',
-                    'profile_pic_url': 'url2'
+                    'profile_pic_url': 'http://sample.com'
                 },
                 {
                     'member_id': '4b8fb6eb-fa7d-47c1-8726-cd917901104e',
                     'name': 'name3',
-                    'profile_pic_url': 'url3'
+                    'profile_pic_url': 'http://sample.com'
                 }
             ],
             'name': 'team 1',
@@ -33,12 +32,12 @@ snapshots['TestGetResponseForGetListOfTeams.test_given_valid_team_with_members_d
                 {
                     'member_id': '2bdb417e-4632-419a-8ddd-085ea272c6eb',
                     'name': 'name1',
-                    'profile_pic_url': 'url1'
+                    'profile_pic_url': 'http://sample.com'
                 },
                 {
                     'member_id': '548a803c-7b48-47ba-a700-24f2ea0d1280',
                     'name': 'name2',
-                    'profile_pic_url': 'url2'
+                    'profile_pic_url': 'http://sample.com'
                 }
             ],
             'name': 'team 2',
@@ -51,12 +50,12 @@ snapshots['TestGetResponseForGetListOfTeams.test_given_valid_team_with_members_d
                 {
                     'member_id': '2bdb417e-4632-419a-8ddd-085ea272c6eb',
                     'name': 'name1',
-                    'profile_pic_url': 'url1'
+                    'profile_pic_url': 'http://sample.com'
                 },
                 {
                     'member_id': '4b8fb6eb-fa7d-47c1-8726-cd917901104e',
                     'name': 'name3',
-                    'profile_pic_url': 'url3'
+                    'profile_pic_url': 'http://sample.com'
                 }
             ],
             'name': 'team 3',

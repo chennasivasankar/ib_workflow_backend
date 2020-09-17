@@ -1,25 +1,18 @@
 import abc
-from dataclasses import dataclass
 from typing import List
 
-from ib_tasks.constants.enum import ViewType, FieldTypes
+from ib_tasks.constants.enum import ViewType
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldCompleteDetailsDTO, UserFieldPermissionDTO, FieldIdWithGoFIdDTO, \
     FieldIdWithFieldDisplayNameDTO, \
     TaskTemplateStageFieldsDTO, StageTaskFieldsDTO, FieldDetailsDTOWithTaskId, \
-    FieldNameDTO, FieldDisplayNameDTO
+    FieldNameDTO, FieldDisplayNameDTO, FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskTemplateStageDTO, StageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskProjectRolesDTO
-
-
-@dataclass
-class FieldTypeDTO:
-    field_id: str
-    field_type: FieldTypes
 
 
 class FieldsStorageInterface(abc.ABC):

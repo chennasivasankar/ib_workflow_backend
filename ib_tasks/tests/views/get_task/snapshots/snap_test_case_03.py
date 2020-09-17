@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestCase03GetTaskAPITestCase.test_case status_code'] = '200'
@@ -103,15 +102,6 @@ snapshots['TestCase03GetTaskAPITestCase.test_case body'] = {
             'stage_display_name': 'name_2',
             'stage_id': 3,
             'task_stage_id': 3
-        },
-        {
-            'actions': [
-            ],
-            'assignee': None,
-            'stage_color': 'white',
-            'stage_display_name': 'name_3',
-            'stage_id': 4,
-            'task_stage_id': 4
         }
     ],
     'start_date': '2020-10-12 04:40:00',

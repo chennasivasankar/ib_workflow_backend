@@ -3,7 +3,8 @@ import json
 import pytest
 
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
-from ib_tasks.interactors.create_or_update_fields_interactor \
+from ib_tasks.interactors.create_or_update_fields \
+    .create_or_update_fields_interactor \
     import CreateOrUpdateFieldsInteractor
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole

@@ -16,15 +16,18 @@ from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
     UserStagesWithPaginationDTO, StageAssigneeDTO, \
     StageAssigneeWithTeamDetailsDTO, AssigneeWithTeamDetailsDTO, \
-    StageWithUserDetailsDTO
+    StageWithUserDetailsDTO, TemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldDetailsDTO, FieldWritePermissionRolesDTO
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskWithDbStageIdDTO, AssigneeCurrentTasksCountDTO, CurrentStageDetailsDTO, \
+    TaskWithDbStageIdDTO, AssigneeCurrentTasksCountDTO, \
+    CurrentStageDetailsDTO, \
     StageIdWithValueDTO, StageAssigneeDetailsDTO, StageActionNamesDTO, \
     CreateStageFlowDTO, \
     StageFlowWithActionIdDTO
@@ -39,10 +42,11 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO, SearchQueryDTO, \
     StageDisplayLogicDTO, BasicTaskDetailsDTO
 from ib_tasks.interactors.task_template_dtos import \
-    CreateTransitionChecklistTemplateDTO, \
-    CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
-from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, \
-    UserDetailsDTO, TeamInfoDTOFactory
+    (CreateTransitionChecklistTemplateDTO,
+     CreateTransitionChecklistTemplateWithTaskDisplayIdDTO)
+from ib_tasks.tests.factories.adapter_dtos import (AssigneeDetailsDTOFactory,
+                                                   UserDetailsDTO,
+                                                   TeamInfoDTOFactory)
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -353,6 +357,14 @@ class TaskDelayParametersDTOFactory(factory.Factory):
     reason = "reason"
 
 
+class TemplateStageDTOFactory(factory.Factory):
+    class Meta:
+        model = TemplateStageDTO
+
+    task_template_id = factory.Sequence(lambda n: "template_%d" % n)
+    stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
+
+
 class BasicTaskDetailsDTOFactory(factory.Factory):
     class Meta:
         model = BasicTaskDetailsDTO
@@ -444,6 +456,16 @@ class SaveAndActOnTaskDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def gof_fields_dtos(self):
         return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
+
+
+class TemplateFieldsDTOFactory(factory.Factory):
+    class Meta:
+        model = TemplateFieldsDTO
+
+    task_template_id = factory.Sequence(
+        lambda c: "task_template_id_{}".format(c))
+    field_ids = factory.Sequence(
+        lambda n: [f"field_id_{n + 1}, field_id_{n + 2}"])
 
 
 class SaveAndActOnTaskWithTaskDisplayIdDTOFactory(factory.Factory):

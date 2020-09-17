@@ -3,6 +3,7 @@ Success case for send verify email link to given email
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -47,7 +48,7 @@ class TestCase01SendVerifyEmailLinkAPITestCase(TestUtils):
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         UserProfileDTOFactory.reset_sequence(0)
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
-            user_id=user_id, is_email_verify=False)
+            user_id=user_id, is_email_verified=False)
         create_auth_tokens_for_user_mock = create_auth_tokens_for_user_mock(
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserTokensDTOFactory

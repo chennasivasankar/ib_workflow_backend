@@ -3,7 +3,6 @@ from typing import Union, List, Optional
 
 from django.db.models import Q
 
-from ib_tasks.constants.config import TIME_FORMAT
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
@@ -15,8 +14,8 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TaskGoFFieldDTO, TaskGoFDTO, TaskBaseDetailsDTO, FieldSearchableDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import (
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO)
-from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO, \
-    BasicTaskDetailsDTO, UpdateTaskBasicDetailsDTO
+from ib_tasks.interactors.task_dtos import BasicTaskDetailsDTO, \
+    UpdateTaskBasicDetailsDTO
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.models.task import Task
@@ -100,8 +99,12 @@ class CreateOrUpdateTaskStorageImplementation(
         ]
         TaskStatusVariable.objects.bulk_create(task_status_variables)
 
-    def get_task_gof_dtos(self, task_id: int) -> List[TaskGoFDTO]:
-        task_gof_objs = TaskGoF.objects.filter(task_id=task_id)
+    def get_task_gof_dtos(
+            self, task_id: int, gof_ids: List[str]
+    ) -> List[TaskGoFDTO]:
+        task_gof_objs = TaskGoF.objects.filter(
+            task_id=task_id, gof_id__in=gof_ids
+        )
         task_gof_dtos = []
         for task_gof_obj in task_gof_objs:
             task_gof_dto = TaskGoFDTO(
@@ -173,7 +176,7 @@ class CreateOrUpdateTaskStorageImplementation(
         ]
         return gof_id_with_same_gof_order_dtos
 
-    def get_fields_details_of_task(
+    def get_field_id_with_task_gof_id_dtos(
             self, task_id: int) -> List[FieldIdWithTaskGoFIdDTO]:
         field_dicts = list(
             TaskGoFField.objects.filter(task_gof__task_id=task_id).values(
@@ -366,13 +369,16 @@ class CreateOrUpdateTaskStorageImplementation(
             field_id__in=field_ids,
             task_gof_id__in=task_gof_ids,
             field__field_type=FieldTypes.SEARCHABLE.value
-        ).values_list('field_id', 'field__field_values', 'field_response')
+        ).values_list(
+            'field_id', 'field__field_values', 'field_response', 'task_gof_id'
+        )
 
         field_searchable_dtos = [
             FieldSearchableDTO(
                 field_id=field_searchable_value[0],
                 field_value=field_searchable_value[1],
-                field_response=field_searchable_value[2]
+                field_response=field_searchable_value[2],
+                task_gof_id=field_searchable_value[3]
             )
             for field_searchable_value in field_searchable_values
         ]

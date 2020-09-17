@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetUsersListPresenter.test_response_for_get_users get_users_response'] = {
@@ -16,6 +15,7 @@ snapshots['TestGetUsersListPresenter.test_response_for_get_users get_users_respo
                 'company_name': 'company 0'
             },
             'email': 'name0@gmail.com',
+            'is_email_verified': True,
             'name': 'name0',
             'roles': [
                 {
@@ -45,6 +45,7 @@ snapshots['TestGetUsersListPresenter.test_response_for_get_users get_users_respo
                 'company_name': 'company 1'
             },
             'email': 'name1@gmail.com',
+            'is_email_verified': True,
             'name': 'name1',
             'roles': [
                 {
@@ -74,6 +75,7 @@ snapshots['TestGetUsersListPresenter.test_response_for_get_users get_users_respo
                 'company_name': 'company 2'
             },
             'email': 'name2@gmail.com',
+            'is_email_verified': True,
             'name': 'name2',
             'roles': [
                 {

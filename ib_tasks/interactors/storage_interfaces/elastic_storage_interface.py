@@ -5,14 +5,11 @@ Author: Pavankumar Pamuru
 """
 import abc
 from dataclasses import dataclass
-from typing import List, Tuple
-from typing import Union
+from typing import Tuple
 
 from ib_tasks.constants.enum import Operators
-from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
-    FieldTypeDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
-from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, SearchQueryDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldTypeDTO
+from ib_tasks.interactors.task_dtos import SearchQueryDTO
 
 
 @dataclass
@@ -24,7 +21,6 @@ class ApplyFilterDTO:
     value: str
 
 
-from ib_tasks.documents.elastic_task import ElasticTaskDTO, Task, QueryTasksDTO
 from ib_tasks.documents.elastic_task import *
 
 

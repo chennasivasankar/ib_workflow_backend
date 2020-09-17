@@ -27,8 +27,9 @@ class AddMembersToSuperiorsInteractor(ValidationMixin):
             immediate_superior_user_id_with_member_ids_dtos: List[
                 ImmediateSuperiorUserIdWithUserIdsDTO], user_id: str
     ):
-        from ib_iam.exceptions.custom_exceptions import \
+        from ib_iam.exceptions.custom_exceptions import (
             InvalidTeamId, InvalidLevelHierarchyOfTeam, MemberIdsNotFoundInTeam
+        )
         try:
             response = self._add_members_to_superiors_response(
                 team_id=team_id, member_level_hierarchy=member_level_hierarchy,
@@ -44,8 +45,9 @@ class AddMembersToSuperiorsInteractor(ValidationMixin):
         except MemberIdsNotFoundInTeam as err:
             response = presenter.response_for_team_member_ids_not_found(err)
         except UsersNotBelongToGivenLevelHierarchy as err:
-            response = presenter. \
-                response_for_users_not_belong_to_team_member_level(err)
+            response = presenter.response_for_users_not_belong_to_team_member_level(
+                err
+            )
         return response
 
     def _add_members_to_superiors_response(

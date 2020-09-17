@@ -344,13 +344,3 @@ TEST_RUNNER = 'snapshottest.django.TestRunner'
 MOCK_X_IB_REQUEST_ID = True
 
 STAGE = os.environ.get("STAGE", "local")
-RESET_PASSWORD_LINK_EXPIRY_IN_SECONDS = \
-    int(os.environ.get("RESET_PASSWORD_LINK_EXPIRY_IN_SECONDS", '3600'))
-RESET_PASSWORD_LINK = \
-    os.environ.get(
-        "RESET_PASSWORD_LINK",
-        'https://ib-workflows-web-beta.apigateway.in/update-password?token=')
-
-USER_VERIFICATION_EMAIL_LINK = os.environ.get(
-    "USER_VERIFICATION_EMAIL_LINK",
-    "https://ib-workflows-web-alpha.apigateway.in/verify-email?token=")
