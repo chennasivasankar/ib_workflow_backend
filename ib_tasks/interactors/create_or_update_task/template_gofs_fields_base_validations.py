@@ -112,7 +112,7 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
         user_roles = roles_service_adapter.roles_service.get_user_role_ids(
             user_id)
         field_write_permission_roles_dtos = \
-            self.storage.get_write_permission_roles_for_given_field_ids(
+            self.field_storage.get_write_permission_roles_for_given_field_ids(
                 field_ids)
         for field_roles_dto in field_write_permission_roles_dtos:
             required_roles = field_roles_dto.write_permission_roles

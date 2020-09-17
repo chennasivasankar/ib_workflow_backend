@@ -1,6 +1,6 @@
 import abc
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 from ib_tasks.interactors.stages_dtos import TaskStageHistoryDTO, \
     StageMinimalDTO
@@ -76,4 +76,23 @@ class TaskStageStorageInterface(abc.ABC):
             self, stage_ids: List[int], task_id: int):
         pass
 
+    @abc.abstractmethod
+    def get_latest_rp_id_if_exists(self, task_id: int,
+                                   stage_id: int) -> Optional[str]:
+        pass
 
+    @abc.abstractmethod
+    def get_rp_ids(self, task_id: int, stage_id: int) -> \
+            List[str]:
+        pass
+
+    @abc.abstractmethod
+    def add_superior_to_db(
+            self, task_id: int, stage_id: int, superior_id: str):
+        pass
+
+    @abc.abstractmethod
+    def get_latest_rp_added_datetime(self,
+                                     task_id: int, stage_id: int
+                                     ) -> Optional[str]:
+        pass

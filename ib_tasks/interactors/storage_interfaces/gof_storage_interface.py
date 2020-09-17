@@ -3,7 +3,7 @@ from typing import List
 
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRoleDTO, GoFToTaskTemplateDTO, GoFIdWithGoFDisplayNameDTO, \
-    GoFIdWithTaskGoFIdDTO, TaskTemplateGofsDTO
+    GoFIdWithTaskGoFIdDTO, TaskTemplateGofsDTO, GOFMultipleEnableDTO
 
 
 class GoFStorageInterface(abc.ABC):
@@ -93,4 +93,9 @@ class GoFStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_gof_ids_for_given_template(self, template_id: str) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_enable_multiple_gofs_field_to_gof_ids(
+            self, template_id: str) -> List[GOFMultipleEnableDTO]:
         pass

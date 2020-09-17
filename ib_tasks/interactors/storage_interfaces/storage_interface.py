@@ -77,11 +77,6 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_write_permission_roles_for_given_gof_ids(
-            self, gof_ids: List[str]) -> List[GoFWritePermissionRolesDTO]:
-        pass
-
-    @abc.abstractmethod
     def get_write_permission_roles_for_given_field_ids(
             self, field_ids: List[str]) -> List[FieldWritePermissionRolesDTO]:
         pass

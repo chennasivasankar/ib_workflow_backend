@@ -42,9 +42,63 @@ from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
 
 class StagesStorageImplementation(StageStorageInterface):
 
+    def update_task_stages(self, task_id: int, stage_ids: List[str]):
+
+        CurrentTaskStage.objects.filter(task_id=task_id).delete()
+        stage_dict = {
+            obj.stage_id: obj
+            for obj in Stage.objects.filter(stage_id__in=stage_ids)
+        }
+
+        task_stage_objs = [
+            CurrentTaskStage(task_id=task_id, stage=stage_dict[stage_id])
+            for stage_id in stage_ids
+        ]
+        CurrentTaskStage.objects.bulk_create(task_stage_objs)
+
+
+    def get_task_template_stage_logic_to_task(
+            self, task_id: int) -> List[StageDisplayValueDTO]:
+
+        from ib_tasks.models.task import Task
+        task_obj = Task.objects.get(id=task_id)
+        stage_objs = Stage.objects.filter(
+            task_template_id=task_obj.template_id)
+
+        return [
+            StageDisplayValueDTO(
+                stage_id=stage_obj.stage_id,
+                display_logic=stage_obj.display_logic,
+                value=stage_obj.value
+            )
+            for stage_obj in stage_objs
+        ]
+
     def get_stage_display_name_for_stage_id(self, stage_id: int) -> str:
         stage_display_name = Stage.objects.get(id=stage_id).display_name
         return stage_display_name
+
+    def get_action_roles_to_stages(
+            self, stage_ids: List[str]) -> List[ActionRolesDTO]:
+        action_role_objs = ActionPermittedRoles.objects.filter(
+            action__in=StageAction.objects.filter(
+                stage__stage_id__in=stage_ids
+            )
+        )
+        from collections import defaultdict
+        action_roles_dict = defaultdict(list)
+        for action_role_obj in action_role_objs:
+            action_id = action_role_obj.action_id
+            role_id = action_role_obj.role_id
+            action_roles_dict[action_id].append(role_id)
+
+        return [
+            ActionRolesDTO(
+                action_id=key,
+                roles=value
+            )
+            for key, value in action_roles_dict.items()
+        ]
 
     def create_stages(self, stage_information: List[StageDTO]):
         list_of_stages = []
@@ -587,46 +641,26 @@ class StagesStorageImplementation(StageStorageInterface):
             stage_ids.append(stage_flow_dto.next_stage_id)
         return stage_ids
 
+    def get_stage_dtos_to_task(self, task_id: int) -> List[StageValueDTO]:
+
+        from ib_tasks.models.task import Task
+        task_obj = Task.objects.get(id=task_id)
+        stage_objs = Stage.objects.filter(
+            task_template_id=task_obj.template_id)
+        return [
+            StageValueDTO(
+                stage_id=stage_obj.stage_id,
+                value=stage_obj.value
+            )
+            for stage_obj in stage_objs
+        ]
+
+    def validate_stage_id(self, stage_id: int) -> bool:
+        does_exists = Stage.objects.filter(id=stage_id).exists()
+        return does_exists
+
+
 class StorageImplementation(StorageInterface):
-
-    def get_write_permission_roles_for_given_gof_ids(
-            self, gof_ids: List[str]
-    ) -> List[GoFWritePermissionRolesDTO]:
-        gof_role_objects = GoFRole.objects.filter(
-            gof_id__in=gof_ids, permission_type=PermissionTypes.WRITE.value)
-        gof_write_permission_roles_dtos = \
-            self._prepare_gof_write_permission_roles_dtos(
-                gof_role_objects, gof_ids)
-        return gof_write_permission_roles_dtos
-
-    def _prepare_gof_write_permission_roles_dtos(
-            self, gof_role_objects: List[GoFRole], gof_ids: List[str]
-    ) -> List[GoFWritePermissionRolesDTO]:
-        gof_write_permission_roles_dtos = []
-        for gof_id in gof_ids:
-            gof_roles = self._get_matching_gof_role_object(
-                gof_id, gof_role_objects)
-            gof_roles_are_empty = not gof_roles
-            if gof_roles_are_empty:
-                gof_write_permission_roles_dtos.append(
-                    GoFWritePermissionRolesDTO(gof_id=gof_id,
-                                               write_permission_roles=[]))
-            else:
-                gof_write_permission_roles_dtos.append(
-                    GoFWritePermissionRolesDTO(
-                        gof_id=gof_id, write_permission_roles=gof_roles)
-                )
-        return gof_write_permission_roles_dtos
-
-    @staticmethod
-    def _get_matching_gof_role_object(
-            gof_id, gof_role_objects) -> List[str]:
-        gof_roles = []
-        for gof_role_obj in gof_role_objects:
-            gof_id_matched = gof_id == gof_role_obj.gof_id
-            if gof_id_matched:
-                gof_roles.append(gof_role_obj.role)
-        return gof_roles
 
     def get_write_permission_roles_for_given_field_ids(
             self, field_ids: List[str]) -> List[FieldWritePermissionRolesDTO]:

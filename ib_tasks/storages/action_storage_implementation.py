@@ -24,6 +24,20 @@ from ib_tasks.models import (StageAction, Stage, ActionPermittedRoles,
 
 class ActionsStorageImplementation(ActionStorageInterface):
 
+    def get_action_roles(self, action_id: int) -> List[str]:
+
+        action_permitted_role_objs = \
+            ActionPermittedRoles.objects.filter(action_id=action_id)
+
+        return [
+            obj.role_id for obj in action_permitted_role_objs
+        ]
+
+    def get_path_name_to_action(self, action_id: int) -> str:
+
+        action_obj = StageAction.objects.get(id=action_id)
+        return action_obj.py_function_import_path
+
     def validate_action_id(
             self, action_id) -> Optional[InvalidActionException]:
         try:
@@ -392,3 +406,12 @@ class ActionsStorageImplementation(ActionStorageInterface):
             )
             for action_obj in action_objs
         ]
+
+    def get_task_present_stage_actions(self, task_id: int):
+
+        from ib_tasks.models import CurrentTaskStage
+        task_stage_ids = CurrentTaskStage.objects.filter(task_id=task_id) \
+            .values_list('stage_id', flat=True)
+        action_ids = StageAction.objects.filter(stage_id__in=task_stage_ids) \
+            .values_list('id', flat=True)
+        return action_ids

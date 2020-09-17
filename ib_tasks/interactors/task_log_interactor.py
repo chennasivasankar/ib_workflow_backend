@@ -1,3 +1,4 @@
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
@@ -8,7 +9,10 @@ from ib_tasks.interactors.task_dtos import CreateTaskLogDTO
 class TaskLogInteractor:
     def __init__(
             self, task_storage: TaskStorageInterface,
-            storage: StorageInterface):
+            storage: StorageInterface,
+            action_storage: ActionStorageInterface
+    ):
+        self.action_storage = action_storage
         self.task_storage = task_storage
         self.storage = storage
 
@@ -32,7 +36,7 @@ class TaskLogInteractor:
             raise TaskDoesNotExists(
                 INVALID_TASK_ID[0].format(create_task_log_dto.task_id)
             )
-        is_action_exists = self.storage.validate_action(
+        is_action_exists = self.action_storage.validate_action(
             action_id=create_task_log_dto.action_id
         )
         is_action_not_exists = not is_action_exists

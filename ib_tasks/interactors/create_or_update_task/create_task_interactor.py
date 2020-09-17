@@ -232,7 +232,9 @@ class CreateTaskInteractor:
         created_task_id = self.create_task(task_dto)
         from ib_tasks.interactors.task_log_interactor import TaskLogInteractor
         task_log_interactor = TaskLogInteractor(
-            storage=self.storage, task_storage=self.task_storage)
+            storage=self.storage, task_storage=self.task_storage,
+            action_storage=self.action_storage
+        )
         create_task_log_dto = CreateTaskLogDTO(
             task_json=task_request_json, task_id=created_task_id,
             user_id=task_dto.created_by_id, action_id=task_dto.action_id)
@@ -245,7 +247,7 @@ class CreateTaskInteractor:
         self._validate_task_template_id(task_dto.task_template_id)
         self._validate_task_template_project_id(
             task_dto.project_id, task_dto.task_template_id)
-        is_valid_action_id = self.storage.validate_action(
+        is_valid_action_id = self.action_storage.validate_action(
             action_id=task_dto.action_id)
         if not is_valid_action_id:
             raise InvalidActionException(task_dto.action_id)

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from django.db.models import Q
 
@@ -14,7 +14,7 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     TaskStageStorageInterface, TaskStageAssigneeIdDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import CurrentTaskStage, Task, TaskStageHistory, \
-    StagePermittedRoles, Stage
+    StagePermittedRoles, Stage, TaskStageRp
 
 
 class TaskStageStorageImplementation(TaskStageStorageInterface):
@@ -165,3 +165,33 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
             for stage_id in stage_ids]
         TaskStageHistory.objects.bulk_create(task_stage_history_objs)
 
+    def get_latest_rp_id_if_exists(self, task_id: int,
+                                   stage_id: int) -> Optional[str]:
+        rp_ids = TaskStageRp.objects.filter(
+            task_id=task_id, stage_id=stage_id
+        ).values_list('rp_id', flat=True).order_by('-id')
+        if not rp_ids:
+            return None
+        return rp_ids[0]
+
+    def get_rp_ids(self, task_id: int, stage_id: int) -> \
+            List[str]:
+        rp_ids = list(TaskStageRp.objects.filter(
+            task_id=task_id, stage_id=stage_id
+        ).values_list('rp_id', flat=True).order_by('id'))
+        return rp_ids
+
+    def add_superior_to_db(
+            self, task_id: int, stage_id: int, superior_id: str):
+        TaskStageRp.objects.get_or_create(
+            task_id=task_id, stage_id=stage_id, rp_id=superior_id)
+
+    def get_latest_rp_added_datetime(self,
+                                     task_id: int, stage_id: int) -> Optional[
+        str]:
+        objs = TaskStageRp.objects.filter(
+            task_id=task_id, stage_id=stage_id
+        ).values_list('added_at', flat=True).order_by('-added_at')
+        if objs:
+            return objs[0]
+        return None

@@ -10,7 +10,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
      FieldIdWithGoFIdDTO, StageTaskFieldsDTO,
      FieldDisplayNameDTO,
      TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId, FieldNameDTO,
-     FieldIdWithFieldDisplayNameDTO, FieldTypeDTO)
+     FieldIdWithFieldDisplayNameDTO, FieldTypeDTO, FieldWritePermissionRolesDTO)
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
@@ -43,6 +43,45 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                 ) for field_dict in field_dicts
         ]
         return field_id_with_display_name_dtos
+
+    def get_write_permission_roles_for_given_field_ids(
+            self, field_ids: List[str]) -> List[FieldWritePermissionRolesDTO]:
+        field_role_objects = FieldRole.objects.filter(
+            field_id__in=field_ids, permission_type=PermissionTypes.WRITE.value
+        )
+        field_write_permission_roles_dtos = \
+            self._prepare_field_write_permission_roles_dtos(
+                field_role_objects, field_ids)
+        return field_write_permission_roles_dtos
+
+    def _prepare_field_write_permission_roles_dtos(
+            self, field_role_objects: List[FieldRole], field_ids: List[str]
+    ) -> List[FieldWritePermissionRolesDTO]:
+        field_write_permission_roles_dtos = []
+        for field_id in field_ids:
+            field_roles = self._get_matching_field_role_object(
+                field_id, field_role_objects)
+            field_roles_are_empty = not field_roles
+            if field_roles_are_empty:
+                field_write_permission_roles_dtos.append(
+                    FieldWritePermissionRolesDTO(field_id=field_id,
+                                                 write_permission_roles=[]))
+            else:
+                field_write_permission_roles_dtos.append(
+                    FieldWritePermissionRolesDTO(
+                        field_id=field_id, write_permission_roles=field_roles)
+                )
+        return field_write_permission_roles_dtos
+
+    @staticmethod
+    def _get_matching_field_role_object(
+            field_id, field_role_objects) -> List[str]:
+        field_roles = []
+        for field_role_obj in field_role_objects:
+            field_id_matched = field_id == field_role_obj.field_id
+            if field_id_matched:
+                field_roles.append(field_role_obj.role)
+        return field_roles
 
     def get_gof_ids_for_given_field_ids(
             self, field_ids: List[str]) -> List[FieldIdWithGoFIdDTO]:

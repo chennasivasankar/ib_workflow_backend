@@ -8,6 +8,7 @@ from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presenter \
     import TaskDueDetailsPresenterInterface
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO, \
     TaskDueDetailsDTO
@@ -17,9 +18,11 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 
 class GetTaskDueMissingReasonsInteractor(GetTaskIdForTaskDisplayIdMixin):
     def __init__(self, task_storage: TaskStorageInterface,
-                 storage: StorageInterface):
+                 storage: StorageInterface,
+                 stage_storage: StageStorageInterface):
         self.storage = storage
         self.task_storage = task_storage
+        self.stage_storage = stage_storage
 
     def get_task_due_missing_reasons_wrapper(
             self,
@@ -50,7 +53,7 @@ class GetTaskDueMissingReasonsInteractor(GetTaskIdForTaskDisplayIdMixin):
         return task_dtos
 
     def _validate_stage_id(self, stage_id: int):
-        is_valid = self.storage.validate_stage_id(stage_id)
+        is_valid = self.stage_storage.validate_stage_id(stage_id)
         if not is_valid:
             raise InvalidStageIdException
 
@@ -67,7 +70,7 @@ class GetTaskDueMissingReasonsInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def _get_task_reasons(self, task_id: int, stage_id: int)\
             -> List[TaskDueDetailsDTO]:
-        task_details = self.storage.get_task_due_details(task_id=task_id,
+        task_details = self.task_storage.get_task_due_details(task_id=task_id,
                                                          stage_id=stage_id)
         user_ids = [task.user_id for task in task_details]
         unique_user_ids = list(set(user_ids))

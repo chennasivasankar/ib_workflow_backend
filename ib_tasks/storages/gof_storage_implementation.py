@@ -6,7 +6,7 @@ from django.db.models import Q
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFToTaskTemplateDTO, GoFDTO, GoFRoleDTO, TaskTemplateGofsDTO, \
-    GoFIdWithGoFDisplayNameDTO, GoFIdWithTaskGoFIdDTO
+    GoFIdWithGoFDisplayNameDTO, GoFIdWithTaskGoFIdDTO, GOFMultipleEnableDTO
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
 from ib_tasks.models import GoFRole, GoF, TaskTemplateGoFs, TaskGoF, \
@@ -253,3 +253,17 @@ class GoFStorageImplementation(GoFStorageInterface):
             ).values_list('gof', flat=True)
         )
         return gof_ids
+
+    def get_enable_multiple_gofs_field_to_gof_ids(
+            self, template_id: str) -> List[GOFMultipleEnableDTO]:
+
+        from ib_tasks.models import TaskTemplateGoFs
+        task_template_gofs = TaskTemplateGoFs.objects \
+            .filter(task_template_id=template_id)
+        return [
+            GOFMultipleEnableDTO(
+                group_of_field_id=task_template_gof.gof_id,
+                multiple_status=task_template_gof.enable_add_another_gof
+            )
+            for task_template_gof in task_template_gofs
+        ]
