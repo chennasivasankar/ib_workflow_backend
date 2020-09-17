@@ -636,7 +636,7 @@ class TestGetTaskInteractor:
         task_stage_storage_mock \
             .is_user_has_permission_for_at_least_one_stage.return_value = True
         task_crud_storage_mock.get_field_searchable_dtos.return_value = []
-        stage_storage_mock.get_stages_permission_gof_ids.return_value = \
+        stage_storage_mock.get_stages_permitted_gof_ids.return_value = \
             permission_gof_ids
 
         interactor = GetTaskInteractor(
@@ -663,7 +663,7 @@ class TestGetTaskInteractor:
             .is_user_has_permission_for_at_least_one_stage.assert_called_once()
         presenter_mock.get_task_response.assert_called_once_with(
             task_complete_details_dto)
-        stage_storage_mock.get_stages_permission_gof_ids \
+        stage_storage_mock.get_stages_permitted_gof_ids \
             .assert_called_once_with(
                 stage_ids, permission_gof_ids)
 
@@ -872,7 +872,7 @@ class TestGetTaskInteractor:
         gof_ids_permission_mock.return_value = permission_gof_ids
         task_crud_storage_mock.get_field_searchable_dtos.return_value = \
             field_searchable_dtos
-        stage_storage_mock.get_stages_permission_gof_ids.return_value = \
+        stage_storage_mock.get_stages_permitted_gof_ids.return_value = \
             permission_gof_ids
         presenter_mock.get_task_response.return_value = mock_object
 
@@ -889,7 +889,7 @@ class TestGetTaskInteractor:
         task_stage_storage_mock \
             .is_user_has_permission_for_at_least_one_stage.assert_called_once()
         searchable_details_dtos_mock_method.assert_called_once()
-        stage_storage_mock.get_stages_permission_gof_ids\
+        stage_storage_mock.get_stages_permitted_gof_ids\
             .assert_called_once_with(
                 stage_ids, permission_gof_ids)
         presenter_mock.get_task_response.assert_called_once_with(

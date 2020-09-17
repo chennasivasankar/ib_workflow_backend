@@ -32,7 +32,7 @@ class TestGetStagesPermissionGoFIds:
         storage = StagesStorageImplementation()
 
         # Act
-        stages_permission_gof_ids = storage.get_stages_permission_gof_ids(
+        stages_permission_gof_ids = storage.get_stages_permitted_gof_ids(
             stage_ids, gof_ids
         )
 
