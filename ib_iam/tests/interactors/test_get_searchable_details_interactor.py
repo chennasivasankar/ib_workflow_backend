@@ -86,12 +86,12 @@ class TestGetSearchableDetailsInteractor:
             SearchableDetailsDTOFactory(
                 search_type=Searchable.USER.value,
                 id="123e4567-e89b-12d3-a456-426614174000",
-                value='{"name": "name0", "profile_pic_url": "url0"}'
+                value='{"name": "name0", "profile_pic_url": "http://sample.com"}'
             ),
             SearchableDetailsDTOFactory(
                 search_type=Searchable.USER.value,
                 id="123e4567-e89b-12d3-a456-426614174001",
-                value='{"name": "name1", "profile_pic_url": "url1"}'
+                value='{"name": "name1", "profile_pic_url": "http://sample.com"}'
             )
         ]
         return searchable_type_user_details_dtos
@@ -158,7 +158,7 @@ class TestGetSearchableDetailsInteractor:
             .assert_called_once_with(state_ids)
         storage_mock.get_searchable_type_city_details_dtos \
             .assert_called_once_with(
-                city_ids)
+            city_ids)
         get_basic_user_dtos_mock_method.assert_called_once()
 
     def test_given_searchable_dtos_with_invalid_city_ids_raise_exception(
