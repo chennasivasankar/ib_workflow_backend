@@ -76,6 +76,7 @@ class FieldDetailsDTO:
 
 @dataclass
 class FieldDetailsDTOWithTaskId(FieldDetailsDTO):
+    field_values: str
     task_id: int
 
 

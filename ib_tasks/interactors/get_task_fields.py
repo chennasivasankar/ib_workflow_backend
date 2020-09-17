@@ -1,18 +1,18 @@
+import json
 from typing import List
 
-from ib_tasks.constants.enum import ViewType
-from ib_tasks.exceptions.stage_custom_exceptions import InvalidTaskStageIds
+from ib_tasks.adapters.dtos import SearchableDetailsDTO
+from ib_tasks.constants.enum import ViewType, Searchable, FieldTypes
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    (TaskTemplateStageFieldsDTO, StageTaskFieldsDTO)
+    (StageTaskFieldsDTO, FieldDetailsDTOWithTaskId, TaskTemplateStageFieldsDTO)
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface \
     import FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskTemplateStageDTO
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+from ib_tasks.interactors.task_dtos import SearchableDTO
 from ib_tasks.interactors.user_role_validation_interactor import \
     UserRoleValidationInteractor
 
@@ -27,7 +27,6 @@ class GetTaskFieldsInteractor:
                         task_ids: List[int],
                         user_id: str,
                         view_type: ViewType):
-
         task_ids = self._validate_task_ids(task_ids)
         task_project_dtos = self.task_storage.get_task_project_ids(task_ids)
         user_roles_interactor = UserRoleValidationInteractor()
@@ -43,7 +42,64 @@ class GetTaskFieldsInteractor:
                 stage_fields_dtos, task_stage_dtos, permitted_field_ids)
         field_dtos = self.field_storage.get_fields_details(
                 task_fields_dtos)
+        searchable_dtos = self._get_searchable_fields(field_dtos)
+        searchable_details_dtos = self._get_searchable_details_dtos(
+                searchable_dtos)
+        field_dtos = self._get_field_details_dtos(field_dtos,
+                                                  searchable_details_dtos)
         return field_dtos, stage_fields_dtos
+
+    def _get_searchable_fields(self, field_dtos: List[
+        FieldDetailsDTOWithTaskId]):
+        searchable_dtos = [
+                SearchableDTO(
+                        search_type=field_dto.field_values,
+                        id=field_dto.value
+                )
+                for field_dto in field_dtos if
+                self._searchable_condition(field_dto)
+        ]
+        return searchable_dtos
+
+    @staticmethod
+    def _searchable_condition(field_dto):
+        return field_dto.field_type == FieldTypes.SEARCHABLE.value and \
+               field_dto.field_values == Searchable.USER.value
+
+    @staticmethod
+    def _get_searchable_details_dtos(
+            searchable_dtos: List[SearchableDTO]
+    ) -> List[SearchableDetailsDTO]:
+        from ib_tasks.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        searchable_details_service = service_adapter.searchable_details_service
+        searchable_details_dtos = \
+            searchable_details_service.get_searchable_details_dtos(
+                    searchable_dtos
+            )
+        return searchable_details_dtos
+
+    def _get_field_details_dtos(self, field_dtos: List[
+        FieldDetailsDTOWithTaskId],
+                                searchable_dtos: List[SearchableDetailsDTO]):
+        for field_dto in field_dtos:
+            for searchable_dto in searchable_dtos:
+                self._get_updated_field_response(
+                        field_dto, searchable_dto)
+        return field_dtos
+
+    @staticmethod
+    def _get_updated_field_response(field_dto: FieldDetailsDTOWithTaskId,
+                                    searchable_dto: SearchableDetailsDTO):
+        search_type = searchable_dto.search_type
+        response_id = searchable_dto.id
+        field_response = field_dto.value
+        field_value = field_dto.field_values
+        condition = field_value == search_type and field_response == \
+                    response_id
+        if condition:
+            response = json.loads(searchable_dto.value)
+            field_dto.value = response['name']
 
     @staticmethod
     def _get_field_ids(stage_fields_dtos: List[TaskTemplateStageFieldsDTO]):
@@ -83,9 +139,9 @@ class GetTaskFieldsInteractor:
         unique_task_ids = list(sorted(set(task_ids)))
         valid_task_ids = self.task_storage.get_valid_task_ids(unique_task_ids)
         invalid_task_ids = [
-            task_id for task_id in task_ids if task_id not in valid_task_ids
+                task_id for task_id in task_ids if
+                task_id not in valid_task_ids
         ]
         if invalid_task_ids:
             raise InvalidTaskIds(invalid_task_ids)
         return task_ids
-

@@ -3,7 +3,7 @@ from typing import List
 
 from ib_tasks.adapters.dtos import UserDetailsDTO, TeamDetailsDTO, \
     UserIdWIthTeamDetailsDTOs, TeamDetailsWithUserIdDTO, \
-    ProjectDetailsDTO, ProjectTeamUserIdsDTO
+    ProjectDetailsDTO, ProjectTeamUserIdsDTO, UserProjectStatusDTO
 from ib_tasks.interactors.field_dtos import SearchableFieldDetailDTO
 from ib_tasks.interactors.filter_dtos import SearchQueryWithPaginationDTO
 
@@ -28,8 +28,8 @@ class UsersNotExistsForGivenProjectException(Exception):
         self.user_ids = user_ids
 
 
-
 class AuthService:
+
     @property
     def interface(self):
         from ib_iam.app_interfaces.service_interface import ServiceInterface
@@ -104,6 +104,20 @@ class AuthService:
         is_in_project = self.interface.is_valid_user_id_for_given_project(
             user_id=user_id, project_id=project_id)
         return is_in_project
+
+    def validate_if_user_is_in_projects(
+            self, user_id: str, project_ids: List[str]
+    ) -> List[UserProjectStatusDTO]:
+        user_project_status_dtos = self.interface.get_user_status_for_given_projects(
+            user_id=user_id, project_ids=project_ids)
+        return [
+            UserProjectStatusDTO(
+                user_id=user_project_status_dto.user_id,
+                project_id=user_project_status_dto.project_id,
+                is_exists=user_project_status_dto.is_exist
+            )
+            for user_project_status_dto in user_project_status_dtos
+        ]
 
     def validate_project_ids(self, project_ids: List[str]) -> \
             List[str]:

@@ -168,11 +168,6 @@ def prepare_task_ids_with_stage_ids(
             '.GetTaskFieldsAndActionsInteractor.get_task_fields_and_action')
     mock.return_value = fields_and_actions
 
-    mock = mocker.patch(
-            'ib_tasks.interactors.get_allowed_stage_ids_of_user_interactor'
-            '.GetAllowedStageIdsOfUserInteractor'
-            '.get_allowed_stage_ids_of_user')
-    mock = stage_ids
 
 
 def prepare_mock_for_filters_interactor(mocker):
