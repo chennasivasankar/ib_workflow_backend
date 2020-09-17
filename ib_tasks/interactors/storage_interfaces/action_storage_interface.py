@@ -43,7 +43,8 @@ class ActionStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_initial_stage_to_task_template(self, task_template_stage_dtos):
+    def get_or_create_initial_stage_to_task_template(self,
+                                                     task_template_stage_dtos):
         pass
 
     @abc.abstractmethod
@@ -82,7 +83,8 @@ class ActionStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_permitted_action_ids_given_stage_ids(self, user_roles: List[str],
-                                                 stage_ids: List[str]) -> List[int]:
+                                                 stage_ids: List[str]) -> List[
+        int]:
         pass
 
     @abc.abstractmethod

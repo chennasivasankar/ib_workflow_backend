@@ -16,7 +16,7 @@ from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
     UserStagesWithPaginationDTO, StageAssigneeDTO, \
     StageAssigneeWithTeamDetailsDTO, AssigneeWithTeamDetailsDTO, \
-    StageWithUserDetailsDTO
+    StageWithUserDetailsDTO, TemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -42,10 +42,11 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO, SearchQueryDTO, \
     StageDisplayLogicDTO, BasicTaskDetailsDTO
 from ib_tasks.interactors.task_template_dtos import \
-    CreateTransitionChecklistTemplateDTO, \
-    CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
-from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, \
-    UserDetailsDTO, TeamInfoDTOFactory
+    (CreateTransitionChecklistTemplateDTO,
+     CreateTransitionChecklistTemplateWithTaskDisplayIdDTO)
+from ib_tasks.tests.factories.adapter_dtos import (AssigneeDetailsDTOFactory,
+                                                   UserDetailsDTO,
+                                                   TeamInfoDTOFactory)
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -354,6 +355,14 @@ class TaskDelayParametersDTOFactory(factory.Factory):
     due_date_time = datetime.now() + timedelta(days=2)
     reason_id = factory.Iterator([1, 2, 3, 4, -1])
     reason = "reason"
+
+
+class TemplateStageDTOFactory(factory.Factory):
+    class Meta:
+        model = TemplateStageDTO
+
+    task_template_id = factory.Sequence(lambda n: "template_%d" % n)
+    stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
 
 
 class BasicTaskDetailsDTOFactory(factory.Factory):

@@ -20,12 +20,10 @@ class TestUpdateStages:
     @pytest.fixture()
     def create_stages(self):
         StageModelFactory.reset_sequence(51)
-        objs = StageModelFactory.create_batch(size=4)
+        stages = StageModelFactory.create_batch(size=4)
         StagePermittedRolesFactory.reset_sequence()
-        StagePermittedRolesFactory(stage=objs[0])
-        StagePermittedRolesFactory(stage=objs[1])
-        StagePermittedRolesFactory(stage=objs[2])
-        StagePermittedRolesFactory(stage=objs[3])
+        StagePermittedRolesFactory.create_batch(4, stage=factory.Iterator(
+                stages))
 
     def test_update_stages_stage_details(self, snapshot,
                                          stage_dtos, create_stages):
