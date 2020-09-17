@@ -2,7 +2,8 @@ import pytest
 from mock import create_autospec, Mock
 
 from ib_iam.tests.factories.storage_dtos import (
-    TeamNameAndDescriptionDTOFactory, TeamWithUserIdsDTOFactory)
+    TeamNameAndDescriptionDTOFactory, TeamWithUserIdsDTOFactory
+)
 
 
 class TestAddTeamInteractor:
@@ -22,8 +23,8 @@ class TestAddTeamInteractor:
     @pytest.fixture
     def presenter(self):
         from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
-            TeamPresenterInterface)
-        return create_autospec(TeamPresenterInterface)
+            AddTeamPresenterInterface)
+        return create_autospec(AddTeamPresenterInterface)
 
     @pytest.fixture
     def interactor(self, team_storage_mock, user_storage_mock):
@@ -40,7 +41,7 @@ class TestAddTeamInteractor:
         user_id = "1"
         team_with_user_ids_dto = TeamWithUserIdsDTOFactory()
         user_storage_mock.is_user_admin.return_value = False
-        presenter.get_user_has_no_access_response_for_add_team \
+        presenter.response_for_user_has_no_access_exception \
             .return_value = Mock()
 
         # Act
@@ -52,7 +53,7 @@ class TestAddTeamInteractor:
         # Assert
         user_storage_mock.is_user_admin.assert_called_once_with(
             user_id=user_id)
-        presenter.get_user_has_no_access_response_for_add_team \
+        presenter.response_for_user_has_no_access_exception \
             .assert_called_once()
 
     def test_given_duplicate_users_returns_duplicate_users_response(
@@ -64,7 +65,7 @@ class TestAddTeamInteractor:
         team_with_user_ids_dto = TeamWithUserIdsDTOFactory(
             name="team1", user_ids=user_ids)
         team_storage_mock.get_team_id_if_team_name_already_exists.return_value = None
-        presenter.get_duplicate_users_response_for_add_team \
+        presenter.response_for_duplicate_user_ids_exception \
             .return_value = Mock()
 
         # Act
@@ -74,7 +75,7 @@ class TestAddTeamInteractor:
         )
 
         # Assert
-        presenter.get_duplicate_users_response_for_add_team.assert_called_once()
+        presenter.response_for_duplicate_user_ids_exception.assert_called_once()
 
     def test_given_invalid_users_returns_invalid_users_response(
             self, interactor, team_storage_mock, user_storage_mock, presenter
@@ -88,7 +89,7 @@ class TestAddTeamInteractor:
         team_storage_mock.get_team_id_if_team_name_already_exists.return_value = None
         user_storage_mock.get_valid_user_ids_among_the_given_user_ids \
             .return_value = valid_user_ids
-        presenter.get_invalid_users_response_for_add_team.return_value = Mock()
+        presenter.response_for_invalid_user_ids_exception.return_value = Mock()
 
         # Act
         interactor.add_team_wrapper(
@@ -99,7 +100,7 @@ class TestAddTeamInteractor:
         # Assert
         user_storage_mock.get_valid_user_ids_among_the_given_user_ids \
             .assert_called_once_with(user_ids=invalid_user_ids)
-        presenter.get_invalid_users_response_for_add_team.assert_called_once()
+        presenter.response_for_invalid_user_ids_exception.assert_called_once()
 
     def test_team_name_exists_returns_team_name_already_exists_response(
             self, interactor, team_storage_mock, user_storage_mock, presenter
@@ -115,7 +116,7 @@ class TestAddTeamInteractor:
             name="team1", user_ids=user_ids
         )
         team_storage_mock.get_team_id_if_team_name_already_exists.return_value = "1"
-        presenter.get_team_name_already_exists_response_for_add_team \
+        presenter.response_for_team_name_already_exists_exception \
             .return_value = Mock()
 
         # Act
@@ -128,7 +129,7 @@ class TestAddTeamInteractor:
         team_storage_mock.get_team_id_if_team_name_already_exists \
             .assert_called_once_with(name=team_with_user_ids_dto.name)
         call_args = \
-            presenter.get_team_name_already_exists_response_for_add_team.call_args
+            presenter.response_for_team_name_already_exists_exception.call_args
         error_obj = call_args[0][0]
         actual_team_name_from_team_name_already_exists_error = \
             error_obj.team_name

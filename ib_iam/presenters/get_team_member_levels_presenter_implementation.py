@@ -43,7 +43,7 @@ class GetTeamMemberLevelsPresenterImplementation(
         }
         return self.prepare_200_success_response(response_dict=response)
 
-    def response_for_invalid_team_id(self):
+    def response_for_invalid_team_id_exception(self):
         response_dict = {
             "response": INVALID_TEAM_ID[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
@@ -52,7 +52,7 @@ class GetTeamMemberLevelsPresenterImplementation(
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
 
-    def response_for_user_is_not_admin(self):
+    def response_for_user_is_not_admin_exception(self):
         response_dict = {
             "response": USER_DOES_NOT_HAVE_ACCESS[0],
             "http_status_code": StatusCode.FORBIDDEN.value,

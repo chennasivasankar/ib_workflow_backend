@@ -8,7 +8,7 @@ def api_wrapper(*args, **kwargs):
     request_data = kwargs['request_data']
     email = request_data['email']
     password = request_data['password']
-    from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+    from ib_iam.adapters.dtos import EmailAndPasswordDTO
     email_and_password_dto = EmailAndPasswordDTO(
         email=email,
         password=password

@@ -1,7 +1,7 @@
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.dtos import UserOptionsDetailsDTO
-from ib_iam.interactors.presenter_interfaces.get_user_options_presenter_interface \
+from ib_iam.interactors.presenter_interfaces.user_presenter_interface \
     import GetUserOptionsPresenterInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface \
     import UserStorageInterface

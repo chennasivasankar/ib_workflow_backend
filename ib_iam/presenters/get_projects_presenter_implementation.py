@@ -6,7 +6,7 @@ from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.dtos import \
     ProjectsWithTeamsAndRolesDTO
 from ib_iam.interactors.presenter_interfaces \
-    .get_projects_presenter_interface import GetProjectsPresenterInterface
+    .project_presenter_interface import GetProjectsPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import ProjectTeamIdsDTO, \
     ProjectRoleDTO, ProjectWithDisplayIdDTO
 

@@ -298,3 +298,13 @@ USER_HAS_NO_ACCESS_TO_GET_USERS_WITH_ROLES = (
     "User has no access to get users with roles",
     "USER_HAS_NO_ACCESS_TO_GET_USERS_WITH_ROLES"
 )
+
+EMAIL_ALREADY_VERIFIED = (
+    "The given email is already verified, now you can login",
+    "EMAIL_ALREADY_VERIFIED"
+)
+
+ACCOUNT_DOES_NOT_EXISTS = (
+    "account doesn't exist with the given email id",
+    "ACCOUNT_DOES_NOT_EXISTS"
+)

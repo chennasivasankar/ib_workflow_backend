@@ -29,7 +29,7 @@ class TestAddNewUserIneractor:
     @pytest.fixture
     def presenter_mock(self):
         from unittest import mock
-        from ib_iam.interactors.presenter_interfaces.add_new_user_presenter_inerface \
+        from ib_iam.interactors.presenter_interfaces.user_presenter_interface \
             import AddUserPresenterInterface
         storage = mock.create_autospec(AddUserPresenterInterface)
         return storage

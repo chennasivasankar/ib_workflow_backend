@@ -8,17 +8,17 @@ from ib_iam.constants.exception_messages import (
     DUPLICATE_USER_IDS_FOR_UPDATE_COMPANY,
     INVALID_USER_IDS_FOR_UPDATE_COMPANY)
 from ib_iam.interactors.presenter_interfaces \
-    .update_company_presenter_interface import UpdateCompanyPresenterInterface
+    .company_presenter_interface import UpdateCompanyPresenterInterface
 
 
 class UpdateCompanyPresenterImplementation(UpdateCompanyPresenterInterface,
                                            HTTPResponseMixin):
 
-    def get_success_response_for_update_company(self):
+    def get_response_for_update_company(self):
         empty_dict = {}
         return self.prepare_200_success_response(response_dict=empty_dict)
 
-    def get_user_has_no_access_response_for_update_company(self):
+    def response_for_user_has_no_access_exception(self):
         response_dict = {
             "response": USER_HAS_NO_ACCESS_FOR_UPDATE_COMPANY[0],
             "http_status_code": StatusCode.UNAUTHORIZED.value,
@@ -27,7 +27,7 @@ class UpdateCompanyPresenterImplementation(UpdateCompanyPresenterInterface,
         return self.prepare_401_unauthorized_response(
             response_dict=response_dict)
 
-    def get_invalid_company_response_for_update_company(self):
+    def response_for_invalid_company_id_exception(self):
         response_dict = {
             "response": INVALID_COMPANY_ID_FOR_UPDATE_COMPANY[0],
             "http_status_code": StatusCode.NOT_FOUND.value,
@@ -36,7 +36,7 @@ class UpdateCompanyPresenterImplementation(UpdateCompanyPresenterInterface,
         return self.prepare_404_not_found_response(
             response_dict=response_dict)
 
-    def get_company_name_already_exists_response_for_update_company(
+    def response_for_company_name_already_exists_exception(
             self, err
     ):
         response_dict = {
@@ -48,7 +48,7 @@ class UpdateCompanyPresenterImplementation(UpdateCompanyPresenterInterface,
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
 
-    def get_duplicate_users_response_for_update_company(self):
+    def response_for_duplicate_user_ids_exception(self):
         response_dict = {
             "response": DUPLICATE_USER_IDS_FOR_UPDATE_COMPANY[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
@@ -57,7 +57,7 @@ class UpdateCompanyPresenterImplementation(UpdateCompanyPresenterInterface,
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
 
-    def get_invalid_users_response_for_update_company(self):
+    def response_for_invalid_user_ids_exception(self):
         response_dict = {
             "response": INVALID_USER_IDS_FOR_UPDATE_COMPANY[0],
             "http_status_code": StatusCode.NOT_FOUND.value,

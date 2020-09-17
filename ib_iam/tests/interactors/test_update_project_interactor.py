@@ -30,7 +30,7 @@ class TestUpdateProjectInteractor:
 
     @pytest.fixture
     def presenter(self):
-        from ib_iam.interactors.presenter_interfaces.update_project_presenter_interface import (
+        from ib_iam.interactors.presenter_interfaces.project_presenter_interface import (
             UpdateProjectPresenterInterface
         )
         storage = mock.create_autospec(UpdateProjectPresenterInterface)
@@ -82,7 +82,7 @@ class TestUpdateProjectInteractor:
         project_dto = ProjectDTOFactory()
         user_id = "1"
         user_storage.is_user_admin.return_value = False
-        presenter.get_invalid_project_response.return_value = mock.Mock()
+        presenter.response_for_invalid_project_id_exception.return_value = mock.Mock()
         complete_project_details_dto = CompleteProjectDetailsDTO(
             project_id=project_dto.project_id,
             name=project_dto.name, description=project_dto.description,
@@ -97,7 +97,7 @@ class TestUpdateProjectInteractor:
 
         # Assert
         user_storage.is_user_admin.assert_called_once_with(user_id=user_id)
-        presenter.get_user_has_no_access_response.assert_called_once()
+        presenter.response_for_user_has_no_access_exception.assert_called_once()
 
     def test_given_invalid_project_returns_invalid_project_response(
             self, project_storage, user_storage, interactor, presenter
@@ -107,7 +107,7 @@ class TestUpdateProjectInteractor:
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
         project_dto = ProjectDTOFactory()
         user_storage.is_valid_project_id.return_value = False
-        presenter.get_invalid_project_response.return_value = mock.Mock()
+        presenter.response_for_invalid_project_id_exception.return_value = mock.Mock()
         complete_project_details_dto = CompleteProjectDetailsDTO(
             project_id=project_dto.project_id,
             name=project_dto.name, description=project_dto.description,
@@ -124,7 +124,7 @@ class TestUpdateProjectInteractor:
         user_storage.is_valid_project_id.assert_called_once_with(
             project_id=project_dto.project_id
         )
-        presenter.get_invalid_project_response.assert_called_once()
+        presenter.response_for_invalid_project_id_exception.assert_called_once()
 
     def test_given_name_already_exists_returns_name_already_exists_response(
             self, project_storage, user_storage, interactor, presenter
@@ -136,7 +136,7 @@ class TestUpdateProjectInteractor:
         ProjectDTOFactory.reset_sequence(1)
         project_dto = ProjectDTOFactory(name=name)
         project_storage.get_project_id.return_value = "project 2"
-        presenter.get_project_name_already_exists_response \
+        presenter.response_for_project_name_already_exists_exception \
             .return_value = mock.Mock()
         complete_project_details_dto = CompleteProjectDetailsDTO(
             project_id=project_dto.project_id, name=project_dto.name,
@@ -152,7 +152,7 @@ class TestUpdateProjectInteractor:
 
         # Assert
         project_storage.get_project_id.assert_called_once_with(name=name)
-        presenter.get_project_name_already_exists_response.assert_called_once()
+        presenter.response_for_project_name_already_exists_exception.assert_called_once()
 
     def test_given_duplicate_team_ids_returns_duplicate_team_ids_response(
             self, project_storage, user_storage, interactor, presenter
@@ -162,7 +162,7 @@ class TestUpdateProjectInteractor:
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
         project_dto = ProjectDTOFactory()
         project_storage.get_project_id.return_value = None
-        presenter.get_duplicate_team_ids_response.return_value = mock.Mock()
+        presenter.response_for_duplicate_team_ids_exception.return_value = mock.Mock()
         complete_project_details_dto = CompleteProjectDetailsDTO(
             project_id=project_dto.project_id, name=project_dto.name,
             description=project_dto.description, logo_url=project_dto.logo_url,
@@ -176,7 +176,7 @@ class TestUpdateProjectInteractor:
         )
 
         # Assert
-        presenter.get_duplicate_team_ids_response.assert_called_once()
+        presenter.response_for_duplicate_team_ids_exception.assert_called_once()
 
     def test_given_invalid_team_ids_returns_invalid_team_ids_response(
             self, project_storage, user_storage, team_storage, interactor,
@@ -189,7 +189,7 @@ class TestUpdateProjectInteractor:
         valid_team_ids = ["1"]
         project_storage.get_project_id.return_value = None
         team_storage.get_valid_team_ids.return_value = valid_team_ids
-        presenter.get_invalid_team_ids_response.return_value = mock.Mock()
+        presenter.response_for_invalid_team_ids_exception.return_value = mock.Mock()
         complete_project_details_dto = CompleteProjectDetailsDTO(
             project_id=project_dto.project_id, name=project_dto.name,
             description=project_dto.description, logo_url=project_dto.logo_url,
@@ -206,7 +206,7 @@ class TestUpdateProjectInteractor:
         team_storage.get_valid_team_ids.assert_called_once_with(
             team_ids=team_ids
         )
-        presenter.get_invalid_team_ids_response.assert_called_once()
+        presenter.response_for_invalid_team_ids_exception.assert_called_once()
 
     def test_given_duplicate_role_ids_returns_duplicate_role_ids_response(
             self, project_storage, user_storage, team_storage, interactor,
@@ -218,7 +218,7 @@ class TestUpdateProjectInteractor:
         from ib_iam.tests.factories.storage_dtos import RoleDTOFactory
         role_dtos = RoleDTOFactory.create_batch(role_id="1", size=2)
         project_storage.get_project_id.return_value = None
-        presenter.get_duplicate_role_ids_response.return_value = mock.Mock()
+        presenter.response_for_duplicate_role_ids_exception.return_value = mock.Mock()
         complete_project_details_dto = CompleteProjectDetailsDTO(
             project_id=project_dto.project_id, name=project_dto.name,
             description=project_dto.description, logo_url=project_dto.logo_url,
@@ -232,7 +232,7 @@ class TestUpdateProjectInteractor:
         )
 
         # Assert
-        presenter.get_duplicate_role_ids_response.assert_called_once()
+        presenter.response_for_duplicate_role_ids_exception.assert_called_once()
 
     def test_given_invalid_role_ids_returns_invalid_role_ids_response(
             self, project_storage, user_storage, team_storage, interactor,
@@ -245,7 +245,7 @@ class TestUpdateProjectInteractor:
         role_ids = ["4", "5"]
         project_storage.get_project_id.return_value = None
         project_storage.get_project_role_ids.return_value = role_ids
-        presenter.get_invalid_role_ids_response.return_value = mock.Mock()
+        presenter.response_for_invalid_role_ids_exception.return_value = mock.Mock()
         complete_project_details_dto = CompleteProjectDetailsDTO(
             project_id=project_dto.project_id, name=project_dto.name,
             description=project_dto.description, logo_url=project_dto.logo_url,
@@ -259,7 +259,7 @@ class TestUpdateProjectInteractor:
         )
 
         # Assert
-        presenter.get_invalid_role_ids_response.assert_called_once()
+        presenter.response_for_invalid_role_ids_exception.assert_called_once()
 
     def test_given_duplicate_role_names_returns_duplicate_role_names_response(
             self, project_storage, user_storage, team_storage, interactor,
@@ -277,7 +277,7 @@ class TestUpdateProjectInteractor:
         project_storage.get_project_id.return_value = None
         project_storage.get_project_role_ids.return_value = role_ids
         team_storage.get_valid_team_ids.return_value = team_ids
-        presenter.get_duplicate_role_names_response \
+        presenter.response_for_duplicate_role_names_exception \
             .return_value = mock.Mock()
         complete_project_details_dto = CompleteProjectDetailsDTO(
             project_id=project_dto.project_id,
@@ -294,7 +294,7 @@ class TestUpdateProjectInteractor:
         )
 
         # Assert
-        presenter.get_duplicate_role_names_response.assert_called_once()
+        presenter.response_for_duplicate_role_names_exception.assert_called_once()
 
     def test_given_role_names_already_exists_returns_role_names_already_exists_response(
             self, project_storage, user_storage, team_storage, interactor,
@@ -311,7 +311,7 @@ class TestUpdateProjectInteractor:
         project_storage.get_project_role_ids.return_value = role_ids
         team_storage.get_valid_team_ids.return_value = team_ids
         user_storage.get_roles.return_value = roles_for_role_names_already_exists
-        presenter.get_role_names_already_exists_response \
+        presenter.response_for_role_names_already_exists_exception \
             .return_value = mock.Mock()
         complete_project_details_dto = CompleteProjectDetailsDTO(
             project_id=project_dto.project_id,
@@ -327,7 +327,7 @@ class TestUpdateProjectInteractor:
 
         # Assert
         user_storage.get_roles.assert_called_once()
-        call_args = presenter.get_role_names_already_exists_response.call_args
+        call_args = presenter.response_for_role_names_already_exists_exception.call_args
         error_obj = call_args[0][0]
         actual_names_that_already_exists = error_obj.role_names
         assert actual_names_that_already_exists == \

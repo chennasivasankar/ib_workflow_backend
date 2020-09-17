@@ -3,7 +3,7 @@ from typing import List
 from ib_iam.exceptions.custom_exceptions import InvalidUserIdsForProject, \
     InvalidRoleIdsForProject, InvalidProjectId, UserIsNotAdmin
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
-from ib_iam.interactors.presenter_interfaces.assign_user_roles_for_given_project_presenter_interface import \
+from ib_iam.interactors.presenter_interfaces.user_presenter_interface import \
     AssignUserRolesForGivenProjectBulkPresenterInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface

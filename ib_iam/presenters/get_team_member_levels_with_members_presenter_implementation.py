@@ -165,7 +165,7 @@ class GetTeamMemberLevelsWithMembersPresenterImplementation(
         ]
         return subordinate_members_details_list
 
-    def response_for_invalid_team_id(self):
+    def response_for_invalid_team_id_exception(self):
         response_dict = {
             "response": INVALID_TEAM_ID[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
@@ -175,7 +175,7 @@ class GetTeamMemberLevelsWithMembersPresenterImplementation(
             response_dict=response_dict
         )
 
-    def response_for_user_is_not_admin(self):
+    def response_for_user_is_not_admin_exception(self):
         response_dict = {
             "response": USER_DOES_NOT_HAVE_ACCESS[0],
             "http_status_code": StatusCode.FORBIDDEN.value,

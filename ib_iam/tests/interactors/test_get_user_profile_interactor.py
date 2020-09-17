@@ -63,7 +63,7 @@ class TestGetUserProfileInteractor:
             expected_role_dtos, expected_team_dtos,
             expected_team_user_ids_dtos, expected_user_dtos):
         user_id = "1"
-        from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
+        from ib_iam.interactors.presenter_interfaces.dtos import \
             UserWithExtraDetailsDTO
         CompleteUserProfileDTOFactory.reset_sequence(1)
         user_profile_dto = CompleteUserProfileDTOFactory(
@@ -184,7 +184,7 @@ class TestGetUserProfileInteractor:
             get_basic_user_profile_dtos_mock
         user_profile_dtos_mock = get_basic_user_profile_dtos_mock(mocker)
         user_profile_dtos_mock.return_value = expected_user_dtos
-        presenter_mock.prepare_response_for_get_user_profile \
+        presenter_mock.response_for_get_user_profile \
             .return_value = Mock()
 
         from ib_iam.interactors.get_user_profile_interactor import \
@@ -213,5 +213,5 @@ class TestGetUserProfileInteractor:
         storage_mock.get_company_employee_ids_dto.assert_called_once_with(
             company_id="1"
         )
-        presenter_mock.prepare_response_for_get_user_profile.assert_called_once_with(
+        presenter_mock.response_for_get_user_profile.assert_called_once_with(
             user_with_extra_details_dto=user_with_extra_details_dto)

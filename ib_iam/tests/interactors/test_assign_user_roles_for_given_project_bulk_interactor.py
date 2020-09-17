@@ -8,7 +8,7 @@ class TestAssignUserRolesForGivenProjectBulkInteractor:
     @pytest.fixture()
     def presenter_mock(self):
         from unittest.mock import create_autospec
-        from ib_iam.interactors.presenter_interfaces.assign_user_roles_for_given_project_presenter_interface import \
+        from ib_iam.interactors.presenter_interfaces.user_presenter_interface import \
             AssignUserRolesForGivenProjectBulkPresenterInterface
         presenter = create_autospec(
             AssignUserRolesForGivenProjectBulkPresenterInterface)

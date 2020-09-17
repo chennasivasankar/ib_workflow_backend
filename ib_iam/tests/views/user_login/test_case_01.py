@@ -17,7 +17,7 @@ class TestCase01UserLoginAPITestCase(TestUtils):
     @pytest.mark.django_db
     def test_case(self, mocker, snapshot):
         user_id = "1"
-        from ib_iam.adapters.auth_service import UserTokensDTO
+        from ib_iam.adapters.dtos import UserTokensDTO
         tokens_dto = UserTokensDTO(
             access_token="asdfaldskfjdfdlsdkf",
             refresh_token="sadfenkljkdfeller",

@@ -1,7 +1,7 @@
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces. \
-    get_list_of_user_roles_for_given_project_presenter_interface import \
+    user_presenter_interface import \
     GetListOfUserRolesForGivenProjectPresenterInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface

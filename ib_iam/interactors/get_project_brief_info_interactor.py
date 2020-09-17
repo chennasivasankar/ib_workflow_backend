@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_iam.exceptions.custom_exceptions import UserDoesNotExist
-from ib_iam.interactors.presenter_interfaces.get_project_brief_info_presenter_interface import \
+from ib_iam.interactors.presenter_interfaces.project_presenter_interface import \
     GetProjectBriefInfoPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import ProjectWithDisplayIdDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \

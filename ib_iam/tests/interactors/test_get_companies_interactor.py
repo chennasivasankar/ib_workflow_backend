@@ -2,7 +2,7 @@ import pytest
 from mock import create_autospec, Mock
 
 from ib_iam.interactors.get_companies_interactor import GetCompaniesInteractor
-from ib_iam.interactors.presenter_interfaces.get_companies_presenter_interface import (
+from ib_iam.interactors.presenter_interfaces.company_presenter_interface import (
     GetCompaniesPresenterInterface,
     CompanyWithEmployeeIdsAndUserDetailsDTO
 )
@@ -52,14 +52,14 @@ class TestGetCompaniesInteractor:
                                             user_storage=user_storage)
         user_id = "1"
         user_storage.is_user_admin.return_value = False
-        presenter.get_user_has_no_access_response_for_get_companies \
+        presenter.response_for_user_has_no_access_exception \
             .return_value = Mock()
 
         interactor.get_companies_wrapper(user_id=user_id, presenter=presenter)
 
         user_storage.is_user_admin.assert_called_once_with(
             user_id=user_id)
-        presenter.get_user_has_no_access_response_for_get_companies \
+        presenter.response_for_user_has_no_access_exception \
             .assert_called_once()
 
     # TODO: Use assert_called_once_with

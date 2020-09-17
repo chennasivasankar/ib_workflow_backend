@@ -13,7 +13,7 @@ class TestAddRolesInteractor:
 
     @pytest.fixture
     def presenter(self):
-        from ib_iam.interactors.presenter_interfaces.add_roles_presenter_interface \
+        from ib_iam.interactors.presenter_interfaces.role_presenter_interface \
             import AddRolesPresenterInterface
         return create_autospec(AddRolesPresenterInterface)
 
@@ -87,7 +87,7 @@ class TestAddRolesInteractor:
             )
             for role in roles
         ]
-        presenter.raise_role_name_should_not_be_empty_exception.return_value = \
+        presenter.response_for_role_name_should_not_be_empty_exception.return_value = \
             Mock()
 
         # Act
@@ -96,7 +96,7 @@ class TestAddRolesInteractor:
         )
 
         # Assert
-        presenter.raise_role_name_should_not_be_empty_exception.assert_called_once()
+        presenter.response_for_role_name_should_not_be_empty_exception.assert_called_once()
 
     def test_given_role_description_is_empty_then_raise_exception(
             self, interactor, storage_mock, presenter
@@ -117,7 +117,7 @@ class TestAddRolesInteractor:
             )
             for role in roles
         ]
-        presenter.raise_role_description_should_not_be_empty_exception.return_value = \
+        presenter.response_for_role_description_should_not_be_empty_exception.return_value = \
             Mock()
 
         # Act
@@ -126,7 +126,7 @@ class TestAddRolesInteractor:
         )
 
         # Assert
-        presenter.raise_role_description_should_not_be_empty_exception.assert_called_once()
+        presenter.response_for_role_description_should_not_be_empty_exception.assert_called_once()
 
     def test_when_role_id_is_invalid_format_then_raise_exception(
             self, interactor, storage_mock, presenter
@@ -145,7 +145,7 @@ class TestAddRolesInteractor:
                 description=role["description"]
             ) for role in roles
         ]
-        presenter.raise_role_id_format_is_invalid_exception.return_value = Mock()
+        presenter.response_for_role_id_format_is_invalid_exception.return_value = Mock()
 
         # Act
         interactor.add_project_roles_wrapper(
@@ -153,7 +153,7 @@ class TestAddRolesInteractor:
         )
 
         # Assert
-        presenter.raise_role_id_format_is_invalid_exception.assert_called_once()
+        presenter.response_for_role_id_format_is_invalid_exception.assert_called_once()
 
     def test_when_given_valid_details_then_create_roles(
             self, interactor, storage_mock, presenter

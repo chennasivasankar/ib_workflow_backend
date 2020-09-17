@@ -1,7 +1,7 @@
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, UserNotFound, \
     UserDoesNotHaveDeletePermission
 from ib_iam.interactors.mixins.validation import ValidationMixin
-from ib_iam.interactors.presenter_interfaces.delete_user_presenter_interface import \
+from ib_iam.interactors.presenter_interfaces.user_presenter_interface import \
     DeleteUserPresenterInterface
 from ib_iam.interactors.storage_interfaces.delete_user_storage_interface import \
     DeleteUserStorageInterface

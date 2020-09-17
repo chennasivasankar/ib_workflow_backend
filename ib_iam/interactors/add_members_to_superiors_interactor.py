@@ -38,9 +38,9 @@ class AddMembersToSuperiorsInteractor(ValidationMixin):
                 immediate_superior_user_id_with_member_ids_dtos
             )
         except UserIsNotAdmin:
-            response = presenter.response_for_user_is_not_admin()
+            response = presenter.response_for_user_is_not_admin_exception()
         except InvalidTeamId:
-            response = presenter.response_for_invalid_team_id()
+            response = presenter.response_for_invalid_team_id_exception()
         except InvalidLevelHierarchyOfTeam:
             response = presenter.response_for_invalid_level_hierarchy_of_team()
         except MemberIdsNotFoundInTeam as err:

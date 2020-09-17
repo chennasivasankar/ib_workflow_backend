@@ -2,7 +2,7 @@ from typing import List
 
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
-    .get_companies_presenter_interface import \
+    .company_presenter_interface import \
     GetCompaniesPresenterInterface, CompanyWithEmployeeIdsAndUserDetailsDTO
 from ib_iam.interactors.storage_interfaces \
     .company_storage_interface import CompanyStorageInterface
@@ -31,7 +31,7 @@ class GetCompaniesInteractor(ValidationMixin):
                 company_details_dtos=company_details_dtos
             )
         except UserIsNotAdmin:
-            response = presenter.get_user_has_no_access_response_for_get_companies()
+            response = presenter.response_for_user_has_no_access_exception()
         return response
 
     def get_companies(self, user_id: str):

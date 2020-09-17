@@ -75,7 +75,7 @@ class TestSendLinkToUserMail:
         from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
         get_user_id_for_given_email_mock.side_effect = \
             UserAccountDoesNotExist()
-        presenter_mock.raise_account_does_not_exist_exception.return_value = \
+        presenter_mock.response_for_account_does_not_exist_exception.return_value = \
             Mock()
 
         # Act
@@ -84,7 +84,7 @@ class TestSendLinkToUserMail:
         )
 
         # Assert
-        presenter_mock.raise_account_does_not_exist_exception.assert_called_once()
+        presenter_mock.response_for_account_does_not_exist_exception.assert_called_once()
         get_user_id_for_given_email_mock.assert_called_once_with(email=email)
 
     def test_given_email_is_already_verify_then_raise_exception(
@@ -106,7 +106,7 @@ class TestSendLinkToUserMail:
         UserProfileDTOFactory.reset_sequence(0)
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
             user_id=user_id, is_email_verified=True)
-        presenter_mock.raise_email_already_verified_exception.return_value = Mock()
+        presenter_mock.response_for_email_already_verified_exception.return_value = Mock()
 
         # Act
         interactor.send_verify_email_link_wrapper(
@@ -116,4 +116,4 @@ class TestSendLinkToUserMail:
         # Assert
         get_user_id_for_given_email_mock.assert_called_once_with(email=email)
         get_user_profile_dto_mock.assert_called_once_with(user_id=user_id)
-        presenter_mock.raise_email_already_verified_exception.assert_called_once()
+        presenter_mock.response_for_email_already_verified_exception.assert_called_once()

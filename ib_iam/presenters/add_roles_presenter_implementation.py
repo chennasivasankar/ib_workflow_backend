@@ -1,13 +1,13 @@
 from django_swagger_utils.utils.http_response_mixin \
     import HTTPResponseMixin
 from ib_iam.constants.enums import StatusCode
-from ib_iam.interactors.presenter_interfaces.add_roles_presenter_interface \
+from ib_iam.interactors.presenter_interfaces.role_presenter_interface \
     import AddRolesPresenterInterface
 
 
 class AddRolesPresenterImplementation(AddRolesPresenterInterface, HTTPResponseMixin):
 
-    def raise_role_name_should_not_be_empty_exception(self):
+    def response_for_role_name_should_not_be_empty_exception(self):
         from ib_iam.constants.exception_messages \
             import ROLE_NAME_SHOULD_NOT_BE_EMPTY
         response_dict = {
@@ -18,7 +18,7 @@ class AddRolesPresenterImplementation(AddRolesPresenterInterface, HTTPResponseMi
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
 
-    def raise_role_description_should_not_be_empty_exception(self):
+    def response_for_role_description_should_not_be_empty_exception(self):
         from ib_iam.constants.exception_messages \
             import ROLE_DESCRIPTION_SHOULD_NOT_BE_EMPTY
         response_dict = {
@@ -29,7 +29,7 @@ class AddRolesPresenterImplementation(AddRolesPresenterInterface, HTTPResponseMi
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
 
-    def raise_role_id_format_is_invalid_exception(self):
+    def response_for_role_id_format_is_invalid_exception(self):
         from ib_iam.constants.exception_messages \
             import ROLE_ID_SHOULD_NOT_BE_IN_VALID_FORMAT
         response_dict = {
@@ -53,7 +53,7 @@ class AddRolesPresenterImplementation(AddRolesPresenterInterface, HTTPResponseMi
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
 
-    def raise_user_is_not_admin_exception(self):
+    def response_for_user_is_not_admin_exception(self):
         from ib_iam.constants.exception_messages import \
             USER_DOES_NOT_HAVE_PERMISSION
         response_dict = {

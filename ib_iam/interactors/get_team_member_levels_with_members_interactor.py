@@ -33,9 +33,9 @@ class GetTeamMemberLevelsWithMembersInteractor(ValidationMixin):
                 team_id=team_id, presenter=presenter, user_id=user_id
             )
         except UserIsNotAdmin:
-            response = presenter.response_for_user_is_not_admin()
+            response = presenter.response_for_user_is_not_admin_exception()
         except InvalidTeamId:
-            response = presenter.response_for_invalid_team_id()
+            response = presenter.response_for_invalid_team_id_exception()
         return response
 
     def _get_team_member_levels_with_members_response(

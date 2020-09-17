@@ -19,9 +19,9 @@ class VerifyEmailInteractor:
             self.link_verified_email_to_user_account(user_id)
             response = presenter.get_response_for_verified_email()
         except EmailDoesNotExistException:
-            response = presenter.raise_email_does_not_exist_to_verify_exception()
+            response = presenter.response_for_email_does_not_exist_exception()
         except EmailAlreadyVerifiedException:
-            response = presenter.raise_email_already_verified_exception()
+            response = presenter.response_for_email_already_verified_exception()
         return response
 
     def link_verified_email_to_user_account(self, user_id: str):

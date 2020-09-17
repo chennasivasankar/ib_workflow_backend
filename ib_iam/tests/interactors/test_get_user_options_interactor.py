@@ -46,7 +46,7 @@ class TestGetUserOptionsInteractor:
     @pytest.fixture
     def presenter_mock(self):
         from unittest import mock
-        from ib_iam.interactors.presenter_interfaces.get_user_options_presenter_interface \
+        from ib_iam.interactors.presenter_interfaces.user_presenter_interface \
             import GetUserOptionsPresenterInterface
         storage = mock.create_autospec(GetUserOptionsPresenterInterface)
         return storage

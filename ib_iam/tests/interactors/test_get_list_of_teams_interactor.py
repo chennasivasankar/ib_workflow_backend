@@ -4,7 +4,7 @@ from mock import create_autospec, Mock
 from ib_iam.interactors.get_list_of_teams_interactor import \
     GetListOfTeamsInteractor
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import \
-    TeamPresenterInterface
+    GetTeamsPresenterInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
     TeamStorageInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
@@ -45,13 +45,13 @@ class TestGetListOfTeamsInteractor:
     def test_if_user_not_admin_returns_unauthorized_response(self):
         team_storage = create_autospec(TeamStorageInterface)
         user_storage = create_autospec(UserStorageInterface)
-        presenter = create_autospec(TeamPresenterInterface)
+        presenter = create_autospec(GetTeamsPresenterInterface)
         interactor = GetListOfTeamsInteractor(team_storage=team_storage,
                                               user_storage=user_storage)
         user_id = "1"
         pagination_dto = PaginationDTOFactory()
         user_storage.is_user_admin.return_value = False
-        presenter.get_user_has_no_access_response_for_get_list_of_teams \
+        presenter.response_for_user_has_no_access_exception \
             .return_value = Mock()
 
         interactor.get_list_of_teams_wrapper(
@@ -60,39 +60,39 @@ class TestGetListOfTeamsInteractor:
 
         user_storage.is_user_admin.assert_called_once_with(
             user_id=user_id)
-        presenter.get_user_has_no_access_response_for_get_list_of_teams \
+        presenter.response_for_user_has_no_access_exception \
             .assert_called_once()
 
     def test_invalid_limit_returns_invalid_limit_response(self):
         team_storage = create_autospec(TeamStorageInterface)
         user_storage = create_autospec(UserStorageInterface)
-        presenter = create_autospec(TeamPresenterInterface)
+        presenter = create_autospec(GetTeamsPresenterInterface)
         interactor = GetListOfTeamsInteractor(team_storage=team_storage,
                                               user_storage=user_storage)
-        presenter.get_invalid_limit_response_for_get_list_of_teams \
+        presenter.response_for_invalid_limit_value_exception \
             .return_value = Mock()
         pagination_dto = PaginationDTOFactory(limit=-1)
 
         interactor.get_list_of_teams_wrapper(
             user_id="1", pagination_dto=pagination_dto, presenter=presenter)
 
-        presenter.get_invalid_limit_response_for_get_list_of_teams \
+        presenter.response_for_invalid_limit_value_exception \
             .assert_called_once()
 
     def test_invalid_offset_returns_invalid_offset_response(self):
         team_storage = create_autospec(TeamStorageInterface)
         user_storage = create_autospec(UserStorageInterface)
-        presenter = create_autospec(TeamPresenterInterface)
+        presenter = create_autospec(GetTeamsPresenterInterface)
         interactor = GetListOfTeamsInteractor(team_storage=team_storage,
                                               user_storage=user_storage)
         pagination_dto = PaginationDTOFactory(offset=-1)
-        presenter.get_invalid_offset_response_for_get_list_of_teams \
+        presenter.response_for_invalid_offset_value_exception \
             .return_value = Mock()
 
         interactor.get_list_of_teams_wrapper(
             user_id="1", pagination_dto=pagination_dto, presenter=presenter)
 
-        presenter.get_invalid_offset_response_for_get_list_of_teams \
+        presenter.response_for_invalid_offset_value_exception \
             .assert_called_once()
 
     def test_given_valid_details_returns_list_of_teams(
@@ -104,7 +104,7 @@ class TestGetListOfTeamsInteractor:
             get_basic_user_profile_dtos_mock
         team_storage = create_autospec(TeamStorageInterface)
         user_storage = create_autospec(UserStorageInterface)
-        presenter = create_autospec(TeamPresenterInterface)
+        presenter = create_autospec(GetTeamsPresenterInterface)
         interactor = GetListOfTeamsInteractor(team_storage=team_storage,
                                               user_storage=user_storage)
         pagination_dto = PaginationDTOFactory()

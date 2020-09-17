@@ -34,7 +34,7 @@ class TestDeleteUserInteractor:
     @pytest.fixture
     def presenter_mock(self):
         from unittest import mock
-        from ib_iam.interactors.presenter_interfaces.delete_user_presenter_interface import \
+        from ib_iam.interactors.presenter_interfaces.user_presenter_interface import \
             DeleteUserPresenterInterface
         presenter = mock.create_autospec(DeleteUserPresenterInterface)
         return presenter

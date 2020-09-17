@@ -10,11 +10,11 @@ from ib_iam.interactors.storage_interfaces.dtos import \
 class AddTeamMemberLevelsPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def prepare_success_response_for_add_team_member_levels_to_team(self):
+    def response_for_add_team_member_levels_to_team(self):
         pass
 
     @abc.abstractmethod
-    def response_for_invalid_team_id(self):
+    def response_for_invalid_team_id_exception(self):
         pass
 
     @abc.abstractmethod
@@ -30,7 +30,7 @@ class AddTeamMemberLevelsPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def response_for_user_is_not_admin(self):
+    def response_for_user_is_not_admin_exception(self):
         pass
 
 
@@ -43,11 +43,11 @@ class GetTeamMemberLevelsPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def response_for_invalid_team_id(self):
+    def response_for_invalid_team_id_exception(self):
         pass
 
     @abc.abstractmethod
-    def response_for_user_is_not_admin(self):
+    def response_for_user_is_not_admin_exception(self):
         pass
 
 
@@ -58,7 +58,7 @@ class AddMembersToTeamMemberLevelsPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def response_for_invalid_team_id(self):
+    def response_for_invalid_team_id_exception(self):
         pass
 
     @abc.abstractmethod
@@ -70,7 +70,7 @@ class AddMembersToTeamMemberLevelsPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def response_for_user_is_not_admin(self):
+    def response_for_user_is_not_admin_exception(self):
         pass
 
 
@@ -84,7 +84,7 @@ class GetTeamMembersOfLevelHierarchyPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def response_for_invalid_team_id(self):
+    def response_for_invalid_team_id_exception(self):
         pass
 
     @abc.abstractmethod
@@ -92,7 +92,7 @@ class GetTeamMembersOfLevelHierarchyPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def response_for_user_is_not_admin(self):
+    def response_for_user_is_not_admin_exception(self):
         pass
 
 
@@ -103,7 +103,7 @@ class AddMembersToSuperiorsPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def response_for_invalid_team_id(self):
+    def response_for_invalid_team_id_exception(self):
         pass
 
     @abc.abstractmethod
@@ -119,7 +119,7 @@ class AddMembersToSuperiorsPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def response_for_user_is_not_admin(self):
+    def response_for_user_is_not_admin_exception(self):
         pass
 
 
@@ -133,9 +133,9 @@ class GetTeamMemberLevelsWithMembersPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def response_for_invalid_team_id(self):
+    def response_for_invalid_team_id_exception(self):
         pass
 
     @abc.abstractmethod
-    def response_for_user_is_not_admin(self):
+    def response_for_user_is_not_admin_exception(self):
         pass

@@ -8,7 +8,7 @@ class TestGetRefreshTokensInteractor:
     @pytest.fixture()
     def presenter_mock(self):
         from unittest.mock import create_autospec
-        from ib_iam.interactors.presenter_interfaces.get_refresh_auth_tokens_presenter_interface import \
+        from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
             GetRefreshTokensPresenterInterface
         presenter = create_autospec(GetRefreshTokensPresenterInterface)
         return presenter
@@ -154,7 +154,7 @@ class TestGetRefreshTokensInteractor:
         access_token = "rNYAlle5thjiWD5MIt63GkhAws5suQ"
         refresh_token = "pNYAlle5thjiWD5MIt63GkhAws5suQ"
 
-        from ib_iam.adapters.auth_service import UserTokensDTO
+        from ib_iam.adapters.dtos import UserTokensDTO
         user_tokens_dto = UserTokensDTO(
             access_token='asdfaldskfjdfdlsdkf',
             refresh_token='sadfenkljkdfeller',

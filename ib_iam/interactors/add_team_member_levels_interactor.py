@@ -49,9 +49,9 @@ class AddTeamMemberLevelsInteractor(ValidationMixin):
                 presenter=presenter
             )
         except UserIsNotAdmin:
-            response = presenter.response_for_user_is_not_admin()
+            response = presenter.response_for_user_is_not_admin_exception()
         except InvalidTeamId:
-            response = presenter.response_for_invalid_team_id()
+            response = presenter.response_for_invalid_team_id_exception()
         except DuplicateLevelHierarchies as err:
             response = presenter.response_for_duplicate_level_hierarchies(err)
         except NegativeLevelHierarchy as err:
@@ -70,7 +70,7 @@ class AddTeamMemberLevelsInteractor(ValidationMixin):
         self.add_team_member_levels(
             team_id=team_id, user_id=user_id,
             team_member_level_dtos=team_member_level_dtos)
-        response = presenter.prepare_success_response_for_add_team_member_levels_to_team()
+        response = presenter.response_for_add_team_member_levels_to_team()
         return response
 
     def add_team_member_levels(

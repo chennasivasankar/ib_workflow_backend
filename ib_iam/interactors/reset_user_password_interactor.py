@@ -45,7 +45,7 @@ class ResetUserPasswordInteractor:
         self.reset_user_password_with_reset_password_token(
             reset_password_token=reset_password_token, password=password
         )
-        return presenter.get_update_user_password_success_response()
+        return presenter.response_for_update_user_password()
 
     @staticmethod
     def reset_user_password_with_reset_password_token(

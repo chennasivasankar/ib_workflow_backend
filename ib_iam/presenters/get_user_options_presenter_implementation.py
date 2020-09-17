@@ -5,7 +5,7 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.dtos \
     import UserOptionsDetailsDTO
-from ib_iam.interactors.presenter_interfaces.get_user_options_presenter_interface import \
+from ib_iam.interactors.presenter_interfaces.user_presenter_interface import \
     GetUserOptionsPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import CompanyIdAndNameDTO, \
     RoleIdAndNameDTO, TeamIdAndNameDTO

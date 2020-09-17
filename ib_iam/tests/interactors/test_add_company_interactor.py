@@ -23,7 +23,7 @@ class TestAddCompanyInteractor:
 
     @pytest.fixture
     def presenter(self):
-        from ib_iam.interactors.presenter_interfaces.add_company_presenter_interface import \
+        from ib_iam.interactors.presenter_interfaces.company_presenter_interface import \
             AddCompanyPresenterInterface
         return create_autospec(AddCompanyPresenterInterface)
 
@@ -43,7 +43,7 @@ class TestAddCompanyInteractor:
         user_id = "1"
         company_with_user_ids_dto = CompanyWithUserIdsDTOFactory()
         user_storage_mock.is_user_admin.return_value = False
-        presenter.get_user_has_no_access_response_for_add_company \
+        presenter.response_for_user_has_no_access_exception \
             .return_value = Mock()
 
         # Act
@@ -55,7 +55,7 @@ class TestAddCompanyInteractor:
         # Assert
         user_storage_mock.is_user_admin \
             .assert_called_once_with(user_id=user_id)
-        presenter.get_user_has_no_access_response_for_add_company \
+        presenter.response_for_user_has_no_access_exception \
             .assert_called_once()
 
     def test_given_duplicate_users_returns_duplicate_users_response(
@@ -69,7 +69,7 @@ class TestAddCompanyInteractor:
             name="company1", user_ids=user_ids)
         company_storage_mock.get_company_id_if_company_name_already_exists \
             .return_value = None
-        presenter.get_duplicate_users_response_for_add_company \
+        presenter.response_for_duplicate_user_ids_exception \
             .return_value = Mock()
 
         # Act
@@ -79,7 +79,7 @@ class TestAddCompanyInteractor:
         )
 
         # Assert
-        presenter.get_duplicate_users_response_for_add_company.assert_called_once()
+        presenter.response_for_duplicate_user_ids_exception.assert_called_once()
 
     def test_given_invalid_users_returns_invalid_users_response(
             self, interactor, company_storage_mock, user_storage_mock,
@@ -95,7 +95,7 @@ class TestAddCompanyInteractor:
             .return_value = None
         user_storage_mock.get_valid_user_ids_among_the_given_user_ids \
             .return_value = valid_user_ids
-        presenter.get_invalid_users_response_for_add_company.return_value = Mock()
+        presenter.response_for_invalid_user_ids_exception.return_value = Mock()
 
         # Act
         interactor.add_company_wrapper(
@@ -106,7 +106,7 @@ class TestAddCompanyInteractor:
         # Assert
         user_storage_mock.get_valid_user_ids_among_the_given_user_ids \
             .assert_called_once_with(user_ids=invalid_user_ids)
-        presenter.get_invalid_users_response_for_add_company \
+        presenter.response_for_invalid_user_ids_exception \
             .assert_called_once()
 
     def test_company_name_exists_returns_company_name_already_exists_response(
@@ -125,7 +125,7 @@ class TestAddCompanyInteractor:
         )
         company_storage_mock.get_company_id_if_company_name_already_exists \
             .return_value = "1"
-        presenter.get_company_name_already_exists_response_for_add_company \
+        presenter.response_for_company_name_already_exists_exception \
             .return_value = Mock()
 
         # Act
@@ -138,7 +138,7 @@ class TestAddCompanyInteractor:
         company_storage_mock.get_company_id_if_company_name_already_exists \
             .assert_called_once_with(name=company_with_user_ids_dto.name)
         call_args = presenter \
-            .get_company_name_already_exists_response_for_add_company.call_args
+            .response_for_company_name_already_exists_exception.call_args
         error_obj = call_args[0][0]
         actual_company_name_from_company_name_already_exists_error = \
             error_obj.company_name

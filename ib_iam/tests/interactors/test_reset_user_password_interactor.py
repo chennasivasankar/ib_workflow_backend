@@ -90,7 +90,7 @@ class TestResetUserPasswordInteractor:
             = update_user_password_with_reset_password_token_mock(
             mocker)
         presenter = presenter_mock
-        presenter.get_update_user_password_success_response.return_value \
+        presenter.response_for_update_user_password.return_value \
             = expected_presenter_success_response_mock
         from ib_iam.interactors.reset_user_password_interactor import \
             ResetUserPasswordInteractor
@@ -103,7 +103,7 @@ class TestResetUserPasswordInteractor:
 
         # Assert
         assert response == expected_presenter_success_response_mock
-        presenter.get_update_user_password_success_response.assert_called_once()
+        presenter.response_for_update_user_password.assert_called_once()
         update_user_password_mock.assert_called_once()
 
     def test_validate_password_min_length_raise_exception(

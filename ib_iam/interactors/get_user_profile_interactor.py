@@ -3,7 +3,8 @@ from typing import List
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.interactors.dtos.dtos import CompleteUserProfileDTO
 from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
-    GetUserProfilePresenterInterface, \
+    GetUserProfilePresenterInterface
+from ib_iam.interactors.presenter_interfaces.dtos import \
     UserWithExtraDetailsDTO
 from ib_iam.interactors.storage_interfaces.dtos import \
     TeamDTO, TeamUserIdsDTO, CompanyIdWithEmployeeIdsDTO, UserDTO, CompanyDTO
@@ -24,7 +25,7 @@ class GetUserProfileInteractor:
             user_with_extra_details_dto = self.get_user_profile(
                 user_id=user_id
             )
-            response = presenter.prepare_response_for_get_user_profile(
+            response = presenter.response_for_get_user_profile(
                 user_with_extra_details_dto=user_with_extra_details_dto
             )
         except InvalidUserId:

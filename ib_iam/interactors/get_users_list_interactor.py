@@ -7,7 +7,7 @@ from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.dtos import \
     ListOfCompleteUsersWithRolesDTO
-from ib_iam.interactors.presenter_interfaces.get_users_list_presenter_interface \
+from ib_iam.interactors.presenter_interfaces.user_presenter_interface \
     import GetUsersListPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO, \
     UserIdAndNameDTO

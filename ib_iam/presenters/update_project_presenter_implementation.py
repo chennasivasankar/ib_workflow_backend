@@ -1,7 +1,7 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_iam.constants.enums import StatusCode
-from ib_iam.interactors.presenter_interfaces.update_project_presenter_interface import (
+from ib_iam.interactors.presenter_interfaces.project_presenter_interface import (
     UpdateProjectPresenterInterface
 )
 
@@ -13,7 +13,7 @@ class UpdateProjectPresenterImplementation(
     def get_success_response_for_update_project(self):
         return self.prepare_200_success_response(response_dict={})
 
-    def get_user_has_no_access_response(self):
+    def response_for_user_has_no_access_exception(self):
         from ib_iam.constants.exception_messages import \
             USER_HAS_NO_ACCESS_TO_ADD_PROJECT
         response_dict = {
@@ -25,7 +25,7 @@ class UpdateProjectPresenterImplementation(
             response_dict=response_dict
         )
 
-    def get_invalid_project_response(self):
+    def response_for_invalid_project_id_exception(self):
         from ib_iam.constants.exception_messages import INVALID_PROJECT_ID
         response_dict = {
             "response": INVALID_PROJECT_ID[0],
@@ -36,7 +36,7 @@ class UpdateProjectPresenterImplementation(
             response_dict=response_dict
         )
 
-    def get_project_name_already_exists_response(self):
+    def response_for_project_name_already_exists_exception(self):
         from ib_iam.constants.exception_messages import (
             PROJECT_NAME_ALREADY_EXISTS
         )
@@ -49,7 +49,7 @@ class UpdateProjectPresenterImplementation(
             response_dict=response_dict
         )
 
-    def get_duplicate_team_ids_response(self):
+    def response_for_duplicate_team_ids_exception(self):
         from ib_iam.constants.exception_messages import DUPLICATE_TEAM_IDS
         response_dict = {
             "response": DUPLICATE_TEAM_IDS[0],
@@ -60,7 +60,7 @@ class UpdateProjectPresenterImplementation(
             response_dict=response_dict
         )
 
-    def get_invalid_team_ids_response(self):
+    def response_for_invalid_team_ids_exception(self):
         from ib_iam.constants.exception_messages import INVALID_TEAM_IDS
         response_dict = {
             "response": INVALID_TEAM_IDS[0],
@@ -71,7 +71,7 @@ class UpdateProjectPresenterImplementation(
             response_dict=response_dict
         )
 
-    def get_duplicate_role_ids_response(self):
+    def response_for_duplicate_role_ids_exception(self):
         from ib_iam.constants.exception_messages import (
             DUPLICATE_ROLE_IDS_FOR_UPDATE_PROJECT
         )
@@ -84,7 +84,7 @@ class UpdateProjectPresenterImplementation(
             response_dict=response_dict
         )
 
-    def get_invalid_role_ids_response(self):
+    def response_for_invalid_role_ids_exception(self):
         from ib_iam.constants.exception_messages import INVALID_ROLE_IDS
         response_dict = {
             "response": INVALID_ROLE_IDS[0],
@@ -95,7 +95,7 @@ class UpdateProjectPresenterImplementation(
             response_dict=response_dict
         )
 
-    def get_duplicate_role_names_response(self):
+    def response_for_duplicate_role_names_exception(self):
         from ib_iam.constants.exception_messages import DUPLICATE_ROLE_NAMES
         response_dict = {
             "response": DUPLICATE_ROLE_NAMES[0],
@@ -106,7 +106,7 @@ class UpdateProjectPresenterImplementation(
             response_dict=response_dict
         )
 
-    def get_role_names_already_exists_response(self, exception):
+    def response_for_role_names_already_exists_exception(self, exception):
         from ib_iam.constants.exception_messages import \
             ROLE_NAMES_ALREADY_EXISTS
         response_dict = {

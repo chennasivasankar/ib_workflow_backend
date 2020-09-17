@@ -21,7 +21,7 @@ class TestUpdateTeamDetails:
 
     @pytest.fixture
     def presenter(self):
-        from ib_iam.interactors.presenter_interfaces.update_team_presenter_interface \
+        from ib_iam.interactors.presenter_interfaces.team_presenter_interface \
             import UpdateTeamPresenterInterface
         return create_autospec(UpdateTeamPresenterInterface)
 

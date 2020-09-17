@@ -5,7 +5,7 @@ from ib_iam.storages.team_storage_implementation import (
     TeamStorageImplementation
 )
 from ib_iam.presenters.team_presenter_implementation import (
-    TeamPresenterImplementation
+    GetTeamsPresenterImplementation
 )
 from ib_iam.interactors.get_list_of_teams_interactor import (
     GetListOfTeamsInteractor
@@ -24,7 +24,7 @@ def api_wrapper(*args, **kwargs):
 
     team_storage = TeamStorageImplementation()
     user_storage = UserStorageImplementation()
-    presenter = TeamPresenterImplementation()
+    presenter = GetTeamsPresenterImplementation()
     interactor = GetListOfTeamsInteractor(team_storage=team_storage,
                                           user_storage=user_storage)
 

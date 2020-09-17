@@ -4,10 +4,10 @@ from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.constants.exception_messages import \
     USER_HAS_NO_ACCESS_FOR_GET_COMPANIES
 from ib_iam.interactors.presenter_interfaces \
-    .get_companies_presenter_interface import \
+    .company_presenter_interface import \
     GetCompaniesPresenterInterface
 from ib_iam.interactors.presenter_interfaces \
-    .get_companies_presenter_interface import \
+    .company_presenter_interface import \
     CompanyWithEmployeeIdsAndUserDetailsDTO
 from ib_iam.interactors.storage_interfaces.dtos import (
     CompanyDTO)
@@ -18,7 +18,7 @@ class GetCompaniesPresenterImplementation(
     GetCompaniesPresenterInterface, HTTPResponseMixin
 ):
 
-    def get_user_has_no_access_response_for_get_companies(self):
+    def response_for_user_has_no_access_exception(self):
         from ib_iam.constants.enums import StatusCode
         response_dict = {
             "response": USER_HAS_NO_ACCESS_FOR_GET_COMPANIES[0],

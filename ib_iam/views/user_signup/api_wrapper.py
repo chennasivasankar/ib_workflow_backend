@@ -10,7 +10,7 @@ def api_wrapper(*args, **kwargs):
     email = request_data["email"]
     password = request_data["password"]
 
-    from ib_iam.presenters.auth_presenter_implementation import \
+    from ib_iam.presenters.create_user_account_presenter_implementation import \
         CreateUserAccountPresenterImplementation
     presenter = CreateUserAccountPresenterImplementation()
     from ib_iam.storages.user_storage_implementation import \

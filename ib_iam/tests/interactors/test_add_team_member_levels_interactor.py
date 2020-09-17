@@ -87,7 +87,7 @@ class TestAddTeamMemberLevelsInteractor:
             InvalidTeamId
         user_storage_mock.is_user_admin.return_value = True
 
-        presenter_mock.response_for_invalid_team_id.return_value \
+        presenter_mock.response_for_invalid_team_id_exception.return_value \
             = expected_result
 
         # Act
@@ -100,7 +100,7 @@ class TestAddTeamMemberLevelsInteractor:
         assert response == expected_result
         team_member_level_storage_mock.validate_team_id.assert_called_with(
             team_id=team_id)
-        presenter_mock.response_for_invalid_team_id.assert_called_once()
+        presenter_mock.response_for_invalid_team_id_exception.assert_called_once()
 
     def test_with_user_not_admin_return_response(
             self, team_member_level_storage_mock, presenter_mock, interactor,
@@ -114,7 +114,7 @@ class TestAddTeamMemberLevelsInteractor:
 
         user_storage_mock.is_user_admin.return_value = False
 
-        presenter_mock.response_for_user_is_not_admin.return_value \
+        presenter_mock.response_for_user_is_not_admin_exception.return_value \
             = expected_result
 
         # Act
@@ -126,7 +126,7 @@ class TestAddTeamMemberLevelsInteractor:
         # Assert
         assert response == expected_result
         user_storage_mock.is_user_admin.assert_called_with(user_id=user_id)
-        presenter_mock.response_for_user_is_not_admin.assert_called_once()
+        presenter_mock.response_for_user_is_not_admin_exception.assert_called_once()
 
     def test_with_duplicate_level_hierarchies_return_response(
             self, team_member_level_storage_mock, presenter_mock, interactor,
@@ -247,7 +247,7 @@ class TestAddTeamMemberLevelsInteractor:
 
         expected_result = Mock()
 
-        presenter_mock.prepare_success_response_for_add_team_member_levels_to_team.return_value = \
+        presenter_mock.response_for_add_team_member_levels_to_team.return_value = \
             expected_result
 
         # Act
@@ -259,7 +259,7 @@ class TestAddTeamMemberLevelsInteractor:
         # Assert
         assert response == expected_result
 
-        presenter_mock.prepare_success_response_for_add_team_member_levels_to_team. \
+        presenter_mock.response_for_add_team_member_levels_to_team. \
             assert_called_once()
         team_member_level_storage_mock.add_team_member_levels.assert_called_once_with(
             team_id=team_id, team_member_level_dtos=team_member_level_dtos

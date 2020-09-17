@@ -6,7 +6,7 @@ from .validator_class import ValidatorClass
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     user_id = str(kwargs["user"].user_id)
-    from ib_iam.presenters.auth_presenter_implementation import \
+    from ib_iam.presenters.verify_email_presenter_implementation import \
         VerifyEmailPresenterImplementation
     presenter = VerifyEmailPresenterImplementation()
 

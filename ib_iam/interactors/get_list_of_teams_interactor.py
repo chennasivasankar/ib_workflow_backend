@@ -3,7 +3,7 @@ from typing import List
 from ib_iam.adapters.service_adapter import get_service_adapter
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
-    .team_presenter_interface import TeamPresenterInterface
+    .team_presenter_interface import GetTeamsPresenterInterface
 from ib_iam.interactors.storage_interfaces \
     .team_storage_interface import TeamStorageInterface
 from ib_iam.interactors.presenter_interfaces.dtos import (
@@ -27,7 +27,7 @@ class GetListOfTeamsInteractor(ValidationMixin):
 
     def get_list_of_teams_wrapper(
             self, user_id: str, pagination_dto: PaginationDTO,
-            presenter: TeamPresenterInterface
+            presenter: GetTeamsPresenterInterface
     ):
         try:
             team_details_dtos = self.get_list_of_teams(
@@ -37,11 +37,11 @@ class GetListOfTeamsInteractor(ValidationMixin):
                 team_details_dtos=team_details_dtos
             )
         except UserIsNotAdmin:
-            response = presenter.get_user_has_no_access_response_for_get_list_of_teams()
+            response = presenter.response_for_user_has_no_access_exception()
         except InvalidLimitValue:
-            response = presenter.get_invalid_limit_response_for_get_list_of_teams()
+            response = presenter.response_for_invalid_limit_value_exception()
         except InvalidOffsetValue:
-            response = presenter.get_invalid_offset_response_for_get_list_of_teams()
+            response = presenter.response_for_invalid_offset_value_exception()
         return response
 
     def get_list_of_teams(self, user_id: str, pagination_dto: PaginationDTO):

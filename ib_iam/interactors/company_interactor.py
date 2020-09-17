@@ -3,11 +3,11 @@ from ib_iam.exceptions.custom_exceptions import (
     UserIsNotAdmin, UserIdsAreInvalid)
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
-    .add_company_presenter_interface import AddCompanyPresenterInterface
+    .company_presenter_interface import AddCompanyPresenterInterface
 from ib_iam.interactors.presenter_interfaces \
-    .delete_company_presenter_interface import DeleteCompanyPresenterInterface
+    .company_presenter_interface import DeleteCompanyPresenterInterface
 from ib_iam.interactors.presenter_interfaces \
-    .update_company_presenter_interface import UpdateCompanyPresenterInterface
+    .company_presenter_interface import UpdateCompanyPresenterInterface
 from ib_iam.interactors.storage_interfaces \
     .company_storage_interface import CompanyStorageInterface
 from ib_iam.interactors.storage_interfaces.dtos import CompanyDTO, \
@@ -40,15 +40,15 @@ class CompanyInteractor(ValidationMixin):
                 company_id=company_id
             )
         except UserIsNotAdmin:
-            response = presenter.get_user_has_no_access_response_for_add_company()
+            response = presenter.response_for_user_has_no_access_exception()
         except CompanyNameAlreadyExists as err:
-            response = presenter.get_company_name_already_exists_response_for_add_company(
+            response = presenter.response_for_company_name_already_exists_exception(
                 err
             )
         except DuplicateUserIds:
-            response = presenter.get_duplicate_users_response_for_add_company()
+            response = presenter.response_for_duplicate_user_ids_exception()
         except UserIdsAreInvalid:
-            response = presenter.get_invalid_users_response_for_add_company()
+            response = presenter.response_for_invalid_user_ids_exception()
         return response
 
     def add_company(
@@ -82,9 +82,9 @@ class CompanyInteractor(ValidationMixin):
             self.delete_company(user_id=user_id, company_id=company_id)
             response = presenter.get_success_response_for_delete_company()
         except UserIsNotAdmin:
-            response = presenter.get_user_has_no_access_response_for_delete_company()
+            response = presenter.response_for_user_has_no_access_exception()
         except InvalidCompanyId:
-            response = presenter.get_invalid_company_response_for_delete_company()
+            response = presenter.response_for_invalid_company_id_exception()
         return response
 
     def delete_company(self, user_id: str, company_id: str):
@@ -102,17 +102,17 @@ class CompanyInteractor(ValidationMixin):
                 user_id=user_id, company_with_company_id_and_user_ids_dto=
                 company_with_company_id_and_user_ids_dto
             )
-            response = presenter.get_success_response_for_update_company()
+            response = presenter.get_response_for_update_company()
         except UserIsNotAdmin:
-            response = presenter.get_user_has_no_access_response_for_update_company()
+            response = presenter.response_for_user_has_no_access_exception()
         except InvalidCompanyId:
-            response = presenter.get_invalid_company_response_for_update_company()
+            response = presenter.response_for_invalid_company_id_exception()
         except DuplicateUserIds:
-            response = presenter.get_duplicate_users_response_for_update_company()
+            response = presenter.response_for_duplicate_user_ids_exception()
         except UserIdsAreInvalid:
-            response = presenter.get_invalid_users_response_for_update_company()
+            response = presenter.response_for_invalid_user_ids_exception()
         except CompanyNameAlreadyExists as err:
-            response = presenter.get_company_name_already_exists_response_for_update_company(
+            response = presenter.response_for_company_name_already_exists_exception(
                 err
             )
         return response

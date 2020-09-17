@@ -7,7 +7,7 @@ class TestUpdateUserProfileInteractor:
     @pytest.fixture
     def presenter_mock(self):
         from ib_iam.interactors.presenter_interfaces \
-            .update_user_password_presenter_interface import \
+            .auth_presenter_interface import \
             UpdateUserPasswordPresenterInterface
         storage = mock.create_autospec(UpdateUserPasswordPresenterInterface)
         return storage
@@ -36,7 +36,7 @@ class TestUpdateUserProfileInteractor:
         user_id = "1"
         current_and_new_password_dto = CurrentAndNewPasswordDTOFactory()
         adapter_mock.side_effect = InvalidNewPassword
-        presenter_mock.raise_invalid_new_password_exception \
+        presenter_mock.response_for_invalid_new_password_exception \
             .return_value = mock.Mock()
 
         # Act
@@ -50,7 +50,7 @@ class TestUpdateUserProfileInteractor:
             user_id=user_id,
             current_and_new_password_dto=current_and_new_password_dto
         )
-        presenter_mock.raise_invalid_new_password_exception \
+        presenter_mock.response_for_invalid_new_password_exception \
             .assert_called_once()
 
     def test_given_invalid_current_password_raises_invalid_current_password_exception(
@@ -63,7 +63,7 @@ class TestUpdateUserProfileInteractor:
         user_id = "1"
         current_and_new_password_dto = CurrentAndNewPasswordDTOFactory()
         adapter_mock.side_effect = InvalidCurrentPassword
-        presenter_mock.raise_invalid_new_password_exception \
+        presenter_mock.response_for_invalid_new_password_exception \
             .return_value = mock.Mock(())
 
         # Act
@@ -76,7 +76,7 @@ class TestUpdateUserProfileInteractor:
         adapter_mock.assert_called_once_with(
             user_id=user_id,
             current_and_new_password_dto=current_and_new_password_dto)
-        presenter_mock.raise_invalid_current_password_exception \
+        presenter_mock.response_for_invalid_current_password_exception \
             .assert_called_once()
 
     def test_given_mismatching_current_password_raises_current_password_mismatch_exception(
@@ -89,7 +89,7 @@ class TestUpdateUserProfileInteractor:
         user_id = "1"
         current_and_new_password_dto = CurrentAndNewPasswordDTOFactory()
         adapter_mock.side_effect = CurrentPasswordMismatch
-        presenter_mock.raise_invalid_new_password_exception \
+        presenter_mock.response_for_invalid_new_password_exception \
             .return_value = mock.Mock()
 
         # Act
@@ -103,7 +103,7 @@ class TestUpdateUserProfileInteractor:
             user_id=user_id,
             current_and_new_password_dto=current_and_new_password_dto
         )
-        presenter_mock.raise_current_password_mismatch_exception \
+        presenter_mock.response_for_current_password_mismatch_exception \
             .assert_called_once()
 
     def test_given_valid_details_returns_success_response(

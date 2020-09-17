@@ -20,7 +20,7 @@ class TestUpdateUserProfileInteractor:
     def presenter_mock(self):
         from unittest import mock
         from ib_iam.interactors.presenter_interfaces \
-            .update_user_profile_presenter_interface import \
+            .auth_presenter_interface import \
             UpdateUserProfilePresenterInterface
         storage = mock.create_autospec(UpdateUserProfilePresenterInterface)
         return storage

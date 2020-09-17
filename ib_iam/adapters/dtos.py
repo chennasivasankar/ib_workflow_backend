@@ -17,3 +17,17 @@ class SearchQueryWithPaginationDTO:
     limit: int
     offset: int
     search_query: str
+
+
+@dataclass
+class EmailAndPasswordDTO:
+    email: str
+    password: str
+
+
+@dataclass
+class UserTokensDTO:
+    access_token: str
+    refresh_token: str
+    expires_in_seconds: int
+    user_id: str

@@ -24,7 +24,7 @@ class TestLoginInteractor:
 
     @pytest.fixture()
     def email_and_password_dto(self):
-        from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+        from ib_iam.adapters.dtos import EmailAndPasswordDTO
         email_and_password_dto = EmailAndPasswordDTO(
             email="test@gmail.com",
             password="test123"
@@ -114,7 +114,7 @@ class TestLoginInteractor:
     ):
         # Arrange
         user_id = "1"
-        from ib_iam.adapters.auth_service import UserTokensDTO
+        from ib_iam.adapters.dtos import UserTokensDTO
         tokens_dto = UserTokensDTO(
             access_token="asdfaldskfjdfdlsdkf",
             refresh_token="sadfenkljkdfeller", expires_in_seconds=1000,

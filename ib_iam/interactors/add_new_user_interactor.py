@@ -8,7 +8,7 @@ from ib_iam.exceptions.custom_exceptions import (
 )
 from ib_iam.interactors.dtos.dtos import AddUserDetailsDTO
 from ib_iam.interactors.mixins.validation import ValidationMixin
-from ib_iam.interactors.presenter_interfaces.add_new_user_presenter_inerface \
+from ib_iam.interactors.presenter_interfaces.user_presenter_interface \
     import AddUserPresenterInterface
 from ib_iam.interactors.storage_interfaces.elastic_storage_interface \
     import ElasticSearchStorageInterface

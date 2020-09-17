@@ -29,7 +29,7 @@ class TestEditNewUserInteractor:
         from unittest import mock
 
         from ib_iam.interactors.presenter_interfaces. \
-            edit_user_presenter_interface import EditUserPresenterInterface
+            user_presenter_interface import EditUserPresenterInterface
         storage = mock.create_autospec(EditUserPresenterInterface)
         return storage
 

@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_iam.exceptions.custom_exceptions import InvalidOffsetValue, \
-    InvalidLimitValue, UserIdsAreInvalid
+    InvalidLimitValue
 
 
 class ValidationMixin:
@@ -33,7 +33,6 @@ class ValidationMixin:
 
     @staticmethod
     def _validate_is_name_satisfies_minimum_length_constant(value: str):
-        # value = value.replace(" ", "")
         from ib_iam.constants.config import MINIMUM_USER_NAME_LENGTH
         is_string_not_satisfies_minimum_length = \
             len(value) < MINIMUM_USER_NAME_LENGTH

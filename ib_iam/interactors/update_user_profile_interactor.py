@@ -9,7 +9,7 @@ from ib_iam.exceptions.custom_exceptions import (
 from ib_iam.interactors.dtos.dtos import CompleteUserProfileDTO
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
-    .update_user_profile_presenter_interface import \
+    .auth_presenter_interface import \
     UpdateUserProfilePresenterInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface

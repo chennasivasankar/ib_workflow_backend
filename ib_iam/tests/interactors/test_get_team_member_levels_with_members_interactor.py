@@ -53,7 +53,7 @@ class TestGetTeamMemberLevelsWithMembersInteractor:
 
         user_storage_mock.is_user_admin.return_value = False
 
-        presenter_mock.response_for_user_is_not_admin.return_value \
+        presenter_mock.response_for_user_is_not_admin_exception.return_value \
             = expected_presenter_response_for_invalid_project_id_mock
 
         # Act
@@ -65,7 +65,7 @@ class TestGetTeamMemberLevelsWithMembersInteractor:
         assert response == \
                expected_presenter_response_for_invalid_project_id_mock
         user_storage_mock.is_user_admin.assert_called_with(user_id=user_id)
-        presenter_mock.response_for_user_is_not_admin.assert_called_once()
+        presenter_mock.response_for_user_is_not_admin_exception.assert_called_once()
 
     def test_with_invalid_team_id_return_response(
             self, team_member_level_storage_mock, presenter_mock, interactor,
@@ -82,7 +82,7 @@ class TestGetTeamMemberLevelsWithMembersInteractor:
             InvalidTeamId
         user_storage_mock.is_user_admin.return_value = True
 
-        presenter_mock.response_for_invalid_team_id.return_value \
+        presenter_mock.response_for_invalid_team_id_exception.return_value \
             = expected_presenter_response_for_invalid_team_id_mock
 
         # Act
@@ -94,7 +94,7 @@ class TestGetTeamMemberLevelsWithMembersInteractor:
         assert response == \
                expected_presenter_response_for_invalid_team_id_mock
         team_member_level_storage_mock.validate_team_id.assert_called_with(team_id=team_id)
-        presenter_mock.response_for_invalid_team_id.assert_called_once()
+        presenter_mock.response_for_invalid_team_id_exception.assert_called_once()
 
     def test_with_valid_details_return_response(
             self, team_member_level_storage_mock, presenter_mock, interactor,

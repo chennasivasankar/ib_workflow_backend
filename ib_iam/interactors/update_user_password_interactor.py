@@ -1,7 +1,7 @@
 import dataclasses
 
 from ib_iam.interactors.presenter_interfaces \
-    .update_user_password_presenter_interface import \
+    .auth_presenter_interface import \
     UpdateUserPasswordPresenterInterface
 
 
@@ -27,11 +27,11 @@ class UpdateUserPasswordInteractor:
             )
             response = presenter.get_success_response_for_update_user_password()
         except InvalidNewPassword:
-            response = presenter.raise_invalid_new_password_exception()
+            response = presenter.response_for_invalid_new_password_exception()
         except InvalidCurrentPassword:
-            response = presenter.raise_invalid_current_password_exception()
+            response = presenter.response_for_invalid_current_password_exception()
         except CurrentPasswordMismatch:
-            response = presenter.raise_current_password_mismatch_exception()
+            response = presenter.response_for_current_password_mismatch_exception()
         return response
 
     @staticmethod

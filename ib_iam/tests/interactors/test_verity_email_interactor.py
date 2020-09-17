@@ -33,7 +33,7 @@ class TestVerifyEmailInteractor:
         get_user_profile_dto_mock.return_value = UserProfileDTO(
             user_id=user_id, name="Baba"
         )
-        presenter_mock.raise_email_does_not_exist_to_verify_exception. \
+        presenter_mock.response_for_email_does_not_exist_exception. \
             return_value = Mock()
 
         # Act
@@ -42,7 +42,7 @@ class TestVerifyEmailInteractor:
 
         # Assert
         get_user_profile_dto_mock.assert_called_once_with(user_id=user_id)
-        presenter_mock.raise_email_does_not_exist_to_verify_exception \
+        presenter_mock.response_for_email_does_not_exist_exception \
             .assert_called_once()
 
     def test_given_email_already_verified_raises_exception(
@@ -60,7 +60,7 @@ class TestVerifyEmailInteractor:
             email="example@gmail.com", user_id=user_id, name="Baba",
             is_email_verified=True
         )
-        presenter_mock.raise_email_already_verified_exception.return_value \
+        presenter_mock.response_for_email_already_verified_exception.return_value \
             = Mock()
 
         # Act
@@ -69,7 +69,7 @@ class TestVerifyEmailInteractor:
 
         # Arrange
         get_user_profile_dto_mock.assert_called_once_with(user_id=user_id)
-        presenter_mock.raise_email_already_verified_exception \
+        presenter_mock.response_for_email_already_verified_exception \
             .assert_called_once()
 
     def test_verified_email_then_return_response(

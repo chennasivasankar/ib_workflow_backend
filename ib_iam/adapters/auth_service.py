@@ -2,22 +2,9 @@ import dataclasses
 
 from ib_users.validators.base_validator import CustomException
 
+from ib_iam.adapters.dtos import EmailAndPasswordDTO, UserTokensDTO
 from ib_iam.interactors.update_user_password_interactor import \
     CurrentAndNewPasswordDTO
-
-
-@dataclasses.dataclass
-class EmailAndPasswordDTO:
-    email: str
-    password: str
-
-
-@dataclasses.dataclass
-class UserTokensDTO:
-    access_token: str
-    refresh_token: str
-    expires_in_seconds: int
-    user_id: str
 
 
 class AccessTokenNotFound(Exception):

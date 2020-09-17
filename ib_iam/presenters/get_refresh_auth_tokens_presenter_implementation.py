@@ -1,8 +1,8 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_iam.adapters.auth_service import UserTokensDTO
+from ib_iam.adapters.dtos import UserTokensDTO
 from ib_iam.constants.enums import StatusCode
-from ib_iam.interactors.presenter_interfaces.get_refresh_auth_tokens_presenter_interface import \
+from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
     GetRefreshTokensPresenterInterface
 
 ACCESS_TOKEN_NOT_FOUND = (

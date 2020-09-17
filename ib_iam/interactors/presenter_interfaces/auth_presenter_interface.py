@@ -4,23 +4,15 @@ from typing import List, Optional
 
 from django.http import HttpResponse
 
-from ib_iam.adapters.auth_service import UserTokensDTO
+from ib_iam.adapters.dtos import UserTokensDTO
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.interactors.dtos.dtos import CompleteUserProfileDTO
+from ib_iam.interactors.presenter_interfaces.dtos import \
+    UserWithExtraDetailsDTO
 from ib_iam.interactors.storage_interfaces.dtos import (
     CompanyDTO, TeamDTO, TeamUserIdsDTO, CompanyIdWithEmployeeIdsDTO,
-    UserRoleDTO)
-
-
-@dataclasses.dataclass
-class UserWithExtraDetailsDTO:
-    user_profile_dto: CompleteUserProfileDTO
-    company_dto: Optional[CompanyDTO]
-    team_dtos: List[TeamDTO]
-    team_user_ids_dto: List[TeamUserIdsDTO]
-    company_id_with_employee_ids_dto: Optional[CompanyIdWithEmployeeIdsDTO]
-    user_dtos: List[UserProfileDTO]
-    role_dtos: List[UserRoleDTO]
+    UserRoleDTO
+)
 
 
 class AuthPresenterInterface(abc.ABC):
@@ -66,7 +58,7 @@ class AuthPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_update_user_password_success_response(self):
+    def response_for_update_user_password(self):
         pass
 
     @abc.abstractmethod
@@ -84,7 +76,7 @@ class GetUserProfilePresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def prepare_response_for_get_user_profile(
+    def response_for_get_user_profile(
             self, user_with_extra_details_dto: UserWithExtraDetailsDTO
     ):
         pass
@@ -122,11 +114,11 @@ class CreateUserAccountPresenterInterface(abc.ABC):
 
 class SendVerifyEmailLinkPresenterInterface(abc.ABC):
     @abc.abstractmethod
-    def raise_account_does_not_exist_exception(self):
+    def response_for_account_does_not_exist_exception(self):
         pass
 
     @abc.abstractmethod
-    def raise_email_already_verified_exception(self):
+    def response_for_email_already_verified_exception(self):
         pass
 
     @abc.abstractmethod
@@ -136,13 +128,87 @@ class SendVerifyEmailLinkPresenterInterface(abc.ABC):
 
 class VerifyEmailPresenterInterface(abc.ABC):
     @abc.abstractmethod
-    def raise_email_does_not_exist_to_verify_exception(self):
+    def response_for_email_does_not_exist_exception(self):
         pass
 
     @abc.abstractmethod
-    def raise_email_already_verified_exception(self):
+    def response_for_email_already_verified_exception(self):
         pass
 
     @abc.abstractmethod
     def get_response_for_verified_email(self):
+        pass
+
+
+class GetRefreshTokensPresenterInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def response_for_access_token_not_found(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_refresh_token_expired(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_refresh_token_not_found(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_user_account_not_found(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_user_tokens_dto(self, user_tokens_dto: UserTokensDTO):
+        pass
+
+
+class UpdateUserProfilePresenterInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def get_response_for_update_user_profile(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_invalid_name_length_exception(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_duplicate_role_ids_exception(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_invalid_role_ids_exception(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_name_contains_special_character_exception(
+            self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_invalid_email_exception(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_email_already_exists_exception(self):
+        pass
+
+
+class UpdateUserPasswordPresenterInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def get_success_response_for_update_user_password(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_invalid_new_password_exception(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_invalid_current_password_exception(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_current_password_mismatch_exception(self):
         pass

@@ -32,7 +32,7 @@ class AddMembersToTeamMemberLevelsPresenterImplementation(
     def prepare_success_response_for_add_members_to_team_member_levels(self):
         return self.prepare_201_created_response(response_dict={})
 
-    def response_for_invalid_team_id(self):
+    def response_for_invalid_team_id_exception(self):
         response_dict = {
             "response": INVALID_TEAM_ID[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
@@ -63,7 +63,7 @@ class AddMembersToTeamMemberLevelsPresenterImplementation(
         return self.prepare_404_not_found_response(
             response_dict=response_dict)
 
-    def response_for_user_is_not_admin(self):
+    def response_for_user_is_not_admin_exception(self):
         response_dict = {
             "response": USER_DOES_NOT_HAVE_ACCESS[0],
             "http_status_code": StatusCode.FORBIDDEN.value,

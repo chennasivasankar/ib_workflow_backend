@@ -14,10 +14,10 @@ from ib_iam.interactors.dtos.dtos import (
     UserIdWithProjectIdAndStatusDTO
 )
 from ib_iam.interactors.mixins.validation import ValidationMixin
-from ib_iam.interactors.presenter_interfaces.add_project_presenter_interface import (
+from ib_iam.interactors.presenter_interfaces.project_presenter_interface import (
     AddProjectPresenterInterface
 )
-from ib_iam.interactors.presenter_interfaces.update_project_presenter_interface import (
+from ib_iam.interactors.presenter_interfaces.project_presenter_interface import (
     UpdateProjectPresenterInterface
 )
 from ib_iam.interactors.storage_interfaces.dtos import (
@@ -320,19 +320,19 @@ class ProjectInteractor(ValidationMixin):
             )
             response = presenter.get_success_response_for_add_project()
         except UserIsNotAdmin:
-            response = presenter.get_user_has_no_access_response()
+            response = presenter.response_for_user_has_no_access_exception()
         except ProjectNameAlreadyExists:
-            response = presenter.get_project_name_already_exists_response()
+            response = presenter.response_for_project_name_already_exists_exception()
         except ProjectDisplayIdAlreadyExists:
-            response = presenter.get_project_display_id_already_exists_response()
+            response = presenter.response_for_project_display_id_already_exists_exception()
         except TeamIdsAreInvalid:
-            response = presenter.get_invalid_team_ids_response()
+            response = presenter.response_for_invalid_team_ids_exception()
         except DuplicateTeamIds:
-            response = presenter.get_duplicate_team_ids_response()
+            response = presenter.response_for_duplicate_team_ids_exception()
         except DuplicateRoleNamesExists:
-            response = presenter.get_duplicate_role_names_response()
+            response = presenter.response_for_duplicate_role_names_exception()
         except RoleNamesAlreadyExists as exception:
-            response = presenter.get_role_names_already_exists_response(
+            response = presenter.response_for_role_names_already_exists_exception(
                 exception
             )
         return response
@@ -400,23 +400,23 @@ class ProjectInteractor(ValidationMixin):
             )
             response = presenter.get_success_response_for_update_project()
         except UserIsNotAdmin:
-            response = presenter.get_user_has_no_access_response()
+            response = presenter.response_for_user_has_no_access_exception()
         except InvalidProjectId:
-            response = presenter.get_invalid_project_response()
+            response = presenter.response_for_invalid_project_id_exception()
         except ProjectNameAlreadyExists:
-            response = presenter.get_project_name_already_exists_response()
+            response = presenter.response_for_project_name_already_exists_exception()
         except DuplicateTeamIds:
-            response = presenter.get_duplicate_team_ids_response()
+            response = presenter.response_for_duplicate_team_ids_exception()
         except TeamIdsAreInvalid:
-            response = presenter.get_invalid_team_ids_response()
+            response = presenter.response_for_invalid_team_ids_exception()
         except RoleIdsAreDuplicated:
-            response = presenter.get_duplicate_role_ids_response()
+            response = presenter.response_for_duplicate_role_ids_exception()
         except RoleIdsAreInvalid:
-            response = presenter.get_invalid_role_ids_response()
+            response = presenter.response_for_invalid_role_ids_exception()
         except DuplicateRoleNamesExists:
-            response = presenter.get_duplicate_role_names_response()
+            response = presenter.response_for_duplicate_role_names_exception()
         except RoleNamesAlreadyExists as exception:
-            response = presenter.get_role_names_already_exists_response(
+            response = presenter.response_for_role_names_already_exists_exception(
                 exception)
         return response
 

@@ -19,9 +19,9 @@ class SendVerifyEmailLinkInteractor:
             self.send_verify_email_link(email=email)
             return presenter.get_response_send_verify_email_link()
         except UserAccountDoesNotExist:
-            return presenter.raise_account_does_not_exist_exception()
+            return presenter.response_for_account_does_not_exist_exception()
         except EmailAlreadyVerifiedException:
-            return presenter.raise_email_already_verified_exception()
+            return presenter.response_for_email_already_verified_exception()
         # TODO validate email pattern
 
     def send_verify_email_link(self, email: str):

@@ -1,7 +1,7 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_iam.constants.enums import StatusCode
-from ib_iam.interactors.presenter_interfaces.assign_user_roles_for_given_project_presenter_interface import \
+from ib_iam.interactors.presenter_interfaces.user_presenter_interface import \
     AssignUserRolesForGivenProjectBulkPresenterInterface
 
 INVALID_USER_IDS_FOR_PROJECT = (

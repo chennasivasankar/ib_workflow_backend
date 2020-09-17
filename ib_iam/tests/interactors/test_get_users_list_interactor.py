@@ -81,7 +81,7 @@ class TestGetUsersDetailsInteractor:
     def presenter_mock(self):
         from unittest import mock
         from ib_iam.interactors.presenter_interfaces. \
-            get_users_list_presenter_interface import \
+            user_presenter_interface import \
             GetUsersListPresenterInterface
         storage = mock.create_autospec(GetUsersListPresenterInterface)
         return storage

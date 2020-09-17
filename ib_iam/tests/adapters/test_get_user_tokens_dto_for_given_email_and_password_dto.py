@@ -16,7 +16,7 @@ class TestGetUserTokens:
             self, mocker
     ):
         # Arrange
-        from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+        from ib_iam.adapters.dtos import EmailAndPasswordDTO
         email_and_password_dto = EmailAndPasswordDTO(
             email="test@gmail.com",
             password="test123"
@@ -35,7 +35,7 @@ class TestGetUserTokens:
             user_id="11"
         )
 
-        from ib_iam.adapters.auth_service import UserTokensDTO
+        from ib_iam.adapters.dtos import UserTokensDTO
         expected_user_tokens_dtos = UserTokensDTO(
             access_token='asdfaldskfjdfdlsdkf',
             refresh_token='sadfenkljkdfeller',
@@ -68,7 +68,7 @@ class TestGetUserTokens:
             self, mocker
     ):
         # Arrange
-        from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+        from ib_iam.adapters.dtos import EmailAndPasswordDTO
         email_and_password_dto = EmailAndPasswordDTO(
             email="test@gmail.com",
             password="test123"
@@ -102,7 +102,7 @@ class TestGetUserTokens:
             self, mocker
     ):
         # Arrange
-        from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+        from ib_iam.adapters.dtos import EmailAndPasswordDTO
         email_and_password_dto = EmailAndPasswordDTO(
             email="test@gmail.com",
             password="test123"
@@ -138,7 +138,7 @@ class TestGetUserTokens:
             self, mocker
     ):
         # Arrange
-        from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+        from ib_iam.adapters.dtos import EmailAndPasswordDTO
         email_and_password_dto = EmailAndPasswordDTO(
             email="test@gmail.com",
             password="test123"
@@ -176,7 +176,7 @@ class TestGetUserTokens:
             self, mocker
     ):
         # Arrange
-        from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+        from ib_iam.adapters.dtos import EmailAndPasswordDTO
         email_and_password_dto = EmailAndPasswordDTO(
             email="test@gmail.com",
             password="test123"
@@ -212,7 +212,7 @@ class TestGetUserTokens:
             self, mocker
     ):
         # Arrange
-        from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+        from ib_iam.adapters.dtos import EmailAndPasswordDTO
         email_and_password_dto = EmailAndPasswordDTO(
             email="test@gmail.com",
             password="test123"
@@ -248,7 +248,7 @@ class TestGetUserTokens:
             self, mocker
     ):
         # Arrange
-        from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+        from ib_iam.adapters.dtos import EmailAndPasswordDTO
         email_and_password_dto = EmailAndPasswordDTO(
             email="test@gmail.com",
             password="test123"

@@ -41,9 +41,9 @@ class AddMembersToTeamMemberLevelsInteractor(ValidationMixin):
                 presenter=presenter, team_id=team_id, user_id=user_id
             )
         except UserIsNotAdmin:
-            response = presenter.response_for_user_is_not_admin()
+            response = presenter.response_for_user_is_not_admin_exception()
         except InvalidTeamId:
-            response = presenter.response_for_invalid_team_id()
+            response = presenter.response_for_invalid_team_id_exception()
         except TeamMemberLevelIdsNotFound as err:
             response = presenter.response_for_team_member_level_ids_not_found(
                 err
