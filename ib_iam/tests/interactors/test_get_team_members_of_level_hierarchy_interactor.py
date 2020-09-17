@@ -34,7 +34,7 @@ class TestGetTeamMembersOfLevelHierarchyInteractor:
 
     @pytest.fixture()
     def interactor(self, team_member_level_storage_mock, user_storage_mock):
-        from ib_iam.interactors.get_team_members_of_level_hierarchy_interactor import \
+        from ib_iam.interactors.levels.get_team_members_of_level_hierarchy_interactor import \
             GetTeamMembersOfLevelHierarchyInteractor
         interactor = GetTeamMembersOfLevelHierarchyInteractor(
             team_member_level_storage=team_member_level_storage_mock,
@@ -187,7 +187,7 @@ class TestGetImmediateSuperiorUserId:
 
     @pytest.fixture()
     def interactor(self, team_member_level_storage_mock, user_storage_mock):
-        from ib_iam.interactors.get_team_members_of_level_hierarchy_interactor import \
+        from ib_iam.interactors.levels.get_team_members_of_level_hierarchy_interactor import \
             GetTeamMembersOfLevelHierarchyInteractor
         interactor = GetTeamMembersOfLevelHierarchyInteractor(
             team_member_level_storage=team_member_level_storage_mock,

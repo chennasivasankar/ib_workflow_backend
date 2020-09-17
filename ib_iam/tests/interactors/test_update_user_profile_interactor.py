@@ -27,7 +27,7 @@ class TestUpdateUserProfileInteractor:
 
     @pytest.fixture
     def interactor(self, storage_mock):
-        from ib_iam.interactors.update_user_profile_interactor import \
+        from ib_iam.interactors.auth.update_user_profile_interactor import \
             UpdateUserProfileInteractor
         interactor = UpdateUserProfileInteractor(user_storage=storage_mock)
         return interactor

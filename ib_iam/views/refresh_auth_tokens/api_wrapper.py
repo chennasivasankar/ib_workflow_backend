@@ -14,7 +14,7 @@ def api_wrapper(*args, **kwargs):
         GetRefreshTokensPresenterImplementation
     presenter = GetRefreshTokensPresenterImplementation()
 
-    from ib_iam.interactors.get_refresh_auth_tokens_interactor import \
+    from ib_iam.interactors.auth.get_refresh_auth_tokens_interactor import \
         GetRefreshTokensInteractor
     interactor = GetRefreshTokensInteractor()
 

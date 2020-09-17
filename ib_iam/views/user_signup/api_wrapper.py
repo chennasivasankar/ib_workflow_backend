@@ -20,7 +20,7 @@ def api_wrapper(*args, **kwargs):
         ElasticStorageImplementation
     elastic_storage = ElasticStorageImplementation()
 
-    from ib_iam.interactors.sign_up_interactor import SignupInteractor
+    from ib_iam.interactors.auth.sign_up_interactor import SignupInteractor
     interactor = SignupInteractor(
         user_storage=user_storage, elastic_storage=elastic_storage
     )

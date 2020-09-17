@@ -39,7 +39,7 @@ def api_wrapper(*args, **kwargs):
         AddMembersToSuperiorsPresenterImplementation
     presenter = AddMembersToSuperiorsPresenterImplementation()
 
-    from ib_iam.interactors.add_members_to_superiors_interactor import \
+    from ib_iam.interactors.levels.add_members_to_superiors_interactor import \
         AddMembersToSuperiorsInteractor
     interactor = AddMembersToSuperiorsInteractor(
         team_member_level_storage=team_member_level_storage,

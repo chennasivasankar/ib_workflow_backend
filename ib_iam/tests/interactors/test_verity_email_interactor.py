@@ -14,7 +14,7 @@ class TestVerifyEmailInteractor:
 
     @pytest.fixture
     def init_interactor(self):
-        from ib_iam.interactors.verify_user_email_interactor import \
+        from ib_iam.interactors.auth.verify_user_email_interactor import \
             VerifyEmailInteractor
         interactor = VerifyEmailInteractor()
         return interactor

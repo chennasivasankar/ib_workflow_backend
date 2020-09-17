@@ -13,7 +13,7 @@ def api_wrapper(*args, **kwargs):
         email=email,
         password=password
     )
-    from ib_iam.interactors.user_login_interactor import LoginInteractor
+    from ib_iam.interactors.auth.user_login_interactor import LoginInteractor
     from ib_iam.storages.user_storage_implementation import UserStorageImplementation
     storage = UserStorageImplementation()
     interactor = LoginInteractor(storage=storage)

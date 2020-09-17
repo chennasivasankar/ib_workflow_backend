@@ -32,7 +32,7 @@ class TestAddTeamMemberLevelsInteractor:
 
     @pytest.fixture()
     def interactor(self, team_member_level_storage_mock, user_storage_mock):
-        from ib_iam.interactors.add_team_member_levels_interactor import \
+        from ib_iam.interactors.levels.add_team_member_levels_interactor import \
             AddTeamMemberLevelsInteractor
         interactor = AddTeamMemberLevelsInteractor(
             team_member_level_storage=team_member_level_storage_mock,

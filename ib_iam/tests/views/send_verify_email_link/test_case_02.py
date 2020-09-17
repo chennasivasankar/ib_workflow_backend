@@ -19,7 +19,7 @@ class TestCase02SendVerifyEmailLinkAPITestCase(TestUtils):
             get_user_id_for_given_email_mock
         get_user_id_for_given_email_mock = get_user_id_for_given_email_mock(
             mocker=mocker)
-        from ib_iam.interactors.send_verify_email_link_interactor import \
+        from ib_iam.interactors.auth.send_verify_email_link_interactor import \
             UserAccountDoesNotExist
         get_user_id_for_given_email_mock.side_effect = \
             UserAccountDoesNotExist()

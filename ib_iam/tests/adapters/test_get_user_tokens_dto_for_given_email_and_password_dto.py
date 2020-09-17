@@ -123,7 +123,7 @@ class TestGetUserTokens:
         auth_service = service_adapter.auth_service
 
         # Assert
-        from ib_iam.interactors.user_login_interactor import IncorrectPassword
+        from ib_iam.interactors.auth.user_login_interactor import IncorrectPassword
         with pytest.raises(IncorrectPassword):
             auth_service.get_user_tokens_dto_for_given_email_and_password_dto(
                 email_and_password_dto=email_and_password_dto
@@ -161,7 +161,7 @@ class TestGetUserTokens:
         auth_service = service_adapter.auth_service
 
         # Assert
-        from ib_iam.interactors.user_login_interactor import IncorrectPassword
+        from ib_iam.interactors.auth.user_login_interactor import IncorrectPassword
         with pytest.raises(IncorrectPassword):
             auth_service.get_user_tokens_dto_for_given_email_and_password_dto(
                 email_and_password_dto=email_and_password_dto
@@ -269,7 +269,7 @@ class TestGetUserTokens:
         auth_service = service_adapter.auth_service
 
         # Assert
-        from ib_iam.interactors.user_login_interactor import IncorrectPassword
+        from ib_iam.interactors.auth.user_login_interactor import IncorrectPassword
         with pytest.raises(IncorrectPassword):
             auth_service.get_user_tokens_dto_for_given_email_and_password_dto(
                 email_and_password_dto=email_and_password_dto

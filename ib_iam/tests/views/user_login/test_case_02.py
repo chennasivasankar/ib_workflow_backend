@@ -36,7 +36,7 @@ class TestCase02UserLoginAPITestCase(TestUtils):
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
             user_id=user_id, is_email_verified=True
         )
-        from ib_iam.interactors.user_login_interactor import IncorrectPassword
+        from ib_iam.interactors.auth.user_login_interactor import IncorrectPassword
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             get_user_tokens_dto_for_given_email_and_password_dto_mock
         get_tokens_dto_for_given_email_and_password_dto \

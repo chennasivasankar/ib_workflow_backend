@@ -15,7 +15,7 @@ class TestGetRefreshTokensInteractor:
 
     @pytest.fixture()
     def interactor(self):
-        from ib_iam.interactors.get_refresh_auth_tokens_interactor import \
+        from ib_iam.interactors.auth.get_refresh_auth_tokens_interactor import \
             GetRefreshTokensInteractor
         interactor = GetRefreshTokensInteractor()
         return interactor

@@ -13,7 +13,7 @@ def api_wrapper(*args, **kwargs):
     from ib_iam.presenters.get_user_profile_presenter_implementation import \
         GetUserProfilePresenterImplementation
     presenter = GetUserProfilePresenterImplementation()
-    from ib_iam.interactors.get_user_profile_interactor import \
+    from ib_iam.interactors.auth.get_user_profile_interactor import \
         GetUserProfileInteractor
     interactor = GetUserProfileInteractor(
         user_storage=storage

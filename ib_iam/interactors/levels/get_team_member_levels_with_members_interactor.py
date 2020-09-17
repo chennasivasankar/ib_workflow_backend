@@ -86,7 +86,7 @@ class GetTeamMemberLevelsWithMembersInteractor(ValidationMixin):
             self, team_id: str, user_id: str,
             team_member_level_details_dtos: List[TeamMemberLevelDetailsDTO],
     ):
-        from ib_iam.interactors.get_team_members_of_level_hierarchy_interactor import \
+        from ib_iam.interactors.levels.get_team_members_of_level_hierarchy_interactor import \
             GetTeamMembersOfLevelHierarchyInteractor
         get_team_members_of_level_hierarchy_interactor = \
             GetTeamMembersOfLevelHierarchyInteractor(
@@ -121,7 +121,7 @@ class GetTeamMemberLevelsWithMembersInteractor(ValidationMixin):
     def _get_team_member_level_details_dtos(
             self, team_id: str, user_id: str
     ) -> List[TeamMemberLevelDetailsDTO]:
-        from ib_iam.interactors.get_team_member_levels_interactor import \
+        from ib_iam.interactors.levels.get_team_member_levels_interactor import \
             GetTeamMemberLevelsInteractor
         get_team_member_levels_interactor = GetTeamMemberLevelsInteractor(
             team_member_level_storage=self.team_member_level_storage,

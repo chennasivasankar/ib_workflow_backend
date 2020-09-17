@@ -89,7 +89,7 @@ class SignupInteractor(ValidationMixin):
 
     @staticmethod
     def _send_email_verify_link(user_id: str, name: str, email: str):
-        from ib_iam.interactors.send_verify_email_link_interactor import \
+        from ib_iam.interactors.auth.send_verify_email_link_interactor import \
             SendVerifyEmailLinkInteractor
         interactor = SendVerifyEmailLinkInteractor()
         interactor.send_verification_email(

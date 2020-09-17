@@ -214,7 +214,7 @@ class ServiceInterface:
             TeamMemberLevelStorageImplementation
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
-        from ib_iam.interactors.get_team_members_of_level_hierarchy_interactor import \
+        from ib_iam.interactors.levels.get_team_members_of_level_hierarchy_interactor import \
             GetTeamMembersOfLevelHierarchyInteractor
 
         team_member_level_storage = TeamMemberLevelStorageImplementation()

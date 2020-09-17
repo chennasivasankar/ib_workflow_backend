@@ -4,7 +4,7 @@ from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, AddUserDetailsDTO, 
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO, \
     CompleteUserProfileDTO, CompleteTeamMemberLevelsDetailsDTO, \
     UserIdWithRoleIdsDTO
-from ib_iam.interactors.update_user_password_interactor import \
+from ib_iam.interactors.auth.update_user_password_interactor import \
     CurrentAndNewPasswordDTO
 from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
 from ib_iam.tests.factories.storage_dtos import MemberDTOFactory, \

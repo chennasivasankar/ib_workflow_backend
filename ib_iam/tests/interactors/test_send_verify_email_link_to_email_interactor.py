@@ -7,7 +7,7 @@ class TestSendLinkToUserMail:
 
     @pytest.fixture
     def interactor(self):
-        from ib_iam.interactors.send_verify_email_link_interactor import \
+        from ib_iam.interactors.auth.send_verify_email_link_interactor import \
             SendVerifyEmailLinkInteractor
         return SendVerifyEmailLinkInteractor()
 

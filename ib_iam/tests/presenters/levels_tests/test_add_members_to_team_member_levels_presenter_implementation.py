@@ -52,7 +52,7 @@ class TestAddMembersToTeamMemberLevelsPresenterImplementation:
         expected_http_status_code = StatusCode.NOT_FOUND.value
         expected_res_status = TEAM_MEMBER_LEVEL_IDS_NOT_FOUND[1]
 
-        from ib_iam.interactors.add_members_to_team_member_levels_interactor import \
+        from ib_iam.interactors.levels.add_members_to_team_member_levels_interactor import \
             TeamMemberLevelIdsNotFound
         error_object = TeamMemberLevelIdsNotFound(
             team_member_level_ids=team_member_level_ids

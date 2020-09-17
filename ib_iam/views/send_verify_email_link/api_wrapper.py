@@ -12,7 +12,7 @@ def api_wrapper(*args, **kwargs):
         SendVerifyEmailLinkPresenterImplementation
     presenter = SendVerifyEmailLinkPresenterImplementation()
 
-    from ib_iam.interactors.send_verify_email_link_interactor import \
+    from ib_iam.interactors.auth.send_verify_email_link_interactor import \
         SendVerifyEmailLinkInteractor
     interactor = SendVerifyEmailLinkInteractor()
 

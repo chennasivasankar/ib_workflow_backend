@@ -111,7 +111,7 @@ class TestGetUserProfileInteractor:
         presenter_mock.response_for_invalid_user_id_exception.return_value \
             = expected_presenter_invalid_user_id_mock
 
-        from ib_iam.interactors.get_user_profile_interactor import \
+        from ib_iam.interactors.auth.get_user_profile_interactor import \
             GetUserProfileInteractor
         interactor = GetUserProfileInteractor(user_storage=storage_mock)
 
@@ -141,7 +141,7 @@ class TestGetUserProfileInteractor:
         presenter_mock.response_for_user_account_does_not_exist_exception \
             .return_value = expected_presenter_user_account_does_not_exist_mock
 
-        from ib_iam.interactors.get_user_profile_interactor import \
+        from ib_iam.interactors.auth.get_user_profile_interactor import \
             GetUserProfileInteractor
         interactor = GetUserProfileInteractor(
             user_storage=storage_mock
@@ -187,7 +187,7 @@ class TestGetUserProfileInteractor:
         presenter_mock.response_for_get_user_profile \
             .return_value = Mock()
 
-        from ib_iam.interactors.get_user_profile_interactor import \
+        from ib_iam.interactors.auth.get_user_profile_interactor import \
             GetUserProfileInteractor
         interactor = GetUserProfileInteractor(user_storage=storage_mock)
 

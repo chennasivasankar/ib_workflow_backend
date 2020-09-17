@@ -396,7 +396,7 @@ def populate_team_member_levels_for_tech_team():
         UserStorageImplementation
     user_storage = UserStorageImplementation()
 
-    from ib_iam.interactors.add_team_member_levels_interactor import \
+    from ib_iam.interactors.levels.add_team_member_levels_interactor import \
         AddTeamMemberLevelsInteractor
     interactor = AddTeamMemberLevelsInteractor(
         team_member_level_storage=team_member_level_storage,
@@ -448,7 +448,7 @@ def populate_users_to_team_member_levels_for_tech_team():
         UserStorageImplementation
     user_storage = UserStorageImplementation()
 
-    from ib_iam.interactors.add_members_to_team_member_levels_interactor import \
+    from ib_iam.interactors.levels.add_members_to_team_member_levels_interactor import \
         AddMembersToTeamMemberLevelsInteractor
     interactor = AddMembersToTeamMemberLevelsInteractor(
         team_member_level_storage=team_member_level_storage,
@@ -510,7 +510,7 @@ def populate_superior_users_and_subordinate_users_with_level_hierarchy_for_tech_
             UserStorageImplementation
         user_storage = UserStorageImplementation()
 
-        from ib_iam.interactors.add_members_to_superiors_interactor import \
+        from ib_iam.interactors.levels.add_members_to_superiors_interactor import \
             AddMembersToSuperiorsInteractor
         interactor = AddMembersToSuperiorsInteractor(
             team_member_level_storage=team_member_level_storage,

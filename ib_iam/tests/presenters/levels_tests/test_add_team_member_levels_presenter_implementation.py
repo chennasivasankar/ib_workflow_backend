@@ -51,7 +51,7 @@ class TestAddLevelsPresenterImplementation:
         expected_http_status_code = StatusCode.BAD_REQUEST.value
         expected_res_status = DUPLICATE_LEVEL_HIERARCHIES[1]
 
-        from ib_iam.interactors.add_team_member_levels_interactor import \
+        from ib_iam.interactors.levels.add_team_member_levels_interactor import \
             DuplicateLevelHierarchies
         error_object = DuplicateLevelHierarchies(
             level_hierarchies=duplicate_level_hierarchies
@@ -80,7 +80,7 @@ class TestAddLevelsPresenterImplementation:
         expected_http_status_code = StatusCode.BAD_REQUEST.value
         expected_res_status = NEGATIVE_LEVEL_HIERARCHIES[1]
 
-        from ib_iam.interactors.add_team_member_levels_interactor import \
+        from ib_iam.interactors.levels.add_team_member_levels_interactor import \
             NegativeLevelHierarchy
         error_object = NegativeLevelHierarchy(
             level_hierarchies=negative_level_hierarchies
@@ -109,7 +109,7 @@ class TestAddLevelsPresenterImplementation:
         expected_http_status_code = StatusCode.BAD_REQUEST.value
         expected_res_status = DUPLICATE_TEAM_MEMBER_LEVEL_NAMES[1]
 
-        from ib_iam.interactors.add_team_member_levels_interactor import \
+        from ib_iam.interactors.levels.add_team_member_levels_interactor import \
             DuplicateTeamMemberLevelNames
         error_object = DuplicateTeamMemberLevelNames(
             team_member_level_names=duplicate_team_member_level_names

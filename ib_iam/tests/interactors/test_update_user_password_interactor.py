@@ -14,7 +14,7 @@ class TestUpdateUserProfileInteractor:
 
     @pytest.fixture
     def interactor(self):
-        from ib_iam.interactors.update_user_password_interactor import \
+        from ib_iam.interactors.auth.update_user_password_interactor import \
             UpdateUserPasswordInteractor
         interactor = UpdateUserPasswordInteractor()
         return interactor

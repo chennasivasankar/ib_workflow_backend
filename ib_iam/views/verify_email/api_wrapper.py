@@ -10,7 +10,7 @@ def api_wrapper(*args, **kwargs):
         VerifyEmailPresenterImplementation
     presenter = VerifyEmailPresenterImplementation()
 
-    from ib_iam.interactors.verify_user_email_interactor import \
+    from ib_iam.interactors.auth.verify_user_email_interactor import \
         VerifyEmailInteractor
     interactor = VerifyEmailInteractor()
 
