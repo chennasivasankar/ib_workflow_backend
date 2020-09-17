@@ -119,7 +119,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
             else:
                 q = q | current_queue
 
-        action_objs = StageAction.objects.filter(q)\
+        action_objs = StageAction.objects.filter(q) \
             .annotate(normal_stage=F('stage__stage_id'))
 
         list_of_permitted_roles = self._get_list_of_permitted_roles_objs(
@@ -181,7 +181,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
             action_obj.py_function_import_path = action_dto.function_path
             action_obj.button_text = action_dto.button_text
             action_obj.action_type = action_dto.action_type
-            action_obj.transition_template_id = action_dto.transition_template_id
+            action_obj.transition_template_id = \
+                action_dto.transition_template_id
             action_obj.button_color = action_dto.button_color
         attributes = [
             "logic", "py_function_import_path", "button_text",
@@ -199,7 +200,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
         for action_obj in action_objs:
             key = action_obj.normal_stage + action_obj.name
             roles = stage_id_action_name_roles_map[key]
-            self._append_roles_to_permitted_roles(action_obj, roles, action_roles)
+            self._append_roles_to_permitted_roles(action_obj, roles,
+                                                  action_roles)
         return action_roles
 
     @staticmethod
@@ -242,9 +244,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
         StageAction.objects.filter(q).delete()
 
-    def create_initial_stage_to_task_template(self,
-                                              task_template_stage_dtos: List[
-                                                  TemplateStageDTO]):
+    def get_or_create_initial_stage_to_task_template(
+            self, task_template_stage_dtos: List[TemplateStageDTO]):
         stage_ids = [stage.stage_id for stage in task_template_stage_dtos]
         stages = Stage.objects.filter(stage_id__in=stage_ids).values(
             'stage_id',
@@ -345,7 +346,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
             current_queue = Q(role_id__in=item.roles) | Q(
                 role_id=ALL_ROLES_ID) & \
                             Q(
-                                action__stage__currenttaskstage__task=item.task_id)
+                                action__stage__currenttaskstage__task=item.task_id) & \
+                            Q(action__stage__stage_id__in=stage_ids)
             if counter == 0:
                 q = current_queue
             else:
@@ -353,9 +355,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
         if q is None:
             return []
 
-        action_ids = (ActionPermittedRoles.objects.filter(q,
-                                                          Q(
-                                                              action__stage__stage_id__in=stage_ids))
+        action_ids = (ActionPermittedRoles.objects.filter(
+            q)
                       .values_list('action_id', flat=True))
         return list(set(action_ids))
 
