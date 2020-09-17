@@ -622,7 +622,7 @@ class StagesStorageImplementation(StageStorageInterface):
             stage_ids.append(stage_flow_dto.next_stage_id)
         return stage_ids
 
-    def get_stages_permission_gof_ids(
+    def get_stages_permitted_gof_ids(
             self, stage_ids: List[str], gof_ids: List[str]
     ) -> List[str]:
         gof_ids = StageGoF.objects.filter(

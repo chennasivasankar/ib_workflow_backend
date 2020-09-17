@@ -212,7 +212,7 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_stages_permission_gof_ids(
+    def get_stages_permitted_gof_ids(
             self, stage_ids: List[str], gof_ids: List[str]
     ) -> List[str]:
         pass

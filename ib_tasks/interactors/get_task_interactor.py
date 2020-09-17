@@ -172,7 +172,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_gof_dto.gof_id
             for task_gof_dto in task_gof_dtos
         ]
-        stage_gof_ids = self.stage_storage.get_stages_permission_gof_ids(
+        stage_gof_ids = self.stage_storage.get_stages_permitted_gof_ids(
             stage_ids, gof_ids)
         stage_task_gof_dtos = [
             task_gof_dto
