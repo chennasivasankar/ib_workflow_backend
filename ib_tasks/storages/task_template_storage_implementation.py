@@ -20,7 +20,11 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
     def get_template_stage_permitted_gof_ids(
             self, task_template_id: str, stage_id: int):
-        pass
+        gof_ids = TaskTemplateGoFs.objects.filter(
+            task_template_id=task_template_id,
+            gof__stagegof__stage_id=stage_id
+        ).exclude(order=-1).values_list('gof_id', flat=True)
+        return gof_ids
 
     def get_stage_permitted_gof_ids(self, stage_id: int) -> List[str]:
         from ib_tasks.models import StageGoF

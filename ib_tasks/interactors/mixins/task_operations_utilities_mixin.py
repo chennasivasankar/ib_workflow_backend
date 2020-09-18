@@ -37,16 +37,16 @@ class TaskOperationsUtilitiesMixin:
         for gof_fields_dto in gof_fields_dtos:
             task_gof_id = self._get_task_gof_id_for_field_in_task_gof_details(
                 gof_fields_dto.gof_id, gof_fields_dto.same_gof_order,
-                task_gof_details_dtos
-            )
-            task_gof_field_dtos += [
-                TaskGoFFieldDTO(
-                    field_id=field_values_dto.field_id,
-                    field_response=field_values_dto.field_response,
-                    task_gof_id=task_gof_id
-                )
-                for field_values_dto in gof_fields_dto.field_values_dtos
-            ]
+                task_gof_details_dtos)
+            if task_gof_id is not None:
+                task_gof_field_dtos += [
+                    TaskGoFFieldDTO(
+                        field_id=field_values_dto.field_id,
+                        field_response=field_values_dto.field_response,
+                        task_gof_id=task_gof_id
+                    )
+                    for field_values_dto in gof_fields_dto.field_values_dtos
+                ]
         return task_gof_field_dtos
 
     @staticmethod
