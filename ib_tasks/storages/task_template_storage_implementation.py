@@ -18,6 +18,10 @@ from ib_tasks.models import TaskTemplate, TaskTemplateGoFs, ProjectTaskTemplate
 
 class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
+    def get_template_stage_permitted_gof_ids(
+            self, task_template_id: str, stage_id: int):
+        pass
+
     def get_stage_permitted_gof_ids(self, stage_id: int) -> List[str]:
         from ib_tasks.models import StageGoF
         gof_ids = StageGoF.objects.filter(stage_id=stage_id).values_list(
