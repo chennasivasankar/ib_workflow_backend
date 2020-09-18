@@ -18,18 +18,18 @@ from ib_tasks.models import TaskTemplate, TaskTemplateGoFs, ProjectTaskTemplate
 
 class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
-    def get_stage_permitted_gof_ids(self, stage_id: int):
-        from ib_tasks.models import StageGoF
-        gof_ids = StageGoF.objects.filter(stage_id=stage_id).values_list(
-            'gof_id', flat=True)
-        return gof_ids
-
     def get_template_stage_permitted_gof_ids(
-            self, stage_id: int, task_template_id: str) -> List[str]:
+            self, task_template_id: str, stage_id: int):
         gof_ids = TaskTemplateGoFs.objects.filter(
             task_template_id=task_template_id,
             gof__stagegof__stage_id=stage_id
         ).exclude(order=-1).values_list('gof_id', flat=True)
+        return gof_ids
+
+    def get_stage_permitted_gof_ids(self, stage_id: int) -> List[str]:
+        from ib_tasks.models import StageGoF
+        gof_ids = StageGoF.objects.filter(stage_id=stage_id).values_list(
+            'gof_id', flat=True)
         return gof_ids
 
     def get_task_template_initial_stage_id(self, task_template_id: str):
@@ -305,7 +305,7 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
     def get_gof_ids_of_template(self, template_id: str) -> List[str]:
         gof_ids_queryset = TaskTemplateGoFs.objects.filter(
-            task_template_id=template_id).exclude(order=-1). \
+            task_template_id=template_id).exclude(order=-1).\
             values_list('gof_id', flat=True)
         gof_ids_list = list(gof_ids_queryset)
         return gof_ids_list

@@ -6,7 +6,7 @@ from ib_tasks.exceptions.task_custom_exceptions import \
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
-    GoFToTaskTemplateDTO, GOFMultipleEnableDTO
+    GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO, ProjectIdWithTaskTemplateIdDTO
 
@@ -142,8 +142,7 @@ class TaskTemplateStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_template_stage_permitted_gof_ids(
-            self, stage_id: int, task_template_id: str) -> List[str]:
+    def get_stage_permitted_gof_ids(self, stage_id: int) -> List[str]:
         pass
 
     @abc.abstractmethod
@@ -151,5 +150,6 @@ class TaskTemplateStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_stage_permitted_gof_ids(self, stage_id: int):
+    def get_template_stage_permitted_gof_ids(
+            self, task_template_id: str, stage_id: int):
         pass

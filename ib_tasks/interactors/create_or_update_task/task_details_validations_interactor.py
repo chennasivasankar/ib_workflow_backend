@@ -69,7 +69,8 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
                 user_id=task_dto.basic_task_details_dto.created_by_id,
                 project_id=task_dto.basic_task_details_dto.project_id,
                 gof_fields_dtos=task_dto.gof_fields_dtos,
-                stage_id=stage_id, task_template_id=task_template_id)
+                stage_id=stage_id, task_template_id=task_template_id
+            )
 
     def _validate_action_id_and_get_action_type(
             self, action_id: int
@@ -173,7 +174,7 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
     ) -> List[str]:
         stage_permitted_gof_ids = \
             self.task_template_storage.get_template_stage_permitted_gof_ids(
-                stage_id, task_template_id)
+                task_template_id, stage_id)
         gof_id_with_display_name_dtos = \
             self.gof_storage.get_user_write_permitted_gof_ids_in_given_gof_ids(
                 user_roles, stage_permitted_gof_ids)

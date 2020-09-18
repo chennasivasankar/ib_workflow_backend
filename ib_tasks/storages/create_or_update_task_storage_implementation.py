@@ -195,7 +195,9 @@ class CreateOrUpdateTaskStorageImplementation(
             self, task_gof_dtos: List[TaskGoFWithTaskIdDTO]
     ) -> List[TaskGoFDetailsDTO]:
         task_id = task_gof_dtos[0].task_id
-        task_gof_objects = TaskGoF.objects.filter(task_id=task_id)
+        gof_ids = [dto.gof_id for dto in task_gof_dtos]
+        task_gof_objects = list(TaskGoF.objects.filter(task_id=task_id,
+                                                       gof_id__in=gof_ids))
         for task_gof_object in task_gof_objects:
             task_gof_dto = self._get_matching_task_gof_dto(
                 task_gof_object, task_gof_dtos)
@@ -216,7 +218,7 @@ class CreateOrUpdateTaskStorageImplementation(
     ) -> Optional[TaskGoFWithTaskIdDTO]:
         for task_gof_dto in task_gof_dtos:
             dto_matched = (
-                task_gof_dto.task_id == task_gof_object.task_id,
+                task_gof_dto.task_id == task_gof_object.task_id and
                 task_gof_dto.gof_id == task_gof_object.gof_id
             )
             if dto_matched:
