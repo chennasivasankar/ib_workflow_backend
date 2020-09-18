@@ -33,7 +33,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                 field__gof_id__in=gof_ids, field__required=True,
                 permission_type=PermissionTypes.WRITE.value
         ).values(
-                "field_id", "field__gof__display_name", "field__display_name")
+            "field_id", "field__gof__display_name", "field__display_name"
+        ).distinct()
         field_id_with_display_name_dtos = [
                 FieldIdWithFieldDisplayNameDTO(
                         field_id=field_dict['field_id'],

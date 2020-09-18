@@ -393,8 +393,9 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             user_id=user_id, project_id=project_id)
         task_template_id = \
             self.create_task_storage.get_template_id_for_given_task(task_id)
-        template_gof_ids = self.task_template_storage.get_stage_permitted_gof_ids(
-            stage_id=stage_id)
+        template_gof_ids = \
+        self.task_template_storage.get_template_stage_permitted_gof_ids(
+            stage_id=stage_id, task_template_id=task_template_id)
         gof_id_with_display_name_dtos = \
             self.gof_storage.get_user_write_permitted_gof_ids_in_given_gof_ids(
                 user_roles, template_gof_ids)

@@ -141,9 +141,14 @@ class TaskTemplateStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_stage_permitted_gof_ids(self, stage_id: int) -> List[str]:
+    def get_template_stage_permitted_gof_ids(
+            self, stage_id: int, task_template_id: str) -> List[str]:
         pass
 
     @abc.abstractmethod
     def get_gof_ids_of_templates(self, template_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_stage_permitted_gof_ids(self, stage_id: int):
         pass
