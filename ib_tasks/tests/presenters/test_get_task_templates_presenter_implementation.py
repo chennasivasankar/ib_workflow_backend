@@ -10,7 +10,7 @@ from ib_tasks.tests.factories.storage_dtos import \
     UserFieldPermissionDTOFactory, FieldDTOFactory, \
     GoFToTaskTemplateDTOFactory, GoFDTOFactory, \
     FieldPermissionDTOFactory, StageIdWithTemplateIdDTOFactory, \
-    ProjectIdWithTaskTemplateIdDTOFactory
+    ProjectIdWithTaskTemplateIdDTOFactory, StageGoFWithTemplateIdDTOFactory
 
 
 class TestGetTaskTemplatesPresenterImplementation:
@@ -27,21 +27,23 @@ class TestGetTaskTemplatesPresenterImplementation:
         FieldPermissionDTOFactory.is_field_writable.reset()
         StageIdWithTemplateIdDTOFactory.reset_sequence(1)
         ProjectIdWithTaskTemplateIdDTOFactory.reset_sequence(1)
+        StageGoFWithTemplateIdDTOFactory.reset_sequence(1)
 
     def test_when_complete_task_template_details_exists(self, snapshot):
         # Arrange
         template_ids = ["template_1", "template_2"]
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = ["field_1", "field_2", "field_3", "field_4"]
+        stage_ids = [1, 2, 3, 4]
 
         task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
         stage_id_with_template_id_dtos = \
             StageIdWithTemplateIdDTOFactory.create_batch(
-                size=2, template_id=template_ids[0]
+                size=2, template_id=factory.Iterator(template_ids)
             )
         action_with_stage_id_dtos = \
             ActionWithStageIdDTOFactory.create_batch(
-                size=2, stage_id=factory.Iterator([1, 2])
+                size=2, stage_id=factory.Iterator(stage_ids)
             )
         gof_dtos = GoFDTOFactory.create_batch(size=2)
         field_dtos = FieldDTOFactory.create_batch(
@@ -59,16 +61,24 @@ class TestGetTaskTemplatesPresenterImplementation:
         project_id_with_task_template_id_dtos = \
             ProjectIdWithTaskTemplateIdDTOFactory.create_batch(
                 size=2, task_template_id=factory.Iterator(template_ids))
+        stage_gof_with_template_id_dtos = \
+            StageGoFWithTemplateIdDTOFactory.create_batch(
+                size=4, task_template_id=factory.Iterator(template_ids),
+                gof_id=factory.Iterator(expected_gof_ids),
+                stage_id=factory.Iterator(stage_ids)
+            )
 
         complete_task_templates_dto = CompleteTaskTemplatesDTO(
             task_template_dtos=task_template_dtos,
             project_id_with_task_template_id_dtos=
             project_id_with_task_template_id_dtos,
-            stage_id_with_template_id_dtos=stage_id_with_template_id_dtos,
+            initial_stage_id_with_template_id_dtos=
+            stage_id_with_template_id_dtos,
             action_with_stage_id_dtos=action_with_stage_id_dtos,
             gof_dtos=gof_dtos,
             gofs_of_task_templates_dtos=gof_to_task_template_dtos,
-            field_with_permissions_dtos=field_with_permissions_dtos
+            field_with_permissions_dtos=field_with_permissions_dtos,
+            stage_gof_with_template_id_dtos=stage_gof_with_template_id_dtos
         )
         presenter = GetTaskTemplatesPresenterImplementation()
 
@@ -93,11 +103,12 @@ class TestGetTaskTemplatesPresenterImplementation:
         complete_task_templates_dto = CompleteTaskTemplatesDTO(
             task_template_dtos=[],
             project_id_with_task_template_id_dtos=[],
-            stage_id_with_template_id_dtos=[],
+            initial_stage_id_with_template_id_dtos=[],
             action_with_stage_id_dtos=[],
             gof_dtos=[],
             gofs_of_task_templates_dtos=[],
-            field_with_permissions_dtos=[]
+            field_with_permissions_dtos=[],
+            stage_gof_with_template_id_dtos=[]
         )
         presenter = GetTaskTemplatesPresenterImplementation()
 
@@ -131,11 +142,13 @@ class TestGetTaskTemplatesPresenterImplementation:
             task_template_dtos=task_template_dtos,
             project_id_with_task_template_id_dtos=
             project_id_with_task_template_id_dtos,
-            stage_id_with_template_id_dtos=stage_id_with_template_id_dtos,
+            initial_stage_id_with_template_id_dtos=
+            stage_id_with_template_id_dtos,
             action_with_stage_id_dtos=action_with_stage_id_dtos,
             gof_dtos=[],
             gofs_of_task_templates_dtos=[],
-            field_with_permissions_dtos=[]
+            field_with_permissions_dtos=[],
+            stage_gof_with_template_id_dtos=[]
         )
         presenter = GetTaskTemplatesPresenterImplementation()
 
@@ -161,6 +174,7 @@ class TestGetTaskTemplatesPresenterImplementation:
         template_ids = ["template_1", "template_2"]
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = ["field_1", "field_2", "field_3", "field_4"]
+        stage_ids = [1, 2, 3, 4]
 
         task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
         gof_dtos = GoFDTOFactory.create_batch(size=2)
@@ -168,6 +182,10 @@ class TestGetTaskTemplatesPresenterImplementation:
             size=4, field_id=factory.Iterator(expected_field_ids),
             gof_id=factory.Iterator(expected_gof_ids)
         )
+        stage_id_with_template_id_dtos = \
+            StageIdWithTemplateIdDTOFactory.create_batch(
+                size=2, template_id=factory.Iterator(template_ids)
+            )
         UserFieldPermissionDTOFactory.create_batch(size=4)
         gof_to_task_template_dtos = \
             GoFToTaskTemplateDTOFactory.create_batch(size=2)
@@ -179,16 +197,24 @@ class TestGetTaskTemplatesPresenterImplementation:
         project_id_with_task_template_id_dtos = \
             ProjectIdWithTaskTemplateIdDTOFactory.create_batch(
                 size=2, task_template_id=factory.Iterator(template_ids))
+        stage_gof_with_template_id_dtos = \
+            StageGoFWithTemplateIdDTOFactory.create_batch(
+                size=4, task_template_id=factory.Iterator(template_ids),
+                gof_id=factory.Iterator(expected_gof_ids),
+                stage_id=factory.Iterator(stage_ids)
+            )
 
         complete_task_templates_dto = CompleteTaskTemplatesDTO(
             task_template_dtos=task_template_dtos,
             project_id_with_task_template_id_dtos=
             project_id_with_task_template_id_dtos,
-            stage_id_with_template_id_dtos=[],
+            initial_stage_id_with_template_id_dtos=
+            stage_id_with_template_id_dtos,
             action_with_stage_id_dtos=[],
             gof_dtos=gof_dtos,
             gofs_of_task_templates_dtos=gof_to_task_template_dtos,
-            field_with_permissions_dtos=field_with_permissions_dtos
+            field_with_permissions_dtos=field_with_permissions_dtos,
+            stage_gof_with_template_id_dtos=stage_gof_with_template_id_dtos
         )
         presenter = GetTaskTemplatesPresenterImplementation()
 
@@ -211,6 +237,8 @@ class TestGetTaskTemplatesPresenterImplementation:
     def test_when_no_fields_exists_returns_empty_fields_list(self, snapshot):
         # Arrange
         template_ids = ["template_1", "template_2"]
+        expected_gof_ids = ['gof_1', 'gof_2']
+        stage_ids = [1, 2, 3, 4]
         task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
         stage_id_with_template_id_dtos = \
             StageIdWithTemplateIdDTOFactory.create_batch(
@@ -227,16 +255,24 @@ class TestGetTaskTemplatesPresenterImplementation:
         project_id_with_task_template_id_dtos = \
             ProjectIdWithTaskTemplateIdDTOFactory.create_batch(
                 size=2, task_template_id=factory.Iterator(template_ids))
+        stage_gof_with_template_id_dtos = \
+            StageGoFWithTemplateIdDTOFactory.create_batch(
+                size=4, task_template_id=factory.Iterator(template_ids),
+                gof_id=factory.Iterator(expected_gof_ids),
+                stage_id=factory.Iterator(stage_ids)
+            )
 
         complete_task_templates_dto = CompleteTaskTemplatesDTO(
             task_template_dtos=task_template_dtos,
             project_id_with_task_template_id_dtos=
             project_id_with_task_template_id_dtos,
-            stage_id_with_template_id_dtos=stage_id_with_template_id_dtos,
+            initial_stage_id_with_template_id_dtos
+            =stage_id_with_template_id_dtos,
             action_with_stage_id_dtos=action_with_stage_id_dtos,
             gof_dtos=gof_dtos,
             gofs_of_task_templates_dtos=gof_to_task_template_dtos,
-            field_with_permissions_dtos=[]
+            field_with_permissions_dtos=[],
+            stage_gof_with_template_id_dtos=stage_gof_with_template_id_dtos
         )
         presenter = GetTaskTemplatesPresenterImplementation()
 
@@ -260,6 +296,8 @@ class TestGetTaskTemplatesPresenterImplementation:
             self, snapshot):
         # Arrange
         template_ids = ["template_1", "template_2"]
+        expected_gof_ids = ['gof_1', 'gof_2']
+        stage_ids = [1, 2, 3, 4]
         task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
         stage_id_with_template_id_dtos = \
             StageIdWithTemplateIdDTOFactory.create_batch(
@@ -274,16 +312,24 @@ class TestGetTaskTemplatesPresenterImplementation:
         gof_to_task_template_dtos = \
             GoFToTaskTemplateDTOFactory.create_batch(size=2)
         project_id_with_task_template_id_dtos = []
+        stage_gof_with_template_id_dtos = \
+            StageGoFWithTemplateIdDTOFactory.create_batch(
+                size=4, task_template_id=factory.Iterator(template_ids),
+                gof_id=factory.Iterator(expected_gof_ids),
+                stage_id=factory.Iterator(stage_ids)
+            )
 
         complete_task_templates_dto = CompleteTaskTemplatesDTO(
             task_template_dtos=task_template_dtos,
             project_id_with_task_template_id_dtos=
             project_id_with_task_template_id_dtos,
-            stage_id_with_template_id_dtos=stage_id_with_template_id_dtos,
+            initial_stage_id_with_template_id_dtos=
+            stage_id_with_template_id_dtos,
             action_with_stage_id_dtos=action_with_stage_id_dtos,
             gof_dtos=gof_dtos,
             gofs_of_task_templates_dtos=gof_to_task_template_dtos,
-            field_with_permissions_dtos=[]
+            field_with_permissions_dtos=[],
+            stage_gof_with_template_id_dtos=stage_gof_with_template_id_dtos
         )
         presenter = GetTaskTemplatesPresenterImplementation()
 
@@ -317,3 +363,142 @@ class TestGetTaskTemplatesPresenterImplementation:
         snapshot.assert_match(response['http_status_code'], 'http_status_code')
         snapshot.assert_match(response['res_status'], 'res_status')
         snapshot.assert_match(response['response'], 'response')
+
+    def test_when_no_task_creation_gofs_exists_returns_empty_list(
+            self, snapshot):
+        # Arrange
+        template_ids = ["template_1", "template_2"]
+        expected_gof_ids = ['gof_1', 'gof_2']
+        expected_field_ids = ["field_1", "field_2", "field_3", "field_4"]
+        stage_ids = [1, 2, 3, 4]
+
+        task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
+        stage_id_with_template_id_dtos = \
+            StageIdWithTemplateIdDTOFactory.create_batch(
+                size=2, template_id=factory.Iterator(template_ids)
+            )
+        action_with_stage_id_dtos = \
+            ActionWithStageIdDTOFactory.create_batch(
+                size=2, stage_id=factory.Iterator(stage_ids)
+            )
+        gof_dtos = GoFDTOFactory.create_batch(size=2)
+        field_dtos = FieldDTOFactory.create_batch(
+            size=4, field_id=factory.Iterator(expected_field_ids),
+            gof_id=factory.Iterator(expected_gof_ids)
+        )
+        UserFieldPermissionDTOFactory.create_batch(size=4)
+        gof_to_task_template_dtos = \
+            GoFToTaskTemplateDTOFactory.create_batch(size=2)
+        field_with_permissions_dtos = \
+            FieldPermissionDTOFactory.create_batch(
+                size=2, field_dto=factory.Iterator(field_dtos),
+                is_field_writable=factory.Iterator([False, True])
+            )
+        project_id_with_task_template_id_dtos = \
+            ProjectIdWithTaskTemplateIdDTOFactory.create_batch(
+                size=2, task_template_id=factory.Iterator(template_ids))
+        stage_gof_with_template_id_dtos = \
+            StageGoFWithTemplateIdDTOFactory.create_batch(
+                size=4, task_template_id=factory.Iterator(template_ids),
+                gof_id=factory.Iterator(expected_gof_ids),
+                stage_id=factory.Iterator([3, 4])
+            )
+
+        complete_task_templates_dto = CompleteTaskTemplatesDTO(
+            task_template_dtos=task_template_dtos,
+            project_id_with_task_template_id_dtos=
+            project_id_with_task_template_id_dtos,
+            initial_stage_id_with_template_id_dtos=
+            stage_id_with_template_id_dtos,
+            action_with_stage_id_dtos=action_with_stage_id_dtos,
+            gof_dtos=gof_dtos,
+            gofs_of_task_templates_dtos=gof_to_task_template_dtos,
+            field_with_permissions_dtos=field_with_permissions_dtos,
+            stage_gof_with_template_id_dtos=stage_gof_with_template_id_dtos
+        )
+        presenter = GetTaskTemplatesPresenterImplementation()
+
+        # Act
+        presenter_response_object = presenter.get_task_templates_response(
+            complete_task_templates_dto=complete_task_templates_dto
+        )
+
+        # Assert
+        import json
+        response_content = json.loads(presenter_response_object.content)
+
+        counter = 1
+        for task_template in response_content:
+            snapshot.assert_match(
+                task_template, 'task_template_{}'.format(counter)
+            )
+            counter = counter + 1
+
+    def test_when_no_stage_gofs_returns_empty_list(self, snapshot):
+        # Arrange
+        template_ids = ["template_1", "template_2"]
+        expected_gof_ids = ['gof_1', 'gof_2']
+        expected_field_ids = ["field_1", "field_2", "field_3", "field_4"]
+        stage_ids = [1, 2, 3, 4]
+
+        task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
+        stage_id_with_template_id_dtos = \
+            StageIdWithTemplateIdDTOFactory.create_batch(
+                size=2, template_id=factory.Iterator(template_ids)
+            )
+        action_with_stage_id_dtos = \
+            ActionWithStageIdDTOFactory.create_batch(
+                size=2, stage_id=factory.Iterator(stage_ids)
+            )
+        gof_dtos = GoFDTOFactory.create_batch(size=2)
+        field_dtos = FieldDTOFactory.create_batch(
+            size=4, field_id=factory.Iterator(expected_field_ids),
+            gof_id=factory.Iterator(expected_gof_ids)
+        )
+        UserFieldPermissionDTOFactory.create_batch(size=4)
+        gof_to_task_template_dtos = \
+            GoFToTaskTemplateDTOFactory.create_batch(size=2)
+        field_with_permissions_dtos = \
+            FieldPermissionDTOFactory.create_batch(
+                size=2, field_dto=factory.Iterator(field_dtos),
+                is_field_writable=factory.Iterator([False, True])
+            )
+        project_id_with_task_template_id_dtos = \
+            ProjectIdWithTaskTemplateIdDTOFactory.create_batch(
+                size=2, task_template_id=factory.Iterator(template_ids))
+        stage_gof_with_template_id_dtos = \
+            StageGoFWithTemplateIdDTOFactory.create_batch(
+                size=2, task_template_id=factory.Iterator(template_ids),
+                gof_id=factory.Iterator(expected_gof_ids),
+                stage_id=factory.Iterator([1, 2])
+            )
+
+        complete_task_templates_dto = CompleteTaskTemplatesDTO(
+            task_template_dtos=task_template_dtos,
+            project_id_with_task_template_id_dtos=
+            project_id_with_task_template_id_dtos,
+            initial_stage_id_with_template_id_dtos=
+            stage_id_with_template_id_dtos,
+            action_with_stage_id_dtos=action_with_stage_id_dtos,
+            gof_dtos=gof_dtos,
+            gofs_of_task_templates_dtos=gof_to_task_template_dtos,
+            field_with_permissions_dtos=field_with_permissions_dtos,
+            stage_gof_with_template_id_dtos=stage_gof_with_template_id_dtos
+        )
+        presenter = GetTaskTemplatesPresenterImplementation()
+
+        # Act
+        presenter_response_object = presenter.get_task_templates_response(
+            complete_task_templates_dto=complete_task_templates_dto
+        )
+
+        # Assert
+        import json
+        response_content = json.loads(presenter_response_object.content)
+
+        counter = 1
+        for task_template in response_content:
+            snapshot.assert_match(
+                task_template, 'task_template_{}'.format(counter)
+            )
+            counter = counter + 1
