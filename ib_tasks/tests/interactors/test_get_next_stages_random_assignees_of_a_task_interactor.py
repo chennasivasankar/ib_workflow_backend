@@ -59,6 +59,21 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         return task_stage_storage
 
     @pytest.fixture
+    def gof_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+            GoFStorageInterface
+        gof_storage = create_autospec(GoFStorageInterface)
+        return gof_storage
+
+    @pytest.fixture
+    def task_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+            TaskStorageInterface
+        task_storage = create_autospec(
+            TaskStorageInterface)
+        return task_storage
+
+    @pytest.fixture
     def task_storage_mock(self):
         from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
             TaskStorageInterface
@@ -110,7 +125,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         return mock_object
 
     def test_given_invalid_task_display_id_raise_exception(
-            self, mock_object, field_storage, storage_mock,
+            self, mock_object, field_storage, storage_mock,gof_storage_mock,
             stage_storage_mock, action_storage_mock, task_storage_mock,
             presenter_mock, task_stage_storage_mock, create_task_storage):
         # Arrange
@@ -127,7 +142,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             create_task_storage=create_task_storage,
-            field_storage=field_storage
+            field_storage=field_storage, gof_storage=gof_storage_mock
         )
 
         # Act
@@ -145,7 +160,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         assert error_obj.task_display_id == exception_object.task_display_id
 
     def test_given_invalid_action_id_raise_exception(
-            self, mock_object, storage_mock, stage_storage_mock,
+            self, mock_object, storage_mock, stage_storage_mock,gof_storage_mock,
             action_storage_mock, task_storage_mock, presenter_mock,
             task_stage_storage_mock, create_task_storage, field_storage):
         # Arrange
@@ -162,7 +177,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             create_task_storage=create_task_storage,
-            field_storage=field_storage
+            field_storage=field_storage, gof_storage=gof_storage_mock
         )
 
         # Act
@@ -182,7 +197,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor,
         'call_action_logic_function_and_get_status_variables_dtos_of_task')
     def test_given_invalid_path_raises_exception(self, action_logic_mock,
-                                                 storage_mock,
+                                                 storage_mock,gof_storage_mock,
                                                  stage_storage_mock,
                                                  action_storage_mock,
                                                  task_storage_mock,
@@ -201,7 +216,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             create_task_storage=create_task_storage,
-            field_storage=field_storage
+            field_storage=field_storage, gof_storage=gof_storage_mock
         )
 
         # Act
@@ -219,7 +234,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor,
         'call_action_logic_function_and_get_status_variables_dtos_of_task')
     def test_given_invalid_method_name_raises_exception(action_logic_mock,
-                                                        storage_mock,
+                                                        storage_mock,gof_storage_mock,
                                                         stage_storage_mock,
                                                         action_storage_mock,
                                                         task_storage_mock,
@@ -241,7 +256,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             create_task_storage=create_task_storage,
-            field_storage=field_storage
+            field_storage=field_storage, gof_storage=gof_storage_mock
         )
 
         # Act
@@ -260,7 +275,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor,
         'call_action_logic_function_and_get_status_variables_dtos_of_task')
     def test_access_invalid_key_raises_invalid_key_error(action_logic_mock,
-                                                         storage_mock,
+                                                         storage_mock,gof_storage_mock,
                                                          presenter_mock,
                                                          stage_storage_mock,
                                                          action_storage_mock,
@@ -281,7 +296,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             create_task_storage=create_task_storage,
-            field_storage=field_storage
+            field_storage=field_storage, gof_storage=gof_storage_mock
         )
 
         # Act
@@ -304,7 +319,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
     def test_given_valid_details_get_next_stage_assignees(
             self, action_logic_mock, next_stages_mock,
             users_with_less_tasks_mock, storage_mock, field_storage,
-            presenter_mock, stage_storage_mock, action_storage_mock,
+            presenter_mock, stage_storage_mock, action_storage_mock,gof_storage_mock,
             task_storage_mock, task_stage_storage_mock, create_task_storage):
         # Arrange
         StageWithUserDetailsDTOFactory.reset_sequence()
@@ -341,7 +356,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             create_task_storage=create_task_storage,
-            field_storage=field_storage
+            field_storage=field_storage, gof_storage=gof_storage_mock
         )
 
         # Act
