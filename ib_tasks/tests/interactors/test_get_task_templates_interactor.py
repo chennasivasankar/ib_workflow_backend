@@ -630,9 +630,8 @@ class TestGetTaskTemplatesInteractor:
             stage_id_with_gof_id_dtos
     ):
         # Arrange
-        complete_task_template_dto.gofs_of_task_templates_dtos = []
         user_id = "user_1"
-
+        complete_task_template_dto.gofs_of_task_templates_dtos = []
         task_template_ids_of_task_template_dtos = \
             self._get_task_template_ids_of_task_template_dtos(
                 task_template_dtos=
@@ -706,6 +705,9 @@ class TestGetTaskTemplatesInteractor:
             )
 
         # Assert
+        complete_task_template_dto.gof_dtos = []
+        complete_task_template_dto.stage_gof_with_template_id_dtos = []
+
         assert complete_task_templates == presenter_response_mock
 
         get_user_role_ids_mock_object.assert_called_once_with(user_id=user_id)
@@ -841,6 +843,10 @@ class TestGetTaskTemplatesInteractor:
             )
 
         # Assert
+        complete_task_template_dto.gof_dtos = []
+        complete_task_template_dto.gofs_of_task_templates_dtos = []
+        complete_task_template_dto.stage_gof_with_template_id_dtos = []
+
         assert complete_task_templates == presenter_response_mock
 
         get_user_role_ids_mock_object.assert_called_once_with(user_id=user_id)
@@ -975,6 +981,10 @@ class TestGetTaskTemplatesInteractor:
             )
 
         # Assert
+        complete_task_template_dto.gof_dtos = []
+        complete_task_template_dto.gofs_of_task_templates_dtos = []
+        complete_task_template_dto.stage_gof_with_template_id_dtos = []
+
         assert complete_task_templates == presenter_response_mock
 
         get_user_role_ids_mock_object.assert_called_once_with(user_id=user_id)
@@ -1109,6 +1119,10 @@ class TestGetTaskTemplatesInteractor:
             )
 
         # Assert
+        complete_task_template_dto.gof_dtos = []
+        complete_task_template_dto.gofs_of_task_templates_dtos = []
+        complete_task_template_dto.stage_gof_with_template_id_dtos = []
+
         assert complete_task_templates == presenter_response_mock
 
         get_user_role_ids_mock_object.assert_called_once_with(user_id=user_id)
@@ -1397,6 +1411,10 @@ class TestGetTaskTemplatesInteractor:
             )
 
         # Assert
+        complete_task_template_dto.gof_dtos = []
+        complete_task_template_dto.gofs_of_task_templates_dtos = []
+        complete_task_template_dto.stage_gof_with_template_id_dtos = []
+
         complete_task_template_dto.field_with_permissions_dtos = []
         assert complete_task_templates == presenter_response_mock
 

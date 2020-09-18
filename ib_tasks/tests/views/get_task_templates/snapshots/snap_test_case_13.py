@@ -21,45 +21,11 @@ snapshots['TestCase13GetTaskTemplatesAPITestCase.test_case body'] = [
             }
         ],
         'group_of_fields': [
-            {
-                'enable_add_another': True,
-                'fields': [
-                ],
-                'gof_display_name': 'GOF_DISPLAY_NAME-0',
-                'gof_id': 'gof_1',
-                'max_columns': 2,
-                'order': 0
-            },
-            {
-                'enable_add_another': True,
-                'fields': [
-                ],
-                'gof_display_name': 'GOF_DISPLAY_NAME-0',
-                'gof_id': 'gof_1',
-                'max_columns': 2,
-                'order': 4
-            },
-            {
-                'enable_add_another': True,
-                'fields': [
-                ],
-                'gof_display_name': 'GOF_DISPLAY_NAME-2',
-                'gof_id': 'gof_3',
-                'max_columns': 2,
-                'order': 2
-            }
         ],
         'project_id': 'project_1',
         'stage_gofs': [
-            {
-                'gof_ids': [
-                    'gof_3'
-                ],
-                'stage_id': 3
-            }
         ],
         'task_creation_gof_ids': [
-            'gof_1'
         ],
         'template_id': 'template_1',
         'template_name': 'Template 1'
@@ -75,45 +41,11 @@ snapshots['TestCase13GetTaskTemplatesAPITestCase.test_case body'] = [
             }
         ],
         'group_of_fields': [
-            {
-                'enable_add_another': False,
-                'fields': [
-                ],
-                'gof_display_name': 'GOF_DISPLAY_NAME-1',
-                'gof_id': 'gof_2',
-                'max_columns': 2,
-                'order': 1
-            },
-            {
-                'enable_add_another': False,
-                'fields': [
-                ],
-                'gof_display_name': 'GOF_DISPLAY_NAME-1',
-                'gof_id': 'gof_2',
-                'max_columns': 2,
-                'order': 5
-            },
-            {
-                'enable_add_another': False,
-                'fields': [
-                ],
-                'gof_display_name': 'GOF_DISPLAY_NAME-3',
-                'gof_id': 'gof_4',
-                'max_columns': 2,
-                'order': 3
-            }
         ],
         'project_id': 'project_2',
         'stage_gofs': [
-            {
-                'gof_ids': [
-                    'gof_4'
-                ],
-                'stage_id': 4
-            }
         ],
         'task_creation_gof_ids': [
-            'gof_2'
         ],
         'template_id': 'template_2',
         'template_name': 'Template 2'
