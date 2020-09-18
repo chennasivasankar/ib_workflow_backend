@@ -287,7 +287,8 @@ def create_user(
         email=email, name=name, password=password
     )
     create_user_in_ib_iam(
-        name=name, user_id=user_id, is_admin=is_admin, company_id=company_id
+        name=name, user_id=user_id, is_admin=is_admin, company_id=company_id,
+        email=email
     )
     return user_id
 
@@ -323,7 +324,7 @@ def get_role_ids(role_names: List[str]) -> List[str]:
 
 
 def create_user_in_ib_iam(
-        user_id: str, name: str, is_admin: bool, company_id: str
+        user_id: str, name: str, is_admin: bool, company_id: str, email: str
 ):
     from ib_iam.storages.user_storage_implementation import \
         UserStorageImplementation
@@ -332,7 +333,7 @@ def create_user_in_ib_iam(
         is_admin=is_admin, company_id=company_id,
         user_id=user_id, name=name
     )
-    create_elastic_user(user_id=user_id, name=name)
+    create_elastic_user(user_id=user_id, name=name, email=email)
 
 
 def get_company_id(company_name: str) -> str:
@@ -395,8 +396,10 @@ def create_user_profile_dto(
     return user_profile_dto
 
 
-def create_elastic_user(user_id: str, name: str):
+def create_elastic_user(user_id: str, name: str, email: str):
     from ib_iam.storages.elastic_storage_implementation import \
         ElasticStorageImplementation
     elastic_storage = ElasticStorageImplementation()
-    elastic_storage.create_elastic_user(user_id=user_id, name=name)
+    elastic_storage.create_elastic_user(
+        user_id=user_id, name=name, email=email
+    )
