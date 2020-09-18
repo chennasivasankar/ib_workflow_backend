@@ -99,7 +99,7 @@ class TestGetDiscussionsInteractor:
 
         expected_presenter_raise_exception_for_invalid_offset_mock = Mock()
 
-        presenter_mock.raise_exception_for_invalid_offset.return_value \
+        presenter_mock.response_for_invalid_offset.return_value \
             = expected_presenter_raise_exception_for_invalid_offset_mock
 
         interactor = initialise_discussions_interactor
@@ -126,7 +126,7 @@ class TestGetDiscussionsInteractor:
         user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
         expected_presenter_raise_exception_for_invalid_limit_mock = Mock()
 
-        presenter_mock.raise_exception_for_invalid_limit.return_value \
+        presenter_mock.response_for_invalid_limit.return_value \
             = expected_presenter_raise_exception_for_invalid_limit_mock
 
         interactor = initialise_discussions_interactor
@@ -194,6 +194,7 @@ class TestGetDiscussionsInteractor:
 
         # Assert
         assert response == expected_presenter_response_for_discussions
+
         storage_mock.get_discussion_set_id_if_exists.assert_called_once()
         storage_mock.get_discussion_dtos.assert_called_once_with(
             discussion_set_id=discussion_set_id,

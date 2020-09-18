@@ -6,8 +6,6 @@ from ib_iam.tests.factories.models import CompanyFactory, TeamFactory, \
     ProjectRoleFactory
 
 
-
-
 class TestAddNewUserStorage:
     @pytest.fixture()
     def reset_sequence_for_model_factories(self):

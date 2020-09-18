@@ -10,16 +10,20 @@ from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 
-from ib_tasks.interactors.multi_values_input_fields_validation_interactor \
+from ib_tasks.interactors.create_or_update_fields\
+    .multi_values_input_fields_validation_interactor \
     import MultiValuesInputFieldsValidationInteractor
 
-from ib_tasks.interactors.gof_selector_validations_interactor \
+from ib_tasks.interactors.create_or_update_fields\
+    .gof_selector_validations_interactor \
     import GoFSelectorValidationsInteractor
 
-from ib_tasks.interactors.image_or_file_uploader_validations_interactor \
+from ib_tasks.interactors.create_or_update_fields\
+    .image_or_file_uploader_validations_interactor \
     import ImageOrFileUploaderValidationsInteractor
 
-from ib_tasks.interactors.field_type_searchable_validations_interactor \
+from ib_tasks.interactors.create_or_update_fields\
+    .field_type_searchable_validations_interactor \
     import FieldTypeSearchableValidationsInteractor
 
 from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS, UPLOADERS
@@ -54,8 +58,8 @@ class CreateOrUpdateFieldsInteractor:
         self.storage.create_fields_roles(field_role_dtos)
 
     def _check_for_base_validations(self, field_dtos: List[FieldDTO]):
-        from ib_tasks.interactors.\
-            create_or_update_fields_base_validations_interactor \
+        from ib_tasks.interactors.create_or_update_fields\
+            .create_or_update_fields_base_validations_interactor \
             import CreateOrUpdateFieldsBaseValidationInteractor
         base_validation_interactor = \
             CreateOrUpdateFieldsBaseValidationInteractor(
@@ -124,7 +128,7 @@ class CreateOrUpdateFieldsInteractor:
 
         if field_type == FieldTypes.SEARCHABLE.value:
             interactor = FieldTypeSearchableValidationsInteractor()
-            interactor.field_type_searcahble_validations(field_dto)
+            interactor.field_type_searchable_validations(field_dto)
 
     @staticmethod
     def _check_for_field_roles_validations(

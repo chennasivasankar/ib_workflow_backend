@@ -16,7 +16,7 @@ class UserDTOFactory(factory.Factory):
     user_id = factory.sequence(lambda number: "team%s" % number)
     is_admin = True
     company_id = factory.sequence(lambda number: "company%s" % number)
-    cover_page_url = factory.sequence(lambda n: "url%d" % n)
+    cover_page_url = "http://sample.com"
 
 
 class UserTeamDTOFactory(factory.Factory):
@@ -121,7 +121,7 @@ class BasicUserDetailsDTOFactory(factory.Factory):
 
     user_id = factory.sequence(lambda n: "user%d" % n)
     name = factory.sequence(lambda n: "name%d" % n)
-    profile_pic_url = factory.sequence(lambda n: "url%d" % n)
+    profile_pic_url = "http://sample.com"
 
 
 class TeamNameAndDescriptionDTOFactory(factory.Factory):
@@ -201,7 +201,7 @@ class CompanyNameLogoAndDescriptionDTOFactory(factory.Factory):
 
     name = factory.sequence(lambda n: "company%d" % n)
     description = factory.sequence(lambda n: "company_description%d" % n)
-    logo_url = factory.sequence(lambda n: "logo_url%d" % n)
+    logo_url = "http://sample.com"
 
 
 class CompanyDTOFactory(
@@ -254,7 +254,7 @@ class UserIdNameEmailAndProfilePicUrlDTOFactory(factory.Factory):
     user_id = factory.Faker("uuid4")
     name = factory.Iterator(["username", "testuser", "dummyuser"])
     email = factory.sequence(lambda n: "email%d@gmail.com" % n)
-    profile_pic_url = factory.sequence(lambda n: "url%d" % n)
+    profile_pic_url = "http://sample.com"
 
 
 class TeamMemberLevelDetailsDTOFactory(factory.Factory):
@@ -281,7 +281,7 @@ class ProjectDTOFactory(factory.Factory):
     project_id = factory.Sequence(lambda n: 'project %s' % n)
     name = factory.Sequence(lambda n: 'name %s' % n)
     description = factory.Sequence(lambda n: 'description %s' % n)
-    logo_url = factory.Sequence(lambda n: 'logo %s' % n)
+    logo_url = "http://sample.com"
 
 
 class ProjectWithDisplayIdDTOFactory(factory.Factory):
@@ -292,7 +292,7 @@ class ProjectWithDisplayIdDTOFactory(factory.Factory):
     display_id = factory.Sequence(lambda n: 'display_id %s' % n)
     name = factory.Sequence(lambda n: 'name %s' % n)
     description = factory.Sequence(lambda n: 'description %s' % n)
-    logo_url = factory.Sequence(lambda n: 'logo %s' % n)
+    logo_url = "http://sample.com"
 
 
 class ProjectWithoutIdDTOFactory(factory.Factory):
@@ -302,7 +302,7 @@ class ProjectWithoutIdDTOFactory(factory.Factory):
     name = factory.Sequence(lambda n: 'name %s' % n)
     display_id = factory.Sequence(lambda n: 'display_id %s' % n)
     description = factory.Sequence(lambda n: 'description %s' % n)
-    logo_url = factory.Sequence(lambda n: 'logo %s' % n)
+    logo_url = "http://sample.com"
 
 
 class SearchableDetailsDTOFactory(factory.Factory):

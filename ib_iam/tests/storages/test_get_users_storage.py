@@ -218,18 +218,25 @@ class TestGetUsers:
         UserDTOFactory.reset_sequence(1)
         expected_output = [
             UserDTOFactory(
-                user_id=user_dict["user_id"],
-                is_admin=user_dict["is_admin"],
-                company_id=user_dict["company_id"],
-                cover_page_url=None
+                user_id=user_dict["user_id"], is_admin=user_dict["is_admin"],
+                company_id=user_dict["company_id"], cover_page_url=None
             )
             for user_dict in users_list
         ]
+        expected_output = sorted(
+            expected_output, key=lambda user_dto: user_dto.user_id
+        )
         storage = UserStorageImplementation()
 
         # Act
         output = storage.get_all_user_dtos(
-            offset=0, limit=10, name_search_query=name_search_query)
+            offset=0, limit=10, name_search_query=name_search_query
+        )
+
+        # Assert
+        output = sorted(
+            output, key=lambda user_dto: user_dto.user_id
+        )
         assert output == expected_output
 
     @pytest.mark.django_db
@@ -600,7 +607,8 @@ class TestGetUsers:
 
         actual_team_dtos = storage.get_user_related_team_dtos(user_id=user_id)
         actual_team_dtos = sorted(
-            actual_team_dtos, key=lambda x: x.team_id)
+            actual_team_dtos, key=lambda x: x.team_id
+        )
 
         assert actual_team_dtos == expected_team_dtos
 
@@ -617,10 +625,10 @@ class TestGetUsers:
         company_object = CompanyFactory.create(company_id=company_id)
         UserDetailsFactory.create(company=company_object, user_id=user_id)
         from ib_iam.interactors.storage_interfaces.dtos import CompanyDTO
-        expected_company_dto = CompanyDTO(company_id=company_id,
-                                          name='company 1',
-                                          description='description 1',
-                                          logo_url='url 1')
+        expected_company_dto = CompanyDTO(
+            company_id=company_id, name='company 1',
+            description='description 1', logo_url='http://sample.com'
+        )
         storage = UserStorageImplementation()
 
         actual_company_dto = storage.get_user_related_company_dto(
@@ -693,9 +701,9 @@ class TestGetUsers:
 
         from ib_iam.tests.factories.storage_dtos import UserDTOFactory
         UserDTOFactory.reset_sequence(1)
-        expected_dto = UserDTOFactory(user_id=user_id,
-                                      is_admin=user_object.is_admin,
-                                      company_id=None)
+        expected_dto = UserDTOFactory(
+            user_id=user_id, is_admin=user_object.is_admin, company_id=None
+        )
 
         actual_dto = storage.get_user_details(user_id=user_id)
 

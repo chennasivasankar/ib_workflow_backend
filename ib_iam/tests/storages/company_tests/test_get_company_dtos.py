@@ -11,10 +11,14 @@ class TestGetCompanyDTOs:
     @pytest.fixture
     def company_objects(self):
         company_details = [
-            {"company_id": "f2c02d98-f311-4ab2-8673-3daa00757002",
-             "name": "Proyuga"},
-            {"company_id": "f2c02d98-f311-4ab2-8673-3daa00757003",
-             "name": "Arogya"}
+            {
+                "company_id": "f2c02d98-f311-4ab2-8673-3daa00757002",
+                "name": "Proyuga"
+            },
+            {
+                "company_id": "f2c02d98-f311-4ab2-8673-3daa00757003",
+                "name": "Arogya"
+            }
         ]
         CompanyFactory.reset_sequence(1)
         company_objects = [
@@ -31,13 +35,13 @@ class TestGetCompanyDTOs:
                 "company_id": "f2c02d98-f311-4ab2-8673-3daa00757003",
                 "name": "Arogya",
                 "description": "description 2",
-                "logo_url": "url 2"
+                "logo_url": "http://sample.com"
             },
             {
                 "company_id": "f2c02d98-f311-4ab2-8673-3daa00757002",
                 "name": "Proyuga",
                 "description": "description 1",
-                "logo_url": "url 1"
+                "logo_url": "http://sample.com"
             }
         ]
         return company_details

@@ -80,7 +80,7 @@ class CreateCommentPresenterImplementation(CreateCommentPresenterInterface,
         comment_details_dto = comment_with_replies_count_and_editable_dto
 
         response = {
-            "comment_id": str(comment_details_dto.comment_id),
+            "comment_id": comment_details_dto.comment_id,
             "comment_content": comment_details_dto.comment_content,
             "author": user_id_wise_user_details_dict[
                 comment_with_replies_count_and_editable_dto.user_id
@@ -114,7 +114,7 @@ class CreateCommentPresenterImplementation(CreateCommentPresenterInterface,
     ) -> List[Dict[str, str]]:
         multimedia_list = [
             {
-                "multimedia_id": str(multimedia_dto.multimedia_id),
+                "multimedia_id": multimedia_dto.multimedia_id,
                 "format_type": multimedia_dto.format_type,
                 "url": multimedia_dto.url,
                 "thumbnail_url": multimedia_dto.thumbnail_url
@@ -128,8 +128,8 @@ class CreateCommentPresenterImplementation(CreateCommentPresenterInterface,
             user_profile_dtos: List[UserProfileDTO]
     ) -> Dict[str, Dict[str, str]]:
         user_id_wise_user_details_dict = {
-            str(user_profile_dto.user_id): {
-                "user_id": str(user_profile_dto.user_id),
+            user_profile_dto.user_id: {
+                "user_id": user_profile_dto.user_id,
                 "name": user_profile_dto.name,
                 "profile_pic_url": user_profile_dto.profile_pic_url
             }

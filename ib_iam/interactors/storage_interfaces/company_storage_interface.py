@@ -1,6 +1,6 @@
 import abc
 
-from typing import List
+from typing import List, Optional
 from ib_iam.interactors.storage_interfaces.dtos import (
     CompanyDTO, CompanyIdWithEmployeeIdsDTO)
 from ib_iam.interactors.storage_interfaces.dtos import \
@@ -14,12 +14,15 @@ class CompanyStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_company_employee_ids_dtos(self, company_ids: List[str]) -> \
-            List[CompanyIdWithEmployeeIdsDTO]:
+    def get_company_employee_ids_dtos(
+            self, company_ids: List[str]
+    ) -> List[CompanyIdWithEmployeeIdsDTO]:
         pass
 
     @abc.abstractmethod
-    def get_company_id_if_company_name_already_exists(self, name: str):
+    def get_company_id_if_company_name_already_exists(
+            self, name: str
+    ) -> Optional[str]:
         pass
 
     @abc.abstractmethod

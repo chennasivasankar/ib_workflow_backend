@@ -11,9 +11,9 @@ def generate_role_id():
 
 
 class ProjectRole(AbstractDateTimeModel):
-    role_id = models.CharField(default=generate_role_id,
-                               primary_key=True,
-                               max_length=100)
+    role_id = models.CharField(
+        default=generate_role_id, primary_key=True, max_length=100
+    )
     project = models.ForeignKey("Project", on_delete=models.CASCADE)
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(null=True, blank=True)

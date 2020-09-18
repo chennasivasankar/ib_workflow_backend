@@ -51,7 +51,7 @@ class TestCreateOrUpdateTaskPresenterImplementation:
         # Arrange
         board_id = "board_1"
 
-        from ib_tasks.interactors.user_action_on_task_interactor \
+        from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor \
             import InvalidBoardIdException
         error = InvalidBoardIdException(board_id=board_id)
 

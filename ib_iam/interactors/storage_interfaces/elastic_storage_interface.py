@@ -9,7 +9,7 @@ from ib_iam.documents.elastic_docs import (
 class ElasticSearchStorageInterface(abc.ABC):
 
     @abc.abstractmethod
-    def create_elastic_user(self, user_id: str, name: str):
+    def create_elastic_user(self, user_id: str, name: str, email: str):
         pass
 
     @abc.abstractmethod

@@ -1,4 +1,4 @@
-from unittest.mock import Mock
+from unittest.mock import Mock, create_autospec
 
 import pytest
 
@@ -37,12 +37,10 @@ class TestGetUserOptionsInteractor:
         return role_dtos
 
     @pytest.fixture
-    def storage_mock(self):
-        from unittest import mock
-        from ib_iam.interactors.storage_interfaces. \
-            user_storage_interface import \
+    def user_storage_mock(self):
+        from ib_iam.interactors.storage_interfaces.user_storage_interface import \
             UserStorageInterface
-        storage = mock.create_autospec(UserStorageInterface)
+        storage = create_autospec(UserStorageInterface)
         return storage
 
     @pytest.fixture
@@ -53,68 +51,84 @@ class TestGetUserOptionsInteractor:
         storage = mock.create_autospec(GetUserOptionsPresenterInterface)
         return storage
 
+    @pytest.fixture
+    def interactor(self, user_storage_mock):
+        return GetUserOptionsDetails(user_storage=user_storage_mock)
+
     def test_create_user_when_user_is_not_admin_then_throw_exception(
-            self, storage_mock, presenter_mock):
+            self, user_storage_mock, presenter_mock, interactor
+    ):
         # Arrange
-        interactor = GetUserOptionsDetails(user_storage=storage_mock)
-        storage_mock.is_user_admin.return_value = False
+        user_id = "user0"
+        user_storage_mock.is_user_admin.return_value = False
         presenter_mock.response_for_user_is_not_admin_exception.return_value = Mock()
 
         # Act
-        interactor.get_configuration_details_wrapper(presenter=presenter_mock,
-                                                     user_id="user0")
+        interactor.get_configuration_details_wrapper(
+            presenter=presenter_mock, user_id=user_id
+        )
 
         # Assert
-        storage_mock.is_user_admin.assert_called_once_with(user_id="user0")
+        user_storage_mock.is_user_admin.assert_called_once_with(
+            user_id=user_id
+        )
         presenter_mock.response_for_user_is_not_admin_exception.assert_called_once()
 
     def test_get_companies_details(
-            self, company_dtos, storage_mock, presenter_mock):
+            self, company_dtos, user_storage_mock, presenter_mock, interactor
+    ):
         # Arrange
-        storage_mock.get_companies.return_value = company_dtos
-        interactor = GetUserOptionsDetails(user_storage=storage_mock)
+        user_id = "user0"
+        user_storage_mock.get_companies.return_value = company_dtos
 
         # Act
-        interactor.get_configuration_details_wrapper(presenter=presenter_mock,
-                                                     user_id="user0")
+        interactor.get_configuration_details_wrapper(
+            presenter=presenter_mock, user_id=user_id
+        )
 
         # Assert
-        storage_mock.get_companies.assert_called_once()
+        user_storage_mock.get_companies.assert_called_once()
 
+    # TODO: user assert_called_with
     def test_get_teams_details(
-            self, team_dtos, storage_mock, presenter_mock):
+            self, team_dtos, user_storage_mock, presenter_mock, interactor
+    ):
         # Arrange
-        storage_mock.get_team_id_and_name_dtos.return_value = team_dtos
-        interactor = GetUserOptionsDetails(user_storage=storage_mock)
+        user_id = "user0"
+        user_storage_mock.get_team_id_and_name_dtos.return_value = team_dtos
+        interactor = GetUserOptionsDetails(user_storage=user_storage_mock)
 
         # Act
-        interactor.get_configuration_details_wrapper(presenter=presenter_mock,
-                                                     user_id="user0")
+        interactor.get_configuration_details_wrapper(
+            presenter=presenter_mock, user_id=user_id
+        )
 
         # Assert
-        storage_mock.get_team_id_and_name_dtos.assert_called_once()
+        user_storage_mock.get_team_id_and_name_dtos.assert_called_once()
 
+    # TODO: user assert_called_with
     def test_get_roles_details(
-            self, role_dtos, storage_mock, presenter_mock):
+            self, role_dtos, user_storage_mock, presenter_mock):
         # Arrange
-        storage_mock.get_roles.return_value = role_dtos
-        interactor = GetUserOptionsDetails(user_storage=storage_mock)
+        user_storage_mock.get_roles.return_value = role_dtos
+        interactor = GetUserOptionsDetails(user_storage=user_storage_mock)
 
         # Act
         interactor.get_configuration_details_wrapper(presenter=presenter_mock,
                                                      user_id="user0")
 
         # Assert
-        storage_mock.get_roles.assert_called_once()
+        user_storage_mock.get_roles.assert_called_once()
 
+    # TODO: user assert_called_with
     def test_get_configuration_details_returns_response(
-            self, role_dtos, team_dtos, company_dtos, storage_mock,
+            self, role_dtos, team_dtos, company_dtos, user_storage_mock,
             presenter_mock):
         # Arrange
-        storage_mock.get_companies.return_value = company_dtos
-        storage_mock.get_team_id_and_name_dtos.return_value = team_dtos
-        storage_mock.get_roles.return_value = role_dtos
-        interactor = GetUserOptionsDetails(user_storage=storage_mock)
+        user_storage_mock.get_companies.return_value = company_dtos
+        user_storage_mock.get_team_id_and_name_dtos.return_value = team_dtos
+        user_storage_mock.get_roles.return_value = role_dtos
+        interactor = GetUserOptionsDetails(user_storage=user_storage_mock)
         presenter_mock.return_value = Mock()
 
         # Act

@@ -14,7 +14,7 @@ class CompanyFactory(factory.django.DjangoModelFactory):
     company_id = factory.Faker("uuid4")
     name = factory.sequence(lambda number: "company %s" % number)
     description = factory.sequence(lambda number: "description %s" % number)
-    logo_url = factory.sequence(lambda number: "url %s" % number)
+    logo_url = "http://sample.com"
 
 
 class TeamFactory(factory.django.DjangoModelFactory):
@@ -35,7 +35,7 @@ class UserDetailsFactory(factory.django.DjangoModelFactory):
     is_admin = False
     name = factory.Faker('name')
     company = factory.SubFactory(CompanyFactory)
-    cover_page_url = factory.sequence(lambda n: "url%d" % n)
+    cover_page_url = "http://sample.com"
 
 
 class TeamUserFactory(factory.django.DjangoModelFactory):
@@ -108,7 +108,7 @@ class ProjectFactory(factory.django.DjangoModelFactory):
     display_id = factory.Sequence(lambda n: 'display_id %s' % n)
     name = factory.Sequence(lambda n: 'name %s' % n)
     description = factory.Sequence(lambda n: 'description %s' % n)
-    logo_url = factory.Sequence(lambda n: 'logo %s' % n)
+    logo_url = "http://sample.com"
 
 
 class ProjectRoleFactory(factory.django.DjangoModelFactory):

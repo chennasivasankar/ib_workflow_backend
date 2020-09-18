@@ -1,6 +1,7 @@
+from django.http import HttpResponse
 from django_swagger_utils.utils.http_response_mixin \
     import HTTPResponseMixin
-from django.http import HttpResponse
+
 from ib_iam.adapters.auth_service import UserTokensDTO
 from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
@@ -180,6 +181,7 @@ INVALID_DOMAIN = (
 )
 
 
+# TODO: Write in a different file
 class CreateUserAccountPresenterImplementation(
     CreateUserAccountPresenterInterface, HTTPResponseMixin
 ):
@@ -261,8 +263,10 @@ ACCOUNT_DOES_NOT_EXISTS = (
 )
 
 
+# TODO: Write in a different file
 class SendVerifyEmailLinkPresenterImplementation(
-    SendVerifyEmailLinkPresenterInterface, HTTPResponseMixin):
+    SendVerifyEmailLinkPresenterInterface, HTTPResponseMixin
+):
     def get_response_send_verify_email_link(self):
         return self.prepare_200_success_response(response_dict={})
 
@@ -284,8 +288,10 @@ class SendVerifyEmailLinkPresenterImplementation(
             response_dict=response_dict)
 
 
+# TODO: Write in a different file
 class VerifyEmailPresenterImplementation(
-    VerifyEmailPresenterInterface, HTTPResponseMixin):
+    VerifyEmailPresenterInterface, HTTPResponseMixin
+):
     def raise_email_does_not_exist_to_verify_exception(self):
         response_dict = {
             "response": ACCOUNT_DOES_NOT_EXISTS[0],

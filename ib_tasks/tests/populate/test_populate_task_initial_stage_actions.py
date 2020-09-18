@@ -103,12 +103,12 @@ class TestCasePopulateTasks:
         )]
         from ib_tasks.populate.populate_task_initial_stage_actions_logic \
             import populate_tasks
-        path = "ib_tasks.interactors.configur_initial_task_template_stage_actions" \
+        path = "ib_tasks.interactors.configure_initial_task_template_stage_actions" \
                ".ConfigureInitialTaskTemplateStageActions.create_update_delete_stage_actions_to_task_template"
         mock_obj = mocker.patch(path)
 
         # Act
-        response = populate_tasks(tasks=tasks)
+        populate_tasks(tasks=tasks)
 
         # Assert
         mock_obj.called_once()

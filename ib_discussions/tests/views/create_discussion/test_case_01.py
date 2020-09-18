@@ -1,7 +1,6 @@
 """
 create discussion
 """
-from uuid import UUID
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -22,9 +21,9 @@ class TestCase01CreateDiscussionAPITestCase(TestUtils):
         from ib_discussions.tests.factories.models import EntityFactory
 
         entity_ids = [
-            UUID('31be920b-7b4c-49e7-8adb-41a0c18da848'),
-            UUID('4c28801f-7084-4b93-a938-f261aedf8f29'),
-            UUID('64eade81-86d0-43d4-9575-d3482aaa30e5'),
+            '31be920b-7b4c-49e7-8adb-41a0c18da848',
+            '4c28801f-7084-4b93-a938-f261aedf8f29',
+            '64eade81-86d0-43d4-9575-d3482aaa30e5',
         ]
         for entity_id in entity_ids:
             EntityFactory(id=entity_id)

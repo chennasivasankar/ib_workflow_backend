@@ -18,6 +18,7 @@ class AuthService:
     @property
     def interface(self):
         from ib_users.interfaces.service_interface import ServiceInterface
+
         service_interface = ServiceInterface()
         return service_interface
 
@@ -25,19 +26,18 @@ class AuthService:
             self, user_ids: List[str]) -> List[UserProfileDTO]:
         from ib_users.interactors.exceptions.user_profile import \
             InvalidUserException
+        from ib_discussions.exceptions.custom_exceptions import \
+            InvalidUserId
+        from ib_users.constants.user_profile.error_types import \
+            INVALID_USER_ID_ERROR_TYPE, EMPTY_USER_ID_ERROR_TYPE
+
         try:
             user_details_dtos = self.interface.get_user_profile_bulk(
                 user_ids=user_ids
             )
         except InvalidUserException as err:
-            from ib_discussions.exceptions.custom_exceptions import \
-                InvalidUserId
-            from ib_users.constants.user_profile.error_types import \
-                INVALID_USER_ID_ERROR_TYPE
             if err.error_type == INVALID_USER_ID_ERROR_TYPE:
                 raise InvalidUserId
-            from ib_users.constants.user_profile.error_types import \
-                EMPTY_USER_ID_ERROR_TYPE
             if err.error_type == EMPTY_USER_ID_ERROR_TYPE:
                 raise InvalidUserId
         else:
@@ -64,6 +64,7 @@ class AuthService:
     @staticmethod
     def validate_user_ids(user_ids: List[str]):
         from ib_iam.app_interfaces.service_interface import ServiceInterface
+
         service_interface = ServiceInterface()
         valid_user_ids = service_interface.get_valid_user_ids(user_ids=user_ids)
         invalid_user_ids = [

@@ -83,7 +83,7 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
 from ib_tasks.interactors.task_dtos import (CreateTaskDTO, CreateTaskLogDTO,
                                             GoFFieldsDTO
                                             )
-from ib_tasks.interactors.user_action_on_task_interactor import \
+from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
 
 

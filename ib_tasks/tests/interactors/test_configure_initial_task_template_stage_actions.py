@@ -1,7 +1,7 @@
 
 import pytest
 from unittest.mock import create_autospec
-from ib_tasks.interactors.configur_initial_task_template_stage_actions import (
+from ib_tasks.interactors.configure_initial_task_template_stage_actions import (
     ConfigureInitialTaskTemplateStageActions, InvalidTaskTemplateIdsException
 )
 from ib_tasks.interactors.stages_dtos import TemplateStageDTO
@@ -24,7 +24,6 @@ class TestConfigureInitialTaskTemplateStageActions:
             import TaskTemplateStorageInterface
         storage = create_autospec(TaskTemplateStorageInterface)
         return storage
-
 
     @staticmethod
     def test_given_invalid_task_template_ids_raises_exception(
@@ -91,7 +90,7 @@ class TestConfigureInitialTaskTemplateStageActions:
 
         # Act
         with pytest.raises(ManyStagesToInitialTaskTemplate) as err:
-            assert interactor \
+            assert interactor\
                 .create_update_delete_stage_actions_to_task_template()
 
         # Assert
@@ -105,6 +104,7 @@ class TestConfigureInitialTaskTemplateStageActions:
             mocker, action_storage, template_storage):
 
         # Arrange
+        
         TaskTemplateStageActionDTOFactory.reset_sequence(0)
         tasks_dto = TaskTemplateStageActionDTOFactory.create_batch(size=2)
 

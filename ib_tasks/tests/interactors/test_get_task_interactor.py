@@ -84,6 +84,14 @@ class TestGetTaskInteractor:
         return storage
 
     @pytest.fixture
+    def stage_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces \
+            .stages_storage_interface import \
+            StageStorageInterface
+        storage = create_autospec(StageStorageInterface)
+        return storage
+
+    @pytest.fixture
     def reset_sequence(self):
         from ib_tasks.tests.factories.storage_dtos import \
             TaskStageAssigneeDTOFactory
@@ -279,27 +287,6 @@ class TestGetTaskInteractor:
         return stages_and_actions_details_dtos
 
     @pytest.fixture
-    def virtual_stages_and_actions_details_dtos(self, stages_action_dtos):
-        from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
-        stages_and_actions_details_dtos = [
-            StageAndActionsDetailsDTO(
-                stage_id="stage0",
-                name="name1",
-                db_stage_id=1,
-                color="color1",
-                actions_dtos=[stages_action_dtos[0], stages_action_dtos[1]]
-            ),
-            StageAndActionsDetailsDTO(
-                stage_id="stage1",
-                name="name2",
-                db_stage_id=2,
-                color="color2",
-                actions_dtos=[stages_action_dtos[2], stages_action_dtos[3]]
-            )
-        ]
-        return stages_and_actions_details_dtos
-
-    @pytest.fixture
     def assignee_details_dtos(self):
         from ib_tasks.tests.factories.interactor_dtos import \
             AssigneeWithTeamDetailsDTOFactory
@@ -366,7 +353,7 @@ class TestGetTaskInteractor:
             self, presenter_mock,
             mock_object, task_crud_storage_mock,
             fields_storage_mock, storage_mock,
-            task_storage_mock, action_storage_mock,
+            task_storage_mock, action_storage_mock, stage_storage_mock,
             task_stage_storage_mock, reset_sequence, gof_storage_mock
     ):
         # Arrange
@@ -382,7 +369,7 @@ class TestGetTaskInteractor:
             task_storage=task_storage_mock, action_storage=action_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             task_crud_storage=task_crud_storage_mock,
-            gof_storage=gof_storage_mock
+            gof_storage=gof_storage_mock, stage_storage=stage_storage_mock
         )
         presenter_mock.raise_invalid_task_display_id.return_value = \
             mock_object
@@ -403,7 +390,7 @@ class TestGetTaskInteractor:
             self, get_task_mock, presenter_mock,
             mock_object, task_crud_storage_mock,
             fields_storage_mock, storage_mock,
-            task_storage_mock, action_storage_mock,
+            task_storage_mock, action_storage_mock, stage_storage_mock,
             task_stage_storage_mock, reset_sequence, gof_storage_mock
     ):
         # Arrange
@@ -419,7 +406,7 @@ class TestGetTaskInteractor:
             task_storage=task_storage_mock, action_storage=action_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             task_crud_storage=task_crud_storage_mock,
-            gof_storage=gof_storage_mock
+            gof_storage=gof_storage_mock, stage_storage=stage_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_task_id.return_value = \
             mock_object
@@ -439,7 +426,7 @@ class TestGetTaskInteractor:
             self, get_task_mock, presenter_mock,
             mock_object, task_crud_storage_mock,
             fields_storage_mock, storage_mock,
-            task_storage_mock, action_storage_mock,
+            task_storage_mock, action_storage_mock, stage_storage_mock,
             task_stage_storage_mock, reset_sequence, gof_storage_mock
     ):
         # Arrange
@@ -455,7 +442,7 @@ class TestGetTaskInteractor:
             task_storage=task_storage_mock, action_storage=action_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             task_crud_storage=task_crud_storage_mock,
-            gof_storage=gof_storage_mock
+            gof_storage=gof_storage_mock, stage_storage=stage_storage_mock
         )
         presenter_mock.raise_invalid_project_id.return_value = \
             mock_object
@@ -481,43 +468,34 @@ class TestGetTaskInteractor:
     def test_given_valid_task_and_valid_stage_ids_but_user_has_no_permission_raise_exception(
             self, get_task_mock, get_task_stages_and_actions_mock,
             field_ids_permission_mock, gof_ids_permission_mock,
-            user_role_mock, stage_assignee_details_dtos,
+            user_role_mock, stage_assignee_details_dtos, stage_storage_mock,
             storage_mock, presenter_mock, fields_storage_mock,
             task_storage_mock, task_crud_storage_mock, action_storage_mock,
             task_stage_storage_mock, task_details_dto, user_roles, gof_ids,
             permission_task_gof_dtos, field_ids, permission_field_ids,
-            permission_task_gof_field_dtos, mock_object,
-            virtual_stages_and_actions_details_dtos, permission_gof_ids,
-            reset_sequence, gof_storage_mock
+            permission_task_gof_field_dtos, mock_object, permission_gof_ids,
+            reset_sequence, gof_storage_mock, stages_and_actions_details_dtos
     ):
         user_role_mock.return_value = user_roles
         user_id = "user1"
         task_id = 1
         task_display_id = "IBWF-1"
-        stage_ids = [
-            stages_and_actions_details_dto.db_stage_id
-            for stages_and_actions_details_dto in
-            virtual_stages_and_actions_details_dtos
-        ]
-        virtual_stage_ids = [stage_ids[1]]
         get_task_mock.return_value = task_details_dto
         get_task_stages_and_actions_mock.return_value = \
-            virtual_stages_and_actions_details_dtos
+            stages_and_actions_details_dtos
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
         task_stage_storage_mock \
             .is_user_has_permission_for_at_least_one_stage.return_value = False
         task_crud_storage_mock.get_field_searchable_dtos.return_value = []
-        fields_storage_mock.get_virtual_stage_ids_in_given_stage_ids \
-            .return_value = virtual_stage_ids
 
         interactor = GetTaskInteractor(
             storage=storage_mock, fields_storage=fields_storage_mock,
             task_storage=task_storage_mock, action_storage=action_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             task_crud_storage=task_crud_storage_mock,
-            gof_storage=gof_storage_mock
+            gof_storage=gof_storage_mock, stage_storage=stage_storage_mock
         )
         field_ids_permission_mock.return_value = permission_field_ids
         gof_ids_permission_mock.return_value = permission_gof_ids
@@ -532,9 +510,6 @@ class TestGetTaskInteractor:
         user_role_mock.assert_called_once()
         field_ids_permission_mock.assert_called_once()
         gof_ids_permission_mock.assert_called_once()
-        fields_storage_mock.get_virtual_stage_ids_in_given_stage_ids \
-            .assert_called_once_with(
-            stage_ids)
         task_stage_storage_mock \
             .is_user_has_permission_for_at_least_one_stage.assert_called_once()
         presenter_mock.raise_user_permission_denied.assert_called_once()
@@ -554,7 +529,7 @@ class TestGetTaskInteractor:
             self, stage_assignee_details_dtos_mock, get_task_mock,
             get_task_stages_and_actions_mock, field_ids_permission_mock,
             gof_ids_permission_mock, user_roles_mock,
-            stage_assignee_details_dtos,
+            stage_assignee_details_dtos, stage_storage_mock,
             storage_mock, presenter_mock, fields_storage_mock,
             task_storage_mock, task_crud_storage_mock, action_storage_mock,
             task_stage_storage_mock, task_details_dto, user_roles, gof_ids,
@@ -588,15 +563,13 @@ class TestGetTaskInteractor:
         task_stage_storage_mock \
             .is_user_has_permission_for_at_least_one_stage.return_value = True
         task_crud_storage_mock.get_field_searchable_dtos.return_value = []
-        fields_storage_mock.get_virtual_stage_ids_in_given_stage_ids\
-            .return_value = []
 
         interactor = GetTaskInteractor(
             storage=storage_mock, fields_storage=fields_storage_mock,
             task_storage=task_storage_mock, action_storage=action_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             task_crud_storage=task_crud_storage_mock,
-            gof_storage=gof_storage_mock
+            gof_storage=gof_storage_mock, stage_storage=stage_storage_mock
         )
         field_ids_permission_mock.return_value = permission_field_ids
         gof_ids_permission_mock.return_value = permission_gof_ids
@@ -630,7 +603,7 @@ class TestGetTaskInteractor:
             self, stage_assignee_details_dtos_mock, get_task_mock,
             get_task_stages_and_actions_mock, field_ids_permission_mock,
             gof_ids_permission_mock, user_roles_mock,
-            stage_assignee_details_dtos,
+            stage_assignee_details_dtos, stage_storage_mock,
             storage_mock, presenter_mock, fields_storage_mock,
             task_storage_mock, task_crud_storage_mock, action_storage_mock,
             task_stage_storage_mock, task_details_dto, user_roles, gof_ids,
@@ -655,15 +628,13 @@ class TestGetTaskInteractor:
         task_stage_storage_mock \
             .is_user_has_permission_for_at_least_one_stage.return_value = True
         task_crud_storage_mock.get_field_searchable_dtos.return_value = []
-        fields_storage_mock.get_virtual_stage_ids_in_given_stage_ids \
-            .return_value = []
 
         interactor = GetTaskInteractor(
             storage=storage_mock, fields_storage=fields_storage_mock,
             task_storage=task_storage_mock, action_storage=action_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             task_crud_storage=task_crud_storage_mock,
-            gof_storage=gof_storage_mock
+            gof_storage=gof_storage_mock, stage_storage=stage_storage_mock
         )
         field_ids_permission_mock.return_value = permission_field_ids
         gof_ids_permission_mock.return_value = permission_gof_ids
@@ -839,7 +810,7 @@ class TestGetTaskInteractor:
             permission_task_gof_field_dtos_with_field_type_searchable,
             field_searchable_dtos,
             task_complete_details_dto_with_field_type_searchable,
-            gof_storage_mock
+            gof_storage_mock, stage_storage_mock
     ):
         # Arrange
         from ib_tasks.tests.common_fixtures.adapters \
@@ -867,15 +838,13 @@ class TestGetTaskInteractor:
             task_storage=task_storage_mock, action_storage=action_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             task_crud_storage=task_crud_storage_mock,
-            gof_storage=gof_storage_mock
+            gof_storage=gof_storage_mock, stage_storage=stage_storage_mock
         )
         field_ids_permission_mock.return_value = permission_field_ids
         gof_ids_permission_mock.return_value = permission_gof_ids
         task_crud_storage_mock.get_field_searchable_dtos.return_value = \
             field_searchable_dtos
         presenter_mock.get_task_response.return_value = mock_object
-        fields_storage_mock.get_virtual_stage_ids_in_given_stage_ids \
-            .return_value = []
 
         # Act
         interactor.get_task_details_wrapper(
@@ -915,7 +884,7 @@ class TestGetTaskInteractor:
             permission_task_gof_field_dtos_with_field_type_searchable,
             field_searchable_dtos_with_invalid_city_ids,
             task_complete_details_dto_with_field_type_searchable,
-            gof_storage_mock
+            gof_storage_mock, stage_storage_mock
     ):
         # Arrange
         user_roles_mock.return_value = user_roles
@@ -937,7 +906,7 @@ class TestGetTaskInteractor:
             task_storage=task_storage_mock, action_storage=action_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             task_crud_storage=task_crud_storage_mock,
-            gof_storage=gof_storage_mock
+            gof_storage=gof_storage_mock, stage_storage=stage_storage_mock
         )
         field_ids_permission_mock.return_value = permission_field_ids
         gof_ids_permission_mock.return_value = permission_gof_ids
@@ -982,7 +951,7 @@ class TestGetTaskInteractor:
             mock_object, permission_gof_ids, reset_sequence,
             permission_task_gof_field_dtos_with_field_type_searchable,
             task_complete_details_dto_with_field_type_searchable,
-            gof_storage_mock
+            gof_storage_mock, stage_storage_mock
     ):
         # Arrange
         user_roles_mock.return_value = user_roles
@@ -1012,7 +981,7 @@ class TestGetTaskInteractor:
             task_storage=task_storage_mock, action_storage=action_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             task_crud_storage=task_crud_storage_mock,
-            gof_storage=gof_storage_mock
+            gof_storage=gof_storage_mock, stage_storage=stage_storage_mock
         )
         field_ids_permission_mock.return_value = permission_field_ids
         gof_ids_permission_mock.return_value = permission_gof_ids
@@ -1057,7 +1026,7 @@ class TestGetTaskInteractor:
             mock_object, permission_gof_ids, reset_sequence,
             permission_task_gof_field_dtos_with_field_type_searchable,
             task_complete_details_dto_with_field_type_searchable,
-            gof_storage_mock
+            gof_storage_mock, stage_storage_mock
     ):
         # Arrange
         user_roles_mock.return_value = user_roles
@@ -1087,7 +1056,7 @@ class TestGetTaskInteractor:
             task_storage=task_storage_mock, action_storage=action_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             task_crud_storage=task_crud_storage_mock,
-            gof_storage=gof_storage_mock
+            gof_storage=gof_storage_mock, stage_storage=stage_storage_mock
         )
         field_ids_permission_mock.return_value = permission_field_ids
         gof_ids_permission_mock.return_value = permission_gof_ids
@@ -1132,7 +1101,7 @@ class TestGetTaskInteractor:
             mock_object, permission_gof_ids, reset_sequence,
             permission_task_gof_field_dtos_with_field_type_searchable,
             task_complete_details_dto_with_field_type_searchable,
-            gof_storage_mock
+            gof_storage_mock, stage_storage_mock
     ):
         # Arrange
         user_roles_mock.return_value = user_roles
@@ -1165,7 +1134,7 @@ class TestGetTaskInteractor:
             task_storage=task_storage_mock, action_storage=action_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             task_crud_storage=task_crud_storage_mock,
-            gof_storage=gof_storage_mock
+            gof_storage=gof_storage_mock, stage_storage=stage_storage_mock
         )
         field_ids_permission_mock.return_value = permission_field_ids
         gof_ids_permission_mock.return_value = permission_gof_ids
@@ -1210,7 +1179,7 @@ class TestGetTaskInteractor:
             permission_task_gof_dtos, field_ids, permission_field_ids,
             permission_task_gof_field_dtos, task_complete_details_dto,
             mock_object, stages_and_actions_details_dtos, permission_gof_ids,
-            reset_sequence, gof_storage_mock
+            reset_sequence, gof_storage_mock, stage_storage_mock
     ):
         # Arrange
         user_roles_mock.return_value = user_roles
@@ -1230,15 +1199,13 @@ class TestGetTaskInteractor:
         task_stage_storage_mock \
             .is_user_has_permission_for_at_least_one_stage.return_value = True
         task_crud_storage_mock.get_field_searchable_dtos.return_value = []
-        fields_storage_mock.get_virtual_stage_ids_in_given_stage_ids \
-            .return_value = []
 
         interactor = GetTaskInteractor(
             storage=storage_mock, fields_storage=fields_storage_mock,
             task_storage=task_storage_mock, action_storage=action_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             task_crud_storage=task_crud_storage_mock,
-            gof_storage=gof_storage_mock
+            gof_storage=gof_storage_mock, stage_storage=stage_storage_mock
         )
         field_ids_permission_mock.return_value = permission_field_ids
         gof_ids_permission_mock.return_value = permission_gof_ids
@@ -1278,7 +1245,7 @@ class TestGetTaskInteractor:
             permission_task_gof_dtos, field_ids, permission_field_ids,
             permission_task_gof_field_dtos, task_complete_details_dto,
             mock_object, stages_and_actions_details_dtos, permission_gof_ids,
-            reset_sequence, gof_storage_mock
+            reset_sequence, gof_storage_mock, stage_storage_mock
     ):
         # Arrange
         user_roles_mock.return_value = user_roles
@@ -1301,15 +1268,13 @@ class TestGetTaskInteractor:
         task_stage_storage_mock \
             .is_user_has_permission_for_at_least_one_stage.return_value = True
         task_crud_storage_mock.get_field_searchable_dtos.return_value = []
-        fields_storage_mock.get_virtual_stage_ids_in_given_stage_ids \
-            .return_value = []
 
         interactor = GetTaskInteractor(
             storage=storage_mock, fields_storage=fields_storage_mock,
             task_storage=task_storage_mock, action_storage=action_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             task_crud_storage=task_crud_storage_mock,
-            gof_storage=gof_storage_mock
+            gof_storage=gof_storage_mock, stage_storage=stage_storage_mock
         )
         field_ids_permission_mock.return_value = permission_field_ids
         gof_ids_permission_mock.return_value = permission_gof_ids
@@ -1351,7 +1316,7 @@ class TestGetTaskInteractor:
             permission_task_gof_dtos, field_ids, permission_field_ids,
             permission_task_gof_field_dtos, task_complete_details_dto,
             mock_object, stages_and_actions_details_dtos, permission_gof_ids,
-            reset_sequence, gof_storage_mock
+            reset_sequence, gof_storage_mock, stage_storage_mock
     ):
         # Arrange
         user_role_mock.return_value = user_roles
@@ -1374,15 +1339,13 @@ class TestGetTaskInteractor:
         task_stage_storage_mock \
             .is_user_has_permission_for_at_least_one_stage.return_value = True
         task_crud_storage_mock.get_field_searchable_dtos.return_value = []
-        fields_storage_mock.get_virtual_stage_ids_in_given_stage_ids \
-            .return_value = []
 
         interactor = GetTaskInteractor(
             storage=storage_mock, fields_storage=fields_storage_mock,
             task_storage=task_storage_mock, action_storage=action_storage_mock,
             task_stage_storage=task_stage_storage_mock,
             task_crud_storage=task_crud_storage_mock,
-            gof_storage=gof_storage_mock
+            gof_storage=gof_storage_mock, stage_storage=stage_storage_mock
         )
         field_ids_permission_mock.return_value = permission_field_ids
         gof_ids_permission_mock.return_value = permission_gof_ids

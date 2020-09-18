@@ -12,9 +12,7 @@ def generate_project_id():
 
 class Project(models.Model):
     project_id = models.CharField(
-        default=generate_project_id,
-        primary_key=True,
-        max_length=100
+        default=generate_project_id, primary_key=True, max_length=100
     )
     display_id = models.CharField(max_length=100, unique=True)
     name = models.CharField(max_length=100, unique=True)

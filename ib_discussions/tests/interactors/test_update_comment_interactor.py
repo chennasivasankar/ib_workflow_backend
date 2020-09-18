@@ -37,9 +37,11 @@ class TestUpdateCommentInteractor:
             "10be920b-7b4c-49e7-8adb-41a0c18da848",
             "20be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
+
         from ib_discussions.tests.common_fixtures.adapters import \
             prepare_get_user_profile_dtos_mock
         get_user_profile_dtos_mock = prepare_get_user_profile_dtos_mock(mocker)
+
         from ib_discussions.tests.factories.adapter_dtos import \
             UserProfileDTOFactory
         user_profile_dtos = [
@@ -186,9 +188,11 @@ class TestUpdateCommentInteractor:
         invalid_user_ids = [
             "20be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
+
         from ib_discussions.tests.common_fixtures.adapters import \
             prepare_validate_user_ids_mock
         validate_user_ids_mock = prepare_validate_user_ids_mock(mocker=mocker)
+
         from ib_discussions.adapters.auth_service import InvalidUserIds
         validate_user_ids_mock.side_effect = InvalidUserIds(
             user_ids=invalid_user_ids)
@@ -221,6 +225,7 @@ class TestUpdateCommentInteractor:
 
         # Assert
         assert response == expected_presenter_response_for_invalid_user_ids_mock
+
         presenter_mock.response_for_invalid_user_ids.assert_called_once()
 
     def test_with_valid_details_return_response(
@@ -285,6 +290,7 @@ class TestUpdateCommentInteractor:
 
         # Assert
         assert response == expected_presenter_prepare_response_for_comment_mock
+
         storage_mock.get_comment_details_dto.assert_called_once_with(
             comment_id=comment_id
         )

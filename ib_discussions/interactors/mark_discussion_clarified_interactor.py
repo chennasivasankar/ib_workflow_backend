@@ -21,10 +21,10 @@ class MarkDiscussionClarifiedInteractor:
                 presenter=presenter
             )
         except DiscussionIdNotFound:
-            response = presenter.raise_exception_for_discussion_id_not_found()
+            response = presenter.response_for_discussion_id_not_found()
         except UserCannotMarkAsClarified:
             response \
-                = presenter.raise_exception_for_user_cannot_mark_as_clarified()
+                = presenter.response_for_user_cannot_mark_as_clarified()
         return response
 
     def _mark_discussion_clarified_response(
@@ -35,7 +35,7 @@ class MarkDiscussionClarifiedInteractor:
             discussion_id=discussion_id, user_id=user_id
         )
         return \
-            presenter.raise_success_response_for_mark_discussion_as_clarified()
+            presenter.prepare_success_response_for_mark_discussion_as_clarified()
 
     def mark_discussion_clarified(self, discussion_id: str, user_id: str):
         self.storage.validate_discussion_id(discussion_id=discussion_id)

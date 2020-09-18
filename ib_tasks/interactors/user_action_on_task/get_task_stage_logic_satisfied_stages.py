@@ -180,7 +180,7 @@ class GetTaskStageLogicSatisfiedStagesInteractor:
     def _get_status_operand_stage_dtos(
             stage_display_dtos: List[StageDisplayDTO]
     ) -> List[StageDisplayLogicDTO]:
-        from ib_tasks.interactors.get_stage_display_logic_interactor \
+        from ib_tasks.interactors.user_action_on_task.get_stage_display_logic_interactor \
             import StageDisplayLogicInteractor
         interactor = StageDisplayLogicInteractor()
         stage_display_logic_dtos = interactor \

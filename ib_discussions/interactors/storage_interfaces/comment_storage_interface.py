@@ -47,7 +47,8 @@ class CommentStorageInterface(abc.ABC):
     @abc.abstractmethod
     def create_reply_to_comment(
             self, parent_comment_id: str, comment_content: str,
-            user_id: str, discussion_id: str) -> str:
+            user_id: str, discussion_id: str
+    ) -> str:
         pass
 
     @abc.abstractmethod
@@ -83,7 +84,7 @@ class CommentStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_comment_creator_id(self, comment_id: str):
+    def get_comment_creator_id(self, comment_id: str) -> str:
         pass
 
     @abc.abstractmethod

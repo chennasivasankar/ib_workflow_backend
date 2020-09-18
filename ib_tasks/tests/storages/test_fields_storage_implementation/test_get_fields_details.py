@@ -1,5 +1,6 @@
 import pytest
 
+from ib_tasks.constants.enum import Searchable
 from ib_tasks.storages.fields_storage_implementation import \
     FieldsStorageImplementation
 from ib_tasks.tests.factories.models import (
@@ -10,7 +11,6 @@ from ib_tasks.tests.factories.storage_dtos import TaskWithFieldsDTOFactory
 
 @pytest.mark.django_db
 class TestGetFieldDetails:
-
     @pytest.fixture()
     def get_task_template_stage_dtos(self):
         TaskWithFieldsDTOFactory.reset_sequence()
@@ -21,15 +21,20 @@ class TestGetFieldDetails:
     @pytest.fixture()
     def populate_data(self):
         GoFFactory.reset_sequence(-1)
-        GoFFactory.create_batch(size=4)
         TaskFactory.reset_sequence()
         FieldFactory.reset_sequence()
         TaskGoFFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
         TaskGoFFieldFactory.reset_sequence()
         StageModelFactory.reset_sequence()
+
         StageModelFactory.create_batch(size=4)
-        fields = FieldFactory.create_batch(size=4)
+        GoFFactory.create_batch(size=4)
+        from ib_tasks.constants.enum import FieldTypes
+        fields = FieldFactory.create_batch(
+                size=4, field_values=Searchable.USER.value,
+                field_type=FieldTypes.SEARCHABLE.value
+        )
         TaskGoFFieldFactory(field=fields[0], task_gof__task_id=2)
         TaskGoFFieldFactory(field=fields[1], task_gof__task_id=1)
         TaskGoFFieldFactory(field=fields[2], task_gof__task_id=2)

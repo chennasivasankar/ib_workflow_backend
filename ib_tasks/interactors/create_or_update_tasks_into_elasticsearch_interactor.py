@@ -9,6 +9,8 @@ from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -20,19 +22,23 @@ class CreateOrUpdateDataIntoElasticsearchInteractor:
                  stage_storage: StageStorageInterface,
                  field_storage: FieldsStorageInterface,
                  task_storage: TaskStorageInterface,
-                 elasticsearch_storage: ElasticSearchStorageInterface):
+                 elasticsearch_storage: ElasticSearchStorageInterface,
+                 gof_storage: GoFStorageInterface
+                 ):
         self.elasticsearch_storage = elasticsearch_storage
         self.field_storage = field_storage
         self.task_storage = task_storage
         self.storage = storage
         self.stage_storage = stage_storage
+        self.gof_storage = gof_storage
 
     def create_or_update_task_in_elasticsearch_storage(self, task_id: int):
 
         from ib_tasks.interactors.get_task_base_interactor import \
             GetTaskBaseInteractor
         task_interactor = GetTaskBaseInteractor(
-            storage=self.storage
+            storage=self.storage,
+            gof_storage=self.gof_storage
         )
         task_dto = task_interactor.get_task(task_id=task_id)
         stage_ids = self.stage_storage.get_task_current_stages(

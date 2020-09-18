@@ -21,9 +21,9 @@ class TestResetUserPasswordInteractor:
         from ib_iam.interactors.reset_user_password_interactor import \
             TokenDoesNotExist
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_update_user_password_with_reset_password_token_mock
+            update_user_password_with_reset_password_token_mock
         update_user_password_mock \
-            = prepare_update_user_password_with_reset_password_token_mock(
+            = update_user_password_with_reset_password_token_mock(
             mocker)
         update_user_password_mock.side_effect = TokenDoesNotExist
 
@@ -53,9 +53,9 @@ class TestResetUserPasswordInteractor:
         from ib_iam.interactors.reset_user_password_interactor import \
             TokenHasExpired
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_update_user_password_with_reset_password_token_mock
+            update_user_password_with_reset_password_token_mock
         update_user_password_mock \
-            = prepare_update_user_password_with_reset_password_token_mock(
+            = update_user_password_with_reset_password_token_mock(
             mocker)
         update_user_password_mock.side_effect = TokenHasExpired
 
@@ -81,9 +81,9 @@ class TestResetUserPasswordInteractor:
         password = "sankar123"
         expected_presenter_success_response_mock = Mock()
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_update_user_password_with_reset_password_token_mock
+            update_user_password_with_reset_password_token_mock
         update_user_password_mock \
-            = prepare_update_user_password_with_reset_password_token_mock(
+            = update_user_password_with_reset_password_token_mock(
             mocker)
         presenter = presenter_mock
         presenter.get_update_user_password_success_response.return_value \
@@ -111,9 +111,9 @@ class TestResetUserPasswordInteractor:
         from ib_iam.interactors.reset_user_password_interactor import \
             PasswordMinLength
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_update_user_password_with_reset_password_token_mock
+            update_user_password_with_reset_password_token_mock
         update_user_password_mock \
-            = prepare_update_user_password_with_reset_password_token_mock(
+            = update_user_password_with_reset_password_token_mock(
             mocker)
         update_user_password_mock.side_effect \
             = PasswordMinLength
@@ -145,9 +145,9 @@ class TestResetUserPasswordInteractor:
         from ib_iam.interactors.reset_user_password_interactor import \
             PasswordAtLeastOneSpecialCharacter
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
-            prepare_update_user_password_with_reset_password_token_mock
+            update_user_password_with_reset_password_token_mock
         update_user_password_mock \
-            = prepare_update_user_password_with_reset_password_token_mock(
+            = update_user_password_with_reset_password_token_mock(
             mocker)
         update_user_password_mock.side_effect \
             = PasswordAtLeastOneSpecialCharacter

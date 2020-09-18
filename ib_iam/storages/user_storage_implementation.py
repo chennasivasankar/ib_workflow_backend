@@ -106,21 +106,25 @@ class UserStorageImplementation(UserStorageInterface):
         )
 
     def update_user_name_and_cover_page_url(
-            self, name: str, cover_page_url: str, user_id: str):
+            self, name: str, cover_page_url: str, user_id: str
+    ):
         from ib_iam.models import UserDetails
         UserDetails.objects.filter(user_id=user_id).update(
-            name=name,
-            cover_page_url=cover_page_url)
+            name=name, cover_page_url=cover_page_url
+        )
 
     def get_all_user_dtos(
-            self, offset: int, limit: int,
-            name_search_query: str) -> List[UserDTO]:
+            self, offset: int, limit: int, name_search_query: str
+    ) -> List[UserDTO]:
         from ib_iam.models import UserDetails
-        users = UserDetails.objects.filter(
+        from django.db.models.functions import Lower
+        users_query_set = UserDetails.objects.filter(
             name__icontains=name_search_query
-        )[offset: offset + limit]
-        user_dtos = [self._convert_to_user_dto(user_object=user_object) for
-                     user_object in users]
+        ).order_by(Lower('name'))[offset: offset + limit]
+        user_dtos = [
+            self._convert_to_user_dto(user_object=user_object)
+            for user_object in users_query_set
+        ]
         return user_dtos
 
     @staticmethod
@@ -128,44 +132,52 @@ class UserStorageImplementation(UserStorageInterface):
         if user_object.company is None:
             user_dto = UserDTO(
                 user_id=user_object.user_id, is_admin=user_object.is_admin,
-                company_id="")
+                company_id=""
+            )
         else:
             user_dto = UserDTO(
                 user_id=user_object.user_id, is_admin=user_object.is_admin,
-                company_id=str(user_object.company_id))
+                company_id=str(user_object.company_id)
+            )
         return user_dto
 
-    def get_total_count_of_users_for_query(self, name_search_query: str):
+    def get_total_count_of_users_for_query(
+            self, name_search_query: str
+    ) -> int:
         from ib_iam.models import UserDetails
-        total_count_of_users = \
-            UserDetails.objects.filter(
-                name__icontains=name_search_query
-            ).count()
+        total_count_of_users = UserDetails.objects.filter(
+            name__icontains=name_search_query
+        ).count()
         return total_count_of_users
 
     def get_team_details_of_users_bulk(
-            self, user_ids: List[str]) -> List[TeamWithUserIdDTO]:
+            self, user_ids: List[str]
+    ) -> List[TeamWithUserIdDTO]:
         from ib_iam.models import TeamUser
-        user_teams = TeamUser.objects.filter(user_id__in=user_ids) \
-            .select_related('team')
+        user_teams = TeamUser.objects.filter(
+            user_id__in=user_ids
+        ).select_related('team')
         team_dtos = []
         for user_team in user_teams:
             team = user_team.team
             team_dto = TeamWithUserIdDTO(
-                user_id=user_team.user_id,
-                team_id=str(team.team_id),
+                user_id=user_team.user_id, team_id=str(team.team_id),
                 team_name=team.name
             )
             team_dtos.append(team_dto)
         return team_dtos
 
     def get_role_details_of_users_bulk(
-            self, user_ids: List[str]) -> List[UserRoleDTO]:
+            self, user_ids: List[str]
+    ) -> List[UserRoleDTO]:
         from ib_iam.models import UserRole
-        user_roles = UserRole.objects.filter(user_id__in=user_ids) \
-            .select_related('project_role')
-        role_dtos = [self._convert_to_user_role_dto(user_role)
-                     for user_role in user_roles]
+        user_roles = UserRole.objects.filter(
+            user_id__in=user_ids
+        ).select_related('project_role')
+        role_dtos = [
+            self._convert_to_user_role_dto(user_role)
+            for user_role in user_roles
+        ]
         return role_dtos
 
     @staticmethod
@@ -173,15 +185,20 @@ class UserStorageImplementation(UserStorageInterface):
         project_role = user_role.project_role
         return UserRoleDTO(
             user_id=user_role.user_id, role_id=project_role.role_id,
-            name=project_role.name, description=project_role.description)
+            name=project_role.name, description=project_role.description
+        )
 
     def get_company_details_of_users_bulk(
-            self, user_ids: List[str]) -> List[UserCompanyDTO]:
+            self, user_ids: List[str]
+    ) -> List[UserCompanyDTO]:
         from ib_iam.models import UserDetails
-        user_companies = UserDetails.objects.filter(user_id__in=user_ids) \
-            .select_related('company')
-        user_company_dtos = [self._convert_user_company_dto(user_company)
-                             for user_company in user_companies]
+        user_companies = UserDetails.objects.filter(
+            user_id__in=user_ids
+        ).select_related('company')
+        user_company_dtos = [
+            self._convert_user_company_dto(user_company)
+            for user_company in user_companies
+        ]
         return user_company_dtos
 
     @staticmethod
@@ -192,34 +209,43 @@ class UserStorageImplementation(UserStorageInterface):
         else:
             return UserCompanyDTO(
                 user_id=user_company.user_id,
-                company_id=str(company.company_id), company_name=company.name)
+                company_id=str(company.company_id), company_name=company.name
+            )
 
     def get_companies(self) -> List[CompanyIdAndNameDTO]:
         from ib_iam.models import Company
         company_query_set = Company.objects.values('company_id', 'name')
-        company_dtos = [CompanyIdAndNameDTO(
-            company_id=str(company_object['company_id']),
-            company_name=company_object['name']) for company_object in
-            company_query_set]
+        company_dtos = [
+            CompanyIdAndNameDTO(
+                company_id=str(company_object['company_id']),
+                company_name=company_object['name']
+            ) for company_object in company_query_set
+        ]
         return company_dtos
 
     def get_team_id_and_name_dtos(self) -> List[TeamIdAndNameDTO]:
         from ib_iam.models import Team
         team_query_set = Team.objects.values('team_id', 'name')
-        team_dtos = [TeamIdAndNameDTO(
-            team_id=str(team_object['team_id']),
-            team_name=team_object['name']) for team_object in team_query_set]
+        team_dtos = [
+            TeamIdAndNameDTO(
+                team_id=str(team_object['team_id']),
+                team_name=team_object['name']
+            ) for team_object in team_query_set
+        ]
         return team_dtos
 
     def get_roles(self) -> List[RoleIdAndNameDTO]:
         from ib_iam.models import ProjectRole
         role_query_set = ProjectRole.objects.values('role_id', 'name')
-        role_dtos = [RoleIdAndNameDTO(
-            role_id=str(role_object['role_id']),
-            name=role_object['name']) for role_object in role_query_set]
+        role_dtos = [
+            RoleIdAndNameDTO(
+                role_id=str(role_object['role_id']),
+                name=role_object['name']
+            ) for role_object in role_query_set
+        ]
         return role_dtos
 
-    def validate_user_id(self, user_id):
+    def validate_user_id(self, user_id: str):
         from ib_iam.models import UserDetails
         user_details_object = UserDetails.objects.filter(user_id=user_id)
         is_user_details_object_not_exist = not user_details_object.exists()
@@ -320,14 +346,6 @@ class UserStorageImplementation(UserStorageInterface):
         user_ids_list = list(user_ids_queryset)
         return user_ids_list
 
-    # def get_db_role_ids(self, role_ids: List[str]) -> List[str]:
-    #     from ib_iam.models import ProjectRole
-    #     db_role_ids_queryset = \
-    #         ProjectRole.objects.filter(
-    #             role_id__in=role_ids).values_list('id', flat=True)
-    #     db_role_ids_list = list(db_role_ids_queryset)
-    #     return db_role_ids_list
-
     @staticmethod
     def _convert_to_user_details_dto(user_details_object):
         user_details_dto = UserIdAndNameDTO(
@@ -339,7 +357,12 @@ class UserStorageImplementation(UserStorageInterface):
     def get_user_related_team_dtos(self, user_id: str) -> List[TeamDTO]:
         from ib_iam.models import Team
         team_objects = Team.objects.filter(users__user_id=user_id)
-        team_dtos = self._get_team_dtos(team_objects=team_objects)
+        team_dtos = [
+            TeamDTO(
+                team_id=str(team_object.team_id), name=team_object.name,
+                description=team_object.description
+            ) for team_object in team_objects
+        ]
         return team_dtos
 
     def get_team_user_ids_dtos(self, team_ids: List[str]) -> \
@@ -446,28 +469,18 @@ class UserStorageImplementation(UserStorageInterface):
             logo_url=company_object.logo_url)
         return company_dto
 
-    @staticmethod
-    def _get_team_dtos(team_objects):
-        team_dtos = [
-            TeamDTO(
-                team_id=str(team_object.team_id),
-                name=team_object.name,
-                description=team_object.description
-            )
-            for team_object in team_objects
-        ]
-        return team_dtos
-
     def get_user_ids_for_given_project(self, project_id: str) -> List[str]:
         # TODO need to optimize the storage calls
         from ib_iam.models import ProjectTeam
         team_ids = list(
             ProjectTeam.objects.filter(project_id=project_id).values_list(
-                'team_id', flat=True))
+                'team_id', flat=True)
+        )
         from ib_iam.models import TeamUser
         user_ids = list(
             TeamUser.objects.filter(team_id__in=team_ids).values_list(
-                'user_id', flat=True))
+                'user_id', flat=True)
+        )
         return user_ids
 
     def assign_user_roles_for_given_project(

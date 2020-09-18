@@ -55,6 +55,7 @@ class TestCreateDiscussionInteractor:
 
         # Assert
         assert response == expected_presenter_response_for_empty_title_mock
+
         presenter_mock.response_for_empty_title.assert_called_once()
 
     def test_create_discussion_set_when_does_not_exists(
@@ -105,6 +106,7 @@ class TestCreateDiscussionInteractor:
 
         # Assert
         assert response == expected_presenter_success_response_mock
+
         storage_mock.get_discussion_set_id_if_exists.assert_called_once_with(
             entity_id=discussion_dto.entity_id,
             entity_type=discussion_dto.entity_type

@@ -103,6 +103,7 @@ class TestGetRepliesForCommentInteractor:
         # Assert
         assert response \
                == expected_presenter_prepare_response_for_replies_with_users_dtos_mock
+
         storage_mock.is_comment_id_exists.assert_called_once_with(
             comment_id=comment_id
         )

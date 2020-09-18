@@ -3,7 +3,8 @@ import pytest
 from ib_tasks.tests.factories.storage_dtos \
     import FieldDTOFactory
 from ib_tasks.constants.enum import FieldTypes
-from ib_tasks.interactors.image_or_file_uploader_validations_interactor \
+from ib_tasks.interactors.create_or_update_fields\
+    .image_or_file_uploader_validations_interactor \
     import ImageOrFileUploaderValidationsInteractor
 
 

@@ -536,7 +536,8 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             storage=self.create_task_storage,
             task_storage=self.task_storage,
             stage_storage=self.stage_storage,
-            field_storage=self.field_storage
+            field_storage=self.field_storage,
+            gof_storage=self.gof_storage
         )
         interactor.create_or_update_task_in_elasticsearch_storage(
             task_id=task_id

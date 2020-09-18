@@ -20,7 +20,9 @@ class TestVerifyEmailInteractor:
         return interactor
 
     def test_given_invalid_email_raises_exception(
-            self, init_interactor, presenter_mock, mocker):
+            self, init_interactor, presenter_mock, mocker
+    ):
+        # Arrange
         interactor = init_interactor
         user_id = "76fcdf69-853e-486d-bb90-2ef99bb43aa5"
         from ib_iam.tests.common_fixtures.adapters.user_service import \
@@ -29,21 +31,24 @@ class TestVerifyEmailInteractor:
             mocker=mocker)
         from ib_iam.adapters.dtos import UserProfileDTO
         get_user_profile_dto_mock.return_value = UserProfileDTO(
-            user_id=user_id,
-            name="Baba"
+            user_id=user_id, name="Baba"
         )
         presenter_mock.raise_email_does_not_exist_to_verify_exception. \
             return_value = Mock()
 
+        # Act
         interactor.link_verified_email_to_user_account_wrapper(
             user_id=user_id, presenter=presenter_mock)
 
+        # Assert
         get_user_profile_dto_mock.assert_called_once_with(user_id=user_id)
         presenter_mock.raise_email_does_not_exist_to_verify_exception \
             .assert_called_once()
 
     def test_given_email_already_verified_raises_exception(
-            self, init_interactor, presenter_mock, mocker):
+            self, init_interactor, presenter_mock, mocker
+    ):
+        # Arrange
         interactor = init_interactor
         user_id = "76fcdf69-853e-486d-bb90-2ef99bb43aa5"
         from ib_iam.tests.common_fixtures.adapters.user_service import \
@@ -52,23 +57,25 @@ class TestVerifyEmailInteractor:
             mocker=mocker)
         from ib_iam.adapters.dtos import UserProfileDTO
         get_user_profile_dto_mock.return_value = UserProfileDTO(
-            email="example@gmail.com",
-            user_id=user_id,
-            name="Baba",
-            is_email_verify=True
+            email="example@gmail.com", user_id=user_id, name="Baba",
+            is_email_verified=True
         )
         presenter_mock.raise_email_already_verified_exception.return_value \
             = Mock()
 
+        # Act
         interactor.link_verified_email_to_user_account_wrapper(
             user_id=user_id, presenter=presenter_mock)
 
+        # Arrange
         get_user_profile_dto_mock.assert_called_once_with(user_id=user_id)
         presenter_mock.raise_email_already_verified_exception \
             .assert_called_once()
 
     def test_verified_email_then_return_response(
-            self, init_interactor, presenter_mock, mocker):
+            self, init_interactor, presenter_mock, mocker
+    ):
+        # Arrange
         interactor = init_interactor
         user_id = "76fcdf69-853e-486d-bb90-2ef99bb43aa5"
         from ib_iam.tests.common_fixtures.adapters.user_service import \
@@ -77,7 +84,8 @@ class TestVerifyEmailInteractor:
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
-            name="Baba", user_id=user_id, is_email_verify=False)
+            name="Baba", user_id=user_id, is_email_verified=False
+        )
 
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             update_is_email_verified_value_mock
@@ -87,9 +95,11 @@ class TestVerifyEmailInteractor:
         presenter_mock.get_response_for_verified_email.return_value \
             = Mock()
 
+        # Act
         interactor.link_verified_email_to_user_account_wrapper(
             user_id=user_id, presenter=presenter_mock)
 
+        # Assert
         get_user_profile_dto_mock.assert_called_once_with(user_id=user_id)
         update_is_email_verified_value_mock.assert_called_once_with(
             user_id=user_id, is_email_verified=True)

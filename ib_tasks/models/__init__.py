@@ -29,6 +29,7 @@ from .task_template_initial_stages import TaskTemplateInitialStage
 from .task_template_status_variable import TaskTemplateStatusVariable
 from .template_status_variables import TaskTemplateStatusVariables
 from .stage_flow import StageFlow
+from .stage_gof import StageGoF
 
 __all__ = [
     "StageFlow",
@@ -56,5 +57,5 @@ __all__ = [
     "TaskTemplateInitialStage",
     "StagePermittedRoles",
     "UserTaskDelayReason", "ProjectTaskTemplate",
-    "TaskStageRp"
+    "TaskStageRp", "StageGoF"
 ]

@@ -48,6 +48,7 @@ class TestUserService:
             message=EMPTY_USER_ID, exception_type=EMPTY_USER_ID_ERROR_TYPE
         )
 
+        # Act
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
 

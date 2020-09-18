@@ -3,17 +3,20 @@ from unittest.mock import create_autospec
 import pytest
 
 from ib_tasks.adapters.dtos import ProjectRolesDTO
-from ib_tasks.constants.enum import ViewType
+from ib_tasks.constants.enum import ViewType, FieldTypes
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
 from ib_tasks.interactors.get_task_fields import GetTaskFieldsInteractor
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    (FieldDetailsDTOWithTaskId, TaskTemplateStageFieldsDTO)
+    (TaskTemplateStageFieldsDTO)
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.tests.common_fixtures.adapters.roles_service import \
     get_user_role_ids_based_on_projects_mock
+from ib_tasks.tests.common_fixtures.adapters.searchable_details_service \
+    import \
+    user_searchable_details_dtos_mock
 from ib_tasks.tests.common_fixtures.interactors import \
     prepare_get_field_ids_having_permission_for_user_projects
 from ib_tasks.tests.factories.interactor_dtos import GetTaskDetailsDTOFactory
@@ -30,10 +33,15 @@ class TestGetFieldsAndActionsInteractor:
     @pytest.fixture()
     def get_fields_dtos(self):
         FieldDetailsDTOWithTaskIdFactory.reset_sequence()
-        fields = FieldDetailsDTOWithTaskIdFactory.create_batch(size=2,
-                                                               task_id=1)
-        fields.append(FieldDetailsDTOWithTaskIdFactory(task_id=2))
-        fields.append(FieldDetailsDTOWithTaskIdFactory(task_id=2))
+        fields = FieldDetailsDTOWithTaskIdFactory.create_batch(
+                size=2, task_id=1, field_type=FieldTypes.SEARCHABLE.value,
+                value="123e4567-e89b-12d3-a456-426614174001")
+        fields.append(FieldDetailsDTOWithTaskIdFactory(
+                task_id=2, value="123e4567-e89b-12d3-a456-426614174001",
+                field_type=FieldTypes.SEARCHABLE.value))
+        fields.append(FieldDetailsDTOWithTaskIdFactory(
+                task_id=2, value="123e4567-e89b-12d3-a456-426614174000",
+                field_type=FieldTypes.SEARCHABLE.value))
         return fields
 
     @pytest.fixture
@@ -42,23 +50,23 @@ class TestGetFieldsAndActionsInteractor:
 
     @pytest.fixture
     def expected_output(self):
-        fields = [
-                FieldDetailsDTOWithTaskId(
-                        field_type='Drop down', field_id='FIELD-ID-1',
-                        key='key', value='value',
-                        task_id=1),
-                FieldDetailsDTOWithTaskId(
-                        field_type='Drop down', field_id='FIELD-ID-2',
-                        key='key', value='value',
-                        task_id=1),
-                FieldDetailsDTOWithTaskId(
-                        field_type='Drop down', field_id='FIELD-ID-3',
-                        key='key', value='value',
-                        task_id=2),
-                FieldDetailsDTOWithTaskId(
-                        field_type='Drop down', field_id='FIELD-ID-4',
-                        key='key', value='value',
-                        task_id=2)]
+        FieldDetailsDTOWithTaskIdFactory.reset_sequence()
+        fields = FieldDetailsDTOWithTaskIdFactory.create_batch(
+                2, task_id=1,
+                field_type=FieldTypes.SEARCHABLE.value,
+                value="User1")
+        fields_1 = FieldDetailsDTOWithTaskIdFactory(
+                task_id=2,
+                field_type=FieldTypes.SEARCHABLE.value,
+                value="User1"
+        )
+        field_2 = FieldDetailsDTOWithTaskIdFactory(
+                task_id=2,
+                field_type=FieldTypes.SEARCHABLE.value,
+                value="User0"
+        )
+        fields += [fields_1, field_2]
+
         stage_fields_dtos = [TaskTemplateStageFieldsDTO(
                 task_template_id='task_template_id_1', task_id=1,
                 stage_id='stage_id_1', display_name='display_name_1',
@@ -74,23 +82,23 @@ class TestGetFieldsAndActionsInteractor:
 
     @pytest.fixture
     def expected_output_for_task_in_two_stages(self):
-        fields = [
-                FieldDetailsDTOWithTaskId(
-                        field_type='Drop down', field_id='FIELD-ID-1',
-                        key='key', value='value',
-                        task_id=1),
-                FieldDetailsDTOWithTaskId(
-                        field_type='Drop down', field_id='FIELD-ID-2',
-                        key='key', value='value',
-                        task_id=1),
-                FieldDetailsDTOWithTaskId(
-                        field_type='Drop down', field_id='FIELD-ID-3',
-                        key='key', value='value',
-                        task_id=2),
-                FieldDetailsDTOWithTaskId(
-                        field_type='Drop down', field_id='FIELD-ID-4',
-                        key='key', value='value',
-                        task_id=2)]
+        FieldDetailsDTOWithTaskIdFactory.reset_sequence()
+        fields = FieldDetailsDTOWithTaskIdFactory.create_batch(
+                2, task_id=1,
+                field_type=FieldTypes.SEARCHABLE.value,
+                value="User1")
+        fields_1 = FieldDetailsDTOWithTaskIdFactory(
+                task_id=2,
+                field_type=FieldTypes.SEARCHABLE.value,
+                value="User1"
+        )
+        field_2 = FieldDetailsDTOWithTaskIdFactory(
+                task_id=2,
+                field_type=FieldTypes.SEARCHABLE.value,
+                value="User0"
+        )
+        fields += [fields_1, field_2]
+
         stage_fields_dtos = [TaskTemplateStageFieldsDTO(
                 task_template_id='task_template_id_1', task_id=1,
                 stage_id='stage_id_1', display_name='display_name_1',
@@ -166,6 +174,7 @@ class TestGetFieldsAndActionsInteractor:
                        "FIN_FINANCE_RP"])]
         user_roles_mock = get_user_role_ids_based_on_projects_mock(mocker)
         user_roles_mock.return_value = user_roles
+        user_searchable_details_dtos_mock(mocker)
         field_ids = ['FIELD-ID-1', 'FIELD-ID-2', 'FIELD-ID-3', 'FIELD-ID-4']
         field_storage_mock.get_field_ids.return_value = get_field_ids
         task_storage_mock.get_valid_task_ids.return_value = task_ids
@@ -212,6 +221,7 @@ class TestGetFieldsAndActionsInteractor:
                        "FIN_FINANCE_RP"])]
         user_roles_mock = get_user_role_ids_based_on_projects_mock(mocker)
         user_roles_mock.return_value = user_roles
+        user_searchable_details_dtos_mock(mocker)
         field_ids = ['FIELD-ID-1', 'FIELD-ID-2', 'FIELD-ID-3', 'FIELD-ID-4']
         field_storage_mock.get_field_ids.return_value = get_field_ids
         task_storage_mock.get_valid_task_ids.return_value = task_ids
@@ -271,10 +281,10 @@ class TestGetFieldsAndActionsInteractor:
         # Act
         with pytest.raises(InvalidTaskIds) as err:
             interactor.get_task_fields(
-                task_stage_dtos=get_task_template_stage_dtos,
-                view_type=view_type,
-                user_id=user_id,
-                task_ids=task_ids)
+                    task_stage_dtos=get_task_template_stage_dtos,
+                    view_type=view_type,
+                    user_id=user_id,
+                    task_ids=task_ids)
 
         # Assert
         task_storage_mock.get_valid_task_ids.assert_called_once_with(task_ids)

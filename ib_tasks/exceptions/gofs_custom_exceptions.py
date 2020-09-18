@@ -2,8 +2,8 @@ from typing import List
 
 
 class DuplicateGoFIds(Exception):
-    def __int__(self, message: str):
-        self.message = message
+    def __int__(self, gof_ids: List[str]):
+        self.gof_ids = gof_ids
 
 
 class GOFIdCantBeEmpty(Exception):

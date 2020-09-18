@@ -13,7 +13,7 @@ class RolesStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_role_ids(self, role_ids: List[str]):
+    def get_valid_role_ids(self, role_ids: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod

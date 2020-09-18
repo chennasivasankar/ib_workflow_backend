@@ -38,8 +38,8 @@ class GetRepliesForCommentInteractor:
         )
 
     def get_replies_for_comment(
-            self, comment_id: str, user_id: str):
-
+            self, comment_id: str, user_id: str
+    ):
         is_comment_id_not_exists = not self.storage.is_comment_id_exists(
             comment_id=comment_id
         )

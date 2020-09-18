@@ -21,6 +21,7 @@ class StorageImplementation(StorageInterface):
             self, entity_id: str, entity_type: EntityType
     ) -> Optional[str]:
         from ib_discussions.models import DiscussionSet
+
         try:
             discussion_set_object = DiscussionSet.objects.get(
                 entity_id=entity_id, entity_type=entity_type
@@ -50,6 +51,7 @@ class StorageImplementation(StorageInterface):
             description=discussion_with_entity_details_dto.description,
             title=discussion_with_entity_details_dto.title,
         )
+        return
 
     def get_discussion_dtos(
             self, discussion_set_id: str, sort_by_dto: SortByDTO,
@@ -75,8 +77,9 @@ class StorageImplementation(StorageInterface):
         )
         return complete_discussion_dtos
 
-    def get_total_discussion_count(self, discussion_set_id: str,
-                                   filter_by_dto: FilterByDTO) -> int:
+    def get_total_discussion_count(
+            self, discussion_set_id: str, filter_by_dto: FilterByDTO
+    ) -> int:
         from ib_discussions.models import Discussion
         discussion_objects = Discussion.objects.filter(
             discussion_set_id=discussion_set_id
@@ -184,24 +187,29 @@ class StorageImplementation(StorageInterface):
 
     def update_discussion(
             self,
-            discussion_id_with_title_and_description_dto: DiscussionIdWithTitleAndDescriptionDTO):
+            discussion_id_with_title_and_description_dto: DiscussionIdWithTitleAndDescriptionDTO
+    ):
         discussion_id \
             = discussion_id_with_title_and_description_dto.discussion_id
         title = discussion_id_with_title_and_description_dto.title
         description = discussion_id_with_title_and_description_dto.description
+
         from ib_discussions.models import Discussion
         discussion_object = Discussion.objects.get(id=discussion_id)
 
         discussion_object.title = title
         discussion_object.description = description
         discussion_object.save()
+        return
 
     def delete_discussion(self, discussion_id: str):
         from ib_discussions.models import Discussion
         Discussion.objects.filter(id=discussion_id).delete()
+        return
 
-    def get_comments_count_for_discussions(self, discussion_set_id: str) -> \
-            List[DiscussionIdWithCommentsCountDTO]:
+    def get_comments_count_for_discussions(
+            self, discussion_set_id: str
+    ) -> List[DiscussionIdWithCommentsCountDTO]:
         from ib_discussions.models import Discussion
         discussion_ids = Discussion.objects.filter(
             discussion_set_id=discussion_set_id

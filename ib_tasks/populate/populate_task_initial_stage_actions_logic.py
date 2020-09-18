@@ -11,7 +11,7 @@ def populate_tasks(tasks: List[Dict]):
         tasks)
     for action_dict in tasks:
         tasks_dto.append(append_action_dict(action_dict))
-    from ib_tasks.interactors.configur_initial_task_template_stage_actions \
+    from ib_tasks.interactors.configure_initial_task_template_stage_actions \
         import ConfigureInitialTaskTemplateStageActions
 
     from ib_tasks.storages.action_storage_implementation import \
@@ -29,9 +29,10 @@ def _remove_white_spaces_and_apply_replaces_to_roles(
     for action_dict in action_dicts:
         roles = action_dict['roles']
         roles = roles.replace(" ", "")
-        roles = roles.split(",")
+        roles = roles.split("\n")
         action_dict["roles"] = roles
     return action_dicts
+
 
 def append_action_dict(action_dict: Dict[str, Any]):
     stage_id = action_dict["stage_id"]

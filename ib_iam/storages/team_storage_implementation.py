@@ -90,9 +90,10 @@ class TeamStorageImplementation(TeamStorageInterface):
             description=team_dto.description
         )
 
-    def get_member_ids_of_team(self, team_id: str):
-        member_ids = TeamUser.objects.filter(team_id=team_id) \
-            .values_list("user_id", flat=True)
+    def get_member_ids_of_team(self, team_id: str) -> List[str]:
+        member_ids = TeamUser.objects.filter(
+            team_id=team_id
+        ).values_list("user_id", flat=True)
         return list(member_ids)
 
     def delete_members_from_team(self, team_id: str, user_ids: List[str]):
@@ -117,11 +118,9 @@ class TeamStorageImplementation(TeamStorageInterface):
     def _convert_to_team_dtos(team_objects):
         team_dtos = [
             TeamDTO(
-                team_id=str(team_object.team_id),
-                name=team_object.name,
+                team_id=str(team_object.team_id), name=team_object.name,
                 description=team_object.description
-            )
-            for team_object in team_objects
+            ) for team_object in team_objects
         ]
         return team_dtos
 
@@ -146,3 +145,7 @@ class TeamStorageImplementation(TeamStorageInterface):
             ) for user_team_object in user_team_objects
         ]
         return user_team_dtos
+
+    def is_team_exist(self, team_id: str) -> bool:
+        # todo write tests for this
+        return Team.objects.filter(team_id=team_id).exists

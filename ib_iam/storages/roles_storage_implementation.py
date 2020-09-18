@@ -10,7 +10,6 @@ class RolesStorageImplementation(RolesStorageInterface):
 
     def create_roles(self, role_dtos: List[RoleDTO], project_id: str):
         from ib_iam.models import ProjectRole
-        # TODO If break the entire project then need to change the back step
         role_objects = [
             ProjectRole(
                 role_id=role_dto.role_id, name=role_dto.name,
@@ -20,10 +19,11 @@ class RolesStorageImplementation(RolesStorageInterface):
             for role_dto in role_dtos]
         ProjectRole.objects.bulk_create(role_objects)
 
-    def get_valid_role_ids(self, role_ids: List[str]):
+    def get_valid_role_ids(self, role_ids: List[str]) -> List[str]:
         from ib_iam.models import ProjectRole
-        valid_role_ids = ProjectRole.objects.filter(role_id__in=role_ids). \
-            values_list("role_id", flat=True)
+        valid_role_ids = ProjectRole.objects.filter(
+            role_id__in=role_ids
+        ).values_list("role_id", flat=True)
         return list(valid_role_ids)
 
     def validate_user_id(self, user_id):

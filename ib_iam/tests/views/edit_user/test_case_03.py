@@ -1,8 +1,9 @@
 """
-# TODO: Update test case description
+Given valid details updating/editing user details is successful
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -41,7 +42,9 @@ class TestCase03EditUserAPITestCase(TestUtils):
         return mock
 
     @pytest.mark.django_db
-    def test_case(self, user_set_up, snapshot, mocker):
+    def test_given_valid_details_returns_success_response(
+            self, user_set_up, snapshot, mocker
+    ):
         self.elastic_search_update_user_mock(mocker=mocker)
         body = {'name': 'parker', 'email': 'parker2020@gmail.com',
                 'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331',

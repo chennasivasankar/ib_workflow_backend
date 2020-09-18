@@ -2,7 +2,8 @@ import pytest
 from ib_tasks.tests.factories.storage_dtos \
     import FieldDTOFactory
 from ib_tasks.constants.enum import FieldTypes
-from ib_tasks.interactors.field_type_searchable_validations_interactor \
+from ib_tasks.interactors.create_or_update_fields\
+    .field_type_searchable_validations_interactor \
     import FieldTypeSearchableValidationsInteractor
 
 

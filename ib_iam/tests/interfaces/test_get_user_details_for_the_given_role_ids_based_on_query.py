@@ -51,9 +51,9 @@ class TestGetUserDetailsForGivenRoleIdsBasedOnQuery:
             offset=0, limit=1, search_query='b'
         )
 
-        from ib_iam.tests.common_fixtures.adapters.user_service_mocks import \
-            prepare_profile_bulk_mock
-        get_user_profile_mock = prepare_profile_bulk_mock(mocker)
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
+            get_user_profile_bulk_mock
+        get_user_profile_mock = get_user_profile_bulk_mock(mocker)
         get_user_profile_mock.return_value = user_profile_dtos
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         service_interface = ServiceInterface()

@@ -167,29 +167,6 @@ snapshots['TestCase02GetTaskAPITestCase.test_case body'] = {
             'stage_display_name': 'name_2',
             'stage_id': 3,
             'task_stage_id': 3
-        },
-        {
-            'actions': [
-                {
-                    'action_id': 4,
-                    'action_type': 'NO_VALIDATIONS',
-                    'button_color': '#fafafa',
-                    'button_text': 'hey',
-                    'transition_template_id': 'template_4'
-                },
-                {
-                    'action_id': 8,
-                    'action_type': 'NO_VALIDATIONS',
-                    'button_color': '#fafafa',
-                    'button_text': 'hey',
-                    'transition_template_id': 'template_8'
-                }
-            ],
-            'assignee': None,
-            'stage_color': 'white',
-            'stage_display_name': 'name_3',
-            'stage_id': 4,
-            'task_stage_id': 4
         }
     ],
     'start_date': '2020-10-12 04:40:00',

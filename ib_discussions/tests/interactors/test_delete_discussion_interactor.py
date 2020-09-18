@@ -90,7 +90,8 @@ class TestDeleteDiscussionInteractor:
         user_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
 
-        expected_presenter_prepare_success_response_for_delete_discussion_mock = Mock()
+        expected_presenter_prepare_success_response_for_delete_discussion_mock \
+            = Mock()
 
         storage_mock.is_discussion_id_exists.return_value = True
         storage_mock.is_user_can_edit_discussion.return_value = True
@@ -106,6 +107,7 @@ class TestDeleteDiscussionInteractor:
 
         # Assert
         assert response == expected_presenter_prepare_success_response_for_delete_discussion_mock
+
         presenter_mock.prepare_success_response_for_delete_discussion.assert_called_once()
         storage_mock.delete_discussion.assert_called_once_with(
             discussion_id=discussion_id)

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from ib_discussions.exceptions.custom_exceptions import DiscussionSetNotFound, \
     DiscussionIdNotFound
 from ib_discussions.interactors.dtos.dtos import \
@@ -121,20 +123,25 @@ class DiscussionInteractor:
         )
         return
 
-    def _validate_is_user_cannot_edit_discussion(self, discussion_id,
-                                                 user_id):
+    def _validate_is_user_cannot_edit_discussion(
+            self, discussion_id: str, user_id: str
+    ) -> Optional[UserCannotEditDiscussion]:
         is_user_cannot_update = not self.storage.is_user_can_edit_discussion(
             user_id=user_id, discussion_id=discussion_id
         )
         if is_user_cannot_update:
             raise UserCannotEditDiscussion
+        return
 
-    def _validate_discussion_id(self, discussion_id):
+    def _validate_discussion_id(
+            self, discussion_id: str
+    ) -> Optional[DiscussionIdNotFound]:
         is_discussion_id_not_exists = not self.storage.is_discussion_id_exists(
             discussion_id=discussion_id
         )
         if is_discussion_id_not_exists:
             raise DiscussionIdNotFound
+        return
 
     def delete_discussion_wrapper(self, discussion_id: str, user_id: str,
                                   presenter: DeleteDiscussionPresenterInterface):
@@ -148,7 +155,7 @@ class DiscussionInteractor:
             response = presenter.response_for_user_cannot_delete_discussion()
         return response
 
-    def delete_discussion(self, discussion_id, user_id):
+    def delete_discussion(self, discussion_id: str, user_id: str):
         self._validate_discussion_id(discussion_id)
         self._validate_is_user_cannot_edit_discussion(discussion_id, user_id)
         self.storage.delete_discussion(discussion_id=discussion_id)

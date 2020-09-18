@@ -1,5 +1,5 @@
 """
-# TODO: Update test case description
+Given valid details user will be added successfully
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils

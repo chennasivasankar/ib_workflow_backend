@@ -18,15 +18,23 @@ def populate_data():
 
 def populate_existing_users_to_elastic_search_database():
     storage = ElasticStorageImplementation()
-    user_objs = UserDetails.objects.all()
+    user_ids = list(
+        UserDetails.objects.all().values_list('user_id', flat=True)
+    )
+    from ib_iam.adapters.user_service import UserService
+    user_service = UserService()
+    user_dtos = user_service.get_user_profile_bulk(
+        user_ids=user_ids
+    )
     ElasticUserIntermediary.objects.all().delete()
-    for user_obj in user_objs:
+    for user_dto in user_dtos:
         elastic_id = storage.create_elastic_user(
-            user_id=user_obj.user_id, name=user_obj.name
+            user_id=user_dto.user_id, name=user_dto.name,
+            email=user_dto.email
         )
         storage.create_elastic_user_intermediary(
             elastic_user_id=elastic_id,
-            user_id=user_obj.user_id
+            user_id=user_dto.user_id
         )
 
 
@@ -210,5 +218,19 @@ def delete_elastic_search_data():
         COUNTRY_INDEX_NAME,
         STATE_INDEX_NAME,
         CITY_INDEX_NAME
+    ]
+    es.delete_by_query(index=indices, body={"query": {"match_all": {}}})
+
+
+def delete_elastic_search_data_for_user_index():
+    from elasticsearch_dsl import connections
+    from django.conf import settings
+    connections.create_connection(
+        hosts=[settings.ELASTICSEARCH_ENDPOINT], timeout=20
+    )
+    from elasticsearch import Elasticsearch
+    es = Elasticsearch(hosts=[settings.ELASTICSEARCH_ENDPOINT])
+    indices = [
+        USER_INDEX_NAME
     ]
     es.delete_by_query(index=indices, body={"query": {"match_all": {}}})

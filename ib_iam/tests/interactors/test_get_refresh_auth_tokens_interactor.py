@@ -31,9 +31,9 @@ class TestGetRefreshTokensInteractor:
             expected_response_for_access_token_not_found_mock
 
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks \
-            import prepare_get_refresh_auth_tokens_dto_mock
+            import get_refresh_auth_tokens_dto_mock
         get_refresh_auth_tokens_dto_mock = \
-            prepare_get_refresh_auth_tokens_dto_mock(mocker)
+            get_refresh_auth_tokens_dto_mock(mocker)
 
         from ib_iam.adapters.auth_service import AccessTokenNotFound
         get_refresh_auth_tokens_dto_mock.side_effect = AccessTokenNotFound
@@ -63,9 +63,9 @@ class TestGetRefreshTokensInteractor:
             expected_response_for_refresh_token_expired_mock
 
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks \
-            import prepare_get_refresh_auth_tokens_dto_mock
+            import get_refresh_auth_tokens_dto_mock
         get_refresh_auth_tokens_dto_mock = \
-            prepare_get_refresh_auth_tokens_dto_mock(mocker)
+            get_refresh_auth_tokens_dto_mock(mocker)
 
         from ib_iam.adapters.auth_service import RefreshTokenHasExpired
         get_refresh_auth_tokens_dto_mock.side_effect = RefreshTokenHasExpired
@@ -95,9 +95,9 @@ class TestGetRefreshTokensInteractor:
             expected_response_for_refresh_token_not_found_mock
 
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks \
-            import prepare_get_refresh_auth_tokens_dto_mock
+            import get_refresh_auth_tokens_dto_mock
         get_refresh_auth_tokens_dto_mock = \
-            prepare_get_refresh_auth_tokens_dto_mock(mocker)
+            get_refresh_auth_tokens_dto_mock(mocker)
 
         from ib_iam.adapters.auth_service import RefreshTokenHasNotFound
         get_refresh_auth_tokens_dto_mock.side_effect = RefreshTokenHasNotFound
@@ -127,9 +127,9 @@ class TestGetRefreshTokensInteractor:
             expected_response_for_user_account_not_found_mock
 
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks \
-            import prepare_get_refresh_auth_tokens_dto_mock
+            import get_refresh_auth_tokens_dto_mock
         get_refresh_auth_tokens_dto_mock = \
-            prepare_get_refresh_auth_tokens_dto_mock(mocker)
+            get_refresh_auth_tokens_dto_mock(mocker)
 
         from ib_iam.adapters.auth_service import UserAccountNotFound
         get_refresh_auth_tokens_dto_mock.side_effect = UserAccountNotFound
@@ -168,9 +168,9 @@ class TestGetRefreshTokensInteractor:
             expected_response_for_user_tokens_dto_mock
 
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks \
-            import prepare_get_refresh_auth_tokens_dto_mock
+            import get_refresh_auth_tokens_dto_mock
         get_refresh_auth_tokens_dto_mock = \
-            prepare_get_refresh_auth_tokens_dto_mock(mocker)
+            get_refresh_auth_tokens_dto_mock(mocker)
         get_refresh_auth_tokens_dto_mock.return_value = user_tokens_dto
 
         # Act

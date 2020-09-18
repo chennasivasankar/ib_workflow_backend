@@ -244,3 +244,12 @@ class GoFStorageImplementation(GoFStorageInterface):
             if gof_id_matched:
                 return gof_dto
         return
+
+    def get_gof_ids_for_given_template(self, template_id: str) -> List[str]:
+
+        gof_ids = list(
+            TaskTemplateGoFs.objects.filter(
+                task_template_id=template_id
+            ).values_list('gof', flat=True)
+        )
+        return gof_ids

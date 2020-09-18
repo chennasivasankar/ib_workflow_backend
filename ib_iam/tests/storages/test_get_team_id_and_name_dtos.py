@@ -15,6 +15,7 @@ class TestGetTeamIdsAndName:
             TeamFactory.create(team_id=team_id) for team_id in team_ids
         ]
 
+    # TODO: no need to assert the length and avoid to write the assert in for loop
     @pytest.mark.django_db
     def test_get_team_id_and_name_dtos(self, teams_set_up):
         team_ids = [

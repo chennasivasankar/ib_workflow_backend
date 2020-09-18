@@ -108,13 +108,13 @@ class TestGetTeamMemberLevelsWithMembersInteractor:
         user_storage_mock.is_user_admin.return_value = True
 
         from ib_iam.tests.common_fixtures.interactors import \
-            prepare_get_team_member_levels_mock
+            get_team_member_levels_mock
         from ib_iam.tests.common_fixtures.interactors import \
-            prepare_get_team_members_of_level_hierarchy_mock
+            get_team_members_of_level_hierarchy_mock
         get_team_member_levels_mock = \
-            prepare_get_team_member_levels_mock(mocker)
+            get_team_member_levels_mock(mocker)
         get_team_members_of_level_hierarchy_mock = \
-            prepare_get_team_members_of_level_hierarchy_mock(mocker)
+            get_team_members_of_level_hierarchy_mock(mocker)
 
         presenter_mock.prepare_success_response_for_team_member_levels_with_members.return_value = \
             expected_presenter_prepare_success_response_for_team_member_levels_with_members

@@ -4,8 +4,8 @@ Gives all available companies if accessed by an admin
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from ib_iam.tests.common_fixtures.adapters.user_service_mocks import (
-    prepare_user_profile_dtos_mock)
+from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import (
+    get_basic_user_profile_dtos_mock)
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -25,7 +25,7 @@ class TestCase01GetCompaniesAPITestCase(TestUtils):
             '7ee2c7b4-34c8-4d65-a83a-f87da75db24e']
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         UserProfileDTOFactory.reset_sequence(1)
-        mock = prepare_user_profile_dtos_mock(mocker)
+        mock = get_basic_user_profile_dtos_mock(mocker)
         mock.return_value = [
             UserProfileDTOFactory(user_id=employee_id)
             for employee_id in employee_ids

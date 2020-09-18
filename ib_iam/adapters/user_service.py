@@ -16,7 +16,8 @@ class UserService:
         return service_interface
 
     def get_user_profile_bulk(
-            self, user_ids: List[str]) -> List[UserProfileDTO]:
+            self, user_ids: List[str]
+    ) -> List[UserProfileDTO]:
         from ib_users.interactors.exceptions.user_profile \
             import InvalidUserException
         from ib_iam.exceptions.custom_exceptions import InvalidUserId
@@ -30,8 +31,10 @@ class UserService:
             UserProfileDTO(
                 user_id=str(user.user_id),
                 name=user.name,
-                email=user.email
-            ) for user in user_profiles
+                email=user.email,
+                is_email_verified=user.is_email_verified
+            )
+            for user in user_profiles
         ]
         return user_profile_dtos
 
@@ -127,7 +130,7 @@ class UserService:
             name=user_profile_dto.name,
             email=user_profile_dto.email,
             profile_pic_url=user_profile_dto.profile_pic_url,
-            is_email_verify=user_profile_dto.is_email_verified
+            is_email_verified=user_profile_dto.is_email_verified
         )
         return converted_user_profile_dto
 

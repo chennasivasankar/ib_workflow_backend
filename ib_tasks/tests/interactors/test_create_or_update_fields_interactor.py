@@ -1,7 +1,8 @@
 import pytest
 
 from ib_tasks.constants.enum import PermissionTypes
-from ib_tasks.interactors.create_or_update_fields_interactor \
+from ib_tasks.interactors.create_or_update_fields\
+    .create_or_update_fields_interactor \
     import CreateOrUpdateFieldsInteractor
 from ib_tasks.tests.common_fixtures.adapters.roles_service \
     import get_valid_role_ids_in_given_role_ids

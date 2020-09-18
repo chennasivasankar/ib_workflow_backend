@@ -16,11 +16,20 @@ class TestCase01AddProjectAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['write']}}
 
+    @pytest.fixture
+    def setup(self, api_user):
+        from ib_iam.tests.factories.models import \
+            UserDetailsFactory, TeamFactory
+        UserDetailsFactory(user_id=str(api_user.user_id), is_admin=True)
+        team_ids = ['f2c02d98-f311-4ab2-8673-3daa00757003']
+        team_objects = [TeamFactory(team_id=team_id) for team_id in team_ids]
+        return team_ids
+
     @pytest.mark.django_db
     def test_case(self, setup, mocker, snapshot):
         from ib_iam.tests.common_fixtures.adapters.uuid_mock import \
-            prepare_uuid_mock
-        mock = prepare_uuid_mock(mocker)
+            uuid_mock
+        mock = uuid_mock(mocker)
         mock.return_value = UUID("7eb737be-810f-4580-83ea-ff4fa67edd22")
         body = {
             'name': 'project_1',
@@ -36,11 +45,10 @@ class TestCase01AddProjectAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(
+            body=body, path_params=path_params, query_params=query_params,
+            headers=headers, snapshot=snapshot
+        )
         self._additional_checks(snapshot)
 
     @staticmethod
@@ -57,12 +65,3 @@ class TestCase01AddProjectAPITestCase(TestUtils):
         project_roles = ProjectRole.objects.filter(project_id=project_id) \
             .values("role_id", "name", "description")
         snapshot.assert_match(list(project_roles), "project_roles")
-
-    @pytest.fixture
-    def setup(self, api_user):
-        from ib_iam.tests.factories.models import \
-            UserDetailsFactory, TeamFactory
-        UserDetailsFactory(user_id=str(api_user.user_id), is_admin=True)
-        team_ids = ['f2c02d98-f311-4ab2-8673-3daa00757003']
-        _ = [TeamFactory(team_id=team_id) for team_id in team_ids]
-        return team_ids

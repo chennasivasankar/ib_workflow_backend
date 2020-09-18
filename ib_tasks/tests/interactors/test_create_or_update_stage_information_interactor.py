@@ -12,8 +12,7 @@ from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidStagesTaskTemplateId, InvalidTaskTemplateIds
 from ib_tasks.interactors.create_or_update_stages import \
     CreateOrUpdateStagesInteractor
-from ib_tasks.interactors.get_stage_display_logic_interactor import StageDisplayLogicInteractor
-from ib_tasks.interactors.stages_dtos import StageLogicAttributes
+from ib_tasks.interactors.user_action_on_task.get_stage_display_logic_interactor import StageDisplayLogicInteractor
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \

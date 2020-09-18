@@ -71,7 +71,8 @@ class GetRepliesForCommentPresenterImplementation(
             comment_dto, comment_id_wise_editable_status_dto_dict,
             comment_id_wise_mention_user_details_list_dict,
             comment_id_wise_multimedia_list_dict,
-            user_id_wise_user_details_dict):
+            user_id_wise_user_details_dict
+    ):
         comment_id = str(comment_dto.comment_id)
         from ib_discussions.utils.datetime_utils import get_datetime_as_string
         comment_details_dict = {
@@ -124,7 +125,7 @@ class GetRepliesForCommentPresenterImplementation(
             comment_id_with_mention_user_id_dtos: List[
                 CommentIdWithMentionUserIdDTO],
             user_id_wise_user_details_dict: Dict[str, Dict[str, str]]
-    ):
+    ) -> Dict[str, List[str]]:
         comment_id_wise_mention_user_details_list_dict = defaultdict(list)
 
         for comment_id_with_mention_user_id_dto in comment_id_with_mention_user_id_dtos:

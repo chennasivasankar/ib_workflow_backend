@@ -5,7 +5,8 @@ from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
 from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidUserIds, \
     InvalidUserIdsForProject, InvalidRoleIdsForProject, InvalidProjectId
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
-from ib_iam.interactors.storage_interfaces.dtos import UserDTO, TeamWithUserIdDTO, \
+from ib_iam.interactors.storage_interfaces.dtos import UserDTO, \
+    TeamWithUserIdDTO, \
     UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, TeamIdAndNameDTO, \
     RoleIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, CompanyDTO, \
     CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO
@@ -60,8 +61,8 @@ class UserStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_all_user_dtos(
-            self, offset: int, limit: int,
-            name_search_query: str) -> List[UserDTO]:
+            self, offset: int, limit: int, name_search_query: str
+    ) -> List[UserDTO]:
         pass
 
     @abc.abstractmethod
@@ -80,7 +81,9 @@ class UserStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_total_count_of_users_for_query(self, name_search_query: str):
+    def get_total_count_of_users_for_query(
+            self, name_search_query: str
+    ) -> int:
         pass
 
     @abc.abstractmethod
@@ -172,8 +175,9 @@ class UserStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_team_user_ids_dtos(self, team_ids: List[str]) -> \
-            List[TeamUserIdsDTO]:
+    def get_team_user_ids_dtos(
+            self, team_ids: List[str]
+    ) -> List[TeamUserIdsDTO]:
         pass
 
     @abc.abstractmethod

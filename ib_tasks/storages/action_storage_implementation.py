@@ -84,7 +84,6 @@ class ActionsStorageImplementation(ActionStorageInterface):
         return list_of_dtos
 
     def create_stage_actions(self, stage_actions: List[StageActionDTO]):
-        names_list = [stage.action_name for stage in stage_actions]
         stage_ids = [stage.stage_id for stage in stage_actions]
         stages = Stage.objects.filter(stage_id__in=stage_ids).values(
             'stage_id', 'id')
@@ -106,7 +105,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
             else:
                 q = q | current_queue
 
-        action_objs = StageAction.objects.filter(q)
+        action_objs = StageAction.objects.filter(q)\
+            .annotate(normal_stage=F('stage__stage_id'))
 
         list_of_permitted_roles = self._get_list_of_permitted_roles_objs(
             action_objs, stage_actions)
@@ -142,33 +142,62 @@ class ActionsStorageImplementation(ActionStorageInterface):
                 transition_template_id=stage_action.transition_template_id,
                 button_color=stage_action.button_color
             )
-        action_objs = []
-        for stage_action in stage_actions:
-            action_objs.append(
-                StageAction.objects.get(
-                    name=stage_action.action_name,
-                    stage__stage_id=stage_action.stage_id
-                )
-            )
+        q = None
+        for counter, item in enumerate(stage_actions):
+            current_queue = Q(stage_id__stage_id=item.stage_id,
+                              name=item.action_name)
+            if counter == 0:
+                q = current_queue
+            else:
+                q = q | current_queue
+
+        action_objs = StageAction.objects.filter(q)\
+            .annotate(normal_stage=F('stage__stage_id'))
+        ActionPermittedRoles.objects.filter(action__in=action_objs).delete()
 
         list_of_permitted_roles = self._get_list_of_permitted_roles_objs(
             action_objs, stage_actions)
 
         ActionPermittedRoles.objects.bulk_create(list_of_permitted_roles)
 
-    @staticmethod
-    def _get_list_of_permitted_roles_objs(action_objs,
+    def _get_list_of_permitted_roles_objs(self, action_objs,
                                           stage_actions):
 
-        list_of_permitted_roles = []
+        stage_id_action_name_roles_map = \
+            self._get_stage_id_action_name_roles(stage_actions)
+
+        action_roles = []
         for action_obj in action_objs:
-            for stage in stage_actions:
-                if action_obj.name == stage.action_name:
-                    for role in stage.roles:
-                        list_of_permitted_roles.append(
-                            ActionPermittedRoles(action_id=action_obj.id,
-                                                 role_id=role))
-        return list_of_permitted_roles
+            key = action_obj.normal_stage + action_obj.name
+            roles = stage_id_action_name_roles_map[key]
+            self._append_roles_to_permitted_roles(action_obj, roles, action_roles)
+        return action_roles
+
+    @staticmethod
+    def _append_roles_to_permitted_roles(
+            action_obj, roles: List[str], action_roles
+    ):
+        for role in roles:
+            action_roles.append(
+                ActionPermittedRoles(
+                    action_id=action_obj.id,
+                    role_id=role
+                )
+            )
+
+    @staticmethod
+    def _get_stage_id_action_name_roles(
+            stage_actions: List[StageActionDTO]):
+
+        from collections import defaultdict
+        stage_id_action_name_map = defaultdict()
+        for stage_action in stage_actions:
+            stage_id = stage_action.stage_id
+            action_name = stage_action.action_name
+            key = stage_id + action_name
+            stage_id_action_name_map[key] = stage_action.roles
+        return stage_id_action_name_map
+
 
     def delete_stage_actions(self, stage_actions: List[StageActionNamesDTO]):
         stage_actions_dict = [{'stage_id': stage.stage_id,
@@ -197,13 +226,11 @@ class ActionsStorageImplementation(ActionStorageInterface):
         for item in stages:
             list_of_stages[item['stage_id']] = item['id']
 
-        list_of_task_stages = []
         for task in task_template_stage_dtos:
-            list_of_task_stages.append(TaskTemplateInitialStage(
+            TaskTemplateInitialStage.objects.get_or_create(
                 task_template_id=task.task_template_id,
                 stage_id=list_of_stages[task.stage_id]
-            ))
-        TaskTemplateInitialStage.objects.bulk_create(list_of_task_stages)
+            )
 
     def get_valid_task_template_ids(self, task_template_ids: List[str]):
         from ib_tasks.models.task_template import TaskTemplate

@@ -216,11 +216,8 @@ class AddGoFsToTemplateInteractor:
                 duplicate_gof_ids.append(gof_id)
 
         from ib_tasks.exceptions.gofs_custom_exceptions import DuplicateGoFIds
-        from ib_tasks.constants.exception_messages import \
-            DUPLICATE_GOF_IDS
         if duplicate_gof_ids:
-            message = DUPLICATE_GOF_IDS.format(duplicate_gof_ids)
-            raise DuplicateGoFIds(message)
+            raise DuplicateGoFIds(duplicate_gof_ids)
 
     @staticmethod
     def _validate_uniqueness_in_orders_of_gofs(orders_of_gofs: List[int]):

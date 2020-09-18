@@ -20,6 +20,7 @@ from ib_tasks.models.filter import Filter
 from ib_tasks.models.filter_condition import FilterCondition
 from ib_tasks.models.action_permitted_roles import ActionPermittedRoles
 from ib_tasks.models.stage_flow import StageFlow
+from ib_tasks.models.stage_gof import StageGoF
 
 admin.site.register(StageFlow)
 admin.site.register(ActionPermittedRoles)
@@ -41,6 +42,7 @@ admin.site.register(TaskGoFField)
 admin.site.register(TaskTemplateGoFs)
 admin.site.register(UserTaskDelayReason)
 admin.site.register(ProjectTaskTemplate)
+admin.site.register(StageGoF)
 
 
 class TaskStageInline(admin.StackedInline):

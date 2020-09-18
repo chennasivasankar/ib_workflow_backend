@@ -22,7 +22,7 @@ class TestGetUserProfilePresenterImplementation:
         expected_res_status = INVALID_USER_ID[1]
 
         # Act
-        response_object = presenter.raise_exception_for_invalid_user_id()
+        response_object = presenter.response_for_invalid_user_id_exception()
 
         # Assert
         response_data = json.loads(response_object.content)
@@ -42,7 +42,7 @@ class TestGetUserProfilePresenterImplementation:
 
         # Act
         response_object = \
-            presenter.raise_exception_for_user_account_does_not_exist()
+            presenter.response_for_user_account_does_not_exist_exception()
 
         # Assert
         response_data = json.loads(response_object.content)

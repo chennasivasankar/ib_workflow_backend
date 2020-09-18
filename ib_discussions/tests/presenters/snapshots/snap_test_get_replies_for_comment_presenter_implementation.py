@@ -11,7 +11,7 @@ snapshots['TestGetRepliesForCommentPresenterImplementation.test_prepare_response
     'replies': [
         {
             'author': {
-                'name': 'name ',
+                'name': 'name',
                 'profile_pic_url': 'https://graph.ib_users.com/',
                 'user_id': '01be920b-7b4c-49e7-8adb-41a0c18da848'
             },
@@ -21,7 +21,7 @@ snapshots['TestGetRepliesForCommentPresenterImplementation.test_prepare_response
             'is_editable': True,
             'mention_users': [
                 {
-                    'name': 'name ',
+                    'name': 'name',
                     'profile_pic_url': 'https://graph.ib_users.com/',
                     'user_id': '01be920b-7b4c-49e7-8adb-41a0c18da848'
                 }
@@ -37,7 +37,7 @@ snapshots['TestGetRepliesForCommentPresenterImplementation.test_prepare_response
         },
         {
             'author': {
-                'name': 'name ',
+                'name': 'name',
                 'profile_pic_url': 'https://graph.ib_users.com/',
                 'user_id': '91be920b-7b4c-49e7-8adb-41a0c18da848'
             },
@@ -47,7 +47,7 @@ snapshots['TestGetRepliesForCommentPresenterImplementation.test_prepare_response
             'is_editable': False,
             'mention_users': [
                 {
-                    'name': 'name ',
+                    'name': 'name',
                     'profile_pic_url': 'https://graph.ib_users.com/',
                     'user_id': '91be920b-7b4c-49e7-8adb-41a0c18da848'
                 }

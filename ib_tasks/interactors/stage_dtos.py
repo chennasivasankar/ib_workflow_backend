@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 
@@ -23,3 +23,21 @@ class TaskStageAssigneeDetailsDTO:
     task_id: int
     stage_id: str
     assignee_details: Optional[AssigneeDetailsDTO]
+
+
+@dataclass
+class StageIdWithGoFIdsDTO:
+    stage_id: str
+    gof_ids: List[str]
+
+
+@dataclass
+class DBStageIdWithStageIdDTO:
+    db_stage_id: int
+    stage_id: str
+
+
+@dataclass
+class DBStageIdWithGoFIdsDTO:
+    db_stage_id: int
+    gof_ids: List[str]

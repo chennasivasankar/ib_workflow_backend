@@ -11,10 +11,10 @@ snapshots['TestGetProjectsPresenterImplementation.test_get_response_for_get_proj
     'projects': [
         {
             'description': 'description 1',
-            'logo_url': 'logo 1',
+            'logo_url': 'http://sample.com',
             'name': 'name 1',
-            'project_id': 'f2c02d98-f311-4ab2-8673-3daa00757002',
             'project_display_id': 'display_id 1',
+            'project_id': 'f2c02d98-f311-4ab2-8673-3daa00757002',
             'roles': [
                 {
                     'description': 'role description 1',

@@ -1,5 +1,7 @@
 import abc
 
+from ib_iam.interactors.presenter_interfaces.dtos import UserOptionsDetailsDTO
+
 
 class GetUserOptionsPresenterInterface(abc.ABC):
 
@@ -8,5 +10,7 @@ class GetUserOptionsPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_user_options_details_response(self, configuration_details):
+    def get_user_options_details_response(
+            self, configuration_details_dto: UserOptionsDetailsDTO
+    ):
         pass

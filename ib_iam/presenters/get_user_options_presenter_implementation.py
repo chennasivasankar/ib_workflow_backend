@@ -14,10 +14,10 @@ from ib_iam.interactors.storage_interfaces.dtos import CompanyIdAndNameDTO, \
 class GetUserOptionsPresenterImplementation(GetUserOptionsPresenterInterface,
                                             HTTPResponseMixin):
     def get_user_options_details_response(
-            self, configuration_details: UserOptionsDetailsDTO):
-        companies = configuration_details.companies
-        teams = configuration_details.teams
-        roles = configuration_details.roles
+            self, configuration_details_dto: UserOptionsDetailsDTO):
+        companies = configuration_details_dto.companies
+        teams = configuration_details_dto.teams
+        roles = configuration_details_dto.roles
         companies_details = self._get_company_details(companies)
         teams_details = self._get_team_details(teams)
         roles_details = self._get_role_details(roles)

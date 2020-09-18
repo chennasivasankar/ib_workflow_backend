@@ -29,7 +29,7 @@ def api_wrapper(*args, **kwargs):
         import FieldsStorageImplementation
     from ib_tasks.storages.storage_implementation \
         import StorageImplementation, StagesStorageImplementation
-    from ib_tasks.interactors.user_action_on_task_interactor \
+    from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor \
         import UserActionOnTaskInteractor
     from ib_tasks.presenters.user_action_on_task_presenter_implementation \
         import UserActionOnTaskPresenterImplementation

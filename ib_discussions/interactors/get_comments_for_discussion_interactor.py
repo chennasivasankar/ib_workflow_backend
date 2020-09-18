@@ -45,7 +45,6 @@ class GetCommentsForDiscussionInteractor:
     ):
         is_discussion_id_not_exists = not self.storage. \
             is_discussion_id_exists(discussion_id=discussion_id)
-
         if is_discussion_id_not_exists:
             raise DiscussionIdNotFound
 

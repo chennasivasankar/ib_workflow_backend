@@ -4,9 +4,7 @@ Author: Pavankumar Pamuru
 
 """
 
-import pytest
-
-from ib_tasks.interactors.get_stage_display_logic_interactor import \
+from ib_tasks.interactors.user_action_on_task.get_stage_display_logic_interactor import \
     StageDisplayLogicInteractor
 
 

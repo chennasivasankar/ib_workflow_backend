@@ -21,6 +21,7 @@ class TestGetListOfTeamIdAndName:
         mock = create_autospec(TeamStorageInterface)
         return mock
 
+    # TODO: Don't prefer to write the assert statements in for loop.
     def test_get_team_id_and_name_dtos_for_given_valid_details(
             self, user_storage_mock, team_storage_mock):
         team_ids = ["1"]

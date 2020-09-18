@@ -4,20 +4,28 @@ from ib_tasks.interactors.storage_interfaces\
     import CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
     import TaskDetailsDTO
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
 
 
 class GetTaskBaseInteractor:
 
-    def __init__(self, storage: CreateOrUpdateTaskStorageInterface):
+    def __init__(
+            self, storage: CreateOrUpdateTaskStorageInterface,
+            gof_storage: GoFStorageInterface
+    ):
         self.storage = storage
+        self.gof_storage = gof_storage
 
     def get_task(self, task_id: int) -> TaskDetailsDTO:
         task_base_details_dto = self.storage.validate_task_id(task_id)
         project_id = task_base_details_dto.project_id
+        template_id = task_base_details_dto.template_id
         task_project_details_dto = self._get_task_project_details_dto(
             project_id
         )
-        task_gof_dtos = self.storage.get_task_gof_dtos(task_id)
+        gof_ids = self.gof_storage.get_gof_ids_for_given_template(template_id)
+        task_gof_dtos = self.storage.get_task_gof_dtos(task_id, gof_ids)
         task_gof_ids = [
             task_gof_dto.task_gof_id
             for task_gof_dto in task_gof_dtos

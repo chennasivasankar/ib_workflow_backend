@@ -23,6 +23,7 @@ class CreateCommentInteractor:
             create_complete_comment_dto: CreateCompleteCommentDTO
     ):
         from ib_discussions.adapters.auth_service import InvalidUserIds
+
         try:
             response = self._create_comment_for_discussion_response(
                 presenter=presenter,
@@ -98,6 +99,7 @@ class CreateCommentInteractor:
     def _validate_discussion_id_and_mention_user_ids(
             self, create_complete_comment_dto: CreateCompleteCommentDTO):
         from ib_discussions.adapters.service_adapter import ServiceAdapter
+
         service_adapter = ServiceAdapter()
         service_adapter.auth_service.validate_user_ids(
             user_ids=create_complete_comment_dto.mention_user_ids)
@@ -164,8 +166,9 @@ class CreateCommentInteractor:
         return user_profile_dtos
 
     @staticmethod
-    def _prepare_comment_editable_status_dtos(comment_dtos: List[CommentDTO],
-                                              user_id):
+    def _prepare_comment_editable_status_dtos(
+            comment_dtos: List[CommentDTO], user_id: str
+    ):
         comment_editable_status_dtos = [
             CreateCommentInteractor._prepare_comment_editable_status_dto(
                 comment_dto=comment_dto, user_id=user_id)
@@ -222,7 +225,8 @@ class CreateCommentInteractor:
     @staticmethod
     def _prepare_comment_id_wise_comment_replies_count_dto_dict(
             comment_id_with_replies_count_dtos: List[
-                CommentIdWithRepliesCountDTO]):
+                CommentIdWithRepliesCountDTO]
+    ):
         comment_id_wise_comment_replies_count_dto_dict = {
             comment_replies_count_dto.comment_id: comment_replies_count_dto
             for comment_replies_count_dto in comment_id_with_replies_count_dtos
@@ -231,7 +235,8 @@ class CreateCommentInteractor:
 
     @staticmethod
     def _prepare_comment_id_wise_editable_status_dto_dict(
-            comment_editable_status_dtos: List[CommentIdWithEditableStatusDTO]):
+            comment_editable_status_dtos: List[CommentIdWithEditableStatusDTO]
+    ):
         comment_id_wise_editable_status_dto_dict = {
             comment_editable_status_dto.comment_id: comment_editable_status_dto
             for comment_editable_status_dto in comment_editable_status_dtos

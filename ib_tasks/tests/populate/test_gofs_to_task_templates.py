@@ -141,7 +141,7 @@ class TestGoFsToTaskTemplate:
                     gofs_with_template_id_dto=gofs_with_template_id_dto
                 )
 
-        snapshot.assert_match(err.value.args[0], 'message')
+        snapshot.assert_match(err.value.args[0], 'duplicate_gof_ids')
 
     @pytest.mark.django_db
     def test_with_duplicate_values_for_orders_of_gof_ids_raises_exception(

@@ -1,5 +1,3 @@
-from uuid import UUID
-
 import pytest
 
 
@@ -17,8 +15,9 @@ class TestGetUserIdWithRoleIdsDTO:
             "1231a0c1-b9ef-4e59-b415-60a28ef17b10",
             "adc1a0c1-b9ef-4e59-b415-60a28ef17b10"
         ]
-        from ib_iam.models import UserDetails
-        UserDetails.objects.create(user_id=user_ids[0])
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        UserDetailsFactory.reset_sequence(0)
+        UserDetailsFactory.create(user_id=user_ids[0])
 
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         service_interface = ServiceInterface()
@@ -59,10 +58,12 @@ class TestGetUserIdWithRoleIdsDTO:
             "abc1a0c1-b9ef-4e59-b415-60a28ef17b10",
             "1231a0c1-b9ef-4e59-b415-60a28ef17b10"
         ]
-        from ib_iam.models import UserDetails
-        UserDetails.objects.create(user_id=user_ids[0])
-        UserDetails.objects.create(user_id=user_ids[1])
-        UserDetails.objects.create(user_id=user_ids[2])
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        UserDetailsFactory.reset_sequence(0)
+        [
+            UserDetailsFactory.create(user_id=user_id)
+            for user_id in user_ids
+        ]
 
         role_ids = [
             "e4ee6a9b8c3a",
@@ -94,4 +95,3 @@ class TestGetUserIdWithRoleIdsDTO:
 
         # Assert
         assert response == expected_response
-

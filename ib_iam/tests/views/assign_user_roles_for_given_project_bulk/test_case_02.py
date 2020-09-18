@@ -304,17 +304,9 @@ class TestCase02AssignUserRolesForGivenProjectBulkAPITestCase(TestUtils):
     def create_project_teams(self, create_teams, create_project):
         project_object = create_project
         team_objects = create_teams
-        from ib_iam.models import ProjectTeam
-        # TODO:  user factory for project team
+        from ib_iam.tests.factories.models import ProjectTeamFactory
         project_teams = [
-            ProjectTeam(
-                project=project_object,
-                team_id=team_objects[0].team_id
-            ),
-            ProjectTeam(
-                project=project_object,
-                team_id=team_objects[1].team_id
-            )
+            ProjectTeamFactory(project=project_object, team=team_objects[0]),
+            ProjectTeamFactory(project=project_object, team=team_objects[1])
         ]
-        ProjectTeam.objects.bulk_create(project_teams)
         return project_teams

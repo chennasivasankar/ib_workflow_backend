@@ -19,11 +19,13 @@ snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id status_code'] 
 
 snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id body'] = {
     'company': None,
-    'cover_page_url': 'url0',
+    'cover_page_url': 'http://sample.com',
     'email': 'name1@gmail.com',
     'is_admin': False,
     'name': 'name1',
-    'profile_pic_url': 'url1',
+    'profile_pic_url': 'http://sample.com',
+    'roles': [
+    ],
     'teams': [
     ],
     'user_id': '217abeb3-6466-4440-96e7-bf02ee941bf8'

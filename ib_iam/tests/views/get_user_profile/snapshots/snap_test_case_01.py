@@ -15,9 +15,9 @@ snapshots['TestCase01GetUserProfileAPITestCase.test_user_account_does_not_exist 
     'response': 'Please send valid user id'
 }
 
-snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id status_code'] = '200'
+snapshots['TestCase01GetUserProfileAPITestCase.test_given_valid_user_id_returns_user_profile_data status_code'] = '200'
 
-snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id body'] = {
+snapshots['TestCase01GetUserProfileAPITestCase.test_given_valid_user_id_returns_user_profile_data body'] = {
     'company': {
         'company_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb200',
         'description': 'description 0',
@@ -25,23 +25,32 @@ snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id body'] = {
             {
                 'employee_id': '217abeb3-6466-4440-96e7-bf02ee941bf8',
                 'name': 'name1',
-                'profile_pic_url': 'url1'
+                'profile_pic_url': 'http://sample.com'
             },
             {
                 'employee_id': '4b8fb6eb-fa7d-47c1-8726-cd917901104e',
                 'name': 'name2',
-                'profile_pic_url': 'url2'
+                'profile_pic_url': 'http://sample.com'
             }
         ],
-        'logo_url': 'url 0',
-        'name': 'company 0',
-        'roles': None
+        'logo_url': 'http://sample.com',
+        'name': 'company 0'
     },
-    'cover_page_url': 'url0',
+    'cover_page_url': 'http://sample.com',
     'email': 'name1@gmail.com',
     'is_admin': False,
     'name': 'name1',
-    'profile_pic_url': 'url1',
+    'profile_pic_url': 'http://sample.com',
+    'roles': [
+        {
+            'role_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb211',
+            'role_name': 'role 0'
+        },
+        {
+            'role_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb222',
+            'role_name': 'role 1'
+        }
+    ],
     'teams': [
         {
             'description': 'team_description 0',
@@ -49,12 +58,12 @@ snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id body'] = {
                 {
                     'member_id': '217abeb3-6466-4440-96e7-bf02ee941bf8',
                     'name': 'name1',
-                    'profile_pic_url': 'url1'
+                    'profile_pic_url': 'http://sample.com'
                 },
                 {
                     'member_id': '7e39bf1c-f9a5-4e76-8451-b962ddd52044',
                     'name': 'name3',
-                    'profile_pic_url': 'url3'
+                    'profile_pic_url': 'http://sample.com'
                 }
             ],
             'name': 'team 0',
