@@ -26,7 +26,6 @@ class TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
         user_obj = api_user
         user_id = str(user_obj.user_id)
         StagePermittedRolesFactory.reset_sequence()
-
         TaskFactory.reset_sequence()
         StageModelFactory.reset_sequence()
         CurrentTaskStageModelFactory.reset_sequence()
