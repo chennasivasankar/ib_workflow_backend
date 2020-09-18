@@ -21,15 +21,13 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldDetailsDTO, FieldWritePermissionRolesDTO
-from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
-    TemplateFieldsDTO
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskWithDbStageIdDTO, AssigneeCurrentTasksCountDTO, \
-    CurrentStageDetailsDTO, \
-    StageIdWithValueDTO, StageAssigneeDetailsDTO, StageActionNamesDTO, \
-    CreateStageFlowDTO, \
+    TaskWithDbStageIdDTO, AssigneeCurrentTasksCountDTO, StageActionNamesDTO, \
+    StageAssigneeDetailsDTO, CurrentStageDetailsDTO, StageIdWithValueDTO, \
+    CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO, StageActionNamesDTO, CreateStageFlowDTO, \
     StageFlowWithActionIdDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
@@ -61,8 +59,7 @@ class UserDetailsDTOFactory(factory.Factory):
     class Meta:
         model = UserDetailsDTO
 
-    user_id = factory.Sequence(
-        lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
+    user_id = factory.Sequence(lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
     user_name = factory.Sequence(lambda n: "name_%d" % n)
     profile_pic_url = "pic_url"
 
@@ -680,7 +677,6 @@ class StageWithUserDetailsDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def assignee_details_dto(self):
         return AssigneeDetailsDTOFactory()
-
 
 class CreateStageFlowDTOFactory(factory.Factory):
     class Meta:

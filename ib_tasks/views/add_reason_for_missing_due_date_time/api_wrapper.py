@@ -4,7 +4,7 @@ from .validator_class import ValidatorClass
 from ib_tasks.interactors.add_task_due_details_interactor import AddTaskDueDetailsInteractor
 from ib_tasks.interactors.task_dtos import TaskDueParametersDTO
 from ib_tasks.presenters.task_due_delay_presenter_implementation import TaskDueDetailsPresenterImplementation
-from ib_tasks.storages.storage_implementation import StorageImplementation
+from ib_tasks.storages.storage_implementation import StorageImplementation, StagesStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -26,11 +26,13 @@ def api_wrapper(*args, **kwargs):
     )
 
     storage = StorageImplementation()
+    stage_storage = StagesStorageImplementation()
     presenter = TaskDueDetailsPresenterImplementation()
     from ib_tasks.storages.tasks_storage_implementation import TasksStorageImplementation
     task_storage = TasksStorageImplementation()
     interactor = AddTaskDueDetailsInteractor(storage=storage,
-                                             task_storage=task_storage)
+                                             task_storage=task_storage,
+                                             stage_storage=stage_storage)
     response = interactor.add_task_due_details_wrapper(presenter=presenter,
                                                        due_details=parameters,
                                                        task_display_id=task_id)

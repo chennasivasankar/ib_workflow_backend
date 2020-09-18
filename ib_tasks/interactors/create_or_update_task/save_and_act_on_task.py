@@ -251,7 +251,9 @@ class SaveAndActOnATaskInteractor(
     def _create_task_log(self, task_log_dto: CreateTaskLogDTO):
         from ib_tasks.interactors.task_log_interactor import TaskLogInteractor
         task_log_interactor = TaskLogInteractor(
-            storage=self.storage, task_storage=self.task_storage)
+            storage=self.storage, task_storage=self.task_storage,
+            action_storage=self.action_storage
+        )
         create_task_log_dto = CreateTaskLogDTO(
             task_json=task_log_dto.task_json,
             task_id=task_log_dto.task_id, user_id=task_log_dto.user_id,
@@ -328,7 +330,7 @@ class SaveAndActOnATaskInteractor(
 
     def _validate_action_id(
             self, action_id: int) -> Optional[InvalidActionException]:
-        is_valid_action_id = self.storage.validate_action(action_id)
+        is_valid_action_id = self.action_storage.validate_action(action_id)
         action_id_is_invalid = not is_valid_action_id
         if action_id_is_invalid:
             raise InvalidActionException(action_id)

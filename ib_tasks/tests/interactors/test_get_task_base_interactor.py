@@ -16,49 +16,39 @@ class TestGetTaskBaseInteractor:
         return storage
 
     @pytest.fixture
-    def task_gof_dtos(self):
-        from ib_tasks.tests.factories.storage_dtos \
-            import TaskGoFDTOFactory
-        task_gof_dtos = [
-            TaskGoFDTOFactory(task_gof_id=0, gof_id="gof0", same_gof_order=0),
-            TaskGoFDTOFactory(task_gof_id=1, gof_id="gof1", same_gof_order=0),
-            TaskGoFDTOFactory(task_gof_id=2, gof_id="gof2", same_gof_order=0)
-        ]
-        return task_gof_dtos
+    def gof_storage_mock(self):
+        from unittest.mock import create_autospec
+        from ib_tasks.interactors.storage_interfaces.gof_storage_interface \
+            import \
+            GoFStorageInterface
+        storage = create_autospec(GoFStorageInterface)
+        return storage
 
     @pytest.fixture
-    def task_base_details_dto(self):
+    def reset_sequence(self):
+        from ib_tasks.tests.factories.storage_dtos import TaskGoFDTOFactory
+        TaskGoFDTOFactory.reset_sequence()
         from ib_tasks.tests.factories.storage_dtos import \
             TaskBaseDetailsDTOFactory
-        task_base_details_dto = TaskBaseDetailsDTOFactory
-        return task_base_details_dto
-
-    @pytest.fixture
-    def task_gof_field_dtos(self):
-        from ib_tasks.tests.factories.storage_dtos \
-            import TaskGoFFieldDTOFactory
-        task_gof_field_dtos = [
-            TaskGoFFieldDTOFactory(task_gof_id=0, field_id="field0",
-                                   field_response="response0"),
-            TaskGoFFieldDTOFactory(task_gof_id=0, field_id="field1",
-                                   field_response="response1"),
-            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field2",
-                                   field_response="response2"),
-            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field3",
-                                   field_response="response3"),
-            TaskGoFFieldDTOFactory(task_gof_id=2, field_id="field2",
-                                   field_response="response3")
-        ]
-        return task_gof_field_dtos
+        TaskBaseDetailsDTOFactory.reset_sequence()
+        from ib_tasks.tests.factories.storage_dtos import \
+            TaskGoFFieldDTOFactory
+        TaskGoFFieldDTOFactory.reset_sequence()
+        from ib_tasks.tests.factories.adapter_dtos import \
+            ProjectDetailsDTOFactory
+        ProjectDetailsDTOFactory.reset_sequence()
 
     def test_given_invalid_task_id_raise_exception(
-            self, storage_mock
+            self, storage_mock, gof_storage_mock
     ):
         # Arrange
         from ib_tasks.exceptions.task_custom_exceptions \
             import InvalidTaskIdException
         task_id = "task0"
-        interactor = GetTaskBaseInteractor(storage=storage_mock)
+        interactor = GetTaskBaseInteractor(
+            storage=storage_mock,
+            gof_storage=gof_storage_mock
+        )
         storage_mock.validate_task_id.side_effect = InvalidTaskIdException(
             task_id)
 
@@ -71,40 +61,66 @@ class TestGetTaskBaseInteractor:
         storage_mock.validate_task_id.assert_called_once_with(task_id=task_id)
 
     def test_given_valid_task_id_returns_task_details_dto(
-            self, storage_mock, task_gof_dtos, task_gof_field_dtos,
-            task_base_details_dto, mocker
+            self, storage_mock, gof_storage_mock,
+            mocker, reset_sequence
     ):
         # Arrange
-        task_id = "task0"
-        task_gof_ids = [0, 1, 2]
         from ib_tasks.tests.factories.adapter_dtos import \
             ProjectDetailsDTOFactory
-        ProjectDetailsDTOFactory.reset_sequence()
-        project_details_dto = ProjectDetailsDTOFactory()
-        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
-            get_projects_info_for_given_ids_mock
-        get_projects_info_for_given_ids_mock_method = \
-            get_projects_info_for_given_ids_mock(
-                mocker)
+        from ib_tasks.tests.factories.storage_dtos import \
+            TaskGoFFieldDTOFactory
         from ib_tasks.tests.factories.storage_dtos import TaskDetailsDTOFactory
+        from ib_tasks.tests.factories.storage_dtos import TaskGoFDTOFactory
+        from ib_tasks.tests.factories.storage_dtos import \
+            TaskBaseDetailsDTOFactory
+        import factory
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_project_info_for_given_ids_mock
+        get_projects_info_for_given_ids_mock_method = \
+            get_project_info_for_given_ids_mock(
+                mocker)
+        ProjectDetailsDTOFactory.reset_sequence()
+        task_gof_dtos = TaskGoFDTOFactory.create_batch(size=3)
+        project_details_dto = ProjectDetailsDTOFactory()
+        project_id = project_details_dto.project_id
+        task_base_details_dto = TaskBaseDetailsDTOFactory(project_id=project_id)
+        task_id = "task0"
+        task_gof_ids = [
+            task_gof_dto.task_gof_id
+            for task_gof_dto in task_gof_dtos
+        ]
+        gof_ids = [
+            task_gof_dto.gof_id
+            for task_gof_dto in task_gof_dtos
+        ]
+        interactor = GetTaskBaseInteractor(
+            storage=storage_mock,
+            gof_storage=gof_storage_mock
+        )
+        task_gof_field_dtos = TaskGoFFieldDTOFactory.create_batch(
+            size=5,  task_gof_id=factory.Iterator(task_gof_ids)
+        )
         task_details_dto = TaskDetailsDTOFactory(
             task_base_details_dto=task_base_details_dto,
             project_details_dto=project_details_dto,
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=task_gof_field_dtos
         )
-        interactor = GetTaskBaseInteractor(storage=storage_mock)
         storage_mock.validate_task_id.return_value = task_base_details_dto
         storage_mock.get_task_gof_dtos.return_value = task_gof_dtos
         storage_mock.get_task_gof_field_dtos.return_value = task_gof_field_dtos
+        gof_storage_mock.get_gof_ids_for_given_template.return_value = gof_ids
 
         # Act
         response = interactor.get_task(task_id=task_id)
 
         # Assert
-        response == task_details_dto
+        assert response == task_details_dto
         storage_mock.validate_task_id.assert_called_once_with(task_id=task_id)
-        storage_mock.get_task_gof_dtos.assert_called_once_with(task_id=task_id)
+        storage_mock.get_task_gof_dtos.assert_called_once_with(
+            task_id=task_id,
+            gof_ids=gof_ids
+        )
         storage_mock.get_task_gof_field_dtos.assert_called_once_with(
             task_gof_ids=task_gof_ids)
         get_projects_info_for_given_ids_mock_method.assert_called_once()

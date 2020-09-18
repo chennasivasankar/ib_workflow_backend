@@ -249,7 +249,9 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
     def _create_task_log(self, task_log_dto: CreateTaskLogDTO):
         from ib_tasks.interactors.task_log_interactor import TaskLogInteractor
         task_log_interactor = TaskLogInteractor(
-            storage=self.storage, task_storage=self.task_storage)
+            storage=self.storage, task_storage=self.task_storage,
+            action_storage=self.action_storage
+        )
         create_task_log_dto = CreateTaskLogDTO(
             task_json=task_log_dto.task_json,
             task_id=task_log_dto.task_id, user_id=task_log_dto.user_id,

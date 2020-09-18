@@ -18,6 +18,7 @@ from ib_tasks.tests.factories.models import (
     FieldRoleFactory,
     FieldFactory, StageModelFactory, CurrentTaskStageModelFactory,
     TaskStageHistoryModelFactory, StagePermittedRolesFactory,
+    TaskTemplateFactory, StageGoFFactory, GoFToTaskTemplateFactory,
 )
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
@@ -44,7 +45,9 @@ class TestCase09GetTaskAPITestCase(TestUtils):
 
     @pytest.fixture
     def setup(self, reset_factories):
-        task_obj = TaskFactory(task_display_id="iBWF-1")
+        task_obj = TaskFactory(task_display_id="iBWF-1", project_id="project0")
+        template_id = task_obj.template_id
+        TaskTemplateFactory(template_id=template_id)
         gof_objs = GoFFactory.create_batch(size=3)
         task_gof_objs = TaskGoFFactory.create_batch(
             size=3, task=task_obj, gof=factory.Iterator(gof_objs)
@@ -107,6 +110,14 @@ class TestCase09GetTaskAPITestCase(TestUtils):
             size=3,
             stage=factory.Iterator(stage_objs),
         )
+        StageGoFFactory.create_batch(
+            size=4, stage=factory.Iterator(stage_objs),
+            gof=factory.Iterator(gof_objs)
+        )
+        GoFToTaskTemplateFactory.create_batch(
+            size=3, gof=factory.Iterator(gof_objs),
+            task_template_id=template_id
+        )
 
     @pytest.mark.django_db
     @patch.object(AuthService, "get_user_id_team_details_dtos")
@@ -117,8 +128,8 @@ class TestCase09GetTaskAPITestCase(TestUtils):
             get_user_role_ids_based_on_project_mock
         get_user_role_ids_based_on_project_mock(mocker)
         from ib_tasks.tests.common_fixtures.adapters.auth_service import \
-            get_projects_info_for_given_ids_mock
-        get_projects_info_for_given_ids_mock(mocker)
+            get_project_info_for_given_ids_mock
+        get_project_info_for_given_ids_mock(mocker)
         from ib_tasks.tests.common_fixtures.adapters \
             .searchable_details_service import \
             searchable_details_dtos_mock

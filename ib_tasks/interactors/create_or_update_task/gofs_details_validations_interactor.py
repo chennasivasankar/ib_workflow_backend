@@ -134,7 +134,7 @@ class GoFsDetailsValidationsInteractor:
         from ib_tasks.constants.constants import ALL_ROLES_ID
         user_roles = self._get_user_roles_of_project(user_id, project_id)
         field_write_permission_roles_dtos = \
-            self.storage.get_write_permission_roles_for_given_field_ids(
+            self.field_storage.get_write_permission_roles_for_given_field_ids(
                 field_ids)
         for field_roles_dto in field_write_permission_roles_dtos:
             required_roles = field_roles_dto.write_permission_roles

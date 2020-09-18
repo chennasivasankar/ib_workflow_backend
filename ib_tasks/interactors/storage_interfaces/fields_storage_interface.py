@@ -6,7 +6,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldCompleteDetailsDTO, UserFieldPermissionDTO, FieldIdWithGoFIdDTO, \
     FieldIdWithFieldDisplayNameDTO, \
     TaskTemplateStageFieldsDTO, StageTaskFieldsDTO, FieldDetailsDTOWithTaskId, \
-    FieldNameDTO, FieldDisplayNameDTO, FieldTypeDTO
+    FieldNameDTO, FieldDisplayNameDTO, FieldTypeDTO, FieldWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
@@ -16,6 +16,11 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
 
 
 class FieldsStorageInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def get_write_permission_roles_for_given_field_ids(
+            self, field_ids: List[str]) -> List[FieldWritePermissionRolesDTO]:
+        pass
 
     @abc.abstractmethod
     def get_fields_details(self, template_stage_dtos: List[StageTaskFieldsDTO]) -> \

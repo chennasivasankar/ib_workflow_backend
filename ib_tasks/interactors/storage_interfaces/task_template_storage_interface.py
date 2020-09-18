@@ -6,12 +6,13 @@ from ib_tasks.exceptions.task_custom_exceptions import \
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
-    GoFToTaskTemplateDTO
+    GoFToTaskTemplateDTO, GOFMultipleEnableDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO, ProjectIdWithTaskTemplateIdDTO
 
 
 class TaskTemplateStorageInterface(abc.ABC):
+
     @abc.abstractmethod
     def create_template(self, template_id: str,
                         template_name: str,

@@ -590,7 +590,7 @@ class TaskBaseDetailsDTOFactory(factory.Factory):
             lambda counter: "IBWF-{}".format(counter + 1))
     title = factory.sequence(lambda counter: "title_{}".format(counter))
     description = factory.sequence(
-        lambda counter: "description_{}".format(counter))
+            lambda counter: "description_{}".format(counter))
     start_date = datetime(2020, 4, 5, 4, 50, 40)
     due_date = datetime(2020, 4, 5, 4, 50, 40) + timedelta(10)
     priority = Priority.HIGH.value

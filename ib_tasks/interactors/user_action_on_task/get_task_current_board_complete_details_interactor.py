@@ -115,7 +115,7 @@ class GetTaskCurrentBoardCompleteDetailsInteractor:
             )
             for stage_id in stage_ids
         ]
-        from ib_tasks.interactors.get_task_fields_and_actions.get_task_fields_and_actions \
+        from ib_tasks.interactors.get_task_fields_and_actions \
             import GetTaskFieldsAndActionsInteractor
         interactor = GetTaskFieldsAndActionsInteractor(
             field_storage=self.field_storage,

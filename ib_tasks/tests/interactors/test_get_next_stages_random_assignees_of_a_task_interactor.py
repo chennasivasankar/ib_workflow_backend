@@ -17,9 +17,10 @@ from ib_tasks.tests.factories.adapter_dtos import \
 from ib_tasks.tests.factories.interactor_dtos import \
     StageWithUserDetailsDTOFactory
 from ib_tasks.tests.factories.storage_dtos import StatusVariableDTOFactory
+from ib_tasks.tests.interactors.super_storage_mock_class import StorageMockClass
 
 
-class TestGetNextStagesRandomAssigneesOfATaskInteractor:
+class TestGetNextStagesRandomAssigneesOfATaskInteractor(StorageMockClass):
     @pytest.fixture
     def storage_mock(self):
         from ib_tasks.interactors.storage_interfaces.storage_interface import \
@@ -109,8 +110,24 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         mock_object = Mock()
         return mock_object
 
+    @pytest.fixture()
+    def interactor(
+            self, field_storage,
+            storage_mock, stage_storage_mock,
+            action_storage_mock, task_storage_mock,
+            presenter_mock, task_stage_storage_mock,
+            create_task_storage, gof_storage):
+        interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
+            storage=storage_mock, action_storage=action_storage_mock,
+            stage_storage=stage_storage_mock, task_storage=task_storage_mock,
+            task_stage_storage=task_stage_storage_mock,
+            create_task_storage=create_task_storage, field_storage=field_storage,
+            gof_storage=gof_storage
+        )
+        return interactor
+
     def test_given_invalid_task_display_id_raise_exception(
-            self, mock_object,field_storage,
+            self, mock_object,field_storage, interactor,
                                                            storage_mock,
                                                            stage_storage_mock,
                                                            action_storage_mock,
@@ -126,13 +143,6 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         action_id = 1
         exception_object = InvalidTaskDisplayId(task_display_id)
         task_storage_mock.check_is_valid_task_display_id.return_value = False
-
-        interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
-            storage=storage_mock, action_storage=action_storage_mock,
-            stage_storage=stage_storage_mock, task_storage=task_storage_mock,
-            task_stage_storage=task_stage_storage_mock,
-            create_task_storage=create_task_storage, field_storage=field_storage
-        )
 
         # Act
         interactor \
@@ -151,7 +161,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
     def test_given_invalid_action_id_raise_exception(
             self, mock_object, storage_mock, stage_storage_mock,
             action_storage_mock, task_storage_mock, presenter_mock,
-            task_stage_storage_mock, create_task_storage, field_storage):
+            task_stage_storage_mock, create_task_storage, field_storage, interactor):
         # Arrange
         task_display_id = "IBWF-1"
         action_id = 1
@@ -161,12 +171,6 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         action_storage_mock.validate_action.return_value = False
 
-        interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
-            storage=storage_mock, action_storage=action_storage_mock,
-            stage_storage=stage_storage_mock, task_storage=task_storage_mock,
-            task_stage_storage=task_stage_storage_mock,
-            create_task_storage=create_task_storage, field_storage=field_storage
-        )
 
         # Act
         interactor \
@@ -190,19 +194,14 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
                                                  task_storage_mock,
                                                  presenter_mock,
                                                  task_stage_storage_mock,
-                                                 create_task_storage, field_storage):
+                                                 create_task_storage, field_storage,
+                                                 interactor):
         # Arrange
         task_display_id = "IBWF-1"
         action_id = 1
         path_name = "ib_tasks.populate.stage_ac.stage_1_action_name_1"
         exception_object = InvalidModulePathFound(path_name)
         action_logic_mock.side_effect = exception_object
-        interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
-            storage=storage_mock, action_storage=action_storage_mock,
-            stage_storage=stage_storage_mock, task_storage=task_storage_mock,
-            task_stage_storage=task_stage_storage_mock,
-            create_task_storage=create_task_storage, field_storage=field_storage
-        )
 
         # Act
         interactor \
@@ -225,7 +224,9 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
                                                         task_storage_mock,
                                                         presenter_mock,
                                                         task_stage_storage_mock,
-                                                        create_task_storage, field_storage):
+                                                        create_task_storage,
+                                                        field_storage,
+                                                        interactor):
         # Arrange
         task_display_id = "IBWF-1"
         action_id = 1
@@ -233,13 +234,6 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         method_name = "stage_1_action_name_1"
         action_logic_mock.side_effect = InvalidMethodFound(
             method_name=method_name
-        )
-
-        interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
-            storage=storage_mock, action_storage=action_storage_mock,
-            stage_storage=stage_storage_mock, task_storage=task_storage_mock,
-            task_stage_storage=task_stage_storage_mock,
-            create_task_storage=create_task_storage, field_storage=field_storage
         )
 
         # Act
@@ -265,7 +259,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
                                                          task_storage_mock,
                                                          task_stage_storage_mock,
                                                          create_task_storage,
-                                                         field_storage):
+                                                         field_storage, interactor):
         # Arrange
         action_id = 1
         task_display_id = "IBWF-1"
@@ -273,13 +267,6 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         from ib_tasks.exceptions.action_custom_exceptions import \
             InvalidKeyError
         action_logic_mock.side_effect = InvalidKeyError()
-
-        interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
-            storage=storage_mock, action_storage=action_storage_mock,
-            stage_storage=stage_storage_mock, task_storage=task_storage_mock,
-            task_stage_storage=task_stage_storage_mock,
-            create_task_storage=create_task_storage, field_storage=field_storage
-        )
 
         # Act
         interactor \
@@ -302,7 +289,9 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             self, action_logic_mock, next_stages_mock,
             users_with_less_tasks_mock, storage_mock,field_storage,
             presenter_mock, stage_storage_mock, action_storage_mock,
-            task_storage_mock, task_stage_storage_mock, create_task_storage):
+            task_storage_mock, task_stage_storage_mock, create_task_storage,
+            interactor
+    ):
         # Arrange
         StageWithUserDetailsDTOFactory.reset_sequence()
         AssigneeDetailsDTOFactory.reset_sequence()
@@ -332,13 +321,6 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
                     UserIdWIthTeamDetailsDTOFactory(
                         user_id="123e4567-e89b-12d3-a456-426614174001")])
         users_with_less_tasks_mock.return_value = stage_with_user_details_and_team_details_dto
-
-        interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
-            storage=storage_mock, action_storage=action_storage_mock,
-            stage_storage=stage_storage_mock, task_storage=task_storage_mock,
-            task_stage_storage=task_stage_storage_mock,
-            create_task_storage=create_task_storage, field_storage=field_storage
-        )
 
         # Act
         interactor \

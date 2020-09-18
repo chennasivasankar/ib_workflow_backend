@@ -17,7 +17,8 @@ from ib_tasks.tests.factories.models import (
     GoFFactory,
     FieldRoleFactory,
     FieldFactory, CurrentTaskStageModelFactory, StageModelFactory,
-    TaskStageHistoryModelFactory, StagePermittedRolesFactory
+    TaskStageHistoryModelFactory, StagePermittedRolesFactory,
+    TaskTemplateFactory, StageGoFFactory, GoFToTaskTemplateFactory
 )
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
@@ -45,6 +46,8 @@ class TestCase03GetTaskAPITestCase(TestUtils):
     @pytest.fixture
     def setup(self, reset_factories):
         task_obj = TaskFactory(project_id="project0")
+        template_id = task_obj.template_id
+        TaskTemplateFactory(template_id=template_id)
         gof_objs = GoFFactory.create_batch(size=3)
         task_gof_objs = TaskGoFFactory.create_batch(
             size=3, task=task_obj, gof=factory.Iterator(gof_objs)
@@ -97,6 +100,14 @@ class TestCase03GetTaskAPITestCase(TestUtils):
         StagePermittedRolesFactory.create_batch(
             size=3,
             stage=factory.Iterator(stage_objs),
+        )
+        StageGoFFactory.create_batch(
+            size=4, stage=factory.Iterator(stage_objs),
+            gof=factory.Iterator(gof_objs)
+        )
+        GoFToTaskTemplateFactory.create_batch(
+            size=3, gof=factory.Iterator(gof_objs),
+            task_template_id=template_id
         )
 
     @pytest.mark.django_db
