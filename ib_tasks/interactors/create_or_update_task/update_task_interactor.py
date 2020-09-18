@@ -279,13 +279,13 @@ class UpdateTaskInteractor(
         task_gof_dtos = self.prepare_task_gof_dtos(task_id, gof_fields_dtos)
         gofs_for_updation, gofs_for_creation = \
             self._get_updation_and_creation_gofs(task_gof_dtos, existing_gofs)
+        if gofs_for_creation:
+            self._create_task_gofs_and_fields(
+                gofs_for_creation, task_dto, task_crud_interactor)
         if gofs_for_updation:
             self._update_task_gofs_and_fields(
                 gofs_for_updation, gof_fields_dtos,
                 existing_fields, task_crud_interactor)
-        if gofs_for_creation:
-            self._create_task_gofs_and_fields(
-                gofs_for_creation, task_dto, task_crud_interactor)
 
     def _update_stage_assignee(
             self, task_id: int, stage_assignee: StageIdWithAssigneeDTO):

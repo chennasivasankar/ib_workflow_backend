@@ -34,7 +34,9 @@ class TaskCrudOperationsInteractor:
     def update_task(self, task_basic_details: UpdateTaskBasicDetailsDTO):
         self.storage.update_task(task_basic_details)
 
-    def update_task_gofs(self, task_gof_dtos: List[TaskGoFWithTaskIdDTO]):
+    def update_task_gofs(
+            self, task_gof_dtos: List[TaskGoFWithTaskIdDTO]
+    ) -> List[TaskGoFDetailsDTO]:
         task_gof_details_dtos = self.storage.update_task_gofs(task_gof_dtos)
         return task_gof_details_dtos
 
