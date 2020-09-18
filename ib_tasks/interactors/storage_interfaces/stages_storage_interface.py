@@ -8,7 +8,7 @@ from ib_tasks.interactors.stages_dtos import StageDTO, \
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO, \
     StageFlowDTO, StageIdWithValueDTO, StageFlowWithActionIdDTO, \
-    StageIdWithTemplateIdDTO, StageIdWithGoFIdDTO
+    StageIdWithTemplateIdDTO, StageIdWithGoFIdDTO, StageValueDTO, StageDisplayValueDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
     TaskStagesDTO, TaskTemplateStageDTO, StageValueWithTaskIdsDTO, \
     TaskIdWithStageDetailsDTO
