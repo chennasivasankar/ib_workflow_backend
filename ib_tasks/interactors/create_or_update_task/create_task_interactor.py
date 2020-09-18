@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 from ib_tasks.exceptions.action_custom_exceptions import (
     InvalidActionException, InvalidKeyError, InvalidCustomLogicException,
@@ -279,6 +280,8 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
         )
         task_details_validation_interactor = TaskDetailsValidationsInteractor(
             storages_dto)
+        self._validate_task_template_id(
+            task_dto.basic_task_details_dto.task_template_id)
         stage_id = \
             self.task_template_storage.get_task_template_initial_stage_id(
                 task_dto.basic_task_details_dto.task_template_id)
@@ -327,3 +330,12 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
             task_current_stages_details_dto=task_current_stage_details_dto,
             all_tasks_overview_details_dto=all_tasks_overview_dto)
         return complete_task_details_dto
+
+    def _validate_task_template_id(
+            self, task_template_id: str) -> Optional[InvalidTaskTemplateDBId]:
+        task_template_existence = \
+            self.task_template_storage.check_is_template_exists(
+                template_id=task_template_id)
+        if not task_template_existence:
+            raise InvalidTaskTemplateDBId(task_template_id)
+        return

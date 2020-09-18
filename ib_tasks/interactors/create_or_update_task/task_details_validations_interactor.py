@@ -7,7 +7,7 @@ from ib_tasks.exceptions.custom_exceptions import InvalidProjectId
 from ib_tasks.exceptions.fields_custom_exceptions import \
     UserDidNotFillRequiredFields
 from ib_tasks.exceptions.task_custom_exceptions import (
-    InvalidTaskTemplateDBId, InvalidTaskTemplateOfProject
+    InvalidTaskTemplateOfProject
 )
 from ib_tasks.interactors.create_or_update_task \
     .gofs_details_validations_interactor import \
@@ -86,7 +86,6 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
         task_template_id = task_dto.basic_task_details_dto.task_template_id
 
         self._validate_project_id(project_id)
-        self._validate_task_template_id(task_template_id)
         self._validate_task_template_project_id(project_id, task_template_id)
         self.validate_task_dates_and_priority(
             task_dto.basic_task_details_dto.start_datetime,
@@ -117,15 +116,6 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
         project_id_is_not_valid = project_id not in valid_project_ids
         if project_id_is_not_valid:
             raise InvalidProjectId(project_id)
-        return
-
-    def _validate_task_template_id(
-            self, task_template_id: str) -> Optional[InvalidTaskTemplateDBId]:
-        task_template_existence = \
-            self.task_template_storage.check_is_template_exists(
-                template_id=task_template_id)
-        if not task_template_existence:
-            raise InvalidTaskTemplateDBId(task_template_id)
         return
 
     def _validate_task_template_project_id(

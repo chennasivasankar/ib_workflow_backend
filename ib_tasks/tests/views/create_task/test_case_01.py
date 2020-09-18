@@ -8,6 +8,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...common_fixtures.adapters.roles_service import \
     get_user_role_ids_based_on_project_mock
+from ...factories.models import StageGoFFactory
 
 
 class TestCase01CreateTaskAPITestCase(TestUtils):
@@ -97,7 +98,7 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
         gof_obj = GoFFactory.create()
-
+        StageGoFFactory.create(stage=stage, gof=gof_obj)
         field_obj = FieldFactory.create(gof=gof_obj)
         GoFToTaskTemplateFactory.create(
             task_template=task_template_obj, gof=gof_obj)

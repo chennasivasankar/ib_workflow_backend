@@ -8,6 +8,7 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ...factories.models import TaskTemplateInitialStageFactory
 
 
 class TestCase16CreateTaskAPITestCase(TestUtils):
@@ -36,6 +37,7 @@ class TestCase16CreateTaskAPITestCase(TestUtils):
         GoFToTaskTemplateFactory.reset_sequence()
         GoFRoleFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
+        TaskTemplateInitialStageFactory.reset_sequence()
 
         template_id = 'template_1'
         project_id = "project_1"
@@ -49,6 +51,8 @@ class TestCase16CreateTaskAPITestCase(TestUtils):
         get_user_role_ids_based_on_project_mock(mocker)
 
         task_template_obj = TaskTemplateFactory.create(template_id=template_id)
+        TaskTemplateInitialStageFactory.create(
+            task_template__template_id=template_id)
         ProjectTaskTemplateFactory.create(
             task_template_id=template_id, project_id=project_id)
         stage = StageModelFactory(
