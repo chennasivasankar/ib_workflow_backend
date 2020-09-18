@@ -8,6 +8,7 @@ from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presenter import \
     TaskDueDetailsPresenterInterface
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
 from ib_tasks.interactors.task_dtos import TaskDueParametersDTO, TaskDelayParametersDTO
@@ -16,8 +17,10 @@ from ib_tasks.interactors.task_dtos import TaskDueParametersDTO, TaskDelayParame
 class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
     def __init__(self,
                  storage: StorageInterface,
+                 stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface):
         self.task_storage = task_storage
+        self.stage_storage = stage_storage
         self.storage = storage
 
     def add_task_due_details_wrapper(self,
@@ -72,11 +75,11 @@ class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
             if reason_dict['id'] == reason_id and reason_id != -1:
                 due_details.reason = reason_dict['reason']
 
-        self.storage.add_due_delay_details(due_details)
-        self.storage.update_task_due_datetime(due_details)
+        self.task_storage.add_due_delay_details(due_details)
+        self.task_storage.update_task_due_datetime(due_details)
 
     def _validate_stage_id(self, stage_id: int):
-        is_valid = self.storage.validate_stage_id(stage_id)
+        is_valid = self.stage_storage.validate_stage_id(stage_id)
         if not is_valid:
             raise InvalidStageIdException
 

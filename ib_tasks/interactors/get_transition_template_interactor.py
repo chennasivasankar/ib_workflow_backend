@@ -125,7 +125,7 @@ class GetTransitionTemplateInteractor:
                 gof_storage=self.gof_storage)
         gofs_of_transition_template_permitted_for_user_dtos = \
             self.task_template_storage. \
-            get_gofs_to_template_from_permitted_gofs(
+            get_gofs_to_template_from_given_gofs(
                 gof_ids=gof_ids_having_read_permission_for_user,
                 template_id=transition_template_id
             )

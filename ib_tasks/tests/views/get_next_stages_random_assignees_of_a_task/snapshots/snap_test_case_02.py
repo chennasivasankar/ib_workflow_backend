@@ -14,3 +14,11 @@ snapshots['TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase.test_case bo
     'res_status': 'INVALID_TASK_ID',
     'response': 'IBWF-2 is invalid task_id send valid task_id'
 }
+
+snapshots['TestCase02GetNextStagesRandomAssigneesOfATaskAPITestCase.test_case status_code'] = '400'
+
+snapshots['TestCase02GetNextStagesRandomAssigneesOfATaskAPITestCase.test_case body'] = {
+    'http_status_code': 400,
+    'res_status': 'INVALID_TASK_ID',
+    'response': 'IBWF-2 is invalid task_id send valid task_id'
+}

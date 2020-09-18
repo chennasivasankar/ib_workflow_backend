@@ -22,6 +22,7 @@ class StorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_task_project_id(self, task_id: int) -> str:
         pass
+
     @abc.abstractmethod
     def get_status_variables_to_task(
             self, task_id: int) -> List[StatusVariableDTO]:
@@ -74,11 +75,6 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def update_task_stages(self, task_id: int, stage_ids: List[str]):
-        pass
-
-    @abc.abstractmethod
-    def get_write_permission_roles_for_given_gof_ids(
-            self, gof_ids: List[str]) -> List[GoFWritePermissionRolesDTO]:
         pass
 
     @abc.abstractmethod

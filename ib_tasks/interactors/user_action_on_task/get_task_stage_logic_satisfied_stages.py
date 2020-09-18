@@ -4,10 +4,11 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDisplayValueDTO, StageDisplayDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
-from ib_tasks.interactors.storage_interfaces.storage_interface \
-    import StorageInterface
 from ib_tasks.interactors.storage_interfaces.status_dtos \
     import StatusVariableDTO
+from ib_tasks.interactors.storage_interfaces.storage_interface \
+    import StorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
 from ib_tasks.interactors.task_dtos import StageDisplayLogicDTO
 
 
@@ -15,8 +16,10 @@ class GetTaskStageLogicSatisfiedStagesInteractor:
 
     def __init__(self, task_id: int,
                  storage: StorageInterface,
-                 stage_storage: StageStorageInterface):
+                 stage_storage: StageStorageInterface,
+                 task_storage: TaskStorageInterface):
         self.task_id = task_id
+        self.task_storage = task_storage
         self.storage = storage
         self.stage_storage = stage_storage
 
@@ -50,7 +53,7 @@ class GetTaskStageLogicSatisfiedStagesInteractor:
 
     def _validate_task_and_get_stage_display_logic_dtos(self):
         self._validate_task_id(task_id=self.task_id)
-        stage_display_value_dtos = self.storage \
+        stage_display_value_dtos = self.stage_storage \
             .get_task_template_stage_logic_to_task(
             task_id=self.task_id)
         stage_display_dtos = self._get_stage_display_dtos(
@@ -62,7 +65,7 @@ class GetTaskStageLogicSatisfiedStagesInteractor:
 
     def _validate_task_id(self, task_id: int):
 
-        valid_task = self.storage.validate_task_id(task_id=task_id)
+        valid_task = self.task_storage.check_is_task_exists(task_id=task_id)
 
         is_invalid_task = not valid_task
         if is_invalid_task:
@@ -165,13 +168,12 @@ class GetTaskStageLogicSatisfiedStagesInteractor:
             ">=": operator.ge,
             "<=": operator.le,
             ">": operator.gt,
-            "<": operator.lt,
-            "!=": operator.ne
+            "<": operator.lt
         }
 
     def _get_task_status_variable_dict_given_task_id(self, task_id: int):
         status_variable_dto = \
-            self.storage.get_status_variables_to_task(task_id=task_id)
+            self.task_storage.get_status_variables_to_task(task_id=task_id)
         status_variables_dict = \
             self._get_status_variables_dict(status_variable_dto)
         return status_variables_dict
@@ -197,7 +199,6 @@ class GetTaskStageLogicSatisfiedStagesInteractor:
             value = status_variable_dto.value
             status_variables_dict[variable] = value
         return status_variables_dict
-
 
     def _get_task_status_variable_dict_given_status_variable_dtos(
             self, status_variable_dtos: List[StatusVariableDTO]):

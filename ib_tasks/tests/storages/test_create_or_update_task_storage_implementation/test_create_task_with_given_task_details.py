@@ -15,7 +15,7 @@ class TestCreateTaskWithGivenDetails:
 
         # Act
         created_task_id = \
-            storage.create_task_with_given_task_details(create_task_dto)
+            storage.create_task(create_task_dto)
 
         # Assert
         due_datetime = create_task_dto.due_datetime
