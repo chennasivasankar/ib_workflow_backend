@@ -4,7 +4,7 @@ from typing import List, Dict
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
-from ib_tasks.interactors.task_dtos import FieldValuesDTO
+from ib_tasks.interactors.task_dtos import FieldValuesDTO, BasicTaskDetailsDTO
 from .validator_class import ValidatorClass
 from ...presenters.create_task_presenter import \
     CreateTaskPresenterImplementation
@@ -25,17 +25,17 @@ from ...storages.task_template_storage_implementation import \
 def api_wrapper(*args, **kwargs):
     user_id = kwargs['user'].user_id
     request_data = kwargs['request_data']
-    project_id = request_data['project_id']
-    task_template_id = request_data['task_template_id']
-    action_id = request_data['action_id']
-    title = request_data['title']
-    description = request_data['description']
-    start_datetime = request_data['start_datetime']
-    due_datetime = request_data['due_datetime']
-    priority = request_data['priority']
-    task_gofs = request_data['task_gofs']
-    request_data['start_datetime'] = str(request_data['start_datetime'])
-    request_data['due_datetime'] = str(request_data['due_datetime'])
+    project_id = request_data.get('project_id')
+    task_template_id = request_data.get('task_template_id')
+    action_id = request_data.get('action_id')
+    title = request_data.get('title')
+    description = request_data.get('description')
+    start_datetime = request_data.get('start_datetime')
+    due_datetime = request_data.get('due_datetime')
+    priority = request_data.get('priority')
+    task_gofs = request_data.get('task_gofs')
+    request_data['start_datetime'] = str(request_data.get('start_datetime'))
+    request_data['due_datetime'] = str(request_data.get('due_datetime'))
     task_request_json = json.dumps(request_data)
 
     from ib_tasks.interactors.task_dtos import GoFFieldsDTO, CreateTaskDTO
@@ -50,11 +50,14 @@ def api_wrapper(*args, **kwargs):
         )
         task_gofs_dtos.append(gof_field_dto)
 
-    task_dto = CreateTaskDTO(
+    basic_task_details_dto = BasicTaskDetailsDTO(
         project_id=project_id, task_template_id=task_template_id,
         created_by_id=user_id, action_id=action_id, title=title,
         description=description, start_datetime=start_datetime,
-        due_datetime=due_datetime, priority=priority,
+        due_datetime=due_datetime, priority=priority
+    )
+    task_dto = CreateTaskDTO(
+        basic_task_details_dto=basic_task_details_dto,
         gof_fields_dtos=task_gofs_dtos)
 
     from ib_tasks.storages.tasks_storage_implementation \

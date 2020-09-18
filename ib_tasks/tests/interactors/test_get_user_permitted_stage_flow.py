@@ -1,7 +1,9 @@
 import pytest
 
-from ib_tasks.tests.factories.storage_dtos import StageMinimalDTOFactory, StageFlowDTOFactory
-from ib_tasks.tests.interactors.super_storage_mock_class import StorageMockClass
+from ib_tasks.tests.factories.storage_dtos import StageMinimalDTOFactory, \
+    StageFlowDTOFactory
+from ib_tasks.tests.interactors.super_storage_mock_class import \
+    StorageMockClass
 
 
 class TestGetPermittedTemplateStageFlowToUser(StorageMockClass):

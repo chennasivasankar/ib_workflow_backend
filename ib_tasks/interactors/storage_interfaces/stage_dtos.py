@@ -232,3 +232,16 @@ class StageIdActionNameDTO:
 @dataclass
 class StageActionIdDTO(StageIdActionNameDTO):
     action_id: int
+
+
+@dataclass
+class StageGoFWithTemplateIdDTO:
+    stage_id: int
+    gof_id: str
+    task_template_id: str
+
+
+@dataclass
+class StageIdWithGoFIdDTO:
+    stage_id: int
+    gof_id: str

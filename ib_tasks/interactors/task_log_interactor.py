@@ -1,14 +1,20 @@
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface \
+    import TaskStorageInterface
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO
 
 
 class TaskLogInteractor:
     def __init__(
             self, task_storage: TaskStorageInterface,
-            storage: StorageInterface):
+            storage: StorageInterface,
+            action_storage: ActionStorageInterface
+    ):
+        self.action_storage = action_storage
         self.task_storage = task_storage
         self.storage = storage
 
@@ -32,7 +38,7 @@ class TaskLogInteractor:
             raise TaskDoesNotExists(
                 INVALID_TASK_ID[0].format(create_task_log_dto.task_id)
             )
-        is_action_exists = self.storage.validate_action(
+        is_action_exists = self.action_storage.validate_action(
             action_id=create_task_log_dto.action_id
         )
         is_action_not_exists = not is_action_exists
@@ -51,7 +57,7 @@ class TaskLogInteractor:
         is_task_json_empty = not task_json_after_strip
         if is_task_json_empty:
             from ib_tasks.constants.exception_messages \
-                import INVALID_TASK_JSON
+                import EMPTY_TASK_JSON
             from ib_tasks.exceptions.task_custom_exceptions \
                 import InvalidTaskJson
-            raise InvalidTaskJson(INVALID_TASK_JSON)
+            raise InvalidTaskJson(EMPTY_TASK_JSON)

@@ -1,7 +1,9 @@
+from unittest.mock import create_autospec
 
 import pytest
-from unittest.mock import create_autospec
-from ib_tasks.interactors.configure_initial_task_template_stage_actions import (
+
+from ib_tasks.interactors.configure_initial_task_template_stage_actions \
+    import (
     ConfigureInitialTaskTemplateStageActions, InvalidTaskTemplateIdsException
 )
 from ib_tasks.interactors.stages_dtos import TemplateStageDTO
@@ -20,7 +22,8 @@ class TestConfigureInitialTaskTemplateStageActions:
 
     @pytest.fixture()
     def template_storage(self):
-        from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
+        from ib_tasks.interactors.storage_interfaces \
+            .task_template_storage_interface \
             import TaskTemplateStorageInterface
         storage = create_autospec(TaskTemplateStorageInterface)
         return storage
@@ -28,7 +31,6 @@ class TestConfigureInitialTaskTemplateStageActions:
     @staticmethod
     def test_given_invalid_task_template_ids_raises_exception(
             action_storage, template_storage):
-
         # Arrange
         import pytest
         import json
@@ -41,7 +43,7 @@ class TestConfigureInitialTaskTemplateStageActions:
 
         task_template_ids = ["task_template_1", "task_template_2"]
 
-        action_storage.get_valid_task_template_ids\
+        action_storage.get_valid_task_template_ids \
             .return_value = ["task_template_1"]
 
         interactor = ConfigureInitialTaskTemplateStageActions(
@@ -52,13 +54,13 @@ class TestConfigureInitialTaskTemplateStageActions:
 
         # Act
         with pytest.raises(InvalidTaskTemplateIdsException) as err:
-            assert interactor\
+            assert interactor \
                 .create_update_delete_stage_actions_to_task_template()
 
         # Assert
         assert \
             err.value.task_template_ids_dict == expected_task_template_ids_dict
-        action_storage.get_valid_task_template_ids\
+        action_storage.get_valid_task_template_ids \
             .assert_called_once_with(task_template_ids=task_template_ids)
 
     @staticmethod
@@ -77,7 +79,7 @@ class TestConfigureInitialTaskTemplateStageActions:
         )
 
         task_template_ids = ["task_template_1", "task_template_2"]
-        action_storage.get_valid_task_template_ids\
+        action_storage.get_valid_task_template_ids \
             .return_value = task_template_ids
 
         interactor = ConfigureInitialTaskTemplateStageActions(
@@ -90,7 +92,7 @@ class TestConfigureInitialTaskTemplateStageActions:
 
         # Act
         with pytest.raises(ManyStagesToInitialTaskTemplate) as err:
-            assert interactor\
+            assert interactor \
                 .create_update_delete_stage_actions_to_task_template()
 
         # Assert
@@ -102,14 +104,13 @@ class TestConfigureInitialTaskTemplateStageActions:
     @staticmethod
     def test_given_valid_details_creates_stage_actions_to_task_template(
             mocker, action_storage, template_storage):
-
         # Arrange
-        
+
         TaskTemplateStageActionDTOFactory.reset_sequence(0)
         tasks_dto = TaskTemplateStageActionDTOFactory.create_batch(size=2)
 
         task_template_ids = ["task_template_1", "task_template_2"]
-        action_storage.get_valid_task_template_ids\
+        action_storage.get_valid_task_template_ids \
             .return_value = task_template_ids
         task_template_stage_dtos = [
             TemplateStageDTO(
@@ -121,8 +122,10 @@ class TestConfigureInitialTaskTemplateStageActions:
                 stage_id="stage_2"
             )
         ]
-        path = 'ib_tasks.interactors.create_or_update_or_delete_stage_actions.CreateOrUpdateOrDeleteStageActions' \
-               '.create_or_update_or_delete_stage_actions'
+        path = \
+            'ib_tasks.interactors.create_or_update_or_delete_stage_actions' \
+            '.CreateOrUpdateOrDeleteStageActions' \
+            '.create_or_update_or_delete_stage_actions'
         mock_obj = mocker.patch(path)
 
         interactor = ConfigureInitialTaskTemplateStageActions(
@@ -138,7 +141,8 @@ class TestConfigureInitialTaskTemplateStageActions:
 
         action_storage.get_valid_task_template_ids \
             .assert_called_once_with(task_template_ids=task_template_ids)
-        action_storage.create_initial_stage_to_task_template.assert_called_once_with(
+        action_storage.get_or_create_initial_stage_to_task_template \
+            .assert_called_once_with(
             task_template_stage_dtos=task_template_stage_dtos
         )
         mock_obj.called_once()

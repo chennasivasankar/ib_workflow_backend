@@ -7,8 +7,10 @@ from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.presenter_interfaces.get_template_stage_flow_presenter_interface import \
     GetTemplateStageFlowPresenterInterface, StageFlowCompleteDetailsDTO
 from ib_tasks.interactors.stages_dtos import StageMinimalDTO
-from ib_tasks.interactors.storage_interfaces.action_storage_interface import ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
+    ActionStorageInterface
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
+    StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import TaskTemplateStorageInterface
 

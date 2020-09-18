@@ -24,8 +24,7 @@ class TestCreateTaskPresenterImplementation:
 
         # Act
         response_object = \
-            presenter.raise_exception_for_invalid_present_stage_actions(
-            err)
+            presenter.raise_exception_for_invalid_present_stage_actions(err)
 
         # Assert
         response = json.loads(response_object.content)
@@ -155,11 +154,15 @@ class TestCreateTaskPresenterImplementation:
 
     def test_raise_duplicate_stage_ids_not_valid(self, snapshot, presenter):
         # Arrange
+        from ib_tasks.exceptions.stage_custom_exceptions import \
+            DuplicateStageIds
+
         expected_duplicate_stage_ids = [1, 2, 3]
+        err = DuplicateStageIds(
+            duplicate_stage_ids=expected_duplicate_stage_ids)
 
         # Act
-        response_object = presenter.raise_duplicate_stage_ids_not_valid(
-            expected_duplicate_stage_ids)
+        response_object = presenter.raise_duplicate_stage_ids_not_valid(err)
 
         # Assert
         response = json.loads(response_object.content)
@@ -184,12 +187,15 @@ class TestCreateTaskPresenterImplementation:
     def test_raise_stage_ids_with_invalid_permission_for_assignee_exception(
             self, snapshot, presenter):
         # Arrange
+
         expected_stage_ids_without_assignee_permissions = [1, 2]
+        from ib_tasks.exceptions.stage_custom_exceptions import \
+            StageIdsWithInvalidPermissionForAssignee
+        err = StageIdsWithInvalidPermissionForAssignee(
+            invalid_stage_ids=expected_stage_ids_without_assignee_permissions)
 
         # Act
-        response_object = presenter. \
-            raise_stage_ids_with_invalid_permission_for_assignee_exception(
-            expected_stage_ids_without_assignee_permissions)
+        response_object = presenter.raise_invalid_stage_assignees(err)
 
         # Assert
         response = json.loads(response_object.content)

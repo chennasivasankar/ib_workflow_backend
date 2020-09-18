@@ -8,6 +8,7 @@ import abc
 from datetime import datetime
 from typing import List, Optional
 
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionWithStageIdDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
@@ -16,12 +17,26 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageValueDTO, StageIdWithTemplateIdDTO, TaskStageIdsDTO, \
     TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
-    TaskTemplateStatusDTO
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO, TaskProjectDTO
-from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO
+    TaskTemplateStatusDTO, StatusVariableDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO, TaskProjectDTO, TaskDueMissingDTO
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO, TaskDelayParametersDTO
 
 
 class TaskStorageInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def update_status_variables_to_task(
+            self, task_id: int, status_variables_dto: List[StatusVariableDTO]):
+        pass
+
+    @abc.abstractmethod
+    def get_status_variables_to_task(
+            self, task_id: int) -> List[StatusVariableDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_task_project_id(self, task_id: int) -> str:
+        pass
 
     @abc.abstractmethod
     def get_existing_field_ids(self, field_ids: List[str]) -> List[str]:
@@ -155,4 +170,22 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_task_display_id_for_task_id(self, task_id: int) -> str:
+        pass
+
+    @abc.abstractmethod
+    def get_global_constants_to_task(
+            self, task_id: int) -> List[GlobalConstantsDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_task_due_details(self, task_id: int, stage_id: int) -> \
+            List[TaskDueMissingDTO]:
+        pass
+
+    @abc.abstractmethod
+    def add_due_delay_details(self, due_details: TaskDelayParametersDTO):
+        pass
+
+    @abc.abstractmethod
+    def update_task_due_datetime(self, due_details: TaskDelayParametersDTO):
         pass

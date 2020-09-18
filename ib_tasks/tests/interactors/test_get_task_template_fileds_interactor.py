@@ -1,4 +1,5 @@
 import pytest
+
 from ib_tasks.tests.factories.storage_dtos import ProjectTemplateDTOFactory, \
     TaskTemplateGofsDTOFactory, FieldNameDTOFactory
 from ib_tasks.tests.factories.storage_dtos import TaskTemplateDTOFactory, \
