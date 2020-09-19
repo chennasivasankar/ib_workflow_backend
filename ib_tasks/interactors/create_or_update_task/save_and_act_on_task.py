@@ -63,17 +63,14 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
-    import \
-    TaskStageStorageInterface
+    import TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
-    import \
-    TaskTemplateStorageInterface
+    import TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO, \
-    SaveAndActOnTaskDTO, \
-    SaveAndActOnTaskWithTaskDisplayIdDTO, UpdateTaskBasicDetailsDTO, \
-    CreateTaskLogDTO
+    SaveAndActOnTaskDTO, SaveAndActOnTaskWithTaskDisplayIdDTO,\
+    UpdateTaskBasicDetailsDTO, CreateTaskLogDTO
 from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor \
     import UserActionOnTaskInteractor
 
