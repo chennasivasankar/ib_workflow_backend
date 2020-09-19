@@ -86,9 +86,9 @@ class GetColumnsTasksDetailsInteractor:
         task_details_dtos = []
         for task_ids_stages_dto in task_ids_stages_dtos:
             for stage_id_dto in task_ids_stages_dto.task_stage_ids:
-                from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+                from ib_tasks.interactors.task_dtos import TaskStageIdDTO
                 task_details_dtos.append(
-                    GetTaskDetailsDTO(
+                    TaskStageIdDTO(
                         task_id=stage_id_dto.task_id,
                         stage_id=stage_id_dto.stage_id
                     )

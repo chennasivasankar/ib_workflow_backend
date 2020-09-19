@@ -25,9 +25,9 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
-from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO, TaskDelayParametersDTO
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, TaskStageIdDTO, TaskDelayParametersDTO
 from ib_tasks.models import Stage, TaskTemplate, CurrentTaskStage, \
-    TaskTemplateStatusVariable, TaskStageHistory, TaskStatusVariable, TaskStageRp
+    TaskTemplateStatusVariable, TaskStageHistory, TaskStatusVariable
 from ib_tasks.models.field import Field
 from ib_tasks.models.stage_actions import StageAction
 from ib_tasks.models.task import Task, ElasticSearchTask
@@ -199,7 +199,7 @@ class TasksStorageImplementation(TaskStorageInterface):
             gofs_dict[gof_dto.gof_id] = gof_dto
         return gofs_dict
 
-    def get_task_details(self, task_dtos: List[GetTaskDetailsDTO]) -> \
+    def get_task_details(self, task_dtos: List[TaskStageIdDTO]) -> \
             GetTaskStageCompleteDetailsDTO:
         task_ids = [task.task_id for task in task_dtos]
         task_objs = Task.objects.filter(id__in=task_ids).values('id',
@@ -458,8 +458,8 @@ class TasksStorageImplementation(TaskStorageInterface):
         )
 
     def validate_task_related_stage_ids(self,
-                                        task_dtos: List[GetTaskDetailsDTO]
-                                        ) -> List[GetTaskDetailsDTO]:
+                                        task_dtos: List[TaskStageIdDTO]
+                                        ) -> List[TaskStageIdDTO]:
         q = None
         for counter, item in enumerate(task_dtos):
             current_queue = Q(stage__stage_id=item.stage_id,
@@ -479,8 +479,8 @@ class TasksStorageImplementation(TaskStorageInterface):
     @staticmethod
     def _convert_task_objs_to_dtos(task_objs):
         valid_task_stages_dtos = [
-            GetTaskDetailsDTO(task_id=task_obj['task_id'],
-                              stage_id=task_obj['stage__stage_id'])
+            TaskStageIdDTO(task_id=task_obj['task_id'],
+                           stage_id=task_obj['stage__stage_id'])
             for task_obj in task_objs
         ]
         return valid_task_stages_dtos

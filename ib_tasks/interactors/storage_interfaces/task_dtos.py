@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import List
 
-from ib_tasks.adapters.dtos import UserDetailsDTO, AssigneeDetailsDTO
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 
 
 @dataclass
@@ -59,3 +59,10 @@ class TaskProjectDTO:
 @dataclass
 class TaskProjectRolesDTO(TaskProjectDTO):
     roles: List[str]
+
+
+@dataclass
+class TaskStageAssigneeDTO:
+    task_id: int
+    stage_id: int
+    assignee_dto: AssigneeDetailsDTO

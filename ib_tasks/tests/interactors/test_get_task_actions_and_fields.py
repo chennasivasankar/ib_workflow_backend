@@ -27,7 +27,7 @@ from ib_tasks.tests.common_fixtures.interactors import \
      prepare_actions_for_get_task_fields_and_actions,
      prepare_fields_for_get_task_fields_and_actions)
 from ib_tasks.tests.factories.interactor_dtos import \
-    GetTaskDetailsDTOFactory
+    TaskStageIdDTOFactory
 from ib_tasks.tests.factories.storage_dtos import (
     StageActionDetailsDTOFactory, FieldDetailsDTOFactory,
     TaskFieldsDTOFactory, TaskTemplateStagesDTOFactory,
@@ -38,8 +38,8 @@ class TestGetFieldsAndActionsInteractor:
 
     @pytest.fixture()
     def get_task_dtos(self):
-        GetTaskDetailsDTOFactory.reset_sequence()
-        return GetTaskDetailsDTOFactory.create_batch(size=2, task_id=1)
+        TaskStageIdDTOFactory.reset_sequence()
+        return TaskStageIdDTOFactory.create_batch(size=2, task_id=1)
 
     @pytest.fixture()
     def get_task_template_stage_dtos(self):
@@ -218,9 +218,9 @@ class TestGetFieldsAndActionsInteractor:
 
     @pytest.fixture()
     def get_task_dtos_for_two_tasks_in_same_stage(self):
-        GetTaskDetailsDTOFactory.reset_sequence()
-        return GetTaskDetailsDTOFactory.create_batch(size=2,
-                                                     stage_id="stage_id_1")
+        TaskStageIdDTOFactory.reset_sequence()
+        return TaskStageIdDTOFactory.create_batch(size=2,
+                                                  stage_id="stage_id_1")
 
     @pytest.fixture()
     def get_task_template_stage_dtos_for_two_tasks_in_same_stage(self):
@@ -290,8 +290,8 @@ class TestGetFieldsAndActionsInteractor:
                       "FIN_FINANCE_RP"]
         user_roles_mock = get_user_role_ids_based_on_projects_mock(mocker)
         user_roles_mock.return_value = user_roles
-        GetTaskDetailsDTOFactory.reset_sequence()
-        task_dtos = GetTaskDetailsDTOFactory.create_batch(size=2)
+        TaskStageIdDTOFactory.reset_sequence()
+        task_dtos = TaskStageIdDTOFactory.create_batch(size=2)
 
         field_storage = create_autospec(FieldsStorageInterface)
         stage_storage = create_autospec(StageStorageInterface)
@@ -391,8 +391,8 @@ class TestGetFieldsAndActionsInteractor:
                       "FIN_FINANCE_RP"]
         user_roles_mock = get_user_role_ids_based_on_projects_mock(mocker)
         user_roles_mock.return_value = user_roles
-        GetTaskDetailsDTOFactory.reset_sequence()
-        task_dtos = GetTaskDetailsDTOFactory.create_batch(size=2)
+        TaskStageIdDTOFactory.reset_sequence()
+        task_dtos = TaskStageIdDTOFactory.create_batch(size=2)
 
         field_storage = create_autospec(FieldsStorageInterface)
         stage_storage = create_autospec(StageStorageInterface)
@@ -445,8 +445,8 @@ class TestGetFieldsAndActionsInteractor:
         user_roles_mock.return_value = user_roles
         action_ids = [1, 2, 3, 4]
         prepare_get_permitted_action_ids_for_project(mocker, action_ids=action_ids)
-        GetTaskDetailsDTOFactory.reset_sequence()
-        task_dtos = GetTaskDetailsDTOFactory.create_batch(size=2)
+        TaskStageIdDTOFactory.reset_sequence()
+        task_dtos = TaskStageIdDTOFactory.create_batch(size=2)
 
         field_storage = create_autospec(FieldsStorageInterface)
         stage_storage = create_autospec(StageStorageInterface)

@@ -10,15 +10,15 @@
 # from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 #     TaskStorageInterface
 #
-# from ib_tasks.tests.factories.interactor_dtos import GetTaskDetailsDTOFactory
+# from ib_tasks.tests.factories.interactor_dtos import TaskStageIdDTOFactory
 #
 # # TODO: Pending
 # class TestGetFieldsAndActionsInteractor:
 #
 #     @pytest.fixture()
 #     def get_task_dtos(self):
-#         GetTaskDetailsDTOFactory.reset_sequence()
-#         return  GetTaskDetailsDTOFactory.create_batch(size=10)
+#         TaskStageIdDTOFactory.reset_sequence()
+#         return  TaskStageIdDTOFactory.create_batch(size=10)
 #
 #
 #     @pytest.fixture()

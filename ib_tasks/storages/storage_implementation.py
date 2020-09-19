@@ -30,7 +30,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
     StorageInterface, StatusVariableDTO
 )
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
+from ib_tasks.interactors.task_dtos import TaskStageIdDTO, \
     TaskDelayParametersDTO
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     GlobalConstant, \
@@ -243,7 +243,7 @@ class StagesStorageImplementation(StageStorageInterface):
                       stage_obj in stage_objs]
         return stage_dtos
 
-    def get_stage_details(self, task_dtos: List[GetTaskDetailsDTO]) -> \
+    def get_stage_details(self, task_dtos: List[TaskStageIdDTO]) -> \
             List[TaskTemplateStageDTO]:
         task_ids = [task.task_id for task in task_dtos]
         task_objs = Task.objects.filter(id__in=task_ids).values(

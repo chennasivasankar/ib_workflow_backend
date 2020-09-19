@@ -134,7 +134,7 @@ class TaskIdsDTO:
 
 
 @dataclass
-class GetTaskDetailsDTO:
+class TaskStageIdDTO:
     task_id: int
     stage_id: str
 

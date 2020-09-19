@@ -83,8 +83,8 @@ class GetTaskIdsOfUserBasedOnStagesInteractor(ValidationMixin):
         )
         task_stage_dtos = []
         for task_id_with_stage_details_dto in task_id_with_stage_details_dtos:
-            from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-            task_stage_dto = GetTaskDetailsDTO(
+            from ib_tasks.interactors.task_dtos import TaskStageIdDTO
+            task_stage_dto = TaskStageIdDTO(
                 task_id=task_id_with_stage_details_dto.task_id,
                 stage_id=task_id_with_stage_details_dto.stage_id
             )

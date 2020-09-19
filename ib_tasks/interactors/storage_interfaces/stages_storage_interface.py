@@ -17,7 +17,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStageHavingAssigneeIdDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskWithDbStageIdDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+from ib_tasks.interactors.task_dtos import TaskStageIdDTO
 
 
 class StageStorageInterface(abc.ABC):
@@ -80,7 +80,7 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_stage_details(self, task_dtos: List[GetTaskDetailsDTO]) -> \
+    def get_stage_details(self, task_dtos: List[TaskStageIdDTO]) -> \
             List[TaskTemplateStageDTO]:
         pass
 

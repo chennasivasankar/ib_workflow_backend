@@ -10,7 +10,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
     TaskStageStorageInterface, TaskStageAssigneeIdDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+from ib_tasks.interactors.task_dtos import TaskStageIdDTO
 from ib_tasks.models import CurrentTaskStage, Task, TaskStageHistory, \
     StagePermittedRoles, Stage, TaskStageRp
 
@@ -131,7 +131,7 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
         return assignee_with_current_tasks_count_dtos
 
     def get_stage_assignee_id_dtos(
-            self, task_stage_dtos: List[GetTaskDetailsDTO]
+            self, task_stage_dtos: List[TaskStageIdDTO]
     ) -> List[TaskStageAssigneeIdDTO]:
         q = None
         for counter, item in enumerate(task_stage_dtos):
@@ -193,3 +193,8 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
         if objs:
             return objs[0]
         return None
+
+    def get_task_stage_details_dtos(
+            self, task_ids: List[int]
+    ) -> List[TaskStageIdDTO]:
+        pass

@@ -2,7 +2,7 @@ import pytest
 
 from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
-from ib_tasks.tests.factories.interactor_dtos import GetTaskDetailsDTOFactory
+from ib_tasks.tests.factories.interactor_dtos import TaskStageIdDTOFactory
 from ib_tasks.tests.factories.models import CurrentTaskStageModelFactory
 
 
@@ -11,8 +11,8 @@ class TestValidateTaskStageIds:
 
     @pytest.fixture()
     def get_task_stage_dtos(self):
-        GetTaskDetailsDTOFactory.reset_sequence()
-        return GetTaskDetailsDTOFactory.create_batch(size=3)
+        TaskStageIdDTOFactory.reset_sequence()
+        return TaskStageIdDTOFactory.create_batch(size=3)
 
     @pytest.fixture()
     def populate_data(self):

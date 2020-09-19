@@ -91,9 +91,9 @@ class GetTaskCurrentBoardCompleteDetailsInteractor:
         assignees_interactor = GetStagesAssigneesDetailsInteractor(
             task_stage_storage=self.task_stage_storage
         )
-        from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+        from ib_tasks.interactors.task_dtos import TaskStageIdDTO
         task_stage_dtos = [
-            GetTaskDetailsDTO(
+            TaskStageIdDTO(
                 task_id=task_id,
                 stage_id=stage_id
             )
@@ -107,9 +107,9 @@ class GetTaskCurrentBoardCompleteDetailsInteractor:
     def _get_task_fields_and_actions_dto(
             self, stage_ids: List[str], task_id: int):
 
-        from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+        from ib_tasks.interactors.task_dtos import TaskStageIdDTO
         task_stage_dtos = [
-            GetTaskDetailsDTO(
+            TaskStageIdDTO(
                 task_id=task_id,
                 stage_id=stage_id
             )

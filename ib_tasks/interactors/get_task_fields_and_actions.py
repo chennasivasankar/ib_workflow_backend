@@ -21,7 +21,7 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+from ib_tasks.interactors.task_dtos import TaskStageIdDTO
 
 
 class GetTaskFieldsAndActionsInteractor:
@@ -34,7 +34,7 @@ class GetTaskFieldsAndActionsInteractor:
         self.task_storage = task_storage
         self.action_storage = action_storage
 
-    def get_task_fields_and_action(self, task_dtos: List[GetTaskDetailsDTO],
+    def get_task_fields_and_action(self, task_dtos: List[TaskStageIdDTO],
                                    user_id: str, view_type: ViewType) -> \
             List[GetTaskStageCompleteDetailsDTO]:
 

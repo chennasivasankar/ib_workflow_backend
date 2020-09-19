@@ -15,7 +15,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
     TaskStageStorageInterface, TaskStageAssigneeIdDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+from ib_tasks.interactors.task_dtos import TaskStageIdDTO
 
 
 class GetStagesAssigneesDetailsInteractor:
@@ -192,7 +192,7 @@ class GetStagesAssigneesDetailsInteractor:
         return
 
     def get_stages_assignee_details_by_given_task_ids(
-            self, task_stage_dtos: List[GetTaskDetailsDTO]
+            self, task_stage_dtos: List[TaskStageIdDTO]
     ) -> List[TaskStageAssigneeDetailsDTO]:
         stage_assignee_dtos = \
             self.task_stage_storage.get_stage_assignee_id_dtos(

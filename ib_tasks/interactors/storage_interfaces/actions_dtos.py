@@ -44,5 +44,3 @@ class ActionDetailsDTO:
 class StageActionDetailsDTO(ActionDetailsDTO):
     action_type: Optional[ActionTypes]
     transition_template_id: Optional[str]
-
-

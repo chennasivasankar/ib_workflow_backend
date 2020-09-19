@@ -14,12 +14,11 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskIdWithStageValueDTO, StageIdWithTemplateIdDTO, TaskStageIdsDTO, \
-    TaskStagesDTO, StageDTO
+    TaskIdWithStageValueDTO, StageIdWithTemplateIdDTO, TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO, StatusVariableDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO, TaskProjectDTO, TaskDueMissingDTO
-from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO, TaskDelayParametersDTO
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, TaskStageIdDTO, TaskDelayParametersDTO
 
 
 class TaskStorageInterface(abc.ABC):
@@ -89,9 +88,9 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def validate_task_related_stage_ids(self,
-                                        task_dtos: List[GetTaskDetailsDTO]) \
+                                        task_dtos: List[TaskStageIdDTO]) \
             -> \
-                    List[GetTaskDetailsDTO]:
+                    List[TaskStageIdDTO]:
         pass
 
     @abc.abstractmethod

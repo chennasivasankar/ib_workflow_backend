@@ -1,21 +1,20 @@
 from typing import List
 
 from ib_tasks.constants.enum import ViewType
-from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO, \
-    FieldDisplayNameDTO
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO, TaskStagesDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
+from ib_tasks.interactors.task_dtos import TaskStageIdDTO, \
     TaskDetailsConfigDTO
 from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
 # class TaskDetailsServiceInterface:
 #
 #     @staticmethod
-#     def get_task_details(task_dtos: List[GetTaskDetailsDTO]):
+#     def get_task_details(task_dtos: List[TaskStageIdDTO]):
 #         storage = TasksStorageImplementation()
 #         interactor = GetTaskFieldsAndActionsInteractor(storage)
 #         result = interactor.get_task_fields_and_action(task_dtos)
@@ -58,7 +57,7 @@ class ServiceInterface:
         return task_ids_dtos
 
     @staticmethod
-    def get_task_details(task_dtos: List[GetTaskDetailsDTO], user_id: str,
+    def get_task_details(task_dtos: List[TaskStageIdDTO], user_id: str,
                          view_type: ViewType) -> \
             List[GetTaskStageCompleteDetailsDTO]:
         from ib_tasks.storages.fields_storage_implementation import \
@@ -81,7 +80,7 @@ class ServiceInterface:
 
     @staticmethod
     def get_assignees_for_task_stages(
-            task_stage_dtos: List[GetTaskDetailsDTO]) -> List[TaskStageAssigneeDetailsDTO]:
+            task_stage_dtos: List[TaskStageIdDTO]) -> List[TaskStageAssigneeDetailsDTO]:
         from ib_tasks.interactors.get_stages_assignees_details_interactor import \
             GetStagesAssigneesDetailsInteractor
         from ib_tasks.storages.task_stage_storage_implementation import \

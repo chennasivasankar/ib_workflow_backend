@@ -25,14 +25,13 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import TemplateFields
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskWithDbStageIdDTO, AssigneeCurrentTasksCountDTO, StageActionNamesDTO, \
-    StageAssigneeDetailsDTO, CurrentStageDetailsDTO, StageIdWithValueDTO, \
-    CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO, StageActionNamesDTO, CreateStageFlowDTO, \
+    TaskWithDbStageIdDTO, AssigneeCurrentTasksCountDTO, CurrentStageDetailsDTO, StageIdWithValueDTO, \
+    StageAssigneeDetailsDTO, StageActionNamesDTO, CreateStageFlowDTO, \
     StageFlowWithActionIdDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     TaskDueParametersDTO, \
-    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, \
+    FieldValuesDTO, TaskStageIdDTO, StatusOperandStageDTO, \
     CreateTaskLogDTO, \
     CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeDTO, \
     SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
@@ -47,9 +46,9 @@ from ib_tasks.tests.factories.adapter_dtos import (AssigneeDetailsDTOFactory,
                                                    TeamInfoDTOFactory)
 
 
-class GetTaskDetailsDTOFactory(factory.Factory):
+class TaskStageIdDTOFactory(factory.Factory):
     class Meta:
-        model = GetTaskDetailsDTO
+        model = TaskStageIdDTO
 
     task_id = factory.Sequence(lambda n: n + 1)
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))

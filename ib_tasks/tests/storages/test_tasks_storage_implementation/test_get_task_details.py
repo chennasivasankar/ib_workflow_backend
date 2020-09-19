@@ -24,11 +24,11 @@ class TestGetTaskDetails:
     #                                                       snapshot,
     #                                                       populate_data):
     #     # Arrange
-    #     task_dtos = [GetTaskDetailsDTO(
+    #     task_dtos = [TaskStageIdDTO(
     #         task_id=1,
     #         stage_id="stage_id_1"
     #     ),
-    #         GetTaskDetailsDTO(
+    #         TaskStageIdDTO(
     #             task_id=2,
     #             stage_id="stage_id_2"
     #         )

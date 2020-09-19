@@ -16,7 +16,7 @@ from ib_boards.interactors.dtos import ColumnTasksDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnStageIdsDTO, \
     AllFieldsDTO
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, \
-    GetTaskDetailsDTO
+    TaskStageIdDTO
 
 
 class TaskColumnDTOFactory(factory.Factory):
@@ -152,7 +152,7 @@ class TaskDetailsConfigDTOFactory(factory.Factory):
 
 class GetTaskDetailsDTOFactory(factory.Factory):
     class Meta:
-        model = GetTaskDetailsDTO
+        model = TaskStageIdDTO
 
     stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
     task_id = factory.Sequence(lambda n: f'TASK_ID_{n + 1}')
