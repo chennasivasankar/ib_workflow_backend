@@ -5,6 +5,7 @@ import json
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+from freezegun import freeze_time
 
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
@@ -15,7 +16,8 @@ from ...common_fixtures.adapters.auth_service import \
     get_team_info_for_given_user_ids_mock
 from ...common_fixtures.adapters.roles_service import get_some_user_role_ids
 from ...factories.adapter_dtos import ProjectDetailsDTOFactory, \
-    AssigneeDetailsDTOFactory, UserDetailsDTOFactory, TeamDetailsDTOFactory
+    AssigneeDetailsDTOFactory, UserDetailsDTOFactory, TeamDetailsDTOFactory, \
+    UserIdWIthTeamDetailsDTOsFactory
 from ...factories.models import StageModelFactory, StageActionFactory, \
     ActionPermittedRolesFactory, \
     CurrentTaskStageModelFactory, TaskStatusVariableFactory, \
@@ -56,6 +58,7 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
         ProjectTaskTemplateFactory.reset_sequence()
         AssigneeDetailsDTOFactory.reset_sequence()
         TeamDetailsDTOFactory.reset_sequence()
+        UserIdWIthTeamDetailsDTOsFactory.reset_sequence()
 
         project_id = "project_1"
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
@@ -67,7 +70,7 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
         user_details = UserDetailsDTOFactory()
         permitted_user_details_mock.return_value = [user_details]
         get_team_info_for_given_user_ids_mock(mocker).return_value = \
-            [TeamDetailsDTOFactory()]
+            [UserIdWIthTeamDetailsDTOsFactory(user_id=user_details.user_id)]
 
         project_info_dtos = ProjectDetailsDTOFactory.create(
             project_id=project_id)
@@ -140,6 +143,7 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
         StagePermittedRolesFactory.create(stage=stage,
                                           role_id="FIN_PAYMENT_REQUESTER")
 
+    @freeze_time("2020-09-09 12:00:00")
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {
@@ -147,11 +151,8 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
             "action_id": 1,
             "title": "updated_title",
             "description": "updated_description",
-            "start_date": "2099-12-31",
-            "due_date": {
-                "date": "2099-12-31",
-                "time": "12:00:00"
-            },
+            "start_datetime": "2020-08-20 00:00:00",
+            "due_datetime": "2020-09-20 00:00:00",
             "priority": "HIGH",
             "stage_assignee": {
                 "stage_id": 1,
@@ -194,7 +195,8 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
             query_params=query_params, headers=headers, snapshot=snapshot
         )
         from ib_tasks.models.task import Task
-        task_object = Task.objects.get(id=1)
+        task_object = Task.objects.get(task_display_id="IBWF-1")
+        task_id = task_object.id
         snapshot.assert_match(task_object.template_id, 'template_id')
         snapshot.assert_match(task_object.created_by, 'created_by_id')
         snapshot.assert_match(task_object.template_id, 'task_template_id')
@@ -217,7 +219,8 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
             counter = counter + 1
 
         from ib_tasks.models.task_gof_field import TaskGoFField
-        task_gof_fields = TaskGoFField.objects.filter(task_gof__task_id=1)
+        task_gof_fields = TaskGoFField.objects.filter(
+            task_gof__task_id=task_id)
         counter = 1
         for task_gof_field in task_gof_fields:
             snapshot.assert_match(task_gof_field.task_gof_id,
@@ -226,3 +229,32 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
             snapshot.assert_match(task_gof_field.field_response,
                                   f'field_response_{counter}')
             counter = counter + 1
+        from ib_tasks.models import CurrentTaskStage
+        current_task_stages = CurrentTaskStage.objects.filter(task_id=task_id)
+        counter = 1
+        for current_task_stage in current_task_stages:
+            snapshot.assert_match(
+                current_task_stage.task_id,
+                f'current_task_stage_task_id_{counter}')
+            snapshot.assert_match(
+                current_task_stage.stage_id, f'task_stage_{counter}')
+            counter += 1
+
+        counter = 1
+        from ib_tasks.models import TaskStageHistory
+        task_stage_histories = TaskStageHistory.objects.filter(task_id=task_id)
+        for task_stage_history in task_stage_histories:
+            snapshot.assert_match(
+                task_stage_history.task_id,
+                f'stage_history_task_id_{counter}')
+            snapshot.assert_match(
+                task_stage_history.stage_id, f'stage_{counter}')
+            snapshot.assert_match(
+                task_stage_history.team_id, f'team_id_{counter}')
+            snapshot.assert_match(
+                task_stage_history.assignee_id, f'assignee_id_{counter}')
+            snapshot.assert_match(
+                str(task_stage_history.joined_at), f'joined_at_{counter}')
+            snapshot.assert_match(
+                str(task_stage_history.left_at), f'left_at_{counter}')
+            counter += 1
