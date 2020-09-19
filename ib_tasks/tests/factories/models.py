@@ -11,7 +11,7 @@ from ib_tasks.models import (
     TaskTemplateGlobalConstants,
     TaskStatusVariable, Filter, FilterCondition, TaskLog,
     StagePermittedRoles, ElasticSearchTask, ProjectTaskTemplate, TaskStageRp,
-    StageGoF, StageFlow)
+    StageGoF, StageFlow, SubTask)
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -43,6 +43,14 @@ class TaskFactory(factory.django.DjangoModelFactory):
     start_date = datetime(2020, 10, 12, 4, 40)
     due_date = datetime(2020, 10, 12, 4, 40) + timedelta(10)
     priority = Priority.HIGH.value
+
+
+class SubTaskFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = SubTask
+
+    task = factory.SubFactory(TaskFactory)
+    sub_task = factory.SubFactory(TaskFactory)
 
 
 class StageModelFactory(factory.django.DjangoModelFactory):
