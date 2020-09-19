@@ -13,9 +13,7 @@ class GetBoardDetailsInteractor:
 
     def get_board_details(self, board_id: str, stage_ids: List[str],
                           user_id: str):
-        is_valid = self.storage.validate_board_id(board_id)
-        if not is_valid:
-            raise InvalidBoardId
+        self.validate_board_id(board_id)
 
         user_service = get_service_adapter().iam_service
         user_roles = user_service.get_user_roles(user_id)
@@ -25,6 +23,11 @@ class GetBoardDetailsInteractor:
         board_details = self.storage.get_board_complete_details(board_id,
                                                                 stage_ids)
         return board_details
+
+    def validate_board_id(self, board_id):
+        is_valid = self.storage.validate_board_id(board_id)
+        if not is_valid:
+            raise InvalidBoardId
 
     def _validate_if_user_has_permissions_for_given_board_id(self,
                                                              board_id: str,
