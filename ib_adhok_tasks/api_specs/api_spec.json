@@ -674,7 +674,13 @@
           "type": "integer",
           "format": "int64"
         },
-        "groups": {
+        "group_by_value": {
+          "type": "string"
+        },
+        "group_by_display_name": {
+          "type": "string"
+        },
+        "child_groups": {
           "type": "array",
           "items": {
             "type": "object",
@@ -683,11 +689,7 @@
                 "type": "string"
               },
               "group_by_display_name": {
-                "type": "string",
-                "enum": [
-                  "Status",
-                  "Assignee"
-                ]
+                "type": "string"
               },
               "total_tasks": {
                 "type": "integer",
@@ -708,7 +710,13 @@
             ]
           }
         }
-      }
+      },
+      "required": [
+        "total_groups",
+        "group_by_value",
+        "group_by_display_name",
+        "child_groups"
+      ]
     }
   },
   "parameters": {
@@ -789,14 +797,14 @@
       "schema": {
         "type": "object",
         "properties": {
-          "group_by_keys": {
+          "group_by_values": {
             "items": {
               "type": "string"
             }
           }
         },
         "required": [
-          "group_by_keys"
+          "group_by_values"
         ]
       }
     },
@@ -1027,24 +1035,6 @@
         ]
       }
     },
-    "ColumnsDetailsResponse": {
-      "description": "columns details",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "total_columns_count": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "columns": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/ColumnDetails"
-            }
-          }
-        }
-      }
-    },
     "TaskDetailsResponse": {
       "description": "tasks details",
       "schema": {
@@ -1069,7 +1059,47 @@
     "ProjectsAdhocBoardListViewResponse": {
       "description": "Project adhoc board list view response",
       "schema": {
-        "$ref": "#/definitions/GroupByOnTasks"
+        "type": "object",
+        "properties": {
+          "total_groups": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "group_by_value": {
+                  "type": "string"
+                },
+                "group_by_display_name": {
+                  "type": "string"
+                },
+                "total_tasks": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "tasks": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/TaskOverviewWithStageAndActions"
+                  }
+                }
+              },
+              "required": [
+                "group_by_value",
+                "group_by_display_name",
+                "total_tasks",
+                "tasks"
+              ]
+            }
+          }
+        },
+        "required": [
+          "total_groups",
+          "groups"
+        ]
       }
     },
     "ProjectsAdhocBoardKanbanViewResponse": {
@@ -1081,13 +1111,16 @@
             "type": "integer",
             "format": "int64"
           },
-          "child_groups": {
-            "$ref": "#/definitions/GroupByOnTasks"
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/GroupByOnTasks"
+            }
           }
         },
         "required": [
           "total_groups",
-          "child_groups"
+          "groups"
         ]
       }
     },
