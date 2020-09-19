@@ -47,7 +47,7 @@ def prepare_permitted_user_details_mock(mocker):
     mock = mocker.patch(
         "ib_tasks.adapters.auth_service.AuthService.get_permitted_user_details"
     )
-    user_details_dtos = [UserDetailsDTOFactory()]
+    user_details_dtos = [UserDetailsDTOFactory(profile_pic_url=None)]
     mock.return_value = user_details_dtos
     return mock
 
@@ -72,7 +72,6 @@ def prepare_empty_permitted_user_details_mock(mocker):
 
 
 def get_user_dtos_given_user_ids(mocker):
-
     mock = mocker.patch(
         "ib_tasks.adapters.auth_service.AuthService."
         "get_user_details"
@@ -137,7 +136,7 @@ def get_immediate_superior_user_id_mock(mocker):
 
 def get_valid_project_ids_mock(mocker, project_ids: List[str]):
     mock = mocker.patch(
-            "ib_tasks.adapters.auth_service.AuthService.validate_project_ids"
+        "ib_tasks.adapters.auth_service.AuthService.validate_project_ids"
     )
     mock.return_value = project_ids
     return mock
@@ -178,6 +177,7 @@ def get_user_details_for_the_given_role_ids_based_on_query_mock(mocker):
         UserDetailsDTOFactory.create_batch(size=2)
     return mock
 
+
 def get_team_info_for_given_user_ids_with_given_names_mock(mocker):
     path = "ib_tasks.adapters.auth_service.AuthService." \
            "get_team_info_for_given_user_ids"
@@ -186,8 +186,8 @@ def get_team_info_for_given_user_ids_with_given_names_mock(mocker):
         UserIdWIthTeamDetailsDTOFactory, TeamDetailsDTOFactory
     UserIdWIthTeamDetailsDTOFactory.reset_sequence()
     TeamDetailsDTOFactory.reset_sequence()
-    user_ids=['user_id_0', 'user_id_1']
     user_id_with_team_details_dtos = \
-        UserIdWIthTeamDetailsDTOFactory.create_batch(size=2, user_id=factory.Iterator(user_ids))
+        UserIdWIthTeamDetailsDTOFactory.create_batch(size=2,
+                                                     user_id='123e4567-e89b-12d3-a456-426614174000')
     mock.return_value = user_id_with_team_details_dtos
     return mock

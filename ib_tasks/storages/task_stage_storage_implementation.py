@@ -113,7 +113,7 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
         ).exists()
         return is_user_has_permissions
 
-    def get_count_of_tasks_assigned_for_each_user(
+    def get_current_count_of_tasks_assigned_for_each_user(
             self, db_stage_ids: List[int], task_ids: List[int]) \
             -> List[AssigneeCurrentTasksCountDTO]:
         from django.db.models import Count
@@ -123,9 +123,8 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
             tasks_count=Count('assignee_id')).order_by('tasks_count'))
         assignee_with_current_tasks_count_dtos = [AssigneeCurrentTasksCountDTO(
             assignee_id=assignee_with_count_obj['assignee_id'],
-            tasks_count=assignee_with_count_obj['tasks_count']) for
-            assignee_with_count_obj in
-            assignee_with_count_objs]
+            tasks_count=assignee_with_count_obj['tasks_count'])
+            for assignee_with_count_obj in assignee_with_count_objs]
         return assignee_with_current_tasks_count_dtos
 
     def get_stage_assignee_id_dtos(

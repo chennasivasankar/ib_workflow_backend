@@ -16,7 +16,7 @@ from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
     UserStagesWithPaginationDTO, StageAssigneeDTO, \
     StageAssigneeWithTeamDetailsDTO, AssigneeWithTeamDetailsDTO, \
-    StageWithUserDetailsDTO
+    StageWithUserDetailsDTO, StageIdWithNameDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -653,13 +653,22 @@ class AssigneeCurrentTasksCountDTOFactory(factory.Factory):
         lambda counter: counter + 1)
 
 
-class StageWithUserDetailsDTOFactory(factory.Factory):
+class StageIdWithNameDTOFactory(factory.Factory):
     class Meta:
-        model = StageWithUserDetailsDTO
+        model = StageIdWithNameDTO
 
     db_stage_id = factory.sequence(lambda counter: counter + 1)
     stage_display_name = factory.sequence(
         lambda counter: 'stage_{}'.format(counter + 1))
+
+
+class StageWithUserDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = StageWithUserDetailsDTO
+
+    @factory.lazy_attribute
+    def stage_details_dto(self):
+        return StageIdWithNameDTOFactory()
 
     @factory.lazy_attribute
     def assignee_details_dto(self):

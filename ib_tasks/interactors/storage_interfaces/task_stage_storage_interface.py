@@ -51,7 +51,7 @@ class TaskStageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_count_of_tasks_assigned_for_each_user(
+    def get_current_count_of_tasks_assigned_for_each_user(
             self, db_stage_ids: List[int],
             task_ids: List[int]) -> List[AssigneeCurrentTasksCountDTO]:
         pass

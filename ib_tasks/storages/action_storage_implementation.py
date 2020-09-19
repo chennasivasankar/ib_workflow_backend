@@ -304,7 +304,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
         db_stage_ids = \
             list(StageAction.objects.filter(
                     stage_id__in=db_stage_ids).values_list(
-                    'stage_id', flat=True))
+                    'stage_id', flat=True).distinct())
         return db_stage_ids
 
     def get_database_stage_actions(self) -> List[StageActionLogicDTO]:

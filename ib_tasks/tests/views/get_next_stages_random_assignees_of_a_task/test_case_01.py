@@ -74,6 +74,11 @@ class TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
         from ib_tasks.tests.common_fixtures.adapters.auth_service import \
             get_team_info_for_given_user_ids_with_given_names_mock
         get_team_info_for_given_user_ids_with_given_names_mock(mocker)
+        project_ids_validation_mock = mocker.patch(
+            'ib_tasks.adapters.auth_service.AuthService.validate_project_ids')
+        project_ids_validation_mock.return_value = ['project_id_1']
+        project_details_path = 'ib_tasks.adapters.auth_service.AuthService.get_projects_info_for_given_ids'
+        project_mock = mocker.patch(project_details_path)
 
         body = {"task_id": "IBWF-1", "action_id": 1}
         path_params = {}
