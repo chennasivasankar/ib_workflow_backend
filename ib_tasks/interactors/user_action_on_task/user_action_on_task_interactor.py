@@ -1,5 +1,6 @@
 import datetime
 from typing import List, Optional
+
 from ib_tasks.constants.enum import ViewType, ActionTypes
 from ib_tasks.exceptions.action_custom_exceptions import (
     InvalidActionException, InvalidPresentStageAction
@@ -25,6 +26,8 @@ from ib_tasks.interactors.storage_interfaces \
     CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldIdWithFieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
@@ -87,7 +90,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             task_id = self.get_task_id_for_task_display_id(task_display_id)
             task_complete_details_dto, task_current_stage_details_dto, \
             all_tasks_overview_dto = \
-                self.user_action_on_task_and_set_random_assignees(task_id=task_id)
+                self.user_action_on_task_and_set_random_assignees(
+                    task_id=task_id)
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
         except InvalidBoardIdException as err:
@@ -164,8 +168,10 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         action_type_is_not_no_validations = \
             action_type != ActionTypes.NO_VALIDATIONS.value
         if action_type_is_not_no_validations:
+            stage_id = self.action_storage.get_stage_id_for_given_action_id(
+                self.action_id)
             self._validate_all_user_template_permitted_fields_are_filled_or_not(
-                self.user_id, task_id, project_id)
+                self.user_id, task_id, project_id, stage_id)
 
     def _validate_task_delay_reason_updated_or_not(self, task_id):
 
@@ -204,7 +210,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
     def _get_task_current_board_complete_details(
             self, task_id: int, stage_ids: List[str]
     ) -> TaskCompleteDetailsDTO:
-        from ib_tasks.interactors.user_action_on_task.get_task_current_board_complete_details_interactor \
+        from ib_tasks.interactors.user_action_on_task \
+            .get_task_current_board_complete_details_interactor \
             import GetTaskCurrentBoardCompleteDetailsInteractor
         interactor = GetTaskCurrentBoardCompleteDetailsInteractor(
             task_stage_storage=self.task_stage_storage,
@@ -248,7 +255,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
 
     def _update_task_stages(self, stage_ids: List[str], task_id: int):
 
-        self.storage.update_task_stages(
+        self.stage_storage.update_task_stages(
             task_id=task_id, stage_ids=stage_ids
         )
 
@@ -259,7 +266,9 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             import GetTaskStageLogicSatisfiedStagesInteractor
         interactor = GetTaskStageLogicSatisfiedStagesInteractor(
             task_id=task_id, storage=self.storage,
-            stage_storage=self.stage_storage)
+            stage_storage=self.stage_storage,
+            task_storage=self.task_storage
+        )
         stage_ids = interactor.get_task_stage_logic_satisfied_stages()
         return stage_ids
 
@@ -267,12 +276,16 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             self, task_id: int) -> TaskDetailsDTO:
         from ib_tasks.interactors.user_action_on_task \
             .call_action_logic_function_and_get_or_update_task_status_variables_interactor \
-            import CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor
+            import \
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor
         update_status_variable_obj = \
             CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
                 action_id=self.action_id, storage=self.storage,
                 task_id=task_id, create_task_storage=self.create_task_storage,
-                field_storage=self.field_storage, gof_storage=self.gof_storage
+                field_storage=self.field_storage, gof_storage=self.gof_storage,
+                task_storage=self.task_storage,
+                action_storage=self.action_storage,
+                stage_storage=self.stage_storage
             )
         task_dto = update_status_variable_obj \
             .call_action_logic_function_and_update_task_status_variables()
@@ -282,11 +295,13 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
 
         if self.board_id:
             self._validate_board_id()
-        valid_action = self.storage.validate_action(action_id=self.action_id)
+        valid_action = self.action_storage.validate_action(
+            action_id=self.action_id)
         is_invalid_action = not valid_action
         if is_invalid_action:
             raise InvalidActionException(action_id=self.action_id)
-        action_roles = self.storage.get_action_roles(action_id=self.action_id)
+        action_roles = self.action_storage.get_action_roles(
+            action_id=self.action_id)
         self._validate_user_permission_to_user(
             self.user_id, action_roles, self.action_id, project_id=project_id
         )
@@ -295,7 +310,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
     def _validate_present_task_stage_actions(self, task_id: int):
 
         action_id = self.action_id
-        action_ids = self.storage.get_task_present_stage_actions(
+        action_ids = self.action_storage.get_task_present_stage_actions(
             task_id=task_id)
         is_not_present_stage_actions = int(action_id) not in action_ids
         if is_not_present_stage_actions:
@@ -304,7 +319,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
     def _validate_task_id(self, task_id: int):
 
         task_id = task_id
-        valid_task = self.storage.validate_task_id(task_id=task_id)
+        valid_task = self.task_storage.check_is_task_exists(task_id=task_id)
         is_invalid_task = not valid_task
         if is_invalid_task:
             raise InvalidTaskException(task_id=task_id)
@@ -368,34 +383,37 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         task_delay_reason_is_not_updated = not is_task_delay_reason_updated
         if task_delay_reason_is_not_updated:
             task_display_id = \
-                self.create_task_storage.get_task_display_id_for_task_id(task_id)
+                self.create_task_storage.get_task_display_id_for_task_id(
+                    task_id)
             stage_display_name = \
-                self.stage_storage.get_stage_display_name_for_stage_id(stage_id)
+                self.stage_storage.get_stage_display_name_for_stage_id(
+                    stage_id)
             raise TaskDelayReasonIsNotUpdated(
                 updated_due_date, task_display_id, stage_display_name)
         return
 
     def _validate_all_user_template_permitted_fields_are_filled_or_not(
-            self, user_id: str, task_id: int, project_id: str
+            self, user_id: str, task_id: int, project_id: str,
+            stage_id: int
     ):
         from ib_tasks.adapters.roles_service_adapter import \
             get_roles_service_adapter
         roles_service_adapter = get_roles_service_adapter()
         user_roles = roles_service_adapter.roles_service \
-            .get_user_role_ids_based_on_project(
-            user_id=user_id, project_id=project_id)
+            .get_user_role_ids_based_on_project(user_id=user_id,
+                                                project_id=project_id)
         task_template_id = \
             self.create_task_storage.get_template_id_for_given_task(task_id)
-        template_gof_ids = self.task_template_storage.get_gof_ids_of_template(
-            template_id=task_template_id)
+        template_gof_ids = \
+            self.task_template_storage.get_template_stage_permitted_gof_ids(
+                stage_id=stage_id, task_template_id=task_template_id)
         gof_id_with_display_name_dtos = \
             self.gof_storage.get_user_write_permitted_gof_ids_in_given_gof_ids(
                 user_roles, template_gof_ids)
         user_permitted_gof_ids = [
             dto.gof_id for dto in gof_id_with_display_name_dtos]
         field_id_with_display_name_dtos = \
-            self.field_storage \
-                .get_user_write_permitted_field_ids_for_given_gof_ids(
+            self.field_storage.get_user_writable_fields_for_given_gof_ids(
                 user_roles, user_permitted_gof_ids)
         filled_gofs_with_task_gof_ids = \
             self.gof_storage.get_filled_task_gofs_with_gof_id(task_id)
@@ -409,7 +427,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
 
     @staticmethod
     def _validate_all_user_permitted_field_ids_are_filled_or_not(
-            permitted_fields, filled_field_ids
+            permitted_fields: List[FieldIdWithFieldDisplayNameDTO],
+            filled_field_ids: List[str]
     ) -> Optional[UserDidNotFillRequiredFields]:
         permitted_field_ids = [
             permitted_field.field_id for permitted_field in permitted_fields]

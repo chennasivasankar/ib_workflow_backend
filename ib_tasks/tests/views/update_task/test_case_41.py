@@ -8,6 +8,9 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
+from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+    get_projects_info_for_given_ids_mock, get_valid_project_ids_mock, \
+    validate_if_user_is_in_project_mock
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
     TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, \
     GoFRoleFactory, FieldRoleFactory, StageFactory
@@ -41,9 +44,16 @@ class TestCase41UpdateTaskAPITestCase(TestUtils):
         gof_id = "GOF-1"
         field_id = "FIELD-1"
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        user_roles_mock_method = get_user_role_ids(mocker)
-        user_roles = user_roles_mock_method.return_value
+            get_user_role_ids_based_on_project_mock
+        mock_method = get_user_role_ids_based_on_project_mock(mocker)
+
+        project_details_mock = get_projects_info_for_given_ids_mock(mocker)
+        project_details_dtos = project_details_mock.return_value
+        project_id = project_details_dtos[0].project_id
+        get_valid_project_ids_mock(mocker, [project_id])
+        validate_if_user_is_in_project_mock(mocker, True)
+
+        user_roles = mock_method.return_value
         gof = GoFFactory.create(gof_id=gof_id)
         gof_role = GoFRoleFactory.create(
             role=user_roles[0], gof=gof,
@@ -62,7 +72,9 @@ class TestCase41UpdateTaskAPITestCase(TestUtils):
         task_template_gofs = GoFToTaskTemplateFactory.create(
             task_template=task_template, gof=gof)
         task = TaskFactory.create(
-            task_display_id=task_id, template_id=task_template.template_id)
+            task_display_id=task_id, template_id=task_template.template_id,
+            project_id=project_id
+        )
         stage = StageFactory.create(
             id=1, task_template_id=task_template.template_id)
 
@@ -72,11 +84,8 @@ class TestCase41UpdateTaskAPITestCase(TestUtils):
             "task_id": "IBWF-1",
             "title": "updated_title",
             "description": "updated_description",
-            "start_date": "2020-09-08",
-            "due_date": {
-                "date": "2020-09-09",
-                "time": "11:00:00"
-            },
+            "start_datetime": "2020-09-20 00:00:00",
+            "due_datetime": "2020-10-31 00:00:00",
             "priority": "HIGH",
             "stage_assignee": {
                 "stage_id": 1,

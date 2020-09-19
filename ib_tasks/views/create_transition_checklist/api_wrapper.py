@@ -10,7 +10,7 @@ from ...interactors.task_dtos import GoFFieldsDTO, FieldValuesDTO
 from ...interactors.task_template_dtos import \
     CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
 from ...presenters.create_transition_checklist_presenter import \
-    CreateOrUpdateTransitionChecklistTemplatePresenterImplementation
+    CreateOrUpdateTransitionChecklistPresenterImplementation
 from ...storages.action_storage_implementation import \
     ActionsStorageImplementation
 from ...storages.create_or_update_task_storage_implementation import \
@@ -60,16 +60,15 @@ def api_wrapper(*args, **kwargs):
     stage_action_storage = ActionsStorageImplementation()
     task_template_storage = TaskTemplateStorageImplementation()
 
-    presenter = CreateOrUpdateTransitionChecklistTemplatePresenterImplementation()
+    presenter = CreateOrUpdateTransitionChecklistPresenterImplementation()
 
     interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
         create_or_update_task_storage=create_task_storage,
         template_storage=template_storage, task_storage=task_storage,
         gof_storage=gof_storage, storage=storage, field_storage=field_storage,
         stage_action_storage=stage_action_storage,
-        task_template_storage=task_template_storage
-    )
-    response = interactor.create_transition_checklist_wrapper(
+        task_template_storage=task_template_storage)
+    response = interactor.create_or_update_transition_checklist_wrapper(
         transition_template_dto, presenter)
     return response
 

@@ -28,7 +28,7 @@ class TestGetGoFsToTemplateFromPermittedGoFs:
         )
 
         # Act
-        result = storage.get_gofs_to_template_from_permitted_gofs(
+        result = storage.get_gofs_to_template_from_given_gofs(
             gof_ids=expected_gof_ids, template_id=template_id
         )
 

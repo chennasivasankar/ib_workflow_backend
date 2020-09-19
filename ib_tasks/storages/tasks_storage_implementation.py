@@ -18,16 +18,16 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO, StageIdWithTemplateIdDTO, \
     TaskIdWithStageValueDTO, TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
-    TaskTemplateStatusDTO
+    TaskTemplateStatusDTO, StatusVariableDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
-    TaskDisplayIdDTO, TaskProjectDTO
+    TaskDisplayIdDTO, TaskProjectDTO, TaskDueMissingDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
-from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO, TaskDelayParametersDTO
 from ib_tasks.models import Stage, TaskTemplate, CurrentTaskStage, \
-    TaskTemplateStatusVariable, TaskStageHistory
+    TaskTemplateStatusVariable, TaskStageHistory, TaskStatusVariable, TaskStageRp
 from ib_tasks.models.field import Field
 from ib_tasks.models.stage_actions import StageAction
 from ib_tasks.models.task import Task, ElasticSearchTask
@@ -37,14 +37,52 @@ from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 class TasksStorageImplementation(TaskStorageInterface):
 
+    def update_status_variables_to_task(
+            self, task_id: int, status_variables_dto: List[StatusVariableDTO]):
+
+        status_variable_objs = TaskStatusVariable.objects \
+            .filter(task_id=task_id)
+        status_variable_dict = \
+            self._get_status_variable_dict(status_variable_objs)
+        for status_variable_dto in status_variables_dto:
+            status_obj = \
+                status_variable_dict[status_variable_dto.status_id]
+            status_obj.variable = status_variable_dto.status_variable
+            status_obj.value = status_variable_dto.value
+            status_obj.save()
+
+    @staticmethod
+    def _get_status_variable_dict(status_variable_objs):
+
+        status_variable_dict = {}
+
+        for status_variable_obj in status_variable_objs:
+            status_id = status_variable_obj.id
+            status_variable_dict[status_id] = status_variable_obj
+        return status_variable_dict
+
+    def get_status_variables_to_task(
+            self, task_id: int) -> List[StatusVariableDTO]:
+
+        status_variable_objs = TaskStatusVariable.objects \
+            .filter(task_id=task_id)
+
+        return [
+            StatusVariableDTO(
+                status_id=status_variable_obj.id,
+                status_variable=status_variable_obj.variable,
+                value=status_variable_obj.value
+            ) for status_variable_obj in status_variable_objs
+        ]
+
     def get_project_id_for_task_display_id(self, task_display_id: str):
         from ib_tasks.models.task import Task
         project_id = Task.objects.filter(task_display_id=task_display_id). \
             values_list('project_id', flat=True)
         return project_id.first()
 
-    def get_tasks_with_max_stage_value_dto(self) -> List[
-        TaskIdWithStageValueDTO]:
+    def get_tasks_with_max_stage_value_dto(
+            self) -> List[TaskIdWithStageValueDTO]:
         pass
 
     def create_elastic_task(self, task_id: int, elastic_task_id: str):
@@ -406,6 +444,10 @@ class TasksStorageImplementation(TaskStorageInterface):
         is_task_exists = Task.objects.filter(id=task_id).exists()
         return is_task_exists
 
+    def get_task_project_id(self, task_id: int) -> str:
+        task = Task.objects.get(id=task_id)
+        return task.project_id
+
     def create_task_log(self, create_task_log_dto: CreateTaskLogDTO):
         from ib_tasks.models.task_log import TaskLog
         TaskLog.objects.create(
@@ -542,3 +584,70 @@ class TasksStorageImplementation(TaskStorageInterface):
     def get_task_display_id_for_task_id(self, task_id: int) -> str:
         task_display_id = Task.objects.get(id=task_id).task_display_id
         return task_display_id
+
+    def get_global_constants_to_task(
+            self, task_id: int) -> List[GlobalConstantsDTO]:
+
+        from ib_tasks.models.task import Task
+        task_obj = Task.objects.get(id=task_id)
+        from ib_tasks.models import GlobalConstant
+        global_constant_objs = GlobalConstant.objects \
+            .filter(task_template_id=task_obj.template_id)
+        return [
+            GlobalConstantsDTO(
+                constant_name=global_constant_obj.name,
+                value=global_constant_obj.value
+            )
+            for global_constant_obj in global_constant_objs
+        ]
+
+    def get_task_due_details(self, task_id: int, stage_id: int) -> \
+            List[TaskDueMissingDTO]:
+        from ib_tasks.models import UserTaskDelayReason
+        task_due_objects = (
+            UserTaskDelayReason.objects.filter(
+                task_id=task_id, stage_id=stage_id
+            ).values('due_datetime', 'count', 'reason', 'user_id',
+                     'task__task_display_id'))
+
+        task_due_details_dtos = self._convert_task_due_details_objs_to_dtos(
+            task_due_objects)
+        return task_due_details_dtos
+
+    @staticmethod
+    def _convert_task_due_details_objs_to_dtos(task_due_objs):
+        task_due_details_dtos = []
+        for task in task_due_objs:
+            task_due_details_dtos.append(
+                TaskDueMissingDTO(
+                    task_id=task['task__task_display_id'],
+                    due_date_time=task['due_datetime'],
+                    due_missed_count=task['count'],
+                    reason=task['reason'],
+                    user_id=task['user_id']
+                )
+            )
+        return task_due_details_dtos
+
+    def add_due_delay_details(self, due_details: TaskDelayParametersDTO):
+        user_id = due_details.user_id
+        task_id = due_details.task_id
+        reason_id = due_details.reason_id
+        stage_id = due_details.stage_id
+        updated_due_datetime = due_details.due_date_time
+        from ib_tasks.models import UserTaskDelayReason
+        count = UserTaskDelayReason.objects.filter(
+            task_id=task_id, user_id=user_id, stage_id=stage_id).count()
+
+        UserTaskDelayReason.objects.create(user_id=user_id, task_id=task_id,
+                                           due_datetime=updated_due_datetime,
+                                           count=count + 1,
+                                           reason_id=reason_id,
+                                           stage_id=stage_id,
+                                           reason=due_details.reason)
+
+    def update_task_due_datetime(self, due_details: TaskDelayParametersDTO):
+        task_id = due_details.task_id
+        updated_due_datetime = due_details.due_date_time
+
+        Task.objects.filter(pk=task_id).update(due_date=updated_due_datetime)

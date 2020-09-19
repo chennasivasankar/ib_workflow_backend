@@ -1,6 +1,4 @@
-from typing import List
-
-from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException
+from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException, UserIsNotInProjectsException
 from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
     import FilterPresenterInterface, ProjectTemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
@@ -30,6 +28,8 @@ class GetTaskTemplatesFieldsInteractor:
             )
         except InvalidProjectIdsException as err:
             return presenter.get_response_for_invalid_project_id(err=err)
+        except UserIsNotInProjectsException:
+            return presenter.get_response_for_user_not_in_project()
         return presenter.get_response_for_get_task_templates_fields(
             task_template_fields=task_template_fields_dto
         )

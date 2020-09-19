@@ -10,37 +10,41 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
 from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 from ib_tasks.interactors.user_role_validation_interactor import \
     UserRoleValidationInteractor
 
 
 class GetTaskStagesAndActions:
-    def __init__(self, storage: FieldsStorageInterface,
-                 task_storage: StorageInterface,
+    def __init__(self, field_storage: FieldsStorageInterface,
+                 storage: StorageInterface,
+                 task_storage: TaskStorageInterface,
                  stage_storage: StageStorageInterface,
-                 action_storage: ActionStorageInterface):
-        self.storage = storage
+                 action_storage: ActionStorageInterface,
+                 ):
+        self.field_storage = field_storage
         self.task_storage = task_storage
+        self.storage = storage
         self.stage_storage = stage_storage
         self.action_storage = action_storage
 
     def get_task_stages_and_actions(self, task_id: int, user_id: str) -> \
             List[StageAndActionsDetailsDTO]:
 
-        is_valid = self.task_storage.validate_task_id(task_id)
+        is_valid = self.task_storage.check_is_task_exists(task_id)
         is_invalid = not is_valid
         if is_invalid:
             raise InvalidTaskIdException(task_id)
 
         project_id = self.task_storage.get_task_project_id(task_id)
         user_roles_interactor = UserRoleValidationInteractor()
-        stage_ids = self.storage.get_task_stages(task_id)
+        stage_ids = self.field_storage.get_task_stages(task_id)
         permitted_stage_ids = \
             user_roles_interactor.get_permitted_stage_ids_for_stages(
                 user_id=user_id, project_id=project_id, stage_ids=stage_ids,
                 stage_storage=self.stage_storage)
-        stage_details_dtos = self.storage.get_stage_complete_details(
+        stage_details_dtos = self.field_storage.get_stage_complete_details(
                 permitted_stage_ids)
 
         permitted_action_ids = user_roles_interactor. \

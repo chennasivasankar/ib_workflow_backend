@@ -1,9 +1,10 @@
 from typing import List, Dict
+
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, TemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
 
@@ -37,7 +38,7 @@ class ConfigureInitialTaskTemplateStageActions:
         )
         task_template_stage_dtos = \
             self._get_initial_stage_dto_to_tasks_templates(tasks_dto)
-        self.storage.create_initial_stage_to_task_template(
+        self.storage.get_or_create_initial_stage_to_task_template(
             task_template_stage_dtos=task_template_stage_dtos
         )
 
@@ -73,7 +74,7 @@ class ConfigureInitialTaskTemplateStageActions:
 
     @staticmethod
     def _get_task_template_stages_dict(
-        template_stage_dict: Dict[str, set]
+            template_stage_dict: Dict[str, set]
     ) -> Dict[str, List[str]]:
 
         from collections import defaultdict
@@ -121,7 +122,8 @@ class ConfigureInitialTaskTemplateStageActions:
             task_template_id = task_dto.task_template_id
             if task_template_id not in unique_ids:
                 unique_ids.append(task_template_id)
-                task_template_stage_dtos.append(self._append_task_dto(task_dto))
+                task_template_stage_dtos.append(
+                    self._append_task_dto(task_dto))
 
         return task_template_stage_dtos
 

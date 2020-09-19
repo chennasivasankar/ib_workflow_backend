@@ -11,4 +11,6 @@ class UserIsNotInProjectException(Exception):
 
 
 class UserIsNotInProjectsException(Exception):
-    pass
+
+    def __init__(self, project_ids: List[str]):
+        self.project_ids = project_ids

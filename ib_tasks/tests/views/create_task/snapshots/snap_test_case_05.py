@@ -12,5 +12,5 @@ snapshots['TestCase05CreateTaskAPITestCase.test_case status_code'] = '400'
 snapshots['TestCase05CreateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'START_DATE_IS_AHEAD_OF_DUE_DATE',
-    'response': 'given start date 2099-12-31 is ahead of given due date 2090-12-31 '
+    'response': 'given start date 2020-10-20 00:00:00 is ahead of given due date 2020-09-09 00:00:00 '
 }

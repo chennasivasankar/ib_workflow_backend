@@ -11,6 +11,6 @@ snapshots['TestCase06CreateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase06CreateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'DUE_DATE_HAS_EXPIRED',
-    'response': 'given due date 2020-08-31 has expired'
+    'res_status': 'DUE_DATE_TIME_HAS_EXPIRED',
+    'response': 'given due date time 2020-08-23 00:00:00 has expired, please give a valid due date time'
 }

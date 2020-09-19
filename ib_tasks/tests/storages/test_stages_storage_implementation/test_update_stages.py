@@ -4,7 +4,8 @@ from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.models import Stage, StagePermittedRoles
 from ib_tasks.storages.storage_implementation import \
     StagesStorageImplementation
-from ib_tasks.tests.factories.models import StageModelFactory
+from ib_tasks.tests.factories.models import (StageModelFactory,
+                                             StagePermittedRolesFactory)
 from ib_tasks.tests.factories.storage_dtos import StageDTOFactory
 
 
@@ -19,7 +20,10 @@ class TestUpdateStages:
     @pytest.fixture()
     def create_stages(self):
         StageModelFactory.reset_sequence(51)
-        StageModelFactory.create_batch(size=4)
+        stages = StageModelFactory.create_batch(size=4)
+        StagePermittedRolesFactory.reset_sequence()
+        StagePermittedRolesFactory.create_batch(4, stage=factory.Iterator(
+                stages))
 
     def test_update_stages_stage_details(self, snapshot,
                                          stage_dtos, create_stages):

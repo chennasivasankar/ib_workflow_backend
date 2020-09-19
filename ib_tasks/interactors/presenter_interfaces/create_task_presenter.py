@@ -7,15 +7,16 @@ from ib_tasks.exceptions.datetime_custom_exceptions import \
     StartDateTimeIsRequired, DueDateTimeIsRequired
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidDateFormat
-from ib_tasks.exceptions.fields_custom_exceptions import UserDidNotFillRequiredFields
-from ib_tasks.exceptions.gofs_custom_exceptions import UserDidNotFillRequiredGoFs
+from ib_tasks.exceptions.fields_custom_exceptions import \
+    UserDidNotFillRequiredFields
+from ib_tasks.exceptions.gofs_custom_exceptions import \
+    UserDidNotFillRequiredGoFs, InvalidStagePermittedGoFs
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException, InvalidStageIdsListException, \
-    DuplicateStageIds, InvalidDbStageIdsListException,\
+    DuplicateStageIds, InvalidDbStageIdsListException, \
     StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import PriorityIsRequired, \
     InvalidTaskJson
-
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
@@ -99,8 +100,7 @@ class CreateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_name_in_gof_selector_field_value(self,
-                                                       err):
+    def raise_invalid_name_in_gof_selector(self, err):
         pass
 
     @abc.abstractmethod
@@ -117,6 +117,10 @@ class CreateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_invalid_multi_select_labels_selected(self, err):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_date_format(self, err: InvalidDateFormat):
         pass
 
     @abc.abstractmethod
@@ -176,7 +180,7 @@ class CreateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_stage_ids_with_invalid_permission_for_assignee(
+    def raise_invalid_stage_assignees(
             self, err: StageIdsWithInvalidPermissionForAssignee):
         pass
 
@@ -224,10 +228,6 @@ class CreateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_date_format(self, err: InvalidDateFormat):
-        pass
-
-    @abc.abstractmethod
     def raise_user_did_not_fill_required_gofs(
             self, err: UserDidNotFillRequiredGoFs):
         pass
@@ -245,3 +245,7 @@ class CreateTaskPresenterInterface(abc.ABC):
     def raise_invalid_project_id(self, err: InvalidProjectId):
         pass
 
+    @abc.abstractmethod
+    def raise_invalid_stage_permitted_gofs(self,
+                                           err: InvalidStagePermittedGoFs):
+        pass

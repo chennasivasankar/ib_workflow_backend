@@ -24,15 +24,15 @@ from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTransitionChecklistTemplateId, InvalidGoFsOfTaskTemplate, \
     InvalidFieldsOfGoF, InvalidTaskDisplayId
 from ib_tasks.interactors.create_or_update_task \
-    .template_gofs_fields_base_validations import \
-    TemplateGoFsFieldsBaseValidationsInteractor
+    .gofs_details_validations_interactor import \
+    GoFsDetailsValidationsInteractor
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
 from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.presenter_interfaces \
     .create_transition_checklist_presenter_interface import \
-    CreateOrUpdateTransitionChecklistTemplatePresenterInterface
+    CreateOrUpdateTransitionChecklistPresenterInterface
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces \
@@ -51,8 +51,7 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
-    import \
-    TaskTemplateStorageInterface
+    import TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO
 from ib_tasks.interactors.task_template_dtos import \
     CreateTransitionChecklistTemplateDTO, \
@@ -79,19 +78,17 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
         self.task_storage = task_storage
         self.stage_action_storage = stage_action_storage
         self.template_storage = template_storage
-        self.create_or_update_task_storage = create_or_update_task_storage
+        self.create_task_storage = create_or_update_task_storage
         self.task_template_storage = task_template_storage
 
-    def create_transition_checklist_wrapper(
+    def create_or_update_transition_checklist_wrapper(
             self,
             transition_template_dto:
             CreateTransitionChecklistTemplateWithTaskDisplayIdDTO,
-            presenter: CreateOrUpdateTransitionChecklistTemplatePresenterInterface
-    ):
+            presenter: CreateOrUpdateTransitionChecklistPresenterInterface):
         try:
-            return self._prepare_create_transition_checklist_response(
-                transition_template_dto, presenter
-            )
+            return self._prepare_create_or_update_transition_checklist_response(
+                transition_template_dto, presenter)
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
         except InvalidTaskIdException as err:
@@ -104,9 +101,8 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
         except InvalidStageId as err:
             return presenter.raise_invalid_stage_id(err)
         except TransitionTemplateIsNotRelatedToGivenStageAction as err:
-            return \
-                presenter.raise_transition_template_is_not_related_to_given_stage_action(
-                    err)
+            return presenter.raise_transition_template_is_not_linked_to_action(
+                err)
         except DuplicateSameGoFOrderForAGoF as err:
             return presenter.raise_same_gof_order_for_a_gof(err)
         except InvalidGoFIds as err:
@@ -128,73 +124,60 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
         except UserDidNotFillRequiredFields as err:
             return presenter.raise_user_did_not_fill_required_fields(err)
         except EmptyValueForRequiredField as err:
-            return presenter. \
-                raise_exception_for_empty_value_in_required_field(err)
+            return presenter.raise_empty_value_in_required_field(err)
         except InvalidPhoneNumberValue as err:
-            return presenter.raise_exception_for_invalid_phone_number_value(
-                err)
+            return presenter.raise_invalid_phone_number_value(err)
         except InvalidEmailFieldValue as err:
-            return presenter.raise_exception_for_invalid_email_address(err)
+            return presenter.raise_invalid_email_address(err)
         except InvalidURLValue as err:
-            return presenter.raise_exception_for_invalid_url_address(err)
+            return presenter.raise_invalid_url_address(err)
         except NotAStrongPassword as err:
-            return presenter.raise_exception_for_weak_password(err)
+            return presenter.raise_weak_password(err)
         except InvalidNumberValue as err:
-            return presenter.raise_exception_for_invalid_number_value(err)
+            return presenter.raise_invalid_number_value(err)
         except InvalidFloatValue as err:
-            return presenter.raise_exception_for_invalid_float_value(err)
+            return presenter.raise_invalid_float_value(err)
         except InvalidValueForDropdownField as err:
-            return presenter.raise_exception_for_invalid_dropdown_value(err)
+            return presenter.raise_invalid_dropdown_value(err)
         except IncorrectNameInGoFSelectorField as err:
-            return presenter. \
-                raise_exception_for_invalid_name_in_gof_selector_field_value(
-                err)
+            return presenter.raise_invalid_name_in_gof_selector(err)
         except IncorrectRadioGroupChoice as err:
-            return presenter. \
-                raise_exception_for_invalid_choice_in_radio_group_field(err)
+            return presenter.raise_invalid_choice_in_radio_group_field(err)
         except IncorrectCheckBoxOptionsSelected as err:
-            return presenter. \
-                raise_exception_for_invalid_checkbox_group_options_selected(
-                err)
+            return presenter.raise_invalid_checkbox_group_options_selected(err)
         except IncorrectMultiSelectOptionsSelected as err:
-            return presenter. \
-                raise_exception_for_invalid_multi_select_options_selected(err)
+            return presenter.raise_invalid_multi_select_options_selected(err)
         except IncorrectMultiSelectLabelsSelected as err:
-            return presenter. \
-                raise_exception_for_invalid_multi_select_labels_selected(err)
+            return presenter.raise_invalid_multi_select_labels_selected(err)
         except InvalidDateFormat as err:
-            return presenter.raise_exception_for_invalid_date_format(err)
+            return presenter.raise_invalid_date_format(err)
         except InvalidTimeFormat as err:
-            return presenter.raise_exception_for_invalid_time_format(err)
+            return presenter.raise_invalid_time_format(err)
         except InvalidUrlForImage as err:
-            return presenter.raise_exception_for_invalid_image_url(err)
+            return presenter.raise_invalid_image_url(err)
         except InvalidImageFormat as err:
-            return presenter.raise_exception_for_not_acceptable_image_format(
-                err)
+            return presenter.raise_not_acceptable_image_format(err)
         except InvalidUrlForFile as err:
-            return presenter.raise_exception_for_invalid_file_url(err)
+            return presenter.raise_invalid_file_url(err)
         except InvalidFileFormat as err:
-            return presenter.raise_exception_for_not_acceptable_file_format(
-                err)
+            return presenter.raise_not_acceptable_file_format(err)
 
-    def _prepare_create_transition_checklist_response(
+    def _prepare_create_or_update_transition_checklist_response(
             self,
             transition_template_dto:
             CreateTransitionChecklistTemplateWithTaskDisplayIdDTO,
-            presenter: CreateOrUpdateTransitionChecklistTemplatePresenterInterface
-    ):
+            presenter: CreateOrUpdateTransitionChecklistPresenterInterface):
         task_id = self.get_task_id_for_task_display_id(
             transition_template_dto.task_display_id)
+        template_id = transition_template_dto.transition_checklist_template_id
+        checklist_gofs = transition_template_dto.transition_checklist_gofs
         transition_template_dto = CreateTransitionChecklistTemplateDTO(
             task_id=task_id,
             created_by_id=transition_template_dto.created_by_id,
-            transition_checklist_template_id=transition_template_dto
-                .transition_checklist_template_id,
+            transition_checklist_template_id=template_id,
             action_id=transition_template_dto.action_id,
             stage_id=transition_template_dto.stage_id,
-            transition_checklist_gofs=transition_template_dto
-                .transition_checklist_gofs
-        )
+            transition_checklist_gofs=checklist_gofs)
         self.create_transition_checklist(transition_template_dto)
         response = presenter.get_create_transition_checklist_response()
         return response
@@ -213,38 +196,34 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
         )
         self._validate_same_gof_order(
             transition_template_dto.transition_checklist_gofs)
-        template_gofs_fields_validation_interactor = \
-            TemplateGoFsFieldsBaseValidationsInteractor(
+        gof_details_validation_interactor = \
+            GoFsDetailsValidationsInteractor(
                 task_storage=self.task_storage, gof_storage=self.gof_storage,
-                create_task_storage=self.create_or_update_task_storage,
+                create_task_storage=self.create_task_storage,
                 storage=self.storage, field_storage=self.field_storage,
                 task_template_storage=self.task_template_storage
             )
         action_type = \
             self.stage_action_storage.get_action_type_for_given_action_id(
-                action_id=transition_template_dto.action_id
-            )
+                action_id=transition_template_dto.action_id)
+        stage_id = self.stage_action_storage.get_stage_id_for_action_id(
+            transition_template_dto.action_id)
         project_id = self.task_storage.get_project_id_for_the_task_id(
             transition_template_dto.task_id)
-        template_gofs_fields_validation_interactor \
-            .perform_base_validations_for_template_gofs_and_fields(
+        gof_details_validation_interactor.perform_gofs_details_validations(
             transition_template_dto.transition_checklist_gofs,
             transition_template_dto.created_by_id,
             transition_template_dto.transition_checklist_template_id,
-            project_id, action_type)
+            project_id, action_type, stage_id)
         action_type_is_not_no_validations = action_type != \
                                             ActionTypes.NO_VALIDATIONS.value
         if action_type_is_not_no_validations:
             self._validate_all_user_template_permitted_fields_are_filled_or_not(
                 transition_template_dto.created_by_id,
                 transition_template_dto.task_id, project_id)
-        existing_gofs = \
-            self.create_or_update_task_storage \
-                .get_gof_ids_with_same_gof_order_related_to_a_task(
+        existing_gofs = self.create_task_storage.get_gofs_details_of_task(
                 transition_template_dto.task_id)
-        existing_fields = \
-            self.create_or_update_task_storage \
-                .get_field_ids_with_task_gof_id_related_to_given_task(
+        existing_fields = self.create_task_storage.get_field_id_with_task_gof_id_dtos(
                 transition_template_dto.task_id)
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
@@ -274,7 +253,7 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
                                    transition_template_dto)
 
     def _validate_task_id(self, task_id) -> Optional[InvalidTaskIdException]:
-        is_valid_task_id = self.create_or_update_task_storage.is_valid_task_id(
+        is_valid_task_id = self.create_task_storage.is_valid_task_id(
             task_id)
         invalid_task_id = not is_valid_task_id
         if invalid_task_id:
@@ -378,7 +357,7 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
             .get_user_role_ids_based_on_project(
             user_id=user_id, project_id=project_id)
         task_template_id = \
-            self.create_or_update_task_storage.get_template_id_for_given_task(
+            self.create_task_storage.get_template_id_for_given_task(
                 task_id)
         template_gof_ids = self.task_template_storage.get_gof_ids_of_template(
             template_id=task_template_id)
@@ -389,7 +368,7 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
             dto.gof_id for dto in gof_id_with_display_name_dtos]
         field_id_with_display_name_dtos = \
             self.field_storage \
-                .get_user_write_permitted_field_ids_for_given_gof_ids(
+                .get_user_writable_fields_for_given_gof_ids(
                 user_roles, user_permitted_gof_ids)
         filled_gofs_with_task_gof_ids = \
             self.gof_storage.get_filled_task_gofs_with_gof_id(task_id)
@@ -399,8 +378,6 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
         filled_field_ids = \
             self.gof_storage.get_filled_field_ids_of_given_task_gof_ids(
                 task_gof_ids)
-        # self._validate_all_user_permitted_gof_ids_are_filled_or_not(
-        #     gof_id_with_display_name_dtos, filled_gof_ids)
         self._validate_all_user_permitted_field_ids_are_filled_or_not(
             field_id_with_display_name_dtos, filled_field_ids)
 
@@ -444,7 +421,7 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
             existing_fields: List[FieldIdWithTaskGoFIdDTO]
     ):
         task_gof_details_dtos = \
-            self.create_or_update_task_storage.update_task_gofs(
+            self.create_task_storage.update_task_gofs(
                 task_gof_dtos_for_updation)
         task_gof_field_dtos = self._prepare_task_gof_fields_dtos(
             transition_template_dto.transition_checklist_gofs,
@@ -453,11 +430,11 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
             self._filter_task_gof_field_dtos(
                 task_gof_field_dtos, existing_fields)
         if task_gof_field_dtos_for_updation:
-            self.create_or_update_task_storage.update_task_gof_fields(
+            self.create_task_storage.update_task_gof_fields(
                 task_gof_field_dtos_for_updation)
 
         if task_gof_field_dtos_for_creation:
-            self.create_or_update_task_storage.create_task_gof_fields(
+            self.create_task_storage.create_task_gof_fields(
                 task_gof_field_dtos_for_creation)
 
     def _create_task_gofs(
@@ -465,13 +442,13 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
             transition_template_dto: CreateTransitionChecklistTemplateDTO
     ):
         task_gof_details_dtos = \
-            self.create_or_update_task_storage.create_task_gofs(
+            self.create_task_storage.create_task_gofs(
                 task_gof_dtos_for_creation)
         task_gof_field_dtos = \
             self._prepare_task_gof_fields_dtos(
                 transition_template_dto.transition_checklist_gofs,
                 task_gof_details_dtos)
-        self.create_or_update_task_storage.create_task_gof_fields(
+        self.create_task_storage.create_task_gof_fields(
             task_gof_field_dtos
         )
 

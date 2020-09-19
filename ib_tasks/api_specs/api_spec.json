@@ -2010,7 +2010,54 @@
          "schema":{
             "type":"array",
             "items":{
-               "$ref":"#/definitions/Template"
+              "allOf": [
+                {
+                  "$ref":"#/definitions/Template"
+                },
+                {
+                 "type":"object",
+                 "properties":{
+                    "stage_gofs":{
+                       "type": "array",
+                       "items": {
+                         "type": "object",
+                         "properties": {
+                          "stage_id": {
+                            "type": "integer"
+                          },
+                           "gof_ids": {
+                             "type": "array",
+                             "items": {
+                               "type": "string"
+                             }
+                           }
+                         },
+                       "required": [
+                          "stage_id",
+                          "gof_ids"
+                        ]
+                       }
+                    }
+                  },
+                  "required": [
+                    "stage_gofs"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "task_creation_gof_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "task_creation_gof_ids"
+                  ]
+                }
+              ]
             }
          }
       },
