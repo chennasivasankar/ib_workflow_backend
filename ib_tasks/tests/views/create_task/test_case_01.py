@@ -85,7 +85,7 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         ProjectTaskTemplateFactory.create(
             task_template=task_template_obj, project_id=project_id)
         stage = StageModelFactory(
-            stage_id=stage_id,
+            stage_id=stage_id, stage_color="blue",
             task_template_id='template_1',
             display_logic="variable0==stage_1",
             card_info_kanban=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]),

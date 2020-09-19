@@ -90,7 +90,7 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         ProjectTaskTemplateFactory.create(
             task_template=task_template_obj, project_id=project_id)
         stage = StageModelFactory(
-            stage_id=stage_id,
+            stage_id=stage_id, stage_color="blue",
             task_template_id='template_1',
             display_logic="variable0==stage_1",
             card_info_kanban=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]),
@@ -102,22 +102,26 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
             action_type="")
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
-        gof_ids = [
+        gof_selector_gof_ids = [
             "FIN_VENDOR_PAYMENT_DETAILS",
             "FIN_VENDOR_ONLINE_EXPENSE_TYPE"
             "FIN_ONLINE_ORDER_DETAILS",
-            "FIN_GST_DETAILS",
-            "FIN_PAYMENT_TYPE"
+            "FIN_GST_DETAILS"
         ]
-        gof_objects = GoFFactory.create_batch(
-            size=len(gof_ids), gof_id=factory.Iterator(gof_ids))
+        gof_selector_objects = GoFFactory.create_batch(
+            size=len(gof_selector_gof_ids),
+            gof_id=factory.Iterator(gof_selector_gof_ids))
+        payment_type_gof = GoFFactory.create(gof_id="FIN_PAYMENT_TYPE")
+        gof_objects = gof_selector_objects + [payment_type_gof]
         StageGoFFactory.create_batch(
-            size=len(gof_ids), stage=stage, gof=factory.Iterator(gof_objects))
+            size=len(gof_objects), stage=stage,
+            gof=factory.Iterator(gof_objects))
         fields = FieldFactory.create_batch(
-            size=len(gof_ids), gof=factory.Iterator(gof_objects))
+            size=len(gof_selector_objects),
+            gof=factory.Iterator(gof_selector_objects))
         gof_selector_field = FieldFactory.create(
             field_id="FIN_TYPE_OF_PAYMENT_REQUEST",
-            gof_id="FIN_PAYMENT_TYPE",
+            gof=payment_type_gof,
             field_type=FieldTypes.GOF_SELECTOR.value,
             field_values=json.dumps([
                 {
@@ -137,12 +141,15 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
             ]))
         fields.append(gof_selector_field)
         GoFToTaskTemplateFactory.create_batch(
-            size=len(gof_ids), task_template=task_template_obj,
-            gof_id=factory.Iterator(gof_ids))
+            size=len(gof_selector_objects), task_template=task_template_obj,
+            gof=factory.Iterator(gof_selector_objects), order=-1)
+        GoFToTaskTemplateFactory.create(task_template=task_template_obj,
+                                        gof=payment_type_gof)
 
         from ib_tasks.constants.enum import PermissionTypes
         GoFRoleFactory.create_batch(
-            size=len(gof_ids), gof=factory.Iterator(gof_ids),
+            size=len(gof_objects),
+            gof=factory.Iterator(gof_objects),
             permission_type=PermissionTypes.WRITE.value,
             role="FIN_PAYMENT_REQUESTER")
         FieldRoleFactory.create_batch(
