@@ -5,15 +5,7 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
-from ib_boards.exceptions.custom_exceptions import \
-    TaskSummaryFieldsNotBelongsToTaskTemplateId, \
-    TaskListViewFieldsNotBelongsToTaskTemplateId, \
-    EmptyValuesForTaskSummaryFields, EmptyValuesForTaskListViewFields, \
-    InvalidTaskIdInListViewFields, InvalidTaskIdInSummaryFields, \
-    InvalidTaskIdInKanbanViewFields, EmptyValuesForTaskKanbanViewFields, \
-    InvalidUserRoles
-from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
-    TaskTemplateStagesDTO, TaskSummaryFieldsDTO
+from ib_boards.interactors.dtos import BoardDTO, ColumnDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
@@ -65,11 +57,13 @@ class CreateBoardsAndColumnsInteractor:
 
     def _validate_columns_data(self, column_dtos: List[ColumnDTO]):
 
-        from ib_boards.interactors.add_or_delete_columns_for_board_interactor import \
+        from ib_boards.interactors \
+            .add_or_delete_columns_for_board_interactor import \
             AddOrDeleteColumnsForBoardInteractor
-        create_boards_and_columns_interactor = AddOrDeleteColumnsForBoardInteractor(
-            storage=self.storage
-        )
+        create_boards_and_columns_interactor = \
+            AddOrDeleteColumnsForBoardInteractor(
+                storage=self.storage
+            )
         create_boards_and_columns_interactor.validate_columns_data(
             column_dtos=column_dtos
         )
