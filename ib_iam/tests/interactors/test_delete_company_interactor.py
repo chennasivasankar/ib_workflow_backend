@@ -18,7 +18,7 @@ class TestDeleteCompany:
 
     @pytest.fixture
     def presenter(self):
-        from ib_iam.interactors.presenter_interfaces.delete_company_presenter_interface import \
+        from ib_iam.interactors.presenter_interfaces.company_presenter_interface import \
             DeleteCompanyPresenterInterface
         return create_autospec(DeleteCompanyPresenterInterface)
 
@@ -37,7 +37,7 @@ class TestDeleteCompany:
         # Arrange
         user_id = "1"
         user_storage_mock.is_user_admin.return_value = False
-        presenter.get_user_has_no_access_response_for_delete_company \
+        presenter.response_for_user_has_no_access_exception \
             .side_effect = Mock()
 
         # Act
@@ -48,7 +48,7 @@ class TestDeleteCompany:
         # Assert
         user_storage_mock.is_user_admin.assert_called_once_with(
             user_id=user_id)
-        presenter.get_user_has_no_access_response_for_delete_company \
+        presenter.response_for_user_has_no_access_exception \
             .assert_called_once()
 
     def test_if_invalid_company_id_raises_not_found_exception(
@@ -61,7 +61,7 @@ class TestDeleteCompany:
         from ib_iam.exceptions.custom_exceptions import InvalidCompanyId
         company_storage_mock.validate_is_company_exists.side_effect = \
             InvalidCompanyId
-        presenter.get_invalid_company_response_for_delete_company \
+        presenter.response_for_invalid_company_id_exception \
             .side_effect = Mock()
 
         # Act
@@ -72,7 +72,7 @@ class TestDeleteCompany:
         # Assert
         company_storage_mock.validate_is_company_exists \
             .assert_called_once_with(company_id=company_id)
-        presenter.get_invalid_company_response_for_delete_company \
+        presenter.response_for_invalid_company_id_exception \
             .assert_called_once()
 
     def test_given_valid_details_deletion_will_happen(

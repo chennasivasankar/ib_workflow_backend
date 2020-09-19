@@ -1,23 +1,8 @@
-import dataclasses
-
 from ib_users.validators.base_validator import CustomException
 
-from ib_iam.interactors.update_user_password_interactor import \
+from ib_iam.adapters.dtos import EmailAndPasswordDTO, UserTokensDTO
+from ib_iam.interactors.auth.update_user_password_interactor import \
     CurrentAndNewPasswordDTO
-
-
-@dataclasses.dataclass
-class EmailAndPasswordDTO:
-    email: str
-    password: str
-
-
-@dataclasses.dataclass
-class UserTokensDTO:
-    access_token: str
-    refresh_token: str
-    expires_in_seconds: int
-    user_id: str
 
 
 class AccessTokenNotFound(Exception):
@@ -86,7 +71,7 @@ class AuthService:
 
     @staticmethod
     def _raise_exception_for_invalid_password(error_type: str):
-        from ib_iam.interactors.user_login_interactor import (
+        from ib_iam.interactors.auth.user_login_interactor import (
             IncorrectPassword
         )
         from ib_users.exceptions.custom_exception_constants import (
@@ -129,7 +114,7 @@ class AuthService:
             InvalidTokenException, TokenExpiredException)
         from ib_users.exceptions.custom_exception_constants import (
             PASSWORD_AT_LEAST_1_SPECIAL_CHARACTER, PASSWORD_MIN_LENGTH_IS)
-        from ib_iam.interactors.reset_user_password_interactor import (
+        from ib_iam.interactors.auth.reset_user_password_interactor import (
             PasswordAtLeastOneSpecialCharacter, PasswordMinLength,
             TokenDoesNotExist, TokenHasExpired
         )
@@ -180,8 +165,9 @@ class AuthService:
         except CurrentPasswordMismatchException:
             raise CurrentPasswordMismatch
 
-    def get_refresh_auth_tokens_dto(self, access_token: str,
-                                    refresh_token: str) -> UserTokensDTO:
+    def get_refresh_auth_tokens_dto(
+            self, access_token: str, refresh_token: str
+    ) -> UserTokensDTO:
         from ib_users.constants.custom_exception_messages import (
             INVALID_ACCESS_TOKEN)
         from django_swagger_utils.drf_server.exceptions import NotFound

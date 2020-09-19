@@ -51,7 +51,8 @@ class ProjectStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def is_user_exist_given_project(
-            self, user_id: str, project_id: str) -> bool:
+            self, user_id: str, project_id: str
+    ) -> bool:
         pass
 
     @abc.abstractmethod

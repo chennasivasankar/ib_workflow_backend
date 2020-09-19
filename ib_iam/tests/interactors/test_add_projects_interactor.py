@@ -29,20 +29,20 @@ class TestAddProjectsInteractor:
         return team_storage_mock
 
     @pytest.fixture
-    def init_interactor(
-            self, project_storage_mock, user_storage_mock, team_storage_mock):
+    def interactor(
+            self, project_storage_mock, user_storage_mock, team_storage_mock
+    ):
         interactor = ProjectInteractor(
             project_storage=project_storage_mock,
-            user_storage=user_storage_mock,
-            team_storage=team_storage_mock
+            user_storage=user_storage_mock, team_storage=team_storage_mock
         )
         return interactor
 
     def test_given_valid_project_dtos_adds_projects_to_db_successfully(
-            self, init_interactor, project_storage_mock, user_storage_mock,
-            team_storage_mock):
+            self, interactor, project_storage_mock, user_storage_mock,
+            team_storage_mock
+    ):
         # Arrange
-        interactor = init_interactor
         from ib_iam.tests.factories.storage_dtos import ProjectDTOFactory
         project_dtos = ProjectDTOFactory.create_batch(size=2)
 
@@ -51,4 +51,5 @@ class TestAddProjectsInteractor:
 
         # Assert
         project_storage_mock.add_projects.assert_called_once_with(
-            project_dtos=project_dtos)
+            project_dtos=project_dtos
+        )

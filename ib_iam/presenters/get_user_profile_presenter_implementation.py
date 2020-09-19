@@ -6,7 +6,8 @@ from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.dtos.dtos import CompleteUserProfileDTO
 from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
-    GetUserProfilePresenterInterface, \
+    GetUserProfilePresenterInterface
+from ib_iam.interactors.presenter_interfaces.dtos import \
     UserWithExtraDetailsDTO
 from ib_iam.interactors.storage_interfaces.dtos import TeamDTO, CompanyDTO, \
     CompanyIdWithEmployeeIdsDTO, TeamUserIdsDTO, UserRoleDTO
@@ -44,7 +45,7 @@ class GetUserProfilePresenterImplementation(
         }
         return self.prepare_404_not_found_response(response_dict=response_dict)
 
-    def prepare_response_for_get_user_profile(
+    def response_for_get_user_profile(
             self,
             user_with_extra_details_dto: UserWithExtraDetailsDTO):
         user_profile_dto = user_with_extra_details_dto.user_profile_dto

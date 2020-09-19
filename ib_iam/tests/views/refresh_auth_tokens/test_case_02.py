@@ -18,7 +18,7 @@ class TestCase02RefreshTokensAPITestCase(TestUtils):
         access_token = "rNYAlle5thjiWD5MIt63GkhAws5suQ"
         refresh_token = "pNYAlle5thjiWD5MIt63GkhAws5suQ"
 
-        from ib_iam.adapters.auth_service import UserTokensDTO
+        from ib_iam.adapters.dtos import UserTokensDTO
         user_tokens_dto = UserTokensDTO(
             access_token='asdfaldskfjdfdlsdkf',
             refresh_token='sadfenkljkdfeller',

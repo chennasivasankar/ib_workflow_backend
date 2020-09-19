@@ -1,15 +1,14 @@
 import abc
 from typing import List, Optional
-
 from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
 from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidUserIds, \
     InvalidUserIdsForProject, InvalidRoleIdsForProject, InvalidProjectId
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, \
-    TeamWithUserIdDTO, \
-    UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, TeamIdAndNameDTO, \
-    RoleIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, CompanyDTO, \
-    CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO
+    TeamWithUserIdDTO, UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, \
+    TeamIdAndNameDTO, RoleIdAndNameDTO, UserIdAndNameDTO, TeamDTO, \
+    TeamUserIdsDTO, CompanyDTO, CompanyIdWithEmployeeIdsDTO, \
+    BasicUserDetailsDTO
 
 
 class UserStorageInterface(abc.ABC):
@@ -77,7 +76,8 @@ class UserStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_company_details_of_users_bulk(
-            self, user_ids: List[str]) -> List[UserCompanyDTO]:
+            self, user_ids: List[str]
+    ) -> List[UserCompanyDTO]:
         pass
 
     @abc.abstractmethod
@@ -103,8 +103,9 @@ class UserStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def validate_user_ids(self, user_ids: List[str]) \
-            -> Optional[InvalidUserIds]:
+    def validate_user_ids(
+            self, user_ids: List[str]
+    ) -> Optional[InvalidUserIds]:
         pass
 
     @abc.abstractmethod
@@ -125,17 +126,21 @@ class UserStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_valid_user_ids_among_the_given_user_ids(
-            self, user_ids: List[str]) -> List[str]:
+            self, user_ids: List[str]
+    ) -> List[str]:
         pass
 
     @abc.abstractmethod
-    def create_user(self, is_admin: bool, user_id: str, name: str,
-                    company_id: Optional[str] = None):
+    def create_user(
+            self, is_admin: bool, user_id: str, name: str,
+            company_id: Optional[str] = None
+    ):
         pass
 
     @abc.abstractmethod
     def update_user_name_and_cover_page_url(
-            self, name: str, cover_page_url: str, user_id: str):
+            self, name: str, cover_page_url: str, user_id: str
+    ):
         pass
 
     @abc.abstractmethod
@@ -156,7 +161,8 @@ class UserStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_user_ids_for_given_role_ids(
-            self, role_ids: List[str]) -> List[str]:
+            self, role_ids: List[str]
+    ) -> List[str]:
         pass
 
     @abc.abstractmethod
@@ -165,10 +171,6 @@ class UserStorageInterface(abc.ABC):
             search_query_with_pagination_dto: SearchQueryWithPaginationDTO
     ) -> List[str]:
         pass
-
-    # @abc.abstractmethod
-    # def get_db_role_ids(self, role_ids: List[str]) -> List[str]:
-    #     pass
 
     @abc.abstractmethod
     def get_user_related_team_dtos(self, user_id: str) -> List[TeamDTO]:
@@ -185,27 +187,29 @@ class UserStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_company_employee_ids_dto(self, company_id: str) \
-            -> CompanyIdWithEmployeeIdsDTO:
+    def get_company_employee_ids_dto(
+            self, company_id: str
+    ) -> CompanyIdWithEmployeeIdsDTO:
         pass
 
     @abc.abstractmethod
     def get_user_details(self, user_id: str) -> UserDTO:
         pass
 
-    # TODO move to project storage interface
     @abc.abstractmethod
     def get_user_ids_for_given_project(self, project_id: str) -> List[str]:
         pass
 
     @abc.abstractmethod
-    def get_basic_user_dtos_for_given_project(self, project_id: str) -> \
-            List[BasicUserDetailsDTO]:
+    def get_basic_user_dtos_for_given_project(
+            self, project_id: str
+    ) -> List[BasicUserDetailsDTO]:
         pass
 
     @abc.abstractmethod
     def get_user_role_dtos_of_a_project(
-            self, user_ids: List[str], project_id: str) -> List[UserRoleDTO]:
+            self, user_ids: List[str], project_id: str
+    ) -> List[UserRoleDTO]:
         pass
 
     @abc.abstractmethod

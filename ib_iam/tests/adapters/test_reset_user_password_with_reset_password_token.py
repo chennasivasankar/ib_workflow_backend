@@ -58,7 +58,7 @@ class TestResetUserPasswordAdapter:
         auth_service = service_adapter.auth_service
 
         # Assert
-        from ib_iam.interactors.reset_user_password_interactor import \
+        from ib_iam.interactors.auth.reset_user_password_interactor import \
             PasswordAtLeastOneSpecialCharacter
         with pytest.raises(PasswordAtLeastOneSpecialCharacter):
             auth_service.update_user_password_with_reset_password_token(
@@ -95,7 +95,7 @@ class TestResetUserPasswordAdapter:
         auth_service = service_adapter.auth_service
 
         # Assert
-        from ib_iam.interactors.reset_user_password_interactor import \
+        from ib_iam.interactors.auth.reset_user_password_interactor import \
             PasswordMinLength
         with pytest.raises(PasswordMinLength):
             auth_service.update_user_password_with_reset_password_token(
@@ -127,7 +127,7 @@ class TestResetUserPasswordAdapter:
         auth_service = service_adapter.auth_service
 
         # Assert
-        from ib_iam.interactors.reset_user_password_interactor import \
+        from ib_iam.interactors.auth.reset_user_password_interactor import \
             TokenDoesNotExist
         with pytest.raises(TokenDoesNotExist):
             auth_service.update_user_password_with_reset_password_token(
@@ -160,7 +160,7 @@ class TestResetUserPasswordAdapter:
 
         # Assert
 
-        from ib_iam.interactors.reset_user_password_interactor import \
+        from ib_iam.interactors.auth.reset_user_password_interactor import \
             TokenHasExpired
         with pytest.raises(TokenHasExpired):
             auth_service.update_user_password_with_reset_password_token(

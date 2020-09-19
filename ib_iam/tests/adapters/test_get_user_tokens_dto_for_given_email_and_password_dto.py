@@ -16,7 +16,7 @@ class TestGetUserTokens:
             self, mocker
     ):
         # Arrange
-        from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+        from ib_iam.adapters.dtos import EmailAndPasswordDTO
         email_and_password_dto = EmailAndPasswordDTO(
             email="test@gmail.com",
             password="test123"
@@ -35,7 +35,7 @@ class TestGetUserTokens:
             user_id="11"
         )
 
-        from ib_iam.adapters.auth_service import UserTokensDTO
+        from ib_iam.adapters.dtos import UserTokensDTO
         expected_user_tokens_dtos = UserTokensDTO(
             access_token='asdfaldskfjdfdlsdkf',
             refresh_token='sadfenkljkdfeller',
@@ -68,7 +68,7 @@ class TestGetUserTokens:
             self, mocker
     ):
         # Arrange
-        from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+        from ib_iam.adapters.dtos import EmailAndPasswordDTO
         email_and_password_dto = EmailAndPasswordDTO(
             email="test@gmail.com",
             password="test123"
@@ -102,7 +102,7 @@ class TestGetUserTokens:
             self, mocker
     ):
         # Arrange
-        from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+        from ib_iam.adapters.dtos import EmailAndPasswordDTO
         email_and_password_dto = EmailAndPasswordDTO(
             email="test@gmail.com",
             password="test123"
@@ -123,7 +123,7 @@ class TestGetUserTokens:
         auth_service = service_adapter.auth_service
 
         # Assert
-        from ib_iam.interactors.user_login_interactor import IncorrectPassword
+        from ib_iam.interactors.auth.user_login_interactor import IncorrectPassword
         with pytest.raises(IncorrectPassword):
             auth_service.get_user_tokens_dto_for_given_email_and_password_dto(
                 email_and_password_dto=email_and_password_dto
@@ -138,7 +138,7 @@ class TestGetUserTokens:
             self, mocker
     ):
         # Arrange
-        from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+        from ib_iam.adapters.dtos import EmailAndPasswordDTO
         email_and_password_dto = EmailAndPasswordDTO(
             email="test@gmail.com",
             password="test123"
@@ -161,7 +161,7 @@ class TestGetUserTokens:
         auth_service = service_adapter.auth_service
 
         # Assert
-        from ib_iam.interactors.user_login_interactor import IncorrectPassword
+        from ib_iam.interactors.auth.user_login_interactor import IncorrectPassword
         with pytest.raises(IncorrectPassword):
             auth_service.get_user_tokens_dto_for_given_email_and_password_dto(
                 email_and_password_dto=email_and_password_dto
@@ -176,7 +176,7 @@ class TestGetUserTokens:
             self, mocker
     ):
         # Arrange
-        from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+        from ib_iam.adapters.dtos import EmailAndPasswordDTO
         email_and_password_dto = EmailAndPasswordDTO(
             email="test@gmail.com",
             password="test123"
@@ -212,7 +212,7 @@ class TestGetUserTokens:
             self, mocker
     ):
         # Arrange
-        from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+        from ib_iam.adapters.dtos import EmailAndPasswordDTO
         email_and_password_dto = EmailAndPasswordDTO(
             email="test@gmail.com",
             password="test123"
@@ -248,7 +248,7 @@ class TestGetUserTokens:
             self, mocker
     ):
         # Arrange
-        from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+        from ib_iam.adapters.dtos import EmailAndPasswordDTO
         email_and_password_dto = EmailAndPasswordDTO(
             email="test@gmail.com",
             password="test123"
@@ -269,7 +269,7 @@ class TestGetUserTokens:
         auth_service = service_adapter.auth_service
 
         # Assert
-        from ib_iam.interactors.user_login_interactor import IncorrectPassword
+        from ib_iam.interactors.auth.user_login_interactor import IncorrectPassword
         with pytest.raises(IncorrectPassword):
             auth_service.get_user_tokens_dto_for_given_email_and_password_dto(
                 email_and_password_dto=email_and_password_dto
