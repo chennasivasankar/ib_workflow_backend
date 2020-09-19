@@ -1125,7 +1125,7 @@
       }
     },
     "GetTasksOfProjectByGroupIds": {
-      "description": "Get task of project by group ids",
+      "description": "Get task of project for group by values",
       "schema": {
         "$ref": "#/definitions/TaskCompleteDetails"
       }
