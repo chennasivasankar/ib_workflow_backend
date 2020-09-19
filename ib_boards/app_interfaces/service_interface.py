@@ -2,11 +2,10 @@ from typing import List
 
 from ib_boards.interactors.get_board_complete_details_interactor import \
     GetBoardDetailsInteractor
-from ib_boards.interactors.mixins.validation_mixins import ValidationMixin
 from ib_boards.storages.storage_implementation import StorageImplementation
 
 
-class BoardServiceInterface(ValidationMixin):
+class BoardServiceInterface:
 
     @staticmethod
     def get_board_details(board_id: str, stage_ids: List[str], user_id: str):
