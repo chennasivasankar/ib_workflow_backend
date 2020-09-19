@@ -60,3 +60,6 @@ vedavidhbudimuri_ib-workflows-backend.aes
 test_data_for_integration.ipynb
 .gitignore
 env_*.sh
+
+task_pr.py
+task_vendor.py
