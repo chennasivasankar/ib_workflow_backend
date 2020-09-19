@@ -102,15 +102,16 @@ class TestSaveAndActOnATaskInteractor:
 
     @pytest.fixture
     def user_action_on_task_mock(self, mocker):
-        from ib_tasks.tests.factories.interactor_dtos import \
-            TaskCurrentStageDetailsDTOFactory, T
         path = "ib_tasks.interactors.user_action_on_task." \
                "user_action_on_task_interactor" \
                ".UserActionOnTaskInteractor." \
                "user_action_on_task_and_set_random_assignees"
-        mock_object = mocker.patch(path)
-        mock_object.return_value = 1
-        return mock_object
+        mock_method = mocker.patch(path)
+        mock_obj_1 = mock.Mock()
+        mock_obj_2 = mock.Mock()
+        mock_obj_3 = mock.Mock()
+        mock_method.return_value = mock_obj_1, mock_obj_2, mock_obj_3
+        return mock_method
 
     @pytest.fixture
     def get_task_current_stages_details_mock(self, mocker):
@@ -143,10 +144,7 @@ class TestSaveAndActOnATaskInteractor:
         given_action_id = 1
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
             action_id=given_action_id)
-        from ib_tasks.exceptions.action_custom_exceptions import \
-            InvalidActionException
-        storage_mock.validate_action.side_effect = InvalidActionException(
-            given_action_id)
+        action_storage_mock.validate_action.return_value = False
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
@@ -165,7 +163,8 @@ class TestSaveAndActOnATaskInteractor:
 
         # Assert
         assert response == mock_object
-        storage_mock.validate_action.assert_called_once_with(given_action_id)
+        action_storage_mock.validate_action.assert_called_once_with(
+            given_action_id)
         presenter_mock.raise_invalid_action_id.assert_called_once()
         call_args = presenter_mock.raise_invalid_action_id.call_args
         error_object = call_args[0][0]
@@ -310,7 +309,7 @@ class TestSaveAndActOnATaskInteractor:
         given_action_id = 1
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
             action_id=given_action_id, priority=None)
-        storage_mock.validate_action.return_value = True
+        action_storage_mock.validate_action.return_value = True
         action_storage_mock.get_action_type_for_given_action_id.return_value \
             = "DO_VALIDATIONS"
         from ib_tasks.exceptions.task_custom_exceptions import \
@@ -333,7 +332,8 @@ class TestSaveAndActOnATaskInteractor:
 
         # Assert
         assert response == mock_object
-        storage_mock.validate_action.assert_called_once_with(given_action_id)
+        action_storage_mock.validate_action.assert_called_once_with(
+            given_action_id)
         presenter_mock.raise_priority_is_required.assert_called_once()
 
     def test_with_due_datetime_without_start_date(
@@ -351,7 +351,7 @@ class TestSaveAndActOnATaskInteractor:
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
             action_id=given_action_id, start_datetime=None,
             due_datetime=given_due_datetime)
-        storage_mock.validate_action.return_value = True
+        action_storage_mock.validate_action.return_value = True
         action_storage_mock.get_action_type_for_given_action_id.return_value \
             = "DO_VALIDATIONS"
         from ib_tasks.exceptions.datetime_custom_exceptions import \
@@ -376,7 +376,8 @@ class TestSaveAndActOnATaskInteractor:
 
         # Assert
         assert response == mock_object
-        storage_mock.validate_action.assert_called_once_with(given_action_id)
+        action_storage_mock.validate_action.assert_called_once_with(
+            given_action_id)
         presenter_mock.raise_due_date_time_without_start_datetime \
             .assert_called_once()
         call_args = \
@@ -399,7 +400,7 @@ class TestSaveAndActOnATaskInteractor:
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
             action_id=given_action_id, start_datetime=None,
             due_datetime=None)
-        storage_mock.validate_action.return_value = True
+        action_storage_mock.validate_action.return_value = True
         action_storage_mock.get_action_type_for_given_action_id.return_value \
             = "DO_VALIDATIONS"
         from ib_tasks.exceptions.datetime_custom_exceptions import \
@@ -424,7 +425,8 @@ class TestSaveAndActOnATaskInteractor:
 
         # Assert
         assert response == mock_object
-        storage_mock.validate_action.assert_called_once_with(given_action_id)
+        action_storage_mock.validate_action.assert_called_once_with(
+            given_action_id)
         presenter_mock.raise_start_date_time_is_required \
             .assert_called_once()
 
@@ -441,7 +443,7 @@ class TestSaveAndActOnATaskInteractor:
         given_action_id = 1
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
             action_id=given_action_id, due_datetime=None)
-        storage_mock.validate_action.return_value = True
+        action_storage_mock.validate_action.return_value = True
         action_storage_mock.get_action_type_for_given_action_id.return_value \
             = "DO_VALIDATIONS"
         from ib_tasks.exceptions.datetime_custom_exceptions import \
@@ -465,7 +467,8 @@ class TestSaveAndActOnATaskInteractor:
 
         # Assert
         assert response == mock_object
-        storage_mock.validate_action.assert_called_once_with(given_action_id)
+        action_storage_mock.validate_action.assert_called_once_with(
+            given_action_id)
         presenter_mock.raise_due_date_time_is_required \
             .assert_called_once()
 
@@ -1038,8 +1041,8 @@ class TestSaveAndActOnATaskInteractor:
             task_stage_storage=task_stage_storage_mock,
             task_template_storage=task_template_storage_mock
         )
-        presenter_mock.raise_invalid_phone_number_value \
-            .return_value = mock_object
+        presenter_mock.raise_empty_value_in_required_field.return_value = \
+            mock_object
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
@@ -1047,11 +1050,10 @@ class TestSaveAndActOnATaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_invalid_phone_number_value \
+        presenter_mock.raise_empty_value_in_required_field \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_invalid_phone_number_value \
-                .call_args
+            presenter_mock.raise_empty_value_in_required_field.call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
         assert invalid_field_id == given_field_id
@@ -2146,14 +2148,12 @@ class TestSaveAndActOnATaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock \
-            .raise_user_action_permission_denied \
+        presenter_mock.raise_user_action_permission_denied \
             .assert_called_once()
-        call_args = presenter_mock. \
-            raise_user_action_permission_denied.call_args
-        error_object = call_args.kwargs['error_obj']
-        action_id = error_object.action_id
-
+        call_args = presenter_mock.raise_user_action_permission_denied.\
+            call_args
+        error_obj = call_args[0][0]
+        action_id = error_obj.action_id
         assert action_id == given_action_id
 
     def test_with_invalid_present_stage_action(
@@ -2368,3 +2368,106 @@ class TestSaveAndActOnATaskInteractor:
         error_object = call_args[0][0]
         message = error_object.message
         assert message == given_message
+
+    def test_with_task_delay_reason_not_updated_raises_exception(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock, update_task_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock, action_storage_mock, task_stage_storage_mock,
+            task_template_storage_mock, presenter_mock, mock_object,
+            user_action_on_task_mock
+    ):
+        # Arrange
+        board_id = "board_1"
+        task_request_json = '{"key": "value"}'
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            TaskDelayReasonIsNotUpdated
+
+        given_due_date = datetime.datetime(2020, 5, 7, 2, 3, 1)
+        given_task_display_id = "task_1"
+        given_stage_display_name = "stage_1"
+
+        user_action_on_task_mock.side_effect = \
+            TaskDelayReasonIsNotUpdated(
+                given_due_date, given_task_display_id,
+                given_stage_display_name)
+
+        interactor = SaveAndActOnATaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            task_stage_storage=task_stage_storage_mock,
+            task_template_storage=task_template_storage_mock
+        )
+        presenter_mock.raise_task_delay_reason_not_updated.return_value = \
+            mock_object
+
+        # Act
+        response = interactor.save_and_act_on_task_wrapper(
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_task_delay_reason_not_updated.assert_called_once()
+        call_args = presenter_mock.raise_task_delay_reason_not_updated \
+            .call_args
+        error_object = call_args[0][0]
+
+        due_date = error_object.due_date
+        task_display_id = error_object.task_display_id
+        stage_display_name = error_object.stage_display_name
+        assert due_date == given_due_date
+        assert task_display_id == given_task_display_id
+        assert stage_display_name == given_stage_display_name
+
+    def test_with_invalid_stage_permitted_gofs_raises_exception(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock, update_task_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock, action_storage_mock, task_stage_storage_mock,
+            task_template_storage_mock, presenter_mock, mock_object,
+            user_action_on_task_mock
+    ):
+        # Arrange
+        board_id = "board_1"
+        task_request_json = '{"key": "value"}'
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
+        from ib_tasks.exceptions.gofs_custom_exceptions import \
+            InvalidStagePermittedGoFs
+
+        given_gof_ids = ["gof_1", "gof_2"]
+        given_stage_id = 1
+
+        user_action_on_task_mock.side_effect = \
+            InvalidStagePermittedGoFs(given_gof_ids, given_stage_id)
+
+        interactor = SaveAndActOnATaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            task_stage_storage=task_stage_storage_mock,
+            task_template_storage=task_template_storage_mock
+        )
+        presenter_mock.raise_invalid_stage_permitted_gofs.return_value = \
+            mock_object
+
+        # Act
+        response = interactor.save_and_act_on_task_wrapper(
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_invalid_stage_permitted_gofs.assert_called_once()
+        call_args = presenter_mock.raise_invalid_stage_permitted_gofs \
+            .call_args
+        error_object = call_args[0][0]
+
+        gof_ids = error_object.gof_ids
+        stage_id = error_object.stage_id
+        assert gof_ids == given_gof_ids
+        assert stage_id == given_stage_id
