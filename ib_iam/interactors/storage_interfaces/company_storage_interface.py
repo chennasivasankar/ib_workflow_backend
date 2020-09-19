@@ -2,7 +2,8 @@ import abc
 from typing import List, Optional
 
 from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDTO, CompanyIdWithEmployeeIdsDTO)
+    CompanyDTO, CompanyIdWithEmployeeIdsDTO
+)
 from ib_iam.interactors.storage_interfaces.dtos import \
     CompanyNameLogoAndDescriptionDTO
 
@@ -27,8 +28,9 @@ class CompanyStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def add_company(
-            self, company_name_logo_and_description_dto:
-            CompanyNameLogoAndDescriptionDTO):
+            self,
+            company_name_logo_and_description_dto: CompanyNameLogoAndDescriptionDTO
+    ):
         pass
 
     @abc.abstractmethod

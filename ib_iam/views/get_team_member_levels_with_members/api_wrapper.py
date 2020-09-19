@@ -24,7 +24,7 @@ def api_wrapper(*args, **kwargs):
         GetTeamMemberLevelsWithMembersPresenterImplementation
     presenter = GetTeamMemberLevelsWithMembersPresenterImplementation()
 
-    from ib_iam.interactors.get_team_member_levels_with_members_interactor import \
+    from ib_iam.interactors.levels.get_team_member_levels_with_members_interactor import \
         GetTeamMemberLevelsWithMembersInteractor
     interactor = GetTeamMemberLevelsWithMembersInteractor(
         team_member_level_storage=team_member_level_storage,

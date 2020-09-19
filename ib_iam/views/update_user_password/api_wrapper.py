@@ -15,7 +15,7 @@ def api_wrapper(*args, **kwargs):
     from ib_iam.presenters.update_user_password_presenter_implementation import \
         UpdateUserPasswordPresenterImplementation
     presenter = UpdateUserPasswordPresenterImplementation()
-    from ib_iam.interactors.update_user_password_interactor import \
+    from ib_iam.interactors.auth.update_user_password_interactor import \
         UpdateUserPasswordInteractor
     interactor = UpdateUserPasswordInteractor()
 
@@ -27,7 +27,7 @@ def api_wrapper(*args, **kwargs):
 
 
 def prepare_current_and_new_password_dto(request_data):
-    from ib_iam.interactors.update_user_password_interactor import \
+    from ib_iam.interactors.auth.update_user_password_interactor import \
         CurrentAndNewPasswordDTO
     current_and_new_password_dto = CurrentAndNewPasswordDTO(
         current_password=request_data["current_password"],

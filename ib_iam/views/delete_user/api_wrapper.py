@@ -1,7 +1,7 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
-from ib_iam.interactors.delete_user_interactor import DeleteUserInteractor
+from ib_iam.interactors.users.delete_user_interactor import DeleteUserInteractor
 from ib_iam.presenters.delete_user_presenter_implementation import \
     DeleteUserPresenterImplementation
 from ib_iam.storages.delete_user_storage_implementation import \

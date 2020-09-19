@@ -1,13 +1,14 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
+from ib_iam.interactors.presenter_interfaces \
+    .team_presenter_interface import DeleteTeamPresenterInterface
+
 from ib_iam.constants.enums import StatusCode
 from ib_iam.constants.exception_messages import (
     USER_HAS_NO_ACCESS_FOR_DELETE_TEAM,
     INVALID_TEAM_ID_FOR_DELETE_TEAM
 
 )
-from ib_iam.interactors.presenter_interfaces \
-    .delete_team_presenter_interface import DeleteTeamPresenterInterface
 
 
 class DeleteTeamPresenterImplementation(DeleteTeamPresenterInterface,

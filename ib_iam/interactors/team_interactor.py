@@ -6,11 +6,11 @@ from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
     InvalidTeamIds, UserIdsAreInvalid
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
-    .delete_team_presenter_interface import DeleteTeamPresenterInterface
+    .team_presenter_interface import DeleteTeamPresenterInterface
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
-    TeamPresenterInterface)
+    AddTeamPresenterInterface)
 from ib_iam.interactors.presenter_interfaces \
-    .update_team_presenter_interface import UpdateTeamPresenterInterface
+    .team_presenter_interface import UpdateTeamPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import (
     TeamWithUserIdsDTO, TeamWithTeamIdAndUserIdsDTO, TeamNameAndDescriptionDTO,
     TeamIdAndNameDTO, TeamWithUserIdDTO)
@@ -22,29 +22,31 @@ from ib_iam.interactors.storage_interfaces.user_storage_interface import \
 
 class TeamInteractor(ValidationMixin):
 
-    def __init__(self,
-                 team_storage: TeamStorageInterface,
-                 user_storage: UserStorageInterface):
+    def __init__(
+            self, team_storage: TeamStorageInterface,
+            user_storage: UserStorageInterface
+    ):
         self.user_storage = user_storage
         self.team_storage = team_storage
 
-    def add_team_wrapper(self, user_id: str,
-                         team_with_user_ids_dto: TeamWithUserIdsDTO,
-                         presenter: TeamPresenterInterface):
+    def add_team_wrapper(
+            self, user_id: str, team_with_user_ids_dto: TeamWithUserIdsDTO,
+            presenter: AddTeamPresenterInterface
+    ):
         try:
             team_id = self.add_team(
-                user_id=user_id,
-                team_with_user_ids_dto=team_with_user_ids_dto)
+                user_id=user_id, team_with_user_ids_dto=team_with_user_ids_dto
+            )
             response = presenter.get_response_for_add_team(team_id=team_id)
         except UserIsNotAdmin:
-            response = presenter.get_user_has_no_access_response_for_add_team()
+            response = presenter.response_for_user_has_no_access_exception()
         except TeamNameAlreadyExists as exception:
             response = presenter \
-                .get_team_name_already_exists_response_for_add_team(exception)
+                .response_for_team_name_already_exists_exception(exception)
         except DuplicateUserIds:
-            response = presenter.get_duplicate_users_response_for_add_team()
+            response = presenter.response_for_duplicate_user_ids_exception()
         except UserIdsAreInvalid:
-            response = presenter.get_invalid_users_response_for_add_team()
+            response = presenter.response_for_invalid_user_ids_exception()
         return response
 
     def add_team(

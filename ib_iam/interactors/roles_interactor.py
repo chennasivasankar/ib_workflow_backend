@@ -4,7 +4,7 @@ from ib_iam.exceptions.custom_exceptions import DuplicateRoleIds, \
     RoleIdFormatIsInvalid, \
     RoleNameIsEmpty, RoleDescriptionIsEmpty
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
-from ib_iam.interactors.presenter_interfaces.add_roles_presenter_interface \
+from ib_iam.interactors.presenter_interfaces.role_presenter_interface \
     import AddRolesPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
 from ib_iam.interactors.storage_interfaces.roles_storage_interface \
@@ -26,11 +26,11 @@ class RolesInteractor:
         except DuplicateRoleIds as err:
             response = presenter.response_for_duplicate_role_ids_exception(err)
         except RoleIdFormatIsInvalid:
-            response = presenter.raise_role_id_format_is_invalid_exception()
+            response = presenter.response_for_role_id_format_is_invalid_exception()
         except RoleNameIsEmpty:
-            response = presenter.raise_role_name_should_not_be_empty_exception()
+            response = presenter.response_for_role_name_should_not_be_empty_exception()
         except RoleDescriptionIsEmpty:
-            response = presenter.raise_role_description_should_not_be_empty_exception()
+            response = presenter.response_for_role_description_should_not_be_empty_exception()
         return response
 
     def add_project_roles(self, role_dtos: List[RoleDTO], project_id: str):

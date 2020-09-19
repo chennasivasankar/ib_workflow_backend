@@ -6,7 +6,7 @@ from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.dtos import \
     ProjectsWithTeamsAndRolesDTO
 from ib_iam.interactors.presenter_interfaces \
-    .get_projects_presenter_interface import GetProjectsPresenterInterface
+    .project_presenter_interface import GetProjectsPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import ProjectTeamIdsDTO, \
     PaginationDTO, ProjectWithDisplayIdDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
@@ -56,11 +56,14 @@ class GetProjectsInteractor(ValidationMixin):
         projects_with_total_count = self.project_storage \
             .get_projects_with_total_count_dto(pagination_dto=pagination_dto)
         project_ids = self._get_project_ids_from_project_dtos(
-            project_dtos=projects_with_total_count.projects)
+            project_dtos=projects_with_total_count.projects
+        )
         project_team_ids_dtos = self.project_storage.get_project_team_ids_dtos(
-            project_ids=project_ids)
+            project_ids=project_ids
+        )
         team_ids = self._get_all_team_ids_ids_from_project_team_ids_dtos(
-            project_team_ids_dtos=project_team_ids_dtos)
+            project_team_ids_dtos=project_team_ids_dtos
+        )
         team_dtos = self.team_storage.get_team_dtos(team_ids=team_ids)
         project_role_dtos = self.project_storage.get_all_project_roles()
         project_with_teams_dto = ProjectsWithTeamsAndRolesDTO(

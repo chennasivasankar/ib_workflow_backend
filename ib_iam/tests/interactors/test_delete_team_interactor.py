@@ -18,7 +18,7 @@ class TestDeleteTeam:
 
     @pytest.fixture
     def presenter(self):
-        from ib_iam.interactors.presenter_interfaces.delete_team_presenter_interface import (
+        from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
             DeleteTeamPresenterInterface)
         return create_autospec(DeleteTeamPresenterInterface)
 

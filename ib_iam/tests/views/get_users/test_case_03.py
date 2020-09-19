@@ -106,8 +106,8 @@ class TestCase03GetUsersAPITestCase(TestUtils):
     def test_case(self, setup, users_set_up, user_teams_set_up,
                   user_roles_set_up, snapshot, mocker):
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dtos_mock
-        get_user_profile_bulk_mock = prepare_get_user_profile_dtos_mock(
+            get_user_profile_dtos_mock
+        get_user_profile_bulk_mock = get_user_profile_dtos_mock(
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         reset_sequence_for_user_profile_dto_factory()
