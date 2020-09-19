@@ -27,7 +27,7 @@ class TestAddProjectsInteractor:
     @pytest.fixture
     def presenter(self):
         from ib_iam.interactors.presenter_interfaces \
-            .get_projects_presenter_interface import \
+            .project_presenter_interface import \
             GetProjectsPresenterInterface
         presenter = mock.create_autospec(GetProjectsPresenterInterface)
         return presenter

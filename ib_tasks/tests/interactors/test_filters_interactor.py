@@ -7,11 +7,10 @@ from unittest.mock import Mock, create_autospec
 
 import pytest
 
-from ib_tasks.build.serializers.definitions.Field.FieldSerializer import \
-    FieldType
 from ib_tasks.exceptions.filter_exceptions import InvalidFilterId, \
     UserNotHaveAccessToFilter, UserNotHaveAccessToFields
-from ib_tasks.interactors.filters.create_or_update_or_delete_filters import CreateOrUpdateOrDeleteFiltersInteractor
+from ib_tasks.interactors.filters.create_or_update_or_delete_filters import \
+    CreateOrUpdateOrDeleteFiltersInteractor
 from ib_tasks.tests.common_fixtures.interactors import \
     prepare_get_field_ids__user
 

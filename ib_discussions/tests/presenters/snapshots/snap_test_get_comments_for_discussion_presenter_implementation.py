@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetCommentsForDiscussionPresenterImplementation.test_response_for_comments_with_users_dtos get_comments_for_discussion'] = {

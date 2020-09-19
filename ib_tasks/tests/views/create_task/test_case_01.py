@@ -8,6 +8,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...common_fixtures.adapters.roles_service import \
     get_user_role_ids_based_on_project_mock
+from ...factories.models import StageGoFFactory
 
 
 class TestCase01CreateTaskAPITestCase(TestUtils):
@@ -58,7 +59,7 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
             get_valid_project_ids_mock, get_projects_info_for_given_ids_mock, \
             get_team_info_for_given_user_ids_mock, \
             prepare_permitted_user_details_mock
-        from ib_tasks.tests.common_fixtures.\
+        from ib_tasks.tests.common_fixtures. \
             adapters.assignees_details_service import \
             assignee_details_dtos_mock
 
@@ -84,7 +85,7 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         ProjectTaskTemplateFactory.create(
             task_template=task_template_obj, project_id=project_id)
         stage = StageModelFactory(
-            stage_id=stage_id,
+            stage_id=stage_id, stage_color="blue",
             task_template_id='template_1',
             display_logic="variable0==stage_1",
             card_info_kanban=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]),
@@ -92,12 +93,12 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         path = 'ib_tasks.tests.populate.' \
                'stage_actions_logic.stage_1_action_name_1_logic'
         action = StageActionFactory(
-            stage=stage, py_function_import_path=path
-        )
+            stage=stage, py_function_import_path=path,
+            action_type="")
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
         gof_obj = GoFFactory.create()
-
+        StageGoFFactory.create(stage=stage, gof=gof_obj)
         field_obj = FieldFactory.create(gof=gof_obj)
         GoFToTaskTemplateFactory.create(
             task_template=task_template_obj, gof=gof_obj)
@@ -161,8 +162,9 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         snapshot.assert_match(str(task_object.due_date), 'task_due_date')
         snapshot.assert_match(task_object.priority, 'task_priority')
 
+        task_id = 1
         from ib_tasks.models.task_gof import TaskGoF
-        task_gofs = TaskGoF.objects.filter(task_id=1)
+        task_gofs = TaskGoF.objects.filter(task_id=task_id)
         counter = 1
         for task_gof in task_gofs:
             snapshot.assert_match(
@@ -173,7 +175,8 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
             counter = counter + 1
 
         from ib_tasks.models.task_gof_field import TaskGoFField
-        task_gof_fields = TaskGoFField.objects.filter(task_gof__task_id=1)
+        task_gof_fields = TaskGoFField.objects.filter(
+            task_gof__task_id=task_id)
         counter = 1
         for task_gof_field in task_gof_fields:
             snapshot.assert_match(task_gof_field.task_gof_id,
@@ -182,3 +185,31 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
             snapshot.assert_match(task_gof_field.field_response,
                                   f'field_response_{counter}')
             counter = counter + 1
+
+        from ib_tasks.models import CurrentTaskStage
+        current_task_stages = CurrentTaskStage.objects.filter(task_id=task_id)
+        counter = 1
+        for current_task_stage in current_task_stages:
+            snapshot.assert_match(
+                current_task_stage.task_id, f'task_id_{counter}')
+            snapshot.assert_match(
+                current_task_stage.stage_id, f'task_stage_{counter}'
+            )
+            counter += 1
+
+        counter = 1
+        from ib_tasks.models import TaskStageHistory
+        task_stage_histories = TaskStageHistory.objects.filter(task_id=task_id)
+        for task_stage_history in task_stage_histories:
+            snapshot.assert_match(
+                task_stage_history.task_id, f'task_id_{counter}')
+            snapshot.assert_match(
+                task_stage_history.stage, f'stage_{counter}')
+            snapshot.assert_match(
+                task_stage_history.team_id, f'team_id_{counter}')
+            snapshot.assert_match(
+                task_stage_history.assignee_id, f'assignee_id_{counter}')
+            snapshot.assert_match(
+                task_stage_history.joined_at, f'joined_at_{counter}')
+            snapshot.assert_match(
+                task_stage_history.left_at, f'left_at_{counter}')

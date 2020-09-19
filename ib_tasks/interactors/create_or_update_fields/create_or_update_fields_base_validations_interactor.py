@@ -1,10 +1,5 @@
-from typing import List, Optional
-
 import collections
-
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO
-from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
-    GoFStorageInterface
+from typing import List, Optional
 
 from ib_tasks.exceptions.fields_custom_exceptions import (
     FieldIdEmptyValueException,
@@ -13,6 +8,9 @@ from ib_tasks.exceptions.fields_custom_exceptions import (
     InvalidValueForFieldDisplayName,
     InvalidValueForFieldType,
 )
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
 
 
 class CreateOrUpdateFieldsBaseValidationInteractor:

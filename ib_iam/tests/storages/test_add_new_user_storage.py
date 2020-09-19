@@ -89,11 +89,14 @@ class TestAddNewUserStorage:
 
     @pytest.mark.django_db
     def test_validate_role_ids_when_invalid_then_returns_false(
-            self, reset_sequence_for_model_factories, roles):
+            self, reset_sequence_for_model_factories, roles
+    ):
         # Arrange
         storage = UserStorageImplementation()
-        role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8000",
-                    "ef6d1fc6-ac3f-4d2d-a983-752c992e8000"]
+        role_ids = [
+            "ef6d1fc6-ac3f-4d2d-a983-752c992e8000",
+            "ef6d1fc6-ac3f-4d2d-a983-752c992e8000"
+        ]
         expected_output = False
 
         # Act
@@ -104,11 +107,14 @@ class TestAddNewUserStorage:
 
     @pytest.mark.django_db
     def test_validate_teams_if_invalid_returns_false(
-            self, reset_sequence_for_model_factories, teams):
+            self, reset_sequence_for_model_factories, teams
+    ):
         # Arrange
         storage = UserStorageImplementation()
-        team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8333",
-                    "ef6d1fc6-ac3f-4d2d-a983-752c992e8344"]
+        team_ids = [
+            "ef6d1fc6-ac3f-4d2d-a983-752c992e8333",
+            "ef6d1fc6-ac3f-4d2d-a983-752c992e8344"
+        ]
         expected_output = False
 
         # Act
@@ -119,14 +125,15 @@ class TestAddNewUserStorage:
 
     @pytest.mark.django_db
     def test_validate_company_when_invalid_returns_false(
-            self, reset_sequence_for_model_factories, companies):
+            self, reset_sequence_for_model_factories, companies
+    ):
         # Arrange
         storage = UserStorageImplementation()
-        comapany_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8333"
+        company_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8333"
         expected_output = False
 
         # Act
-        output = storage.check_is_exists_company_id(company_id=comapany_id)
+        output = storage.check_is_exists_company_id(company_id=company_id)
 
         # Assert
         assert output == expected_output

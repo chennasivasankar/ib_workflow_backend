@@ -8,11 +8,11 @@ def api_wrapper(*args, **kwargs):
     request_data = kwargs["request_data"]
     email = request_data["email"]
 
-    from ib_iam.presenters.auth_presenter_implementation import \
+    from ib_iam.presenters.send_verify_email_link_presenter_implementation import \
         SendVerifyEmailLinkPresenterImplementation
     presenter = SendVerifyEmailLinkPresenterImplementation()
 
-    from ib_iam.interactors.send_verify_email_link_interactor import \
+    from ib_iam.interactors.auth.send_verify_email_link_interactor import \
         SendVerifyEmailLinkInteractor
     interactor = SendVerifyEmailLinkInteractor()
 

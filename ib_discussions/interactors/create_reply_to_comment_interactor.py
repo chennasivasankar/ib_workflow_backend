@@ -1,11 +1,12 @@
 from typing import List
 
+from ib_discussions.adapters.auth_service import UserProfileDTO
 from ib_discussions.exceptions.custom_exceptions import \
     EmptyCommentAndMultiMediaException
 from ib_discussions.interactors.dtos.dtos import \
-    CreateCompleteReplyToCommentDTO, MultimediaDTO
-from ib_discussions.adapters.auth_service import UserProfileDTO
-from ib_discussions.interactors.dtos.dtos import CreateCompleteReplyToCommentDTO
+    CreateCompleteReplyToCommentDTO
+from ib_discussions.interactors.dtos.dtos import \
+    MultimediaDTO
 from ib_discussions.interactors.presenter_interfaces.dtos import \
     CommentIdWithEditableStatusDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \

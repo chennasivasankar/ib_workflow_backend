@@ -1,7 +1,5 @@
 import json
-
 import pytest
-
 from ib_iam.constants.enums import StatusCode
 
 
@@ -9,15 +7,17 @@ class TestGetListOfUserRolesForGivenProjectPresenterImplementation:
 
     @pytest.fixture()
     def presenter(self):
-        from ib_iam.presenters.get_list_of_user_roles_for_given_project_presenter_implementation import \
-            GetListOfUserRolesForGivenProjectPresenterImplementation
+        from ib_iam.presenters. \
+            get_list_of_user_roles_for_given_project_presenter_implementation \
+            import GetListOfUserRolesForGivenProjectPresenterImplementation
         presenter = GetListOfUserRolesForGivenProjectPresenterImplementation()
         return presenter
 
     def test_response_for_invalid_project_id(self, presenter):
         # Arrange
-        from ib_iam.presenters.get_list_of_user_roles_for_given_project_presenter_implementation import \
-            INVALID_PROJECT_ID
+        from ib_iam.presenters. \
+            get_list_of_user_roles_for_given_project_presenter_implementation \
+            import INVALID_PROJECT_ID
         expected_response = INVALID_PROJECT_ID[0]
         response_status_code = INVALID_PROJECT_ID[1]
 

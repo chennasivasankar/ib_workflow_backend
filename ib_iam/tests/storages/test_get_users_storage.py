@@ -3,8 +3,6 @@ import pytest
 
 from ib_iam.storages.user_storage_implementation \
     import UserStorageImplementation
-from ib_iam.tests.common_fixtures.storages import \
-    user_not_admin, users_company
 
 
 class TestGetUsers:

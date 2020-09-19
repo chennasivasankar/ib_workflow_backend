@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from ib_iam.interactors.get_users_list_interactor import \
+from ib_iam.interactors.users.get_users_list_interactor import \
     GetListOfUsersInteractor
 from ib_iam.tests.factories.storage_dtos import UserDTOFactory
 
@@ -81,7 +81,7 @@ class TestGetUsersDetailsInteractor:
     def presenter_mock(self):
         from unittest import mock
         from ib_iam.interactors.presenter_interfaces. \
-            get_users_list_presenter_interface import \
+            user_presenter_interface import \
             GetUsersListPresenterInterface
         storage = mock.create_autospec(GetUsersListPresenterInterface)
         return storage

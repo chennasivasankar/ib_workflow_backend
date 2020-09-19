@@ -1,6 +1,3 @@
-from unittest import mock
-
-
 class TestCasePopulateTasks:
 
     @staticmethod

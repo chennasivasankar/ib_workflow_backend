@@ -8,6 +8,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...common_fixtures.adapters.roles_service import \
     get_user_role_ids_based_on_project_mock
+from ...factories.models import StageGoFFactory
 
 
 class TestCase37CreateTaskAPITestCase(TestUtils):
@@ -45,6 +46,7 @@ class TestCase37CreateTaskAPITestCase(TestUtils):
         TaskTemplateInitialStageFactory.reset_sequence()
         UserDetailsDTOFactory.reset_sequence()
         AssigneeDetailsDTOFactory.reset_sequence()
+        StageGoFFactory.reset_sequence()
 
         template_id = 'template_1'
         project_id = "project_1"
@@ -92,13 +94,12 @@ class TestCase37CreateTaskAPITestCase(TestUtils):
         path = 'ib_tasks.tests.populate.' \
                'stage_actions_logic.stage_1_action_name_1_logic'
         action = StageActionFactory.create(
-            stage=stage, py_function_import_path=path
-        )
-        StageActionFactory.create()
+            stage=stage, py_function_import_path=path)
+        action = StageActionFactory.create(id=2)
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
         gof_obj = GoFFactory.create()
-
+        StageGoFFactory.create(gof=gof_obj, stage=stage)
         field_obj = FieldFactory.create(gof=gof_obj)
         GoFToTaskTemplateFactory.create(
             task_template=task_template_obj, gof=gof_obj)
@@ -117,6 +118,7 @@ class TestCase37CreateTaskAPITestCase(TestUtils):
 
         from ib_tasks.constants.constants import ALL_ROLES_ID
         StagePermittedRolesFactory.create(stage=stage, role_id=ALL_ROLES_ID)
+        ActionPermittedRolesFactory.create(action=action, role_id=ALL_ROLES_ID)
         TaskTemplateInitialStageFactory.create(
             task_template_id=template_id, stage=stage)
 

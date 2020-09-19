@@ -10,7 +10,7 @@ def api_wrapper(*args, **kwargs):
     email = request_data["email"]
     password = request_data["password"]
 
-    from ib_iam.presenters.auth_presenter_implementation import \
+    from ib_iam.presenters.create_user_account_presenter_implementation import \
         CreateUserAccountPresenterImplementation
     presenter = CreateUserAccountPresenterImplementation()
     from ib_iam.storages.user_storage_implementation import \
@@ -20,7 +20,7 @@ def api_wrapper(*args, **kwargs):
         ElasticStorageImplementation
     elastic_storage = ElasticStorageImplementation()
 
-    from ib_iam.interactors.sign_up_interactor import SignupInteractor
+    from ib_iam.interactors.auth.sign_up_interactor import SignupInteractor
     interactor = SignupInteractor(
         user_storage=user_storage, elastic_storage=elastic_storage
     )

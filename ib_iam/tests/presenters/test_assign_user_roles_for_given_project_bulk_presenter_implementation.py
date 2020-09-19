@@ -1,7 +1,5 @@
 import json
-
 import pytest
-
 from ib_iam.constants.enums import StatusCode
 
 
@@ -9,8 +7,9 @@ class TestAssignUserRolesForGivenProjectBulkPresenterImplementation:
 
     @pytest.fixture()
     def presenter(self):
-        from ib_iam.presenters.assign_user_roles_for_given_project_bulk_presenter_implementation import \
-            AssignUserRolesForGivenProjectBulkPresenterImplementation
+        from ib_iam.presenters. \
+            assign_user_roles_for_given_project_bulk_presenter_implementation \
+            import AssignUserRolesForGivenProjectBulkPresenterImplementation
         presenter = AssignUserRolesForGivenProjectBulkPresenterImplementation()
         return presenter
 
@@ -29,11 +28,13 @@ class TestAssignUserRolesForGivenProjectBulkPresenterImplementation:
             "01be920b-7b4c-49e7-8adb-41a0c18da848",
             "77be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
-        from ib_iam.exceptions.custom_exceptions import InvalidUserIdsForProject
+        from ib_iam.exceptions.custom_exceptions import \
+            InvalidUserIdsForProject
         error_object = InvalidUserIdsForProject(user_ids=invalid_user_ids)
 
-        from ib_iam.presenters.assign_user_roles_for_given_project_bulk_presenter_implementation import \
-            INVALID_USER_IDS_FOR_PROJECT
+        from ib_iam.presenters. \
+            assign_user_roles_for_given_project_bulk_presenter_implementation \
+            import INVALID_USER_IDS_FOR_PROJECT
         expected_response = INVALID_USER_IDS_FOR_PROJECT[0].format(
             invalid_user_ids=invalid_user_ids
         )
@@ -56,11 +57,13 @@ class TestAssignUserRolesForGivenProjectBulkPresenterImplementation:
         invalid_role_ids = [
             "ROLE_3"
         ]
-        from ib_iam.exceptions.custom_exceptions import InvalidRoleIdsForProject
+        from ib_iam.exceptions.custom_exceptions import \
+            InvalidRoleIdsForProject
         error_object = InvalidRoleIdsForProject(role_ids=invalid_role_ids)
 
-        from ib_iam.presenters.assign_user_roles_for_given_project_bulk_presenter_implementation import \
-            INVALID_ROLE_IDS_FOR_PROJECT
+        from ib_iam.presenters. \
+            assign_user_roles_for_given_project_bulk_presenter_implementation \
+            import INVALID_ROLE_IDS_FOR_PROJECT
         expected_response = INVALID_ROLE_IDS_FOR_PROJECT[0].format(
             invalid_role_ids=invalid_role_ids
         )
@@ -80,8 +83,9 @@ class TestAssignUserRolesForGivenProjectBulkPresenterImplementation:
 
     def test_response_for_invalid_project_id(self, presenter):
         # Arrange
-        from ib_iam.presenters.assign_user_roles_for_given_project_bulk_presenter_implementation import \
-            INVALID_PROJECT_ID
+        from ib_iam.presenters. \
+            assign_user_roles_for_given_project_bulk_presenter_implementation \
+            import INVALID_PROJECT_ID
         expected_response = INVALID_PROJECT_ID[0]
         response_status_code = INVALID_PROJECT_ID[1]
 
@@ -97,8 +101,9 @@ class TestAssignUserRolesForGivenProjectBulkPresenterImplementation:
 
     def test_response_for_user_is_not_admin(self, presenter):
         # Arrange
-        from ib_iam.presenters.assign_user_roles_for_given_project_bulk_presenter_implementation import \
-            USER_DOES_NOT_HAVE_ACCESS
+        from ib_iam.presenters. \
+            assign_user_roles_for_given_project_bulk_presenter_implementation \
+            import USER_DOES_NOT_HAVE_ACCESS
         expected_response = USER_DOES_NOT_HAVE_ACCESS[0]
         response_status_code = USER_DOES_NOT_HAVE_ACCESS[1]
 

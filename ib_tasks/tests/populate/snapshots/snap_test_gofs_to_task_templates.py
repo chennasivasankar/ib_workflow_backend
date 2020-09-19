@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestGoFsToTaskTemplate.test_with_invalid_template_raises_exception message'] = 'The template with template id: FIN_MAN, does not exists'

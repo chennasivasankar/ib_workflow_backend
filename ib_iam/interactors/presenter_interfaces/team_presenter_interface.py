@@ -1,21 +1,62 @@
 import abc
-
 from ib_iam.interactors.presenter_interfaces.dtos import \
     TeamWithUsersDetailsDTO
 
 
-class TeamPresenterInterface(abc.ABC):
+class UpdateTeamPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_user_has_no_access_response_for_get_list_of_teams(self):
+    def get_success_response_for_update_team(self):
         pass
 
     @abc.abstractmethod
-    def get_invalid_limit_response_for_get_list_of_teams(self):
+    def response_for_user_has_no_access_exception(self):
         pass
 
     @abc.abstractmethod
-    def get_invalid_offset_response_for_get_list_of_teams(self):
+    def response_for_invalid_team_id_exception(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_team_name_already_exists_exception(self, err):
+        pass
+
+    @abc.abstractmethod
+    def response_for_duplicate_user_ids_exception(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_invalid_user_ids_exception(self):
+        pass
+
+
+class DeleteTeamPresenterInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def get_success_response_for_delete_team(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_user_has_no_access_exception(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_invalid_team_id_exception(self):
+        pass
+
+
+class GetTeamsPresenterInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def response_for_user_has_no_access_exception(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_invalid_limit_value_exception(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_invalid_offset_value_exception(self):
         pass
 
     @abc.abstractmethod
@@ -24,20 +65,23 @@ class TeamPresenterInterface(abc.ABC):
     ):
         pass
 
+
+class AddTeamPresenterInterface(abc.ABC):
+
     @abc.abstractmethod
-    def get_user_has_no_access_response_for_add_team(self):
+    def response_for_user_has_no_access_exception(self):
         pass
 
     @abc.abstractmethod
-    def get_invalid_users_response_for_add_team(self):
+    def response_for_invalid_user_ids_exception(self):
         pass
 
     @abc.abstractmethod
-    def get_duplicate_users_response_for_add_team(self):
+    def response_for_duplicate_user_ids_exception(self):
         pass
 
     @abc.abstractmethod
-    def get_team_name_already_exists_response_for_add_team(self, err):
+    def response_for_team_name_already_exists_exception(self, err):
         pass
 
     @abc.abstractmethod
