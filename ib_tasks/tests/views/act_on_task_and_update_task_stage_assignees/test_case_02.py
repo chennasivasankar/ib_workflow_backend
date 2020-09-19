@@ -1,5 +1,5 @@
 """
-# Given Valid details
+# Given Valid details along with virtual stages
 """
 import factory
 import pytest
@@ -76,7 +76,8 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
             task_template_id='template_1',
             display_logic="variable2==stage_id_2",
             card_info_kanban=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
-            card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
+            card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
+            value=-1
         )
         stages = [stage1, stage2, stage3]
         path = 'ib_tasks.tests.populate.stage_actions_logic.stage_1_action_name_1'
@@ -157,11 +158,6 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
                     "stage_id": 2,
                     "assignee_id": "123e4567-e89b-12d3-a456-427614174008",
                     "team_id": "123e4567-e89b-12d3-a456-426614174002"
-                },
-                {
-                    "stage_id": 3,
-                    "assignee_id": "123e4567-e89b-12d3-a476-427614174006",
-                    "team_id": "123e4567-e89b-12d3-a456-426614174003"
                 }
             ]
         }

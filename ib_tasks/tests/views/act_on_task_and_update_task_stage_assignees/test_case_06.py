@@ -1,5 +1,5 @@
 """
-# Given Valid details
+# Given action which user doesnt have permission to perform that
 """
 import factory
 import pytest
@@ -101,7 +101,7 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
 
         TaskGoFFieldFactory.create_batch(
             6, task_gof=factory.Iterator(task_gofs),
-            field=factory.Iterator(fields)
+            field=factory.Iterator(fields), field_response=""
         )
         CurrentTaskStageModelFactory.create_batch(
             3, task=task,
@@ -122,7 +122,7 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
         mock_obj.return_value = True
         roles_path = 'ib_iam.app_interfaces.service_interface.ServiceInterface.get_user_role_ids'
         roles_mock = mocker.patch(roles_path)
-        roles_mock.return_value = ['role_1', 'role_2', 'role_3']
+        roles_mock.return_value = ['role_4']
         path = 'ib_tasks.adapters.boards_service.BoardsService.get_display_boards_and_column_details'
         board_mock = mocker.patch(path)
         project_details_path = 'ib_tasks.adapters.auth_service.AuthService.get_projects_info_for_given_ids'
@@ -137,7 +137,7 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
         user_roles_mock = mocker.patch(
             "ib_tasks.adapters.roles_service.RolesService."
             "get_user_role_ids_based_on_project")
-        user_roles_mock.return_value = ['role_1', 'role_2']
+        user_roles_mock.return_value = ['role_4']
 
         from ib_tasks.tests.common_fixtures.interactors \
             import prepare_integration_task_boards_details
@@ -152,18 +152,7 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
                     "stage_id": 1,
                     "assignee_id": "123e4567-e89b-12d3-a456-426614174004",
                     "team_id": "123e4567-e89b-12d3-a456-426614174001"
-                },
-                {
-                    "stage_id": 2,
-                    "assignee_id": "123e4567-e89b-12d3-a456-427614174008",
-                    "team_id": "123e4567-e89b-12d3-a456-426614174002"
-                },
-                {
-                    "stage_id": 3,
-                    "assignee_id": "123e4567-e89b-12d3-a476-427614174006",
-                    "team_id": "123e4567-e89b-12d3-a456-426614174003"
-                }
-            ]
+                }]
         }
         path_params = {}
         query_params = {}
@@ -173,18 +162,3 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
                            query_params=query_params,
                            headers=headers,
                            snapshot=snapshot)
-
-        from ib_tasks.models import TaskStageHistory
-        task_stage_objs = TaskStageHistory.objects.all()
-        counter = 1
-        for task_stage_obj in task_stage_objs:
-            snapshot.assert_match(
-                name=f'stage_{counter}', value=task_stage_obj.stage_id
-            )
-            snapshot.assert_match(
-                name=f'assignee_{counter}', value=task_stage_obj.assignee_id
-            )
-            snapshot.assert_match(
-                name=f'left_{counter}', value=task_stage_obj.left_at
-            )
-            counter += counter

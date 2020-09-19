@@ -1,5 +1,5 @@
 """
-# Given Valid details
+# Given Invalid db stage ids in updating stage assignees
 """
 import factory
 import pytest
@@ -149,19 +149,9 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
             "board_id": "board_1",
             "stage_assignees": [
                 {
-                    "stage_id": 1,
+                    "stage_id": 4,
                     "assignee_id": "123e4567-e89b-12d3-a456-426614174004",
                     "team_id": "123e4567-e89b-12d3-a456-426614174001"
-                },
-                {
-                    "stage_id": 2,
-                    "assignee_id": "123e4567-e89b-12d3-a456-427614174008",
-                    "team_id": "123e4567-e89b-12d3-a456-426614174002"
-                },
-                {
-                    "stage_id": 3,
-                    "assignee_id": "123e4567-e89b-12d3-a476-427614174006",
-                    "team_id": "123e4567-e89b-12d3-a456-426614174003"
                 }
             ]
         }
@@ -173,18 +163,3 @@ class TestCase01ActOnTaskAndUpdateTaskStageAssigneesAPITestCase(TestUtils):
                            query_params=query_params,
                            headers=headers,
                            snapshot=snapshot)
-
-        from ib_tasks.models import TaskStageHistory
-        task_stage_objs = TaskStageHistory.objects.all()
-        counter = 1
-        for task_stage_obj in task_stage_objs:
-            snapshot.assert_match(
-                name=f'stage_{counter}', value=task_stage_obj.stage_id
-            )
-            snapshot.assert_match(
-                name=f'assignee_{counter}', value=task_stage_obj.assignee_id
-            )
-            snapshot.assert_match(
-                name=f'left_{counter}', value=task_stage_obj.left_at
-            )
-            counter += counter
