@@ -685,7 +685,6 @@ class StagesStorageImplementation(StageStorageInterface):
         gof_ids = list(gof_ids)
         return gof_ids
 
-
     @staticmethod
     def _convert_template_id_with_stage_id_dicts_to_dtos(
             template_id_with_stage_id_dicts: List[Dict]
