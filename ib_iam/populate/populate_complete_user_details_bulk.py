@@ -242,7 +242,7 @@ USERS = [
             "Assert Management Team"
         ],
         "is_admin": False,
-        "roles": ["Finance Admin"],
+        "roles": ["ALL_ROLES"],
         "project_id": "FIN_MAN"
     }
 ]
