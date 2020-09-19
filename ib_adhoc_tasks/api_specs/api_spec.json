@@ -256,6 +256,23 @@
         "task_id": {
           "type": "string"
         },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "start_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "due_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "priority": {
+          "type": "string"
+        },
         "task_overview_fields": {
           "type": "array",
           "items": {
@@ -269,7 +286,12 @@
       "required": [
         "task_id",
         "task_overview_fields",
-        "stage_with_actions"
+        "stage_with_actions",
+        "title",
+        "description",
+        "start_date",
+        "due_date",
+        "priority"
       ]
     },
     "TaskOverviewWithStageAndActionsListView": {
@@ -532,33 +554,6 @@
         "res_status"
       ]
     },
-    "ColumnDetails": {
-      "type": "object",
-      "properties": {
-        "column_id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "total_tasks": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "tasks": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/TaskOverviewWithStageAndActions"
-          }
-        }
-      },
-      "required": [
-        "column_id",
-        "name",
-        "total_tasks",
-        "tasks"
-      ]
-    },
     "InvalidStarBoardDetails": {
       "type": "object",
       "properties": {
@@ -673,34 +668,55 @@
       ]
     },
     "GroupByOnTasks": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "group_id": {
-            "type": "string"
-          },
-          "group_name": {
-            "type": "string",
-            "enum": [
-              "Status",
-              "Assignee"
-            ]
-          },
-          "total_groups": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "tasks": {
-            "$ref": "#/definitions/TaskCompleteDetails"
-          }
+      "type": "object",
+      "properties": {
+        "total_groups": {
+          "type": "integer",
+          "format": "int64"
         },
-        "required": [
-          "group_name",
-          "total_groups",
-          "tasks"
-        ]
-      }
+        "group_by_value": {
+          "type": "string"
+        },
+        "group_by_display_name": {
+          "type": "string"
+        },
+        "child_groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "group_by_value": {
+                "type": "string"
+              },
+              "group_by_display_name": {
+                "type": "string"
+              },
+              "total_tasks": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "tasks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/TaskOverviewWithStageAndActions"
+                }
+              }
+            },
+            "required": [
+              "group_by_value",
+              "group_by_display_name",
+              "total_tasks",
+              "tasks"
+            ]
+          }
+        }
+      },
+      "required": [
+        "total_groups",
+        "group_by_value",
+        "group_by_display_name",
+        "child_groups"
+      ]
     }
   },
   "parameters": {
@@ -774,21 +790,21 @@
       "required": true,
       "default": 0
     },
-    "GetTasksOfProjectByGroupIdsParameter": {
+    "GetTasksOfProjectOfGroupByKeyParameter": {
       "name": "get_tasks_for_given_group_ids",
       "in": "body",
       "description": "Group tasks for given group ids ",
       "schema": {
         "type": "object",
         "properties": {
-          "group_ids": {
+          "group_by_values": {
             "items": {
               "type": "string"
             }
           }
         },
         "required": [
-          "group_ids"
+          "group_by_values"
         ]
       }
     },
@@ -1019,24 +1035,6 @@
         ]
       }
     },
-    "ColumnsDetailsResponse": {
-      "description": "columns details",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "total_columns_count": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "columns": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/ColumnDetails"
-            }
-          }
-        }
-      }
-    },
     "TaskDetailsResponse": {
       "description": "tasks details",
       "schema": {
@@ -1058,58 +1056,86 @@
         }
       }
     },
-    "SingleGroupByAdhocBoardResponse": {
-      "description": "Apply Single group by on tasks",
+    "ProjectsAdhocBoardListViewResponse": {
+      "description": "Project adhoc board list view response",
       "schema": {
-        "$ref": "#/definitions/GroupByOnTasks"
+        "type": "object",
+        "properties": {
+          "total_groups": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "group_by_value": {
+                  "type": "string"
+                },
+                "group_by_display_name": {
+                  "type": "string"
+                },
+                "total_tasks": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "tasks": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/TaskOverviewWithStageAndActions"
+                  }
+                }
+              },
+              "required": [
+                "group_by_value",
+                "group_by_display_name",
+                "total_tasks",
+                "tasks"
+              ]
+            }
+          }
+        },
+        "required": [
+          "total_groups",
+          "groups"
+        ]
       }
     },
-    "TwoGroupByAdhocBoardResponse": {
-      "description": "Apply two group bys on tasks",
+    "ProjectsAdhocBoardKanbanViewResponse": {
+      "description": "Project adhoc board kanban view response",
       "schema": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "group_id": {
-              "type": "string"
-            },
-            "group_name": {
-              "type": "string",
-              "enum": [
-                "Status",
-                "Assignee"
-              ]
-            },
-            "total_count": {
-              "type": "integer",
-              "format": "int64"
-            },
-            "child_groups": {
+        "type": "object",
+        "properties": {
+          "total_groups": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "groups": {
+            "type": "array",
+            "items": {
               "$ref": "#/definitions/GroupByOnTasks"
             }
-          },
-          "required": [
-            "group_id",
-            "group_name",
-            "total_count",
-            "child_groups"
-          ]
-        }
+          }
+        },
+        "required": [
+          "total_groups",
+          "groups"
+        ]
       }
     },
     "GetTasksOfProjectByGroupIds": {
-      "description": "Get task of project by group ids",
+      "description": "Get task of project for group by values",
       "schema": {
         "$ref": "#/definitions/TaskCompleteDetails"
       }
     }
   },
   "paths": {
-    "/projects/adhoc_board/single_group_by/tasks/v1/": {
+    "/projects/adhoc_board/list_view/tasks/v1/": {
       "get": {
-        "summary": "Get the adhoc tasks in the project by applying the group by",
-        "operationId": "get_adhoc_tasks_by_group_by",
+        "summary": "Get the adhoc tasks in the project for list view",
+        "operationId": "get_adhoc_tasks_for_list_view",
         "security": [
           {
             "oauth": [
@@ -1136,15 +1162,15 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/SingleGroupByAdhocBoardResponse"
+            "$ref": "#/responses/ProjectsAdhocBoardListViewResponse"
           }
         }
       }
     },
-    "/projects/adhoc_board/two_group_by/tasks/v1/": {
+    "/projects/adhoc_board/kanban_view/tasks/v1/": {
       "get": {
-        "summary": "Get the adhoc tasks in the project by applying the two group by",
-        "operationId": "get_adhoc_tasks_by_two_group_by",
+        "summary": "Get the adhoc tasks in the project for kanban view",
+        "operationId": "get_adhoc_tasks_for_kanban_view",
         "security": [
           {
             "oauth": [
@@ -1177,13 +1203,13 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/TwoGroupByAdhocBoardResponse"
+            "$ref": "#/responses/ProjectsAdhocBoardKanbanViewResponse"
           }
         }
       }
     },
     "/projects/adhoc_board/groups/tasks/v1/": {
-      "get": {
+      "post": {
         "summary": "Get The Tasks In The Project Based On The Group Ids",
         "operationId": "get_adhoc_tasks_by_group_ids",
         "security": [
@@ -1204,7 +1230,7 @@
             "$ref": "#/parameters/OffsetParameter"
           },
           {
-            "$ref": "#/parameters/GetTasksOfProjectByGroupIdsParameter"
+            "$ref": "#/parameters/GetTasksOfProjectOfGroupByKeyParameter"
           }
         ],
         "responses": {
