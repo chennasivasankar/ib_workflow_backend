@@ -135,10 +135,11 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             import CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor
         call_action_logic_function_interactor = \
             CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
-                storage=self.storage,
+                storage=self.storage, stage_storage=self.stage_storage,
                 create_task_storage=self.create_task_storage, task_id=task_id,
                 action_id=action_id, field_storage=self.field_storage,
-                gof_storage=self.gof_storage
+                gof_storage=self.gof_storage, task_storage=self.task_storage,
+                action_storage=self.action_storage
             )
         updated_status_variable_dtos = call_action_logic_function_interactor. \
             call_action_logic_function_and_get_status_variables_dtos_of_task()
@@ -153,7 +154,7 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
         get_task_stage_logic_satisfied_next_stages_interactor = \
             GetTaskStageLogicSatisfiedStagesInteractor(
                 storage=self.storage, stage_storage=self.stage_storage,
-                task_id=task_id)
+                task_id=task_id, task_storage=self.task_storage)
         next_stage_ids = get_task_stage_logic_satisfied_next_stages_interactor. \
             get_task_stage_logic_satisfied_next_stages_given_status_variable_dtos(
             status_variable_dtos=status_variable_dtos)

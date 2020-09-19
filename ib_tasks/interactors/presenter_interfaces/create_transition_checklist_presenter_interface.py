@@ -6,7 +6,7 @@ from ib_tasks.exceptions.gofs_custom_exceptions import \
     UserDidNotFillRequiredGoFs
 
 
-class CreateOrUpdateTransitionChecklistTemplatePresenterInterface(abc.ABC):
+class CreateOrUpdateTransitionChecklistPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_create_transition_checklist_response(self):
@@ -33,8 +33,8 @@ class CreateOrUpdateTransitionChecklistTemplatePresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_transition_template_is_not_related_to_given_stage_action(self,
-                                                                       err):
+    def raise_transition_template_is_not_linked_to_action(self,
+                                                          err):
         pass
 
     @abc.abstractmethod
@@ -66,80 +66,79 @@ class CreateOrUpdateTransitionChecklistTemplatePresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_empty_value_in_required_field(self, err):
+    def raise_empty_value_in_required_field(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_phone_number_value(self, err):
+    def raise_invalid_phone_number_value(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_email_address(self, err):
+    def raise_invalid_email_address(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_url_address(self, err):
+    def raise_invalid_url_address(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_weak_password(self, err):
+    def raise_weak_password(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_number_value(self, err):
+    def raise_invalid_number_value(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_float_value(self, err):
+    def raise_invalid_float_value(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_dropdown_value(self, err):
+    def raise_invalid_dropdown_value(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_name_in_gof_selector_field_value(self,
-                                                                     err):
+    def raise_invalid_name_in_gof_selector(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_choice_in_radio_group_field(self, err):
+    def raise_invalid_choice_in_radio_group_field(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_checkbox_group_options_selected(self, err):
+    def raise_invalid_checkbox_group_options_selected(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_multi_select_options_selected(self, err):
+    def raise_invalid_multi_select_options_selected(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_multi_select_labels_selected(self, err):
+    def raise_invalid_multi_select_labels_selected(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_date_format(self, err):
+    def raise_invalid_date_format(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_time_format(self, err):
+    def raise_invalid_time_format(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_image_url(self, err):
+    def raise_invalid_image_url(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_not_acceptable_image_format(self, err):
+    def raise_not_acceptable_image_format(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_file_url(self, err):
+    def raise_invalid_file_url(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_not_acceptable_file_format(self, err):
+    def raise_not_acceptable_file_format(self, err):
         pass
 
     @abc.abstractmethod
@@ -155,4 +154,3 @@ class CreateOrUpdateTransitionChecklistTemplatePresenterInterface(abc.ABC):
     def raise_user_did_not_fill_required_fields(
             self, err: UserDidNotFillRequiredFields):
         pass
-

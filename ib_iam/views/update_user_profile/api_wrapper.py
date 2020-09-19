@@ -19,7 +19,7 @@ def api_wrapper(*args, **kwargs):
         .update_user_profile_presenter_implementation import \
         UpdateUserProfilePresenterImplementation
     presenter = UpdateUserProfilePresenterImplementation()
-    from ib_iam.interactors.update_user_profile_interactor import \
+    from ib_iam.interactors.auth.update_user_profile_interactor import \
         UpdateUserProfileInteractor
     interactor = UpdateUserProfileInteractor(user_storage=user_storage)
 

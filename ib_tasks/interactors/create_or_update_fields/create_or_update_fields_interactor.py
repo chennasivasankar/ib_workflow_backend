@@ -1,5 +1,19 @@
 from typing import List
 
+from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS, UPLOADERS
+from ib_tasks.constants.enum import PermissionTypes, FieldTypes
+from ib_tasks.interactors.create_or_update_fields \
+    .field_type_searchable_validations_interactor \
+    import FieldTypeSearchableValidationsInteractor
+from ib_tasks.interactors.create_or_update_fields \
+    .gof_selector_validations_interactor \
+    import GoFSelectorValidationsInteractor
+from ib_tasks.interactors.create_or_update_fields \
+    .image_or_file_uploader_validations_interactor \
+    import ImageOrFileUploaderValidationsInteractor
+from ib_tasks.interactors.create_or_update_fields \
+    .multi_values_input_fields_validation_interactor \
+    import MultiValuesInputFieldsValidationInteractor
 from ib_tasks.interactors.storage_interfaces.field_config_storage_interface \
     import \
     FieldConfigStorageInterface
@@ -7,26 +21,6 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos \
     import FieldDTO, FieldRolesDTO, FieldRoleDTO
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
-
-from ib_tasks.constants.enum import PermissionTypes, FieldTypes
-
-from ib_tasks.interactors.create_or_update_fields\
-    .multi_values_input_fields_validation_interactor \
-    import MultiValuesInputFieldsValidationInteractor
-
-from ib_tasks.interactors.create_or_update_fields\
-    .gof_selector_validations_interactor \
-    import GoFSelectorValidationsInteractor
-
-from ib_tasks.interactors.create_or_update_fields\
-    .image_or_file_uploader_validations_interactor \
-    import ImageOrFileUploaderValidationsInteractor
-
-from ib_tasks.interactors.create_or_update_fields\
-    .field_type_searchable_validations_interactor \
-    import FieldTypeSearchableValidationsInteractor
-
-from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS, UPLOADERS
 
 
 class CreateOrUpdateFieldsInteractor:

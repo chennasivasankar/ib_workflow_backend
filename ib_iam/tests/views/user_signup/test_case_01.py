@@ -69,7 +69,7 @@ class TestCase01UserSignupAPITestCase(TestUtils):
     @staticmethod
     def send_verification_email_mock(mocker):
         mock = mocker.patch(
-            "ib_iam.interactors.send_verify_email_link_interactor.SendVerifyEmailLinkInteractor.send_verification_email"
+            "ib_iam.interactors.auth.send_verify_email_link_interactor.SendVerifyEmailLinkInteractor.send_verification_email"
         )
         return mock
 

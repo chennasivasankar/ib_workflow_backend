@@ -1,14 +1,19 @@
 import factory
 
-from ib_tasks.interactors.presenter_interfaces.dtos import AllTasksOverviewDetailsDTO
-from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface import ProjectTemplateFieldsDTO
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    AllTasksOverviewDetailsDTO, TaskCompleteDetailsDTO
+from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface import \
+    ProjectTemplateFieldsDTO
 from ib_tasks.interactors.presenter_interfaces.get_template_stage_flow_presenter_interface import \
     StageFlowCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageDetailsDTO, GetTaskStageCompleteDetailsDTO, \
     TaskWithCompleteStageDetailsDTO
+from ib_tasks.tests.factories.adapter_dtos import TaskBoardsDetailsDTOFactory
 from ib_tasks.tests.factories.interactor_dtos import \
-    StageAssigneeDetailsWithOneAssigneeDTOFactory, TaskStageAssigneeDetailsDTOFactory
+    TaskStageAssigneeDetailsDTOFactory, FieldDisplayDTOFactory, \
+    TaskStageDTOFactory
+from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory
 
 
 class TaskIdWithStageDetailsDTOFactory(factory.Factory):
@@ -17,7 +22,7 @@ class TaskIdWithStageDetailsDTOFactory(factory.Factory):
 
     task_id = factory.Sequence(lambda n: (n + 1))
     task_display_id = factory.sequence(
-        lambda counter: "iBWF-{}".format(counter+1))
+        lambda counter: "iBWF-{}".format(counter + 1))
     stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
     stage_display_name = factory.Sequence(
         lambda n: 'stage_display_%d' % (n + 1))
@@ -28,6 +33,7 @@ class TaskIdWithStageDetailsDTOFactory(factory.Factory):
 class TaskWithCompleteStageDetailsDTOFactory(factory.Factory):
     class Meta:
         model = TaskWithCompleteStageDetailsDTO
+
     task_with_stage_details_dto = \
         factory.SubFactory(TaskIdWithStageDetailsDTOFactory)
 
@@ -44,7 +50,7 @@ class GetTaskStageCompleteDetailsDTOFactory(factory.Factory):
     stage_color = factory.Sequence(lambda n: 'color_%d' % (n + 1))
     stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
     display_name = "stage"
-    db_stage_id = factory.Sequence(lambda n: (n+1))
+    db_stage_id = factory.Sequence(lambda n: (n + 1))
     field_dtos = None
     action_dtos = None
 
@@ -101,3 +107,31 @@ class AllTasksOverviewDetailsDTOFactory(factory.Factory):
     def task_fields_and_action_details_dtos(self):
         GetTaskStageCompleteDetailsDTOFactory.reset_sequence()
         return [GetTaskStageCompleteDetailsDTOFactory()]
+
+
+class TaskCompleteDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskCompleteDetailsDTO
+
+    task_id = factory.Sequence(lambda c: c)
+    task_display_id = factory.Sequence(lambda c: f"task_display_id-{c}")
+    task_boards_details = factory.SubFactory(TaskBoardsDetailsDTOFactory)
+
+    @factory.lazy_attribute
+    def actions_dto(self):
+        return [ActionDTOFactory(), ActionDTOFactory()]
+
+    @factory.lazy_attribute
+    def field_dtos(self):
+        return [FieldDisplayDTOFactory(), FieldDisplayDTOFactory()]
+
+    @factory.lazy_attribute
+    def task_stage_details(self):
+        return [TaskStageDTOFactory(), TaskStageDTOFactory()]
+
+    @factory.lazy_attribute
+    def assignees_details(self):
+        return [
+            TaskStageAssigneeDetailsDTOFactory(),
+            TaskStageAssigneeDetailsDTOFactory()
+        ]

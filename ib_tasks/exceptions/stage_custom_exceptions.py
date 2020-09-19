@@ -25,8 +25,7 @@ class InvalidDbStageIdsListException(Exception):
 
 
 class StageIdsWithInvalidPermissionForAssignee(Exception):
-    def __init__(self,
-                 invalid_stage_ids: List[int]):
+    def __init__(self, invalid_stage_ids: List[int]):
         self.invalid_stage_ids = invalid_stage_ids
 
 

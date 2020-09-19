@@ -5,6 +5,7 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ...factories.models import TaskTemplateInitialStageFactory
 
 
 class TestCase04CreateTaskAPITestCase(TestUtils):
@@ -15,17 +16,22 @@ class TestCase04CreateTaskAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.fixture(autouse=True)
-    def setup(self):
+    def setup(self, mocker):
         from ib_tasks.tests.factories.models import \
             ProjectTaskTemplateFactory, TaskTemplateFactory
 
         ProjectTaskTemplateFactory.reset_sequence()
         TaskTemplateFactory.reset_sequence()
+        TaskTemplateInitialStageFactory.reset_sequence()
 
         template_id = 'template_1'
         project_id = "project_1"
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_valid_project_ids_mock
+        get_valid_project_ids_mock(mocker, [project_id])
 
-        TaskTemplateFactory.create(template_id=template_id)
+        task_template = TaskTemplateFactory.create(template_id=template_id)
+        TaskTemplateInitialStageFactory.create(task_template=task_template)
         ProjectTaskTemplateFactory.create(
             task_template_id=template_id, project_id=project_id)
 
@@ -37,11 +43,8 @@ class TestCase04CreateTaskAPITestCase(TestUtils):
             "action_id": 1,
             "title": "task_title",
             "description": "task_description",
-            "start_date": "2099-12-31",
-            "due_date": {
-                "date": "2099-12-31",
-                "time": "12:00:00"
-            },
+            "start_datetime": "2020-09-20 00:00:00",
+            "due_datetime": "2020-10-31 00:00:00",
             "priority": "HIGH",
             "task_gofs": [
                 {

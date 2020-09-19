@@ -1,6 +1,7 @@
 from typing import List, Any, Dict
 
 from ib_tasks.constants.enum import FieldTypes
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_dtos \
     import FieldValueDTO, FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
@@ -9,10 +10,12 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos \
     import TaskDetailsDTO, TaskGoFDTO, TaskGoFFieldDTO
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
 
 
 class InvalidModulePathFound(Exception):
@@ -31,14 +34,20 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
         CreateOrUpdateTaskStorageInterface
 
     def __init__(self, storage: StorageInterface,
+                 task_storage: TaskStorageInterface,
                  create_task_storage: CreateOrUpdateTaskStorageInterface,
                  field_storage: FieldsStorageInterface,
                  action_id: int, task_id: int,
-                 gof_storage: GoFStorageInterface
+                 gof_storage: GoFStorageInterface,
+                 action_storage: ActionStorageInterface,
+                 stage_storage: StageStorageInterface
                  ):
+        self.stage_storage = stage_storage
+        self.action_storage = action_storage
         self.storage = storage
         self.action_id = action_id
         self.task_id = task_id
+        self.task_storage = task_storage
         self.create_task_storage = create_task_storage
         self.field_storage = field_storage
         self.gof_storage = gof_storage
@@ -68,7 +77,7 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
         task_gof_fields_dto = task_dto.task_gof_field_dtos
         task_gof_fields_dto_dict = self._get_task_gof_fields_dict(
             task_gof_fields_dto)
-        status_variable_dtos = self.storage\
+        status_variable_dtos = self.task_storage\
             .get_status_variables_to_task(task_id=self.task_id)
         task_dict = self._get_task_dict(
             task_gof_dtos, gof_multiple_enable_dict,
@@ -117,14 +126,14 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
             status_variables_dto: List[StatusVariableDTO]):
         updated_status_variables_dto = self._get_updated_status_variable_dto(
             status_dict, status_variables_dto)
-        self.storage.update_status_variables_to_task(
+        self.task_storage.update_status_variables_to_task(
             task_id=self.task_id,
             status_variables_dto=updated_status_variables_dto)
 
     def _get_global_constants_to_task(self, task_id: int) -> Dict[str, Any]:
 
         global_constants_dto = \
-            self.storage.get_global_constants_to_task(task_id=task_id)
+            self.task_storage.get_global_constants_to_task(task_id=task_id)
 
         global_constants = {}
         for global_constant_dto in global_constants_dto:
@@ -135,7 +144,7 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
     def _get_stage_value_dict_to_task(self, task_id: int) -> Dict[str, int]:
 
         task_stage_dtos = \
-            self.storage.get_stage_dtos_to_task(task_id=task_id)
+            self.stage_storage.get_stage_dtos_to_task(task_id=task_id)
 
         stage_value_dict = {}
         for task_stage_dto in task_stage_dtos:
@@ -144,7 +153,7 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
         return stage_value_dict
 
     def _get_method_object_for_condition(self, action_id: int):
-        path_name = self.storage.get_path_name_to_action(
+        path_name = self.action_storage.get_path_name_to_action(
             action_id=action_id
         )
         path, method = path_name.rsplit(".", 1)
@@ -223,7 +232,7 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
     def _get_gof_multiple_enable_dict(
             self, template_id: str) -> Dict[str, bool]:
 
-        gof_multiple_enable_dtos = self.storage \
+        gof_multiple_enable_dtos = self.gof_storage \
             .get_enable_multiple_gofs_field_to_gof_ids(
             template_id=template_id
         )

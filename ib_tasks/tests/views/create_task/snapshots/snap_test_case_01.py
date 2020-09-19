@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestCase01CreateTaskAPITestCase.test_case status_code'] = '201'
@@ -25,18 +24,13 @@ snapshots['TestCase01CreateTaskAPITestCase.test_case body'] = {
             'actions': [
                 {
                     'action_id': 1,
-                    'action_type': 'NO_VALIDATIONS',
+                    'action_type': '',
                     'button_color': '#fafafa',
                     'button_text': 'hey',
                     'transition_template_id': 'template_2'
                 }
             ],
-            'assignee': {
-                'assignee_id': 'user_1',
-                'name': 'name_3',
-                'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM',
-                'team_info': None
-            },
+            'assignee': None,
             'stage_color': 'blue',
             'stage_display_name': 'name_0',
             'stage_id': 1
@@ -60,9 +54,9 @@ snapshots['TestCase01CreateTaskAPITestCase.test_case task_title'] = 'task_title'
 
 snapshots['TestCase01CreateTaskAPITestCase.test_case task_description'] = 'task_description'
 
-snapshots['TestCase01CreateTaskAPITestCase.test_case task_start_date'] = '2099-12-31 00:00:00'
+snapshots['TestCase01CreateTaskAPITestCase.test_case task_start_date'] = '2020-09-20 00:00:00'
 
-snapshots['TestCase01CreateTaskAPITestCase.test_case task_due_date'] = '2099-12-31 12:00:00'
+snapshots['TestCase01CreateTaskAPITestCase.test_case task_due_date'] = '2020-10-31 00:00:00'
 
 snapshots['TestCase01CreateTaskAPITestCase.test_case task_priority'] = 'HIGH'
 
@@ -77,3 +71,7 @@ snapshots['TestCase01CreateTaskAPITestCase.test_case task_gof_1'] = 1
 snapshots['TestCase01CreateTaskAPITestCase.test_case field_1'] = 'FIELD_ID-0'
 
 snapshots['TestCase01CreateTaskAPITestCase.test_case field_response_1'] = 'field_0_response'
+
+snapshots['TestCase01CreateTaskAPITestCase.test_case task_id_1'] = 1
+
+snapshots['TestCase01CreateTaskAPITestCase.test_case task_stage_1'] = 1

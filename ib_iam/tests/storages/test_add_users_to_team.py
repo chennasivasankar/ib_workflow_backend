@@ -1,4 +1,5 @@
 import pytest
+
 from ib_iam.models import TeamUser
 
 

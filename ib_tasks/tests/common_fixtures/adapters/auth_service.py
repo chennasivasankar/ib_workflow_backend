@@ -4,7 +4,6 @@ import factory
 
 from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTOFactory, \
     TeamDetailsWithUserIdDTOFactory
-
 from ib_tasks.tests.factories.interactor_dtos import \
     UserDetailsDTOFactory, \
     SearchableFieldUserDetailDTOFactory
@@ -88,7 +87,7 @@ def get_user_dtos_given_user_ids_mock(mocker):
         "ib_tasks.adapters.auth_service.AuthService."
         "get_user_details"
     )
-    UserDetailsDTOFactory.reset_sequence()
+    UserDetailsDTOFactory.reset_sequence(50)
     user_dtos = UserDetailsDTOFactory.create_batch(size=2)
     mock.return_value = user_dtos
     return mock
@@ -190,4 +189,15 @@ def get_team_info_for_given_user_ids_with_given_names_mock(mocker):
         UserIdWIthTeamDetailsDTOFactory.create_batch(size=2,
                                                      user_id='123e4567-e89b-12d3-a456-426614174000')
     mock.return_value = user_id_with_team_details_dtos
+    return mock
+
+def get_project_info_for_given_ids_mock(mocker):
+    mock = mocker.patch(
+        "ib_tasks.adapters.auth_service.AuthService.get_projects_info_for_given_ids"
+    )
+    from ib_tasks.tests.factories.adapter_dtos import \
+        ProjectDetailsDTOFactory
+    ProjectDetailsDTOFactory.reset_sequence()
+    project_details_dtos = ProjectDetailsDTOFactory.create_batch(size=1)
+    mock.return_value = project_details_dtos
     return mock

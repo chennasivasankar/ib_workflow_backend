@@ -1,31 +1,28 @@
 import abc
 
+from ib_tasks.exceptions.custom_exceptions import InvalidMethodFound, \
+    InvalidModulePathFound
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueDateTimeWithoutStartDateTimeIsNotValid, StartDateTimeIsRequired, \
     DueDateTimeIsRequired, DueDateTimeHasExpired
 from ib_tasks.exceptions.fields_custom_exceptions import \
     UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import \
-    UserDidNotFillRequiredGoFs
+    UserDidNotFillRequiredGoFs, InvalidStagePermittedGoFs
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
-    StageIdsListEmptyException, InvalidStageIdsListException
+    StageIdsListEmptyException, InvalidStageIdsListException, \
+    DuplicateStageIds, InvalidDbStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import \
     TaskDelayReasonIsNotUpdated, PriorityIsRequired, InvalidTaskJson
-from ib_tasks.interactors.presenter_interfaces.dtos import \
-    AllTasksOverviewDetailsDTO
-from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
-from ib_tasks.interactors.presenter_interfaces.dtos import \
-    TaskCompleteDetailsDTO
+from ib_tasks.interactors.dtos.dtos import TaskOverallCompleteDetailsDTO
 
 
 class SaveAndActOnATaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_save_and_act_on_task_response(
-            self, task_current_stage_details_dto: TaskCurrentStageDetailsDTO,
-            all_tasks_overview_details_dto: AllTasksOverviewDetailsDTO,
-            task_complete_details_dto: TaskCompleteDetailsDTO
+            self, task_overview_details_dto: TaskOverallCompleteDetailsDTO
     ):
         pass
 
@@ -66,84 +63,83 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_empty_value_in_required_field(self, err):
+    def raise_empty_value_in_required_field(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_phone_number_value(self, err):
+    def raise_invalid_phone_number_value(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_email_address(self, err):
+    def raise_invalid_email_address(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_url_address(self, err):
+    def raise_invalid_url_address(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_weak_password(self, err):
+    def raise_weak_password(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_number_value(self, err):
+    def raise_invalid_number_value(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_float_value(self, err):
+    def raise_invalid_float_value(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_dropdown_value(self, err):
+    def raise_invalid_dropdown_value(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_name_in_gof_selector_field_value(self,
-                                                                     err):
+    def raise_invalid_name_in_gof_selector(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_choice_in_radio_group_field(self, err):
+    def raise_invalid_choice_in_radio_group_field(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_checkbox_group_options_selected(self, err):
+    def raise_invalid_checkbox_group_options_selected(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_multi_select_options_selected(self, err):
+    def raise_invalid_multi_select_options_selected(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_multi_select_labels_selected(self, err):
+    def raise_invalid_multi_select_labels_selected(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_date_format(self, err):
+    def raise_invalid_date_format(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_time_format(self, err):
+    def raise_invalid_time_format(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_image_url(self, err):
+    def raise_invalid_image_url(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_not_acceptable_image_format(self, err):
+    def raise_not_acceptable_image_format(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_file_url(self, err):
+    def raise_invalid_file_url(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_not_acceptable_file_format(self, err):
+    def raise_not_acceptable_file_format(self, err):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_user_action_permission_denied(self, error_obj):
+    def raise_user_action_permission_denied(self, error_obj):
         pass
 
     @abc.abstractmethod
@@ -151,9 +147,8 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_stage_ids_with_invalid_permission_for_assignee_exception(
-            self, err: StageIdsWithInvalidPermissionForAssignee
-    ):
+    def raise_invalid_stage_assignees(
+            self, err: StageIdsWithInvalidPermissionForAssignee):
         pass
 
     @abc.abstractmethod
@@ -161,7 +156,7 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_present_stage_actions(self, err):
+    def raise_invalid_present_stage_actions(self, err):
         pass
 
     @abc.abstractmethod
@@ -173,19 +168,20 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_path_not_found_exception(self, path_name):
+    def raise_path_not_found_exception(self, err: InvalidModulePathFound):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_method_not_found_exception(self, method_name):
+    def raise_method_not_found(self, err: InvalidMethodFound):
         pass
 
     @abc.abstractmethod
-    def raise_duplicate_stage_ids_not_valid(self, duplicate_stage_ids):
+    def raise_duplicate_stage_ids_not_valid(self, err: DuplicateStageIds):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_stage_ids_exception(self, invalid_stage_ids):
+    def raise_invalid_stage_ids_exception(
+            self, err: InvalidDbStageIdsListException):
         pass
 
     @abc.abstractmethod
@@ -211,8 +207,8 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_task_delay_reason_not_updated(self,
-                                            err: TaskDelayReasonIsNotUpdated):
+    def raise_task_delay_reason_not_updated(
+            self, err: TaskDelayReasonIsNotUpdated):
         pass
 
     @abc.abstractmethod
@@ -237,8 +233,8 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_user_did_not_fill_required_gofs(self,
-                                              err: UserDidNotFillRequiredGoFs):
+    def raise_user_did_not_fill_required_gofs(
+            self, err: UserDidNotFillRequiredGoFs):
         pass
 
     @abc.abstractmethod
@@ -248,4 +244,9 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_invalid_task_json(self, err: InvalidTaskJson):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_stage_permitted_gofs(self,
+                                           err: InvalidStagePermittedGoFs):
         pass

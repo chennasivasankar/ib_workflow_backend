@@ -8,6 +8,8 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ...factories.models import TaskTemplateInitialStageFactory, \
+    StageGoFFactory
 
 
 class TestCase32CreateTaskAPITestCase(TestUtils):
@@ -36,14 +38,22 @@ class TestCase32CreateTaskAPITestCase(TestUtils):
         GoFToTaskTemplateFactory.reset_sequence()
         GoFRoleFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
+        TaskTemplateInitialStageFactory.reset_sequence()
+        StageGoFFactory.reset_sequence()
 
         template_id = 'template_1'
         project_id = "project_1"
         stage_id = "stage_1"
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_valid_project_ids_mock
+        get_valid_project_ids_mock(mocker, [project_id])
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_valid_project_ids_mock
+        get_valid_project_ids_mock(mocker, [project_id])
 
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        get_user_role_ids(mocker)
+            get_user_role_ids_based_on_project_mock
+        get_user_role_ids_based_on_project_mock(mocker)
 
         task_template_obj = TaskTemplateFactory.create(template_id=template_id)
         ProjectTaskTemplateFactory.create(
@@ -54,6 +64,8 @@ class TestCase32CreateTaskAPITestCase(TestUtils):
             display_logic="variable0==stage_1",
             card_info_kanban=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]),
             card_info_list=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]))
+        TaskTemplateInitialStageFactory.create(
+            task_template_id=template_id, stage=stage)
         path = 'ib_tasks.tests.populate.' \
                'stage_actions_logic.stage_1_action_name_1_logic'
         action = StageActionFactory(
@@ -63,7 +75,7 @@ class TestCase32CreateTaskAPITestCase(TestUtils):
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
         gof_obj = GoFFactory.create()
-
+        StageGoFFactory.create(gof=gof_obj, stage=stage)
         from ib_tasks.constants.constants import FieldTypes
         field_obj = FieldFactory.create(
             gof=gof_obj, field_type=FieldTypes.FILE_UPLOADER.value,
@@ -90,11 +102,8 @@ class TestCase32CreateTaskAPITestCase(TestUtils):
             "action_id": 1,
             "title": "task_title",
             "description": "task_description",
-            "start_date": "2099-12-31",
-            "due_date": {
-                "date": "2099-12-31",
-                "time": "12:00:00"
-            },
+            "start_datetime": "2020-09-20 00:00:00",
+            "due_datetime": "2020-10-31 00:00:00",
             "priority": "HIGH",
             "task_gofs": [
                 {

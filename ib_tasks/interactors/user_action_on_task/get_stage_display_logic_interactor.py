@@ -1,7 +1,8 @@
 from typing import List
 
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDisplayDTO
-from ib_tasks.interactors.task_dtos import StatusOperandStageDTO, StageDisplayLogicDTO
+from ib_tasks.interactors.task_dtos import StatusOperandStageDTO, \
+    StageDisplayLogicDTO
 
 
 class StageDisplayLogicInteractor:

@@ -5,6 +5,7 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ...factories.models import TaskTemplateInitialStageFactory
 
 
 class TestCase05CreateTaskAPITestCase(TestUtils):
@@ -15,7 +16,7 @@ class TestCase05CreateTaskAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.fixture(autouse=True)
-    def setup(self):
+    def setup(self, mocker):
         import json
         from ib_tasks.tests.factories.models import \
             ProjectTaskTemplateFactory, TaskTemplateFactory, \
@@ -27,14 +28,20 @@ class TestCase05CreateTaskAPITestCase(TestUtils):
         StageModelFactory.reset_sequence()
         ActionPermittedRolesFactory.reset_sequence()
         StageActionFactory.reset_sequence()
+        TaskTemplateInitialStageFactory.reset_sequence()
 
         template_id = 'template_1'
         project_id = "project_1"
         stage_id = "stage_1"
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_valid_project_ids_mock
+        get_valid_project_ids_mock(mocker, [project_id])
 
-        TaskTemplateFactory.create(template_id=template_id)
-        ProjectTaskTemplateFactory.create(
-            task_template_id=template_id, project_id=project_id)
+        task_template = TaskTemplateFactory.create(template_id=template_id)
+        TaskTemplateInitialStageFactory.create(task_template=task_template)
+        ProjectTaskTemplateFactory.create(project_id=project_id,
+                                          task_template=task_template)
+
         stage = StageModelFactory(
             stage_id=stage_id,
             task_template_id='template_1',
@@ -55,11 +62,8 @@ class TestCase05CreateTaskAPITestCase(TestUtils):
             "action_id": 1,
             "title": "task_title",
             "description": "task_description",
-            "start_date": "2099-12-31",
-            "due_date": {
-                "date": "2090-12-31",
-                "time": "12:00:00"
-            },
+            "start_datetime": "2020-10-20 00:00:00",
+            "due_datetime": "2020-09-09 00:00:00",
             "priority": "HIGH",
             "task_gofs": [
                 {

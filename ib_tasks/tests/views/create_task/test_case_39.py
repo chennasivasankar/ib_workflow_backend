@@ -6,6 +6,9 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ...common_fixtures.adapters.roles_service import \
+    get_user_role_ids_based_on_project_mock
+from ...factories.models import StageGoFFactory
 
 
 class TestCase39CreateTaskAPITestCase(TestUtils):
@@ -43,27 +46,29 @@ class TestCase39CreateTaskAPITestCase(TestUtils):
         TaskTemplateInitialStageFactory.reset_sequence()
         UserDetailsDTOFactory.reset_sequence()
         AssigneeDetailsDTOFactory.reset_sequence()
+        StageGoFFactory.reset_sequence()
 
         template_id = 'template_1'
         project_id = "project_1"
         stage_id = "stage_1"
         variable = "variable0"
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_valid_project_ids_mock
+        get_valid_project_ids_mock(mocker, [project_id])
 
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
         from ib_tasks.tests.common_fixtures.adapters.auth_service import \
             validate_if_user_is_in_project_mock, \
             get_valid_project_ids_mock, get_projects_info_for_given_ids_mock, \
             get_team_info_for_given_user_ids_mock, \
             prepare_permitted_user_details_mock
-        from ib_tasks.tests.common_fixtures.\
+        from ib_tasks.tests.common_fixtures. \
             adapters.assignees_details_service import \
             assignee_details_dtos_mock
 
-        get_user_role_ids(mocker)
         is_user_in_project = True
         validate_if_user_is_in_project_mock(mocker, is_user_in_project)
         get_valid_project_ids_mock(mocker, [project_id])
+        get_user_role_ids_based_on_project_mock(mocker)
         get_projects_info_for_given_ids_mock(mocker)
         get_team_info_for_given_user_ids_mock(mocker)
         prepare_permitted_user_details_mock_method = \
@@ -94,7 +99,7 @@ class TestCase39CreateTaskAPITestCase(TestUtils):
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
         gof_obj = GoFFactory.create()
-
+        StageGoFFactory.create(stage=stage, gof=gof_obj)
         field_obj = FieldFactory.create(gof=gof_obj)
         GoFToTaskTemplateFactory.create(
             task_template=task_template_obj, gof=gof_obj)
@@ -124,11 +129,8 @@ class TestCase39CreateTaskAPITestCase(TestUtils):
             "action_id": 1,
             "title": "task_title",
             "description": "task_description",
-            "start_date": "2099-12-31",
-            "due_date": {
-                "date": "2099-12-31",
-                "time": "12:00:00"
-            },
+            "start_datetime": "2020-09-20 00:00:00",
+            "due_datetime": "2020-10-31 00:00:00",
             "priority": "HIGH",
             "task_gofs": [
                 {
@@ -151,34 +153,3 @@ class TestCase39CreateTaskAPITestCase(TestUtils):
                            query_params=query_params,
                            headers=headers,
                            snapshot=snapshot)
-        from ib_tasks.models.task import Task
-        task_object = Task.objects.get(id=1)
-        snapshot.assert_match(task_object.id, 'task_id')
-        snapshot.assert_match(task_object.template_id, 'template_id')
-        snapshot.assert_match(task_object.title, 'task_title')
-        snapshot.assert_match(task_object.description, 'task_description')
-        snapshot.assert_match(str(task_object.start_date), 'task_start_date')
-        snapshot.assert_match(str(task_object.due_date), 'task_due_date')
-        snapshot.assert_match(task_object.priority, 'task_priority')
-
-        from ib_tasks.models.task_gof import TaskGoF
-        task_gofs = TaskGoF.objects.filter(task_id=1)
-        counter = 1
-        for task_gof in task_gofs:
-            snapshot.assert_match(
-                task_gof.same_gof_order, f'same_gof_order_{counter}')
-            snapshot.assert_match(task_gof.gof_id, f'gof_id_{counter}')
-            snapshot.assert_match(task_gof.task_id,
-                                  f'gof_task_id_{counter}')
-            counter = counter + 1
-
-        from ib_tasks.models.task_gof_field import TaskGoFField
-        task_gof_fields = TaskGoFField.objects.filter(task_gof__task_id=1)
-        counter = 1
-        for task_gof_field in task_gof_fields:
-            snapshot.assert_match(task_gof_field.task_gof_id,
-                                  f'task_gof_{counter}')
-            snapshot.assert_match(task_gof_field.field_id, f'field_{counter}')
-            snapshot.assert_match(task_gof_field.field_response,
-                                  f'field_response_{counter}')
-            counter = counter + 1

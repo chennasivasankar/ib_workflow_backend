@@ -10,7 +10,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
     TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, \
-    GoFRoleFactory, StageFactory
+    GoFRoleFactory, StageFactory, StageGoFFactory, CurrentTaskStageModelFactory
 from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
@@ -31,6 +31,8 @@ class TestCase14UpdateTaskAPITestCase(TestUtils):
         GoFToTaskTemplateFactory.reset_sequence()
         GoFRoleFactory.reset_sequence()
         StageFactory.reset_sequence()
+        StageGoFFactory.reset_sequence()
+        CurrentTaskStageModelFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
@@ -40,18 +42,17 @@ class TestCase14UpdateTaskAPITestCase(TestUtils):
         gof_ids = ["GOF-1", "GOF-2"]
         field_ids = ["FIELD-1", "FIELD-2", "FIELD-3", "FIELD-4"]
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        user_roles_mock_method = get_user_role_ids(mocker)
-        user_roles = user_roles_mock_method.return_value
+            get_user_role_ids_based_on_project_mock
+        mock_method = get_user_role_ids_based_on_project_mock(mocker)
+        user_roles = mock_method.return_value
 
-        StageFactory.create(id=stage_id)
+        stage = StageFactory.create(id=stage_id)
         gofs = GoFFactory.create_batch(size=len(gof_ids),
                                        gof_id=factory.Iterator(gof_ids))
         gof_roles = GoFRoleFactory.create_batch(
             size=len(gofs), role=factory.Iterator(user_roles),
             gof=factory.Iterator(gofs),
-            permission_type=PermissionTypes.WRITE.value
-        )
+            permission_type=PermissionTypes.WRITE.value)
         fields = [
             FieldFactory.create(field_id=field_ids[0], gof=gofs[0]),
             FieldFactory.create(field_id=field_ids[1], gof=gofs[0]),
@@ -65,6 +66,10 @@ class TestCase14UpdateTaskAPITestCase(TestUtils):
             gof=factory.Iterator(gofs))
         task = TaskFactory.create(
             task_display_id=task_id, template_id=task_template.template_id)
+        StageGoFFactory.create_batch(
+            size=len(gofs), gof=factory.Iterator(gofs), stage=stage)
+        current_task_stage = CurrentTaskStageModelFactory.create(task=task,
+                                                                 stage=stage)
 
     @pytest.mark.django_db
     def test_case(self, snapshot, mocker):
@@ -72,11 +77,8 @@ class TestCase14UpdateTaskAPITestCase(TestUtils):
             "task_id": "IBWF-1",
             "title": "updated_title",
             "description": "updated_description",
-            "start_date": "2020-09-08",
-            "due_date": {
-                "date": "2020-09-09",
-                "time": "11:00:00"
-            },
+            "start_datetime": "2020-09-20 00:00:00",
+            "due_datetime": "2020-10-31 00:00:00",
             "priority": "HIGH",
             "stage_assignee": {
                 "stage_id": 1,

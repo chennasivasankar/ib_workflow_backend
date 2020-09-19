@@ -113,9 +113,9 @@ class TestUpdateTaskInteractor:
     def perform_base_validations_for_template_gofs_and_fields_mock(self,
                                                                    mocker):
         path = "ib_tasks.interactors.create_or_update_task" \
-               ".template_gofs_fields_base_validations" \
-               ".TemplateGoFsFieldsBaseValidationsInteractor" \
-               ".perform_base_validations_for_template_gofs_and_fields"
+               ".gofs_details_validations_interactor" \
+               ".GoFsDetailsValidationsInteractor" \
+               ".perform_gofs_details_validations"
         return mocker.patch(path)
 
     @pytest.fixture
@@ -132,6 +132,14 @@ class TestUpdateTaskInteractor:
             ".get_all_task_overview_with_filters_and_searches_for_user" \
             ".GetTasksOverviewForUserInteractor" \
             ".get_filtered_tasks_overview_for_user"
+        return mocker.patch(path)
+
+    @pytest.fixture
+    def create_or_update_task_in_elasticsearch_storage_mock(self, mocker):
+        path = "ib_tasks.interactors." \
+               "create_or_update_tasks_into_elasticsearch_interactor" \
+               ".CreateOrUpdateDataIntoElasticsearchInteractor" \
+               ".create_or_update_task_in_elasticsearch_storage"
         return mocker.patch(path)
 
     def test_with_invalid_task_display_id(
@@ -166,7 +174,7 @@ class TestUpdateTaskInteractor:
         assert response == mock_object
         task_storage_mock.check_is_valid_task_display_id \
             .assert_called_once_with(
-            given_task_display_id)
+                given_task_display_id)
         presenter_mock.raise_invalid_task_display_id.assert_called_once()
         call_args = presenter_mock.raise_invalid_task_display_id.call_args
         error_object = call_args[0][0]
@@ -628,11 +636,13 @@ class TestUpdateTaskInteractor:
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
         create_task_storage_mock.is_valid_task_id.return_value = True
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = DuplicateSameGoFOrderForAGoF(
-            given_gof_id, [given_same_gof_order])
+                given_gof_id, [given_same_gof_order])
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock,
@@ -683,6 +693,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
         from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = \
@@ -735,6 +747,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
         from ib_tasks.exceptions.task_custom_exceptions import \
             InvalidGoFsOfTaskTemplate
 
@@ -795,7 +809,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
-
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
         from ib_tasks.exceptions.fields_custom_exceptions import \
             InvalidFieldIds
 
@@ -851,6 +866,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.fields_custom_exceptions import \
             DuplicateFieldIdsToGoF
@@ -910,6 +927,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.task_custom_exceptions import \
             InvalidFieldsOfGoF
@@ -968,6 +987,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.permission_custom_exceptions import \
             UserNeedsGoFWritablePermission
@@ -1033,6 +1054,9 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
+
         from ib_tasks.exceptions.permission_custom_exceptions import \
             UserNeedsFieldWritablePermission
 
@@ -1070,105 +1094,6 @@ class TestUpdateTaskInteractor:
         assert invalid_field_id == given_field_id
         assert required_roles == given_required_user_roles
 
-    def test_with_unfilled_gofs_which_are_required_and_user_permitted(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, action_storage_mock,
-            task_stage_storage_mock, task_template_storage_mock,
-            presenter_mock, mock_object,
-            perform_base_validations_for_template_gofs_and_fields_mock
-    ):
-        # Arrange
-        given_gof_display_names = ["gof_display_name_1", "gof_display_name_2"]
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
-        task_storage_mock.check_is_valid_task_display_id.return_value = True
-        task_id = 1
-        task_storage_mock.get_task_id_for_task_display_id.return_value = \
-            task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
-            = "template_1"
-
-        perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = UserDidNotFillRequiredGoFs(given_gof_display_names)
-        interactor = UpdateTaskInteractor(
-            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock,
-            action_storage=action_storage_mock,
-            task_stage_storage=task_stage_storage_mock,
-            task_template_storage=task_template_storage_mock
-        )
-        presenter_mock.raise_user_did_not_fill_required_gofs.return_value \
-            = mock_object
-
-        # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
-
-        # Assert
-        assert response == mock_object
-        presenter_mock.raise_user_did_not_fill_required_gofs \
-            .assert_called_once()
-        call_args = presenter_mock.raise_user_did_not_fill_required_gofs \
-            .call_args
-        error_object = call_args[0][0]
-        gof_display_names = error_object.gof_display_names
-        assert gof_display_names == given_gof_display_names
-
-    def test_with_unfilled_fields_which_are_required_and_user_permitted(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, action_storage_mock,
-            task_stage_storage_mock, task_template_storage_mock,
-            presenter_mock, mock_object,
-            perform_base_validations_for_template_gofs_and_fields_mock
-    ):
-        # Arrange
-        given_unfilled_field_dtos = FieldIdWithFieldDisplayNameDTOFactory()
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
-        task_storage_mock.check_is_valid_task_display_id.return_value = True
-        task_id = 1
-        task_storage_mock.get_task_id_for_task_display_id.return_value = \
-            task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
-            = "template_1"
-
-        from ib_tasks.exceptions.fields_custom_exceptions import \
-            UserDidNotFillRequiredFields
-        perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = UserDidNotFillRequiredFields(
-            given_unfilled_field_dtos)
-        interactor = UpdateTaskInteractor(
-            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock,
-            action_storage=action_storage_mock,
-            task_stage_storage=task_stage_storage_mock,
-            task_template_storage=task_template_storage_mock
-        )
-        presenter_mock.raise_user_did_not_fill_required_fields.return_value \
-            = mock_object
-
-        # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
-
-        # Assert
-        assert response == mock_object
-        presenter_mock.raise_user_did_not_fill_required_fields \
-            .assert_called_once()
-        call_args = presenter_mock.raise_user_did_not_fill_required_fields \
-            .call_args
-        error_object = call_args[0][0]
-        unfilled_field_dtos = error_object.unfilled_field_dtos
-        assert unfilled_field_dtos == given_unfilled_field_dtos
-
     def test_with_empty_response_to_a_required_field(
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
@@ -1196,6 +1121,9 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
+
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             EmptyValueForRequiredField
 
@@ -1211,19 +1139,17 @@ class TestUpdateTaskInteractor:
             task_stage_storage=task_stage_storage_mock,
             task_template_storage=task_template_storage_mock
         )
-        presenter_mock.raise_exception_for_empty_value_in_required_field \
-            .return_value = mock_object
+        presenter_mock.raise_empty_value_in_required_field.return_value = \
+            mock_object
 
         # Act
         response = interactor.update_task_wrapper(presenter_mock, task_dto)
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_empty_value_in_required_field \
-            .assert_called_once()
+        presenter_mock.raise_empty_value_in_required_field.assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_empty_value_in_required_field \
-                .call_args
+            presenter_mock.raise_empty_value_in_required_field.call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
         assert invalid_field_id == given_field_id
@@ -1255,6 +1181,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidPhoneNumberValue
@@ -1272,7 +1200,7 @@ class TestUpdateTaskInteractor:
             task_stage_storage=task_stage_storage_mock,
             task_template_storage=task_template_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_phone_number_value \
+        presenter_mock.raise_invalid_phone_number_value \
             .return_value = mock_object
 
         # Act
@@ -1280,10 +1208,10 @@ class TestUpdateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_invalid_phone_number_value \
+        presenter_mock.raise_invalid_phone_number_value \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_phone_number_value \
+            presenter_mock.raise_invalid_phone_number_value \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1318,6 +1246,9 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
+
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidEmailFieldValue
 
@@ -1334,7 +1265,7 @@ class TestUpdateTaskInteractor:
             task_stage_storage=task_stage_storage_mock,
             task_template_storage=task_template_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_email_address \
+        presenter_mock.raise_invalid_email_address \
             .return_value = mock_object
 
         # Act
@@ -1342,10 +1273,10 @@ class TestUpdateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_invalid_email_address \
+        presenter_mock.raise_invalid_email_address \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_email_address \
+            presenter_mock.raise_invalid_email_address \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1380,6 +1311,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidURLValue
@@ -1397,7 +1330,7 @@ class TestUpdateTaskInteractor:
             task_stage_storage=task_stage_storage_mock,
             task_template_storage=task_template_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_url_address \
+        presenter_mock.raise_invalid_url_address \
             .return_value = mock_object
 
         # Act
@@ -1405,10 +1338,10 @@ class TestUpdateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_invalid_url_address \
+        presenter_mock.raise_invalid_url_address \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_url_address \
+            presenter_mock.raise_invalid_url_address \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1443,6 +1376,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             NotAStrongPassword
@@ -1460,7 +1395,7 @@ class TestUpdateTaskInteractor:
             task_stage_storage=task_stage_storage_mock,
             task_template_storage=task_template_storage_mock
         )
-        presenter_mock.raise_exception_for_weak_password \
+        presenter_mock.raise_weak_password \
             .return_value = mock_object
 
         # Act
@@ -1468,10 +1403,10 @@ class TestUpdateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_weak_password \
+        presenter_mock.raise_weak_password \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_weak_password \
+            presenter_mock.raise_weak_password \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1506,6 +1441,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidNumberValue
@@ -1523,7 +1460,7 @@ class TestUpdateTaskInteractor:
             task_stage_storage=task_stage_storage_mock,
             task_template_storage=task_template_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_number_value \
+        presenter_mock.raise_invalid_number_value \
             .return_value = mock_object
 
         # Act
@@ -1531,10 +1468,10 @@ class TestUpdateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_invalid_number_value \
+        presenter_mock.raise_invalid_number_value \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_number_value \
+            presenter_mock.raise_invalid_number_value \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1569,6 +1506,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidFloatValue
@@ -1586,7 +1525,7 @@ class TestUpdateTaskInteractor:
             task_stage_storage=task_stage_storage_mock,
             task_template_storage=task_template_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_float_value \
+        presenter_mock.raise_invalid_float_value \
             .return_value = mock_object
 
         # Act
@@ -1594,10 +1533,10 @@ class TestUpdateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_invalid_float_value \
+        presenter_mock.raise_invalid_float_value \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_float_value \
+            presenter_mock.raise_invalid_float_value \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1633,6 +1572,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidValueForDropdownField
@@ -1651,7 +1592,7 @@ class TestUpdateTaskInteractor:
             task_stage_storage=task_stage_storage_mock,
             task_template_storage=task_template_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_dropdown_value \
+        presenter_mock.raise_invalid_dropdown_value \
             .return_value = mock_object
 
         # Act
@@ -1659,10 +1600,10 @@ class TestUpdateTaskInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_exception_for_invalid_dropdown_value \
+        presenter_mock.raise_invalid_dropdown_value \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_dropdown_value \
+            presenter_mock.raise_invalid_dropdown_value \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1701,6 +1642,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             IncorrectNameInGoFSelectorField
@@ -1720,7 +1663,7 @@ class TestUpdateTaskInteractor:
             task_template_storage=task_template_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_name_in_gof_selector_field_value \
+            .raise_invalid_name_in_gof_selector \
             .return_value = mock_object
 
         # Act
@@ -1729,10 +1672,10 @@ class TestUpdateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_name_in_gof_selector_field_value \
+            .raise_invalid_name_in_gof_selector \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_name_in_gof_selector_field_value \
+            raise_invalid_name_in_gof_selector \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1771,6 +1714,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             IncorrectRadioGroupChoice
@@ -1790,7 +1735,7 @@ class TestUpdateTaskInteractor:
             task_template_storage=task_template_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_choice_in_radio_group_field \
+            .raise_invalid_choice_in_radio_group_field \
             .return_value = mock_object
 
         # Act
@@ -1799,10 +1744,10 @@ class TestUpdateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_choice_in_radio_group_field \
+            .raise_invalid_choice_in_radio_group_field \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_choice_in_radio_group_field \
+            raise_invalid_choice_in_radio_group_field \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1841,6 +1786,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             IncorrectCheckBoxOptionsSelected
@@ -1860,7 +1807,7 @@ class TestUpdateTaskInteractor:
             task_template_storage=task_template_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_checkbox_group_options_selected \
+            .raise_invalid_checkbox_group_options_selected \
             .return_value = mock_object
 
         # Act
@@ -1869,10 +1816,10 @@ class TestUpdateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_checkbox_group_options_selected \
+            .raise_invalid_checkbox_group_options_selected \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_checkbox_group_options_selected \
+            raise_invalid_checkbox_group_options_selected \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1911,6 +1858,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             IncorrectMultiSelectOptionsSelected
@@ -1931,7 +1880,7 @@ class TestUpdateTaskInteractor:
             task_template_storage=task_template_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_multi_select_options_selected \
+            .raise_invalid_multi_select_options_selected \
             .return_value = mock_object
 
         # Act
@@ -1940,10 +1889,10 @@ class TestUpdateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_multi_select_options_selected \
+            .raise_invalid_multi_select_options_selected \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_multi_select_options_selected \
+            raise_invalid_multi_select_options_selected \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -1984,6 +1933,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             IncorrectMultiSelectLabelsSelected
@@ -2003,7 +1954,7 @@ class TestUpdateTaskInteractor:
             task_template_storage=task_template_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_multi_select_labels_selected \
+            .raise_invalid_multi_select_labels_selected \
             .return_value = mock_object
 
         # Act
@@ -2012,10 +1963,10 @@ class TestUpdateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_multi_select_labels_selected \
+            .raise_invalid_multi_select_labels_selected \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_multi_select_labels_selected \
+            raise_invalid_multi_select_labels_selected \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -2057,14 +2008,16 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidDateFormat
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidDateFormat(
-            given_field_id, given_field_response, expected_format
-        )
+                given_field_id, given_field_response, expected_format
+            )
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock,
@@ -2075,9 +2028,7 @@ class TestUpdateTaskInteractor:
             task_stage_storage=task_stage_storage_mock,
             task_template_storage=task_template_storage_mock
         )
-        presenter_mock \
-            .raise_exception_for_invalid_date_format \
-            .return_value = mock_object
+        presenter_mock.raise_invalid_date_format.return_value = mock_object
 
         # Act
         response = interactor.update_task_wrapper(presenter_mock, task_dto)
@@ -2085,10 +2036,10 @@ class TestUpdateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_date_format \
+            .raise_invalid_date_format \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_date_format \
+            raise_invalid_date_format \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -2128,6 +2079,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidTimeFormat
@@ -2147,7 +2100,7 @@ class TestUpdateTaskInteractor:
             task_template_storage=task_template_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_time_format \
+            .raise_invalid_time_format \
             .return_value = mock_object
 
         # Act
@@ -2156,10 +2109,10 @@ class TestUpdateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_time_format \
+            .raise_invalid_time_format \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_time_format \
+            raise_invalid_time_format \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -2197,6 +2150,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidUrlForImage
@@ -2214,7 +2169,7 @@ class TestUpdateTaskInteractor:
             task_stage_storage=task_stage_storage_mock,
             task_template_storage=task_template_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_image_url.return_value = \
+        presenter_mock.raise_invalid_image_url.return_value = \
             mock_object
 
         # Act
@@ -2223,10 +2178,10 @@ class TestUpdateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_image_url \
+            .raise_invalid_image_url \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_image_url \
+            raise_invalid_image_url \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -2264,6 +2219,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidImageFormat
@@ -2282,7 +2239,7 @@ class TestUpdateTaskInteractor:
             task_template_storage=task_template_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_not_acceptable_image_format \
+            .raise_not_acceptable_image_format \
             .return_value = mock_object
 
         # Act
@@ -2291,10 +2248,10 @@ class TestUpdateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_not_acceptable_image_format \
+            .raise_not_acceptable_image_format \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_not_acceptable_image_format \
+            raise_not_acceptable_image_format \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -2332,6 +2289,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidUrlForFile
@@ -2350,7 +2309,7 @@ class TestUpdateTaskInteractor:
             task_template_storage=task_template_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_invalid_file_url \
+            .raise_invalid_file_url \
             .return_value = mock_object
 
         # Act
@@ -2359,10 +2318,10 @@ class TestUpdateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_invalid_file_url \
+            .raise_invalid_file_url \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_invalid_file_url \
+            raise_invalid_file_url \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -2378,7 +2337,8 @@ class TestUpdateTaskInteractor:
             elastic_storage_mock, action_storage_mock,
             task_stage_storage_mock, task_template_storage_mock,
             presenter_mock, mock_object,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            create_or_update_task_in_elasticsearch_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -2400,6 +2360,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidFileFormat
@@ -2418,7 +2380,7 @@ class TestUpdateTaskInteractor:
             task_template_storage=task_template_storage_mock
         )
         presenter_mock \
-            .raise_exception_for_not_acceptable_file_format \
+            .raise_not_acceptable_file_format \
             .return_value = mock_object
 
         # Act
@@ -2427,10 +2389,10 @@ class TestUpdateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock \
-            .raise_exception_for_not_acceptable_file_format \
+            .raise_not_acceptable_file_format \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_exception_for_not_acceptable_file_format \
+            raise_not_acceptable_file_format \
             .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -2450,7 +2412,8 @@ class TestUpdateTaskInteractor:
             presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock,
             update_task_stage_assignees_mock,
-            get_filtered_tasks_overview_for_user_mock
+            get_filtered_tasks_overview_for_user_mock,
+            create_or_update_task_in_elasticsearch_storage_mock, mocker
     ):
         # Arrange
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
@@ -2461,6 +2424,10 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
+        create_or_update_task_in_elasticsearch_storage_mock(mocker)
+
         expected_existing_gofs = [
             GoFIdWithSameGoFOrderDTOFactory(
                 gof_id=gof_fields_dto.gof_id,
@@ -2469,7 +2436,7 @@ class TestUpdateTaskInteractor:
             for gof_fields_dto in task_dto.gof_fields_dtos
         ]
         create_task_storage_mock \
-            .get_gof_ids_with_same_gof_order_related_to_a_task.return_value \
+            .get_gofs_details_of_task.return_value \
             = expected_existing_gofs
         field_ids = []
         for gof_fields_dto in task_dto.gof_fields_dtos:
@@ -2481,7 +2448,7 @@ class TestUpdateTaskInteractor:
             task_gof_id=factory.Iterator(task_gof_ids)
         )
         create_task_storage_mock \
-            .get_field_ids_with_task_gof_id_related_to_given_task \
+            .get_field_id_with_task_gof_id_dtos \
             .return_value = expected_existing_fields
         gof_ids = [gof.gof_id for gof in expected_existing_gofs]
         same_gof_orders = [gof.same_gof_order for gof in
@@ -2527,7 +2494,8 @@ class TestUpdateTaskInteractor:
             presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock,
             update_task_stage_assignees_mock,
-            get_filtered_tasks_overview_for_user_mock
+            get_filtered_tasks_overview_for_user_mock,
+            create_or_update_task_in_elasticsearch_storage_mock, mocker
     ):
         # Arrange
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
@@ -2538,6 +2506,10 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
+        create_or_update_task_in_elasticsearch_storage_mock(mocker)
+
         expected_existing_gofs = [
             GoFIdWithSameGoFOrderDTOFactory(
                 gof_id=gof_fields_dto.gof_id,
@@ -2546,7 +2518,7 @@ class TestUpdateTaskInteractor:
             for gof_fields_dto in task_dto.gof_fields_dtos
         ]
         create_task_storage_mock \
-            .get_gof_ids_with_same_gof_order_related_to_a_task.return_value \
+            .get_gofs_details_of_task.return_value \
             = expected_existing_gofs
         field_ids = []
         for gof_fields_dto in task_dto.gof_fields_dtos:
@@ -2558,7 +2530,7 @@ class TestUpdateTaskInteractor:
             task_gof_id=factory.Iterator(task_gof_ids)
         )
         create_task_storage_mock \
-            .get_field_ids_with_task_gof_id_related_to_given_task \
+            .get_field_id_with_task_gof_id_dtos \
             .return_value = expected_existing_fields
         gof_ids = [gof.gof_id for gof in expected_existing_gofs]
         same_gof_orders = [gof.same_gof_order for gof in
@@ -2610,10 +2582,14 @@ class TestUpdateTaskInteractor:
             presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock,
             update_task_stage_assignees_mock,
-            get_filtered_tasks_overview_for_user_mock
+            get_filtered_tasks_overview_for_user_mock,
+            create_or_update_task_in_elasticsearch_storage_mock, mocker
     ):
         # Arrange
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            start_datetime=datetime.datetime(2020, 9, 21, 16, 21, 3, 556776),
+            due_datetime=datetime.datetime(2020, 9, 23, 16, 21, 3, 556776)
+        )
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
@@ -2621,6 +2597,10 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 9, 21, 16, 18, 11, 174188)
+        create_or_update_task_in_elasticsearch_storage_mock(mocker)
+
         expected_existing_gofs = [
             GoFIdWithSameGoFOrderDTOFactory(
                 gof_id=gof_fields_dto.gof_id,
@@ -2629,7 +2609,7 @@ class TestUpdateTaskInteractor:
             for gof_fields_dto in task_dto.gof_fields_dtos
         ]
         create_task_storage_mock \
-            .get_gof_ids_with_same_gof_order_related_to_a_task.return_value \
+            .get_gofs_details_of_task.return_value \
             = expected_existing_gofs
         field_ids = []
         for gof_fields_dto in task_dto.gof_fields_dtos:
@@ -2641,7 +2621,7 @@ class TestUpdateTaskInteractor:
             task_gof_id=factory.Iterator(task_gof_ids)
         )
         create_task_storage_mock \
-            .get_field_ids_with_task_gof_id_related_to_given_task \
+            .get_field_id_with_task_gof_id_dtos \
             .return_value = expected_existing_fields
         expected_task_gof_dtos_for_updation = [
             TaskGoFWithTaskIdDTOFactory(
@@ -2681,26 +2661,26 @@ class TestUpdateTaskInteractor:
         response = interactor.update_task_wrapper(presenter_mock, task_dto)
 
         # Assert
-        update_task_dto_with_task_db_id = UpdateTaskDTOFactory(
-            task_id=task_id, created_by_id=task_dto.created_by_id,
-            title=task_dto.title,
-            description=task_dto.description,
-            start_datetime=task_dto.start_datetime,
-            due_datetime=task_dto.due_datetime,
-            priority=task_dto.priority,
-            stage_assignee=task_dto.stage_assignee,
-            gof_fields_dtos=task_dto.gof_fields_dtos
-        )
-        create_task_storage_mock.update_task_with_given_task_details \
-            .assert_called_once_with(task_dto=update_task_dto_with_task_db_id)
+        from ib_tasks.interactors.task_dtos import UpdateTaskBasicDetailsDTO
+        from ib_tasks.constants.enum import Priority
+        expected_update_task_basic_details_dto = UpdateTaskBasicDetailsDTO(
+            task_id=1, action_type=None,
+            created_by_id='123e4567-e89b-12d3-a456-426614174000',
+            title='title_0', description='description0',
+            start_datetime=datetime.datetime(2020, 9, 21, 16, 21, 3, 556776),
+            due_datetime=datetime.datetime(2020, 9, 23, 16, 21, 3, 556776),
+            priority=Priority.HIGH.value)
+
+        create_task_storage_mock.update_task.assert_called_once_with(
+            expected_update_task_basic_details_dto)
         create_task_storage_mock \
-            .get_gof_ids_with_same_gof_order_related_to_a_task \
+            .get_gofs_details_of_task \
             .assert_called_once_with(task_id)
         create_task_storage_mock.update_task_gofs(
             expected_task_gof_dtos_for_updation)
         create_task_storage_mock.update_task_gof_fields \
             .assert_called_once_with(
-            expected_task_gof_field_dtos_for_updation)
+                expected_task_gof_field_dtos_for_updation)
 
     def test_with_invalid_permission_for_assignee_to_given_stage_ids(
             self, task_storage_mock, gof_storage_mock,
@@ -2710,7 +2690,8 @@ class TestUpdateTaskInteractor:
             task_stage_storage_mock, task_template_storage_mock,
             presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock,
-            update_task_stage_assignees_mock
+            update_task_stage_assignees_mock,
+            create_or_update_task_in_elasticsearch_storage_mock, mocker
     ):
         # Arrange
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
@@ -2721,6 +2702,10 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
+        create_or_update_task_in_elasticsearch_storage_mock(mocker)
+
         stage_assignees = [
             StageAssigneeDTOFactory(
                 db_stage_id=task_dto.stage_assignee.stage_id,
@@ -2747,7 +2732,7 @@ class TestUpdateTaskInteractor:
             StageIdsWithInvalidPermissionForAssignee(
                 given_invalid_stage_ids)
         presenter_mock \
-            .raise_stage_ids_with_invalid_permission_for_assignee_exception \
+            .raise_invalid_stage_assignees \
             .return_value = mock_object
 
         # Act
@@ -2758,10 +2743,10 @@ class TestUpdateTaskInteractor:
         update_task_stage_assignees_mock.assert_called_once_with(
             expected_task_stage_assignee_dto)
         presenter_mock \
-            .raise_stage_ids_with_invalid_permission_for_assignee_exception \
+            .raise_invalid_stage_assignees \
             .assert_called_once()
         call_args = presenter_mock. \
-            raise_stage_ids_with_invalid_permission_for_assignee_exception \
+            raise_invalid_stage_assignees \
             .call_args
         error_object = call_args[0][0]
         invalid_stage_ids = error_object.invalid_stage_ids
@@ -2776,7 +2761,8 @@ class TestUpdateTaskInteractor:
             presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock,
             update_task_stage_assignees_mock,
-            get_filtered_tasks_overview_for_user_mock
+            get_filtered_tasks_overview_for_user_mock,
+            create_or_update_task_in_elasticsearch_storage_mock, mocker
     ):
         # Arrange
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
@@ -2787,6 +2773,10 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
+        create_or_update_task_in_elasticsearch_storage_mock(mocker)
+
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock,

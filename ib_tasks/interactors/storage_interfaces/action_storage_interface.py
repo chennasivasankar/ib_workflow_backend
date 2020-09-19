@@ -6,7 +6,6 @@ Author: Pavankumar Pamuru
 import abc
 from typing import List, Optional
 
-from ib_tasks.adapters.dtos import ProjectRolesDTO
 from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId, \
@@ -16,10 +15,19 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO, StageActionIdDTO, StageIdActionNameDTO
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskProjectRolesDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import \
+    TaskProjectRolesDTO
 
 
 class ActionStorageInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def get_action_roles(self, action_id: int) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_path_name_to_action(self, action_id: int) -> str:
+        pass
 
     @abc.abstractmethod
     def get_stage_action_names(
@@ -43,7 +51,8 @@ class ActionStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_initial_stage_to_task_template(self, task_template_stage_dtos):
+    def get_or_create_initial_stage_to_task_template(self,
+                                                     task_template_stage_dtos):
         pass
 
     @abc.abstractmethod
@@ -82,7 +91,8 @@ class ActionStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_permitted_action_ids_given_stage_ids(self, user_roles: List[str],
-                                                 stage_ids: List[str]) -> List[int]:
+                                                 stage_ids: List[str]) -> List[
+        int]:
         pass
 
     @abc.abstractmethod
@@ -117,4 +127,12 @@ class ActionStorageInterface(abc.ABC):
     def get_stage_action_name_dtos(
             self, stage_id_action_dtos: List[StageIdActionNameDTO]
     ) -> List[StageActionIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_stage_id_for_action_id(self, action_id: int):
+        pass
+
+    @abc.abstractmethod
+    def get_task_present_stage_actions(self, task_id: int):
         pass

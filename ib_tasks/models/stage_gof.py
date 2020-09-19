@@ -1,4 +1,5 @@
 from django.db import models
+
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.stage import Stage
 
@@ -9,5 +10,5 @@ class StageGoF(models.Model):
 
     def __str__(self):
         return "{} gof in stage {}".format(
-            self.gof_id, self.stage_id
+            self.gof_id, self.stage.stage_id
         )

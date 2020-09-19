@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('ib_iam', '0002_auto_20200903_1611'),
     ]
@@ -43,7 +42,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='userdetails',
             name='name',
-            field=models.CharField(max_length=100, null=True),
+            field=models.CharField(max_length=100, null=True, blank=True),
         ),
         migrations.AlterField(
             model_name='userdetails',

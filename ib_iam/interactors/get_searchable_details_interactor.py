@@ -21,16 +21,20 @@ class GetSearchableDetailsInteractor:
     ) -> List[SearchableDetailsDTO]:
         searchable_type_city_details_dtos = \
             self._get_searchable_type_city_details_dtos(
-                searchable_dtos)
+                searchable_dtos
+            )
         searchable_type_state_details_dtos = \
             self._get_searchable_type_state_details_dtos(
-                searchable_dtos)
+                searchable_dtos
+            )
         searchable_type_country_details_dtos = \
             self._get_searchable_type_country_details_dtos(
-                searchable_dtos)
+                searchable_dtos
+            )
         searchable_type_user_details_dtos = \
             self._get_searchable_type_user_details_dtos(
-                searchable_dtos)
+                searchable_dtos
+            )
         searchable_details_dtos = (
                 searchable_type_city_details_dtos +
                 searchable_type_state_details_dtos +

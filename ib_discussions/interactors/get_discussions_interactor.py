@@ -1,4 +1,4 @@
-from typing import List, Optional, Dict
+from typing import List, Optional
 
 from ib_discussions.adapters.auth_service import UserProfileDTO
 from ib_discussions.constants.enum import EntityType

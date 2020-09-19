@@ -5,7 +5,7 @@ class TestUserLogoutResponse:
 
     @pytest.fixture
     def interactor(self):
-        from ib_iam.interactors.user_logout_interactor import \
+        from ib_iam.interactors.auth.user_logout_interactor import \
             UserLogoutInteractor
         return UserLogoutInteractor()
 

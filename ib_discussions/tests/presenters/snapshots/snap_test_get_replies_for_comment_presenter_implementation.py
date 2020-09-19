@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetRepliesForCommentPresenterImplementation.test_prepare_response_for_reply get replies'] = {

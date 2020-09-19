@@ -1,9 +1,13 @@
-import pytest
 from typing import List
+
+import pytest
+
 from ib_tasks.tests.factories.adapter_dtos import UserProjectStatusDTOFactory
-from ib_tasks.tests.factories.storage_dtos import ProjectTemplateDTOFactory, TaskTemplateGofsDTOFactory, \
+from ib_tasks.tests.factories.storage_dtos import ProjectTemplateDTOFactory, \
+    TaskTemplateGofsDTOFactory, \
     FieldNameDTOFactory
-from ib_tasks.tests.interactors.super_storage_mock_class import StorageMockClass
+from ib_tasks.tests.interactors.super_storage_mock_class import \
+    StorageMockClass
 
 
 class TestGetProjectsTemplatesFieldsInteractor(StorageMockClass):
