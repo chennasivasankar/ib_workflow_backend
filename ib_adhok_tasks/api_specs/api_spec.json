@@ -554,33 +554,6 @@
         "res_status"
       ]
     },
-    "ColumnDetails": {
-      "type": "object",
-      "properties": {
-        "column_id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "total_tasks": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "tasks": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/TaskOverviewWithStageAndActions"
-          }
-        }
-      },
-      "required": [
-        "column_id",
-        "name",
-        "total_tasks",
-        "tasks"
-      ]
-    },
     "InvalidStarBoardDetails": {
       "type": "object",
       "properties": {
