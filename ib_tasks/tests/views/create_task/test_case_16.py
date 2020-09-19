@@ -8,7 +8,8 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...factories.models import TaskTemplateInitialStageFactory
+from ...factories.models import TaskTemplateInitialStageFactory, \
+    StageGoFFactory
 
 
 class TestCase16CreateTaskAPITestCase(TestUtils):
@@ -51,8 +52,6 @@ class TestCase16CreateTaskAPITestCase(TestUtils):
         get_user_role_ids_based_on_project_mock(mocker)
 
         task_template_obj = TaskTemplateFactory.create(template_id=template_id)
-        TaskTemplateInitialStageFactory.create(
-            task_template__template_id=template_id)
         ProjectTaskTemplateFactory.create(
             task_template_id=template_id, project_id=project_id)
         stage = StageModelFactory(
@@ -61,6 +60,8 @@ class TestCase16CreateTaskAPITestCase(TestUtils):
             display_logic="variable0==stage_1",
             card_info_kanban=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]),
             card_info_list=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]))
+        TaskTemplateInitialStageFactory.create(
+            task_template=task_template_obj, stage=stage)
         path = 'ib_tasks.tests.populate.' \
                'stage_actions_logic.stage_1_action_name_1_logic'
         action = StageActionFactory(
@@ -70,6 +71,7 @@ class TestCase16CreateTaskAPITestCase(TestUtils):
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
         gof_obj = GoFFactory.create()
+        StageGoFFactory.create(gof=gof_obj, stage=stage)
         field_obj = FieldFactory.create(gof=gof_obj)
         GoFToTaskTemplateFactory.create(
             task_template=task_template_obj, gof=gof_obj)

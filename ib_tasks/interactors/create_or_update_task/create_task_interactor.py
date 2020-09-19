@@ -2,8 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from ib_tasks.exceptions.action_custom_exceptions import (
-    InvalidActionException, InvalidKeyError, InvalidCustomLogicException,
-    InvalidPresentStageAction
+    InvalidActionException, InvalidKeyError, InvalidPresentStageAction
 )
 from ib_tasks.exceptions.custom_exceptions import InvalidProjectId
 from ib_tasks.exceptions.datetime_custom_exceptions import (
@@ -24,8 +23,7 @@ from ib_tasks.exceptions.fields_custom_exceptions import (
     InvalidFieldIds, DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
 )
 from ib_tasks.exceptions.gofs_custom_exceptions import (
-    InvalidGoFIds, DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs,
-    InvalidStagePermittedGoFs
+    InvalidGoFIds, DuplicateSameGoFOrderForAGoF, InvalidStagePermittedGoFs
 )
 from ib_tasks.exceptions.permission_custom_exceptions import (
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission,
@@ -161,8 +159,6 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
             return presenter.raise_user_needs_gof_writable_permission(err)
         except UserNeedsFieldWritablePermission as err:
             return presenter.raise_user_needs_field_writable_permission(err)
-        except UserDidNotFillRequiredGoFs as err:
-            return presenter.raise_user_did_not_fill_required_gofs(err)
         except UserDidNotFillRequiredFields as err:
             return presenter.raise_user_did_not_fill_required_fields(err)
         except EmptyValueForRequiredField as err:
@@ -209,8 +205,6 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
             return presenter.raise_invalid_present_stage_actions(err)
         except InvalidKeyError:
             return presenter.raise_invalid_key_error()
-        except InvalidCustomLogicException:
-            return presenter.raise_invalid_custom_logic_function()
         except InvalidModulePathFound as err:
             return presenter.raise_invalid_path_not_found(err)
         except InvalidMethodFound as err:

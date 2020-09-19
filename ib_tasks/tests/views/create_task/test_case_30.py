@@ -8,6 +8,8 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ...factories.models import TaskTemplateInitialStageFactory, \
+    StageGoFFactory
 
 
 class TestCase30CreateTaskAPITestCase(TestUtils):
@@ -36,13 +38,12 @@ class TestCase30CreateTaskAPITestCase(TestUtils):
         GoFToTaskTemplateFactory.reset_sequence()
         GoFRoleFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
+        TaskTemplateInitialStageFactory.reset_sequence()
+        StageGoFFactory.reset_sequence()
 
         template_id = 'template_1'
         project_id = "project_1"
         stage_id = "stage_1"
-        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
-            get_valid_project_ids_mock
-        get_valid_project_ids_mock(mocker, [project_id])
         from ib_tasks.tests.common_fixtures.adapters.auth_service import \
             get_valid_project_ids_mock
         get_valid_project_ids_mock(mocker, [project_id])
@@ -60,6 +61,8 @@ class TestCase30CreateTaskAPITestCase(TestUtils):
             display_logic="variable0==stage_1",
             card_info_kanban=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]),
             card_info_list=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]))
+        TaskTemplateInitialStageFactory.create(
+            task_template_id=template_id, stage=stage)
         path = 'ib_tasks.tests.populate.' \
                'stage_actions_logic.stage_1_action_name_1_logic'
         action = StageActionFactory(
@@ -69,7 +72,7 @@ class TestCase30CreateTaskAPITestCase(TestUtils):
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
         gof_obj = GoFFactory.create()
-
+        StageGoFFactory.create(gof=gof_obj, stage=stage)
         from ib_tasks.constants.constants import FieldTypes
         field_obj = FieldFactory.create(
             gof=gof_obj, field_type=FieldTypes.TIME.value)

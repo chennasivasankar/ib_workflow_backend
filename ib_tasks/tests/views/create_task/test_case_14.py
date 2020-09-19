@@ -1,10 +1,15 @@
 """
 test with valid details creates task
+when a field is gof selector and user has permission for multiple gofs in
+that gof selector name and we have to bypass the user permitted fields
+validation for those gofs as use can only select one gof and it's fields
+even though he has permission over all gofs and it's fields
 """
 import factory
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
+from ib_tasks.constants.enum import FieldTypes
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...common_fixtures.adapters.roles_service import \
     get_user_role_ids_based_on_project_mock
@@ -97,21 +102,54 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
             action_type="")
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
-        gof_obj = GoFFactory.create()
-        StageGoFFactory.create(stage=stage, gof=gof_obj)
-        field_obj = FieldFactory.create(gof=gof_obj)
-        GoFToTaskTemplateFactory.create(
-            task_template=task_template_obj, gof=gof_obj)
+        gof_ids = [
+            "FIN_VENDOR_PAYMENT_DETAILS",
+            "FIN_VENDOR_ONLINE_EXPENSE_TYPE"
+            "FIN_ONLINE_ORDER_DETAILS",
+            "FIN_GST_DETAILS",
+            "FIN_PAYMENT_TYPE"
+        ]
+        gof_objects = GoFFactory.create_batch(
+            size=len(gof_ids), gof_id=factory.Iterator(gof_ids))
+        StageGoFFactory.create_batch(
+            size=len(gof_ids), stage=stage, gof=factory.Iterator(gof_objects))
+        fields = FieldFactory.create_batch(
+            size=len(gof_ids), gof=factory.Iterator(gof_objects))
+        gof_selector_field = FieldFactory.create(
+            field_id="FIN_TYPE_OF_PAYMENT_REQUEST",
+            gof_id="FIN_PAYMENT_TYPE",
+            field_type=FieldTypes.GOF_SELECTOR.value,
+            field_values=json.dumps([
+                {
+                    "name": "Vendor Payment",
+                    "gof_ids": [
+                        "FIN_VENDOR_PAYMENT_DETAILS",
+                        "FIN_VENDOR_ONLINE_EXPENSE_TYPE"
+                    ]
+                },
+                {
+                    "name": "Online Orders/3rd Party Site Payment",
+                    "gof_ids": [
+                        "FIN_ONLINE_ORDER_DETAILS",
+                        "FIN_GST_DETAILS"
+                    ]
+                }
+            ]))
+        fields.append(gof_selector_field)
+        GoFToTaskTemplateFactory.create_batch(
+            size=len(gof_ids), task_template=task_template_obj,
+            gof_id=factory.Iterator(gof_ids))
 
         from ib_tasks.constants.enum import PermissionTypes
-        GoFRoleFactory.create(
-            gof=gof_obj, permission_type=PermissionTypes.WRITE.value,
-            role="FIN_PAYMENT_REQUESTER"
-        )
-        FieldRoleFactory.create(
-            field=field_obj, permission_type=PermissionTypes.WRITE.value,
-            role="FIN_PAYMENT_REQUESTER"
-        )
+        GoFRoleFactory.create_batch(
+            size=len(gof_ids), gof=factory.Iterator(gof_ids),
+            permission_type=PermissionTypes.WRITE.value,
+            role="FIN_PAYMENT_REQUESTER")
+        FieldRoleFactory.create_batch(
+            size=len(fields),
+            field=factory.Iterator(fields),
+            permission_type=PermissionTypes.WRITE.value,
+            role="FIN_PAYMENT_REQUESTER")
         TaskTemplateStatusVariableFactory.create(
             task_template_id=template_id, variable=variable)
 
@@ -133,12 +171,22 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
             "priority": "HIGH",
             "task_gofs": [
                 {
-                    "gof_id": "gof_1",
+                    "gof_id": "FIN_PAYMENT_TYPE",
+                    "same_gof_order": 1,
+                    "gof_fields": [
+                        {
+                            "field_id": "FIN_TYPE_OF_PAYMENT_REQUEST",
+                            "field_response": "Vendor Payment"
+                        }
+                    ]
+                },
+                {
+                    "gof_id": "FIN_VENDOR_PAYMENT_DETAILS",
                     "same_gof_order": 1,
                     "gof_fields": [
                         {
                             "field_id": "FIELD_ID-0",
-                            "field_response": "field_0_response"
+                            "field_response": "vendor payment details"
                         }
                     ]
                 }

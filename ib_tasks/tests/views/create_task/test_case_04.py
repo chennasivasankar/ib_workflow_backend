@@ -30,9 +30,8 @@ class TestCase04CreateTaskAPITestCase(TestUtils):
             get_valid_project_ids_mock
         get_valid_project_ids_mock(mocker, [project_id])
 
-        TaskTemplateFactory.create(template_id=template_id)
-        TaskTemplateInitialStageFactory.create(
-            task_template__template_id=template_id)
+        task_template = TaskTemplateFactory.create(template_id=template_id)
+        TaskTemplateInitialStageFactory.create(task_template=task_template)
         ProjectTaskTemplateFactory.create(
             task_template_id=template_id, project_id=project_id)
 

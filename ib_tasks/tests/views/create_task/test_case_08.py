@@ -1,8 +1,10 @@
 """
-test with invalid value for phone number field raises exception
+test with user who does not fill his all permitted fields in case of
+Action Type is not NO_VALIDATIONS
 """
 import datetime
 
+import factory
 import freezegun
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -12,15 +14,22 @@ from ...factories.models import TaskTemplateInitialStageFactory, \
     StageGoFFactory
 
 
-class TestCase17CreateTaskAPITestCase(TestUtils):
+class TestCase15CreateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['write']}}
 
+    @pytest.fixture
+    def get_project_info_mock(self, mocker):
+        mock = mocker.patch(
+            "ib_tasks.adapters.auth_service.AuthService.get_projects_info_for_given_ids"
+        )
+        return mock
+
     @pytest.fixture(autouse=True)
-    def setup(self, mocker):
+    def setup(self, mocker, get_project_info_mock):
         import json
         from ib_tasks.tests.factories.models import \
             ProjectTaskTemplateFactory, TaskTemplateFactory, \
@@ -47,7 +56,6 @@ class TestCase17CreateTaskAPITestCase(TestUtils):
         from ib_tasks.tests.common_fixtures.adapters.auth_service import \
             get_valid_project_ids_mock
         get_valid_project_ids_mock(mocker, [project_id])
-
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids_based_on_project_mock
         get_user_role_ids_based_on_project_mock(mocker)
@@ -67,15 +75,12 @@ class TestCase17CreateTaskAPITestCase(TestUtils):
                'stage_actions_logic.stage_1_action_name_1_logic'
         action = StageActionFactory(
             stage=stage, py_function_import_path=path,
-            action_type=None
-        )
+            action_type="DO_VALIDATIONS")
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
         gof_obj = GoFFactory.create()
         StageGoFFactory.create(stage=stage, gof=gof_obj)
-        from ib_tasks.constants.constants import FieldTypes
-        field_obj = FieldFactory.create(
-            gof=gof_obj, field_type=FieldTypes.PHONE_NUMBER.value)
+        field_objects = FieldFactory.create_batch(size=2, gof=gof_obj)
         GoFToTaskTemplateFactory.create(
             task_template=task_template_obj, gof=gof_obj)
 
@@ -84,15 +89,15 @@ class TestCase17CreateTaskAPITestCase(TestUtils):
             gof=gof_obj, permission_type=PermissionTypes.WRITE.value,
             role="FIN_PAYMENT_REQUESTER"
         )
-        FieldRoleFactory.create(
-            field=field_obj, permission_type=PermissionTypes.WRITE.value,
-            role="FIN_PAYMENT_REQUESTER"
-        )
+        FieldRoleFactory.create_batch(
+            size=len(field_objects),
+            field=factory.Iterator(field_objects),
+            permission_type=PermissionTypes.WRITE.value,
+            role="FIN_PAYMENT_REQUESTER")
 
     @pytest.mark.django_db
-    @pytest.mark.parametrize('phone_number', ['879389jkh2', '34567892'])
     @freezegun.freeze_time(datetime.datetime(2020, 8, 31, 5, 4, 54))
-    def test_case(self, snapshot, phone_number):
+    def test_case(self, snapshot):
         body = {
             "project_id": "project_1",
             "task_template_id": "template_1",
@@ -109,7 +114,7 @@ class TestCase17CreateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD_ID-0",
-                            "field_response": phone_number
+                            "field_response": "field_0_response"
                         }
                     ]
                 }
