@@ -11,14 +11,6 @@ from ib_tasks.interactors.task_dtos import TaskStageIdDTO, \
     TaskDetailsConfigDTO
 from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
-# class TaskDetailsServiceInterface:
-#
-#     @staticmethod
-#     def get_task_details(task_dtos: List[TaskStageIdDTO]):
-#         storage = TasksStorageImplementation()
-#         interactor = GetTaskFieldsAndActionsInteractor(storage)
-#         result = interactor.get_task_fields_and_action(task_dtos)
-#         return result
 from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
 
