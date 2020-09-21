@@ -108,7 +108,8 @@ class ElasticStorageImplementation(ElasticStorageInterface):
             task_ids=task_ids,
             total_tasks=task_objects.count()
         )
-        return group_details_dto
+        group_details_dtos = [group_details_dto]
+        return group_details_dtos
 
     @staticmethod
     def _prepare_group_details_dto_for_first_order_grouping(

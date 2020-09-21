@@ -17,10 +17,6 @@ class GetTaskIdsForViewInteractor:
             group_by_dtos: List[GroupByDTO],
             task_offset_and_limit_values_dto: TaskOffsetAndLimitValuesDTO
     ):
-        '''
-        # TODO: It is needed
-        to get task stage ids
-        '''
         self._validate_project_id(project_id=project_id)
         self._validate_template_id(task_template_id=adhoc_template_id)
         self._validate_group_by_dtos(group_by_dtos=group_by_dtos)
