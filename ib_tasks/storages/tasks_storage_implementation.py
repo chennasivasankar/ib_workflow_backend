@@ -11,7 +11,7 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldDetailsDTO, FieldCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
-    TemplateFieldsDTO
+    TemplateFieldsDTO, TaskBaseDetailsDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
@@ -651,3 +651,28 @@ class TasksStorageImplementation(TaskStorageInterface):
         updated_due_datetime = due_details.due_date_time
 
         Task.objects.filter(pk=task_id).update(due_date=updated_due_datetime)
+
+    def get_base_details_to_task_ids(
+            self, task_ids: List[int]
+    ) -> List[TaskBaseDetailsDTO]:
+
+        task_objs = Task.objects.filter(id__in=task_ids)
+        return [
+            self._get_task_base_details_dto(task_obj=task_obj)
+            for task_obj in task_objs
+        ]
+
+    @staticmethod
+    def _get_task_base_details_dto(task_obj: Task) -> TaskBaseDetailsDTO:
+        task_base_details_dto = TaskBaseDetailsDTO(
+            template_id=task_obj.template_id,
+            project_id=task_obj.project_id,
+            task_display_id=task_obj.task_display_id,
+            title=task_obj.title,
+            description=task_obj.description,
+            start_date=task_obj.start_date,
+            due_date=task_obj.due_date,
+            priority=task_obj.priority,
+            task_id=task_obj.id
+        )
+        return task_base_details_dto

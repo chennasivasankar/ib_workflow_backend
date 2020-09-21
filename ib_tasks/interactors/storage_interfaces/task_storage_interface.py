@@ -12,7 +12,7 @@ from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionWithStageIdDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
-    TemplateFieldsDTO
+    TemplateFieldsDTO, TaskBaseDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageValueDTO, StageIdWithTemplateIdDTO, TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
@@ -187,4 +187,10 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def update_task_due_datetime(self, due_details: TaskDelayParametersDTO):
+        pass
+
+    @abc.abstractmethod
+    def get_base_details_to_task_ids(
+            self, task_ids: List[int]
+    ) -> List[TaskBaseDetailsDTO]:
         pass

@@ -4,9 +4,6 @@ from typing import List, Optional, Union
 
 from ib_tasks.adapters.dtos import ProjectDetailsDTO
 from ib_tasks.constants.enum import Priority, Searchable
-from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import GetTaskStageCompleteDetailsDTO
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO
 
 
 @dataclass
@@ -27,6 +24,7 @@ class TaskGoFFieldDTO:
 class TaskBaseDetailsDTO:
     template_id: str
     project_id: str
+    task_id: int
     task_display_id: str
     title: str
     description: Optional[str]
@@ -57,9 +55,3 @@ class FieldSearchableDTO:
     field_response: Union[int, str]
 
 
-@dataclass
-class TasksCompleteDetailsDTO:
-    task_base_details_dtos: List[TaskBaseDetailsDTO]
-    task_stage_details_dtos: List[GetTaskStageCompleteDetailsDTO]
-    task_display_id_dtos: List[TaskDisplayIdDTO]
-    task_stage_assignee_dtos: List[TaskStageAssigneeDetailsDTO]

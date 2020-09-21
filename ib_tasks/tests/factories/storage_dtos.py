@@ -583,14 +583,15 @@ class TaskBaseDetailsDTOFactory(factory.Factory):
         model = TaskBaseDetailsDTO
 
     template_id = factory.sequence(
-            lambda counter: "template_{}".format(counter))
+        lambda counter: "template_{}".format(counter))
     project_id = factory.sequence(
-            lambda counter: "project_id{}".format(counter))
+        lambda counter: "project_id{}".format(counter))
+    task_id = factory.sequence(lambda counter: counter + 1)
     task_display_id = factory.sequence(
-            lambda counter: "IBWF-{}".format(counter + 1))
+        lambda counter: "IBWF-{}".format(counter + 1))
     title = factory.sequence(lambda counter: "title_{}".format(counter))
     description = factory.sequence(
-            lambda counter: "description_{}".format(counter))
+        lambda counter: "description_{}".format(counter))
     start_date = datetime(2020, 4, 5, 4, 50, 40)
     due_date = datetime(2020, 4, 5, 4, 50, 40) + timedelta(10)
     priority = Priority.HIGH.value
@@ -814,3 +815,4 @@ class StageIdWithGoFIdDTOFactory(factory.Factory):
         model = StageIdWithGoFIdDTO
     stage_id = factory.sequence(lambda counter: counter)
     gof_id = factory.sequence(lambda counter: "gof_{}".format(counter))
+
