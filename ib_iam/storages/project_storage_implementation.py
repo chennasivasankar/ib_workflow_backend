@@ -1,15 +1,17 @@
+from collections import defaultdict
 from typing import List, Optional
 
 from ib_iam.interactors.dtos.dtos import UserIdWithProjectIdAndStatusDTO
 from ib_iam.interactors.storage_interfaces.dtos import (
     ProjectWithoutIdDTO, RoleNameAndDescriptionDTO, RoleDTO,
     ProjectWithDisplayIdDTO, ProjectsWithTotalCountDTO, PaginationDTO,
-    ProjectTeamIdsDTO, ProjectRoleDTO, ProjectDTO, UserIdAndTeamIdsDTO
+    ProjectTeamIdsDTO, ProjectRoleDTO, ProjectDTO, UserIdAndTeamIdsDTO,
+    ProjectRolesDTO
 )
 from ib_iam.interactors.storage_interfaces.project_storage_interface import (
     ProjectStorageInterface
 )
-from ib_iam.models import Project, ProjectTeam, ProjectRole
+from ib_iam.models import Project, ProjectTeam, ProjectRole, UserRole
 
 
 class ProjectStorageImplementation(ProjectStorageInterface):
@@ -32,6 +34,30 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             project_id__in=project_ids
         ).values_list("project_id", flat=True)
         return list(project_ids)
+
+    def get_user_roles_for_projects(self, user_id: str, project_ids: List[
+        str]) -> List[ProjectRolesDTO]:
+        from django.db.models import F
+        project_roles_objs = UserRole.objects.filter(
+            user_id=user_id, project_role__project_id__in=project_ids
+        ).annotate(role_id=F("project_role__role_id"),
+                   project_id=F("project_role__project_id")).values("role_id",
+                                                                    "project_id")
+        project_roles_dtos = self._convert_to_project_roles_dtos(
+            project_roles_objs, project_ids)
+        return project_roles_dtos
+
+    def _convert_to_project_roles_dtos(self, project_roles_objs,
+                                       project_ids: List[str]):
+        project_roles_map = defaultdict(list)
+        for project_role_obj in project_roles_objs:
+            project_roles_map[project_role_obj[
+                "project_id"]].append(project_role_obj["role_id"])
+        project_roles_dtos = [
+            ProjectRolesDTO(project_id=project_id,
+                            roles=project_roles_map[project_id])
+            for project_id in project_ids]
+        return project_roles_dtos
 
     def get_projects_with_total_count_dto(
             self, pagination_dto: PaginationDTO

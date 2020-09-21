@@ -248,3 +248,9 @@ class RoleNameAndDescriptionDTO:
 class UserIdAndTeamIdsDTO:
     user_id: str
     team_ids: List[str]
+
+
+@dataclass
+class ProjectRolesDTO:
+    project_id: str
+    roles: List[str]

@@ -1,12 +1,14 @@
 import factory
 
 from ib_iam.constants.enums import Searchable
+from ib_iam.interactors.dtos.dtos import UserIdWithProjectIdAndStatusDTO
 from ib_iam.interactors.storage_interfaces.dtos import (
     TeamWithUserIdDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO,
     CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, MemberDTO,
     TeamMemberLevelDetailsDTO, UserProfileDTO, SearchableDetailsDTO,
     ProjectDTO, MemberIdWithSubordinateMemberIdsDTO, ProjectRoleDTO,
-    ProjectWithoutIdDTO, ProjectWithDisplayIdDTO, RoleNameAndDescriptionDTO)
+    ProjectWithoutIdDTO, ProjectWithDisplayIdDTO, RoleNameAndDescriptionDTO,
+    ProjectRolesDTO)
 
 
 class UserDTOFactory(factory.Factory):
@@ -101,6 +103,28 @@ user_ids = [
 
 member_ids = user_ids
 employee_ids = user_ids
+
+
+class UserIdWithProjectIdAndStatusDTOFactory(factory.Factory):
+    class Meta:
+        model = UserIdWithProjectIdAndStatusDTO
+
+    user_id = factory.Sequence(
+        lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
+    project_id = factory.Sequence(
+        lambda n: "eca1a0c1-b9ef-4e59-b415-60a28ef17b1%d" % n)
+    is_exist = factory.Iterator([True, False])
+
+
+class ProjectRolesDTOFactory(factory.Factory):
+    class Meta:
+        model = ProjectRolesDTO
+
+    project_id = factory.Sequence(
+        lambda n: "project %d" % n)
+    roles = factory.Iterator([["ROLE_1", "ROLE_2"],
+                              ["ROLE_3", "ROLE_4"],
+                              ["ROLE_5", "ROLE_6"]])
 
 
 class TeamUserIdsDTOFactory(factory.Factory):

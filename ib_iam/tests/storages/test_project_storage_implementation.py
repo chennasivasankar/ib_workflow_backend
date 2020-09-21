@@ -4,7 +4,8 @@ from ib_iam.storages.project_storage_implementation import \
     ProjectStorageImplementation
 from ib_iam.tests.factories.storage_dtos import (
     ProjectDTOFactory, ProjectRoleDTOFactory, ProjectWithoutIdDTOFactory,
-    RoleDTOFactory, ProjectWithDisplayIdDTOFactory, PaginationDTOFactory)
+    RoleDTOFactory, ProjectWithDisplayIdDTOFactory, PaginationDTOFactory,
+    ProjectRolesDTOFactory)
 
 
 class TestProjectStorageImplementation:
@@ -615,3 +616,44 @@ class TestProjectStorageImplementation:
         )
 
         assert actual_role_names == expected_role_names
+
+    @pytest.mark.django_db
+    def test_get_user_roles_for_given_project_ids(
+            self, project_storage, expected_output,
+            populate_data_for_user_project_roles):
+        # Arrange
+        project_ids = ["project 0", "project 1"]
+        user_id = "user0"
+
+        # Act
+        response = project_storage.get_user_roles_for_projects(user_id,
+                                                               project_ids)
+
+        # Assert
+        self._validate_project_roles(response, expected_output)
+
+    @pytest.fixture
+    def expected_output(self):
+        ProjectRolesDTOFactory.reset_sequence()
+        return ProjectRolesDTOFactory.create_batch(size=2)
+
+    def _validate_project_roles(self, returned_output, expected_output):
+        for returned, expected in zip(returned_output, expected_output):
+            assert returned.project_id == expected.project_id
+            self._validate_roles(returned.roles, expected.roles)
+
+    @staticmethod
+    def _validate_roles(returned_roles, expected_roles):
+        for returned, expected in zip(returned_roles, expected_roles):
+            assert returned == expected
+
+    @pytest.fixture
+    def populate_data_for_user_project_roles(self):
+        from ib_iam.tests.factories.models import ProjectRoleFactory, \
+            ProjectFactory, UserRoleFactory
+        ProjectFactory.reset_sequence()
+        projects = ProjectFactory.create_batch(2)
+        ProjectRoleFactory.reset_sequence(1)
+        ProjectRoleFactory.create_batch(size=2, project=projects[0])
+        ProjectRoleFactory.create_batch(size=2, project=projects[1])
+        UserRoleFactory.create_batch(4, user_id="user0")
