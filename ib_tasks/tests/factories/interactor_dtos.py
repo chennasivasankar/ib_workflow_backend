@@ -16,7 +16,7 @@ from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
     UserStagesWithPaginationDTO, StageAssigneeDTO, \
     StageAssigneeWithTeamDetailsDTO, AssigneeWithTeamDetailsDTO, \
-    StageWithUserDetailsDTO, TemplateStageDTO
+    StageWithUserDetailsDTO, TemplateStageDTO, StageIdWithNameDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -665,6 +665,7 @@ class AssigneeCurrentTasksCountDTOFactory(factory.Factory):
         lambda counter: 'assignee_{}'.format(counter + 1))
     tasks_count = factory.sequence(
         lambda counter: counter + 1)
+
 
 class StageIdWithNameDTOFactory(factory.Factory):
     class Meta:
