@@ -247,7 +247,13 @@ snapshots['TestUpdateTaskPresenterImplementation.test_raise_invalid_stage_ids_li
 
 snapshots['TestUpdateTaskPresenterImplementation.test_raise_invalid_stage_ids_list response'] = "Invalid stage ids that you have sent are: ['stage_1', 'stage_2'],please send valid stage ids"
 
-snapshots['TestUpdateTaskPresenterImplementation.test_get_update_task_response success_reponse'] = {
+snapshots['TestUpdateTaskPresenterImplementation.test_raise_due_date_time_is_required http_status_code'] = 400
+
+snapshots['TestUpdateTaskPresenterImplementation.test_raise_due_date_time_is_required res_status'] = 'DUE_DATE_TIME_IS_REQUIRED'
+
+snapshots['TestUpdateTaskPresenterImplementation.test_raise_due_date_time_is_required json_response'] = 'due datetime is required if action type is not no validations'
+
+snapshots['TestUpdateTaskPresenterImplementation.test_get_update_task_response success_response'] = {
     'task_details': {
         'stage_with_actions': {
             'actions': [

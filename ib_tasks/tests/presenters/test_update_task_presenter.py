@@ -114,6 +114,24 @@ class TestUpdateTaskPresenterImplementation:
         snapshot.assert_match(response['res_status'], 'res_status')
         snapshot.assert_match(response['response'], 'response')
 
+    def test_raise_due_date_time_is_required(self, snapshot, presenter):
+        # Arrange
+        expected_due_date = datetime.date(2020, 3, 5)
+        from ib_tasks.exceptions.datetime_custom_exceptions import \
+            DueDateTimeIsRequired
+
+        err = DueDateTimeIsRequired(expected_due_date)
+
+        # Act
+        response = presenter.raise_due_date_time_is_required(err)
+
+        # Assert
+        json_response = json.loads(response.content)
+        snapshot.assert_match(json_response['http_status_code'],
+                              'http_status_code')
+        snapshot.assert_match(json_response['res_status'], 'res_status')
+        snapshot.assert_match(json_response['response'], 'json_response')
+
     def test_raise_due_date_has_expired(self, snapshot, presenter):
         # Arrange
         expected_due_date = datetime.date(2020, 3, 5)
@@ -810,4 +828,4 @@ class TestUpdateTaskPresenterImplementation:
 
         # Assert
         json_response = json.loads(response.content)
-        snapshot.assert_match(name="success_reponse", value=json_response)
+        snapshot.assert_match(name="success_response", value=json_response)
