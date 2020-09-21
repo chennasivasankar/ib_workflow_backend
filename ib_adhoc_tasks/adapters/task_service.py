@@ -1,12 +1,9 @@
 from typing import List
 
 
-class Service:
+class TaskService:
 
-    @staticmethod
-    def get_user_role_ids_based_on_project(
-            user_id: str, project_id: str
-    ) -> List[str]:
+    def is_template_exists(self, template_id: str) -> bool:
         pass
 
     @staticmethod
