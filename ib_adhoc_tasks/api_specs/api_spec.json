@@ -756,7 +756,6 @@
       ]
     },
     "InvalidPaginationDetailsForViews": {
-      "type": "object",
       "allOf": [
         {
           "$ref": "#/definitions/CommonHttpExceptionFields"
@@ -780,7 +779,6 @@
       ]
     },
     "InvalidProjectAndUserNotExistsInProjectForViews": {
-      "type": "object",
       "allOf": [
         {
           "$ref": "#/definitions/CommonHttpExceptionFields"
@@ -1610,6 +1608,9 @@
         "parameters": [
           {
             "$ref": "#/parameters/ProjectIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/ViewTypeParameter"
           }
         ],
         "responses": {
