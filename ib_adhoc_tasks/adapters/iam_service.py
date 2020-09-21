@@ -19,3 +19,9 @@ class IamService:
             project_ids=project_ids
         )
         return valid_project_ids
+
+    @staticmethod
+    def get_user_role_ids_based_on_project(
+            user_id: str, project_id: str
+    ) -> List[str]:
+        pass

@@ -20,3 +20,7 @@ class InvalidTaskLimitValue(Exception):
 
 class InvalidTaskOffsetValue(Exception):
     pass
+
+
+class InvalidTaskTemplateId(Exception):
+    pass
