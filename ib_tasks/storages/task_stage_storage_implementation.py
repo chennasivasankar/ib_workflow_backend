@@ -197,4 +197,15 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
     def get_task_stage_details_dtos(
             self, task_ids: List[int]
     ) -> List[TaskStageIdDTO]:
-        pass
+
+        from django.db.models import F
+        task_current_stage_objs = CurrentTaskStage.objects \
+            .filter(task_id__in=task_ids) \
+            .exclude(stage__value=-1) \
+            .annotate(normal_stage=F('stage__stage_id'))
+        return [
+            TaskStageIdDTO(
+                task_id=task_current_stage_obj.task_id,
+                stage_id=task_current_stage_obj.normal_stage
+            ) for task_current_stage_obj in task_current_stage_objs
+        ]

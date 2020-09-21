@@ -1,5 +1,6 @@
 import pytest
 
+from ib_tasks.constants.enum import ViewType
 from ib_tasks.tests.interactors.super_storage_mock_class import StorageMockClass
 
 
@@ -29,7 +30,6 @@ class TestGetTasksCompleteDetailsInteractor(StorageMockClass):
     def input_data(task_ids, project_id):
         from ib_tasks.interactors.dtos.dtos import TasksDetailsInputDTO
         user_id = "user_1"
-        from ib_tasks.constants.enum import ViewType
         view_type = ViewType.KANBAN.value
         input_dto = TasksDetailsInputDTO(
             task_ids=task_ids, project_id=project_id,
@@ -84,7 +84,7 @@ class TestGetTasksCompleteDetailsInteractor(StorageMockClass):
 
     def task_stage_response(self):
         from ib_tasks.tests.factories.interactor_dtos import TaskStageIdDTOFactory
-        TaskStageIdDTOFactory.reset_sequence(1)
+        TaskStageIdDTOFactory.reset_sequence()
         task_stage_dtos = TaskStageIdDTOFactory.create_batch(2)
         return task_stage_dtos
 
@@ -116,12 +116,16 @@ class TestGetTasksCompleteDetailsInteractor(StorageMockClass):
 
     def task_stage_assign_mock_response(self):
         from ib_tasks.tests.factories.interactor_dtos import TaskStageAssigneeDetailsDTOFactory
-        TaskStageAssigneeDetailsDTOFactory.reset_sequence(1)
+        from ib_tasks.tests.factories.interactor_dtos import AssigneeWithTeamDetailsDTOFactory
+        AssigneeWithTeamDetailsDTOFactory.reset_sequence(1)
+        from ib_tasks.tests.factories.adapter_dtos import TeamInfoDTOFactory
+        TeamInfoDTOFactory.reset_sequence(1)
+        TaskStageAssigneeDetailsDTOFactory.reset_sequence()
         return TaskStageAssigneeDetailsDTOFactory.create_batch(2)
 
     def tasks_base_response(self):
         from ib_tasks.tests.factories.storage_dtos import TaskBaseDetailsDTOFactory
-        TaskBaseDetailsDTOFactory.reset_sequence(1)
+        TaskBaseDetailsDTOFactory.reset_sequence()
         return TaskBaseDetailsDTOFactory.create_batch(2)
 
     def set_up_valid_storage(
@@ -136,12 +140,24 @@ class TestGetTasksCompleteDetailsInteractor(StorageMockClass):
         user_roles_mock.return_value = user_roles
         stage_storage.get_permitted_stage_ids_given_stage_ids \
             .return_value = stage_ids
-        tasks_stage_fields_and_actions = self.tasks_fields_and_actions()
-        tasks_fields_and_actions.return_value = tasks_stage_fields_and_actions
+        tasks_stage_fields_and_actions_response = self.tasks_fields_and_actions_mock()
+        tasks_fields_and_actions.return_value = tasks_stage_fields_and_actions_response
         task_stage_assignee_mock_response = self.task_stage_assign_mock_response()
         task_stage_assignee_mock.return_value = task_stage_assignee_mock_response
         tasks_base_response = self.tasks_base_response()
         task_storage.get_base_details_to_task_ids.return_value = tasks_base_response
+
+    def expected_response(self, ):
+        from ib_tasks.tests.factories.interactor_dtos import TasksCompleteDetailsDTOFactory
+        TasksCompleteDetailsDTOFactory.reset_sequence(1)
+        tasks_base_response = self.tasks_base_response()
+        tasks_stage_fields_and_actions_response = self.tasks_fields_and_actions_mock()
+        task_stage_assignee_mock_response = self.task_stage_assign_mock_response()
+        return TasksCompleteDetailsDTOFactory(
+            task_base_details_dtos=tasks_base_response,
+            task_stage_assignee_dtos=task_stage_assignee_mock_response,
+            task_stage_details_dtos=tasks_stage_fields_and_actions_response
+        )
 
     def test_given_valid_details_returns_details(
             self, interactor, project_mock, task_storage,
@@ -152,9 +168,10 @@ class TestGetTasksCompleteDetailsInteractor(StorageMockClass):
         project_id = "project_1"
         task_ids = [1, 2]
         project_ids = [project_id]
+        user_id = "user_1"
         user_roles = ["role_1", "role_2"]
         input_dto = self.input_data(task_ids, project_id)
-        stage_ids = ["stage_id_1", "stage_id_1"]
+        stage_ids = ["stage_id_1", "stage_id_2"]
         task_stage_dtos = self.task_stage_response()
         self.set_up_valid_storage(
             project_mock, project_ids, task_storage, task_ids,
@@ -162,8 +179,24 @@ class TestGetTasksCompleteDetailsInteractor(StorageMockClass):
             stage_storage, stage_ids, tasks_fields_and_actions,
             task_stage_assignee_mock
         )
+        expected_response = self.expected_response()
 
         # Act
         response = interactor.get_tasks_complete_details(input_dto)
 
         # Assert
+        assert response == expected_response
+        user_roles_mock.assert_called_once_with(user_id=user_id, project_id=project_id)
+        stage_storage.get_permitted_stage_ids_given_stage_ids.assert_called_once_with(
+            user_roles=user_roles, stage_ids=stage_ids
+        )
+        tasks_fields_and_actions.assert_called_once_with(
+            task_dtos=task_stage_dtos, user_id=user_id,
+            view_type=ViewType.KANBAN.value
+        )
+        task_stage_assignee_mock.assert_called_once_with(
+            task_stage_dtos=task_stage_dtos
+        )
+        task_storage.get_base_details_to_task_ids.assert_called_once_with(
+            task_ids=task_ids
+        )
