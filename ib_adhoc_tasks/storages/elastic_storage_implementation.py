@@ -1,18 +1,11 @@
-from typing import List
-
-from elasticsearch_dsl import Q, Search
-
-from ib_adhoc_tasks.interactors.dtos import TaskIdsAndCountDTO, \
-    TaskIdsForGroupsParameterDTO, GroupByValueDTO
-from ib_adhoc_tasks.interactors.storage_interfaces \
-    .elastic_storage_interface import ElasticStorageInterface
-from typing import List, Tuple, Optional
+from typing import List, Optional
 
 from elasticsearch_dsl import Q, Search, A
 
 from ib_adhoc_tasks.constants.config import TASK_INDEX_NAME
 from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO, \
-    TaskOffsetAndLimitValuesDTO
+    TaskOffsetAndLimitValuesDTO, TaskIdsForGroupsParameterDTO, \
+    TaskIdsAndCountDTO, GroupByValueDTO
 from ib_adhoc_tasks.interactors.storage_interfaces.dtos import GroupDetailsDTO, \
     GroupCountDTO, ChildGroupCountDTO
 from ib_adhoc_tasks.interactors.storage_interfaces.elastic_storage_interface import \
@@ -85,6 +78,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
                 template_id__keyword=task_ids_for_groups_parameter_dto.template_id) \
             & Q('terms', stages__stage_id__keyword=stage_ids)
         return query
+
     def get_group_details_of_project(
             self, project_id: str, adhoc_template_id: str,
             group_by_dtos: List[GroupByDTO], stage_ids: List[str],
