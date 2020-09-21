@@ -135,13 +135,15 @@ class ServiceInterface:
             project_id=project_id
         )
 
+    @staticmethod
     def get_user_permitted_stage_ids(
-            self, user_roles: List[str]
+            user_roles: List[str]
     ) -> List[str]:
         from ib_tasks.interactors.get_user_permitted_stage_ids \
             import GetUserPermittedStageIds
         stage_storage = StagesStorageImplementation()
         interactor = GetUserPermittedStageIds(stage_storage=stage_storage)
-        return interactor.get_permitted_stage_ids_to_user_role_ids(
+        stage_ids = interactor.get_permitted_stage_ids_to_user_role_ids(
             user_roles=user_roles
         )
+        return stage_ids
