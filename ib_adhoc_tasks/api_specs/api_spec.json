@@ -1180,6 +1180,9 @@
       "schema": {
         "type": "object",
         "properties": {
+          "group_by_id": {
+            "type": "integer"
+          },
           "group_by_display_name": {
             "type": "string"
           },
