@@ -45,7 +45,7 @@ class TestGetCountOfTasksAssignedForEachUser:
 
         # Act
         assignee_with_current_tasks_count_dtos = \
-            task_storage.get_count_of_tasks_assigned_for_each_user(
+            task_storage.get_current_count_of_tasks_assigned_for_each_user(
             db_stage_ids=db_stage_ids, task_ids=task_ids
         )
 

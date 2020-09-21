@@ -10,6 +10,8 @@ from ib_tasks.tests.factories.interactor_dtos import \
 from ib_tasks.tests.factories.storage_dtos import \
     TaskGoFWithTaskIdDTOFactory, \
     TaskGoFDetailsDTOFactory, TaskGoFFieldDTOFactory
+from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+    get_user_role_ids_based_on_project_mock_given_user_role_ids
 
 
 class TestCreateTransitionChecklistInteractor:
@@ -73,6 +75,12 @@ class TestCreateTransitionChecklistInteractor:
         return mock.create_autospec(StorageInterface)
 
     @pytest.fixture
+    def task_template_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.\
+            task_template_storage_interface import TaskTemplateStorageInterface
+        return mock.create_autospec(TaskTemplateStorageInterface)
+
+    @pytest.fixture
     def mock_object(self):
         return mock.Mock()
 
@@ -88,15 +96,16 @@ class TestCreateTransitionChecklistInteractor:
     def perform_base_validations_for_template_gofs_and_fields_mock(self,
                                                                    mocker):
         path = "ib_tasks.interactors.create_or_update_task" \
-               ".template_gofs_fields_base_validations" \
-               ".TemplateGoFsFieldsBaseValidationsInteractor" \
-               ".perform_base_validations_for_template_gofs_and_fields"
+               ".gofs_details_validations_interactor" \
+               ".GoFsDetailsValidationsInteractor" \
+               ".perform_gofs_details_validations"
         return mocker.patch(path)
 
     def test_with_invalid_task_display_id(
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
-            storage_mock, field_storage_mock, mock_object, presenter_mock
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_task_display_id = "task_1"
@@ -109,7 +118,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_invalid_task_display_id.return_value = mock_object
 
@@ -130,7 +140,8 @@ class TestCreateTransitionChecklistInteractor:
     def test_with_invalid_task_id(
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
-            storage_mock, field_storage_mock, mock_object, presenter_mock
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_task_display_id = "task_1"
@@ -148,7 +159,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_invalid_task_id.return_value = mock_object
 
@@ -170,7 +182,8 @@ class TestCreateTransitionChecklistInteractor:
     def test_with_invalid_transition_checklist_template_id(
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
-            storage_mock, field_storage_mock, mock_object, presenter_mock
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_task_display_id = "task_1"
@@ -197,7 +210,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_invalid_transition_checklist_template_id \
             .return_value = mock_object
@@ -225,7 +239,8 @@ class TestCreateTransitionChecklistInteractor:
     def test_with_invalid_action_id(
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
-            storage_mock, field_storage_mock, mock_object, presenter_mock
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
+            task_template_storage_mock
     ):
         # Arrange
         task_id = 1
@@ -247,7 +262,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_invalid_action \
             .return_value = mock_object
@@ -269,7 +285,8 @@ class TestCreateTransitionChecklistInteractor:
     def test_with_invalid_stage_id(
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
-            storage_mock, field_storage_mock, mock_object, presenter_mock
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
+            task_template_storage_mock
     ):
         # Arrange
         task_id = 1
@@ -290,7 +307,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_invalid_stage_id.return_value = mock_object
 
@@ -311,7 +329,8 @@ class TestCreateTransitionChecklistInteractor:
     def test_with_irrelevant_transition_template_for_given_stage_action(
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
-            storage_mock, field_storage_mock, mock_object, presenter_mock
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
+            task_template_storage_mock
     ):
         # Arrange
         task_id = 1
@@ -333,15 +352,15 @@ class TestCreateTransitionChecklistInteractor:
         stage_action_storage_mock \
             .validate_transition_template_id_is_related_to_given_stage_action. \
             side_effect = TransitionTemplateIsNotRelatedToGivenStageAction(
-            stage_id=given_stage_id, action_id=given_action_id,
-            transition_checklist_template_id=given_transition_template_id
-        )
+                stage_id=given_stage_id, action_id=given_action_id,
+                transition_checklist_template_id=given_transition_template_id)
         interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock \
             .raise_transition_template_is_not_linked_to_action \
@@ -356,8 +375,8 @@ class TestCreateTransitionChecklistInteractor:
         stage_action_storage_mock \
             .validate_transition_template_id_is_related_to_given_stage_action. \
             assert_called_once_with(
-            given_transition_template_id, given_action_id, given_stage_id
-        )
+                given_transition_template_id, given_action_id, given_stage_id
+            )
         presenter_mock \
             .raise_transition_template_is_not_linked_to_action \
             .assert_called_once()
@@ -375,7 +394,8 @@ class TestCreateTransitionChecklistInteractor:
     def test_with_duplicate_same_gof_order_for_a_gof(
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
-            storage_mock, field_storage_mock, mock_object, presenter_mock
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
+            task_template_storage_mock
     ):
         # Arrange
         task_id = 1
@@ -396,7 +416,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_same_gof_order_for_a_gof.return_value = \
             mock_object
@@ -419,7 +440,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_gof_ids = ["gof_0", "gof_1", "gof_2"]
@@ -447,7 +469,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_invalid_gof_ids.return_value = mock_object
 
@@ -467,7 +490,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_task_template_id = "template_0"
@@ -498,7 +522,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_invalid_gofs_given_to_a_task_template \
             .return_value = mock_object
@@ -524,7 +549,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_ids = ["field_0", "field_1", "field_2"]
@@ -555,7 +581,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_invalid_field_ids.return_value = mock_object
 
@@ -575,7 +602,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_gof_id = "gof_0"
@@ -609,7 +637,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_duplicate_field_ids_to_a_gof.return_value = \
             mock_object
@@ -632,7 +661,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_gof_id = "gof_0"
@@ -664,7 +694,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_invalid_fields_given_to_a_gof.return_value = \
             mock_object
@@ -688,7 +719,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_created_by_id = "user_0"
@@ -715,13 +747,14 @@ class TestCreateTransitionChecklistInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = UserNeedsGoFWritablePermission(
-            given_created_by_id, given_gof_id, given_required_user_roles)
+                given_created_by_id, given_gof_id, given_required_user_roles)
         interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_user_needs_gof_writable_permission.return_value \
             = \
@@ -749,7 +782,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_created_by_id = "user_0"
@@ -777,13 +811,14 @@ class TestCreateTransitionChecklistInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = UserNeedsFieldWritablePermission(
-            given_created_by_id, given_field_id, given_required_user_roles)
+                given_created_by_id, given_field_id, given_required_user_roles)
         interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_user_needs_field_writable_permission \
             .return_value \
@@ -811,7 +846,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -843,9 +879,10 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
-        presenter_mock.raise_invalid_phone_number_value \
+        presenter_mock.raise_empty_value_in_required_field \
             .return_value = mock_object
 
         # Act
@@ -854,10 +891,10 @@ class TestCreateTransitionChecklistInteractor:
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_invalid_phone_number_value \
+        presenter_mock.raise_empty_value_in_required_field \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_invalid_phone_number_value \
+            presenter_mock.raise_empty_value_in_required_field \
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
@@ -867,7 +904,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -901,7 +939,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_invalid_phone_number_value \
             .return_value = mock_object
@@ -927,7 +966,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -960,7 +1000,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_invalid_email_address \
             .return_value = mock_object
@@ -986,7 +1027,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -1020,7 +1062,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_invalid_url_address \
             .return_value = mock_object
@@ -1045,7 +1088,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -1079,7 +1123,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_weak_password \
             .return_value = mock_object
@@ -1104,7 +1149,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -1138,7 +1184,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_invalid_number_value \
             .return_value = mock_object
@@ -1163,7 +1210,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -1197,7 +1245,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_invalid_float_value \
             .return_value = mock_object
@@ -1223,7 +1272,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -1259,7 +1309,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_invalid_dropdown_value \
             .return_value = mock_object
@@ -1288,7 +1339,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -1324,7 +1376,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock \
             .raise_invalid_name_in_gof_selector \
@@ -1355,7 +1408,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -1384,14 +1438,15 @@ class TestCreateTransitionChecklistInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = IncorrectRadioGroupChoice(
-            given_field_id, given_field_response, valid_choices
-        )
+                given_field_id, given_field_response, valid_choices
+            )
         interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock \
             .raise_invalid_choice_in_radio_group_field \
@@ -1422,7 +1477,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -1458,7 +1514,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock \
             .raise_invalid_checkbox_group_options_selected \
@@ -1489,7 +1546,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -1518,15 +1576,16 @@ class TestCreateTransitionChecklistInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = IncorrectMultiSelectOptionsSelected(
-            given_field_id, invalid_multi_select_options_selected,
-            valid_choices
-        )
+                given_field_id, invalid_multi_select_options_selected,
+                valid_choices
+            )
         interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock \
             .raise_invalid_multi_select_options_selected \
@@ -1559,7 +1618,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -1588,14 +1648,15 @@ class TestCreateTransitionChecklistInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = IncorrectMultiSelectLabelsSelected(
-            given_field_id, invalid_multi_select_labels_selected, valid_choices
-        )
+                given_field_id, invalid_multi_select_labels_selected,
+                valid_choices)
         interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock \
             .raise_invalid_multi_select_labels_selected \
@@ -1628,7 +1689,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -1658,14 +1720,15 @@ class TestCreateTransitionChecklistInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidDateFormat(
-            given_field_id, given_field_response, expected_format
-        )
+                given_field_id, given_field_response, expected_format
+            )
         interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock \
             .raise_invalid_date_format \
@@ -1696,7 +1759,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -1726,14 +1790,15 @@ class TestCreateTransitionChecklistInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidTimeFormat(
-            given_field_id, given_field_response, expected_format
-        )
+                given_field_id, given_field_response, expected_format
+            )
         interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock \
             .raise_invalid_time_format \
@@ -1764,7 +1829,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -1798,7 +1864,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_invalid_image_url.return_value = \
             mock_object
@@ -1826,7 +1893,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -1862,7 +1930,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock \
             .raise_not_acceptable_image_format \
@@ -1893,7 +1962,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -1927,7 +1997,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock \
             .raise_invalid_file_url \
@@ -1956,7 +2027,8 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock
     ):
         # Arrange
         given_field_id = "field_0"
@@ -1992,7 +2064,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock \
             .raise_not_acceptable_file_format \
@@ -2023,11 +2096,17 @@ class TestCreateTransitionChecklistInteractor:
             self, create_or_update_task_storage_mock, template_storage_mock,
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock, mocker
     ):
         # Arrange
         given_task_display_id = "task_1"
         task_id = 1
+        user_role_ids = ["FIN_PR", "FIN_ADMIN"]
+
+        get_user_role_ids_based_on_project_mock_given_user_role_ids(
+            mocker, user_role_ids)
+
         transition_checklist_dto = \
             CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
                 task_display_id=given_task_display_id)
@@ -2065,7 +2144,8 @@ class TestCreateTransitionChecklistInteractor:
             template_storage=template_storage_mock,
             stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         presenter_mock.get_create_transition_checklist_response.return_value \
             = mock_object

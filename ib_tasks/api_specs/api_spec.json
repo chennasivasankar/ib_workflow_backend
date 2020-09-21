@@ -65,7 +65,7 @@
                "type":"string",
                "enum":[
                   "INVALID_ACTION_ID",
-                  "INVALID_TASK_DISPLAY_ID",
+                  "INVALID_TASK_ID",
                   "INVALID_BOARD_ID",
                   "TASK_DELAY_REASON_IS_NOT_ADDED"
                ]

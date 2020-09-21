@@ -13,7 +13,7 @@ snapshots['TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase.test_case bo
     'stage_assignees': [
         {
             'assignee': {
-                'assignee_id': 'user_id_0',
+                'assignee_id': '123e4567-e89b-12d3-a456-426614174000',
                 'name': 'name_0',
                 'profile_pic_url': 'pic_url',
                 'team_info': {
@@ -26,7 +26,7 @@ snapshots['TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase.test_case bo
         },
         {
             'assignee': {
-                'assignee_id': 'user_id_0',
+                'assignee_id': '123e4567-e89b-12d3-a456-426614174000',
                 'name': 'name_0',
                 'profile_pic_url': 'pic_url',
                 'team_info': {
@@ -39,7 +39,7 @@ snapshots['TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase.test_case bo
         },
         {
             'assignee': {
-                'assignee_id': 'user_id_0',
+                'assignee_id': '123e4567-e89b-12d3-a456-426614174000',
                 'name': 'name_0',
                 'profile_pic_url': 'pic_url',
                 'team_info': {
