@@ -717,6 +717,28 @@
         "group_by_display_name",
         "child_groups"
       ]
+    },
+    "GroupByFields": {
+      "type": "object",
+      "properties": {
+        "view_type": {
+          "type": "string",
+          "enum": [
+            "LIST",
+            "KANBAN"
+          ]
+        },
+        "group_by_display_name": {
+          "type": "string"
+        },
+        "order": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "view_type",
+        "group_by_display_name"
+      ]
     }
   },
   "parameters": {
@@ -949,6 +971,29 @@
           "view_type"
         ]
       }
+    },
+    "AddGroupByParameter": {
+      "name": "add_group_by_parameter",
+      "in": "body",
+      "required": true,
+      "description": "add group by parameter",
+      "schema": {
+        "$ref": "#/definitions/GroupByFields"
+      }
+    },
+    "ProjectIdPathParameter": {
+      "name": "project_id",
+      "in": "path",
+      "description": "project id value",
+      "type": "string",
+      "required": true
+    },
+    "GroupByIdPathParameter": {
+      "name": "group_by_id",
+      "in": "path",
+      "description": "group id value",
+      "type": "integer",
+      "required": true
     }
   },
   "responses": {
@@ -1129,6 +1174,24 @@
       "schema": {
         "$ref": "#/definitions/TaskCompleteDetails"
       }
+    },
+    "GroupByResponse": {
+      "description": "",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "group_by_display_name": {
+            "type": "string"
+          },
+          "order": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "view_type",
+          "group_by_display_name"
+        ]
+      }
     }
   },
   "paths": {
@@ -1236,6 +1299,84 @@
         "responses": {
           "200": {
             "$ref": "#/responses/GetTasksOfProjectByGroupIds"
+          }
+        }
+      }
+    },
+    "/project/{project_id}/adhoc_board/group/create/v1/": {
+      "post": {
+        "summary": "Create a group by",
+        "operationId": "create_group_by",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/AddGroupByParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GroupByResponse"
+          }
+        }
+      }
+    },
+    "/project/{project_id}/adhoc_board/group/{group_by_id}/edit/v1/": {
+      "put": {
+        "summary": "edit a group by",
+        "operationId": "edit_group_by",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/GroupByIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/AddGroupByParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GroupByResponse"
+          }
+        }
+      }
+    },
+    "/project/{project_id}/adhoc_board/group/v1/": {
+      "get": {
+        "summary": "get a group by",
+        "operationId": "get_group_by",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GroupByResponse"
           }
         }
       }
