@@ -36,6 +36,10 @@ class TestGetTaskIdsForGroupInteractor:
                 task_ids_for_groups_parameter_dto=task_ids_for_groups_parameter_dto
             )
 
+        is_project_exists_mock.assert_called_once_with(
+            project_id=task_ids_for_groups_parameter_dto.project_id
+        )
+
     def test_given_invalid_template_id_raises_invalid_template_id_exception(
             self, interactor, elastic_storage_mock, mocker
     ):
@@ -43,20 +47,23 @@ class TestGetTaskIdsForGroupInteractor:
             TaskIdsForGroupsParameterDTOFactory
         task_ids_for_groups_parameter_dto = TaskIdsForGroupsParameterDTOFactory()
         from ib_adhoc_tasks.tests.common_fixtures.adapters import \
-            is_project_exists_mock
+            is_project_exists_mock, validate_task_template_id_mock
         is_project_exists_mock = is_project_exists_mock(mocker=mocker)
         is_project_exists_mock.return_value = True
-        from ib_adhoc_tasks.tests.common_fixtures.adapters import \
-            is_template_exists_mock
-        is_template_exists_mock = is_template_exists_mock(mocker=mocker)
-        is_template_exists_mock.return_value = False
         from ib_adhoc_tasks.exceptions.custom_exceptions import \
-            InvalidTemplateId
+            InvalidTaskTemplateId
+        validate_task_template_id_mock = validate_task_template_id_mock(
+            mocker=mocker)
+        validate_task_template_id_mock.side_effect = InvalidTaskTemplateId
 
-        with pytest.raises(InvalidTemplateId):
+        with pytest.raises(InvalidTaskTemplateId):
             interactor.get_task_ids_for_groups(
                 task_ids_for_groups_parameter_dto=task_ids_for_groups_parameter_dto
             )
+
+        validate_task_template_id_mock.assert_called_once_with(
+            task_template_id=task_ids_for_groups_parameter_dto.template_id
+        )
 
     def test_given_valid_data_it_returns_task_ids(
             self, interactor, elastic_storage_mock, mocker
@@ -72,11 +79,9 @@ class TestGetTaskIdsForGroupInteractor:
             task_ids=task_ids, total_tasks_count=2
         )
         from ib_adhoc_tasks.tests.common_fixtures.adapters import \
-            is_project_exists_mock, is_template_exists_mock
+            is_project_exists_mock
         is_project_exists_mock = is_project_exists_mock(mocker=mocker)
         is_project_exists_mock.return_value = True
-        is_template_exists_mock = is_template_exists_mock(mocker=mocker)
-        is_template_exists_mock.return_value = True
         from ib_adhoc_tasks.tests.common_fixtures.adapters import \
             get_user_role_ids_based_on_project_mock
         get_user_role_ids_based_on_project_mock = \

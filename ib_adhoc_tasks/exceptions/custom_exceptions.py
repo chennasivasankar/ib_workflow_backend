@@ -1,4 +1,4 @@
-class InvalidTemplateId(Exception):
+class InvalidTaskTemplateId(Exception):
     pass
 
 

@@ -50,11 +50,4 @@ class GetTaskIdsForGroupInteractor:
     def _validate_template_id(self, template_id: str):
         from ib_adhoc_tasks.adapters.task_service import TaskService
         task_service = TaskService()
-        is_template_exists = task_service.is_template_exists(
-            template_id=template_id
-        )
-        is_template_not_exists = not is_template_exists
-        if is_template_not_exists:
-            from ib_adhoc_tasks.exceptions.custom_exceptions import \
-                InvalidTemplateId
-            raise InvalidTemplateId
+        task_service.validate_task_template_id(task_template_id=template_id)

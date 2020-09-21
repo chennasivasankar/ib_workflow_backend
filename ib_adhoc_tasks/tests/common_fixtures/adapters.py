@@ -5,9 +5,9 @@ def is_project_exists_mock(mocker):
     return mock
 
 
-def is_template_exists_mock(mocker):
+def validate_task_template_id_mock(mocker):
     mock = mocker.patch(
-        "ib_adhoc_tasks.adapters.task_service.TaskService.is_template_exists"
+        "ib_adhoc_tasks.adapters.task_service.TaskService.validate_task_template_id"
     )
     return mock
 

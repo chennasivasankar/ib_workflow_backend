@@ -1,9 +1,12 @@
-from typing import List
+from typing import List, Optional
+
+from ib_adhoc_tasks.exceptions.custom_exceptions import InvalidTaskTemplateId
 
 
 class TaskService:
 
-    def is_template_exists(self, template_id: str) -> bool:
+    def validate_task_template_id(self, task_template_id: str) -> \
+            Optional[InvalidTaskTemplateId]:
         pass
 
     @staticmethod
