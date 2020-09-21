@@ -8,7 +8,7 @@ def api_wrapper(*args, **kwargs):
     user_obj = kwargs["user"]
     user_id = user_obj.user_id
 
-    from ib_iam.interactors.user_logout_interactor import \
+    from ib_iam.interactors.auth.user_logout_interactor import \
         UserLogoutInteractor
     interactor = UserLogoutInteractor()
     interactor.user_logout_wrapper(user_id=user_id)

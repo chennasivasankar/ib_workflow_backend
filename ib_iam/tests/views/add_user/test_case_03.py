@@ -3,7 +3,6 @@ Given valid details user will be added successfully
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-from mock import patch, create_autospec
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
@@ -50,7 +49,7 @@ class TestCase03AddUserAPITestCase(TestUtils):
     @staticmethod
     def send_verification_email_mock(mocker):
         mock = mocker.patch(
-            "ib_iam.interactors.send_verify_email_link_interactor.SendVerifyEmailLinkInteractor.send_verification_email"
+            "ib_iam.interactors.auth.send_verify_email_link_interactor.SendVerifyEmailLinkInteractor.send_verification_email"
         )
         return mock
 

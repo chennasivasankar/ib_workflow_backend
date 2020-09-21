@@ -59,7 +59,7 @@ class TeamInfoDTO:
 class UserDetailsDTO:
     user_id: str
     user_name: str
-    profile_pic_url: str
+    profile_pic_url: Optional[str] = None
 
 
 @dataclass

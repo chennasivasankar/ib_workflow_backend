@@ -63,7 +63,7 @@ class TestGetUserProfileInteractor:
             expected_role_dtos, expected_team_dtos,
             expected_team_user_ids_dtos, expected_user_dtos):
         user_id = "1"
-        from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
+        from ib_iam.interactors.presenter_interfaces.dtos import \
             UserWithExtraDetailsDTO
         CompleteUserProfileDTOFactory.reset_sequence(1)
         user_profile_dto = CompleteUserProfileDTOFactory(
@@ -103,15 +103,15 @@ class TestGetUserProfileInteractor:
         expected_presenter_invalid_user_id_mock = Mock()
 
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dto_mock
-        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
+            get_user_profile_dto_mock
+        get_user_profile_dto_mock = get_user_profile_dto_mock(mocker)
         from ib_iam.exceptions.custom_exceptions import InvalidUserId
         get_user_profile_dto_mock.side_effect = InvalidUserId
 
         presenter_mock.response_for_invalid_user_id_exception.return_value \
             = expected_presenter_invalid_user_id_mock
 
-        from ib_iam.interactors.get_user_profile_interactor import \
+        from ib_iam.interactors.auth.get_user_profile_interactor import \
             GetUserProfileInteractor
         interactor = GetUserProfileInteractor(user_storage=storage_mock)
 
@@ -133,15 +133,15 @@ class TestGetUserProfileInteractor:
         expected_presenter_user_account_does_not_exist_mock = Mock()
 
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dto_mock
-        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
+            get_user_profile_dto_mock
+        get_user_profile_dto_mock = get_user_profile_dto_mock(mocker)
         from ib_iam.adapters.user_service import UserAccountDoesNotExist
         get_user_profile_dto_mock.side_effect = UserAccountDoesNotExist
 
         presenter_mock.response_for_user_account_does_not_exist_exception \
             .return_value = expected_presenter_user_account_does_not_exist_mock
 
-        from ib_iam.interactors.get_user_profile_interactor import \
+        from ib_iam.interactors.auth.get_user_profile_interactor import \
             GetUserProfileInteractor
         interactor = GetUserProfileInteractor(
             user_storage=storage_mock
@@ -171,8 +171,8 @@ class TestGetUserProfileInteractor:
         user_profile_dto = UserProfileDTOFactory(user_id=user_id)
         user_detail_dto = UserDTOFactory(user_id=user_id)
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dto_mock
-        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
+            get_user_profile_dto_mock
+        get_user_profile_dto_mock = get_user_profile_dto_mock(mocker)
         get_user_profile_dto_mock.return_value = user_profile_dto
         storage_mock.get_user_details.return_value = user_detail_dto
         storage_mock.get_user_related_team_dtos.return_value = expected_team_dtos
@@ -184,10 +184,10 @@ class TestGetUserProfileInteractor:
             get_basic_user_profile_dtos_mock
         user_profile_dtos_mock = get_basic_user_profile_dtos_mock(mocker)
         user_profile_dtos_mock.return_value = expected_user_dtos
-        presenter_mock.prepare_response_for_get_user_profile \
+        presenter_mock.response_for_get_user_profile \
             .return_value = Mock()
 
-        from ib_iam.interactors.get_user_profile_interactor import \
+        from ib_iam.interactors.auth.get_user_profile_interactor import \
             GetUserProfileInteractor
         interactor = GetUserProfileInteractor(user_storage=storage_mock)
 
@@ -213,5 +213,5 @@ class TestGetUserProfileInteractor:
         storage_mock.get_company_employee_ids_dto.assert_called_once_with(
             company_id="1"
         )
-        presenter_mock.prepare_response_for_get_user_profile.assert_called_once_with(
+        presenter_mock.response_for_get_user_profile.assert_called_once_with(
             user_with_extra_details_dto=user_with_extra_details_dto)

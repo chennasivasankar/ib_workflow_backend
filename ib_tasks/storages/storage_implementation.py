@@ -315,9 +315,8 @@ class StagesStorageImplementation(StageStorageInterface):
                 invalid_task_id_stages.append(stage.stage_id)
         return invalid_task_id_stages
 
-    def get_stage_role_dtos_given_db_stage_ids(self,
-                                               db_stage_ids: List[int]) -> \
-            List[StageRoleDTO]:
+    def get_stage_role_dtos_given_db_stage_ids(
+            self, db_stage_ids: List[int]) -> List[StageRoleDTO]:
         stage_roles = list(
             StagePermittedRoles.objects.filter(
                 stage_id__in=db_stage_ids).values(
@@ -684,7 +683,6 @@ class StagesStorageImplementation(StageStorageInterface):
         ).values_list("gof_id", flat=True)
         gof_ids = list(gof_ids)
         return gof_ids
-
 
     @staticmethod
     def _convert_template_id_with_stage_id_dicts_to_dtos(

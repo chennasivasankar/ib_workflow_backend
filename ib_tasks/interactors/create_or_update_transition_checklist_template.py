@@ -281,8 +281,8 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
     ) -> Optional[TransitionTemplateIsNotRelatedToGivenStageAction]:
         self.stage_action_storage \
             .validate_transition_template_id_is_related_to_given_stage_action(
-            transition_checklist_template_id, action_id, stage_id
-        )
+                transition_checklist_template_id, action_id, stage_id
+            )
         return
 
     def _validate_same_gof_order(
@@ -355,7 +355,7 @@ class CreateOrUpdateTransitionChecklistTemplateInteractor(
         roles_service_adapter = get_roles_service_adapter()
         user_roles = roles_service_adapter.roles_service \
             .get_user_role_ids_based_on_project(
-            user_id=user_id, project_id=project_id)
+                user_id=user_id, project_id=project_id)
         task_template_id = \
             self.create_task_storage.get_template_id_for_given_task(
                 task_id)

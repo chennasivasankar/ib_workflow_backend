@@ -7,7 +7,7 @@ from ib_tasks.exceptions.custom_exceptions import InvalidProjectId
 from ib_tasks.exceptions.fields_custom_exceptions import \
     UserDidNotFillRequiredFields
 from ib_tasks.exceptions.task_custom_exceptions import (
-    InvalidTaskTemplateDBId, InvalidTaskTemplateOfProject
+    InvalidTaskTemplateOfProject
 )
 from ib_tasks.interactors.create_or_update_task \
     .gofs_details_validations_interactor import \
@@ -58,6 +58,7 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
             self, task_dto: CreateTaskDTO, stage_id: int):
         action_id = task_dto.basic_task_details_dto.action_id
         action_type = self._validate_action_id_and_get_action_type(action_id)
+        task_template_id = task_dto.basic_task_details_dto.task_template_id
 
         self._validate_task_basic_details(task_dto, action_type)
         self._validate_gofs_details(task_dto, action_type, stage_id)
@@ -68,7 +69,7 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
                 user_id=task_dto.basic_task_details_dto.created_by_id,
                 project_id=task_dto.basic_task_details_dto.project_id,
                 gof_fields_dtos=task_dto.gof_fields_dtos,
-                stage_id=stage_id
+                stage_id=stage_id, task_template_id=task_template_id
             )
 
     def _validate_action_id_and_get_action_type(
@@ -85,7 +86,6 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
         task_template_id = task_dto.basic_task_details_dto.task_template_id
 
         self._validate_project_id(project_id)
-        self._validate_task_template_id(task_template_id)
         self._validate_task_template_project_id(project_id, task_template_id)
         self.validate_task_dates_and_priority(
             task_dto.basic_task_details_dto.start_datetime,
@@ -118,15 +118,6 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
             raise InvalidProjectId(project_id)
         return
 
-    def _validate_task_template_id(
-            self, task_template_id: str) -> Optional[InvalidTaskTemplateDBId]:
-        task_template_existence = \
-            self.task_template_storage.check_is_template_exists(
-                template_id=task_template_id)
-        if not task_template_existence:
-            raise InvalidTaskTemplateDBId(task_template_id)
-        return
-
     def _validate_task_template_project_id(
             self, project_id: str, task_template_id: str
     ) -> Optional[InvalidTaskTemplateOfProject]:
@@ -148,10 +139,12 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
 
     def _validate_all_user_permitted_fields_are_filled_or_not(
             self, user_id: str, project_id: str,
-            gof_fields_dtos: List[GoFFieldsDTO], stage_id: int):
+            gof_fields_dtos: List[GoFFieldsDTO], stage_id: int,
+            task_template_id: str
+    ):
         user_roles = self._get_user_roles_of_project(user_id, project_id)
         permitted_gof_ids = self._get_user_writable_gof_ids_based_on_stage(
-            stage_id, user_roles)
+            stage_id, user_roles, task_template_id)
         self._validate_permitted_fields_filled_or_not(
             user_roles, permitted_gof_ids, gof_fields_dtos)
 
@@ -166,9 +159,12 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
         return user_roles
 
     def _get_user_writable_gof_ids_based_on_stage(
-            self, stage_id: int, user_roles: List[str]) -> List[str]:
+            self, stage_id: int, user_roles: List[str],
+            task_template_id: str
+    ) -> List[str]:
         stage_permitted_gof_ids = \
-            self.task_template_storage.get_stage_permitted_gof_ids(stage_id)
+            self.task_template_storage.get_template_stage_permitted_gof_ids(
+                task_template_id, stage_id)
         gof_id_with_display_name_dtos = \
             self.gof_storage.get_user_write_permitted_gof_ids_in_given_gof_ids(
                 user_roles, stage_permitted_gof_ids)

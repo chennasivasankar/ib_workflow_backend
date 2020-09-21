@@ -1,15 +1,15 @@
-import json
-from typing import List, Dict, Union, Optional
-from json.decoder import JSONDecodeError
 import collections
+import json
+from json.decoder import JSONDecodeError
+from typing import List, Dict, Union, Optional
 
 from ib_tasks.exceptions.fields_custom_exceptions import (
     InvalidGOFIds, InvalidJsonForFieldValue,
     EmptyValuesForGoFNames, DuplicationOfGoFNamesForFieldValues
 )
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO
 
 
 class GoFSelectorValidationsInteractor:

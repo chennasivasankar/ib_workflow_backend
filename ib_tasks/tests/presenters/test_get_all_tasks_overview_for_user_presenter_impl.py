@@ -1,5 +1,3 @@
-import pytest
-
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.presenters.get_all_tasks_overview_for_user_presenter_impl import \

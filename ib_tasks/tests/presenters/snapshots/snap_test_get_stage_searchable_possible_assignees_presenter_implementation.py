@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetStageSearchablePossibleAssigneesPresenterImplementation.test_raise_invalid_offset_exception http_status_code'] = 400

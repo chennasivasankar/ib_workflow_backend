@@ -10,7 +10,7 @@ from ib_iam.constants.exception_messages import (
 
 )
 from ib_iam.interactors.presenter_interfaces \
-    .update_team_presenter_interface import UpdateTeamPresenterInterface
+    .team_presenter_interface import UpdateTeamPresenterInterface
 
 
 class UpdateTeamPresenterImplementation(

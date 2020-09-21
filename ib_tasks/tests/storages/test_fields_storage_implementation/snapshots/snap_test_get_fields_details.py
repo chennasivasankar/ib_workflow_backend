@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import GenericRepr, Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetFieldDetails.test_when_user_permitted_fields_exists_returns_field_details response'] = [

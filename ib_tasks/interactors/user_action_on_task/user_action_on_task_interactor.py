@@ -90,7 +90,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             task_id = self.get_task_id_for_task_display_id(task_display_id)
             task_complete_details_dto, task_current_stage_details_dto, \
             all_tasks_overview_dto = \
-                self.user_action_on_task_and_set_random_assignees(task_id=task_id)
+                self.user_action_on_task_and_set_random_assignees(
+                    task_id=task_id)
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
         except InvalidBoardIdException as err:
@@ -132,10 +133,11 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             self.task_storage.get_project_id_for_the_task_id(task_id=task_id)
         self.validate_if_user_is_in_project(
             project_id=project_id, user_id=self.user_id)
+
+        self._validations_for_task_action(task_id, project_id)
         self._validation_all_user_template_permitted_fields_are_filled_or_not(
             task_id=task_id, project_id=project_id
         )
-        self._validations_for_task_action(task_id, project_id)
         self._validate_present_task_stage_actions(task_id=task_id)
         updated_task_dto = \
             self._call_logic_and_update_status_variables_and_get_stage_ids(
@@ -209,7 +211,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
     def _get_task_current_board_complete_details(
             self, task_id: int, stage_ids: List[str]
     ) -> TaskCompleteDetailsDTO:
-        from ib_tasks.interactors.user_action_on_task\
+        from ib_tasks.interactors.user_action_on_task \
             .get_task_current_board_complete_details_interactor \
             import GetTaskCurrentBoardCompleteDetailsInteractor
         interactor = GetTaskCurrentBoardCompleteDetailsInteractor(
@@ -275,13 +277,15 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             self, task_id: int) -> TaskDetailsDTO:
         from ib_tasks.interactors.user_action_on_task \
             .call_action_logic_function_and_get_or_update_task_status_variables_interactor \
-            import CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor
+            import \
+            CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor
         update_status_variable_obj = \
             CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
                 action_id=self.action_id, storage=self.storage,
                 task_id=task_id, create_task_storage=self.create_task_storage,
                 field_storage=self.field_storage, gof_storage=self.gof_storage,
-                task_storage=self.task_storage, action_storage=self.action_storage,
+                task_storage=self.task_storage,
+                action_storage=self.action_storage,
                 stage_storage=self.stage_storage
             )
         task_dto = update_status_variable_obj \
@@ -292,11 +296,13 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
 
         if self.board_id:
             self._validate_board_id()
-        valid_action = self.action_storage.validate_action(action_id=self.action_id)
+        valid_action = self.action_storage.validate_action(
+            action_id=self.action_id)
         is_invalid_action = not valid_action
         if is_invalid_action:
             raise InvalidActionException(action_id=self.action_id)
-        action_roles = self.action_storage.get_action_roles(action_id=self.action_id)
+        action_roles = self.action_storage.get_action_roles(
+            action_id=self.action_id)
         self._validate_user_permission_to_user(
             self.user_id, action_roles, self.action_id, project_id=project_id
         )
@@ -378,9 +384,11 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         task_delay_reason_is_not_updated = not is_task_delay_reason_updated
         if task_delay_reason_is_not_updated:
             task_display_id = \
-                self.create_task_storage.get_task_display_id_for_task_id(task_id)
+                self.create_task_storage.get_task_display_id_for_task_id(
+                    task_id)
             stage_display_name = \
-                self.stage_storage.get_stage_display_name_for_stage_id(stage_id)
+                self.stage_storage.get_stage_display_name_for_stage_id(
+                    stage_id)
             raise TaskDelayReasonIsNotUpdated(
                 updated_due_date, task_display_id, stage_display_name)
         return
@@ -393,12 +401,13 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             get_roles_service_adapter
         roles_service_adapter = get_roles_service_adapter()
         user_roles = roles_service_adapter.roles_service \
-            .get_user_role_ids_based_on_project(
-            user_id=user_id, project_id=project_id)
+            .get_user_role_ids_based_on_project(user_id=user_id,
+                                                project_id=project_id)
         task_template_id = \
             self.create_task_storage.get_template_id_for_given_task(task_id)
-        template_gof_ids = self.task_template_storage.get_stage_permitted_gof_ids(
-            stage_id=stage_id)
+        template_gof_ids = \
+            self.task_template_storage.get_template_stage_permitted_gof_ids(
+                stage_id=stage_id, task_template_id=task_template_id)
         gof_id_with_display_name_dtos = \
             self.gof_storage.get_user_write_permitted_gof_ids_in_given_gof_ids(
                 user_roles, template_gof_ids)
@@ -406,7 +415,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             dto.gof_id for dto in gof_id_with_display_name_dtos]
         field_id_with_display_name_dtos = \
             self.field_storage.get_user_writable_fields_for_given_gof_ids(
-                    user_roles, user_permitted_gof_ids)
+                user_roles, user_permitted_gof_ids)
         filled_gofs_with_task_gof_ids = \
             self.gof_storage.get_filled_task_gofs_with_gof_id(task_id)
         task_gof_ids = [

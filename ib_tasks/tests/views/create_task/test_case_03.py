@@ -6,7 +6,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import StageActionFactory, ProjectTaskTemplateFactory, \
-    TaskTemplateFactory
+    TaskTemplateFactory, TaskTemplateInitialStageFactory
 
 
 class TestCase03CreateTaskAPITestCase(TestUtils):
@@ -21,24 +21,28 @@ class TestCase03CreateTaskAPITestCase(TestUtils):
         StageActionFactory.reset_sequence()
         ProjectTaskTemplateFactory.reset_sequence()
         TaskTemplateFactory.reset_sequence()
+        TaskTemplateInitialStageFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
         template_id = 'template_1'
+        project_template = "project_template"
         project_id = "project_1"
         from ib_tasks.tests.common_fixtures.adapters.auth_service import \
             get_valid_project_ids_mock
         get_valid_project_ids_mock(mocker, [project_id])
-        TaskTemplateFactory.create(template_id=template_id)
+        task_template = TaskTemplateFactory.create(template_id=template_id)
+        TaskTemplateInitialStageFactory.create(task_template=task_template)
         ProjectTaskTemplateFactory.create(
-            task_template_id=template_id, project_id=project_id)
+            task_template__template_id="project_template",
+            project_id=project_id)
         StageActionFactory.create(id=1)
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {
             "project_id": "project_1",
-            "task_template_id": "template_2",
+            "task_template_id": "template_1",
             "action_id": 1,
             "title": "task_title",
             "description": "task_description",

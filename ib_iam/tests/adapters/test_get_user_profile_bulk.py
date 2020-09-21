@@ -35,8 +35,10 @@ class TestGetUserProfileBulk:
     def test_get_user_profile_bulk_raise_invalid_user_when_a_user_does_not_exist(
             self, mocker):
         # Arrange
-        user_ids = ['e06b8a3b-94af-4d2e-ba14-bcec11140277',
-                    'e06b8a3b-94af-4d2e-ba14-bcec11140288']
+        user_ids = [
+            'e06b8a3b-94af-4d2e-ba14-bcec11140277',
+            'e06b8a3b-94af-4d2e-ba14-bcec11140288'
+        ]
         from ib_users.interactors.exceptions.user_profile \
             import InvalidUserException
         get_user_profile_bulk_mock = self.get_user_profile_bulk_mock(

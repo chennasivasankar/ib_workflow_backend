@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestCase03EditUserAPITestCase.test_given_valid_details_returns_success_response status_code'] = '200'

@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestCase01GetConfigurationDetailsAPITestCase.test_given_user_not_admin_returns_user_does_not_have_perrmission_response status_code'] = '403'

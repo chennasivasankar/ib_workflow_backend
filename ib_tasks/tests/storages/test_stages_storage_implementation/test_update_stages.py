@@ -1,3 +1,4 @@
+import factory
 import pytest
 
 from ib_tasks.interactors.stages_dtos import StageDTO

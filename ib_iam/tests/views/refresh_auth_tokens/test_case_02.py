@@ -3,7 +3,9 @@ get refresh tokens
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-from ib_iam.tests.views.refresh_auth_tokens import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+
+from ib_iam.tests.views.refresh_auth_tokens import APP_NAME, OPERATION_NAME, \
+    REQUEST_METHOD, URL_SUFFIX
 
 
 class TestCase02RefreshTokensAPITestCase(TestUtils):
@@ -18,7 +20,7 @@ class TestCase02RefreshTokensAPITestCase(TestUtils):
         access_token = "rNYAlle5thjiWD5MIt63GkhAws5suQ"
         refresh_token = "pNYAlle5thjiWD5MIt63GkhAws5suQ"
 
-        from ib_iam.adapters.auth_service import UserTokensDTO
+        from ib_iam.adapters.dtos import UserTokensDTO
         user_tokens_dto = UserTokensDTO(
             access_token='asdfaldskfjdfdlsdkf',
             refresh_token='sadfenkljkdfeller',

@@ -152,3 +152,17 @@ class UserProjectStatusDTOFactory(factory.Factory):
     user_id = factory.Sequence(lambda counter: "user_{}".format(counter))
     project_id = factory.Sequence(lambda counter: "project_{}".format(counter))
     is_exists = True
+
+class TaskBoardsDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskBoardsDetailsDTO
+
+    board_dto = factory.SubFactory(BoardDTOFactory)
+
+    @factory.lazy_attribute
+    def column_stage_dtos(self):
+        return [ColumnStageDTOFactory(), ColumnStageDTOFactory()]
+
+    @factory.lazy_attribute
+    def columns_dtos(self):
+        return [ColumnDTOFactory(), ColumnDTOFactory()]

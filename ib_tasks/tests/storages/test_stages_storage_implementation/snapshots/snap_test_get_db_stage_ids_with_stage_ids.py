@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import GenericRepr, Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetDBStageIdsWithStageIds.test_when_stage_ids_exists_returns_dtos db_stage_ids_with_stage_ids_dtos'] = [
