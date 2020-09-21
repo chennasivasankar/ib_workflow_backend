@@ -115,7 +115,7 @@ class SaveAndActOnATaskPresenterImplementation(
         return self.raise_invalid_multi_select_labels_selected_exception(err)
 
     def raise_invalid_date_format(self, err: InvalidDateFormat):
-        self.raise_invalid_date_format_exception(err)
+        return self.raise_invalid_date_format_exception(err)
 
     def raise_invalid_time_format(self, err):
         return self.raise_invalid_time_format_exception(err)
