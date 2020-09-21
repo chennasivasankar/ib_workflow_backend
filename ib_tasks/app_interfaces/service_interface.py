@@ -1,11 +1,10 @@
 from typing import List
 
 from ib_tasks.constants.enum import ViewType
-from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO, \
-    FieldDisplayNameDTO
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO, TaskStagesDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
@@ -20,6 +19,7 @@ from ib_tasks.storages.action_storage_implementation import \
 #         interactor = GetTaskFieldsAndActionsInteractor(storage)
 #         result = interactor.get_task_fields_and_action(task_dtos)
 #         return result
+from ib_tasks.storages.storage_implementation import StagesStorageImplementation
 from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
 
@@ -135,3 +135,13 @@ class ServiceInterface:
             project_id=project_id
         )
 
+    def get_user_permitted_stage_ids(
+            self, user_roles: List[str]
+    ) -> List[str]:
+        from ib_tasks.interactors.get_user_permitted_stage_ids \
+            import GetUserPermittedStageIds
+        stage_storage = StagesStorageImplementation()
+        interactor = GetUserPermittedStageIds(stage_storage=stage_storage)
+        return interactor.get_permitted_stage_ids_to_user_role_ids(
+            user_roles=user_roles
+        )
