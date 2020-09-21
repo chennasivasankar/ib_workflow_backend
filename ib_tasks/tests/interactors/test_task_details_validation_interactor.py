@@ -9,8 +9,6 @@ from ib_tasks.interactors.create_or_update_task. \
     TaskDetailsValidationsInteractor
 from ib_tasks.tests.common_fixtures.adapters.auth_service import \
     get_valid_project_ids_mock
-from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-    get_user_role_ids_based_on_project_mock
 from ib_tasks.tests.factories.interactor_dtos import CreateTaskDTOFactory, \
     GoFFieldsDTOFactory, FieldValuesDTOFactory
 from ib_tasks.tests.factories.storage_dtos import \
@@ -364,6 +362,9 @@ class TestTaskDetailsValidationsInteractor:
 
         get_valid_project_ids_mock(mocker, valid_project_ids)
         gofs_details_validation_interactor_mock(mocker)
+
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids_based_on_project_mock
         get_user_role_ids_based_on_project_mock(mocker)
 
         task_details_validation_storages_dto.task_template_storage.\
