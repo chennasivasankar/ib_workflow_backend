@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 
 class InvalidTaskTemplateId(Exception):
@@ -9,6 +9,11 @@ class InvalidGroupById(Exception):
     pass
 
 
+class InvalidRoleIdsException(Exception):
+    def __init__(self, role_ids: List[str]):
+        self.role_ids = role_ids
+
+
 class TaskService:
 
     @property
@@ -16,8 +21,14 @@ class TaskService:
         from ib_tasks.app_interfaces.service_interface import ServiceInterface
         return ServiceInterface()
 
-    def get_stage_ids_having_actions(self):
-        pass
+    def get_user_permitted_stage_ids(self, user_role_ids: List[str]):
+        try:
+            stage_ids = self.interface.get_user_permitted_stage_ids(
+                user_roles=user_role_ids
+            )
+        except InvalidRoleIdsException:
+            raise InvalidRoleIdsException
+        return stage_ids
 
     def validate_task_template_id(self, task_template_id: str) -> \
             Optional[InvalidTaskTemplateId]:

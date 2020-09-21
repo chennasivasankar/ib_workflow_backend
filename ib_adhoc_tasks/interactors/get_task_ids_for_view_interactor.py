@@ -13,7 +13,7 @@ class GetTaskIdsForViewInteractor:
         self.elastic_storage = elastic_storage
 
     def get_task_ids_for_view(
-            self, project_id: str, adhoc_template_id: str,
+            self, user_id: str, project_id: str, adhoc_template_id: str,
             group_by_dtos: List[GroupByDTO],
             task_offset_and_limit_values_dto: TaskOffsetAndLimitValuesDTO
     ):
@@ -28,13 +28,21 @@ class GetTaskIdsForViewInteractor:
             task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
         )
 
-        group_details_dtos = self.elastic_storage.get_group_details_of_project(
-            project_id=project_id,
-            adhoc_template_id=adhoc_template_id,
-            group_by_dtos=group_by_dtos,
-            task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
+        from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        user_role_ids = service_adapter.iam_service.get_user_role_ids(user_id=user_id)
+        stage_ids = service_adapter.task_service.get_user_permitted_stage_ids(
+            user_role_ids=user_role_ids
         )
-        return group_details_dtos
+
+        group_details_dtos, group_count_dtos, child_group_count_dtos = \
+            self.elastic_storage.get_group_details_of_project(
+                project_id=project_id, stage_ids=stage_ids,
+                adhoc_template_id=adhoc_template_id,
+                group_by_dtos=group_by_dtos,
+                task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
+            )
+        return group_details_dtos, group_count_dtos, child_group_count_dtos
 
     @staticmethod
     def _validate_template_id(task_template_id: str):

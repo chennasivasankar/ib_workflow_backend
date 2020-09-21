@@ -40,6 +40,7 @@ class TestGetTaskIdsForViewInteractor:
             task_offset_and_limit_values_dto
     ):
         # Arrange
+        user_id = "USER_1"
         project_id = "PROJECT_1"
         adhoc_template_id = "ADHOC_TEMPLATE_ID"
         group_by_dtos = group_by_dtos
@@ -55,7 +56,7 @@ class TestGetTaskIdsForViewInteractor:
         with pytest.raises(InvalidProjectId):
             interactor.get_task_ids_for_view(
                 project_id=project_id, adhoc_template_id=adhoc_template_id,
-                group_by_dtos=group_by_dtos,
+                group_by_dtos=group_by_dtos, user_id=user_id,
                 task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
             )
         get_valid_project_ids_mock.assert_called_once_with(
@@ -67,6 +68,7 @@ class TestGetTaskIdsForViewInteractor:
             task_offset_and_limit_values_dto
     ):
         # Arrange
+        user_id = "USER_1"
         project_id = "PROJECT_1"
         adhoc_template_id = "ADHOC_TEMPLATE_ID"
         group_by_dtos = group_by_dtos
@@ -86,7 +88,7 @@ class TestGetTaskIdsForViewInteractor:
         with pytest.raises(InvalidTaskTemplateId):
             interactor.get_task_ids_for_view(
                 project_id=project_id, adhoc_template_id=adhoc_template_id,
-                group_by_dtos=group_by_dtos,
+                group_by_dtos=group_by_dtos, user_id=user_id,
                 task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
             )
         validate_task_template_id_mock.assert_called_once_with(
@@ -96,6 +98,7 @@ class TestGetTaskIdsForViewInteractor:
             self, interactor, elastic_storage, group_by_dtos, mocker,
             task_offset_and_limit_values_dto
     ):
+        user_id = "USER_1"
         project_id = "PROJECT_1"
         adhoc_template_id = "ADHOC_TEMPLATE_ID"
         group_by_dtos = group_by_dtos
@@ -115,17 +118,58 @@ class TestGetTaskIdsForViewInteractor:
         with pytest.raises(DuplicateGroupByOrder):
             interactor.get_task_ids_for_view(
                 project_id=project_id, adhoc_template_id=adhoc_template_id,
-                group_by_dtos=group_by_dtos,
+                group_by_dtos=group_by_dtos, user_id=user_id,
                 task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
             )
         validate_task_template_id_mock.assert_called_once_with(
             task_template_id=adhoc_template_id
         )
 
+    def test_with_invalid_user_role_ids_raise_exception(
+            self, interactor, elastic_storage, group_by_dtos, mocker,
+            task_offset_and_limit_values_dto
+    ):
+        user_id = "USER_1"
+        project_id = "PROJECT_1"
+        adhoc_template_id = "ADHOC_TEMPLATE_ID"
+        group_by_dtos = group_by_dtos
+        valid_project_ids = ["PROJECT_1"]
+        user_role_ids = ['ROLE_1', 'ROLE_2']
+
+        from ib_adhoc_tasks.tests.common_fixtures.adapters import \
+            get_valid_project_ids_mock, validate_task_template_id_mock, \
+            get_user_permitted_stage_ids_mock, get_user_role_ids_mock
+        get_valid_project_ids_mock = get_valid_project_ids_mock(mocker)
+        get_valid_project_ids_mock.return_value = valid_project_ids
+
+        validate_task_template_id_mock(mocker)
+        get_user_role_ids_mock = get_user_role_ids_mock(mocker)
+        get_user_role_ids_mock.return_value = user_role_ids
+
+        get_user_permitted_stage_ids_mock = get_user_permitted_stage_ids_mock(
+            mocker)
+        from ib_adhoc_tasks.adapters.task_interface import \
+            InvalidRoleIdsException
+        get_user_permitted_stage_ids_mock.side_effect = InvalidRoleIdsException(
+            role_ids=user_role_ids
+        )
+
+        # Assert
+        with pytest.raises(InvalidRoleIdsException):
+            interactor.get_task_ids_for_view(
+                project_id=project_id, adhoc_template_id=adhoc_template_id,
+                group_by_dtos=group_by_dtos, user_id=user_id,
+                task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
+            )
+        get_user_permitted_stage_ids_mock.assert_called_once_with(
+            user_role_ids=user_role_ids
+        )
+
     def test_with_invalid_group_limit_value_raise_exception(
             self, interactor, elastic_storage, group_by_dtos, mocker,
             task_offset_and_limit_values_dto
     ):
+        user_id = "USER_1"
         project_id = "PROJECT_1"
         adhoc_template_id = "ADHOC_TEMPLATE_ID"
         group_by_dtos = group_by_dtos
@@ -137,7 +181,7 @@ class TestGetTaskIdsForViewInteractor:
             get_valid_project_ids_mock, validate_task_template_id_mock
         get_valid_project_ids_mock = get_valid_project_ids_mock(mocker)
         get_valid_project_ids_mock.return_value = valid_project_ids
-        validate_task_template_id_mock = validate_task_template_id_mock(mocker)
+        validate_task_template_id_mock(mocker)
 
         # Assert
         from ib_adhoc_tasks.exceptions.custom_exceptions import \
@@ -145,7 +189,7 @@ class TestGetTaskIdsForViewInteractor:
         with pytest.raises(InvalidGroupLimitValue):
             interactor.get_task_ids_for_view(
                 project_id=project_id, adhoc_template_id=adhoc_template_id,
-                group_by_dtos=group_by_dtos,
+                group_by_dtos=group_by_dtos, user_id=user_id,
                 task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
             )
 
@@ -153,6 +197,7 @@ class TestGetTaskIdsForViewInteractor:
             self, interactor, elastic_storage, group_by_dtos, mocker,
             task_offset_and_limit_values_dto
     ):
+        user_id = "USER_1"
         project_id = "PROJECT_1"
         adhoc_template_id = "ADHOC_TEMPLATE_ID"
         group_by_dtos = group_by_dtos
@@ -164,7 +209,7 @@ class TestGetTaskIdsForViewInteractor:
             get_valid_project_ids_mock, validate_task_template_id_mock
         get_valid_project_ids_mock = get_valid_project_ids_mock(mocker)
         get_valid_project_ids_mock.return_value = valid_project_ids
-        validate_task_template_id_mock = validate_task_template_id_mock(mocker)
+        validate_task_template_id_mock(mocker)
 
         # Assert
         from ib_adhoc_tasks.exceptions.custom_exceptions import \
@@ -172,7 +217,7 @@ class TestGetTaskIdsForViewInteractor:
         with pytest.raises(InvalidGroupOffsetValue):
             interactor.get_task_ids_for_view(
                 project_id=project_id, adhoc_template_id=adhoc_template_id,
-                group_by_dtos=group_by_dtos,
+                group_by_dtos=group_by_dtos, user_id=user_id,
                 task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
             )
 
@@ -180,6 +225,7 @@ class TestGetTaskIdsForViewInteractor:
             self, interactor, elastic_storage, group_by_dtos, mocker,
             task_offset_and_limit_values_dto
     ):
+        user_id = "USER_1"
         project_id = "PROJECT_1"
         adhoc_template_id = "ADHOC_TEMPLATE_ID"
         group_by_dtos = group_by_dtos
@@ -190,7 +236,7 @@ class TestGetTaskIdsForViewInteractor:
             get_valid_project_ids_mock, validate_task_template_id_mock
         get_valid_project_ids_mock = get_valid_project_ids_mock(mocker)
         get_valid_project_ids_mock.return_value = valid_project_ids
-        validate_task_template_id_mock = validate_task_template_id_mock(mocker)
+        validate_task_template_id_mock(mocker)
 
         # Assert
         from ib_adhoc_tasks.exceptions.custom_exceptions import \
@@ -198,7 +244,7 @@ class TestGetTaskIdsForViewInteractor:
         with pytest.raises(InvalidTaskLimitValue):
             interactor.get_task_ids_for_view(
                 project_id=project_id, adhoc_template_id=adhoc_template_id,
-                group_by_dtos=group_by_dtos,
+                group_by_dtos=group_by_dtos, user_id=user_id,
                 task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
             )
 
@@ -206,6 +252,7 @@ class TestGetTaskIdsForViewInteractor:
             self, interactor, elastic_storage, group_by_dtos, mocker,
             task_offset_and_limit_values_dto
     ):
+        user_id = "USER_1"
         project_id = "PROJECT_1"
         adhoc_template_id = "ADHOC_TEMPLATE_ID"
         group_by_dtos = group_by_dtos
@@ -216,7 +263,7 @@ class TestGetTaskIdsForViewInteractor:
             get_valid_project_ids_mock, validate_task_template_id_mock
         get_valid_project_ids_mock = get_valid_project_ids_mock(mocker)
         get_valid_project_ids_mock.return_value = valid_project_ids
-        validate_task_template_id_mock = validate_task_template_id_mock(mocker)
+        validate_task_template_id_mock(mocker)
 
         # Assert
         from ib_adhoc_tasks.exceptions.custom_exceptions import \
@@ -224,7 +271,7 @@ class TestGetTaskIdsForViewInteractor:
         with pytest.raises(InvalidTaskOffsetValue):
             interactor.get_task_ids_for_view(
                 project_id=project_id, adhoc_template_id=adhoc_template_id,
-                group_by_dtos=group_by_dtos,
+                group_by_dtos=group_by_dtos, user_id=user_id,
                 task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
             )
 
@@ -233,25 +280,33 @@ class TestGetTaskIdsForViewInteractor:
             task_offset_and_limit_values_dto
     ):
         # Arrange
+        user_id = "USER_1"
         project_id = "PROJECT_1"
         adhoc_template_id = "ADHOC_TEMPLATE_ID"
         group_by_dtos = group_by_dtos
         valid_project_ids = ["PROJECT_1"]
+        stage_ids = ['STAGE_1', 'STAGE_2']
 
         from ib_adhoc_tasks.tests.common_fixtures.adapters import \
-            get_valid_project_ids_mock, validate_task_template_id_mock
+            get_valid_project_ids_mock, validate_task_template_id_mock, \
+            get_user_permitted_stage_ids_mock, get_user_role_ids_mock
         get_valid_project_ids_mock = get_valid_project_ids_mock(mocker)
         get_valid_project_ids_mock.return_value = valid_project_ids
-        validate_task_template_id_mock = validate_task_template_id_mock(mocker)
+        validate_task_template_id_mock(mocker)
+        get_user_role_ids_mock(mocker)
 
-        expected_get_group_details_of_project_mock = Mock()
+        get_user_permitted_stage_ids_mock = get_user_permitted_stage_ids_mock(
+            mocker)
+        get_user_permitted_stage_ids_mock.return_value = stage_ids
+
+        expected_get_group_details_of_project_mock = Mock(), 0, 0
         elastic_storage.get_group_details_of_project.return_value = \
             expected_get_group_details_of_project_mock
 
         # Act
         response = interactor.get_task_ids_for_view(
             project_id=project_id, adhoc_template_id=adhoc_template_id,
-            group_by_dtos=group_by_dtos,
+            group_by_dtos=group_by_dtos, user_id=user_id,
             task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
         )
 
@@ -259,6 +314,6 @@ class TestGetTaskIdsForViewInteractor:
         assert response == expected_get_group_details_of_project_mock
         elastic_storage.get_group_details_of_project.assert_called_once_with(
             project_id=project_id, adhoc_template_id=adhoc_template_id,
-            group_by_dtos=group_by_dtos,
+            group_by_dtos=group_by_dtos, stage_ids=stage_ids,
             task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
         )

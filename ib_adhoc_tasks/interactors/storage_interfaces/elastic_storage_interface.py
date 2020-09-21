@@ -10,7 +10,7 @@ class ElasticStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_group_details_of_project(
-            self, project_id: str, adhoc_template_id: str,
+            self, project_id: str, adhoc_template_id: str, stage_ids: List[str],
             group_by_dtos: List[GroupByDTO],
             task_offset_and_limit_values_dto: TaskOffsetAndLimitValuesDTO
     ) -> List[GroupDetailsDTO]:
