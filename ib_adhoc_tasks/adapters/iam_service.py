@@ -1,3 +1,6 @@
+from typing import List
+
+
 class IamService:
 
     @property
@@ -10,3 +13,9 @@ class IamService:
             user_id=user_id
         )
         return user_role_ids
+
+    def get_valid_project_ids(self, project_ids: List[str]):
+        valid_project_ids = self.interface.get_valid_project_ids(
+            project_ids=project_ids
+        )
+        return valid_project_ids

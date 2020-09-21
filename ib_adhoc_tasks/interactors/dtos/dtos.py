@@ -1,3 +1,7 @@
+from dataclasses import dataclass
+
+
+@dataclass
 class GroupByDTO:
-    group_by_id: str
+    group_by_key: str
     order: int
