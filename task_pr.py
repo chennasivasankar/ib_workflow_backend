@@ -1,7 +1,7 @@
 def create_task(no_of_tasks: int):
     import requests
 
-    headers = {'Authorization': 'Bearer vstummb5EeKrQLpbqQpSRdGwRiAOHp'}
+    headers = {'Authorization': 'Bearer 7mMXeKqhou8773fmnYAUPcnXhkgjIg'}
 
     for i in range(no_of_tasks):
         print(i)

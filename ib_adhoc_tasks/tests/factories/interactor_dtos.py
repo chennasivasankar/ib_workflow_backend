@@ -8,7 +8,7 @@ class GroupByDTOFactory(factory.Factory):
     class Meta:
         model = GroupByDTO
 
-    group_by_key = factory.Sequence(lambda n: "group_by_%s" % n)
+    group_by_value = factory.Sequence(lambda n: "group_by_%s" % n)
     order = factory.Sequence(lambda n: n)
     limit = 5
     offset = 0
