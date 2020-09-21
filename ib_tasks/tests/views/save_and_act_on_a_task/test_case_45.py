@@ -1,5 +1,5 @@
 """
-save and act on a task (update task) success test case
+test with invalid present stage action
 """
 import json
 
@@ -24,7 +24,7 @@ from ...factories.models import StageModelFactory, StageActionFactory, \
     StagePermittedRolesFactory, StageGoFFactory, ProjectTaskTemplateFactory
 
 
-class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
+class TestCase45SaveAndActOnATaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -46,29 +46,22 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
             FieldFactory, FieldRoleFactory, GoFToTaskTemplateFactory, \
             TaskGoFFieldFactory
 
-        UserDetailsDTOFactory.reset_sequence()
-        UserIdWIthTeamDetailsDTOsFactory.reset_sequence()
-        ProjectDetailsDTOFactory.reset_sequence()
-        AssigneeDetailsDTOFactory.reset_sequence()
-        GoFFactory.reset_sequence()
         TaskTemplateFactory.reset_sequence()
-        ProjectTaskTemplateFactory.reset_sequence()
-        GoFToTaskTemplateFactory.reset_sequence()
+        GoFRoleFactory.reset_sequence()
+        GoFFactory.reset_sequence()
         FieldFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
-        TaskFactory.reset_sequence()
-        TaskGoFFactory.reset_sequence()
-        TaskGoFFieldFactory.reset_sequence()
-        StageModelFactory.reset_sequence()
-        StageGoFFactory.reset_sequence()
-        TaskStatusVariableFactory.reset_sequence()
-        StageActionFactory.reset_sequence()
-        ActionPermittedRolesFactory.reset_sequence()
-        CurrentTaskStageModelFactory.reset_sequence()
+        GoFToTaskTemplateFactory.reset_sequence()
         StagePermittedRolesFactory.reset_sequence()
+        StageGoFFactory.reset_sequence()
+        ProjectDetailsDTOFactory.reset_sequence()
+        ProjectTaskTemplateFactory.reset_sequence()
+        AssigneeDetailsDTOFactory.reset_sequence()
         TeamDetailsDTOFactory.reset_sequence()
+        UserIdWIthTeamDetailsDTOsFactory.reset_sequence()
 
         project_id = "project_1"
+        stage_id = 1
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids_based_on_project_mock
         get_user_role_ids_based_on_project_mock(mocker)
@@ -131,8 +124,14 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
             field_response='["interactors", "storages"]'
         )
         stage = StageModelFactory(
+            id=stage_id,
             task_template_id=task_template.template_id,
-            stage_color="blue",
+            display_logic="variable0==stage_id_0",
+            card_info_kanban=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
+            card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
+        )
+        present_stage = StageModelFactory(
+            task_template_id=task_template.template_id,
             display_logic="variable0==stage_id_0",
             card_info_kanban=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
             card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
@@ -148,7 +147,7 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
         action = StageActionFactory(stage=stage, py_function_import_path=path)
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
-        CurrentTaskStageModelFactory.create(task=task_obj, stage=stage)
+        CurrentTaskStageModelFactory.create(task=task_obj, stage=present_stage)
         StagePermittedRolesFactory.create(stage=stage,
                                           role_id="FIN_PAYMENT_REQUESTER")
 
@@ -203,67 +202,3 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
-        from ib_tasks.models.task import Task
-        task_object = Task.objects.get(task_display_id="IBWF-1")
-        task_id = task_object.id
-        snapshot.assert_match(task_object.template_id, 'template_id')
-        snapshot.assert_match(task_object.created_by, 'created_by_id')
-        snapshot.assert_match(task_object.template_id, 'task_template_id')
-        snapshot.assert_match(task_object.title, 'task_title')
-        snapshot.assert_match(task_object.description, 'task_description')
-        snapshot.assert_match(str(task_object.start_date), 'task_start_date')
-        snapshot.assert_match(str(task_object.due_date), 'task_due_date')
-        snapshot.assert_match(task_object.priority, 'task_priority')
-
-        from ib_tasks.models.task_gof import TaskGoF
-        task_gofs = TaskGoF.objects.filter(task_id=1)
-        counter = 1
-        for task_gof in task_gofs:
-            snapshot.assert_match(task_gof.same_gof_order,
-                                  f'same_gof_order_{counter}')
-            snapshot.assert_match(task_gof.gof_id, f'gof_id_{counter}')
-            snapshot.assert_match(
-                task_gof.task.task_display_id, f'task_id_{counter}')
-
-            counter = counter + 1
-
-        from ib_tasks.models.task_gof_field import TaskGoFField
-        task_gof_fields = TaskGoFField.objects.filter(
-            task_gof__task_id=task_id)
-        counter = 1
-        for task_gof_field in task_gof_fields:
-            snapshot.assert_match(task_gof_field.task_gof_id,
-                                  f'task_gof_{counter}')
-            snapshot.assert_match(task_gof_field.field_id, f'field_{counter}')
-            snapshot.assert_match(task_gof_field.field_response,
-                                  f'field_response_{counter}')
-            counter = counter + 1
-        from ib_tasks.models import CurrentTaskStage
-        current_task_stages = CurrentTaskStage.objects.filter(task_id=task_id)
-        counter = 1
-        for current_task_stage in current_task_stages:
-            snapshot.assert_match(
-                current_task_stage.task_id,
-                f'current_task_stage_task_id_{counter}')
-            snapshot.assert_match(
-                current_task_stage.stage_id, f'task_stage_{counter}')
-            counter += 1
-
-        counter = 1
-        from ib_tasks.models import TaskStageHistory
-        task_stage_histories = TaskStageHistory.objects.filter(task_id=task_id)
-        for task_stage_history in task_stage_histories:
-            snapshot.assert_match(
-                task_stage_history.task_id,
-                f'stage_history_task_id_{counter}')
-            snapshot.assert_match(
-                task_stage_history.stage_id, f'stage_{counter}')
-            snapshot.assert_match(
-                task_stage_history.team_id, f'team_id_{counter}')
-            snapshot.assert_match(
-                task_stage_history.assignee_id, f'assignee_id_{counter}')
-            snapshot.assert_match(
-                str(task_stage_history.joined_at), f'joined_at_{counter}')
-            snapshot.assert_match(
-                str(task_stage_history.left_at), f'left_at_{counter}')
-            counter += 1
