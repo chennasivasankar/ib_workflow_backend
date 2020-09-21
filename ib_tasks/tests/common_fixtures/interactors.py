@@ -171,7 +171,6 @@ def prepare_task_ids_with_stage_ids(
     mock.return_value = fields_and_actions
 
 
-
 def prepare_mock_for_filters_interactor(mocker):
     mock = mocker.patch(
             'ib_tasks.interactors'
