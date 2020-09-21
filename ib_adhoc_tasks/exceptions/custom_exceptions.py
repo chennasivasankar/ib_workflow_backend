@@ -4,3 +4,19 @@ class InvalidProjectId(Exception):
 
 class DuplicateGroupByOrder(Exception):
     pass
+
+
+class InvalidGroupLimitValue(Exception):
+    pass
+
+
+class InvalidGroupOffsetValue(Exception):
+    pass
+
+
+class InvalidTaskLimitValue(Exception):
+    pass
+
+
+class InvalidTaskOffsetValue(Exception):
+    pass

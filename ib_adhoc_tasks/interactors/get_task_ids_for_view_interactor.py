@@ -1,7 +1,8 @@
 import collections
 from typing import List
 
-from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO
+from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO, \
+    TaskOffsetAndLimitValuesDTO
 from ib_adhoc_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticStorageInterface
 
@@ -13,7 +14,8 @@ class GetTaskIdsForViewInteractor:
 
     def get_task_ids_for_view(
             self, project_id: str, adhoc_template_id: str,
-            group_by_dtos: List[GroupByDTO]
+            group_by_dtos: List[GroupByDTO],
+            task_offset_and_limit_values_dto: TaskOffsetAndLimitValuesDTO
     ):
         '''
         # TODO: It is needed
@@ -22,11 +24,15 @@ class GetTaskIdsForViewInteractor:
         self._validate_project_id(project_id=project_id)
         self._validate_template_id(task_template_id=adhoc_template_id)
         self._validate_group_by_dtos(group_by_dtos=group_by_dtos)
+        self._validate_task_limit_and_offset_value(
+            task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
+        )
 
         group_details_dtos = self.elastic_storage.get_group_details_of_project(
             project_id=project_id,
             adhoc_template_id=adhoc_template_id,
-            group_by_dtos=group_by_dtos
+            group_by_dtos=group_by_dtos,
+            task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
         )
         return group_details_dtos
 
@@ -67,5 +73,24 @@ class GetTaskIdsForViewInteractor:
             DuplicateGroupByOrder
         if duplicate_orders:
             raise DuplicateGroupByOrder
+
+        from ib_adhoc_tasks.exceptions.custom_exceptions import \
+            InvalidGroupLimitValue, InvalidGroupOffsetValue
+        for group_by_dto in group_by_dtos:
+            if group_by_dto.limit < 0:
+                raise InvalidGroupLimitValue
+            if group_by_dto.offset < 0:
+                raise InvalidGroupOffsetValue
         # TODO: validate group by key
         return
+
+    @staticmethod
+    def _validate_task_limit_and_offset_value(
+            task_offset_and_limit_values_dto: TaskOffsetAndLimitValuesDTO
+    ):
+        from ib_adhoc_tasks.exceptions.custom_exceptions import \
+            InvalidTaskLimitValue, InvalidTaskOffsetValue
+        if task_offset_and_limit_values_dto.limit < 0:
+            raise InvalidTaskLimitValue
+        if task_offset_and_limit_values_dto.offset < 0:
+            raise InvalidTaskOffsetValue

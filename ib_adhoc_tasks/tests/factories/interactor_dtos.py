@@ -1,6 +1,7 @@
 import factory
 
-from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO
+from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO, \
+    TaskOffsetAndLimitValuesDTO
 
 
 class GroupByDTOFactory(factory.Factory):
@@ -9,3 +10,13 @@ class GroupByDTOFactory(factory.Factory):
 
     group_by_key = factory.Sequence(lambda n: "group_by_%s" % n)
     order = factory.Sequence(lambda n: n)
+    limit = 5
+    offset = 0
+
+
+class TaskOffsetAndLimitValuesDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskOffsetAndLimitValuesDTO
+
+    limit = 5
+    offset = 0
