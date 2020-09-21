@@ -1,24 +1,25 @@
 import factory
 
 from ib_adhoc_tasks.constants.enum import GroupByType
-from ib_adhoc_tasks.interactors.dtos import GroupByDTO, ApplyGroupByDTO
+from ib_adhoc_tasks.interactors.dtos import GroupByValueDTO, \
+    TaskIdsForGroupsParameterDTO
 
 
-class ApplyGroupByDTOFactory(factory.Factory):
+class TaskIdsForGroupsParameterDTOFactory(factory.Factory):
     class Meta:
-        model = ApplyGroupByDTO
+        model = TaskIdsForGroupsParameterDTO
 
     project_id = factory.Sequence(lambda n: "project_id_%d" % n)
     template_id = factory.Sequence(lambda n: "template_%d" % n)
     user_id = factory.Sequence(lambda n: "user_id_%d" % n)
-    groupby_dtos = []
+    groupby_value_dtos = []
     limit = 5
     offset = 0
 
 
-class GroupByDTOFactory(factory.Factory):
+class GroupByValueDTOFactory(factory.Factory):
     class Meta:
-        model = GroupByDTO
+        model = GroupByValueDTO
 
     key = factory.Iterator([GroupByType.STAGE.value,
                             GroupByType.ASSIGNEE.value,

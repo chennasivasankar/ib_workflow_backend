@@ -22,8 +22,8 @@ class TestGetTaskIdsForGroupInteractor:
             self, interactor, elastic_storage_mock, mocker
     ):
         from ib_adhoc_tasks.tests.factories.interactor_dtos import \
-            ApplyGroupByDTOFactory
-        apply_groupby_dto = ApplyGroupByDTOFactory()
+            TaskIdsForGroupsParameterDTOFactory
+        task_ids_for_groups_parameter_dto = TaskIdsForGroupsParameterDTOFactory()
         from ib_adhoc_tasks.tests.common_fixtures.adapters import \
             is_project_exists_mock
         is_project_exists_mock = is_project_exists_mock(mocker=mocker)
@@ -33,15 +33,15 @@ class TestGetTaskIdsForGroupInteractor:
 
         with pytest.raises(InvalidProjectId):
             interactor.get_task_ids_for_groups(
-                apply_groupby_dto=apply_groupby_dto
+                task_ids_for_groups_parameter_dto=task_ids_for_groups_parameter_dto
             )
 
     def test_given_invalid_template_id_raises_invalid_template_id_exception(
             self, interactor, elastic_storage_mock, mocker
     ):
         from ib_adhoc_tasks.tests.factories.interactor_dtos import \
-            ApplyGroupByDTOFactory
-        apply_groupby_dto = ApplyGroupByDTOFactory()
+            TaskIdsForGroupsParameterDTOFactory
+        task_ids_for_groups_parameter_dto = TaskIdsForGroupsParameterDTOFactory()
         from ib_adhoc_tasks.tests.common_fixtures.adapters import \
             is_project_exists_mock
         is_project_exists_mock = is_project_exists_mock(mocker=mocker)
@@ -55,15 +55,15 @@ class TestGetTaskIdsForGroupInteractor:
 
         with pytest.raises(InvalidTemplateId):
             interactor.get_task_ids_for_groups(
-                apply_groupby_dto=apply_groupby_dto
+                task_ids_for_groups_parameter_dto=task_ids_for_groups_parameter_dto
             )
 
     def test_given_valid_data_it_returns_task_ids(
             self, interactor, elastic_storage_mock, mocker
     ):
         from ib_adhoc_tasks.tests.factories.interactor_dtos import \
-            ApplyGroupByDTOFactory
-        apply_groupby_dto = ApplyGroupByDTOFactory()
+            TaskIdsForGroupsParameterDTOFactory
+        task_ids_for_groups_parameter_dto = TaskIdsForGroupsParameterDTOFactory()
         user_role_ids = ["role_1", "role_2"]
         stage_ids = ["stage_id_1", "stage_id_2"]
         task_ids = ["task_id_1", "task_id_2"]
@@ -92,18 +92,19 @@ class TestGetTaskIdsForGroupInteractor:
             return_value = expected_task_ids_and_count_dto
 
         actual_task_ids_and_count_dto = interactor.get_task_ids_for_groups(
-            apply_groupby_dto=apply_groupby_dto
+            task_ids_for_groups_parameter_dto=task_ids_for_groups_parameter_dto
         )
 
         get_user_role_ids_based_on_project_mock.assert_called_once_with(
-            user_id=apply_groupby_dto.user_id,
-            project_id=apply_groupby_dto.project_id
+            user_id=task_ids_for_groups_parameter_dto.user_id,
+            project_id=task_ids_for_groups_parameter_dto.project_id
         )
         get_stage_ids_based_on_user_roles_mock.assert_called_once_with(
             user_role_ids=user_role_ids
         )
         elastic_storage_mock. \
             get_task_ids_and_count_dto_based_on_given_groupby_and_pagination_detail(
-            apply_group_dto=apply_groupby_dto, stage_ids=stage_ids
+            task_ids_for_groups_parameter_dto=task_ids_for_groups_parameter_dto,
+            stage_ids=stage_ids
         )
         assert actual_task_ids_and_count_dto == expected_task_ids_and_count_dto

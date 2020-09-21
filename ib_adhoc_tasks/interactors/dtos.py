@@ -3,17 +3,17 @@ from typing import List
 
 
 @dataclass
-class GroupByDTO:
-    key: str
-    value: str
+class GroupByValueDTO:
+    group_by_display_name: str
+    group_by_value: str
 
 
 @dataclass
-class ApplyGroupByDTO:
+class TaskIdsForGroupsParameterDTO:
     project_id: str
     template_id: str
     user_id: str
-    groupby_dtos: List[GroupByDTO]
+    groupby_value_dtos: List[GroupByValueDTO]
     limit: str
     offset: str
 
