@@ -389,6 +389,7 @@ class CreateTaskDTOFactory(factory.Factory):
     def gof_fields_dtos(self):
         return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
 
+
 class StageIdWithAssigneeDTOFactory(factory.Factory):
     class Meta:
         model = StageIdWithAssigneeDTO
