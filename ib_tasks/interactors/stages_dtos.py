@@ -95,9 +95,14 @@ class TaskIdWithStageAssigneeDTO(StageAssigneeDTO):
 
 
 @dataclass
-class StageWithUserDetailsDTO:
+class StageIdWithNameDTO:
     db_stage_id: int
     stage_display_name: str
+
+
+@dataclass
+class StageWithUserDetailsDTO:
+    stage_details_dto: StageIdWithNameDTO
     assignee_details_dto: Optional[AssigneeDetailsDTO]
 
 

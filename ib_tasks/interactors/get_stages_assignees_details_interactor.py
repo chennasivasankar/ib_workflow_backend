@@ -168,8 +168,7 @@ class GetStagesAssigneesDetailsInteractor:
         assignees_details_service = service_adapter.assignee_details_service
         assignee_details_dtos = \
             assignees_details_service.get_assignees_details_dtos(
-                assignee_ids
-            )
+                assignee_ids)
         return assignee_details_dtos
 
     def _validate_stage_ids_of_task(

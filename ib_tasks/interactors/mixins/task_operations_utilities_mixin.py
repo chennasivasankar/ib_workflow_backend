@@ -85,6 +85,7 @@ class TaskOperationsUtilitiesMixin:
             self, start_datetime: datetime.datetime,
             due_datetime: datetime.datetime, priority: Priority,
             action_type: Optional[ActionTypes]) -> Optional[Exception]:
+
         self._validate_due_datetime_without_start_datetime(
             start_datetime, due_datetime)
         action_type_is_no_validations = \

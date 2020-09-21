@@ -62,6 +62,21 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor(StorageMockClass):
         return task_stage_storage
 
     @pytest.fixture
+    def gof_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+            GoFStorageInterface
+        gof_storage = create_autospec(GoFStorageInterface)
+        return gof_storage
+
+    @pytest.fixture
+    def task_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+            TaskStorageInterface
+        task_storage = create_autospec(
+            TaskStorageInterface)
+        return task_storage
+
+    @pytest.fixture
     def task_storage_mock(self):
         from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
             TaskStorageInterface
@@ -127,10 +142,10 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor(StorageMockClass):
         return interactor
 
     def test_given_invalid_task_display_id_raise_exception(
-            self, mock_object, storage_mock, field_storage,
-            presenter_mock, stage_storage_mock, action_storage_mock,
-            task_storage_mock, task_stage_storage_mock, create_task_storage,
-            interactor):
+            self, mock_object, field_storage, storage_mock,gof_storage_mock,
+            stage_storage_mock, action_storage_mock, task_storage_mock,
+            presenter_mock, task_stage_storage_mock, create_task_storage,
+    interactor):
         # Arrange
         from ib_tasks.exceptions.task_custom_exceptions \
             import InvalidTaskDisplayId
@@ -139,7 +154,6 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor(StorageMockClass):
         action_id = 1
         exception_object = InvalidTaskDisplayId(task_display_id)
         task_storage_mock.check_is_valid_task_display_id.return_value = False
-
         # Act
         interactor \
             .get_next_stages_random_assignees_of_a_task_wrapper(
@@ -155,7 +169,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor(StorageMockClass):
         assert error_obj.task_display_id == exception_object.task_display_id
 
     def test_given_invalid_action_id_raise_exception(
-            self, mock_object, storage_mock, stage_storage_mock,
+            self, mock_object, storage_mock, stage_storage_mock,gof_storage_mock,
             action_storage_mock, task_storage_mock, presenter_mock,
             task_stage_storage_mock, create_task_storage, field_storage,
             interactor):
@@ -188,14 +202,13 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor(StorageMockClass):
             self, action_logic_mock, storage_mock, field_storage,
             presenter_mock, stage_storage_mock, action_storage_mock,
             task_storage_mock, task_stage_storage_mock, create_task_storage,
-            interactor):
+            interactor, gof_storage_mock):
         # Arrange
         task_display_id = "IBWF-1"
         action_id = 1
         path_name = "ib_tasks.populate.stage_ac.stage_1_action_name_1"
         exception_object = InvalidModulePathFound(path_name)
         action_logic_mock.side_effect = exception_object
-
         # Act
         interactor \
             .get_next_stages_random_assignees_of_a_task_wrapper(
@@ -213,7 +226,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor(StorageMockClass):
             self, action_logic_mock, storage_mock, field_storage,
             presenter_mock, stage_storage_mock, action_storage_mock,
             task_storage_mock, task_stage_storage_mock, create_task_storage,
-            interactor):
+            interactor, gof_storage_mock):
         # Arrange
         task_display_id = "IBWF-1"
         action_id = 1
@@ -234,14 +247,15 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor(StorageMockClass):
         presenter_mock.raise_invalid_method_not_found_exception. \
             assert_called_once_with(method_name=method_name)
 
+    @staticmethod
     @patch.object(
         CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor,
         'call_action_logic_function_and_get_status_variables_dtos_of_task')
     def test_access_invalid_key_raises_invalid_key_error(
-            self, action_logic_mock, storage_mock, field_storage,
+            action_logic_mock, storage_mock, field_storage,
             presenter_mock, stage_storage_mock, action_storage_mock,
             task_storage_mock, task_stage_storage_mock, create_task_storage,
-            interactor):
+            interactor, gof_storage_mock):
         # Arrange
         action_id = 1
         task_display_id = "IBWF-1"
@@ -270,9 +284,8 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor(StorageMockClass):
     def test_given_valid_details_get_next_stage_assignees(
             self, action_logic_mock, next_stages_mock,
             users_with_less_tasks_mock, storage_mock, field_storage,
-            presenter_mock, stage_storage_mock, action_storage_mock,
-            task_storage_mock, task_stage_storage_mock, create_task_storage,
-            interactor):
+            presenter_mock, stage_storage_mock, action_storage_mock,gof_storage_mock,
+            task_storage_mock, task_stage_storage_mock, create_task_storage, interactor):
         # Arrange
         StageWithUserDetailsDTOFactory.reset_sequence()
         AssigneeDetailsDTOFactory.reset_sequence()

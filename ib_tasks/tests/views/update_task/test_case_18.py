@@ -55,8 +55,7 @@ class TestCase18UpdateTaskAPITestCase(TestUtils):
 
         field = FieldFactory.create(
             field_id=field_id, gof=gof,
-            field_type=FieldTypes.PHONE_NUMBER.value
-        )
+            field_type=FieldTypes.PHONE_NUMBER.value)
 
         field_role = FieldRoleFactory.create(
             role=user_roles[0], field=field,
