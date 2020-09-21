@@ -5,6 +5,11 @@ from ib_adhoc_tasks.exceptions.custom_exceptions import InvalidTaskTemplateId
 
 class TaskService:
 
+    @property
+    def interface(self):
+        from ib_tasks.app_interfaces.service_interface import ServiceInterface
+        return ServiceInterface()
+
     def validate_task_template_id(self, task_template_id: str) -> \
             Optional[InvalidTaskTemplateId]:
         pass

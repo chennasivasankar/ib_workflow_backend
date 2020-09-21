@@ -1,9 +1,14 @@
 from typing import List
 
 
-class IAMService:
+class IamService:
 
-    def is_project_exists(self, project_id: str) -> bool:
+    @property
+    def interface(self):
+        from ib_iam.app_interfaces.service_interface import ServiceInterface
+        return ServiceInterface()
+
+    def get_valid_project_ids(self, project_ids: List[str]) -> List[str]:
         pass
 
     @staticmethod

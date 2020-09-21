@@ -1,6 +1,6 @@
-def is_project_exists_mock(mocker):
+def get_valid_project_ids_mock(mocker):
     mock = mocker.patch(
-        "ib_adhoc_tasks.adapters.iam_service.IAMService.is_project_exists"
+        "ib_adhoc_tasks.adapters.iam_service.IamService.get_valid_project_ids"
     )
     return mock
 
@@ -14,7 +14,7 @@ def validate_task_template_id_mock(mocker):
 
 def get_user_role_ids_based_on_project_mock(mocker):
     mock = mocker.patch(
-        "ib_adhoc_tasks.adapters.iam_service.IAMService.get_user_role_ids_based_on_project"
+        "ib_adhoc_tasks.adapters.iam_service.IamService.get_user_role_ids_based_on_project"
     )
     return mock
 
