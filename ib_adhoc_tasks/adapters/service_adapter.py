@@ -8,7 +8,7 @@ class ServiceAdapter:
 
     @property
     def task_service(self):
-        from ib_adhoc_tasks.adapters.task_interface import TaskService
+        from ib_adhoc_tasks.adapters.task_service import TaskService
         task_service = TaskService()
         return task_service
 

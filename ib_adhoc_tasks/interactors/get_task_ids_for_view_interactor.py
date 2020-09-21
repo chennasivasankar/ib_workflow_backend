@@ -26,7 +26,14 @@ class GetTaskIdsForViewInteractor:
 
         from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
-        user_role_ids = service_adapter.iam_service.get_user_role_ids(user_id=user_id)
+        service_adapter.iam_service.is_valid_user_id_for_given_project(
+            user_id=user_id, project_id=project_id
+        )
+
+        user_role_ids = \
+            service_adapter.iam_service.get_user_role_ids_based_on_project(
+                user_id=user_id, project_id=project_id
+            )
         stage_ids = service_adapter.task_service.get_user_permitted_stage_ids(
             user_role_ids=user_role_ids
         )

@@ -1,10 +1,9 @@
 import abc
 from typing import List
 
-from ib_adhoc_tasks.interactors.dtos import TaskIdsAndCountDTO, \
-    TaskIdsForGroupsParameterDTO
 from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO, \
-    TaskOffsetAndLimitValuesDTO
+    TaskOffsetAndLimitValuesDTO, TaskIdsForGroupsParameterDTO, \
+    TaskIdsAndCountDTO
 from ib_adhoc_tasks.interactors.storage_interfaces.dtos import GroupDetailsDTO
 
 

@@ -1,7 +1,8 @@
 import factory
 
+from ib_adhoc_tasks.constants.enum import GroupByType
 from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO, \
-    TaskOffsetAndLimitValuesDTO
+    TaskOffsetAndLimitValuesDTO, TaskIdsForGroupsParameterDTO, GroupByValueDTO
 
 
 class GroupByDTOFactory(factory.Factory):
@@ -18,9 +19,8 @@ class TaskOffsetAndLimitValuesDTOFactory(factory.Factory):
     class Meta:
         model = TaskOffsetAndLimitValuesDTO
 
-from ib_adhoc_tasks.constants.enum import GroupByType
-from ib_adhoc_tasks.interactors.dtos import GroupByValueDTO, \
-    TaskIdsForGroupsParameterDTO
+    limit = 5
+    offset = 0
 
 
 class TaskIdsForGroupsParameterDTOFactory(factory.Factory):
