@@ -1,6 +1,7 @@
 from typing import List
 
 from ib_tasks.constants.enum import ViewType
+from ib_tasks.interactors.dtos.dtos import TasksDetailsInputDTO
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
 from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
@@ -9,8 +10,12 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO, TaskStagesDTO
 from ib_tasks.interactors.task_dtos import TaskStageIdDTO, \
     TaskDetailsConfigDTO
+from ib_tasks.interactors.task_stage_dtos import TasksCompleteDetailsDTO
 from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
+from ib_tasks.storages.fields_storage_implementation import FieldsStorageImplementation
+from ib_tasks.storages.storage_implementation import StagesStorageImplementation
+from ib_tasks.storages.task_stage_storage_implementation import TaskStageStorageImplementation
 from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
 
@@ -126,3 +131,23 @@ class ServiceInterface:
             project_id=project_id
         )
 
+    @staticmethod
+    def get_tasks_complete_details(
+            input_dto: TasksDetailsInputDTO
+    ) -> TasksCompleteDetailsDTO:
+        from ib_tasks.interactors.get_tasks_complete_details_interactor \
+            import GetTasksCompleteDetailsInteractor
+        task_storage = TasksStorageImplementation()
+        action_storage = ActionsStorageImplementation()
+        task_stage_storage = TaskStageStorageImplementation()
+        stage_storage = StagesStorageImplementation()
+        field_storage = FieldsStorageImplementation()
+        interactor = GetTasksCompleteDetailsInteractor(
+            task_storage=task_storage,
+            action_storage=action_storage,
+            stage_storage=stage_storage,
+            field_storage=field_storage,
+            task_stage_storage=task_stage_storage
+        )
+        response = interactor.get_tasks_complete_details(input_dto=input_dto)
+        return response

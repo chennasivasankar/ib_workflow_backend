@@ -30,7 +30,7 @@ class GetTasksCompleteDetailsInteractor(ValidationMixin):
 
     def get_tasks_complete_details(
             self, input_dto: TasksDetailsInputDTO
-    ):
+    ) -> TasksCompleteDetailsDTO:
         self.validations_for_input_data(input_dto)
         task_stage_dtos = self._get_permitted_task_stage_dtos(input_dto)
         task_stage_details_dtos = self._get_task_stage_fields_and_actions(
