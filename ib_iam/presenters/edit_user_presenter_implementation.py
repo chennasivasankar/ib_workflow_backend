@@ -1,7 +1,7 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_iam.constants.enums import StatusCode
-from ib_iam.interactors.presenter_interfaces.edit_user_presenter_interface \
+from ib_iam.interactors.presenter_interfaces.user_presenter_interface \
     import EditUserPresenterInterface
 
 

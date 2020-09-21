@@ -401,7 +401,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         return field_searchable_dtos
 
     def _get_stages_and_actions_details_dtos(
-            self, task_id: int, user_id: str, user_roles: str
+            self, task_id: int, user_id: str, user_roles: List[str]
     ) -> List[StageAndActionsDetailsDTO]:
         from ib_tasks.interactors.get_task_stages_and_actions \
             import GetTaskStagesAndActions

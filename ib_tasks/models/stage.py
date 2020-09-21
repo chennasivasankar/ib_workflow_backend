@@ -1,4 +1,5 @@
 from django.db import models
+
 from ib_tasks.models.gof import GoF
 
 

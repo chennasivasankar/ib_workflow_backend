@@ -5,8 +5,6 @@ from django.db.models import Q
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.stages_dtos import TaskStageHistoryDTO, \
     StageMinimalDTO
-from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
-    FieldSearchableDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStageAssigneeDTO, CurrentStageDetailsDTO, AssigneeCurrentTasksCountDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
@@ -115,21 +113,18 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
         ).exists()
         return is_user_has_permissions
 
-    def get_count_of_tasks_assigned_for_each_user(
-            self, db_stage_ids: List[int],
-            task_ids: List[int]) -> List[
-        AssigneeCurrentTasksCountDTO]:
+    def get_current_count_of_tasks_assigned_for_each_user(
+            self, db_stage_ids: List[int], task_ids: List[int]) \
+            -> List[AssigneeCurrentTasksCountDTO]:
         from django.db.models import Count
         assignee_with_count_objs = list(TaskStageHistory.objects.filter(
             task_id__in=task_ids, stage_id__in=db_stage_ids,
-            left_at__isnull=True).values(
-            'assignee_id').annotate(
+            left_at__isnull=True).values('assignee_id').annotate(
             tasks_count=Count('assignee_id')).order_by('tasks_count'))
         assignee_with_current_tasks_count_dtos = [AssigneeCurrentTasksCountDTO(
             assignee_id=assignee_with_count_obj['assignee_id'],
-            tasks_count=assignee_with_count_obj['tasks_count']) for
-            assignee_with_count_obj in
-            assignee_with_count_objs]
+            tasks_count=assignee_with_count_obj['tasks_count'])
+            for assignee_with_count_obj in assignee_with_count_objs]
         return assignee_with_current_tasks_count_dtos
 
     def get_stage_assignee_id_dtos(
@@ -147,7 +142,8 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
             return []
         q = q & Q(assignee_id__isnull=False)
         task_stage_objects = TaskStageHistory.objects.filter(
-            q, left_at=None).values('task_id', 'stage__stage_id', 'assignee_id')
+            q, left_at=None).values('task_id', 'stage__stage_id',
+                                    'assignee_id')
         task_stage_assignee_id_dto = [
             TaskStageAssigneeIdDTO(
                 task_id=task_stage_object['task_id'],

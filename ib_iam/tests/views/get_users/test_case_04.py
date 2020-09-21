@@ -156,8 +156,8 @@ class TestCase04GetUsersAPITestCase(TestUtils):
     def test_case(self, setup, users_set_up, user_teams_set_up,
                   user_roles_set_up, snapshot, mocker):
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dtos_mock
-        get_user_profile_bulk_mock = prepare_get_user_profile_dtos_mock(
+            get_user_profile_dtos_mock
+        get_user_profile_bulk_mock = get_user_profile_dtos_mock(
             mocker=mocker)
         ib_users = [
             {

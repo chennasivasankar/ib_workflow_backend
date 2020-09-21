@@ -49,7 +49,7 @@ class TestGetUsersWithLessTasksInGivenStagesInteractor:
             = stage_details_dtos
         stage_storage_mock.get_stage_role_dtos_given_db_stage_ids.return_value \
             = stage_role_dtos
-        task_stage_storage_mock.get_count_of_tasks_assigned_for_each_user. \
+        task_stage_storage_mock.get_current_count_of_tasks_assigned_for_each_user. \
             return_value = [AssigneeCurrentTasksCountDTOFactory(
             assignee_id="user_id_2", tasks_count=2)]
         stage_storage_mock. \
@@ -81,7 +81,7 @@ class TestGetUsersWithLessTasksInGivenStagesInteractor:
         stage_storage_mock.get_current_stages_of_all_tasks.assert_called_once()
         stage_storage_mock.get_stage_detail_dtos_given_stage_ids.assert_called_once()
         stage_storage_mock.get_stage_role_dtos_given_db_stage_ids.assert_called_once()
-        task_stage_storage_mock.get_count_of_tasks_assigned_for_each_user.assert_called_once()
+        task_stage_storage_mock.get_current_count_of_tasks_assigned_for_each_user.assert_called_once()
         stage_storage_mock. \
             get_current_stages_of_all_tasks.assert_called_once()
         action_storage_mock.get_stage_ids_having_actions.assert_called_once()
@@ -96,7 +96,7 @@ class TestGetUsersWithLessTasksInGivenStagesInteractor:
             = stage_details_dtos
         stage_storage_mock.get_stage_role_dtos_given_db_stage_ids.return_value \
             = stage_role_dtos
-        task_stage_storage_mock.get_count_of_tasks_assigned_for_each_user. \
+        task_stage_storage_mock.get_current_count_of_tasks_assigned_for_each_user. \
             return_value = []
         stage_storage_mock. \
             get_current_stages_of_all_tasks.return_value = \
@@ -129,7 +129,7 @@ class TestGetUsersWithLessTasksInGivenStagesInteractor:
         stage_storage_mock.get_current_stages_of_all_tasks.assert_called_once()
         stage_storage_mock.get_stage_detail_dtos_given_stage_ids.assert_called_once()
         stage_storage_mock.get_stage_role_dtos_given_db_stage_ids.assert_called_once()
-        task_stage_storage_mock.get_count_of_tasks_assigned_for_each_user.assert_called_once()
+        task_stage_storage_mock.get_current_count_of_tasks_assigned_for_each_user.assert_called_once()
         stage_storage_mock. \
             get_current_stages_of_all_tasks.assert_called_once()
         action_storage_mock.get_stage_ids_having_actions.assert_called_once()
@@ -145,7 +145,7 @@ class TestGetUsersWithLessTasksInGivenStagesInteractor:
             = stage_details_dtos
         stage_storage_mock.get_stage_role_dtos_given_db_stage_ids.return_value \
             = stage_role_dtos
-        task_stage_storage_mock.get_count_of_tasks_assigned_for_each_user. \
+        task_stage_storage_mock.get_current_count_of_tasks_assigned_for_each_user. \
             return_value = [AssigneeCurrentTasksCountDTOFactory(
             assignee_id="user_id_1", tasks_count=1), AssigneeCurrentTasksCountDTOFactory(
             assignee_id="user_id_0", tasks_count=1)]
@@ -178,7 +178,7 @@ class TestGetUsersWithLessTasksInGivenStagesInteractor:
         stage_storage_mock.get_current_stages_of_all_tasks.assert_called_once()
         stage_storage_mock.get_stage_detail_dtos_given_stage_ids.assert_called_once()
         stage_storage_mock.get_stage_role_dtos_given_db_stage_ids.assert_called_once()
-        task_stage_storage_mock.get_count_of_tasks_assigned_for_each_user.assert_called_once()
+        task_stage_storage_mock.get_current_count_of_tasks_assigned_for_each_user.assert_called_once()
         stage_storage_mock. \
             get_current_stages_of_all_tasks.assert_called_once()
         action_storage_mock.get_stage_ids_having_actions.assert_called_once()

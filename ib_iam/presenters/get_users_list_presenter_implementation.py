@@ -6,7 +6,7 @@ from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.dtos import \
     ListOfCompleteUsersWithRolesDTO
-from ib_iam.interactors.presenter_interfaces.get_users_list_presenter_interface \
+from ib_iam.interactors.presenter_interfaces.user_presenter_interface \
     import GetUsersListPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import TeamWithUserIdDTO, \
     UserCompanyDTO, UserRoleDTO

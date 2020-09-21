@@ -1,6 +1,8 @@
-import pytest
 import json
 from unittest.mock import create_autospec
+
+import pytest
+
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTransitionTemplateIds
 from ib_tasks.interactors.create_or_update_or_delete_stage_actions import (
@@ -10,7 +12,7 @@ from ib_tasks.interactors.create_or_update_or_delete_stage_actions import (
 )
 from ib_tasks.interactors.storage_interfaces.action_storage_interface \
     import ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import TaskTemplateStorageInterface
 from ib_tasks.tests.factories.interactor_dtos import StageActionDTOFactory
 

@@ -1,9 +1,8 @@
 import pytest
 
+from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
 from ib_iam.tests.factories.models import UserDetailsFactory, CompanyFactory, \
     TeamUserFactory, TeamFactory, ProjectRoleFactory, UserRoleFactory
-
-from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
 from ib_iam.tests.factories.storage_dtos \
     import UserDTOFactory, UserTeamDTOFactory, UserCompanyDTOFactory, \
     UserRoleDTOFactory, CompanyIdAndNameDTOFactory, TeamDTOFactory, \

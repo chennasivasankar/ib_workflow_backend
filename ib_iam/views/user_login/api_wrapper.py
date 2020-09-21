@@ -8,12 +8,12 @@ def api_wrapper(*args, **kwargs):
     request_data = kwargs['request_data']
     email = request_data['email']
     password = request_data['password']
-    from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+    from ib_iam.adapters.dtos import EmailAndPasswordDTO
     email_and_password_dto = EmailAndPasswordDTO(
         email=email,
         password=password
     )
-    from ib_iam.interactors.user_login_interactor import LoginInteractor
+    from ib_iam.interactors.auth.user_login_interactor import LoginInteractor
     from ib_iam.storages.user_storage_implementation import UserStorageImplementation
     storage = UserStorageImplementation()
     interactor = LoginInteractor(storage=storage)

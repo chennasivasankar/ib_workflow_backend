@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List, Union, Optional
 
 from ib_tasks.constants.enum import Searchable
 
@@ -59,7 +59,7 @@ class TeamInfoDTO:
 class UserDetailsDTO:
     user_id: str
     user_name: str
-    profile_pic_url: str
+    profile_pic_url: Optional[str] = None
 
 
 @dataclass

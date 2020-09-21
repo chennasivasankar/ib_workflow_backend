@@ -22,11 +22,11 @@ from ib_tasks.populate.populate_gofs_to_task_templates import \
     PopulateGoFsToTaskTemplate
 from ib_tasks.populate.populate_gofs_to_transition_templates import \
     PopulateGoFsToTransitionTemplate
-from ib_tasks.populate.task_templates import PopulateTaskTemplates
-from ib_tasks.populate.transition_template import PopulateTransitionTemplates
 from ib_tasks.populate.populate_projects_for_task_templates import \
     PopulateProjectsForTaskTemplates
 from ib_tasks.populate.populate_stage_gofs import PopulateStageGoFs
+from ib_tasks.populate.task_templates import PopulateTaskTemplates
+from ib_tasks.populate.transition_template import PopulateTransitionTemplates
 
 
 @transaction.atomic()

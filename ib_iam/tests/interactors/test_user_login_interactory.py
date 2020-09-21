@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import Mock
+
+import pytest
 
 
 class TestLoginInteractor:
@@ -24,7 +25,7 @@ class TestLoginInteractor:
 
     @pytest.fixture()
     def email_and_password_dto(self):
-        from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+        from ib_iam.adapters.dtos import EmailAndPasswordDTO
         email_and_password_dto = EmailAndPasswordDTO(
             email="test@gmail.com",
             password="test123"
@@ -44,14 +45,14 @@ class TestLoginInteractor:
             mocker=mocker)
         get_user_id_for_given_email_mock.return_value = user_id
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dto_mock
-        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(
+            get_user_profile_dto_mock
+        get_user_profile_dto_mock = get_user_profile_dto_mock(
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
             user_id=user_id, is_email_verified=True
         )
-        from ib_iam.interactors.user_login_interactor import IncorrectPassword
+        from ib_iam.interactors.auth.user_login_interactor import IncorrectPassword
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             get_user_tokens_dto_for_given_email_and_password_dto_mock
         get_tokens_dto_for_given_email_and_password_dto_mock \
@@ -64,7 +65,7 @@ class TestLoginInteractor:
         presenter_mock.raise_exception_for_incorrect_password.return_value \
             = expected_raise_incorrect_password_mock
 
-        from ib_iam.interactors.user_login_interactor import LoginInteractor
+        from ib_iam.interactors.auth.user_login_interactor import LoginInteractor
         interactor = LoginInteractor(storage=storage_mock_setup)
 
         # Act
@@ -94,7 +95,7 @@ class TestLoginInteractor:
         presenter_mock.raise_exception_for_user_account_does_not_exists. \
             return_value = expected_presenter_raise_email_does_not_exist_mock
 
-        from ib_iam.interactors.user_login_interactor import LoginInteractor
+        from ib_iam.interactors.auth.user_login_interactor import LoginInteractor
         interactor = LoginInteractor(storage=storage_mock_setup)
 
         # Act
@@ -114,7 +115,7 @@ class TestLoginInteractor:
     ):
         # Arrange
         user_id = "1"
-        from ib_iam.adapters.auth_service import UserTokensDTO
+        from ib_iam.adapters.dtos import UserTokensDTO
         tokens_dto = UserTokensDTO(
             access_token="asdfaldskfjdfdlsdkf",
             refresh_token="sadfenkljkdfeller", expires_in_seconds=1000,
@@ -128,8 +129,8 @@ class TestLoginInteractor:
             mocker=mocker)
         get_user_id_for_given_email_mock.return_value = user_id
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dto_mock
-        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(
+            get_user_profile_dto_mock
+        get_user_profile_dto_mock = get_user_profile_dto_mock(
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
@@ -148,7 +149,7 @@ class TestLoginInteractor:
         presenter_mock.prepare_response_for_user_tokens_dto_and_is_admin.return_value \
             = expected_presenter_mock_response
 
-        from ib_iam.interactors.user_login_interactor import LoginInteractor
+        from ib_iam.interactors.auth.user_login_interactor import LoginInteractor
         interactor = LoginInteractor(storage=storage_mock_setup)
 
         # Act
@@ -173,8 +174,8 @@ class TestLoginInteractor:
             mocker=mocker)
         get_user_id_for_given_email_mock.return_value = user_id
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dto_mock
-        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(
+            get_user_profile_dto_mock
+        get_user_profile_dto_mock = get_user_profile_dto_mock(
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
@@ -193,7 +194,7 @@ class TestLoginInteractor:
         presenter_mock.raise_exception_for_invalid_email.return_value \
             = expected_raise_invalid_email_mock
 
-        from ib_iam.interactors.user_login_interactor import LoginInteractor
+        from ib_iam.interactors.auth.user_login_interactor import LoginInteractor
         interactor = LoginInteractor(storage=storage_mock_setup)
 
         # Act
@@ -219,8 +220,8 @@ class TestLoginInteractor:
             mocker=mocker)
         get_user_id_for_given_email_mock.return_value = user_id
         from ib_iam.tests.common_fixtures.adapters.user_service import \
-            prepare_get_user_profile_dto_mock
-        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(
+            get_user_profile_dto_mock
+        get_user_profile_dto_mock = get_user_profile_dto_mock(
             mocker=mocker)
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         get_user_profile_dto_mock.return_value = UserProfileDTOFactory.create(
@@ -230,7 +231,7 @@ class TestLoginInteractor:
         presenter_mock.raise_exception_for_login_with_not_verify_email. \
             return_value = expected_raise_invalid_email_mock
 
-        from ib_iam.interactors.user_login_interactor import LoginInteractor
+        from ib_iam.interactors.auth.user_login_interactor import LoginInteractor
         interactor = LoginInteractor(storage=storage_mock_setup)
 
         # Act
@@ -258,7 +259,7 @@ class TestLoginInteractor:
         presenter_mock.raise_exception_for_invalid_email.return_value \
             = expected_raise_invalid_email_mock
 
-        from ib_iam.interactors.user_login_interactor import LoginInteractor
+        from ib_iam.interactors.auth.user_login_interactor import LoginInteractor
         interactor = LoginInteractor(storage=storage_mock_setup)
 
         # Act

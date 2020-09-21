@@ -1,10 +1,11 @@
 import pytest
-from ib_iam.tests.factories.storage_dtos import \
-    CompanyNameLogoAndDescriptionDTOFactory
+
 from ib_iam.models import Company
 from ib_iam.storages.company_storage_implementation import \
     CompanyStorageImplementation
 from ib_iam.tests.common_fixtures.adapters.uuid_mock import uuid_mock
+from ib_iam.tests.factories.storage_dtos import \
+    CompanyNameLogoAndDescriptionDTOFactory
 
 
 @pytest.mark.django_db

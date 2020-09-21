@@ -21,7 +21,7 @@ class TestGetProjectBriefInfoInteractor:
 
     @pytest.fixture
     def presenter(self):
-        from ib_iam.interactors.presenter_interfaces.get_project_brief_info_presenter_interface import \
+        from ib_iam.interactors.presenter_interfaces.project_presenter_interface import \
             GetProjectBriefInfoPresenterInterface
         presenter = create_autospec(GetProjectBriefInfoPresenterInterface)
         return presenter

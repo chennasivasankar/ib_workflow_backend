@@ -1,4 +1,5 @@
 import pytest
+
 from ib_iam.tests.common_fixtures.reset_fixture \
     import reset_sequence_company_factory, \
     reset_sequence_user_details_factory

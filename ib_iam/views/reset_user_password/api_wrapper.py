@@ -10,7 +10,7 @@ def api_wrapper(*args, **kwargs):
     request_data = kwargs["request_data"]
     password = request_data["password"]
 
-    from ib_iam.interactors.reset_user_password_interactor import \
+    from ib_iam.interactors.auth.reset_user_password_interactor import \
         ResetUserPasswordInteractor
     interactor = ResetUserPasswordInteractor()
 

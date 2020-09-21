@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestCase04EditUserAPITestCase.test_given_invalid_company_returns_invalid_company_response status_code'] = '404'

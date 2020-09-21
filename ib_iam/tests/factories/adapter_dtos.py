@@ -1,6 +1,6 @@
 import factory
 
-from ib_iam.adapters.auth_service import UserTokensDTO
+from ib_iam.adapters.dtos import UserTokensDTO
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.app_interfaces.dtos import SearchableDTO, ProjectTeamUserDTO, \
     UserIdWithTeamIdDTO, ProjectTeamsAndUsersDTO

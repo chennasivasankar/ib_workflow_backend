@@ -17,8 +17,8 @@ class TestCase05UpdateUserProfileAPITestCase(TestUtils):
     @pytest.mark.django_db
     def test_case(self, mocker, setup, snapshot):
         from ib_iam.tests.common_fixtures.adapters.user_service \
-            import prepare_update_user_profile_adapter_mock
-        update_user_profile_mock = prepare_update_user_profile_adapter_mock(
+            import update_user_profile_adapter_mock
+        update_user_profile_mock = update_user_profile_adapter_mock(
             mocker=mocker)
         from ib_iam.exceptions.custom_exceptions import InvalidEmail
         update_user_profile_mock.side_effect = InvalidEmail

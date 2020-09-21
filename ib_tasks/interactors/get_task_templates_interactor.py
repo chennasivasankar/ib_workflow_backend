@@ -85,41 +85,31 @@ class GetTaskTemplatesInteractor:
             self.task_template_storage.get_task_templates_dtos()
         self._validate_task_templates_are_exists(
             task_templates_dtos=task_templates_dtos)
-
         project_id_with_task_template_id_dtos = \
             self.task_template_storage.\
             get_project_id_with_task_template_id_dtos()
-
         initial_stage_id_with_template_id_dtos = \
             self.task_storage.get_initial_stage_id_with_template_id_dtos()
         action_with_stage_id_dtos = self._get_action_with_stage_id_dtos(
             stage_id_with_template_id_dtos=
             initial_stage_id_with_template_id_dtos)
-
         task_template_ids = self._get_task_template_ids(
             task_templates_dtos=task_templates_dtos)
         gof_details_with_field_dto = \
             self._get_gof_details_with_field_dtos_of_task_templates(
                 task_template_ids=task_template_ids, user_roles=user_roles)
-
-        gofs_of_task_templates_dtos = \
-            gof_details_with_field_dto.gofs_of_task_templates_dtos
-        gof_ids = self._get_gof_ids_of_task_templates(
-            gofs_of_task_templates_dtos=gofs_of_task_templates_dtos)
         stage_gof_with_template_id_dtos = \
             self._get_stage_gofs_for_each_task_template_dtos(
-                task_template_ids=task_template_ids, gof_ids=gof_ids,
-                user_roles=user_roles)
-        user_stage_permitted_gof_ids = \
-            self._get_gof_ids_having_stage_permission_for_user(
-                stage_gof_with_template_id_dtos=stage_gof_with_template_id_dtos
-            )
+                task_template_ids=task_template_ids, user_roles=user_roles,
+                gofs_of_task_templates_dtos=
+                gof_details_with_field_dto.gofs_of_task_templates_dtos)
 
-        field_with_is_field_writable_dtos = \
-            self._remove_gof_ids_from_gof_selector_if_user_does_not_have_permission(
-                field_with_is_field_writable_dtos=
-                gof_details_with_field_dto.field_with_is_field_writable_dtos,
-                gof_ids_having_user_permissions=user_stage_permitted_gof_ids)
+        filtered_gof_details_with_field_dto, \
+            filtered_stage_gof_with_template_id_dtos = self.\
+            _remove_data_from_gof_selector_if_user_does_not_have_permission(
+                gof_details_with_field_dto=gof_details_with_field_dto,
+                stage_gof_with_template_id_dtos=
+                stage_gof_with_template_id_dtos)
 
         return CompleteTaskTemplatesDTO(
             task_template_dtos=task_templates_dtos,
@@ -128,10 +118,13 @@ class GetTaskTemplatesInteractor:
             initial_stage_id_with_template_id_dtos=
             initial_stage_id_with_template_id_dtos,
             action_with_stage_id_dtos=action_with_stage_id_dtos,
-            gof_dtos=gof_details_with_field_dto.gof_dtos,
-            gofs_of_task_templates_dtos=gofs_of_task_templates_dtos,
-            field_with_permissions_dtos=field_with_is_field_writable_dtos,
-            stage_gof_with_template_id_dtos=stage_gof_with_template_id_dtos)
+            gof_dtos=filtered_gof_details_with_field_dto.gof_dtos,
+            gofs_of_task_templates_dtos=
+            filtered_gof_details_with_field_dto.gofs_of_task_templates_dtos,
+            field_with_permissions_dtos=filtered_gof_details_with_field_dto.
+            field_with_is_field_writable_dtos,
+            stage_gof_with_template_id_dtos=
+            filtered_stage_gof_with_template_id_dtos)
 
     def _get_gof_details_with_field_dtos_of_task_templates(
             self, task_template_ids: List[str], user_roles: List[str]
@@ -228,13 +221,18 @@ class GetTaskTemplatesInteractor:
         return field_ids_having_read_permission_for_user, \
             field_ids_having_write_permission_for_user
 
-    def _remove_gof_ids_from_gof_selector_if_user_does_not_have_permission(
-            self, field_with_is_field_writable_dtos: List[FieldPermissionDTO],
-            gof_ids_having_user_permissions: List[str]
-    ) -> List[FieldPermissionDTO]:
+    def _remove_data_from_gof_selector_if_user_does_not_have_permission(
+            self, gof_details_with_field_dto: GoFsDetailsWithFieldsDTO,
+            stage_gof_with_template_id_dtos: List[StageGoFWithTemplateIdDTO]
+    ) -> (GoFsDetailsWithFieldsDTO, List[StageGoFWithTemplateIdDTO]):
         import json
         from ib_tasks.constants.enum import FieldTypes
-
+        gof_ids_having_user_permissions = \
+            self._get_gof_ids_having_stage_permission_for_user(
+                stage_gof_with_template_id_dtos=stage_gof_with_template_id_dtos
+            )
+        field_with_is_field_writable_dtos = \
+            gof_details_with_field_dto.field_with_is_field_writable_dtos
         field_with_is_field_writable_dtos_having_user_permission = []
         for field_with_is_field_writable_dto in \
                 field_with_is_field_writable_dtos:
@@ -255,22 +253,32 @@ class GetTaskTemplatesInteractor:
                     continue
             field_with_is_field_writable_dtos_having_user_permission.append(
                 field_with_is_field_writable_dto)
-        return field_with_is_field_writable_dtos_having_user_permission
+        filtered_gof_details_with_field_dto,\
+            filtered_stage_gof_with_template_id_dtos = \
+            self._remove_gof_details_if_gof_has_no_fields(
+                gof_details_with_field_dto=gof_details_with_field_dto,
+                stage_gof_with_template_id_dtos=
+                stage_gof_with_template_id_dtos,
+                field_with_is_field_writable_dtos_having_user_permission=
+                field_with_is_field_writable_dtos_having_user_permission
+            )
+        return filtered_gof_details_with_field_dto, \
+            filtered_stage_gof_with_template_id_dtos
 
     def _get_stage_gofs_for_each_task_template_dtos(
-            self, task_template_ids: List[str], gof_ids: List[str],
-            user_roles: List[str]
+            self, task_template_ids: List[str], user_roles: List[str],
+            gofs_of_task_templates_dtos: List[GoFToTaskTemplateDTO]
     ) -> List[StageGoFWithTemplateIdDTO]:
+        gof_ids = self._get_gof_ids_of_task_templates(
+            gofs_of_task_templates_dtos=gofs_of_task_templates_dtos)
         stage_id_with_template_id_dtos = \
             self.stage_storage.get_stage_id_with_template_id_dtos(
                 task_template_ids=task_template_ids
             )
-
         user_permitted_stage_id_with_template_id_dtos = \
             self._get_user_permitted_stage_id_with_template_id_dtos(
                 stage_id_with_template_id_dtos=stage_id_with_template_id_dtos,
                 user_roles=user_roles)
-
         stage_ids = self._get_stage_ids(
             stage_id_with_template_id_dtos=
             user_permitted_stage_id_with_template_id_dtos)
@@ -312,6 +320,48 @@ class GetTaskTemplatesInteractor:
             user_permitted_stage_ids
         ]
         return user_permitted_stage_id_with_template_id_dtos
+
+    def _remove_gof_details_if_gof_has_no_fields(
+            self, gof_details_with_field_dto: GoFsDetailsWithFieldsDTO,
+            stage_gof_with_template_id_dtos: List[StageGoFWithTemplateIdDTO],
+            field_with_is_field_writable_dtos_having_user_permission:
+            List[FieldPermissionDTO]
+    ) -> (GoFsDetailsWithFieldsDTO, List[StageGoFWithTemplateIdDTO]):
+        gof_ids_of_task_templates = self._get_gof_ids_of_task_templates(
+            gofs_of_task_templates_dtos=
+            gof_details_with_field_dto.gofs_of_task_templates_dtos)
+
+        gof_ids_having_at_least_one_field = \
+            self._get_gof_ids_having_at_least_one_field(
+                gof_ids=gof_ids_of_task_templates, field_with_permissions_dtos=
+                field_with_is_field_writable_dtos_having_user_permission)
+        gofs_of_task_templates_dtos_having_at_least_one_field = \
+            self._get_gofs_of_task_templates_having_at_least_one_field(
+                gofs_of_task_templates_dtos=
+                gof_details_with_field_dto.gofs_of_task_templates_dtos,
+                gof_ids_of_task_templates=gof_ids_having_at_least_one_field
+            )
+        gof_dtos_having_at_least_one_field = \
+            self._get_gof_dtos_having_at_least_one_field(
+                gof_dtos=gof_details_with_field_dto.gof_dtos,
+                gof_ids_of_task_templates=gof_ids_having_at_least_one_field
+            )
+        stage_gof_with_template_id_dtos_having_at_least_one_field = self.\
+            _get_stage_gof_with_template_id_dtos_having_at_least_one_field(
+                stage_gof_with_template_id_dtos=
+                stage_gof_with_template_id_dtos,
+                gof_ids_of_task_templates=gof_ids_having_at_least_one_field
+            )
+        gof_details_with_field_dtos_having_at_least_one_field = \
+            GoFsDetailsWithFieldsDTO(
+                field_with_is_field_writable_dtos=
+                field_with_is_field_writable_dtos_having_user_permission,
+                gofs_of_task_templates_dtos=
+                gofs_of_task_templates_dtos_having_at_least_one_field,
+                gof_dtos=gof_dtos_having_at_least_one_field
+            )
+        return gof_details_with_field_dtos_having_at_least_one_field, \
+            stage_gof_with_template_id_dtos_having_at_least_one_field
 
     @staticmethod
     def _make_stage_id_with_template_id_dtos_dict(
@@ -433,3 +483,40 @@ class GetTaskTemplatesInteractor:
             if stage_gof_with_template_id_dto.gof_id not in gof_ids:
                 gof_ids.append(stage_gof_with_template_id_dto.gof_id)
         return gof_ids
+
+    @staticmethod
+    def _get_gofs_of_task_templates_having_at_least_one_field(
+            gofs_of_task_templates_dtos: List[GoFToTaskTemplateDTO],
+            gof_ids_of_task_templates: List[str]
+    ) -> List[GoFToTaskTemplateDTO]:
+        gofs_of_task_templates_dtos_having_at_least_one_field = [
+            gofs_of_task_templates_dto
+            for gofs_of_task_templates_dto in gofs_of_task_templates_dtos
+            if gofs_of_task_templates_dto.gof_id in gof_ids_of_task_templates
+        ]
+        return gofs_of_task_templates_dtos_having_at_least_one_field
+
+    @staticmethod
+    def  _get_gof_dtos_having_at_least_one_field(
+            gof_dtos: List[GoFDTO], gof_ids_of_task_templates: List[str]
+    ) -> List[GoFDTO]:
+        gof_dtos_having_at_least_one_field = [
+            gof_dto for gof_dto in gof_dtos
+            if gof_dto.gof_id in gof_ids_of_task_templates
+        ]
+        return gof_dtos_having_at_least_one_field
+
+    @staticmethod
+    def _get_stage_gof_with_template_id_dtos_having_at_least_one_field(
+            stage_gof_with_template_id_dtos: List[StageGoFWithTemplateIdDTO],
+            gof_ids_of_task_templates: List[str]
+    ) -> List[StageGoFWithTemplateIdDTO]:
+
+        stage_gof_with_template_id_dtos_having_at_least_one_field = [
+            stage_gof_with_template_id_dto
+            for stage_gof_with_template_id_dto in
+            stage_gof_with_template_id_dtos
+            if stage_gof_with_template_id_dto.gof_id in
+            gof_ids_of_task_templates
+        ]
+        return stage_gof_with_template_id_dtos_having_at_least_one_field

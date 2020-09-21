@@ -1,11 +1,11 @@
 import collections
 import json
 
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO
-from ib_tasks.exceptions.fields_custom_exceptions \
-        import FieldsDuplicationOfAllowedFormatsValues
 from ib_tasks.constants.exception_messages \
-        import FIELD_DUPLICATION_OF_ALLOWED_FORMATS
+    import FIELD_DUPLICATION_OF_ALLOWED_FORMATS
+from ib_tasks.exceptions.fields_custom_exceptions \
+    import FieldsDuplicationOfAllowedFormatsValues
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO
 
 
 class ImageOrFileUploaderValidationsInteractor:

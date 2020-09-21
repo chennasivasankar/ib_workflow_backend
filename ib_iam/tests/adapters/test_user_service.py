@@ -87,10 +87,15 @@ class TestUserService:
         # Assert
         assert response == expected_user_profile_dto
 
+    @staticmethod
+    def deactivate_user_in_ib_users_mock(mocker):
+        mock = mocker.patch(
+            "ib_users.interfaces.service_interface.ServiceInterface.deactivate_user"
+        )
+        return mock
+
     def test_deactivate_user_in_ib_users_given_valid_user_id(self, mocker):
-        from ib_iam.tests.common_fixtures.adapters.user_service import \
-            deactivate_user_in_ib_users_mock
-        mock = deactivate_user_in_ib_users_mock(mocker=mocker)
+        mock = self.deactivate_user_in_ib_users_mock(mocker=mocker)
         mock.return_value = None
         user_id = "1234"
 

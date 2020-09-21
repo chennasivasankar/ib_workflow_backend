@@ -1,12 +1,17 @@
-from typing import List
+from typing import List, Optional
 
 from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException, \
     UserIsNotInProjectException, UserIsNotInProjectsException
 from ib_tasks.exceptions.custom_exceptions import InvalidProjectId
+from ib_tasks.exceptions.action_custom_exceptions import \
+    InvalidActionException
+from ib_tasks.exceptions.task_custom_exceptions import \
+            InvalidTaskIdException
 
 
 class ValidationMixin:
-    def validate_task_id(self, task_id: int):
+    def validate_task_id(self, task_id: int) -> \
+            Optional[InvalidTaskIdException]:
         is_task_exists = self.task_storage. \
             check_is_task_exists(task_id=task_id)
         is_task_does_not_exists = not is_task_exists
@@ -15,8 +20,10 @@ class ValidationMixin:
             InvalidTaskIdException
         if is_task_does_not_exists:
             raise InvalidTaskIdException(task_id=task_id)
+        return
 
-    def validate_action_id(self, action_id: int):
+    def validate_action_id(self, action_id: int) -> \
+            Optional[InvalidActionException]:
         valid_action = self.action_storage.validate_action(action_id=action_id)
         is_invalid_action = not valid_action
 
@@ -24,6 +31,7 @@ class ValidationMixin:
             InvalidActionException
         if is_invalid_action:
             raise InvalidActionException(action_id=action_id)
+        return
 
     def check_is_valid_stage_id(self, stage_id: int) -> bool:
         is_valid_stage = \
@@ -48,10 +56,10 @@ class ValidationMixin:
     def validate_if_user_is_in_projects(self, user_id: str, project_ids):
 
         adapter = self.get_service_adapter()
-        user_project_status_dtos = adapter.auth_service\
+        user_project_status_dtos = adapter.auth_service \
             .validate_if_user_is_in_projects(
-                user_id=user_id, project_ids=project_ids
-            )
+            user_id=user_id, project_ids=project_ids
+        )
         user_not_in_projects = [
             user_project_status_dto.project_id
             for user_project_status_dto in user_project_status_dtos
@@ -95,4 +103,3 @@ class ValidationMixin:
         self.filter_storage.validate_user_with_filter_id(
             user_id=user_id, filter_id=filter_id
         )
-

@@ -8,6 +8,7 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ...factories.models import TaskTemplateInitialStageFactory
 
 
 class TestCase06CreateTaskAPITestCase(TestUtils):
@@ -30,6 +31,7 @@ class TestCase06CreateTaskAPITestCase(TestUtils):
         StageModelFactory.reset_sequence()
         ActionPermittedRolesFactory.reset_sequence()
         StageActionFactory.reset_sequence()
+        TaskTemplateInitialStageFactory.reset_sequence()
 
         template_id = 'template_1'
         project_id = "project_1"
@@ -38,7 +40,8 @@ class TestCase06CreateTaskAPITestCase(TestUtils):
             get_valid_project_ids_mock
         get_valid_project_ids_mock(mocker, [project_id])
 
-        TaskTemplateFactory.create(template_id=template_id)
+        task_template_obj = TaskTemplateFactory.create(template_id=template_id)
+        TaskTemplateInitialStageFactory.create(task_template=task_template_obj)
         ProjectTaskTemplateFactory.create(
             task_template_id=template_id, project_id=project_id)
         stage = StageModelFactory(
