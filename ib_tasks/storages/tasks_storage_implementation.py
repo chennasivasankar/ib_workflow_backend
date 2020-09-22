@@ -1,9 +1,10 @@
 from collections import defaultdict
 from datetime import datetime
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Union
 
 from django.db.models import Q
 
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
@@ -25,9 +26,10 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
-from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO, TaskDelayParametersDTO
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO, \
+    TaskDelayParametersDTO
 from ib_tasks.models import Stage, TaskTemplate, CurrentTaskStage, \
-    TaskTemplateStatusVariable, TaskStageHistory, TaskStatusVariable, TaskStageRp
+    TaskTemplateStatusVariable, TaskStageHistory, TaskStatusVariable
 from ib_tasks.models.field import Field
 from ib_tasks.models.stage_actions import StageAction
 from ib_tasks.models.task import Task, ElasticSearchTask
@@ -36,6 +38,18 @@ from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 
 class TasksStorageImplementation(TaskStorageInterface):
+
+    def add_sub_task(self, created_task_id: int, parent_task_id: int):
+        pass
+
+    def validate_task_display_id_and_return_task_id(
+            self, task_display_id: str) -> Union[InvalidTaskDisplayId, int]:
+        try:
+            task_id = Task.objects.get(display_id=task_display_id).id
+        except Task.DoesNotExist:
+            raise InvalidTaskDisplayId(task_display_id)
+        else:
+            return task_id
 
     def update_status_variables_to_task(
             self, task_id: int, status_variables_dto: List[StatusVariableDTO]):
@@ -556,7 +570,7 @@ class TasksStorageImplementation(TaskStorageInterface):
             self, task_id: int) -> \
             Optional[datetime]:
         task_due_time = Task.objects.filter(
-                id=task_id
+            id=task_id
         ).values_list('due_date', flat=True)
         if task_due_time:
             return task_due_time[0]

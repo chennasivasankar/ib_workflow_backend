@@ -41,6 +41,11 @@ class CreateTaskDTO:
 
 
 @dataclass
+class CreateSubTaskDTO(CreateTaskDTO):
+    parent_task_id: str
+
+
+@dataclass
 class StageIdWithAssigneeDTO:
     stage_id: int
     assignee_id: str
