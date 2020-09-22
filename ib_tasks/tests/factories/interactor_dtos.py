@@ -388,6 +388,7 @@ class CreateTaskDTOFactory(factory.Factory):
     def gof_fields_dtos(self):
         return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
 
+
 class StageIdWithAssigneeDTOFactory(factory.Factory):
     class Meta:
         model = StageIdWithAssigneeDTO
@@ -511,6 +512,7 @@ class TaskCurrentStageDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def stage_details_dtos(self):
+        CurrentStageDetailsDTOFactory.reset_sequence()
         return [CurrentStageDetailsDTOFactory(),
                 CurrentStageDetailsDTOFactory()]
 
@@ -618,6 +620,7 @@ class AssigneeWithTeamDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def team_info_dto(self):
+        TeamInfoDTOFactory.reset_sequence()
         return TeamInfoDTOFactory()
 
 
@@ -630,6 +633,7 @@ class TaskStageAssigneeDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def assignee_details(self):
+        AssigneeWithTeamDetailsDTOFactory.reset_sequence()
         return AssigneeWithTeamDetailsDTOFactory()
 
 
@@ -664,6 +668,7 @@ class AssigneeCurrentTasksCountDTOFactory(factory.Factory):
         lambda counter: 'assignee_{}'.format(counter + 1))
     tasks_count = factory.sequence(
         lambda counter: counter + 1)
+
 
 class StageIdWithNameDTOFactory(factory.Factory):
     class Meta:

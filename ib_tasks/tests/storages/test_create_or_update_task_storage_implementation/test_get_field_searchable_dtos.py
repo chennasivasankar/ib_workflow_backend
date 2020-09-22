@@ -3,10 +3,16 @@ import pytest
 
 from ib_tasks.tests.factories.models import TaskGoFFieldFactory, \
     TaskGoFFactory, FieldFactory
+from ib_tasks.tests.factories.storage_dtos import FieldSearchableDTOFactory
 
 
 @pytest.mark.django_db
 class TestGetFieldSearchableDTOS:
+
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        FieldFactory.reset_sequence()
+        TaskGoFFieldFactory.reset_sequence()
 
     def test_given_field_ids_returns_field_searchable_dtos(
             self, storage, snapshot
