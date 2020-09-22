@@ -17,7 +17,7 @@ class TestCase01GetAdhocTasksByGroupIdsAPITestCase(TestUtils):
     def test_case(self, snapshot):
         body = {'group_by_values': ['string']}
         path_params = {}
-        query_params = {'project_id': 'string', 'limit': 129, 'offset': 662}
+        query_params = {'project_id': 'string', 'limit': 690, 'offset': 41}
         headers = {}
         response = self.make_api_call(body=body,
                                       path_params=path_params,

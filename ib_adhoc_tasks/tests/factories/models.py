@@ -16,3 +16,4 @@ class GroupByInfoFactory(factory.django.DjangoModelFactory):
     view_type = factory.Iterator([
         ViewType.LIST.value, ViewType.KANBAN.value
     ])
+

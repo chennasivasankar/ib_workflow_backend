@@ -1,9 +1,10 @@
 def create_task(no_of_tasks: int):
     import requests
 
-    headers = {'Authorization': 'Bearer Eeg2cr9yizrBYtJHKlFE4aIu8z9MgG'}
+    headers = {'Authorization': 'Bearer 7mMXeKqhou8773fmnYAUPcnXhkgjIg'}
 
     for i in range(no_of_tasks):
+        print(i)
         data = {
             "task_gofs": [{
                 "gof_id": "FIN_REQUESTOR_DETAILS",
@@ -155,5 +156,6 @@ def create_task(no_of_tasks: int):
             "priority": "MEDIUM"
         }
         response = requests.post(
-            "https://dd5d9fb7bf83.ngrok.io/api/ib_tasks/task/v1/",
+            "http://127.0.0.1:8000/api/ib_tasks/task/v1/",
             headers=headers, json=data)
+        print(response.content)

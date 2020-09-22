@@ -8,7 +8,8 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
     TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, \
-    GoFRoleFactory, FieldRoleFactory, StageFactory
+    GoFRoleFactory, FieldRoleFactory, StageFactory, StageGoFFactory, \
+    CurrentTaskStageModelFactory
 from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
@@ -30,6 +31,8 @@ class TestCase16UpdateTaskAPITestCase(TestUtils):
         GoFRoleFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
         StageFactory.reset_sequence()
+        StageGoFFactory.reset_sequence()
+        CurrentTaskStageModelFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
@@ -43,7 +46,7 @@ class TestCase16UpdateTaskAPITestCase(TestUtils):
         mock_method = get_user_role_ids_based_on_project_mock(mocker)
         user_roles = mock_method.return_value
 
-        StageFactory.create(id=stage_id)
+        stage = StageFactory.create(id=stage_id)
         gof = GoFFactory.create(gof_id=gof_id)
         gof_role = GoFRoleFactory.create(
             role=user_roles[0], gof=gof,
@@ -57,6 +60,9 @@ class TestCase16UpdateTaskAPITestCase(TestUtils):
             task_template=task_template, gof=gof)
         task = TaskFactory.create(
             task_display_id=task_id, template_id=task_template.template_id)
+        StageGoFFactory.create(gof=gof, stage=stage)
+        current_task_stage = CurrentTaskStageModelFactory.create(task=task,
+                                                                 stage=stage)
 
     @pytest.mark.django_db
     def test_case(self, snapshot, mocker):
