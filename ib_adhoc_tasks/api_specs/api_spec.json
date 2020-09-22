@@ -420,27 +420,11 @@
         },
         "profile_pic_url": {
           "type": "string"
-        },
-        "team_info": {
-          "type": "object",
-          "properties": {
-            "team_id": {
-              "type": "string"
-            },
-            "team_name": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "team_id",
-            "team_name"
-          ]
         }
       },
       "required": [
         "assignee_id",
-        "name",
-        "team_info"
+        "name"
       ]
     },
     "TaskDetails": {
@@ -801,7 +785,8 @@
             "res_status": {
               "type": "string",
               "enum": [
-                "INVALID_OFFSET_OR_LIMIT_VALUE"
+                "INVALID_OFFSET_VALUE",
+                "INVALID_LIMIT_VALUE"
               ]
             }
           },
@@ -823,7 +808,8 @@
               "type": "string",
               "enum": [
                 "INVALID_PROJECT_ID",
-                "USER_NOT_EXISTS_IN_PROJECT"
+                "USER_NOT_EXISTS_IN_PROJECT",
+                "INVALID_USER_ID"
               ]
             }
           },

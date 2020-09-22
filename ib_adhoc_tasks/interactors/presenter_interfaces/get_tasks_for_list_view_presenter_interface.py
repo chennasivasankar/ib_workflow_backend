@@ -20,5 +20,19 @@ class GetTasksForListViewPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_offset_or_limit_value(self):
+    def raise_invalid_offset_value(self):
         pass
+
+    @abc.abstractmethod
+    def raise_invalid_limit_value(self):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_user_id(self):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_user_for_project(self):
+        pass
+
+

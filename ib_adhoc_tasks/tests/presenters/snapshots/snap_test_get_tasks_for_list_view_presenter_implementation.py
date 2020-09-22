@@ -783,3 +783,13 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
         }
     ]
 }'''
+
+snapshots['TestGetTasksForListViewPresenterImplementation.test_raise_invalid_offset_value exception_object'] = b'{"response": "Invalid offset value, please send valid offset value", "http_status_code": 400, "res_status": "INVALID_OFFSET_VALUE"}'
+
+snapshots['TestGetTasksForListViewPresenterImplementation.test_raise_invalid_limit_value exception_object'] = b'{"response": "Invalid limit value, please send valid limit values", "http_status_code": 400, "res_status": "INVALID_LIMIT_VALUE"}'
+
+snapshots['TestGetTasksForListViewPresenterImplementation.test_raise_invalid_project_id exception_object'] = b'{"response": "Invalid project id, please send valid project id", "http_status_code": 404, "res_status": "INVALID_PROJECT_ID"}'
+
+snapshots['TestGetTasksForListViewPresenterImplementation.test_raise_invalid_user_id exception_object'] = b'{"response": "Invalid user_id, please send valid user_id", "http_status_code": 404, "res_status": "INVALID_USER_ID"}'
+
+snapshots['TestGetTasksForListViewPresenterImplementation.test_raise_invalid_user_for_project exception_object'] = b'{"response": "User not the member of project", "http_status_code": 404, "res_status": "INVALID_USER_ID_FOR_PROJECT"}'

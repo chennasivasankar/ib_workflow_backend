@@ -91,6 +91,66 @@ class TestGetTasksForListViewPresenterImplementation:
         )
         return group_details_dtos
 
+    def test_raise_invalid_offset_value(self, snapshot, presenter):
+        # Arrange
+
+        # Act
+        response = presenter.raise_invalid_offset_value()
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response.content
+        )
+
+    def test_raise_invalid_limit_value(self, snapshot, presenter):
+        # Arrange
+
+        # Act
+        response = presenter.raise_invalid_limit_value()
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response.content
+        )
+
+    def test_raise_invalid_project_id(self, snapshot, presenter):
+        # Arrange
+
+        # Act
+        response = presenter.raise_invalid_project_id()
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response.content
+        )
+
+    def test_raise_invalid_user_id(self, snapshot, presenter):
+        # Arrange
+
+        # Act
+        response = presenter.raise_invalid_user_id()
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response.content
+        )
+
+    def test_raise_invalid_user_for_project(self, snapshot, presenter):
+        # Arrange
+
+        # Act
+        response = presenter.raise_invalid_user_for_project()
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response.content
+        )
+
     def test_given_group_details_dtos_and_task_details_dtos_returns_group_info_task_details_dtos(
             self, task_complete_details_dto, presenter, group_details_dtos,
             snapshot
