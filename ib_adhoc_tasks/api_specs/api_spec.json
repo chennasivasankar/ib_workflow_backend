@@ -1,0 +1,1244 @@
+{
+  "swagger": "2.0",
+  "host": "127.0.0.1:8000",
+  "basePath": "/api/ib_adhok_tasks",
+  "info": {
+    "version": "1.0.0",
+    "title": "Simple API",
+    "description": "A simple API to learn how to write OpenAPI Specification"
+  },
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "oauth": {
+      "tokenUrl": "http://auth.ibtspl.com/oauth2/",
+      "flow": "password",
+      "scopes": {
+        "read": "read users",
+        "write": "create users",
+        "update": "update users",
+        "delete": "delete users"
+      },
+      "type": "oauth2"
+    }
+  },
+  "security": [],
+  "definitions": {
+    "InvalidTaskDetails": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_COLUMN_ID"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "AccessUnauthorizedForProject": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "USER_IS_NOT_IN_PROJECT",
+            "USER_DONOT_HAVE_ACCESS"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "AccessUnauthorized": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "USER_NOT_HAVE_ACCESS_TO_COLUMN"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "InvalidColumnDetails": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_BOARD_ID"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "InvalidPaginationDetails": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_OFFSET_VALUE",
+            "INVALID_LIMIT_VALUE"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "FieldTypeEnum": {
+      "type": "object",
+      "properties": {
+        "field_type": {
+          "type": "string",
+          "enum": [
+            "PLAIN_TEXT",
+            "PHONE_NUMBER",
+            "EMAIL",
+            "URL",
+            "PASSWORD",
+            "NUMBER",
+            "FLOAT",
+            "LONG_TEXT",
+            "GOF_SELECTOR",
+            "RADIO_GROUP",
+            "CHECKBOX_GROUP",
+            "DROPDOWN",
+            "IMAGE_UPLOADER",
+            "FILE_UPLOADER",
+            "SEARCHABLE",
+            "DATE",
+            "MULTI_SELECT_FIELD"
+          ]
+        }
+      },
+      "required": [
+        "field_type"
+      ]
+    },
+    "StagesWithActions": {
+      "type": "object",
+      "properties": {
+        "stage_id": {
+          "type": "integer"
+        },
+        "stage_display_name": {
+          "type": "string"
+        },
+        "stage_color": {
+          "type": "string"
+        },
+        "assignee": {
+          "$ref": "#/definitions/Assignee"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Action"
+          }
+        }
+      },
+      "required": [
+        "stage_id",
+        "stage_display_name",
+        "stage_color",
+        "actions"
+      ]
+    },
+    "Action": {
+      "type": "object",
+      "properties": {
+        "action_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "action_type": {
+          "type": "string",
+          "enum": [
+            "NO_VALIDATIONS"
+          ]
+        },
+        "button_text": {
+          "type": "string"
+        },
+        "button_color": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_id",
+        "button_text",
+        "button_color"
+      ]
+    },
+    "InvalidProjectId": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_PROJECT_ID"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "TaskOverviewWithStageAndActions": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "start_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "due_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "priority": {
+          "type": "string"
+        },
+        "task_overview_fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaskOverviewFields"
+          }
+        },
+        "stage_with_actions": {
+          "$ref": "#/definitions/StagesWithActions"
+        }
+      },
+      "required": [
+        "task_id",
+        "task_overview_fields",
+        "stage_with_actions",
+        "title",
+        "description",
+        "start_date",
+        "due_date",
+        "priority"
+      ]
+    },
+    "TaskOverviewWithStageAndActionsListView": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "task_overview_fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaskOverviewFieldsListView"
+          }
+        },
+        "stage_with_actions": {
+          "$ref": "#/definitions/StagesWithActions"
+        }
+      },
+      "required": [
+        "task_id",
+        "task_overview_fields",
+        "stage_with_actions"
+      ]
+    },
+    "TaskOverviewFields": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/FieldTypeEnum"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "field_display_name": {
+              "type": "string"
+            },
+            "field_response": {
+              "type": "string"
+            },
+            "field_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "field_display_name",
+            "field_id"
+          ]
+        }
+      ]
+    },
+    "TaskOverviewFieldsListView": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/FieldTypeEnum"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "field_display_name": {
+              "type": "string"
+            },
+            "field_response": {
+              "type": "string"
+            },
+            "field_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "field_display_name",
+            "field_id"
+          ]
+        }
+      ]
+    },
+    "AllFieldsInColumn": {
+      "type": "object",
+      "properties": {
+        "field_id": {
+          "type": "string"
+        },
+        "field_display_name": {
+          "type": "string"
+        },
+        "display_order": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "display_status": {
+          "type": "string",
+          "enum": [
+            "HIDE",
+            "SHOW"
+          ]
+        }
+      },
+      "required": [
+        "field_display_name",
+        "display_order",
+        "display_status",
+        "field_id"
+      ]
+    },
+    "Assignee": {
+      "type": "object",
+      "properties": {
+        "assignee_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "profile_pic_url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "assignee_id",
+        "name"
+      ]
+    },
+    "TaskDetails": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "stage_color": {
+          "type": "string"
+        },
+        "stage_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "field_type": {
+                "type": "string"
+              },
+              "key": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "field_type",
+              "key",
+              "value"
+            ]
+          }
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "action_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "button_text": {
+                "type": "string"
+              },
+              "button_color": {
+                "type": "string"
+              },
+              "transition_template_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "action_id",
+              "name",
+              "button_text"
+            ]
+          }
+        }
+      },
+      "required": [
+        "task_id",
+        "fields",
+        "actions",
+        "stage_color",
+        "stage_id"
+      ]
+    },
+    "FieldsOperationInvalid": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_COLUMN_ID",
+            "INVALID_FIELD_ID"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "InvalidDisplayOrder": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_DISPLAY_ORDER"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "ForbiddenInFieldsOperation": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "USER_NOT_HAVE_ACCESS_TO_COLUMN",
+            "USER_DO_NOT_HAVE_ACCESS_FIELDS",
+            "FIELD_NOT_BELONGS_TO_COLUMN",
+            "FIELDS_NOT_BELONGS_TO_COLUMN"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "InvalidStarBoardDetails": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_BOARD_ID"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "BoardDetails": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "board_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "board_id",
+          "name"
+        ]
+      }
+    },
+    "TaskCompleteDetails": {
+      "type": "object",
+      "properties": {
+        "total_tasks": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaskOverviewWithStageAndActions"
+          }
+        }
+      },
+      "required": [
+        "total_tasks",
+        "tasks"
+      ]
+    },
+    "TaskCompleteDetailsListView": {
+      "type": "object",
+      "properties": {
+        "total_tasks": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaskOverviewWithStageAndActionsListView"
+          }
+        },
+        "all_fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AllFieldsInColumn"
+          }
+        }
+      },
+      "required": [
+        "total_tasks",
+        "tasks",
+        "all_fields"
+      ]
+    },
+    "FieldDisplay": {
+      "type": "object",
+      "properties": {
+        "field_id": {
+          "type": "string"
+        },
+        "field_display_name": {
+          "type": "string"
+        },
+        "display_status": {
+          "type": "string",
+          "enum": [
+            "HIDE",
+            "SHOW"
+          ]
+        },
+        "display_order": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "required": [
+        "display_order",
+        "display_status",
+        "field_id",
+        "field_display_name"
+      ]
+    },
+    "GroupByOnTasks": {
+      "type": "object",
+      "properties": {
+        "total_groups": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "group_by_value": {
+          "type": "string"
+        },
+        "group_by_display_name": {
+          "type": "string"
+        },
+        "child_groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "group_by_value": {
+                "type": "string"
+              },
+              "group_by_display_name": {
+                "type": "string"
+              },
+              "total_tasks": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "tasks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/TaskOverviewWithStageAndActions"
+                }
+              }
+            },
+            "required": [
+              "group_by_value",
+              "group_by_display_name",
+              "total_tasks",
+              "tasks"
+            ]
+          }
+        }
+      },
+      "required": [
+        "total_groups",
+        "group_by_value",
+        "group_by_display_name",
+        "child_groups"
+      ]
+    }
+  },
+  "parameters": {
+    "OffsetParameter": {
+      "name": "offset",
+      "in": "query",
+      "description": "offset value",
+      "type": "integer",
+      "format": "int64",
+      "required": true
+    },
+    "LimitParameter": {
+      "name": "limit",
+      "in": "query",
+      "description": "limit value",
+      "type": "integer",
+      "format": "int64",
+      "required": true
+    },
+    "GroupLimitParameter": {
+      "name": "group_limit",
+      "in": "query",
+      "description": "group limit value",
+      "type": "integer",
+      "format": "int64",
+      "required": true,
+      "default": 10
+    },
+    "GroupOffsetParameter": {
+      "name": "group_offset",
+      "in": "query",
+      "description": "group offset value",
+      "type": "integer",
+      "format": "int64",
+      "required": true,
+      "default": 0
+    },
+    "Group1LimitParameter": {
+      "name": "group1_limit",
+      "in": "query",
+      "description": "group1 limit value",
+      "type": "integer",
+      "format": "int64",
+      "required": true,
+      "default": 10
+    },
+    "Group1OffsetParameter": {
+      "name": "group1_offset",
+      "in": "query",
+      "description": "group1 offset value",
+      "type": "integer",
+      "format": "int64",
+      "required": true,
+      "default": 0
+    },
+    "Group2LimitParameter": {
+      "name": "group2_limit",
+      "in": "query",
+      "description": "group2 limit value",
+      "type": "integer",
+      "format": "int64",
+      "required": true,
+      "default": 10
+    },
+    "Group2OffsetParameter": {
+      "name": "group2_offset",
+      "in": "query",
+      "description": "group2 offset value",
+      "type": "integer",
+      "format": "int64",
+      "required": true,
+      "default": 0
+    },
+    "GetTasksOfProjectOfGroupByKeyParameter": {
+      "name": "get_tasks_for_given_group_ids",
+      "in": "body",
+      "description": "Group tasks for given group ids ",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "group_by_values": {
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "group_by_values"
+        ]
+      }
+    },
+    "Group1IdParameter": {
+      "name": "group1_id",
+      "in": "query",
+      "description": "group1 id value",
+      "type": "string",
+      "required": true
+    },
+    "Group2IdParameter": {
+      "name": "group2_id",
+      "in": "query",
+      "description": "group2 id value",
+      "type": "string",
+      "required": true
+    },
+    "SearchQueryParameter": {
+      "name": "search_query",
+      "in": "query",
+      "description": "Search Query value",
+      "type": "string",
+      "required": false
+    },
+    "BoardIdParameter": {
+      "name": "board_id",
+      "in": "path",
+      "description": "board id value",
+      "type": "string",
+      "required": true
+    },
+    "ProjectIdParameter": {
+      "name": "project_id",
+      "in": "query",
+      "description": "project id value",
+      "type": "string",
+      "required": true
+    },
+    "ColumnIdParameter": {
+      "name": "column_id",
+      "in": "path",
+      "description": "column id value",
+      "type": "string",
+      "required": true
+    },
+    "FieldIdPathParameter": {
+      "name": "field_id",
+      "in": "path",
+      "description": "field id value",
+      "type": "string",
+      "required": true
+    },
+    "FieldDisplayStatus": {
+      "name": "Status",
+      "in": "body",
+      "description": "Field display status",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "field_id": {
+            "type": "string"
+          },
+          "display_status": {
+            "type": "string",
+            "enum": [
+              "HIDE",
+              "SHOW"
+            ]
+          }
+        },
+        "required": [
+          "display_status",
+          "field_id"
+        ]
+      }
+    },
+    "FieldDisplayOrder": {
+      "name": "Status",
+      "in": "body",
+      "description": "Field display order",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "field_id": {
+            "type": "string"
+          },
+          "display_order": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "field_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "display_order",
+          "field_id",
+          "field_ids"
+        ]
+      }
+    },
+    "ActionParameter": {
+      "name": "action",
+      "in": "body",
+      "description": "is starred value",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "STAR",
+              "UNSTAR"
+            ]
+          }
+        },
+        "required": [
+          "action"
+        ]
+      }
+    },
+    "ViewTypeParameter": {
+      "name": "view_type",
+      "in": "body",
+      "required": true,
+      "description": "view type",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "view_type": {
+            "type": "string",
+            "enum": [
+              "LIST",
+              "KANBAN"
+            ]
+          }
+        },
+        "required": [
+          "view_type"
+        ]
+      }
+    }
+  },
+  "responses": {
+    "InvalidAccessResponse": {
+      "description": "unauthorized access",
+      "schema": {
+        "$ref": "#/definitions/AccessUnauthorized"
+      }
+    },
+    "UserNotInProjectResponse": {
+      "description": "unauthorized access",
+      "schema": {
+        "$ref": "#/definitions/AccessUnauthorizedForProject"
+      }
+    },
+    "InvalidProjectIdResponse": {
+      "description": "invalid project id",
+      "schema": {
+        "$ref": "#/definitions/InvalidProjectId"
+      }
+    },
+    "InvalidColumnsResponse": {
+      "description": "invalid board id",
+      "schema": {
+        "$ref": "#/definitions/InvalidColumnDetails"
+      }
+    },
+    "InvalidTasksResponse": {
+      "description": "invalid column id",
+      "schema": {
+        "$ref": "#/definitions/InvalidTaskDetails"
+      }
+    },
+    "InvalidPaginationResponse": {
+      "description": "invalid offset or invalid limit",
+      "schema": {
+        "$ref": "#/definitions/InvalidPaginationDetails"
+      }
+    },
+    "InvalidStarResponse": {
+      "description": "invalid starred board response",
+      "schema": {
+        "$ref": "#/definitions/InvalidStarBoardDetails"
+      }
+    },
+    "InvalidFieldsOperationResponse": {
+      "description": "invalid offset or invalid limit",
+      "schema": {
+        "$ref": "#/definitions/FieldsOperationInvalid"
+      }
+    },
+    "ForbiddenResponse": {
+      "description": "invalid starred board response",
+      "schema": {
+        "$ref": "#/definitions/ForbiddenInFieldsOperation"
+      }
+    },
+    "InvalidDisplayOrderResponse": {
+      "description": "invalid starred board response",
+      "schema": {
+        "$ref": "#/definitions/InvalidDisplayOrder"
+      }
+    },
+    "GetBoardsResponse": {
+      "description": "get boards response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "total_boards_count": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "starred_boards": {
+            "$ref": "#/definitions/BoardDetails"
+          },
+          "all_boards": {
+            "$ref": "#/definitions/BoardDetails"
+          }
+        },
+        "required": [
+          "total_boards_count",
+          "starred_boards",
+          "all_boards"
+        ]
+      }
+    },
+    "TaskDetailsResponse": {
+      "description": "tasks details",
+      "schema": {
+        "$ref": "#/definitions/TaskCompleteDetails"
+      }
+    },
+    "TaskDetailsListViewResponse": {
+      "description": "tasks details",
+      "schema": {
+        "$ref": "#/definitions/TaskCompleteDetailsListView"
+      }
+    },
+    "FieldsDisplayResponse": {
+      "description": "Fields display order and display status",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/FieldDisplay"
+        }
+      }
+    },
+    "ProjectsAdhocBoardListViewResponse": {
+      "description": "Project adhoc board list view response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "total_groups": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "group_by_value": {
+                  "type": "string"
+                },
+                "group_by_display_name": {
+                  "type": "string"
+                },
+                "total_tasks": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "tasks": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/TaskOverviewWithStageAndActions"
+                  }
+                }
+              },
+              "required": [
+                "group_by_value",
+                "group_by_display_name",
+                "total_tasks",
+                "tasks"
+              ]
+            }
+          }
+        },
+        "required": [
+          "total_groups",
+          "groups"
+        ]
+      }
+    },
+    "ProjectsAdhocBoardKanbanViewResponse": {
+      "description": "Project adhoc board kanban view response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "total_groups": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/GroupByOnTasks"
+            }
+          }
+        },
+        "required": [
+          "total_groups",
+          "groups"
+        ]
+      }
+    },
+    "GetTasksOfProjectByGroupIds": {
+      "description": "Get task of project for group by values",
+      "schema": {
+        "$ref": "#/definitions/TaskCompleteDetails"
+      }
+    }
+  },
+  "paths": {
+    "/projects/adhoc_board/list_view/tasks/v1/": {
+      "get": {
+        "summary": "Get the adhoc tasks in the project for list view",
+        "operationId": "get_adhoc_tasks_for_list_view",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/GroupLimitParameter"
+          },
+          {
+            "$ref": "#/parameters/GroupOffsetParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/ProjectsAdhocBoardListViewResponse"
+          }
+        }
+      }
+    },
+    "/projects/adhoc_board/kanban_view/tasks/v1/": {
+      "get": {
+        "summary": "Get the adhoc tasks in the project for kanban view",
+        "operationId": "get_adhoc_tasks_for_kanban_view",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/Group1LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/Group1OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/Group2LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/Group2OffsetParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/ProjectsAdhocBoardKanbanViewResponse"
+          }
+        }
+      }
+    },
+    "/projects/adhoc_board/groups/tasks/v1/": {
+      "post": {
+        "summary": "Get The Tasks In The Project Based On The Group Ids",
+        "operationId": "get_adhoc_tasks_by_group_ids",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/GetTasksOfProjectOfGroupByKeyParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTasksOfProjectByGroupIds"
+          }
+        }
+      }
+    }
+  }
+}
