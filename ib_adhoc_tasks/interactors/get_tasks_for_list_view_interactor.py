@@ -116,7 +116,7 @@ class GetTasksForListViewInteractor:
             elastic_storage=self.elastic_storage)
         group_details_dtos = interactor.get_task_ids_for_view(
             project_id=project_id, adhoc_template_id=adhoc_template_id,
-            group_by_dtos=group_by_dtos,
+            group_by_dtos=group_by_dtos, user_id=user_id,
             task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
         )
         return group_details_dtos

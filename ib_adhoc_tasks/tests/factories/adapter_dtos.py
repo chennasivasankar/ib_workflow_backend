@@ -41,7 +41,7 @@ class GetTaskStageCompleteDetailsDTOFactory(factory.Factory):
     class Meta:
         model = GetTaskStageCompleteDetailsDTO
 
-    task_id = factory.sequence(lambda counter: "task_{}".format(counter))
+    task_id = factory.sequence(lambda counter: counter)
     stage_id = factory.sequence(lambda counter: "stage_{}".format(counter))
     stage_color = factory.sequence(
         lambda counter: "stage_color{}".format(counter))
@@ -81,7 +81,7 @@ class TaskStageAssigneeDetailsDTOFactory(factory.Factory):
     class Meta:
         model = TaskStageAssigneeDetailsDTO
 
-    task_id = factory.sequence(lambda counter: "task_{}".format(counter))
+    task_id = factory.sequence(lambda counter: counter)
     stage_id = factory.sequence(lambda counter: "stage_{}".format(counter))
 
     @factory.lazy_attribute
@@ -90,7 +90,7 @@ class TaskStageAssigneeDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def team_details(self):
-        return TeamDetailsDTOFactory
+        return TeamDetailsDTOFactory()
 
 
 class TaskBaseDetailsDTOFactory(factory.Factory):
