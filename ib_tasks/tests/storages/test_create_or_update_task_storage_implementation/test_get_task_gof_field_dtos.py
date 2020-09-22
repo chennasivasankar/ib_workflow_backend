@@ -6,6 +6,13 @@ from ib_tasks.tests.factories.models import TaskGoFFieldFactory, \
 
 @pytest.mark.django_db
 class TestGetTaskGoFFieldDTOS:
+
+    @pytest.fixture
+    def reset_sequence(self):
+        TaskGoFFactory.reset_seqeunce()
+        TaskGoFFieldFactory.reset_seqeunce()
+        GoFFactory.reset_sequence()
+
     def test_given_task_gof_ids_returns_task_gof_field_dtos(
             self, storage, snapshot
     ):

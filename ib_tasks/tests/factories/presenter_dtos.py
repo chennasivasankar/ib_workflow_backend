@@ -39,6 +39,7 @@ class TaskWithCompleteStageDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def stage_assignee_dto(self):
+        TaskStageAssigneeDetailsDTOFactory.reset_sequence()
         return [TaskStageAssigneeDetailsDTOFactory()]
 
 
@@ -119,10 +120,12 @@ class TaskCompleteDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def actions_dto(self):
+        ActionDTOFactory.reset_sequence()
         return [ActionDTOFactory(), ActionDTOFactory()]
 
     @factory.lazy_attribute
     def field_dtos(self):
+        FieldDisplayDTOFactory.reset_sequence()
         return [FieldDisplayDTOFactory(), FieldDisplayDTOFactory()]
 
     @factory.lazy_attribute

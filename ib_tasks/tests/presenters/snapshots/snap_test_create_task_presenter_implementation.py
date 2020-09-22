@@ -7,41 +7,17 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_has_expired http_status_code'] = 400
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_has_expired res_status'] = 'DUE_DATE_HAS_EXPIRED'
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_has_expired response'] = 'given due date 2020-03-05 has expired'
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_due_time_format http_status_code'] = 400
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_due_time_format res_status'] = 'INVALID_DUE_TIME_FORMAT'
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_due_time_format response'] = '55:55:03 has invalid due time format, time format should be HH:MM:SS'
-
 snapshots['TestCreateTaskPresenterImplementation.test_raise_start_date_is_ahead_of_due_date http_status_code'] = 400
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_start_date_is_ahead_of_due_date res_status'] = 'START_DATE_IS_AHEAD_OF_DUE_DATE'
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_start_date_is_ahead_of_due_date response'] = 'given start date 2020-05-04 is ahead of given due date 2020-04-04 '
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_due_time_has_expired_for_today http_status_code'] = 400
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_due_time_has_expired_for_today res_status'] = 'DUE_TIME_HAS_EXPIRED_FOR_TODAY'
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_due_time_has_expired_for_today response'] = 'give due time 05:08:55 has expired for today date'
-
 snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_key_error http_status_code'] = 400
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_key_error res_status'] = 'INVALID_KEY_ERROR'
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_key_error response'] = 'invalid key error'
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_custom_logic_function_exception http_status_code'] = 400
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_custom_logic_function_exception res_status'] = 'INVALID_CUSTOM_LOGIC'
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_custom_logic_function_exception response'] = 'invalid custom logic'
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_path_not_found_exception http_status_code'] = 400
 
@@ -132,12 +108,6 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_wri
 snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission res_status'] = 'USER_NEEDS_FILED_WRITABLE_PERMISSION'
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_user_needs_field_writable_permission response'] = "user needs write access on field field_1, because user does not have at least one role in ['role_1', 'role_2'] roles"
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_empty_value_in_required_field http_status_code'] = 400
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_empty_value_in_required_field res_status'] = 'EMPTY_VALUE_FOR_REQUIRED_FIELD'
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_empty_value_in_required_field response'] = 'Given Empty value for the required field of field_id: field_1! Required field should not be empty'
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_phone_number_value http_status_code'] = 400
 
@@ -253,25 +223,38 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_user_a
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_user_action_permission_denied response'] = 'User do not have access to the action: 1'
 
-snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_user_board_permission_denied http_status_code'] = 403
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_user_board_permission_denied res_status'] = 'USER_DO_NOT_HAVE_ACCESS'
-
-snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_user_board_permission_denied response'] = 'User do not have access to the board: board_1'
-
 snapshots['TestCreateTaskPresenterImplementation.test_get_create_task_response create_task_response'] = {
-    'stages': [
-        {
-            'stage_display_name': 'stage_display_name_0',
-            'stage_id': 'stage_0'
+    'task_current_stages_details': {
+        'stages': [
+            {
+                'stage_display_name': 'stage_display_name_0',
+                'stage_id': 'stage_0'
+            },
+            {
+                'stage_display_name': 'stage_display_name_1',
+                'stage_id': 'stage_1'
+            }
+        ],
+        'task_id': 'task_display_0',
+        'user_has_permission': True
+    },
+    'task_details': {
+        'stage_with_actions': {
+            'actions': [
+            ],
+            'assignee': {
+                'assignee_id': '123e4567-e89b-12d3-a456-426614174000',
+                'name': 'name_0',
+                'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM'
+            },
+            'stage_color': 'color_1',
+            'stage_display_name': 'stage_display_1',
+            'stage_id': 1
         },
-        {
-            'stage_display_name': 'stage_display_name_1',
-            'stage_id': 'stage_1'
-        }
-    ],
-    'task_id': 'task_display_0',
-    'user_has_permission': True
+        'task_id': 'iBWF-1',
+        'task_overview_fields': [
+        ]
+    }
 }
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_present_stage_actions http_status_code'] = 400
@@ -279,3 +262,81 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invali
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_present_stage_actions res_status'] = 'INVALID_PRESENT_STAGE_ACTION'
 
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_invalid_present_stage_actions response'] = '1 is invalid present stage action'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_project_id http_status_code'] = 400
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_project_id res_status'] = 'INVALID_PROJECT_ID'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_project_id response'] = 'project_1 is invalid project id, please send valid project id'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_of_project http_status_code'] = 400
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_of_project res_status'] = 'INVALID_PROJECT_TEMPLATE'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_template_of_project response'] = 'template_1 is not valid template for given project project_1'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_priority_is_required http_status_code'] = 400
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_priority_is_required res_status'] = 'PRIORITY_IS_REQUIRED'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_priority_is_required response'] = 'task priority is required if action type is not no validations'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_time_without_start_datetime http_status_code'] = 400
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_time_without_start_datetime res_status'] = 'DUE_DATE_TIME_WITHOUT_START_DATE_TIME'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_time_without_start_datetime response'] = 'due date time 2020-05-06 04:03:01 is given with out start datetime'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_start_date_time_is_required http_status_code'] = 400
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_start_date_time_is_required res_status'] = 'START_DATE_TIME_IS_REQUIRED'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_start_date_time_is_required response'] = 'start datetime is required if action type is not no validations'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_time_is_required http_status_code'] = 400
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_time_is_required res_status'] = 'DUE_DATE_TIME_IS_REQUIRED'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_time_is_required response'] = 'due datetime is required if action type is not no validations'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_time_has_expired http_status_code'] = 400
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_time_has_expired res_status'] = 'DUE_DATE_TIME_HAS_EXPIRED'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_due_date_time_has_expired response'] = 'given due date time 2020-04-04 02:03:01 has expired, please give a valid due date time'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_stage_permitted_gofs http_status_code'] = 400
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_stage_permitted_gofs res_status'] = 'INVALID_STAGE_PERMITTED_GOFS'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_stage_permitted_gofs response'] = "['gof_1', 'gof_2'] gof ids are not permitted for the stage 1"
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_user_did_not_fill_required_fields http_status_code'] = 400
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_user_did_not_fill_required_fields res_status'] = 'USER_DID_NOT_FILL_REQUIRED_FIELDS'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_user_did_not_fill_required_fields response'] = "user did not fill required fields: ['field_display_name_0', 'field_display_name_1']"
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_empty_value_in_required_field http_status_code'] = 400
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_empty_value_in_required_field res_status'] = 'EMPTY_VALUE_FOR_REQUIRED_FIELD'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_empty_value_in_required_field response'] = 'Given Empty value for the required field of field_id: field_1! Required field should not be empty'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_stage_ids_list_empty http_status_code'] = 400
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_stage_ids_list_empty res_status'] = 'EMPTY_STAGE_IDS_ARE_INVALID'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_stage_ids_list_empty response'] = 'Stage Ids list should not be empty'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_stage_ids_list http_status_code'] = 400
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_stage_ids_list res_status'] = 'INVALID_STAGE_IDS'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_stage_ids_list response'] = "Invalid stage ids that you have sent are: ['stage_1', 'stage_2'],please send valid stage ids"
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_json http_status_code'] = 400
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_json res_status'] = 'INVALID_TASK_JSON'
+
+snapshots['TestCreateTaskPresenterImplementation.test_raise_invalid_task_json response'] = 'Invalid task json object received'

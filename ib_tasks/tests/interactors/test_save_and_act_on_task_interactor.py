@@ -6,7 +6,7 @@ import pytest
 from ib_tasks.exceptions.fields_custom_exceptions import \
     UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import \
-    DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs
+    DuplicateSameGoFOrderForAGoF
 from ib_tasks.interactors.create_or_update_task.save_and_act_on_task import \
     SaveAndActOnATaskInteractor
 from ib_tasks.tests.factories.interactor_dtos import \
@@ -89,7 +89,7 @@ class TestSaveAndActOnATaskInteractor:
 
     @pytest.fixture
     def task_template_storage_mock(self, mocker):
-        from ib_tasks.interactors.storage_interfaces\
+        from ib_tasks.interactors.storage_interfaces \
             .task_template_storage_interface import \
             TaskTemplateStorageInterface
         return mock.create_autospec(TaskTemplateStorageInterface)
@@ -102,9 +102,16 @@ class TestSaveAndActOnATaskInteractor:
 
     @pytest.fixture
     def user_action_on_task_mock(self, mocker):
-        path = "ib_tasks.interactors.user_action_on_task_interactor" \
-               ".UserActionOnTaskInteractor.user_action_on_task_and_set_random_assignees"
-        return mocker.patch(path)
+        path = "ib_tasks.interactors.user_action_on_task." \
+               "user_action_on_task_interactor" \
+               ".UserActionOnTaskInteractor." \
+               "user_action_on_task_and_set_random_assignees"
+        mock_method = mocker.patch(path)
+        mock_obj_1 = mock.Mock()
+        mock_obj_2 = mock.Mock()
+        mock_obj_3 = mock.Mock()
+        mock_method.return_value = mock_obj_1, mock_obj_2, mock_obj_3
+        return mock_method
 
     @pytest.fixture
     def get_task_current_stages_details_mock(self, mocker):
@@ -128,17 +135,16 @@ class TestSaveAndActOnATaskInteractor:
             create_task_storage_mock, update_task_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
             elastic_storage_mock, action_storage_mock, task_stage_storage_mock,
-            task_template_storage_mock, presenter_mock, mock_object
+            task_template_storage_mock, presenter_mock, mock_object,
+            user_action_on_task_mock, mocker
     ):
-        # Arrange
+        # Arrange,
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_action_id = 1
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
             action_id=given_action_id)
-        from ib_tasks.exceptions.action_custom_exceptions import \
-            InvalidActionException
-        storage_mock.validate_action.side_effect = InvalidActionException(
-            given_action_id)
+        action_storage_mock.validate_action.return_value = False
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
@@ -149,14 +155,16 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage=task_template_storage_mock
         )
         presenter_mock.raise_invalid_action_id.return_value = mock_object
+        user_action_on_task_mock(mocker)
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
-        storage_mock.validate_action.assert_called_once_with(given_action_id)
+        action_storage_mock.validate_action.assert_called_once_with(
+            given_action_id)
         presenter_mock.raise_invalid_action_id.assert_called_once()
         call_args = presenter_mock.raise_invalid_action_id.call_args
         error_object = call_args[0][0]
@@ -171,6 +179,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_task_display_id = "task_1"
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
@@ -192,7 +201,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -213,6 +222,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_task_display_id = 1
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
@@ -234,7 +244,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -252,6 +262,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_task_display_id = 1
         given_stage_id = 2
@@ -275,7 +286,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -293,11 +304,12 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_action_id = 1
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
             action_id=given_action_id, priority=None)
-        storage_mock.validate_action.return_value = True
+        action_storage_mock.validate_action.return_value = True
         action_storage_mock.get_action_type_for_given_action_id.return_value \
             = "DO_VALIDATIONS"
         from ib_tasks.exceptions.task_custom_exceptions import \
@@ -316,11 +328,12 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
-        storage_mock.validate_action.assert_called_once_with(given_action_id)
+        action_storage_mock.validate_action.assert_called_once_with(
+            given_action_id)
         presenter_mock.raise_priority_is_required.assert_called_once()
 
     def test_with_due_datetime_without_start_date(
@@ -331,13 +344,14 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_action_id = 1
         given_due_datetime = datetime.datetime(2020, 9, 9)
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
             action_id=given_action_id, start_datetime=None,
             due_datetime=given_due_datetime)
-        storage_mock.validate_action.return_value = True
+        action_storage_mock.validate_action.return_value = True
         action_storage_mock.get_action_type_for_given_action_id.return_value \
             = "DO_VALIDATIONS"
         from ib_tasks.exceptions.datetime_custom_exceptions import \
@@ -358,11 +372,12 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
-        storage_mock.validate_action.assert_called_once_with(given_action_id)
+        action_storage_mock.validate_action.assert_called_once_with(
+            given_action_id)
         presenter_mock.raise_due_date_time_without_start_datetime \
             .assert_called_once()
         call_args = \
@@ -379,12 +394,13 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_action_id = 1
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
             action_id=given_action_id, start_datetime=None,
             due_datetime=None)
-        storage_mock.validate_action.return_value = True
+        action_storage_mock.validate_action.return_value = True
         action_storage_mock.get_action_type_for_given_action_id.return_value \
             = "DO_VALIDATIONS"
         from ib_tasks.exceptions.datetime_custom_exceptions import \
@@ -405,11 +421,12 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
-        storage_mock.validate_action.assert_called_once_with(given_action_id)
+        action_storage_mock.validate_action.assert_called_once_with(
+            given_action_id)
         presenter_mock.raise_start_date_time_is_required \
             .assert_called_once()
 
@@ -421,11 +438,12 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_action_id = 1
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
             action_id=given_action_id, due_datetime=None)
-        storage_mock.validate_action.return_value = True
+        action_storage_mock.validate_action.return_value = True
         action_storage_mock.get_action_type_for_given_action_id.return_value \
             = "DO_VALIDATIONS"
         from ib_tasks.exceptions.datetime_custom_exceptions import \
@@ -445,11 +463,12 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
-        storage_mock.validate_action.assert_called_once_with(given_action_id)
+        action_storage_mock.validate_action.assert_called_once_with(
+            given_action_id)
         presenter_mock.raise_due_date_time_is_required \
             .assert_called_once()
 
@@ -461,6 +480,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_start_datetime = datetime.datetime(2020, 9, 1)
         given_due_datetime = datetime.datetime(2020, 8, 1)
@@ -485,7 +505,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -507,6 +527,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_due_datetime = datetime.datetime(2020, 9, 9)
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
@@ -528,7 +549,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -548,6 +569,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_gof_id = "gof_0"
         given_same_gof_order = 1
@@ -572,7 +594,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -592,6 +614,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         given_gof_ids = ["gof_1", "gof_2"]
@@ -611,7 +634,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -631,6 +654,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         given_field_ids = ["field_1", "field_2"]
@@ -651,7 +675,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -669,6 +693,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         given_task_template_id = "task_template_1"
@@ -692,7 +717,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -715,6 +740,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         given_gof_id = "gof_1"
@@ -738,7 +764,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -761,6 +787,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         given_gof_id = "gof_1"
@@ -784,7 +811,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -799,56 +826,6 @@ class TestSaveAndActOnATaskInteractor:
         assert gof_id == given_gof_id
         assert invalid_field_ids == given_field_ids
 
-    def test_with_user_who_does_not_have_write_permission_to_a_gof(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock, update_task_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, action_storage_mock, task_stage_storage_mock,
-            task_template_storage_mock, presenter_mock, mock_object
-    ):
-        # Arrange
-        task_request_json = '{"key": "value"}'
-        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
-        given_user_id = "user_1"
-        given_gof_id = "gof_1"
-        given_required_roles = ["role_1", "role2"]
-        from ib_tasks.exceptions.permission_custom_exceptions import \
-            UserNeedsGoFWritablePermission
-        update_task_mock.side_effect = UserNeedsGoFWritablePermission(
-            given_user_id, given_gof_id, given_required_roles)
-        interactor = SaveAndActOnATaskInteractor(
-            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock, storage=storage_mock,
-            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
-            action_storage=action_storage_mock,
-            elastic_storage=elastic_storage_mock,
-            task_stage_storage=task_stage_storage_mock,
-            task_template_storage=task_template_storage_mock
-        )
-        presenter_mock.raise_user_needs_gof_writable_permission \
-            .return_value = \
-            mock_object
-
-        # Act
-        response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
-
-        # Assert
-        assert response == mock_object
-        presenter_mock.raise_user_needs_gof_writable_permission \
-            .assert_called_once()
-        call_args = \
-            presenter_mock.raise_user_needs_gof_writable_permission \
-                .call_args
-        error_object = call_args[0][0]
-        user_id = error_object.user_id
-        gof_id = error_object.gof_id
-        required_roles = error_object.required_roles
-
-        assert user_id == given_user_id
-        assert gof_id == given_gof_id
-        assert required_roles == given_required_roles
-
     def test_with_user_who_does_not_have_write_permission_to_a_field(
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock, update_task_mock,
@@ -857,6 +834,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         given_user_id = "user_1"
@@ -881,7 +859,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -899,46 +877,6 @@ class TestSaveAndActOnATaskInteractor:
         assert field_id == given_field_id
         assert required_roles == given_required_roles
 
-    def test_with_unfilled_gofs_which_are_required_and_permitted_to_user(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock, update_task_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, action_storage_mock, task_stage_storage_mock,
-            task_template_storage_mock, presenter_mock, mock_object
-    ):
-        # Arrange
-        task_request_json = '{"key": "value"}'
-        given_gof_display_names = ["gof_display_name_1", "gof_display_name_2"]
-        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
-        update_task_mock.side_effect = UserDidNotFillRequiredGoFs(
-            given_gof_display_names)
-        interactor = SaveAndActOnATaskInteractor(
-            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock, storage=storage_mock,
-            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
-            action_storage=action_storage_mock,
-            elastic_storage=elastic_storage_mock,
-            task_stage_storage=task_stage_storage_mock,
-            task_template_storage=task_template_storage_mock
-        )
-        presenter_mock.raise_user_did_not_fill_required_gofs.return_value = \
-            mock_object
-
-        # Act
-        response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
-
-        # Assert
-        assert response == mock_object
-        presenter_mock.raise_user_did_not_fill_required_gofs \
-            .assert_called_once()
-        call_args = \
-            presenter_mock.raise_user_did_not_fill_required_gofs \
-                .call_args
-        error_object = call_args[0][0]
-        gof_display_names = error_object.gof_display_names
-        assert gof_display_names == given_gof_display_names
-
     def test_with_unfilled_fields_which_are_required_and_permitted_to_user(
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock, update_task_mock,
@@ -947,6 +885,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_unfilled_field_dtos = FieldIdWithFieldDisplayNameDTOFactory()
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
@@ -966,7 +905,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -986,6 +925,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         given_field_response = ""
@@ -1009,20 +949,19 @@ class TestSaveAndActOnATaskInteractor:
             task_stage_storage=task_stage_storage_mock,
             task_template_storage=task_template_storage_mock
         )
-        presenter_mock.raise_invalid_phone_number_value \
-            .return_value = mock_object
+        presenter_mock.raise_empty_value_in_required_field.return_value = \
+            mock_object
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_invalid_phone_number_value \
+        presenter_mock.raise_empty_value_in_required_field \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_invalid_phone_number_value \
-                .call_args
+            presenter_mock.raise_empty_value_in_required_field.call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
         assert invalid_field_id == given_field_id
@@ -1035,6 +974,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         given_field_response = "890808"
@@ -1065,7 +1005,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -1088,6 +1028,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         given_field_response = "sljlsjls@gmail"
@@ -1118,7 +1059,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -1141,6 +1082,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         given_field_response = "invalid url"
@@ -1171,7 +1113,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -1194,6 +1136,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         given_field_response = "weak password"
@@ -1224,7 +1167,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -1247,6 +1190,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         given_field_response = "two"
@@ -1277,7 +1221,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -1300,6 +1244,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         given_field_response = "two point five"
@@ -1330,7 +1275,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -1353,6 +1298,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         valid_choices = ["choice 1", "choice 2", "choice 3"]
@@ -1385,7 +1331,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -1411,6 +1357,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         valid_choices = ["gof selector name 1", "gof selector name 2"]
@@ -1444,7 +1391,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -1471,6 +1418,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         valid_choices = ["choice 1", "choice 2", "choice 3"]
@@ -1504,7 +1452,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -1531,6 +1479,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         valid_choices = ["choice 1", "choice 2", "choice 3"]
@@ -1564,7 +1513,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -1591,6 +1540,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         valid_choices = ["choice 1", "choice 2", "choice 3"]
@@ -1625,7 +1575,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -1654,6 +1604,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         valid_choices = ["choice 1", "choice 2", "choice 3"]
@@ -1687,7 +1638,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -1716,6 +1667,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         from ib_tasks.constants.config import DATE_FORMAT
@@ -1750,7 +1702,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -1777,6 +1729,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         from ib_tasks.constants.config import TIME_FORMAT
@@ -1811,7 +1764,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -1838,6 +1791,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         given_field_response = "invalid image url"
@@ -1868,7 +1822,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -1893,6 +1847,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         given_field_response = "invalid image format url"
@@ -1926,7 +1881,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -1953,6 +1908,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         given_field_response = "invalid file url"
@@ -1984,7 +1940,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -2009,6 +1965,7 @@ class TestSaveAndActOnATaskInteractor:
             task_template_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
         given_field_response = "invalid file format url"
@@ -2042,7 +1999,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -2070,6 +2027,7 @@ class TestSaveAndActOnATaskInteractor:
             user_action_on_task_mock
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_action_id = 1
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
@@ -2094,18 +2052,16 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
-        presenter_mock \
-            .raise_user_action_permission_denied \
+        presenter_mock.raise_user_action_permission_denied \
             .assert_called_once()
-        call_args = presenter_mock. \
-            raise_user_action_permission_denied.call_args
-        error_object = call_args.kwargs['error_obj']
-        action_id = error_object.action_id
-
+        call_args = presenter_mock.raise_user_action_permission_denied. \
+            call_args
+        error_obj = call_args[0][0]
+        action_id = error_obj.action_id
         assert action_id == given_action_id
 
     def test_with_invalid_present_stage_action(
@@ -2117,6 +2073,7 @@ class TestSaveAndActOnATaskInteractor:
             user_action_on_task_mock
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_action_id = 1
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
@@ -2140,7 +2097,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -2162,6 +2119,7 @@ class TestSaveAndActOnATaskInteractor:
             user_action_on_task_mock
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         from ib_tasks.exceptions.stage_custom_exceptions import \
@@ -2184,7 +2142,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -2208,6 +2166,7 @@ class TestSaveAndActOnATaskInteractor:
             get_task_current_stages_details_mock
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         from ib_tasks.exceptions.stage_custom_exceptions import \
@@ -2227,7 +2186,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -2244,6 +2203,7 @@ class TestSaveAndActOnATaskInteractor:
             get_task_current_stages_details_mock
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = '{"key": "value"}'
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
 
@@ -2265,7 +2225,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -2288,6 +2248,7 @@ class TestSaveAndActOnATaskInteractor:
             create_task_log_mock
     ):
         # Arrange
+        board_id = "board_1"
         task_request_json = ''
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         given_message = "invalid task json"
@@ -2306,7 +2267,7 @@ class TestSaveAndActOnATaskInteractor:
 
         # Act
         response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json)
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
 
         # Assert
         assert response == mock_object
@@ -2315,3 +2276,106 @@ class TestSaveAndActOnATaskInteractor:
         error_object = call_args[0][0]
         message = error_object.message
         assert message == given_message
+
+    def test_with_task_delay_reason_not_updated_raises_exception(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock, update_task_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock, action_storage_mock, task_stage_storage_mock,
+            task_template_storage_mock, presenter_mock, mock_object,
+            user_action_on_task_mock
+    ):
+        # Arrange
+        board_id = "board_1"
+        task_request_json = '{"key": "value"}'
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            TaskDelayReasonIsNotUpdated
+
+        given_due_date = datetime.datetime(2020, 5, 7, 2, 3, 1)
+        given_task_display_id = "task_1"
+        given_stage_display_name = "stage_1"
+
+        user_action_on_task_mock.side_effect = \
+            TaskDelayReasonIsNotUpdated(
+                given_due_date, given_task_display_id,
+                given_stage_display_name)
+
+        interactor = SaveAndActOnATaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            task_stage_storage=task_stage_storage_mock,
+            task_template_storage=task_template_storage_mock
+        )
+        presenter_mock.raise_task_delay_reason_not_updated.return_value = \
+            mock_object
+
+        # Act
+        response = interactor.save_and_act_on_task_wrapper(
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_task_delay_reason_not_updated.assert_called_once()
+        call_args = presenter_mock.raise_task_delay_reason_not_updated \
+            .call_args
+        error_object = call_args[0][0]
+
+        due_date = error_object.due_date
+        task_display_id = error_object.task_display_id
+        stage_display_name = error_object.stage_display_name
+        assert due_date == given_due_date
+        assert task_display_id == given_task_display_id
+        assert stage_display_name == given_stage_display_name
+
+    def test_with_invalid_stage_permitted_gofs_raises_exception(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock, update_task_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock, action_storage_mock, task_stage_storage_mock,
+            task_template_storage_mock, presenter_mock, mock_object,
+            user_action_on_task_mock
+    ):
+        # Arrange
+        board_id = "board_1"
+        task_request_json = '{"key": "value"}'
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
+        from ib_tasks.exceptions.gofs_custom_exceptions import \
+            InvalidStagePermittedGoFs
+
+        given_gof_ids = ["gof_1", "gof_2"]
+        given_stage_id = 1
+
+        user_action_on_task_mock.side_effect = \
+            InvalidStagePermittedGoFs(given_gof_ids, given_stage_id)
+
+        interactor = SaveAndActOnATaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            task_stage_storage=task_stage_storage_mock,
+            task_template_storage=task_template_storage_mock
+        )
+        presenter_mock.raise_invalid_stage_permitted_gofs.return_value = \
+            mock_object
+
+        # Act
+        response = interactor.save_and_act_on_task_wrapper(
+            presenter_mock, task_dto, task_request_json, board_id=board_id)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_invalid_stage_permitted_gofs.assert_called_once()
+        call_args = presenter_mock.raise_invalid_stage_permitted_gofs \
+            .call_args
+        error_object = call_args[0][0]
+
+        gof_ids = error_object.gof_ids
+        stage_id = error_object.stage_id
+        assert gof_ids == given_gof_ids
+        assert stage_id == given_stage_id

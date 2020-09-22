@@ -8,12 +8,12 @@ from snapshottest import Snapshot
 snapshots = Snapshot()
 
 snapshots['TestGetGoFIdsHavingPermission.test_given_gof_ids_and_user_roles_returns_gof_ids_having_permission_for_roles gof_ids_having_permission'] = [
-    'gof_40',
-    'gof_42',
-    'gof_48',
-    'gof_49'
+    'gof_10',
+    'gof_11',
+    'gof_2',
+    'gof_4'
 ]
 
 snapshots['TestGetGoFIdsHavingPermission.test_given_gof_ids_and_user_roles_not_having_permission_for_gof_ids_but_permission_for_all_roles_returns_gof_ids gof_ids_having_permission'] = [
-    'gof_60'
+    'gof_11'
 ]

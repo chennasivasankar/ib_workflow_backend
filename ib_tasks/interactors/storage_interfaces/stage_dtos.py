@@ -61,7 +61,6 @@ class TaskWithDbStageIdDTO:
     db_stage_id: int
 
 
-
 @dataclass
 class GetTaskStageCompleteDetailsDTO:
     task_id: int
