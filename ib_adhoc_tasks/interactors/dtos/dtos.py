@@ -1,8 +1,7 @@
 from dataclasses import dataclass
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
-from ib_adhoc_tasks.constants.enum import GroupByEnum
+from ib_adhoc_tasks.constants.enum import GroupByEnum, ViewType
 
 
 @dataclass
@@ -84,3 +83,10 @@ class GroupByInfoListViewDTO:
     group_offset_limit_dto: Optional[OffsetLimitDTO]
 
 
+@dataclass
+class GetSubtasksParameterDTO:
+    user_id: str
+    task_id: int
+    limit: int
+    offset: int
+    view_type: ViewType
