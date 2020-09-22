@@ -30,7 +30,7 @@ class StorageImplementation(StorageInterface):
         from ib_adhoc_tasks.models import GroupByInfo
         group_by_info_object = GroupByInfo.objects.create(
             user_id=add_or_edit_group_by_parameter_dto.user_id,
-            group_by=add_or_edit_group_by_parameter_dto.group_by_display_name,
+            group_by=add_or_edit_group_by_parameter_dto.group_by_key,
             view_type=add_or_edit_group_by_parameter_dto.view_type,
             order=add_or_edit_group_by_parameter_dto.order,
         )
@@ -47,7 +47,7 @@ class StorageImplementation(StorageInterface):
         GroupByInfo.objects.filter(
             id=add_or_edit_group_by_parameter_dto.group_by_id
         ).update(
-            group_by=add_or_edit_group_by_parameter_dto.group_by_display_name,
+            group_by=add_or_edit_group_by_parameter_dto.group_by_key,
             view_type=add_or_edit_group_by_parameter_dto.view_type,
             order=add_or_edit_group_by_parameter_dto.order,
         )

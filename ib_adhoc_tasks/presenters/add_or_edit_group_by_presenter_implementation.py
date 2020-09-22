@@ -27,6 +27,6 @@ class AddOrEditGroupByPresenterImplementation(
         return {
             "group_by_id": group_by_response_dto.group_by_id,
             "group_by_display_name":
-                group_by_response_dto.group_by_display_name,
+                group_by_response_dto.group_by_key,
             "order": group_by_response_dto.order
         }
