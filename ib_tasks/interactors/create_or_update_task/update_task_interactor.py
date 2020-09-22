@@ -176,7 +176,7 @@ class UpdateTaskInteractor(
         except IncorrectMultiSelectLabelsSelected as err:
             return presenter.raise_invalid_multi_select_labels_selected(err)
         except InvalidDateFormat as err:
-            return presenter.raise_invalid_time_format(err)
+            return presenter.raise_invalid_date_format(err)
         except InvalidTimeFormat as err:
             return presenter.raise_invalid_time_format(err)
         except InvalidUrlForImage as err:
