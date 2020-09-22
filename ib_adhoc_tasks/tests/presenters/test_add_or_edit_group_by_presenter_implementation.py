@@ -17,6 +17,7 @@ class TestAddOrEditGroupByPresenterImplementation:
         # Arrange
         from ib_adhoc_tasks.tests.factories.storage_dtos import \
             GroupByResponseDTOFactory
+        GroupByResponseDTOFactory.reset_sequence(0)
         group_by_response_dto = GroupByResponseDTOFactory()
         expected_response_dict = {
             'group_by_display_name': 'ASSIGNEE',

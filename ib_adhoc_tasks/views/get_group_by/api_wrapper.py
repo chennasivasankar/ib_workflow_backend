@@ -9,6 +9,7 @@ def api_wrapper(*args, **kwargs):
     user_object = kwargs["user"]
     user_id = str(user_object.user_id)
     project_id = kwargs["project_id"]
+    view_type = kwargs["query_params"]["view_type"]
 
     from ib_adhoc_tasks.interactors.group_by_interactor import \
         GroupByInteractor
@@ -21,6 +22,6 @@ def api_wrapper(*args, **kwargs):
     interactor = GroupByInteractor(storage=storage)
 
     return interactor.get_group_by_wrapper(
-        project_id=project_id, user_id=user_id,
+        project_id=project_id, user_id=user_id, view_type=view_type,
         presenter=presenter
     )

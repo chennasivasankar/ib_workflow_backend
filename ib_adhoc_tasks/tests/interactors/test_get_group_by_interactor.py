@@ -29,17 +29,22 @@ class TestGetGroupByInteractor:
         from ib_adhoc_tasks.tests.factories.storage_dtos import \
             GroupByResponseDTOFactory
         group_by_response_dtos = \
-            GroupByResponseDTOFactory.create_batch(size=2)
+            GroupByResponseDTOFactory.create_batch(size=4)
         project_id = "project_id_1"
         user_id = "user_id_1"
+        from ib_adhoc_tasks.constants.enum import ViewType
+        view_type = ViewType.LIST.value
         storage.get_group_by_dtos.return_value = group_by_response_dtos
         presenter.get_response_for_get_group_by.return_value = mock.Mock()
 
         interactor.get_group_by_wrapper(
-            project_id=project_id, user_id=user_id, presenter=presenter
+            project_id=project_id, user_id=user_id, view_type=view_type,
+            presenter=presenter
         )
 
-        storage.get_group_by_dtos.assert_called_once_with(user_id=user_id)
+        storage.get_group_by_dtos.assert_called_once_with(
+            user_id=user_id, view_type=view_type
+        )
         presenter.get_response_for_get_group_by.assert_called_once_with(
             group_by_response_dtos=group_by_response_dtos
         )

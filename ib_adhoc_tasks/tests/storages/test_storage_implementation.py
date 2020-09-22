@@ -15,17 +15,19 @@ class TestStorageImplementation:
     ):
         # Arrange
         user_id = "user_id_1"
+        from ib_adhoc_tasks.constants.enum import ViewType
+        view_type = ViewType.LIST.value
         from ib_adhoc_tasks.tests.factories.models import GroupByInfoFactory
         GroupByInfoFactory.reset_sequence(1)
         GroupByInfoFactory.create_batch(size=2, user_id=user_id)
         from ib_adhoc_tasks.tests.factories.storage_dtos import \
             GroupByResponseDTOFactory
         GroupByResponseDTOFactory.reset_sequence(1)
-        group_by_response_dtos = GroupByResponseDTOFactory.create_batch(size=2)
+        group_by_response_dtos = [GroupByResponseDTOFactory()]
 
         # Act
         actual_group_by_response_dtos = \
-            storage.get_group_by_dtos(user_id="user_id_1")
+            storage.get_group_by_dtos(user_id=user_id, view_type=view_type)
 
         # Assert
         assert actual_group_by_response_dtos == group_by_response_dtos
@@ -36,15 +38,15 @@ class TestStorageImplementation:
     ):
         # Arrange
         from ib_adhoc_tasks.tests.factories.storage_dtos import \
-            AddOrEditGroupByParameterDTOFactory
-        AddOrEditGroupByParameterDTOFactory.reset_sequence(1)
-        add_or_edit_group_by_parameter_dto = AddOrEditGroupByParameterDTOFactory(
-            group_by_id=None
-        )
-        from ib_adhoc_tasks.tests.factories.storage_dtos import \
-            GroupByResponseDTOFactory
+            AddOrEditGroupByParameterDTOFactory, GroupByResponseDTOFactory
         GroupByResponseDTOFactory.reset_sequence(1)
         group_by_response_dto = GroupByResponseDTOFactory()
+        AddOrEditGroupByParameterDTOFactory.reset_sequence(1)
+        add_or_edit_group_by_parameter_dto = AddOrEditGroupByParameterDTOFactory(
+            group_by_id=None,
+            group_by_display_name=group_by_response_dto.group_by_display_name,
+            order=group_by_response_dto.order
+        )
 
         # Act
         actual_group_by_response_dto = storage.add_group_by(

@@ -21,7 +21,8 @@ class GetGroupByPresenterImplementation(
             ) for group_by_response_dto in group_by_response_dtos
         ]
         return self.prepare_200_success_response(
-            response_dict=group_by_response)
+            response_dict=group_by_response
+        )
 
     @staticmethod
     def _convert_to_group_by_response_dict(

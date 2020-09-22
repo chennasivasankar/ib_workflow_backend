@@ -1501,8 +1501,8 @@
     },
     "/project/{project_id}/adhoc_board/group/add_or_edit/v1/": {
       "post": {
-        "summary": "Create a group by",
-        "operationId": "create_or_update_group_by",
+        "summary": "add or edit a group by",
+        "operationId": "add_or_edit_group_by",
         "security": [
           {
             "oauth": [

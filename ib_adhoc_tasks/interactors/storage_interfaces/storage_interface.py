@@ -1,6 +1,7 @@
 import abc
 from typing import List
 
+from ib_adhoc_tasks.constants.enum import ViewType
 from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
     GroupByResponseDTO, AddOrEditGroupByParameterDTO
 
@@ -8,7 +9,9 @@ from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
 class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_group_by_dtos(self, user_id: str) -> List[GroupByResponseDTO]:
+    def get_group_by_dtos(
+            self, user_id: str, view_type: ViewType
+    ) -> List[GroupByResponseDTO]:
         pass
 
     @abc.abstractmethod

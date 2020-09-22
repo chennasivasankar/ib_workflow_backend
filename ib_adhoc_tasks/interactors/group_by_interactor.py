@@ -14,18 +14,21 @@ class GroupByInteractor:
         self.storage = storage
 
     def get_group_by_wrapper(
-            self, project_id: str, user_id: str,
+            self, project_id: str, user_id: str, view_type: ViewType,
             presenter: GetGroupByPresenterInterface
     ):
         group_by_response_dtos = self.get_group_by(
-            project_id=project_id, user_id=user_id
+            project_id=project_id, user_id=user_id, view_type=view_type
         )
         return presenter.get_response_for_get_group_by(
             group_by_response_dtos=group_by_response_dtos
         )
 
-    def get_group_by(self, project_id: str, user_id: str):
-        group_by_response_dtos = self.storage.get_group_by_dtos(user_id=user_id)
+    def get_group_by(self, project_id: str, user_id: str, view_type: ViewType):
+        group_by_response_dtos = self.storage.get_group_by_dtos(
+            user_id=user_id, view_type=view_type
+        )
+        group_by_response_dtos.sort(key=lambda x: x.order)
         return group_by_response_dtos
 
     def add_or_edit_group_by_wrapper(

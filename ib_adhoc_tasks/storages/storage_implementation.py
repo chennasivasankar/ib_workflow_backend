@@ -1,5 +1,6 @@
 from typing import List
 
+from ib_adhoc_tasks.constants.enum import ViewType
 from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
     GroupByResponseDTO, AddOrEditGroupByParameterDTO
 from ib_adhoc_tasks.interactors.storage_interfaces.storage_interface import \
@@ -8,9 +9,13 @@ from ib_adhoc_tasks.interactors.storage_interfaces.storage_interface import \
 
 class StorageImplementation(StorageInterface):
 
-    def get_group_by_dtos(self, user_id: str) -> List[GroupByResponseDTO]:
+    def get_group_by_dtos(
+            self, user_id: str, view_type: ViewType
+    ) -> List[GroupByResponseDTO]:
         from ib_adhoc_tasks.models import GroupByInfo
-        group_by_info_objects = GroupByInfo.objects.filter(user_id=user_id)
+        group_by_info_objects = GroupByInfo.objects.filter(
+            user_id=user_id, view_type=view_type
+        )
         group_by_response_dtos = [
             self._convert_to_group_by_response_dto(
                 group_by_info_object=group_by_info_object
