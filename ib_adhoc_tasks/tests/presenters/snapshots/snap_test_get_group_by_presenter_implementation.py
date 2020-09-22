@@ -11,13 +11,13 @@ snapshots['TestGetGroupByPresenterImplementation.test_get_response_for_get_group
     {
         'display_name': 'ASSIGNEE',
         'group_by_id': 0,
-        'group_by_key': 'STAGE',
+        'group_by_key': 'ASSIGNEE',
         'order': 1
     },
     {
         'display_name': 'STAGE',
         'group_by_id': 1,
-        'group_by_key': 'ASSIGNEE',
+        'group_by_key': 'STAGE',
         'order': 2
     }
 ]
