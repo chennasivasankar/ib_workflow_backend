@@ -27,7 +27,15 @@ class TaskService:
     def get_task_complete_details_dto(
             self, task_details_input_dto: TasksDetailsInputDTO
     ) -> TasksCompleteDetailsDTO:
-        pass
+        from ib_tasks.app_interfaces.service_interface import ServiceInterface
+        service = ServiceInterface()
+        task_complete_details_dto = service.get_tasks_complete_details(
+            input_dto=task_details_input_dto
+        )
+        complete_task_details_dto = self._convert_to_task_complete_details_dto(
+            task_complete_details_dto=task_complete_details_dto
+        )
+        return complete_task_details_dto
 
     def _convert_to_task_complete_details_dto(
             self, task_complete_details_dto: TasksCompleteDetailsDTO
