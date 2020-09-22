@@ -2,7 +2,7 @@ from collections import defaultdict
 from datetime import datetime
 from typing import List, Optional, Dict, Union
 
-from django.db.models import Q
+from django.db.models import Q, Count
 
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
@@ -12,7 +12,7 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldDetailsDTO, FieldCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
-    TemplateFieldsDTO
+    TemplateFieldsDTO, TaskBaseDetailsDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
@@ -21,7 +21,8 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO, StatusVariableDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
-    TaskDisplayIdDTO, TaskProjectDTO, TaskDueMissingDTO
+    TaskDisplayIdDTO, TaskProjectDTO, TaskDueMissingDTO, SubTasksCountDTO, \
+    SubTasksIdsDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
@@ -29,7 +30,7 @@ from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO, \
     TaskDelayParametersDTO
 from ib_tasks.models import Stage, TaskTemplate, CurrentTaskStage, \
-    TaskTemplateStatusVariable, TaskStageHistory, TaskStatusVariable
+    TaskTemplateStatusVariable, TaskStageHistory, TaskStatusVariable, SubTask
 from ib_tasks.models.field import Field
 from ib_tasks.models.stage_actions import StageAction
 from ib_tasks.models.task import Task, ElasticSearchTask
@@ -665,3 +666,63 @@ class TasksStorageImplementation(TaskStorageInterface):
         updated_due_datetime = due_details.due_date_time
 
         Task.objects.filter(pk=task_id).update(due_date=updated_due_datetime)
+
+    def get_base_details_to_task_ids(
+            self, task_ids: List[int]
+    ) -> List[TaskBaseDetailsDTO]:
+
+        task_objs = Task.objects.filter(id__in=task_ids)
+        return [
+            self._get_task_base_details_dto(task_obj=task_obj)
+            for task_obj in task_objs
+        ]
+
+    @staticmethod
+    def _get_task_base_details_dto(task_obj: Task) -> TaskBaseDetailsDTO:
+        task_base_details_dto = TaskBaseDetailsDTO(
+            template_id=task_obj.template_id,
+            project_id=task_obj.project_id,
+            task_display_id=task_obj.task_display_id,
+            title=task_obj.title,
+            description=task_obj.description,
+            start_date=task_obj.start_date,
+            due_date=task_obj.due_date,
+            priority=task_obj.priority,
+            task_id=task_obj.id
+        )
+        return task_base_details_dto
+
+    def get_sub_tasks_count_to_tasks(
+            self, task_ids: List[int]
+    ) -> List[SubTasksCountDTO]:
+        sub_task_dicts = SubTask.objects.filter(task_id__in=task_ids) \
+            .values("task_id").annotate(sub_tasks_count=Count("sub_task_id"))
+
+        return [
+            SubTasksCountDTO(
+                task_id=sub_task_dict["task_id"],
+                sub_tasks_count=sub_task_dict["sub_tasks_count"]
+            )
+            for sub_task_dict in sub_task_dicts
+        ]
+
+    def get_sub_task_ids_to_tasks(
+            self, task_ids: List[int]
+    ) -> List[SubTasksIdsDTO]:
+
+        sub_task_objs = SubTask.objects.filter(task_id__in=task_ids)
+
+        from collections import defaultdict
+        task_sub_task_ids_map = defaultdict(list)
+        for sub_task_obj in sub_task_objs:
+            task_id = sub_task_obj.task_id
+            sub_task_id = sub_task_obj.sub_task_id
+            task_sub_task_ids_map[task_id].append(sub_task_id)
+
+        return [
+            SubTasksIdsDTO(
+                task_id=task_id,
+                sub_task_ids=sub_task_ids
+            )
+            for task_id, sub_task_ids in task_sub_task_ids_map.items()
+        ]

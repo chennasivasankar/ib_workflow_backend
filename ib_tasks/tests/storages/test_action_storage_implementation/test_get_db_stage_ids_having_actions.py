@@ -17,7 +17,7 @@ class TestGetStageIdsHavingActions:
             self, storage, snapshot
     ):
         # Arrange
-        stage_objects = StageModelFactory.create_batch(size=5)
+        stage_objects = StageModelFactory.create_batch(size=2)
         db_stage_ids = [
             stage_obj.id
             for stage_obj in stage_objects

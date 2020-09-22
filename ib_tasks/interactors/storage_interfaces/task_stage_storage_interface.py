@@ -16,6 +16,14 @@ class TaskStageAssigneeIdDTO:
     assignee_id: str
 
 
+@dataclass
+class TaskStageAssigneeTeamIdDTO:
+    task_id: int
+    stage_id: str
+    assignee_id: str
+    team_id: str
+
+
 class TaskStageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
@@ -51,10 +59,9 @@ class TaskStageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_count_of_tasks_assigned_for_each_user(
+    def get_current_count_of_tasks_assigned_for_each_user(
             self, db_stage_ids: List[int],
-            task_ids: List[int]) -> List[
-        AssigneeCurrentTasksCountDTO]:
+            task_ids: List[int]) -> List[AssigneeCurrentTasksCountDTO]:
         pass
 
     @abc.abstractmethod
@@ -69,6 +76,12 @@ class TaskStageStorageInterface(abc.ABC):
     def get_stage_assignee_id_dtos(
             self, task_stage_dtos: List[GetTaskDetailsDTO]
     ) -> List[TaskStageAssigneeIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_task_stage_team_assignee_id_dtos(
+            self, task_stage_dtos: List[GetTaskDetailsDTO]
+    ) -> List[TaskStageAssigneeTeamIdDTO]:
         pass
 
     @abc.abstractmethod
@@ -95,4 +108,10 @@ class TaskStageStorageInterface(abc.ABC):
     def get_latest_rp_added_datetime(self,
                                      task_id: int, stage_id: int
                                      ) -> Optional[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_task_stage_details_dtos(
+            self, task_ids: List[int]
+    ) -> List[GetTaskDetailsDTO]:
         pass

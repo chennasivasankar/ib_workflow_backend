@@ -1,4 +1,4 @@
-from ib_adhoc_tasks.interactors.dtos import TaskIdsForGroupsParameterDTO, \
+from ib_adhoc_tasks.interactors.dtos.dtos import TaskIdsForGroupsParameterDTO, \
     TaskIdsAndCountDTO
 from ib_adhoc_tasks.interactors.storage_interfaces \
     .elastic_storage_interface import ElasticStorageInterface
@@ -23,7 +23,7 @@ class GetTaskIdsForGroupInteractor:
             user_id=task_ids_for_groups_parameter_dto.user_id,
             project_id=task_ids_for_groups_parameter_dto.project_id
         )
-        stage_ids = service.task_service.get_stage_ids_based_on_user_roles(
+        stage_ids = service.task_service.get_user_permitted_stage_ids(
             user_role_ids=user_role_ids
         )
         task_ids_and_count_dto = self.elastic_storage. \
