@@ -1,6 +1,8 @@
 import collections
 from typing import List
 
+from ib_adhoc_tasks.adapters.iam_service import UserIdAndNameDTO
+from ib_adhoc_tasks.adapters.task_service import StageIdAndNameDTO
 from ib_adhoc_tasks.constants.enum import GroupByEnum
 from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO, \
     TaskOffsetAndLimitValuesDTO
@@ -156,7 +158,7 @@ class GetTaskIdsForViewInteractor:
         return group_details_dtos
 
     @staticmethod
-    def _get_group_by_values(group_details_dtos):
+    def _get_group_by_values(group_details_dtos: List[GroupDetailsDTO]):
         group_by_values = [
             group_details_dto.group_by_value
             for group_details_dto in group_details_dtos
@@ -164,8 +166,9 @@ class GetTaskIdsForViewInteractor:
         return group_by_values
 
     @staticmethod
-    def _update_group_by_display_name_for_assignee(group_details_dtos,
-                                                   assignee_id_and_name_dtos):
+    def _update_group_by_display_name_for_assignee(
+            group_details_dtos: List[GroupDetailsDTO],
+            assignee_id_and_name_dtos: List[UserIdAndNameDTO]):
         assignee_id_wise_name_dict = {
             assignee_id_and_name_dto.user_id: assignee_id_and_name_dto.name
             for assignee_id_and_name_dto in assignee_id_and_name_dtos
@@ -177,8 +180,9 @@ class GetTaskIdsForViewInteractor:
 
         return group_details_dtos
 
-    def add_child_group_by_display_name_to_dtos(self, group_details_dtos,
-                                                type_of_child_group_by):
+    def add_child_group_by_display_name_to_dtos(
+            self, group_details_dtos: List[GroupDetailsDTO],
+            type_of_child_group_by):
         from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         if type_of_child_group_by == GroupByEnum.ASSIGNEE.value:
@@ -204,7 +208,7 @@ class GetTaskIdsForViewInteractor:
         return group_details_dtos
 
     @staticmethod
-    def _get_child_group_by_values(group_details_dtos):
+    def _get_child_group_by_values(group_details_dtos: List[GroupDetailsDTO]):
         group_by_values = [
             group_details_dto.child_group_by_value
             for group_details_dto in group_details_dtos
@@ -212,8 +216,10 @@ class GetTaskIdsForViewInteractor:
         return group_by_values
 
     @staticmethod
-    def _update_child_group_by_display_name_for_assingee(group_details_dtos,
-                                                         assignee_id_and_name_dtos):
+    def _update_child_group_by_display_name_for_assingee(
+            group_details_dtos: List[GroupDetailsDTO],
+            assignee_id_and_name_dtos: List[UserIdAndNameDTO]
+    ):
         assignee_id_wise_name_dict = {
             assignee_id_and_name_dto.user_id: assignee_id_and_name_dto.name
             for assignee_id_and_name_dto in assignee_id_and_name_dtos
@@ -226,21 +232,25 @@ class GetTaskIdsForViewInteractor:
         return group_details_dtos
 
     @staticmethod
-    def _update_group_by_display_name_for_stage(group_details_dtos,
-                                                stage_id_and_name_dtos):
+    def _update_group_by_display_name_for_stage(
+            group_details_dtos: List[GroupDetailsDTO],
+            stage_id_and_name_dtos: List[StageIdAndNameDTO]
+    ):
         stage_id_wise_name_dict = {
             stage_id_and_name_dto.stage_id: stage_id_and_name_dto.name
             for stage_id_and_name_dto in stage_id_and_name_dtos
         }
         for group_details_dto in group_details_dtos:
             group_details_dto.group_by_display_name = \
-                    stage_id_wise_name_dict[group_details_dto.group_by_value]
+                stage_id_wise_name_dict[group_details_dto.group_by_value]
 
         return group_details_dtos
 
     @staticmethod
-    def _update_child_group_by_display_name_for_stage(group_details_dtos,
-                                                      stage_id_and_name_dtos):
+    def _update_child_group_by_display_name_for_stage(
+            group_details_dtos: List[GroupDetailsDTO],
+            stage_id_and_name_dtos: List[StageIdAndNameDTO]
+    ):
         stage_id_wise_name_dict = {
             stage_id_and_name_dto.stage_id: stage_id_and_name_dto.name
             for stage_id_and_name_dto in stage_id_and_name_dtos
