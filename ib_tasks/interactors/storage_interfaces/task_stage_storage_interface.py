@@ -16,6 +16,14 @@ class TaskStageAssigneeIdDTO:
     assignee_id: str
 
 
+@dataclass
+class TaskStageAssigneeTeamIdDTO:
+    task_id: int
+    stage_id: str
+    assignee_id: str
+    team_id: str
+
+
 class TaskStageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
@@ -68,6 +76,12 @@ class TaskStageStorageInterface(abc.ABC):
     def get_stage_assignee_id_dtos(
             self, task_stage_dtos: List[TaskStageIdDTO]
     ) -> List[TaskStageAssigneeIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_task_stage_team_assignee_id_dtos(
+            self, task_stage_dtos: List[TaskStageIdDTO]
+    ) -> List[TaskStageAssigneeTeamIdDTO]:
         pass
 
     @abc.abstractmethod

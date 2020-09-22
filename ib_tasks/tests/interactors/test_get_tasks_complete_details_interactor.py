@@ -104,7 +104,7 @@ class TestGetTasksCompleteDetailsInteractor(StorageMockClass):
     @pytest.fixture()
     def task_stage_assignee_mock(self, mocker):
         path = 'ib_tasks.interactors.get_stages_assignees_details_interactor.GetStagesAssigneesDetailsInteractor' \
-               '.get_stages_assignee_details_by_given_task_ids'
+               '.get_tasks_stage_assignee_details'
         return mocker.patch(path)
 
     def tasks_fields_and_actions_mock(self):
@@ -115,13 +115,15 @@ class TestGetTasksCompleteDetailsInteractor(StorageMockClass):
         return response
 
     def task_stage_assign_mock_response(self):
-        from ib_tasks.tests.factories.interactor_dtos import TaskStageAssigneeDetailsDTOFactory
         from ib_tasks.tests.factories.interactor_dtos import AssigneeWithTeamDetailsDTOFactory
+        from ib_tasks.tests.factories.interactor_dtos import TaskStageAssigneeTeamDetailsDTOFactory
         AssigneeWithTeamDetailsDTOFactory.reset_sequence(1)
         from ib_tasks.tests.factories.adapter_dtos import TeamInfoDTOFactory
         TeamInfoDTOFactory.reset_sequence(1)
-        TaskStageAssigneeDetailsDTOFactory.reset_sequence()
-        return TaskStageAssigneeDetailsDTOFactory.create_batch(2)
+        from ib_tasks.tests.factories.adapter_dtos import TeamDetailsDTOFactory
+        TeamDetailsDTOFactory.reset_sequence(1)
+        TaskStageAssigneeTeamDetailsDTOFactory.reset_sequence()
+        return TaskStageAssigneeTeamDetailsDTOFactory.create_batch(2)
 
     def tasks_base_response(self):
         from ib_tasks.tests.factories.storage_dtos import TaskBaseDetailsDTOFactory
@@ -195,7 +197,7 @@ class TestGetTasksCompleteDetailsInteractor(StorageMockClass):
             view_type=ViewType.KANBAN.value
         )
         task_stage_assignee_mock.assert_called_once_with(
-            task_stage_dtos=task_stage_dtos
+            task_stage_dtos=task_stage_dtos, project_id=project_id
         )
         task_storage.get_base_details_to_task_ids.assert_called_once_with(
             task_ids=task_ids

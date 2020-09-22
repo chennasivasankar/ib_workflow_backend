@@ -25,7 +25,7 @@ class TestGetTaskStageDTOs:
         task_ids = [1]
         from ib_tasks.tests.factories.interactor_dtos import TaskStageIdDTOFactory
         TaskStageIdDTOFactory.reset_sequence()
-        expected = TaskStageIdDTOFactory.create_batch(1)
+        expected = TaskStageIdDTOFactory.create_batch(2, task_id=1)
 
         # Act
         response = storage.get_task_stage_details_dtos(task_ids=task_ids)

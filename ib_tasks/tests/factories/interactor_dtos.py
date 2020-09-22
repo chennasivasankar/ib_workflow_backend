@@ -11,7 +11,7 @@ from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
-    TaskStageAssigneeDetailsDTO
+    TaskStageAssigneeDetailsDTO, TaskStageAssigneeTeamDetailsDTO
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
     UserStagesWithPaginationDTO, StageAssigneeDTO, \
@@ -45,7 +45,7 @@ from ib_tasks.interactors.task_template_dtos import \
      CreateTransitionChecklistTemplateWithTaskDisplayIdDTO)
 from ib_tasks.tests.factories.adapter_dtos import (AssigneeDetailsDTOFactory,
                                                    UserDetailsDTO,
-                                                   TeamInfoDTOFactory)
+                                                   TeamInfoDTOFactory, TeamDetailsDTOFactory)
 
 
 class TaskStageIdDTOFactory(factory.Factory):
@@ -633,6 +633,22 @@ class TaskStageAssigneeDetailsDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def assignee_details(self):
         return AssigneeWithTeamDetailsDTOFactory()
+
+
+class TaskStageAssigneeTeamDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskStageAssigneeTeamDetailsDTO
+
+    task_id = factory.sequence(lambda counter: counter + 1)
+    stage_id = factory.sequence(lambda counter: 'stage_{}'.format(counter + 1))
+
+    @factory.lazy_attribute
+    def assignee_details(self):
+        return AssigneeWithTeamDetailsDTOFactory()
+
+    @factory.lazy_attribute
+    def team_details(self):
+        return TeamDetailsDTOFactory()
 
 
 class AssigneesDTOFactory(factory.Factory):

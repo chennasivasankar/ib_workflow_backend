@@ -2,7 +2,7 @@ from typing import List
 
 from ib_tasks.interactors.dtos.dtos import TasksDetailsInputDTO
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
-from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import GetTaskStageCompleteDetailsDTO
@@ -38,7 +38,7 @@ class GetTasksCompleteDetailsInteractor(ValidationMixin):
             input_dto=input_dto
         )
         task_stage_assignee_dtos = self._get_task_assignee_details(
-            task_stage_dtos=task_stage_dtos
+            task_stage_dtos=task_stage_dtos, project_id=input_dto.project_id
         )
         task_ids = self._get_task_ids(task_stage_assignee_dtos)
         task_base_details_dtos = self.task_storage.get_base_details_to_task_ids(
@@ -95,7 +95,7 @@ class GetTasksCompleteDetailsInteractor(ValidationMixin):
 
     @staticmethod
     def _get_task_ids(
-            task_stage_assignee_dtos: List[TaskStageAssigneeDetailsDTO]
+            task_stage_assignee_dtos: List[TaskStageAssigneeTeamDetailsDTO]
     ) -> List[int]:
         task_ids = [
             task_stage_assignee_dto.task_id
@@ -104,16 +104,17 @@ class GetTasksCompleteDetailsInteractor(ValidationMixin):
         return sorted(list(set(task_ids)))
 
     def _get_task_assignee_details(
-            self, task_stage_dtos: List[TaskStageIdDTO]
-    ) -> List[TaskStageAssigneeDetailsDTO]:
+            self, task_stage_dtos: List[TaskStageIdDTO],
+            project_id: str
+    ) -> List[TaskStageAssigneeTeamDetailsDTO]:
         from ib_tasks.interactors.get_stages_assignees_details_interactor \
             import GetStagesAssigneesDetailsInteractor
         interactor = GetStagesAssigneesDetailsInteractor(
             task_stage_storage=self.task_stage_storage
         )
         task_stage_assignee_dtos = \
-            interactor.get_stages_assignee_details_by_given_task_ids(
-                task_stage_dtos=task_stage_dtos
+            interactor.get_tasks_stage_assignee_details(
+                task_stage_dtos=task_stage_dtos, project_id=project_id
             )
         return task_stage_assignee_dtos
 
