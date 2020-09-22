@@ -354,8 +354,8 @@ snapshots['TestSaveAndActOnATaskPresenterImplementation.test_get_save_and_act_on
                     'actions': [
                     ],
                     'assignee': {
-                        'assignee_id': '123e4567-e89b-12d3-a456-426614174001',
-                        'name': 'name_1',
+                        'assignee_id': '123e4567-e89b-12d3-a456-426614174000',
+                        'name': 'name_0',
                         'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM'
                     },
                     'stage_color': 'stage_color_2',
@@ -393,8 +393,8 @@ snapshots['TestSaveAndActOnATaskPresenterImplementation.test_get_save_and_act_on
             'actions': [
             ],
             'assignee': {
-                'assignee_id': '123e4567-e89b-12d3-a456-426614174002',
-                'name': 'name_2',
+                'assignee_id': '123e4567-e89b-12d3-a456-426614174000',
+                'name': 'name_0',
                 'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM'
             },
             'stage_color': 'color_1',

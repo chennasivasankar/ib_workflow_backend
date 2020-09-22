@@ -27,7 +27,7 @@ class PaginationParametersDTO:
 
 
 @dataclass
-class TaskStageIdDTO:
+class GetTaskDetailsDTO:
     task_id: str
     stage_id: str
 

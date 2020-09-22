@@ -62,6 +62,13 @@ class TaskProjectRolesDTO(TaskProjectDTO):
 
 
 @dataclass
+class TaskStageAssigneeDTO:
+    task_id: int
+    stage_id: int
+    assignee_dto: AssigneeDetailsDTO
+
+
+@dataclass
 class SubTasksCountDTO:
     task_id: int
     sub_tasks_count: int

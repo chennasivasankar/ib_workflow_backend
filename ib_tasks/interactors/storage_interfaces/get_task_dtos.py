@@ -24,6 +24,7 @@ class TaskGoFFieldDTO:
 class TaskBaseDetailsDTO:
     template_id: str
     project_id: str
+    task_id: int
     task_display_id: str
     title: str
     description: Optional[str]
@@ -52,3 +53,5 @@ class FieldSearchableDTO:
     field_id: str
     field_value: Searchable
     field_response: Union[int, str]
+
+

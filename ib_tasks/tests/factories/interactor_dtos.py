@@ -11,12 +11,12 @@ from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
-    TaskStageAssigneeDetailsDTO
+    TaskStageAssigneeDetailsDTO, TaskStageAssigneeTeamDetailsDTO
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
     UserStagesWithPaginationDTO, StageAssigneeDTO, \
     StageAssigneeWithTeamDetailsDTO, AssigneeWithTeamDetailsDTO, \
-    StageWithUserDetailsDTO, StageIdWithNameDTO, TemplateStageDTO
+    StageWithUserDetailsDTO, TemplateStageDTO, StageIdWithNameDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -39,12 +39,13 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     TaskDelayParametersDTO, UpdateTaskWithTaskDisplayIdDTO, \
     SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO, SearchQueryDTO, \
     StageDisplayLogicDTO, BasicTaskDetailsDTO
+from ib_tasks.interactors.task_stage_dtos import TasksCompleteDetailsDTO
 from ib_tasks.interactors.task_template_dtos import \
     (CreateTransitionChecklistTemplateDTO,
      CreateTransitionChecklistTemplateWithTaskDisplayIdDTO)
 from ib_tasks.tests.factories.adapter_dtos import (AssigneeDetailsDTOFactory,
                                                    UserDetailsDTO,
-                                                   TeamInfoDTOFactory)
+                                                   TeamInfoDTOFactory, TeamDetailsDTOFactory)
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -512,6 +513,7 @@ class TaskCurrentStageDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def stage_details_dtos(self):
+        CurrentStageDetailsDTOFactory.reset_sequence()
         return [CurrentStageDetailsDTOFactory(),
                 CurrentStageDetailsDTOFactory()]
 
@@ -619,6 +621,7 @@ class AssigneeWithTeamDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def team_info_dto(self):
+        TeamInfoDTOFactory.reset_sequence()
         return TeamInfoDTOFactory()
 
 
@@ -631,7 +634,24 @@ class TaskStageAssigneeDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def assignee_details(self):
+        AssigneeWithTeamDetailsDTOFactory.reset_sequence()
         return AssigneeWithTeamDetailsDTOFactory()
+
+
+class TaskStageAssigneeTeamDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskStageAssigneeTeamDetailsDTO
+
+    task_id = factory.sequence(lambda counter: counter + 1)
+    stage_id = factory.sequence(lambda counter: 'stage_{}'.format(counter + 1))
+
+    @factory.lazy_attribute
+    def assignee_details(self):
+        return AssigneeWithTeamDetailsDTOFactory()
+
+    @factory.lazy_attribute
+    def team_details(self):
+        return TeamDetailsDTOFactory()
 
 
 class AssigneesDTOFactory(factory.Factory):
@@ -705,3 +725,26 @@ class StageFlowWithActionIdDTOFactory(factory.Factory):
     previous_stage_id = factory.sequence(lambda n: "stage_{}".format(n))
     action_id = factory.sequence(lambda n: n)
     next_stage_id = factory.sequence(lambda n: "stage_{}".format(n + 1))
+
+
+class TasksCompleteDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TasksCompleteDetailsDTO
+
+    @factory.lazy_attribute
+    def task_base_details_dtos(self):
+        from ib_tasks.tests.factories.storage_dtos import TaskBaseDetailsDTOFactory
+        TaskBaseDetailsDTOFactory.reset_sequence(1)
+        return TaskBaseDetailsDTOFactory.create_batch(2)
+
+    @factory.lazy_attribute
+    def task_stage_details_dtos(self):
+        from ib_tasks.tests.factories.presenter_dtos \
+            import GetTaskStageCompleteDetailsDTOFactory
+        GetTaskStageCompleteDetailsDTOFactory.reset_sequence(1)
+        return GetTaskStageCompleteDetailsDTOFactory.create_batch(2)
+
+    @factory.lazy_attribute
+    def task_stage_assignee_dtos(self):
+        TaskStageAssigneeDetailsDTOFactory.reset_sequence(1)
+        return TaskStageAssigneeDetailsDTOFactory.create_batch(2)
