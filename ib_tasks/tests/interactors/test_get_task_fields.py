@@ -19,7 +19,7 @@ from ib_tasks.tests.common_fixtures.adapters.searchable_details_service \
     user_searchable_details_dtos_mock
 from ib_tasks.tests.common_fixtures.interactors import \
     prepare_get_field_ids_having_permission_for_user_projects
-from ib_tasks.tests.factories.interactor_dtos import TaskStageIdDTOFactory
+from ib_tasks.tests.factories.interactor_dtos import GetTaskDetailsDTOFactory
 from ib_tasks.tests.factories.storage_dtos import (
     FieldDetailsDTOWithTaskIdFactory, TaskTemplateStagesDTOFactory)
 
@@ -142,8 +142,8 @@ class TestGetFieldsAndActionsInteractor:
 
     @pytest.fixture()
     def get_task_dtos(self):
-        TaskStageIdDTOFactory.reset_sequence()
-        return TaskStageIdDTOFactory.create_batch(size=2, task_id=1)
+        GetTaskDetailsDTOFactory.reset_sequence()
+        return GetTaskDetailsDTOFactory.create_batch(size=2, task_id=1)
 
     @pytest.fixture()
     def get_task_template_stage_dtos_for_two_stages(self):

@@ -9,7 +9,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import GetTaskStageCompl
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
-from ib_tasks.interactors.task_dtos import TaskStageIdDTO
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.interactors.task_stage_dtos import TasksCompleteDetailsDTO
 
 
@@ -52,7 +52,7 @@ class GetTasksCompleteDetailsInteractor(ValidationMixin):
 
     def _get_permitted_task_stage_dtos(
             self, input_dto: TasksDetailsInputDTO
-    ) -> List[TaskStageIdDTO]:
+    ) -> List[GetTaskDetailsDTO]:
         task_ids = input_dto.task_ids
         task_stage_dtos = self.task_stage_storage \
             .get_task_stage_details_dtos(task_ids=task_ids)
@@ -76,7 +76,7 @@ class GetTasksCompleteDetailsInteractor(ValidationMixin):
         self._validate_task_ids(task_ids=task_ids)
 
     def _get_task_stage_fields_and_actions(
-            self, task_stage_dtos: List[TaskStageIdDTO],
+            self, task_stage_dtos: List[GetTaskDetailsDTO],
             input_dto: TasksDetailsInputDTO
     ) -> List[GetTaskStageCompleteDetailsDTO]:
         from ib_tasks.interactors.get_task_fields_and_actions \
@@ -104,7 +104,7 @@ class GetTasksCompleteDetailsInteractor(ValidationMixin):
         return sorted(list(set(task_ids)))
 
     def _get_task_assignee_details(
-            self, task_stage_dtos: List[TaskStageIdDTO],
+            self, task_stage_dtos: List[GetTaskDetailsDTO],
             project_id: str
     ) -> List[TaskStageAssigneeTeamDetailsDTO]:
         from ib_tasks.interactors.get_stages_assignees_details_interactor \
@@ -131,7 +131,7 @@ class GetTasksCompleteDetailsInteractor(ValidationMixin):
         return user_roles
 
     @staticmethod
-    def _get_stage_ids(task_stage_dtos: List[TaskStageIdDTO]):
+    def _get_stage_ids(task_stage_dtos: List[GetTaskDetailsDTO]):
         return [
             task_stage_dto.stage_id
             for task_stage_dto in task_stage_dtos

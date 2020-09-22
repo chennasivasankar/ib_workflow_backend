@@ -6,7 +6,7 @@ from ib_tasks.interactors.stages_dtos import TaskStageHistoryDTO, \
     StageMinimalDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStageAssigneeDTO, AssigneeCurrentTasksCountDTO, CurrentStageDetailsDTO
-from ib_tasks.interactors.task_dtos import TaskStageIdDTO
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
 @dataclass
@@ -74,13 +74,13 @@ class TaskStageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_stage_assignee_id_dtos(
-            self, task_stage_dtos: List[TaskStageIdDTO]
+            self, task_stage_dtos: List[GetTaskDetailsDTO]
     ) -> List[TaskStageAssigneeIdDTO]:
         pass
 
     @abc.abstractmethod
     def get_task_stage_team_assignee_id_dtos(
-            self, task_stage_dtos: List[TaskStageIdDTO]
+            self, task_stage_dtos: List[GetTaskDetailsDTO]
     ) -> List[TaskStageAssigneeTeamIdDTO]:
         pass
 
@@ -113,5 +113,5 @@ class TaskStageStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_task_stage_details_dtos(
             self, task_ids: List[int]
-    ) -> List[TaskStageIdDTO]:
+    ) -> List[GetTaskDetailsDTO]:
         pass

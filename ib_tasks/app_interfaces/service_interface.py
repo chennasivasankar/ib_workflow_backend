@@ -8,7 +8,7 @@ from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO, TaskStagesDTO
-from ib_tasks.interactors.task_dtos import TaskStageIdDTO, \
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
     TaskDetailsConfigDTO
 from ib_tasks.interactors.task_stage_dtos import TasksCompleteDetailsDTO
 from ib_tasks.storages.action_storage_implementation import \
@@ -54,7 +54,7 @@ class ServiceInterface:
         return task_ids_dtos
 
     @staticmethod
-    def get_task_details(task_dtos: List[TaskStageIdDTO], user_id: str,
+    def get_task_details(task_dtos: List[GetTaskDetailsDTO], user_id: str,
                          view_type: ViewType) -> \
             List[GetTaskStageCompleteDetailsDTO]:
         from ib_tasks.storages.fields_storage_implementation import \
@@ -77,7 +77,7 @@ class ServiceInterface:
 
     @staticmethod
     def get_assignees_for_task_stages(
-            task_stage_dtos: List[TaskStageIdDTO]) -> List[TaskStageAssigneeDetailsDTO]:
+            task_stage_dtos: List[GetTaskDetailsDTO]) -> List[TaskStageAssigneeDetailsDTO]:
         from ib_tasks.interactors.get_stages_assignees_details_interactor import \
             GetStagesAssigneesDetailsInteractor
         from ib_tasks.storages.task_stage_storage_implementation import \

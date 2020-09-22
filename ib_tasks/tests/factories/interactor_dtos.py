@@ -32,7 +32,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     TaskDueParametersDTO, \
-    FieldValuesDTO, TaskStageIdDTO, StatusOperandStageDTO, \
+    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, \
     CreateTaskLogDTO, \
     CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeDTO, \
     SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
@@ -48,9 +48,9 @@ from ib_tasks.tests.factories.adapter_dtos import (AssigneeDetailsDTOFactory,
                                                    TeamInfoDTOFactory, TeamDetailsDTOFactory)
 
 
-class TaskStageIdDTOFactory(factory.Factory):
+class GetTaskDetailsDTOFactory(factory.Factory):
     class Meta:
-        model = TaskStageIdDTO
+        model = GetTaskDetailsDTO
 
     task_id = factory.Sequence(lambda n: n + 1)
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))

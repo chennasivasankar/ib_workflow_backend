@@ -2,7 +2,7 @@ import pytest
 
 from ib_tasks.storages.storage_implementation import \
     StagesStorageImplementation
-from ib_tasks.tests.factories.interactor_dtos import TaskStageIdDTOFactory
+from ib_tasks.tests.factories.interactor_dtos import GetTaskDetailsDTOFactory
 from ib_tasks.tests.factories.models import StageModelFactory, TaskFactory, \
     TaskTemplateFactory, CurrentTaskStageModelFactory, \
     GoFFactory
@@ -13,13 +13,13 @@ class TestGetStageDetails:
 
     @pytest.fixture()
     def get_task_stage_dtos(self):
-        TaskStageIdDTOFactory.reset_sequence()
-        return TaskStageIdDTOFactory.create_batch(size=3)
+        GetTaskDetailsDTOFactory.reset_sequence()
+        return GetTaskDetailsDTOFactory.create_batch(size=3)
 
     @pytest.fixture()
     def get_task_stage_dtos_for_three_stages(self):
-        TaskStageIdDTOFactory.reset_sequence()
-        return TaskStageIdDTOFactory.create_batch(size=3, task_id=1)
+        GetTaskDetailsDTOFactory.reset_sequence()
+        return GetTaskDetailsDTOFactory.create_batch(size=3, task_id=1)
 
     @pytest.fixture()
     def populate_data(self):

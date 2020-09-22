@@ -14,7 +14,7 @@ from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, \
-    TaskStageIdDTO
+    GetTaskDetailsDTO
 
 
 class InvalidStagesForTemplate(Exception):
@@ -104,7 +104,7 @@ class TaskService:
         return column_task_ids_dtos
 
     def get_task_complete_details(
-            self, task_stage_ids: List[TaskStageIdDTO],
+            self, task_stage_ids: List[GetTaskDetailsDTO],
             user_id: str, view_type: ViewType) \
             -> Tuple[List[FieldDTO], List[ActionDTO], List[TaskStageDTO]]:
         tasks_complete_details_dtos = self.interface.get_task_details(
@@ -168,7 +168,7 @@ class TaskService:
         ]
 
     def get_tasks_assignees_details(
-            self, task_stage_ids: List[TaskStageIdDTO]) -> List[
+            self, task_stage_ids: List[GetTaskDetailsDTO]) -> List[
         StageAssigneesDTO]:
 
         stage_assignees_dtos = self.interface.get_assignees_for_task_stages(

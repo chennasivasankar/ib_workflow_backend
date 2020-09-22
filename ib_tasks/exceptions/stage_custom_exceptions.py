@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_tasks.interactors.task_dtos import TaskStageIdDTO
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
 class InvalidStageIdsException(Exception):
@@ -55,7 +55,7 @@ class InvalidPythonCodeException(Exception):
 
 
 class InvalidTaskStageIds(Exception):
-    def __init__(self, invalid_task_stage_ids: List[TaskStageIdDTO]):
+    def __init__(self, invalid_task_stage_ids: List[GetTaskDetailsDTO]):
         self.invalid_task_stage_ids = invalid_task_stage_ids
 
 

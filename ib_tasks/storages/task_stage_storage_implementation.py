@@ -10,7 +10,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
     TaskStageStorageInterface, TaskStageAssigneeIdDTO, TaskStageAssigneeTeamIdDTO
-from ib_tasks.interactors.task_dtos import TaskStageIdDTO
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import CurrentTaskStage, Task, TaskStageHistory, \
     StagePermittedRoles, Stage, TaskStageRp
 
@@ -128,7 +128,7 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
         return assignee_with_current_tasks_count_dtos
 
     def get_stage_assignee_id_dtos(
-            self, task_stage_dtos: List[TaskStageIdDTO]
+            self, task_stage_dtos: List[GetTaskDetailsDTO]
     ) -> List[TaskStageAssigneeIdDTO]:
         q = None
         for counter, item in enumerate(task_stage_dtos):
@@ -155,7 +155,7 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
         return task_stage_assignee_id_dto
 
     def get_task_stage_team_assignee_id_dtos(
-            self, task_stage_dtos: List[TaskStageIdDTO]
+            self, task_stage_dtos: List[GetTaskDetailsDTO]
     ) -> List[TaskStageAssigneeTeamIdDTO]:
         q = None
         for counter, item in enumerate(task_stage_dtos):
@@ -222,14 +222,14 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
 
     def get_task_stage_details_dtos(
             self, task_ids: List[int]
-    ) -> List[TaskStageIdDTO]:
+    ) -> List[GetTaskDetailsDTO]:
 
         from django.db.models import F
         task_current_stage_objs = CurrentTaskStage.objects \
             .filter(task_id__in=task_ids) \
             .annotate(normal_stage=F('stage__stage_id'))
         return [
-            TaskStageIdDTO(
+            GetTaskDetailsDTO(
                 task_id=task_current_stage_obj.task_id,
                 stage_id=task_current_stage_obj.normal_stage
             ) for task_current_stage_obj in task_current_stage_objs

@@ -26,7 +26,7 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.task_dtos import TaskStageIdDTO
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.interactors.user_role_validation_interactor import \
     UserRoleValidationInteractor
 
@@ -71,9 +71,9 @@ class GetTasksOverviewForUserInteractor(ValidationMixin):
             for task_with_complete_stage_details_dto in
             task_with_complete_stage_details_dtos
         ]
-        from ib_tasks.interactors.task_dtos import TaskStageIdDTO
+        from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
         task_id_with_stage_id_dtos = [
-            TaskStageIdDTO(
+            GetTaskDetailsDTO(
                 stage_id=each_task_id_with_stage_details_dto.stage_id,
                 task_id=each_task_id_with_stage_details_dto.task_id)
             for each_task_id_with_stage_details_dto in
@@ -120,7 +120,7 @@ class GetTasksOverviewForUserInteractor(ValidationMixin):
         return task_id_with_stage_ids_dtos
 
     def _get_task_fields_and_action(
-            self, task_id_with_stage_id_dtos: List[TaskStageIdDTO],
+            self, task_id_with_stage_id_dtos: List[GetTaskDetailsDTO],
             user_id: str, view_type: ViewType
     ) -> List[GetTaskStageCompleteDetailsDTO]:
         from ib_tasks.interactors.get_task_fields_and_actions import \

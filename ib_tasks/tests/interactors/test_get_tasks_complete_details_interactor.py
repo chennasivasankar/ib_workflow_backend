@@ -83,9 +83,9 @@ class TestGetTasksCompleteDetailsInteractor(StorageMockClass):
         task_storage.get_valid_task_ids.assert_called_once_with(task_ids=task_ids)
 
     def task_stage_response(self):
-        from ib_tasks.tests.factories.interactor_dtos import TaskStageIdDTOFactory
-        TaskStageIdDTOFactory.reset_sequence()
-        task_stage_dtos = TaskStageIdDTOFactory.create_batch(2)
+        from ib_tasks.tests.factories.interactor_dtos import GetTaskDetailsDTOFactory
+        GetTaskDetailsDTOFactory.reset_sequence()
+        task_stage_dtos = GetTaskDetailsDTOFactory.create_batch(2)
         return task_stage_dtos
 
     @pytest.fixture()
