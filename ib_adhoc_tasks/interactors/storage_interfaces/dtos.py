@@ -9,6 +9,7 @@ from ib_adhoc_tasks.constants.enum import ViewType
 class GroupByResponseDTO:
     group_by_id: int
     group_by_key: str
+    display_name: str
     order: int
 
 

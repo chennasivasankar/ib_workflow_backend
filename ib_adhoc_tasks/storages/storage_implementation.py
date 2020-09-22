@@ -76,9 +76,8 @@ class StorageImplementation(StorageInterface):
     @staticmethod
     def _convert_to_group_by_response_dto(group_by_info_object):
         return GroupByResponseDTO(
-            group_by_display_name=group_by_info_object.group_by,
+            group_by_key=group_by_info_object.group_by,
+            display_name=group_by_info_object.group_by,
             group_by_id=group_by_info_object.id,
             order=group_by_info_object.order
         )
-
-

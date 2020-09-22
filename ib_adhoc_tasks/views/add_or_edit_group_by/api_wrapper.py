@@ -15,8 +15,6 @@ def api_wrapper(*args, **kwargs):
     from ib_adhoc_tasks.storages.storage_implementation import \
         StorageImplementation
     storage = StorageImplementation()
-    from ib_adhoc_tasks.interactors.presenter_interfaces \
-        .group_by_presenter_interface import AddOrEditGroupByPresenterInterface
     from ib_adhoc_tasks.presenters.add_or_edit_group_by_presenter_implementation import \
         AddOrEditGroupByPresenterImplementation
     presenter = AddOrEditGroupByPresenterImplementation()
@@ -37,7 +35,7 @@ def prepare_add_or_edit_group_by_parameter_dto(kwargs):
         user_id=str(user_object.user_id),
         project_id=kwargs["project_id"],
         view_type=request_data["view_type"],
-        group_by_display_name=request_data["group_by_display_name"],
+        group_by_key=request_data["group_by_key"],
         group_by_id=request_data["group_by_id"],
         order=request_data.get("order", None)
     )
