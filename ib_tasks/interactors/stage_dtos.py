@@ -41,9 +41,3 @@ class DBStageIdWithStageIdDTO:
 class DBStageIdWithGoFIdsDTO:
     db_stage_id: int
     gof_ids: List[str]
-
-
-@dataclass
-class StageIdAndNameDTO:
-    stage_id: str
-    name: str
