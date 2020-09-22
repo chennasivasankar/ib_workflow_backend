@@ -3,9 +3,10 @@ from typing import List
 from ib_adhoc_tasks.adapters.dtos import TasksCompleteDetailsDTO, \
     TasksDetailsInputDTO
 from ib_adhoc_tasks.constants.enum import ViewType
-from ib_adhoc_tasks.exceptions.custom_exceptions import InvalidProjectId, \
+from ib_adhoc_tasks.exceptions.custom_exceptions import \
     InvalidOffsetOrLimitValue
-from ib_adhoc_tasks.interactors.dtos import GroupByInfoListViewDTO, \
+from ib_adhoc_tasks.exceptions.custom_exceptions import InvalidProjectId
+from ib_adhoc_tasks.interactors.dtos.dtos import GroupByInfoListViewDTO, \
     TaskOffsetAndLimitValuesDTO, GroupByDTO
 from ib_adhoc_tasks.interactors.presenter_interfaces \
     .get_tasks_for_list_view_presenter_interface import \
@@ -89,8 +90,8 @@ class GetTasksForListViewInteractor:
         group_limit = group_offset_limit_dto.limit
 
         is_invalid_offset_or_limit_values = (
-                    task_limit < 0 or task_offset < 0 or group_offset < 0 or
-                    group_limit < 0)
+                task_limit < 0 or task_offset < 0 or group_offset < 0 or
+                group_limit < 0)
 
         if is_invalid_offset_or_limit_values:
             raise InvalidOffsetOrLimitValue()
@@ -138,11 +139,12 @@ class GetTasksForListViewInteractor:
             GetTaskIdsForViewInteractor
         interactor = GetTaskIdsForViewInteractor(
             elastic_storage=self.elastic_storage)
-        group_details_dtos = interactor.get_task_ids_for_view(
-            project_id=project_id, adhoc_template_id=adhoc_template_id,
-            group_by_dtos=group_by_dtos, user_id=user_id,
-            task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
-        )
+        group_details_dtos, group_count_dtos, child_group_count_dtos = \
+            interactor.get_task_ids_for_view(
+                project_id=project_id, adhoc_template_id=adhoc_template_id,
+                group_by_dtos=group_by_dtos, user_id=user_id,
+                task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
+            )
         return group_details_dtos
 
     @staticmethod

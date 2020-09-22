@@ -75,7 +75,7 @@ class TestGetTaskIdsForGroupInteractor:
         user_role_ids = ["role_1", "role_2"]
         stage_ids = ["stage_id_1", "stage_id_2"]
         task_ids = ["task_id_1", "task_id_2"]
-        from ib_adhoc_tasks.interactors.dtos import TaskIdsAndCountDTO
+        from ib_adhoc_tasks.interactors.dtos.dtos import TaskIdsAndCountDTO
         expected_task_ids_and_count_dto = TaskIdsAndCountDTO(
             task_ids=task_ids, total_tasks_count=2
         )
@@ -90,13 +90,16 @@ class TestGetTaskIdsForGroupInteractor:
             get_user_role_ids_based_on_project_mock(mocker=mocker)
         get_user_role_ids_based_on_project_mock.return_value = user_role_ids
         from ib_adhoc_tasks.tests.common_fixtures.adapters import \
-            get_stage_ids_based_on_user_roles_mock
+            get_user_permitted_stage_ids_mock
         get_stage_ids_based_on_user_roles_mock = \
-            get_stage_ids_based_on_user_roles_mock(mocker=mocker)
+            get_user_permitted_stage_ids_mock(mocker=mocker)
         get_stage_ids_based_on_user_roles_mock.return_value = stage_ids
         elastic_storage_mock. \
             get_task_ids_and_count_dto_based_on_given_groupby_and_pagination_detail. \
             return_value = expected_task_ids_and_count_dto
+        from ib_adhoc_tasks.tests.common_fixtures.adapters import \
+            validate_task_template_id_mock
+        validate_task_template_id_mock(mocker)
 
         actual_task_ids_and_count_dto = interactor.get_task_ids_for_groups(
             task_ids_for_groups_parameter_dto=task_ids_for_groups_parameter_dto

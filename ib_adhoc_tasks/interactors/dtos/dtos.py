@@ -2,6 +2,28 @@ from dataclasses import dataclass
 from typing import List
 from typing import Optional
 
+from ib_adhoc_tasks.constants.enum import GroupByEnum
+
+
+@dataclass
+class GroupByDTO:
+    group_by_value: GroupByEnum
+    order: int
+    offset: int
+    limit: int
+
+
+@dataclass
+class TaskOffsetAndLimitValuesDTO:
+    offset: int
+    limit: int
+
+
+@dataclass
+class GroupByValueDTO:
+    group_by_display_name: str
+    group_by_value: str
+
 
 @dataclass
 class GroupByValueDTO:

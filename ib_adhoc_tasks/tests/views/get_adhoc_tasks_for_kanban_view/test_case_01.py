@@ -19,12 +19,12 @@ class TestCase01GetAdhocTasksForKanbanViewAPITestCase(TestUtils):
         path_params = {}
         query_params = {
             'project_id': 'string',
-            'limit': 261,
-            'offset': 710,
+            'limit': 772,
+            'offset': 564,
             'group1_limit': 10,
-            'group1_offset': 224,
+            'group1_offset': 198,
             'group2_limit': 10,
-            'group2_offset': 414
+            'group2_offset': 215
         }
         headers = {}
         response = self.make_api_call(body=body,
