@@ -123,9 +123,6 @@ class ElasticStorageImplementation(ElasticStorageInterface):
             )
             return group_details_dtos, [], []
 
-        print("child_agg", child_agg)
-        print("group_agg", group_agg)
-
         is_grouping_for_only_order_one = not is_grouping_for_order_two
         if is_grouping_for_only_order_one:
             group_details_dtos, group_count_dtos = \
