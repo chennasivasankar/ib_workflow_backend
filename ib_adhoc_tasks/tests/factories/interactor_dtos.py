@@ -1,7 +1,7 @@
 import factory
 
 from ib_adhoc_tasks.constants.enum import GroupByType
-from ib_adhoc_tasks.interactors.dtos import GroupByValueDTO, \
+from ib_adhoc_tasks.interactors.dtos.dtos import GroupByValueDTO, \
     TaskIdsForGroupsParameterDTO, OffsetLimitDTO, GroupByInfoKanbanViewDTO, \
     GroupByInfoListViewDTO
 from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO, \
