@@ -5,7 +5,7 @@ import pytest
 
 from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import ColumnParametersDTO, \
-    PaginationParametersDTO, TaskStageIdDTO
+    PaginationParametersDTO, GetTaskDetailsDTO
 from ib_boards.interactors.get_column_details_interactor import \
     GetColumnDetailsInteractor
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
@@ -16,7 +16,7 @@ from ib_boards.tests.factories.interactor_dtos import \
     ColumnTaskIdsDTOFactory, \
     TaskColumnDTOFactory, ColumnStageIdsDTOFactory, \
     TaskDetailsConfigDTOFactory, \
-    GetTaskDetailsDTOFactory, TaskStageIdDTOFactory, StageAssigneesDTOFactory
+    GetTaskDetailsDTOFactory, StageAssigneesDTOFactory
 from ib_boards.tests.factories.storage_dtos import (
     ColumnDetailsDTOFactory, TaskActionsDTOFactory, TaskFieldsDTOFactory,
     ColumnCompleteDetailsDTOFactory, TaskStageDTOFactory)
@@ -31,7 +31,7 @@ class TestGetColumnDetailsInteractor:
         ColumnTaskIdsDTOFactory.reset_sequence()
         ColumnStageIdsDTOFactory.reset_sequence()
         ColumnCompleteDetailsDTOFactory.reset_sequence()
-        TaskStageIdDTOFactory.reset_sequence()
+        GetTaskDetailsDTOFactory.reset_sequence()
 
     @classmethod
     def teardown_class(cls):
@@ -65,14 +65,14 @@ class TestGetColumnDetailsInteractor:
 
     @pytest.fixture
     def column_tasks_ids(self):
-        TaskStageIdDTOFactory.reset_sequence()
+        GetTaskDetailsDTOFactory.reset_sequence()
         return ColumnTaskIdsDTOFactory.create_batch(3)
 
     @pytest.fixture
     def column_tasks_ids_no_duplicates(self):
-        task_stage_ids = [TaskStageIdDTOFactory.create_batch(3),
-                          TaskStageIdDTOFactory.create_batch(3),
-                          TaskStageIdDTOFactory.create_batch(3)]
+        task_stage_ids = [GetTaskDetailsDTOFactory.create_batch(3),
+                          GetTaskDetailsDTOFactory.create_batch(3),
+                          GetTaskDetailsDTOFactory.create_batch(3)]
         return ColumnTaskIdsDTOFactory.create_batch(
             3, task_stage_ids=factory.Iterator(task_stage_ids)
         )
@@ -362,8 +362,8 @@ class TestGetColumnDetailsInteractor:
                       "FIN_PAYMENTS_LEVEL2_VERIFIER",
                       "FIN_PAYMENTS_LEVEL3_VERIFIER"]
 
-        tasks_dtos = [TaskStageIdDTO(task_id="task_id_1",
-                                     stage_id="stage_id_1")]
+        tasks_dtos = [GetTaskDetailsDTO(task_id="task_id_1",
+                                        stage_id="stage_id_1")]
 
         storage.get_project_id_for_board.return_value = "project_id_2"
         from ib_boards.tests.common_fixtures.adapters.task_service import \
@@ -456,8 +456,8 @@ class TestGetColumnDetailsInteractor:
                       "FIN_PAYMENTS_LEVEL2_VERIFIER",
                       "FIN_PAYMENTS_LEVEL3_VERIFIER"]
 
-        tasks_dtos = [TaskStageIdDTO(task_id="task_id_1",
-                                     stage_id="stage_id_1")]
+        tasks_dtos = [GetTaskDetailsDTO(task_id="task_id_1",
+                                        stage_id="stage_id_1")]
 
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             prepare_task_details_dtos

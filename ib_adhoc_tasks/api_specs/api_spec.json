@@ -31,6 +31,21 @@
   },
   "security": [],
   "definitions": {
+    "CommonHttpExceptionFields": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code"
+      ]
+    },
     "InvalidTaskDetails": {
       "type": "object",
       "properties": {
@@ -733,6 +748,93 @@
         "group_by_display_name",
         "child_groups"
       ]
+    },
+    "GroupByFields": {
+      "type": "object",
+      "properties": {
+        "view_type": {
+          "type": "string",
+          "enum": [
+            "LIST",
+            "KANBAN"
+          ]
+        },
+        "group_by_display_name": {
+          "type": "string"
+        },
+        "order": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "view_type",
+        "group_by_display_name"
+      ]
+    },
+    "GroupByResponseFields": {
+      "type": "object",
+      "properties": {
+        "group_by_id": {
+          "type": "integer"
+        },
+        "group_by_display_name": {
+          "type": "string"
+        },
+        "order": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "group_by_id",
+        "group_by_display_name",
+        "order"
+      ]
+    },
+    "InvalidPaginationDetailsForViews": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "INVALID_OFFSET_VALUE",
+                "INVALID_LIMIT_VALUE",
+                "INVALID_GROUP_OFFSET_VALUE",
+                "INVALID_GROUP_LIMIT_VALUE"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "InvalidProjectAndUserNotExistsInProjectForViews": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "INVALID_PROJECT_ID",
+                "USER_NOT_EXISTS_IN_PROJECT"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
     }
   },
   "parameters": {
@@ -966,6 +1068,45 @@
           "view_type"
         ]
       }
+    },
+    "ViewTypeQueryParameter": {
+      "name": "view_type",
+      "in": "query",
+      "description": "view_type value",
+      "type": "string",
+      "enum": [
+        "LIST",
+        "KANBAN"
+      ],
+      "required": true
+    },
+    "AddOrEditGroupByParameter": {
+      "name": "add_group_by_parameter",
+      "in": "body",
+      "required": true,
+      "description": "add group by parameter",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/GroupByFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "group_by_id": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "ProjectIdPathParameter": {
+      "name": "project_id",
+      "in": "path",
+      "description": "project id value",
+      "type": "string",
+      "required": true
     }
   },
   "responses": {
@@ -1146,6 +1287,105 @@
       "schema": {
         "$ref": "#/definitions/TaskCompleteDetails"
       }
+    },
+    "GroupByResponse": {
+      "description": "group by response",
+      "schema": {
+        "$ref": "#/definitions/GroupByResponseFields"
+      }
+    },
+    "NotFoundRequestForAddGroupResponse": {
+      "description": "not found response for add group response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_PROJECT_ID",
+                  "INVALID_GROUP_BY_ID",
+                  "INVALID_GROUP_DISPLAY_NAME",
+                  "USER_NOT_EXISTS_IN_PROJECT"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "UnauthorizedRequestForAddGroupResponse": {
+      "description": "unauthorized response for add group",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_HAS_NO_ACCESS_FOR_GIVEN_FIELD"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "NotFoundRequestForGetGroupResponse": {
+      "description": "not found response for get group",
+      "schema": {
+        "$ref": "#/definitions/InvalidProjectAndUserNotExistsInProjectForViews"
+      }
+    },
+    "NotFoundRequestForListViewResponse": {
+      "description": "not found response for get tasks in list view",
+      "schema": {
+        "$ref": "#/definitions/InvalidProjectAndUserNotExistsInProjectForViews"
+      }
+    },
+    "BadRequestForListViewResponse": {
+      "description": "bad request response for get tasks in list view",
+      "schema": {
+        "$ref": "#/definitions/InvalidPaginationDetailsForViews"
+      }
+    },
+    "NotFoundRequestForKanbanViewResponse": {
+      "description": "not found response for get tasks in list view",
+      "schema": {
+        "$ref": "#/definitions/InvalidProjectAndUserNotExistsInProjectForViews"
+      }
+    },
+    "BadRequestForKanbanViewResponse": {
+      "description": "bad request response for get tasks in list view",
+      "schema": {
+        "$ref": "#/definitions/InvalidPaginationDetailsForViews"
+      }
+    },
+    "NotFoundRequestForGroupPaginationResponse": {
+      "description": "not found response for get tasks by groups with pagination details",
+      "schema": {
+        "$ref": "#/definitions/InvalidProjectAndUserNotExistsInProjectForViews"
+      }
+    },
+    "BadRequestForGroupPaginationResponse": {
+      "description": "bad request response for get tasks by groups with pagination details",
+      "schema": {
+        "$ref": "#/definitions/InvalidPaginationDetails"
+      }
     }
   },
   "paths": {
@@ -1180,6 +1420,12 @@
         "responses": {
           "200": {
             "$ref": "#/responses/ProjectsAdhocBoardListViewResponse"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForListViewResponse"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundRequestForListViewResponse"
           }
         }
       }
@@ -1221,6 +1467,12 @@
         "responses": {
           "200": {
             "$ref": "#/responses/ProjectsAdhocBoardKanbanViewResponse"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForKanbanViewResponse"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundRequestForKanbanViewResponse"
           }
         }
       }
@@ -1253,6 +1505,79 @@
         "responses": {
           "200": {
             "$ref": "#/responses/GetTasksOfProjectByGroupIds"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundRequestForGroupPaginationResponse"
+          },
+          "403": {
+            "$ref": "#/responses/BadRequestForGroupPaginationResponse"
+          }
+        }
+      }
+    },
+    "/project/{project_id}/adhoc_board/group/add_or_edit/v1/": {
+      "post": {
+        "summary": "add or edit a group by",
+        "operationId": "add_or_edit_group_by",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/AddOrEditGroupByParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GroupByResponse"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundRequestForAddGroupResponse"
+          },
+          "403": {
+            "$ref": "#/responses/UnauthorizedRequestForAddGroupResponse"
+          }
+        }
+      }
+    },
+    "/project/{project_id}/adhoc_board/group/v1/": {
+      "get": {
+        "summary": "get a group by",
+        "operationId": "get_group_by",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/ViewTypeQueryParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get group by response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GroupByResponseFields"
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundRequestForGetGroupResponse"
           }
         }
       }

@@ -6,6 +6,10 @@ from ib_tasks.tests.factories.models import StageModelFactory
 @pytest.mark.django_db
 class TestGetStageDetailsDTOS:
 
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        StageModelFactory.reset_sequence()
+
     def test_given_stage_ids_returns_stage_details_dtos(
             self, task_storage, snapshot
     ):

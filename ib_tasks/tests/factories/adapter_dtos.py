@@ -161,6 +161,7 @@ class TaskBoardsDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def column_stage_dtos(self):
+        ColumnStageDTOFactory.reset_sequence()
         return [ColumnStageDTOFactory(), ColumnStageDTOFactory()]
 
     @factory.lazy_attribute

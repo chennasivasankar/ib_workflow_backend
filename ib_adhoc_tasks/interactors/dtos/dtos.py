@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List
+from typing import Optional
 
 from ib_adhoc_tasks.constants.enum import GroupByEnum
 
@@ -44,3 +45,42 @@ class TaskIdsForGroupsParameterDTO:
 class TaskIdsAndCountDTO:
     task_ids: List[str]
     total_tasks_count: int
+
+
+@dataclass
+class GroupByDTO:
+    group_by_value: str
+    order: int
+    offset: int
+    limit: int
+
+
+@dataclass
+class TaskOffsetAndLimitValuesDTO:
+    offset: int
+    limit: int
+
+
+@dataclass
+class OffsetLimitDTO:
+    offset: int
+    limit: int
+
+
+@dataclass
+class GroupByInfoKanbanViewDTO:
+    project_id: str
+    user_id: str
+    task_offset_limit_dto: OffsetLimitDTO
+    group1_offset_limit_dto: Optional[OffsetLimitDTO]
+    group2_offset_limit_dto: Optional[OffsetLimitDTO]
+
+
+@dataclass
+class GroupByInfoListViewDTO:
+    project_id: str
+    user_id: str
+    task_offset_limit_dto: OffsetLimitDTO
+    group_offset_limit_dto: Optional[OffsetLimitDTO]
+
+

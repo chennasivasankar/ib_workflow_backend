@@ -74,6 +74,12 @@ class IamService:
         )
         return user_id_and_name_dtos
 
+    def get_user_role_ids(self, user_id: str):
+        user_role_ids = self.interface.get_user_role_ids(
+            user_id=user_id
+        )
+        return user_role_ids
+
     @staticmethod
     def _prepare_user_id_and_name_dtos(user_profile_dtos):
         user_id_and_name_dtos = [

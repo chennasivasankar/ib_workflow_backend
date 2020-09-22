@@ -15,7 +15,8 @@ from ib_tasks.tests.factories.interactor_dtos import GoFFieldsDTOFactory, \
 from ib_tasks.tests.factories.presenter_dtos import \
     TaskCompleteDetailsDTOFactory, AllTasksOverviewDetailsDTOFactory
 from ib_tasks.tests.factories.storage_dtos import TaskGoFDetailsDTOFactory, \
-    TaskGoFFieldDTOFactory, FieldIdWithFieldDisplayNameDTOFactory
+    TaskGoFFieldDTOFactory, FieldIdWithFieldDisplayNameDTOFactory, \
+    TaskGoFWithTaskIdDTOFactory
 
 
 class TestCreateTaskInteractor:
@@ -899,7 +900,7 @@ class TestCreateTaskInteractor:
             UserNeedsGoFWritablePermission
         task_details_validations_mock \
             .side_effect = UserNeedsGoFWritablePermission(
-                given_created_by_id, given_gof_id, given_required_user_roles)
+            given_created_by_id, given_gof_id, given_required_user_roles)
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -955,7 +956,7 @@ class TestCreateTaskInteractor:
             UserNeedsFieldWritablePermission
         task_details_validations_mock \
             .side_effect = UserNeedsFieldWritablePermission(
-                given_created_by_id, given_field_id, given_required_user_roles)
+            given_created_by_id, given_field_id, given_required_user_roles)
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -1003,7 +1004,7 @@ class TestCreateTaskInteractor:
             UserDidNotFillRequiredFields
         task_details_validations_mock \
             .side_effect = UserDidNotFillRequiredFields(
-                given_unfilled_field_dtos)
+            given_unfilled_field_dtos)
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -1411,8 +1412,8 @@ class TestCreateTaskInteractor:
             InvalidValueForDropdownField
         task_details_validations_mock \
             .side_effect = InvalidValueForDropdownField(
-                given_field_id, given_field_response, valid_choices
-            )
+            given_field_id, given_field_response, valid_choices
+        )
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -1467,8 +1468,8 @@ class TestCreateTaskInteractor:
             IncorrectNameInGoFSelectorField
         task_details_validations_mock \
             .side_effect = IncorrectNameInGoFSelectorField(
-                given_field_id, given_field_response, valid_choices
-            )
+            given_field_id, given_field_response, valid_choices
+        )
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -1526,8 +1527,8 @@ class TestCreateTaskInteractor:
             IncorrectRadioGroupChoice
         task_details_validations_mock \
             .side_effect = IncorrectRadioGroupChoice(
-                given_field_id, given_field_response, valid_choices
-            )
+            given_field_id, given_field_response, valid_choices
+        )
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -1585,8 +1586,8 @@ class TestCreateTaskInteractor:
             IncorrectCheckBoxOptionsSelected
         task_details_validations_mock \
             .side_effect = IncorrectCheckBoxOptionsSelected(
-                given_field_id, invalid_checkbox_options_selected,
-                valid_choices)
+            given_field_id, invalid_checkbox_options_selected,
+            valid_choices)
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -1706,8 +1707,8 @@ class TestCreateTaskInteractor:
             IncorrectMultiSelectLabelsSelected
         task_details_validations_mock \
             .side_effect = IncorrectMultiSelectLabelsSelected(
-                given_field_id, invalid_multi_select_labels_selected,
-                valid_choices)
+            given_field_id, invalid_multi_select_labels_selected,
+            valid_choices)
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -1828,8 +1829,8 @@ class TestCreateTaskInteractor:
             InvalidTimeFormat
         task_details_validations_mock \
             .side_effect = InvalidTimeFormat(
-                given_field_id, given_field_response, expected_format
-            )
+            given_field_id, given_field_response, expected_format
+        )
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -2105,22 +2106,38 @@ class TestCreateTaskInteractor:
         # Arrange
         task_request_json = '{"key": "value"}'
         created_task_id = 1
+
+        TaskGoFWithTaskIdDTOFactory.reset_sequence()
+        TaskGoFFieldDTOFactory.reset_sequence()
+        TaskGoFWithTaskIdDTOFactory.reset_sequence()
+        TaskGoFDetailsDTOFactory.reset_sequence()
+
         task_dto = CreateTaskDTOFactory()
-        from ib_tasks.interactors.storage_interfaces.task_dtos import \
-            TaskGoFWithTaskIdDTO
-        expected_task_gof_dtos = [
-            TaskGoFWithTaskIdDTO(
-                task_id=created_task_id,
-                gof_id=gof_fields_dto.gof_id,
-                same_gof_order=gof_fields_dto.same_gof_order
+        expected_task_gof_dtos = []
+        for gof_fields_dto in task_dto.gof_fields_dtos:
+            expected_task_gof_dtos.append(
+                TaskGoFWithTaskIdDTOFactory(
+                    task_id=created_task_id, gof_id=gof_fields_dto.gof_id,
+                    same_gof_order=gof_fields_dto.same_gof_order)
             )
-            for gof_fields_dto in task_dto.gof_fields_dtos
-        ]
-        expected_task_gof_details_dtos = TaskGoFDetailsDTOFactory.build_batch(
-            size=2)
-        task_gof_ids = [0, 0, 1, 1]
-        expected_task_gof_field_dtos = TaskGoFFieldDTOFactory.build_batch(
-            size=4, task_gof_id=factory.Iterator(task_gof_ids))
+        expected_task_gof_details_dtos = []
+        for task_gof_dto in expected_task_gof_dtos:
+            expected_task_gof_details_dtos.append(
+                TaskGoFDetailsDTOFactory(
+                    gof_id=task_gof_dto.gof_id,
+                    same_gof_order=task_gof_dto.same_gof_order)
+            )
+        expected_task_gof_field_dtos = []
+        for gof_fields_dto in task_dto.gof_fields_dtos:
+            task_gof_id = self._get_task_gof_id_for_gof_id(
+                gof_fields_dto.gof_id, expected_task_gof_details_dtos)
+            expected_task_gof_field_dtos += [
+                TaskGoFFieldDTOFactory(
+                    field_id=field_value_dto.field_id,
+                    task_gof_id=task_gof_id)
+                for field_value_dto in gof_fields_dto.field_values_dtos
+            ]
+
         task_crud_create_task_mock.return_value = created_task_id
         task_crud_create_task_gofs_mock.return_value = \
             expected_task_gof_details_dtos
@@ -2148,12 +2165,12 @@ class TestCreateTaskInteractor:
             expected_task_gof_field_dtos)
         create_task_storage_mock.set_status_variables_for_template_and_task \
             .assert_called_once_with(
-                task_dto.basic_task_details_dto.task_template_id,
-                created_task_id)
-        create_task_storage_mock.create_initial_task_stage.\
+            task_dto.basic_task_details_dto.task_template_id,
+            created_task_id)
+        create_task_storage_mock.create_initial_task_stage. \
             assert_called_once_with(
-                task_id=created_task_id,
-                template_id=task_dto.basic_task_details_dto.task_template_id)
+            task_id=created_task_id,
+            template_id=task_dto.basic_task_details_dto.task_template_id)
 
     def test_with_not_permitted_user_action(
             self, task_storage_mock, gof_storage_mock,
@@ -2696,3 +2713,10 @@ class TestCreateTaskInteractor:
         # Assert
         assert response == mock_object
         presenter_mock.raise_stage_ids_list_empty.assert_called_once()
+
+    @staticmethod
+    def _get_task_gof_id_for_gof_id(gof_id, expected_task_gof_details_dtos):
+        for gof_details_dto in expected_task_gof_details_dtos:
+            if gof_details_dto.gof_id == gof_id:
+                return gof_details_dto.task_gof_id
+        return

@@ -16,7 +16,11 @@ def api_wrapper(*args, **kwargs):
 
     test_case = {
         "path_params": {},
+<<<<<<< HEAD
         "query_params": {'project_id': 'string', 'limit': 772, 'offset': 564, 'group1_limit': 10, 'group1_offset': 198, 'group2_limit': 10, 'group2_offset': 215},
+=======
+        "query_params": {'project_id': 'string', 'limit': 261, 'offset': 710, 'group1_limit': 10, 'group1_offset': 224, 'group2_limit': 10, 'group2_offset': 414},
+>>>>>>> feature/adhoc-board-tasks
         "header_params": {},
         "body": body,
         "securities": [{'oauth': ['read']}]
@@ -27,12 +31,20 @@ def api_wrapper(*args, **kwargs):
     try:
         response = ''
         status_code = 200
+<<<<<<< HEAD
         if '200' in ['200']:
+=======
+        if '200' in ['200', '400', '404']:
+>>>>>>> feature/adhoc-board-tasks
             from ib_adhoc_tasks.views.get_adhoc_tasks_for_kanban_view.request_response_mocks \
                 import RESPONSE_200_JSON
             response = RESPONSE_200_JSON
             status_code = 200
+<<<<<<< HEAD
         elif '201' in ['200']:
+=======
+        elif '201' in ['200', '400', '404']:
+>>>>>>> feature/adhoc-board-tasks
             from ib_adhoc_tasks.views.get_adhoc_tasks_for_kanban_view.request_response_mocks \
                 import RESPONSE_201_JSON
             response = RESPONSE_201_JSON

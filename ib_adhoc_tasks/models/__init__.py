@@ -1,4 +1,6 @@
-__all__ = []
+from .group_by_info import GroupByInfo
+
+__all__ = ["GroupByInfo"]
 
 # class DummyModel(AbstractDateTimeModel):
 #     """

@@ -40,7 +40,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO, TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
-    TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO, TaskDueMissingDTO
+    TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO, TaskDueMissingDTO, SubTasksIdsDTO, SubTasksCountDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO, ProjectIdWithTaskTemplateIdDTO, ProjectTemplateDTO
 from ib_tasks.interactors.task_dtos import TaskStatusVariableDTO
@@ -586,6 +586,7 @@ class TaskBaseDetailsDTOFactory(factory.Factory):
         lambda counter: "template_{}".format(counter))
     project_id = factory.sequence(
         lambda counter: "project_id{}".format(counter))
+    task_id = factory.sequence(lambda counter: counter + 1)
     task_display_id = factory.sequence(
         lambda counter: "IBWF-{}".format(counter + 1))
     title = factory.sequence(lambda counter: "title_{}".format(counter))
@@ -819,3 +820,19 @@ class StageIdWithGoFIdDTOFactory(factory.Factory):
 
     stage_id = factory.sequence(lambda counter: counter)
     gof_id = factory.sequence(lambda counter: "gof_{}".format(counter))
+
+
+class SubTasksCountDTOFactory(factory.Factory):
+    class Meta:
+        model = SubTasksCountDTO
+
+    task_id = factory.sequence(lambda n: n)
+    sub_tasks_count = factory.sequence(lambda n: n + 1)
+
+
+class SubTasksIdsDTOFactory(factory.Factory):
+    class Meta:
+        model = SubTasksIdsDTO
+
+    task_id = factory.sequence(lambda n: n)
+    sub_task_ids = factory.sequence(lambda n: [n + 1, n + 2])

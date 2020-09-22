@@ -1,8 +1,11 @@
 from typing import List
 
 from ib_tasks.constants.enum import ViewType
+from ib_tasks.interactors.dtos.dtos import TasksDetailsInputDTO
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDisplayNameDTO
 from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldDisplayNameDTO
@@ -10,16 +13,12 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO, TaskStagesDTO, StageDetailsDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
     TaskDetailsConfigDTO
+from ib_tasks.interactors.task_stage_dtos import TasksCompleteDetailsDTO
 from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
-# class TaskDetailsServiceInterface:
-#
-#     @staticmethod
-#     def get_task_details(task_dtos: List[GetTaskDetailsDTO]):
-#         storage = TasksStorageImplementation()
-#         interactor = GetTaskFieldsAndActionsInteractor(storage)
-#         result = interactor.get_task_fields_and_action(task_dtos)
-#         return result
+from ib_tasks.storages.fields_storage_implementation import FieldsStorageImplementation
+from ib_tasks.storages.storage_implementation import StagesStorageImplementation
+from ib_tasks.storages.task_stage_storage_implementation import TaskStageStorageImplementation
 from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
 
@@ -149,3 +148,24 @@ class ServiceInterface:
         interactor = GetStageDetails(storage)
         stage_details_dtos = interactor.get_stage_details(stage_ids=stage_ids)
         return stage_details_dtos
+
+    @staticmethod
+    def get_tasks_complete_details(
+            input_dto: TasksDetailsInputDTO
+    ) -> TasksCompleteDetailsDTO:
+        from ib_tasks.interactors.get_tasks_complete_details_interactor \
+            import GetTasksCompleteDetailsInteractor
+        task_storage = TasksStorageImplementation()
+        action_storage = ActionsStorageImplementation()
+        task_stage_storage = TaskStageStorageImplementation()
+        stage_storage = StagesStorageImplementation()
+        field_storage = FieldsStorageImplementation()
+        interactor = GetTasksCompleteDetailsInteractor(
+            task_storage=task_storage,
+            action_storage=action_storage,
+            stage_storage=stage_storage,
+            field_storage=field_storage,
+            task_stage_storage=task_stage_storage
+        )
+        response = interactor.get_tasks_complete_details(input_dto=input_dto)
+        return response

@@ -24,3 +24,4 @@ class InvalidTaskOffsetValue(Exception):
 
 class InvalidTaskTemplateId(Exception):
     pass
+
