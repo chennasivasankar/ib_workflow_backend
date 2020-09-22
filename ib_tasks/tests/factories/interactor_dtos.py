@@ -513,6 +513,7 @@ class TaskCurrentStageDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def stage_details_dtos(self):
+        CurrentStageDetailsDTOFactory.reset_sequence()
         return [CurrentStageDetailsDTOFactory(),
                 CurrentStageDetailsDTOFactory()]
 
@@ -620,6 +621,7 @@ class AssigneeWithTeamDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def team_info_dto(self):
+        TeamInfoDTOFactory.reset_sequence()
         return TeamInfoDTOFactory()
 
 
@@ -632,6 +634,7 @@ class TaskStageAssigneeDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def assignee_details(self):
+        AssigneeWithTeamDetailsDTOFactory.reset_sequence()
         return AssigneeWithTeamDetailsDTOFactory()
 
 

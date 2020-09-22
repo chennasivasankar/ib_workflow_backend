@@ -558,7 +558,7 @@ class TestUpdateTaskPresenterImplementation:
             expected_field_id, expected_radio_choice, expected_valid_values)
 
         # Act
-        response_object = presenter.\
+        response_object = presenter. \
             raise_invalid_choice_in_radio_group_field(err)
 
         # Assert
@@ -604,7 +604,7 @@ class TestUpdateTaskPresenterImplementation:
             expected_valid_values)
 
         # Act
-        response_object = presenter.\
+        response_object = presenter. \
             raise_invalid_multi_select_options_selected(err)
 
         # Assert
@@ -818,6 +818,9 @@ class TestUpdateTaskPresenterImplementation:
         from ib_tasks.tests.factories.presenter_dtos import \
             AllTasksOverviewDetailsDTOFactory
         AllTasksOverviewDetailsDTOFactory.reset_sequence()
+        from ib_tasks.tests.factories.presenter_dtos import \
+            TaskIdWithStageDetailsDTOFactory
+        TaskIdWithStageDetailsDTOFactory.reset_sequence()
 
         all_tasks_overview_dto = AllTasksOverviewDetailsDTOFactory()
 

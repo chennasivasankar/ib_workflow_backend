@@ -566,7 +566,7 @@ class TestCreateTaskPresenterImplementation:
             expected_field_id, expected_radio_choice, expected_valid_values)
 
         # Act
-        response_object = presenter.\
+        response_object = presenter. \
             raise_invalid_choice_in_radio_group_field(err)
 
         # Assert
@@ -612,7 +612,7 @@ class TestCreateTaskPresenterImplementation:
             expected_valid_values)
 
         # Act
-        response_object = presenter.\
+        response_object = presenter. \
             raise_invalid_multi_select_options_selected(err)
 
         # Assert
@@ -818,7 +818,7 @@ class TestCreateTaskPresenterImplementation:
         # Arrange
         expected_path_name = "home"
 
-        from ib_tasks.interactors.user_action_on_task.\
+        from ib_tasks.interactors.user_action_on_task. \
             call_action_logic_function_and_get_or_update_task_status_variables_interactor \
             import InvalidModulePathFound
         error_object = InvalidModulePathFound(expected_path_name)
@@ -836,7 +836,7 @@ class TestCreateTaskPresenterImplementation:
             self, snapshot, presenter):
         # Arrange
         expected_method = "some_method"
-        from ib_tasks.interactors.user_action_on_task.\
+        from ib_tasks.interactors.user_action_on_task. \
             call_action_logic_function_and_get_or_update_task_status_variables_interactor \
             import InvalidMethodFound
         error_object = InvalidMethodFound(expected_method)
@@ -954,14 +954,15 @@ class TestCreateTaskPresenterImplementation:
     def test_get_create_task_response(self, snapshot, presenter):
         # Arrange
         from ib_tasks.tests.factories.interactor_dtos import \
-            TaskCurrentStageDetailsDTOFactory, \
-            CurrentStageDetailsDTOFactory
+            TaskCurrentStageDetailsDTOFactory
         from ib_tasks.tests.factories.presenter_dtos import \
             AllTasksOverviewDetailsDTOFactory
+        from ib_tasks.tests.factories.presenter_dtos import \
+            TaskIdWithStageDetailsDTOFactory
 
         AllTasksOverviewDetailsDTOFactory.reset_sequence()
         TaskCurrentStageDetailsDTOFactory.reset_sequence()
-        CurrentStageDetailsDTOFactory.reset_sequence()
+        TaskIdWithStageDetailsDTOFactory.reset_sequence()
 
         all_tasks_overview_dto = AllTasksOverviewDetailsDTOFactory()
         task_current_stage_details_dto = TaskCurrentStageDetailsDTOFactory()

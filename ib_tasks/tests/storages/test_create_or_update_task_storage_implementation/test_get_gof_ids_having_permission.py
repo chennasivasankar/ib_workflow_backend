@@ -1,11 +1,17 @@
 import pytest
 
 from ib_tasks.constants.constants import ALL_ROLES_ID
-from ib_tasks.tests.factories.models import GoFRoleFactory
+from ib_tasks.tests.factories.models import GoFRoleFactory, GoFFactory
 
 
 @pytest.mark.django_db
 class TestGetGoFIdsHavingPermission:
+
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        GoFRoleFactory.reset_sequence()
+        GoFFactory.reset_sequence()
+
     def test_given_gof_ids_and_user_roles_returns_gof_ids_having_permission_for_roles(
             self, storage, snapshot
     ):

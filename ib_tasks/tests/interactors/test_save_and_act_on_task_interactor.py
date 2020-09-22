@@ -6,7 +6,7 @@ import pytest
 from ib_tasks.exceptions.fields_custom_exceptions import \
     UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import \
-    DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs
+    DuplicateSameGoFOrderForAGoF
 from ib_tasks.interactors.create_or_update_task.save_and_act_on_task import \
     SaveAndActOnATaskInteractor
 from ib_tasks.tests.factories.interactor_dtos import \
@@ -89,7 +89,7 @@ class TestSaveAndActOnATaskInteractor:
 
     @pytest.fixture
     def task_template_storage_mock(self, mocker):
-        from ib_tasks.interactors.storage_interfaces\
+        from ib_tasks.interactors.storage_interfaces \
             .task_template_storage_interface import \
             TaskTemplateStorageInterface
         return mock.create_autospec(TaskTemplateStorageInterface)
@@ -826,57 +826,6 @@ class TestSaveAndActOnATaskInteractor:
         assert gof_id == given_gof_id
         assert invalid_field_ids == given_field_ids
 
-    def test_with_user_who_does_not_have_write_permission_to_a_gof(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock, update_task_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, action_storage_mock, task_stage_storage_mock,
-            task_template_storage_mock, presenter_mock, mock_object
-    ):
-        # Arrange
-        board_id = "board_1"
-        task_request_json = '{"key": "value"}'
-        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
-        given_user_id = "user_1"
-        given_gof_id = "gof_1"
-        given_required_roles = ["role_1", "role2"]
-        from ib_tasks.exceptions.permission_custom_exceptions import \
-            UserNeedsGoFWritablePermission
-        update_task_mock.side_effect = UserNeedsGoFWritablePermission(
-            given_user_id, given_gof_id, given_required_roles)
-        interactor = SaveAndActOnATaskInteractor(
-            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock, storage=storage_mock,
-            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
-            action_storage=action_storage_mock,
-            elastic_storage=elastic_storage_mock,
-            task_stage_storage=task_stage_storage_mock,
-            task_template_storage=task_template_storage_mock
-        )
-        presenter_mock.raise_user_needs_gof_writable_permission \
-            .return_value = \
-            mock_object
-
-        # Act
-        response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json, board_id=board_id)
-
-        # Assert
-        assert response == mock_object
-        presenter_mock.raise_user_needs_gof_writable_permission \
-            .assert_called_once()
-        call_args = \
-            presenter_mock.raise_user_needs_gof_writable_permission \
-                .call_args
-        error_object = call_args[0][0]
-        user_id = error_object.user_id
-        gof_id = error_object.gof_id
-        required_roles = error_object.required_roles
-
-        assert user_id == given_user_id
-        assert gof_id == given_gof_id
-        assert required_roles == given_required_roles
-
     def test_with_user_who_does_not_have_write_permission_to_a_field(
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock, update_task_mock,
@@ -927,47 +876,6 @@ class TestSaveAndActOnATaskInteractor:
         assert user_id == given_user_id
         assert field_id == given_field_id
         assert required_roles == given_required_roles
-
-    def test_with_unfilled_gofs_which_are_required_and_permitted_to_user(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock, update_task_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, action_storage_mock, task_stage_storage_mock,
-            task_template_storage_mock, presenter_mock, mock_object
-    ):
-        # Arrange
-        board_id = "board_1"
-        task_request_json = '{"key": "value"}'
-        given_gof_display_names = ["gof_display_name_1", "gof_display_name_2"]
-        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
-        update_task_mock.side_effect = UserDidNotFillRequiredGoFs(
-            given_gof_display_names)
-        interactor = SaveAndActOnATaskInteractor(
-            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock, storage=storage_mock,
-            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
-            action_storage=action_storage_mock,
-            elastic_storage=elastic_storage_mock,
-            task_stage_storage=task_stage_storage_mock,
-            task_template_storage=task_template_storage_mock
-        )
-        presenter_mock.raise_user_did_not_fill_required_gofs.return_value = \
-            mock_object
-
-        # Act
-        response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json, board_id=board_id)
-
-        # Assert
-        assert response == mock_object
-        presenter_mock.raise_user_did_not_fill_required_gofs \
-            .assert_called_once()
-        call_args = \
-            presenter_mock.raise_user_did_not_fill_required_gofs \
-                .call_args
-        error_object = call_args[0][0]
-        gof_display_names = error_object.gof_display_names
-        assert gof_display_names == given_gof_display_names
 
     def test_with_unfilled_fields_which_are_required_and_permitted_to_user(
             self, task_storage_mock, gof_storage_mock,
@@ -2150,7 +2058,7 @@ class TestSaveAndActOnATaskInteractor:
         assert response == mock_object
         presenter_mock.raise_user_action_permission_denied \
             .assert_called_once()
-        call_args = presenter_mock.raise_user_action_permission_denied.\
+        call_args = presenter_mock.raise_user_action_permission_denied. \
             call_args
         error_obj = call_args[0][0]
         action_id = error_obj.action_id
