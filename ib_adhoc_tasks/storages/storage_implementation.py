@@ -2,12 +2,26 @@ from typing import List
 
 from ib_adhoc_tasks.constants.enum import ViewType
 from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
-    GroupByResponseDTO, AddOrEditGroupByParameterDTO
+    GroupByResponseDTO, AddOrEditGroupByParameterDTO, GroupByDetailsDTO
 from ib_adhoc_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
 
 class StorageImplementation(StorageInterface):
+
+    def get_group_by_details_dtos(
+            self, user_id: str
+    ) -> List[GroupByDetailsDTO]:
+        from ib_adhoc_tasks.models import GroupByInfo
+        group_by_objects = GroupByInfo.objects.filter(user_id=user_id)
+        group_by_details_dtos = [
+            GroupByDetailsDTO(
+                group_by=group_by_object.group_by,
+                order=group_by_object.order
+            )
+            for group_by_object in group_by_objects
+        ]
+        return group_by_details_dtos
 
     def get_group_by_dtos(
             self, user_id: str, view_type: ViewType
@@ -66,3 +80,5 @@ class StorageImplementation(StorageInterface):
             group_by_id=group_by_info_object.id,
             order=group_by_info_object.order
         )
+
+

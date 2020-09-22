@@ -19,10 +19,10 @@ class TestCase01GetAdhocTasksForListViewAPITestCase(TestUtils):
         path_params = {}
         query_params = {
             'project_id': 'string',
-            'limit': 741,
-            'offset': 274,
+            'limit': 375,
+            'offset': 262,
             'group_limit': 10,
-            'group_offset': 258
+            'group_offset': 406
         }
         headers = {}
         response = self.make_api_call(body=body,

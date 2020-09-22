@@ -1,10 +1,9 @@
 import enum
 
 
-class ViewType(enum.Enum):
-    LIST = "LIST"
-    KANBAN = "KANBAN"
-import enum
+class GroupByEnum(enum.Enum):
+    STAGE = "STAGE"
+    ASSIGNEE = "ASSIGNEE"
 
 
 class GroupByType(enum.Enum):
@@ -26,4 +25,3 @@ class Priority(enum.Enum):
     HIGH = "HIGH"
     LOW = "LOW"
     MEDIUM = "MEDIUM"
-
