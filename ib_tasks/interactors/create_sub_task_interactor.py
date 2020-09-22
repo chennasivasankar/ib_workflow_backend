@@ -82,7 +82,7 @@ class CreateSubTaskInteractor:
         self.action_storage = action_storage
         self.elastic_storage = elastic_storage
 
-    def create_task_wrapper(
+    def create_sub_task_wrapper(
             self, presenter: CreateSubTaskPresenterInterface,
             task_dto: CreateSubTaskDTO, task_request_json: str
     ):

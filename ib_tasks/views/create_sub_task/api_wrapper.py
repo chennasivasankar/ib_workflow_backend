@@ -3,11 +3,13 @@ from typing import List, Dict
 
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
+
 from .validator_class import ValidatorClass
+from ...interactors.create_sub_task_interactor import CreateSubTaskInteractor
 from ...interactors.task_dtos import FieldValuesDTO, BasicTaskDetailsDTO, \
     CreateSubTaskDTO
-from ...presenters.create_task_presenter import \
-    CreateTaskPresenterImplementation
+from ...presenters.create_sub_task_presenter_implementation import \
+    CreateSubTaskPresenterImplementation
 from ...storages.action_storage_implementation import \
     ActionsStorageImplementation
 from ...storages.fields_storage_implementation import \
@@ -39,7 +41,7 @@ def api_wrapper(*args, **kwargs):
     request_data['due_datetime'] = str(request_data.get('due_datetime'))
     task_request_json = json.dumps(request_data)
 
-    from ib_tasks.interactors.task_dtos import GoFFieldsDTO, CreateTaskDTO
+    from ib_tasks.interactors.task_dtos import GoFFieldsDTO
 
     task_gofs_dtos = []
     for task_gof in task_gofs:
@@ -65,8 +67,6 @@ def api_wrapper(*args, **kwargs):
         import TasksStorageImplementation
     from ib_tasks.storages.create_or_update_task_storage_implementation \
         import CreateOrUpdateTaskStorageImplementation
-    from ib_tasks.interactors.create_or_update_task.create_task_interactor \
-        import CreateTaskInteractor
     from ib_tasks.storages.elasticsearch_storage_implementation \
         import ElasticSearchStorageImplementation
     task_storage = TasksStorageImplementation()
@@ -77,11 +77,11 @@ def api_wrapper(*args, **kwargs):
     gof_storage = GoFStorageImplementation()
     task_template_storage = TaskTemplateStorageImplementation()
     action_storage = ActionsStorageImplementation()
-    presenter = CreateTaskPresenterImplementation()
+    presenter = CreateSubTaskPresenterImplementation()
     elastic_storage = ElasticSearchStorageImplementation()
     task_stage_storage = TaskStageStorageImplementation()
 
-    interactor = CreateTaskInteractor(
+    interactor = CreateSubTaskInteractor(
         task_storage=task_storage,
         create_task_storage=create_task_storage,
         storage=storage, field_storage=field_storage,
@@ -89,10 +89,9 @@ def api_wrapper(*args, **kwargs):
         task_template_storage=task_template_storage,
         action_storage=action_storage,
         elastic_storage=elastic_storage,
-        task_stage_storage=task_stage_storage
-    )
+        task_stage_storage=task_stage_storage)
 
-    response = interactor.create_task_wrapper(
+    response = interactor.create_sub_task_wrapper(
         task_dto=task_dto, presenter=presenter,
         task_request_json=task_request_json)
     return response

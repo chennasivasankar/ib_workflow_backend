@@ -40,8 +40,8 @@ from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 class TasksStorageImplementation(TaskStorageInterface):
 
-    def add_sub_task(self, created_task_id: int, parent_task_id: int):
-        pass
+    def add_sub_task(self, sub_task_id: int, parent_task_id: int):
+        SubTask.objects.create(task_id=parent_task_id, sub_task_id=sub_task_id)
 
     def validate_task_display_id_and_return_task_id(
             self, task_display_id: str) -> Union[InvalidTaskDisplayId, int]:
