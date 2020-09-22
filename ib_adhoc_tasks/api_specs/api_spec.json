@@ -785,10 +785,7 @@
             "res_status": {
               "type": "string",
               "enum": [
-                "INVALID_OFFSET_VALUE",
-                "INVALID_LIMIT_VALUE",
-                "INVALID_GROUP_OFFSET_VALUE",
-                "INVALID_GROUP_LIMIT_VALUE"
+                "INVALID_OFFSET_OR_LIMIT_VALUE"
               ]
             }
           },

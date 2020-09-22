@@ -5,3 +5,7 @@ class InvalidTaskTemplateId(Exception):
 class InvalidProjectId(Exception):
     pass
 
+
+class InvalidOffsetOrLimitValue(Exception):
+    pass
+
