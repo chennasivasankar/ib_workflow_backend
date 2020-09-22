@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from elasticsearch_dsl import Q, Search, A
 
@@ -125,16 +125,16 @@ class ElasticStorageImplementation(ElasticStorageInterface):
 
         is_grouping_for_only_order_one = not is_grouping_for_order_two
         if is_grouping_for_only_order_one:
-            group_details_dtos, group_count_dtos = \
+            group_details_dtos, group_count_dto = \
                 self._prepare_group_details_dto_for_first_order_grouping(
                     query=query, search=search, group_agg=group_agg,
                     task_offset_and_limit_values_dto=task_offset_and_limit_values_dto,
                     group_by_order_one_dto=group_by_order_one_dto
                 )
-            return group_details_dtos, group_count_dtos, []
+            return group_details_dtos, group_count_dto, []
 
         if is_grouping_for_order_two:
-            group_details_dtos, group_count_dtos, child_group_count_dtos = \
+            group_details_dtos, group_count_dto, child_group_count_dtos = \
                 self._prepare_group_details_dto_for_second_order_grouping(
                     query=query, search=search, group_agg=group_agg,
                     child_agg=child_agg,
@@ -142,7 +142,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
                     group_by_order_one_dto=group_by_order_one_dto,
                     group_by_order_two_dto=group_by_order_two_dto
                 )
-            return group_details_dtos, group_count_dtos, child_group_count_dtos
+            return group_details_dtos, group_count_dto, child_group_count_dtos
         return
 
     @staticmethod
@@ -193,27 +193,17 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         search.aggs.bucket('groups', group_agg).bucket('tasks', tasks_data)
         response = search.execute()
 
-        from ib_adhoc_tasks.constants.enum import GroupByEnum
-        group_by_value = group_by_order_one_dto.group_by_value
-        is_group_by_value_is_not_field = not (
-                GroupByEnum.STAGE != group_by_value) and (
-                                                 GroupByEnum.STAGE != group_by_value)
+        total_groups_count = len(response.aggregations.groups.buckets)
 
         group_offset = group_by_order_one_dto.offset
         group_limit = group_by_order_one_dto.limit
         task_offset = task_offset_and_limit_values_dto.offset
         task_limit = task_offset_and_limit_values_dto.limit
 
-        group_count_dtos = []
         group_details_dtos = []
         for group in response.aggregations.groups.buckets[
                      group_offset: group_offset + group_limit]:
             task_ids = []
-            group_count_dto = GroupCountDTO(
-                group_by_value=group.key,
-                total_groups=group.doc_count
-            )
-            group_count_dtos.append(group_count_dto)
 
             for task in group.tasks[task_offset: task_offset + task_limit]:
                 task_ids.append(task.task_id)
@@ -226,7 +216,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
             group_details_dto.group_by_display_name = group.key
             group_details_dtos.append(group_details_dto)
 
-        return group_details_dtos, group_count_dtos
+        return group_details_dtos, total_groups_count
 
     @staticmethod
     def _prepare_group_details_dto_for_second_order_grouping(
@@ -240,17 +230,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
             'child_groups', child_agg
         ).bucket('tasks', tasks_data)
         response = search.execute()
-
-        from ib_adhoc_tasks.constants.enum import GroupByEnum
-        group_by_value = group_by_order_one_dto.group_by_value
-        is_group_by_value_is_not_field = not (
-                GroupByEnum.STAGE != group_by_value) and (
-                                                 GroupByEnum.STAGE != group_by_value)
-
-        child_group_by_value = group_by_order_two_dto.group_by_value
-        is_child_group_by_value_is_not_field = not (
-                GroupByEnum.STAGE != child_group_by_value) and (
-                                                       GroupByEnum.STAGE != child_group_by_value)
+        total_groups_count = len(response.aggregations.groups.buckets)
 
         task_offset = task_offset_and_limit_values_dto.offset
         task_limit = task_offset_and_limit_values_dto.limit
@@ -261,18 +241,11 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         child_group_offset = group_by_order_two_dto.offset
         child_group_limit = group_by_order_two_dto.limit
 
-        group_count_dtos = []
         child_group_count_dtos = []
 
         group_details_dtos = []
         for group in response.aggregations.groups.buckets[
                      group_offset: group_offset + group_limit]:
-
-            group_count_dto = GroupCountDTO(
-                group_by_value=group.key,
-                total_groups=group.doc_count
-            )
-            group_count_dtos.append(group_count_dto)
 
             for child_group in group.child_groups[
                                child_group_offset: child_group_offset + child_group_limit]:
@@ -300,4 +273,4 @@ class ElasticStorageImplementation(ElasticStorageInterface):
 
                 group_details_dtos.append(group_details_dto)
 
-        return group_details_dtos, group_count_dtos, child_group_count_dtos
+        return group_details_dtos, total_groups_count, child_group_count_dtos
