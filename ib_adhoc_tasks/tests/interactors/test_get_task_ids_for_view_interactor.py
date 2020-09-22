@@ -377,6 +377,7 @@ class TestGetTaskIdsForViewInteractor:
         adhoc_template_id = "ADHOC_TEMPLATE_ID"
         valid_project_ids = ["PROJECT_1"]
         stage_ids = ['STAGE_1', 'STAGE_2']
+        total_groups_count = 5
 
         from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO
         group_by_dtos = [
@@ -405,12 +406,12 @@ class TestGetTaskIdsForViewInteractor:
         get_stage_details_mock.return_value = stage_id_and_name_dtos
 
         expected_get_group_details_of_project_mock = \
-            prepare_group_details_dtos, prepare_group_count_dto, prepare_child_group_count_dtos
+            prepare_group_details_dtos, total_groups_count, prepare_child_group_count_dtos
         elastic_storage.get_group_details_of_project.return_value = \
             expected_get_group_details_of_project_mock
 
         # Act
-        group_details_dtos, group_count_dto, child_group_count_dtos = \
+        group_details_dtos, total_groups_count, child_group_count_dtos = \
             interactor.get_task_ids_for_view(
                 project_id=project_id, adhoc_template_id=adhoc_template_id,
                 group_by_dtos=group_by_dtos, user_id=user_id,
@@ -424,7 +425,7 @@ class TestGetTaskIdsForViewInteractor:
             task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
         )
         snapshot.assert_match(group_details_dtos, "group_details_dtos")
-        snapshot.assert_match(group_count_dto, "group_count_dto")
+        snapshot.assert_match(total_groups_count, "total_groups_count")
         snapshot.assert_match(child_group_count_dtos, "child_group_count_dtos")
 
     @pytest.fixture()

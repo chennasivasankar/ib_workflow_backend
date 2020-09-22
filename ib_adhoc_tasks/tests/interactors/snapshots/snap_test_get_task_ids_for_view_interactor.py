@@ -15,7 +15,7 @@ snapshots['TestGetTaskIdsForViewInteractor.test_with_valid_details_return_respon
     GenericRepr("GroupDetailsDTO(task_ids=[25], total_tasks=1, group_by_value='sfsdfsd', group_by_display_name='sfsdfsd', child_group_by_value='PR_PAYMENT_REQUEST_DRAFTS', child_group_by_display_name='Payment Request Drafts')")
 ]
 
-snapshots['TestGetTaskIdsForViewInteractor.test_with_valid_details_return_response group_count_dto'] = GenericRepr("GroupCountDTO(group_by_value='FIN_PURPOSE_OF_THE_ORDER', total_groups=5)")
+snapshots['TestGetTaskIdsForViewInteractor.test_with_valid_details_return_response total_groups_count'] = 5
 
 snapshots['TestGetTaskIdsForViewInteractor.test_with_valid_details_return_response child_group_count_dtos'] = [
     GenericRepr("ChildGroupCountDTO(child_group_by_value='PR_PAYMENT_REQUEST_DRAFTS', total_child_groups=1)"),
