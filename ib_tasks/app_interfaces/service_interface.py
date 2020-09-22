@@ -3,12 +3,11 @@ from typing import List
 from ib_tasks.constants.enum import ViewType
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
-from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO, \
-    StageIdAndNameDTO
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO, TaskStagesDTO
+    GetTaskStageCompleteDetailsDTO, TaskStagesDTO, StageDetailsDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
     TaskDetailsConfigDTO
 from ib_tasks.storages.action_storage_implementation import \
@@ -142,7 +141,7 @@ class ServiceInterface:
         )
 
     @staticmethod
-    def get_stage_details(stage_ids: List[str]) -> List[StageIdAndNameDTO]:
+    def get_stage_details(stage_ids: List[str]) -> List[StageDetailsDTO]:
         from ib_tasks.storages.storage_implementation import \
             StagesStorageImplementation
         storage = StagesStorageImplementation()

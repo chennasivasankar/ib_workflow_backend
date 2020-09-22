@@ -7,13 +7,6 @@ from ib_tasks.tests.factories.storage_dtos import StageDetailsDTOFactory
 class TestGetStageDetails:
 
     @pytest.fixture
-    def stage_details_dtos(self):
-        from ib_tasks.tests.factories.interactor_dtos import \
-            StageIDAndNameDTOFactory
-        StageIDAndNameDTOFactory.reset_sequence()
-        return StageIDAndNameDTOFactory.create_batch(size=2)
-
-    @pytest.fixture
     def storage_stage_details_dtos(self):
         StageDetailsDTOFactory.reset_sequence()
         return StageDetailsDTOFactory.create_batch(2)
@@ -32,11 +25,11 @@ class TestGetStageDetails:
         return interactor
 
     def test_get_stage_details_given_stage_ids(
-            self, storage_mock, stage_details_dtos, interactor_mock,
+            self, storage_mock, interactor_mock,
             storage_stage_details_dtos):
         # Arrange
         stage_ids = ["stage_id_0", "stage_id_1"]
-        expected_output = stage_details_dtos
+        expected_output = storage_stage_details_dtos
         storage_mock.get_valid_stage_ids_in_given_stage_ids.return_value = \
             stage_ids
         storage_mock.get_stage_detail_dtos_given_stage_ids.return_value = \

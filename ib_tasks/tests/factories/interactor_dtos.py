@@ -11,7 +11,7 @@ from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
-    TaskStageAssigneeDetailsDTO, StageIdAndNameDTO
+    TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
     UserStagesWithPaginationDTO, StageAssigneeDTO, \
@@ -74,14 +74,6 @@ class GetTaskDueDetailsDTOFactory(factory.Factory):
     due_date_time = datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S.%z")
     due_missed_count = factory.Sequence(lambda n: n)
     reason = factory.Sequence(lambda n: "reason_id_%d" % n)
-
-
-class StageIDAndNameDTOFactory(factory.Factory):
-    class Meta:
-        model = StageIdAndNameDTO
-
-    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % n)
-    name = factory.Sequence(lambda n: 'name_%d' % n)
 
 
 class StageActionDTOFactory(factory.Factory):
