@@ -20,12 +20,15 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO, StatusVariableDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
-    TaskDisplayIdDTO, TaskProjectDTO, TaskDueMissingDTO, SubTasksCountDTO, SubTasksIdsDTO
+    TaskDisplayIdDTO, TaskProjectDTO, TaskDueMissingDTO, SubTasksCountDTO, \
+    SubTasksIdsDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
-from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO, TaskDelayParametersDTO
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, \
+    GetTaskDetailsDTO, \
+    TaskDelayParametersDTO
 from ib_tasks.models import Stage, TaskTemplate, CurrentTaskStage, \
     TaskTemplateStatusVariable, TaskStageHistory, TaskStatusVariable, SubTask
 from ib_tasks.models.field import Field
@@ -308,6 +311,13 @@ class TasksStorageImplementation(TaskStorageInterface):
                 .values_list('id', flat=True))
         return list(valid_task_ids)
 
+    def get_valid_task_display_ids(self, task_display_ids: List[str]) -> \
+            Optional[List[str]]:
+        valid_task_ids = (
+            Task.objects.filter(task_display_id__in=task_display_ids)
+                .values_list('task_display_id', flat=True))
+        return list(valid_task_ids)
+
     @staticmethod
     def _convert_task_templates_objs_to_dtos(
             task_template_objs: List[TaskTemplate]) -> List[TemplateDTO]:
@@ -529,6 +539,20 @@ class TasksStorageImplementation(TaskStorageInterface):
         TaskDisplayIdDTO]:
         task_ids = Task.objects.filter(
             id__in=task_ids
+        ).values('id', 'task_display_id')
+
+        return [
+            TaskDisplayIdDTO(
+                task_id=task_id['id'],
+                display_id=task_id['task_display_id']
+            )
+            for task_id in task_ids
+        ]
+
+    def get_task_ids_given_task_display_ids(self, task_display_ids: List[
+        str]) -> List[TaskDisplayIdDTO]:
+        task_ids = Task.objects.filter(
+            task_display_id__in=task_display_ids
         ).values('id', 'task_display_id')
 
         return [
