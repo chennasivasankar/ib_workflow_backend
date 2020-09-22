@@ -167,7 +167,6 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
             q = q | current_queue
         if q is None:
             return []
-        q = q & Q(assignee_id__isnull=False)
         task_stage_objects = TaskStageHistory.objects.filter(
             q, left_at=None).values('task_id', 'stage__stage_id',
                                     'assignee_id', 'team_id')
