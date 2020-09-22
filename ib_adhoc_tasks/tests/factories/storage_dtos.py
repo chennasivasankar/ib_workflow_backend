@@ -58,3 +58,4 @@ class GroupDetailsDTOFactory(factory.Factory):
         lambda counter: "value_{}".format(counter))
     child_group_by_display_name = factory.Sequence(
         lambda counter: "display_name_{}".format(counter))
+
