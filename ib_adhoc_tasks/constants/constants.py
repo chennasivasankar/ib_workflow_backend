@@ -1,5 +1,7 @@
-from ib_adhoc_tasks.constants.enum import ViewType
+from ib_adhoc_tasks.constants.enum import ViewType, GroupByType
 
 View_Types = [(item.value, item.value) for item in ViewType]
-ADHOC_TEMPLATE_ID = "Adhoc Template"
+group_by_types = [(item.value, item.value) for item in GroupByType]
+group_by_types_list = [item.value for item in GroupByType]
+ADHOC_TEMPLATE_ID = "FIN_PR"
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"

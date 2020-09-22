@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from dataclasses import dataclass
 from typing import List, Optional
 
 from ib_adhoc_tasks.adapters.dtos import TasksDetailsInputDTO, \
@@ -62,6 +61,19 @@ class TaskService:
             for stage_details_dto in stage_details_dtos
         ]
         return stage_id_and_name_dtos
+
+    @staticmethod
+    def get_field_display_name(
+            field_id: str, user_id: str, project_id: str
+    ) -> str:
+        from ib_tasks.app_interfaces.service_interface import ServiceInterface
+        service = ServiceInterface()
+        field_display_name_dtos = service.get_field_display_names(
+            field_ids=[field_id], user_id=user_id, project_id=project_id
+        )
+        field_display_name = field_display_name_dtos[0].field_display_name
+        return field_display_name
+
     def get_task_complete_details_dto(
             self, task_details_input_dto: TasksDetailsInputDTO
     ) -> TasksCompleteDetailsDTO:

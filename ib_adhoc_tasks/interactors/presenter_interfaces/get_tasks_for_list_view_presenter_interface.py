@@ -15,7 +15,8 @@ class GetTasksForListViewPresenterInterface(abc.ABC):
     def get_task_details_group_by_info_response(
             self,
             group_details_dtos: List[GroupDetailsDTO],
-            task_details_dto: TasksCompleteDetailsDTO
+            task_details_dto: TasksCompleteDetailsDTO,
+            total_groups_count: int
     ):
         pass
 

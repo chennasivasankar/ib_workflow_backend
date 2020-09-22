@@ -303,7 +303,6 @@
         "task_overview_fields",
         "stage_with_actions",
         "title",
-        "description",
         "start_date",
         "due_date",
         "priority"
@@ -743,7 +742,7 @@
             "KANBAN"
           ]
         },
-        "group_by_display_name": {
+        "group_by_key": {
           "type": "string"
         },
         "order": {
@@ -752,7 +751,7 @@
       },
       "required": [
         "view_type",
-        "group_by_display_name"
+        "group_by_key"
       ]
     },
     "GroupByResponseFields": {
@@ -761,7 +760,10 @@
         "group_by_id": {
           "type": "integer"
         },
-        "group_by_display_name": {
+        "group_by_key": {
+          "type": "string"
+        },
+        "display_name": {
           "type": "string"
         },
         "order": {
@@ -770,7 +772,8 @@
       },
       "required": [
         "group_by_id",
-        "group_by_display_name",
+        "group_by_key",
+        "display_name",
         "order"
       ]
     },
@@ -1090,6 +1093,30 @@
       "description": "project id value",
       "type": "string",
       "required": true
+    },
+    "GetSubTasksParameter": {
+      "name": "get_subtasks_parameter",
+      "in": "body",
+      "description": "get subtasks of task parameter",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string"
+          },
+          "view_type": {
+            "type": "string",
+            "enum": [
+              "LIST",
+              "KANBAN"
+            ]
+          }
+        },
+        "required": [
+          "task_id",
+          "view_type"
+        ]
+      }
     }
   },
   "responses": {
@@ -1369,6 +1396,31 @@
       "schema": {
         "$ref": "#/definitions/InvalidPaginationDetails"
       }
+    },
+    "NotFoundRequestForGetSubTasksResponse": {
+      "description": "not found response for get sub tasks response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_TASK_ID",
+                  "USER_NOT_EXISTS_IN_PROJECT"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
     }
   },
   "paths": {
@@ -1561,6 +1613,41 @@
           },
           "404": {
             "$ref": "#/responses/NotFoundRequestForGetGroupResponse"
+          }
+        }
+      }
+    },
+    "/projects/adhoc_board/groups/task/subtasks/v1/": {
+      "post": {
+        "summary": "Get sub tasks of a task",
+        "operationId": "get_subtasks_of_task",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/GetSubTasksParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTasksOfProjectByGroupIds"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundRequestForGetSubTasksResponse"
+          },
+          "400": {
+            "$ref": "#/responses/InvalidPaginationResponse"
           }
         }
       }

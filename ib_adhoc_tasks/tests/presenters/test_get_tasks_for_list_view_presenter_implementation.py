@@ -156,10 +156,13 @@ class TestGetTasksForListViewPresenterImplementation:
             snapshot
     ):
         # Arrange
+        total_groups_count = 3
 
         # Act
         response = presenter.get_task_details_group_by_info_response(
-            group_details_dtos, task_complete_details_dto
+            group_details_dtos=group_details_dtos,
+            task_details_dto=task_complete_details_dto,
+            total_groups_count=total_groups_count
         )
 
         # Arrange

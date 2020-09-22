@@ -5,8 +5,7 @@ from ib_tasks.interactors.dtos.dtos import TasksDetailsInputDTO
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
 from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldDisplayNameDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO, TaskStagesDTO, StageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import SubTasksCountDTO, \
@@ -140,6 +139,19 @@ class ServiceInterface:
             field_ids=field_ids,
             project_id=project_id
         )
+
+    @staticmethod
+    def get_user_permitted_stage_ids(
+            user_roles: List[str]
+    ) -> List[str]:
+        from ib_tasks.interactors.get_user_permitted_stage_ids \
+            import GetUserPermittedStageIds
+        stage_storage = StagesStorageImplementation()
+        interactor = GetUserPermittedStageIds(stage_storage=stage_storage)
+        stage_ids = interactor.get_permitted_stage_ids_to_user_role_ids(
+            user_roles=user_roles
+        )
+        return stage_ids
 
     @staticmethod
     def get_stage_details(stage_ids: List[str]) -> List[StageDetailsDTO]:

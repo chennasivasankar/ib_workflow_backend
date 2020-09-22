@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 
 from ib_adhoc_tasks.adapters.dtos import TasksCompleteDetailsDTO, \
     TasksDetailsInputDTO
@@ -55,11 +55,11 @@ class GetTasksForListViewInteractor:
             self, group_by_info_list_view_dto: GroupByInfoListViewDTO,
             presenter: GetTasksForListViewPresenterInterface
     ):
-        group_details_dtos, task_details_dto = self.get_tasks_for_list_view(
-            group_by_info_list_view_dto)
+        group_details_dtos, task_details_dto, total_groups_count = \
+            self.get_tasks_for_list_view(group_by_info_list_view_dto)
 
         response = presenter.get_task_details_group_by_info_response(
-            group_details_dtos, task_details_dto)
+            group_details_dtos, task_details_dto, total_groups_count)
         return response
 
     def get_tasks_for_list_view(
@@ -68,7 +68,7 @@ class GetTasksForListViewInteractor:
         project_id = group_by_info_list_view_dto.project_id
         self._validate_limit_offset_values(group_by_info_list_view_dto)
         self._validate_project_id(project_id)
-        group_details_dtos = self._get_group_details_dtos(
+        group_details_dtos, total_groups_count = self._get_group_details_dtos(
             group_by_info_list_view_dto)
         task_ids = self._get_task_ids(group_details_dtos)
         user_id = group_by_info_list_view_dto.user_id
@@ -79,7 +79,7 @@ class GetTasksForListViewInteractor:
             view_type=ViewType.LIST.value
         )
         task_details_dto = self._get_task_details_dto(task_details_input_dto)
-        return group_details_dtos, task_details_dto
+        return group_details_dtos, task_details_dto, total_groups_count
 
     @staticmethod
     def _validate_limit_offset_values(
@@ -124,7 +124,7 @@ class GetTasksForListViewInteractor:
     def _get_group_details_dtos(
             self,
             group_by_info_list_view_dto: GroupByInfoListViewDTO
-    ) -> List[GroupDetailsDTO]:
+    ) -> (List[GroupDetailsDTO], int):
         user_id = group_by_info_list_view_dto.user_id
         project_id = group_by_info_list_view_dto.project_id
         group_by_details_dtos = self.storage.get_group_by_details_dtos(user_id)
@@ -145,14 +145,14 @@ class GetTasksForListViewInteractor:
             GetTaskIdsForViewInteractor
         interactor = GetTaskIdsForViewInteractor(
             elastic_storage=self.elastic_storage)
-        group_details_dtos = \
+        group_details_dtos, total_groups_count, child_group_count_dtos = \
             interactor.get_task_ids_for_view(
                 project_id=project_id, adhoc_template_id=adhoc_template_id,
                 group_by_dtos=group_by_dtos, user_id=user_id,
                 task_offset_and_limit_values_dto
                 =task_offset_and_limit_values_dto
             )
-        return group_details_dtos
+        return group_details_dtos, total_groups_count
 
     @staticmethod
     def _get_group_by_dtos(

@@ -2,7 +2,7 @@ from typing import List
 
 from ib_adhoc_tasks.adapters.dtos import TasksCompleteDetailsDTO
 from ib_adhoc_tasks.exceptions.custom_exceptions import InvalidProjectId
-from ib_adhoc_tasks.interactors.dtos import GroupByInfoKanbanViewDTO, \
+from ib_adhoc_tasks.interactors.dtos.dtos import GroupByInfoKanbanViewDTO, \
     OffsetLimitDTO, GroupByDTO, TaskOffsetAndLimitValuesDTO
 from ib_adhoc_tasks.interactors.presenter_interfaces \
     .get_tasks_for_kanban_view_presenter_interface import \

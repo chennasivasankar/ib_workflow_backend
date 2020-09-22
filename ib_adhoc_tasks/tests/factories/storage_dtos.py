@@ -1,10 +1,9 @@
 import factory
-from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
-    GroupByDetailsDTO, GroupDetailsDTO
 
 from ib_adhoc_tasks.constants.enum import ViewType
 from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
-    GroupByResponseDTO, AddOrEditGroupByParameterDTO
+    GroupByDetailsDTO, GroupDetailsDTO, GroupByResponseDTO, \
+    AddOrEditGroupByParameterDTO
 
 
 class GroupByResponseDTOFactory(factory.Factory):
@@ -12,9 +11,8 @@ class GroupByResponseDTOFactory(factory.Factory):
         model = GroupByResponseDTO
 
     group_by_id = factory.sequence(lambda number: number)
-    group_by_display_name = factory.Iterator([
-        "ASSIGNEE", "STAGE"
-    ])
+    group_by_key = factory.Iterator(["ASSIGNEE", "STAGE"])
+    display_name = factory.Iterator(["ASSIGNEE", "STAGE"])
     order = factory.Iterator([1, 2])
 
 
@@ -27,9 +25,7 @@ class AddOrEditGroupByParameterDTOFactory(factory.Factory):
     view_type = factory.Iterator([
         ViewType.LIST.value, ViewType.KANBAN.value
     ])
-    group_by_display_name = factory.Iterator([
-        "ASSIGNEE", "STAGE"
-    ])
+    group_by_key = factory.Iterator(["ASSIGNEE", "STAGE"])
     order = factory.Iterator([1, 2])
     group_by_id = factory.sequence(lambda number: number)
 
@@ -58,4 +54,3 @@ class GroupDetailsDTOFactory(factory.Factory):
         lambda counter: "value_{}".format(counter))
     child_group_by_display_name = factory.Sequence(
         lambda counter: "display_name_{}".format(counter))
-

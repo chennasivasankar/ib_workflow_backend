@@ -3,7 +3,7 @@ from unittest.mock import patch, Mock
 import pytest
 
 from ib_adhoc_tasks.adapters.iam_service import IamService
-from ib_adhoc_tasks.adapters.tasks_service import TasksService
+from ib_adhoc_tasks.adapters.task_service import TaskService
 from ib_adhoc_tasks.interactors.get_task_ids_for_view_interactor import \
     GetTaskIdsForViewInteractor
 from ib_adhoc_tasks.interactors.get_tasks_for_kanban_view import \
@@ -108,34 +108,34 @@ class TestGetTasksForKanbanViewInteractor:
     #     # Assert
     #     valid_project_id_mock.assert_called_once()
 
-    @patch.object(TasksService, "get_task_details_dtos")
-    @patch.object(GetTaskIdsForViewInteractor, "get_task_ids_for_view")
-    def test_given_valid_details_when_selected_two_group_by_options_return_group_details_dtos(
-            self, get_task_ids_mock, task_details_mock,
-            group_by_info_kanban_view_dto,
-            presenter_mock, mocker, group_details_dtos,
-            storage_mock, elastic_storage_mock,
-            group_by_details_dto_when_selected_two_options
-    ):
-        # Arrange
-        user_id = group_by_info_kanban_view_dto.user_id
-        from ib_adhoc_tasks.tests.common_fixtures.adapters import \
-            validate_project_ids_for_kanban_view_mock
-        validate_project_ids_for_kanban_view_mock(
-            mocker)
-        get_task_ids_mock.return_value = group_details_dtos
-        storage_mock.get_group_by_details_dtos.return_value = \
-            group_by_details_dto_when_selected_two_options
-        interactor = GetTasksForKanbanViewInteractor(
-            storage=storage_mock,
-            elastic_storage=elastic_storage_mock
-        )
-
-        # Act
-        interactor.get_tasks_for_kanban_view_wrapper(
-            group_by_info_kanban_view_dto=group_by_info_kanban_view_dto,
-            presenter=presenter_mock
-        )
-
-        # Assert
-        storage_mock.get_group_by_details_dtos.assert_called_once_with(user_id)
+    # @patch.object(TasksService, "get_task_details_dtos")
+    # @patch.object(GetTaskIdsForViewInteractor, "get_task_ids_for_view")
+    # def test_given_valid_details_when_selected_two_group_by_options_return_group_details_dtos(
+    #         self, get_task_ids_mock, task_details_mock,
+    #         group_by_info_kanban_view_dto,
+    #         presenter_mock, mocker, group_details_dtos,
+    #         storage_mock, elastic_storage_mock,
+    #         group_by_details_dto_when_selected_two_options
+    # ):
+    #     # Arrange
+    #     user_id = group_by_info_kanban_view_dto.user_id
+    #     from ib_adhoc_tasks.tests.common_fixtures.adapters import \
+    #         validate_project_ids_for_kanban_view_mock
+    #     validate_project_ids_for_kanban_view_mock(
+    #         mocker)
+    #     get_task_ids_mock.return_value = group_details_dtos
+    #     storage_mock.get_group_by_details_dtos.return_value = \
+    #         group_by_details_dto_when_selected_two_options
+    #     interactor = GetTasksForKanbanViewInteractor(
+    #         storage=storage_mock,
+    #         elastic_storage=elastic_storage_mock
+    #     )
+    #
+    #     # Act
+    #     interactor.get_tasks_for_kanban_view_wrapper(
+    #         group_by_info_kanban_view_dto=group_by_info_kanban_view_dto,
+    #         presenter=presenter_mock
+    #     )
+    #
+    #     # Assert
+    #     storage_mock.get_group_by_details_dtos.assert_called_once_with(user_id)

@@ -90,7 +90,8 @@ class GetTasksForListViewPresenterImplementation(
     def get_task_details_group_by_info_response(
             self,
             group_details_dtos: List[GroupDetailsDTO],
-            task_details_dto: TasksCompleteDetailsDTO
+            task_details_dto: TasksCompleteDetailsDTO,
+            total_groups_count: int
     ):
         groups = []
         for group_details_dto in group_details_dtos:
@@ -105,10 +106,8 @@ class GetTasksForListViewPresenterImplementation(
                 "tasks": tasks
             }
             groups.append(each_group_details)
-
-        total_groups = len(group_details_dtos)
         all_group_details = {
-            "total_groups": total_groups,
+            "total_groups": total_groups_count,
             "groups": groups
         }
         response_object = self.prepare_200_success_response(

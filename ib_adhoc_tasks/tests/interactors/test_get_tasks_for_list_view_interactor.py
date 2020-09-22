@@ -244,7 +244,10 @@ class TestGetTasksForListViewInteractor:
             validate_project_ids_for_kanban_view_mock
         validate_project_ids_for_kanban_view_mock(
             mocker)
-        group_details_mock.return_value = group_details_dtos
+        total_groups_count = 3
+        child_group_count_dtos = []
+        group_details_mock.return_value = \
+            group_details_dtos, total_groups_count, child_group_count_dtos
         task_details_mock.return_value = task_details_dtos
         interactor = GetTasksForListViewInteractor(
             storage=storage_mock,
@@ -266,4 +269,6 @@ class TestGetTasksForListViewInteractor:
         assert response == mock_object
         storage_mock.get_group_by_details_dtos.assert_called_once_with(user_id)
         presenter_mock.get_task_details_group_by_info_response \
-            .assert_called_once_with(group_details_dtos, task_details_dtos)
+            .assert_called_once_with(
+                group_details_dtos, task_details_dtos, total_groups_count
+            )
