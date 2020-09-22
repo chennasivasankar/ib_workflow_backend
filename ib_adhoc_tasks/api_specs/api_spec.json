@@ -814,6 +814,7 @@
         "type": "object",
         "properties": {
           "group_by_values": {
+            "type": "array",
             "items": {
               "type": "string"
             }
