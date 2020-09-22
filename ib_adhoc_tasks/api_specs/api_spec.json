@@ -761,6 +761,9 @@
         "group_by_id": {
           "type": "integer"
         },
+        "group_by_field_id": {
+          "type": "string"
+        },
         "group_by_display_name": {
           "type": "string"
         },
@@ -770,6 +773,7 @@
       },
       "required": [
         "group_by_id",
+        "group_by_field_id",
         "group_by_display_name",
         "order"
       ]
