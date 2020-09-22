@@ -1,25 +1,28 @@
 from typing import List
 
 from ib_tasks.constants.enum import ViewType
+from ib_tasks.interactors.dtos.dtos import TasksDetailsInputDTO
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
 from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldDisplayNameDTO
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO, TaskStagesDTO
+    GetTaskStageCompleteDetailsDTO, TaskStagesDTO, StageDetailsDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import SubTasksCountDTO, \
+    SubTasksIdsDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
     TaskDetailsConfigDTO
+from ib_tasks.interactors.task_stage_dtos import TasksCompleteDetailsDTO
 from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
-# class TaskDetailsServiceInterface:
-#
-#     @staticmethod
-#     def get_task_details(task_dtos: List[GetTaskDetailsDTO]):
-#         storage = TasksStorageImplementation()
-#         interactor = GetTaskFieldsAndActionsInteractor(storage)
-#         result = interactor.get_task_fields_and_action(task_dtos)
-#         return result
+from ib_tasks.storages.fields_storage_implementation import \
+    FieldsStorageImplementation
 from ib_tasks.storages.storage_implementation import StagesStorageImplementation
+from ib_tasks.storages.task_stage_storage_implementation import \
+    TaskStageStorageImplementation
 from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
 
@@ -76,25 +79,30 @@ class ServiceInterface:
             action_storage=action_storage,
             task_storage=task_storage,
         )
-        result = interactor.get_task_fields_and_action(task_dtos, user_id, view_type)
+        result = interactor.get_task_fields_and_action(task_dtos, user_id,
+                                                       view_type)
         return result
 
     @staticmethod
     def get_assignees_for_task_stages(
-            task_stage_dtos: List[GetTaskDetailsDTO]) -> List[TaskStageAssigneeDetailsDTO]:
-        from ib_tasks.interactors.get_stages_assignees_details_interactor import \
+            task_stage_dtos: List[GetTaskDetailsDTO]) -> List[
+        TaskStageAssigneeDetailsDTO]:
+        from ib_tasks.interactors.get_stages_assignees_details_interactor \
+            import \
             GetStagesAssigneesDetailsInteractor
         from ib_tasks.storages.task_stage_storage_implementation import \
             TaskStageStorageImplementation
         assignees_interactor = GetStagesAssigneesDetailsInteractor(
             task_stage_storage=TaskStageStorageImplementation()
         )
-        return assignees_interactor.get_stages_assignee_details_by_given_task_ids(
-            task_stage_dtos=task_stage_dtos
-        )
+        return \
+            assignees_interactor.get_stages_assignee_details_by_given_task_ids(
+                task_stage_dtos=task_stage_dtos
+            )
 
     @staticmethod
-    def validate_stage_ids_with_template_id(template_stages: List[TaskStagesDTO]):
+    def validate_stage_ids_with_template_id(
+            template_stages: List[TaskStagesDTO]):
         from ib_tasks.interactors.basic_validations_interactor import \
             BasicValidationsInteractor
         from ib_tasks.storages.storage_implementation import \
@@ -147,3 +155,56 @@ class ServiceInterface:
             user_roles=user_roles
         )
         return stage_ids
+
+    @staticmethod
+    def get_stage_details(stage_ids: List[str]) -> List[StageDetailsDTO]:
+        from ib_tasks.storages.storage_implementation import \
+            StagesStorageImplementation
+        storage = StagesStorageImplementation()
+        from ib_tasks.interactors.get_stage_details import GetStageDetails
+        interactor = GetStageDetails(storage)
+        stage_details_dtos = interactor.get_stage_details(stage_ids=stage_ids)
+        return stage_details_dtos
+
+    @staticmethod
+    def get_tasks_complete_details(
+            input_dto: TasksDetailsInputDTO
+    ) -> TasksCompleteDetailsDTO:
+        from ib_tasks.interactors.get_tasks_complete_details_interactor \
+            import GetTasksCompleteDetailsInteractor
+        task_storage = TasksStorageImplementation()
+        action_storage = ActionsStorageImplementation()
+        task_stage_storage = TaskStageStorageImplementation()
+        stage_storage = StagesStorageImplementation()
+        field_storage = FieldsStorageImplementation()
+        interactor = GetTasksCompleteDetailsInteractor(
+            task_storage=task_storage,
+            action_storage=action_storage,
+            stage_storage=stage_storage,
+            field_storage=field_storage,
+            task_stage_storage=task_stage_storage
+        )
+        response = interactor.get_tasks_complete_details(input_dto=input_dto)
+        return response
+
+    @staticmethod
+    def get_sub_tasks_count_task_ids(task_ids: List[int]) -> \
+            List[SubTasksCountDTO]:
+        task_storage = TasksStorageImplementation()
+        from ib_tasks.interactors.sub_tasks_interactor import SubTasksInteractor
+        interactor = SubTasksInteractor(task_storage=task_storage)
+        sub_tasks_count_dtos = interactor.get_sub_tasks_count_task_ids(
+            task_ids=task_ids
+        )
+        return sub_tasks_count_dtos
+
+    @staticmethod
+    def get_sub_task_ids_to_task_ids(task_ids: List[int]) -> \
+            List[SubTasksIdsDTO]:
+        task_storage = TasksStorageImplementation()
+        from ib_tasks.interactors.sub_tasks_interactor import SubTasksInteractor
+        interactor = SubTasksInteractor(task_storage=task_storage)
+        task_id_with_sub_task_ids_dtos = interactor.get_sub_task_ids_to_task_ids(
+            task_ids=task_ids
+        )
+        return task_id_with_sub_task_ids_dtos

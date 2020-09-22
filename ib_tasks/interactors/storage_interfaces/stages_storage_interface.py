@@ -6,7 +6,8 @@ from ib_tasks.interactors.stage_dtos import DBStageIdWithGoFIdsDTO, \
 from ib_tasks.interactors.stages_dtos import StageDTO, \
     TaskIdWithStageAssigneeDTO, StageAssigneeDTO, StageMinimalDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionRolesDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO, \
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    StageDetailsDTO, \
     StageFlowDTO, StageIdWithValueDTO, StageFlowWithActionIdDTO, \
     StageIdWithTemplateIdDTO, StageIdWithGoFIdDTO, StageDisplayValueDTO, \
     StageValueDTO
