@@ -211,6 +211,7 @@ class GetStagesAssigneesDetailsInteractor:
         assignee_ids = [
             stage_assignee_dto.assignee_id
             for stage_assignee_dto in stage_assignee_dtos
+            if stage_assignee_dto.assignee_id
         ]
         return list(set(assignee_ids))
 

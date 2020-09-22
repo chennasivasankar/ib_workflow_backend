@@ -303,7 +303,6 @@
         "task_overview_fields",
         "stage_with_actions",
         "title",
-        "description",
         "start_date",
         "due_date",
         "priority"
@@ -805,10 +804,7 @@
             "res_status": {
               "type": "string",
               "enum": [
-                "INVALID_OFFSET_VALUE",
-                "INVALID_LIMIT_VALUE",
-                "INVALID_GROUP_OFFSET_VALUE",
-                "INVALID_GROUP_LIMIT_VALUE"
+                "INVALID_OFFSET_OR_LIMIT_VALUE"
               ]
             }
           },
