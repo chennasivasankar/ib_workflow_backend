@@ -65,7 +65,7 @@
                "type":"string",
                "enum":[
                   "INVALID_ACTION_ID",
-                  "INVALID_TASK_DISPLAY_ID",
+                  "INVALID_TASK_ID",
                   "INVALID_BOARD_ID",
                   "TASK_DELAY_REASON_IS_NOT_ADDED"
                ]
@@ -1462,6 +1462,25 @@
             "stages_history"
          ]
       },
+      "SaveAndActOnATaskTaskNotAuthorisedResponseBody": {
+         "type":"object",
+         "properties":{
+            "response":{
+               "type":"string"
+            },
+            "http_status_code":{
+               "type":"integer"
+            },
+            "res_status":{
+               "type":"string"
+            }
+         },
+         "required":[
+            "response",
+            "http_status_code",
+            "res_status"
+         ]
+      },
       "NextStageAssigneesRequestBody":{
          "type":"object",
          "properties":{
@@ -2442,10 +2461,7 @@
                "tasks":{
                   "type":"array",
                   "items":{
-                     "$ref":"#/definitions/TaskOverviewWithStageAndActions",
-                     "required":[
-                        "tasks"
-                     ]
+                     "$ref":"#/definitions/TaskOverviewWithStageAndActions"
                   }
                },
                "total_tasks":{
@@ -2993,6 +3009,12 @@
          "schema":{
             "$ref":"#/definitions/TaskStagesCompleteResponseBody"
          }
+      },
+      "SaveAndActOnATaskTaskNotAuthorisedResponse": {
+         "description":"Not Authorised",
+         "schema":{
+            "$ref":"#/definitions/SaveAndActOnATaskTaskNotAuthorisedResponseBody"
+         }
       }
    },
    "paths":{
@@ -3317,6 +3339,9 @@
                },
                "400":{
                   "$ref":"#/responses/SaveAndActOnATaskTaskFailureResponse"
+               },
+               "403":{
+                  "$ref":"#/responses/SaveAndActOnATaskTaskNotAuthorisedResponse"
                }
             }
          }

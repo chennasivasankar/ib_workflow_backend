@@ -1,5 +1,5 @@
 """
-test with invalid stage ids list
+test with valid details
 """
 
 import pytest
@@ -9,15 +9,16 @@ from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 from ib_tasks.tests.common_fixtures.adapters.auth_service import \
     get_projects_info_for_given_ids_mock, get_valid_project_ids_mock, \
     validate_if_user_is_in_project_mock
+from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
     TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, \
     GoFRoleFactory, FieldRoleFactory, StageFactory, StagePermittedRolesFactory, \
-    ProjectTaskTemplateFactory
+    ProjectTaskTemplateFactory, CurrentTaskStageModelFactory, StageGoFFactory
 from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase41UpdateTaskAPITestCase(TestUtils):
+class TestCase42UpdateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -36,9 +37,19 @@ class TestCase41UpdateTaskAPITestCase(TestUtils):
         StageFactory.reset_sequence()
         StagePermittedRolesFactory.reset_sequence()
         ProjectTaskTemplateFactory.reset_sequence()
+        StageGoFFactory.reset_sequence()
+        CurrentTaskStageModelFactory.reset_sequence()
+        AssigneeDetailsDTOFactory.reset_sequence()
+
+    @pytest.fixture
+    def get_assignees_details_dtos_mock(self, mocker):
+        path = "ib_tasks.adapters.assignees_details_service" \
+               ".AssigneeDetailsService.get_assignees_details_dtos"
+        mock = mocker.patch(path)
+        return mock
 
     @pytest.fixture(autouse=True)
-    def setup(self, mocker):
+    def setup(self, mocker, get_assignees_details_dtos_mock):
         task_id = "IBWF-1"
         stage_id = 1
         template_id = "TEMPLATE-1"
@@ -47,6 +58,8 @@ class TestCase41UpdateTaskAPITestCase(TestUtils):
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids_based_on_project_mock
         mock_method = get_user_role_ids_based_on_project_mock(mocker)
+        get_assignees_details_dtos_mock.return_value = \
+            [AssigneeDetailsDTOFactory(assignee_id="assignee_id_1")]
         user_roles = mock_method.return_value
         gof = GoFFactory.create(gof_id=gof_id)
         gof_role = GoFRoleFactory.create(
@@ -80,6 +93,9 @@ class TestCase41UpdateTaskAPITestCase(TestUtils):
         stage = StageFactory.create(
             id=1, task_template_id=task_template.template_id)
         StagePermittedRolesFactory.create(stage=stage, role_id=user_roles[0])
+        StageGoFFactory.create(gof=gof, stage=stage)
+        current_task_stage = CurrentTaskStageModelFactory.create(task=task,
+                                                                 stage=stage)
 
     @pytest.mark.django_db
     def test_case(self, snapshot, mocker):

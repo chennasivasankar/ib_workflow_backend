@@ -65,6 +65,73 @@ class TestUpdateTaskPresenterImplementation:
         snapshot.assert_match(json_json_response['response'],
                               'json_response')
 
+    def test_raise_priority_is_required(self, snapshot, presenter):
+        # Arrange
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            PriorityIsRequired
+        err = PriorityIsRequired()
+
+        # Act
+        response_object = presenter.raise_priority_is_required(err)
+
+        # Assert
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
+
+    def test_raise_due_date_time_without_start_datetime(
+            self, snapshot, presenter):
+        # Arrange
+        due_datetime = datetime.datetime(2020, 5, 6, 4, 3, 1)
+        from ib_tasks.exceptions.datetime_custom_exceptions import \
+            DueDateTimeWithoutStartDateTimeIsNotValid
+        err = DueDateTimeWithoutStartDateTimeIsNotValid(due_datetime)
+
+        # Act
+        response_object = \
+            presenter.raise_due_date_time_without_start_datetime(err)
+
+        # Assert
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
+
+    def test_raise_start_date_time_is_required(self, snapshot, presenter):
+        # Arrange
+        from ib_tasks.exceptions.datetime_custom_exceptions import \
+            StartDateTimeIsRequired
+        err = StartDateTimeIsRequired()
+
+        # Act
+        response_object = \
+            presenter.raise_start_date_time_is_required(err)
+
+        # Assert
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
+
+    def test_raise_due_date_time_is_required(self, snapshot, presenter):
+        # Arrange
+        expected_due_date = datetime.date(2020, 3, 5)
+        from ib_tasks.exceptions.datetime_custom_exceptions import \
+            DueDateTimeIsRequired
+
+        err = DueDateTimeIsRequired(expected_due_date)
+
+        # Act
+        response = presenter.raise_due_date_time_is_required(err)
+
+        # Assert
+        json_response = json.loads(response.content)
+        snapshot.assert_match(json_response['http_status_code'],
+                              'http_status_code')
+        snapshot.assert_match(json_response['res_status'], 'res_status')
+        snapshot.assert_match(json_response['response'], 'json_response')
+
     def test_raise_due_date_has_expired(self, snapshot, presenter):
         # Arrange
         expected_due_date = datetime.date(2020, 3, 5)
@@ -74,25 +141,7 @@ class TestUpdateTaskPresenterImplementation:
         err = DueDateTimeHasExpired(expected_due_date)
 
         # Act
-        response = presenter.raise_due_date_has_expired(err)
-
-        # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
-
-    def test_raise_invalid_due_time_format(self, snapshot, presenter):
-        # Arrange
-        expected_due_time_format = "55:55:03"
-        from ib_tasks.exceptions.datetime_custom_exceptions import \
-            InvalidDueTimeFormat
-
-        err = InvalidDueTimeFormat(expected_due_time_format)
-
-        # Act
-        response = presenter.raise_invalid_due_time_format(err)
+        response = presenter.raise_due_date_time_has_expired(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -120,34 +169,19 @@ class TestUpdateTaskPresenterImplementation:
         snapshot.assert_match(json_response['res_status'], 'res_status')
         snapshot.assert_match(json_response['response'], 'json_response')
 
-    def test_raise_due_time_has_expired_for_today(self, snapshot, presenter):
+    def test_raise_task_delay_reason_not_updated(self, snapshot, presenter):
         # Arrange
-        expected_due_time = "05:08:55"
-        from ib_tasks.exceptions.datetime_custom_exceptions import \
-            DueTimeHasExpiredForToday
-
-        err = DueTimeHasExpiredForToday(expected_due_time)
-
-        # Act
-        response = presenter.raise_due_time_has_expired_for_today(err)
-
-        # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
-
-    def test_raise_invalid_task_template_ids(self, snapshot, presenter):
-        # Arrange
-        expected_invalid_task_template_ids = ["template_1", "template_2"]
-
+        expected_due_date = datetime.date(2020, 3, 5)
+        task_display_id = "task_1"
+        stage_display_name = "stage_1"
         from ib_tasks.exceptions.task_custom_exceptions import \
-            InvalidTaskTemplateIds
-        err = InvalidTaskTemplateIds(expected_invalid_task_template_ids)
+            TaskDelayReasonIsNotUpdated
+
+        err = TaskDelayReasonIsNotUpdated(
+            expected_due_date, task_display_id, stage_display_name)
 
         # Act
-        response = presenter.raise_invalid_task_template_ids(err)
+        response = presenter.raise_task_delay_reason_not_updated(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -155,6 +189,27 @@ class TestUpdateTaskPresenterImplementation:
                               'http_status_code')
         snapshot.assert_match(json_response['res_status'], 'res_status')
         snapshot.assert_match(json_response['response'], 'json_response')
+
+    def test_raise_duplicate_same_gof_orders_for_a_gof(
+            self, snapshot, presenter):
+        # Arrange
+        expected_duplicate_same_gof_order = [1, 2]
+        expected_gof_id = "gof_1"
+
+        from ib_tasks.exceptions.gofs_custom_exceptions import \
+            DuplicateSameGoFOrderForAGoF
+        err = DuplicateSameGoFOrderForAGoF(
+            expected_gof_id, expected_duplicate_same_gof_order)
+
+        # Act
+        response_object = \
+            presenter.raise_duplicate_same_gof_orders_for_a_gof(err)
+
+        # Assert
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_invalid_gof_ids(self, snapshot, presenter):
         # Arrange
@@ -253,6 +308,25 @@ class TestUpdateTaskPresenterImplementation:
         snapshot.assert_match(json_response['res_status'], 'res_status')
         snapshot.assert_match(json_response['response'], 'json_response')
 
+    def test_raise_invalid_stage_permitted_gofs(self, snapshot, presenter):
+        # Arrange
+        expected_gof_ids = ["gof_1", "gof_2"]
+        stage_id = 1
+        expected_invalid_field_ids = ["field_1", "field_2"]
+
+        from ib_tasks.exceptions.gofs_custom_exceptions import \
+            InvalidStagePermittedGoFs
+        err = InvalidStagePermittedGoFs(expected_gof_ids, stage_id)
+
+        # Act
+        response_object = presenter.raise_invalid_stage_permitted_gofs(err)
+
+        # Assert
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
+
     def test_raise_user_needs_gof_writable_permission(
             self, snapshot, presenter):
         # Arrange
@@ -266,15 +340,14 @@ class TestUpdateTaskPresenterImplementation:
             expected_user_id, expected_gof_id, expected_roles)
 
         # Act
-        response = \
+        response_object = \
             presenter.raise_user_needs_gof_writable_permission(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_user_needs_field_writable_permission(
             self, snapshot, presenter):
@@ -289,35 +362,33 @@ class TestUpdateTaskPresenterImplementation:
             expected_user_id, expected_field_id, expected_roles)
 
         # Act
-        response = \
+        response_object = \
             presenter.raise_user_needs_field_writable_permission(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
-    def test_raise_exception_for_empty_value_in_required_field(
-            self, snapshot, presenter):
+    def test_raise_empty_value_in_required_field(self, snapshot, presenter):
         # Arrange
         expected_field_id = "field_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             EmptyValueForRequiredField
+
         err = EmptyValueForRequiredField(expected_field_id)
 
         # Act
-        response = \
+        response_object = \
             presenter.raise_empty_value_in_required_field(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_exception_for_invalid_phone_number_value(
             self, snapshot, presenter):
@@ -330,15 +401,13 @@ class TestUpdateTaskPresenterImplementation:
         err = InvalidPhoneNumberValue(expected_field_id, expected_phone_number)
 
         # Act
-        response = \
-            presenter.raise_invalid_phone_number_value(err)
+        response_object = presenter.raise_invalid_phone_number_value(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_exception_for_invalid_email_address(
             self, snapshot, presenter):
@@ -351,15 +420,13 @@ class TestUpdateTaskPresenterImplementation:
         err = InvalidEmailFieldValue(expected_field_id, expected_email)
 
         # Act
-        response = \
-            presenter.raise_invalid_email_address(err)
+        response_object = presenter.raise_invalid_email_address(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_exception_for_invalid_url_address(
             self, snapshot, presenter):
@@ -372,15 +439,13 @@ class TestUpdateTaskPresenterImplementation:
         err = InvalidURLValue(expected_field_id, expected_url)
 
         # Act
-        response = \
-            presenter.raise_invalid_url_address(err)
+        response_object = presenter.raise_invalid_url_address(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_exception_for_weak_password(self, snapshot, presenter):
         # Arrange
@@ -392,14 +457,13 @@ class TestUpdateTaskPresenterImplementation:
         err = NotAStrongPassword(expected_field_id, expected_password)
 
         # Act
-        response = presenter.raise_weak_password(err)
+        response_object = presenter.raise_weak_password(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_exception_for_invalid_number_value(
             self, snapshot, presenter):
@@ -412,15 +476,13 @@ class TestUpdateTaskPresenterImplementation:
         err = InvalidNumberValue(expected_field_id, expected_number)
 
         # Act
-        response = \
-            presenter.raise_invalid_number_value(err)
+        response_object = presenter.raise_invalid_number_value(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_exception_for_invalid_float_value(
             self, snapshot, presenter):
@@ -433,15 +495,13 @@ class TestUpdateTaskPresenterImplementation:
         err = InvalidFloatValue(expected_field_id, expected_float)
 
         # Act
-        response = \
-            presenter.raise_invalid_float_value(err)
+        response_object = presenter.raise_invalid_float_value(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_exception_for_invalid_dropdown_value(
             self, snapshot, presenter):
@@ -456,15 +516,13 @@ class TestUpdateTaskPresenterImplementation:
             expected_field_id, expected_dropdown_value, expected_valid_values)
 
         # Act
-        response = \
-            presenter.raise_invalid_dropdown_value(err)
+        response_object = presenter.raise_invalid_dropdown_value(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_exception_for_invalid_name_in_gof_selector_field_value(
             self, snapshot, presenter):
@@ -479,15 +537,13 @@ class TestUpdateTaskPresenterImplementation:
             expected_field_id, expected_gof_name_value, expected_valid_values)
 
         # Act
-        response = presenter. \
-            raise_invalid_name_in_gof_selector(err)
+        response_object = presenter.raise_invalid_name_in_gof_selector(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_exception_for_invalid_choice_in_radio_group_field(
             self, snapshot, presenter):
@@ -502,15 +558,14 @@ class TestUpdateTaskPresenterImplementation:
             expected_field_id, expected_radio_choice, expected_valid_values)
 
         # Act
-        response = presenter. \
+        response_object = presenter.\
             raise_invalid_choice_in_radio_group_field(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_exception_for_invalid_checkbox_group_options_selected(
             self, snapshot, presenter):
@@ -526,15 +581,14 @@ class TestUpdateTaskPresenterImplementation:
             expected_valid_values)
 
         # Act
-        response = presenter. \
+        response_object = presenter. \
             raise_invalid_checkbox_group_options_selected(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_exception_for_invalid_multi_select_options_selected(
             self, snapshot, presenter):
@@ -550,15 +604,14 @@ class TestUpdateTaskPresenterImplementation:
             expected_valid_values)
 
         # Act
-        response = presenter. \
+        response_object = presenter.\
             raise_invalid_multi_select_options_selected(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_exception_for_invalid_multi_select_labels_selected(
             self, snapshot, presenter):
@@ -574,15 +627,14 @@ class TestUpdateTaskPresenterImplementation:
             expected_valid_values)
 
         # Act
-        response = presenter. \
+        response_object = presenter. \
             raise_invalid_multi_select_labels_selected(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_exception_for_invalid_date_format(
             self, snapshot, presenter):
@@ -598,15 +650,13 @@ class TestUpdateTaskPresenterImplementation:
             expected_valid_date_format)
 
         # Act
-        response = \
-            presenter.raise_invalid_time_format(err)
+        response_object = presenter.raise_invalid_date_format(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_exception_for_invalid_time_format(
             self, snapshot, presenter):
@@ -622,15 +672,13 @@ class TestUpdateTaskPresenterImplementation:
             expected_valid_time_format)
 
         # Act
-        response = \
-            presenter.raise_invalid_time_format(err)
+        response_object = presenter.raise_invalid_time_format(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_exception_for_invalid_image_url(self, snapshot, presenter):
         # Arrange
@@ -642,29 +690,7 @@ class TestUpdateTaskPresenterImplementation:
         err = InvalidUrlForImage(expected_field_id, expected_invalid_image_url)
 
         # Act
-        response = presenter.raise_invalid_image_url(err)
-
-        # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
-
-    def test_raise_duplicate_same_gof_orders_for_a_gof(
-            self, snapshot, presenter):
-        # Arrange
-        expected_duplicate_same_gof_order = [1, 2]
-        expected_gof_id = "gof_1"
-
-        from ib_tasks.exceptions.gofs_custom_exceptions import \
-            DuplicateSameGoFOrderForAGoF
-        err = DuplicateSameGoFOrderForAGoF(
-            expected_gof_id, expected_duplicate_same_gof_order)
-
-        # Act
-        response_object = \
-            presenter.raise_duplicate_same_gof_orders_for_a_gof(err)
+        response_object = presenter.raise_invalid_image_url(err)
 
         # Assert
         response = json.loads(response_object.content)
@@ -686,15 +712,13 @@ class TestUpdateTaskPresenterImplementation:
             expected_valid_formats)
 
         # Act
-        response = \
-            presenter.raise_not_acceptable_image_format(err)
+        response_object = presenter.raise_not_acceptable_image_format(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_exception_for_invalid_file_url(self, snapshot, presenter):
         # Arrange
@@ -707,14 +731,13 @@ class TestUpdateTaskPresenterImplementation:
             expected_field_id, expected_invalid_file_url)
 
         # Act
-        response = presenter.raise_invalid_file_url(err)
+        response_object = presenter.raise_invalid_file_url(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_exception_for_not_acceptable_file_format(
             self, snapshot, presenter):
@@ -730,15 +753,13 @@ class TestUpdateTaskPresenterImplementation:
             expected_valid_formats)
 
         # Act
-        response = \
-            presenter.raise_not_acceptable_file_format(err)
+        response_object = presenter.raise_not_acceptable_file_format(err)
 
         # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
 
     def test_raise_stage_ids_with_invalid_permission_for_assignee_exception(
             self, presenter, snapshot
@@ -761,10 +782,50 @@ class TestUpdateTaskPresenterImplementation:
         snapshot.assert_match(json_response['res_status'], 'res_status')
         snapshot.assert_match(json_response['response'], 'json_response')
 
-    def test_get_update_task_response(self, presenter, snapshot):
+    def test_raise_stage_ids_list_empty(self, snapshot, presenter):
+        # Arrange
+        from ib_tasks.exceptions.stage_custom_exceptions import \
+            StageIdsListEmptyException
+        err = StageIdsListEmptyException()
+
         # Act
-        response = presenter.get_update_task_response()
+        response_object = presenter.raise_stage_ids_list_empty_exception(err)
+
+        # Assert
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
+
+    def test_raise_invalid_stage_ids_list(self, snapshot, presenter):
+        # Arrange
+        invalid_stage_ids = ["stage_1", "stage_2"]
+        from ib_tasks.exceptions.stage_custom_exceptions import \
+            InvalidStageIdsListException
+        err = InvalidStageIdsListException(invalid_stage_ids)
+
+        # Act
+        response_object = presenter.raise_invalid_stage_ids_list_exception(err)
+
+        # Assert
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
+
+    def test_get_update_task_response(self, presenter, snapshot):
+        # Arrange
+        from ib_tasks.tests.factories.presenter_dtos import \
+            AllTasksOverviewDetailsDTOFactory
+        AllTasksOverviewDetailsDTOFactory.reset_sequence()
+
+        all_tasks_overview_dto = AllTasksOverviewDetailsDTOFactory()
+
+        # Act
+        response = presenter.get_update_task_response(
+            all_tasks_overview_details_dto=all_tasks_overview_dto
+        )
 
         # Assert
         json_response = json.loads(response.content)
-        snapshot.assert_match(name="success_message", value=json_response)
+        snapshot.assert_match(name="success_response", value=json_response)

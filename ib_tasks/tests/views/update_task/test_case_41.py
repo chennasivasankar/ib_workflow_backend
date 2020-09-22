@@ -13,7 +13,8 @@ from ib_tasks.tests.common_fixtures.adapters.auth_service import \
     validate_if_user_is_in_project_mock
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
     TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, \
-    GoFRoleFactory, FieldRoleFactory, StageFactory
+    GoFRoleFactory, FieldRoleFactory, StageFactory, \
+    CurrentTaskStageModelFactory, StageGoFFactory
 from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
@@ -35,6 +36,8 @@ class TestCase41UpdateTaskAPITestCase(TestUtils):
         GoFRoleFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
         StageFactory.reset_sequence()
+        StageGoFFactory.reset_sequence()
+        CurrentTaskStageModelFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
@@ -77,6 +80,9 @@ class TestCase41UpdateTaskAPITestCase(TestUtils):
         )
         stage = StageFactory.create(
             id=1, task_template_id=task_template.template_id)
+        StageGoFFactory.create(gof=gof, stage=stage)
+        current_task_stage = CurrentTaskStageModelFactory.create(task=task,
+                                                                 stage=stage)
 
     @pytest.mark.django_db
     def test_case(self, snapshot, mocker):
