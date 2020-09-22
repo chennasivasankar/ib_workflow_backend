@@ -4,3 +4,4 @@ class InvalidTaskTemplateId(Exception):
 
 class InvalidProjectId(Exception):
     pass
+
