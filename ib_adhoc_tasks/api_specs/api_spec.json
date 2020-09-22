@@ -755,12 +755,32 @@
         "group_by_display_name"
       ]
     },
+    "GroupByResponseFields": {
+      "type": "object",
+      "properties": {
+        "group_by_id": {
+          "type": "integer"
+        },
+        "group_by_display_name": {
+          "type": "string"
+        },
+        "order": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "group_by_id",
+        "group_by_display_name",
+        "order"
+      ]
+    },
     "InvalidPaginationDetailsForViews": {
       "allOf": [
         {
           "$ref": "#/definitions/CommonHttpExceptionFields"
         },
         {
+          "type": "object",
           "properties": {
             "res_status": {
               "type": "string",
@@ -880,6 +900,7 @@
         "type": "object",
         "properties": {
           "group_by_values": {
+            "type": "array",
             "items": {
               "type": "string"
             }
@@ -1032,13 +1053,36 @@
         ]
       }
     },
-    "AddGroupByParameter": {
+    "ViewTypeQueryParameter": {
+      "name": "view_type",
+      "in": "query",
+      "description": "view_type value",
+      "type": "string",
+      "enum": [
+        "LIST",
+        "KANBAN"
+      ],
+      "required": true
+    },
+    "AddOrEditGroupByParameter": {
       "name": "add_group_by_parameter",
       "in": "body",
       "required": true,
       "description": "add group by parameter",
       "schema": {
-        "$ref": "#/definitions/GroupByFields"
+        "allOf": [
+          {
+            "$ref": "#/definitions/GroupByFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "group_by_id": {
+                "type": "string"
+              }
+            }
+          }
+        ]
       }
     },
     "ProjectIdPathParameter": {
@@ -1046,13 +1090,6 @@
       "in": "path",
       "description": "project id value",
       "type": "string",
-      "required": true
-    },
-    "GroupByIdPathParameter": {
-      "name": "group_by_id",
-      "in": "path",
-      "description": "group id value",
-      "type": "integer",
       "required": true
     }
   },
@@ -1236,24 +1273,9 @@
       }
     },
     "GroupByResponse": {
-      "description": "",
+      "description": "group by response",
       "schema": {
-        "type": "object",
-        "properties": {
-          "group_by_id": {
-            "type": "integer"
-          },
-          "group_by_display_name": {
-            "type": "string"
-          },
-          "order": {
-            "type": "integer"
-          }
-        },
-        "required": [
-          "view_type",
-          "group_by_display_name"
-        ]
+        "$ref": "#/definitions/GroupByResponseFields"
       }
     },
     "NotFoundRequestForAddGroupResponse": {
@@ -1270,6 +1292,7 @@
                 "type": "string",
                 "enum": [
                   "INVALID_PROJECT_ID",
+                  "INVALID_GROUP_BY_ID",
                   "INVALID_GROUP_DISPLAY_NAME",
                   "USER_NOT_EXISTS_IN_PROJECT"
                 ]
@@ -1283,57 +1306,6 @@
       }
     },
     "UnauthorizedRequestForAddGroupResponse": {
-      "description": "unauthorized response for add group",
-      "schema": {
-        "allOf": [
-          {
-            "$ref": "#/definitions/CommonHttpExceptionFields"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "res_status": {
-                "type": "string",
-                "enum": [
-                  "USER_HAS_NO_ACCESS_FOR_GIVEN_FIELD"
-                ]
-              }
-            },
-            "required": [
-              "res_status"
-            ]
-          }
-        ]
-      }
-    },
-    "NotFoundRequestForEditGroupResponse": {
-      "description": "not found response for edit group",
-      "schema": {
-        "allOf": [
-          {
-            "$ref": "#/definitions/CommonHttpExceptionFields"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "res_status": {
-                "type": "string",
-                "enum": [
-                  "INVALID_PROJECT_ID",
-                  "INVALID_GROUP_ID",
-                  "INVALID_GROUP_DISPLAY_NAME",
-                  "USER_NOT_EXISTS_IN_PROJECT"
-                ]
-              }
-            },
-            "required": [
-              "res_status"
-            ]
-          }
-        ]
-      }
-    },
-    "UnauthorizedRequestForEditGroupResponse": {
       "description": "unauthorized response for add group",
       "schema": {
         "allOf": [
@@ -1527,10 +1499,10 @@
         }
       }
     },
-    "/project/{project_id}/adhoc_board/group/create/v1/": {
+    "/project/{project_id}/adhoc_board/group/add_or_edit/v1/": {
       "post": {
         "summary": "Create a group by",
-        "operationId": "create_group_by",
+        "operationId": "create_or_update_group_by",
         "security": [
           {
             "oauth": [
@@ -1543,7 +1515,7 @@
             "$ref": "#/parameters/ProjectIdPathParameter"
           },
           {
-            "$ref": "#/parameters/AddGroupByParameter"
+            "$ref": "#/parameters/AddOrEditGroupByParameter"
           }
         ],
         "responses": {
@@ -1555,41 +1527,6 @@
           },
           "403": {
             "$ref": "#/responses/UnauthorizedRequestForAddGroupResponse"
-          }
-        }
-      }
-    },
-    "/project/{project_id}/adhoc_board/group/{group_by_id}/edit/v1/": {
-      "put": {
-        "summary": "edit a group by",
-        "operationId": "edit_group_by",
-        "security": [
-          {
-            "oauth": [
-              "write"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/parameters/ProjectIdPathParameter"
-          },
-          {
-            "$ref": "#/parameters/GroupByIdPathParameter"
-          },
-          {
-            "$ref": "#/parameters/AddGroupByParameter"
-          }
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/GroupByResponse"
-          },
-          "404": {
-            "$ref": "#/responses/NotFoundRequestForEditGroupResponse"
-          },
-          "403": {
-            "$ref": "#/responses/UnauthorizedRequestForEditGroupResponse"
           }
         }
       }
@@ -1610,12 +1547,18 @@
             "$ref": "#/parameters/ProjectIdPathParameter"
           },
           {
-            "$ref": "#/parameters/ViewTypeParameter"
+            "$ref": "#/parameters/ViewTypeQueryParameter"
           }
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/GroupByResponse"
+            "description": "get group by response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GroupByResponseFields"
+              }
+            }
           },
           "404": {
             "$ref": "#/responses/NotFoundRequestForGetGroupResponse"
