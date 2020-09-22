@@ -303,7 +303,6 @@
         "task_overview_fields",
         "stage_with_actions",
         "title",
-        "description",
         "start_date",
         "due_date",
         "priority"
