@@ -1,4 +1,13 @@
+from dataclasses import dataclass
 from typing import List
+
+from ib_users.interactors.exceptions.user_profile import InvalidUserException
+
+
+@dataclass
+class UserIdAndNameDTO:
+    user_id: str
+    name: str
 
 
 class InvalidUserId(Exception):
@@ -51,3 +60,27 @@ class IamService:
             raise InvalidProjectId
         if is_user_not_in_a_project:
             raise InvalidUserForProject
+
+    def get_user_details_bulk(self, user_ids: List[str]) -> \
+            List[UserIdAndNameDTO]:
+        try:
+            user_profile_dtos = self.interface.get_user_details_bulk(
+                user_ids=user_ids
+            )
+        except InvalidUserException:
+            raise InvalidUserId
+        user_id_and_name_dtos = self._prepare_user_id_and_name_dtos(
+            user_profile_dtos=user_profile_dtos
+        )
+        return user_id_and_name_dtos
+
+    @staticmethod
+    def _prepare_user_id_and_name_dtos(user_profile_dtos):
+        user_id_and_name_dtos = [
+            UserIdAndNameDTO(
+                user_id=user_profile_dto.user_id,
+                name=user_profile_dto.name
+            )
+            for user_profile_dto in user_profile_dtos
+        ]
+        return user_id_and_name_dtos

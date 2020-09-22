@@ -222,9 +222,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
                 task_ids=task_ids,
                 total_tasks=group.doc_count
             )
-            group_details_dto.group_by_value = group_by_value
-            if is_group_by_value_is_not_field:
-                group_details_dto.group_by_value = group.key
+            group_details_dto.group_by_value = group.key
             group_details_dto.group_by_display_name = group.key
             group_details_dtos.append(group_details_dto)
 
@@ -270,7 +268,6 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         for group in response.aggregations.groups.buckets[
                      group_offset: group_offset + group_limit]:
 
-            group_by_display_name = group.key
             group_count_dto = GroupCountDTO(
                 group_by_value=group.key,
                 total_groups=group.doc_count
@@ -296,15 +293,11 @@ class ElasticStorageImplementation(ElasticStorageInterface):
                     total_tasks=child_group.doc_count
                 )
 
-                group_details_dto.group_by_value = group_by_value
-                if is_group_by_value_is_not_field:
-                    group_details_dto.group_by_value = group_by_display_name
-                group_details_dto.group_by_display_name = group_by_display_name
+                group_details_dto.group_by_value = group.key
+                group_details_dto.group_by_display_name = group.key
 
                 group_details_dto.child_group_by_value = child_group_by_value
-                if is_child_group_by_value_is_not_field:
-                    group_details_dto.child_group_by_value = child_by_display_name
-                group_details_dto.child_group_by_display_name = child_by_display_name
+                group_details_dto.child_group_by_display_name = child_group_by_value
 
                 group_details_dtos.append(group_details_dto)
 

@@ -1,10 +1,12 @@
 from dataclasses import dataclass
 from typing import List
 
+from ib_adhoc_tasks.constants.enum import GroupByEnum
+
 
 @dataclass
 class GroupByDTO:
-    group_by_value: str
+    group_by_value: GroupByEnum
     order: int
     offset: int
     limit: int
