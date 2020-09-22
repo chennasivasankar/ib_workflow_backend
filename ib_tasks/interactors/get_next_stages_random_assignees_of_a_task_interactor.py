@@ -62,10 +62,9 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
         from ib_tasks.adapters.auth_service import \
             UsersNotExistsForGivenProjectException
         try:
-            task_id = self.get_task_id_for_task_display_id(task_display_id)
             stage_with_user_details_and_team_details_dto = \
                 self.get_next_stages_random_assignees_of_a_task(
-                    task_id=task_id, action_id=action_id)
+                    task_display_id=task_display_id, action_id=action_id)
             return presenter. \
                 get_next_stages_random_assignees_of_a_task_response(
                 stage_with_user_details_and_team_details_dto)
@@ -77,6 +76,7 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
         except UsersNotExistsForGivenProjectException as exception:
             return presenter.raise_users_not_exists_for_given_projects(
                 user_ids=exception.user_ids)
+
         except InvalidKeyError:
             return presenter.raise_invalid_key_error()
         except InvalidModulePathFound as exception:
@@ -87,27 +87,32 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
                 method_name=exception.method_name)
 
     def get_next_stages_random_assignees_of_a_task(
-            self, task_id: int,
-            action_id: int) -> StageWithUserDetailsAndTeamDetailsDTO:
-        self.validate_action_id(action_id=action_id)
-        project_id = self.task_storage.get_project_id_of_task(task_id)
-        status_variable_dtos = self. \
-            _get_status_variables_dtos_of_task_based_on_action(
-            task_id=task_id, action_id=action_id)
-        next_stage_ids_of_task = \
-            self._get_next_stages_of_task(task_id=task_id,
-                                          status_variable_dtos=
-                                          status_variable_dtos)
-        valid_next_stage_ids_of_task = self.stage_storage. \
-            get_stage_ids_excluding_virtual_stages(
-            next_stage_ids_of_task)
-        stage_with_user_details_and_team_details_dto = self. \
-            _get_users_with_less_tasks_in_given_stages(
-            valid_next_stage_ids_of_task, project_id)
+            self, task_display_id: str, action_id: int) \
+            -> StageWithUserDetailsAndTeamDetailsDTO:
 
+        task_id = self.get_task_id_for_task_display_id(
+            task_display_id=task_display_id)
+        self.validate_action_id(action_id=action_id)
+        project_id = self.task_storage.get_project_id_of_task(task_id=task_id)
+
+        status_variable_dtos = \
+            self._get_status_variables_dtos_of_task_based_on_action(
+                task_id=task_id, action_id=action_id)
+
+        next_stage_ids_of_task = \
+            self._get_next_stages_of_task(
+                task_id=task_id, status_variable_dtos=status_variable_dtos)
+        task_next_stage_ids_excluding_virtual_stages = \
+            self.stage_storage.get_stage_ids_excluding_virtual_stages(
+                stage_ids=next_stage_ids_of_task)
+
+        stage_with_user_details_and_team_details_dto =\
+            self._get_users_with_less_tasks_for_given_stages(
+            stage_ids=task_next_stage_ids_excluding_virtual_stages,
+            project_id=project_id)
         return stage_with_user_details_and_team_details_dto
 
-    def _get_users_with_less_tasks_in_given_stages(
+    def _get_users_with_less_tasks_for_given_stages(
             self, stage_ids: List[str], project_id: str) -> \
             StageWithUserDetailsAndTeamDetailsDTO:
         get_users_with_less_tasks_interactor = \
@@ -125,8 +130,8 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
                                                            action_id: int) -> \
             List[StatusVariableDTO]:
 
-        from ib_tasks.interactors.user_action_on_task\
-            .call_action_logic_function_and_get_or_update_task_status_variables_interactor \
+        from ib_tasks.interactors.user_action_on_task.\
+            call_action_logic_function_and_get_or_update_task_status_variables_interactor \
             import CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor
         call_action_logic_function_interactor = \
             CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
@@ -143,7 +148,8 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
     def _get_next_stages_of_task(self, task_id: int,
                                  status_variable_dtos) -> List[str]:
 
-        from ib_tasks.interactors.user_action_on_task.get_task_stage_logic_satisfied_stages import \
+        from ib_tasks.interactors.user_action_on_task.\
+            get_task_stage_logic_satisfied_stages import \
             GetTaskStageLogicSatisfiedStagesInteractor
         get_task_stage_logic_satisfied_next_stages_interactor = \
             GetTaskStageLogicSatisfiedStagesInteractor(

@@ -6,7 +6,8 @@ from ib_tasks.interactors.stage_dtos import DBStageIdWithGoFIdsDTO, \
 from ib_tasks.interactors.stages_dtos import StageDTO, \
     TaskIdWithStageAssigneeDTO, StageAssigneeDTO, StageMinimalDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionRolesDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO, \
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    StageDetailsDTO, \
     StageFlowDTO, StageIdWithValueDTO, StageFlowWithActionIdDTO, \
     StageIdWithTemplateIdDTO, StageIdWithGoFIdDTO, StageDisplayValueDTO, \
     StageValueDTO
@@ -93,9 +94,8 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_stage_role_dtos_given_db_stage_ids(self,
-                                               db_stage_ids: List[int]) -> \
-            List[StageRoleDTO]:
+    def get_stage_role_dtos_given_db_stage_ids(
+            self, db_stage_ids: List[int]) -> List[StageRoleDTO]:
         pass
 
     @abc.abstractmethod
@@ -187,7 +187,7 @@ class StageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_user_permitted_stages_in_template(
-        self, template_id: str, user_roles: List[str]
+            self, template_id: str, user_roles: List[str]
     ) -> List[StageMinimalDTO]:
         pass
 
@@ -198,8 +198,8 @@ class StageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_stage_flows_to_user(
-        self, stage_ids: List[int],
-        action_ids: List[int]
+            self, stage_ids: List[int],
+            action_ids: List[int]
     ) -> List[StageFlowDTO]:
         pass
 

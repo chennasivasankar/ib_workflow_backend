@@ -18,6 +18,8 @@ from ib_tasks.tests.factories.models import (
     GoFFactory,
     FieldRoleFactory,
     FieldFactory, TaskTemplateFactory, GoFToTaskTemplateFactory,
+    StageModelFactory, CurrentTaskStageModelFactory,
+    TaskStageHistoryModelFactory, StagePermittedRolesFactory, StageGoFFactory,
 )
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
@@ -86,6 +88,35 @@ class TestCase06GetTaskAPITestCase(TestUtils):
             field=factory.Iterator(field_objs),
             role=factory.Iterator(roles),
             permission_type=factory.Iterator(permission_type)
+        )
+        stage_colors = ["white", "black", "blue"]
+        stage_objs = StageModelFactory.create_batch(
+            size=4,
+            stage_color=factory.Iterator(stage_colors)
+        )
+        assignee_ids = [
+            "123e4567-e89b-12d3-a456-426614174000",
+            "123e4567-e89b-12d3-a456-426614174001",
+            "123e4567-e89b-12d3-a456-426614174002"
+        ]
+        CurrentTaskStageModelFactory.create_batch(size=4, task=task_obj,
+                                                  stage=factory.Iterator(
+                                                      stage_objs))
+        TaskStageHistoryModelFactory.create_batch(
+            size=3, task=task_obj, stage=factory.Iterator(stage_objs),
+            assignee_id=factory.Iterator(assignee_ids), left_at=None
+        )
+        TaskStageHistoryModelFactory.create(
+            task=task_obj, stage=stage_objs[3], assignee_id=None, left_at=None
+        )
+        StagePermittedRolesFactory.create_batch(
+            size=3,
+            stage=factory.Iterator(stage_objs),
+            role_id=factory.Iterator(roles)
+        )
+        StageGoFFactory.create_batch(
+            size=4, stage=factory.Iterator(stage_objs),
+            gof=factory.Iterator(gof_objs)
         )
 
     @pytest.mark.django_db
