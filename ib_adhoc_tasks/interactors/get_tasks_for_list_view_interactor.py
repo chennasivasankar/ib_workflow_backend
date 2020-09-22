@@ -4,7 +4,7 @@ from ib_adhoc_tasks.adapters.dtos import TasksCompleteDetailsDTO, \
     TasksDetailsInputDTO
 from ib_adhoc_tasks.constants.enum import ViewType
 from ib_adhoc_tasks.exceptions.custom_exceptions import InvalidProjectId
-from ib_adhoc_tasks.interactors.dtos import GroupByInfoListViewDTO, \
+from ib_adhoc_tasks.interactors.dtos.dtos import GroupByInfoListViewDTO, \
     TaskOffsetAndLimitValuesDTO, GroupByDTO
 from ib_adhoc_tasks.interactors.presenter_interfaces \
     .get_tasks_for_list_view_presenter_interface import \

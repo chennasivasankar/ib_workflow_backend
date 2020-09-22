@@ -1,9 +1,29 @@
 import factory
 
 from ib_adhoc_tasks.constants.enum import GroupByType
-from ib_adhoc_tasks.interactors.dtos import GroupByValueDTO, \
+from ib_adhoc_tasks.interactors.dtos.dtos import GroupByValueDTO, \
     TaskIdsForGroupsParameterDTO, OffsetLimitDTO, GroupByInfoKanbanViewDTO, \
     GroupByInfoListViewDTO
+from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO, \
+    TaskOffsetAndLimitValuesDTO, TaskIdsForGroupsParameterDTO, GroupByValueDTO
+
+
+class GroupByDTOFactory(factory.Factory):
+    class Meta:
+        model = GroupByDTO
+
+    group_by_value = factory.Sequence(lambda n: "group_by_%s" % n)
+    order = factory.Sequence(lambda n: n)
+    limit = 5
+    offset = 0
+
+
+class TaskOffsetAndLimitValuesDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskOffsetAndLimitValuesDTO
+
+    limit = 5
+    offset = 0
 
 
 class TaskIdsForGroupsParameterDTOFactory(factory.Factory):
