@@ -276,7 +276,6 @@ class ElasticStorageImplementation(ElasticStorageInterface):
 
             for child_group in group.child_groups[
                                child_group_offset: child_group_offset + child_group_limit]:
-                child_by_display_name = child_group.key
 
                 child_group_count_dto = ChildGroupCountDTO(
                     child_group_by_value=child_group.key,
@@ -296,8 +295,8 @@ class ElasticStorageImplementation(ElasticStorageInterface):
                 group_details_dto.group_by_value = group.key
                 group_details_dto.group_by_display_name = group.key
 
-                group_details_dto.child_group_by_value = child_group_by_value
-                group_details_dto.child_group_by_display_name = child_group_by_value
+                group_details_dto.child_group_by_value = child_group.key
+                group_details_dto.child_group_by_display_name = child_group.key
 
                 group_details_dtos.append(group_details_dto)
 
