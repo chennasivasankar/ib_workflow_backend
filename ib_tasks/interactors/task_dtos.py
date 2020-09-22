@@ -28,16 +28,21 @@ class BasicTaskDetailsDTO:
     created_by_id: str
     action_id: int
     title: str
-    description: str
-    start_datetime: datetime.datetime
-    due_datetime: datetime.datetime
-    priority: Priority
+    description: Optional[str]
+    start_datetime: Optional[datetime.datetime]
+    due_datetime: Optional[datetime.datetime]
+    priority: Optional[Priority]
 
 
 @dataclass
 class CreateTaskDTO:
     basic_task_details_dto: BasicTaskDetailsDTO
     gof_fields_dtos: List[GoFFieldsDTO]
+
+
+@dataclass
+class CreateSubTaskDTO(CreateTaskDTO):
+    parent_task_id: str
 
 
 @dataclass
