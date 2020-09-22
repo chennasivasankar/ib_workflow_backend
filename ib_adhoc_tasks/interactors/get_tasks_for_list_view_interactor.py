@@ -3,6 +3,8 @@ from typing import List
 from ib_adhoc_tasks.adapters.dtos import TasksCompleteDetailsDTO, \
     TasksDetailsInputDTO
 from ib_adhoc_tasks.constants.enum import ViewType
+from ib_adhoc_tasks.exceptions.custom_exceptions import \
+    InvalidOffsetOrLimitValue
 from ib_adhoc_tasks.exceptions.custom_exceptions import InvalidProjectId
 from ib_adhoc_tasks.interactors.dtos.dtos import GroupByInfoListViewDTO, \
     TaskOffsetAndLimitValuesDTO, GroupByDTO
@@ -41,6 +43,8 @@ class GetTasksForListViewInteractor:
             )
         except InvalidProjectId:
             return presenter.raise_invalid_project_id()
+        except InvalidOffsetOrLimitValue:
+            return presenter.raise_invalid_offset_or_limit_value()
 
     def get_tasks_for_list_view_response(
             self, group_by_info_list_view_dto: GroupByInfoListViewDTO,
@@ -57,6 +61,7 @@ class GetTasksForListViewInteractor:
             self, group_by_info_list_view_dto: GroupByInfoListViewDTO
     ):
         project_id = group_by_info_list_view_dto.project_id
+        self._validate_limit_offset_values(group_by_info_list_view_dto)
         self._validate_project_id(project_id)
         group_details_dtos = self._get_group_details_dtos(
             group_by_info_list_view_dto)
@@ -70,6 +75,26 @@ class GetTasksForListViewInteractor:
         )
         task_details_dto = self._get_task_details_dto(task_details_input_dto)
         return group_details_dtos, task_details_dto
+
+    @staticmethod
+    def _validate_limit_offset_values(
+            group_by_info_list_view_dto: GroupByInfoListViewDTO
+    ):
+        task_offset_limit_dto = \
+            group_by_info_list_view_dto.task_offset_limit_dto
+        task_offset = task_offset_limit_dto.offset
+        task_limit = task_offset_limit_dto.limit
+        group_offset_limit_dto = \
+            group_by_info_list_view_dto.group_offset_limit_dto
+        group_offset = group_offset_limit_dto.offset
+        group_limit = group_offset_limit_dto.limit
+
+        is_invalid_offset_or_limit_values = (
+                task_limit < 0 or task_offset < 0 or group_offset < 0 or
+                group_limit < 0)
+
+        if is_invalid_offset_or_limit_values:
+            raise InvalidOffsetOrLimitValue()
 
     @staticmethod
     def _get_task_ids(group_details_dtos: List[GroupDetailsDTO]):
@@ -114,11 +139,12 @@ class GetTasksForListViewInteractor:
             GetTaskIdsForViewInteractor
         interactor = GetTaskIdsForViewInteractor(
             elastic_storage=self.elastic_storage)
-        group_details_dtos = interactor.get_task_ids_for_view(
-            project_id=project_id, adhoc_template_id=adhoc_template_id,
-            group_by_dtos=group_by_dtos, user_id=user_id,
-            task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
-        )
+        group_details_dtos, group_count_dtos, child_group_count_dtos = \
+            interactor.get_task_ids_for_view(
+                project_id=project_id, adhoc_template_id=adhoc_template_id,
+                group_by_dtos=group_by_dtos, user_id=user_id,
+                task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
+            )
         return group_details_dtos
 
     @staticmethod

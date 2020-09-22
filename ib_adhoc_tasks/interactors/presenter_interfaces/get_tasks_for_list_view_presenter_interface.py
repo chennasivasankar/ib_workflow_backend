@@ -18,3 +18,7 @@ class GetTasksForListViewPresenterInterface(abc.ABC):
             task_details_dto: TasksCompleteDetailsDTO
     ):
         pass
+
+    @abc.abstractmethod
+    def raise_invalid_offset_or_limit_value(self):
+        pass

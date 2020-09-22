@@ -14,7 +14,21 @@ from ib_adhoc_tasks.interactors.storage_interfaces.dtos import GroupDetailsDTO
 
 
 class GetTasksForListViewPresenterImplementation(
-    GetTasksForListViewPresenterInterface, HTTPResponseMixin):
+        GetTasksForListViewPresenterInterface, HTTPResponseMixin):
+
+    def raise_invalid_offset_or_limit_value(self):
+        from ib_adhoc_tasks.constants.exception_messages import \
+            INVALID_OFFSET_OR_LIMIT_VALUE
+        response_message = INVALID_OFFSET_OR_LIMIT_VALUE[0]
+        data = {
+            "response": response_message,
+            "http_status_code": 400,
+            "res_status": INVALID_OFFSET_OR_LIMIT_VALUE[1]
+        }
+        response_object = self.prepare_400_bad_request_response(
+            response_dict=data
+        )
+        return response_object
 
     def raise_invalid_project_id(self):
         from ib_adhoc_tasks.constants.exception_messages import \
