@@ -13,7 +13,8 @@ class TestGetGroupByInteractor:
     @pytest.fixture
     def presenter(self):
         from ib_adhoc_tasks.interactors.presenter_interfaces \
-        .get_group_by_presenter_interface import GetGroupByPresenterInterface
+            .group_by_presenter_interface import \
+            GetGroupByPresenterInterface
         return mock.create_autospec(GetGroupByPresenterInterface)
 
     @pytest.fixture
@@ -27,11 +28,18 @@ class TestGetGroupByInteractor:
     ):
         from ib_adhoc_tasks.tests.factories.storage_dtos import \
             GroupByResponseDTOFactory
-        group_by_response_dto = GroupByResponseDTOFactory()
+        group_by_response_dtos = \
+            GroupByResponseDTOFactory.create_batch(size=2)
         project_id = "project_id_1"
         user_id = "user_id_1"
+        storage.get_group_by_dtos.return_value = group_by_response_dtos
+        presenter.get_response_for_get_group_by.return_value = mock.Mock()
 
-        actual_group_by_response_dtos = interactor.get_group_by_wrapper(
+        interactor.get_group_by_wrapper(
             project_id=project_id, user_id=user_id, presenter=presenter
         )
 
+        storage.get_group_by_dtos.assert_called_once_with(user_id=user_id)
+        presenter.get_response_for_get_group_by.assert_called_once_with(
+            group_by_response_dtos=group_by_response_dtos
+        )

@@ -12,3 +12,12 @@ class GetGroupByPresenterInterface(abc.ABC):
             self, group_by_response_dtos: List[GroupByResponseDTO]
     ):
         pass
+
+
+class AddOrEditGroupByPresenterInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def get_response_for_add_or_edit_group_by(
+            self, group_by_response_dto: GroupByResponseDTO
+    ):
+        pass
