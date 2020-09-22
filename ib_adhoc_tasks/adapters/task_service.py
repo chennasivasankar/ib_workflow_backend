@@ -107,12 +107,16 @@ class TaskService:
     def _convert_to_task_stage_assignees_dtos(
             self, task_stage_assignee_dto: TaskStageAssigneeDetailsDTO
     ) -> TaskStageAssigneeDetailsDTO:
-        assignee_details = self._convert_to_assignee_details_dto(
-            assignee_details_dto=task_stage_assignee_dto.assignee_details
-        )
-        team_details = self._convert_to_team_details_dto(
-            team_details_dto=task_stage_assignee_dto.team_details
-        )
+        assignee_details = None
+        if task_stage_assignee_dto.assignee_details:
+            assignee_details = self._convert_to_assignee_details_dto(
+                assignee_details_dto=task_stage_assignee_dto.assignee_details
+            )
+        team_details = None
+        if task_stage_assignee_dto.team_details:
+            team_details = self._convert_to_team_details_dto(
+                team_details_dto=task_stage_assignee_dto.team_details
+            )
         return TaskStageAssigneeDetailsDTO(
             task_id=task_stage_assignee_dto.task_id,
             stage_id=task_stage_assignee_dto.stage_id,
