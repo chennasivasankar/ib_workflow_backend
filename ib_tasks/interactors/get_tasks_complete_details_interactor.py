@@ -40,9 +40,8 @@ class GetTasksCompleteDetailsInteractor(ValidationMixin):
         task_stage_assignee_dtos = self._get_task_assignee_details(
             task_stage_dtos=task_stage_dtos, project_id=input_dto.project_id
         )
-        task_ids = self._get_task_ids(task_stage_assignee_dtos)
         task_base_details_dtos = self.task_storage.get_base_details_to_task_ids(
-            task_ids=task_ids
+            task_ids=input_dto.task_ids
         )
         return TasksCompleteDetailsDTO(
             task_base_details_dtos=task_base_details_dtos,
