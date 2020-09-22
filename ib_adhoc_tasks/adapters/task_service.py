@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from dataclasses import dataclass
 from typing import List, Optional
 
 from ib_adhoc_tasks.adapters.dtos import TasksDetailsInputDTO, \
@@ -62,6 +61,18 @@ class TaskService:
             for stage_details_dto in stage_details_dtos
         ]
         return stage_id_and_name_dtos
+
+    def get_subtask_ids_for_task_id(self, task_id: int) -> List[str]:
+        from ib_tasks.app_interfaces.service_interface import ServiceInterface
+        service = ServiceInterface()
+        subtask_ids_dtos = service.get_sub_task_ids_to_task_ids(
+            task_ids=[task_id]
+        )
+        subtask_ids = subtask_ids_dtos[0].sub_task_ids
+        return subtask_ids
+
+    def get_project_id_based_on_task_id(self, task_id: int) -> str:
+        pass
 
     def get_task_complete_details_dto(
             self, task_details_input_dto: TasksDetailsInputDTO
