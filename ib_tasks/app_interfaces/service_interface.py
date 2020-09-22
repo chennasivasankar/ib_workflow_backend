@@ -5,20 +5,22 @@ from ib_tasks.interactors.dtos.dtos import TasksDetailsInputDTO
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
 from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDisplayNameDTO
-from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO, TaskStagesDTO, StageDetailsDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import SubTasksCountDTO, \
+    SubTasksIdsDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
     TaskDetailsConfigDTO
 from ib_tasks.interactors.task_stage_dtos import TasksCompleteDetailsDTO
 from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
-from ib_tasks.storages.fields_storage_implementation import FieldsStorageImplementation
+from ib_tasks.storages.fields_storage_implementation import \
+    FieldsStorageImplementation
 from ib_tasks.storages.storage_implementation import StagesStorageImplementation
-from ib_tasks.storages.task_stage_storage_implementation import TaskStageStorageImplementation
+from ib_tasks.storages.task_stage_storage_implementation import \
+    TaskStageStorageImplementation
 from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
 
@@ -169,3 +171,25 @@ class ServiceInterface:
         )
         response = interactor.get_tasks_complete_details(input_dto=input_dto)
         return response
+
+    @staticmethod
+    def get_sub_tasks_count_task_ids(task_ids: List[int]) -> \
+            List[SubTasksCountDTO]:
+        task_storage = TasksStorageImplementation()
+        from ib_tasks.interactors.sub_tasks_interactor import SubTasksInteractor
+        interactor = SubTasksInteractor(task_storage=task_storage)
+        sub_tasks_count_dtos = interactor.get_sub_tasks_count_task_ids(
+            task_ids=task_ids
+        )
+        return sub_tasks_count_dtos
+
+    @staticmethod
+    def get_sub_task_ids_to_task_ids(task_ids: List[int]) -> \
+            List[SubTasksIdsDTO]:
+        task_storage = TasksStorageImplementation()
+        from ib_tasks.interactors.sub_tasks_interactor import SubTasksInteractor
+        interactor = SubTasksInteractor(task_storage=task_storage)
+        task_id_with_sub_task_ids_dtos = interactor.get_sub_task_ids_to_task_ids(
+            task_ids=task_ids
+        )
+        return task_id_with_sub_task_ids_dtos
