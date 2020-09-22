@@ -62,15 +62,16 @@ class TaskService:
         ]
         return stage_id_and_name_dtos
 
+    @staticmethod
     def get_field_display_name(
-            self, field_id: str, user_id: str, project_id: str
+            field_id: str, user_id: str, project_id: str
     ) -> str:
         from ib_tasks.app_interfaces.service_interface import ServiceInterface
         service = ServiceInterface()
-        field_display_name_dto, = service.get_field_display_names(
+        field_display_name_dtos = service.get_field_display_names(
             field_ids=[field_id], user_id=user_id, project_id=project_id
         )
-        field_display_name = field_display_name_dto.field_display_name
+        field_display_name = field_display_name_dtos[0].field_display_name
         return field_display_name
 
     def get_task_complete_details_dto(
