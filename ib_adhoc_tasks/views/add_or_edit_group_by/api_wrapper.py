@@ -36,6 +36,6 @@ def prepare_add_or_edit_group_by_parameter_dto(kwargs):
         project_id=kwargs["project_id"],
         view_type=request_data["view_type"],
         group_by_key=request_data["group_by_key"],
-        group_by_id=request_data["group_by_id"],
+        group_by_id=request_data.get("group_by_id", None),
         order=request_data.get("order", None)
     )
