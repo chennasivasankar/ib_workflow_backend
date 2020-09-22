@@ -62,6 +62,7 @@ class TaskService:
             for stage_details_dto in stage_details_dtos
         ]
         return stage_id_and_name_dtos
+
     def get_task_complete_details_dto(
             self, task_details_input_dto: TasksDetailsInputDTO
     ) -> TasksCompleteDetailsDTO:

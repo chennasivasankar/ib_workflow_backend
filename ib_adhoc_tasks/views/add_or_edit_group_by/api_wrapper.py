@@ -15,8 +15,6 @@ def api_wrapper(*args, **kwargs):
     from ib_adhoc_tasks.storages.storage_implementation import \
         StorageImplementation
     storage = StorageImplementation()
-    from ib_adhoc_tasks.interactors.presenter_interfaces \
-        .group_by_presenter_interface import AddOrEditGroupByPresenterInterface
     from ib_adhoc_tasks.presenters.add_or_edit_group_by_presenter_implementation import \
         AddOrEditGroupByPresenterImplementation
     presenter = AddOrEditGroupByPresenterImplementation()
