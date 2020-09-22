@@ -4,14 +4,15 @@ import pytest
 
 from ib_tasks.interactors.create_or_update_transition_checklist_template import \
     CreateOrUpdateTransitionChecklistTemplateInteractor
+from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+    get_user_role_ids_based_on_project_mock_given_user_role_ids
 from ib_tasks.tests.factories.interactor_dtos import \
     CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory, \
     GoFFieldsDTOFactory, FieldValuesDTOFactory
 from ib_tasks.tests.factories.storage_dtos import \
     TaskGoFWithTaskIdDTOFactory, \
-    TaskGoFDetailsDTOFactory, TaskGoFFieldDTOFactory
-from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-    get_user_role_ids_based_on_project_mock_given_user_role_ids
+    TaskGoFDetailsDTOFactory, TaskGoFFieldDTOFactory, \
+    GoFIdWithSameGoFOrderDTOFactory, FieldIdWithTaskGoFIdDTOFactory
 
 
 class TestCreateTransitionChecklistInteractor:
@@ -25,6 +26,8 @@ class TestCreateTransitionChecklistInteractor:
         TaskGoFWithTaskIdDTOFactory.reset_sequence()
         TaskGoFDetailsDTOFactory.reset_sequence()
         TaskGoFFieldDTOFactory.reset_sequence()
+        GoFIdWithSameGoFOrderDTOFactory.reset_sequence()
+        FieldIdWithTaskGoFIdDTOFactory.reset_sequence()
 
     @pytest.fixture
     def create_or_update_task_storage_mock(self):
@@ -76,7 +79,7 @@ class TestCreateTransitionChecklistInteractor:
 
     @pytest.fixture
     def task_template_storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces.\
+        from ib_tasks.interactors.storage_interfaces. \
             task_template_storage_interface import TaskTemplateStorageInterface
         return mock.create_autospec(TaskTemplateStorageInterface)
 
@@ -99,6 +102,34 @@ class TestCreateTransitionChecklistInteractor:
                ".gofs_details_validations_interactor" \
                ".GoFsDetailsValidationsInteractor" \
                ".perform_gofs_details_validations"
+        return mocker.patch(path)
+
+    @pytest.fixture
+    def task_crud_create_task_gofs_mock(self, mocker):
+        path = "ib_tasks.interactors.create_or_update_task" \
+               ".task_crud_operations_interactor" \
+               ".TaskCrudOperationsInteractor.create_task_gofs"
+        return mocker.patch(path)
+
+    @pytest.fixture
+    def task_crud_create_task_gof_fields_mock(self, mocker):
+        path = "ib_tasks.interactors.create_or_update_task" \
+               ".task_crud_operations_interactor" \
+               ".TaskCrudOperationsInteractor.create_task_gof_fields"
+        return mocker.patch(path)
+
+    @pytest.fixture
+    def task_crud_update_task_gofs_mock(self, mocker):
+        path = "ib_tasks.interactors.create_or_update_task" \
+               ".task_crud_operations_interactor" \
+               ".TaskCrudOperationsInteractor.update_task_gofs"
+        return mocker.patch(path)
+
+    @pytest.fixture
+    def task_crud_update_task_gof_fields_mock(self, mocker):
+        path = "ib_tasks.interactors.create_or_update_task" \
+               ".task_crud_operations_interactor" \
+               ".TaskCrudOperationsInteractor.update_task_gof_fields"
         return mocker.patch(path)
 
     def test_with_invalid_task_display_id(
@@ -350,10 +381,10 @@ class TestCreateTransitionChecklistInteractor:
         from ib_tasks.exceptions.stage_custom_exceptions import \
             TransitionTemplateIsNotRelatedToGivenStageAction
         stage_action_storage_mock \
-            .validate_transition_template_id_is_related_to_given_stage_action. \
+            .validate_transition_template_relation_with_action. \
             side_effect = TransitionTemplateIsNotRelatedToGivenStageAction(
-                stage_id=given_stage_id, action_id=given_action_id,
-                transition_checklist_template_id=given_transition_template_id)
+            stage_id=given_stage_id, action_id=given_action_id,
+            transition_checklist_template_id=given_transition_template_id)
         interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
@@ -373,10 +404,10 @@ class TestCreateTransitionChecklistInteractor:
         # Assert
         assert response == mock_object
         stage_action_storage_mock \
-            .validate_transition_template_id_is_related_to_given_stage_action. \
+            .validate_transition_template_relation_with_action. \
             assert_called_once_with(
-                given_transition_template_id, given_action_id, given_stage_id
-            )
+            given_transition_template_id, given_action_id, given_stage_id
+        )
         presenter_mock \
             .raise_transition_template_is_not_linked_to_action \
             .assert_called_once()
@@ -747,7 +778,7 @@ class TestCreateTransitionChecklistInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = UserNeedsGoFWritablePermission(
-                given_created_by_id, given_gof_id, given_required_user_roles)
+            given_created_by_id, given_gof_id, given_required_user_roles)
         interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
@@ -811,7 +842,7 @@ class TestCreateTransitionChecklistInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = UserNeedsFieldWritablePermission(
-                given_created_by_id, given_field_id, given_required_user_roles)
+            given_created_by_id, given_field_id, given_required_user_roles)
         interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
@@ -1438,8 +1469,8 @@ class TestCreateTransitionChecklistInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = IncorrectRadioGroupChoice(
-                given_field_id, given_field_response, valid_choices
-            )
+            given_field_id, given_field_response, valid_choices
+        )
         interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
@@ -1576,9 +1607,9 @@ class TestCreateTransitionChecklistInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = IncorrectMultiSelectOptionsSelected(
-                given_field_id, invalid_multi_select_options_selected,
-                valid_choices
-            )
+            given_field_id, invalid_multi_select_options_selected,
+            valid_choices
+        )
         interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
@@ -1648,8 +1679,8 @@ class TestCreateTransitionChecklistInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = IncorrectMultiSelectLabelsSelected(
-                given_field_id, invalid_multi_select_labels_selected,
-                valid_choices)
+            given_field_id, invalid_multi_select_labels_selected,
+            valid_choices)
         interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
@@ -1720,8 +1751,8 @@ class TestCreateTransitionChecklistInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidDateFormat(
-                given_field_id, given_field_response, expected_format
-            )
+            given_field_id, given_field_response, expected_format
+        )
         interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
@@ -1790,8 +1821,8 @@ class TestCreateTransitionChecklistInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidTimeFormat(
-                given_field_id, given_field_response, expected_format
-            )
+            given_field_id, given_field_response, expected_format
+        )
         interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
             create_or_update_task_storage=create_or_update_task_storage_mock,
             template_storage=template_storage_mock,
@@ -2097,7 +2128,9 @@ class TestCreateTransitionChecklistInteractor:
             stage_action_storage_mock, task_storage_mock, gof_storage_mock,
             storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock,
-            task_template_storage_mock, mocker
+            task_template_storage_mock, mocker,
+            task_crud_create_task_gofs_mock,
+            task_crud_create_task_gof_fields_mock
     ):
         # Arrange
         given_task_display_id = "task_1"
@@ -2132,7 +2165,7 @@ class TestCreateTransitionChecklistInteractor:
             size=len(gof_ids), gof_id=factory.Iterator(gof_ids),
             same_gof_order=factory.Iterator(same_gof_orders)
         )
-        create_or_update_task_storage_mock.create_task_gofs.return_value = \
+        task_crud_create_task_gofs_mock.return_value = \
             expected_task_gof_details
         expected_task_gof_ids = [0, 0, 1, 1]
         expected_task_gof_fields = TaskGoFFieldDTOFactory.build_batch(
@@ -2156,7 +2189,118 @@ class TestCreateTransitionChecklistInteractor:
 
         # Assert
         assert response == mock_object
-        create_or_update_task_storage_mock.create_task_gofs \
-            .assert_called_once_with(task_gof_dtos=expected_task_gofs)
-        create_or_update_task_storage_mock.create_task_gof_fields \
-            .assert_called_once_with(expected_task_gof_fields)
+        task_crud_create_task_gofs_mock.assert_called_once_with(
+            task_gof_dtos=expected_task_gofs)
+        task_crud_create_task_gof_fields_mock.assert_called_once_with(
+            expected_task_gof_fields)
+
+    def test_with_existing_gofs_and_fields_updates_fields(
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            task_template_storage_mock, mocker,
+            task_crud_update_task_gofs_mock,
+            task_crud_update_task_gof_fields_mock,
+            task_crud_create_task_gofs_mock,
+            task_crud_create_task_gof_fields_mock
+    ):
+        # Arrange
+        given_task_display_id = "task_1"
+        task_id = 1
+        user_role_ids = ["FIN_PR", "FIN_ADMIN"]
+
+        get_user_role_ids_based_on_project_mock_given_user_role_ids(
+            mocker, user_role_ids)
+
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                task_display_id=given_task_display_id)
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = \
+            True
+        gof_ids = [
+            gof_dto.gof_id for gof_dto in
+            transition_checklist_dto.transition_checklist_gofs
+        ]
+        gofs = transition_checklist_dto.transition_checklist_gofs
+        field_ids = []
+        for gof in gofs:
+            field_ids += [
+                field_values_dto.field_id
+                for field_values_dto in gof.field_values_dtos
+            ]
+        same_gof_orders = [
+            gof_dto.same_gof_order for gof_dto in
+            transition_checklist_dto.transition_checklist_gofs
+        ]
+        existing_gofs = GoFIdWithSameGoFOrderDTOFactory.build_batch(
+            size=len(gof_ids), gof_id=factory.Iterator(gof_ids),
+            same_gof_order=factory.Iterator(same_gof_orders))
+        create_or_update_task_storage_mock.get_gofs_details_of_task \
+            .return_value = existing_gofs
+        task_gof_details = TaskGoFDetailsDTOFactory.build_batch(
+            size=len(gof_ids), gof_id=factory.Iterator(gof_ids),
+            same_gof_order=factory.Iterator(same_gof_orders))
+        task_crud_update_task_gofs_mock.return_value = \
+            task_gof_details
+        existing_fields = []
+        for gof in gofs:
+            task_gof_id = self._get_task_gof_id(gof, task_gof_details)
+            for field in gof.field_values_dtos:
+                existing_fields.append(
+                    FieldIdWithTaskGoFIdDTOFactory(
+                        field_id=field.field_id, task_gof_id=task_gof_id)
+                )
+        create_or_update_task_storage_mock \
+            .get_field_id_with_task_gof_id_dtos.return_value = existing_fields
+        expected_task_gofs = TaskGoFWithTaskIdDTOFactory.build_batch(
+            size=len(gof_ids), task_id=task_id,
+            gof_id=factory.Iterator(gof_ids),
+            same_gof_order=factory.Iterator(same_gof_orders)
+        )
+        expected_task_gof_details = TaskGoFDetailsDTOFactory.build_batch(
+            size=len(gof_ids), gof_id=factory.Iterator(gof_ids),
+            same_gof_order=factory.Iterator(same_gof_orders)
+        )
+        create_or_update_task_storage_mock.create_task_gofs.return_value = \
+            expected_task_gof_details
+
+        expected_task_gof_fields = []
+        for field in existing_fields:
+            expected_task_gof_fields.append(
+                TaskGoFFieldDTOFactory(task_gof_id=field.task_gof_id,
+                                       field_id=field.field_id))
+
+        interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            storage=storage_mock, field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
+        )
+        presenter_mock.get_create_transition_checklist_response.return_value \
+            = mock_object
+
+        # Act
+        response = interactor.create_or_update_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
+
+        # Assert
+        assert response == mock_object
+        task_crud_update_task_gofs_mock.assert_called_once_with(
+            task_gof_dtos=expected_task_gofs)
+        task_crud_update_task_gof_fields_mock.assert_called_once_with(
+            expected_task_gof_fields)
+        task_crud_create_task_gofs_mock.assert_not_called()
+        task_crud_create_task_gof_fields_mock.assert_not_called()
+
+    @staticmethod
+    def _get_task_gof_id(gof, task_gof_details):
+        for task_gof in task_gof_details:
+            if gof.gof_id == task_gof.gof_id:
+                return task_gof.task_gof_id
+        return
