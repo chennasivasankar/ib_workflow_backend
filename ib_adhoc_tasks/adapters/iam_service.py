@@ -42,12 +42,12 @@ class IamService:
 
     def is_valid_user_id_for_given_project(self, user_id: str, project_id: str):
         try:
-            response = self.interface.is_valid_user_id_for_given_project(
+            is_user_not_in_a_project = not self.interface.is_valid_user_id_for_given_project(
                 user_id=user_id, project_id=project_id
             )
         except InvalidUserId:
             raise InvalidUserId
         except InvalidProjectId:
             raise InvalidProjectId
-        if response:
+        if is_user_not_in_a_project:
             raise InvalidUserForProject

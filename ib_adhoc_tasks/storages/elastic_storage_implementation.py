@@ -83,7 +83,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
             self, project_id: str, adhoc_template_id: str,
             group_by_dtos: List[GroupByDTO], stage_ids: List[str],
             task_offset_and_limit_values_dto: TaskOffsetAndLimitValuesDTO
-    ) -> Optional[GroupDetailsDTO, GroupCountDTO, ChildGroupCountDTO]:
+    ):
         from elasticsearch_dsl import connections
         from django.conf import settings
         connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
@@ -98,15 +98,20 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         is_grouping_for_order_one = False
         is_grouping_for_order_two = False
 
+        group_agg = ""
+        child_agg = ""
+        group_by_order_one_dto = ""
+        group_by_order_two_dto = ""
+
         for group_by_dto in group_by_dtos:
-            is_grouping_for_order_one = not is_grouping_for_order_one
             if group_by_dto.order == 1:
+                is_grouping_for_order_one = not is_grouping_for_order_one
                 group_by_order_one_dto = group_by_dto
                 group_agg = self._prepare_aggregation(group_by_dto=group_by_dto)
 
         for group_by_dto in group_by_dtos:
-            is_grouping_for_order_two = True
             if group_by_dto.order == 2:
+                is_grouping_for_order_two = not is_grouping_for_order_two
                 group_by_order_two_dto = group_by_dto
                 child_agg = self._prepare_aggregation(group_by_dto=group_by_dto)
 
@@ -116,7 +121,10 @@ class ElasticStorageImplementation(ElasticStorageInterface):
                 query=query, search=search,
                 task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
             )
-            return group_details_dtos
+            return group_details_dtos, [], []
+
+        print("child_agg", child_agg)
+        print("group_agg", group_agg)
 
         is_grouping_for_only_order_one = not is_grouping_for_order_two
         if is_grouping_for_only_order_one:
@@ -126,7 +134,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
                     task_offset_and_limit_values_dto=task_offset_and_limit_values_dto,
                     group_by_order_one_dto=group_by_order_one_dto
                 )
-            return group_details_dtos, group_count_dtos
+            return group_details_dtos, group_count_dtos, []
 
         if is_grouping_for_order_two:
             group_details_dtos, group_count_dtos, child_group_count_dtos = \
