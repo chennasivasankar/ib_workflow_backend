@@ -2,7 +2,7 @@ from datetime import datetime
 from dataclasses import dataclass
 from typing import List, Optional
 
-from ib_adhoc_tasks.constants.enum import ActionTypes
+from ib_adhoc_tasks.constants.enum import ActionTypes, ViewType
 from ib_tasks.constants.enum import Priority
 
 
@@ -40,7 +40,13 @@ class GetTaskStageCompleteDetailsDTO:
 class AssigneeDetailsDTO:
     assignee_id: str
     name: str
-    profile_pic_url: str
+    profile_pic_url: Optional[str]
+
+
+@dataclass
+class TeamDetailsDTO:
+    team_id: str
+    name: str
 
 
 @dataclass
@@ -48,6 +54,7 @@ class TaskStageAssigneeDetailsDTO:
     task_id: int
     stage_id: str
     assignee_details: Optional[AssigneeDetailsDTO]
+    team_details: Optional[TeamDetailsDTO]
 
 
 @dataclass
@@ -70,3 +77,9 @@ class TasksCompleteDetailsDTO:
     task_stage_assignee_dtos: List[TaskStageAssigneeDetailsDTO]
 
 
+@dataclass
+class TasksDetailsInputDTO:
+    task_ids: List[int]
+    project_id: str
+    user_id: str
+    view_type: ViewType

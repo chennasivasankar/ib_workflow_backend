@@ -16,7 +16,9 @@ class GroupDetailsDTOFactory(factory.Factory):
     class Meta:
         model = GroupDetailsDTO
 
-    task_ids = factory.Sequence(lambda counter: "task_{}".format(counter))
+    task_ids = factory.Iterator(
+        [[1, 2, 3, 4], [5, 6, 7],
+         [8, 9]])
     total_tasks = factory.Sequence(lambda counter: counter)
     group_by_value = factory.Sequence(
         lambda counter: "value_{}".format(counter))

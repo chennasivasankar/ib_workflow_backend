@@ -8,6 +8,12 @@ class IamService:
         from ib_iam.app_interfaces.service_interface import ServiceInterface
         return ServiceInterface()
 
+    @staticmethod
+    def get_user_role_ids_based_on_project(
+            user_id: str, project_id: str
+    ) -> List[str]:
+        pass
+
     def get_user_role_ids(self, user_id: str):
         user_role_ids = self.interface.get_user_role_ids(
             user_id=user_id
@@ -19,3 +25,4 @@ class IamService:
             project_ids=project_ids
         )
         return valid_project_ids
+

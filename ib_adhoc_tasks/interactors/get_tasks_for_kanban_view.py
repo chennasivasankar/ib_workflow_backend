@@ -6,7 +6,7 @@ from ib_adhoc_tasks.interactors.dtos import GroupByInfoKanbanViewDTO, \
     OffsetLimitDTO, GroupByDTO, TaskOffsetAndLimitValuesDTO
 from ib_adhoc_tasks.interactors.presenter_interfaces \
     .get_tasks_for_kanban_view_presenter_interface import \
-    GetTasksForKanbanViewPresenterInterface, TaskDetailsWithGroupByInfoDTO
+    GetTasksForKanbanViewPresenterInterface
 from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
     GroupByDetailsDTO, GroupDetailsDTO
 from ib_adhoc_tasks.interactors.storage_interfaces.elastic_storage_interface \
@@ -36,18 +36,18 @@ class GetTasksForKanbanViewInteractor:
             return self.get_tasks_for_kanban_view_response(
                 group_by_info_kanban_view_dto, presenter
             )
-        except InvalidProjectId as err:
-            return presenter.raise_invalid_project_id(err)
+        except InvalidProjectId:
+            return presenter.raise_invalid_project_id()
 
     def get_tasks_for_kanban_view_response(
             self, group_by_info_kanban_view_dto: GroupByInfoKanbanViewDTO,
             presenter: GetTasksForKanbanViewPresenterInterface
     ):
-        task_details_with_group_by_info_dto = self.get_tasks_for_kanban_view(
+        group_details_dtos, task_details_dtos = self.get_tasks_for_kanban_view(
             group_by_info_kanban_view_dto)
 
-        response = presenter.get_task_details_group_by_info_reponse(
-            task_details_with_group_by_info_dto)
+        response = presenter.get_task_details_group_by_info_response(
+            group_details_dtos, task_details_dtos)
         return response
 
     def get_tasks_for_kanban_view(
@@ -59,14 +59,10 @@ class GetTasksForKanbanViewInteractor:
             group_by_info_kanban_view_dto)
         task_ids = self._get_task_ids(group_details_dtos)
         task_details_dtos = self._get_task_details_dtos(task_ids)
-        task_details_with_group_by_info_dto = TaskDetailsWithGroupByInfoDTO(
-            group_details_dtos=group_details_dtos,
-            task_details_dtos=task_details_dtos
-        )
-        return task_details_with_group_by_info_dto
+        return group_details_dtos, task_details_dtos
 
     @staticmethod
-    def _get_task_ids(group_details_dtos: List[GroupByDetailsDTO]):
+    def _get_task_ids(group_details_dtos: List[GroupDetailsDTO]):
         all_task_ids = []
         for dto in group_details_dtos:
             task_ids = dto.task_ids
@@ -80,7 +76,7 @@ class GetTasksForKanbanViewInteractor:
         from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
         task_service_adapter = get_service_adapter()
         task_service = task_service_adapter.task_service
-        task_details_dtos = task_service.get_task_details_dtos(task_ids)
+        task_details_dtos = task_service.get_task_complete_details_dtos(task_ids)
         return task_details_dtos
 
     @staticmethod
@@ -95,7 +91,7 @@ class GetTasksForKanbanViewInteractor:
                 flag = 1
                 break
         if flag == 0:
-            raise InvalidProjectId(project_id)
+            raise InvalidProjectId()
 
     def _get_group_details_dtos(
             self,

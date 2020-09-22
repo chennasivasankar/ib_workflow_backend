@@ -41,7 +41,7 @@ class TestGetTasksForKanbanViewInteractor:
 
     @pytest.fixture
     def group_by_info_kanban_view_dto(self):
-        from ib_adhoc_tasks.tests.factories.interactor import \
+        from ib_adhoc_tasks.tests.factories.interactor_dtos import \
             GroupByInfoKanbanViewDTOFactory
         GroupByInfoKanbanViewDTOFactory.reset_sequence()
         return GroupByInfoKanbanViewDTOFactory()
