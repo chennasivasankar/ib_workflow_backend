@@ -28,7 +28,11 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'assignee': {
                     'assignee_id': 'assignee_0',
                     'name': 'name_0',
-                    'profile_pic_url': 'profile_pic_0'
+                    'profile_pic_url': 'profile_pic_0',
+                    'team_info': {
+                        'team_id': 'team_0',
+                        'team_name': 'name_0'
+                    }
                 },
                 'stage_color': 'stage_color0',
                 'stage_display_name': 'stage_name0',
@@ -74,7 +78,11 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'assignee': {
                     'assignee_id': 'assignee_1',
                     'name': 'name_1',
-                    'profile_pic_url': 'profile_pic_1'
+                    'profile_pic_url': 'profile_pic_1',
+                    'team_info': {
+                        'team_id': 'team_1',
+                        'team_name': 'name_1'
+                    }
                 },
                 'stage_color': 'stage_color1',
                 'stage_display_name': 'stage_name1',
@@ -120,7 +128,11 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'assignee': {
                     'assignee_id': 'assignee_2',
                     'name': 'name_2',
-                    'profile_pic_url': 'profile_pic_2'
+                    'profile_pic_url': 'profile_pic_2',
+                    'team_info': {
+                        'team_id': 'team_2',
+                        'team_name': 'name_2'
+                    }
                 },
                 'stage_color': 'stage_color2',
                 'stage_display_name': 'stage_name2',
@@ -166,7 +178,11 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'assignee': {
                     'assignee_id': 'assignee_3',
                     'name': 'name_3',
-                    'profile_pic_url': 'profile_pic_3'
+                    'profile_pic_url': 'profile_pic_3',
+                    'team_info': {
+                        'team_id': 'team_3',
+                        'team_name': 'name_3'
+                    }
                 },
                 'stage_color': 'stage_color3',
                 'stage_display_name': 'stage_name3',
@@ -212,7 +228,11 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'assignee': {
                     'assignee_id': 'assignee_4',
                     'name': 'name_4',
-                    'profile_pic_url': 'profile_pic_4'
+                    'profile_pic_url': 'profile_pic_4',
+                    'team_info': {
+                        'team_id': 'team_4',
+                        'team_name': 'name_4'
+                    }
                 },
                 'stage_color': 'stage_color4',
                 'stage_display_name': 'stage_name4',
@@ -258,7 +278,11 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'assignee': {
                     'assignee_id': 'assignee_5',
                     'name': 'name_5',
-                    'profile_pic_url': 'profile_pic_5'
+                    'profile_pic_url': 'profile_pic_5',
+                    'team_info': {
+                        'team_id': 'team_5',
+                        'team_name': 'name_5'
+                    }
                 },
                 'stage_color': 'stage_color5',
                 'stage_display_name': 'stage_name5',
@@ -304,7 +328,11 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'assignee': {
                     'assignee_id': 'assignee_6',
                     'name': 'name_6',
-                    'profile_pic_url': 'profile_pic_6'
+                    'profile_pic_url': 'profile_pic_6',
+                    'team_info': {
+                        'team_id': 'team_6',
+                        'team_name': 'name_6'
+                    }
                 },
                 'stage_color': 'stage_color6',
                 'stage_display_name': 'stage_name6',
@@ -350,7 +378,11 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'assignee': {
                     'assignee_id': 'assignee_7',
                     'name': 'name_7',
-                    'profile_pic_url': 'profile_pic_7'
+                    'profile_pic_url': 'profile_pic_7',
+                    'team_info': {
+                        'team_id': 'team_7',
+                        'team_name': 'name_7'
+                    }
                 },
                 'stage_color': 'stage_color7',
                 'stage_display_name': 'stage_name7',
@@ -396,7 +428,11 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'assignee': {
                     'assignee_id': 'assignee_8',
                     'name': 'name_8',
-                    'profile_pic_url': 'profile_pic_8'
+                    'profile_pic_url': 'profile_pic_8',
+                    'team_info': {
+                        'team_id': 'team_8',
+                        'team_name': 'name_8'
+                    }
                 },
                 'stage_color': 'stage_color8',
                 'stage_display_name': 'stage_name8',
@@ -442,7 +478,11 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'assignee': {
                     'assignee_id': 'assignee_9',
                     'name': 'name_9',
-                    'profile_pic_url': 'profile_pic_9'
+                    'profile_pic_url': 'profile_pic_9',
+                    'team_info': {
+                        'team_id': 'team_9',
+                        'team_name': 'name_9'
+                    }
                 },
                 'stage_color': 'stage_color9',
                 'stage_display_name': 'stage_name9',
@@ -488,7 +528,11 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'assignee': {
                     'assignee_id': 'assignee_10',
                     'name': 'name_10',
-                    'profile_pic_url': 'profile_pic_10'
+                    'profile_pic_url': 'profile_pic_10',
+                    'team_info': {
+                        'team_id': 'team_10',
+                        'team_name': 'name_10'
+                    }
                 },
                 'stage_color': 'stage_color10',
                 'stage_display_name': 'stage_name10',
@@ -534,7 +578,11 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'assignee': {
                     'assignee_id': 'assignee_11',
                     'name': 'name_11',
-                    'profile_pic_url': 'profile_pic_11'
+                    'profile_pic_url': 'profile_pic_11',
+                    'team_info': {
+                        'team_id': 'team_11',
+                        'team_name': 'name_11'
+                    }
                 },
                 'stage_color': 'stage_color11',
                 'stage_display_name': 'stage_name11',
@@ -580,7 +628,11 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'assignee': {
                     'assignee_id': 'assignee_12',
                     'name': 'name_12',
-                    'profile_pic_url': 'profile_pic_12'
+                    'profile_pic_url': 'profile_pic_12',
+                    'team_info': {
+                        'team_id': 'team_12',
+                        'team_name': 'name_12'
+                    }
                 },
                 'stage_color': 'stage_color12',
                 'stage_display_name': 'stage_name12',
@@ -626,7 +678,11 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'assignee': {
                     'assignee_id': 'assignee_13',
                     'name': 'name_13',
-                    'profile_pic_url': 'profile_pic_13'
+                    'profile_pic_url': 'profile_pic_13',
+                    'team_info': {
+                        'team_id': 'team_13',
+                        'team_name': 'name_13'
+                    }
                 },
                 'stage_color': 'stage_color13',
                 'stage_display_name': 'stage_name13',
@@ -672,7 +728,11 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'assignee': {
                     'assignee_id': 'assignee_14',
                     'name': 'name_14',
-                    'profile_pic_url': 'profile_pic_14'
+                    'profile_pic_url': 'profile_pic_14',
+                    'team_info': {
+                        'team_id': 'team_14',
+                        'team_name': 'name_14'
+                    }
                 },
                 'stage_color': 'stage_color14',
                 'stage_display_name': 'stage_name14',
