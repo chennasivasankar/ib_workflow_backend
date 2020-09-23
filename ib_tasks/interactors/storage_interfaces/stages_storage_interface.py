@@ -9,7 +9,7 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDetailsDTO, \
     StageFlowDTO, StageIdWithValueDTO, StageFlowWithActionIdDTO, \
-    StageIdWithTemplateIdDTO, StageIdWithGoFIdDTO, StageDisplayValueDTO, \
+    StageIdWithTemplateIdDTO, DBStageIdWithGoFIdDTO, StageDisplayValueDTO, \
     StageValueDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
     TaskStagesDTO, TaskTemplateStageDTO, StageValueWithTaskIdsDTO, \
@@ -209,7 +209,8 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_existing_gof_ids_of_stage(self, stage_id: str) -> List[str]:
+    def get_existing_gof_ids_with_stage_id_of_stages(
+            self, stage_ids: List[int]) -> List[DBStageIdWithGoFIdDTO]:
         pass
 
     @abc.abstractmethod
@@ -237,7 +238,7 @@ class StageStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_stage_gof_dtos_for_given_stages_and_gofs(
             self, stage_ids: List[int], gof_ids: List[str]
-    ) -> List[StageIdWithGoFIdDTO]:
+    ) -> List[DBStageIdWithGoFIdDTO]:
         pass
 
     @abc.abstractmethod
