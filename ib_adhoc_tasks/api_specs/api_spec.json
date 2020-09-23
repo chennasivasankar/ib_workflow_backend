@@ -1444,6 +1444,27 @@
           }
         ]
       }
+    },
+    "GetSubTasksOfTask": {
+      "description": "Get subtasks of task",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "parent_task_id": {
+            "type": "string"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/TaskOverviewWithStageAndActions"
+            }
+          }
+        },
+        "required": [
+          "parent_task_id",
+          "tasks"
+        ]
+      }
     }
   },
   "paths": {
@@ -1653,18 +1674,12 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/LimitParameter"
-          },
-          {
-            "$ref": "#/parameters/OffsetParameter"
-          },
-          {
             "$ref": "#/parameters/GetSubTasksParameter"
           }
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/GetTasksOfProjectByGroupIds"
+            "$ref": "#/responses/GetSubTasksOfTask"
           },
           "404": {
             "$ref": "#/responses/NotFoundRequestForGetSubTasksResponse"

@@ -10,7 +10,7 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_200_JSON = """
 {
-    "total_tasks": 1,
+    "parent_task_id": "string",
     "tasks": [
         {
             "task_id": "string",
@@ -34,7 +34,11 @@ RESPONSE_200_JSON = """
                 "assignee": {
                     "assignee_id": "string",
                     "name": "string",
-                    "profile_pic_url": "string"
+                    "profile_pic_url": "string",
+                    "team_info": {
+                        "team_id": "string",
+                        "team_name": "string"
+                    }
                 },
                 "actions": [
                     {
