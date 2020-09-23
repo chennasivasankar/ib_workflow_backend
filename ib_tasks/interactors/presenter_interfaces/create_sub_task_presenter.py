@@ -16,20 +16,16 @@ from ib_tasks.exceptions.stage_custom_exceptions import \
     DuplicateStageIds, InvalidDbStageIdsListException, \
     StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import PriorityIsRequired, \
-    InvalidTaskJson
+    InvalidTaskJson, InvalidTaskDisplayId
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 
 
-class CreateTaskPresenterInterface(abc.ABC):
+class CreateSubTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_create_task_response(
-            self, created_task_display_id: str,
-            task_current_stage_details_dto: TaskCurrentStageDetailsDTO,
-            all_tasks_overview_dto: AllTasksOverviewDetailsDTO
-    ):
+    def get_create_sub_task_response(self):
         pass
 
     @abc.abstractmethod
@@ -249,4 +245,8 @@ class CreateTaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_invalid_stage_permitted_gofs(self,
                                            err: InvalidStagePermittedGoFs):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_parent_task_id(self, err: InvalidTaskDisplayId):
         pass

@@ -6,8 +6,9 @@ Author: Pavankumar Pamuru
 
 import abc
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Union
 
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionWithStageIdDTO
@@ -20,9 +21,13 @@ from ib_tasks.interactors.storage_interfaces.status_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskDisplayIdDTO, \
     TaskProjectDTO, TaskDueMissingDTO, \
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO, \
+    TaskProjectDTO, TaskDueMissingDTO, \
     SubTasksCountDTO, SubTasksIdsDTO
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, \
     GetTaskDetailsDTO, \
+    TaskDelayParametersDTO
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO, \
     TaskDelayParametersDTO
 
 
@@ -222,4 +227,14 @@ class TaskStorageInterface(abc.ABC):
     def get_sub_task_ids_to_tasks(
             self, task_ids: List[int]
     ) -> SubTasksIdsDTO:
+        pass
+
+    @abc.abstractmethod
+    def validate_task_display_id_and_return_task_id(
+            self, task_display_id: str
+    ) -> Union[InvalidTaskDisplayId, int]:
+        pass
+
+    @abc.abstractmethod
+    def add_sub_task(self, created_task_id: int, parent_task_id: int):
         pass

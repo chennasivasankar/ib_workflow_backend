@@ -10,6 +10,7 @@ snapshots = Snapshot()
 snapshots['TestCase01CreateTaskAPITestCase.test_case status_code'] = '201'
 
 snapshots['TestCase01CreateTaskAPITestCase.test_case body'] = {
+    'created_task_id': 'IBWF-1',
     'task_current_stages_details': {
         'stages': [
             {
