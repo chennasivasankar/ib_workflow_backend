@@ -207,3 +207,15 @@ class GetTaskRPsParametersDTO:
     task_id: str
     user_id: str
     stage_id: int
+
+
+@dataclass
+class TaskWithAllSubTaskDTO:
+    task_id: int
+    sub_task_ids: List[int]
+
+
+@dataclass
+class TaskWithCompletedSubTasksCountDTO:
+    task_id: int
+    completed_sub_tasks_count: int

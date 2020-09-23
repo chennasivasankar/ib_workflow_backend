@@ -42,7 +42,7 @@ from ib_tasks.interactors.storage_interfaces.status_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO, TaskDueMissingDTO, \
     SubTasksIdsDTO, \
-    SubTasksCountDTO, TaskProjectDTO, TaskDisplayIdDTO
+    SubTasksCountDTO, TaskProjectDTO, TaskDisplayIdDTO, TaskWithSubTaskDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO, ProjectIdWithTaskTemplateIdDTO, ProjectTemplateDTO
 from ib_tasks.interactors.task_dtos import TaskStatusVariableDTO
@@ -854,3 +854,11 @@ class SubTasksIdsDTOFactory(factory.Factory):
 
     task_id = factory.sequence(lambda n: n)
     sub_task_ids = factory.sequence(lambda n: [n + 1, n + 2])
+
+
+class TaskWithSubTaskDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskWithSubTaskDTO
+
+    task_id = factory.sequence(lambda counter: counter)
+    sub_task_id = factory.sequence(lambda counter: counter)
