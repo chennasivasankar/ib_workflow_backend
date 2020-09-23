@@ -40,8 +40,6 @@ class GoFsDetailsValidationsInteractor:
         self.create_task_storage = create_task_storage
         self.storage = storage
         self.task_template_storage = task_template_storage
-        self.gof_id_with_display_name_dtos = None
-        self.field_id_with_display_name_dtos = None
 
     def perform_gofs_details_validations(
             self, gof_fields_dtos: List[GoFFieldsDTO], user_id: str,
