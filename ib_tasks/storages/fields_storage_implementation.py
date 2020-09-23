@@ -10,7 +10,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
      FieldIdWithGoFIdDTO, StageTaskFieldsDTO,
      FieldDisplayNameDTO,
      TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId, FieldNameDTO,
-     FieldIdWithFieldDisplayNameDTO, FieldTypeDTO, FieldWritePermissionRolesDTO)
+     FieldNameWithGoFDisplayNameDTO, FieldTypeDTO, FieldWritePermissionRolesDTO)
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
@@ -25,9 +25,22 @@ from ib_tasks.models import (CurrentTaskStage, Stage, TaskGoFField, FieldRole,
 
 class FieldsStorageImplementation(FieldsStorageInterface):
 
+    def get_fields_display_names_with_gof_display_name(
+            self, field_ids: List[str]) -> List[FieldNameWithGoFDisplayNameDTO]:
+        field_dicts = Field.objects.filter(field_id__in=field_ids).values(
+            "field_id", "field__gof__display_name", "field__display_name")
+        field_id_with_display_name_dtos = [
+            FieldNameWithGoFDisplayNameDTO(
+                field_id=field_dict['field_id'],
+                gof_display_name=field_dict['field__gof__display_name'],
+                field_display_name=field_dict['field__display_name']
+            ) for field_dict in field_dicts
+        ]
+        return field_id_with_display_name_dtos
+
     def get_user_writable_fields_for_given_gof_ids(
             self, user_roles, gof_ids: List[str]
-    ) -> List[FieldIdWithFieldDisplayNameDTO]:
+    ) -> List[FieldNameWithGoFDisplayNameDTO]:
         field_dicts = FieldRole.objects.filter(
                 Q(role__in=user_roles) | Q(role=ALL_ROLES_ID),
                 field__gof_id__in=gof_ids, field__required=True,
@@ -36,11 +49,10 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             "field_id", "field__gof__display_name", "field__display_name"
         ).distinct()
         field_id_with_display_name_dtos = [
-                FieldIdWithFieldDisplayNameDTO(
-                        field_id=field_dict['field_id'],
-                        gof_display_name=field_dict[
-                            'field__gof__display_name'],
-                        field_display_name=field_dict['field__display_name']
+                FieldNameWithGoFDisplayNameDTO(
+                    field_id=field_dict['field_id'],
+                    gof_display_name=field_dict['field__gof__display_name'],
+                    field_display_name=field_dict['field__display_name']
                 ) for field_dict in field_dicts
         ]
         return field_id_with_display_name_dtos

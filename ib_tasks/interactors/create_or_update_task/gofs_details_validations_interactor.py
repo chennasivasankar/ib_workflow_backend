@@ -9,6 +9,8 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
+from ib_tasks.interactors.mixins.get_gofs_feilds_display_names_mixin import \
+    GetGoFsFieldsDisplayNameMixin
 from ib_tasks.interactors.storage_interfaces. \
     create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
@@ -25,7 +27,7 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, FieldValuesDTO
 
 
-class GoFsDetailsValidationsInteractor:
+class GoFsDetailsValidationsInteractor(GetGoFsFieldsDisplayNameMixin):
 
     def __init__(
             self, task_storage: TaskStorageInterface,
@@ -40,6 +42,8 @@ class GoFsDetailsValidationsInteractor:
         self.create_task_storage = create_task_storage
         self.storage = storage
         self.task_template_storage = task_template_storage
+        self.gof_id_with_display_name_dtos = None
+        self.field_id_with_display_name_dtos = None
 
     def perform_gofs_details_validations(
             self, gof_fields_dtos: List[GoFFieldsDTO], user_id: str,
@@ -47,8 +51,17 @@ class GoFsDetailsValidationsInteractor:
             action_type: Optional[ActionTypes], stage_id: int):
         gof_ids = self._validate_gof_details_and_get_gof_ids(gof_fields_dtos)
         field_ids = self._validate_fields(gof_fields_dtos)
+        self.gof_id_with_display_name_dtos = \
+            self.gof_storage.get_gofs_display_names(gof_ids)
+        self.field_id_with_display_name_dtos = \
+            self.field_storage.get_fields_display_names_with_gof_display_name(
+                field_ids)
         self._validate_that_fields_gofs_and_template_are_related(
             task_template_id, gof_ids, gof_fields_dtos, stage_id)
+        # todo: check error message has display names instead of ids from
+        #  here after fixing one exception in the above method related stage
+        #  permitted gofs error - remember to always refactor instead of
+        #  renaming on the fly
         self._validate_user_permission_on_given_fields(
             field_ids, user_id, project_id)
         self._validate_given_field_responses(gof_fields_dtos, action_type)
@@ -197,7 +210,13 @@ class GoFsDetailsValidationsInteractor:
             set(given_gof_field_ids) - set(valid_gof_field_ids)
         ))
         if invalid_gof_field_ids:
-            raise InvalidFieldsOfGoF(gof_id, invalid_gof_field_ids)
+            invalid_field_display_names = self.get_fields_display_names(
+                invalid_gof_field_ids,
+                self.field_id_with_display_name_dtos)
+            gof_display_name = self.get_gof_display_name(
+                gof_id, self.gof_id_with_display_name_dtos)
+            raise InvalidFieldsOfGoF(
+                gof_display_name, invalid_field_display_names)
         return
 
     def _validate_for_given_gofs_are_related_to_given_task_template(
@@ -208,8 +227,11 @@ class GoFsDetailsValidationsInteractor:
         invalid_task_template_gof_ids = sorted(list(
             set(gof_ids) - set(valid_task_template_gof_ids)))
         if invalid_task_template_gof_ids:
+            invalid_gof_display_names = self.get_gof_display_names(
+                invalid_task_template_gof_ids,
+                self.gof_id_with_display_name_dtos)
             raise InvalidGoFsOfTaskTemplate(
-                invalid_task_template_gof_ids, task_template_id)
+                invalid_gof_display_names, task_template_id)
         return
 
     @staticmethod
@@ -248,5 +270,6 @@ class GoFsDetailsValidationsInteractor:
         not_permitted_gof_ids = list(
             sorted(set(gof_ids) - set(permitted_gof_ids)))
         if not_permitted_gof_ids:
+            # todo: send gof display names instead of ids
             raise InvalidStagePermittedGoFs(not_permitted_gof_ids, stage_id)
         return

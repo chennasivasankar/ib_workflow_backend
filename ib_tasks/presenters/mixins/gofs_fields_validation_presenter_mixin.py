@@ -20,7 +20,7 @@ class GoFsFieldsValidationPresenterMixin:
     def raise_invalid_gof_ids_exception(self, err):
         from ib_tasks.constants.exception_messages import \
             INVALID_GOF_IDS
-        response_message = INVALID_GOF_IDS[0].format(str(err.gof_ids))
+        response_message = INVALID_GOF_IDS[0].format(str(err.gofs_display_names))
         data = {
             "response": response_message,
             "http_status_code": 400,
@@ -31,7 +31,7 @@ class GoFsFieldsValidationPresenterMixin:
     def raise_invalid_field_ids_exception(self, err):
         from ib_tasks.constants.exception_messages import \
             INVALID_FIELD_IDS
-        response_message = INVALID_FIELD_IDS[0].format(str(err.field_ids))
+        response_message = INVALID_FIELD_IDS[0].format(str(err.field_display_names))
         data = {
             "response": response_message,
             "http_status_code": 400,
@@ -45,7 +45,7 @@ class GoFsFieldsValidationPresenterMixin:
         from ib_tasks.constants.exception_messages import \
             INVALID_GOFS_OF_TASK_TEMPLATE
         response_message = INVALID_GOFS_OF_TASK_TEMPLATE[0].format(
-            str(err.gof_ids), err.task_template_id)
+            str(err.gofs_display_names), err.task_template_id)
         data = {
             "response": response_message,
             "http_status_code": 400,
@@ -71,7 +71,7 @@ class GoFsFieldsValidationPresenterMixin:
         from ib_tasks.constants.exception_messages import \
             INVALID_FIELDS_OF_GOF
         response_message = INVALID_FIELDS_OF_GOF[0].format(
-            str(err.field_ids), err.gof_id)
+            str(err.field_display_names), err.gof_display_name)
         data = {
             "response": response_message,
             "http_status_code": 400,

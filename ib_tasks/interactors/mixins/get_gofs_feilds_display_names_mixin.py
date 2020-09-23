@@ -42,3 +42,16 @@ class GetGoFsFieldsDisplayNameMixin:
             if gof_id_matched:
                 gof_display_names.append(gof_dto.gof_display_name)
         return gof_display_names
+
+    @staticmethod
+    def get_fields_display_names(
+            field_ids: List[str],
+            field_id_with_field_display_name_dtos: List[
+                FieldNameWithGoFDisplayNameDTO]
+    ) -> List[str]:
+        field_display_names = []
+        for field_dto in field_id_with_field_display_name_dtos:
+            field_id_matched = field_dto.field_id in field_ids
+            if field_id_matched:
+                field_display_names.append(field_dto.field_display_name)
+        return field_display_names

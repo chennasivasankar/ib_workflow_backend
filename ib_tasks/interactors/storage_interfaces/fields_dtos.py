@@ -130,7 +130,7 @@ class FieldWritePermissionRolesDTO:
 
 
 @dataclass
-class FieldIdWithFieldDisplayNameDTO:
+class FieldNameWithGoFDisplayNameDTO:
     field_id: str
     gof_display_name: str
     field_display_name: str
