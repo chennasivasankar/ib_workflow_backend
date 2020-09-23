@@ -79,8 +79,3 @@ class SubTasksIdsDTO:
     task_id: int
     sub_task_ids: List[int]
 
-
-@dataclass
-class TaskWithSubTaskDTO:
-    task_id: int
-    sub_task_id: int

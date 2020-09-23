@@ -21,7 +21,7 @@ from ib_tasks.interactors.storage_interfaces.status_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskDisplayIdDTO, \
     TaskProjectDTO, TaskDueMissingDTO, \
-    SubTasksCountDTO, SubTasksIdsDTO, TaskWithSubTaskDTO
+    SubTasksCountDTO, SubTasksIdsDTO
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, \
     GetTaskDetailsDTO, \
     TaskDelayParametersDTO
@@ -223,12 +223,6 @@ class TaskStorageInterface(abc.ABC):
     def get_sub_task_ids_to_tasks(
             self, task_ids: List[int]
     ) -> List[SubTasksIdsDTO]:
-        pass
-
-    @abc.abstractmethod
-    def get_task_with_sub_task_dtos(
-            self, task_ids: List[int]
-    ) -> List[TaskWithSubTaskDTO]:
         pass
 
     @abc.abstractmethod

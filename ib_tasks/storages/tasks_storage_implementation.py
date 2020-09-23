@@ -22,12 +22,13 @@ from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO, StatusVariableDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskDisplayIdDTO, TaskProjectDTO, TaskDueMissingDTO, SubTasksCountDTO, \
-    SubTasksIdsDTO, TaskWithSubTaskDTO
+    SubTasksIdsDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
-from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO, \
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, \
+    GetTaskDetailsDTO, \
     TaskDelayParametersDTO
 from ib_tasks.models import Stage, TaskTemplate, CurrentTaskStage, \
     TaskTemplateStatusVariable, TaskStageHistory, TaskStatusVariable, SubTask
@@ -747,16 +748,3 @@ class TasksStorageImplementation(TaskStorageInterface):
             )
             for task_id in task_ids
         ]
-
-    def get_task_with_sub_task_dtos(
-            self, task_ids: List[int]
-    ) -> List[TaskWithSubTaskDTO]:
-        sub_task_objects = SubTask.objects.filter(task_id__in=task_ids)
-        task_with_sub_task_dtos = [
-            TaskWithSubTaskDTO(
-                task_id=sub_task_object.task_id,
-                sub_task_id=sub_task_object.sub_task_id
-            )
-            for sub_task_object in sub_task_objects
-        ]
-        return task_with_sub_task_dtos
