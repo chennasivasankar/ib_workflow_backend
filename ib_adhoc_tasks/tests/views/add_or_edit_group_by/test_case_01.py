@@ -18,7 +18,7 @@ class TestCase01AddOrEditGroupByAPITestCase(TestUtils):
     def test_adds_and_returns_group_by_response_dto(self, snapshot):
         body = {
             'view_type': 'LIST',
-            'group_by_display_name': "ASSIGNEE",
+            'group_by_key': "ASSIGNEE",
             'order': 1,
             'group_by_id': None
         }
@@ -35,7 +35,7 @@ class TestCase01AddOrEditGroupByAPITestCase(TestUtils):
     def test_edits_and_returns_group_by_response_dto(self, setup, snapshot):
         body = {
             'view_type': 'KANBAN',
-            'group_by_display_name': "STAGE",
+            'group_by_key': "STAGE",
             'order': 2,
             'group_by_id': setup["group_by_id"]
         }

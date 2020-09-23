@@ -52,3 +52,10 @@ def validate_project_ids_for_kanban_view_mock(mocker):
     valid_project_ids = [group_by_info_kanban_view_dto.project_id]
     mock.return_value = valid_project_ids
     return mock
+
+
+def get_stage_details_mock(mocker):
+    mock = mocker.patch(
+        "ib_adhoc_tasks.adapters.task_service.TaskService.get_stage_details"
+    )
+    return mock

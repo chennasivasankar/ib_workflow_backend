@@ -758,7 +758,7 @@
             "KANBAN"
           ]
         },
-        "group_by_display_name": {
+        "group_by_key": {
           "type": "string"
         },
         "order": {
@@ -767,7 +767,7 @@
       },
       "required": [
         "view_type",
-        "group_by_display_name"
+        "group_by_key"
       ]
     },
     "GroupByResponseFields": {
@@ -776,7 +776,10 @@
         "group_by_id": {
           "type": "integer"
         },
-        "group_by_display_name": {
+        "group_by_key": {
+          "type": "string"
+        },
+        "display_name": {
           "type": "string"
         },
         "order": {
@@ -785,7 +788,8 @@
       },
       "required": [
         "group_by_id",
-        "group_by_display_name",
+        "group_by_key",
+        "display_name",
         "order"
       ]
     },

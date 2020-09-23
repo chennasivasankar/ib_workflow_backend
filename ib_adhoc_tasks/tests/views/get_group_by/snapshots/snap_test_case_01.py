@@ -11,13 +11,15 @@ snapshots['TestCase01GetGroupByAPITestCase.test_given_valid_data_it_returns_grou
 
 snapshots['TestCase01GetGroupByAPITestCase.test_given_valid_data_it_returns_group_by_response body'] = [
     {
-        'group_by_display_name': 'ASSIGNEE',
+        'display_name': 'ASSIGNEE',
         'group_by_id': 1,
+        'group_by_key': 'ASSIGNEE',
         'order': 1
     },
     {
-        'group_by_display_name': 'STAGE',
+        'display_name': 'STAGE',
         'group_by_id': 2,
+        'group_by_key': 'STAGE',
         'order': 2
     }
 ]

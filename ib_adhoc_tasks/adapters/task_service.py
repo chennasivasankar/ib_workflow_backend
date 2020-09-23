@@ -74,6 +74,18 @@ class TaskService:
     def get_project_id_based_on_task_id(self, task_id: int) -> str:
         pass
 
+    @staticmethod
+    def get_field_display_name(
+            field_id: str, user_id: str, project_id: str
+    ) -> str:
+        from ib_tasks.app_interfaces.service_interface import ServiceInterface
+        service = ServiceInterface()
+        field_display_name_dtos = service.get_field_display_names(
+            field_ids=[field_id], user_id=user_id, project_id=project_id
+        )
+        field_display_name = field_display_name_dtos[0].field_display_name
+        return field_display_name
+
     def get_task_complete_details_dto(
             self, task_details_input_dto: TasksDetailsInputDTO
     ) -> TasksCompleteDetailsDTO:
