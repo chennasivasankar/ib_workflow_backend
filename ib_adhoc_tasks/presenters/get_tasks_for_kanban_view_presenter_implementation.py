@@ -110,7 +110,7 @@ class GetTasksForKanbanViewPresenterImplementation(
         groups = []
         for group_by_value, dto in group_by_parent_dict.items():
             total_child_groups = self._get_total_child_groups(
-                group_by_value, child_group_count_dtos
+                dto.group_by_value, child_group_count_dtos
             )
             child_group_dtos = group_by_child_dict[group_by_value]
             child_groups = self._get_child_groups_details_for_each_group(
@@ -159,7 +159,7 @@ class GetTasksForKanbanViewPresenterImplementation(
     ) -> int:
         total_child_groups = 0
         for dto in child_group_count_dtos:
-            if dto.child_group_by_value == group_by_value:
+            if dto.group_by_value == group_by_value:
                 total_child_groups = dto.total_child_groups
         return total_child_groups
 

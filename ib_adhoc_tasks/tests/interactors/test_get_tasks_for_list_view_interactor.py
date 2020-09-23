@@ -122,8 +122,8 @@ class TestGetTasksForListViewInteractor:
     ):
         # Arrange
         from ib_adhoc_tasks.tests.common_fixtures.adapters import \
-            validate_project_ids_for_kanban_view_mock
-        validate_project_ids_for_kanban_view_mock(
+            validate_project_ids_mock
+        validate_project_ids_mock(
             mocker)
         interactor = GetTasksForListViewInteractor(
             storage=storage_mock,
@@ -148,8 +148,8 @@ class TestGetTasksForListViewInteractor:
     ):
         # Arrange
         from ib_adhoc_tasks.tests.common_fixtures.adapters import \
-            validate_project_ids_for_kanban_view_mock
-        validate_project_ids_for_kanban_view_mock(
+            validate_project_ids_mock
+        validate_project_ids_mock(
             mocker)
         interactor = GetTasksForListViewInteractor(
             storage=storage_mock,
@@ -176,8 +176,8 @@ class TestGetTasksForListViewInteractor:
     ):
         # Arrange
         from ib_adhoc_tasks.tests.common_fixtures.adapters import \
-            validate_project_ids_for_kanban_view_mock
-        validate_project_ids_for_kanban_view_mock(
+            validate_project_ids_mock
+        validate_project_ids_mock(
             mocker)
         invalid_user_exception = InvalidUserId()
         user_mock.side_effect = invalid_user_exception
@@ -207,8 +207,8 @@ class TestGetTasksForListViewInteractor:
     ):
         # Arrange
         from ib_adhoc_tasks.tests.common_fixtures.adapters import \
-            validate_project_ids_for_kanban_view_mock
-        validate_project_ids_for_kanban_view_mock(
+            validate_project_ids_mock
+        validate_project_ids_mock(
             mocker)
         invalid_user_exception = InvalidUserForProject()
         user_mock.side_effect = invalid_user_exception
@@ -241,8 +241,8 @@ class TestGetTasksForListViewInteractor:
         # Arrange
         user_id = group_by_info_list_view_dto.user_id
         from ib_adhoc_tasks.tests.common_fixtures.adapters import \
-            validate_project_ids_for_kanban_view_mock
-        validate_project_ids_for_kanban_view_mock(
+            validate_project_ids_mock
+        validate_project_ids_mock(
             mocker)
         total_groups_count = 3
         child_group_count_dtos = []

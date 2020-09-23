@@ -60,6 +60,6 @@ class ChildGroupCountDTOFactory(factory.Factory):
     class Meta:
         model = ChildGroupCountDTO
 
-    child_group_by_value = factory.Sequence(
+    group_by_value = factory.Sequence(
         lambda counter: "child_group_by_value_{}".format(counter))
     total_child_groups = factory.Sequence(lambda counter: counter)
