@@ -116,7 +116,7 @@ class TestGetTasksForListViewInteractor:
         project_mock.assert_called_once()
         presenter_mock.raise_invalid_project_id.assert_called_once()
 
-    def test_given_invalid_offset_value(
+    def test_given_invalid_offset_value_raise_exception(
             self, mocker, presenter_mock,  storage_mock, elastic_storage_mock,
             group_by_info_list_view_dto_with_invalid_offset
     ):
@@ -142,7 +142,7 @@ class TestGetTasksForListViewInteractor:
         assert response == mock_object
         presenter_mock.raise_invalid_offset_value.assert_called_once()
 
-    def test_given_invalid_limit_value(
+    def test_given_invalid_limit_value_raise_exception(
             self, mocker, presenter_mock,  storage_mock, elastic_storage_mock,
             group_by_info_list_view_dto_with_invalid_limit
     ):
