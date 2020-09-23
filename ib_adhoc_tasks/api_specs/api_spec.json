@@ -906,6 +906,13 @@
             "items": {
               "type": "string"
             }
+          },
+          "view_type": {
+            "type": "string",
+            "enum": [
+              "LIST",
+              "KANBAN"
+            ]
           }
         },
         "required": [
