@@ -632,8 +632,8 @@ class StagesStorageImplementation(StageStorageInterface):
         )
         StageGoF.objects.bulk_create(stage_gof_objects)
 
-    def get_existing_gof_ids_with_stage_id_of_stage(
-            self, stage_ids: List[str]) -> List[DBStageIdWithGoFIdDTO]:
+    def get_existing_gof_ids_with_stage_id_of_stages(
+            self, stage_ids: List[int]) -> List[DBStageIdWithGoFIdDTO]:
         gof_id_and_stage_id_values = StageGoF.objects.filter(
             stage_id__in=stage_ids).values('gof_id', 'stage_id')
 

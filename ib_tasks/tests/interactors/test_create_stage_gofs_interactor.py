@@ -135,6 +135,7 @@ class TestCreateStageGoFsInteractor:
             self, stage_storage_mock, gof_storage_mock):
         # Arrange
         expected_stage_ids = ["stage_1", "stage_2"]
+        expected_db_stage_ids = [1, 2]
         expected_gof_ids = ["gof_1", "gof_2"]
         stage_id_with_gof_ids_dtos = \
             StageIdWithGoFIdsDTOFactory.create_batch(size=2)
@@ -153,7 +154,7 @@ class TestCreateStageGoFsInteractor:
             expected_gof_ids
         stage_storage_mock.get_db_stage_ids_with_stage_ids_dtos.\
             return_value = db_stage_id_with_stage_id_dtos
-        stage_storage_mock.get_existing_gof_ids_with_stage_id_of_stage.\
+        stage_storage_mock.get_existing_gof_ids_with_stage_id_of_stages.\
             return_value = []
 
         # Assert
@@ -167,8 +168,8 @@ class TestCreateStageGoFsInteractor:
             assert_called_once_with(gof_ids=expected_gof_ids)
         stage_storage_mock.get_db_stage_ids_with_stage_ids_dtos.\
             assert_called_once_with(stage_ids=expected_stage_ids)
-        stage_storage_mock.get_existing_gof_ids_with_stage_id_of_stage.\
-            assert_called_once_with(stage_ids=expected_stage_ids)
+        stage_storage_mock.get_existing_gof_ids_with_stage_id_of_stages.\
+            assert_called_once_with(stage_ids=expected_db_stage_ids)
         stage_storage_mock.create_stage_gofs.assert_called_once_with(
             stage_id_with_gof_ids_dtos=db_stage_id_with_gof_ids_dtos)
 
@@ -176,6 +177,7 @@ class TestCreateStageGoFsInteractor:
             self, stage_storage_mock, gof_storage_mock):
         # Arrange
         expected_stage_ids = ["stage_1", "stage_2"]
+        expected_db_stage_ids = [1, 2]
         expected_gof_ids = ["gof_1", "gof_2"]
 
         stage_id_with_gof_ids_dtos = \
@@ -197,7 +199,7 @@ class TestCreateStageGoFsInteractor:
             expected_gof_ids
         stage_storage_mock.get_db_stage_ids_with_stage_ids_dtos.\
             return_value = db_stage_id_with_stage_id_dtos
-        stage_storage_mock.get_existing_gof_ids_with_stage_id_of_stage.\
+        stage_storage_mock.get_existing_gof_ids_with_stage_id_of_stages.\
             return_value = db_stage_id_with_gof_id_dtos
 
         # Assert
@@ -211,7 +213,7 @@ class TestCreateStageGoFsInteractor:
             assert_called_once_with(gof_ids=expected_gof_ids)
         stage_storage_mock.get_db_stage_ids_with_stage_ids_dtos.\
             assert_called_once_with(stage_ids=expected_stage_ids)
-        stage_storage_mock.get_existing_gof_ids_with_stage_id_of_stage.\
-            assert_called_once_with(stage_ids=expected_stage_ids)
+        stage_storage_mock.get_existing_gof_ids_with_stage_id_of_stages.\
+            assert_called_once_with(stage_ids=expected_db_stage_ids)
         stage_storage_mock.create_stage_gofs.assert_called_once_with(
             stage_id_with_gof_ids_dtos=[db_stage_id_with_gof_ids_dtos[1]])

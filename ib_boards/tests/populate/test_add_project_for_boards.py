@@ -46,7 +46,6 @@ class TestPopulateProjectForBoards:
         ]
 
         # Act
-
         from ib_boards.exceptions.custom_exceptions import \
             InvalidFormatException
         with pytest.raises(InvalidFormatException) as err:

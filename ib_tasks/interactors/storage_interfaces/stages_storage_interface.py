@@ -209,8 +209,8 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_existing_gof_ids_with_stage_id_of_stage(
-            self, stage_ids: List[str]) -> List[DBStageIdWithGoFIdDTO]:
+    def get_existing_gof_ids_with_stage_id_of_stages(
+            self, stage_ids: List[int]) -> List[DBStageIdWithGoFIdDTO]:
         pass
 
     @abc.abstractmethod

@@ -48,10 +48,11 @@ class CreateStageGoFsInteractor:
             self, stage_id_with_gof_ids_dtos: List[StageIdWithGoFIdsDTO],
             db_stage_id_with_stage_id_dtos_dict: Dict
     ) -> List[DBStageIdWithGoFIdsDTO]:
-        stage_ids = self._get_stage_ids(
-            stage_id_with_gof_ids_dtos=stage_id_with_gof_ids_dtos)
+        stage_ids = [
+            stage_id
+            for stage_id in db_stage_id_with_stage_id_dtos_dict.values()]
         existing_stage_id_with_gof_id_dtos = \
-            self.stage_storage.get_existing_gof_ids_with_stage_id_of_stage(
+            self.stage_storage.get_existing_gof_ids_with_stage_id_of_stages(
                 stage_ids=stage_ids)
         existing_stage_id_with_gof_id_dtos_dict = \
             self._make_stage_id_with_gof_id_dtos_dict(
