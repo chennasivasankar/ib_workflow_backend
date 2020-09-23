@@ -1,11 +1,10 @@
 import factory
 
 from ib_adhoc_tasks.constants.enum import GroupByType
-from ib_adhoc_tasks.interactors.dtos.dtos import GroupByValueDTO, \
-    TaskIdsForGroupsParameterDTO, OffsetLimitDTO, GroupByInfoKanbanViewDTO, \
-    GroupByInfoListViewDTO
-from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO, \
-    TaskOffsetAndLimitValuesDTO, TaskIdsForGroupsParameterDTO, GroupByValueDTO
+from ib_adhoc_tasks.interactors.dtos.dtos import OffsetLimitDTO, \
+    GroupByInfoKanbanViewDTO, GroupByInfoListViewDTO, GetSubtasksParameterDTO, \
+    GroupByDTO, TaskOffsetAndLimitValuesDTO, TaskIdsForGroupsParameterDTO, \
+    GroupByValueDTO
 
 
 class GroupByDTOFactory(factory.Factory):
@@ -90,3 +89,12 @@ class GroupByInfoListViewDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def group_offset_limit_dto(self):
         return OffsetLimitDTOFactory()
+
+
+class GetSubtasksParameterDTOFactory(factory.Factory):
+    class Meta:
+        model = GetSubtasksParameterDTO
+
+    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
+    task_id = factory.Sequence(lambda n: "task_id_%d" % n)
+    view_type = factory.Iterator(["LIST", "KANBAN"])

@@ -87,6 +87,4 @@ class GroupByInfoListViewDTO:
 class GetSubtasksParameterDTO:
     user_id: str
     task_id: int
-    limit: int
-    offset: int
     view_type: ViewType
