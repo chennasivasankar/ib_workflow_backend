@@ -214,7 +214,7 @@ class TaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_sub_tasks_count_to_tasks(
             self, task_ids: List[int]
-    ) -> SubTasksCountDTO:
+    ) -> List[SubTasksCountDTO]:
         pass
 
     @abc.abstractmethod
