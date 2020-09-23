@@ -17,6 +17,7 @@ class SubTasksInteractor:
                 get_subtasks_parameter_dto=get_subtasks_parameter_dto
             )
         return presenter.get_response_for_get_subtasks_of_task(
+            task_display_id=get_subtasks_parameter_dto.task_id,
             subtask_ids=subtask_ids,
             complete_subtasks_details_dto=complete_subtasks_details_dto
         )

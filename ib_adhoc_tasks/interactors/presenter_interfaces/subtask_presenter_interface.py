@@ -8,7 +8,9 @@ class GetSubTasksPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_get_subtasks_of_task(
-            self, subtask_ids: List[int],
+            self,
+            task_display_id: str,
+            subtask_ids: List[int],
             complete_subtasks_details_dto: TasksCompleteDetailsDTO
     ):
         pass

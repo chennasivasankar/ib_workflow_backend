@@ -14,7 +14,9 @@ class GetSubTasksPresenterImplementation(
 ):
 
     def get_response_for_get_subtasks_of_task(
-            self, subtask_ids: List[int],
+            self,
+            task_display_id: str,
+            subtask_ids: List[int],
             complete_subtasks_details_dto: TasksCompleteDetailsDTO
     ):
         complete_task_details = self.get_tasks_details(
@@ -22,7 +24,7 @@ class GetSubTasksPresenterImplementation(
             task_details_dto=complete_subtasks_details_dto
         )
         complete_task_details_dict = {
-            "total_tasks": len(subtask_ids),
+            "parent_task_id": task_display_id,
             "tasks": complete_task_details
         }
         return self.prepare_200_success_response(

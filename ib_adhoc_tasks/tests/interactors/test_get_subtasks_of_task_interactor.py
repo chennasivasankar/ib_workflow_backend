@@ -29,7 +29,8 @@ class TestGetSubTasksInteractor:
     @mock.patch.object(TaskService, "get_subtask_ids_for_task_id")
     @mock.patch.object(TaskService, "get_task_complete_details_dto")
     def test_given_valid_details_returns_complete_task_details(
-            self, task_details_mock, subtask_ids_for_task_id_mock, project_id_mock,
+            self, task_details_mock, subtask_ids_for_task_id_mock,
+            project_id_mock,
             get_task_id_mock, task_details_dtos, interactor, presenter
     ):
         # Arrange
@@ -57,6 +58,7 @@ class TestGetSubTasksInteractor:
         assert response == mock_object
         presenter.get_response_for_get_subtasks_of_task \
             .assert_called_once_with(
+            task_display_id=task_id,
             complete_subtasks_details_dto=task_details_dtos,
             subtask_ids=subtask_ids
         )

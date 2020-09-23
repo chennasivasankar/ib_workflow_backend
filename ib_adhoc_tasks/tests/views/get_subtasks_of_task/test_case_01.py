@@ -3,7 +3,6 @@
 """
 import factory
 import mock
-
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
@@ -36,15 +35,15 @@ class TestCase01GetSubtasksOfTaskAPITestCase(TestUtils):
         get_project_id_based_on_task_id_mock.return_value = project_id
         get_subtask_ids_for_task_id_mock.return_value = subtask_ids
         get_task_complete_details_dto_mock.return_value = task_complete_details_dto
-        body = {'task_id': '1', 'view_type': 'LIST'}
+        body = {'task_id': 'IBWF-1', 'view_type': 'LIST'}
         path_params = {}
         query_params = {'limit': 7, 'offset': 0}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
 
     @pytest.fixture
     @mock.patch.object(TaskService, "get_task_id")
@@ -102,7 +101,9 @@ class TestCase01GetSubtasksOfTaskAPITestCase(TestUtils):
         task_stage_complete_details_dtos = \
             GetTaskStageCompleteDetailsDTOFactory.create_batch(
                 size=15,
-                field_dtos=FieldDetailsDTOFactory.create_batch(size=3),
+                field_dtos=FieldDetailsDTOFactory.create_batch(
+                    size=3, field_type="PLAIN_TEXT"
+                ),
                 stage_id=factory.Iterator(stage_ids),
                 action_dtos=StageActionDetailsDTOFactory.create_batch(
                     size=1, stage_id=factory.Iterator(stage_ids),
