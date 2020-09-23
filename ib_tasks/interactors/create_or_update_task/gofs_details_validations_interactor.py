@@ -60,8 +60,8 @@ class GoFsDetailsValidationsInteractor(GetGoFsFieldsDisplayNameMixin):
             task_template_id, gof_ids, gof_fields_dtos, stage_id)
         # todo: check error message has display names instead of ids from
         #  here after fixing one exception in the above method related stage
-        #  permitted gofs error - remember to always refactor instead of
-        #  renaming on the fly
+        #  permitted gofs error - remember to always RENAME instead of
+        #  REFACTOR as Refactoring is changing shit so weirdly
         self._validate_user_permission_on_given_fields(
             field_ids, user_id, project_id)
         self._validate_given_field_responses(gof_fields_dtos, action_type)
