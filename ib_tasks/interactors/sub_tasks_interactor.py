@@ -1,5 +1,6 @@
 from typing import List
 
+from ib_tasks.interactors.storage_interfaces.task_dtos import SubTasksCountDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
 
@@ -14,7 +15,27 @@ class SubTasksInteractor:
         self._validate_task_ids(task_ids=task_ids)
         subtasks_count_dtos = \
             self.task_storage.get_sub_tasks_count_to_tasks(task_ids=task_ids)
+        extra_sub_task_count_dtos = self._get_task_ids(subtasks_count_dtos, task_ids)
+        subtasks_count_dtos += extra_sub_task_count_dtos
         return subtasks_count_dtos
+
+    @staticmethod
+    def _get_task_ids(
+            subtasks_count_dtos: List[SubTasksCountDTO],
+            task_ids: List[int]
+    ):
+        parent_task_ids = [
+            subtasks_count_dto.task_id
+            for subtasks_count_dto in subtasks_count_dtos
+        ]
+        return [
+            SubTasksCountDTO(
+                task_id=task_id,
+                sub_tasks_count=0
+            )
+            for task_id in task_ids
+            if task_id not in parent_task_ids
+        ]
 
     def _validate_task_ids(self, task_ids: List[int]):
         valid_task_ids = self.task_storage.get_valid_task_ids(task_ids=task_ids)
