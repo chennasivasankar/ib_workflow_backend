@@ -124,7 +124,7 @@ class TaskService:
             self, task_ids
     ) -> List[TaskIdWithCompletedSubTasksCountDTO]:
         task_with_completed_sub_tasks_count_dtos = \
-            self.interface.get_tasks_completed_sub_tasks_count(task_ids)
+            self.interface.get_tasks_completed_sub_tasks_count_dtos(task_ids)
         return [
             TaskIdWithCompletedSubTasksCountDTO(
                 task_id=dto.task_id,

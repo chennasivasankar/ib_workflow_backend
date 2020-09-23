@@ -229,7 +229,7 @@ class ServiceInterface:
             task_display_ids)
 
     @staticmethod
-    def get_tasks_completed_sub_tasks_count(
+    def get_tasks_completed_sub_tasks_count_dtos(
             task_ids: List[int]
     ) -> List[TaskWithCompletedSubTasksCountDTO]:
         from ib_tasks.interactors.get_tasks_completed_sub_tasks_count import \
