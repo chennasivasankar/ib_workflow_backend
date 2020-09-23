@@ -6,7 +6,7 @@ from ib_adhoc_tasks.adapters.iam_service import IamService
 from ib_adhoc_tasks.adapters.task_service import TaskService
 from ib_adhoc_tasks.interactors.get_task_ids_for_view_interactor import \
     GetTaskIdsForViewInteractor
-from ib_adhoc_tasks.interactors.get_tasks_for_kanban_view import \
+from ib_adhoc_tasks.interactors.get_tasks_for_kanban_view_interactor import \
     GetTasksForKanbanViewInteractor
 
 
