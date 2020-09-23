@@ -253,6 +253,7 @@ class TestGetTasksForListViewInteractor:
             storage=storage_mock,
             elastic_storage=elastic_storage_mock
         )
+        # todo need to add mocks of get subtasks count and completed_sub_task_count
         mock_object = Mock()
         presenter_mock.get_task_details_group_by_info_response.return_value \
             = mock_object
