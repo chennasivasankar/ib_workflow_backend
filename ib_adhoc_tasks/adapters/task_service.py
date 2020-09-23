@@ -79,7 +79,9 @@ class TaskService:
         return subtask_ids
 
     def get_project_id_based_on_task_id(self, task_id: int) -> str:
-        pass
+        task_project_dtos = self.interface.get_tasks_project_ids([task_id])
+        task_project_dto = task_project_dtos[0]
+        return task_project_dto.project_id
 
     @staticmethod
     def get_field_display_name(
