@@ -127,7 +127,10 @@ class GetTasksForListViewInteractor:
     ) -> (List[GroupDetailsDTO], int):
         user_id = group_by_info_list_view_dto.user_id
         project_id = group_by_info_list_view_dto.project_id
-        group_by_details_dtos = self.storage.get_group_by_details_dtos(user_id)
+        view_type = ViewType.LIST.value
+        group_by_details_dtos = self.storage.get_group_by_details_dtos(
+            user_id, view_type
+        )
         group_by_dtos = self._get_group_by_dtos(
             group_by_details_dtos,
             group_by_info_list_view_dto

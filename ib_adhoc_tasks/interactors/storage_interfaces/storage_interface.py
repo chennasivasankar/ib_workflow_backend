@@ -30,7 +30,7 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_group_by_details_dtos(
-            self, user_id: str
+            self, user_id: str, view_type: ViewType
     ) -> List[GroupByDetailsDTO]:
         pass
 

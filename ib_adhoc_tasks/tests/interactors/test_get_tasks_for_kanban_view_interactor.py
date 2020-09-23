@@ -269,6 +269,8 @@ class TestGetTasksForKanbanViewInteractor:
             validate_project_ids_mock
         validate_project_ids_mock(
             mocker)
+        from ib_adhoc_tasks.constants.enum import ViewType
+        view_type = ViewType.KANBAN.value
         get_task_ids_mock.return_value = \
             group_details_dtos, total_groups_count, child_group_count_dtos
         storage_mock.get_group_by_details_dtos.return_value = \
@@ -290,7 +292,9 @@ class TestGetTasksForKanbanViewInteractor:
 
         # Assert
         assert mock_object == response
-        storage_mock.get_group_by_details_dtos.assert_called_once_with(user_id)
+        storage_mock.get_group_by_details_dtos.assert_called_once_with(
+            user_id, view_type
+        )
         presenter_mock.get_task_details_group_by_info_response \
             .assert_called_once_with(task_details_with_group_by_info_dto)
 
@@ -312,6 +316,8 @@ class TestGetTasksForKanbanViewInteractor:
             validate_project_ids_mock
         validate_project_ids_mock(
             mocker)
+        from ib_adhoc_tasks.constants.enum import ViewType
+        view_type = ViewType.KANBAN.value
         get_task_ids_mock.return_value = \
             group_details_dtos, total_groups_count, child_group_count_dtos
         storage_mock.get_group_by_details_dtos.return_value = \
@@ -333,6 +339,8 @@ class TestGetTasksForKanbanViewInteractor:
 
         # Assert
         assert mock_object == response
-        storage_mock.get_group_by_details_dtos.assert_called_once_with(user_id)
+        storage_mock.get_group_by_details_dtos.assert_called_once_with(
+            user_id, view_type
+        )
         presenter_mock.get_task_details_group_by_info_response \
             .assert_called_once_with(task_details_with_group_by_info_dto)
