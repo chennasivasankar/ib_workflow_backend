@@ -55,11 +55,13 @@ class GetTasksForListViewInteractor:
             self, group_by_info_list_view_dto: GroupByInfoListViewDTO,
             presenter: GetTasksForListViewPresenterInterface
     ):
-        group_details_dtos, task_details_dto, total_groups_count = \
+        group_details_dtos, task_details_dto, total_groups_count, sub_tasks_count_dtos, completed_sub_tasks_count_dtos = \
             self.get_tasks_for_list_view(group_by_info_list_view_dto)
 
         response = presenter.get_task_details_group_by_info_response(
-            group_details_dtos, task_details_dto, total_groups_count)
+            group_details_dtos, task_details_dto, total_groups_count,
+            sub_tasks_count_dtos, completed_sub_tasks_count_dtos
+        )
         return response
 
     def get_tasks_for_list_view(
@@ -79,7 +81,17 @@ class GetTasksForListViewInteractor:
             view_type=ViewType.LIST.value
         )
         task_details_dto = self._get_task_details_dto(task_details_input_dto)
-        return group_details_dtos, task_details_dto, total_groups_count
+        from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        sub_tasks_count_dtos = \
+            service_adapter.task_service.get_sub_tasks_count_task_ids(
+                task_ids=task_ids
+            )
+        completed_sub_tasks_count_dtos = \
+            service_adapter.task_service \
+                .get_completed_sub_tasks_count_for_task_ids(task_ids=task_ids)
+        # TODO need to prepare a dto
+        return group_details_dtos, task_details_dto, total_groups_count, sub_tasks_count_dtos, completed_sub_tasks_count_dtos
 
     @staticmethod
     def _validate_limit_offset_values(
