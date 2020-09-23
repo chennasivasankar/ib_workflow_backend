@@ -108,7 +108,7 @@ class TaskDetailsMixin:
                                                             team_dto)
         actions = self._get_stage_actions(action_dtos)
         stage_with_actions = {
-            "stage_id": task_stage_details_dto.stage_id,
+            "stage_id": task_stage_details_dto.db_stage_id,
             "stage_display_name": task_stage_details_dto.display_name,
             "stage_color": task_stage_details_dto.stage_color,
             "assignee": assignee,

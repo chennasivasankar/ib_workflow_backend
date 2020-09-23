@@ -2,9 +2,7 @@
 
 REQUEST_BODY_JSON = """
 {
-    "group_by_values": [
-        "string"
-    ],
+    "task_id": "string",
     "view_type": "LIST"
 }
 """
@@ -56,11 +54,11 @@ RESPONSE_404_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "INVALID_PROJECT_ID"
+    "res_status": "INVALID_TASK_ID"
 }
 """
 
-RESPONSE_403_JSON = """
+RESPONSE_400_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
