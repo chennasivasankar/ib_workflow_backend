@@ -40,8 +40,8 @@ class GetTaskStageDetailsOfUserBasedOnStagesInteractor:
         self._validate_stage_ids(valid_stage_ids, given_unique_stage_ids)
         task_id_with_max_stage_value_dtos = self.task_storage. \
             get_user_task_and_max_stage_value_dto_based_on_given_stage_ids(
-            user_id=user_id, stage_ids=valid_stage_ids, limit=limit,
-            offset=offset)
+                user_id=user_id, stage_ids=valid_stage_ids, limit=limit,
+                offset=offset)
         stage_values = [
             task_id_with_max_stage_value_dto.stage_value
             for task_id_with_max_stage_value_dto in
@@ -55,9 +55,9 @@ class GetTaskStageDetailsOfUserBasedOnStagesInteractor:
         task_id_with_stage_details_dtos = self. \
             stage_storage. \
             get_task_id_with_stage_details_dtos_based_on_stage_value(
-            stage_values=stage_values,
-            task_ids_group_by_stage_value_dtos=
-            task_ids_group_by_stage_value_dtos)
+                stage_values=stage_values,
+                task_ids_group_by_stage_value_dtos=
+                task_ids_group_by_stage_value_dtos, stage_ids=valid_stage_ids)
         task_ids = []
         task_id_with_single_stage_details_dto = []
         for task_id_with_stage_details_dto in task_id_with_stage_details_dtos:

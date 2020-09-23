@@ -35,6 +35,7 @@ class TestCase02GetTaskAPITestCase(TestUtils):
 
     @pytest.fixture
     def reset_factories(self):
+        TaskTemplateFactory.reset_sequence()
         TaskFactory.reset_sequence()
         TaskGoFFactory.reset_sequence()
         GoFRoleFactory.reset_sequence()
@@ -122,7 +123,6 @@ class TestCase02GetTaskAPITestCase(TestUtils):
             size=4, stage=factory.Iterator(stage_objs),
             gof=factory.Iterator(gof_objs)
         )
-
 
     @pytest.mark.django_db
     @patch.object(AuthService, "get_user_id_team_details_dtos")
