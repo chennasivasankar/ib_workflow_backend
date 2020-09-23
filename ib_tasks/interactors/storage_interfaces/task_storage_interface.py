@@ -220,7 +220,7 @@ class TaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_sub_task_ids_to_tasks(
             self, task_ids: List[int]
-    ) -> SubTasksIdsDTO:
+    ) -> List[SubTasksIdsDTO]:
         pass
 
     @abc.abstractmethod
