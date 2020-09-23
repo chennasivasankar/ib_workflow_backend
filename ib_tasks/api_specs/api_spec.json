@@ -283,7 +283,6 @@
             }
          },
          "required":[
-            "task_gofs",
             "action_id",
             "task_template_id",
             "title",
