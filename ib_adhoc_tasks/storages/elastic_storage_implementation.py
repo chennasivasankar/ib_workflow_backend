@@ -225,7 +225,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
             group_by_order_one_dto, group_by_order_two_dto
     ):
         tasks_data = A('top_hits')
-        search.filter(query)
+        search = search.filter(query)
         search.aggs.bucket('groups', group_agg).bucket(
             'child_groups', child_agg
         ).bucket('tasks', tasks_data)
@@ -250,11 +250,9 @@ class ElasticStorageImplementation(ElasticStorageInterface):
                 group_by_value=group.key,
                 total_child_groups=len(group.child_groups)
             )
-
+            child_group_count_dtos.append(child_group_count_dto)
             for child_group in group.child_groups[
                                child_group_offset: child_group_offset + child_group_limit]:
-
-                child_group_count_dtos.append(child_group_count_dto)
 
                 task_ids = []
                 for task in child_group.tasks[

@@ -11,7 +11,8 @@ from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
-    TaskStageAssigneeDetailsDTO, TaskStageAssigneeTeamDetailsDTO
+    TaskStageAssigneeDetailsDTO, TaskStageAssigneeTeamDetailsDTO, \
+    StageIdWithGoFIdsDTO, DBStageIdWithStageIdDTO, DBStageIdWithGoFIdsDTO
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
     UserStagesWithPaginationDTO, StageAssigneeDTO, \
@@ -28,7 +29,8 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos import \
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskWithDbStageIdDTO, AssigneeCurrentTasksCountDTO, \
     CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO, \
-    StageActionNamesDTO, CreateStageFlowDTO, StageFlowWithActionIdDTO
+    StageActionNamesDTO, CreateStageFlowDTO, StageFlowWithActionIdDTO, \
+    DBStageIdWithGoFIdDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     TaskDueParametersDTO, \
@@ -764,3 +766,37 @@ class TaskWithCompletedSubTasksCountDTOFactory(factory.Factory):
 
     task_id = factory.sequence(lambda counter: counter)
     completed_sub_tasks_count = factory.sequence(lambda counter: counter)
+
+
+class StageIdWithGoFIdsDTOFactory(factory.Factory):
+    class Meta:
+        model = StageIdWithGoFIdsDTO
+
+    stage_id = factory.sequence(lambda counter: "stage_{}".format(counter))
+    gof_ids = factory.Sequence(
+        lambda counter: ["gof_{}".format(counter)])
+
+
+class DBStageIdWithStageIdDTOFactory(factory.Factory):
+    class Meta:
+        model = DBStageIdWithStageIdDTO
+
+    db_stage_id = factory.sequence(lambda counter: counter)
+    stage_id = factory.sequence(lambda counter: "stage_{}".format(counter))
+
+
+class DBStageIdWithGoFIdDTOFactory(factory.Factory):
+    class Meta:
+        model = DBStageIdWithGoFIdDTO
+
+    stage_id = factory.sequence(lambda counter: counter)
+    gof_id = factory.sequence(lambda counter: "gof_{}".format(counter))
+
+
+class DBStageIdWithGoFIdsDTOFactory(factory.Factory):
+    class Meta:
+        model = DBStageIdWithGoFIdsDTO
+
+    db_stage_id = factory.sequence(lambda counter: counter)
+    gof_ids = factory.Sequence(
+        lambda counter: ["gof_{}".format(counter)])

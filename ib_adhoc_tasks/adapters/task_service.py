@@ -4,8 +4,14 @@ from typing import List, Optional
 from ib_adhoc_tasks.adapters.dtos import TasksDetailsInputDTO, \
     TasksCompleteDetailsDTO, TaskBaseDetailsDTO, \
     GetTaskStageCompleteDetailsDTO, TaskStageAssigneeDetailsDTO, \
-    FieldDetailsDTO, StageActionDetailsDTO, AssigneeDetailsDTO, TeamDetailsDTO
+    FieldDetailsDTO, StageActionDetailsDTO, AssigneeDetailsDTO, TeamDetailsDTO, \
+    TaskIdWithCompletedSubTasksCountDTO, TaskIdWithSubTasksCountDTO
 from ib_adhoc_tasks.exceptions.custom_exceptions import InvalidTaskTemplateId
+
+
+class InvalidTaskIds(Exception):
+    def __init__(self, task_ids: List[int]):
+        self.invalid_task_ids = task_ids
 
 
 class InvalidGroupById(Exception):
@@ -62,6 +68,18 @@ class TaskService:
         ]
         return stage_id_and_name_dtos
 
+    def get_subtask_ids_for_task_id(self, task_id: int) -> List[int]:
+        from ib_tasks.app_interfaces.service_interface import ServiceInterface
+        service = ServiceInterface()
+        subtask_ids_dtos = service.get_sub_task_ids_to_task_ids(
+            task_ids=[task_id]
+        )
+        subtask_ids = subtask_ids_dtos[0].sub_task_ids
+        return subtask_ids
+
+    def get_project_id_based_on_task_id(self, task_id: int) -> str:
+        pass
+
     @staticmethod
     def get_field_display_name(
             field_id: str, user_id: str, project_id: str
@@ -73,6 +91,36 @@ class TaskService:
         )
         field_display_name = field_display_name_dtos[0].field_display_name
         return field_display_name
+
+    def get_task_id(self, task_display_id: str) -> int:
+        from ib_tasks.app_interfaces.service_interface import ServiceInterface
+        service = ServiceInterface()
+        task_ids_dtos = service.get_task_ids_for_given_task_display_ids(
+            task_display_ids=[task_display_id])
+        task_id = task_ids_dtos[0].task_id
+        return task_id
+
+    def get_sub_tasks_count_task_ids(self, task_ids: List[int]) \
+            -> List[TaskIdWithSubTasksCountDTO]:
+        try:
+            sub_tasks_count_dtos = self.interface.get_sub_tasks_count_task_ids(
+                task_ids=task_ids
+            )
+        except InvalidTaskIds:
+            raise InvalidTaskIds
+        task_id_with_sub_tasks_count_dtos = [
+            TaskIdWithSubTasksCountDTO(
+                task_id=sub_tasks_count_dto.task_id,
+                sub_tasks_count=sub_tasks_count_dto.sub_tasks_count
+            )
+            for sub_tasks_count_dto in sub_tasks_count_dtos
+        ]
+        return task_id_with_sub_tasks_count_dtos
+
+    def get_completed_sub_tasks_count_for_task_ids(
+            self, task_ids
+    ) -> List[TaskIdWithCompletedSubTasksCountDTO]:
+        pass
 
     def get_task_complete_details_dto(
             self, task_details_input_dto: TasksDetailsInputDTO

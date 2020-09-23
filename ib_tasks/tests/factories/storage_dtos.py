@@ -35,7 +35,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
      StageRoleDTO, TaskStagesDTO,
      TaskTemplateStageDTO, TaskStageAssigneeDTO, TaskStageHavingAssigneeIdDTO,
      CurrentStageDetailsDTO, StageIdActionNameDTO, StageActionIdDTO,
-     StageDisplayDTO, StageGoFWithTemplateIdDTO, StageIdWithGoFIdDTO,
+     StageDisplayDTO, StageGoFWithTemplateIdDTO, DBStageIdWithGoFIdDTO,
      StageFlowDTO)
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO, TaskTemplateStatusDTO
@@ -834,7 +834,7 @@ class StageGoFWithTemplateIdDTOFactory(factory.Factory):
 
 class StageIdWithGoFIdDTOFactory(factory.Factory):
     class Meta:
-        model = StageIdWithGoFIdDTO
+        model = DBStageIdWithGoFIdDTO
 
     stage_id = factory.sequence(lambda counter: counter)
     gof_id = factory.sequence(lambda counter: "gof_{}".format(counter))

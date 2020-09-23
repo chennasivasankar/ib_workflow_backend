@@ -428,3 +428,49 @@ def PR_CREATE_PAYMENT_REQUEST_Submit_for_Approval(task_dict, global_constants,
                                                   stage_value_dict):
     task_dict["status_variables"]["Status1"] = "PR_PENDING_RP_APPROVAL"
     return task_dict
+
+
+def IN_PROGRESS_To_Do(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "TO_DO"
+    return task_dict
+
+
+def IN_PROGRESS_To_Be_Reviewed(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "TO_BE_REVIEWED"
+    return task_dict
+
+
+def TO_BE_REVIEWED_In_Progress(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "IN_PROGRESS"
+    return task_dict
+
+
+def TO_BE_REVIEWED_Review_Rejected(task_dict, global_constants,
+                                   stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "REVIEW_REJECTED"
+    return task_dict
+
+
+def TO_BE_REVIEWED_Done(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "DONE"
+    return task_dict
+
+
+def TO_BE_REVIEWED_To_Do(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "TO_DO"
+    return task_dict
+
+
+def REVIEW_REJECTED_To_Do(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "TO_DO"
+    return task_dict
+
+
+def TO_DO_In_Progress(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "IN_PROGRESS"
+    return task_dict
+
+
+def CREATE_STAGE_Create_Task(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "TO_DO"
+    return task_dict
