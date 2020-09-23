@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 from ib_adhoc_tasks.constants.enum import GroupByEnum, ViewType
 
@@ -92,3 +91,10 @@ class GetTaskDetailsInGroupInputDTO:
     offset: int
     group_by_values: List[str]
     user_id: str
+
+
+@dataclass
+class GetSubtasksParameterDTO:
+    user_id: str
+    task_id: int
+    view_type: ViewType

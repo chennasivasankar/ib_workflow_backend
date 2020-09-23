@@ -21,14 +21,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                     "description": "description_5",
                     "start_date": "2020-09-10 05:30:00",
                     "due_date": "2020-10-10 05:30:00",
-                    "priority": "LOW",
+                    "priority": "MEDIUM",
                     "task_overview_fields": [
-                        {
-                            "field_type": "field_type5",
-                            "field_display_name": "key_5",
-                            "field_response": "value_5",
-                            "field_id": "field_5"
-                        },
                         {
                             "field_type": "field_type6",
                             "field_display_name": "key_6",
@@ -40,6 +34,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             "field_display_name": "key_7",
                             "field_response": "value_7",
                             "field_id": "field_7"
+                        },
+                        {
+                            "field_type": "field_type8",
+                            "field_display_name": "key_8",
+                            "field_response": "value_8",
+                            "field_id": "field_8"
                         }
                     ],
                     "stage_with_actions": {
@@ -47,12 +47,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                         "stage_display_name": "stage_name5",
                         "stage_color": "stage_color5",
                         "assignee": {
-                            "assignee_id": "assignee_22",
-                            "name": "name_22",
-                            "profile_pic_url": "profile_pic_22",
+                            "assignee_id": "assignee_35",
+                            "name": "name_35",
+                            "profile_pic_url": "profile_pic_35",
                             "team_info": {
-                                "team_id": "team_22",
-                                "team_name": "name_22"
+                                "team_id": "team_35",
+                                "team_name": "name_35"
                             }
                         },
                         "actions": [
@@ -71,14 +71,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                     "description": "description_6",
                     "start_date": "2020-09-10 05:30:00",
                     "due_date": "2020-10-10 05:30:00",
-                    "priority": "MEDIUM",
+                    "priority": "HIGH",
                     "task_overview_fields": [
-                        {
-                            "field_type": "field_type5",
-                            "field_display_name": "key_5",
-                            "field_response": "value_5",
-                            "field_id": "field_5"
-                        },
                         {
                             "field_type": "field_type6",
                             "field_display_name": "key_6",
@@ -90,6 +84,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             "field_display_name": "key_7",
                             "field_response": "value_7",
                             "field_id": "field_7"
+                        },
+                        {
+                            "field_type": "field_type8",
+                            "field_display_name": "key_8",
+                            "field_response": "value_8",
+                            "field_id": "field_8"
                         }
                     ],
                     "stage_with_actions": {
@@ -97,12 +97,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                         "stage_display_name": "stage_name6",
                         "stage_color": "stage_color6",
                         "assignee": {
-                            "assignee_id": "assignee_23",
-                            "name": "name_23",
-                            "profile_pic_url": "profile_pic_23",
+                            "assignee_id": "assignee_36",
+                            "name": "name_36",
+                            "profile_pic_url": "profile_pic_36",
                             "team_info": {
-                                "team_id": "team_23",
-                                "team_name": "name_23"
+                                "team_id": "team_36",
+                                "team_name": "name_36"
                             }
                         },
                         "actions": [
@@ -121,14 +121,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                     "description": "description_7",
                     "start_date": "2020-09-10 05:30:00",
                     "due_date": "2020-10-10 05:30:00",
-                    "priority": "HIGH",
+                    "priority": "LOW",
                     "task_overview_fields": [
-                        {
-                            "field_type": "field_type5",
-                            "field_display_name": "key_5",
-                            "field_response": "value_5",
-                            "field_id": "field_5"
-                        },
                         {
                             "field_type": "field_type6",
                             "field_display_name": "key_6",
@@ -140,6 +134,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             "field_display_name": "key_7",
                             "field_response": "value_7",
                             "field_id": "field_7"
+                        },
+                        {
+                            "field_type": "field_type8",
+                            "field_display_name": "key_8",
+                            "field_response": "value_8",
+                            "field_id": "field_8"
                         }
                     ],
                     "stage_with_actions": {
@@ -147,12 +147,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                         "stage_display_name": "stage_name7",
                         "stage_color": "stage_color7",
                         "assignee": {
-                            "assignee_id": "assignee_24",
-                            "name": "name_24",
-                            "profile_pic_url": "profile_pic_24",
+                            "assignee_id": "assignee_37",
+                            "name": "name_37",
+                            "profile_pic_url": "profile_pic_37",
                             "team_info": {
-                                "team_id": "team_24",
-                                "team_name": "name_24"
+                                "team_id": "team_37",
+                                "team_name": "name_37"
                             }
                         },
                         "actions": [
@@ -171,14 +171,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                     "description": "description_8",
                     "start_date": "2020-09-10 05:30:00",
                     "due_date": "2020-10-10 05:30:00",
-                    "priority": "LOW",
+                    "priority": "MEDIUM",
                     "task_overview_fields": [
-                        {
-                            "field_type": "field_type5",
-                            "field_display_name": "key_5",
-                            "field_response": "value_5",
-                            "field_id": "field_5"
-                        },
                         {
                             "field_type": "field_type6",
                             "field_display_name": "key_6",
@@ -190,6 +184,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             "field_display_name": "key_7",
                             "field_response": "value_7",
                             "field_id": "field_7"
+                        },
+                        {
+                            "field_type": "field_type8",
+                            "field_display_name": "key_8",
+                            "field_response": "value_8",
+                            "field_id": "field_8"
                         }
                     ],
                     "stage_with_actions": {
@@ -197,12 +197,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                         "stage_display_name": "stage_name8",
                         "stage_color": "stage_color8",
                         "assignee": {
-                            "assignee_id": "assignee_25",
-                            "name": "name_25",
-                            "profile_pic_url": "profile_pic_25",
+                            "assignee_id": "assignee_38",
+                            "name": "name_38",
+                            "profile_pic_url": "profile_pic_38",
                             "team_info": {
-                                "team_id": "team_25",
-                                "team_name": "name_25"
+                                "team_id": "team_38",
+                                "team_name": "name_38"
                             }
                         },
                         "actions": [
@@ -221,14 +221,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                     "description": "description_9",
                     "start_date": "2020-09-10 05:30:00",
                     "due_date": "2020-10-10 05:30:00",
-                    "priority": "MEDIUM",
+                    "priority": "HIGH",
                     "task_overview_fields": [
-                        {
-                            "field_type": "field_type5",
-                            "field_display_name": "key_5",
-                            "field_response": "value_5",
-                            "field_id": "field_5"
-                        },
                         {
                             "field_type": "field_type6",
                             "field_display_name": "key_6",
@@ -240,6 +234,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             "field_display_name": "key_7",
                             "field_response": "value_7",
                             "field_id": "field_7"
+                        },
+                        {
+                            "field_type": "field_type8",
+                            "field_display_name": "key_8",
+                            "field_response": "value_8",
+                            "field_id": "field_8"
                         }
                     ],
                     "stage_with_actions": {
@@ -247,12 +247,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                         "stage_display_name": "stage_name9",
                         "stage_color": "stage_color9",
                         "assignee": {
-                            "assignee_id": "assignee_26",
-                            "name": "name_26",
-                            "profile_pic_url": "profile_pic_26",
+                            "assignee_id": "assignee_39",
+                            "name": "name_39",
+                            "profile_pic_url": "profile_pic_39",
                             "team_info": {
-                                "team_id": "team_26",
-                                "team_name": "name_26"
+                                "team_id": "team_39",
+                                "team_name": "name_39"
                             }
                         },
                         "actions": [
@@ -278,14 +278,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                     "description": "description_10",
                     "start_date": "2020-09-10 05:30:00",
                     "due_date": "2020-10-10 05:30:00",
-                    "priority": "HIGH",
+                    "priority": "LOW",
                     "task_overview_fields": [
-                        {
-                            "field_type": "field_type5",
-                            "field_display_name": "key_5",
-                            "field_response": "value_5",
-                            "field_id": "field_5"
-                        },
                         {
                             "field_type": "field_type6",
                             "field_display_name": "key_6",
@@ -297,6 +291,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             "field_display_name": "key_7",
                             "field_response": "value_7",
                             "field_id": "field_7"
+                        },
+                        {
+                            "field_type": "field_type8",
+                            "field_display_name": "key_8",
+                            "field_response": "value_8",
+                            "field_id": "field_8"
                         }
                     ],
                     "stage_with_actions": {
@@ -304,12 +304,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                         "stage_display_name": "stage_name10",
                         "stage_color": "stage_color10",
                         "assignee": {
-                            "assignee_id": "assignee_27",
-                            "name": "name_27",
-                            "profile_pic_url": "profile_pic_27",
+                            "assignee_id": "assignee_40",
+                            "name": "name_40",
+                            "profile_pic_url": "profile_pic_40",
                             "team_info": {
-                                "team_id": "team_27",
-                                "team_name": "name_27"
+                                "team_id": "team_40",
+                                "team_name": "name_40"
                             }
                         },
                         "actions": [
@@ -328,14 +328,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                     "description": "description_11",
                     "start_date": "2020-09-10 05:30:00",
                     "due_date": "2020-10-10 05:30:00",
-                    "priority": "LOW",
+                    "priority": "MEDIUM",
                     "task_overview_fields": [
-                        {
-                            "field_type": "field_type5",
-                            "field_display_name": "key_5",
-                            "field_response": "value_5",
-                            "field_id": "field_5"
-                        },
                         {
                             "field_type": "field_type6",
                             "field_display_name": "key_6",
@@ -347,6 +341,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             "field_display_name": "key_7",
                             "field_response": "value_7",
                             "field_id": "field_7"
+                        },
+                        {
+                            "field_type": "field_type8",
+                            "field_display_name": "key_8",
+                            "field_response": "value_8",
+                            "field_id": "field_8"
                         }
                     ],
                     "stage_with_actions": {
@@ -354,12 +354,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                         "stage_display_name": "stage_name11",
                         "stage_color": "stage_color11",
                         "assignee": {
-                            "assignee_id": "assignee_28",
-                            "name": "name_28",
-                            "profile_pic_url": "profile_pic_28",
+                            "assignee_id": "assignee_41",
+                            "name": "name_41",
+                            "profile_pic_url": "profile_pic_41",
                             "team_info": {
-                                "team_id": "team_28",
-                                "team_name": "name_28"
+                                "team_id": "team_41",
+                                "team_name": "name_41"
                             }
                         },
                         "actions": [
@@ -378,14 +378,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                     "description": "description_12",
                     "start_date": "2020-09-10 05:30:00",
                     "due_date": "2020-10-10 05:30:00",
-                    "priority": "MEDIUM",
+                    "priority": "HIGH",
                     "task_overview_fields": [
-                        {
-                            "field_type": "field_type5",
-                            "field_display_name": "key_5",
-                            "field_response": "value_5",
-                            "field_id": "field_5"
-                        },
                         {
                             "field_type": "field_type6",
                             "field_display_name": "key_6",
@@ -397,6 +391,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             "field_display_name": "key_7",
                             "field_response": "value_7",
                             "field_id": "field_7"
+                        },
+                        {
+                            "field_type": "field_type8",
+                            "field_display_name": "key_8",
+                            "field_response": "value_8",
+                            "field_id": "field_8"
                         }
                     ],
                     "stage_with_actions": {
@@ -404,12 +404,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                         "stage_display_name": "stage_name12",
                         "stage_color": "stage_color12",
                         "assignee": {
-                            "assignee_id": "assignee_29",
-                            "name": "name_29",
-                            "profile_pic_url": "profile_pic_29",
+                            "assignee_id": "assignee_42",
+                            "name": "name_42",
+                            "profile_pic_url": "profile_pic_42",
                             "team_info": {
-                                "team_id": "team_29",
-                                "team_name": "name_29"
+                                "team_id": "team_42",
+                                "team_name": "name_42"
                             }
                         },
                         "actions": [
@@ -428,14 +428,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                     "description": "description_13",
                     "start_date": "2020-09-10 05:30:00",
                     "due_date": "2020-10-10 05:30:00",
-                    "priority": "HIGH",
+                    "priority": "LOW",
                     "task_overview_fields": [
-                        {
-                            "field_type": "field_type5",
-                            "field_display_name": "key_5",
-                            "field_response": "value_5",
-                            "field_id": "field_5"
-                        },
                         {
                             "field_type": "field_type6",
                             "field_display_name": "key_6",
@@ -447,6 +441,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             "field_display_name": "key_7",
                             "field_response": "value_7",
                             "field_id": "field_7"
+                        },
+                        {
+                            "field_type": "field_type8",
+                            "field_display_name": "key_8",
+                            "field_response": "value_8",
+                            "field_id": "field_8"
                         }
                     ],
                     "stage_with_actions": {
@@ -454,12 +454,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                         "stage_display_name": "stage_name13",
                         "stage_color": "stage_color13",
                         "assignee": {
-                            "assignee_id": "assignee_30",
-                            "name": "name_30",
-                            "profile_pic_url": "profile_pic_30",
+                            "assignee_id": "assignee_43",
+                            "name": "name_43",
+                            "profile_pic_url": "profile_pic_43",
                             "team_info": {
-                                "team_id": "team_30",
-                                "team_name": "name_30"
+                                "team_id": "team_43",
+                                "team_name": "name_43"
                             }
                         },
                         "actions": [
@@ -478,14 +478,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                     "description": "description_14",
                     "start_date": "2020-09-10 05:30:00",
                     "due_date": "2020-10-10 05:30:00",
-                    "priority": "LOW",
+                    "priority": "MEDIUM",
                     "task_overview_fields": [
-                        {
-                            "field_type": "field_type5",
-                            "field_display_name": "key_5",
-                            "field_response": "value_5",
-                            "field_id": "field_5"
-                        },
                         {
                             "field_type": "field_type6",
                             "field_display_name": "key_6",
@@ -497,6 +491,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             "field_display_name": "key_7",
                             "field_response": "value_7",
                             "field_id": "field_7"
+                        },
+                        {
+                            "field_type": "field_type8",
+                            "field_display_name": "key_8",
+                            "field_response": "value_8",
+                            "field_id": "field_8"
                         }
                     ],
                     "stage_with_actions": {
@@ -504,12 +504,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                         "stage_display_name": "stage_name14",
                         "stage_color": "stage_color14",
                         "assignee": {
-                            "assignee_id": "assignee_31",
-                            "name": "name_31",
-                            "profile_pic_url": "profile_pic_31",
+                            "assignee_id": "assignee_44",
+                            "name": "name_44",
+                            "profile_pic_url": "profile_pic_44",
                             "team_info": {
-                                "team_id": "team_31",
-                                "team_name": "name_31"
+                                "team_id": "team_44",
+                                "team_name": "name_44"
                             }
                         },
                         "actions": [
@@ -535,14 +535,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                     "description": "description_0",
                     "start_date": "2020-09-10 05:30:00",
                     "due_date": "2020-10-10 05:30:00",
-                    "priority": "MEDIUM",
+                    "priority": "HIGH",
                     "task_overview_fields": [
-                        {
-                            "field_type": "field_type5",
-                            "field_display_name": "key_5",
-                            "field_response": "value_5",
-                            "field_id": "field_5"
-                        },
                         {
                             "field_type": "field_type6",
                             "field_display_name": "key_6",
@@ -554,6 +548,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             "field_display_name": "key_7",
                             "field_response": "value_7",
                             "field_id": "field_7"
+                        },
+                        {
+                            "field_type": "field_type8",
+                            "field_display_name": "key_8",
+                            "field_response": "value_8",
+                            "field_id": "field_8"
                         }
                     ],
                     "stage_with_actions": {
@@ -561,12 +561,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                         "stage_display_name": "stage_name0",
                         "stage_color": "stage_color0",
                         "assignee": {
-                            "assignee_id": "assignee_17",
-                            "name": "name_17",
-                            "profile_pic_url": "profile_pic_17",
+                            "assignee_id": "assignee_30",
+                            "name": "name_30",
+                            "profile_pic_url": "profile_pic_30",
                             "team_info": {
-                                "team_id": "team_17",
-                                "team_name": "name_17"
+                                "team_id": "team_30",
+                                "team_name": "name_30"
                             }
                         },
                         "actions": [
@@ -585,14 +585,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                     "description": "description_1",
                     "start_date": "2020-09-10 05:30:00",
                     "due_date": "2020-10-10 05:30:00",
-                    "priority": "HIGH",
+                    "priority": "LOW",
                     "task_overview_fields": [
-                        {
-                            "field_type": "field_type5",
-                            "field_display_name": "key_5",
-                            "field_response": "value_5",
-                            "field_id": "field_5"
-                        },
                         {
                             "field_type": "field_type6",
                             "field_display_name": "key_6",
@@ -604,6 +598,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             "field_display_name": "key_7",
                             "field_response": "value_7",
                             "field_id": "field_7"
+                        },
+                        {
+                            "field_type": "field_type8",
+                            "field_display_name": "key_8",
+                            "field_response": "value_8",
+                            "field_id": "field_8"
                         }
                     ],
                     "stage_with_actions": {
@@ -611,12 +611,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                         "stage_display_name": "stage_name1",
                         "stage_color": "stage_color1",
                         "assignee": {
-                            "assignee_id": "assignee_18",
-                            "name": "name_18",
-                            "profile_pic_url": "profile_pic_18",
+                            "assignee_id": "assignee_31",
+                            "name": "name_31",
+                            "profile_pic_url": "profile_pic_31",
                             "team_info": {
-                                "team_id": "team_18",
-                                "team_name": "name_18"
+                                "team_id": "team_31",
+                                "team_name": "name_31"
                             }
                         },
                         "actions": [
@@ -635,14 +635,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                     "description": "description_2",
                     "start_date": "2020-09-10 05:30:00",
                     "due_date": "2020-10-10 05:30:00",
-                    "priority": "LOW",
+                    "priority": "MEDIUM",
                     "task_overview_fields": [
-                        {
-                            "field_type": "field_type5",
-                            "field_display_name": "key_5",
-                            "field_response": "value_5",
-                            "field_id": "field_5"
-                        },
                         {
                             "field_type": "field_type6",
                             "field_display_name": "key_6",
@@ -654,6 +648,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             "field_display_name": "key_7",
                             "field_response": "value_7",
                             "field_id": "field_7"
+                        },
+                        {
+                            "field_type": "field_type8",
+                            "field_display_name": "key_8",
+                            "field_response": "value_8",
+                            "field_id": "field_8"
                         }
                     ],
                     "stage_with_actions": {
@@ -661,12 +661,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                         "stage_display_name": "stage_name2",
                         "stage_color": "stage_color2",
                         "assignee": {
-                            "assignee_id": "assignee_19",
-                            "name": "name_19",
-                            "profile_pic_url": "profile_pic_19",
+                            "assignee_id": "assignee_32",
+                            "name": "name_32",
+                            "profile_pic_url": "profile_pic_32",
                             "team_info": {
-                                "team_id": "team_19",
-                                "team_name": "name_19"
+                                "team_id": "team_32",
+                                "team_name": "name_32"
                             }
                         },
                         "actions": [
@@ -685,14 +685,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                     "description": "description_3",
                     "start_date": "2020-09-10 05:30:00",
                     "due_date": "2020-10-10 05:30:00",
-                    "priority": "MEDIUM",
+                    "priority": "HIGH",
                     "task_overview_fields": [
-                        {
-                            "field_type": "field_type5",
-                            "field_display_name": "key_5",
-                            "field_response": "value_5",
-                            "field_id": "field_5"
-                        },
                         {
                             "field_type": "field_type6",
                             "field_display_name": "key_6",
@@ -704,6 +698,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             "field_display_name": "key_7",
                             "field_response": "value_7",
                             "field_id": "field_7"
+                        },
+                        {
+                            "field_type": "field_type8",
+                            "field_display_name": "key_8",
+                            "field_response": "value_8",
+                            "field_id": "field_8"
                         }
                     ],
                     "stage_with_actions": {
@@ -711,12 +711,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                         "stage_display_name": "stage_name3",
                         "stage_color": "stage_color3",
                         "assignee": {
-                            "assignee_id": "assignee_20",
-                            "name": "name_20",
-                            "profile_pic_url": "profile_pic_20",
+                            "assignee_id": "assignee_33",
+                            "name": "name_33",
+                            "profile_pic_url": "profile_pic_33",
                             "team_info": {
-                                "team_id": "team_20",
-                                "team_name": "name_20"
+                                "team_id": "team_33",
+                                "team_name": "name_33"
                             }
                         },
                         "actions": [
@@ -735,14 +735,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                     "description": "description_4",
                     "start_date": "2020-09-10 05:30:00",
                     "due_date": "2020-10-10 05:30:00",
-                    "priority": "HIGH",
+                    "priority": "LOW",
                     "task_overview_fields": [
-                        {
-                            "field_type": "field_type5",
-                            "field_display_name": "key_5",
-                            "field_response": "value_5",
-                            "field_id": "field_5"
-                        },
                         {
                             "field_type": "field_type6",
                             "field_display_name": "key_6",
@@ -754,6 +748,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             "field_display_name": "key_7",
                             "field_response": "value_7",
                             "field_id": "field_7"
+                        },
+                        {
+                            "field_type": "field_type8",
+                            "field_display_name": "key_8",
+                            "field_response": "value_8",
+                            "field_id": "field_8"
                         }
                     ],
                     "stage_with_actions": {
@@ -761,12 +761,12 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                         "stage_display_name": "stage_name4",
                         "stage_color": "stage_color4",
                         "assignee": {
-                            "assignee_id": "assignee_21",
-                            "name": "name_21",
-                            "profile_pic_url": "profile_pic_21",
+                            "assignee_id": "assignee_34",
+                            "name": "name_34",
+                            "profile_pic_url": "profile_pic_34",
                             "team_info": {
-                                "team_id": "team_21",
-                                "team_name": "name_21"
+                                "team_id": "team_34",
+                                "team_name": "name_34"
                             }
                         },
                         "actions": [

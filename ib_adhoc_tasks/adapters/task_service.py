@@ -62,6 +62,18 @@ class TaskService:
         ]
         return stage_id_and_name_dtos
 
+    def get_subtask_ids_for_task_id(self, task_id: int) -> List[int]:
+        from ib_tasks.app_interfaces.service_interface import ServiceInterface
+        service = ServiceInterface()
+        subtask_ids_dtos = service.get_sub_task_ids_to_task_ids(
+            task_ids=[task_id]
+        )
+        subtask_ids = subtask_ids_dtos[0].sub_task_ids
+        return subtask_ids
+
+    def get_project_id_based_on_task_id(self, task_id: int) -> str:
+        pass
+
     @staticmethod
     def get_field_display_name(
             field_id: str, user_id: str, project_id: str
@@ -73,6 +85,14 @@ class TaskService:
         )
         field_display_name = field_display_name_dtos[0].field_display_name
         return field_display_name
+
+    def get_task_id(self, task_display_id: str) -> int:
+        from ib_tasks.app_interfaces.service_interface import ServiceInterface
+        service = ServiceInterface()
+        task_ids_dtos = service.get_task_ids_for_given_task_display_ids(
+            task_display_ids=[task_display_id])
+        task_id = task_ids_dtos[0].task_id
+        return task_id
 
     def get_task_complete_details_dto(
             self, task_details_input_dto: TasksDetailsInputDTO
