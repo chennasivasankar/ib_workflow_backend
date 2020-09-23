@@ -6,7 +6,8 @@ from ib_adhoc_tasks.adapters.dtos import FieldDetailsDTO, \
     StageActionDetailsDTO, GetTaskStageCompleteDetailsDTO, \
     AssigneeDetailsDTO, \
     TaskStageAssigneeDetailsDTO, TaskBaseDetailsDTO, TasksCompleteDetailsDTO, \
-    TeamDetailsDTO
+    TeamDetailsDTO, TaskIdWithSubTasksCountDTO, \
+    TaskIdWithCompletedSubTasksCountDTO
 from ib_adhoc_tasks.constants.enum import ActionTypes, Priority
 
 
@@ -127,3 +128,19 @@ class TasksCompleteDetailsDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def task_stage_assignee_dtos(self):
         return [TaskStageAssigneeDetailsDTOFactory()]
+
+
+class TaskIdWithSubTasksCountDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskIdWithSubTasksCountDTO
+
+    task_id = factory.sequence(lambda counter: "task_{}".format(counter))
+    sub_tasks_count = factory.Iterator([0, 1, 2, 3])
+
+
+class TaskIdWithCompletedSubTasksCountDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskIdWithCompletedSubTasksCountDTO
+
+    task_id = factory.sequence(lambda counter: "task_{}".format(counter))
+    completed_sub_tasks_count = factory.Iterator([0, 1, 2, 3])

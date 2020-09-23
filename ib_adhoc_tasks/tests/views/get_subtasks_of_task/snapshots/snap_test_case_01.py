@@ -13,6 +13,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
     'parent_task_id': '1',
     'tasks': [
         {
+            'completed_sub_tasks_count': None,
             'description': 'description_0',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'HIGH',
@@ -39,6 +40,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'stage_id': 0
             },
             'start_date': '2020-09-10 05:30:00',
+            'sub_tasks_count': None,
             'task_id': 'task_display0',
             'task_overview_fields': [
                 {
@@ -63,6 +65,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
             'title': 'title_0'
         },
         {
+            'completed_sub_tasks_count': None,
             'description': 'description_1',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'LOW',
@@ -89,6 +92,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'stage_id': 1
             },
             'start_date': '2020-09-10 05:30:00',
+            'sub_tasks_count': None,
             'task_id': 'task_display1',
             'task_overview_fields': [
                 {
@@ -113,6 +117,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
             'title': 'title_1'
         },
         {
+            'completed_sub_tasks_count': None,
             'description': 'description_2',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'MEDIUM',
@@ -139,6 +144,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'stage_id': 2
             },
             'start_date': '2020-09-10 05:30:00',
+            'sub_tasks_count': None,
             'task_id': 'task_display2',
             'task_overview_fields': [
                 {
@@ -163,6 +169,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
             'title': 'title_2'
         },
         {
+            'completed_sub_tasks_count': None,
             'description': 'description_3',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'HIGH',
@@ -189,6 +196,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'stage_id': 3
             },
             'start_date': '2020-09-10 05:30:00',
+            'sub_tasks_count': None,
             'task_id': 'task_display3',
             'task_overview_fields': [
                 {
@@ -213,6 +221,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
             'title': 'title_3'
         },
         {
+            'completed_sub_tasks_count': None,
             'description': 'description_4',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'LOW',
@@ -239,6 +248,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'stage_id': 4
             },
             'start_date': '2020-09-10 05:30:00',
+            'sub_tasks_count': None,
             'task_id': 'task_display4',
             'task_overview_fields': [
                 {
@@ -263,6 +273,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
             'title': 'title_4'
         },
         {
+            'completed_sub_tasks_count': None,
             'description': 'description_5',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'MEDIUM',
@@ -289,6 +300,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'stage_id': 5
             },
             'start_date': '2020-09-10 05:30:00',
+            'sub_tasks_count': None,
             'task_id': 'task_display5',
             'task_overview_fields': [
                 {
@@ -313,6 +325,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
             'title': 'title_5'
         },
         {
+            'completed_sub_tasks_count': None,
             'description': 'description_6',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'HIGH',
@@ -339,6 +352,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'stage_id': 6
             },
             'start_date': '2020-09-10 05:30:00',
+            'sub_tasks_count': None,
             'task_id': 'task_display6',
             'task_overview_fields': [
                 {
@@ -363,6 +377,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
             'title': 'title_6'
         },
         {
+            'completed_sub_tasks_count': None,
             'description': 'description_7',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'LOW',
@@ -389,6 +404,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'stage_id': 7
             },
             'start_date': '2020-09-10 05:30:00',
+            'sub_tasks_count': None,
             'task_id': 'task_display7',
             'task_overview_fields': [
                 {
@@ -413,6 +429,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
             'title': 'title_7'
         },
         {
+            'completed_sub_tasks_count': None,
             'description': 'description_8',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'MEDIUM',
@@ -439,6 +456,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'stage_id': 8
             },
             'start_date': '2020-09-10 05:30:00',
+            'sub_tasks_count': None,
             'task_id': 'task_display8',
             'task_overview_fields': [
                 {
@@ -463,6 +481,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
             'title': 'title_8'
         },
         {
+            'completed_sub_tasks_count': None,
             'description': 'description_9',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'HIGH',
@@ -489,6 +508,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'stage_id': 9
             },
             'start_date': '2020-09-10 05:30:00',
+            'sub_tasks_count': None,
             'task_id': 'task_display9',
             'task_overview_fields': [
                 {
@@ -513,6 +533,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
             'title': 'title_9'
         },
         {
+            'completed_sub_tasks_count': None,
             'description': 'description_10',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'LOW',
@@ -539,6 +560,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'stage_id': 10
             },
             'start_date': '2020-09-10 05:30:00',
+            'sub_tasks_count': None,
             'task_id': 'task_display10',
             'task_overview_fields': [
                 {
@@ -563,6 +585,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
             'title': 'title_10'
         },
         {
+            'completed_sub_tasks_count': None,
             'description': 'description_11',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'MEDIUM',
@@ -589,6 +612,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'stage_id': 11
             },
             'start_date': '2020-09-10 05:30:00',
+            'sub_tasks_count': None,
             'task_id': 'task_display11',
             'task_overview_fields': [
                 {
@@ -613,6 +637,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
             'title': 'title_11'
         },
         {
+            'completed_sub_tasks_count': None,
             'description': 'description_12',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'HIGH',
@@ -639,6 +664,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'stage_id': 12
             },
             'start_date': '2020-09-10 05:30:00',
+            'sub_tasks_count': None,
             'task_id': 'task_display12',
             'task_overview_fields': [
                 {
@@ -663,6 +689,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
             'title': 'title_12'
         },
         {
+            'completed_sub_tasks_count': None,
             'description': 'description_13',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'LOW',
@@ -689,6 +716,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'stage_id': 13
             },
             'start_date': '2020-09-10 05:30:00',
+            'sub_tasks_count': None,
             'task_id': 'task_display13',
             'task_overview_fields': [
                 {
@@ -713,6 +741,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
             'title': 'title_13'
         },
         {
+            'completed_sub_tasks_count': None,
             'description': 'description_14',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'MEDIUM',
@@ -739,6 +768,7 @@ snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
                 'stage_id': 14
             },
             'start_date': '2020-09-10 05:30:00',
+            'sub_tasks_count': None,
             'task_id': 'task_display14',
             'task_overview_fields': [
                 {

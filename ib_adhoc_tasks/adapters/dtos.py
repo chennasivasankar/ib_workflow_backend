@@ -1,5 +1,5 @@
-from datetime import datetime
 from dataclasses import dataclass
+from datetime import datetime
 from typing import List, Optional
 
 from ib_adhoc_tasks.constants.enum import ActionTypes, ViewType
@@ -83,3 +83,15 @@ class TasksDetailsInputDTO:
     project_id: str
     user_id: str
     view_type: ViewType
+
+
+@dataclass
+class TaskIdWithSubTasksCountDTO:
+    task_id: int
+    sub_tasks_count: int
+
+
+@dataclass
+class TaskIdWithCompletedSubTasksCountDTO:
+    task_id: int
+    completed_sub_tasks_count: int
