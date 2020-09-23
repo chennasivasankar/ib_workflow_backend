@@ -15,7 +15,7 @@ snapshots['TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase.test_case bo
             'assignee': {
                 'assignee_id': '123e4567-e89b-12d3-a456-426614174000',
                 'name': 'name_0',
-                'profile_pic_url': 'pic_url',
+                'profile_pic_url': None,
                 'team_info': {
                     'team_id': 'team_0',
                     'team_name': 'team_name0'
@@ -28,7 +28,7 @@ snapshots['TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase.test_case bo
             'assignee': {
                 'assignee_id': '123e4567-e89b-12d3-a456-426614174000',
                 'name': 'name_0',
-                'profile_pic_url': 'pic_url',
+                'profile_pic_url': None,
                 'team_info': {
                     'team_id': 'team_0',
                     'team_name': 'team_name0'
@@ -41,7 +41,7 @@ snapshots['TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase.test_case bo
             'assignee': {
                 'assignee_id': '123e4567-e89b-12d3-a456-426614174000',
                 'name': 'name_0',
-                'profile_pic_url': 'pic_url',
+                'profile_pic_url': None,
                 'team_info': {
                     'team_id': 'team_0',
                     'team_name': 'team_name0'
