@@ -81,7 +81,7 @@ class GetTasksForKanbanViewInteractor:
         from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
         task_service_adapter = get_service_adapter()
         task_service = task_service_adapter.task_service
-        task_details_dtos = task_service.get_task_complete_details_dtos(
+        task_details_dtos = task_service.get_task_complete_details_dto(
             task_ids)
         return task_details_dtos
 
@@ -127,8 +127,7 @@ class GetTasksForKanbanViewInteractor:
             interactor.get_task_ids_for_view(
                 project_id=project_id, adhoc_template_id=adhoc_template_id,
                 group_by_dtos=group_by_dtos,
-                task_offset_and_limit_values_dto
-                =task_offset_and_limit_values_dto
+                task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
             )
         return group_details_dtos, total_groups_count, child_group_count_dtos
 

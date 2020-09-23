@@ -1,11 +1,13 @@
 import abc
 from typing import List
+from dataclasses import dataclass
 
 from ib_adhoc_tasks.adapters.dtos import TasksCompleteDetailsDTO
 from ib_adhoc_tasks.interactors.storage_interfaces.dtos import GroupDetailsDTO, \
     ChildGroupCountDTO
 
 
+@dataclass
 class TaskDetailsWithGroupByInfoDTO:
     group_details_dtos: List[GroupDetailsDTO]
     total_groups_count: int
