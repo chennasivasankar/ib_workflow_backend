@@ -246,14 +246,14 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         group_details_dtos = []
         for group in response.aggregations.groups.buckets[
                      group_offset: group_offset + group_limit]:
+            child_group_count_dto = ChildGroupCountDTO(
+                group_by_value=group.key,
+                total_child_groups=len(group.child_groups)
+            )
 
             for child_group in group.child_groups[
                                child_group_offset: child_group_offset + child_group_limit]:
 
-                child_group_count_dto = ChildGroupCountDTO(
-                    child_group_by_value=child_group.key,
-                    total_child_groups=child_group.doc_count
-                )
                 child_group_count_dtos.append(child_group_count_dto)
 
                 task_ids = []

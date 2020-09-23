@@ -2,7 +2,7 @@
 # snapshottest: v1 - https://goo.gl/zC4yUc
 from __future__ import unicode_literals
 
-from snapshottest import Snapshot, GenericRepr
+from snapshottest import GenericRepr, Snapshot
 
 
 snapshots = Snapshot()
@@ -18,9 +18,9 @@ snapshots['TestGetTaskIdsForViewInteractor.test_with_valid_details_return_respon
 snapshots['TestGetTaskIdsForViewInteractor.test_with_valid_details_return_response total_groups_count'] = 5
 
 snapshots['TestGetTaskIdsForViewInteractor.test_with_valid_details_return_response child_group_count_dtos'] = [
-    GenericRepr("ChildGroupCountDTO(child_group_by_value='PR_PAYMENT_REQUEST_DRAFTS', total_child_groups=1)"),
-    GenericRepr("ChildGroupCountDTO(child_group_by_value='PR_PAYMENT_REQUEST_DRAFTS', total_child_groups=1)"),
-    GenericRepr("ChildGroupCountDTO(child_group_by_value='PR_NEED_CLARIFICATION', total_child_groups=1)"),
-    GenericRepr("ChildGroupCountDTO(child_group_by_value='PR_PAYMENT_REQUEST_DRAFTS', total_child_groups=1)"),
-    GenericRepr("ChildGroupCountDTO(child_group_by_value='PR_PAYMENT_REQUEST_DRAFTS', total_child_groups=1)")
+    GenericRepr("ChildGroupCountDTO(group_by_value='PR_PAYMENT_REQUEST_DRAFTS', total_child_groups=1)"),
+    GenericRepr("ChildGroupCountDTO(group_by_value='PR_PAYMENT_REQUEST_DRAFTS', total_child_groups=1)"),
+    GenericRepr("ChildGroupCountDTO(group_by_value='PR_NEED_CLARIFICATION', total_child_groups=1)"),
+    GenericRepr("ChildGroupCountDTO(group_by_value='PR_PAYMENT_REQUEST_DRAFTS', total_child_groups=1)"),
+    GenericRepr("ChildGroupCountDTO(group_by_value='PR_PAYMENT_REQUEST_DRAFTS', total_child_groups=1)")
 ]
