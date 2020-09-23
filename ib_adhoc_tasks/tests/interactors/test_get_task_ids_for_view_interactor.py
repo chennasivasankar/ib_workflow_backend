@@ -473,15 +473,15 @@ class TestGetTaskIdsForViewInteractor:
         from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
             ChildGroupCountDTO
         child_group_count_dtos = [
-            ChildGroupCountDTO(child_group_by_value='PR_PAYMENT_REQUEST_DRAFTS',
+            ChildGroupCountDTO(group_by_value='PR_PAYMENT_REQUEST_DRAFTS',
                                total_child_groups=1),
-            ChildGroupCountDTO(child_group_by_value='PR_PAYMENT_REQUEST_DRAFTS',
+            ChildGroupCountDTO(group_by_value='PR_PAYMENT_REQUEST_DRAFTS',
                                total_child_groups=1),
-            ChildGroupCountDTO(child_group_by_value='PR_NEED_CLARIFICATION',
+            ChildGroupCountDTO(group_by_value='PR_NEED_CLARIFICATION',
                                total_child_groups=1),
-            ChildGroupCountDTO(child_group_by_value='PR_PAYMENT_REQUEST_DRAFTS',
+            ChildGroupCountDTO(group_by_value='PR_PAYMENT_REQUEST_DRAFTS',
                                total_child_groups=1),
-            ChildGroupCountDTO(child_group_by_value='PR_PAYMENT_REQUEST_DRAFTS',
+            ChildGroupCountDTO(group_by_value='PR_PAYMENT_REQUEST_DRAFTS',
                                total_child_groups=1)]
         return child_group_count_dtos
 

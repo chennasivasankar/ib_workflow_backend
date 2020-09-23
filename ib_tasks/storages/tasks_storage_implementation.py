@@ -1,9 +1,10 @@
 from collections import defaultdict
 from datetime import datetime
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Union
 
 from django.db.models import Q, Count
 
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
@@ -26,8 +27,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
-from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, \
-    GetTaskDetailsDTO, \
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO, \
     TaskDelayParametersDTO
 from ib_tasks.models import Stage, TaskTemplate, CurrentTaskStage, \
     TaskTemplateStatusVariable, TaskStageHistory, TaskStatusVariable, SubTask
@@ -39,6 +39,18 @@ from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 
 class TasksStorageImplementation(TaskStorageInterface):
+
+    def add_sub_task(self, sub_task_id: int, parent_task_id: int):
+        SubTask.objects.create(task_id=parent_task_id, sub_task_id=sub_task_id)
+
+    def validate_task_display_id_and_return_task_id(
+            self, task_display_id: str) -> Union[InvalidTaskDisplayId, int]:
+        try:
+            task_id = Task.objects.get(task_display_id=task_display_id).id
+        except Task.DoesNotExist:
+            raise InvalidTaskDisplayId(task_display_id)
+        else:
+            return task_id
 
     def update_status_variables_to_task(
             self, task_id: int, status_variables_dto: List[StatusVariableDTO]):
@@ -580,7 +592,7 @@ class TasksStorageImplementation(TaskStorageInterface):
             self, task_id: int) -> \
             Optional[datetime]:
         task_due_time = Task.objects.filter(
-                id=task_id
+            id=task_id
         ).values_list('due_date', flat=True)
         if task_due_time:
             return task_due_time[0]
@@ -701,19 +713,25 @@ class TasksStorageImplementation(TaskStorageInterface):
         )
         return task_base_details_dto
 
-
     def get_sub_tasks_count_to_tasks(
             self, task_ids: List[int]
     ) -> List[SubTasksCountDTO]:
         sub_task_dicts = SubTask.objects.filter(task_id__in=task_ids) \
             .values("task_id").annotate(sub_tasks_count=Count("sub_task_id"))
 
+        from collections import defaultdict
+        task_sub_task_counts_map = defaultdict(int)
+        for sub_task_dict in sub_task_dicts:
+            task_id = sub_task_dict["task_id"]
+            sub_tasks_count = sub_task_dict["sub_tasks_count"]
+            task_sub_task_counts_map[task_id] = sub_tasks_count
+
         return [
             SubTasksCountDTO(
-                task_id=sub_task_dict["task_id"],
-                sub_tasks_count=sub_task_dict["sub_tasks_count"]
+                task_id=task_id,
+                sub_tasks_count=task_sub_task_counts_map.get(task_id, 0)
             )
-            for sub_task_dict in sub_task_dicts
+            for task_id in task_ids
         ]
 
     def get_sub_task_ids_to_tasks(
@@ -732,7 +750,7 @@ class TasksStorageImplementation(TaskStorageInterface):
         return [
             SubTasksIdsDTO(
                 task_id=task_id,
-                sub_task_ids=sub_task_ids
+                sub_task_ids=task_sub_task_ids_map.get(task_id, [])
             )
-            for task_id, sub_task_ids in task_sub_task_ids_map.items()
+            for task_id in task_ids
         ]

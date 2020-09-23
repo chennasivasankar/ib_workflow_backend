@@ -241,6 +241,6 @@ class StageGoFWithTemplateIdDTO:
 
 
 @dataclass
-class StageIdWithGoFIdDTO:
+class DBStageIdWithGoFIdDTO:
     stage_id: int
     gof_id: str

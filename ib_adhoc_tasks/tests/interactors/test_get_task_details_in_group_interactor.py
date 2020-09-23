@@ -79,7 +79,7 @@ class TestGetTaskDetailsInGroupInteractor:
         from ib_adhoc_tasks.interactors.dtos.dtos import GroupByValueDTO
         task_ids_for_groups_parameter_dto = TaskIdsForGroupsParameterDTO(
             project_id='project_id_0',
-            template_id='FIN_PR', user_id='user_0',
+            template_id='ADHOC', user_id='user_0',
             groupby_value_dtos=[
                 GroupByValueDTO(
                     group_by_display_name='ASSIGNEE',

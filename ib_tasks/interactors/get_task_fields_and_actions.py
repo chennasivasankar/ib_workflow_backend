@@ -54,6 +54,8 @@ class GetTaskFieldsAndActionsInteractor:
                 stage_ids, task_ids,
                 task_stage_dtos, user_id, view_type)
 
+        print("hello")
+
         task_details_dtos = self. \
             _map_fields_and_actions_based_on_their_stage_and_task_id(
                 action_dtos, field_dtos, stage_fields_dtos)

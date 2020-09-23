@@ -10,7 +10,7 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_200_JSON = """
 {
-    "total_tasks": 1,
+    "parent_task_id": "string",
     "tasks": [
         {
             "task_id": "string",
@@ -48,7 +48,9 @@ RESPONSE_200_JSON = """
                         "button_color": "string"
                     }
                 ]
-            }
+            },
+            "sub_tasks_count": 1,
+            "completed_sub_tasks_count": 1
         }
     ]
 }

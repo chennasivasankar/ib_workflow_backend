@@ -1,21 +1,41 @@
-from typing import List, Dict
 from datetime import datetime
+from typing import List, Dict, Optional
 
 from ib_adhoc_tasks.adapters.dtos import TasksCompleteDetailsDTO, \
     TaskBaseDetailsDTO, GetTaskStageCompleteDetailsDTO, \
     TaskStageAssigneeDetailsDTO, AssigneeDetailsDTO, TeamDetailsDTO, \
-    StageActionDetailsDTO, FieldDetailsDTO
+    StageActionDetailsDTO, FieldDetailsDTO, \
+    TaskIdWithCompletedSubTasksCountDTO, TaskIdWithSubTasksCountDTO
 
 
 class TaskDetailsMixin:
 
     def get_tasks_details(
             self, task_ids: List[int],
-            task_details_dto: TasksCompleteDetailsDTO
+            task_details_dto: TasksCompleteDetailsDTO,
+            sub_tasks_count_dtos:
+            Optional[List[TaskIdWithSubTasksCountDTO]] = None,
+            completed_sub_tasks_count_dtos:
+            Optional[List[TaskIdWithCompletedSubTasksCountDTO]] = None
+
     ):
         task_base_details_dtos = task_details_dto.task_base_details_dtos
         task_stage_details_dtos = task_details_dto.task_stage_details_dtos
         task_stage_assignee_dtos = task_details_dto.task_stage_assignee_dtos
+        task_id_wise_sub_task_count_dict = {}
+        task_id_wise_completed_sub_task_count_dict = {}
+        if sub_tasks_count_dtos:
+            task_id_wise_sub_task_count_dict = {
+                sub_tasks_count_dto.task_id: sub_tasks_count_dto.sub_tasks_count
+                for sub_tasks_count_dto in sub_tasks_count_dtos
+            }
+        if completed_sub_tasks_count_dtos:
+            task_id_wise_completed_sub_task_count_dict = {
+                completed_sub_tasks_count_dto.task_id:
+                    completed_sub_tasks_count_dto.completed_sub_tasks_count
+                for completed_sub_tasks_count_dto in
+                completed_sub_tasks_count_dtos
+            }
 
         tasks = []
         for task_id in task_ids:
@@ -33,6 +53,12 @@ class TaskDetailsMixin:
                 task_base_details_dto, task_stage_details_dto,
                 task_stage_assignee_dto
             )
+            if sub_tasks_count_dtos:
+                task_dict["sub_tasks_count"] = \
+                    task_id_wise_sub_task_count_dict.get(task_base_details_dto.task_id, 0)
+            if completed_sub_tasks_count_dtos:
+                task_dict["completed_sub_tasks_count"] = \
+                    task_id_wise_completed_sub_task_count_dict.get(task_base_details_dto.task_id, 0)
             tasks.append(task_dict)
         return tasks
 
@@ -60,6 +86,7 @@ class TaskDetailsMixin:
     def _get_task_stage_assignee_dto(
             task_id: int, stage_id: str,
             task_stage_assignee_dtos: List[TaskStageAssigneeDetailsDTO]
+
     ):
         for task_stage_assignee_dto in task_stage_assignee_dtos:
             assignee_task_id = task_stage_assignee_dto.task_id
