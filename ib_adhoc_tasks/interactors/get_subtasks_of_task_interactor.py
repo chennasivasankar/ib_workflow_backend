@@ -1,3 +1,5 @@
+from typing import Tuple, List
+
 from ib_adhoc_tasks.adapters.dtos import TasksCompleteDetailsDTO
 from ib_adhoc_tasks.interactors.dtos.dtos import GetSubtasksParameterDTO
 from ib_adhoc_tasks.interactors.presenter_interfaces \
@@ -10,18 +12,24 @@ class SubTasksInteractor:
             self, get_subtasks_parameter_dto: GetSubtasksParameterDTO,
             presenter: GetSubTasksPresenterInterface
     ):
-        complete_subtasks_details_dto = self.get_subtasks_of_task(
-            get_subtasks_parameter_dto=get_subtasks_parameter_dto
-        )
+        subtask_ids, complete_subtasks_details_dto = \
+            self.get_subtasks_of_task(
+                get_subtasks_parameter_dto=get_subtasks_parameter_dto
+            )
         return presenter.get_response_for_get_subtasks_of_task(
+            subtask_ids=subtask_ids,
             complete_subtasks_details_dto=complete_subtasks_details_dto
         )
 
     def get_subtasks_of_task(
             self, get_subtasks_parameter_dto: GetSubtasksParameterDTO
-    ) -> TasksCompleteDetailsDTO:
+    ) -> Tuple[List[int], TasksCompleteDetailsDTO]:
         from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
         service = get_service_adapter()
+        task_id = service.task_service.get_task_id(
+            task_display_id=get_subtasks_parameter_dto.task_id
+        )
+        get_subtasks_parameter_dto.task_id = task_id
         project_id = service.task_service.get_project_id_based_on_task_id(
             task_id=get_subtasks_parameter_dto.task_id
         )
@@ -39,4 +47,4 @@ class SubTasksInteractor:
             .get_task_complete_details_dto(
             task_details_input_dto=task_details_input_dto
         )
-        return complete_subtasks_details_dto
+        return subtask_ids, complete_subtasks_details_dto
