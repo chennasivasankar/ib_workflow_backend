@@ -46,7 +46,7 @@ class TasksStorageImplementation(TaskStorageInterface):
     def validate_task_display_id_and_return_task_id(
             self, task_display_id: str) -> Union[InvalidTaskDisplayId, int]:
         try:
-            task_id = Task.objects.get(display_id=task_display_id).id
+            task_id = Task.objects.get(task_display_id=task_display_id).id
         except Task.DoesNotExist:
             raise InvalidTaskDisplayId(task_display_id)
         else:

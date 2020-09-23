@@ -1592,25 +1592,6 @@
             "task_current_stages_details"
          ]
       },
-      "CreateSubTaskSuccessResponseBody":{
-         "type":"object",
-         "properties":{
-            "response":{
-               "type":"string"
-            },
-            "http_status_code":{
-               "type":"integer"
-            },
-            "res_status":{
-               "type":"string"
-            }
-         },
-         "required":[
-            "response",
-            "http_status_code",
-            "res_status"
-         ]
-      },
       "UpdateTaskSuccessResponseBody":{
          "type":"object",
          "properties":{
@@ -2067,10 +2048,7 @@
          }
       },
       "CreateSubTaskSuccessResponse":{
-         "description":"Sub task created successfully",
-         "schema":{
-            "$ref":"#/definitions/CreateSubTaskSuccessResponseBody"
-         }
+         "description":"Sub task created successfully"
       },
       "CreateTaskAccessUnauthorized":{
          "description":"user does not have access",

@@ -1,5 +1,5 @@
 """
-test with valid details when action type is not NO_VALIDATIONS
+test with valid details when only task title is give creates a sub task
 """
 import factory
 import pytest
@@ -7,6 +7,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from freezegun import freeze_time
 
 from ib_tasks.constants.constants import ALL_ROLES_ID
+from ib_tasks.constants.enum import ActionTypes
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...common_fixtures.adapters.assignees_details_service import \
     assignee_details_dtos_mock
@@ -24,7 +25,7 @@ from ...factories.models import TaskFactory, TaskTemplateFactory, \
     TaskTemplateInitialStageFactory, StagePermittedRolesFactory
 
 
-class TestCase01CreateSubTaskAPITestCase(TestUtils):
+class TestCase02CreateSubTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -81,7 +82,7 @@ class TestCase01CreateSubTaskAPITestCase(TestUtils):
                'stage_actions_logic.stage_1_action_name_1_logic'
         action = StageActionFactory(
             id=action_id, stage=stage, py_function_import_path=path,
-            action_type=None)
+            action_type=ActionTypes.NO_VALIDATIONS.value)
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
         StagePermittedRolesFactory.create(stage=stage, role_id=ALL_ROLES_ID)
@@ -99,10 +100,10 @@ class TestCase01CreateSubTaskAPITestCase(TestUtils):
             "action_id": 1,
             "parent_task_id": "IBWF-1",
             "title": "Sub Task",
-            "description": "description of sub task",
-            "start_datetime": "2020-09-09 00:00:00",
-            "due_datetime": "2099-10-09 00:00:00",
-            "priority": "HIGH",
+            "description": None,
+            "start_datetime": None,
+            "due_datetime": None,
+            "priority": None,
             "task_gofs": []
         }
         path_params = {}
