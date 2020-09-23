@@ -55,14 +55,10 @@ class TaskDetailsMixin:
             )
             if sub_tasks_count_dtos:
                 task_dict["sub_tasks_count"] = \
-                    task_id_wise_sub_task_count_dict[
-                        task_base_details_dto.task_id
-                    ]
+                    task_id_wise_sub_task_count_dict.get(task_base_details_dto.task_id, 0)
             if completed_sub_tasks_count_dtos:
                 task_dict["completed_sub_tasks_count"] = \
-                    task_id_wise_completed_sub_task_count_dict[
-                        task_base_details_dto.task_id
-                    ]
+                    task_id_wise_completed_sub_task_count_dict.get(task_base_details_dto.task_id, 0)
             tasks.append(task_dict)
         return tasks
 
