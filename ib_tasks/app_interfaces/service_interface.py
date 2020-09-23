@@ -234,7 +234,12 @@ class ServiceInterface:
     ) -> List[TaskWithCompletedSubTasksCountDTO]:
         from ib_tasks.interactors.get_tasks_completed_sub_tasks_count import \
             GetTasksCompletedSubTasksCount
-        interactor = GetTasksCompletedSubTasksCount()
+        task_storage = TasksStorageImplementation()
+        task_stage_storage = TaskStageStorageImplementation()
+        interactor = GetTasksCompletedSubTasksCount(
+            task_stage_storage=task_stage_storage,
+            task_storage=task_storage
+        )
         task_with_completed_sub_tasks_count_dtos = \
             interactor.get_tasks_completed_sub_tasks_count(
                 task_ids=task_ids

@@ -21,9 +21,7 @@ class GetTasksCompletedSubTasksCount:
     def get_tasks_completed_sub_tasks_count(self, task_ids: List[int]):
         self._validate_task_ids(task_ids)
         task_with_all_sub_tasks_dtos = \
-            self.task_storage.get_sub_task_ids_to_tasks(
-                task_ids=task_ids
-            )
+            self.task_storage.get_sub_task_ids_to_tasks(task_ids=task_ids)
         from ib_tasks.constants.constants import ADHOC_TEMPLATE_ID
         adhoc_task_template_id = ADHOC_TEMPLATE_ID
         max_stage_value = \
