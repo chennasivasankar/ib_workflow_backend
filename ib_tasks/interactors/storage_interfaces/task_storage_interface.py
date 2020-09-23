@@ -17,9 +17,13 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageValueDTO, StageIdWithTemplateIdDTO, TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO, StatusVariableDTO
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO, TaskProjectDTO, TaskDueMissingDTO, \
+from ib_tasks.interactors.storage_interfaces.task_dtos import \
+    TaskDisplayIdDTO, \
+    TaskProjectDTO, TaskDueMissingDTO, \
     SubTasksCountDTO, SubTasksIdsDTO
-from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO, TaskDelayParametersDTO
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, \
+    GetTaskDetailsDTO, \
+    TaskDelayParametersDTO
 
 
 class TaskStorageInterface(abc.ABC):
@@ -72,6 +76,11 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_valid_task_ids(self, task_ids: List[int]) -> Optional[List[int]]:
+        pass
+
+    @abc.abstractmethod
+    def get_valid_task_display_ids(self, task_display_ids: List[str]) -> \
+            Optional[List[str]]:
         pass
 
     @abc.abstractmethod
@@ -140,6 +149,12 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_task_ids_given_task_display_ids(self, task_display_ids: List[
+        str]) -> List[
+        TaskDisplayIdDTO]:
+        pass
+
+    @abc.abstractmethod
     def get_project_id_of_task(self, task_id: int) -> str:
         pass
 
@@ -160,7 +175,8 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_task_ids_from_the_project(self, task_ids: List[int], project_id: str):
+    def get_valid_task_ids_from_the_project(self, task_ids: List[int],
+                                            project_id: str):
         pass
 
     @abc.abstractmethod
@@ -195,7 +211,6 @@ class TaskStorageInterface(abc.ABC):
             self, task_ids: List[int]
     ) -> List[TaskBaseDetailsDTO]:
         pass
-
 
     @abc.abstractmethod
     def get_sub_tasks_count_to_tasks(

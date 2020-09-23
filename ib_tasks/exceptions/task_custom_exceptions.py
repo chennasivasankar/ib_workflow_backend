@@ -70,6 +70,11 @@ class InvalidTaskIds(Exception):
         self.invalid_task_ids = task_ids
 
 
+class InvalidTaskDisplayIds(Exception):
+    def __init__(self, task_display_ids: List[str]):
+        self.invalid_task_display_ids = task_display_ids
+
+
 class InvalidTaskJson(Exception):
     def __init__(self, message: str):
         self.message = message
