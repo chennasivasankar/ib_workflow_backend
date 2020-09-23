@@ -296,6 +296,14 @@
         },
         "stage_with_actions": {
           "$ref": "#/definitions/StagesWithActions"
+        },
+        "sub_tasks_count": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "completed_sub_tasks_count": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "required": [
