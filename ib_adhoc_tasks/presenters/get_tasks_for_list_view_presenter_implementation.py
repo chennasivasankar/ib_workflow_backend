@@ -96,8 +96,7 @@ class GetTasksForListViewPresenterImplementation(
         groups = []
         for group_details_dto in group_details_dtos:
             task_ids = group_details_dto.task_ids
-            tasks = self.get_tasks_details(
-                task_ids, task_details_dto)
+            tasks = self.get_tasks_details(task_ids, task_details_dto)
             each_group_details = {
                 "group_by_value": group_details_dto.group_by_value,
                 "group_by_display_name":

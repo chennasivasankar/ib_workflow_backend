@@ -116,7 +116,7 @@ class GetTasksForKanbanViewInteractor:
     @staticmethod
     def _get_task_details_dtos(
             task_ids: List[str]
-    ) -> List[TasksCompleteDetailsDTO]:
+    ) -> TasksCompleteDetailsDTO:
         from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
         task_service_adapter = get_service_adapter()
         task_service = task_service_adapter.task_service

@@ -12,7 +12,7 @@ class TaskDetailsWithGroupByInfoDTO:
     group_details_dtos: List[GroupDetailsDTO]
     total_groups_count: int
     child_group_count_dtos: List[ChildGroupCountDTO]
-    task_details_dtos: List[TasksCompleteDetailsDTO]
+    task_details_dtos: TasksCompleteDetailsDTO
 
 
 class GetTasksForKanbanViewPresenterInterface(abc.ABC):
