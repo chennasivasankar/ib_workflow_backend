@@ -4,7 +4,8 @@ REQUEST_BODY_JSON = """
 {
     "group_by_values": [
         "string"
-    ]
+    ],
+    "view_type": "LIST"
 }
 """
 
@@ -35,11 +36,7 @@ RESPONSE_200_JSON = """
                 "assignee": {
                     "assignee_id": "string",
                     "name": "string",
-                    "profile_pic_url": "string",
-                    "team_info": {
-                        "team_id": "string",
-                        "team_name": "string"
-                    }
+                    "profile_pic_url": "string"
                 },
                 "actions": [
                     {

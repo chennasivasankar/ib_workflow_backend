@@ -26,6 +26,10 @@ class InvalidTaskTemplateId(Exception):
     pass
 
 
-class InvalidOffsetOrLimitValue(Exception):
+class InvalidOffsetValue(Exception):
+    pass
+
+
+class InvalidLimitValue(Exception):
     pass
 

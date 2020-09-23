@@ -17,7 +17,7 @@ class TestCase01GetSubtasksOfTaskAPITestCase(TestUtils):
     def test_case(self, snapshot):
         body = {'task_id': 'string', 'view_type': 'LIST'}
         path_params = {}
-        query_params = {'limit': 38, 'offset': 688}
+        query_params = {'limit': 642, 'offset': 362}
         headers = {}
         response = self.make_api_call(body=body,
                                       path_params=path_params,

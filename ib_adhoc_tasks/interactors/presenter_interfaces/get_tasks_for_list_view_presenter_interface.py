@@ -15,10 +15,25 @@ class GetTasksForListViewPresenterInterface(abc.ABC):
     def get_task_details_group_by_info_response(
             self,
             group_details_dtos: List[GroupDetailsDTO],
-            task_details_dto: TasksCompleteDetailsDTO
+            task_details_dto: TasksCompleteDetailsDTO,
+            total_groups_count: int
     ):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_offset_or_limit_value(self):
+    def raise_invalid_offset_value(self):
         pass
+
+    @abc.abstractmethod
+    def raise_invalid_limit_value(self):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_user_id(self):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_user_for_project(self):
+        pass
+
+
