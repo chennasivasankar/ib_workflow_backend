@@ -466,11 +466,11 @@ def REVIEW_REJECTED_To_Do(task_dict, global_constants, stage_value_dict):
     return task_dict
 
 
-def TO_DO_To_Do(task_dict, global_constants, stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "TO_DO"
+def TO_DO_In_Progress(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "IN_PROGRESS"
     return task_dict
 
 
-def TO_DO_In_Progress(task_dict, global_constants, stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "IN_PROGRESS"
+def CREATE_STAGE_Create_Task(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "TO_DO"
     return task_dict

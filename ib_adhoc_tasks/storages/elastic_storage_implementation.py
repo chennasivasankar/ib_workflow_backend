@@ -225,7 +225,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
             group_by_order_one_dto, group_by_order_two_dto
     ):
         tasks_data = A('top_hits')
-        search.filter(query)
+        search = search.filter(query)
         search.aggs.bucket('groups', group_agg).bucket(
             'child_groups', child_agg
         ).bucket('tasks', tasks_data)

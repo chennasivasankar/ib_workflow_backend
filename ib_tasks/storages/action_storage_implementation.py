@@ -350,7 +350,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
             current_queue = Q(role_id__in=item.roles) | Q(
                 role_id=ALL_ROLES_ID) & \
                             Q(
-                                action__stage__currenttaskstage__task=item.task_id) & \
+                                action__stage__currenttaskstage__task_id=item.task_id) & \
                             Q(action__stage__stage_id__in=stage_ids)
             if counter == 0:
                 q = current_queue
