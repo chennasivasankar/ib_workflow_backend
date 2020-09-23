@@ -4,8 +4,14 @@ from typing import List, Optional
 from ib_adhoc_tasks.adapters.dtos import TasksDetailsInputDTO, \
     TasksCompleteDetailsDTO, TaskBaseDetailsDTO, \
     GetTaskStageCompleteDetailsDTO, TaskStageAssigneeDetailsDTO, \
-    FieldDetailsDTO, StageActionDetailsDTO, AssigneeDetailsDTO, TeamDetailsDTO
+    FieldDetailsDTO, StageActionDetailsDTO, AssigneeDetailsDTO, TeamDetailsDTO, \
+    TaskIdWithCompletedSubTasksCountDTO, TaskIdWithSubTasksCountDTO
 from ib_adhoc_tasks.exceptions.custom_exceptions import InvalidTaskTemplateId
+
+
+class InvalidTaskIds(Exception):
+    def __init__(self, task_ids: List[int]):
+        self.invalid_task_ids = task_ids
 
 
 class InvalidGroupById(Exception):
@@ -111,7 +117,9 @@ class TaskService:
         ]
         return task_id_with_sub_tasks_count_dtos
 
-    def get_completed_sub_tasks_count_for_task_ids(self, task_ids):
+    def get_completed_sub_tasks_count_for_task_ids(
+            self, task_ids
+    ) -> List[TaskIdWithCompletedSubTasksCountDTO]:
         pass
 
     def get_task_complete_details_dto(

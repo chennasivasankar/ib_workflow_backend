@@ -71,7 +71,8 @@ class GetTasksForListViewInteractor:
         self._validate_limit_offset_values(group_by_info_list_view_dto)
         self._validate_project_id(project_id)
         group_details_dtos, total_groups_count = self._get_group_details_dtos(
-            group_by_info_list_view_dto)
+            group_by_info_list_view_dto
+        )
         task_ids = self._get_task_ids(group_details_dtos)
         user_id = group_by_info_list_view_dto.user_id
         task_details_input_dto = TasksDetailsInputDTO(

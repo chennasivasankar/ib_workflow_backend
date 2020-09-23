@@ -15,7 +15,7 @@ class TestCase01GetAdhocTasksByGroupIdsAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
-        body = {'group_by_values': ['string']}
+        body = {'group_by_values': ['string'], 'view_type': 'LIST'}
         path_params = {}
         query_params = {'project_id': 'string', 'limit': 690, 'offset': 41}
         headers = {}
