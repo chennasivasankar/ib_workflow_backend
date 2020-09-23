@@ -17,12 +17,12 @@ class GoFStorageImplementation(GoFStorageInterface):
 
     def get_gofs_display_names(
             self, gof_ids: List[str]) -> List[GoFIdWithGoFDisplayNameDTO]:
-        gof_dicts = GoF.objects.filter(gof_id__in=gof_ids).values_list(
+        gof_dicts = GoF.objects.filter(gof_id__in=gof_ids).values(
             'gof_id', 'display_name')
         gofs_with_display_name_dtos = [
             GoFIdWithGoFDisplayNameDTO(
                 gof_id=gof_dict['gof_id'],
-                gof_display_name=gof_dict['gof_display_name'])
+                gof_display_name=gof_dict['display_name'])
             for gof_dict in gof_dicts
         ]
         return gofs_with_display_name_dtos

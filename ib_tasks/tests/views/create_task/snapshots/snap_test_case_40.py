@@ -41,21 +41,3 @@ snapshots['TestCase40CreateTaskAPITestCase.test_case body'] = {
         ]
     }
 }
-
-snapshots['TestCase40CreateTaskAPITestCase.test_case task_id'] = 1
-
-snapshots['TestCase40CreateTaskAPITestCase.test_case template_id'] = 'template_1'
-
-snapshots['TestCase40CreateTaskAPITestCase.test_case task_title'] = 'task_title'
-
-snapshots['TestCase40CreateTaskAPITestCase.test_case task_description'] = None
-
-snapshots['TestCase40CreateTaskAPITestCase.test_case task_start_date'] = 'None'
-
-snapshots['TestCase40CreateTaskAPITestCase.test_case task_due_date'] = 'None'
-
-snapshots['TestCase40CreateTaskAPITestCase.test_case task_priority'] = None
-
-snapshots['TestCase40CreateTaskAPITestCase.test_case task_id_1'] = 1
-
-snapshots['TestCase40CreateTaskAPITestCase.test_case task_stage_1'] = 1

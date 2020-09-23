@@ -4,7 +4,7 @@ from typing import List
 from ib_tasks.constants.enum import ViewType
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldCompleteDetailsDTO, UserFieldPermissionDTO, FieldIdWithGoFIdDTO, \
-    FieldNameWithGoFDisplayNameDTO, \
+    FieldWithGoFDisplayNameDTO, \
     TaskTemplateStageFieldsDTO, StageTaskFieldsDTO, FieldDetailsDTOWithTaskId, \
     FieldNameDTO, FieldDisplayNameDTO, FieldTypeDTO, FieldWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
@@ -128,7 +128,7 @@ class FieldsStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_user_writable_fields_for_given_gof_ids(
             self, user_roles, gof_ids: List[str]
-    ) -> List[FieldNameWithGoFDisplayNameDTO]:
+    ) -> List[FieldWithGoFDisplayNameDTO]:
         pass
 
     @abc.abstractmethod
@@ -143,5 +143,5 @@ class FieldsStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_fields_display_names_with_gof_display_name(
             self, field_ids: List[str]
-    ) -> List[FieldNameWithGoFDisplayNameDTO]:
+    ) -> List[FieldWithGoFDisplayNameDTO]:
         pass

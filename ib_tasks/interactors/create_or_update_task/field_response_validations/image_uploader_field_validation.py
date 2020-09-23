@@ -4,6 +4,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidUrlForImage, InvalidImageFormat
 from ib_tasks.interactors.create_or_update_task.field_response_validations. \
     base_field_validation import BaseFieldValidation
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldWithGoFDisplayNameDTO
 
 
 class ImageUploaderFieldValidationInteractor(BaseFieldValidation):
@@ -17,7 +19,8 @@ class ImageUploaderFieldValidationInteractor(BaseFieldValidation):
         self.allowed_formats = allowed_formats
 
     def validate_field_response(
-            self
+            self,
+            field_id_with_display_name_dtos: List[FieldWithGoFDisplayNameDTO]
     ) -> Union[None, InvalidUrlForImage, InvalidImageFormat]:
         from ib_tasks.constants.config import VALID_URL_REGEX_PATTERN
         invalid_url_path = \
@@ -34,7 +37,8 @@ class ImageUploaderFieldValidationInteractor(BaseFieldValidation):
         given_image_format_not_in_allowed_formats = \
             given_image_format not in self.allowed_formats
         if given_image_format_not_in_allowed_formats:
+            field_display_name = self.get_field_display_name(
+                self.field_id, field_id_with_display_name_dtos)
             raise InvalidImageFormat(
-                self.field_id, given_image_format, self.allowed_formats
-            )
+                field_display_name, given_image_format, self.allowed_formats)
         return

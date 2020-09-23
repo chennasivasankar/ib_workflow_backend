@@ -1,7 +1,7 @@
 from typing import Optional, List
 
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldNameWithGoFDisplayNameDTO
+    FieldWithGoFDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFIdWithGoFDisplayNameDTO
 
@@ -23,7 +23,7 @@ class GetGoFsFieldsDisplayNameMixin:
     def get_field_display_name(
             field_id: str,
             field_id_with_field_display_name_dtos: List[
-                FieldNameWithGoFDisplayNameDTO]
+                FieldWithGoFDisplayNameDTO]
     ) -> Optional[str]:
         for field_dto in field_id_with_field_display_name_dtos:
             field_id_matched = field_id == field_dto.field_id
@@ -44,10 +44,10 @@ class GetGoFsFieldsDisplayNameMixin:
         return gof_display_names
 
     @staticmethod
-    def get_fields_display_names(
+    def get_field_display_names(
             field_ids: List[str],
             field_id_with_field_display_name_dtos: List[
-                FieldNameWithGoFDisplayNameDTO]
+                FieldWithGoFDisplayNameDTO]
     ) -> List[str]:
         field_display_names = []
         for field_dto in field_id_with_field_display_name_dtos:

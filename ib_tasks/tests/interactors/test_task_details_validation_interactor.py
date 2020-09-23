@@ -12,7 +12,7 @@ from ib_tasks.tests.common_fixtures.adapters.auth_service import \
 from ib_tasks.tests.factories.interactor_dtos import CreateTaskDTOFactory, \
     GoFFieldsDTOFactory, FieldValuesDTOFactory
 from ib_tasks.tests.factories.storage_dtos import \
-    FieldIdWithFieldDisplayNameDTOFactory
+    FieldWithGoFDisplayNameDTOFactory
 
 
 class TestTaskDetailsValidationsInteractor:
@@ -23,7 +23,7 @@ class TestTaskDetailsValidationsInteractor:
             BasicTaskDetailsDTOFactory
         CreateTaskDTOFactory.reset_sequence(1)
         BasicTaskDetailsDTOFactory.reset_sequence(1)
-        FieldIdWithFieldDisplayNameDTOFactory.reset_sequence(1)
+        FieldWithGoFDisplayNameDTOFactory.reset_sequence(1)
         GoFFieldsDTOFactory.reset_sequence(1)
         FieldValuesDTOFactory.reset_sequence(1)
 
@@ -358,7 +358,7 @@ class TestTaskDetailsValidationsInteractor:
             gof_fields_dtos=gof_field_dtos
         )
         field_id_with_field_name_dtos = \
-            FieldIdWithFieldDisplayNameDTOFactory.create_batch(size=2)
+            FieldWithGoFDisplayNameDTOFactory.create_batch(size=2)
 
         get_valid_project_ids_mock(mocker, valid_project_ids)
         gofs_details_validation_interactor_mock(mocker)

@@ -12,7 +12,7 @@ snapshots['TestCase17CreateTaskAPITestCase.test_case[879389jkh2] status_code'] =
 snapshots['TestCase17CreateTaskAPITestCase.test_case[879389jkh2] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_PHONE_NUMBER_VALUE',
-    'response': 'Invalid value for phone number: 879389jkh2 for field: FIELD_ID-0'
+    'response': 'Invalid value for phone number: 879389jkh2 for field: DISPLAY_NAME-0'
 }
 
 snapshots['TestCase17CreateTaskAPITestCase.test_case[34567892] status_code'] = '400'
@@ -20,5 +20,5 @@ snapshots['TestCase17CreateTaskAPITestCase.test_case[34567892] status_code'] = '
 snapshots['TestCase17CreateTaskAPITestCase.test_case[34567892] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_PHONE_NUMBER_VALUE',
-    'response': 'Invalid value for phone number: 34567892 for field: FIELD_ID-0'
+    'response': 'Invalid value for phone number: 34567892 for field: DISPLAY_NAME-0'
 }

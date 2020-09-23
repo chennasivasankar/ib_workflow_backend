@@ -20,7 +20,8 @@ class GoFsFieldsValidationPresenterMixin:
     def raise_invalid_gof_ids_exception(self, err):
         from ib_tasks.constants.exception_messages import \
             INVALID_GOF_IDS
-        response_message = INVALID_GOF_IDS[0].format(str(err.gofs_display_names))
+        response_message = INVALID_GOF_IDS[0].format(
+            str(err.gof_ids))
         data = {
             "response": response_message,
             "http_status_code": 400,
@@ -31,7 +32,8 @@ class GoFsFieldsValidationPresenterMixin:
     def raise_invalid_field_ids_exception(self, err):
         from ib_tasks.constants.exception_messages import \
             INVALID_FIELD_IDS
-        response_message = INVALID_FIELD_IDS[0].format(str(err.field_display_names))
+        response_message = INVALID_FIELD_IDS[0].format(
+            str(err.field_ids))
         data = {
             "response": response_message,
             "http_status_code": 400,
@@ -84,7 +86,7 @@ class GoFsFieldsValidationPresenterMixin:
         from ib_tasks.constants.exception_messages import \
             INVALID_STAGE_PERMITTED_GOFS
         response_message = INVALID_STAGE_PERMITTED_GOFS[0].format(
-            str(err.gof_ids), err.stage_id)
+            str(err.gof_display_names), err.stage_id)
         data = {
             "response": response_message,
             "http_status_code": 400,
@@ -110,7 +112,7 @@ class GoFsFieldsValidationPresenterMixin:
         from ib_tasks.constants.exception_messages import \
             USER_NEEDS_FILED_WRITABLE_PERMISSION
         response_message = USER_NEEDS_FILED_WRITABLE_PERMISSION[0].format(
-            err.field_id, str(err.required_roles))
+            err.field_display_name, str(err.required_roles))
         data = {
             "response": response_message,
             "http_status_code": 400,
@@ -123,7 +125,7 @@ class GoFsFieldsValidationPresenterMixin:
         from ib_tasks.constants.exception_messages import \
             EMPTY_VALUE_FOR_REQUIRED_FIELD
         response_message = EMPTY_VALUE_FOR_REQUIRED_FIELD[0].format(
-            err.field_id
+            err.field_display_name
         )
         data = {
             "response": response_message,
@@ -137,7 +139,7 @@ class GoFsFieldsValidationPresenterMixin:
         from ib_tasks.constants.exception_messages import \
             INVALID_PHONE_NUMBER_VALUE
         response_message = INVALID_PHONE_NUMBER_VALUE[0].format(
-            err.field_value, err.field_id
+            err.field_value, err.field_display_name
         )
         data = {
             "response": response_message,
@@ -151,7 +153,7 @@ class GoFsFieldsValidationPresenterMixin:
         from ib_tasks.constants.exception_messages import \
             INVALID_EMAIL
         response_message = INVALID_EMAIL[0].format(
-            err.field_value, err.field_id
+            err.field_value, err.field_display_name
         )
         data = {
             "response": response_message,
@@ -163,7 +165,7 @@ class GoFsFieldsValidationPresenterMixin:
     def raise_invalid_url_address_exception(self, err: InvalidURLValue):
         from ib_tasks.constants.exception_messages import INVALID_URL
         response_message = INVALID_URL[0].format(
-            err.field_value, err.field_id
+            err.field_value, err.field_display_name
         )
         data = {
             "response": response_message,
@@ -175,7 +177,7 @@ class GoFsFieldsValidationPresenterMixin:
     def raise_weak_password_exception(self, err: NotAStrongPassword):
         from ib_tasks.constants.exception_messages import NOT_A_STRONG_PASSWORD
         response_message = NOT_A_STRONG_PASSWORD[0].format(
-            err.field_value, err.field_id
+            err.field_value, err.field_display_name
         )
         data = {
             "response": response_message,
@@ -187,7 +189,7 @@ class GoFsFieldsValidationPresenterMixin:
     def raise_invalid_number_value_exception(self, err: InvalidNumberValue):
         from ib_tasks.constants.exception_messages import INVALID_NUMBER_VALUE
         response_message = INVALID_NUMBER_VALUE[0].format(
-            err.field_value, err.field_id
+            err.field_value, err.field_display_name
         )
         data = {
             "response": response_message,
@@ -199,7 +201,7 @@ class GoFsFieldsValidationPresenterMixin:
     def raise_invalid_float_value_exception(self, err: InvalidFloatValue):
         from ib_tasks.constants.exception_messages import INVALID_FLOAT_VALUE
         response_message = INVALID_FLOAT_VALUE[0].format(
-            err.field_value, err.field_id
+            err.field_value, err.field_display_name
         )
         data = {
             "response": response_message,
@@ -213,7 +215,7 @@ class GoFsFieldsValidationPresenterMixin:
         from ib_tasks.constants.exception_messages import \
             INVALID_VALUE_FOR_DROPDOWN
         response_message = INVALID_VALUE_FOR_DROPDOWN[0].format(
-            err.field_value, err.field_id, err.valid_values
+            err.field_value, err.field_display_name, err.valid_values
         )
         data = {
             "response": response_message,
@@ -227,7 +229,7 @@ class GoFsFieldsValidationPresenterMixin:
         from ib_tasks.constants.exception_messages import \
             INCORRECT_NAME_IN_GOF_SELECTOR_FIELD
         response_message = INCORRECT_NAME_IN_GOF_SELECTOR_FIELD[0].format(
-            err.field_value, err.field_id, err.valid_gof_selector_names
+            err.field_value, err.field_display_name, err.valid_gof_selector_names
         )
         data = {
             "response": response_message,
@@ -241,7 +243,7 @@ class GoFsFieldsValidationPresenterMixin:
         from ib_tasks.constants.exception_messages import \
             INCORRECT_RADIO_GROUP_CHOICE
         response_message = INCORRECT_RADIO_GROUP_CHOICE[0].format(
-            err.field_value, err.field_id, err.valid_radio_group_options
+            err.field_value, err.field_display_name, err.valid_radio_group_options
         )
         data = {
             "response": response_message,
@@ -255,7 +257,7 @@ class GoFsFieldsValidationPresenterMixin:
         from ib_tasks.constants.exception_messages import \
             INCORRECT_CHECK_BOX_OPTIONS_SELECTED
         response_message = INCORRECT_CHECK_BOX_OPTIONS_SELECTED[0].format(
-            err.invalid_checkbox_options, err.field_id,
+            err.invalid_checkbox_options, err.field_display_name,
             err.valid_check_box_options
         )
         data = {
@@ -270,7 +272,7 @@ class GoFsFieldsValidationPresenterMixin:
         from ib_tasks.constants.exception_messages import \
             INCORRECT_MULTI_SELECT_OPTIONS_SELECTED
         response_message = INCORRECT_MULTI_SELECT_OPTIONS_SELECTED[0].format(
-            err.invalid_multi_select_options, err.field_id,
+            err.invalid_multi_select_options, err.field_display_name,
             err.valid_multi_select_options
         )
         data = {
@@ -285,7 +287,7 @@ class GoFsFieldsValidationPresenterMixin:
         from ib_tasks.constants.exception_messages import \
             INCORRECT_MULTI_SELECT_LABELS_SELECTED
         response_message = INCORRECT_MULTI_SELECT_LABELS_SELECTED[0].format(
-            err.invalid_multi_select_labels, err.field_id,
+            err.invalid_multi_select_labels, err.field_display_name,
             err.valid_multi_select_labels
         )
         data = {
@@ -298,7 +300,7 @@ class GoFsFieldsValidationPresenterMixin:
     def raise_invalid_date_format_exception(self, err: InvalidDateFormat):
         from ib_tasks.constants.exception_messages import \
             INVALID_DATE_FORMAT
-        message = INVALID_DATE_FORMAT[0].format(err.field_value, err.field_id,
+        message = INVALID_DATE_FORMAT[0].format(err.field_value, err.field_display_name,
                                                 err.expected_format)
         data = {
             "response": message,
@@ -310,7 +312,7 @@ class GoFsFieldsValidationPresenterMixin:
     def raise_invalid_time_format_exception(self, err: InvalidTimeFormat):
         from ib_tasks.constants.exception_messages import INVALID_TIME_FORMAT
         response_message = INVALID_TIME_FORMAT[0].format(
-            err.field_value, err.field_id, err.expected_format
+            err.field_value, err.field_display_name, err.expected_format
         )
         data = {
             "response": response_message,
@@ -322,7 +324,7 @@ class GoFsFieldsValidationPresenterMixin:
     def raise_invalid_image_url_exception(self, err: InvalidUrlForImage):
         from ib_tasks.constants.exception_messages import INVALID_IMAGE_URL
         response_message = INVALID_IMAGE_URL[0].format(
-            err.image_url, err.field_id
+            err.image_url, err.field_display_name
         )
         data = {
             "response": response_message,
@@ -335,7 +337,7 @@ class GoFsFieldsValidationPresenterMixin:
             self, err: InvalidImageFormat):
         from ib_tasks.constants.exception_messages import INVALID_IMAGE_FORMAT
         response_message = INVALID_IMAGE_FORMAT[0].format(
-            err.given_format, err.field_id, err.allowed_formats
+            err.given_format, err.field_display_name, err.allowed_formats
         )
         data = {
             "response": response_message,
@@ -347,7 +349,7 @@ class GoFsFieldsValidationPresenterMixin:
     def raise_invalid_file_url_exception(self, err: InvalidUrlForFile):
         from ib_tasks.constants.exception_messages import INVALID_FILE_URL
         response_message = INVALID_FILE_URL[0].format(
-            err.file_url, err.field_id
+            err.file_url, err.field_display_name
         )
         data = {
             "response": response_message,
@@ -361,7 +363,7 @@ class GoFsFieldsValidationPresenterMixin:
         from ib_tasks.constants.exception_messages import \
             INVALID_FILE_FORMAT
         response_message = INVALID_FILE_FORMAT[0].format(
-            err.given_format, err.field_id, err.allowed_formats
+            err.given_format, err.field_display_name, err.allowed_formats
         )
         data = {
             "response": response_message,

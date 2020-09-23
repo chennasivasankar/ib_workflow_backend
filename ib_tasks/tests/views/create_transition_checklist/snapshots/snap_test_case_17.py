@@ -12,7 +12,7 @@ snapshots['TestCase17CreateTransitionChecklistAPITestCase.test_case[rajesh@ibhub
 snapshots['TestCase17CreateTransitionChecklistAPITestCase.test_case[rajesh@ibhubs@.com] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_EMAIL',
-    'response': 'Invalid value for email: rajesh@ibhubs@.com for field: field_1'
+    'response': 'Invalid value for email: rajesh@ibhubs@.com for field: DISPLAY_NAME-0'
 }
 
 snapshots['TestCase17CreateTransitionChecklistAPITestCase.test_case[.kumar@gmail@com] status_code'] = '400'
@@ -20,5 +20,5 @@ snapshots['TestCase17CreateTransitionChecklistAPITestCase.test_case[.kumar@gmail
 snapshots['TestCase17CreateTransitionChecklistAPITestCase.test_case[.kumar@gmail@com] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_EMAIL',
-    'response': 'Invalid value for email: .kumar@gmail@com for field: field_1'
+    'response': 'Invalid value for email: .kumar@gmail@com for field: DISPLAY_NAME-0'
 }

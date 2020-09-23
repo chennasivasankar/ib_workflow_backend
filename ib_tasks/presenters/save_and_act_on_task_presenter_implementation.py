@@ -263,7 +263,7 @@ class SaveAndActOnATaskPresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF
         response_message = DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF[0].format(
-            err.gof_display_name, err.same_gof_orders
+            err.gof_id, err.same_gof_orders
         )
         data = {
             "response": response_message,

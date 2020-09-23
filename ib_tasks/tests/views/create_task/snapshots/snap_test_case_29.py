@@ -12,7 +12,7 @@ snapshots['TestCase29CreateTaskAPITestCase.test_case[31-2099-12] status_code'] =
 snapshots['TestCase29CreateTaskAPITestCase.test_case[31-2099-12] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_DATE_FORMAT',
-    'response': 'given invalid format for date: 31-2099-12 for field: FIELD_ID-0! Try with this format: %Y-%m-%d'
+    'response': 'given invalid format for date: 31-2099-12 for field: DISPLAY_NAME-0! Try with this format: %Y-%m-%d'
 }
 
 snapshots['TestCase29CreateTaskAPITestCase.test_case[2099-31-12] status_code'] = '400'
@@ -20,7 +20,7 @@ snapshots['TestCase29CreateTaskAPITestCase.test_case[2099-31-12] status_code'] =
 snapshots['TestCase29CreateTaskAPITestCase.test_case[2099-31-12] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_DATE_FORMAT',
-    'response': 'given invalid format for date: 2099-31-12 for field: FIELD_ID-0! Try with this format: %Y-%m-%d'
+    'response': 'given invalid format for date: 2099-31-12 for field: DISPLAY_NAME-0! Try with this format: %Y-%m-%d'
 }
 
 snapshots['TestCase29CreateTaskAPITestCase.test_case[31-12-2099] status_code'] = '400'
@@ -28,7 +28,7 @@ snapshots['TestCase29CreateTaskAPITestCase.test_case[31-12-2099] status_code'] =
 snapshots['TestCase29CreateTaskAPITestCase.test_case[31-12-2099] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_DATE_FORMAT',
-    'response': 'given invalid format for date: 31-12-2099 for field: FIELD_ID-0! Try with this format: %Y-%m-%d'
+    'response': 'given invalid format for date: 31-12-2099 for field: DISPLAY_NAME-0! Try with this format: %Y-%m-%d'
 }
 
 snapshots['TestCase29CreateTaskAPITestCase.test_case[12-31-2099] status_code'] = '400'
@@ -36,5 +36,5 @@ snapshots['TestCase29CreateTaskAPITestCase.test_case[12-31-2099] status_code'] =
 snapshots['TestCase29CreateTaskAPITestCase.test_case[12-31-2099] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_DATE_FORMAT',
-    'response': 'given invalid format for date: 12-31-2099 for field: FIELD_ID-0! Try with this format: %Y-%m-%d'
+    'response': 'given invalid format for date: 12-31-2099 for field: DISPLAY_NAME-0! Try with this format: %Y-%m-%d'
 }

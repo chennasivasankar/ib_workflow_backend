@@ -58,10 +58,6 @@ class GoFsDetailsValidationsInteractor(GetGoFsFieldsDisplayNameMixin):
                 field_ids)
         self._validate_that_fields_gofs_and_template_are_related(
             task_template_id, gof_ids, gof_fields_dtos, stage_id)
-        # todo: check error message has display names instead of ids from
-        #  here after fixing one exception in the above method related stage
-        #  permitted gofs error - remember to always RENAME instead of
-        #  REFACTOR as Refactoring is changing shit so weirdly
         self._validate_user_permission_on_given_fields(
             field_ids, user_id, project_id)
         self._validate_given_field_responses(gof_fields_dtos, action_type)
@@ -106,7 +102,7 @@ class GoFsDetailsValidationsInteractor(GetGoFsFieldsDisplayNameMixin):
         from ib_tasks.interactors.create_or_update_task. \
             validate_field_responses import ValidateFieldResponsesInteractor
         field_validation_interactor = ValidateFieldResponsesInteractor(
-            self.field_storage)
+            self.field_storage, self.field_id_with_display_name_dtos)
         field_values_dtos = \
             self._get_field_values_dtos(gof_fields_dots)
         field_validation_interactor.validate_field_responses(
@@ -157,8 +153,11 @@ class GoFsDetailsValidationsInteractor(GetGoFsFieldsDisplayNameMixin):
             user_permitted = self.any_in(user_roles, required_roles)
             required_roles_are_empty = not required_roles
             if not user_permitted or required_roles_are_empty:
+                field_display_name = self.get_field_display_name(
+                    field_roles_dto.field_id,
+                    self.field_id_with_display_name_dtos)
                 raise UserNeedsFieldWritablePermission(
-                    user_id, field_roles_dto.field_id, required_roles)
+                    user_id, field_display_name, required_roles)
         return
 
     @staticmethod
@@ -210,7 +209,7 @@ class GoFsDetailsValidationsInteractor(GetGoFsFieldsDisplayNameMixin):
             set(given_gof_field_ids) - set(valid_gof_field_ids)
         ))
         if invalid_gof_field_ids:
-            invalid_field_display_names = self.get_fields_display_names(
+            invalid_field_display_names = self.get_field_display_names(
                 invalid_gof_field_ids,
                 self.field_id_with_display_name_dtos)
             gof_display_name = self.get_gof_display_name(
@@ -270,6 +269,7 @@ class GoFsDetailsValidationsInteractor(GetGoFsFieldsDisplayNameMixin):
         not_permitted_gof_ids = list(
             sorted(set(gof_ids) - set(permitted_gof_ids)))
         if not_permitted_gof_ids:
-            # todo: send gof display names instead of ids
-            raise InvalidStagePermittedGoFs(not_permitted_gof_ids, stage_id)
+            gof_display_names = self.get_gof_display_names(
+                not_permitted_gof_ids, self.gof_id_with_display_name_dtos)
+            raise InvalidStagePermittedGoFs(gof_display_names, stage_id)
         return

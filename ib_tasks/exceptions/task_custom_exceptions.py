@@ -91,9 +91,9 @@ class InvalidGoFsOfTaskTemplate(Exception):
 class InvalidFieldsOfGoF(Exception):
     def __init__(
             self, gof_display_name: str,
-            invalid_fields_display_names: List[str]):
+            invalid_field_display_names: List[str]):
         self.gof_display_name = gof_display_name
-        self.field_display_names = invalid_fields_display_names
+        self.field_display_names = invalid_field_display_names
 
 
 class ManyStagesToInitialTaskTemplate(Exception):

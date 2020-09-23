@@ -13,7 +13,7 @@ from ib_tasks.tests.factories.interactor_dtos import \
     SaveAndActOnTaskWithTaskDisplayIdDTOFactory, GoFFieldsDTOFactory, \
     FieldValuesDTOFactory
 from ib_tasks.tests.factories.storage_dtos import \
-    FieldIdWithFieldDisplayNameDTOFactory
+    FieldWithGoFDisplayNameDTOFactory
 
 
 class TestSaveAndActOnATaskInteractor:
@@ -21,7 +21,7 @@ class TestSaveAndActOnATaskInteractor:
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
         SaveAndActOnTaskWithTaskDisplayIdDTOFactory.reset_sequence()
-        FieldIdWithFieldDisplayNameDTOFactory.reset_sequence()
+        FieldWithGoFDisplayNameDTOFactory.reset_sequence()
 
     @pytest.fixture
     def task_storage_mock(self):
@@ -887,7 +887,7 @@ class TestSaveAndActOnATaskInteractor:
         # Arrange
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
-        given_unfilled_field_dtos = FieldIdWithFieldDisplayNameDTOFactory()
+        given_unfilled_field_dtos = FieldWithGoFDisplayNameDTOFactory()
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         update_task_mock.side_effect = UserDidNotFillRequiredFields(
             given_unfilled_field_dtos)

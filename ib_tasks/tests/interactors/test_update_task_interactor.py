@@ -16,7 +16,7 @@ from ib_tasks.tests.factories.interactor_dtos import FieldValuesDTOFactory, \
 from ib_tasks.tests.factories.storage_dtos import \
     GoFIdWithSameGoFOrderDTOFactory, FieldIdWithTaskGoFIdDTOFactory, \
     TaskGoFDetailsDTOFactory, TaskGoFFieldDTOFactory, \
-    TaskGoFWithTaskIdDTOFactory, FieldIdWithFieldDisplayNameDTOFactory
+    TaskGoFWithTaskIdDTOFactory, FieldWithGoFDisplayNameDTOFactory
 
 
 class TestUpdateTaskInteractor:
@@ -32,7 +32,7 @@ class TestUpdateTaskInteractor:
         TaskGoFFieldDTOFactory.reset_sequence()
         TaskGoFWithTaskIdDTOFactory.reset_sequence()
         StageAssigneeDTOFactory.reset_sequence()
-        FieldIdWithFieldDisplayNameDTOFactory.reset_sequence()
+        FieldWithGoFDisplayNameDTOFactory.reset_sequence()
 
     @pytest.fixture
     def task_storage_mock(self):

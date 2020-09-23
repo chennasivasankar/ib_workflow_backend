@@ -20,7 +20,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldCompleteDetailsDTO, FieldRolesDTO, FieldRoleDTO, \
     UserFieldPermissionDTO, FieldDetailsDTOWithTaskId, FieldDetailsDTO, \
     StageTaskFieldsDTO, FieldPermissionDTO, FieldValueDTO, FieldNameDTO, \
-    FieldIdWithFieldDisplayNameDTO, FieldTypeDTO
+    FieldTypeDTO, FieldWithGoFDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
     TaskGoFFieldDTO,
     TaskGoFDTO, TaskDetailsDTO, TaskBaseDetailsDTO, FieldSearchableDTO
@@ -762,9 +762,9 @@ class ProjectIdWithTaskTemplateIdDTOFactory(factory.Factory):
         lambda counter: "template_{}".format(counter))
 
 
-class FieldIdWithFieldDisplayNameDTOFactory(factory.Factory):
+class FieldWithGoFDisplayNameDTOFactory(factory.Factory):
     class Meta:
-        model = FieldIdWithFieldDisplayNameDTO
+        model = FieldWithGoFDisplayNameDTO
 
     field_id = factory.Sequence(lambda c: "field_id_{}".format(c))
     gof_display_name = factory.Sequence(
