@@ -94,6 +94,26 @@ class TaskService:
         task_id = task_ids_dtos[0].task_id
         return task_id
 
+    def get_sub_tasks_count_task_ids(self, task_ids: List[int]) \
+            -> List[TaskIdWithSubTasksCountDTO]:
+        try:
+            sub_tasks_count_dtos = self.interface.get_sub_tasks_count_task_ids(
+                task_ids=task_ids
+            )
+        except InvalidTaskIds:
+            raise InvalidTaskIds
+        task_id_with_sub_tasks_count_dtos = [
+            TaskIdWithSubTasksCountDTO(
+                task_id=sub_tasks_count_dto.task_id,
+                sub_tasks_count=sub_tasks_count_dto.sub_tasks_count
+            )
+            for sub_tasks_count_dto in sub_tasks_count_dtos
+        ]
+        return task_id_with_sub_tasks_count_dtos
+
+    def get_completed_sub_tasks_count_for_task_ids(self, task_ids):
+        pass
+
     def get_task_complete_details_dto(
             self, task_details_input_dto: TasksDetailsInputDTO
     ) -> TasksCompleteDetailsDTO:
