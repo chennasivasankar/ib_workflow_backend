@@ -1,9 +1,12 @@
-from typing import List, Dict
+import collections
+from typing import List, Dict, Optional
 
 from ib_tasks.interactors.stage_dtos import StageIdWithGoFIdsDTO, \
     DBStageIdWithStageIdDTO, DBStageIdWithGoFIdsDTO
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    DBStageIdWithGoFIdDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface \
     import StageStorageInterface
 
@@ -29,39 +32,68 @@ class CreateStageGoFsInteractor:
             self._make_db_stage_id_with_stage_id_dtos_dict(
                 db_stage_id_with_stage_id_dtos=db_stage_id_with_stage_id_dtos)
 
-        stage_id_with_gof_ids_dtos_to_create = \
-            self._get_stage_id_with_gof_ids_dtos_to_create(
+        db_stage_id_with_gof_ids_dtos_to_create = \
+            self._get_db_stage_id_with_gof_ids_dtos_to_create(
                 stage_id_with_gof_ids_dtos=stage_id_with_gof_ids_dtos,
                 db_stage_id_with_stage_id_dtos_dict=
                 db_stage_id_with_stage_id_dtos_dict
             )
-        self.stage_storage.create_stage_gofs(
-            stage_id_with_gof_ids_dtos=stage_id_with_gof_ids_dtos_to_create
-        )
+        if db_stage_id_with_gof_ids_dtos_to_create:
+            self.stage_storage.create_stage_gofs(
+                stage_id_with_gof_ids_dtos=
+                db_stage_id_with_gof_ids_dtos_to_create
+            )
 
-    def _get_stage_id_with_gof_ids_dtos_to_create(
+    def _get_db_stage_id_with_gof_ids_dtos_to_create(
             self, stage_id_with_gof_ids_dtos: List[StageIdWithGoFIdsDTO],
             db_stage_id_with_stage_id_dtos_dict: Dict
     ) -> List[DBStageIdWithGoFIdsDTO]:
-
-        stage_id_with_gof_ids_dtos_to_create = []
+        stage_ids = self._get_stage_ids(
+            stage_id_with_gof_ids_dtos=stage_id_with_gof_ids_dtos)
+        existing_stage_id_with_gof_id_dtos = \
+            self.stage_storage.get_existing_gof_ids_with_stage_id_of_stage(
+                stage_ids=stage_ids)
+        existing_stage_id_with_gof_id_dtos_dict = \
+            self._make_stage_id_with_gof_id_dtos_dict(
+                db_stage_id_with_gof_id_dtos=
+                existing_stage_id_with_gof_id_dtos)
+        db_stage_id_with_gof_ids_dtos_to_create = []
         for stage_id_with_gof_ids_dto in stage_id_with_gof_ids_dtos:
             db_stage_id = db_stage_id_with_stage_id_dtos_dict[
                 stage_id_with_gof_ids_dto.stage_id]
-            existing_gof_ids_of_stage = self.stage_storage.\
-                get_existing_gof_ids_of_stage(stage_id=db_stage_id)
+
+            db_stage_id_with_gof_ids_dto = \
+                self._filter_gof_ids_for_stage_to_create(
+                    stage_id_with_gof_ids_dto=stage_id_with_gof_ids_dto,
+                    existing_stage_id_with_gof_id_dtos_dict=
+                    existing_stage_id_with_gof_id_dtos_dict,
+                    db_stage_id=db_stage_id)
+            if db_stage_id_with_gof_ids_dto:
+                db_stage_id_with_gof_ids_dtos_to_create.append(
+                    db_stage_id_with_gof_ids_dto)
+
+        return db_stage_id_with_gof_ids_dtos_to_create
+
+    def _filter_gof_ids_for_stage_to_create(
+            self, stage_id_with_gof_ids_dto: StageIdWithGoFIdsDTO,
+            existing_stage_id_with_gof_id_dtos_dict: Dict, db_stage_id: int
+    ) -> Optional[DBStageIdWithGoFIdsDTO]:
+
+        is_gofs_exists_for_stage = \
+            db_stage_id in existing_stage_id_with_gof_id_dtos_dict.keys()
+        if is_gofs_exists_for_stage:
             gof_ids_to_create = self._get_gof_ids_to_create(
                 gof_ids=stage_id_with_gof_ids_dto.gof_ids,
-                existing_gof_ids_of_stage=existing_gof_ids_of_stage
+                existing_gof_ids_of_stage=
+                existing_stage_id_with_gof_id_dtos_dict[db_stage_id]
             )
-            if gof_ids_to_create:
-                stage_id_with_gof_ids_dtos_to_create.append(
-                    DBStageIdWithGoFIdsDTO(
-                        db_stage_id=db_stage_id,
-                        gof_ids=gof_ids_to_create
-                    )
-                )
-        return stage_id_with_gof_ids_dtos_to_create
+        else:
+            gof_ids_to_create = stage_id_with_gof_ids_dto.gof_ids
+        if gof_ids_to_create:
+            return DBStageIdWithGoFIdsDTO(
+                db_stage_id=db_stage_id,
+                gof_ids=gof_ids_to_create
+            )
 
     def _make_validations(
             self, stage_id_with_gof_ids_dtos: List[StageIdWithGoFIdsDTO]):
@@ -138,8 +170,7 @@ class CreateStageGoFsInteractor:
 
     @staticmethod
     def _validate_uniqueness_in_gof_ids(gof_ids: List[str]):
-        from collections import Counter
-        gof_ids_counter = Counter(gof_ids)
+        gof_ids_counter = collections.Counter(gof_ids)
 
         duplicate_gof_ids = []
         for gof_id, count in gof_ids_counter.items():
@@ -153,8 +184,7 @@ class CreateStageGoFsInteractor:
 
     @staticmethod
     def _validate_uniqueness_in_stage_ids(stage_ids: List[str]):
-        from collections import Counter
-        stage_ids_counter = Counter(stage_ids)
+        stage_ids_counter = collections.Counter(stage_ids)
 
         duplicate_stage_ids = []
         for stage_id, count in stage_ids_counter.items():
@@ -177,3 +207,14 @@ class CreateStageGoFsInteractor:
             for db_stage_id_with_stage_id_dto in db_stage_id_with_stage_id_dtos
         }
         return db_stage_id_with_stage_id_dtos_dict
+
+    @staticmethod
+    def _make_stage_id_with_gof_id_dtos_dict(
+            db_stage_id_with_gof_id_dtos: List[DBStageIdWithGoFIdDTO]
+    ):
+        db_stage_id_with_gof_ids_dtos_dict = collections.defaultdict(list)
+        for db_stage_id_with_gof_id_dto in db_stage_id_with_gof_id_dtos:
+            db_stage_id_with_gof_ids_dtos_dict[
+                db_stage_id_with_gof_id_dto.stage_id].append(
+                db_stage_id_with_gof_id_dto.gof_id)
+        return db_stage_id_with_gof_ids_dtos_dict

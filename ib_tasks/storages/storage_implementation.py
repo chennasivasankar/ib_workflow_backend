@@ -23,7 +23,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDetailsDTO, TaskStageHavingAssigneeIdDTO, TaskWithDbStageIdDTO, \
     StageFlowDTO, \
     StageIdWithValueDTO, StageFlowWithActionIdDTO, StageIdWithTemplateIdDTO, \
-    StageIdWithGoFIdDTO
+    DBStageIdWithGoFIdDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import (
@@ -45,7 +45,7 @@ class StagesStorageImplementation(StageStorageInterface):
 
     def get_stage_gof_dtos_for_given_stages_and_gofs(
             self, stage_ids: List[int], gof_ids: List[str]
-    ) -> List[StageIdWithGoFIdDTO]:
+    ) -> List[DBStageIdWithGoFIdDTO]:
         stage_id_with_gof_id_dicts = StageGoF.objects.filter(
             stage_id__in=stage_ids, gof_id__in=gof_ids
         ).values('stage_id', 'gof_id')
@@ -632,12 +632,16 @@ class StagesStorageImplementation(StageStorageInterface):
         )
         StageGoF.objects.bulk_create(stage_gof_objects)
 
-    def get_existing_gof_ids_of_stage(self, stage_id: str) -> List[str]:
-        gof_ids_of_stage_queryset = StageGoF.objects.filter(
-            stage_id=stage_id).values_list('gof_id', flat=True)
+    def get_existing_gof_ids_with_stage_id_of_stage(
+            self, stage_ids: List[str]) -> List[DBStageIdWithGoFIdDTO]:
+        gof_id_and_stage_id_values = StageGoF.objects.filter(
+            stage_id__in=stage_ids).values('gof_id', 'stage_id')
 
-        gof_ids_of_stage_list = list(gof_ids_of_stage_queryset)
-        return gof_ids_of_stage_list
+        stage_id_with_gof_id_dtos = \
+            self._convert_stage_id_with_gof_id_dicts_to_dtos(
+                stage_id_with_gof_id_dicts=gof_id_and_stage_id_values)
+
+        return stage_id_with_gof_id_dtos
 
     @staticmethod
     def _get_stage_gof_objects(
@@ -702,9 +706,9 @@ class StagesStorageImplementation(StageStorageInterface):
     @staticmethod
     def _convert_stage_id_with_gof_id_dicts_to_dtos(
             stage_id_with_gof_id_dicts: List[Dict]
-    ) -> List[StageIdWithGoFIdDTO]:
+    ) -> List[DBStageIdWithGoFIdDTO]:
         stage_id_with_gof_id_dtos = [
-            StageIdWithGoFIdDTO(
+            DBStageIdWithGoFIdDTO(
                 gof_id=stage_id_with_gof_id_dict['gof_id'],
                 stage_id=stage_id_with_gof_id_dict['stage_id']
             )
