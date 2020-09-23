@@ -257,3 +257,7 @@ class StageStorageInterface(abc.ABC):
     @abc.abstractmethod
     def validate_stage_id(self, stage_id: int) -> bool:
         pass
+
+    def get_current_task_stages_excluding_virtual_stages(
+            self, task_id: int) -> List[int]:
+        pass

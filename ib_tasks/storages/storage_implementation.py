@@ -90,7 +90,6 @@ class StagesStorageImplementation(StageStorageInterface):
         ]
         CurrentTaskStage.objects.bulk_create(task_stage_objs)
 
-
     def get_task_template_stage_logic_to_task(
             self, task_id: int) -> List[StageDisplayValueDTO]:
 
@@ -712,7 +711,6 @@ class StagesStorageImplementation(StageStorageInterface):
         ]
         return stage_id_with_gof_id_dtos
 
-
     def get_stage_dtos_to_task(self, task_id: int) -> List[StageValueDTO]:
 
         from ib_tasks.models.task import Task
@@ -730,6 +728,14 @@ class StagesStorageImplementation(StageStorageInterface):
     def validate_stage_id(self, stage_id: int) -> bool:
         does_exists = Stage.objects.filter(id=stage_id).exists()
         return does_exists
+
+    def get_current_task_stages_excluding_virtual_stages(
+            self, task_id: int) -> List[int]:
+        current_task_stage_ids = list(CurrentTaskStage.objects.
+                                      filter(task_id=task_id).
+                                      exclude(stage__value=-1).
+                                      values_list('stage__id', flat=True))
+        return current_task_stage_ids
 
 
 class StorageImplementation(StorageInterface):
