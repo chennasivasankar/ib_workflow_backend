@@ -17,7 +17,6 @@ class TaskStageAssigneeTeamIdDTO:
     team_id: str
 
 
-
 class TaskStageStorageInterface(abc.ABC):
 
     @abc.abstractmethod

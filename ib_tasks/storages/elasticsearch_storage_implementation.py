@@ -16,6 +16,8 @@ from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+    TaskStageAssigneeTeamIdDTO
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, SearchQueryDTO
 
 
@@ -76,11 +78,11 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         return task_dict
 
     @staticmethod
-    def _get_stages_dict(task_stage_assignees_dtos) -> List[Dict[str, Any]]:
+    def _get_stages_dict(task_stage_assignees_dtos: List[TaskStageAssigneeTeamIdDTO]) -> List[Dict[str, Any]]:
         return [
             {
                 "stage_id": task_stage_assignees_dto.stage_id,
-                "assignee": task_stage_assignees_dto.assignee_id
+                "assignee_id": task_stage_assignees_dto.assignee_id
             }
             for task_stage_assignees_dto in task_stage_assignees_dtos
         ]

@@ -55,7 +55,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         if groupby_value_dto.group_by_display_name == GroupByType.ASSIGNEE.value:
             return Q(
                 'term',
-                assignees__assignee_id__keyword=groupby_value_dto.group_by_value
+                stages__assignee_id__keyword=groupby_value_dto.group_by_value
             )
         elif groupby_value_dto.group_by_display_name == GroupByType.STAGE.value:
             return Q(
@@ -154,12 +154,12 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         is_group_by_value_assignee = group_by_value == GroupByEnum.ASSIGNEE.value
         is_group_by_value_other_than_stage_and_assignee = \
             (group_by_value != GroupByEnum.STAGE.value) and (
-                    group_by_value != GroupByEnum.STAGE.value)
+                    group_by_value != GroupByEnum.ASSIGNEE.value)
         group_agg = ""
         if is_group_by_value_stage:
             group_agg = A('terms', field='stages.stage_id.keyword')
         if is_group_by_value_assignee:
-            group_agg = A('terms', field='assignees.assignee_id.keyword')
+            group_agg = A('terms', field='stages.assignee_id.keyword')
         if is_group_by_value_other_than_stage_and_assignee:
             attribute = group_by_value + '.keyword'
             group_agg = A('terms', field=attribute)
@@ -249,7 +249,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
                      group_offset: group_offset + group_limit]:
             child_group_count_dto = ChildGroupCountDTO(
                 group_by_value=group.key,
-                total_child_groups=len(group.child_groups)
+                total_child_groups=len(group.child_groups.buckets)
             )
             child_group_count_dtos.append(child_group_count_dto)
             for child_group in group.child_groups[
@@ -364,7 +364,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
             query = query & Q("term", stages__stage_id__keyword=group_by_value)
 
         elif group_by_order_one == GroupByType.ASSIGNEE.value:
-            query = query & Q("term", assignees__assignee_id__keyword=group_by_value)
+            query = query & Q("term", stages__assignee_id__keyword=group_by_value)
 
         else:
             attribute = group_by_order_one + '.keyword'
