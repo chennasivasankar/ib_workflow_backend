@@ -720,12 +720,19 @@ class TasksStorageImplementation(TaskStorageInterface):
         sub_task_dicts = SubTask.objects.filter(task_id__in=task_ids) \
             .values("task_id").annotate(sub_tasks_count=Count("sub_task_id"))
 
+        from collections import defaultdict
+        task_sub_task_counts_map = defaultdict(int)
+        for sub_task_dict in sub_task_dicts:
+            task_id = sub_task_dict["task_id"]
+            sub_tasks_count = sub_task_dict["sub_tasks_count"]
+            task_sub_task_counts_map[task_id] = sub_tasks_count
+
         return [
             SubTasksCountDTO(
-                task_id=sub_task_dict["task_id"],
-                sub_tasks_count=sub_task_dict["sub_tasks_count"]
+                task_id=task_id,
+                sub_tasks_count=task_sub_task_counts_map.get(task_id, 0)
             )
-            for sub_task_dict in sub_task_dicts
+            for task_id in task_ids
         ]
 
     def get_sub_task_ids_to_tasks(

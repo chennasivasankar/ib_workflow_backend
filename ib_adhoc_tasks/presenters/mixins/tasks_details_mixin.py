@@ -127,9 +127,9 @@ class TaskDetailsMixin:
             task_stage_assignee_dto: TaskStageAssigneeDetailsDTO
     ):
         action_dtos = task_stage_details_dto.action_dtos
-        assignee_dto = task_stage_assignee_dto.assignee_details
         assignee = None
-        if assignee_dto:
+        if task_stage_assignee_dto:
+            assignee_dto = task_stage_assignee_dto.assignee_details
             team_dto = task_stage_assignee_dto.team_details
             assignee = self._get_assignee_with_team_details(assignee_dto,
                                                             team_dto)
