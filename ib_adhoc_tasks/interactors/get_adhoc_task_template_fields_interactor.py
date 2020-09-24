@@ -35,7 +35,8 @@ class AdhocTaskTemplateFieldsInteractor:
         for item in GroupByType:
             field_dtos.append(
                 FieldIdAndNameDTO(
-                    field_id=item.value, field_display_name=item.value
+                    field_id=item.value,
+                    field_display_name=item.value.capitalize()
                 )
             )
         return field_dtos

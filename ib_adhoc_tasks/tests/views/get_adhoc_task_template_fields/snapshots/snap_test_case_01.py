@@ -15,11 +15,11 @@ snapshots['TestCase01GetAdhocTaskTemplateFieldsAPITestCase.test_given_valid_data
         'group_by_key': 'field_1'
     },
     {
-        'display_name': 'STAGE',
+        'display_name': 'Stage',
         'group_by_key': 'STAGE'
     },
     {
-        'display_name': 'ASSIGNEE',
+        'display_name': 'Assignee',
         'group_by_key': 'ASSIGNEE'
     }
 ]
