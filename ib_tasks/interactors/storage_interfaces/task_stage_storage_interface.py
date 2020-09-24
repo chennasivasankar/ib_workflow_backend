@@ -10,18 +10,12 @@ from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
 @dataclass
-class TaskStageAssigneeIdDTO:
-    task_id: int
-    stage_id: str
-    assignee_id: str
-
-
-@dataclass
 class TaskStageAssigneeTeamIdDTO:
     task_id: int
     stage_id: str
     assignee_id: str
     team_id: str
+
 
 
 class TaskStageStorageInterface(abc.ABC):
@@ -75,7 +69,7 @@ class TaskStageStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_stage_assignee_id_dtos(
             self, task_stage_dtos: List[GetTaskDetailsDTO]
-    ) -> List[TaskStageAssigneeIdDTO]:
+    ) -> List[TaskStageAssigneeTeamIdDTO]:
         pass
 
     @abc.abstractmethod

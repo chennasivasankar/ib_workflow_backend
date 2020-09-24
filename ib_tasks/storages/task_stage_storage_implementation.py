@@ -9,7 +9,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStageAssigneeDTO, CurrentStageDetailsDTO, AssigneeCurrentTasksCountDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
-    TaskStageStorageInterface, TaskStageAssigneeIdDTO, TaskStageAssigneeTeamIdDTO
+    TaskStageStorageInterface, TaskStageAssigneeTeamIdDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import CurrentTaskStage, Task, TaskStageHistory, \
     StagePermittedRoles, Stage, TaskStageRp
@@ -129,7 +129,7 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
 
     def get_stage_assignee_id_dtos(
             self, task_stage_dtos: List[GetTaskDetailsDTO]
-    ) -> List[TaskStageAssigneeIdDTO]:
+    ) -> List[TaskStageAssigneeTeamIdDTO]:
         q = None
         for counter, item in enumerate(task_stage_dtos):
             current_queue = Q(
@@ -143,12 +143,13 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
         q = q & Q(assignee_id__isnull=False)
         task_stage_objects = TaskStageHistory.objects.filter(
             q, left_at=None).values('task_id', 'stage__stage_id',
-                                    'assignee_id')
+                                    'assignee_id', 'team_id')
         task_stage_assignee_id_dto = [
-            TaskStageAssigneeIdDTO(
+            TaskStageAssigneeTeamIdDTO(
                 task_id=task_stage_object['task_id'],
                 stage_id=task_stage_object['stage__stage_id'],
-                assignee_id=task_stage_object['assignee_id']
+                assignee_id=task_stage_object['assignee_id'],
+                team_id=task_stage_object['team_id']
             )
             for task_stage_object in task_stage_objects
         ]

@@ -11,7 +11,7 @@ from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
-    TaskStageAssigneeDetailsDTO, TaskStageAssigneeTeamDetailsDTO, \
+    TaskStageAssigneeTeamDetailsDTO, \
     StageIdWithGoFIdsDTO, DBStageIdWithStageIdDTO, DBStageIdWithGoFIdsDTO
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
@@ -631,7 +631,7 @@ class AssigneeWithTeamDetailsDTOFactory(factory.Factory):
 
 class TaskStageAssigneeDetailsDTOFactory(factory.Factory):
     class Meta:
-        model = TaskStageAssigneeDetailsDTO
+        model = TaskStageAssigneeTeamDetailsDTO
 
     task_id = factory.sequence(lambda counter: counter + 1)
     stage_id = factory.sequence(lambda counter: 'stage_{}'.format(counter + 1))

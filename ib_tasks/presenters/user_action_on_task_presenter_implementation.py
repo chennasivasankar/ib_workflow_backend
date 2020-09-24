@@ -20,7 +20,7 @@ from ib_tasks.interactors.presenter_interfaces.dtos import \
 from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
-    TaskStageAssigneeDetailsDTO
+    TaskStageAssigneeTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO
@@ -291,7 +291,7 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
 
     @staticmethod
     def _get_assignee_details(
-            stage_assignee_dto: List[TaskStageAssigneeDetailsDTO]
+            stage_assignee_dto: List[TaskStageAssigneeTeamDetailsDTO]
     ) -> Optional[Dict]:
         if stage_assignee_dto:
             assignee_details_dto = stage_assignee_dto[0].assignee_details
@@ -569,7 +569,7 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
     @staticmethod
     def _get_stage_details_and_assignees_details_dict(
             column_stage_dtos: List[ColumnStageDTO],
-            assignee_dtos: List[TaskStageAssigneeDetailsDTO],
+            assignee_dtos: List[TaskStageAssigneeTeamDetailsDTO],
             task_stage_dtos: List[TaskStageDTO]):
 
         assignee_dtos_dict = {}
