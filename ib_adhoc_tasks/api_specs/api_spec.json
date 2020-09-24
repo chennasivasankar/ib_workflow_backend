@@ -1118,13 +1118,6 @@
         ]
       }
     },
-    "ProjectIdPathParameter": {
-      "name": "project_id",
-      "in": "path",
-      "description": "project id value",
-      "type": "string",
-      "required": true
-    },
     "GetSubTasksParameter": {
       "name": "get_subtasks_parameter",
       "in": "body",
@@ -1602,7 +1595,7 @@
         }
       }
     },
-    "/project/{project_id}/adhoc_board/group/add_or_edit/v1/": {
+    "/projects/adhoc_board/group/add_or_edit/v1/": {
       "post": {
         "summary": "add or edit a group by",
         "operationId": "add_or_edit_group_by",
@@ -1615,7 +1608,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/ProjectIdPathParameter"
+            "$ref": "#/parameters/ProjectIdParameter"
           },
           {
             "$ref": "#/parameters/AddOrEditGroupByParameter"
@@ -1634,7 +1627,7 @@
         }
       }
     },
-    "/project/{project_id}/adhoc_board/group/v1/": {
+    "/projects/adhoc_board/group/v1/": {
       "get": {
         "summary": "get a group by",
         "operationId": "get_group_by",
@@ -1647,7 +1640,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/ProjectIdPathParameter"
+            "$ref": "#/parameters/ProjectIdParameter"
           },
           {
             "$ref": "#/parameters/ViewTypeQueryParameter"
