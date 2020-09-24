@@ -1,15 +1,15 @@
-from typing import List, Dict
+from typing import List
 
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
     import ProjectTemplateFieldsDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     TaskTemplateGofsDTO
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
-
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import TaskTemplateStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
@@ -46,7 +46,8 @@ class GetProjectsTemplatesFieldsInteractor(ValidationMixin):
         return complete_task_templates_dto
 
     @staticmethod
-    def _get_template_ids(template_dtos: List[ProjectTemplateDTO]) -> List[str]:
+    def _get_template_ids(template_dtos: List[ProjectTemplateDTO]) -> List[
+        str]:
 
         return [
             template_dto.template_id
@@ -70,7 +71,7 @@ class GetProjectsTemplatesFieldsInteractor(ValidationMixin):
         )
         template_ids = self._get_template_ids(template_dtos)
         template_gof_dtos = self.gof_storage.get_user_permitted_template_gof_dtos(
-                user_roles=user_roles, template_ids=template_ids)
+            user_roles=user_roles, template_ids=template_ids)
 
         gof_ids = self._get_gof_ids(template_gof_dtos)
 
@@ -82,3 +83,37 @@ class GetProjectsTemplatesFieldsInteractor(ValidationMixin):
             task_template_gofs_dtos=template_gof_dtos,
             fields_dto=field_dtos
         )
+
+    def get_task_template_field_dtos(
+            self, user_id: str, project_ids: List[str], template_id: str
+    ) -> List[FieldNameDTO]:
+
+        self.validate_given_project_ids(project_ids=project_ids)
+        self.validate_if_user_is_in_projects(
+            user_id=user_id, project_ids=project_ids
+        )
+        from ib_tasks.adapters.roles_service_adapter import \
+            get_roles_service_adapter
+        service_adapter = get_roles_service_adapter()
+        user_roles = \
+            service_adapter.roles_service.get_user_role_ids(user_id=user_id)
+
+        field_name_dtos = self._get_template_fields(
+            user_roles=user_roles, template_id=template_id
+        )
+        return field_name_dtos
+
+    def _get_template_fields(
+            self, user_roles: List[str], template_id: str
+    ) -> List[FieldNameDTO]:
+        template_ids = [template_id]
+
+        template_gof_dtos = self.gof_storage.get_user_permitted_template_gof_dtos(
+            user_roles=user_roles, template_ids=template_ids
+        )
+        gof_ids = self._get_gof_ids(template_gof_dtos)
+
+        field_dtos = self.field_storage.get_user_permitted_gof_field_dtos(
+            user_roles=user_roles, gof_ids=gof_ids
+        )
+        return field_dtos
