@@ -1473,6 +1473,27 @@
           "tasks"
         ]
       }
+    },
+    "GetAdhocTemplateFieldsResponse": {
+      "description": "Get Adhoc template fields",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "group_by_key": {
+              "type": "string"
+            },
+            "display_name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "group_by_key",
+            "display_name"
+          ]
+        }
+      }
     }
   },
   "paths": {
@@ -1694,6 +1715,29 @@
           },
           "400": {
             "$ref": "#/responses/InvalidPaginationResponse"
+          }
+        }
+      }
+    },
+    "/project/adhoc_board/adhoc_template/fields/v1/": {
+      "post": {
+        "summary": "Get Adhoc task template fields",
+        "operationId": "get_adhoc_task_template_fields",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetAdhocTemplateFieldsResponse"
           }
         }
       }
