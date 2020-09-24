@@ -120,6 +120,7 @@ def get_user_id_team_details_dtos_mock(
     mock = mocker.patch(
         "ib_tasks.adapters.auth_service.AuthService.get_user_id_team_details_dtos"
     )
+    TeamDetailsWithUserIdDTOFactory.reset_sequence()
     team_details_with_user_id_dtos = \
         TeamDetailsWithUserIdDTOFactory.create_batch(size=3)
     mock.return_value = team_details_with_user_id_dtos
@@ -200,4 +201,21 @@ def get_project_info_for_given_ids_mock(mocker):
     ProjectDetailsDTOFactory.reset_sequence()
     project_details_dtos = ProjectDetailsDTOFactory.create_batch(size=1)
     mock.return_value = project_details_dtos
+    return mock
+
+
+def get_team_info_for_given_user_ids_with_given_names_for_controller_mock(mocker):
+    path = "ib_tasks.adapters.auth_service.AuthService." \
+           "get_team_info_for_given_user_ids"
+    mock = mocker.patch(path)
+    from ib_tasks.tests.factories.adapter_dtos import \
+        UserIdWIthTeamDetailsDTOFactory, TeamDetailsDTOFactory
+    UserIdWIthTeamDetailsDTOFactory.reset_sequence()
+    TeamDetailsDTOFactory.reset_sequence()
+    team_details_dtos = TeamDetailsDTOFactory.create_batch(size=2)
+    user_id_with_team_details_dtos = \
+        UserIdWIthTeamDetailsDTOFactory.create_batch(
+            size=2, team_details=factory.Iterator(team_details_dtos)
+        )
+    mock.return_value = user_id_with_team_details_dtos
     return mock

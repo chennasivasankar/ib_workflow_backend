@@ -83,7 +83,8 @@ class TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
             get_team_info_for_given_user_ids_with_given_names_mock, \
             get_project_info_for_given_ids_mock
 
-        get_team_info_for_given_user_ids_with_given_names_mock(mocker)
+        get_team_info_for_given_user_ids_with_given_names_mock(
+            mocker)
         get_project_info_for_given_ids_mock(mocker)
         project_ids_validation_mock = mocker.patch(
             'ib_tasks.adapters.auth_service.AuthService.validate_project_ids')
