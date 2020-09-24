@@ -66,3 +66,16 @@ class TaskStageAssigneeDTO:
     task_id: int
     stage_id: int
     assignee_dto: AssigneeDetailsDTO
+
+
+@dataclass
+class SubTasksCountDTO:
+    task_id: int
+    sub_tasks_count: int
+
+
+@dataclass
+class SubTasksIdsDTO:
+    task_id: int
+    sub_task_ids: List[int]
+

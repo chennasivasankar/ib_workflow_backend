@@ -386,10 +386,12 @@ class CreateTaskPresenterImplementation(
         return self.prepare_400_bad_request_response(data)
 
     def get_create_task_response(
-            self, task_current_stage_details_dto: TaskCurrentStageDetailsDTO,
+            self, created_task_display_id: str,
+            task_current_stage_details_dto: TaskCurrentStageDetailsDTO,
             all_tasks_overview_dto: AllTasksOverviewDetailsDTO
     ):
         data = {
+            "created_task_id": created_task_display_id,
             "task_current_stages_details": {
                 "task_id": task_current_stage_details_dto.task_display_id,
                 "stages": [],

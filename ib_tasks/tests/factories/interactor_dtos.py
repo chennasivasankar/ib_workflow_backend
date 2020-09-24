@@ -40,14 +40,16 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
     TaskDelayParametersDTO, UpdateTaskWithTaskDisplayIdDTO, \
     SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO, SearchQueryDTO, \
-    StageDisplayLogicDTO, BasicTaskDetailsDTO
+    StageDisplayLogicDTO, BasicTaskDetailsDTO, \
+    TaskWithCompletedSubTasksCountDTO
 from ib_tasks.interactors.task_stage_dtos import TasksCompleteDetailsDTO
 from ib_tasks.interactors.task_template_dtos import \
     (CreateTransitionChecklistTemplateDTO,
      CreateTransitionChecklistTemplateWithTaskDisplayIdDTO)
 from ib_tasks.tests.factories.adapter_dtos import (AssigneeDetailsDTOFactory,
                                                    UserDetailsDTO,
-                                                   TeamInfoDTOFactory, TeamDetailsDTOFactory)
+                                                   TeamInfoDTOFactory,
+                                                   TeamDetailsDTOFactory)
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -735,7 +737,8 @@ class TasksCompleteDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def task_base_details_dtos(self):
-        from ib_tasks.tests.factories.storage_dtos import TaskBaseDetailsDTOFactory
+        from ib_tasks.tests.factories.storage_dtos import \
+            TaskBaseDetailsDTOFactory
         TaskBaseDetailsDTOFactory.reset_sequence(1)
         return TaskBaseDetailsDTOFactory.create_batch(2)
 
@@ -750,6 +753,14 @@ class TasksCompleteDetailsDTOFactory(factory.Factory):
     def task_stage_assignee_dtos(self):
         TaskStageAssigneeDetailsDTOFactory.reset_sequence(1)
         return TaskStageAssigneeDetailsDTOFactory.create_batch(2)
+
+
+class TaskWithCompletedSubTasksCountDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskWithCompletedSubTasksCountDTO
+
+    task_id = factory.sequence(lambda counter: counter)
+    completed_sub_tasks_count = factory.sequence(lambda counter: counter)
 
 
 class StageIdWithGoFIdsDTOFactory(factory.Factory):

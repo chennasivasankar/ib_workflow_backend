@@ -40,7 +40,9 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO, TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
-    TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO, TaskDueMissingDTO
+    TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO, TaskDueMissingDTO, \
+    SubTasksIdsDTO, \
+    SubTasksCountDTO, TaskProjectDTO, TaskDisplayIdDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO, ProjectIdWithTaskTemplateIdDTO, ProjectTemplateDTO
 from ib_tasks.interactors.task_dtos import TaskStatusVariableDTO
@@ -65,6 +67,22 @@ class FieldValueDTOFactory(factory.Factory):
     gof_database_id = factory.Sequence(lambda n: 'gof_database_%d' % (n + 1))
     field_id = factory.Sequence(lambda n: 'field_%d' % (n + 1))
     value = factory.Sequence(lambda n: 'value_%d' % (n + 1))
+
+
+class TaskDisplayIdDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskDisplayIdDTO
+
+    task_id = factory.Sequence(lambda n: (n + 1))
+    display_id = factory.Sequence(lambda n: "IBWF-%d" % (n + 1))
+
+
+class TaskProjectDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskProjectDTO
+
+    task_id = factory.Sequence(lambda n: (n + 1))
+    project_id = factory.Sequence(lambda n: "project_id_%d" % (n + 1))
 
 
 class StatusVariableDTOFactory(factory.Factory):
@@ -820,4 +838,20 @@ class StageIdWithGoFIdDTOFactory(factory.Factory):
 
     stage_id = factory.sequence(lambda counter: counter)
     gof_id = factory.sequence(lambda counter: "gof_{}".format(counter))
+
+
+class SubTasksCountDTOFactory(factory.Factory):
+    class Meta:
+        model = SubTasksCountDTO
+
+    task_id = factory.sequence(lambda n: n)
+    sub_tasks_count = factory.sequence(lambda n: n + 1)
+
+
+class SubTasksIdsDTOFactory(factory.Factory):
+    class Meta:
+        model = SubTasksIdsDTO
+
+    task_id = factory.sequence(lambda n: n)
+    sub_task_ids = factory.sequence(lambda n: [n + 1, n + 2])
 

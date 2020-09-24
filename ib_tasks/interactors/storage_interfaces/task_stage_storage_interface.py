@@ -115,3 +115,16 @@ class TaskStageStorageInterface(abc.ABC):
             self, task_ids: List[int]
     ) -> List[GetTaskDetailsDTO]:
         pass
+
+    @abc.abstractmethod
+    def get_max_stage_value_for_the_given_template(
+            self, adhoc_task_template_id: str
+    ) -> int:
+        pass
+
+    @abc.abstractmethod
+    def get_completed_sub_task_ids(
+            self, all_sub_task_ids: List[int],
+            max_stage_value: int
+    ) -> List[int]:
+        pass

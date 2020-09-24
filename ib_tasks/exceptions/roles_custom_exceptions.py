@@ -31,3 +31,8 @@ class InvalidStageRolesException(Exception):
 
     def __init__(self, invalid_roles_ids: List[str]):
         self.invalid_roles_ids = invalid_roles_ids
+
+
+class InvalidRoleIdsException(Exception):
+    def __init__(self, role_ids: List[str]):
+        self.role_ids = role_ids
