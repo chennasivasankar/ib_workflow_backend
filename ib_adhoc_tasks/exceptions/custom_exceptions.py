@@ -33,3 +33,6 @@ class InvalidOffsetValue(Exception):
 class InvalidLimitValue(Exception):
     pass
 
+
+class UserNotExistInProject(Exception):
+    pass
