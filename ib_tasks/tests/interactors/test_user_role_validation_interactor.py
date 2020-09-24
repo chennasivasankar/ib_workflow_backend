@@ -2,7 +2,7 @@ import pytest
 from ib_tasks.interactors.user_role_validation_interactor import \
     UserRoleValidationInteractor
 from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-    get_user_role_ids
+    get_user_role_ids, get_user_role_ids_based_on_project_mock
 
 
 class TestUserRoleValidationInteractor:
@@ -22,9 +22,11 @@ class TestUserRoleValidationInteractor:
         gof_storage_mock = create_autospec(GoFStorageInterface)
         return gof_storage_mock
 
-    def test_given_all_roles_id_return_true(self, mocker):
+    def test_does_user_has_required_permission_with_given_all_roles_id_return_true(
+            self, mocker):
         # Arrange
         user_id = "user_1"
+        project_id = "project_1"
         role_ids = ["ALL_ROLES", "FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"]
         get_user_role_ids_mock_method = \
             get_user_role_ids(mocker)
@@ -33,46 +35,53 @@ class TestUserRoleValidationInteractor:
 
         # Act
         result = \
-            interactor.does_user_has_required_permission(user_id=user_id,
-                                                         role_ids=role_ids)
+            interactor.does_user_has_required_permission(
+                user_id=user_id, role_ids=role_ids, project_id=project_id)
 
         # Assert
         assert result is True
         get_user_role_ids_mock_method.assert_not_called()
 
-    def test_given_valid_user_roles_return_true(self, mocker):
+    def test_does_user_has_required_permission_with_given_valid_user_roles_return_true(
+            self, mocker):
         # Arrange
         user_id = "user_1"
+        project_id = "project_1"
         role_ids = ["FIN_PAYMENTS_LEVEL3_VERIFIER", "FIN_PAYMENT_REQUESTER"]
-        get_user_role_ids_mock_method = \
-            get_user_role_ids(mocker)
+        get_user_role_ids_based_on_project_mock_method = \
+            get_user_role_ids_based_on_project_mock(mocker)
 
         interactor = UserRoleValidationInteractor()
 
         # Act
         result = \
-            interactor.does_user_has_required_permission(user_id=user_id,
-                                                         role_ids=role_ids)
+            interactor.does_user_has_required_permission(
+                user_id=user_id, role_ids=role_ids, project_id=project_id)
 
         # Assert
         assert result is True
-        get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
+        get_user_role_ids_based_on_project_mock_method.assert_called_once_with(
+            user_id=user_id, project_id=project_id)
 
-    def test_given_invalid_user_roles_return_false(self, mocker):
+    def test_does_user_has_required_permission_with_given_invalid_user_roles_return_false(
+            self, mocker):
         # Arrange
         user_id = "user_1"
+        project_id = "project_1"
         role_ids = ["user_role_1", "user_role_2"]
-        get_user_role_ids_mock_method = get_user_role_ids(mocker)
+        get_user_role_ids_based_on_project_mock_method = \
+            get_user_role_ids_based_on_project_mock(mocker)
         interactor = UserRoleValidationInteractor()
 
         # Act
         result = \
-            interactor.does_user_has_required_permission(user_id=user_id,
-                                                         role_ids=role_ids)
+            interactor.does_user_has_required_permission(
+                user_id=user_id, role_ids=role_ids, project_id=project_id)
 
         # Assert
         assert result is False
-        get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
+        get_user_role_ids_based_on_project_mock_method.assert_called_once_with(
+            user_id=user_id, project_id=project_id)
 
     def test_get_gof_ids_having_read_permission_for_user(
             self, gof_storage_mock):

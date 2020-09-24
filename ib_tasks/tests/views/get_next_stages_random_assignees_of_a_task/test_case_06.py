@@ -18,7 +18,7 @@ class TestCase06GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['read']}}
 
     @pytest.fixture(autouse=True)
-    def setup(self):
+    def setup(self, mocker):
         TaskFactory.reset_sequence()
         StageActionFactory.reset_sequence()
         StageModelFactory.reset_sequence()
@@ -34,6 +34,9 @@ class TestCase06GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
             variable="variable1",
             value="VENDOR_REJECTED"
         )
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_project_info_for_given_ids_mock
+        get_project_info_for_given_ids_mock(mocker)
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):
