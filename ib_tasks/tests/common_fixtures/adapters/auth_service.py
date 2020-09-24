@@ -186,6 +186,7 @@ def get_team_info_for_given_user_ids_with_given_names_mock(mocker):
     mock = mocker.patch(path)
     from ib_tasks.tests.factories.adapter_dtos import \
         UserIdWIthTeamDetailsDTOFactory, TeamDetailsDTOFactory
+    TeamDetailsDTOFactory.reset_sequence()
     UserIdWIthTeamDetailsDTOFactory.reset_sequence()
     user_id_with_team_details_dtos = \
         UserIdWIthTeamDetailsDTOFactory.create_batch(size=2,

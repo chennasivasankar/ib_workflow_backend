@@ -128,7 +128,6 @@ class UserIdWIthTeamDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def team_details(self):
-        TeamDetailsDTOFactory.reset_sequence()
         return TeamDetailsDTOFactory.create_batch(size=2)
 
 
