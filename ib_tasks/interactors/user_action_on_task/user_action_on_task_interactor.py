@@ -121,9 +121,6 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         task_complete_details_dto, task_current_stage_details_dto, \
         stage_ids, project_id = self.user_action_on_task(
             task_id)
-        self._set_next_stage_assignees_to_task_and_update_in_db(
-            task_id=task_id, stage_ids=stage_ids
-        )
         all_tasks_overview_details_dto = self._get_tasks_overview_for_users(
             task_id=task_id, project_id=project_id
         )
@@ -148,6 +145,9 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             )
         stage_ids = self._get_task_stage_display_satisfied_stage_ids(task_id)
         self._update_task_stages(stage_ids=stage_ids, task_id=task_id)
+        self._set_next_stage_assignees_to_task_and_update_in_db(
+            task_id=task_id, stage_ids=stage_ids
+        )
         self._create_or_update_task_in_elasticsearch(
             task_dto=updated_task_dto, task_id=task_id, stage_ids=stage_ids
         )
@@ -202,7 +202,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             stage_storage=self.stage_storage, task_storage=self.task_storage,
             field_storage=self.field_storage,
             action_storage=self.action_storage,
-            task_stage_storage=self.task_stage_storage
+            task_stage_storage=self.task_stage_storage,
+            template_storage=self.task_template_storage
         )
         all_tasks_overview_details_dto = \
             task_overview_interactor.get_filtered_tasks_overview_for_user(

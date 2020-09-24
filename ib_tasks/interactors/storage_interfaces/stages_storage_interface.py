@@ -258,3 +258,7 @@ class StageStorageInterface(abc.ABC):
     @abc.abstractmethod
     def validate_stage_id(self, stage_id: int) -> bool:
         pass
+
+    @abc.abstractmethod
+    def get_stage_ids_of_templates(self, template_ids: List[str]) -> List[str]:
+        pass
