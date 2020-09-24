@@ -13,7 +13,7 @@ from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import TaskDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
-    TaskStageAssigneeIdDTO
+    TaskStageAssigneeTeamIdDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 
@@ -55,7 +55,7 @@ class CreateOrUpdateDataInElasticSearchInteractor:
             )
 
     def _get_elastic_task_dto(
-            self, task_dto: TaskDetailsDTO, task_stage_assignees_dtos: List[TaskStageAssigneeIdDTO],
+            self, task_dto: TaskDetailsDTO, task_stage_assignees_dtos: List[TaskStageAssigneeTeamIdDTO],
             task_id: int, project_id: str) -> ElasticTaskDTO:
         fields = self._get_field_dtos_with_exact_data_type(
             task_dto=task_dto

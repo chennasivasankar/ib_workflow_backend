@@ -10,13 +10,13 @@ snapshots = Snapshot()
 snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_response_for_get_child_groups_in_group response_for_get_child_groups_in_group'] = {
     'child_groups': [
         {
-            'group_by_display_name': 'display_name_0',
-            'group_by_value': 'value_0',
+            'group_by_display_name': 'display_name_12',
+            'group_by_value': 'value_12',
             'tasks': [
                 {
                     'description': 'description_0',
                     'due_date': '2020-10-10 05:30:00',
-                    'priority': 'HIGH',
+                    'priority': 'MEDIUM',
                     'stage_with_actions': {
                         'actions': [
                             {
@@ -27,12 +27,12 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                             }
                         ],
                         'assignee': {
-                            'assignee_id': 'assignee_0',
-                            'name': 'name_0',
-                            'profile_pic_url': 'profile_pic_0',
+                            'assignee_id': 'assignee_20',
+                            'name': 'name_20',
+                            'profile_pic_url': 'profile_pic_20',
                             'team_info': {
-                                'team_id': 'team_0',
-                                'team_name': 'name_0'
+                                'team_id': 'team_20',
+                                'team_name': 'name_20'
                             }
                         },
                         'stage_color': 'stage_color0',
@@ -43,22 +43,22 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                     'task_id': 'task_display0',
                     'task_overview_fields': [
                         {
-                            'field_display_name': 'key_0',
-                            'field_id': 'field_0',
-                            'field_response': 'value_0',
-                            'field_type': 'field_type0'
+                            'field_display_name': 'key_8',
+                            'field_id': 'field_8',
+                            'field_response': 'value_8',
+                            'field_type': 'field_type8'
                         },
                         {
-                            'field_display_name': 'key_1',
-                            'field_id': 'field_1',
-                            'field_response': 'value_1',
-                            'field_type': 'field_type1'
+                            'field_display_name': 'key_9',
+                            'field_id': 'field_9',
+                            'field_response': 'value_9',
+                            'field_type': 'field_type9'
                         },
                         {
-                            'field_display_name': 'key_2',
-                            'field_id': 'field_2',
-                            'field_response': 'value_2',
-                            'field_type': 'field_type2'
+                            'field_display_name': 'key_10',
+                            'field_id': 'field_10',
+                            'field_response': 'value_10',
+                            'field_type': 'field_type10'
                         }
                     ],
                     'title': 'title_0'
@@ -66,7 +66,7 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                 {
                     'description': 'description_1',
                     'due_date': '2020-10-10 05:30:00',
-                    'priority': 'LOW',
+                    'priority': 'HIGH',
                     'stage_with_actions': {
                         'actions': [
                             {
@@ -77,12 +77,12 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                             }
                         ],
                         'assignee': {
-                            'assignee_id': 'assignee_1',
-                            'name': 'name_1',
-                            'profile_pic_url': 'profile_pic_1',
+                            'assignee_id': 'assignee_21',
+                            'name': 'name_21',
+                            'profile_pic_url': 'profile_pic_21',
                             'team_info': {
-                                'team_id': 'team_1',
-                                'team_name': 'name_1'
+                                'team_id': 'team_21',
+                                'team_name': 'name_21'
                             }
                         },
                         'stage_color': 'stage_color1',
@@ -93,22 +93,22 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                     'task_id': 'task_display1',
                     'task_overview_fields': [
                         {
-                            'field_display_name': 'key_0',
-                            'field_id': 'field_0',
-                            'field_response': 'value_0',
-                            'field_type': 'field_type0'
+                            'field_display_name': 'key_8',
+                            'field_id': 'field_8',
+                            'field_response': 'value_8',
+                            'field_type': 'field_type8'
                         },
                         {
-                            'field_display_name': 'key_1',
-                            'field_id': 'field_1',
-                            'field_response': 'value_1',
-                            'field_type': 'field_type1'
+                            'field_display_name': 'key_9',
+                            'field_id': 'field_9',
+                            'field_response': 'value_9',
+                            'field_type': 'field_type9'
                         },
                         {
-                            'field_display_name': 'key_2',
-                            'field_id': 'field_2',
-                            'field_response': 'value_2',
-                            'field_type': 'field_type2'
+                            'field_display_name': 'key_10',
+                            'field_id': 'field_10',
+                            'field_response': 'value_10',
+                            'field_type': 'field_type10'
                         }
                     ],
                     'title': 'title_1'
@@ -116,7 +116,7 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                 {
                     'description': 'description_2',
                     'due_date': '2020-10-10 05:30:00',
-                    'priority': 'MEDIUM',
+                    'priority': 'LOW',
                     'stage_with_actions': {
                         'actions': [
                             {
@@ -127,12 +127,12 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                             }
                         ],
                         'assignee': {
-                            'assignee_id': 'assignee_2',
-                            'name': 'name_2',
-                            'profile_pic_url': 'profile_pic_2',
+                            'assignee_id': 'assignee_22',
+                            'name': 'name_22',
+                            'profile_pic_url': 'profile_pic_22',
                             'team_info': {
-                                'team_id': 'team_2',
-                                'team_name': 'name_2'
+                                'team_id': 'team_22',
+                                'team_name': 'name_22'
                             }
                         },
                         'stage_color': 'stage_color2',
@@ -143,22 +143,22 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                     'task_id': 'task_display2',
                     'task_overview_fields': [
                         {
-                            'field_display_name': 'key_0',
-                            'field_id': 'field_0',
-                            'field_response': 'value_0',
-                            'field_type': 'field_type0'
+                            'field_display_name': 'key_8',
+                            'field_id': 'field_8',
+                            'field_response': 'value_8',
+                            'field_type': 'field_type8'
                         },
                         {
-                            'field_display_name': 'key_1',
-                            'field_id': 'field_1',
-                            'field_response': 'value_1',
-                            'field_type': 'field_type1'
+                            'field_display_name': 'key_9',
+                            'field_id': 'field_9',
+                            'field_response': 'value_9',
+                            'field_type': 'field_type9'
                         },
                         {
-                            'field_display_name': 'key_2',
-                            'field_id': 'field_2',
-                            'field_response': 'value_2',
-                            'field_type': 'field_type2'
+                            'field_display_name': 'key_10',
+                            'field_id': 'field_10',
+                            'field_response': 'value_10',
+                            'field_type': 'field_type10'
                         }
                     ],
                     'title': 'title_2'
@@ -166,7 +166,7 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                 {
                     'description': 'description_3',
                     'due_date': '2020-10-10 05:30:00',
-                    'priority': 'HIGH',
+                    'priority': 'MEDIUM',
                     'stage_with_actions': {
                         'actions': [
                             {
@@ -177,12 +177,12 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                             }
                         ],
                         'assignee': {
-                            'assignee_id': 'assignee_3',
-                            'name': 'name_3',
-                            'profile_pic_url': 'profile_pic_3',
+                            'assignee_id': 'assignee_23',
+                            'name': 'name_23',
+                            'profile_pic_url': 'profile_pic_23',
                             'team_info': {
-                                'team_id': 'team_3',
-                                'team_name': 'name_3'
+                                'team_id': 'team_23',
+                                'team_name': 'name_23'
                             }
                         },
                         'stage_color': 'stage_color3',
@@ -193,22 +193,22 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                     'task_id': 'task_display3',
                     'task_overview_fields': [
                         {
-                            'field_display_name': 'key_0',
-                            'field_id': 'field_0',
-                            'field_response': 'value_0',
-                            'field_type': 'field_type0'
+                            'field_display_name': 'key_8',
+                            'field_id': 'field_8',
+                            'field_response': 'value_8',
+                            'field_type': 'field_type8'
                         },
                         {
-                            'field_display_name': 'key_1',
-                            'field_id': 'field_1',
-                            'field_response': 'value_1',
-                            'field_type': 'field_type1'
+                            'field_display_name': 'key_9',
+                            'field_id': 'field_9',
+                            'field_response': 'value_9',
+                            'field_type': 'field_type9'
                         },
                         {
-                            'field_display_name': 'key_2',
-                            'field_id': 'field_2',
-                            'field_response': 'value_2',
-                            'field_type': 'field_type2'
+                            'field_display_name': 'key_10',
+                            'field_id': 'field_10',
+                            'field_response': 'value_10',
+                            'field_type': 'field_type10'
                         }
                     ],
                     'title': 'title_3'
@@ -216,7 +216,7 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                 {
                     'description': 'description_4',
                     'due_date': '2020-10-10 05:30:00',
-                    'priority': 'LOW',
+                    'priority': 'HIGH',
                     'stage_with_actions': {
                         'actions': [
                             {
@@ -227,12 +227,12 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                             }
                         ],
                         'assignee': {
-                            'assignee_id': 'assignee_4',
-                            'name': 'name_4',
-                            'profile_pic_url': 'profile_pic_4',
+                            'assignee_id': 'assignee_24',
+                            'name': 'name_24',
+                            'profile_pic_url': 'profile_pic_24',
                             'team_info': {
-                                'team_id': 'team_4',
-                                'team_name': 'name_4'
+                                'team_id': 'team_24',
+                                'team_name': 'name_24'
                             }
                         },
                         'stage_color': 'stage_color4',
@@ -243,22 +243,22 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                     'task_id': 'task_display4',
                     'task_overview_fields': [
                         {
-                            'field_display_name': 'key_0',
-                            'field_id': 'field_0',
-                            'field_response': 'value_0',
-                            'field_type': 'field_type0'
+                            'field_display_name': 'key_8',
+                            'field_id': 'field_8',
+                            'field_response': 'value_8',
+                            'field_type': 'field_type8'
                         },
                         {
-                            'field_display_name': 'key_1',
-                            'field_id': 'field_1',
-                            'field_response': 'value_1',
-                            'field_type': 'field_type1'
+                            'field_display_name': 'key_9',
+                            'field_id': 'field_9',
+                            'field_response': 'value_9',
+                            'field_type': 'field_type9'
                         },
                         {
-                            'field_display_name': 'key_2',
-                            'field_id': 'field_2',
-                            'field_response': 'value_2',
-                            'field_type': 'field_type2'
+                            'field_display_name': 'key_10',
+                            'field_id': 'field_10',
+                            'field_response': 'value_10',
+                            'field_type': 'field_type10'
                         }
                     ],
                     'title': 'title_4'
@@ -267,13 +267,13 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
             'total_tasks': 5
         },
         {
-            'group_by_display_name': 'display_name_1',
-            'group_by_value': 'value_1',
+            'group_by_display_name': 'display_name_13',
+            'group_by_value': 'value_13',
             'tasks': [
                 {
                     'description': 'description_5',
                     'due_date': '2020-10-10 05:30:00',
-                    'priority': 'MEDIUM',
+                    'priority': 'LOW',
                     'stage_with_actions': {
                         'actions': [
                             {
@@ -284,12 +284,12 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                             }
                         ],
                         'assignee': {
-                            'assignee_id': 'assignee_5',
-                            'name': 'name_5',
-                            'profile_pic_url': 'profile_pic_5',
+                            'assignee_id': 'assignee_25',
+                            'name': 'name_25',
+                            'profile_pic_url': 'profile_pic_25',
                             'team_info': {
-                                'team_id': 'team_5',
-                                'team_name': 'name_5'
+                                'team_id': 'team_25',
+                                'team_name': 'name_25'
                             }
                         },
                         'stage_color': 'stage_color5',
@@ -300,22 +300,22 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                     'task_id': 'task_display5',
                     'task_overview_fields': [
                         {
-                            'field_display_name': 'key_0',
-                            'field_id': 'field_0',
-                            'field_response': 'value_0',
-                            'field_type': 'field_type0'
+                            'field_display_name': 'key_8',
+                            'field_id': 'field_8',
+                            'field_response': 'value_8',
+                            'field_type': 'field_type8'
                         },
                         {
-                            'field_display_name': 'key_1',
-                            'field_id': 'field_1',
-                            'field_response': 'value_1',
-                            'field_type': 'field_type1'
+                            'field_display_name': 'key_9',
+                            'field_id': 'field_9',
+                            'field_response': 'value_9',
+                            'field_type': 'field_type9'
                         },
                         {
-                            'field_display_name': 'key_2',
-                            'field_id': 'field_2',
-                            'field_response': 'value_2',
-                            'field_type': 'field_type2'
+                            'field_display_name': 'key_10',
+                            'field_id': 'field_10',
+                            'field_response': 'value_10',
+                            'field_type': 'field_type10'
                         }
                     ],
                     'title': 'title_5'
@@ -323,7 +323,7 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                 {
                     'description': 'description_6',
                     'due_date': '2020-10-10 05:30:00',
-                    'priority': 'HIGH',
+                    'priority': 'MEDIUM',
                     'stage_with_actions': {
                         'actions': [
                             {
@@ -334,12 +334,12 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                             }
                         ],
                         'assignee': {
-                            'assignee_id': 'assignee_6',
-                            'name': 'name_6',
-                            'profile_pic_url': 'profile_pic_6',
+                            'assignee_id': 'assignee_26',
+                            'name': 'name_26',
+                            'profile_pic_url': 'profile_pic_26',
                             'team_info': {
-                                'team_id': 'team_6',
-                                'team_name': 'name_6'
+                                'team_id': 'team_26',
+                                'team_name': 'name_26'
                             }
                         },
                         'stage_color': 'stage_color6',
@@ -350,22 +350,22 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                     'task_id': 'task_display6',
                     'task_overview_fields': [
                         {
-                            'field_display_name': 'key_0',
-                            'field_id': 'field_0',
-                            'field_response': 'value_0',
-                            'field_type': 'field_type0'
+                            'field_display_name': 'key_8',
+                            'field_id': 'field_8',
+                            'field_response': 'value_8',
+                            'field_type': 'field_type8'
                         },
                         {
-                            'field_display_name': 'key_1',
-                            'field_id': 'field_1',
-                            'field_response': 'value_1',
-                            'field_type': 'field_type1'
+                            'field_display_name': 'key_9',
+                            'field_id': 'field_9',
+                            'field_response': 'value_9',
+                            'field_type': 'field_type9'
                         },
                         {
-                            'field_display_name': 'key_2',
-                            'field_id': 'field_2',
-                            'field_response': 'value_2',
-                            'field_type': 'field_type2'
+                            'field_display_name': 'key_10',
+                            'field_id': 'field_10',
+                            'field_response': 'value_10',
+                            'field_type': 'field_type10'
                         }
                     ],
                     'title': 'title_6'
@@ -373,7 +373,7 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                 {
                     'description': 'description_7',
                     'due_date': '2020-10-10 05:30:00',
-                    'priority': 'LOW',
+                    'priority': 'HIGH',
                     'stage_with_actions': {
                         'actions': [
                             {
@@ -384,12 +384,12 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                             }
                         ],
                         'assignee': {
-                            'assignee_id': 'assignee_7',
-                            'name': 'name_7',
-                            'profile_pic_url': 'profile_pic_7',
+                            'assignee_id': 'assignee_27',
+                            'name': 'name_27',
+                            'profile_pic_url': 'profile_pic_27',
                             'team_info': {
-                                'team_id': 'team_7',
-                                'team_name': 'name_7'
+                                'team_id': 'team_27',
+                                'team_name': 'name_27'
                             }
                         },
                         'stage_color': 'stage_color7',
@@ -400,22 +400,22 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                     'task_id': 'task_display7',
                     'task_overview_fields': [
                         {
-                            'field_display_name': 'key_0',
-                            'field_id': 'field_0',
-                            'field_response': 'value_0',
-                            'field_type': 'field_type0'
+                            'field_display_name': 'key_8',
+                            'field_id': 'field_8',
+                            'field_response': 'value_8',
+                            'field_type': 'field_type8'
                         },
                         {
-                            'field_display_name': 'key_1',
-                            'field_id': 'field_1',
-                            'field_response': 'value_1',
-                            'field_type': 'field_type1'
+                            'field_display_name': 'key_9',
+                            'field_id': 'field_9',
+                            'field_response': 'value_9',
+                            'field_type': 'field_type9'
                         },
                         {
-                            'field_display_name': 'key_2',
-                            'field_id': 'field_2',
-                            'field_response': 'value_2',
-                            'field_type': 'field_type2'
+                            'field_display_name': 'key_10',
+                            'field_id': 'field_10',
+                            'field_response': 'value_10',
+                            'field_type': 'field_type10'
                         }
                     ],
                     'title': 'title_7'
@@ -423,7 +423,7 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                 {
                     'description': 'description_8',
                     'due_date': '2020-10-10 05:30:00',
-                    'priority': 'MEDIUM',
+                    'priority': 'LOW',
                     'stage_with_actions': {
                         'actions': [
                             {
@@ -434,12 +434,12 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                             }
                         ],
                         'assignee': {
-                            'assignee_id': 'assignee_8',
-                            'name': 'name_8',
-                            'profile_pic_url': 'profile_pic_8',
+                            'assignee_id': 'assignee_28',
+                            'name': 'name_28',
+                            'profile_pic_url': 'profile_pic_28',
                             'team_info': {
-                                'team_id': 'team_8',
-                                'team_name': 'name_8'
+                                'team_id': 'team_28',
+                                'team_name': 'name_28'
                             }
                         },
                         'stage_color': 'stage_color8',
@@ -450,22 +450,22 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                     'task_id': 'task_display8',
                     'task_overview_fields': [
                         {
-                            'field_display_name': 'key_0',
-                            'field_id': 'field_0',
-                            'field_response': 'value_0',
-                            'field_type': 'field_type0'
+                            'field_display_name': 'key_8',
+                            'field_id': 'field_8',
+                            'field_response': 'value_8',
+                            'field_type': 'field_type8'
                         },
                         {
-                            'field_display_name': 'key_1',
-                            'field_id': 'field_1',
-                            'field_response': 'value_1',
-                            'field_type': 'field_type1'
+                            'field_display_name': 'key_9',
+                            'field_id': 'field_9',
+                            'field_response': 'value_9',
+                            'field_type': 'field_type9'
                         },
                         {
-                            'field_display_name': 'key_2',
-                            'field_id': 'field_2',
-                            'field_response': 'value_2',
-                            'field_type': 'field_type2'
+                            'field_display_name': 'key_10',
+                            'field_id': 'field_10',
+                            'field_response': 'value_10',
+                            'field_type': 'field_type10'
                         }
                     ],
                     'title': 'title_8'
@@ -473,7 +473,7 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                 {
                     'description': 'description_9',
                     'due_date': '2020-10-10 05:30:00',
-                    'priority': 'HIGH',
+                    'priority': 'MEDIUM',
                     'stage_with_actions': {
                         'actions': [
                             {
@@ -484,12 +484,12 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                             }
                         ],
                         'assignee': {
-                            'assignee_id': 'assignee_9',
-                            'name': 'name_9',
-                            'profile_pic_url': 'profile_pic_9',
+                            'assignee_id': 'assignee_29',
+                            'name': 'name_29',
+                            'profile_pic_url': 'profile_pic_29',
                             'team_info': {
-                                'team_id': 'team_9',
-                                'team_name': 'name_9'
+                                'team_id': 'team_29',
+                                'team_name': 'name_29'
                             }
                         },
                         'stage_color': 'stage_color9',
@@ -500,22 +500,22 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                     'task_id': 'task_display9',
                     'task_overview_fields': [
                         {
-                            'field_display_name': 'key_0',
-                            'field_id': 'field_0',
-                            'field_response': 'value_0',
-                            'field_type': 'field_type0'
+                            'field_display_name': 'key_8',
+                            'field_id': 'field_8',
+                            'field_response': 'value_8',
+                            'field_type': 'field_type8'
                         },
                         {
-                            'field_display_name': 'key_1',
-                            'field_id': 'field_1',
-                            'field_response': 'value_1',
-                            'field_type': 'field_type1'
+                            'field_display_name': 'key_9',
+                            'field_id': 'field_9',
+                            'field_response': 'value_9',
+                            'field_type': 'field_type9'
                         },
                         {
-                            'field_display_name': 'key_2',
-                            'field_id': 'field_2',
-                            'field_response': 'value_2',
-                            'field_type': 'field_type2'
+                            'field_display_name': 'key_10',
+                            'field_id': 'field_10',
+                            'field_response': 'value_10',
+                            'field_type': 'field_type10'
                         }
                     ],
                     'title': 'title_9'
@@ -524,111 +524,11 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
             'total_tasks': 5
         },
         {
-            'group_by_display_name': 'display_name_2',
-            'group_by_value': 'value_2',
+            'group_by_display_name': 'display_name_14',
+            'group_by_value': 'value_14',
             'tasks': [
                 {
                     'description': 'description_10',
-                    'due_date': '2020-10-10 05:30:00',
-                    'priority': 'LOW',
-                    'stage_with_actions': {
-                        'actions': [
-                            {
-                                'action_id': 'action0',
-                                'action_type': 'NO_VALIDATIONS',
-                                'button_color': 'button_color0',
-                                'button_text': 'button_text0'
-                            }
-                        ],
-                        'assignee': {
-                            'assignee_id': 'assignee_10',
-                            'name': 'name_10',
-                            'profile_pic_url': 'profile_pic_10',
-                            'team_info': {
-                                'team_id': 'team_10',
-                                'team_name': 'name_10'
-                            }
-                        },
-                        'stage_color': 'stage_color10',
-                        'stage_display_name': 'stage_name10',
-                        'stage_id': 10
-                    },
-                    'start_date': '2020-09-10 05:30:00',
-                    'task_id': 'task_display10',
-                    'task_overview_fields': [
-                        {
-                            'field_display_name': 'key_0',
-                            'field_id': 'field_0',
-                            'field_response': 'value_0',
-                            'field_type': 'field_type0'
-                        },
-                        {
-                            'field_display_name': 'key_1',
-                            'field_id': 'field_1',
-                            'field_response': 'value_1',
-                            'field_type': 'field_type1'
-                        },
-                        {
-                            'field_display_name': 'key_2',
-                            'field_id': 'field_2',
-                            'field_response': 'value_2',
-                            'field_type': 'field_type2'
-                        }
-                    ],
-                    'title': 'title_10'
-                },
-                {
-                    'description': 'description_11',
-                    'due_date': '2020-10-10 05:30:00',
-                    'priority': 'MEDIUM',
-                    'stage_with_actions': {
-                        'actions': [
-                            {
-                                'action_id': 'action0',
-                                'action_type': 'NO_VALIDATIONS',
-                                'button_color': 'button_color0',
-                                'button_text': 'button_text0'
-                            }
-                        ],
-                        'assignee': {
-                            'assignee_id': 'assignee_11',
-                            'name': 'name_11',
-                            'profile_pic_url': 'profile_pic_11',
-                            'team_info': {
-                                'team_id': 'team_11',
-                                'team_name': 'name_11'
-                            }
-                        },
-                        'stage_color': 'stage_color11',
-                        'stage_display_name': 'stage_name11',
-                        'stage_id': 11
-                    },
-                    'start_date': '2020-09-10 05:30:00',
-                    'task_id': 'task_display11',
-                    'task_overview_fields': [
-                        {
-                            'field_display_name': 'key_0',
-                            'field_id': 'field_0',
-                            'field_response': 'value_0',
-                            'field_type': 'field_type0'
-                        },
-                        {
-                            'field_display_name': 'key_1',
-                            'field_id': 'field_1',
-                            'field_response': 'value_1',
-                            'field_type': 'field_type1'
-                        },
-                        {
-                            'field_display_name': 'key_2',
-                            'field_id': 'field_2',
-                            'field_response': 'value_2',
-                            'field_type': 'field_type2'
-                        }
-                    ],
-                    'title': 'title_11'
-                },
-                {
-                    'description': 'description_12',
                     'due_date': '2020-10-10 05:30:00',
                     'priority': 'HIGH',
                     'stage_with_actions': {
@@ -641,44 +541,44 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                             }
                         ],
                         'assignee': {
-                            'assignee_id': 'assignee_12',
-                            'name': 'name_12',
-                            'profile_pic_url': 'profile_pic_12',
+                            'assignee_id': 'assignee_30',
+                            'name': 'name_30',
+                            'profile_pic_url': 'profile_pic_30',
                             'team_info': {
-                                'team_id': 'team_12',
-                                'team_name': 'name_12'
+                                'team_id': 'team_30',
+                                'team_name': 'name_30'
                             }
                         },
-                        'stage_color': 'stage_color12',
-                        'stage_display_name': 'stage_name12',
-                        'stage_id': 12
+                        'stage_color': 'stage_color10',
+                        'stage_display_name': 'stage_name10',
+                        'stage_id': 10
                     },
                     'start_date': '2020-09-10 05:30:00',
-                    'task_id': 'task_display12',
+                    'task_id': 'task_display10',
                     'task_overview_fields': [
                         {
-                            'field_display_name': 'key_0',
-                            'field_id': 'field_0',
-                            'field_response': 'value_0',
-                            'field_type': 'field_type0'
+                            'field_display_name': 'key_8',
+                            'field_id': 'field_8',
+                            'field_response': 'value_8',
+                            'field_type': 'field_type8'
                         },
                         {
-                            'field_display_name': 'key_1',
-                            'field_id': 'field_1',
-                            'field_response': 'value_1',
-                            'field_type': 'field_type1'
+                            'field_display_name': 'key_9',
+                            'field_id': 'field_9',
+                            'field_response': 'value_9',
+                            'field_type': 'field_type9'
                         },
                         {
-                            'field_display_name': 'key_2',
-                            'field_id': 'field_2',
-                            'field_response': 'value_2',
-                            'field_type': 'field_type2'
+                            'field_display_name': 'key_10',
+                            'field_id': 'field_10',
+                            'field_response': 'value_10',
+                            'field_type': 'field_type10'
                         }
                     ],
-                    'title': 'title_12'
+                    'title': 'title_10'
                 },
                 {
-                    'description': 'description_13',
+                    'description': 'description_11',
                     'due_date': '2020-10-10 05:30:00',
                     'priority': 'LOW',
                     'stage_with_actions': {
@@ -691,44 +591,44 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                             }
                         ],
                         'assignee': {
-                            'assignee_id': 'assignee_13',
-                            'name': 'name_13',
-                            'profile_pic_url': 'profile_pic_13',
+                            'assignee_id': 'assignee_31',
+                            'name': 'name_31',
+                            'profile_pic_url': 'profile_pic_31',
                             'team_info': {
-                                'team_id': 'team_13',
-                                'team_name': 'name_13'
+                                'team_id': 'team_31',
+                                'team_name': 'name_31'
                             }
                         },
-                        'stage_color': 'stage_color13',
-                        'stage_display_name': 'stage_name13',
-                        'stage_id': 13
+                        'stage_color': 'stage_color11',
+                        'stage_display_name': 'stage_name11',
+                        'stage_id': 11
                     },
                     'start_date': '2020-09-10 05:30:00',
-                    'task_id': 'task_display13',
+                    'task_id': 'task_display11',
                     'task_overview_fields': [
                         {
-                            'field_display_name': 'key_0',
-                            'field_id': 'field_0',
-                            'field_response': 'value_0',
-                            'field_type': 'field_type0'
+                            'field_display_name': 'key_8',
+                            'field_id': 'field_8',
+                            'field_response': 'value_8',
+                            'field_type': 'field_type8'
                         },
                         {
-                            'field_display_name': 'key_1',
-                            'field_id': 'field_1',
-                            'field_response': 'value_1',
-                            'field_type': 'field_type1'
+                            'field_display_name': 'key_9',
+                            'field_id': 'field_9',
+                            'field_response': 'value_9',
+                            'field_type': 'field_type9'
                         },
                         {
-                            'field_display_name': 'key_2',
-                            'field_id': 'field_2',
-                            'field_response': 'value_2',
-                            'field_type': 'field_type2'
+                            'field_display_name': 'key_10',
+                            'field_id': 'field_10',
+                            'field_response': 'value_10',
+                            'field_type': 'field_type10'
                         }
                     ],
-                    'title': 'title_13'
+                    'title': 'title_11'
                 },
                 {
-                    'description': 'description_14',
+                    'description': 'description_12',
                     'due_date': '2020-10-10 05:30:00',
                     'priority': 'MEDIUM',
                     'stage_with_actions': {
@@ -741,12 +641,112 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                             }
                         ],
                         'assignee': {
-                            'assignee_id': 'assignee_14',
-                            'name': 'name_14',
-                            'profile_pic_url': 'profile_pic_14',
+                            'assignee_id': 'assignee_32',
+                            'name': 'name_32',
+                            'profile_pic_url': 'profile_pic_32',
                             'team_info': {
-                                'team_id': 'team_14',
-                                'team_name': 'name_14'
+                                'team_id': 'team_32',
+                                'team_name': 'name_32'
+                            }
+                        },
+                        'stage_color': 'stage_color12',
+                        'stage_display_name': 'stage_name12',
+                        'stage_id': 12
+                    },
+                    'start_date': '2020-09-10 05:30:00',
+                    'task_id': 'task_display12',
+                    'task_overview_fields': [
+                        {
+                            'field_display_name': 'key_8',
+                            'field_id': 'field_8',
+                            'field_response': 'value_8',
+                            'field_type': 'field_type8'
+                        },
+                        {
+                            'field_display_name': 'key_9',
+                            'field_id': 'field_9',
+                            'field_response': 'value_9',
+                            'field_type': 'field_type9'
+                        },
+                        {
+                            'field_display_name': 'key_10',
+                            'field_id': 'field_10',
+                            'field_response': 'value_10',
+                            'field_type': 'field_type10'
+                        }
+                    ],
+                    'title': 'title_12'
+                },
+                {
+                    'description': 'description_13',
+                    'due_date': '2020-10-10 05:30:00',
+                    'priority': 'HIGH',
+                    'stage_with_actions': {
+                        'actions': [
+                            {
+                                'action_id': 'action0',
+                                'action_type': 'NO_VALIDATIONS',
+                                'button_color': 'button_color0',
+                                'button_text': 'button_text0'
+                            }
+                        ],
+                        'assignee': {
+                            'assignee_id': 'assignee_33',
+                            'name': 'name_33',
+                            'profile_pic_url': 'profile_pic_33',
+                            'team_info': {
+                                'team_id': 'team_33',
+                                'team_name': 'name_33'
+                            }
+                        },
+                        'stage_color': 'stage_color13',
+                        'stage_display_name': 'stage_name13',
+                        'stage_id': 13
+                    },
+                    'start_date': '2020-09-10 05:30:00',
+                    'task_id': 'task_display13',
+                    'task_overview_fields': [
+                        {
+                            'field_display_name': 'key_8',
+                            'field_id': 'field_8',
+                            'field_response': 'value_8',
+                            'field_type': 'field_type8'
+                        },
+                        {
+                            'field_display_name': 'key_9',
+                            'field_id': 'field_9',
+                            'field_response': 'value_9',
+                            'field_type': 'field_type9'
+                        },
+                        {
+                            'field_display_name': 'key_10',
+                            'field_id': 'field_10',
+                            'field_response': 'value_10',
+                            'field_type': 'field_type10'
+                        }
+                    ],
+                    'title': 'title_13'
+                },
+                {
+                    'description': 'description_14',
+                    'due_date': '2020-10-10 05:30:00',
+                    'priority': 'LOW',
+                    'stage_with_actions': {
+                        'actions': [
+                            {
+                                'action_id': 'action0',
+                                'action_type': 'NO_VALIDATIONS',
+                                'button_color': 'button_color0',
+                                'button_text': 'button_text0'
+                            }
+                        ],
+                        'assignee': {
+                            'assignee_id': 'assignee_34',
+                            'name': 'name_34',
+                            'profile_pic_url': 'profile_pic_34',
+                            'team_info': {
+                                'team_id': 'team_34',
+                                'team_name': 'name_34'
                             }
                         },
                         'stage_color': 'stage_color14',
@@ -757,22 +757,22 @@ snapshots['TestGetChildGroupsInGroupPresenterImplementation.test_prepare_respons
                     'task_id': 'task_display14',
                     'task_overview_fields': [
                         {
-                            'field_display_name': 'key_0',
-                            'field_id': 'field_0',
-                            'field_response': 'value_0',
-                            'field_type': 'field_type0'
+                            'field_display_name': 'key_8',
+                            'field_id': 'field_8',
+                            'field_response': 'value_8',
+                            'field_type': 'field_type8'
                         },
                         {
-                            'field_display_name': 'key_1',
-                            'field_id': 'field_1',
-                            'field_response': 'value_1',
-                            'field_type': 'field_type1'
+                            'field_display_name': 'key_9',
+                            'field_id': 'field_9',
+                            'field_response': 'value_9',
+                            'field_type': 'field_type9'
                         },
                         {
-                            'field_display_name': 'key_2',
-                            'field_id': 'field_2',
-                            'field_response': 'value_2',
-                            'field_type': 'field_type2'
+                            'field_display_name': 'key_10',
+                            'field_id': 'field_10',
+                            'field_response': 'value_10',
+                            'field_type': 'field_type10'
                         }
                     ],
                     'title': 'title_14'

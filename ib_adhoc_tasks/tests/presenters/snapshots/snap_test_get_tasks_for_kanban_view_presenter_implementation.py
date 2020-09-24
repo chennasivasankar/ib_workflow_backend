@@ -16,8 +16,8 @@ snapshots['TestGetTasksForKanbanViewPresenterImplementation.test_given_task_deta
             "group_by_display_name": "group_by_display_name",
             "child_groups": [
                 {
-                    "group_by_value": "value_12",
-                    "group_by_display_name": "display_name_12",
+                    "group_by_value": "value_15",
+                    "group_by_display_name": "display_name_15",
                     "total_tasks": 3,
                     "tasks": [
                         {
@@ -180,8 +180,8 @@ snapshots['TestGetTasksForKanbanViewPresenterImplementation.test_given_task_deta
             "group_by_display_name": "group_by_display_name",
             "child_groups": [
                 {
-                    "group_by_value": "value_13",
-                    "group_by_display_name": "display_name_13",
+                    "group_by_value": "value_16",
+                    "group_by_display_name": "display_name_16",
                     "total_tasks": 3,
                     "tasks": [
                         {
