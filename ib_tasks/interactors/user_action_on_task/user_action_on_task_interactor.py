@@ -118,6 +118,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         )
 
     def user_action_on_task_and_set_random_assignees(self, task_id: int):
+
         task_complete_details_dto, task_current_stage_details_dto, \
         stage_ids, project_id = self.user_action_on_task(
             task_id)
