@@ -7,7 +7,7 @@ from ib_adhoc_tasks.adapters.dtos import FieldDetailsDTO, \
     AssigneeDetailsDTO, \
     TaskStageAssigneeDetailsDTO, TaskBaseDetailsDTO, TasksCompleteDetailsDTO, \
     TeamDetailsDTO, TaskIdWithSubTasksCountDTO, \
-    TaskIdWithCompletedSubTasksCountDTO
+    TaskIdWithCompletedSubTasksCountDTO, FieldIdAndNameDTO
 from ib_adhoc_tasks.constants.enum import ActionTypes, Priority
 
 
@@ -144,3 +144,13 @@ class TaskIdWithCompletedSubTasksCountDTOFactory(factory.Factory):
 
     task_id = factory.sequence(lambda counter: "task_{}".format(counter))
     completed_sub_tasks_count = factory.Iterator([0, 1, 2, 3])
+
+
+class FieldIdAndNameDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldIdAndNameDTO
+
+    field_id = factory.sequence(lambda counter: "field_{}".format(counter))
+    field_display_name = factory.sequence(
+        lambda counter: "field_display_name{}".format(counter)
+    )

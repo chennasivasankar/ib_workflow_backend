@@ -9,7 +9,6 @@ class GroupByEnum(enum.Enum):
 class GroupByType(enum.Enum):
     STAGE = "STAGE"
     ASSIGNEE = "ASSIGNEE"
-    FIELD = "FIELD"
 
 
 class ViewType(enum.Enum):
