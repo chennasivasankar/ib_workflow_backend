@@ -1720,7 +1720,7 @@
       }
     },
     "/project/adhoc_board/adhoc_template/fields/v1/": {
-      "post": {
+      "get": {
         "summary": "Get Adhoc task template fields",
         "operationId": "get_adhoc_task_template_fields",
         "security": [
