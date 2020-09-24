@@ -16,8 +16,8 @@ snapshots['TestGetTasksForKanbanViewPresenterImplementation.test_given_task_deta
             "group_by_display_name": "group_by_display_name",
             "child_groups": [
                 {
-                    "group_by_value": "value_12",
-                    "group_by_display_name": "display_name_12",
+                    "group_by_value": "value_0",
+                    "group_by_display_name": "display_name_0",
                     "total_tasks": 3,
                     "tasks": [
                         {
@@ -29,22 +29,22 @@ snapshots['TestGetTasksForKanbanViewPresenterImplementation.test_given_task_deta
                             "priority": "HIGH",
                             "task_overview_fields": [
                                 {
-                                    "field_type": "field_type6",
-                                    "field_display_name": "key_6",
-                                    "field_response": "value_6",
-                                    "field_id": "field_6"
+                                    "field_type": "field_type0",
+                                    "field_display_name": "key_0",
+                                    "field_response": "value_0",
+                                    "field_id": "field_0"
                                 },
                                 {
-                                    "field_type": "field_type7",
-                                    "field_display_name": "key_7",
-                                    "field_response": "value_7",
-                                    "field_id": "field_7"
+                                    "field_type": "field_type1",
+                                    "field_display_name": "key_1",
+                                    "field_response": "value_1",
+                                    "field_id": "field_1"
                                 },
                                 {
-                                    "field_type": "field_type8",
-                                    "field_display_name": "key_8",
-                                    "field_response": "value_8",
-                                    "field_id": "field_8"
+                                    "field_type": "field_type2",
+                                    "field_display_name": "key_2",
+                                    "field_response": "value_2",
+                                    "field_id": "field_2"
                                 }
                             ],
                             "stage_with_actions": {
@@ -52,12 +52,12 @@ snapshots['TestGetTasksForKanbanViewPresenterImplementation.test_given_task_deta
                                 "stage_display_name": "stage_name0",
                                 "stage_color": "stage_color0",
                                 "assignee": {
-                                    "assignee_id": "assignee_30",
-                                    "name": "name_30",
-                                    "profile_pic_url": "profile_pic_30",
+                                    "assignee_id": "assignee_0",
+                                    "name": "name_0",
+                                    "profile_pic_url": "profile_pic_0",
                                     "team_info": {
-                                        "team_id": "team_30",
-                                        "team_name": "name_30"
+                                        "team_id": "team_0",
+                                        "team_name": "name_0"
                                     }
                                 },
                                 "actions": [
@@ -79,22 +79,22 @@ snapshots['TestGetTasksForKanbanViewPresenterImplementation.test_given_task_deta
                             "priority": "LOW",
                             "task_overview_fields": [
                                 {
-                                    "field_type": "field_type6",
-                                    "field_display_name": "key_6",
-                                    "field_response": "value_6",
-                                    "field_id": "field_6"
+                                    "field_type": "field_type0",
+                                    "field_display_name": "key_0",
+                                    "field_response": "value_0",
+                                    "field_id": "field_0"
                                 },
                                 {
-                                    "field_type": "field_type7",
-                                    "field_display_name": "key_7",
-                                    "field_response": "value_7",
-                                    "field_id": "field_7"
+                                    "field_type": "field_type1",
+                                    "field_display_name": "key_1",
+                                    "field_response": "value_1",
+                                    "field_id": "field_1"
                                 },
                                 {
-                                    "field_type": "field_type8",
-                                    "field_display_name": "key_8",
-                                    "field_response": "value_8",
-                                    "field_id": "field_8"
+                                    "field_type": "field_type2",
+                                    "field_display_name": "key_2",
+                                    "field_response": "value_2",
+                                    "field_id": "field_2"
                                 }
                             ],
                             "stage_with_actions": {
@@ -102,12 +102,12 @@ snapshots['TestGetTasksForKanbanViewPresenterImplementation.test_given_task_deta
                                 "stage_display_name": "stage_name1",
                                 "stage_color": "stage_color1",
                                 "assignee": {
-                                    "assignee_id": "assignee_31",
-                                    "name": "name_31",
-                                    "profile_pic_url": "profile_pic_31",
+                                    "assignee_id": "assignee_1",
+                                    "name": "name_1",
+                                    "profile_pic_url": "profile_pic_1",
                                     "team_info": {
-                                        "team_id": "team_31",
-                                        "team_name": "name_31"
+                                        "team_id": "team_1",
+                                        "team_name": "name_1"
                                     }
                                 },
                                 "actions": [
@@ -129,22 +129,22 @@ snapshots['TestGetTasksForKanbanViewPresenterImplementation.test_given_task_deta
                             "priority": "MEDIUM",
                             "task_overview_fields": [
                                 {
-                                    "field_type": "field_type6",
-                                    "field_display_name": "key_6",
-                                    "field_response": "value_6",
-                                    "field_id": "field_6"
+                                    "field_type": "field_type0",
+                                    "field_display_name": "key_0",
+                                    "field_response": "value_0",
+                                    "field_id": "field_0"
                                 },
                                 {
-                                    "field_type": "field_type7",
-                                    "field_display_name": "key_7",
-                                    "field_response": "value_7",
-                                    "field_id": "field_7"
+                                    "field_type": "field_type1",
+                                    "field_display_name": "key_1",
+                                    "field_response": "value_1",
+                                    "field_id": "field_1"
                                 },
                                 {
-                                    "field_type": "field_type8",
-                                    "field_display_name": "key_8",
-                                    "field_response": "value_8",
-                                    "field_id": "field_8"
+                                    "field_type": "field_type2",
+                                    "field_display_name": "key_2",
+                                    "field_response": "value_2",
+                                    "field_id": "field_2"
                                 }
                             ],
                             "stage_with_actions": {
@@ -152,12 +152,12 @@ snapshots['TestGetTasksForKanbanViewPresenterImplementation.test_given_task_deta
                                 "stage_display_name": "stage_name2",
                                 "stage_color": "stage_color2",
                                 "assignee": {
-                                    "assignee_id": "assignee_32",
-                                    "name": "name_32",
-                                    "profile_pic_url": "profile_pic_32",
+                                    "assignee_id": "assignee_2",
+                                    "name": "name_2",
+                                    "profile_pic_url": "profile_pic_2",
                                     "team_info": {
-                                        "team_id": "team_32",
-                                        "team_name": "name_32"
+                                        "team_id": "team_2",
+                                        "team_name": "name_2"
                                     }
                                 },
                                 "actions": [
@@ -180,8 +180,8 @@ snapshots['TestGetTasksForKanbanViewPresenterImplementation.test_given_task_deta
             "group_by_display_name": "group_by_display_name",
             "child_groups": [
                 {
-                    "group_by_value": "value_13",
-                    "group_by_display_name": "display_name_13",
+                    "group_by_value": "value_1",
+                    "group_by_display_name": "display_name_1",
                     "total_tasks": 3,
                     "tasks": [
                         {
@@ -193,22 +193,22 @@ snapshots['TestGetTasksForKanbanViewPresenterImplementation.test_given_task_deta
                             "priority": "HIGH",
                             "task_overview_fields": [
                                 {
-                                    "field_type": "field_type6",
-                                    "field_display_name": "key_6",
-                                    "field_response": "value_6",
-                                    "field_id": "field_6"
+                                    "field_type": "field_type0",
+                                    "field_display_name": "key_0",
+                                    "field_response": "value_0",
+                                    "field_id": "field_0"
                                 },
                                 {
-                                    "field_type": "field_type7",
-                                    "field_display_name": "key_7",
-                                    "field_response": "value_7",
-                                    "field_id": "field_7"
+                                    "field_type": "field_type1",
+                                    "field_display_name": "key_1",
+                                    "field_response": "value_1",
+                                    "field_id": "field_1"
                                 },
                                 {
-                                    "field_type": "field_type8",
-                                    "field_display_name": "key_8",
-                                    "field_response": "value_8",
-                                    "field_id": "field_8"
+                                    "field_type": "field_type2",
+                                    "field_display_name": "key_2",
+                                    "field_response": "value_2",
+                                    "field_id": "field_2"
                                 }
                             ],
                             "stage_with_actions": {
@@ -216,12 +216,12 @@ snapshots['TestGetTasksForKanbanViewPresenterImplementation.test_given_task_deta
                                 "stage_display_name": "stage_name3",
                                 "stage_color": "stage_color3",
                                 "assignee": {
-                                    "assignee_id": "assignee_33",
-                                    "name": "name_33",
-                                    "profile_pic_url": "profile_pic_33",
+                                    "assignee_id": "assignee_3",
+                                    "name": "name_3",
+                                    "profile_pic_url": "profile_pic_3",
                                     "team_info": {
-                                        "team_id": "team_33",
-                                        "team_name": "name_33"
+                                        "team_id": "team_3",
+                                        "team_name": "name_3"
                                     }
                                 },
                                 "actions": [
@@ -243,22 +243,22 @@ snapshots['TestGetTasksForKanbanViewPresenterImplementation.test_given_task_deta
                             "priority": "LOW",
                             "task_overview_fields": [
                                 {
-                                    "field_type": "field_type6",
-                                    "field_display_name": "key_6",
-                                    "field_response": "value_6",
-                                    "field_id": "field_6"
+                                    "field_type": "field_type0",
+                                    "field_display_name": "key_0",
+                                    "field_response": "value_0",
+                                    "field_id": "field_0"
                                 },
                                 {
-                                    "field_type": "field_type7",
-                                    "field_display_name": "key_7",
-                                    "field_response": "value_7",
-                                    "field_id": "field_7"
+                                    "field_type": "field_type1",
+                                    "field_display_name": "key_1",
+                                    "field_response": "value_1",
+                                    "field_id": "field_1"
                                 },
                                 {
-                                    "field_type": "field_type8",
-                                    "field_display_name": "key_8",
-                                    "field_response": "value_8",
-                                    "field_id": "field_8"
+                                    "field_type": "field_type2",
+                                    "field_display_name": "key_2",
+                                    "field_response": "value_2",
+                                    "field_id": "field_2"
                                 }
                             ],
                             "stage_with_actions": {
@@ -266,12 +266,12 @@ snapshots['TestGetTasksForKanbanViewPresenterImplementation.test_given_task_deta
                                 "stage_display_name": "stage_name4",
                                 "stage_color": "stage_color4",
                                 "assignee": {
-                                    "assignee_id": "assignee_34",
-                                    "name": "name_34",
-                                    "profile_pic_url": "profile_pic_34",
+                                    "assignee_id": "assignee_4",
+                                    "name": "name_4",
+                                    "profile_pic_url": "profile_pic_4",
                                     "team_info": {
-                                        "team_id": "team_34",
-                                        "team_name": "name_34"
+                                        "team_id": "team_4",
+                                        "team_name": "name_4"
                                     }
                                 },
                                 "actions": [
@@ -293,22 +293,22 @@ snapshots['TestGetTasksForKanbanViewPresenterImplementation.test_given_task_deta
                             "priority": "MEDIUM",
                             "task_overview_fields": [
                                 {
-                                    "field_type": "field_type6",
-                                    "field_display_name": "key_6",
-                                    "field_response": "value_6",
-                                    "field_id": "field_6"
+                                    "field_type": "field_type0",
+                                    "field_display_name": "key_0",
+                                    "field_response": "value_0",
+                                    "field_id": "field_0"
                                 },
                                 {
-                                    "field_type": "field_type7",
-                                    "field_display_name": "key_7",
-                                    "field_response": "value_7",
-                                    "field_id": "field_7"
+                                    "field_type": "field_type1",
+                                    "field_display_name": "key_1",
+                                    "field_response": "value_1",
+                                    "field_id": "field_1"
                                 },
                                 {
-                                    "field_type": "field_type8",
-                                    "field_display_name": "key_8",
-                                    "field_response": "value_8",
-                                    "field_id": "field_8"
+                                    "field_type": "field_type2",
+                                    "field_display_name": "key_2",
+                                    "field_response": "value_2",
+                                    "field_id": "field_2"
                                 }
                             ],
                             "stage_with_actions": {
@@ -316,12 +316,12 @@ snapshots['TestGetTasksForKanbanViewPresenterImplementation.test_given_task_deta
                                 "stage_display_name": "stage_name5",
                                 "stage_color": "stage_color5",
                                 "assignee": {
-                                    "assignee_id": "assignee_35",
-                                    "name": "name_35",
-                                    "profile_pic_url": "profile_pic_35",
+                                    "assignee_id": "assignee_5",
+                                    "name": "name_5",
+                                    "profile_pic_url": "profile_pic_5",
                                     "team_info": {
-                                        "team_id": "team_35",
-                                        "team_name": "name_35"
+                                        "team_id": "team_5",
+                                        "team_name": "name_5"
                                     }
                                 },
                                 "actions": [
