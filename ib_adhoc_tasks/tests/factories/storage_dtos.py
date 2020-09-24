@@ -3,7 +3,7 @@ import factory
 from ib_adhoc_tasks.constants.enum import ViewType
 from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
     GroupByDetailsDTO, GroupDetailsDTO, GroupByResponseDTO, \
-    AddOrEditGroupByParameterDTO
+    AddOrEditGroupByParameterDTO, ChildGroupCountDTO
 
 
 class GroupByResponseDTOFactory(factory.Factory):
@@ -54,3 +54,12 @@ class GroupDetailsDTOFactory(factory.Factory):
         lambda counter: "value_{}".format(counter))
     child_group_by_display_name = factory.Sequence(
         lambda counter: "display_name_{}".format(counter))
+
+
+class ChildGroupCountDTOFactory(factory.Factory):
+    class Meta:
+        model = ChildGroupCountDTO
+
+    group_by_value = factory.Sequence(
+        lambda counter: "child_group_by_value_{}".format(counter))
+    total_child_groups = factory.Sequence(lambda counter: counter)

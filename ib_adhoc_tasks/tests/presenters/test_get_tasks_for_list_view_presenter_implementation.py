@@ -177,7 +177,7 @@ class TestGetTasksForListViewPresenterImplementation:
             value=response.content
         )
 
-    def test_given_group_details_dtos_and_task_details_dtos_returns_group_info_task_details_dtos(
+    def test_given_group_details_dtos_and_task_details_dtos_returns_group_info_task_details(
             self, task_complete_details_dto, presenter, group_details_dtos,
             sub_tasks_count_dtos, completed_sub_tasks_count_dtos,
             snapshot

@@ -7,14 +7,14 @@ from ib_tasks.adapters.dtos import (
 from ib_tasks.adapters.service_adapter import get_service_adapter
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidStageIdsForTask
-from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO, TaskStageAssigneeTeamDetailsDTO
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeTeamDetailsDTO
 from ib_tasks.interactors.stages_dtos import StageAssigneeWithTeamDetailsDTO, \
     AssigneeWithTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
-    TaskStageStorageInterface, TaskStageAssigneeIdDTO, TaskStageAssigneeTeamIdDTO
+    TaskStageStorageInterface, TaskStageAssigneeTeamIdDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
@@ -192,47 +192,14 @@ class GetStagesAssigneesDetailsInteractor:
         return
 
     def get_stages_assignee_details_by_given_task_ids(
-            self, task_stage_dtos: List[GetTaskDetailsDTO]
-    ) -> List[TaskStageAssigneeDetailsDTO]:
+            self, task_stage_dtos: List[GetTaskDetailsDTO], project_id: str
+    ) -> List[TaskStageAssigneeTeamDetailsDTO]:
         stage_assignee_dtos = \
             self.task_stage_storage.get_stage_assignee_id_dtos(
                 task_stage_dtos=task_stage_dtos
             )
-        assignee_ids = self._get_unique_assignee_ids(stage_assignee_dtos)
-        assignee_details_dtos = self._get_assignee_details_dtos(assignee_ids)
-        return self._get_task_stage_assignee_details_dtos(
-            stage_assignee_dtos, assignee_details_dtos
-        )
 
-    @staticmethod
-    def _get_unique_assignee_ids(
-            stage_assignee_dtos: Union[List[TaskStageAssigneeIdDTO],
-                                       TaskStageAssigneeTeamIdDTO]) -> List[str]:
-        assignee_ids = [
-            stage_assignee_dto.assignee_id
-            for stage_assignee_dto in stage_assignee_dtos
-            if stage_assignee_dto.assignee_id
-        ]
-        return list(set(assignee_ids))
-
-    @staticmethod
-    def _get_task_stage_assignee_details_dtos(
-            stage_assignee_dtos: List[TaskStageAssigneeIdDTO],
-            assignee_details_dtos: List[AssigneeDetailsDTO]
-    ) -> List[TaskStageAssigneeDetailsDTO]:
-
-        assignees_dict = {}
-        for assignee_details_dto in assignee_details_dtos:
-            assignees_dict[
-                assignee_details_dto.assignee_id] = assignee_details_dto
-        return [
-            TaskStageAssigneeDetailsDTO(
-                task_id=stage_assignee_dto.task_id,
-                stage_id=stage_assignee_dto.stage_id,
-                assignee_details=assignees_dict[stage_assignee_dto.assignee_id]
-            )
-            for stage_assignee_dto in stage_assignee_dtos
-        ]
+        return self._get_task_stage_assignee_team_details(project_id, stage_assignee_dtos)
 
     def get_tasks_stage_assignee_details(
             self, task_stage_dtos: List[GetTaskDetailsDTO], project_id: str
@@ -241,6 +208,9 @@ class GetStagesAssigneesDetailsInteractor:
             self.task_stage_storage.get_task_stage_team_assignee_id_dtos(
                 task_stage_dtos=task_stage_dtos
             )
+        return self._get_task_stage_assignee_team_details(project_id, stage_assignee_dtos)
+
+    def _get_task_stage_assignee_team_details(self, project_id, stage_assignee_dtos):
         user_id_with_team_id_dtos = self._get_user_id_with_team_id_dtos(
             stage_assignee_dtos)
         assignee_ids = self._get_unique_assignee_ids(stage_assignee_dtos)
@@ -252,11 +222,21 @@ class GetStagesAssigneesDetailsInteractor:
         team_details_with_user_id_dtos = \
             self._get_team_details_with_user_id_dtos(
                 project_team_user_ids_dto)
-
         return self._get_task_stage_team_assignee_details_dtos(
             stage_assignee_dtos, assignee_details_dtos,
             team_details_with_user_id_dtos
         )
+
+    @staticmethod
+    def _get_unique_assignee_ids(
+            stage_assignee_dtos: Union[List[TaskStageAssigneeTeamIdDTO],
+                                       TaskStageAssigneeTeamIdDTO]) -> List[str]:
+        assignee_ids = [
+            stage_assignee_dto.assignee_id
+            for stage_assignee_dto in stage_assignee_dtos
+            if stage_assignee_dto.assignee_id
+        ]
+        return list(set(assignee_ids))
 
     @staticmethod
     def _get_task_stage_team_assignee_details_dtos(

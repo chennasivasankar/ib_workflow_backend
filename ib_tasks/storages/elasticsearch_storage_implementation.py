@@ -76,10 +76,13 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         return task_dict
 
     @staticmethod
-    def _get_stages_dict(stages_ids: List[str]) -> List[Dict[str, Any]]:
+    def _get_stages_dict(task_stage_assignees_dtos) -> List[Dict[str, Any]]:
         return [
-            {"stage_id": stage_id}
-            for stage_id in stages_ids
+            {
+                "stage_id": task_stage_assignees_dto.stage_id,
+                "assignee": task_stage_assignees_dto.assignee_id
+            }
+            for task_stage_assignees_dto in task_stage_assignees_dtos
         ]
 
     def filter_tasks(

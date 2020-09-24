@@ -10,18 +10,12 @@ from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
 @dataclass
-class TaskStageAssigneeIdDTO:
-    task_id: int
-    stage_id: str
-    assignee_id: str
-
-
-@dataclass
 class TaskStageAssigneeTeamIdDTO:
     task_id: int
     stage_id: str
     assignee_id: str
     team_id: str
+
 
 
 class TaskStageStorageInterface(abc.ABC):
@@ -75,7 +69,7 @@ class TaskStageStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_stage_assignee_id_dtos(
             self, task_stage_dtos: List[GetTaskDetailsDTO]
-    ) -> List[TaskStageAssigneeIdDTO]:
+    ) -> List[TaskStageAssigneeTeamIdDTO]:
         pass
 
     @abc.abstractmethod
@@ -114,4 +108,17 @@ class TaskStageStorageInterface(abc.ABC):
     def get_task_stage_details_dtos(
             self, task_ids: List[int]
     ) -> List[GetTaskDetailsDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_max_stage_value_for_the_given_template(
+            self, adhoc_task_template_id: str
+    ) -> int:
+        pass
+
+    @abc.abstractmethod
+    def get_completed_sub_task_ids(
+            self, all_sub_task_ids: List[int],
+            max_stage_value: int
+    ) -> List[int]:
         pass

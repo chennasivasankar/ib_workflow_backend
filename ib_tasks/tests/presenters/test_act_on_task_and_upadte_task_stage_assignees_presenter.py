@@ -293,8 +293,8 @@ class TestActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation:
             AssigneeWithTeamDetailsDTOFactory
         AssigneeWithTeamDetailsDTOFactory.reset_sequence()
         from ib_tasks.tests.factories.interactor_dtos import \
-            TaskStageAssigneeDetailsDTOFactory
-        TaskStageAssigneeDetailsDTOFactory.reset_sequence()
+            TaskStageAssigneeTeamDetailsDTOFactory
+        TaskStageAssigneeTeamDetailsDTOFactory.reset_sequence()
 
     def test_get_response_for_user_action_on_task(
             self, presenter, snapshot, task_complete_details, reset_sequence

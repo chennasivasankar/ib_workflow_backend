@@ -161,7 +161,6 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
         try:
             module = import_module(path)
         except ModuleNotFoundError:
-            print("entered")
             raise InvalidModulePathFound(path_name=path_name)
         try:
             method_object = getattr(module, method)

@@ -149,7 +149,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             task_dto=updated_task_dto, task_id=task_id, stage_ids=stage_ids
         )
         task_complete_details_dto = self._get_task_current_board_complete_details(
-            task_id=task_id, stage_ids=stage_ids
+            task_id=task_id, stage_ids=stage_ids, project_id=project_id
         )
         task_current_stage_details_dto = \
             self._get_task_current_stage_details(task_id=task_id)
@@ -209,7 +209,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         return all_tasks_overview_details_dto
 
     def _get_task_current_board_complete_details(
-            self, task_id: int, stage_ids: List[str]
+            self, task_id: int, stage_ids: List[str], project_id: str
     ) -> TaskCompleteDetailsDTO:
         from ib_tasks.interactors.user_action_on_task \
             .get_task_current_board_complete_details_interactor \
@@ -222,7 +222,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             stage_storage=self.stage_storage,
             task_storage=self.task_storage,
             action_storage=self.action_storage,
-            view_type=self.view_type
+            view_type=self.view_type,
+            project_id=project_id
         )
         return interactor.get_task_current_board_complete_details(
             task_id=task_id, stage_ids=stage_ids)
