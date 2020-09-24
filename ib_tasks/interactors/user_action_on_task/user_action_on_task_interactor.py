@@ -119,13 +119,16 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
 
     def user_action_on_task_and_set_random_assignees(self, task_id: int):
         task_complete_details_dto, task_current_stage_details_dto, \
-        all_tasks_overview_dto, stage_ids = self.user_action_on_task(
+        stage_ids, project_id = self.user_action_on_task(
             task_id)
         self._set_next_stage_assignees_to_task_and_update_in_db(
             task_id=task_id, stage_ids=stage_ids
         )
+        all_tasks_overview_details_dto = self._get_tasks_overview_for_users(
+            task_id=task_id, project_id=project_id
+        )
         return (task_complete_details_dto, task_current_stage_details_dto,
-                all_tasks_overview_dto)
+                all_tasks_overview_details_dto)
 
     def user_action_on_task(self, task_id: int):
         self._validate_task_id(task_id)
@@ -158,7 +161,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         )
         return (
             task_complete_details_dto, task_current_stage_details_dto,
-            all_tasks_overview_details_dto, stage_ids
+            stage_ids, project_id
         )
 
     def _validation_all_user_template_permitted_fields_are_filled_or_not(
