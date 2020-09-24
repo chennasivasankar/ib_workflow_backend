@@ -5,7 +5,8 @@ from ib_adhoc_tasks.adapters.dtos import TasksDetailsInputDTO, \
     TasksCompleteDetailsDTO, TaskBaseDetailsDTO, \
     GetTaskStageCompleteDetailsDTO, TaskStageAssigneeDetailsDTO, \
     FieldDetailsDTO, StageActionDetailsDTO, AssigneeDetailsDTO, TeamDetailsDTO, \
-    TaskIdWithCompletedSubTasksCountDTO, TaskIdWithSubTasksCountDTO
+    TaskIdWithCompletedSubTasksCountDTO, TaskIdWithSubTasksCountDTO, \
+    FieldIdAndNameDTO
 from ib_adhoc_tasks.exceptions.custom_exceptions import InvalidTaskTemplateId
 
 
@@ -121,6 +122,22 @@ class TaskService:
             self, task_ids
     ) -> List[TaskIdWithCompletedSubTasksCountDTO]:
         pass
+
+    def get_task_template_field_dtos(
+            self, user_id: str, project_id: str, template_id: str
+    ) -> List[FieldIdAndNameDTO]:
+        from ib_tasks.app_interfaces.service_interface import ServiceInterface
+        service = ServiceInterface()
+        field_dtos = service.get_task_template_field_dtos(
+            user_id=user_id, project_ids=[project_id], template_id=template_id
+        )
+        field_id_and_name_dtos = [
+            FieldIdAndNameDTO(
+                field_id=field_dto.field_id,
+                field_display_name=field_dto.field_display_name
+            ) for field_dto in field_dtos
+        ]
+        return field_id_and_name_dtos
 
     def get_task_complete_details_dto(
             self, task_details_input_dto: TasksDetailsInputDTO
