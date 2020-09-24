@@ -46,6 +46,8 @@ def prepare_permitted_user_details_mock(mocker):
     mock = mocker.patch(
         "ib_tasks.adapters.auth_service.AuthService.get_permitted_user_details"
     )
+    from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTOFactory
+    UserDetailsDTOFactory.reset_sequence()
     user_details_dtos = [UserDetailsDTOFactory(profile_pic_url=None)]
     mock.return_value = user_details_dtos
     return mock
@@ -185,7 +187,6 @@ def get_team_info_for_given_user_ids_with_given_names_mock(mocker):
     from ib_tasks.tests.factories.adapter_dtos import \
         UserIdWIthTeamDetailsDTOFactory, TeamDetailsDTOFactory
     UserIdWIthTeamDetailsDTOFactory.reset_sequence()
-    TeamDetailsDTOFactory.reset_sequence()
     user_id_with_team_details_dtos = \
         UserIdWIthTeamDetailsDTOFactory.create_batch(size=2,
                                                      user_id='123e4567-e89b-12d3-a456-426614174000')

@@ -103,9 +103,6 @@ class GetNextStagesRandomAssigneesOfATaskPresenterImpl(
                 assignee_id = assignee_details_dto.assignee_id
                 team_details_dto = self._get_team_info_of_user_id(
                     assignee_id, user_with_team_details_dtos)
-                print("\n\n****************\n\n")
-                print(team_details_dto, user_with_team_details_dtos, assignee_id)
-                print("\n\n****************\n\n")
                 team_info = {"team_id": team_details_dto.team_id,
                              "team_name": team_details_dto.name}
                 assignee_details_dto_dict = {
