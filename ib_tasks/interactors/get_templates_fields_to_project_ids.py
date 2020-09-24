@@ -88,6 +88,7 @@ class GetProjectsTemplatesFieldsInteractor(ValidationMixin):
             self, user_id: str, project_ids: List[str], template_id: str
     ) -> List[FieldNameDTO]:
 
+        # TODO need to write test cases
         self.validate_given_project_ids(project_ids=project_ids)
         self.validate_if_user_is_in_projects(
             user_id=user_id, project_ids=project_ids
