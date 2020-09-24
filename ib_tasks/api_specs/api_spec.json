@@ -1595,6 +1595,24 @@
             "task_current_stages_details"
          ]
       },
+      "CreateSubTaskSuccessResponseBody":{
+         "type":"object",
+         "properties":{
+            "created_task_id": {
+               "type": "string"
+            },
+            "task_current_stages_details":{
+               "$ref":"#/definitions/TaskWithCurrentStages"
+            },
+            "task_details":{
+               "$ref":"#/definitions/TaskOverviewWithStageAndActions"
+            }
+         },
+         "required":[
+            "created_task_id",
+            "task_current_stages_details"
+         ]
+      },
       "UpdateTaskSuccessResponseBody":{
          "type":"object",
          "properties":{
@@ -2051,7 +2069,10 @@
          }
       },
       "CreateSubTaskSuccessResponse":{
-         "description":"Sub task created successfully"
+         "description":"Sub task created successfully",
+         "schema":{
+            "$ref":"#/definitions/CreateSubTaskSuccessResponseBody"
+         }
       },
       "CreateTaskAccessUnauthorized":{
          "description":"user does not have access",
