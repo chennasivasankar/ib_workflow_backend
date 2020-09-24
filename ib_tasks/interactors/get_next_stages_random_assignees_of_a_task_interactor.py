@@ -3,8 +3,9 @@ from typing import List
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.action_custom_exceptions \
     import InvalidKeyError
-from ib_tasks.exceptions.custom_exceptions import InvalidModulePathFound, \
-    InvalidMethodFound
+from ib_tasks.interactors.user_action_on_task.\
+    call_action_logic_function_and_get_or_update_task_status_variables_interactor \
+    import InvalidModulePathFound, InvalidMethodFound
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId
 from ib_tasks.interactors.get_users_with_less_tasks_for_stages import \
     GetUsersWithLessTasksInGivenStagesInteractor
@@ -37,7 +38,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 
 
 class GetNextStagesRandomAssigneesOfATaskInteractor(
-    ValidationMixin, GetTaskIdForTaskDisplayIdMixin):
+        ValidationMixin, GetTaskIdForTaskDisplayIdMixin):
     def __init__(self, storage: StorageInterface,
                  stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,

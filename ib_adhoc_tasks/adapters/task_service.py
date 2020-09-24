@@ -4,7 +4,8 @@ from typing import List, Optional
 from ib_adhoc_tasks.adapters.dtos import TasksDetailsInputDTO, \
     TasksCompleteDetailsDTO, TaskBaseDetailsDTO, \
     GetTaskStageCompleteDetailsDTO, TaskStageAssigneeDetailsDTO, \
-    FieldDetailsDTO, StageActionDetailsDTO, AssigneeDetailsDTO, TeamDetailsDTO, \
+    FieldDetailsDTO, StageActionDetailsDTO, AssigneeDetailsDTO, \
+    TeamDetailsDTO, \
     TaskIdWithCompletedSubTasksCountDTO, TaskIdWithSubTasksCountDTO
 from ib_adhoc_tasks.exceptions.custom_exceptions import InvalidTaskTemplateId
 
@@ -78,7 +79,9 @@ class TaskService:
         return subtask_ids
 
     def get_project_id_based_on_task_id(self, task_id: int) -> str:
-        pass
+        task_project_dtos = self.interface.get_tasks_project_ids([task_id])
+        task_project_dto = task_project_dtos[0]
+        return task_project_dto.project_id
 
     @staticmethod
     def get_field_display_name(
@@ -120,7 +123,15 @@ class TaskService:
     def get_completed_sub_tasks_count_for_task_ids(
             self, task_ids
     ) -> List[TaskIdWithCompletedSubTasksCountDTO]:
-        pass
+        task_with_completed_sub_tasks_count_dtos = \
+            self.interface.get_tasks_completed_sub_tasks_count_dtos(task_ids)
+        return [
+            TaskIdWithCompletedSubTasksCountDTO(
+                task_id=dto.task_id,
+                completed_sub_tasks_count=dto.completed_sub_tasks_count
+            )
+            for dto in task_with_completed_sub_tasks_count_dtos
+        ]
 
     def get_task_complete_details_dto(
             self, task_details_input_dto: TasksDetailsInputDTO

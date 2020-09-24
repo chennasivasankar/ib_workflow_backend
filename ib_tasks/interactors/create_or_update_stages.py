@@ -21,7 +21,8 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import StageDisplayLogicDTO
-from ib_tasks.interactors.user_action_on_task.get_stage_display_logic_interactor import \
+from ib_tasks.interactors.user_action_on_task \
+    .get_stage_display_logic_interactor import \
     StageDisplayLogicInteractor
 
 
@@ -58,9 +59,7 @@ class CreateOrUpdateStagesInteractor:
                                          task_fields_dtos):
 
         if not task_fields_dtos:
-            task_template_ids = [stage.task_template_id
-                                 for stage in stage_details]
-            raise InvalidTemplateFields(task_template_ids)
+            return
 
         stages_dict = {}
         for stage in stage_details:

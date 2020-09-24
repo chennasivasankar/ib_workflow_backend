@@ -39,7 +39,8 @@ class TestGetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
 
     @pytest.fixture
     def task_stage_storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+        from ib_tasks.interactors.storage_interfaces.\
+            task_stage_storage_interface import \
             TaskStageStorageInterface
         task_stage_storage = create_autospec(
             TaskStageStorageInterface)
@@ -47,15 +48,17 @@ class TestGetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
 
     @pytest.fixture
     def task_storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
-            TaskStorageInterface
-        task_storage = create_autospec(
-            TaskStorageInterface)
+        from ib_tasks.interactors.storage_interfaces.task_storage_interface\
+            import TaskStorageInterface
+        task_storage = create_autospec(TaskStorageInterface)
         return task_storage
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
+        from ib_tasks.tests.factories.interactor_dtos import \
+            StageIdWithNameDTOFactory
         StageWithUserDetailsDTOFactory.reset_sequence()
+        StageIdWithNameDTOFactory.reset_sequence()
         AssigneeDetailsDTOFactory.reset_sequence()
         UserIdWIthTeamDetailsDTOFactory.reset_sequence()
         TeamDetailsDTOFactory.reset_sequence()
@@ -74,21 +77,21 @@ class TestGetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
         # Arrange
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = 1
-        task_storage_mock.get_project_id_for_the_task_id.return_value = "project_1"
+        task_storage_mock.get_project_id_for_the_task_id.return_value = \
+            "project_1"
         stage_storage_mock. \
             get_virtual_stages_already_having_in_task.return_value = []
 
         stage_storage_mock. \
             get_stage_ids_excluding_virtual_stages.return_value = \
             ['stage_1', 'stage_2', 'stage_3']
-        given_stage_ids = [2, 3]
+        given_stage_ids = [1, 2, 3]
         from ib_tasks.interactors.stages_dtos import \
             StageWithUserDetailsAndTeamDetailsDTO
         stage_with_user_details_and_team_details_dto = \
             StageWithUserDetailsAndTeamDetailsDTO(
                 stages_with_user_details_dtos=
-                StageWithUserDetailsDTOFactory.create_batch(
-                    2, db_stage_id=factory.Iterator(given_stage_ids)),
+                StageWithUserDetailsDTOFactory.create_batch(2),
                 user_with_team_details_dtos=[
                     UserIdWIthTeamDetailsDTOFactory(
                         user_id="123e4567-e89b-12d3-a456-426614174000",
@@ -100,8 +103,8 @@ class TestGetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
             stage_with_user_details_and_team_details_dto
 
         from ib_tasks.interactors. \
-            get_and_update_assignees_having_less_tasks_counts_for_next_stages_interactor import \
-            GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor
+            get_and_update_assignees_having_less_tasks_counts_for_next_stages_interactor \
+            import GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor
         interactor = GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor(
             storage=storage_mock, action_storage=action_storage_mock,
             stage_storage=stage_storage_mock, task_storage=task_storage_mock,
@@ -110,7 +113,7 @@ class TestGetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
         # Act
         interactor \
             .get_random_assignees_of_next_stages_and_update_in_db(
-            stage_ids=['stage_2', 'stage_3'], task_id=1)
+                stage_ids=['stage_2', 'stage_3'], task_id=1)
 
         # Assert
         from ib_tasks.interactors.stages_dtos import \
@@ -137,7 +140,8 @@ class TestGetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
         # Arrange
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = 1
-        task_storage_mock.get_project_id_for_the_task_id.return_value = "project_1"
+        task_storage_mock.get_project_id_for_the_task_id.return_value = \
+            "project_1"
         stage_storage_mock. \
             get_virtual_stages_already_having_in_task.return_value = []
 
@@ -146,14 +150,13 @@ class TestGetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
             ['stage_1', 'stage_2', 'stage_3']
         stage_storage_mock. \
             get_db_stage_ids_for_given_stage_ids.return_value = [4, 5]
-        given_stage_ids = [2, 3, 4, 5]
+        given_stage_ids = [1, 2, 3, 4, 5]
         from ib_tasks.interactors.stages_dtos import \
             StageWithUserDetailsAndTeamDetailsDTO
         stage_with_user_details_and_team_details_dto = \
             StageWithUserDetailsAndTeamDetailsDTO(
                 stages_with_user_details_dtos=
-                StageWithUserDetailsDTOFactory.create_batch(
-                    2, db_stage_id=factory.Iterator(given_stage_ids)),
+                StageWithUserDetailsDTOFactory.create_batch(2),
                 user_with_team_details_dtos=[
                     UserIdWIthTeamDetailsDTOFactory(
                         user_id="123e4567-e89b-12d3-a456-426614174000",
@@ -175,7 +178,7 @@ class TestGetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
         # Act
         interactor \
             .get_random_assignees_of_next_stages_and_update_in_db(
-            stage_ids=['stage_2', 'stage_3'], task_id=1)
+                stage_ids=['stage_2', 'stage_3'], task_id=1)
 
         # Assert
         from ib_tasks.interactors.stages_dtos import \

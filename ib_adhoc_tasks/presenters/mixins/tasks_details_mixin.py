@@ -106,10 +106,8 @@ class TaskDetailsMixin:
         stage_with_actions = self._get_stages_with_actions(
             task_stage_details_dto, task_stage_assignee_dto
         )
-        start_date = self._convert_datetime_object_to_string(
-            task_base_details_dto.start_date)
-        due_date = self._convert_datetime_object_to_string(
-            task_base_details_dto.due_date)
+        start_date, due_date = self._get_start_date_and_due_date(
+            task_base_details_dto)
         task_dict = {
             "task_id": task_base_details_dto.task_display_id,
             "title": task_base_details_dto.title,
@@ -122,14 +120,28 @@ class TaskDetailsMixin:
         }
         return task_dict
 
+    def _get_start_date_and_due_date(
+            self, task_base_details_dto: TaskBaseDetailsDTO
+    ):
+        start_date, due_date = None, None
+        if task_base_details_dto.start_date is not None:
+            start_date = self._convert_datetime_object_to_string(
+                task_base_details_dto.start_date
+            )
+        if task_base_details_dto.due_date is not None:
+            due_date = self._convert_datetime_object_to_string(
+                task_base_details_dto.due_date
+            )
+        return start_date, due_date
+
     def _get_stages_with_actions(
             self, task_stage_details_dto: GetTaskStageCompleteDetailsDTO,
             task_stage_assignee_dto: TaskStageAssigneeDetailsDTO
     ):
         action_dtos = task_stage_details_dto.action_dtos
-        assignee_dto = task_stage_assignee_dto.assignee_details
         assignee = None
-        if assignee_dto:
+        if task_stage_assignee_dto:
+            assignee_dto = task_stage_assignee_dto.assignee_details
             team_dto = task_stage_assignee_dto.team_details
             assignee = self._get_assignee_with_team_details(assignee_dto,
                                                             team_dto)

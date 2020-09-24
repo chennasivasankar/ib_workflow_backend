@@ -40,7 +40,7 @@ def is_valid_user_id_for_given_project_mock(mocker):
     return mock
 
 
-def validate_project_ids_for_kanban_view_mock(mocker):
+def validate_project_ids_mock(mocker):
     mock = mocker.patch(
         "ib_adhoc_tasks.adapters.iam_service.IamService"
         ".get_valid_project_ids"

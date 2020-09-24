@@ -310,10 +310,7 @@
         "task_id",
         "task_overview_fields",
         "stage_with_actions",
-        "title",
-        "start_date",
-        "due_date",
-        "priority"
+        "title"
       ]
     },
     "TaskOverviewWithStageAndActionsListView": {
@@ -1148,6 +1145,22 @@
           "view_type"
         ]
       }
+    },
+    "GetChildGroupsInGroupParameter": {
+      "name": "get_child_groups_in_group_parameter",
+      "in": "body",
+      "description": "get child groups in a group",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "group_by_value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "group_by_value"
+        ]
+      }
     }
   },
   "responses": {
@@ -1473,6 +1486,52 @@
           "tasks"
         ]
       }
+    },
+    "GetChildGroupsInGroupResponse": {
+      "description": "Get child groups in group response",
+      "schema": {
+          "type": "object",
+        "properties": {
+          "total_child_groups": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "child_groups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "group_by_value": {
+                  "type": "string"
+                },
+                "group_by_display_name": {
+                  "type": "string"
+                },
+                "total_tasks": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "tasks": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/TaskOverviewWithStageAndActions"
+                  }
+                }
+              },
+              "required": [
+                "group_by_value",
+                "group_by_display_name",
+                "total_tasks",
+                "tasks"
+              ]
+            }
+          }
+        },
+        "required": [
+          "total_child_groups",
+          "child_groups"
+        ]
+      }
     }
   },
   "paths": {
@@ -1694,6 +1753,45 @@
           },
           "400": {
             "$ref": "#/responses/InvalidPaginationResponse"
+          }
+        }
+      }
+    },
+    "/projects/adhoc_board/groups/child_groups/v1": {
+      "get": {
+        "summary": "Get Child Groups In A Group",
+        "operationId": "get_child_groups_in_group",
+        "description": "Get child groups in a group",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/GroupLimitParameter"
+          },
+          {
+            "$ref": "#/parameters/GroupOffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/GetChildGroupsInGroupParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetChildGroupsInGroupResponse"
           }
         }
       }

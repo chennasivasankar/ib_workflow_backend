@@ -98,3 +98,14 @@ class GetSubtasksParameterDTO:
     user_id: str
     task_id: int
     view_type: ViewType
+
+
+@dataclass
+class GetChildGroupsInGroupInputDTO:
+    user_id: str
+    project_id: str
+    limit: int
+    offset: int
+    group_limit: int
+    group_offset: int
+    group_by_value: str

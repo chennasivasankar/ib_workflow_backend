@@ -27,7 +27,8 @@ def api_wrapper(*args, **kwargs):
         ElasticStorageImplementation
     elastic_storage = ElasticStorageImplementation()
 
-    from ib_adhoc_tasks.presenters.get_tasks_for_list_view_presenter_implementation import \
+    from ib_adhoc_tasks.presenters\
+        .get_tasks_for_list_view_presenter_implementation import \
         GetTasksForListViewPresenterImplementation
     presenter = GetTasksForListViewPresenterImplementation()
 
