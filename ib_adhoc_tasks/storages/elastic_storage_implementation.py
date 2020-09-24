@@ -188,7 +188,9 @@ class ElasticStorageImplementation(ElasticStorageInterface):
             task_offset_and_limit_values_dto: TaskOffsetAndLimitValuesDTO,
             group_by_order_one_dto: GroupByDTO
     ):
-        tasks_data = A('top_hits')
+        task_offset = task_offset_and_limit_values_dto.offset
+        task_limit = task_offset_and_limit_values_dto.limit
+        tasks_data = A('top_hits', size=task_limit+task_offset)
         search = search.filter(query)
         search.aggs.bucket('groups', group_agg).bucket('tasks', tasks_data)
         response = search.execute()
@@ -197,8 +199,6 @@ class ElasticStorageImplementation(ElasticStorageInterface):
 
         group_offset = group_by_order_one_dto.offset
         group_limit = group_by_order_one_dto.limit
-        task_offset = task_offset_and_limit_values_dto.offset
-        task_limit = task_offset_and_limit_values_dto.limit
 
         group_details_dtos = []
         for group in response.aggregations.groups.buckets[
