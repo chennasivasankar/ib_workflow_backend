@@ -295,13 +295,18 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
     ) -> Optional[Dict]:
         if stage_assignee_dto:
             assignee_details_dto = stage_assignee_dto[0].assignee_details
+            team_details_dto = stage_assignee_dto[0].team_details
         else:
             return None
         if assignee_details_dto:
             assignee_details = {
                 "assignee_id": assignee_details_dto.assignee_id,
                 "name": assignee_details_dto.name,
-                "profile_pic_url": assignee_details_dto.profile_pic_url
+                "profile_pic_url": assignee_details_dto.profile_pic_url,
+                "team_info": {
+                    "team_id": team_details_dto.team_id,
+                    "team_name": team_details_dto.name
+                }
             }
             return assignee_details
 
