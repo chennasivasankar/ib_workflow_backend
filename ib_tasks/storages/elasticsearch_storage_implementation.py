@@ -82,7 +82,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         return [
             {
                 "stage_id": task_stage_assignees_dto.stage_id,
-                "assignee": task_stage_assignees_dto.assignee_id
+                "assignee_id": task_stage_assignees_dto.assignee_id
             }
             for task_stage_assignees_dto in task_stage_assignees_dtos
         ]

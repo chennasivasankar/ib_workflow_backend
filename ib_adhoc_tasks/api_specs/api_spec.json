@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "host": "127.0.0.1:8000",
-  "basePath": "/api/ib_adhok_tasks",
+  "basePath": "/api/ib_adhoc_tasks",
   "info": {
     "version": "1.0.0",
     "title": "Simple API",
@@ -1758,7 +1758,7 @@
       }
     },
     "/projects/adhoc_board/groups/child_groups/v1": {
-      "get": {
+      "post": {
         "summary": "Get Child Groups In A Group",
         "operationId": "get_child_groups_in_group",
         "description": "Get child groups in a group",
