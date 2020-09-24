@@ -157,9 +157,6 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         )
         task_current_stage_details_dto = \
             self._get_task_current_stage_details(task_id=task_id)
-        all_tasks_overview_details_dto = self._get_tasks_overview_for_users(
-            task_id=task_id, project_id=project_id
-        )
         return (
             task_complete_details_dto, task_current_stage_details_dto,
             stage_ids, project_id
