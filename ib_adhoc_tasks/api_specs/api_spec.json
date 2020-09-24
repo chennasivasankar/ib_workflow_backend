@@ -1758,7 +1758,7 @@
       }
     },
     "/projects/adhoc_board/groups/child_groups/v1": {
-      "get": {
+      "post": {
         "summary": "Get Child Groups In A Group",
         "operationId": "get_child_groups_in_group",
         "description": "Get child groups in a group",
