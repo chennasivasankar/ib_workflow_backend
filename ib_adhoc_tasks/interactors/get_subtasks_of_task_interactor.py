@@ -30,7 +30,7 @@ class SubTasksInteractor:
         task_id = service.task_service.get_task_id(
             task_display_id=get_subtasks_parameter_dto.task_id
         )
-        get_subtasks_parameter_dto.task_id = task_id
+        # get_subtasks_parameter_dto.task_id = task_id
         project_id = service.task_service.get_project_id_based_on_task_id(
             task_id=get_subtasks_parameter_dto.task_id
         )
