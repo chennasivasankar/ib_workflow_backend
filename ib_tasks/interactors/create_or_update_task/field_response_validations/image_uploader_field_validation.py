@@ -31,14 +31,14 @@ class ImageUploaderFieldValidationInteractor(BaseFieldValidation):
         except ValueError:
             raise InvalidUrlForImage(self.field_id, self.field_response)
         image_file_is_empty = not image_file
+        field_display_name = self.get_field_display_name(
+            self.field_id, field_id_with_display_name_dtos)
         if invalid_url_path or image_file_is_empty:
-            raise InvalidUrlForImage(self.field_id, self.field_response)
+            raise InvalidUrlForImage(field_display_name, self.field_response)
         given_image_format = '.' + image_file.split('.')[-1]
         given_image_format_not_in_allowed_formats = \
             given_image_format not in self.allowed_formats
         if given_image_format_not_in_allowed_formats:
-            field_display_name = self.get_field_display_name(
-                self.field_id, field_id_with_display_name_dtos)
             raise InvalidImageFormat(
                 field_display_name, given_image_format, self.allowed_formats)
         return

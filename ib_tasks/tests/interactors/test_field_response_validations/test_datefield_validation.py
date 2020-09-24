@@ -3,9 +3,15 @@ import pytest
 from ib_tasks.interactors.create_or_update_task.field_response_validations \
     import \
     DateFieldValidationInteractor
+from ib_tasks.tests.factories.storage_dtos import \
+    FieldWithGoFDisplayNameDTOFactory
 
 
 class TestDateFieldValidationInteractor:
+
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        FieldWithGoFDisplayNameDTOFactory.reset_sequence()
 
     def test_given_invalid_date_format_in_field_response_raise_exception(self):
         # Arrange
@@ -17,16 +23,19 @@ class TestDateFieldValidationInteractor:
         field_response = "2303/05/4"
         interactor = DateFieldValidationInteractor(
             field_id=field_id,
-            field_response=field_response
-        )
+            field_response=field_response)
+
+        field_with_gof_display_name_dto = FieldWithGoFDisplayNameDTOFactory(
+            field_id=field_id)
+        expected_field_display_name = field_with_gof_display_name_dto.field_display_name
 
         # Act
         with pytest.raises(InvalidDateFormat) as err:
-            interactor.validate_field_response()
+            interactor.validate_field_response([field_with_gof_display_name_dto])
 
         # Assert
         exception_object = err.value
-        assert exception_object.field_id == field_id
+        assert exception_object.field_display_name == expected_field_display_name
         assert exception_object.field_value == field_response
         assert exception_object.expected_format == expected_format
 
@@ -36,10 +45,12 @@ class TestDateFieldValidationInteractor:
         field_response = "2303-05-04"
         interactor = DateFieldValidationInteractor(
             field_id=field_id,
-            field_response=field_response
-        )
+            field_response=field_response)
+
+        field_with_gof_display_name_dto = FieldWithGoFDisplayNameDTOFactory(
+            field_id=field_id)
 
         # Act
-        interactor.validate_field_response()
+        interactor.validate_field_response([field_with_gof_display_name_dto])
 
         # Assert

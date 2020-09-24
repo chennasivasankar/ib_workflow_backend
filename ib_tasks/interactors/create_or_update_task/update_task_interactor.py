@@ -378,7 +378,7 @@ class UpdateTaskInteractor(
             task_crud_interactor: TaskCrudOperationsInteractor
     ):
         task_gof_details_dtos = task_crud_interactor.update_task_gofs(
-            task_gof_dtos=task_gof_dtos_for_updation)
+            task_gof_dtos_for_updation)
         task_gof_field_dtos = self.prepare_task_gof_fields_dtos(
             gof_fields_dtos, task_gof_details_dtos)
         task_gof_field_dtos_for_updation, task_gof_field_dtos_for_creation = \
