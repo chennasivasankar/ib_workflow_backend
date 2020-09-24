@@ -48,8 +48,7 @@ from ib_tasks.interactors.task_template_dtos import \
      CreateTransitionChecklistTemplateWithTaskDisplayIdDTO)
 from ib_tasks.tests.factories.adapter_dtos import (AssigneeDetailsDTOFactory,
                                                    UserDetailsDTO,
-                                                   TeamInfoDTOFactory,
-                                                   TeamDetailsDTOFactory)
+                                                   TeamInfoDTOFactory)
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -629,7 +628,7 @@ class AssigneeWithTeamDetailsDTOFactory(factory.Factory):
         return TeamInfoDTOFactory()
 
 
-class TaskStageAssigneeDetailsDTOFactory(factory.Factory):
+class TaskStageAssigneeTeamDetailsDTOFactory(factory.Factory):
     class Meta:
         model = TaskStageAssigneeTeamDetailsDTO
 
@@ -640,22 +639,6 @@ class TaskStageAssigneeDetailsDTOFactory(factory.Factory):
     def assignee_details(self):
         AssigneeWithTeamDetailsDTOFactory.reset_sequence()
         return AssigneeWithTeamDetailsDTOFactory()
-
-
-class TaskStageAssigneeTeamDetailsDTOFactory(factory.Factory):
-    class Meta:
-        model = TaskStageAssigneeTeamDetailsDTO
-
-    task_id = factory.sequence(lambda counter: counter + 1)
-    stage_id = factory.sequence(lambda counter: 'stage_{}'.format(counter + 1))
-
-    @factory.lazy_attribute
-    def assignee_details(self):
-        return AssigneeWithTeamDetailsDTOFactory()
-
-    @factory.lazy_attribute
-    def team_details(self):
-        return TeamDetailsDTOFactory()
 
 
 class AssigneesDTOFactory(factory.Factory):
@@ -751,8 +734,8 @@ class TasksCompleteDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def task_stage_assignee_dtos(self):
-        TaskStageAssigneeDetailsDTOFactory.reset_sequence(1)
-        return TaskStageAssigneeDetailsDTOFactory.create_batch(2)
+        TaskStageAssigneeTeamDetailsDTOFactory.reset_sequence(1)
+        return TaskStageAssigneeTeamDetailsDTOFactory.create_batch(2)
 
 
 class TaskWithCompletedSubTasksCountDTOFactory(factory.Factory):
