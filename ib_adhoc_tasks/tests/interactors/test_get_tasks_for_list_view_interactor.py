@@ -116,8 +116,8 @@ class TestGetTasksForListViewInteractor:
         project_mock.assert_called_once()
         presenter_mock.raise_invalid_project_id.assert_called_once()
 
-    def test_given_invalid_offset_value(
-            self, mocker, presenter_mock, storage_mock, elastic_storage_mock,
+    def test_given_invalid_offset_value_raise_exception(
+            self, mocker, presenter_mock,  storage_mock, elastic_storage_mock,
             group_by_info_list_view_dto_with_invalid_offset
     ):
         # Arrange
@@ -142,8 +142,8 @@ class TestGetTasksForListViewInteractor:
         assert response == mock_object
         presenter_mock.raise_invalid_offset_value.assert_called_once()
 
-    def test_given_invalid_limit_value(
-            self, mocker, presenter_mock, storage_mock, elastic_storage_mock,
+    def test_given_invalid_limit_value_raise_exception(
+            self, mocker, presenter_mock,  storage_mock, elastic_storage_mock,
             group_by_info_list_view_dto_with_invalid_limit
     ):
         # Arrange
@@ -170,7 +170,7 @@ class TestGetTasksForListViewInteractor:
 
     @patch.object(GetTaskIdsForViewInteractor, "get_task_ids_for_view")
     def test_given_invalid_user_raise_exception(
-            self, user_mock, presenter_mock, storage_mock,
+            self, user_mock, presenter_mock,  storage_mock,
             elastic_storage_mock, group_by_info_list_view_dto,
             group_by_details_dtos, mocker
     ):
@@ -230,14 +230,10 @@ class TestGetTasksForListViewInteractor:
         user_mock.assert_called_once()
         presenter_mock.raise_invalid_user_for_project.assert_called_once()
 
-    @patch.object(TaskService, "get_sub_tasks_count_task_ids")
-    @patch.object(TaskService, "get_completed_sub_tasks_count_for_task_ids")
     @patch.object(TaskService, "get_task_complete_details_dto")
     @patch.object(GetTaskIdsForViewInteractor, "get_task_ids_for_view")
     def test_given_valid_details_returns_group_details_dtos_and_task_details_dtos(
             self, group_details_mock, task_details_mock,
-            get_completed_sub_tasks_count_for_task_ids_mock,
-            get_sub_tasks_count_task_ids_mock,
             group_by_info_list_view_dto, mocker, storage_mock, presenter_mock,
             group_details_dtos, task_details_dtos, elastic_storage_mock,
             group_by_details_dtos
@@ -250,6 +246,8 @@ class TestGetTasksForListViewInteractor:
             mocker)
         total_groups_count = 3
         child_group_count_dtos = []
+        from ib_adhoc_tasks.constants.enum import ViewType
+        view_type = ViewType.LIST.value
         group_details_mock.return_value = \
             group_details_dtos, total_groups_count, child_group_count_dtos
         task_details_mock.return_value = task_details_dtos
@@ -257,11 +255,6 @@ class TestGetTasksForListViewInteractor:
             storage=storage_mock,
             elastic_storage=elastic_storage_mock
         )
-        sub_tasks_count_dtos = []
-        completed_sub_tasks_count_dtos = []
-        get_sub_tasks_count_task_ids_mock.return_value = sub_tasks_count_dtos
-        get_completed_sub_tasks_count_for_task_ids_mock.return_value = \
-            completed_sub_tasks_count_dtos
         mock_object = Mock()
         presenter_mock.get_task_details_group_by_info_response.return_value \
             = mock_object
@@ -276,9 +269,10 @@ class TestGetTasksForListViewInteractor:
 
         # Assert
         assert response == mock_object
-        storage_mock.get_group_by_details_dtos.assert_called_once_with(user_id)
+        storage_mock.get_group_by_details_dtos.assert_called_once_with(
+            user_id, view_type
+        )
         presenter_mock.get_task_details_group_by_info_response \
             .assert_called_once_with(
-            group_details_dtos, task_details_dtos, total_groups_count,
-            sub_tasks_count_dtos, completed_sub_tasks_count_dtos
-        )
+                group_details_dtos, task_details_dtos, total_groups_count
+            )

@@ -3,6 +3,7 @@ from typing import List
 from ib_adhoc_tasks.adapters.dtos import TasksCompleteDetailsDTO
 from ib_adhoc_tasks.adapters.iam_service import InvalidProjectId, \
     InvalidUserId, InvalidUserForProject
+from ib_adhoc_tasks.constants.enum import ViewType
 from ib_adhoc_tasks.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue
 from ib_adhoc_tasks.interactors.dtos.dtos import GroupByInfoKanbanViewDTO, \
@@ -144,7 +145,10 @@ class GetTasksForKanbanViewInteractor:
     ) -> (List[GroupDetailsDTO], int, List[ChildGroupCountDTO]):
         user_id = group_by_info_kanban_view_dto.user_id
         project_id = group_by_info_kanban_view_dto.project_id
-        group_by_details_dtos = self.storage.get_group_by_details_dtos(user_id)
+        view_type = ViewType.KANBAN.value
+        group_by_details_dtos = self.storage.get_group_by_details_dtos(
+            user_id, view_type
+        )
         group_by_dtos = self._get_group_by_dtos(
             group_by_details_dtos,
             group_by_info_kanban_view_dto
