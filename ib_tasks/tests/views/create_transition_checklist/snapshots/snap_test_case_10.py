@@ -12,5 +12,5 @@ snapshots['TestCase10CreateTransitionChecklistAPITestCase.test_case status_code'
 snapshots['TestCase10CreateTransitionChecklistAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_GOFS_OF_TASK_TEMPLATE',
-    'response': "invalid gofs ['gof_1', 'gof_2']  given to the task template transition_template_1"
+    'response': "invalid gofs ['GOF_DISPLAY_NAME-0', 'GOF_DISPLAY_NAME-1']  given to the task template transition_template_1"
 }

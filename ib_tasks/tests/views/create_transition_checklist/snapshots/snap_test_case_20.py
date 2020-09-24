@@ -12,7 +12,7 @@ snapshots['TestCase20CreateTransitionChecklistAPITestCase.test_case[iBHubs] stat
 snapshots['TestCase20CreateTransitionChecklistAPITestCase.test_case[iBHubs] body'] = {
     'http_status_code': 400,
     'res_status': 'NOT_A_STRONG_PASSWORD',
-    'response': 'Given a weak password: iBHubs for field: field_1! Try with at least 6 characters including special characters'
+    'response': 'Given a weak password: iBHubs for field: DISPLAY_NAME-0! Try with at least 6 characters including special characters'
 }
 
 snapshots['TestCase20CreateTransitionChecklistAPITestCase.test_case[@priB] status_code'] = '400'
@@ -20,5 +20,5 @@ snapshots['TestCase20CreateTransitionChecklistAPITestCase.test_case[@priB] statu
 snapshots['TestCase20CreateTransitionChecklistAPITestCase.test_case[@priB] body'] = {
     'http_status_code': 400,
     'res_status': 'NOT_A_STRONG_PASSWORD',
-    'response': 'Given a weak password: @priB for field: field_1! Try with at least 6 characters including special characters'
+    'response': 'Given a weak password: @priB for field: DISPLAY_NAME-0! Try with at least 6 characters including special characters'
 }

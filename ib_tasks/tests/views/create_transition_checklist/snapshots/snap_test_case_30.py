@@ -12,5 +12,5 @@ snapshots['TestCase30CreateTransitionChecklistAPITestCase.test_case status_code'
 snapshots['TestCase30CreateTransitionChecklistAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_IMAGE_FORMAT',
-    'response': "Invalid format for an image: .mp4 for field: field_1! Try with these formats: ['.jpg', '.jpeg']"
+    'response': "Invalid format for an image: .mp4 for field: DISPLAY_NAME-0! Try with these formats: ['.jpg', '.jpeg']"
 }

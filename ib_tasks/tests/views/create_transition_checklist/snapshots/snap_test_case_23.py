@@ -12,5 +12,5 @@ snapshots['TestCase23CreateTransitionChecklistAPITestCase.test_case status_code'
 snapshots['TestCase23CreateTransitionChecklistAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INCORRECT_RADIO_GROUP_CHOICE',
-    'response': "Invalid radio group choice: Others for field: field_1! Try with these valid options: ['Mr', 'Mrs']"
+    'response': "Invalid radio group choice: Others for field: DISPLAY_NAME-0! Try with these valid options: ['Mr', 'Mrs']"
 }

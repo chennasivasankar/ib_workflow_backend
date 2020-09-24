@@ -12,7 +12,7 @@ snapshots['TestCase25SaveAndActOnATaskAPITestCase.test_case[strong_password] sta
 snapshots['TestCase25SaveAndActOnATaskAPITestCase.test_case[strong_password] body'] = {
     'http_status_code': 400,
     'res_status': 'NOT_A_STRONG_PASSWORD',
-    'response': 'Given a weak password: strong_password for field: FIELD_ID-1! Try with at least 6 characters including special characters'
+    'response': 'Given a weak password: strong_password for field: DISPLAY_NAME-0! Try with at least 6 characters including special characters'
 }
 
 snapshots['TestCase25SaveAndActOnATaskAPITestCase.test_case[password123] status_code'] = '400'
@@ -20,7 +20,7 @@ snapshots['TestCase25SaveAndActOnATaskAPITestCase.test_case[password123] status_
 snapshots['TestCase25SaveAndActOnATaskAPITestCase.test_case[password123] body'] = {
     'http_status_code': 400,
     'res_status': 'NOT_A_STRONG_PASSWORD',
-    'response': 'Given a weak password: password123 for field: FIELD_ID-1! Try with at least 6 characters including special characters'
+    'response': 'Given a weak password: password123 for field: DISPLAY_NAME-0! Try with at least 6 characters including special characters'
 }
 
 snapshots['TestCase25SaveAndActOnATaskAPITestCase.test_case[#2pass=] status_code'] = '400'
@@ -28,5 +28,5 @@ snapshots['TestCase25SaveAndActOnATaskAPITestCase.test_case[#2pass=] status_code
 snapshots['TestCase25SaveAndActOnATaskAPITestCase.test_case[#2pass=] body'] = {
     'http_status_code': 400,
     'res_status': 'NOT_A_STRONG_PASSWORD',
-    'response': 'Given a weak password: #2pass= for field: FIELD_ID-1! Try with at least 6 characters including special characters'
+    'response': 'Given a weak password: #2pass= for field: DISPLAY_NAME-0! Try with at least 6 characters including special characters'
 }
