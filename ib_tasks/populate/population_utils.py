@@ -45,8 +45,36 @@ def populate_project_roles(spread_sheet_name: str):
 
 
 @transaction.atomic()
-def populate_data(spread_sheet_name: str):
+def populate_data_for_adhoc_tasks(spread_sheet_name: str):
+    task_template = PopulateTaskTemplates()
+    task_template.populate_task_templates(spread_sheet_name=spread_sheet_name)
 
+    status_variables = GetSheetDataForStatusVariables()
+    status_variables.get_data_from_status_variables_sub_sheet(
+        spread_sheet_name=spread_sheet_name)
+
+    stage_values = GetSheetDataForStages()
+    stage_values.get_data_from_stage_id_and_values_sub_sheet(
+        spread_sheet_name=spread_sheet_name)
+
+    stage_actions = GetSheetDataForStageActions()
+    stage_actions.get_data_from_stages_and_actions_sub_sheet(
+        spread_sheet_name=spread_sheet_name
+    )
+
+    task_creation_config = GetSheetDataForTaskCreationConfig()
+    task_creation_config.get_data_from_task_creation_config_sub_sheet(
+        spread_sheet_name=spread_sheet_name
+    )
+
+    stage_flows = GetSheetDataForStageFlows()
+    stage_flows.get_data_from_stage_flows_sub_sheet(
+        spread_sheet_name=spread_sheet_name
+    )
+
+
+@transaction.atomic()
+def populate_data(spread_sheet_name: str):
     task_template = PopulateTaskTemplates()
     task_template.populate_task_templates(spread_sheet_name=spread_sheet_name)
 
@@ -124,7 +152,8 @@ def create_tasks_in_elasticsearch_data(task_ids=None):
     from ib_tasks.storages.tasks_storage_implementation import \
         TasksStorageImplementation
     task_storage = TasksStorageImplementation()
-    from ib_tasks.storages.create_or_update_task_storage_implementation import \
+    from ib_tasks.storages.create_or_update_task_storage_implementation \
+        import \
         CreateOrUpdateTaskStorageImplementation
     storage = CreateOrUpdateTaskStorageImplementation()
     from ib_tasks.storages.storage_implementation import \
@@ -135,7 +164,8 @@ def create_tasks_in_elasticsearch_data(task_ids=None):
     gof_storage = GoFStorageImplementation()
     if task_ids is None:
         task_ids = storage.get_task_ids()
-    from ib_tasks.interactors.create_or_update_tasks_into_elasticsearch_interactor import \
+    from ib_tasks.interactors \
+        .create_or_update_tasks_into_elasticsearch_interactor import \
         CreateOrUpdateDataIntoElasticsearchInteractor
     interactor = CreateOrUpdateDataIntoElasticsearchInteractor(
         elasticsearch_storage=elasticsearch_storage,

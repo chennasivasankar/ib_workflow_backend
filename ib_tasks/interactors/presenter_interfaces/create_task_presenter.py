@@ -26,7 +26,8 @@ class CreateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_create_task_response(
-            self, task_current_stage_details_dto: TaskCurrentStageDetailsDTO,
+            self, created_task_display_id: str,
+            task_current_stage_details_dto: TaskCurrentStageDetailsDTO,
             all_tasks_overview_dto: AllTasksOverviewDetailsDTO
     ):
         pass

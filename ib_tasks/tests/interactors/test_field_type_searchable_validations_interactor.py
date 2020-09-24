@@ -13,7 +13,8 @@ class TestFieldTypeSearchableValidationsInteractor:
     def test_given_empty_values_for_field_values_for_field_type_searchable_raise_exception(self):
         # Arrange
         from ib_tasks.constants.constants import SEARCHABLE_VALUES
-        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForSearchable
+        from ib_tasks.exceptions.fields_custom_exceptions import \
+            InvalidValueForSearchable
         from ib_tasks.constants.exception_messages \
             import INVALID_VALUE_FOR_SEARCHABLE
         field_dto = FieldDTOFactory(
@@ -29,7 +30,7 @@ class TestFieldTypeSearchableValidationsInteractor:
 
         # Act
         with pytest.raises(InvalidValueForSearchable) as err:
-            interactor.field_type_searcahble_validations(field_dto)
+            interactor.field_type_searchable_validations(field_dto)
 
         # Assert
         assert str(err.value) == exception_message
@@ -37,7 +38,8 @@ class TestFieldTypeSearchableValidationsInteractor:
     def test_given_invalid_field_values_for_field_type_searchable_raise_exception(self):
         # Arrange
         from ib_tasks.constants.constants import SEARCHABLE_VALUES
-        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForSearchable
+        from ib_tasks.exceptions.fields_custom_exceptions import \
+            InvalidValueForSearchable
         from ib_tasks.constants.exception_messages \
             import INVALID_VALUE_FOR_SEARCHABLE
         field_dto = FieldDTOFactory(
@@ -53,7 +55,7 @@ class TestFieldTypeSearchableValidationsInteractor:
 
         # Act
         with pytest.raises(InvalidValueForSearchable) as err:
-            interactor.field_type_searcahble_validations(field_dto)
+            interactor.field_type_searchable_validations(field_dto)
 
         # Assert
         assert str(err.value) == exception_message

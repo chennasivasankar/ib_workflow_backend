@@ -1,14 +1,14 @@
 from typing import List
 
 from ib_boards.constants.enum import ViewType
-from ib_boards.interactors.dtos import TaskStageIdDTO, \
+from ib_boards.interactors.dtos import GetTaskDetailsDTO, \
     TaskCompleteDetailsDTO, \
     ColumnTaskIdsDTO, FieldNameDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory, TaskStageDTOFactory
 
 
-def prepare_task_details_dtos(mocker, task_dtos: List[TaskStageIdDTO],
+def prepare_task_details_dtos(mocker, task_dtos: List[GetTaskDetailsDTO],
                               user_id: str, view_type: ViewType):
     mock = mocker.patch(
         'ib_boards.adapters.task_service.TaskService.get_task_complete_details'

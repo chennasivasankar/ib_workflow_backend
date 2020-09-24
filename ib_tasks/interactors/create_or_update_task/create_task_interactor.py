@@ -86,6 +86,7 @@ from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor \
 @dataclass
 class CompleteTaskDetailsDTO:
     task_id: int
+    created_task_display_id: str
     task_current_stages_details_dto: TaskCurrentStageDetailsDTO
     all_tasks_overview_details_dto: AllTasksOverviewDetailsDTO
 
@@ -237,6 +238,7 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
             task_json=task_request_json)
         self._create_task_log(task_log_dto)
         response = presenter.get_create_task_response(
+            complete_task_details_dto.created_task_display_id,
             complete_task_details_dto.task_current_stages_details_dto,
             complete_task_details_dto.all_tasks_overview_details_dto)
         return response
@@ -319,8 +321,10 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
         all_tasks_overview_dto = \
             act_on_task_interactor.user_action_on_task_and_set_random_assignees(
                 task_id=task_id)
+        created_task_display_id = \
+            self.task_storage.get_task_display_id_for_task_id(task_id)
         complete_task_details_dto = CompleteTaskDetailsDTO(
-            task_id=task_id,
+            task_id=task_id, created_task_display_id=created_task_display_id,
             task_current_stages_details_dto=task_current_stage_details_dto,
             all_tasks_overview_details_dto=all_tasks_overview_dto)
         return complete_task_details_dto

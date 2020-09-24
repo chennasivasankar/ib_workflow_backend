@@ -120,18 +120,24 @@ class TestGetNextStagesRandomAssigneesOfATaskPresenterImpl:
 
     def test_given_valid_details_get_expected_result(self, presenter,
                                                      snapshot):
-        given_stage_ids = [2, 3]
         from ib_tasks.interactors.stages_dtos import \
             StageWithUserDetailsAndTeamDetailsDTO
         from ib_tasks.tests.factories.adapter_dtos import \
-            UserIdWIthTeamDetailsDTOFactory, TeamDetailsDTOFactory
+            UserIdWIthTeamDetailsDTOFactory, TeamDetailsDTOFactory, \
+            AssigneeDetailsDTOFactory
         from ib_tasks.tests.factories.interactor_dtos import \
-            StageWithUserDetailsDTOFactory
+            StageWithUserDetailsDTOFactory, StageIdWithNameDTOFactory
+
+        StageWithUserDetailsDTOFactory.reset_sequence()
+        StageIdWithNameDTOFactory.reset_sequence()
+        AssigneeDetailsDTOFactory.reset_sequence()
+        UserIdWIthTeamDetailsDTOFactory.reset_sequence()
+        TeamDetailsDTOFactory.reset_sequence()
+
         stage_with_user_details_and_team_details_dto = \
             StageWithUserDetailsAndTeamDetailsDTO(
                 stages_with_user_details_dtos=
-                StageWithUserDetailsDTOFactory.create_batch(
-                    2, db_stage_id=factory.Iterator(given_stage_ids)),
+                StageWithUserDetailsDTOFactory.create_batch(2),
                 user_with_team_details_dtos=[
                     UserIdWIthTeamDetailsDTOFactory(
                         user_id="123e4567-e89b-12d3-a456-426614174000",

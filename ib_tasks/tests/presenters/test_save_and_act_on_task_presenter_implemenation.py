@@ -3,17 +3,43 @@ import json
 
 import pytest
 
-from ib_tasks.tests.factories.interactor_dtos import \
-    TaskCurrentStageDetailsDTOFactory
-from ib_tasks.tests.factories.storage_dtos import CurrentStageDetailsDTOFactory
-
 
 class TestSaveAndActOnATaskPresenterImplementation:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
+        from ib_tasks.tests.factories.presenter_dtos import \
+            TaskCompleteDetailsDTOFactory, AllTasksOverviewDetailsDTOFactory, \
+            TaskBoardsDetailsDTOFactory, TaskIdWithStageDetailsDTOFactory, \
+            TaskStageDTOFactory, TaskWithCompleteStageDetailsDTOFactory, \
+            GetTaskStageCompleteDetailsDTOFactory
+        from ib_tasks.tests.factories.adapter_dtos import BoardDTOFactory, \
+            ColumnDTOFactory, AssigneeDetailsDTOFactory, ColumnStageDTOFactory
+        from ib_tasks.tests.factories.interactor_dtos import \
+            TaskCurrentStageDetailsDTOFactory, FieldDisplayDTOFactory, \
+            TaskStageAssigneeDetailsDTOFactory
+        from ib_tasks.tests.factories.storage_dtos import \
+            CurrentStageDetailsDTOFactory, ActionDTOFactory, \
+            FieldDetailsDTOFactory, StageActionDetailsDTOFactory
+
+        TaskCompleteDetailsDTOFactory.reset_sequence()
+        TaskBoardsDetailsDTOFactory.reset_sequence()
+        BoardDTOFactory.reset_sequence()
+        ActionDTOFactory.reset_sequence()
+        FieldDisplayDTOFactory.reset_sequence()
+        TaskStageDTOFactory.reset_sequence()
+        TaskStageAssigneeDetailsDTOFactory.reset_sequence()
+        ColumnStageDTOFactory.reset_sequence()
+        ColumnDTOFactory.reset_sequence()
+        AssigneeDetailsDTOFactory.reset_sequence()
         CurrentStageDetailsDTOFactory.reset_sequence()
         TaskCurrentStageDetailsDTOFactory.reset_sequence()
+        AllTasksOverviewDetailsDTOFactory.reset_sequence()
+        TaskWithCompleteStageDetailsDTOFactory.reset_sequence()
+        GetTaskStageCompleteDetailsDTOFactory.reset_sequence()
+        TaskIdWithStageDetailsDTOFactory.reset_sequence()
+        FieldDetailsDTOFactory.reset_sequence()
+        StageActionDetailsDTOFactory.reset_sequence()
 
     @pytest.fixture
     def presenter(self):
@@ -1019,9 +1045,8 @@ class TestSaveAndActOnATaskPresenterImplementation:
         # Arrange
         from ib_tasks.tests.factories.presenter_dtos import \
             TaskCompleteDetailsDTOFactory, AllTasksOverviewDetailsDTOFactory
-
-        TaskCompleteDetailsDTOFactory.reset_sequence()
-        AllTasksOverviewDetailsDTOFactory.reset_sequence()
+        from ib_tasks.tests.factories.interactor_dtos import \
+            TaskCurrentStageDetailsDTOFactory
 
         task_current_stage_details_dto = TaskCurrentStageDetailsDTOFactory()
         task_complete_details_dto = TaskCompleteDetailsDTOFactory()

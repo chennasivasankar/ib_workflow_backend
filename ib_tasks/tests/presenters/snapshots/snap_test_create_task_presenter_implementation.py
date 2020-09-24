@@ -224,6 +224,7 @@ snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_user_a
 snapshots['TestCreateTaskPresenterImplementation.test_raise_exception_for_user_action_permission_denied response'] = 'User do not have access to the action: 1'
 
 snapshots['TestCreateTaskPresenterImplementation.test_get_create_task_response create_task_response'] = {
+    'created_task_id': 'IBWF-1',
     'task_current_stages_details': {
         'stages': [
             {

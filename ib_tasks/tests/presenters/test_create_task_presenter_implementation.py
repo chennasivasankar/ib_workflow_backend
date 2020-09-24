@@ -972,11 +972,13 @@ class TestCreateTaskPresenterImplementation:
         TaskCurrentStageDetailsDTOFactory.reset_sequence()
         TaskIdWithStageDetailsDTOFactory.reset_sequence()
 
+        created_task_display_id = "IBWF-1"
         all_tasks_overview_dto = AllTasksOverviewDetailsDTOFactory()
         task_current_stage_details_dto = TaskCurrentStageDetailsDTOFactory()
 
         # Act
         response_object = presenter.get_create_task_response(
+            created_task_display_id=created_task_display_id,
             task_current_stage_details_dto=task_current_stage_details_dto,
             all_tasks_overview_dto=all_tasks_overview_dto
         )
