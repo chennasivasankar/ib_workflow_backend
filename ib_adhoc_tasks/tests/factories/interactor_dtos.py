@@ -4,7 +4,8 @@ from ib_adhoc_tasks.constants.enum import GroupByType, ViewType
 from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO, \
     TaskOffsetAndLimitValuesDTO, TaskIdsForGroupsParameterDTO, GroupByValueDTO, \
     OffsetLimitDTO, GroupByInfoKanbanViewDTO, GroupByInfoListViewDTO, \
-    GetSubtasksParameterDTO, GetTaskDetailsInGroupInputDTO
+    GetSubtasksParameterDTO, GetTaskDetailsInGroupInputDTO, \
+    GetChildGroupsInGroupInputDTO
 
 
 class GroupByDTOFactory(factory.Factory):
@@ -112,3 +113,16 @@ class GetSubtasksParameterDTOFactory(factory.Factory):
     user_id = factory.Sequence(lambda n: "user_id_%d" % n)
     task_id = factory.Sequence(lambda n: "task_id_%d" % n)
     view_type = factory.Iterator(["LIST", "KANBAN"])
+
+
+class GetChildGroupsInGroupInputDTOFactory(factory.Factory):
+    class Meta:
+        model = GetChildGroupsInGroupInputDTO
+
+    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
+    project_id = factory.Sequence(lambda n: "project_id_%d" % n)
+    limit = 5
+    offset = 0
+    group_limit = 5
+    group_offset = 0
+    group_by_value = factory.Iterator(["GROUP_BY_VALUE_1", "GROUP_BY_VALUE_1"])
