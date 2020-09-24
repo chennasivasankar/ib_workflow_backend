@@ -118,12 +118,10 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         )
 
     def user_action_on_task_and_set_random_assignees(self, task_id: int):
+
         task_complete_details_dto, task_current_stage_details_dto, \
         stage_ids, project_id = self.user_action_on_task(
             task_id)
-        self._set_next_stage_assignees_to_task_and_update_in_db(
-            task_id=task_id, stage_ids=stage_ids
-        )
         all_tasks_overview_details_dto = self._get_tasks_overview_for_users(
             task_id=task_id, project_id=project_id
         )
@@ -148,6 +146,9 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             )
         stage_ids = self._get_task_stage_display_satisfied_stage_ids(task_id)
         self._update_task_stages(stage_ids=stage_ids, task_id=task_id)
+        self._set_next_stage_assignees_to_task_and_update_in_db(
+            task_id=task_id, stage_ids=stage_ids
+        )
         self._create_or_update_task_in_elasticsearch(
             task_dto=updated_task_dto, task_id=task_id, stage_ids=stage_ids
         )

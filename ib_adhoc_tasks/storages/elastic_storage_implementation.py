@@ -108,14 +108,20 @@ class ElasticStorageImplementation(ElasticStorageInterface):
                 is_grouping_for_order_one = not is_grouping_for_order_one
                 group_by_order_one_dto = group_by_dto
                 group_agg = self._prepare_aggregation(
-                    group_by_value=group_by_dto.group_by_value)
+                    group_by_value=group_by_dto.group_by_value,
+                    limit=group_by_dto.limit,
+                    offset=group_by_dto.offset
+                )
 
         for group_by_dto in group_by_dtos:
             if group_by_dto.order == 2:
                 is_grouping_for_order_two = not is_grouping_for_order_two
                 group_by_order_two_dto = group_by_dto
                 child_agg = self._prepare_aggregation(
-                    group_by_value=group_by_dto.group_by_value)
+                    group_by_value=group_by_dto.group_by_value,
+                    limit=group_by_dto.limit,
+                    offset=group_by_dto.offset
+                )
 
         is_no_group_by_dtos = not group_by_dtos
         if is_no_group_by_dtos:
@@ -148,7 +154,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         return
 
     @staticmethod
-    def _prepare_aggregation(group_by_value: str):
+    def _prepare_aggregation(group_by_value: str, limit: int, offset: int):
         from ib_adhoc_tasks.constants.enum import GroupByEnum
         is_group_by_value_stage = group_by_value == GroupByEnum.STAGE.value
         is_group_by_value_assignee = group_by_value == GroupByEnum.ASSIGNEE.value
@@ -191,7 +197,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
     ):
         task_offset = task_offset_and_limit_values_dto.offset
         task_limit = task_offset_and_limit_values_dto.limit
-        tasks_data = A('top_hits', size=task_limit+task_offset)
+        tasks_data = A('top_hits', size=task_limit + task_offset)
         search = search.filter(query)
         search.aggs.bucket('groups', group_agg).bucket('tasks', tasks_data)
         response = search.execute()
@@ -341,7 +347,10 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         for group_by_response_dto in group_by_response_dtos:
             if group_by_response_dto.order == 2:
                 child_agg = self._prepare_aggregation(
-                    group_by_value=group_by_response_dto.group_by_key)
+                    group_by_value=group_by_response_dto.group_by_key,
+                    limit=get_child_groups_in_group_input_dto.group_limit,
+                    offset=get_child_groups_in_group_input_dto.group_offset
+                )
 
         group_details_dtos, total_child_groups_count = \
             self._prepare_group_details_for_child_groups(
@@ -365,7 +374,8 @@ class ElasticStorageImplementation(ElasticStorageInterface):
             query = query & Q("term", stages__stage_id__keyword=group_by_value)
 
         elif group_by_order_one == GroupByType.ASSIGNEE.value:
-            query = query & Q("term", stages__assignee_id__keyword=group_by_value)
+            query = query & Q("term",
+                              stages__assignee_id__keyword=group_by_value)
 
         else:
             attribute = group_by_order_one + '.keyword'
