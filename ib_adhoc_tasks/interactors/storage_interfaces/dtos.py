@@ -57,12 +57,6 @@ class GroupCountDTO:
 
 @dataclass
 class ChildGroupCountDTO:
-    child_group_by_value: str
-    total_child_groups: int
-
-
-@dataclass
-class ChildGroupCountDTO:
     group_by_value: str
     total_child_groups: int
 

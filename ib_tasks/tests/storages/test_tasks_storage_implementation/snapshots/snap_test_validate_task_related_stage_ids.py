@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot, GenericRepr
 
+
 snapshots = Snapshot()
 
 snapshots['TestValidateTaskStageIds.test_validate_stage_task_details response'] = [

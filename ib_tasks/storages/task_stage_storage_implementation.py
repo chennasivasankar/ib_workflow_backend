@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from django.db.models import Q
+from django.db.models import Q, Max
 
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.stages_dtos import TaskStageHistoryDTO, \
@@ -233,3 +233,23 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
                 stage_id=task_current_stage_obj.normal_stage
             ) for task_current_stage_obj in task_current_stage_objs
         ]
+
+    def get_max_stage_value_for_the_given_template(
+            self, adhoc_task_template_id: str
+    ) -> int:
+        max_value_dict = Stage.objects.filter(
+            task_template_id=adhoc_task_template_id
+        ).aggregate(Max('value'))
+        max_value = max_value_dict['value__max']
+        return max_value
+
+    def get_completed_sub_task_ids(
+            self, all_sub_task_ids: List[int],
+            max_stage_value: int
+    ) -> List[int]:
+        completed_sub_task_ids = CurrentTaskStage.objects.filter(
+            task_id__in=all_sub_task_ids,
+            stage__value=max_stage_value
+        ).values_list('task_id', flat=True)
+        completed_sub_task_ids = list(completed_sub_task_ids)
+        return completed_sub_task_ids

@@ -27,7 +27,8 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
-from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO, \
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, \
+    GetTaskDetailsDTO, \
     TaskDelayParametersDTO
 from ib_tasks.models import Stage, TaskTemplate, CurrentTaskStage, \
     TaskTemplateStatusVariable, TaskStageHistory, TaskStatusVariable, SubTask

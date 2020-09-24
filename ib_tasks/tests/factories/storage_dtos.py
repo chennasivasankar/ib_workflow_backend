@@ -854,3 +854,4 @@ class SubTasksIdsDTOFactory(factory.Factory):
 
     task_id = factory.sequence(lambda n: n)
     sub_task_ids = factory.sequence(lambda n: [n + 1, n + 2])
+

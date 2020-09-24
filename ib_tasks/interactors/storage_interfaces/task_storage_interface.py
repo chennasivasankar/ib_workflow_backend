@@ -18,10 +18,12 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageValueDTO, StageIdWithTemplateIdDTO, TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO, StatusVariableDTO
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO, \
+from ib_tasks.interactors.storage_interfaces.task_dtos import \
+    TaskDisplayIdDTO, \
     TaskProjectDTO, TaskDueMissingDTO, \
     SubTasksCountDTO, SubTasksIdsDTO
-from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO, \
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, \
+    GetTaskDetailsDTO, \
     TaskDelayParametersDTO
 
 

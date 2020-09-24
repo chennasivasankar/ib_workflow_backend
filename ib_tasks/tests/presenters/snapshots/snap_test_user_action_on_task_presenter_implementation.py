@@ -114,7 +114,7 @@ snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_get_response_for_u
                 'stage_id': 'stage_1'
             }
         ],
-        'task_id': 'task_display_1',
+        'task_id': 'task_display_0',
         'user_has_permission': True
     },
     'task_details': {
@@ -134,7 +134,7 @@ snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_get_response_for_u
         'task_overview_fields': [
         ]
     },
-    'task_id': 'task_display_1'
+    'task_id': 'task_display_0'
 }
 
 snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exception_for_reason_is_not_added_to_task reason is not added to task delay'] = {

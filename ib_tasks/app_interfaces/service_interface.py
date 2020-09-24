@@ -15,7 +15,7 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
     SubTasksCountDTO, \
     SubTasksIdsDTO, TaskProjectDTO, TaskDisplayIdDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
-    TaskDetailsConfigDTO
+    TaskDetailsConfigDTO, TaskWithCompletedSubTasksCountDTO
 from ib_tasks.interactors.task_stage_dtos import TasksCompleteDetailsDTO
 from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
@@ -193,7 +193,8 @@ class ServiceInterface:
     def get_sub_tasks_count_task_ids(task_ids: List[int]) -> \
             List[SubTasksCountDTO]:
         task_storage = TasksStorageImplementation()
-        from ib_tasks.interactors.sub_tasks_interactor import SubTasksInteractor
+        from ib_tasks.interactors.sub_tasks_interactor import \
+            SubTasksInteractor
         interactor = SubTasksInteractor(task_storage=task_storage)
         sub_tasks_count_dtos = interactor.get_sub_tasks_count_task_ids(
             task_ids=task_ids
@@ -226,3 +227,21 @@ class ServiceInterface:
         interactor = GetTaskDetailsInteractor(task_storage)
         return interactor.get_task_ids_for_given_task_display_ids(
             task_display_ids)
+
+    @staticmethod
+    def get_tasks_completed_sub_tasks_count_dtos(
+            task_ids: List[int]
+    ) -> List[TaskWithCompletedSubTasksCountDTO]:
+        from ib_tasks.interactors.get_tasks_completed_sub_tasks_count import \
+            GetTasksCompletedSubTasksCount
+        task_storage = TasksStorageImplementation()
+        task_stage_storage = TaskStageStorageImplementation()
+        interactor = GetTasksCompletedSubTasksCount(
+            task_stage_storage=task_stage_storage,
+            task_storage=task_storage
+        )
+        task_with_completed_sub_tasks_count_dtos = \
+            interactor.get_tasks_completed_sub_tasks_count(
+                task_ids=task_ids
+        )
+        return task_with_completed_sub_tasks_count_dtos

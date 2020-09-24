@@ -12,14 +12,45 @@ from ib_tasks.tests.factories.adapter_dtos import (
 )
 from ib_tasks.tests.factories.interactor_dtos import (FieldDisplayDTOFactory,
                                                       TaskCurrentStageDetailsDTOFactory,
-                                                      CurrentStageDetailsDTOFactory,
-                                                      TaskStageAssigneeDetailsDTOFactory,
                                                       AssigneeWithTeamDetailsDTOFactory)
 from ib_tasks.tests.factories.interactor_dtos import TaskStageDTOFactory
 from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory
 
 
 class TestCreateOrUpdateTaskPresenterImplementation:
+
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        from ib_tasks.tests.factories.presenter_dtos import \
+            TaskCompleteDetailsDTOFactory, AllTasksOverviewDetailsDTOFactory, \
+            TaskBoardsDetailsDTOFactory, TaskIdWithStageDetailsDTOFactory, \
+            TaskStageDTOFactory, TaskWithCompleteStageDetailsDTOFactory, \
+            GetTaskStageCompleteDetailsDTOFactory
+        from ib_tasks.tests.factories.interactor_dtos import \
+            TaskStageAssigneeDetailsDTOFactory
+        from ib_tasks.tests.factories.storage_dtos import \
+            CurrentStageDetailsDTOFactory, ActionDTOFactory, \
+            FieldDetailsDTOFactory, StageActionDetailsDTOFactory
+
+        TaskCompleteDetailsDTOFactory.reset_sequence()
+        TaskBoardsDetailsDTOFactory.reset_sequence()
+        BoardDTOFactory.reset_sequence()
+        ActionDTOFactory.reset_sequence()
+        FieldDisplayDTOFactory.reset_sequence()
+        TaskStageDTOFactory.reset_sequence()
+        TaskStageAssigneeDetailsDTOFactory.reset_sequence()
+        ColumnStageDTOFactory.reset_sequence()
+        ColumnDTOFactory.reset_sequence()
+        AssigneeDetailsDTOFactory.reset_sequence()
+        CurrentStageDetailsDTOFactory.reset_sequence()
+        TaskCurrentStageDetailsDTOFactory.reset_sequence()
+        AllTasksOverviewDetailsDTOFactory.reset_sequence()
+        TaskWithCompleteStageDetailsDTOFactory.reset_sequence()
+        GetTaskStageCompleteDetailsDTOFactory.reset_sequence()
+        TaskIdWithStageDetailsDTOFactory.reset_sequence()
+        FieldDetailsDTOFactory.reset_sequence()
+        StageActionDetailsDTOFactory.reset_sequence()
+        AssigneeWithTeamDetailsDTOFactory.reset_sequence()
 
     @pytest.fixture
     def presenter(self):
@@ -128,17 +159,8 @@ class TestCreateOrUpdateTaskPresenterImplementation:
                 value=json.loads(response_object.content)
         )
 
-    def reset_sequence(self):
-        ColumnDTOFactory.reset_sequence(0)
-        BoardDTOFactory.reset_sequence(0)
-        ColumnStageDTOFactory.reset_sequence(0)
-        ActionDTOFactory.reset_sequence(0)
-        FieldDisplayDTOFactory.reset_sequence(0)
-
     @pytest.fixture()
     def task_complete_details(self):
-        self.reset_sequence()
-        ColumnStageDTOFactory.reset_sequence(0)
         column_stage_dtos = ColumnStageDTOFactory.create_batch(size=3)
 
         task_board_details = TaskBoardsDetailsDTO(
@@ -165,17 +187,10 @@ class TestCreateOrUpdateTaskPresenterImplementation:
             self, presenter, snapshot, task_complete_details
     ):
         # Arrange
-        TaskCurrentStageDetailsDTOFactory.reset_sequence(1)
-        CurrentStageDetailsDTOFactory.reset_sequence()
-        task_current_stage_details_dto = TaskCurrentStageDetailsDTOFactory()
         from ib_tasks.tests.factories.presenter_dtos \
             import AllTasksOverviewDetailsDTOFactory
-        AllTasksOverviewDetailsDTOFactory.reset_sequence()
-        TaskStageAssigneeDetailsDTOFactory.reset_sequence()
-        from ib_tasks.tests.factories.presenter_dtos \
-            import TaskIdWithStageDetailsDTOFactory
-        TaskIdWithStageDetailsDTOFactory.reset_sequence()
-        AssigneeWithTeamDetailsDTOFactory.reset_sequence()
+
+        task_current_stage_details_dto = TaskCurrentStageDetailsDTOFactory()
         all_tasks_overview_details = AllTasksOverviewDetailsDTOFactory()
 
         # Act

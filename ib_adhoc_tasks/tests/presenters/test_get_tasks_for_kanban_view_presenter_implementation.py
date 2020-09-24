@@ -2,28 +2,37 @@ import factory
 import pytest
 
 
-class TestGetTasksForListViewPresenterImplementation:
+class TestGetTasksForKanbanViewPresenterImplementation:
 
     @pytest.fixture
     def presenter(self):
         from ib_adhoc_tasks.presenters \
-            .get_tasks_for_list_view_presenter_implementation import \
-            GetTasksForListViewPresenterImplementation
-        return GetTasksForListViewPresenterImplementation()
+            .get_tasks_for_kanban_view_presenter_implementation import \
+            GetTasksForKanbanViewPresenterImplementation
+        return GetTasksForKanbanViewPresenterImplementation()
+
+    @pytest.fixture
+    def task_base_details_dtos(self):
+        from ib_adhoc_tasks.tests.factories.adapter_dtos import \
+            TaskBaseDetailsDTOFactory
+        TaskBaseDetailsDTOFactory.reset_sequence()
+        task_base_details_dtos = TaskBaseDetailsDTOFactory.create_batch(
+            size=15
+        )
+        return task_base_details_dtos
 
     @pytest.fixture
     def task_ids(self):
-        task_ids = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+        task_ids = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, 11]]
         return task_ids
 
     @pytest.fixture
     def task_base_details_dtos(self):
         from ib_adhoc_tasks.tests.factories.adapter_dtos import \
             TaskBaseDetailsDTOFactory
-        TaskBaseDetailsDTOFactory.reset_sequence(0)
-        from ib_adhoc_tasks.constants.enum import Priority
+        TaskBaseDetailsDTOFactory.reset_sequence()
         task_base_details_dtos = TaskBaseDetailsDTOFactory.create_batch(
-            size=15, priority=Priority.HIGH.value
+            size=12
         )
         return task_base_details_dtos
 
@@ -31,8 +40,7 @@ class TestGetTasksForListViewPresenterImplementation:
     def stage_ids(self):
         stage_ids = [
             "stage1", "stage2", "stage3", "stage4", "stage5", "stage6",
-            "stage7", "stage8", "stage9", "stage10", "stage11", "stage12",
-            "stage13", "stage14", "stage15"
+            "stage7", "stage8", "stage9", "stage10", "stage11", "stage12"
         ]
         return stage_ids
 
@@ -44,12 +52,11 @@ class TestGetTasksForListViewPresenterImplementation:
             FieldDetailsDTOFactory
         from ib_adhoc_tasks.tests.factories.adapter_dtos import \
             StageActionDetailsDTOFactory
-        GetTaskStageCompleteDetailsDTOFactory.reset_sequence(0)
-        FieldDetailsDTOFactory.reset_sequence(0)
-        StageActionDetailsDTOFactory.reset_sequence(0)
+        GetTaskStageCompleteDetailsDTOFactory.reset_sequence()
+        StageActionDetailsDTOFactory.reset_sequence()
         task_stage_complete_details_dtos = \
             GetTaskStageCompleteDetailsDTOFactory.create_batch(
-                size=15,
+                size=12,
                 field_dtos=FieldDetailsDTOFactory.create_batch(size=3),
                 stage_id=factory.Iterator(stage_ids),
                 action_dtos=StageActionDetailsDTOFactory.create_batch(
@@ -61,14 +68,11 @@ class TestGetTasksForListViewPresenterImplementation:
     @pytest.fixture
     def task_stage_assignee_details_dto(self, stage_ids):
         from ib_adhoc_tasks.tests.factories.adapter_dtos import \
-            TaskStageAssigneeDetailsDTOFactory, AssigneeDetailsDTOFactory, \
-            TeamDetailsDTOFactory
-        TaskStageAssigneeDetailsDTOFactory.reset_sequence(0)
-        AssigneeDetailsDTOFactory.reset_sequence(0)
-        TeamDetailsDTOFactory.reset_sequence(0)
+            TaskStageAssigneeDetailsDTOFactory
+        TaskStageAssigneeDetailsDTOFactory.reset_sequence()
         task_stage_assignee_details_dto = \
             TaskStageAssigneeDetailsDTOFactory.create_batch(
-                size=15,
+                size=12,
                 stage_id=factory.Iterator(stage_ids)
             )
         return task_stage_assignee_details_dto
@@ -80,7 +84,6 @@ class TestGetTasksForListViewPresenterImplementation:
     ):
         from ib_adhoc_tasks.tests.factories.adapter_dtos import \
             TasksCompleteDetailsDTOFactory
-        TasksCompleteDetailsDTOFactory.reset_sequence(0)
         task_complete_details_dto = TasksCompleteDetailsDTOFactory(
             task_base_details_dtos=task_base_details_dtos,
             task_stage_details_dtos=task_stage_complete_details_dtos,
@@ -89,33 +92,49 @@ class TestGetTasksForListViewPresenterImplementation:
         return task_complete_details_dto
 
     @pytest.fixture
-    def group_details_dtos(self):
+    def group_by_values(self):
+        group_by_values = ["group_by_value1", "group_by_value2"]
+        return group_by_values
+
+    @pytest.fixture
+    def child_group_count_dtos(self, group_by_values):
+        from ib_adhoc_tasks.tests.factories.storage_dtos import \
+            ChildGroupCountDTOFactory
+        return ChildGroupCountDTOFactory.create_batch(
+            group_by_value=factory.Iterator(group_by_values),
+            total_child_groups=2, size=2
+        )
+
+    @pytest.fixture
+    def group_details_dtos(self, task_ids):
         from ib_adhoc_tasks.tests.factories.storage_dtos import \
             GroupDetailsDTOFactory
-        GroupDetailsDTOFactory.reset_sequence(0)
+        group_by_values = ["group_by_value1", "group_by_value2"]
+        group_by_display_name = ["group_by_display_name", "group_by_display_name"]
+
         group_details_dtos = GroupDetailsDTOFactory.create_batch(
-            size=3, total_tasks=5
+            size=2, total_tasks=3,
+            task_ids=factory.Iterator(task_ids),
+            group_by_value=factory.Iterator(group_by_values),
+            group_by_display_name=factory.Iterator(group_by_display_name)
         )
         return group_details_dtos
 
-    @pytest.fixture()
-    def sub_tasks_count_dtos(self, task_ids):
-        from ib_adhoc_tasks.tests.factories.adapter_dtos import \
-            TaskIdWithSubTasksCountDTOFactory
-        TaskIdWithSubTasksCountDTOFactory.reset_sequence(0)
-        sub_tasks_count_dtos = TaskIdWithSubTasksCountDTOFactory.create_batch(
-            size=16, task_id=factory.Iterator(task_ids)
+    @pytest.fixture
+    def task_details_with_group_by_info_dto(
+            self, group_details_dtos, child_group_count_dtos,
+            task_complete_details_dto
+    ):
+        from ib_adhoc_tasks.interactors.presenter_interfaces\
+            .get_tasks_for_kanban_view_presenter_interface import \
+            TaskDetailsWithGroupByInfoDTO
+        task_details_with_group_by_info_dto = TaskDetailsWithGroupByInfoDTO(
+            group_details_dtos=group_details_dtos,
+            total_groups_count=2,
+            child_group_count_dtos=child_group_count_dtos,
+            task_details_dtos=task_complete_details_dto
         )
-        return sub_tasks_count_dtos
-
-    @pytest.fixture()
-    def completed_sub_tasks_count_dtos(self, task_ids):
-        from ib_adhoc_tasks.tests.factories.adapter_dtos import \
-            TaskIdWithCompletedSubTasksCountDTOFactory
-        TaskIdWithCompletedSubTasksCountDTOFactory.reset_sequence(0)
-        completed_sub_tasks_count_dtos = TaskIdWithCompletedSubTasksCountDTOFactory \
-            .create_batch(size=16, task_id=factory.Iterator(task_ids))
-        return completed_sub_tasks_count_dtos
+        return task_details_with_group_by_info_dto
 
     def test_raise_invalid_offset_value(self, snapshot, presenter):
         # Arrange
@@ -177,21 +196,15 @@ class TestGetTasksForListViewPresenterImplementation:
             value=response.content
         )
 
-    def test_given_group_details_dtos_and_task_details_dtos_returns_group_info_task_details(
+    def test_given_task_details_group_by_info_dto_returns_group_info_task_details(
             self, task_complete_details_dto, presenter, group_details_dtos,
-            sub_tasks_count_dtos, completed_sub_tasks_count_dtos,
-            snapshot
+            snapshot, task_details_with_group_by_info_dto
     ):
         # Arrange
-        total_groups_count = 3
 
         # Act
         response = presenter.get_task_details_group_by_info_response(
-            group_details_dtos=group_details_dtos,
-            task_details_dto=task_complete_details_dto,
-            total_groups_count=total_groups_count,
-            sub_tasks_count_dtos=sub_tasks_count_dtos,
-            completed_sub_tasks_count_dtos=completed_sub_tasks_count_dtos
+            task_details_with_group_by_info_dto
         )
 
         # Arrange
