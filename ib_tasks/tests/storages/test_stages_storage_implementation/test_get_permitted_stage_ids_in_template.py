@@ -24,9 +24,9 @@ class TestGetAllowedStageIdsOfUser:
         StageMinimalDTOFactory.reset_sequence(1)
 
         response = [
-            StageMinimalDTOFactory(color="blue", name="name_1"),
+            StageMinimalDTOFactory(color="orange", name="name_1"),
             StageMinimalDTOFactory(color="orange", name="name_2"),
-            StageMinimalDTOFactory(color="green", name="name_3")
+            StageMinimalDTOFactory(color="orange", name="name_3")
         ]
         return response
 
