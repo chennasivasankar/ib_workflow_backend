@@ -225,16 +225,15 @@ class ElasticStorageImplementation(ElasticStorageInterface):
             task_offset_and_limit_values_dto,
             group_by_order_one_dto, group_by_order_two_dto
     ):
-        tasks_data = A('top_hits')
+        task_offset = task_offset_and_limit_values_dto.offset
+        task_limit = task_offset_and_limit_values_dto.limit
+        tasks_data = A('top_hits', size=task_limit + task_offset)
         search = search.filter(query)
         search.aggs.bucket('groups', group_agg).bucket(
             'child_groups', child_agg
         ).bucket('tasks', tasks_data)
         response = search.execute()
         total_groups_count = len(response.aggregations.groups.buckets)
-
-        task_offset = task_offset_and_limit_values_dto.offset
-        task_limit = task_offset_and_limit_values_dto.limit
 
         group_offset = group_by_order_one_dto.offset
         group_limit = group_by_order_one_dto.limit
@@ -278,7 +277,9 @@ class ElasticStorageImplementation(ElasticStorageInterface):
     def _prepare_group_details_for_child_groups(
             search, child_agg,
             get_child_groups_in_group_input_dto: GetChildGroupsInGroupInputDTO):
-        tasks_data = A('top_hits')
+        task_offset = get_child_groups_in_group_input_dto.offset
+        task_limit = get_child_groups_in_group_input_dto.limit
+        tasks_data = A('top_hits', size=task_limit + task_offset)
         search.aggs.bucket('child_groups', child_agg).bucket('tasks',
                                                              tasks_data)
         response = search.execute()
