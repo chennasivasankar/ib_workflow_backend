@@ -210,7 +210,8 @@ class TestGoFSelectorValidationsInteractor:
                 "gof_ids": ["FIN_VENDOR_BASIC_DETAILS", "GST_DETAILS"]
             }
         ]
-        existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS", "CUSTOMER_DETAILS", "GST_DETAILS"]
+        existing_gof_ids = [
+            "FIN_VENDOR_BASIC_DETAILS", "CUSTOMER_DETAILS", "GST_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
         expected_field_values = json.dumps(expected_field_values)

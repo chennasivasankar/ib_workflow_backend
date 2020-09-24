@@ -310,10 +310,7 @@
         "task_id",
         "task_overview_fields",
         "stage_with_actions",
-        "title",
-        "start_date",
-        "due_date",
-        "priority"
+        "title"
       ]
     },
     "TaskOverviewWithStageAndActionsListView": {
