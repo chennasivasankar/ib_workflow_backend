@@ -76,7 +76,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         return task_dict
 
     @staticmethod
-    def _get_stages_dict(task_stage_assignees_dtos: List[TaskStageAssigneeIdDTO]) -> List[Dict[str, Any]]:
+    def _get_stages_dict(task_stage_assignees_dtos) -> List[Dict[str, Any]]:
         return [
             {
                 "stage_id": task_stage_assignees_dto.stage_id,
