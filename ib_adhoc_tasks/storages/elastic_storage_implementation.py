@@ -154,7 +154,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         is_group_by_value_assignee = group_by_value == GroupByEnum.ASSIGNEE.value
         is_group_by_value_other_than_stage_and_assignee = \
             (group_by_value != GroupByEnum.STAGE.value) and (
-                    group_by_value != GroupByEnum.STAGE.value)
+                    group_by_value != GroupByEnum.ASSIGNEE.value)
         group_agg = ""
         if is_group_by_value_stage:
             group_agg = A('terms', field='stages.stage_id.keyword')
@@ -249,10 +249,10 @@ class ElasticStorageImplementation(ElasticStorageInterface):
                      group_offset: group_offset + group_limit]:
             child_group_count_dto = ChildGroupCountDTO(
                 group_by_value=group.key,
-                total_child_groups=len(group.child_groups)
+                total_child_groups=len(group.child_groups.buckets)
             )
             child_group_count_dtos.append(child_group_count_dto)
-            for child_group in group.child_groups[
+            for child_group in group.child_groups.buckets[
                                child_group_offset: child_group_offset + child_group_limit]:
 
                 task_ids = []
