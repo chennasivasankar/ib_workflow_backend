@@ -1,11 +1,13 @@
 import datetime
-from typing import Optional
+from typing import Optional, List
 
 from ib_tasks.constants.config import TIME_FORMAT
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidTimeFormat
 from ib_tasks.interactors.create_or_update_task.field_response_validations. \
     base_field_validation import BaseFieldValidation
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldWithGoFDisplayNameDTO
 
 
 class TimeFieldValidationInteractor(BaseFieldValidation):
@@ -14,13 +16,17 @@ class TimeFieldValidationInteractor(BaseFieldValidation):
         self.field_id = field_id
         self.field_response = field_response
 
-    def validate_field_response(self) -> Optional[InvalidTimeFormat]:
+    def validate_field_response(
+            self,
+            field_id_with_display_name_dtos: List[FieldWithGoFDisplayNameDTO]
+    ) -> Optional[InvalidTimeFormat]:
         try:
             self._validate_time_string(self.field_response)
         except ValueError:
+            field_display_name = self.get_field_display_name(
+                self.field_id, field_id_with_display_name_dtos)
             raise InvalidTimeFormat(
-                self.field_id, self.field_response, TIME_FORMAT
-            )
+                field_display_name, self.field_response, TIME_FORMAT)
         return
 
     @staticmethod

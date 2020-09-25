@@ -12,5 +12,5 @@ snapshots['TestCase23CreateTaskAPITestCase.test_case status_code'] = '400'
 snapshots['TestCase23CreateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_VALUE_FOR_DROPDOWN',
-    'response': "Invalid dropdown value: Other for field: FIELD_ID-0! Try with these dropdown values: ['Mr', 'Mrs']"
+    'response': "Invalid dropdown value: Other for field: DISPLAY_NAME-0! Try with these dropdown values: ['Mr', 'Mrs']"
 }

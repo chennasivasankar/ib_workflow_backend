@@ -12,5 +12,5 @@ snapshots['TestCase16SaveAndActOnATaskAPITestCase.test_case status_code'] = '400
 snapshots['TestCase16SaveAndActOnATaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_GOFS_OF_TASK_TEMPLATE',
-    'response': "invalid gofs ['gof_1']  given to the task template template_1"
+    'response': "invalid gofs ['GOF_DISPLAY_NAME-0']  given to the task template template_1"
 }

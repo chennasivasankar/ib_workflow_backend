@@ -40,3 +40,6 @@ class UserNotAllowedToCreateMoreThanOneGroupByInListView(Exception):
 
 class UserNotAllowedToCreateMoreThanTwoGroupByInKanbanView(Exception):
     pass
+
+class UserNotExistInProject(Exception):
+    pass

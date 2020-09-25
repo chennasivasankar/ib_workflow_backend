@@ -99,3 +99,8 @@ class GoFStorageInterface(abc.ABC):
     def get_enable_multiple_gofs_field_to_gof_ids(
             self, template_id: str) -> List[GOFMultipleEnableDTO]:
         pass
+
+    @abc.abstractmethod
+    def get_gofs_display_names(
+            self, gof_ids: List[str]) -> List[GoFIdWithGoFDisplayNameDTO]:
+        pass

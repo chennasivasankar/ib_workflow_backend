@@ -5,7 +5,7 @@ REQUEST_BODY_JSON = """
     "view_type": "LIST",
     "group_by_key": "string",
     "order": 1,
-    "group_by_id": "string"
+    "group_by_id": 1
 }
 """
 

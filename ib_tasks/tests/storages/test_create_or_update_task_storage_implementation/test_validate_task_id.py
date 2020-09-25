@@ -38,7 +38,8 @@ class TestValidateTaskId:
             start_date=task_obj.start_date,
             due_date=task_obj.due_date,
             priority=task_obj.priority,
-            project_id=task_obj.project_id
+            project_id=task_obj.project_id,
+            task_id=task_obj.id
         )
         # Act
         actual_task_base_details_dto = storage.validate_task_id(task_id)

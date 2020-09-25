@@ -5,9 +5,16 @@ import pytest
 from ib_tasks.interactors.create_or_update_task.field_response_validations \
     import \
     CheckBoxGroupFieldValidationInteractor
+from ib_tasks.tests.factories.storage_dtos import \
+    FieldWithGoFDisplayNameDTOFactory
 
 
 class TestCheckBoxGroupFieldValidationInteractor:
+
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        FieldWithGoFDisplayNameDTOFactory.reset_sequence()
+
     @pytest.fixture
     def valid_check_box_options(self):
         valid_check_box_options = [
@@ -36,23 +43,26 @@ class TestCheckBoxGroupFieldValidationInteractor:
         interactor = CheckBoxGroupFieldValidationInteractor(
             field_id=field_id,
             field_response=field_response,
-            valid_check_box_options=valid_check_box_options
-        )
+            valid_check_box_options=valid_check_box_options)
+
+        field_with_gof_display_name_dto = FieldWithGoFDisplayNameDTOFactory(
+            field_id=field_id)
+        expected_field_display_name = field_with_gof_display_name_dto.field_display_name
 
         # Act
         with pytest.raises(IncorrectCheckBoxOptionsSelected) as err:
-            interactor.validate_field_response()
+            interactor.validate_field_response(
+                [field_with_gof_display_name_dto])
 
         # Assert
         exception_obj = err.value
-        assert exception_obj.field_id == field_id
+        assert exception_obj.field_display_name == expected_field_display_name
         assert exception_obj.invalid_checkbox_options == \
                invalid_checkbox_options
         assert exception_obj.valid_check_box_options == valid_check_box_options
 
     def test_given_valid_checkbox_options_in_field_response(
-            self, valid_check_box_options
-    ):
+            self, valid_check_box_options):
         # Arrange
         field_id = "FIN_GOF_VENDOR_TYPE"
         field_response = [
@@ -67,10 +77,10 @@ class TestCheckBoxGroupFieldValidationInteractor:
             field_response=field_response,
             valid_check_box_options=valid_check_box_options
         )
+        field_with_gof_display_name_dto = FieldWithGoFDisplayNameDTOFactory(
+            field_id=field_id)
 
         # Act
-        interactor.validate_field_response()
+        interactor.validate_field_response([field_with_gof_display_name_dto])
 
         # Assert
-
-

@@ -15,10 +15,22 @@ from ib_tasks.models import GoFRole, GoF, TaskTemplateGoFs, TaskGoF, \
 
 class GoFStorageImplementation(GoFStorageInterface):
 
+    def get_gofs_display_names(
+            self, gof_ids: List[str]) -> List[GoFIdWithGoFDisplayNameDTO]:
+        gof_dicts = GoF.objects.filter(gof_id__in=gof_ids).values(
+            'gof_id', 'display_name')
+        gofs_with_display_name_dtos = [
+            GoFIdWithGoFDisplayNameDTO(
+                gof_id=gof_dict['gof_id'],
+                gof_display_name=gof_dict['display_name'])
+            for gof_dict in gof_dicts
+        ]
+        return gofs_with_display_name_dtos
+
     def get_filled_field_ids_of_given_task_gof_ids(
             self, task_gof_ids: List[int]) -> List[str]:
         filled_field_ids = TaskGoFField.objects.filter(
-            task_gof_id__in=task_gof_ids).exclude(field_response="")\
+            task_gof_id__in=task_gof_ids).exclude(field_response="") \
             .values_list('field_id', flat=True)
         return filled_field_ids
 

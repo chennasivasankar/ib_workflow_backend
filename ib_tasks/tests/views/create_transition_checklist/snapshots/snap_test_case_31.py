@@ -12,5 +12,5 @@ snapshots['TestCase31CreateTransitionChecklistAPITestCase.test_case status_code'
 snapshots['TestCase31CreateTransitionChecklistAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_FILE_URL',
-    'response': 'Invalid url for a file: http://google.com/ for field: field_1!'
+    'response': 'Invalid url for a file: http://google.com/ for field: DISPLAY_NAME-0!'
 }

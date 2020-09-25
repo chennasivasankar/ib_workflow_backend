@@ -12,7 +12,7 @@ snapshots['TestCase19CreateTransitionChecklistAPITestCase.test_case[iBHubs] stat
 snapshots['TestCase19CreateTransitionChecklistAPITestCase.test_case[iBHubs] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_FLOAT_VALUE',
-    'response': 'Invalid float value: iBHubs for field: field_1!'
+    'response': 'Invalid float value: iBHubs for field: DISPLAY_NAME-0!'
 }
 
 snapshots['TestCase19CreateTransitionChecklistAPITestCase.test_case[700.0iB] status_code'] = '400'
@@ -20,5 +20,5 @@ snapshots['TestCase19CreateTransitionChecklistAPITestCase.test_case[700.0iB] sta
 snapshots['TestCase19CreateTransitionChecklistAPITestCase.test_case[700.0iB] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_FLOAT_VALUE',
-    'response': 'Invalid float value: 700.0iB for field: field_1!'
+    'response': 'Invalid float value: 700.0iB for field: DISPLAY_NAME-0!'
 }

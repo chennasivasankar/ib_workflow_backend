@@ -243,7 +243,7 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
             task_stage_complete_details_dtos: List[StageAndActionsDetailsDTO],
             stage_assignee_with_team_details_dtos: List[
                 StageAssigneeWithTeamDetailsDTO]
-    ):
+    ) -> List[Dict]:
         stages_with_actions = []
         for task_stage_complete_details_dto in \
                 task_stage_complete_details_dtos:
@@ -258,7 +258,7 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
             self, task_stage_complete_details_dto: StageAndActionsDetailsDTO,
             stage_assignee_with_team_details_dtos: List[
                 StageAssigneeWithTeamDetailsDTO]
-    ):
+    ) -> Dict:
         actions_dtos = task_stage_complete_details_dto.actions_dtos
         actions = self._get_action_details(actions_dtos)
         task_stage_id = self._get_task_stage_id(
