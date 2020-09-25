@@ -21,7 +21,7 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def validate_task_id(
             self, task_id: int
-    ) -> Union[str, TaskBaseDetailsDTO, InvalidTaskIdException]:
+    ) -> Union[TaskBaseDetailsDTO, InvalidTaskIdException]:
         pass
 
     @abc.abstractmethod
