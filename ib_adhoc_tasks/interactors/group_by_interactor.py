@@ -20,14 +20,6 @@ class GroupByInteractor:
         group_by_response_dtos = self.get_group_by(
             project_id=project_id, user_id=user_id, view_type=view_type
         )
-        from ib_adhoc_tasks.constants.constants import group_by_types_list
-        for group_by_response_dto in group_by_response_dtos:
-            if group_by_response_dto.group_by_key not in group_by_types_list:
-                group_by_response_dto.display_name = \
-                    self._get_field_display_name(
-                        project_id=project_id, user_id=user_id,
-                        field_id=group_by_response_dto.group_by_key
-                    )
         return presenter.get_response_for_get_group_by(
             group_by_response_dtos=group_by_response_dtos
         )
@@ -36,6 +28,14 @@ class GroupByInteractor:
         group_by_response_dtos = self.storage.get_group_by_dtos(
             user_id=user_id, view_type=view_type
         )
+        from ib_adhoc_tasks.constants.constants import group_by_types_list
+        for group_by_response_dto in group_by_response_dtos:
+            if group_by_response_dto.group_by_key not in group_by_types_list:
+                group_by_response_dto.display_name = \
+                    self._get_field_display_name(
+                        project_id=project_id, user_id=user_id,
+                        field_id=group_by_response_dto.group_by_key
+                    )
         group_by_response_dtos.sort(key=lambda x: x.order)
         return group_by_response_dtos
 

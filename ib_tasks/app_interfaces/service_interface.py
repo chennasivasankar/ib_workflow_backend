@@ -6,6 +6,7 @@ from ib_tasks.interactors.get_task_details_interactor import \
     GetTaskDetailsInteractor
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldDisplayNameDTO, FieldNameDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \

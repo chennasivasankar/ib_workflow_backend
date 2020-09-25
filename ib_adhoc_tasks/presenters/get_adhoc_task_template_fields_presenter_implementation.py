@@ -20,8 +20,9 @@ class GetAdhocTaskTemplateFieldsPresenterImplementation(
         ]
         return self.prepare_200_success_response(response_dict=response)
 
+    @staticmethod
     def _convert_to_group_by_key_name_dictionary(
-            self, field_dto: FieldIdAndNameDTO
+            field_dto: FieldIdAndNameDTO
     ):
         return {
             "group_by_key": field_dto.field_id,
