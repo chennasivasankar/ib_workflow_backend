@@ -5,11 +5,13 @@ import factory
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...common_fixtures.adapters.roles_service import \
+from ib_tasks.tests.views.create_task import APP_NAME, OPERATION_NAME, \
+    REQUEST_METHOD, URL_SUFFIX
+from ib_tasks.tests.common_fixtures.adapters.roles_service import \
     get_user_role_ids_based_on_project_mock
-from ...common_fixtures.storages import elastic_storage_implementation_mock
-from ...factories.models import StageGoFFactory
+from ib_tasks.tests.common_fixtures.storages import \
+    elastic_storage_implementation_mock
+from ib_tasks.tests.factories import models
 
 
 class TestCase01CreateTaskAPITestCase(TestUtils):
@@ -100,7 +102,7 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
         gof_obj = GoFFactory.create()
-        StageGoFFactory.create(stage=stage, gof=gof_obj)
+        models.StageGoFFactory.create(stage=stage, gof=gof_obj)
         field_obj = FieldFactory.create(gof=gof_obj)
         GoFToTaskTemplateFactory.create(
             task_template=task_template_obj, gof=gof_obj)

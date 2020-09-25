@@ -7,10 +7,12 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_tasks.constants.enum import ActionTypes
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...common_fixtures.adapters.roles_service import \
+from ib_tasks.tests.views.create_task import APP_NAME, OPERATION_NAME, \
+    REQUEST_METHOD, URL_SUFFIX
+from ib_tasks.tests.common_fixtures.adapters.roles_service import \
     get_user_role_ids_based_on_project_mock
-from ...common_fixtures.storages import elastic_storage_implementation_mock
+from ib_tasks.tests.common_fixtures.storages import \
+    elastic_storage_implementation_mock
 
 
 class TestCase40CreateTaskAPITestCase(TestUtils):
