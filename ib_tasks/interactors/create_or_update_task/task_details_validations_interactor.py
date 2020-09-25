@@ -69,8 +69,7 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
                 user_id=task_dto.basic_task_details_dto.created_by_id,
                 project_id=task_dto.basic_task_details_dto.project_id,
                 gof_fields_dtos=task_dto.gof_fields_dtos,
-                stage_id=stage_id, task_template_id=task_template_id
-            )
+                stage_id=stage_id, task_template_id=task_template_id)
 
     def _validate_action_id_and_get_action_type(
             self, action_id: int

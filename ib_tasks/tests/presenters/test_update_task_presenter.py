@@ -769,6 +769,30 @@ class TestUpdateTaskPresenterImplementation:
         snapshot.assert_match(response['res_status'], 'res_status')
         snapshot.assert_match(response['response'], 'response')
 
+    def test_raise_user_did_not_fill_required_fields(
+            self, snapshot, presenter):
+        # Arrange
+        from ib_tasks.exceptions.fields_custom_exceptions import \
+            UserDidNotFillRequiredFields
+        from ib_tasks.tests.factories.storage_dtos import \
+            FieldWithGoFDisplayNameDTOFactory
+
+        FieldWithGoFDisplayNameDTOFactory.reset_sequence()
+        unfilled_field_dtos = \
+            FieldWithGoFDisplayNameDTOFactory.create_batch(size=2)
+
+        err = UserDidNotFillRequiredFields(unfilled_field_dtos)
+
+        # Act
+        response_object = \
+            presenter.raise_user_did_not_fill_required_fields(err)
+
+        # Assert
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')
+
     def test_raise_stage_ids_with_invalid_permission_for_assignee_exception(
             self, presenter, snapshot
     ):

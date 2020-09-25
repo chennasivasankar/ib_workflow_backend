@@ -8,21 +8,25 @@ from freezegun import freeze_time
 
 from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.constants.enum import ActionTypes
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...common_fixtures.adapters.assignees_details_service import \
+from ib_tasks.tests.common_fixtures.adapters.project_service import \
+    get_valid_project_ids_mock
+from ib_tasks.tests.views.create_sub_task import APP_NAME, OPERATION_NAME, \
+    REQUEST_METHOD, URL_SUFFIX
+from ib_tasks.tests.common_fixtures.adapters.assignees_details_service import \
     assignee_details_dtos_mock
-from ...common_fixtures.adapters.auth_service import \
-    validate_if_user_is_in_project_mock, get_valid_project_ids_mock, \
+from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+    validate_if_user_is_in_project_mock, \
+    get_valid_project_ids_mock as auth_service_project_ids_mock, \
     get_projects_info_for_given_ids_mock, \
-    get_team_info_for_given_user_ids_mock, prepare_permitted_user_details_mock
-from ...common_fixtures.adapters.roles_service import get_user_role_ids, \
-    get_user_role_ids_based_on_project_mock
-from ...factories.adapter_dtos import UserDetailsDTOFactory, \
+    get_team_info_for_given_user_ids_mock, prepare_permitted_user_details_mock, \
+    get_user_id_team_details_dtos_mock
+from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+    get_user_role_ids, get_user_role_ids_based_on_project_mock
+from ib_tasks.tests.common_fixtures.storages import \
+    elastic_storage_implementation_mock
+from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTOFactory, \
     AssigneeDetailsDTOFactory
-from ...factories.models import TaskFactory, TaskTemplateFactory, \
-    StageActionFactory, ProjectTaskTemplateFactory, StageModelFactory, \
-    ActionPermittedRolesFactory, TaskTemplateStatusVariableFactory, \
-    TaskTemplateInitialStageFactory, StagePermittedRolesFactory
+from ib_tasks.tests.factories import models
 
 
 class TestCase02CreateSubTaskAPITestCase(TestUtils):
@@ -34,15 +38,15 @@ class TestCase02CreateSubTaskAPITestCase(TestUtils):
 
     @pytest.fixture(autouse=True)
     def setup(self, api_user, mocker):
-        TaskFactory.reset_sequence()
-        TaskTemplateFactory.reset_sequence()
-        StageActionFactory.reset_sequence()
-        ProjectTaskTemplateFactory.reset_sequence()
-        StageModelFactory.reset_sequence()
-        ActionPermittedRolesFactory.reset_sequence()
-        TaskTemplateStatusVariableFactory.reset_sequence()
-        TaskTemplateInitialStageFactory.reset_sequence()
-        StagePermittedRolesFactory.reset_sequence()
+        models.TaskFactory.reset_sequence()
+        models.TaskTemplateFactory.reset_sequence()
+        models.StageActionFactory.reset_sequence()
+        models.ProjectTaskTemplateFactory.reset_sequence()
+        models.StageModelFactory.reset_sequence()
+        models.ActionPermittedRolesFactory.reset_sequence()
+        models.TaskTemplateStatusVariableFactory.reset_sequence()
+        models.TaskTemplateInitialStageFactory.reset_sequence()
+        models.StagePermittedRolesFactory.reset_sequence()
 
         parent_task_id = "IBWF-1"
         template_id = "template_1"
@@ -51,10 +55,15 @@ class TestCase02CreateSubTaskAPITestCase(TestUtils):
         action_id = 1
         variable = "variable0"
 
+        elastic_storage_implementation_mock(mocker)
         get_user_role_ids(mocker)
         is_user_in_project = True
         validate_if_user_is_in_project_mock(mocker, is_user_in_project)
-        get_valid_project_ids_mock(mocker, [project_id])
+        auth_service_project_ids_mock(mocker, [project_id])
+        project_mock = get_valid_project_ids_mock(mocker)
+        project_mock.return_value = [project_id]
+        get_projects_info_for_given_ids_mock(mocker)
+        get_user_id_team_details_dtos_mock(mocker)
         get_projects_info_for_given_ids_mock(mocker)
         get_team_info_for_given_user_ids_mock(mocker)
         get_user_role_ids_based_on_project_mock(mocker)
@@ -69,26 +78,26 @@ class TestCase02CreateSubTaskAPITestCase(TestUtils):
             AssigneeDetailsDTOFactory.create_batch(
                 size=2, assignee_id=factory.Iterator(["user_1", "user_2"]))
 
-        template_obj = TaskTemplateFactory.create(template_id=template_id)
-        TaskFactory.create(task_display_id=parent_task_id,
-                           template_id=template_id)
-        ProjectTaskTemplateFactory.create(
+        template_obj = models.TaskTemplateFactory.create(template_id=template_id)
+        models.TaskFactory.create(task_display_id=parent_task_id,
+                                  template_id=template_id)
+        models.ProjectTaskTemplateFactory.create(
             project_id=project_id, task_template=template_obj)
-        stage = StageModelFactory(
+        stage = models.StageModelFactory(
             stage_id=stage_id, stage_color="blue",
             task_template_id='template_1',
             display_logic="variable0==stage_1")
         path = 'ib_tasks.tests.populate.' \
                'stage_actions_logic.stage_1_action_name_1_logic'
-        action = StageActionFactory(
+        action = models.StageActionFactory(
             id=action_id, stage=stage, py_function_import_path=path,
             action_type=ActionTypes.NO_VALIDATIONS.value)
-        ActionPermittedRolesFactory.create(
+        models.ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
-        StagePermittedRolesFactory.create(stage=stage, role_id=ALL_ROLES_ID)
-        TaskTemplateInitialStageFactory.create(
+        models.StagePermittedRolesFactory.create(stage=stage, role_id=ALL_ROLES_ID)
+        models.TaskTemplateInitialStageFactory.create(
             task_template_id=template_id, stage=stage)
-        TaskTemplateStatusVariableFactory.create(
+        models.TaskTemplateStatusVariableFactory.create(
             task_template_id=template_id, variable=variable)
 
     @freeze_time("2020-09-09 12:00:00")
