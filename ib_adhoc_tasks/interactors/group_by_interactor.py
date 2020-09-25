@@ -123,10 +123,7 @@ class GroupByInteractor:
     def _validate_is_group_by_for_list_view_is_possible(
             view_types: List[str]
     ):
-        group_by_for_list_view_count = 0
-        for view_type in view_types:
-            if view_type == ViewType.LIST.value:
-                group_by_for_list_view_count += 1
+        group_by_for_list_view_count = view_types.count(ViewType.LIST.value)
         if group_by_for_list_view_count >= 1:
             raise UserNotAllowedToCreateMoreThanOneGroupByInListView
 
@@ -134,10 +131,9 @@ class GroupByInteractor:
     def _validate_is_group_by_for_kanban_view_is_possible(
             view_types: List[str]
     ):
-        group_by_for_kanban_view_count = 0
-        for view_type in view_types:
-            if view_type == ViewType.KANBAN.value:
-                group_by_for_kanban_view_count += 1
+        group_by_for_kanban_view_count = view_types.count(
+            ViewType.KANBAN.value
+        )
         if group_by_for_kanban_view_count >= 2:
             raise UserNotAllowedToCreateMoreThanTwoGroupByInKanbanView
 
