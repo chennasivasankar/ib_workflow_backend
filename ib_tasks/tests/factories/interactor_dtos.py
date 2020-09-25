@@ -41,14 +41,15 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     TaskDelayParametersDTO, UpdateTaskWithTaskDisplayIdDTO, \
     SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO, SearchQueryDTO, \
     StageDisplayLogicDTO, BasicTaskDetailsDTO, \
-    TaskWithCompletedSubTasksCountDTO
+    TaskWithCompletedSubTasksCountDTO, CreateSubTaskDTO
 from ib_tasks.interactors.task_stage_dtos import TasksCompleteDetailsDTO
 from ib_tasks.interactors.task_template_dtos import \
     (CreateTransitionChecklistTemplateDTO,
      CreateTransitionChecklistTemplateWithTaskDisplayIdDTO)
 from ib_tasks.tests.factories.adapter_dtos import (AssigneeDetailsDTOFactory,
                                                    UserDetailsDTO,
-                                                   TeamInfoDTOFactory, TeamDetailsDTOFactory)
+                                                   TeamInfoDTOFactory,
+                                                   TeamDetailsDTOFactory)
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -783,3 +784,15 @@ class DBStageIdWithGoFIdsDTOFactory(factory.Factory):
     db_stage_id = factory.sequence(lambda counter: counter)
     gof_ids = factory.Sequence(
         lambda counter: ["gof_{}".format(counter)])
+
+
+class CreateSubTaskDTOFactory(factory.Factory):
+    class Meta:
+        model = CreateSubTaskDTO
+
+    parent_task_id = factory.Sequence(lambda c: f"parent_task_{c}")
+    basic_task_details_dto = factory.SubFactory(BasicTaskDetailsDTOFactory)
+
+    @factory.lazy_attribute
+    def gof_fields_dtos(self):
+        return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
