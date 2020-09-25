@@ -12,5 +12,5 @@ snapshots['TestCase40UpdateTaskAPITestCase.test_case status_code'] = '400'
 snapshots['TestCase40UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_FILE_FORMAT',
-    'response': "Invalid format for a file: .tar for field: FIELD-1! Try with these formats: ['.zip', '.pdf']"
+    'response': "Invalid format for a file: .tar for field: DISPLAY_NAME-0! Try with these formats: ['.zip', '.pdf']"
 }

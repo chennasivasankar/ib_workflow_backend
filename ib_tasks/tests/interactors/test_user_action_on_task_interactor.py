@@ -12,7 +12,7 @@ from ib_tasks.tests.factories.storage_dtos import (
     ActionDTOFactory, StageActionDetailsDTOFactory,
     TaskDetailsDTOFactory,
     TaskGoFDTOFactory, TaskGoFFieldDTOFactory,
-    GoFIdWithGoFDisplayNameDTOFactory, FieldIdWithFieldDisplayNameDTOFactory
+    GoFIdWithGoFDisplayNameDTOFactory, FieldWithGoFDisplayNameDTOFactory
 )
 from ib_tasks.tests.interactors.super_storage_mock_class import \
     StorageMockClass
@@ -241,8 +241,8 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
 
     @pytest.fixture()
     def field_name_dtos(self):
-        FieldIdWithFieldDisplayNameDTOFactory.reset_sequence(1)
-        field_dtos = FieldIdWithFieldDisplayNameDTOFactory.create_batch(2)
+        FieldWithGoFDisplayNameDTOFactory.reset_sequence(1)
+        field_dtos = FieldWithGoFDisplayNameDTOFactory.create_batch(2)
         return field_dtos
 
     def set_up_storage_for_required_fields(

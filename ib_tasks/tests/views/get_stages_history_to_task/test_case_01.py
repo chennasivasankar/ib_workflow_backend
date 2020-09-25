@@ -26,7 +26,6 @@ class TestCase01GetStagesHistoryToTaskAPITestCase(TestUtils):
         task = TaskFactory(task_display_id="IBWF-1")
         TaskStageHistoryDTOFactory.reset_sequence(1)
         StageModelFactory.reset_sequence()
-        StageModelFactory.stage_color.reset()
         TaskStageHistoryModelFactory.reset_sequence(1)
         LogDurationDTOFactory.reset_sequence(1)
         AssigneeDetailsDTOFactory.reset_sequence(1)

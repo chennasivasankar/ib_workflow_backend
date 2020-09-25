@@ -1,3 +1,4 @@
+import factory
 import pytest
 from mock import create_autospec
 
@@ -8,7 +9,10 @@ from ib_tasks.interactors.create_or_update_task \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldIdWithGoFIdDTO
 from ib_tasks.tests.factories.interactor_dtos import \
-    GoFWritePermissionRolesDTOFactory, FieldWritePermissionRolesDTOFactory
+    GoFWritePermissionRolesDTOFactory, FieldWritePermissionRolesDTOFactory, \
+    GoFFieldsDTOFactory, FieldValuesDTOFactory
+from ib_tasks.tests.factories.storage_dtos import \
+    GoFIdWithGoFDisplayNameDTOFactory, FieldWithGoFDisplayNameDTOFactory
 
 
 class TestTemplateGoFsFieldsBaseValidationsInteractor:
@@ -59,14 +63,12 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
             TaskTemplateStorageInterface
         return create_autospec(TaskTemplateStorageInterface)
 
-    @pytest.fixture
+    @pytest.fixture(autouse=True)
     def reset_sequence(self):
-        from ib_tasks.tests.factories.interactor_dtos import \
-            GoFFieldsDTOFactory
         GoFFieldsDTOFactory.reset_sequence()
-        from ib_tasks.tests.factories.interactor_dtos import \
-            FieldValuesDTOFactory
         FieldValuesDTOFactory.reset_sequence()
+        GoFIdWithGoFDisplayNameDTOFactory.reset_sequence()
+        FieldWithGoFDisplayNameDTOFactory.reset_sequence()
 
     @pytest.fixture
     def gof_fields_dtos(self, reset_sequence):
@@ -247,6 +249,27 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         create_task_storage_mock.get_all_gof_ids_related_to_a_task_template \
             .return_value = valid_task_template_gof_ids
 
+        gof_ids = [dto.gof_id for dto in gof_fields_dtos]
+        field_ids = []
+        for gof_fields_dto in gof_fields_dtos:
+            field_ids += [
+                field_value_dto.field_id
+                for field_value_dto in gof_fields_dto.field_values_dtos
+            ]
+        gof_id_with_display_name_dtos = GoFIdWithGoFDisplayNameDTOFactory \
+            .create_batch(size=len(gof_ids), gof_id=factory.Iterator(gof_ids))
+        field_with_gof_display_name_dtos = FieldWithGoFDisplayNameDTOFactory \
+            .create_batch(size=len(field_ids),
+                          field_id=factory.Iterator(field_ids))
+        gof_storage_mock.get_gofs_display_names.return_value = \
+            gof_id_with_display_name_dtos
+        field_storage_mock.get_fields_display_names_with_gof_display_name \
+            .return_value = field_with_gof_display_name_dtos
+        expected_invalid_gof_display_names = [
+            dto.gof_display_name
+            for dto in gof_id_with_display_name_dtos
+            if dto.gof_id in invalid_task_template_gof_ids]
+
         # Act
         with pytest.raises(InvalidGoFsOfTaskTemplate) as err:
             interactor.perform_gofs_details_validations(
@@ -257,11 +280,10 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
         # Assert
         exception_object = err.value
-        assert exception_object.gof_ids == invalid_task_template_gof_ids
+        assert exception_object.gofs_display_names == expected_invalid_gof_display_names
         assert exception_object.task_template_id == task_template_id
         create_task_storage_mock.get_all_gof_ids_related_to_a_task_template \
-            .assert_called_once_with(
-            task_template_id)
+            .assert_called_once_with(task_template_id)
 
     def test_given_fields_are_not_related_to_given_gofs_raise_exception(
             self, task_storage_mock, gof_storage_mock, field_storage_mock,
@@ -302,6 +324,32 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         field_storage_mock.get_field_ids_related_to_given_gof_ids \
             .return_value = field_id_with_gof_id_dtos
 
+        gof_ids = [dto.gof_id for dto in gof_fields_dtos]
+        field_ids = []
+        for gof_fields_dto in gof_fields_dtos:
+            field_ids += [
+                field_value_dto.field_id
+                for field_value_dto in gof_fields_dto.field_values_dtos
+            ]
+        gof_id_with_display_name_dtos = GoFIdWithGoFDisplayNameDTOFactory \
+            .create_batch(size=len(gof_ids), gof_id=factory.Iterator(gof_ids))
+        field_with_gof_display_name_dtos = FieldWithGoFDisplayNameDTOFactory \
+            .create_batch(size=len(field_ids),
+                          field_id=factory.Iterator(field_ids))
+        gof_storage_mock.get_gofs_display_names.return_value = \
+            gof_id_with_display_name_dtos
+        field_storage_mock.get_fields_display_names_with_gof_display_name \
+            .return_value = field_with_gof_display_name_dtos
+        expected_gof_display_name = None
+        for dto in gof_id_with_display_name_dtos:
+            if dto.gof_id == gof_id:
+                expected_gof_display_name = dto.gof_display_name
+        expected_field_display_names = [
+            dto.field_display_name
+            for dto in field_with_gof_display_name_dtos
+            if dto.field_id in invalid_gof_field_ids
+        ]
+
         # Act
         with pytest.raises(InvalidFieldsOfGoF) as err:
             interactor.perform_gofs_details_validations(
@@ -312,8 +360,8 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
         # Assert
         exception_object = err.value
-        assert exception_object.gof_id == gof_id
-        assert exception_object.field_ids == invalid_gof_field_ids
+        assert exception_object.gof_display_name == expected_gof_display_name
+        assert exception_object.field_display_names == expected_field_display_names
 
     def test_given_duplicate_of_fields_for_given_gofs_raise_exception(
             self, task_storage_mock, gof_storage_mock, field_storage_mock,
@@ -414,6 +462,28 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         field_storage_mock.get_write_permission_roles_for_given_field_ids \
             .return_value = field_write_permission_roles_dtos
 
+        gof_ids = [dto.gof_id for dto in gof_fields_dtos]
+        field_ids = []
+        for gof_fields_dto in gof_fields_dtos:
+            field_ids += [
+                field_value_dto.field_id
+                for field_value_dto in gof_fields_dto.field_values_dtos
+            ]
+        gof_id_with_display_name_dtos = GoFIdWithGoFDisplayNameDTOFactory \
+            .create_batch(size=len(gof_ids), gof_id=factory.Iterator(gof_ids))
+        field_with_gof_display_name_dtos = FieldWithGoFDisplayNameDTOFactory \
+            .create_batch(size=len(field_ids),
+                          field_id=factory.Iterator(field_ids))
+        gof_storage_mock.get_gofs_display_names.return_value = \
+            gof_id_with_display_name_dtos
+        field_storage_mock.get_fields_display_names_with_gof_display_name \
+            .return_value = field_with_gof_display_name_dtos
+        expected_field_display_name = None
+        for dto in field_with_gof_display_name_dtos:
+            if dto.field_id == field_id:
+                expected_field_display_name = dto.field_display_name
+
+
         # Act
         with pytest.raises(UserNeedsFieldWritablePermission) as err:
             interactor.perform_gofs_details_validations(
@@ -425,7 +495,7 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         # Assert
         exception_object = err.value
         assert exception_object.user_id == created_by_id
-        assert exception_object.field_id == field_id
+        assert exception_object.field_display_name == expected_field_display_name
         assert exception_object.required_roles == required_roles
         field_storage_mock.get_write_permission_roles_for_given_field_ids \
             .assert_called_once()

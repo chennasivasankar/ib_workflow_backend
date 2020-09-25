@@ -12,5 +12,5 @@ snapshots['TestCase28CreateTransitionChecklistAPITestCase.test_case status_code'
 snapshots['TestCase28CreateTransitionChecklistAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_TIME_FORMAT',
-    'response': 'given invalid format for time: 31:00:00 for field: field_1! Try with this format: %H:%M:%S'
+    'response': 'given invalid format for time: 31:00:00 for field: DISPLAY_NAME-0! Try with this format: %H:%M:%S'
 }

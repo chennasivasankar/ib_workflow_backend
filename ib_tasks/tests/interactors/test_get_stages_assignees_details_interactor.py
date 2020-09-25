@@ -1,3 +1,4 @@
+import factory
 import pytest
 from mock import create_autospec
 
@@ -52,15 +53,26 @@ class TestGetStagesAssigneesDetailsInteractor:
     ):
         from ib_tasks.tests.factories.interactor_dtos import \
             StageAssigneeWithTeamDetailsDTOFactory
+        StageAssigneeWithTeamDetailsDTOFactory.reset_sequence()
+        from ib_tasks.tests.factories.interactor_dtos import \
+            AssigneeWithTeamDetailsDTOFactory
+        AssigneeWithTeamDetailsDTOFactory.reset_sequence()
+        from ib_tasks.tests.factories.adapter_dtos import TeamInfoDTOFactory
+        TeamInfoDTOFactory.reset_sequence()
+        team_info_dtos = TeamInfoDTOFactory.create_batch(size=3)
+        assignee_details_dtos = AssigneeWithTeamDetailsDTOFactory.create_batch(
+            size=3, team_info_dto=factory.Iterator(team_info_dtos)
+        )
         stage_assignee_details_dtos = \
             StageAssigneeWithTeamDetailsDTOFactory.create_batch(
                 size=3,
+                assignee_details_dto=factory.Iterator(assignee_details_dtos)
             )
         stage_assignee_details_dto = [StageAssigneeWithTeamDetailsDTOFactory(
             assignee_details_dto=None
         )]
         stage_assignee_details_dtos = stage_assignee_details_dtos + \
-                                    stage_assignee_details_dto
+                                      stage_assignee_details_dto
         return stage_assignee_details_dtos
 
     def test_given_task_id_and_stage_ids_invalid_stages_for_task_raise_exception(

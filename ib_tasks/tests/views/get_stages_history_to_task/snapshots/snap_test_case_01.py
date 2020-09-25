@@ -12,7 +12,7 @@ snapshots['TestCase01GetStagesHistoryToTaskAPITestCase.test_case status_code'] =
 snapshots['TestCase01GetStagesHistoryToTaskAPITestCase.test_case body'] = {
     'stages_details': [
         {
-            'color': 'blue',
+            'color': 'orange',
             'name': 'name_0',
             'stage_id': 1
         },

@@ -26,7 +26,7 @@ from ib_tasks.interactors.storage_interfaces \
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldIdWithFieldDisplayNameDTO
+    FieldWithGoFDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
@@ -356,7 +356,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
 
     @staticmethod
     def _validate_all_user_permitted_field_ids_are_filled_or_not(
-            permitted_fields: List[FieldIdWithFieldDisplayNameDTO],
+            permitted_fields: List[FieldWithGoFDisplayNameDTO],
             filled_field_ids: List[str]
     ) -> Optional[UserDidNotFillRequiredFields]:
         permitted_field_ids = [

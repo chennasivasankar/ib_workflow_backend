@@ -46,7 +46,7 @@ class TestGetStageDetails:
         assert response == expected_output
 
     def test_with_invalid_details_raises_exception(
-            self, storage_mock, stage_details_dtos, interactor_mock):
+            self, storage_mock, interactor_mock):
         # Arrange
         stage_ids = ["stage_id_0", "stage_id_1"]
 
