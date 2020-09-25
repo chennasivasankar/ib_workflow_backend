@@ -1,7 +1,4 @@
 from ib_adhoc_tasks.constants.enum import ViewType
-from ib_adhoc_tasks.exceptions.custom_exceptions import \
-    UserNotAllowedToCreateMoreThanOneGroupByInListView, \
-    UserNotAllowedToCreateMoreThanTwoGroupByInKanbanView
 from ib_adhoc_tasks.interactors.dtos.dtos import \
     TemplateFieldsAndGroupByFieldsDTO
 from ib_adhoc_tasks.interactors.presenter_interfaces \
@@ -20,19 +17,14 @@ class GetAdhocTaskTemplateFieldsAndGroupBy:
             self, project_id: str, user_id: str, view_type: ViewType,
             presenter: GetAdhocTaskTemplateFieldsAndGroupByPresenterInterface
     ):
-        try:
-            template_fields_and_group_by_fields_dto = \
-                self.get_adhoc_task_template_fields_and_group_by(
-                    project_id=project_id, user_id=user_id, view_type=view_type
-                )
-            return presenter.get_response_for_get_template_and_group_by_fields(
-                template_fields_and_group_by_fields_dto=
-                template_fields_and_group_by_fields_dto
+        template_fields_and_group_by_fields_dto = \
+            self.get_adhoc_task_template_fields_and_group_by(
+                project_id=project_id, user_id=user_id, view_type=view_type
             )
-        except UserNotAllowedToCreateMoreThanOneGroupByInListView:
-            return presenter.get_response_for_user_not_allowed_to_create_more_than_one_group_by_in_list_view()
-        except UserNotAllowedToCreateMoreThanTwoGroupByInKanbanView:
-            return presenter.get_response_for_user_not_allowed_to_create_more_than_two_group_by_in_kanban_view()
+        return presenter.get_response_for_get_template_and_group_by_fields(
+            template_fields_and_group_by_fields_dto=
+            template_fields_and_group_by_fields_dto
+        )
 
     def get_adhoc_task_template_fields_and_group_by(
             self, project_id: str, user_id: str, view_type: ViewType
