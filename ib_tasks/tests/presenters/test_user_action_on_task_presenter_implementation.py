@@ -27,7 +27,7 @@ class TestCreateOrUpdateTaskPresenterImplementation:
             TaskStageDTOFactory, TaskWithCompleteStageDetailsDTOFactory, \
             GetTaskStageCompleteDetailsDTOFactory
         from ib_tasks.tests.factories.interactor_dtos import \
-            TaskStageAssigneeDetailsDTOFactory
+            TaskStageAssigneeTeamDetailsDTOFactory
         from ib_tasks.tests.factories.storage_dtos import \
             CurrentStageDetailsDTOFactory, ActionDTOFactory, \
             FieldDetailsDTOFactory, StageActionDetailsDTOFactory
@@ -38,7 +38,7 @@ class TestCreateOrUpdateTaskPresenterImplementation:
         ActionDTOFactory.reset_sequence()
         FieldDisplayDTOFactory.reset_sequence()
         TaskStageDTOFactory.reset_sequence()
-        TaskStageAssigneeDetailsDTOFactory.reset_sequence()
+        TaskStageAssigneeTeamDetailsDTOFactory.reset_sequence()
         ColumnStageDTOFactory.reset_sequence()
         ColumnDTOFactory.reset_sequence()
         AssigneeDetailsDTOFactory.reset_sequence()

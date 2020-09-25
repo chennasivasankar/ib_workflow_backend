@@ -5,7 +5,7 @@ from ib_tasks.constants.enum import ViewType
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO
-from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
@@ -30,12 +30,13 @@ class GetTaskCurrentBoardCompleteDetailsInteractor:
                  stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,
                  action_storage: ActionStorageInterface,
-                 board_id: str,
+                 board_id: str, project_id: str,
                  task_stage_storage: Optional[TaskStageStorageInterface],
                  view_type: ViewType = ViewType.KANBAN.value):
         self.task_stage_storage = task_stage_storage
         self.user_id = user_id
         self.board_id = board_id
+        self.project_id = project_id
         self.field_storage = field_storage
         self.stage_storage = stage_storage
         self.task_storage = task_storage
@@ -83,7 +84,7 @@ class GetTaskCurrentBoardCompleteDetailsInteractor:
 
     def _get_stage_assignees_details(
             self, stage_ids: List[str], task_id
-    ) -> List[TaskStageAssigneeDetailsDTO]:
+    ) -> List[TaskStageAssigneeTeamDetailsDTO]:
         if self.task_stage_storage is None:
             return []
         from ib_tasks.interactors.get_stages_assignees_details_interactor \
@@ -101,7 +102,7 @@ class GetTaskCurrentBoardCompleteDetailsInteractor:
         ]
         return \
             assignees_interactor.get_stages_assignee_details_by_given_task_ids(
-                task_stage_dtos=task_stage_dtos
+                task_stage_dtos=task_stage_dtos, project_id=self.project_id
             )
 
     def _get_task_fields_and_actions_dto(

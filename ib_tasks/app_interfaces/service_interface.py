@@ -6,7 +6,7 @@ from ib_tasks.interactors.get_task_details_interactor import \
     GetTaskDetailsInteractor
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
-from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
@@ -87,8 +87,8 @@ class ServiceInterface:
 
     @staticmethod
     def get_assignees_for_task_stages(
-            task_stage_dtos: List[GetTaskDetailsDTO]) -> List[
-        TaskStageAssigneeDetailsDTO]:
+            task_stage_dtos: List[GetTaskDetailsDTO], project_id: str
+    ) -> List[TaskStageAssigneeTeamDetailsDTO]:
         from ib_tasks.interactors.get_stages_assignees_details_interactor \
             import \
             GetStagesAssigneesDetailsInteractor
@@ -99,7 +99,7 @@ class ServiceInterface:
         )
         return \
             assignees_interactor.get_stages_assignee_details_by_given_task_ids(
-                task_stage_dtos=task_stage_dtos
+                task_stage_dtos=task_stage_dtos, project_id=project_id
             )
 
     @staticmethod

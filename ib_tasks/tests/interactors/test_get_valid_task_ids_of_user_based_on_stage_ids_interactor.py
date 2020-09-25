@@ -36,9 +36,9 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
     @pytest.fixture
     def assignees(self):
         from ib_tasks.tests.factories.interactor_dtos import \
-            TaskStageAssigneeDetailsDTOFactory
-        TaskStageAssigneeDetailsDTOFactory.reset_sequence()
-        return TaskStageAssigneeDetailsDTOFactory.create_batch(2)
+            TaskStageAssigneeTeamDetailsDTOFactory
+        TaskStageAssigneeTeamDetailsDTOFactory.reset_sequence()
+        return TaskStageAssigneeTeamDetailsDTOFactory.create_batch(2)
 
     def test_given_valid_stage_ids_get_tasks_with_invalid_project_id(
             self, task_storage_mock, stage_storage_mock, mocker,

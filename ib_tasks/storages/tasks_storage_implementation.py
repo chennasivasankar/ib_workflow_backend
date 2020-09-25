@@ -23,6 +23,8 @@ from ib_tasks.interactors.storage_interfaces.status_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskDisplayIdDTO, TaskProjectDTO, TaskDueMissingDTO, SubTasksCountDTO, \
     SubTasksIdsDTO
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+    TaskStageAssigneeTeamIdDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
@@ -40,6 +42,23 @@ from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 
 class TasksStorageImplementation(TaskStorageInterface):
+
+    def get_stage_assignee_id_dtos(
+            self, task_id: int, stage_ids: List[str]) -> List[TaskStageAssigneeTeamIdDTO]:
+
+        task_stage_objs = TaskStageHistory.objects.filter(
+            task_id=task_id, stage__stage_id__in=stage_ids, left_at=None
+        ).values('task_id', 'stage__stage_id', 'assignee_id', 'team_id')
+        task_stage_assignee_dtos = [
+            TaskStageAssigneeTeamIdDTO(
+                task_id=task_stage_obj['task_id'],
+                stage_id=task_stage_obj['stage__stage_id'],
+                assignee_id=task_stage_obj['assignee_id'],
+                team_id=task_stage_obj['team_id']
+            )
+            for task_stage_obj in task_stage_objs
+        ]
+        return task_stage_assignee_dtos
 
     def add_sub_task(self, sub_task_id: int, parent_task_id: int):
         SubTask.objects.create(task_id=parent_task_id, sub_task_id=sub_task_id)

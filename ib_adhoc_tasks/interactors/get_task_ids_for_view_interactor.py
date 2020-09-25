@@ -227,7 +227,7 @@ class GetTaskIdsForViewInteractor:
 
         for group_details_dto in group_details_dtos:
             group_details_dto.child_group_by_display_name = \
-                assignee_id_wise_name_dict[group_details_dto.group_by_value]
+                assignee_id_wise_name_dict[group_details_dto.child_group_by_value]
 
         return group_details_dtos
 
