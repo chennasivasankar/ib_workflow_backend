@@ -97,11 +97,11 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             self, task_base_details_dto: ElasticTaskDTO
     ):
         start_date, due_date = None, None
-        if task_base_details_dto.start_date is not None:
+        if task_base_details_dto.start_date:
             start_date = self._convert_datetime_object_to_string(
                 task_base_details_dto.start_date
             )
-        if task_base_details_dto.due_date is not None:
+        if task_base_details_dto.due_date:
             due_date = self._convert_datetime_object_to_string(
                 task_base_details_dto.due_date
             )
