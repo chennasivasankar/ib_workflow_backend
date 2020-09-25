@@ -80,7 +80,8 @@ class GetUserActOnTaskResponse:
             stage_storage=self.stage_storage, task_storage=self.task_storage,
             field_storage=self.field_storage,
             action_storage=self.action_storage,
-            task_stage_storage=self.task_stage_storage
+            task_stage_storage=self.task_stage_storage,
+            template_storage=self.task_template_storage
         )
         all_tasks_overview_details_dto = \
             task_overview_interactor.get_filtered_tasks_overview_for_user(
