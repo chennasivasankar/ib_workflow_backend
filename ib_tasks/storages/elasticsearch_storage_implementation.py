@@ -111,8 +111,8 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def _convert_datetime_object_to_string(
             datetime_obj: datetime
     ) -> str:
-        from ib_adhoc_tasks.constants.constants import DATETIME_FORMAT
-        datetime_in_string_format = datetime_obj.strftime(DATETIME_FORMAT)
+        from ib_tasks.constants.constants import DATE_FORMAT
+        datetime_in_string_format = datetime_obj.strftime(DATE_FORMAT)
         return datetime_in_string_format
 
     def filter_tasks(
