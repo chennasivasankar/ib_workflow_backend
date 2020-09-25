@@ -104,7 +104,8 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
             stage_id='stage_id_1',
             assignee_details=AssigneeDetailsDTO(assignee_id='1',
                                                 name='name',
-                                                profile_pic_url='pavan.com')
+                                                profile_pic_url='pavan.com'),
+            team_details=None
         )
 
     @staticmethod
