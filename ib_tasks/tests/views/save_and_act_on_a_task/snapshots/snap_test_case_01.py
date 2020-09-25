@@ -34,12 +34,7 @@ snapshots['TestCase01SaveAndActOnATaskAPITestCase.test_case body'] = {
                     'transition_template_id': 'template_2'
                 }
             ],
-            'assignee': {
-                'assignee_id': 'assignee_id_1',
-                'name': 'name_0',
-                'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM',
-                'team_info': None
-            },
+            'assignee': None,
             'stage_color': 'blue',
             'stage_display_name': 'name_0',
             'stage_id': 1

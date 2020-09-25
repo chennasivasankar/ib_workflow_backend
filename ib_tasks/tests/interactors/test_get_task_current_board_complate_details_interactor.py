@@ -129,7 +129,8 @@ class TestUserActionOnTaskInteractor:
             task_id=1,
             stage_id='stage_id_1',
             assignee_details=AssigneeDetailsDTO(assignee_id='1', name='name',
-                                                profile_pic_url='pavan.com')
+                                                profile_pic_url='pavan.com'),
+            team_details=None
         )
 
     @pytest.fixture()
@@ -177,6 +178,7 @@ class TestUserActionOnTaskInteractor:
         board_id = "board_1"
         task_display_id = "task_1"
         task_id = 1
+        project_id = 'project_1'
         task_storage_mock.get_task_display_id_for_task_id.return_value = task_display_id
         from ib_tasks.constants.enum import ViewType
         view_type = ViewType.KANBAN.value
@@ -186,7 +188,8 @@ class TestUserActionOnTaskInteractor:
             user_id=user_id, board_id=board_id,
             field_storage=field_storage, stage_storage=stage_storage,
             task_storage=task_storage_mock, action_storage=action_storage_mock,
-            task_stage_storage=task_stage_storage, view_type=view_type
+            task_stage_storage=task_stage_storage, view_type=view_type,
+            project_id=project_id
         )
         from ib_tasks.tests.common_fixtures.interactors import (
             prepare_task_boards_details,

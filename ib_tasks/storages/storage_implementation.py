@@ -525,6 +525,14 @@ class StagesStorageImplementation(StageStorageInterface):
         ).values_list('stage__stage_id', flat=True)
         return sorted(list(set(stage_ids)))
 
+    def get_permitted_stage_ids_to_user_roles(
+            self, user_roles: List[str]) -> List[str]:
+
+        stage_ids = StagePermittedRoles.objects.filter(
+            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+        ).values_list('stage__stage_id', flat=True)
+        return sorted(list(set(stage_ids)))
+
     def get_task_current_stages(self, task_id: int) -> List[str]:
         return list(CurrentTaskStage.objects.filter(
             task_id=task_id

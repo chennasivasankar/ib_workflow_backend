@@ -1,33 +1,24 @@
 """
-test with empty stage ids list
-since user does not have stage permitted roles so, stage ids are empty for
-this user
+test with user did not fill required and stage permitted fields for the
+current task stage
 """
-
+import factory
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 from ib_tasks.tests.common_fixtures.adapters.auth_service import \
-    get_projects_info_for_given_ids_mock, \
-    get_valid_project_ids_mock as auth_service_project_ids_mock, \
-    validate_if_user_is_in_project_mock, get_user_id_team_details_dtos_mock
-from ib_tasks.tests.common_fixtures.adapters.project_service import \
-    get_valid_project_ids_mock
-from ib_tasks.tests.common_fixtures.interactors import \
-    create_or_update_data_into_elastic_search_interactor_mock
-from ib_tasks.tests.common_fixtures.storages import \
-    elastic_storage_implementation_mock, \
-    elastic_search_storage_implementation_mock
+    get_projects_info_for_given_ids_mock, get_valid_project_ids_mock, \
+    validate_if_user_is_in_project_mock
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
     TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, \
-    GoFRoleFactory, FieldRoleFactory, StageFactory, \
-    CurrentTaskStageModelFactory, StageGoFFactory
+    GoFRoleFactory, FieldRoleFactory, StageFactory, StageGoFFactory, \
+    CurrentTaskStageModelFactory
 from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase41UpdateTaskAPITestCase(TestUtils):
+class TestCase40UpdateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -57,45 +48,45 @@ class TestCase41UpdateTaskAPITestCase(TestUtils):
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids_based_on_project_mock
         mock_method = get_user_role_ids_based_on_project_mock(mocker)
+        user_roles = mock_method.return_value
 
         project_details_mock = get_projects_info_for_given_ids_mock(mocker)
-        elastic_storage_implementation_mock(mocker)
-        elastic_search_storage_implementation_mock(mocker)
-        create_or_update_data_into_elastic_search_interactor_mock(mocker)
         project_details_dtos = project_details_mock.return_value
         project_id = project_details_dtos[0].project_id
-        auth_service_project_ids_mock(mocker, [project_id])
-        project_mock = get_valid_project_ids_mock(mocker)
-        project_mock.return_value = [project_id]
-        get_projects_info_for_given_ids_mock(mocker)
-        get_user_id_team_details_dtos_mock(mocker)
+        get_valid_project_ids_mock(mocker, [project_id])
         validate_if_user_is_in_project_mock(mocker, True)
 
-        user_roles = mock_method.return_value
+        stage = StageFactory.create(id=stage_id)
         gof = GoFFactory.create(gof_id=gof_id)
+        permitted_but_unfilled_gof = GoFFactory.create()
         gof_role = GoFRoleFactory.create(
             role=user_roles[0], gof=gof,
             permission_type=PermissionTypes.WRITE.value)
+        GoFRoleFactory.create(
+            role=user_roles[0], gof=permitted_but_unfilled_gof,
+            permission_type=PermissionTypes.WRITE.value)
 
-        field = FieldFactory.create(
-            field_id=field_id, gof=gof,
-            field_type=FieldTypes.FILE_UPLOADER.value,
-            allowed_formats='[".zip", ".pdf"]'
-        )
+        field = FieldFactory.create(field_id=field_id, gof=gof)
+        permitted_but_unfilled_fields = FieldFactory.create_batch(
+            size=2, gof=permitted_but_unfilled_gof)
 
         field_role = FieldRoleFactory.create(
             role=user_roles[0], field=field,
             permission_type=PermissionTypes.WRITE.value)
+        FieldRoleFactory.create_batch(
+            size=len(permitted_but_unfilled_fields), role=user_roles[0],
+            field=factory.Iterator(permitted_but_unfilled_fields),
+            permission_type=PermissionTypes.WRITE.value)
         task_template = TaskTemplateFactory.create(template_id=template_id)
         task_template_gofs = GoFToTaskTemplateFactory.create(
             task_template=task_template, gof=gof)
+        GoFToTaskTemplateFactory.create(
+            task_template=task_template, gof=permitted_but_unfilled_gof)
         task = TaskFactory.create(
             task_display_id=task_id, template_id=task_template.template_id,
-            project_id=project_id
-        )
-        stage = StageFactory.create(
-            id=1, task_template_id=task_template.template_id)
+            project_id=project_id)
         StageGoFFactory.create(gof=gof, stage=stage)
+        StageGoFFactory.create(gof=permitted_but_unfilled_gof, stage=stage)
         current_task_stage = CurrentTaskStageModelFactory.create(task=task,
                                                                  stage=stage)
 
@@ -120,7 +111,7 @@ class TestCase41UpdateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD-1",
-                            "field_response": "https://www.url.com/file.zip"
+                            "field_response": "field response"
                         }
                     ]
                 }
@@ -134,33 +125,3 @@ class TestCase41UpdateTaskAPITestCase(TestUtils):
                            query_params=query_params,
                            headers=headers,
                            snapshot=snapshot)
-        from ib_tasks.models import Task
-        task = Task.objects.get(task_display_id="IBWF-1")
-        snapshot.assert_match(name="task_title", value=task.title)
-        snapshot.assert_match(name="task_description", value=task.description)
-        snapshot.assert_match(name="task_start_date",
-                              value=str(task.start_date))
-        snapshot.assert_match(name="task_due_date",
-                              value=str(task.due_date))
-        snapshot.assert_match(name="task_priority", value=task.priority)
-        from ib_tasks.models import TaskGoF
-        task_gofs = TaskGoF.objects.filter(
-            gof_id="GOF-1", task=task)
-        from ib_tasks.models import TaskGoFField
-        task_gof_fields = TaskGoFField.objects.filter(task_gof__in=task_gofs)
-
-        for task_gof_field in task_gof_fields:
-            snapshot.assert_match(
-                name=task_gof_field.field_id,
-                value=task_gof_field.field_response)
-            snapshot.assert_match(
-                name=f"{task_gof_field.field_id} response",
-                value=task_gof_field.field_response)
-        from ib_tasks.models import TaskStageHistory
-        task_stage_history = TaskStageHistory.objects.get(task=task,
-                                                          stage_id=1)
-        snapshot.assert_match(
-            name="task_stage_id", value=task_stage_history.stage_id)
-        snapshot.assert_match(
-            name="task_stage_assignee_id", value=task_stage_history.assignee_id
-        )

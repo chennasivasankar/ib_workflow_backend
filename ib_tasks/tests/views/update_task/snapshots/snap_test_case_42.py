@@ -18,7 +18,10 @@ snapshots['TestCase42UpdateTaskAPITestCase.test_case body'] = {
                 'assignee_id': 'assignee_id_1',
                 'name': 'name_0',
                 'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM',
-                'team_info': None
+                'team_info': {
+                    'team_id': 'team_1',
+                    'team_name': 'team_name1'
+                }
             },
             'stage_color': '#fff2f0',
             'stage_display_name': 'display_name_0',

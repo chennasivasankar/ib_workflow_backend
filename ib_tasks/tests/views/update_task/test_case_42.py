@@ -7,9 +7,18 @@ from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 from ib_tasks.tests.common_fixtures.adapters.auth_service import \
-    get_projects_info_for_given_ids_mock, get_valid_project_ids_mock, \
-    validate_if_user_is_in_project_mock
-from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
+    get_projects_info_for_given_ids_mock, \
+    get_valid_project_ids_mock as auth_service_project_ids_mock, \
+    validate_if_user_is_in_project_mock, get_user_id_team_details_dtos_mock
+from ib_tasks.tests.common_fixtures.adapters.project_service import \
+    get_valid_project_ids_mock
+from ib_tasks.tests.common_fixtures.interactors import \
+    create_or_update_data_into_elastic_search_interactor_mock
+from ib_tasks.tests.common_fixtures.storages import \
+    elastic_storage_implementation_mock, \
+    elastic_search_storage_implementation_mock
+from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, \
+    TeamDetailsWithUserIdDTOFactory
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
     TaskTemplateFactory, GoFToTaskTemplateFactory, FieldFactory, \
     GoFRoleFactory, FieldRoleFactory, StageFactory, StagePermittedRolesFactory, \
@@ -40,6 +49,7 @@ class TestCase42UpdateTaskAPITestCase(TestUtils):
         StageGoFFactory.reset_sequence()
         CurrentTaskStageModelFactory.reset_sequence()
         AssigneeDetailsDTOFactory.reset_sequence()
+        TeamDetailsWithUserIdDTOFactory.reset_sequence()
 
     @pytest.fixture
     def get_assignees_details_dtos_mock(self, mocker):
@@ -58,6 +68,9 @@ class TestCase42UpdateTaskAPITestCase(TestUtils):
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids_based_on_project_mock
         mock_method = get_user_role_ids_based_on_project_mock(mocker)
+        elastic_storage_implementation_mock(mocker)
+        elastic_search_storage_implementation_mock(mocker)
+        create_or_update_data_into_elastic_search_interactor_mock(mocker)
         get_assignees_details_dtos_mock.return_value = \
             [AssigneeDetailsDTOFactory(assignee_id="assignee_id_1")]
         user_roles = mock_method.return_value
@@ -69,7 +82,11 @@ class TestCase42UpdateTaskAPITestCase(TestUtils):
         project_details_mock = get_projects_info_for_given_ids_mock(mocker)
         project_details_dtos = project_details_mock.return_value
         project_id = project_details_dtos[0].project_id
-        get_valid_project_ids_mock(mocker, [project_id])
+        auth_service_project_ids_mock(mocker, [project_id])
+        project_mock = get_valid_project_ids_mock(mocker)
+        project_mock.return_value = [project_id]
+        get_projects_info_for_given_ids_mock(mocker)
+        get_user_id_team_details_dtos_mock(mocker)
         validate_if_user_is_in_project_mock(mocker, True)
 
         field = FieldFactory.create(

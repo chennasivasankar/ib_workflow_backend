@@ -8,20 +8,23 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from freezegun import freeze_time
 
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...common_fixtures.adapters.auth_service import \
-    get_projects_info_for_given_ids_mock, get_valid_project_ids_mock, \
+from ib_tasks.tests.common_fixtures.adapters.project_service import \
+    get_valid_project_ids_mock
+from ib_tasks.tests.views.save_and_act_on_a_task import APP_NAME, \
+    OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+    get_projects_info_for_given_ids_mock, get_valid_project_ids_mock as auth_service_project_ids_mock, \
     validate_if_user_is_in_project_mock, \
     prepare_empty_permitted_user_details_mock, \
-    get_team_info_for_given_user_ids_mock
-from ...common_fixtures.adapters.roles_service import get_some_user_role_ids
-from ...factories.adapter_dtos import ProjectDetailsDTOFactory, \
+    get_team_info_for_given_user_ids_mock, get_user_id_team_details_dtos_mock
+from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+    get_some_user_role_ids
+from ib_tasks.tests.common_fixtures.storages import \
+    elastic_storage_implementation_mock
+from ib_tasks.tests.factories.adapter_dtos import ProjectDetailsDTOFactory, \
     AssigneeDetailsDTOFactory, UserDetailsDTOFactory, TeamDetailsDTOFactory, \
     UserIdWIthTeamDetailsDTOsFactory
-from ...factories.models import StageModelFactory, StageActionFactory, \
-    ActionPermittedRolesFactory, \
-    CurrentTaskStageModelFactory, TaskStatusVariableFactory, \
-    StagePermittedRolesFactory, StageGoFFactory, ProjectTaskTemplateFactory
+from ib_tasks.tests.factories import models
 
 
 class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
@@ -52,20 +55,20 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
         AssigneeDetailsDTOFactory.reset_sequence()
         GoFFactory.reset_sequence()
         TaskTemplateFactory.reset_sequence()
-        ProjectTaskTemplateFactory.reset_sequence()
+        models.ProjectTaskTemplateFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
         FieldFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
         TaskFactory.reset_sequence()
         TaskGoFFactory.reset_sequence()
         TaskGoFFieldFactory.reset_sequence()
-        StageModelFactory.reset_sequence()
-        StageGoFFactory.reset_sequence()
-        TaskStatusVariableFactory.reset_sequence()
-        StageActionFactory.reset_sequence()
-        ActionPermittedRolesFactory.reset_sequence()
-        CurrentTaskStageModelFactory.reset_sequence()
-        StagePermittedRolesFactory.reset_sequence()
+        models.StageModelFactory.reset_sequence()
+        models.StageGoFFactory.reset_sequence()
+        models.TaskStatusVariableFactory.reset_sequence()
+        models.StageActionFactory.reset_sequence()
+        models.ActionPermittedRolesFactory.reset_sequence()
+        models.CurrentTaskStageModelFactory.reset_sequence()
+        models.StagePermittedRolesFactory.reset_sequence()
         TeamDetailsDTOFactory.reset_sequence()
 
         project_id = "project_1"
@@ -73,6 +76,7 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
             get_user_role_ids_based_on_project_mock
         get_user_role_ids_based_on_project_mock(mocker)
         get_some_user_role_ids(mocker)
+        elastic_storage_implementation_mock(mocker)
         permitted_user_details_mock = \
             prepare_empty_permitted_user_details_mock(mocker)
         user_details = UserDetailsDTOFactory()
@@ -84,7 +88,11 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
             project_id=project_id)
         project_info_mock = get_projects_info_for_given_ids_mock(mocker)
         project_info_mock.return_value = [project_info_dtos]
-        get_valid_project_ids_mock(mocker, [project_id])
+        auth_service_project_ids_mock(mocker, [project_id])
+        project_mock = get_valid_project_ids_mock(mocker)
+        project_mock.return_value = [project_id]
+        get_projects_info_for_given_ids_mock(mocker)
+        get_user_id_team_details_dtos_mock(mocker)
         validate_if_user_is_in_project_mock(mocker, True)
         get_assignees_details_dtos_mock.return_value = [
             AssigneeDetailsDTOFactory(assignee_id="assignee_id_1")]
@@ -92,8 +100,8 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
         template_id = "template_1"
         gofs = GoFFactory.create_batch(size=2)
         task_template = TaskTemplateFactory.create(template_id=template_id)
-        ProjectTaskTemplateFactory.create(task_template=task_template,
-                                          project_id=project_id)
+        models.ProjectTaskTemplateFactory.create(task_template=task_template,
+                                                 project_id=project_id)
         GoFToTaskTemplateFactory.create_batch(
             size=2, task_template=task_template, gof=factory.Iterator(gofs))
         plain_text = FieldFactory.create(
@@ -130,27 +138,27 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
             field=checkbox_group,
             field_response='["interactors", "storages"]'
         )
-        stage = StageModelFactory(
+        stage = models.StageModelFactory(
             task_template_id=task_template.template_id,
             stage_color="blue",
             display_logic="variable0==stage_id_0",
             card_info_kanban=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
             card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
         )
-        StageGoFFactory.create_batch(
+        models.StageGoFFactory.create_batch(
             size=len(gofs), gof=factory.Iterator(gofs), stage=stage)
-        TaskStatusVariableFactory.create(
+        models.TaskStatusVariableFactory.create(
             task_id=task_obj.id, variable="variable0", value=stage.stage_id)
-        TaskStatusVariableFactory.create(
+        models.TaskStatusVariableFactory.create(
             task_id=task_obj.id, variable="stage_id_0", value=stage.stage_id)
         path = \
             'ib_tasks.tests.populate.stage_actions_logic.stage_1_action_name_3'
-        action = StageActionFactory(stage=stage, py_function_import_path=path)
-        ActionPermittedRolesFactory.create(
+        action = models.StageActionFactory(stage=stage, py_function_import_path=path)
+        models.ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
-        CurrentTaskStageModelFactory.create(task=task_obj, stage=stage)
-        StagePermittedRolesFactory.create(stage=stage,
-                                          role_id="FIN_PAYMENT_REQUESTER")
+        models.CurrentTaskStageModelFactory.create(task=task_obj, stage=stage)
+        models.StagePermittedRolesFactory.create(stage=stage,
+                                                 role_id="FIN_PAYMENT_REQUESTER")
 
     @freeze_time("2020-09-09 12:00:00")
     @pytest.mark.django_db

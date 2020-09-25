@@ -78,3 +78,25 @@ class TestGetStageIdsHavingActions:
 
         # Assert
         assert expected_stage_ids == stage_ids
+
+    def test_given_user_roles_returns_all_stages_with_or_without_actions(self, setup):
+        # Arrange
+
+        from ib_tasks.storages.storage_implementation import \
+            StagesStorageImplementation
+        storage = StagesStorageImplementation()
+        from ib_tasks.models import StagePermittedRoles
+        stage_role = StagePermittedRoles.objects.get(id=1)
+        from ib_tasks.constants.constants import ALL_ROLES_ID
+        stage_role.role_id = ALL_ROLES_ID
+        stage_role.save()
+        user_roles = ['FIN_PAYMENT_APPROVER']
+        expected_stage_ids = ['stage_id_0', 'stage_id_1']
+
+        # Act
+        stage_ids = storage.get_permitted_stage_ids_to_user_roles(
+            user_roles=user_roles
+        )
+
+        # Assert
+        assert expected_stage_ids == stage_ids
