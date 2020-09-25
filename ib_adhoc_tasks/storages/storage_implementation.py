@@ -10,10 +10,12 @@ from ib_adhoc_tasks.interactors.storage_interfaces.storage_interface import \
 class StorageImplementation(StorageInterface):
 
     def get_group_by_details_dtos(
-            self, user_id: str
+            self, user_id: str, view_type: ViewType
     ) -> List[GroupByDetailsDTO]:
         from ib_adhoc_tasks.models import GroupByInfo
-        group_by_objects = GroupByInfo.objects.filter(user_id=user_id)
+        group_by_objects = GroupByInfo.objects.filter(
+            user_id=user_id, view_type=view_type
+        )
         group_by_details_dtos = [
             GroupByDetailsDTO(
                 group_by=group_by_object.group_by,
@@ -44,7 +46,7 @@ class StorageImplementation(StorageInterface):
         from ib_adhoc_tasks.models import GroupByInfo
         group_by_info_object = GroupByInfo.objects.create(
             user_id=add_or_edit_group_by_parameter_dto.user_id,
-            group_by=add_or_edit_group_by_parameter_dto.group_by_display_name,
+            group_by=add_or_edit_group_by_parameter_dto.group_by_key,
             view_type=add_or_edit_group_by_parameter_dto.view_type,
             order=add_or_edit_group_by_parameter_dto.order,
         )
@@ -61,7 +63,7 @@ class StorageImplementation(StorageInterface):
         GroupByInfo.objects.filter(
             id=add_or_edit_group_by_parameter_dto.group_by_id
         ).update(
-            group_by=add_or_edit_group_by_parameter_dto.group_by_display_name,
+            group_by=add_or_edit_group_by_parameter_dto.group_by_key,
             view_type=add_or_edit_group_by_parameter_dto.view_type,
             order=add_or_edit_group_by_parameter_dto.order,
         )
@@ -76,9 +78,8 @@ class StorageImplementation(StorageInterface):
     @staticmethod
     def _convert_to_group_by_response_dto(group_by_info_object):
         return GroupByResponseDTO(
-            group_by_display_name=group_by_info_object.group_by,
+            group_by_key=group_by_info_object.group_by,
+            display_name=group_by_info_object.group_by,
             group_by_id=group_by_info_object.id,
             order=group_by_info_object.order
         )
-
-

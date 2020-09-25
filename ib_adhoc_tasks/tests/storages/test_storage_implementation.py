@@ -44,7 +44,7 @@ class TestStorageImplementation:
         AddOrEditGroupByParameterDTOFactory.reset_sequence(1)
         add_or_edit_group_by_parameter_dto = AddOrEditGroupByParameterDTOFactory(
             group_by_id=None,
-            group_by_display_name=group_by_response_dto.group_by_display_name,
+            group_by_key=group_by_response_dto.display_name,
             order=group_by_response_dto.order
         )
 
@@ -69,13 +69,13 @@ class TestStorageImplementation:
             AddOrEditGroupByParameterDTOFactory
         AddOrEditGroupByParameterDTOFactory.reset_sequence(1)
         add_or_edit_group_by_parameter_dto = AddOrEditGroupByParameterDTOFactory(
-            group_by_id=group_by_id, group_by_display_name="ASSIGNEE", order=2
+            group_by_id=group_by_id, group_by_key="ASSIGNEE", order=2
         )
         from ib_adhoc_tasks.tests.factories.storage_dtos import \
             GroupByResponseDTOFactory
         GroupByResponseDTOFactory.reset_sequence(1)
         group_by_response_dto = GroupByResponseDTOFactory(
-            group_by_display_name="ASSIGNEE", order=2
+            group_by_key="ASSIGNEE", order=2
         )
 
         # Act

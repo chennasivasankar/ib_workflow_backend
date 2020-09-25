@@ -50,7 +50,7 @@ class GetTaskIdsForViewInteractor:
             if group_by_dto.order == 2:
                 type_of_child_group_by = group_by_dto.group_by_value
 
-        group_details_dtos, group_count_dtos, child_group_count_dtos = \
+        group_details_dtos, total_groups_count, child_group_count_dtos = \
             self.elastic_storage.get_group_details_of_project(
                 project_id=project_id, stage_ids=stage_ids,
                 adhoc_template_id=adhoc_template_id,
@@ -68,7 +68,7 @@ class GetTaskIdsForViewInteractor:
                 group_details_dtos=group_details_dtos,
                 type_of_child_group_by=type_of_child_group_by
             )
-        return group_details_dtos, group_count_dtos, child_group_count_dtos
+        return group_details_dtos, total_groups_count, child_group_count_dtos
 
     @staticmethod
     def _validate_template_id(task_template_id: str):
@@ -227,7 +227,7 @@ class GetTaskIdsForViewInteractor:
 
         for group_details_dto in group_details_dtos:
             group_details_dto.child_group_by_display_name = \
-                assignee_id_wise_name_dict[group_details_dto.group_by_value]
+                assignee_id_wise_name_dict[group_details_dto.child_group_by_value]
 
         return group_details_dtos
 

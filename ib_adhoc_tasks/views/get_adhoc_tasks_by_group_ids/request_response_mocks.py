@@ -4,7 +4,8 @@ REQUEST_BODY_JSON = """
 {
     "group_by_values": [
         "string"
-    ]
+    ],
+    "view_type": "LIST"
 }
 """
 
@@ -49,7 +50,9 @@ RESPONSE_200_JSON = """
                         "button_color": "string"
                     }
                 ]
-            }
+            },
+            "sub_tasks_count": 1,
+            "completed_sub_tasks_count": 1
         }
     ]
 }

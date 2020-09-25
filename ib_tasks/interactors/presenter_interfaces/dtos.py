@@ -4,11 +4,11 @@ from typing import List, Optional
 
 from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
+from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
+    TaskStageAssigneeTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO, TaskWithCompleteStageDetailsDTO
-from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
-    TaskStageAssigneeDetailsDTO
 
 
 @dataclass
@@ -19,7 +19,7 @@ class TaskCompleteDetailsDTO:
     actions_dto: Optional[List[ActionDTO]]
     field_dtos: Optional[List[FieldDisplayDTO]]
     task_stage_details: Optional[List[TaskStageDTO]]
-    assignees_details: Optional[List[TaskStageAssigneeDetailsDTO]]
+    assignees_details: Optional[List[TaskStageAssigneeTeamDetailsDTO]]
 
 
 @dataclass

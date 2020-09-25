@@ -40,7 +40,7 @@ def is_valid_user_id_for_given_project_mock(mocker):
     return mock
 
 
-def validate_project_ids_for_kanban_view_mock(mocker):
+def validate_project_ids_mock(mocker):
     mock = mocker.patch(
         "ib_adhoc_tasks.adapters.iam_service.IamService"
         ".get_valid_project_ids"
@@ -51,4 +51,11 @@ def validate_project_ids_for_kanban_view_mock(mocker):
     group_by_info_kanban_view_dto = GroupByInfoKanbanViewDTOFactory()
     valid_project_ids = [group_by_info_kanban_view_dto.project_id]
     mock.return_value = valid_project_ids
+    return mock
+
+
+def get_stage_details_mock(mocker):
+    mock = mocker.patch(
+        "ib_adhoc_tasks.adapters.task_service.TaskService.get_stage_details"
+    )
     return mock

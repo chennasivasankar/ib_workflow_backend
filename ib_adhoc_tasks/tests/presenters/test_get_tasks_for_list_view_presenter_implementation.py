@@ -20,9 +20,10 @@ class TestGetTasksForListViewPresenterImplementation:
     def task_base_details_dtos(self):
         from ib_adhoc_tasks.tests.factories.adapter_dtos import \
             TaskBaseDetailsDTOFactory
-        TaskBaseDetailsDTOFactory.reset_sequence()
+        TaskBaseDetailsDTOFactory.reset_sequence(0)
+        from ib_adhoc_tasks.constants.enum import Priority
         task_base_details_dtos = TaskBaseDetailsDTOFactory.create_batch(
-            size=15
+            size=15, priority=Priority.HIGH.value
         )
         return task_base_details_dtos
 
@@ -43,8 +44,9 @@ class TestGetTasksForListViewPresenterImplementation:
             FieldDetailsDTOFactory
         from ib_adhoc_tasks.tests.factories.adapter_dtos import \
             StageActionDetailsDTOFactory
-        GetTaskStageCompleteDetailsDTOFactory.reset_sequence()
-        StageActionDetailsDTOFactory.reset_sequence()
+        GetTaskStageCompleteDetailsDTOFactory.reset_sequence(0)
+        FieldDetailsDTOFactory.reset_sequence(0)
+        StageActionDetailsDTOFactory.reset_sequence(0)
         task_stage_complete_details_dtos = \
             GetTaskStageCompleteDetailsDTOFactory.create_batch(
                 size=15,
@@ -59,8 +61,11 @@ class TestGetTasksForListViewPresenterImplementation:
     @pytest.fixture
     def task_stage_assignee_details_dto(self, stage_ids):
         from ib_adhoc_tasks.tests.factories.adapter_dtos import \
-            TaskStageAssigneeDetailsDTOFactory
-        TaskStageAssigneeDetailsDTOFactory.reset_sequence()
+            TaskStageAssigneeDetailsDTOFactory, AssigneeDetailsDTOFactory, \
+            TeamDetailsDTOFactory
+        TaskStageAssigneeDetailsDTOFactory.reset_sequence(0)
+        AssigneeDetailsDTOFactory.reset_sequence(0)
+        TeamDetailsDTOFactory.reset_sequence(0)
         task_stage_assignee_details_dto = \
             TaskStageAssigneeDetailsDTOFactory.create_batch(
                 size=15,
@@ -75,6 +80,7 @@ class TestGetTasksForListViewPresenterImplementation:
     ):
         from ib_adhoc_tasks.tests.factories.adapter_dtos import \
             TasksCompleteDetailsDTOFactory
+        TasksCompleteDetailsDTOFactory.reset_sequence(0)
         task_complete_details_dto = TasksCompleteDetailsDTOFactory(
             task_base_details_dtos=task_base_details_dtos,
             task_stage_details_dtos=task_stage_complete_details_dtos,
@@ -86,20 +92,106 @@ class TestGetTasksForListViewPresenterImplementation:
     def group_details_dtos(self):
         from ib_adhoc_tasks.tests.factories.storage_dtos import \
             GroupDetailsDTOFactory
+        GroupDetailsDTOFactory.reset_sequence(0)
         group_details_dtos = GroupDetailsDTOFactory.create_batch(
             size=3, total_tasks=5
         )
         return group_details_dtos
 
-    def test_given_group_details_dtos_and_task_details_dtos_returns_group_info_task_details_dtos(
-            self, task_complete_details_dto, presenter, group_details_dtos,
-            snapshot
-    ):
+    @pytest.fixture()
+    def sub_tasks_count_dtos(self, task_ids):
+        from ib_adhoc_tasks.tests.factories.adapter_dtos import \
+            TaskIdWithSubTasksCountDTOFactory
+        TaskIdWithSubTasksCountDTOFactory.reset_sequence(0)
+        sub_tasks_count_dtos = TaskIdWithSubTasksCountDTOFactory.create_batch(
+            size=16, task_id=factory.Iterator(task_ids)
+        )
+        return sub_tasks_count_dtos
+
+    @pytest.fixture()
+    def completed_sub_tasks_count_dtos(self, task_ids):
+        from ib_adhoc_tasks.tests.factories.adapter_dtos import \
+            TaskIdWithCompletedSubTasksCountDTOFactory
+        TaskIdWithCompletedSubTasksCountDTOFactory.reset_sequence(0)
+        completed_sub_tasks_count_dtos = TaskIdWithCompletedSubTasksCountDTOFactory \
+            .create_batch(size=16, task_id=factory.Iterator(task_ids))
+        return completed_sub_tasks_count_dtos
+
+    def test_raise_invalid_offset_value(self, snapshot, presenter):
         # Arrange
 
         # Act
+        response = presenter.raise_invalid_offset_value()
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response.content
+        )
+
+    def test_raise_invalid_limit_value(self, snapshot, presenter):
+        # Arrange
+
+        # Act
+        response = presenter.raise_invalid_limit_value()
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response.content
+        )
+
+    def test_raise_invalid_project_id(self, snapshot, presenter):
+        # Arrange
+
+        # Act
+        response = presenter.raise_invalid_project_id()
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response.content
+        )
+
+    def test_raise_invalid_user_id(self, snapshot, presenter):
+        # Arrange
+
+        # Act
+        response = presenter.raise_invalid_user_id()
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response.content
+        )
+
+    def test_raise_invalid_user_for_project(self, snapshot, presenter):
+        # Arrange
+
+        # Act
+        response = presenter.raise_invalid_user_for_project()
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response.content
+        )
+
+    def test_given_group_details_dtos_and_task_details_dtos_returns_group_info_task_details(
+            self, task_complete_details_dto, presenter, group_details_dtos,
+            sub_tasks_count_dtos, completed_sub_tasks_count_dtos,
+            snapshot
+    ):
+        # Arrange
+        total_groups_count = 3
+
+        # Act
         response = presenter.get_task_details_group_by_info_response(
-            group_details_dtos, task_complete_details_dto
+            group_details_dtos=group_details_dtos,
+            task_details_dto=task_complete_details_dto,
+            total_groups_count=total_groups_count,
+            sub_tasks_count_dtos=sub_tasks_count_dtos,
+            completed_sub_tasks_count_dtos=completed_sub_tasks_count_dtos
         )
 
         # Arrange

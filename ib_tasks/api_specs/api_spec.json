@@ -289,58 +289,6 @@
             "project_id"
          ]
       },
-      "CreateSubTaskRequestBody":{
-        "type":"object",
-         "properties":{
-            "project_id":{
-               "type":"string"
-            },
-            "task_template_id":{
-               "type":"string"
-            },
-            "action_id":{
-               "type":"integer"
-            },
-            "parent_task_id":{
-               "type":"string"
-            },
-            "title":{
-               "type":"string"
-            },
-            "description":{
-               "type":"string"
-            },
-            "start_datetime":{
-               "type":"string",
-               "format": "date-time"
-            },
-            "due_datetime":{
-               "type":"string",
-               "format": "date-time"
-            },
-            "priority":{
-               "type":"string",
-               "enum":[
-                  "HIGH",
-                  "MEDIUM",
-                  "LOW"
-               ]
-            },
-            "task_gofs":{
-               "type":"array",
-               "items":{
-                  "$ref":"#/definitions/GoF"
-               }
-            }
-         },
-         "required":[
-            "parent_task_id",
-            "action_id",
-            "task_template_id",
-            "title",
-            "project_id"
-         ]
-      },
       "ActionDetailsResponse":{
          "type":"object",
          "properties":{
@@ -576,6 +524,58 @@
             "enable_add_another",
             "max_columns",
             "fields"
+         ]
+      },
+      "CreateSubTaskRequestBody":{
+        "type":"object",
+         "properties":{
+            "project_id":{
+               "type":"string"
+            },
+            "task_template_id":{
+               "type":"string"
+            },
+            "action_id":{
+               "type":"integer"
+            },
+            "parent_task_id":{
+               "type":"string"
+            },
+            "title":{
+               "type":"string"
+            },
+            "description":{
+               "type":"string"
+            },
+            "start_datetime":{
+               "type":"string",
+               "format": "date-time"
+            },
+            "due_datetime":{
+               "type":"string",
+               "format": "date-time"
+            },
+            "priority":{
+               "type":"string",
+               "enum":[
+                  "HIGH",
+                  "MEDIUM",
+                  "LOW"
+               ]
+            },
+            "task_gofs":{
+               "type":"array",
+               "items":{
+                  "$ref":"#/definitions/GoF"
+               }
+            }
+         },
+         "required":[
+            "parent_task_id",
+            "action_id",
+            "task_template_id",
+            "title",
+            "project_id"
          ]
       },
       "PerformActionRequestBody":{

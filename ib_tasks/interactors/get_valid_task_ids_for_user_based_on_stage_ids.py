@@ -91,8 +91,8 @@ class GetTaskIdsOfUserBasedOnStagesInteractor(ValidationMixin):
             task_stage_dtos.append(task_stage_dto)
         stage_assignee_dtos = get_stage_assignees_interactor. \
             get_stages_assignee_details_by_given_task_ids(
-                task_stage_dtos=task_stage_dtos
-            )
+            task_stage_dtos=task_stage_dtos, project_id=project_id
+        )
 
         from collections import defaultdict
         stage_assignee_map = defaultdict(lambda: [])

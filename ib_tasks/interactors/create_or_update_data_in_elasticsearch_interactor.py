@@ -12,6 +12,8 @@ from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import TaskDetailsDTO
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+    TaskStageAssigneeTeamIdDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 
@@ -37,8 +39,11 @@ class CreateOrUpdateDataInElasticSearchInteractor:
         project_id = self.task_storage.get_project_id_for_the_task_id(
             task_id=task_id
         )
+        task_stage_assignees_dtos = self.task_storage.get_stage_assignee_id_dtos(
+            task_id=task_id, stage_ids=stage_ids
+        )
         elastic_task_dto = self._get_elastic_task_dto(
-            task_dto=task_dto, stage_ids=stage_ids, task_id=task_id, project_id=project_id)
+            task_dto=task_dto, task_stage_assignees_dtos=task_stage_assignees_dtos, task_id=task_id, project_id=project_id)
         if is_task_id_exists:
             self.elasticsearch_storage.update_task(task_dto=elastic_task_dto)
         else:
@@ -50,7 +55,7 @@ class CreateOrUpdateDataInElasticSearchInteractor:
             )
 
     def _get_elastic_task_dto(
-            self, task_dto: TaskDetailsDTO, stage_ids: List[str],
+            self, task_dto: TaskDetailsDTO, task_stage_assignees_dtos: List[TaskStageAssigneeTeamIdDTO],
             task_id: int, project_id: str) -> ElasticTaskDTO:
         fields = self._get_field_dtos_with_exact_data_type(
             task_dto=task_dto
@@ -61,7 +66,7 @@ class CreateOrUpdateDataInElasticSearchInteractor:
             task_id=task_id,
             title=task_dto.task_base_details_dto.title,
             fields=fields,
-            stages=stage_ids
+            stages=task_stage_assignees_dtos
         )
 
     def _get_field_dtos_with_exact_data_type(self, task_dto: TaskDetailsDTO):

@@ -1,4 +1,4 @@
-from unittest.mock import create_autospec, Mock
+from unittest.mock import create_autospec
 
 import pytest
 
@@ -365,47 +365,132 @@ class TestGetTaskIdsForViewInteractor:
             )
 
     def test_with_valid_details_return_response(
-            self, interactor, elastic_storage, group_by_dtos, mocker,
-            task_offset_and_limit_values_dto
+            self, interactor, elastic_storage, mocker,
+            prepare_group_details_dtos,
+            task_offset_and_limit_values_dto, prepare_group_count_dto,
+            prepare_child_group_count_dtos,
+            stage_id_and_name_dtos, snapshot
     ):
         # Arrange
         user_id = "USER_1"
         project_id = "PROJECT_1"
         adhoc_template_id = "ADHOC_TEMPLATE_ID"
-        group_by_dtos = group_by_dtos
         valid_project_ids = ["PROJECT_1"]
         stage_ids = ['STAGE_1', 'STAGE_2']
+        total_groups_count = 5
+
+        from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO
+        group_by_dtos = [
+            GroupByDTO(group_by_value="FIN_PURPOSE_OF_THE_ORDER", order=1,
+                       offset=0, limit=5),
+            GroupByDTO(group_by_value="STAGE", order=2, offset=0, limit=5)
+        ]
 
         from ib_adhoc_tasks.tests.common_fixtures.adapters import \
             get_valid_project_ids_mock, validate_task_template_id_mock, \
             get_user_permitted_stage_ids_mock, get_user_role_ids_mock, \
-            is_valid_user_id_for_given_project_mock
+            is_valid_user_id_for_given_project_mock, get_stage_details_mock
         get_valid_project_ids_mock = get_valid_project_ids_mock(mocker)
         get_valid_project_ids_mock.return_value = valid_project_ids
         validate_task_template_id_mock(mocker)
         get_user_role_ids_mock(mocker)
-        is_valid_user_id_for_given_project_mock = is_valid_user_id_for_given_project_mock(mocker)
+        is_valid_user_id_for_given_project_mock = is_valid_user_id_for_given_project_mock(
+            mocker)
         is_valid_user_id_for_given_project_mock.return_value = True
 
         get_user_permitted_stage_ids_mock = get_user_permitted_stage_ids_mock(
             mocker)
         get_user_permitted_stage_ids_mock.return_value = stage_ids
 
-        expected_get_group_details_of_project_mock = Mock(), 0, 0
+        get_stage_details_mock = get_stage_details_mock(mocker)
+        get_stage_details_mock.return_value = stage_id_and_name_dtos
+
+        expected_get_group_details_of_project_mock = \
+            prepare_group_details_dtos, total_groups_count, prepare_child_group_count_dtos
         elastic_storage.get_group_details_of_project.return_value = \
             expected_get_group_details_of_project_mock
 
         # Act
-        response = interactor.get_task_ids_for_view(
-            project_id=project_id, adhoc_template_id=adhoc_template_id,
-            group_by_dtos=group_by_dtos, user_id=user_id,
-            task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
-        )
+        group_details_dtos, total_groups_count, child_group_count_dtos = \
+            interactor.get_task_ids_for_view(
+                project_id=project_id, adhoc_template_id=adhoc_template_id,
+                group_by_dtos=group_by_dtos, user_id=user_id,
+                task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
+            )
 
         # Assert
-        assert response == expected_get_group_details_of_project_mock
         elastic_storage.get_group_details_of_project.assert_called_once_with(
             project_id=project_id, adhoc_template_id=adhoc_template_id,
             group_by_dtos=group_by_dtos, stage_ids=stage_ids,
             task_offset_and_limit_values_dto=task_offset_and_limit_values_dto
         )
+        snapshot.assert_match(group_details_dtos, "group_details_dtos")
+        snapshot.assert_match(total_groups_count, "total_groups_count")
+        snapshot.assert_match(child_group_count_dtos, "child_group_count_dtos")
+
+    @pytest.fixture()
+    def prepare_group_details_dtos(self):
+        from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
+            GroupDetailsDTO
+        group_details_dtos = [
+            GroupDetailsDTO(task_ids=[19], total_tasks=1,
+                            group_by_value='need to pay debt',
+                            group_by_display_name='need to pay debt',
+                            child_group_by_value='PR_PAYMENT_REQUEST_DRAFTS',
+                            child_group_by_display_name='PR_PAYMENT_REQUEST_DRAFTS'),
+            GroupDetailsDTO(task_ids=[20], total_tasks=1,
+                            group_by_value='need to pay friend',
+                            group_by_display_name='need to pay friend',
+                            child_group_by_value='PR_PAYMENT_REQUEST_DRAFTS',
+                            child_group_by_display_name='PR_PAYMENT_REQUEST_DRAFTS'),
+            GroupDetailsDTO(task_ids=[24], total_tasks=1,
+                            group_by_value='purpose',
+                            group_by_display_name='purpose',
+                            child_group_by_value='PR_NEED_CLARIFICATION',
+                            child_group_by_display_name='PR_NEED_CLARIFICATION'),
+            GroupDetailsDTO(task_ids=[21], total_tasks=1,
+                            group_by_value='sfsdd',
+                            group_by_display_name='sfsdd',
+                            child_group_by_value='PR_PAYMENT_REQUEST_DRAFTS',
+                            child_group_by_display_name='PR_PAYMENT_REQUEST_DRAFTS'),
+            GroupDetailsDTO(task_ids=[25], total_tasks=1,
+                            group_by_value='sfsdfsd',
+                            group_by_display_name='sfsdfsd',
+                            child_group_by_value='PR_PAYMENT_REQUEST_DRAFTS',
+                            child_group_by_display_name='PR_PAYMENT_REQUEST_DRAFTS')]
+        return group_details_dtos
+
+    @pytest.fixture()
+    def prepare_group_count_dto(self):
+        from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
+            GroupCountDTO
+        return GroupCountDTO(
+            group_by_value='FIN_PURPOSE_OF_THE_ORDER', total_groups=5
+        )
+
+    @pytest.fixture()
+    def prepare_child_group_count_dtos(self):
+        from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
+            ChildGroupCountDTO
+        child_group_count_dtos = [
+            ChildGroupCountDTO(group_by_value='PR_PAYMENT_REQUEST_DRAFTS',
+                               total_child_groups=1),
+            ChildGroupCountDTO(group_by_value='PR_PAYMENT_REQUEST_DRAFTS',
+                               total_child_groups=1),
+            ChildGroupCountDTO(group_by_value='PR_NEED_CLARIFICATION',
+                               total_child_groups=1),
+            ChildGroupCountDTO(group_by_value='PR_PAYMENT_REQUEST_DRAFTS',
+                               total_child_groups=1),
+            ChildGroupCountDTO(group_by_value='PR_PAYMENT_REQUEST_DRAFTS',
+                               total_child_groups=1)]
+        return child_group_count_dtos
+
+    @pytest.fixture()
+    def stage_id_and_name_dtos(self):
+        from ib_adhoc_tasks.adapters.task_service import StageIdAndNameDTO
+        stage_id_and_name_dtos = [
+            StageIdAndNameDTO(stage_id='PR_NEED_CLARIFICATION',
+                              name='Need Clarification'),
+            StageIdAndNameDTO(stage_id='PR_PAYMENT_REQUEST_DRAFTS',
+                              name='Payment Request Drafts')]
+        return stage_id_and_name_dtos

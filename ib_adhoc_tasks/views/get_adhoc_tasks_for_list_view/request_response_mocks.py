@@ -46,7 +46,9 @@ RESPONSE_200_JSON = """
                                 "button_color": "string"
                             }
                         ]
-                    }
+                    },
+                    "sub_tasks_count": 1,
+                    "completed_sub_tasks_count": 1
                 }
             ]
         }
@@ -58,7 +60,7 @@ RESPONSE_400_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "INVALID_OFFSET_OR_LIMIT_VALUE"
+    "res_status": "INVALID_OFFSET_VALUE"
 }
 """
 

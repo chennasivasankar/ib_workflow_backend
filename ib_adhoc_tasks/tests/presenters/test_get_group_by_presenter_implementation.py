@@ -19,7 +19,8 @@ class TestGetGroupByPresenterImplementation:
             GroupByResponseDTOFactory
         GroupByResponseDTOFactory.reset_sequence(0)
         GroupByResponseDTOFactory.order.reset()
-        GroupByResponseDTOFactory.group_by_display_name.reset()
+        GroupByResponseDTOFactory.group_by_key.reset()
+        GroupByResponseDTOFactory.display_name.reset()
         group_by_response_dtos = \
             GroupByResponseDTOFactory.create_batch(size=2)
 

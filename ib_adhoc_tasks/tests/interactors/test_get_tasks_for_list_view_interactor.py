@@ -2,6 +2,8 @@ from unittest.mock import patch, Mock
 
 import pytest
 
+from ib_adhoc_tasks.adapters.iam_service import IamService, InvalidUserId, \
+    InvalidUserForProject
 from ib_adhoc_tasks.adapters.task_service import TaskService
 from ib_adhoc_tasks.interactors.get_task_ids_for_view_interactor import \
     GetTaskIdsForViewInteractor
@@ -65,6 +67,168 @@ class TestGetTasksForListViewInteractor:
         GroupByInfoListViewDTOFactory.reset_sequence()
         return GroupByInfoListViewDTOFactory()
 
+    @pytest.fixture
+    def group_by_info_list_view_dto_with_invalid_offset(self):
+        from ib_adhoc_tasks.tests.factories.interactor_dtos import \
+            GroupByInfoListViewDTOFactory
+        GroupByInfoListViewDTOFactory.reset_sequence()
+        from ib_adhoc_tasks.tests.factories.interactor_dtos import \
+            OffsetLimitDTOFactory
+        return GroupByInfoListViewDTOFactory(
+            task_offset_limit_dto=OffsetLimitDTOFactory(offset=-1),
+            group_offset_limit_dto=OffsetLimitDTOFactory(offset=-10)
+        )
+
+    @pytest.fixture
+    def group_by_info_list_view_dto_with_invalid_limit(self):
+        from ib_adhoc_tasks.tests.factories.interactor_dtos import \
+            GroupByInfoListViewDTOFactory
+        GroupByInfoListViewDTOFactory.reset_sequence()
+        from ib_adhoc_tasks.tests.factories.interactor_dtos import \
+            OffsetLimitDTOFactory
+        return GroupByInfoListViewDTOFactory(
+            task_offset_limit_dto=OffsetLimitDTOFactory(limit=-1),
+            group_offset_limit_dto=OffsetLimitDTOFactory(limit=-10)
+        )
+
+    @patch.object(IamService, "get_valid_project_ids")
+    def test_given_invalid_project_id_raise_exception(
+            self, project_mock, storage_mock, elastic_storage_mock,
+            group_by_info_list_view_dto, presenter_mock
+    ):
+        # Arrange
+        project_mock.return_value = []
+        interactor = GetTasksForListViewInteractor(
+            storage=storage_mock,
+            elastic_storage=elastic_storage_mock
+        )
+        mock_object = Mock()
+        presenter_mock.raise_invalid_project_id.return_value = mock_object
+
+        # Act
+        response = interactor.get_tasks_for_list_view_wrapper(
+            group_by_info_list_view_dto=group_by_info_list_view_dto,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == mock_object
+        project_mock.assert_called_once()
+        presenter_mock.raise_invalid_project_id.assert_called_once()
+
+    def test_given_invalid_offset_value_raise_exception(
+            self, mocker, presenter_mock,  storage_mock, elastic_storage_mock,
+            group_by_info_list_view_dto_with_invalid_offset
+    ):
+        # Arrange
+        from ib_adhoc_tasks.tests.common_fixtures.adapters import \
+            validate_project_ids_mock
+        validate_project_ids_mock(
+            mocker)
+        interactor = GetTasksForListViewInteractor(
+            storage=storage_mock,
+            elastic_storage=elastic_storage_mock
+        )
+        mock_object = Mock()
+        presenter_mock.raise_invalid_offset_value.return_value = mock_object
+
+        # Act
+        response = interactor.get_tasks_for_list_view_wrapper(
+            group_by_info_list_view_dto=group_by_info_list_view_dto_with_invalid_offset,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_invalid_offset_value.assert_called_once()
+
+    def test_given_invalid_limit_value_raise_exception(
+            self, mocker, presenter_mock,  storage_mock, elastic_storage_mock,
+            group_by_info_list_view_dto_with_invalid_limit
+    ):
+        # Arrange
+        from ib_adhoc_tasks.tests.common_fixtures.adapters import \
+            validate_project_ids_mock
+        validate_project_ids_mock(
+            mocker)
+        interactor = GetTasksForListViewInteractor(
+            storage=storage_mock,
+            elastic_storage=elastic_storage_mock
+        )
+        mock_object = Mock()
+        presenter_mock.raise_invalid_limit_value.return_value = mock_object
+
+        # Act
+        response = interactor.get_tasks_for_list_view_wrapper(
+            group_by_info_list_view_dto=group_by_info_list_view_dto_with_invalid_limit,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_invalid_limit_value.assert_called_once()
+
+    @patch.object(GetTaskIdsForViewInteractor, "get_task_ids_for_view")
+    def test_given_invalid_user_raise_exception(
+            self, user_mock, presenter_mock,  storage_mock,
+            elastic_storage_mock, group_by_info_list_view_dto,
+            group_by_details_dtos, mocker
+    ):
+        # Arrange
+        from ib_adhoc_tasks.tests.common_fixtures.adapters import \
+            validate_project_ids_mock
+        validate_project_ids_mock(
+            mocker)
+        invalid_user_exception = InvalidUserId()
+        user_mock.side_effect = invalid_user_exception
+        interactor = GetTasksForListViewInteractor(
+            storage=storage_mock,
+            elastic_storage=elastic_storage_mock
+        )
+        mock_object = Mock()
+        presenter_mock.raise_invalid_user_id.return_value = mock_object
+
+        # Act
+        response = interactor.get_tasks_for_list_view_wrapper(
+            group_by_info_list_view_dto=group_by_info_list_view_dto,
+            presenter=presenter_mock
+        )
+
+        # Arrange
+        assert response == mock_object
+        user_mock.assert_called_once()
+        presenter_mock.raise_invalid_user_id.assert_called_once()
+
+    @patch.object(GetTaskIdsForViewInteractor, "get_task_ids_for_view")
+    def test_given_user_not_exists_for_project_raise_exception(
+            self, user_mock, presenter_mock, storage_mock,
+            elastic_storage_mock, group_by_info_list_view_dto,
+            group_by_details_dtos, mocker
+    ):
+        # Arrange
+        from ib_adhoc_tasks.tests.common_fixtures.adapters import \
+            validate_project_ids_mock
+        validate_project_ids_mock(
+            mocker)
+        invalid_user_exception = InvalidUserForProject()
+        user_mock.side_effect = invalid_user_exception
+        interactor = GetTasksForListViewInteractor(
+            storage=storage_mock,
+            elastic_storage=elastic_storage_mock
+        )
+        mock_object = Mock()
+        presenter_mock.raise_invalid_user_for_project.return_value = mock_object
+
+        # Act
+        response = interactor.get_tasks_for_list_view_wrapper(
+            group_by_info_list_view_dto=group_by_info_list_view_dto,
+            presenter=presenter_mock
+        )
+
+        # Arrange
+        assert response == mock_object
+        user_mock.assert_called_once()
+        presenter_mock.raise_invalid_user_for_project.assert_called_once()
 
     @patch.object(TaskService, "get_task_complete_details_dto")
     @patch.object(GetTaskIdsForViewInteractor, "get_task_ids_for_view")
@@ -77,10 +241,15 @@ class TestGetTasksForListViewInteractor:
         # Arrange
         user_id = group_by_info_list_view_dto.user_id
         from ib_adhoc_tasks.tests.common_fixtures.adapters import \
-            validate_project_ids_for_kanban_view_mock
-        validate_project_ids_for_kanban_view_mock(
+            validate_project_ids_mock
+        validate_project_ids_mock(
             mocker)
-        group_details_mock.return_value = group_details_dtos
+        total_groups_count = 3
+        child_group_count_dtos = []
+        from ib_adhoc_tasks.constants.enum import ViewType
+        view_type = ViewType.LIST.value
+        group_details_mock.return_value = \
+            group_details_dtos, total_groups_count, child_group_count_dtos
         task_details_mock.return_value = task_details_dtos
         interactor = GetTasksForListViewInteractor(
             storage=storage_mock,
@@ -100,6 +269,10 @@ class TestGetTasksForListViewInteractor:
 
         # Assert
         assert response == mock_object
+        storage_mock.get_group_by_details_dtos.assert_called_once_with(
+            user_id, view_type
+        )
         presenter_mock.get_task_details_group_by_info_response \
-            .assert_called_once()
-
+            .assert_called_once_with(
+                group_details_dtos, task_details_dtos, total_groups_count
+            )

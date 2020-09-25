@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "host": "127.0.0.1:8000",
-  "basePath": "/api/ib_adhok_tasks",
+  "basePath": "/api/ib_adhoc_tasks",
   "info": {
     "version": "1.0.0",
     "title": "Simple API",
@@ -296,16 +296,21 @@
         },
         "stage_with_actions": {
           "$ref": "#/definitions/StagesWithActions"
+        },
+        "sub_tasks_count": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "completed_sub_tasks_count": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "required": [
         "task_id",
         "task_overview_fields",
         "stage_with_actions",
-        "title",
-        "start_date",
-        "due_date",
-        "priority"
+        "title"
       ]
     },
     "TaskOverviewWithStageAndActionsListView": {
@@ -758,7 +763,7 @@
             "KANBAN"
           ]
         },
-        "group_by_display_name": {
+        "group_by_key": {
           "type": "string"
         },
         "order": {
@@ -767,7 +772,7 @@
       },
       "required": [
         "view_type",
-        "group_by_display_name"
+        "group_by_key"
       ]
     },
     "GroupByResponseFields": {
@@ -776,7 +781,10 @@
         "group_by_id": {
           "type": "integer"
         },
-        "group_by_display_name": {
+        "group_by_key": {
+          "type": "string"
+        },
+        "display_name": {
           "type": "string"
         },
         "order": {
@@ -785,7 +793,8 @@
       },
       "required": [
         "group_by_id",
-        "group_by_display_name",
+        "group_by_key",
+        "display_name",
         "order"
       ]
     },
@@ -800,7 +809,8 @@
             "res_status": {
               "type": "string",
               "enum": [
-                "INVALID_OFFSET_OR_LIMIT_VALUE"
+                "INVALID_OFFSET_VALUE",
+                "INVALID_LIMIT_VALUE"
               ]
             }
           },
@@ -822,7 +832,8 @@
               "type": "string",
               "enum": [
                 "INVALID_PROJECT_ID",
-                "USER_NOT_EXISTS_IN_PROJECT"
+                "USER_NOT_EXISTS_IN_PROJECT",
+                "INVALID_USER_ID"
               ]
             }
           },
@@ -916,6 +927,13 @@
             "items": {
               "type": "string"
             }
+          },
+          "view_type": {
+            "type": "string",
+            "enum": [
+              "LIST",
+              "KANBAN"
+            ]
           }
         },
         "required": [
@@ -1103,6 +1121,46 @@
       "description": "project id value",
       "type": "string",
       "required": true
+    },
+    "GetSubTasksParameter": {
+      "name": "get_subtasks_parameter",
+      "in": "body",
+      "description": "get subtasks of task parameter",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string"
+          },
+          "view_type": {
+            "type": "string",
+            "enum": [
+              "LIST",
+              "KANBAN"
+            ]
+          }
+        },
+        "required": [
+          "task_id",
+          "view_type"
+        ]
+      }
+    },
+    "GetChildGroupsInGroupParameter": {
+      "name": "get_child_groups_in_group_parameter",
+      "in": "body",
+      "description": "get child groups in a group",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "group_by_value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "group_by_value"
+        ]
+      }
     }
   },
   "responses": {
@@ -1382,6 +1440,98 @@
       "schema": {
         "$ref": "#/definitions/InvalidPaginationDetails"
       }
+    },
+    "NotFoundRequestForGetSubTasksResponse": {
+      "description": "not found response for get sub tasks response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_TASK_ID",
+                  "USER_NOT_EXISTS_IN_PROJECT"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetSubTasksOfTask": {
+      "description": "Get subtasks of task",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "parent_task_id": {
+            "type": "string"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/TaskOverviewWithStageAndActions"
+            }
+          }
+        },
+        "required": [
+          "parent_task_id",
+          "tasks"
+        ]
+      }
+    },
+    "GetChildGroupsInGroupResponse": {
+      "description": "Get child groups in group response",
+      "schema": {
+          "type": "object",
+        "properties": {
+          "total_child_groups": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "child_groups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "group_by_value": {
+                  "type": "string"
+                },
+                "group_by_display_name": {
+                  "type": "string"
+                },
+                "total_tasks": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "tasks": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/TaskOverviewWithStageAndActions"
+                  }
+                }
+              },
+              "required": [
+                "group_by_value",
+                "group_by_display_name",
+                "total_tasks",
+                "tasks"
+              ]
+            }
+          }
+        },
+        "required": [
+          "total_child_groups",
+          "child_groups"
+        ]
+      }
     }
   },
   "paths": {
@@ -1574,6 +1724,74 @@
           },
           "404": {
             "$ref": "#/responses/NotFoundRequestForGetGroupResponse"
+          }
+        }
+      }
+    },
+    "/projects/adhoc_board/groups/task/subtasks/v1/": {
+      "post": {
+        "summary": "Get sub tasks of a task",
+        "operationId": "get_subtasks_of_task",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/GetSubTasksParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetSubTasksOfTask"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundRequestForGetSubTasksResponse"
+          },
+          "400": {
+            "$ref": "#/responses/InvalidPaginationResponse"
+          }
+        }
+      }
+    },
+    "/projects/adhoc_board/groups/child_groups/v1": {
+      "post": {
+        "summary": "Get Child Groups In A Group",
+        "operationId": "get_child_groups_in_group",
+        "description": "Get child groups in a group",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/GroupLimitParameter"
+          },
+          {
+            "$ref": "#/parameters/GroupOffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/GetChildGroupsInGroupParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetChildGroupsInGroupResponse"
           }
         }
       }
