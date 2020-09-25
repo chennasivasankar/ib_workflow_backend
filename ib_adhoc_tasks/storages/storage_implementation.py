@@ -14,7 +14,7 @@ class StorageImplementation(StorageInterface):
     ) -> List[GroupByDetailsDTO]:
         from ib_adhoc_tasks.models import GroupByInfo
         group_by_objects = GroupByInfo.objects.filter(
-            user_id=user_id, view_type=view_type
+            user_id=user_id
         )
         group_by_details_dtos = [
             GroupByDetailsDTO(
@@ -30,7 +30,7 @@ class StorageImplementation(StorageInterface):
     ) -> List[GroupByResponseDTO]:
         from ib_adhoc_tasks.models import GroupByInfo
         group_by_info_objects = GroupByInfo.objects.filter(
-            user_id=user_id, view_type=view_type
+            user_id=user_id
         )
         group_by_response_dtos = [
             self._convert_to_group_by_response_dto(

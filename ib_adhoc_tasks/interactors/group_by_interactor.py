@@ -93,9 +93,7 @@ class GroupByInteractor:
         self._validate_is_creation_possible(
             add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto
         )
-        from ib_adhoc_tasks.constants.enum import ViewType
-        if add_or_edit_group_by_parameter_dto.view_type == ViewType.LIST.value:
-            add_or_edit_group_by_parameter_dto.order = 1
+
         group_by_response_dto = self.storage.add_group_by(
             add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto
         )
@@ -109,15 +107,8 @@ class GroupByInteractor:
             .get_view_types_of_user(
             user_id=add_or_edit_group_by_parameter_dto.user_id
         )
-        view_type = add_or_edit_group_by_parameter_dto.view_type
-        if view_type == ViewType.LIST.value:
-            self._validate_is_group_by_for_list_view_is_possible(
-                view_types=view_types
-            )
-        if view_type == ViewType.KANBAN.value:
-            self._validate_is_group_by_for_kanban_view_is_possible(
-                view_types=view_types
-            )
+        if len(view_types) >= 2:
+            raise UserNotAllowedToCreateMoreThanTwoGroupByInKanbanView
 
     @staticmethod
     def _validate_is_group_by_for_list_view_is_possible(
