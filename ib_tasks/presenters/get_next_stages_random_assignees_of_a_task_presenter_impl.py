@@ -90,7 +90,7 @@ class GetNextStagesRandomAssigneesOfATaskPresenterImpl(
             stage_with_user_details_and_team_details_dto:
             StageWithUserDetailsAndTeamDetailsDTO):
         user_with_team_details_dtos = \
-            stage_with_user_details_and_team_details_dto. \
+            stage_with_user_details_and_team_details_dto.\
                 user_with_team_details_dtos
         all_stage_assignees_details = []
         for each_stage_with_user_details_dto in \
@@ -109,13 +109,14 @@ class GetNextStagesRandomAssigneesOfATaskPresenterImpl(
                     "assignee_id": assignee_id,
                     "name": assignee_details_dto.name,
                     "profile_pic_url": assignee_details_dto.
-                        profile_pic_url,
+                    profile_pic_url,
                     "team_info": team_info}
 
             stage_assignees_details = {
-                "stage_id": each_stage_with_user_details_dto.db_stage_id,
+                "stage_id": each_stage_with_user_details_dto.
+                stage_details_dto.db_stage_id,
                 "stage_display_name": each_stage_with_user_details_dto.
-                    stage_display_name,
+                stage_details_dto.stage_display_name,
                 "assignee": assignee_details_dto_dict}
             all_stage_assignees_details.append(stage_assignees_details)
 

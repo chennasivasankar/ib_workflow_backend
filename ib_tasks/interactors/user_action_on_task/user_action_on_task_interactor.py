@@ -118,14 +118,15 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         )
 
     def user_action_on_task_and_set_random_assignees(self, task_id: int):
+
         task_complete_details_dto, task_current_stage_details_dto, \
-        all_tasks_overview_dto, stage_ids = self.user_action_on_task(
+        stage_ids, project_id = self.user_action_on_task(
             task_id)
-        self._set_next_stage_assignees_to_task_and_update_in_db(
-            task_id=task_id, stage_ids=stage_ids
+        all_tasks_overview_details_dto = self._get_tasks_overview_for_users(
+            task_id=task_id, project_id=project_id
         )
         return (task_complete_details_dto, task_current_stage_details_dto,
-                all_tasks_overview_dto)
+                all_tasks_overview_details_dto)
 
     def user_action_on_task(self, task_id: int):
         self._validate_task_id(task_id)
@@ -145,11 +146,14 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             )
         stage_ids = self._get_task_stage_display_satisfied_stage_ids(task_id)
         self._update_task_stages(stage_ids=stage_ids, task_id=task_id)
+        self._set_next_stage_assignees_to_task_and_update_in_db(
+            task_id=task_id, stage_ids=stage_ids
+        )
         self._create_or_update_task_in_elasticsearch(
             task_dto=updated_task_dto, task_id=task_id, stage_ids=stage_ids
         )
         task_complete_details_dto = self._get_task_current_board_complete_details(
-            task_id=task_id, stage_ids=stage_ids
+            task_id=task_id, stage_ids=stage_ids, project_id=project_id
         )
         task_current_stage_details_dto = \
             self._get_task_current_stage_details(task_id=task_id)
@@ -158,7 +162,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         )
         return (
             task_complete_details_dto, task_current_stage_details_dto,
-            all_tasks_overview_details_dto, stage_ids
+            stage_ids, project_id
         )
 
     def _validation_all_user_template_permitted_fields_are_filled_or_not(
@@ -209,7 +213,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         return all_tasks_overview_details_dto
 
     def _get_task_current_board_complete_details(
-            self, task_id: int, stage_ids: List[str]
+            self, task_id: int, stage_ids: List[str], project_id: str
     ) -> TaskCompleteDetailsDTO:
         from ib_tasks.interactors.user_action_on_task \
             .get_task_current_board_complete_details_interactor \
@@ -222,7 +226,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             stage_storage=self.stage_storage,
             task_storage=self.task_storage,
             action_storage=self.action_storage,
-            view_type=self.view_type
+            view_type=self.view_type,
+            project_id=project_id
         )
         return interactor.get_task_current_board_complete_details(
             task_id=task_id, stage_ids=stage_ids)

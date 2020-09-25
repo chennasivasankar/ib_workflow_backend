@@ -6,7 +6,6 @@ from ib_tasks.interactors.get_task_details_interactor import \
     GetTaskDetailsInteractor
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
-from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldDisplayNameDTO, FieldNameDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
@@ -15,7 +14,7 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
     SubTasksCountDTO, \
     SubTasksIdsDTO, TaskProjectDTO, TaskDisplayIdDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
-    TaskDetailsConfigDTO
+    TaskDetailsConfigDTO, TaskWithCompletedSubTasksCountDTO
 from ib_tasks.interactors.task_stage_dtos import TasksCompleteDetailsDTO
 from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
@@ -91,8 +90,8 @@ class ServiceInterface:
 
     @staticmethod
     def get_assignees_for_task_stages(
-            task_stage_dtos: List[GetTaskDetailsDTO]) -> List[
-        TaskStageAssigneeDetailsDTO]:
+            task_stage_dtos: List[GetTaskDetailsDTO], project_id: str
+    ) -> List[TaskStageAssigneeTeamDetailsDTO]:
         from ib_tasks.interactors.get_stages_assignees_details_interactor \
             import \
             GetStagesAssigneesDetailsInteractor
@@ -103,7 +102,7 @@ class ServiceInterface:
         )
         return \
             assignees_interactor.get_stages_assignee_details_by_given_task_ids(
-                task_stage_dtos=task_stage_dtos
+                task_stage_dtos=task_stage_dtos, project_id=project_id
             )
 
     @staticmethod
@@ -231,6 +230,24 @@ class ServiceInterface:
         interactor = GetTaskDetailsInteractor(task_storage)
         return interactor.get_task_ids_for_given_task_display_ids(
             task_display_ids)
+
+    @staticmethod
+    def get_tasks_completed_sub_tasks_count_dtos(
+            task_ids: List[int]
+    ) -> List[TaskWithCompletedSubTasksCountDTO]:
+        from ib_tasks.interactors.get_tasks_completed_sub_tasks_count import \
+            GetTasksCompletedSubTasksCount
+        task_storage = TasksStorageImplementation()
+        task_stage_storage = TaskStageStorageImplementation()
+        interactor = GetTasksCompletedSubTasksCount(
+            task_stage_storage=task_stage_storage,
+            task_storage=task_storage
+        )
+        task_with_completed_sub_tasks_count_dtos = \
+            interactor.get_tasks_completed_sub_tasks_count(
+                task_ids=task_ids
+            )
+        return task_with_completed_sub_tasks_count_dtos
 
     def get_task_template_field_dtos(
             self, user_id: str, project_ids: List[str], template_id: str

@@ -3,11 +3,13 @@ Created on: 07/08/20
 Author: Pavankumar Pamuru
 
 """
-from django.conf import settings
 from dataclasses import dataclass
 from typing import List, Any, Optional
 
-from elasticsearch_dsl import Document, Nested, InnerDoc, Text, Integer, Keyword
+from django.conf import settings
+from elasticsearch_dsl import Document, Nested, InnerDoc, Text, Integer
+
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import TaskStageAssigneeTeamIdDTO
 
 TASK_INDEX_NAME = 'task-{}'.format(settings.STAGE)
 
@@ -25,7 +27,7 @@ class ElasticTaskDTO:
     task_id: int
     title: str
     fields: List[ElasticFieldDTO]
-    stages: List[str]
+    stages: List[TaskStageAssigneeTeamIdDTO]
 
 
 class Field(InnerDoc):

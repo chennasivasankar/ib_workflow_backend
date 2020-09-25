@@ -58,7 +58,8 @@ class GetColumnsTasksDetailsInteractor:
             self._get_tasks_complete_details(
                 task_ids_stages_dtos=task_ids_stages_dtos,
                 user_id=user_id,
-                view_type=view_type
+                view_type=view_type,
+                project_id=project_id
             )
 
         return task_field_dtos, task_action_dtos, task_stage_color_dtos, task_ids_stages_dtos, assignees_dtos
@@ -81,7 +82,9 @@ class GetColumnsTasksDetailsInteractor:
     def _get_tasks_complete_details(
             task_ids_stages_dtos: List[ColumnTaskIdsDTO],
             user_id: str,
-            view_type: ViewType) \
+            view_type: ViewType,
+            project_id: str
+    ) \
             -> Tuple[List[FieldDTO], List[ActionDTO], List[TaskStageDTO], List[StageAssigneesDTO]]:
         task_details_dtos = []
         for task_ids_stages_dto in task_ids_stages_dtos:
@@ -96,7 +99,7 @@ class GetColumnsTasksDetailsInteractor:
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         assignees_dtos = service_adapter.task_service.get_tasks_assignees_details(
-            task_stage_ids=task_details_dtos
+            task_stage_ids=task_details_dtos, project_id=project_id
         )
         task_field_dtos, task_action_dtos, task_stage_color_dtos =\
             service_adapter.task_service.get_task_complete_details(

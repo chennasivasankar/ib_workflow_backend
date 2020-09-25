@@ -34,7 +34,7 @@ class GoFSelectorValidationsInteractor:
         for field_value_dict in field_values:
             gof_ids = field_value_dict["gof_ids"]
             unique_gof_ids = self._get_unique_gof_ids(gof_ids)
-            field_value_dict["gof_ids"] = unique_gof_ids
+            field_value_dict["gof_ids"] = sorted(unique_gof_ids)
         return field_values
 
     @staticmethod
