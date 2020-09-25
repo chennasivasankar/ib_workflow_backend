@@ -66,7 +66,11 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             "project_id": elastic_task_dto.project_id,
             "template_id": elastic_task_dto.template_id,
             "task_id": elastic_task_dto.task_id,
-            "title": elastic_task_dto.title
+            "title": elastic_task_dto.title,
+            "description": elastic_task_dto.description,
+            "start_date": elastic_task_dto.start_date,
+            "due_date": elastic_task_dto.due_date,
+            "priority": elastic_task_dto.priority
         }
         fields_dict = {}
         for field in elastic_task_dto.fields:
