@@ -12,6 +12,7 @@ from ...storages.fields_storage_implementation import \
 from ...storages.storage_implementation import StagesStorageImplementation
 from ...storages.task_stage_storage_implementation import \
     TaskStageStorageImplementation
+from ...storages.task_template_storage_implementation import TaskTemplateStorageImplementation
 from ...storages.tasks_storage_implementation import TasksStorageImplementation
 
 
@@ -36,6 +37,7 @@ def api_wrapper(*args, **kwargs):
         ElasticSearchStorageImplementation
     elasticsearch_storage = ElasticSearchStorageImplementation()
     task_stage_storage = TaskStageStorageImplementation()
+    template_storage = TaskTemplateStorageImplementation()
 
     from ib_tasks.interactors.get_filtered_tasks_details_interactor import \
         GetTaskDetailsByFilterInteractor
@@ -46,7 +48,8 @@ def api_wrapper(*args, **kwargs):
         action_storage=action_storage,
         elasticsearch_storage=elasticsearch_storage,
         filter_storage=filter_storage,
-        task_stage_storage=task_stage_storage
+        task_stage_storage=task_stage_storage,
+        template_storage=template_storage
     )
     from ib_tasks.interactors.get_filtered_tasks_details_interactor import \
         ProjectTasksParameterDTO

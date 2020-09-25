@@ -65,6 +65,10 @@ class CreateOrUpdateDataInElasticSearchInteractor:
             template_id=task_dto.task_base_details_dto.template_id,
             task_id=task_id,
             title=task_dto.task_base_details_dto.title,
+            description=task_dto.task_base_details_dto.description,
+            start_date=task_dto.task_base_details_dto.start_date,
+            due_date=task_dto.task_base_details_dto.due_date,
+            priority=task_dto.task_base_details_dto.priority,
             fields=fields,
             stages=task_stage_assignees_dtos
         )

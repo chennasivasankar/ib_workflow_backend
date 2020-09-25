@@ -17,6 +17,8 @@ from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import PriorityIsRequired, \
     InvalidTaskJson, InvalidTaskDisplayId
+from ib_tasks.interactors.create_or_update_task.create_task_interactor import \
+    CompleteTaskDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
@@ -25,7 +27,8 @@ from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 class CreateSubTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_create_sub_task_response(self):
+    def get_create_sub_task_response(
+            self, complete_task_details: CompleteTaskDetailsDTO):
         pass
 
     @abc.abstractmethod

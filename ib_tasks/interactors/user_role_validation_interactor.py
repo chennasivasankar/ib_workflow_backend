@@ -11,6 +11,7 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_dtos import (TaskProjectDTO,
                                                                TaskProjectRolesDTO)
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import TaskTemplateStorageInterface
 
 
 class UserRoleValidationInteractor:
@@ -105,18 +106,28 @@ class UserRoleValidationInteractor:
 
         is_user_has_write_permission = \
             field_storage.check_is_user_has_write_permission_for_field(
-                    field_id=field_id, user_roles=user_roles)
+                field_id=field_id, user_roles=user_roles)
         return is_user_has_write_permission
 
-    def get_permitted_stage_ids_given_user_id(self, user_id: str,
-                                              project_id: str,
-                                              stage_storage:
-                                              StageStorageInterface) -> \
+    def get_permitted_stage_ids_given_user_id(
+            self, user_id: str, project_id: str,
+            stage_storage: StageStorageInterface,
+            template_storage: TaskTemplateStorageInterface
+    ) -> \
             List[str]:
         user_role_ids = self._get_user_role_ids_for_project(user_id,
                                                             project_id)
-        permitted_stage_ids = stage_storage.get_permitted_stage_ids(
-                user_role_ids, project_id
+
+        from ib_tasks.interactors.project_task_templates_validation_interactor import \
+            ProjectTaskTemplateValidationInteractor
+        interactor = ProjectTaskTemplateValidationInteractor(
+            task_template_storage=template_storage
+        )
+        stage_ids = interactor.get_task_template_stages_for_project(
+            project_id=project_id, stage_storage=stage_storage
+        )
+        permitted_stage_ids = stage_storage.get_permitted_stage_ids_given_stage_ids(
+            user_roles=user_role_ids, stage_ids=stage_ids
         )
         return permitted_stage_ids
 

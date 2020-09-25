@@ -818,8 +818,6 @@ class GoFIdWithGoFDisplayNameDTOFactory(factory.Factory):
     gof_id = factory.sequence(lambda counter: "gof_{}".format(counter))
     gof_display_name = factory.sequence(
         lambda counter: "gof_display_name_{}".format(counter))
-    action_name = factory.sequence(
-        lambda counter: "action_name_{}".format(counter))
 
 
 class StageGoFWithTemplateIdDTOFactory(factory.Factory):

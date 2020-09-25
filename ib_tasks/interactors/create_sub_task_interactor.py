@@ -30,6 +30,8 @@ from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateDBId, 
     InvalidTaskTemplateOfProject, PriorityIsRequired, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskJson, \
     InvalidTaskDisplayId
+from ib_tasks.interactors.create_or_update_task.create_task_interactor import \
+    CompleteTaskDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.create_sub_task_presenter import \
     CreateSubTaskPresenterInterface
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -197,8 +199,8 @@ class CreateSubTaskInteractor:
             presenter: CreateSubTaskPresenterInterface,
             task_request_json: str
     ):
-        created_task_id = self.create_sub_task(task_dto)
-        task_id = created_task_id
+        complete_task_details = self.create_sub_task(task_dto)
+        task_id = complete_task_details.task_id
         user_id = task_dto.basic_task_details_dto.created_by_id
         action_id = task_dto.basic_task_details_dto.action_id
 
@@ -206,7 +208,7 @@ class CreateSubTaskInteractor:
             task_id=task_id, user_id=user_id, action_id=action_id,
             task_json=task_request_json)
         self._create_task_log(task_log_dto)
-        response = presenter.get_create_sub_task_response()
+        response = presenter.get_create_sub_task_response(complete_task_details)
         return response
 
     def _create_task_log(self, task_log_dto: CreateTaskLogDTO):
@@ -220,13 +222,14 @@ class CreateSubTaskInteractor:
             action_id=task_log_dto.action_id)
         task_log_interactor.create_task_log(create_task_log_dto)
 
-    def create_sub_task(self, task_dto: CreateSubTaskDTO):
+    def create_sub_task(
+            self, task_dto: CreateSubTaskDTO) -> CompleteTaskDetailsDTO:
         parent_task_id = self._validate_parent_task_id_and_get_db_id(
             task_dto.parent_task_id)
-        created_task_id = self.create_task(task_dto)
+        complete_task_details = self.create_task(task_dto)
         self._add_task_as_sub_task_to_given_parent_task(
-            parent_task_id, created_task_id)
-        return created_task_id
+            parent_task_id, complete_task_details.task_id)
+        return complete_task_details
 
     def _validate_parent_task_id_and_get_db_id(
             self, parent_task_id: str) -> Union[InvalidTaskDisplayId, int]:
@@ -235,7 +238,7 @@ class CreateSubTaskInteractor:
                 parent_task_id)
         return task_id
 
-    def create_task(self, task_dto: CreateSubTaskDTO) -> int:
+    def create_task(self, task_dto: CreateSubTaskDTO) -> CompleteTaskDetailsDTO:
         from ib_tasks.interactors.create_or_update_task \
             .create_task_interactor import CreateTaskInteractor
         create_task_interactor = CreateTaskInteractor(
@@ -252,8 +255,7 @@ class CreateSubTaskInteractor:
             gof_fields_dtos=task_dto.gof_fields_dtos)
         complete_task_details_dto = create_task_interactor.create_task(
             create_task_dto)
-        created_task_id = complete_task_details_dto.task_id
-        return created_task_id
+        return complete_task_details_dto
 
     def _add_task_as_sub_task_to_given_parent_task(
             self, parent_task_id, created_task_id):

@@ -17,6 +17,7 @@ from ib_tasks.exceptions.task_custom_exceptions import (
     InvalidTaskDisplayId, TaskDelayReasonIsNotUpdated)
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
+from ib_tasks.interactors.mixins.get_user_act_on_task_response import GetUserActOnTaskResponse
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.presenter_interfaces. \
     act_on_task_and_upadte_task_stage_assignees_presenter_interface import \
@@ -51,7 +52,8 @@ from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor imp
 
 
 class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
-    GetTaskIdForTaskDisplayIdMixin, ValidationMixin):
+    GetTaskIdForTaskDisplayIdMixin, ValidationMixin, GetUserActOnTaskResponse
+):
     def __init__(self, user_id: str, action_id: int, storage: StorageInterface,
                  create_task_storage: CreateOrUpdateTaskStorageInterface,
                  board_id: Optional[str],
@@ -134,8 +136,7 @@ class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
 
     def act_on_task_interactor_and_update_task_stage_assignees(
             self, task_id: int, stage_assignee_dtos: List[StageAssigneeDTO]):
-        task_complete_details_dto, task_current_stage_details_dto, \
-        all_tasks_overview_details_dto, stage_ids = self. \
+        stage_ids, project_id, updated_task_dto = self. \
             _act_on_task_and_get_required_dtos(task_id=task_id)
         stage_ids_excluding_virtual_stages = self.stage_storage. \
             get_stage_ids_excluding_virtual_stages(stage_ids)
@@ -147,6 +148,10 @@ class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
             stage_assignees=stage_assignee_dtos)
         self._update_task_stage_assignees(
             task_id_with_stage_assignees_dto=task_id_with_stage_assignees_dto)
+        task_complete_details_dto, task_current_stage_details_dto, \
+        all_tasks_overview_details_dto = self.get_user_act_on_task_response(
+            task_dto=updated_task_dto, task_id=task_id,
+            stage_ids=stage_ids, project_id=project_id)
         return (task_complete_details_dto, task_current_stage_details_dto,
                 all_tasks_overview_details_dto)
 
@@ -178,12 +183,9 @@ class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
             task_stage_storage=self.task_stage_storage,
             task_storage=self.task_storage,
             task_template_storage=self.task_template_storage)
-        task_complete_details_dto, task_current_stage_details_dto, \
-        all_tasks_overview_details_dto, stage_ids = act_on_task_interactor. \
+        stage_ids, project_id, updated_task_dto = act_on_task_interactor. \
             user_action_on_task(task_id=task_id)
-        return (
-            task_complete_details_dto, task_current_stage_details_dto,
-            all_tasks_overview_details_dto, stage_ids)
+        return (stage_ids, project_id, updated_task_dto)
 
     def _create_task_stage_history_records_for_virtual_stages(
             self, task_id: int, stage_ids_excluding_virtual_stages: List[str],
