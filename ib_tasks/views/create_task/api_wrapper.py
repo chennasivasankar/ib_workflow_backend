@@ -5,19 +5,20 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
 from ib_tasks.interactors.task_dtos import FieldValuesDTO, BasicTaskDetailsDTO
-from .validator_class import ValidatorClass
-from ...presenters.create_task_presenter import \
+from ib_tasks.views.create_task.validator_class import ValidatorClass
+from ib_tasks.presenters.create_task_presenter import \
     CreateTaskPresenterImplementation
-from ...storages.action_storage_implementation import \
+from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
-from ...storages.fields_storage_implementation import \
+from ib_tasks.storages.fields_storage_implementation import \
     FieldsStorageImplementation
-from ...storages.gof_storage_implementation import GoFStorageImplementation
-from ...storages.storage_implementation import StorageImplementation, \
+from ib_tasks.storages.gof_storage_implementation import \
+    GoFStorageImplementation
+from ib_tasks.storages.storage_implementation import StorageImplementation, \
     StagesStorageImplementation
-from ...storages.task_stage_storage_implementation import \
+from ib_tasks.storages.task_stage_storage_implementation import \
     TaskStageStorageImplementation
-from ...storages.task_template_storage_implementation import \
+from ib_tasks.storages.task_template_storage_implementation import \
     TaskTemplateStorageImplementation
 
 

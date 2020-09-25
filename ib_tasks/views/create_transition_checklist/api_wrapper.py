@@ -3,25 +3,28 @@ from typing import List, Dict
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
-from .validator_class import ValidatorClass
-from ...interactors.create_or_update_transition_checklist_template import \
+from ib_tasks.views.create_transition_checklist.validator_class import \
+    ValidatorClass
+from ib_tasks.interactors.create_or_update_transition_checklist_template import \
     CreateOrUpdateTransitionChecklistTemplateInteractor
-from ...interactors.task_dtos import GoFFieldsDTO, FieldValuesDTO
-from ...interactors.task_template_dtos import \
+from ib_tasks.interactors.task_dtos import GoFFieldsDTO, FieldValuesDTO
+from ib_tasks.interactors.task_template_dtos import \
     CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
-from ...presenters.create_transition_checklist_presenter import \
+from ib_tasks.presenters.create_transition_checklist_presenter import \
     CreateOrUpdateTransitionChecklistPresenterImplementation
-from ...storages.action_storage_implementation import \
+from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
-from ...storages.create_or_update_task_storage_implementation import \
+from ib_tasks.storages.create_or_update_task_storage_implementation import \
     CreateOrUpdateTaskStorageImplementation
-from ...storages.fields_storage_implementation import \
+from ib_tasks.storages.fields_storage_implementation import \
     FieldsStorageImplementation
-from ...storages.gof_storage_implementation import GoFStorageImplementation
-from ...storages.storage_implementation import StorageImplementation
-from ...storages.task_template_storage_implementation import \
+from ib_tasks.storages.gof_storage_implementation import \
+    GoFStorageImplementation
+from ib_tasks.storages.storage_implementation import StorageImplementation
+from ib_tasks.storages.task_template_storage_implementation import \
     TaskTemplateStorageImplementation
-from ...storages.tasks_storage_implementation import TasksStorageImplementation
+from ib_tasks.storages.tasks_storage_implementation import \
+    TasksStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
