@@ -1,4 +1,9 @@
+from typing import List
+
 from ib_adhoc_tasks.constants.enum import ViewType
+from ib_adhoc_tasks.exceptions.custom_exceptions import \
+    UserNotAllowedToCreateMoreThanOneGroupByInListView, \
+    UserNotAllowedToCreateMoreThanTwoGroupByInKanbanView
 from ib_adhoc_tasks.interactors.presenter_interfaces \
     .group_by_presenter_interface import GetGroupByPresenterInterface, \
     AddOrEditGroupByPresenterInterface
@@ -62,8 +67,9 @@ class GroupByInteractor:
                 add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto
             )
         else:
-            group_by_response_dto = self.add_group_by(
-                add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto
+            group_by_response_dto = self._add_group_by(
+                add_or_edit_group_by_parameter_dto=
+                add_or_edit_group_by_parameter_dto
             )
         from ib_adhoc_tasks.constants.constants import group_by_types_list
         if group_by_response_dto.group_by_key not in group_by_types_list:
@@ -75,10 +81,13 @@ class GroupByInteractor:
                 )
         return group_by_response_dto
 
-    def add_group_by(
+    def _add_group_by(
             self,
             add_or_edit_group_by_parameter_dto: AddOrEditGroupByParameterDTO
     ):
+        self._validate_is_creation_possible(
+            add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto
+        )
         from ib_adhoc_tasks.constants.enum import ViewType
         if add_or_edit_group_by_parameter_dto.view_type == ViewType.LIST.value:
             add_or_edit_group_by_parameter_dto.order = 1
@@ -86,6 +95,46 @@ class GroupByInteractor:
             add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto
         )
         return group_by_response_dto
+
+    def _validate_is_creation_possible(
+            self,
+            add_or_edit_group_by_parameter_dto: AddOrEditGroupByParameterDTO
+    ):
+        view_types = self.storage \
+            .get_view_types_of_user(
+            user_id=add_or_edit_group_by_parameter_dto.user_id
+        )
+        view_type = add_or_edit_group_by_parameter_dto.view_type
+        if view_type == ViewType.LIST.value:
+            self._validate_is_group_by_for_list_view_is_possible(
+                view_types=view_types
+            )
+        if view_type == ViewType.KANBAN.value:
+            self._validate_is_group_by_for_kanban_view_is_possible(
+                view_types=view_types
+            )
+
+    @staticmethod
+    def _validate_is_group_by_for_list_view_is_possible(
+            view_types: List[str]
+    ):
+        group_by_for_list_view_count = 0
+        for view_type in view_types:
+            if view_type == ViewType.LIST.value:
+                group_by_for_list_view_count += 1
+        if group_by_for_list_view_count > 1:
+            raise UserNotAllowedToCreateMoreThanOneGroupByInListView
+
+    @staticmethod
+    def _validate_is_group_by_for_kanban_view_is_possible(
+            view_types: List[str]
+    ):
+        group_by_for_kanban_view_count = 0
+        for view_type in view_types:
+            if view_type == ViewType.KANBAN.value:
+                group_by_for_kanban_view_count += 1
+        if group_by_for_kanban_view_count > 1:
+            raise UserNotAllowedToCreateMoreThanTwoGroupByInKanbanView
 
     @staticmethod
     def _get_field_display_name(

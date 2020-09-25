@@ -33,3 +33,10 @@ class InvalidOffsetValue(Exception):
 class InvalidLimitValue(Exception):
     pass
 
+
+class UserNotAllowedToCreateMoreThanOneGroupByInListView(Exception):
+    pass
+
+
+class UserNotAllowedToCreateMoreThanTwoGroupByInKanbanView(Exception):
+    pass
