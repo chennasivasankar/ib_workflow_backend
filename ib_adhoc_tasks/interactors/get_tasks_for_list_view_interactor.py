@@ -217,10 +217,7 @@ class GetTasksForListViewInteractor:
         iam_service_adapter = get_service_adapter()
         iam_service = iam_service_adapter.iam_service
         valid_project_ids = iam_service.get_valid_project_ids([project_id])
-        flag = 0
         for valid_project_id in valid_project_ids:
             if valid_project_id == project_id:
-                flag = 1
-                break
-        if flag == 0:
-            raise InvalidProjectId()
+                return
+        raise InvalidProjectId()
