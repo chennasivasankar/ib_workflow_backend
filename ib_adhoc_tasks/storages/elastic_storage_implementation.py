@@ -163,12 +163,14 @@ class ElasticStorageImplementation(ElasticStorageInterface):
                     group_by_value != GroupByEnum.ASSIGNEE.value)
         group_agg = ""
         if is_group_by_value_stage:
-            group_agg = A('terms', field='stages.stage_id.keyword')
+            group_agg = A('terms', field='stages.stage_id.keyword',
+                          size=limit + offset)
         if is_group_by_value_assignee:
-            group_agg = A('terms', field='stages.assignee_id.keyword')
+            group_agg = A('terms', field='stages.assignee_id.keyword',
+                          size=limit + offset)
         if is_group_by_value_other_than_stage_and_assignee:
             attribute = group_by_value + '.keyword'
-            group_agg = A('terms', field=attribute)
+            group_agg = A('terms', field=attribute, size=limit + offset)
         return group_agg
 
     @staticmethod
@@ -202,10 +204,12 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         search.aggs.bucket('groups', group_agg).bucket('tasks', tasks_data)
         response = search.execute()
 
-        total_groups_count = len(response.aggregations.groups.buckets)
-
         group_offset = group_by_order_one_dto.offset
         group_limit = group_by_order_one_dto.limit
+
+        total_groups_count = len(response.aggregations.groups.buckets) \
+                             + response.aggregations.groups.sum_other_doc_count \
+                             + group_offset
 
         group_details_dtos = []
         for group in response.aggregations.groups.buckets[
@@ -239,10 +243,10 @@ class ElasticStorageImplementation(ElasticStorageInterface):
             'child_groups', child_agg
         ).bucket('tasks', tasks_data)
         response = search.execute()
-        total_groups_count = len(response.aggregations.groups.buckets)
-
         group_offset = group_by_order_one_dto.offset
         group_limit = group_by_order_one_dto.limit
+        total_groups_count = len(
+            response.aggregations.groups.buckets) + response.aggregations.groups.sum_other_doc_count + group_offset
 
         child_group_offset = group_by_order_two_dto.offset
         child_group_limit = group_by_order_two_dto.limit
@@ -254,7 +258,8 @@ class ElasticStorageImplementation(ElasticStorageInterface):
                      group_offset: group_offset + group_limit]:
             child_group_count_dto = ChildGroupCountDTO(
                 group_by_value=group.key,
-                total_child_groups=len(group.child_groups.buckets)
+                total_child_groups=len(
+                    group.child_groups.buckets) + group.child_groups.sum_other_doc_count + child_group_offset
             )
             child_group_count_dtos.append(child_group_count_dto)
             for child_group in group.child_groups[
@@ -290,7 +295,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
                                                              tasks_data)
         response = search.execute()
         total_child_groups_count = len(
-            response.aggregations.child_groups.buckets)
+            response.aggregations.child_groups.buckets) + response.aggregations.child_groups.sum_other_doc_count
 
         task_offset = get_child_groups_in_group_input_dto.offset
         task_limit = get_child_groups_in_group_input_dto.limit
