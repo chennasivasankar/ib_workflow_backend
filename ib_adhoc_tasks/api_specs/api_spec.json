@@ -1849,7 +1849,7 @@
         }
       }
     },
-    "/project/adhoc_board/adhoc_template/fields/v1/": {
+    "/projects/adhoc_board/adhoc_template/fields/v1/": {
       "get": {
         "summary": "Get Adhoc task template fields",
         "operationId": "get_adhoc_task_template_fields",
@@ -1872,7 +1872,7 @@
         }
       }
     },
-    "/project/adhoc_board/adhoc_template/group_by_and_fields/v1/": {
+    "/projects/adhoc_board/adhoc_template/group_by_and_fields/v1/": {
       "get": {
         "summary": "Get Adhoc task template fields and group_by",
         "operationId": "get_adhoc_task_template_fields_and_group_by",

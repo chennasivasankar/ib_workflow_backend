@@ -29,14 +29,12 @@ class GetAdhocTaskTemplateFieldsAndGroupBy:
     def get_adhoc_task_template_fields_and_group_by(
             self, project_id: str, user_id: str, view_type: ViewType
     ) -> TemplateFieldsAndGroupByFieldsDTO:
-        print("at 1")
         from ib_adhoc_tasks.interactors.group_by_interactor import \
             GroupByInteractor
         group_by_interactor = GroupByInteractor(storage=self.storage)
         group_by_fields_dtos = group_by_interactor.get_group_by(
             project_id=project_id, user_id=user_id, view_type=view_type
         )
-        print("at 2")
 
         from ib_adhoc_tasks.interactors \
             .get_adhoc_task_template_fields_interactor import \
@@ -46,7 +44,6 @@ class GetAdhocTaskTemplateFieldsAndGroupBy:
             .get_adhoc_task_template_fields(
             project_id=project_id, user_id=user_id
         )
-        print("at 3")
 
         return TemplateFieldsAndGroupByFieldsDTO(
             group_by_fields_dtos=group_by_fields_dtos, field_dtos=field_dtos
