@@ -33,4 +33,12 @@ INVALID_LIMIT_VALUE = (
     "INVALID_LIMIT_VALUE"
 )
 
+USER_NOT_ALLOWED_TO_CREATE_MORE_THAN_ONE_GROUP_BY_IN_LIST_VIEW = (
+    "user is not allowed to create more than one group_by in list view",
+    "USER_NOT_ALLOWED_TO_CREATE_MORE_THAN_ONE_GROUP_BY_IN_LIST_VIEW"
+)
 
+USER_NOT_ALLOWED_TO_CREATE_MORE_THAN_TWO_GROUP_BY_IN_KANBAN_VIEW = (
+    "user is not allowed to create more than one group_by in kanban view",
+    "USER_NOT_ALLOWED_TO_CREATE_MORE_THAN_TWO_GROUP_BY_IN_KANBAN_VIEW"
+)
