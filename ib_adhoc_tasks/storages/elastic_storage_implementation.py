@@ -107,7 +107,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
             if group_by_dto.order == 1:
                 is_grouping_for_order_one = not is_grouping_for_order_one
                 group_by_order_one_dto = group_by_dto
-                group_agg = self._prepare_aggregation(
+                group_agg, groups_count_agg = self._prepare_aggregation(
                     group_by_value=group_by_dto.group_by_value,
                     limit=group_by_dto.limit,
                     offset=group_by_dto.offset
@@ -117,7 +117,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
             if group_by_dto.order == 2:
                 is_grouping_for_order_two = not is_grouping_for_order_two
                 group_by_order_two_dto = group_by_dto
-                child_agg = self._prepare_aggregation(
+                child_agg, child_count_agg = self._prepare_aggregation(
                     group_by_value=group_by_dto.group_by_value,
                     limit=group_by_dto.limit,
                     offset=group_by_dto.offset
@@ -135,7 +135,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         if is_grouping_for_only_order_one:
             group_details_dtos, group_count_dto = \
                 self._prepare_group_details_dto_for_first_order_grouping(
-                    query=query, search=search, group_agg=group_agg,
+                    query=query, search=search, group_agg=group_agg, groups_count_agg=groups_count_agg,
                     task_offset_and_limit_values_dto=task_offset_and_limit_values_dto,
                     group_by_order_one_dto=group_by_order_one_dto
                 )
@@ -165,13 +165,16 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         if is_group_by_value_stage:
             group_agg = A('terms', field='stages.stage_id.keyword',
                           size=limit + offset)
+            groups_count_agg = A('cardinality', field='stages.stage_id.keyword')
         if is_group_by_value_assignee:
             group_agg = A('terms', field='stages.assignee_id.keyword',
                           size=limit + offset)
+            groups_count_agg = A('cardinality', field='stages.assignee_id.keyword')
         if is_group_by_value_other_than_stage_and_assignee:
             attribute = group_by_value + '.keyword'
             group_agg = A('terms', field=attribute, size=limit + offset)
-        return group_agg
+            groups_count_agg = A('cardinality', field=attribute)
+        return group_agg, groups_count_agg
 
     @staticmethod
     def _prepare_group_details_dto_for_no_grouping(
@@ -193,7 +196,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
 
     @staticmethod
     def _prepare_group_details_dto_for_first_order_grouping(
-            query, search, group_agg,
+            query, search, group_agg, groups_count_agg,
             task_offset_and_limit_values_dto: TaskOffsetAndLimitValuesDTO,
             group_by_order_one_dto: GroupByDTO
     ):
@@ -202,14 +205,13 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         tasks_data = A('top_hits', size=task_limit + task_offset)
         search = search.filter(query)
         search.aggs.bucket('groups', group_agg).bucket('tasks', tasks_data)
+        search.aggs.bucket('groups_count', groups_count_agg)
         response = search.execute()
 
         group_offset = group_by_order_one_dto.offset
         group_limit = group_by_order_one_dto.limit
 
-        total_groups_count = len(response.aggregations.groups.buckets) \
-                             + response.aggregations.groups.sum_other_doc_count \
-                             + group_offset
+        total_groups_count = response.aggregations.groups_count.value
 
         group_details_dtos = []
         for group in response.aggregations.groups.buckets[
@@ -351,7 +353,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         child_agg = ""
         for group_by_response_dto in group_by_response_dtos:
             if group_by_response_dto.order == 2:
-                child_agg = self._prepare_aggregation(
+                child_agg, child_count_agg = self._prepare_aggregation(
                     group_by_value=group_by_response_dto.group_by_key,
                     limit=get_child_groups_in_group_input_dto.group_limit,
                     offset=get_child_groups_in_group_input_dto.group_offset
