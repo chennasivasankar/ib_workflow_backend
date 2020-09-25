@@ -51,13 +51,13 @@ class ElasticStorageImplementation(ElasticStorageInterface):
     def _get_query_for_given_groupby_field(
             self, groupby_value_dto: GroupByValueDTO
     ):
-        from ib_adhoc_tasks.constants.enum import GroupByType
-        if groupby_value_dto.group_by_display_name == GroupByType.ASSIGNEE.value:
+        from ib_adhoc_tasks.constants.enum import GroupByKey
+        if groupby_value_dto.group_by_display_name == GroupByKey.ASSIGNEE.value:
             return Q(
                 'term',
                 stages__assignee_id__keyword=groupby_value_dto.group_by_value
             )
-        elif groupby_value_dto.group_by_display_name == GroupByType.STAGE.value:
+        elif groupby_value_dto.group_by_display_name == GroupByKey.STAGE.value:
             return Q(
                 'term',
                 stages__stage_id__keyword=groupby_value_dto.group_by_value
@@ -155,12 +155,12 @@ class ElasticStorageImplementation(ElasticStorageInterface):
 
     @staticmethod
     def _prepare_aggregation(group_by_value: str, limit: int, offset: int):
-        from ib_adhoc_tasks.constants.enum import GroupByEnum
-        is_group_by_value_stage = group_by_value == GroupByEnum.STAGE.value
-        is_group_by_value_assignee = group_by_value == GroupByEnum.ASSIGNEE.value
+        from ib_adhoc_tasks.constants.enum import GroupByKey
+        is_group_by_value_stage = group_by_value == GroupByKey.STAGE.value
+        is_group_by_value_assignee = group_by_value == GroupByKey.ASSIGNEE.value
         is_group_by_value_other_than_stage_and_assignee = \
-            (group_by_value != GroupByEnum.STAGE.value) and (
-                    group_by_value != GroupByEnum.ASSIGNEE.value)
+            (group_by_value != GroupByKey.STAGE.value) and (
+                    group_by_value != GroupByKey.ASSIGNEE.value)
         group_agg = ""
         if is_group_by_value_stage:
             group_agg = A('terms', field='stages.stage_id.keyword',
@@ -374,11 +374,11 @@ class ElasticStorageImplementation(ElasticStorageInterface):
             if group_by_response_dto.order == 1:
                 group_by_order_one = group_by_response_dto.group_by_key
 
-        from ib_adhoc_tasks.constants.enum import GroupByType
-        if group_by_order_one == GroupByType.STAGE.value:
+        from ib_adhoc_tasks.constants.enum import GroupByKey
+        if group_by_order_one == GroupByKey.STAGE.value:
             query = query & Q("term", stages__stage_id__keyword=group_by_value)
 
-        elif group_by_order_one == GroupByType.ASSIGNEE.value:
+        elif group_by_order_one == GroupByKey.ASSIGNEE.value:
             query = query & Q("term",
                               stages__assignee_id__keyword=group_by_value)
 

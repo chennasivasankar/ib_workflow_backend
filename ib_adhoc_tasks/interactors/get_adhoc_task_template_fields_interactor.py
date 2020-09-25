@@ -30,9 +30,9 @@ class AdhocTaskTemplateFieldsInteractor:
             project_id=project_id, user_id=user_id,
             template_id=ADHOC_TEMPLATE_ID
         )
-        from ib_adhoc_tasks.constants.enum import GroupByType
+        from ib_adhoc_tasks.constants.enum import GroupByKey
         from ib_adhoc_tasks.adapters.dtos import FieldIdAndNameDTO
-        for item in GroupByType:
+        for item in GroupByKey:
             field_dtos.append(
                 FieldIdAndNameDTO(
                     field_id=item.value,

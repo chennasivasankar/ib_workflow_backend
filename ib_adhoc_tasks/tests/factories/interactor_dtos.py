@@ -1,6 +1,6 @@
 import factory
 
-from ib_adhoc_tasks.constants.enum import GroupByType, ViewType
+from ib_adhoc_tasks.constants.enum import GroupByKey, ViewType
 from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO, \
     TaskOffsetAndLimitValuesDTO, TaskIdsForGroupsParameterDTO, GroupByValueDTO, \
     OffsetLimitDTO, GroupByInfoKanbanViewDTO, GroupByInfoListViewDTO, \
@@ -42,8 +42,8 @@ class GroupByValueDTOFactory(factory.Factory):
     class Meta:
         model = GroupByValueDTO
 
-    key = factory.Iterator([GroupByType.STAGE.value,
-                            GroupByType.ASSIGNEE.value,
+    key = factory.Iterator([GroupByKey.STAGE.value,
+                            GroupByKey.ASSIGNEE.value,
                             "field_id_1"])
     value = factory.Iterator(["stage_id_1", "assignee_id_1", "field_value_1"])
 

@@ -36,8 +36,8 @@ class TestGetAdhocTaskTemplateFieldsInteractor:
         presenter.get_response_for_get_adhoc_task_template_fields \
             .return_value = mock.Mock()
         # todo need to look over this
-        from ib_adhoc_tasks.constants.enum import GroupByType
-        for item in GroupByType:
+        from ib_adhoc_tasks.constants.enum import GroupByKey
+        for item in GroupByKey:
             from ib_adhoc_tasks.adapters.dtos import FieldIdAndNameDTO
             field_dtos.append(
                 FieldIdAndNameDTO(
