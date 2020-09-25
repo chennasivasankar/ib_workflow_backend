@@ -8,6 +8,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...common_fixtures.adapters.roles_service import \
     get_user_role_ids_based_on_project_mock
+from ...common_fixtures.storages import elastic_storage_implementation_mock
 from ...factories.models import StageGoFFactory
 
 
@@ -63,6 +64,7 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
             adapters.assignees_details_service import \
             assignee_details_dtos_mock
 
+        elastic_storage_implementation_mock(mocker)
         get_user_role_ids(mocker)
         is_user_in_project = True
         validate_if_user_is_in_project_mock(mocker, is_user_in_project)

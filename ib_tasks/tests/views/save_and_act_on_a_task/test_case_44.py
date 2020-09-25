@@ -13,6 +13,7 @@ from ...common_fixtures.adapters.auth_service import \
     validate_if_user_is_in_project_mock
 from ...common_fixtures.adapters.roles_service import \
     get_user_role_ids_based_on_project_mock
+from ...common_fixtures.storages import elastic_storage_implementation_mock
 from ...factories.adapter_dtos import ProjectDetailsDTOFactory
 from ...factories.models import (
     TaskFactory, StageActionFactory, StageFactory, GoFFactory,
@@ -54,6 +55,7 @@ class TestCase44SaveAndActOnATaskAPITestCase(TestUtils):
         template_id = "template_1"
         project_id = "project_1"
 
+        elastic_storage_implementation_mock(mocker)
         get_user_role_ids_based_on_project_mock(mocker)
         project_info_dtos = ProjectDetailsDTOFactory.create(
             project_id=project_id)

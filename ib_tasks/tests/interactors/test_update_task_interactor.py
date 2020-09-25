@@ -11,13 +11,16 @@ from ib_tasks.exceptions.gofs_custom_exceptions import \
 from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
     UpdateTaskInteractor
 from ib_tasks.interactors.stages_dtos import TaskIdWithStageAssigneesDTO
+from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+    get_user_role_ids_based_on_project_mock
 from ib_tasks.tests.factories.interactor_dtos import FieldValuesDTOFactory, \
     GoFFieldsDTOFactory, UpdateTaskWithTaskDisplayIdDTOFactory, \
     StageAssigneeDTOFactory
 from ib_tasks.tests.factories.storage_dtos import \
     GoFIdWithSameGoFOrderDTOFactory, FieldIdWithTaskGoFIdDTOFactory, \
     TaskGoFDetailsDTOFactory, TaskGoFFieldDTOFactory, \
-    TaskGoFWithTaskIdDTOFactory, FieldWithGoFDisplayNameDTOFactory
+    TaskGoFWithTaskIdDTOFactory, FieldWithGoFDisplayNameDTOFactory, \
+    GoFIdWithGoFDisplayNameDTOFactory
 
 
 class TestUpdateTaskInteractor:
@@ -2457,6 +2460,95 @@ class TestUpdateTaskInteractor:
         assert given_invalid_format == given_format
         assert valid_formats == allowed_formats
 
+    def test_with_required_and_permitted_fields_not_filled_raise_exception(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, task_template_storage_mock,
+            presenter_mock, mock_object,
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            create_or_update_task_in_elasticsearch_storage_mock, mocker
+    ):
+        # Arrange
+        given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
+        given_field_response = "field response"
+        field_values_dtos = FieldValuesDTOFactory.build_batch(
+            size=1, field_id=given_field_id,
+            field_response=given_field_response)
+
+        GoFIdWithGoFDisplayNameDTOFactory.reset_sequence()
+        FieldWithGoFDisplayNameDTOFactory.reset_sequence()
+
+        permitted_field_ids = ["permitted_field_1", "permitted_field_2"]
+        permitted_field_display_names = [
+            "permitted_field_display_name_1", "permitted_field_display_name_2"]
+        permitted_gof_ids = ["permitted_gof"]
+        permitted_gof_display_names = ["permitted_gof_display_name"]
+        permitted_gof_with_display_name_dtos = \
+            GoFIdWithGoFDisplayNameDTOFactory.create_batch(
+                size=1, gof_id=permitted_gof_ids[0],
+                gof_display_name=permitted_gof_display_names[0])
+        field_with_display_name_dtos = \
+            FieldWithGoFDisplayNameDTOFactory.create_batch(
+                size=2,
+                field_id=factory.Iterator(permitted_field_ids),
+                gof_display_name=permitted_gof_display_names[0],
+                field_display_name=factory.Iterator(
+                    permitted_field_display_names))
+
+        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+            size=1, field_values_dtos=field_values_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_id = 1
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        create_task_storage_mock.is_valid_task_id.return_value = True
+        create_task_storage_mock.get_template_id_for_given_task.return_value \
+            = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids_based_on_project_mock
+        get_user_role_ids_based_on_project_mock(mocker)
+        task_template_storage_mock.get_template_stage_permitted_gof_ids \
+            .return_value = permitted_gof_ids
+
+        gof_storage_mock.get_user_write_permitted_gof_ids_in_given_gof_ids \
+            .return_value = permitted_gof_with_display_name_dtos
+        field_storage_mock.get_user_writable_fields_for_given_gof_ids \
+            .return_value = field_with_display_name_dtos
+
+        interactor = UpdateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock,
+            storage=storage_mock, field_storage=field_storage_mock,
+            stage_storage=stage_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock,
+            task_template_storage=task_template_storage_mock
+        )
+        presenter_mock.raise_user_did_not_fill_required_fields.return_value \
+            = mock_object
+
+        # Act
+        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_user_did_not_fill_required_fields \
+            .assert_called_once()
+        call_args = presenter_mock.raise_user_did_not_fill_required_fields \
+            .call_args
+        error_object = call_args[0][0]
+        unfilled_fields = error_object.unfilled_field_dtos
+
+        assert unfilled_fields == field_with_display_name_dtos
+
     def test_with_empty_stage_ids_list(
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
@@ -2470,6 +2562,7 @@ class TestUpdateTaskInteractor:
             create_or_update_task_in_elasticsearch_storage_mock, mocker
     ):
         # Arrange
+        get_user_role_ids_based_on_project_mock(mocker)
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_id = 1
@@ -2552,6 +2645,7 @@ class TestUpdateTaskInteractor:
             create_or_update_task_in_elasticsearch_storage_mock, mocker
     ):
         # Arrange
+        get_user_role_ids_based_on_project_mock(mocker)
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_id = 1
@@ -2643,6 +2737,7 @@ class TestUpdateTaskInteractor:
             task_crud_update_task_gof_fields_mock, mocker
     ):
         # Arrange
+        get_user_role_ids_based_on_project_mock(mocker)
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
             start_datetime=datetime.datetime(2020, 9, 21, 16, 21, 3, 556776),
             due_datetime=datetime.datetime(2020, 9, 23, 16, 21, 3, 556776)
@@ -2747,6 +2842,7 @@ class TestUpdateTaskInteractor:
             create_or_update_task_in_elasticsearch_storage_mock, mocker
     ):
         # Arrange
+        get_user_role_ids_based_on_project_mock(mocker)
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_id = 1
@@ -2818,6 +2914,7 @@ class TestUpdateTaskInteractor:
             create_or_update_task_in_elasticsearch_storage_mock, mocker
     ):
         # Arrange
+        get_user_role_ids_based_on_project_mock(mocker)
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_id = 1

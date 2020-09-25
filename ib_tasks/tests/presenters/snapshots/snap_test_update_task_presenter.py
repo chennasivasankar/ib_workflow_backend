@@ -272,3 +272,9 @@ snapshots['TestUpdateTaskPresenterImplementation.test_get_update_task_response s
         ]
     }
 }
+
+snapshots['TestUpdateTaskPresenterImplementation.test_raise_user_did_not_fill_required_fields http_status_code'] = 400
+
+snapshots['TestUpdateTaskPresenterImplementation.test_raise_user_did_not_fill_required_fields res_status'] = 'USER_DID_NOT_FILL_REQUIRED_FIELDS'
+
+snapshots['TestUpdateTaskPresenterImplementation.test_raise_user_did_not_fill_required_fields response'] = "user did not fill required fields: ['field_display_name_0', 'field_display_name_1']"

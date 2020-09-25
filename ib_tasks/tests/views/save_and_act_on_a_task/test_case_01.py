@@ -15,6 +15,7 @@ from ...common_fixtures.adapters.auth_service import \
     prepare_empty_permitted_user_details_mock, \
     get_team_info_for_given_user_ids_mock
 from ...common_fixtures.adapters.roles_service import get_some_user_role_ids
+from ...common_fixtures.storages import elastic_storage_implementation_mock
 from ...factories.adapter_dtos import ProjectDetailsDTOFactory, \
     AssigneeDetailsDTOFactory, UserDetailsDTOFactory, TeamDetailsDTOFactory, \
     UserIdWIthTeamDetailsDTOsFactory
@@ -73,6 +74,7 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
             get_user_role_ids_based_on_project_mock
         get_user_role_ids_based_on_project_mock(mocker)
         get_some_user_role_ids(mocker)
+        elastic_storage_implementation_mock(mocker)
         permitted_user_details_mock = \
             prepare_empty_permitted_user_details_mock(mocker)
         user_details = UserDetailsDTOFactory()

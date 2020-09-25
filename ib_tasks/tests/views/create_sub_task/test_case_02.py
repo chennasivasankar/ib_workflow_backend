@@ -17,6 +17,7 @@ from ...common_fixtures.adapters.auth_service import \
     get_team_info_for_given_user_ids_mock, prepare_permitted_user_details_mock
 from ...common_fixtures.adapters.roles_service import get_user_role_ids, \
     get_user_role_ids_based_on_project_mock
+from ...common_fixtures.storages import elastic_storage_implementation_mock
 from ...factories.adapter_dtos import UserDetailsDTOFactory, \
     AssigneeDetailsDTOFactory
 from ...factories.models import TaskFactory, TaskTemplateFactory, \
@@ -51,6 +52,7 @@ class TestCase02CreateSubTaskAPITestCase(TestUtils):
         action_id = 1
         variable = "variable0"
 
+        elastic_storage_implementation_mock(mocker)
         get_user_role_ids(mocker)
         is_user_in_project = True
         validate_if_user_is_in_project_mock(mocker, is_user_in_project)
