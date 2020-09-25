@@ -10,7 +10,37 @@ snapshots = Snapshot()
 snapshots['TestCase02CreateSubTaskAPITestCase.test_case status_code'] = '201'
 
 snapshots['TestCase02CreateSubTaskAPITestCase.test_case body'] = {
-    'response': 'Sub task created Successfully'
+    'created_task_id': 'IBWF-2',
+    'task_current_stages_details': {
+        'stages': [
+            {
+                'stage_display_name': 'name_0',
+                'stage_id': '1'
+            }
+        ],
+        'task_id': 'IBWF-2',
+        'user_has_permission': True
+    },
+    'task_details': {
+        'stage_with_actions': {
+            'actions': [
+                {
+                    'action_id': 1,
+                    'action_type': 'NO_VALIDATIONS',
+                    'button_color': '#fafafa',
+                    'button_text': 'hey',
+                    'transition_template_id': 'template_2'
+                }
+            ],
+            'assignee': None,
+            'stage_color': 'blue',
+            'stage_display_name': 'name_0',
+            'stage_id': 1
+        },
+        'task_id': 'IBWF-2',
+        'task_overview_fields': [
+        ]
+    }
 }
 
 snapshots['TestCase02CreateSubTaskAPITestCase.test_case parent_task_id'] = 1

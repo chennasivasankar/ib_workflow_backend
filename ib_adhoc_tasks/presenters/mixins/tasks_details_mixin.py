@@ -17,25 +17,15 @@ class TaskDetailsMixin:
             Optional[List[TaskIdWithSubTasksCountDTO]] = None,
             completed_sub_tasks_count_dtos:
             Optional[List[TaskIdWithCompletedSubTasksCountDTO]] = None
-
-    ):
+    ) -> List[Dict]:
         task_base_details_dtos = task_details_dto.task_base_details_dtos
         task_stage_details_dtos = task_details_dto.task_stage_details_dtos
         task_stage_assignee_dtos = task_details_dto.task_stage_assignee_dtos
-        task_id_wise_sub_task_count_dict = {}
-        task_id_wise_completed_sub_task_count_dict = {}
-        if sub_tasks_count_dtos:
-            task_id_wise_sub_task_count_dict = {
-                sub_tasks_count_dto.task_id: sub_tasks_count_dto.sub_tasks_count
-                for sub_tasks_count_dto in sub_tasks_count_dtos
-            }
-        if completed_sub_tasks_count_dtos:
-            task_id_wise_completed_sub_task_count_dict = {
-                completed_sub_tasks_count_dto.task_id:
-                    completed_sub_tasks_count_dto.completed_sub_tasks_count
-                for completed_sub_tasks_count_dto in
-                completed_sub_tasks_count_dtos
-            }
+        task_id_wise_sub_task_count_dict = \
+            self._get_task_id_wise_sub_task_count_dict(sub_tasks_count_dtos)
+        task_id_wise_completed_sub_task_count_dict = \
+            self._task_id_wise_completed_sub_task_count_dict(
+                completed_sub_tasks_count_dtos)
 
         tasks = []
         for task_id in task_ids:
@@ -55,12 +45,43 @@ class TaskDetailsMixin:
             )
             if sub_tasks_count_dtos:
                 task_dict["sub_tasks_count"] = \
-                    task_id_wise_sub_task_count_dict.get(task_base_details_dto.task_id, 0)
+                    task_id_wise_sub_task_count_dict.get(
+                        task_base_details_dto.task_id, 0)
             if completed_sub_tasks_count_dtos:
                 task_dict["completed_sub_tasks_count"] = \
-                    task_id_wise_completed_sub_task_count_dict.get(task_base_details_dto.task_id, 0)
+                    task_id_wise_completed_sub_task_count_dict.get(
+                        task_base_details_dto.task_id, 0)
             tasks.append(task_dict)
         return tasks
+
+    @staticmethod
+    def _get_task_id_wise_sub_task_count_dict(
+            sub_tasks_count_dtos: Optional[List[TaskIdWithSubTasksCountDTO]]
+    ) -> Dict:
+        task_id_wise_sub_task_count_dict = {}
+        if sub_tasks_count_dtos:
+            task_id_wise_sub_task_count_dict = {
+                sub_tasks_count_dto.task_id:
+                    sub_tasks_count_dto.sub_tasks_count
+                for sub_tasks_count_dto in sub_tasks_count_dtos
+            }
+        return task_id_wise_sub_task_count_dict
+
+    @staticmethod
+    def _task_id_wise_completed_sub_task_count_dict(
+            completed_sub_tasks_count_dtos:
+            Optional[List[TaskIdWithCompletedSubTasksCountDTO]]
+    ) -> Dict:
+        task_id_wise_completed_sub_task_count_dict = {}
+        if completed_sub_tasks_count_dtos:
+            task_id_wise_completed_sub_task_count_dict = {
+                completed_sub_tasks_count_dto.task_id:
+                    completed_sub_tasks_count_dto.completed_sub_tasks_count
+                for completed_sub_tasks_count_dto in
+                completed_sub_tasks_count_dtos
+            }
+
+        return task_id_wise_completed_sub_task_count_dict
 
     @staticmethod
     def _get_task_base_details_dto(
