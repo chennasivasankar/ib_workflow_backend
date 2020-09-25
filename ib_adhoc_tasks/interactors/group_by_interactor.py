@@ -127,7 +127,7 @@ class GroupByInteractor:
         for view_type in view_types:
             if view_type == ViewType.LIST.value:
                 group_by_for_list_view_count += 1
-        if group_by_for_list_view_count > 1:
+        if group_by_for_list_view_count >= 1:
             raise UserNotAllowedToCreateMoreThanOneGroupByInListView
 
     @staticmethod
@@ -138,7 +138,7 @@ class GroupByInteractor:
         for view_type in view_types:
             if view_type == ViewType.KANBAN.value:
                 group_by_for_kanban_view_count += 1
-        if group_by_for_kanban_view_count > 1:
+        if group_by_for_kanban_view_count >= 2:
             raise UserNotAllowedToCreateMoreThanTwoGroupByInKanbanView
 
     @staticmethod
