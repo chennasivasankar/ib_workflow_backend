@@ -60,8 +60,7 @@ class GroupByInteractor:
             self,
             add_or_edit_group_by_parameter_dto: AddOrEditGroupByParameterDTO
     ):
-        is_group_by_id_exists = \
-            add_or_edit_group_by_parameter_dto.group_by_id is not None
+        is_group_by_id_exists = add_or_edit_group_by_parameter_dto.group_by_id
         if is_group_by_id_exists:
             group_by_response_dto = self.storage.edit_group_by(
                 add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto
