@@ -842,6 +842,21 @@
           ]
         }
       ]
+    },
+    "GroupByKeyAndNameFields": {
+      "type": "object",
+      "properties": {
+        "group_by_key": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "group_by_key",
+        "display_name"
+      ]
     }
   },
   "parameters": {
@@ -1490,7 +1505,7 @@
     "GetChildGroupsInGroupResponse": {
       "description": "Get child groups in group response",
       "schema": {
-          "type": "object",
+        "type": "object",
         "properties": {
           "total_child_groups": {
             "type": "integer",
@@ -1552,6 +1567,30 @@
             "display_name"
           ]
         }
+      }
+    },
+    "GetAdhocTemplateFieldsAndGroupByResponse": {
+      "description": "Get Adhoc template fields and group_by",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "all_fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/GroupByKeyAndNameFields"
+            }
+          },
+          "group_by_fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/GroupByResponseFields"
+            }
+          }
+        },
+        "required": [
+          "all_fields",
+          "group_by_fields"
+        ]
       }
     }
   },
@@ -1721,7 +1760,7 @@
         "security": [
           {
             "oauth": [
-              "write"
+              "read"
             ]
           }
         ],
@@ -1836,6 +1875,32 @@
         "responses": {
           "200": {
             "$ref": "#/responses/GetAdhocTemplateFieldsResponse"
+          }
+        }
+      }
+    },
+    "/project/adhoc_board/adhoc_template/group_by_and_fields/v1/": {
+      "get": {
+        "summary": "Get Adhoc task template fields and group_by",
+        "operationId": "get_adhoc_task_template_fields_and_group_by",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdParameter"
+          },
+          {
+            "$ref": "#/parameters/ViewTypeQueryParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetAdhocTemplateFieldsAndGroupByResponse"
           }
         }
       }
