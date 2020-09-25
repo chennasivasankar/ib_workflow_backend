@@ -58,7 +58,7 @@ class TestGetSubTasksInteractor:
         assert response == mock_object
         presenter.get_response_for_get_subtasks_of_task \
             .assert_called_once_with(
-            task_display_id=task_id,
+            task_display_id='task_id_0',
             complete_subtasks_details_dto=task_details_dtos,
             subtask_ids=subtask_ids
         )

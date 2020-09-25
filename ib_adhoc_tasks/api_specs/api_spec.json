@@ -842,6 +842,21 @@
           ]
         }
       ]
+    },
+    "GroupByKeyAndNameFields": {
+      "type": "object",
+      "properties": {
+        "group_by_key": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "group_by_key",
+        "display_name"
+      ]
     }
   },
   "parameters": {
@@ -1108,19 +1123,12 @@
             "type": "object",
             "properties": {
               "group_by_id": {
-                "type": "string"
+                "type": "integer"
               }
             }
           }
         ]
       }
-    },
-    "ProjectIdPathParameter": {
-      "name": "project_id",
-      "in": "path",
-      "description": "project id value",
-      "type": "string",
-      "required": true
     },
     "GetSubTasksParameter": {
       "name": "get_subtasks_parameter",
@@ -1490,7 +1498,7 @@
     "GetChildGroupsInGroupResponse": {
       "description": "Get child groups in group response",
       "schema": {
-          "type": "object",
+        "type": "object",
         "properties": {
           "total_child_groups": {
             "type": "integer",
@@ -1530,6 +1538,51 @@
         "required": [
           "total_child_groups",
           "child_groups"
+        ]
+      }
+    },
+    "GetAdhocTemplateFieldsResponse": {
+      "description": "Get Adhoc template fields",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "group_by_key": {
+              "type": "string"
+            },
+            "display_name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "group_by_key",
+            "display_name"
+          ]
+        }
+      }
+    },
+    "GetAdhocTemplateFieldsAndGroupByResponse": {
+      "description": "Get Adhoc template fields and group_by",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "all_fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/GroupByKeyAndNameFields"
+            }
+          },
+          "group_by_fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/GroupByResponseFields"
+            }
+          }
+        },
+        "required": [
+          "all_fields",
+          "group_by_fields"
         ]
       }
     }
@@ -1661,7 +1714,7 @@
         }
       }
     },
-    "/project/{project_id}/adhoc_board/group/add_or_edit/v1/": {
+    "/projects/adhoc_board/group/add_or_edit/v1/": {
       "post": {
         "summary": "add or edit a group by",
         "operationId": "add_or_edit_group_by",
@@ -1674,7 +1727,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/ProjectIdPathParameter"
+            "$ref": "#/parameters/ProjectIdParameter"
           },
           {
             "$ref": "#/parameters/AddOrEditGroupByParameter"
@@ -1693,20 +1746,20 @@
         }
       }
     },
-    "/project/{project_id}/adhoc_board/group/v1/": {
+    "/projects/adhoc_board/group/v1/": {
       "get": {
         "summary": "get a group by",
         "operationId": "get_group_by",
         "security": [
           {
             "oauth": [
-              "write"
+              "read"
             ]
           }
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/ProjectIdPathParameter"
+            "$ref": "#/parameters/ProjectIdParameter"
           },
           {
             "$ref": "#/parameters/ViewTypeQueryParameter"
@@ -1792,6 +1845,55 @@
         "responses": {
           "200": {
             "$ref": "#/responses/GetChildGroupsInGroupResponse"
+          }
+        }
+      }
+    },
+    "/projects/adhoc_board/adhoc_template/fields/v1/": {
+      "get": {
+        "summary": "Get Adhoc task template fields",
+        "operationId": "get_adhoc_task_template_fields",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetAdhocTemplateFieldsResponse"
+          }
+        }
+      }
+    },
+    "/projects/adhoc_board/adhoc_template/group_by_and_fields/v1/": {
+      "get": {
+        "summary": "Get Adhoc task template fields and group_by",
+        "operationId": "get_adhoc_task_template_fields_and_group_by",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdParameter"
+          },
+          {
+            "$ref": "#/parameters/ViewTypeQueryParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetAdhocTemplateFieldsAndGroupByResponse"
           }
         }
       }

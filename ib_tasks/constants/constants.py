@@ -45,6 +45,7 @@ TRANSITION_TEMPLATES_SUB_SHEET = "Transition Templates"
 PRIORITY_TYPES = [(item.value, item.value) for item in Priority]
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+DATE_FORMAT = "%Y-%m-%d"
 
 STAGE_TASK = "STAGE_TASK"
 

@@ -16,19 +16,24 @@ from ib_tasks.interactors.create_or_update_task.field_response_validations \
     MultiSelectLabelFieldValidationInteractor
 from ib_tasks.interactors.create_or_update_task.field_response_validations. \
     base_field_validation import BaseFieldValidation
+from ib_tasks.interactors.mixins.get_gofs_feilds_display_names_mixin import \
+    GetGoFsFieldsDisplayNameMixin
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldCompleteDetailsDTO
+    FieldCompleteDetailsDTO, FieldWithGoFDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.task_dtos import FieldValuesDTO
 
 
-class ValidateFieldResponsesInteractor:
+class ValidateFieldResponsesInteractor(GetGoFsFieldsDisplayNameMixin):
 
     def __init__(
-            self, field_storage: FieldsStorageInterface
+            self, field_storage: FieldsStorageInterface,
+            field_id_with_display_name_dtos: List[
+                FieldWithGoFDisplayNameDTO]
     ):
         self.field_storage = field_storage
+        self.field_id_with_display_name_dtos = field_id_with_display_name_dtos
 
     def validate_field_responses(
             self, field_values_dtos: List[FieldValuesDTO],
@@ -75,14 +80,16 @@ class ValidateFieldResponsesInteractor:
         field_is_required_but_not_given = (
                 not field_response and field_details_dto.required)
         if field_is_required_but_not_given:
-            raise EmptyValueForRequiredField(field_id)
+            field_display_name = self.get_field_display_name(
+                field_id, self.field_id_with_display_name_dtos)
+            raise EmptyValueForRequiredField(field_display_name)
         field_validation_interactor = \
             self._get_field_validation_interactor_based_on_field_details(
-                field_id, field_response, field_details_dto
-            )
+                field_id, field_response, field_details_dto)
         validations_is_required = field_validation_interactor is not None
         if validations_is_required:
-            field_validation_interactor.validate_field_response()
+            field_validation_interactor.validate_field_response(
+                self.field_id_with_display_name_dtos)
         return
 
     @staticmethod

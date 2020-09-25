@@ -12,7 +12,7 @@ snapshots['TestCase15CreateTransitionChecklistAPITestCase.test_case[679820] stat
 snapshots['TestCase15CreateTransitionChecklistAPITestCase.test_case[679820] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_PHONE_NUMBER_VALUE',
-    'response': 'Invalid value for phone number: 679820 for field: field_1'
+    'response': 'Invalid value for phone number: 679820 for field: DISPLAY_NAME-0'
 }
 
 snapshots['TestCase15CreateTransitionChecklistAPITestCase.test_case[162789hdsb] status_code'] = '400'
@@ -20,5 +20,5 @@ snapshots['TestCase15CreateTransitionChecklistAPITestCase.test_case[162789hdsb] 
 snapshots['TestCase15CreateTransitionChecklistAPITestCase.test_case[162789hdsb] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_PHONE_NUMBER_VALUE',
-    'response': 'Invalid value for phone number: 162789hdsb for field: field_1'
+    'response': 'Invalid value for phone number: 162789hdsb for field: DISPLAY_NAME-0'
 }

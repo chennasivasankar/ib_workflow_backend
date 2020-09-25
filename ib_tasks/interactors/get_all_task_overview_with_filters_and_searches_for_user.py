@@ -26,6 +26,7 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.interactors.user_role_validation_interactor import \
     UserRoleValidationInteractor
@@ -43,12 +44,14 @@ class GetTasksOverviewForUserInteractor(ValidationMixin):
                  task_storage: TaskStorageInterface,
                  field_storage: FieldsStorageInterface,
                  action_storage: ActionStorageInterface,
-                 task_stage_storage: TaskStageStorageInterface):
+                 task_stage_storage: TaskStageStorageInterface,
+                 template_storage: TaskTemplateStorageInterface):
         self.task_stage_storage = task_stage_storage
         self.stage_storage = stage_storage
         self.task_storage = task_storage
         self.field_storage = field_storage
         self.action_storage = action_storage
+        self.template_storage = template_storage
 
     def get_filtered_tasks_overview_for_user(
             self, user_id: str, task_ids: List[int],
@@ -96,9 +99,10 @@ class GetTasksOverviewForUserInteractor(ValidationMixin):
                                        project_id: str) -> List[str]:
         user_interactor = UserRoleValidationInteractor()
         stage_ids = user_interactor. \
-            get_permitted_stage_ids_given_user_id(user_id=user_id,
-                                                  stage_storage=self.stage_storage,
-                                                  project_id=project_id)
+            get_permitted_stage_ids_given_user_id(
+            user_id=user_id, stage_storage=self.stage_storage,
+            project_id=project_id, template_storage=self.template_storage
+        )
         return stage_ids
 
     def _get_task_with_complete_stage_details_dtos(

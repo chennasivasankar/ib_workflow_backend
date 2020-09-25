@@ -12,5 +12,5 @@ snapshots['TestCase38UpdateTaskAPITestCase.test_case status_code'] = '400'
 snapshots['TestCase38UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_IMAGE_FORMAT',
-    'response': "Invalid format for an image: .svg for field: FIELD-1! Try with these formats: ['.jpeg', '.png']"
+    'response': "Invalid format for an image: .svg for field: DISPLAY_NAME-0! Try with these formats: ['.jpeg', '.png']"
 }

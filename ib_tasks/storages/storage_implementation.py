@@ -733,6 +733,16 @@ class StagesStorageImplementation(StageStorageInterface):
         does_exists = Stage.objects.filter(id=stage_id).exists()
         return does_exists
 
+    def get_stage_ids_of_templates(
+            self, template_ids: List[str]
+    ) -> List[str]:
+        stage_ids_queryset = Stage.objects.filter(
+            task_template_id__in=template_ids).values_list(
+            'stage_id', flat=True)
+
+        stage_ids_list = list(stage_ids_queryset)
+        return stage_ids_list
+
     def get_current_task_stages_excluding_virtual_stages(
             self, task_id: int) -> List[int]:
         current_task_stage_ids = list(CurrentTaskStage.objects.

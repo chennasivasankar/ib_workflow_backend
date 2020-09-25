@@ -12,7 +12,7 @@ snapshots['TestCase18CreateTransitionChecklistAPITestCase.test_case[iBHubs] stat
 snapshots['TestCase18CreateTransitionChecklistAPITestCase.test_case[iBHubs] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_NUMBER_VALUE',
-    'response': 'Invalid number: iBHubs for field: field_1! Number should only consists digits'
+    'response': 'Invalid number: iBHubs for field: DISPLAY_NAME-0! Number should only consists digits'
 }
 
 snapshots['TestCase18CreateTransitionChecklistAPITestCase.test_case[700.0] status_code'] = '400'
@@ -20,5 +20,5 @@ snapshots['TestCase18CreateTransitionChecklistAPITestCase.test_case[700.0] statu
 snapshots['TestCase18CreateTransitionChecklistAPITestCase.test_case[700.0] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_NUMBER_VALUE',
-    'response': 'Invalid number: 700.0 for field: field_1! Number should only consists digits'
+    'response': 'Invalid number: 700.0 for field: DISPLAY_NAME-0! Number should only consists digits'
 }

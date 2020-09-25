@@ -11,8 +11,11 @@ from ib_tasks.tests.common_fixtures.adapters.auth_service import \
     prepare_permitted_user_details_mock
 from ib_tasks.tests.factories.models import StagePermittedRolesFactory, \
     StageModelFactory, CurrentTaskStageModelFactory, StageActionFactory, \
-    TaskStatusVariableFactory, ActionPermittedRolesFactory, TaskFactory
+    TaskStatusVariableFactory, ActionPermittedRolesFactory, TaskFactory, \
+    TaskTemplateFactory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ...factories.adapter_dtos import ProjectDetailsDTOFactory, \
+    UserIdWIthTeamDetailsDTOFactory
 
 
 class TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
@@ -36,8 +39,18 @@ class TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
         TaskStatusVariableFactory.reset_sequence()
         ActionPermittedRolesFactory.reset_sequence()
         UserDetailsDTOFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence()
+        ProjectDetailsDTOFactory.reset_sequence()
+        UserIdWIthTeamDetailsDTOFactory.reset_sequence()
+        ProjectDetailsDTOFactory.reset_sequence()
 
         user_details_mock = prepare_permitted_user_details_mock(mocker)
+        user_details_dtos = [
+            UserDetailsDTOFactory(
+                user_id="123e4567-e89b-12d3-a456-426614174000",
+                profile_pic_url=None)
+        ]
+        user_details_mock.return_value = user_details_dtos
         stage1 = StageModelFactory(
             task_template_id='template_1',
             display_logic="variable0==stage_id_0",
@@ -83,7 +96,8 @@ class TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
             get_team_info_for_given_user_ids_with_given_names_mock, \
             get_project_info_for_given_ids_mock
 
-        get_team_info_for_given_user_ids_with_given_names_mock(mocker)
+        get_team_info_for_given_user_ids_with_given_names_mock(
+            mocker)
         get_project_info_for_given_ids_mock(mocker)
         project_ids_validation_mock = mocker.patch(
             'ib_tasks.adapters.auth_service.AuthService.validate_project_ids')

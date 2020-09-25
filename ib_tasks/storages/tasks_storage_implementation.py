@@ -167,14 +167,12 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     def create_status_for_tasks(
             self, create_status_for_tasks: List[TaskTemplateStatusDTO]):
-        list_of_status_tasks = [
-            TaskTemplateStatusVariable(
-                variable=status.status_variable_id,
-                task_template_id=status.task_template_id)
-            for status in create_status_for_tasks
-        ]
 
-        TaskTemplateStatusVariable.objects.bulk_create(list_of_status_tasks)
+        for status in create_status_for_tasks:
+            TaskTemplateStatusVariable.objects.get_or_create(
+                variable=status.status_variable_id,
+                task_template_id=status.task_template_id
+            )
 
     def get_initial_stage_ids_of_templates(self) -> List[int]:
         from ib_tasks.models.task_template_initial_stages import \

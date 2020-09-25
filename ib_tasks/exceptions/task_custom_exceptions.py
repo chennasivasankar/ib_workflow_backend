@@ -86,15 +86,19 @@ class TaskDoesNotExists(Exception):
 
 
 class InvalidGoFsOfTaskTemplate(Exception):
-    def __init__(self, invalid_gof_ids: List[str], task_template_id: str):
-        self.gof_ids = invalid_gof_ids
+    def __init__(
+            self, invalid_gofs_display_names: List[str], task_template_id: str
+    ):
+        self.gofs_display_names = invalid_gofs_display_names
         self.task_template_id = task_template_id
 
 
 class InvalidFieldsOfGoF(Exception):
-    def __init__(self, gof_id: str, invalid_field_ids: List[str]):
-        self.gof_id = gof_id
-        self.field_ids = invalid_field_ids
+    def __init__(
+            self, gof_display_name: str,
+            invalid_field_display_names: List[str]):
+        self.gof_display_name = gof_display_name
+        self.field_display_names = invalid_field_display_names
 
 
 class ManyStagesToInitialTaskTemplate(Exception):

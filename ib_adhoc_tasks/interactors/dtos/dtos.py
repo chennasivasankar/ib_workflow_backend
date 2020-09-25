@@ -1,12 +1,15 @@
 from dataclasses import dataclass
 from typing import List, Optional
 
-from ib_adhoc_tasks.constants.enum import GroupByEnum, ViewType
+from ib_adhoc_tasks.adapters.dtos import FieldIdAndNameDTO
+from ib_adhoc_tasks.constants.enum import GroupByKey, ViewType
+from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
+    GroupByResponseDTO
 
 
 @dataclass
 class GroupByDTO:
-    group_by_value: GroupByEnum
+    group_by_value: GroupByKey
     order: int
     offset: int
     limit: int
@@ -109,3 +112,9 @@ class GetChildGroupsInGroupInputDTO:
     group_limit: int
     group_offset: int
     group_by_value: str
+
+
+@dataclass
+class TemplateFieldsAndGroupByFieldsDTO:
+    group_by_fields_dtos: List[GroupByResponseDTO]
+    field_dtos: List[FieldIdAndNameDTO]

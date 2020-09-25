@@ -85,3 +85,23 @@ class TestStorageImplementation:
 
         # Assert
         assert actual_group_by_response_dto == group_by_response_dto
+
+    @pytest.mark.django_db
+    def test_get_view_types_of_user_returns_view_types(self, storage):
+        # Arrange
+        user_id = "user_id_1"
+        from ib_adhoc_tasks.tests.factories.models import GroupByInfoFactory
+        GroupByInfoFactory.reset_sequence(1)
+        GroupByInfoFactory.view_type.reset()
+        GroupByInfoFactory.group_by.reset()
+        GroupByInfoFactory.create_batch(size=3, user_id=user_id)
+        from ib_adhoc_tasks.constants.enum import ViewType
+        expected_view_types = [
+            ViewType.LIST.value, ViewType.KANBAN.value, ViewType.LIST.value
+        ]
+
+        # Act
+        view_types = storage.get_view_types_of_user(user_id=user_id)
+
+        # Assert
+        assert view_types == expected_view_types

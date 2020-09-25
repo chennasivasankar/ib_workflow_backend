@@ -2,8 +2,10 @@ from typing import Optional, List
 
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     IncorrectCheckBoxOptionsSelected
-from ib_tasks.interactors.create_or_update_task.field_response_validations.\
+from ib_tasks.interactors.create_or_update_task.field_response_validations. \
     base_field_validation import BaseFieldValidation
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldWithGoFDisplayNameDTO
 
 
 class CheckBoxGroupFieldValidationInteractor(BaseFieldValidation):
@@ -17,15 +19,18 @@ class CheckBoxGroupFieldValidationInteractor(BaseFieldValidation):
         self.valid_check_box_options = valid_check_box_options
 
     def validate_field_response(
-            self) -> Optional[IncorrectCheckBoxOptionsSelected]:
+            self,
+            field_id_with_display_name_dtos: List[FieldWithGoFDisplayNameDTO]
+    ) -> Optional[IncorrectCheckBoxOptionsSelected]:
         import json
         selected_check_box_options = json.loads(self.field_response)
         invalid_checkbox_options = sorted(list(
             set(selected_check_box_options) - set(self.valid_check_box_options)
         ))
         if invalid_checkbox_options:
+            field_display_name = self.get_field_display_name(
+                self.field_id, field_id_with_display_name_dtos)
             raise IncorrectCheckBoxOptionsSelected(
-                self.field_id, invalid_checkbox_options,
-                self.valid_check_box_options
-            )
+                field_display_name, invalid_checkbox_options,
+                self.valid_check_box_options)
         return

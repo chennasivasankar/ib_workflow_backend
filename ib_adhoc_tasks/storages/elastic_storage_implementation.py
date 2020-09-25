@@ -51,13 +51,13 @@ class ElasticStorageImplementation(ElasticStorageInterface):
     def _get_query_for_given_groupby_field(
             self, groupby_value_dto: GroupByValueDTO
     ):
-        from ib_adhoc_tasks.constants.enum import GroupByType
-        if groupby_value_dto.group_by_display_name == GroupByType.ASSIGNEE.value:
+        from ib_adhoc_tasks.constants.enum import GroupByKey
+        if groupby_value_dto.group_by_display_name == GroupByKey.ASSIGNEE.value:
             return Q(
                 'term',
                 stages__assignee_id__keyword=groupby_value_dto.group_by_value
             )
-        elif groupby_value_dto.group_by_display_name == GroupByType.STAGE.value:
+        elif groupby_value_dto.group_by_display_name == GroupByKey.STAGE.value:
             return Q(
                 'term',
                 stages__stage_id__keyword=groupby_value_dto.group_by_value
@@ -155,20 +155,22 @@ class ElasticStorageImplementation(ElasticStorageInterface):
 
     @staticmethod
     def _prepare_aggregation(group_by_value: str, limit: int, offset: int):
-        from ib_adhoc_tasks.constants.enum import GroupByEnum
-        is_group_by_value_stage = group_by_value == GroupByEnum.STAGE.value
-        is_group_by_value_assignee = group_by_value == GroupByEnum.ASSIGNEE.value
+        from ib_adhoc_tasks.constants.enum import GroupByKey
+        is_group_by_value_stage = group_by_value == GroupByKey.STAGE.value
+        is_group_by_value_assignee = group_by_value == GroupByKey.ASSIGNEE.value
         is_group_by_value_other_than_stage_and_assignee = \
-            (group_by_value != GroupByEnum.STAGE.value) and (
-                    group_by_value != GroupByEnum.ASSIGNEE.value)
+            (group_by_value != GroupByKey.STAGE.value) and (
+                    group_by_value != GroupByKey.ASSIGNEE.value)
         group_agg = ""
         if is_group_by_value_stage:
-            group_agg = A('terms', field='stages.stage_id.keyword')
+            group_agg = A('terms', field='stages.stage_id.keyword',
+                          size=limit + offset)
         if is_group_by_value_assignee:
-            group_agg = A('terms', field='stages.assignee_id.keyword')
+            group_agg = A('terms', field='stages.assignee_id.keyword',
+                          size=limit + offset)
         if is_group_by_value_other_than_stage_and_assignee:
             attribute = group_by_value + '.keyword'
-            group_agg = A('terms', field=attribute)
+            group_agg = A('terms', field=attribute, size=limit + offset)
         return group_agg
 
     @staticmethod
@@ -202,10 +204,12 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         search.aggs.bucket('groups', group_agg).bucket('tasks', tasks_data)
         response = search.execute()
 
-        total_groups_count = len(response.aggregations.groups.buckets)
-
         group_offset = group_by_order_one_dto.offset
         group_limit = group_by_order_one_dto.limit
+
+        total_groups_count = len(response.aggregations.groups.buckets) \
+                             + response.aggregations.groups.sum_other_doc_count \
+                             + group_offset
 
         group_details_dtos = []
         for group in response.aggregations.groups.buckets[
@@ -239,10 +243,10 @@ class ElasticStorageImplementation(ElasticStorageInterface):
             'child_groups', child_agg
         ).bucket('tasks', tasks_data)
         response = search.execute()
-        total_groups_count = len(response.aggregations.groups.buckets)
-
         group_offset = group_by_order_one_dto.offset
         group_limit = group_by_order_one_dto.limit
+        total_groups_count = len(
+            response.aggregations.groups.buckets) + response.aggregations.groups.sum_other_doc_count + group_offset
 
         child_group_offset = group_by_order_two_dto.offset
         child_group_limit = group_by_order_two_dto.limit
@@ -254,7 +258,8 @@ class ElasticStorageImplementation(ElasticStorageInterface):
                      group_offset: group_offset + group_limit]:
             child_group_count_dto = ChildGroupCountDTO(
                 group_by_value=group.key,
-                total_child_groups=len(group.child_groups.buckets)
+                total_child_groups=len(
+                    group.child_groups.buckets) + group.child_groups.sum_other_doc_count + child_group_offset
             )
             child_group_count_dtos.append(child_group_count_dto)
             for child_group in group.child_groups[
@@ -290,7 +295,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
                                                              tasks_data)
         response = search.execute()
         total_child_groups_count = len(
-            response.aggregations.child_groups.buckets)
+            response.aggregations.child_groups.buckets) + response.aggregations.child_groups.sum_other_doc_count
 
         task_offset = get_child_groups_in_group_input_dto.offset
         task_limit = get_child_groups_in_group_input_dto.limit
@@ -369,11 +374,11 @@ class ElasticStorageImplementation(ElasticStorageInterface):
             if group_by_response_dto.order == 1:
                 group_by_order_one = group_by_response_dto.group_by_key
 
-        from ib_adhoc_tasks.constants.enum import GroupByType
-        if group_by_order_one == GroupByType.STAGE.value:
+        from ib_adhoc_tasks.constants.enum import GroupByKey
+        if group_by_order_one == GroupByKey.STAGE.value:
             query = query & Q("term", stages__stage_id__keyword=group_by_value)
 
-        elif group_by_order_one == GroupByType.ASSIGNEE.value:
+        elif group_by_order_one == GroupByKey.ASSIGNEE.value:
             query = query & Q("term",
                               stages__assignee_id__keyword=group_by_value)
 

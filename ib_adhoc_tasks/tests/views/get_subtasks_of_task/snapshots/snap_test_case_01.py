@@ -10,7 +10,7 @@ snapshots = Snapshot()
 snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case status_code'] = '200'
 
 snapshots['TestCase01GetSubtasksOfTaskAPITestCase.test_case body'] = {
-    'parent_task_id': '1',
+    'parent_task_id': 'IBWF-1',
     'tasks': [
         {
             'completed_sub_tasks_count': None,

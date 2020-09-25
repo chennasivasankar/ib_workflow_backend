@@ -20,7 +20,7 @@ class AddOrEditGroupByParameterDTO:
     view_type: ViewType
     group_by_key: str
     order: int = 1
-    group_by_id: Optional[str] = None
+    group_by_id: Optional[int] = None
 
 
 @dataclass

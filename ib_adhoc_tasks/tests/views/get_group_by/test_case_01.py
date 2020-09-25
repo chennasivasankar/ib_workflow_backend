@@ -19,8 +19,10 @@ class TestCase01GetGroupByAPITestCase(TestUtils):
             self, setup, snapshot
     ):
         body = {}
-        path_params = {"project_id": setup["project_id"]}
-        query_params = {'view_type': 'KANBAN'}
+        path_params = {}
+        query_params = {
+            'view_type': 'KANBAN', "project_id": setup["project_id"]
+        }
         headers = {}
         self.make_api_call(body=body,
                            path_params=path_params,

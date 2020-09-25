@@ -3,9 +3,15 @@ import pytest
 from ib_tasks.interactors.create_or_update_task.field_response_validations \
     import \
     ImageUploaderFieldValidationInteractor
+from ib_tasks.tests.factories.storage_dtos import \
+    FieldWithGoFDisplayNameDTOFactory
 
 
 class TestImageUploaderFieldValidationInteractor:
+
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        FieldWithGoFDisplayNameDTOFactory.reset_sequence()
 
     @pytest.fixture
     def allowed_formats(self):
@@ -32,17 +38,20 @@ class TestImageUploaderFieldValidationInteractor:
         interactor = ImageUploaderFieldValidationInteractor(
             field_id=field_id,
             field_response=field_response,
-            allowed_formats=allowed_formats
-        )
+            allowed_formats=allowed_formats)
+
+        field_with_gof_display_name_dto = FieldWithGoFDisplayNameDTOFactory(
+            field_id=field_id)
+        expected_field_display_name = field_with_gof_display_name_dto.field_display_name
 
         # Act
 
         with pytest.raises(InvalidUrlForImage) as err:
-            interactor.validate_field_response()
+            interactor.validate_field_response([field_with_gof_display_name_dto])
 
         # Assert
         exception_object = err.value
-        assert exception_object.field_id == field_id
+        assert exception_object.field_display_name == expected_field_display_name
         assert exception_object.image_url == field_response
 
     def test_invalid_image_format_in_field_response_raise_exception(self, allowed_formats):
@@ -55,16 +64,19 @@ class TestImageUploaderFieldValidationInteractor:
         interactor = ImageUploaderFieldValidationInteractor(
             field_id=field_id,
             field_response=field_response,
-            allowed_formats=allowed_formats
-        )
+            allowed_formats=allowed_formats)
+
+        field_with_gof_display_name_dto = FieldWithGoFDisplayNameDTOFactory(
+            field_id=field_id)
+        expected_field_display_name = field_with_gof_display_name_dto.field_display_name
 
         # Act
         with pytest.raises(InvalidImageFormat) as err:
-            interactor.validate_field_response()
+            interactor.validate_field_response([field_with_gof_display_name_dto])
 
         # Assert
         exception_object = err.value
-        assert exception_object.field_id == field_id
+        assert exception_object.field_display_name == expected_field_display_name
         assert exception_object.given_format == given_image_format
         assert exception_object.allowed_formats == allowed_formats
 
@@ -77,11 +89,13 @@ class TestImageUploaderFieldValidationInteractor:
         interactor = ImageUploaderFieldValidationInteractor(
             field_id=field_id,
             field_response=field_response,
-            allowed_formats=allowed_formats
-        )
+            allowed_formats=allowed_formats)
+
+        field_with_gof_display_name_dto = FieldWithGoFDisplayNameDTOFactory(
+            field_id=field_id)
 
         # Act
-        interactor.validate_field_response()
+        interactor.validate_field_response([field_with_gof_display_name_dto])
 
         # Assert
 

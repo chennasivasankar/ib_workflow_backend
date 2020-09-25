@@ -291,8 +291,8 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
                 AssigneeCurrentTasksCountDTO]) -> Union[list, UserDetailsDTO]:
         empty_permitted_assignee_with_current_tasks_count_dtos = \
             permitted_assignee_with_current_tasks_count_dtos == []
+        permitted_user_details_dto_having_less_tasks = []
         if empty_permitted_assignee_with_current_tasks_count_dtos:
-            permitted_user_details_dto_having_less_tasks = []
             return permitted_user_details_dto_having_less_tasks
 
         assignee_id_with_current_less_tasks, \

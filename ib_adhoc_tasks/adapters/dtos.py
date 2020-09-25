@@ -95,3 +95,9 @@ class TaskIdWithSubTasksCountDTO:
 class TaskIdWithCompletedSubTasksCountDTO:
     task_id: int
     completed_sub_tasks_count: int
+
+
+@dataclass
+class FieldIdAndNameDTO:
+    field_id: str
+    field_display_name: str
