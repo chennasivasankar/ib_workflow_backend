@@ -97,9 +97,9 @@ class PopulateBulkTasks:
     def populate_bulk_tasks(self):
         sheet = get_google_sheet("OTG Model Bulk Tasks Creation")
         worksheet = sheet.worksheet("Task Primary Information")
+        all_tasks_details = worksheet.get_all_records()
         col_headers = worksheet.row_values(1)
         self._validate_field_ids(col_headers)
-        all_tasks_details = worksheet.get_all_records()
         create_task_dtos = self._prepare_create_task_dtos(all_tasks_details)
         interactor = CreateTaskInteractor(
             task_storage=self.task_storage, gof_storage=self.gof_storage,
