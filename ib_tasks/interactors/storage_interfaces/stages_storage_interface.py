@@ -263,6 +263,11 @@ class StageStorageInterface(abc.ABC):
     def get_stage_ids_of_templates(self, template_ids: List[str]) -> List[str]:
         pass
 
+    @abc.abstractmethod
     def get_current_task_stages_excluding_virtual_stages(
             self, task_id: int) -> List[int]:
+        pass
+
+    @abc.abstractmethod
+    def get_recent_task_stage(self, task_id: int) -> List[int]:
         pass

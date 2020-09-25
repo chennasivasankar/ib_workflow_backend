@@ -751,6 +751,11 @@ class StagesStorageImplementation(StageStorageInterface):
                                       values_list('stage__id', flat=True))
         return current_task_stage_ids
 
+    def get_recent_task_stage(self, task_id: int) -> List[int]:
+        stage_ids = TaskStageHistory.objects.filter(task_id=task_id, left_at=None)\
+            .values_list('stage_id', flat=True)
+        return stage_ids
+
 
 class StorageImplementation(StorageInterface):
 

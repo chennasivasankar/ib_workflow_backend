@@ -109,13 +109,12 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
             db_stage_ids=db_stage_ids)
         stage_with_user_details_dtos = []
         if len(db_stage_ids) == 1:
-            current_task_stage_ids = self.stage_storage. \
-                get_current_task_stages_excluding_virtual_stages(task_id=task_id)
-            if len(current_task_stage_ids) == 1:
+            previous_stage_ids = self.stage_storage.get_recent_task_stage(task_id=task_id)
+            if len(previous_stage_ids) == 1:
                 stage_with_user_details_dtos = self. \
                     _get_previous_user_details_for_next_stage_if_user_is_permitted(
                     task_id=task_id,
-                    current_task_stage_ids=current_task_stage_ids,
+                    previous_stage_ids=previous_stage_ids,
                     next_task_stage_ids=db_stage_ids, project_id=project_id,
                     stage_detail_dtos=stage_detail_dtos)
         if stage_with_user_details_dtos == [] or len(db_stage_ids) != 1:
@@ -126,12 +125,12 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
         return stage_with_user_details_dtos
 
     def _get_previous_user_details_for_next_stage_if_user_is_permitted(
-            self, task_id: int, current_task_stage_ids: List[int],
+            self, task_id: int, previous_stage_ids: List[int],
             next_task_stage_ids: List[int], project_id: str,
             stage_detail_dtos: List[StageDetailsDTO])-> List[StageWithUserDetailsDTO]:
         task_stage_assignee_dto = self.stage_storage. \
             get_stage_details_having_assignees_in_given_stage_ids(
-            task_id=task_id, db_stage_ids=current_task_stage_ids)
+            task_id=task_id, db_stage_ids=previous_stage_ids)
         role_ids_group_by_stage_id_dtos = self. \
             _get_role_ids_group_by_stage_id_dtos_given_stages(
             db_stage_ids=next_task_stage_ids)
