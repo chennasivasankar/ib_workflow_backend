@@ -11,7 +11,7 @@ from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
-    TaskStageAssigneeDetailsDTO, TaskStageAssigneeTeamDetailsDTO, \
+    TaskStageAssigneeTeamDetailsDTO, \
     StageIdWithGoFIdsDTO, DBStageIdWithStageIdDTO, DBStageIdWithGoFIdsDTO
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
@@ -48,8 +48,7 @@ from ib_tasks.interactors.task_template_dtos import \
      CreateTransitionChecklistTemplateWithTaskDisplayIdDTO)
 from ib_tasks.tests.factories.adapter_dtos import (AssigneeDetailsDTOFactory,
                                                    UserDetailsDTO,
-                                                   TeamInfoDTOFactory,
-                                                   TeamDetailsDTOFactory)
+                                                   TeamInfoDTOFactory, TeamDetailsDTOFactory)
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -629,19 +628,6 @@ class AssigneeWithTeamDetailsDTOFactory(factory.Factory):
         return TeamInfoDTOFactory()
 
 
-class TaskStageAssigneeDetailsDTOFactory(factory.Factory):
-    class Meta:
-        model = TaskStageAssigneeDetailsDTO
-
-    task_id = factory.sequence(lambda counter: counter + 1)
-    stage_id = factory.sequence(lambda counter: 'stage_{}'.format(counter + 1))
-
-    @factory.lazy_attribute
-    def assignee_details(self):
-        AssigneeWithTeamDetailsDTOFactory.reset_sequence()
-        return AssigneeWithTeamDetailsDTOFactory()
-
-
 class TaskStageAssigneeTeamDetailsDTOFactory(factory.Factory):
     class Meta:
         model = TaskStageAssigneeTeamDetailsDTO
@@ -651,10 +637,12 @@ class TaskStageAssigneeTeamDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def assignee_details(self):
+        AssigneeWithTeamDetailsDTOFactory.reset_sequence()
         return AssigneeWithTeamDetailsDTOFactory()
 
     @factory.lazy_attribute
     def team_details(self):
+        TeamDetailsDTOFactory.reset_sequence()
         return TeamDetailsDTOFactory()
 
 
@@ -751,8 +739,8 @@ class TasksCompleteDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def task_stage_assignee_dtos(self):
-        TaskStageAssigneeDetailsDTOFactory.reset_sequence(1)
-        return TaskStageAssigneeDetailsDTOFactory.create_batch(2)
+        TaskStageAssigneeTeamDetailsDTOFactory.reset_sequence(1)
+        return TaskStageAssigneeTeamDetailsDTOFactory.create_batch(2)
 
 
 class TaskWithCompletedSubTasksCountDTOFactory(factory.Factory):

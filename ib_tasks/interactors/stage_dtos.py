@@ -19,13 +19,6 @@ class TaskStageDTO:
 
 
 @dataclass
-class TaskStageAssigneeDetailsDTO:
-    task_id: int
-    stage_id: str
-    assignee_details: Optional[AssigneeDetailsDTO]
-
-
-@dataclass
 class TaskStageAssigneeTeamDetailsDTO:
     task_id: int
     stage_id: str

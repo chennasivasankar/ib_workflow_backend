@@ -1,6 +1,7 @@
 from typing import List
 
-from ib_adhoc_tasks.adapters.dtos import TasksCompleteDetailsDTO
+from ib_adhoc_tasks.adapters.dtos import TasksCompleteDetailsDTO, \
+    TasksDetailsInputDTO
 from ib_adhoc_tasks.adapters.iam_service import InvalidProjectId, \
     InvalidUserId, InvalidUserForProject
 from ib_adhoc_tasks.constants.enum import ViewType
@@ -64,13 +65,20 @@ class GetTasksForKanbanViewInteractor:
             self, group_by_info_kanban_view_dto: GroupByInfoKanbanViewDTO
     ) -> TaskDetailsWithGroupByInfoDTO:
         project_id = group_by_info_kanban_view_dto.project_id
+        user_id = group_by_info_kanban_view_dto.user_id
         self._validate_project_id(project_id)
         self._validate_limit_offset_values(group_by_info_kanban_view_dto)
         group_details_dtos, total_groups_count, child_group_count_dtos = \
             self._get_group_details_dtos(
                 group_by_info_kanban_view_dto)
         task_ids = self._get_task_ids(group_details_dtos)
-        task_details_dtos = self._get_task_details_dtos(task_ids)
+        task_details_input_dto = TasksDetailsInputDTO(
+            task_ids=task_ids,
+            project_id=project_id,
+            user_id=user_id,
+            view_type=ViewType.KANBAN.value
+        )
+        task_details_dtos = self._get_task_details_dtos(task_details_input_dto)
         task_details_with_group_by_info_dto = TaskDetailsWithGroupByInfoDTO(
             group_details_dtos=group_details_dtos,
             total_groups_count=total_groups_count,
@@ -116,13 +124,13 @@ class GetTasksForKanbanViewInteractor:
 
     @staticmethod
     def _get_task_details_dtos(
-            task_ids: List[str]
+            task_details_input_dto: TasksDetailsInputDTO
     ) -> TasksCompleteDetailsDTO:
         from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
         task_service_adapter = get_service_adapter()
         task_service = task_service_adapter.task_service
         task_details_dtos = task_service.get_task_complete_details_dto(
-            task_ids)
+            task_details_input_dto)
         return task_details_dtos
 
     @staticmethod
@@ -131,13 +139,10 @@ class GetTasksForKanbanViewInteractor:
         iam_service_adapter = get_service_adapter()
         iam_service = iam_service_adapter.iam_service
         valid_project_ids = iam_service.get_valid_project_ids([project_id])
-        flag = 0
         for valid_project_id in valid_project_ids:
             if valid_project_id == project_id:
-                flag = 1
-                break
-        if flag == 0:
-            raise InvalidProjectId()
+                return
+        raise InvalidProjectId()
 
     def _get_group_details_dtos(
             self,
@@ -171,7 +176,8 @@ class GetTasksForKanbanViewInteractor:
                 project_id=project_id, adhoc_template_id=adhoc_template_id,
                 group_by_dtos=group_by_dtos,
                 task_offset_and_limit_values_dto
-                =task_offset_and_limit_values_dto
+                =task_offset_and_limit_values_dto,
+                user_id=user_id
             )
         return group_details_dtos, total_groups_count, child_group_count_dtos
 

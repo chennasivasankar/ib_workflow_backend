@@ -3,7 +3,7 @@ from typing import List
 
 from ib_adhoc_tasks.adapters.iam_service import UserIdAndNameDTO
 from ib_adhoc_tasks.adapters.task_service import StageIdAndNameDTO
-from ib_adhoc_tasks.constants.enum import GroupByEnum
+from ib_adhoc_tasks.constants.enum import GroupByKey
 from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO, \
     TaskOffsetAndLimitValuesDTO
 from ib_adhoc_tasks.interactors.storage_interfaces.dtos import GroupDetailsDTO
@@ -131,11 +131,11 @@ class GetTaskIdsForViewInteractor:
 
     def add_group_by_display_name_to_dtos(
             self, group_details_dtos: List[GroupDetailsDTO],
-            type_of_group_by: GroupByEnum
+            type_of_group_by: GroupByKey
     ):
         from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
-        if type_of_group_by == GroupByEnum.ASSIGNEE.value:
+        if type_of_group_by == GroupByKey.ASSIGNEE.value:
             assignee_ids = self._get_group_by_values(group_details_dtos)
             assignee_id_and_name_dtos = \
                 service_adapter.iam_service.get_user_details_bulk(
@@ -146,7 +146,7 @@ class GetTaskIdsForViewInteractor:
                 assignee_id_and_name_dtos=assignee_id_and_name_dtos
             )
 
-        if type_of_group_by == GroupByEnum.STAGE.value:
+        if type_of_group_by == GroupByKey.STAGE.value:
             stage_ids = self._get_group_by_values(group_details_dtos)
             stage_id_and_name_dtos = \
                 service_adapter.task_service.get_stage_details(
@@ -185,7 +185,7 @@ class GetTaskIdsForViewInteractor:
             type_of_child_group_by):
         from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
-        if type_of_child_group_by == GroupByEnum.ASSIGNEE.value:
+        if type_of_child_group_by == GroupByKey.ASSIGNEE.value:
             assignee_ids = self._get_child_group_by_values(group_details_dtos)
             assignee_id_and_name_dtos = \
                 service_adapter.iam_service.get_user_details_bulk(
@@ -196,7 +196,7 @@ class GetTaskIdsForViewInteractor:
                 assignee_id_and_name_dtos=assignee_id_and_name_dtos
             )
 
-        if type_of_child_group_by == GroupByEnum.STAGE.value:
+        if type_of_child_group_by == GroupByKey.STAGE.value:
             stage_ids = self._get_child_group_by_values(group_details_dtos)
             stage_id_and_name_dtos = \
                 service_adapter.task_service.get_stage_details(
@@ -227,7 +227,7 @@ class GetTaskIdsForViewInteractor:
 
         for group_details_dto in group_details_dtos:
             group_details_dto.child_group_by_display_name = \
-                assignee_id_wise_name_dict[group_details_dto.group_by_value]
+                assignee_id_wise_name_dict[group_details_dto.child_group_by_value]
 
         return group_details_dtos
 

@@ -83,3 +83,9 @@ class StorageImplementation(StorageInterface):
             group_by_id=group_by_info_object.id,
             order=group_by_info_object.order
         )
+
+    def get_view_types_of_user(self, user_id: str) -> List[str]:
+        from ib_adhoc_tasks.models import GroupByInfo
+        view_types = GroupByInfo.objects.filter(user_id=user_id) \
+            .values_list("view_type", flat=True)
+        return list(view_types)

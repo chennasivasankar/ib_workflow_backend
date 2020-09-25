@@ -36,7 +36,7 @@ from ib_tasks.interactors.presenter_interfaces.dtos import \
 from ib_tasks.interactors.presenter_interfaces \
     .save_and_act_on_task_presenter_interface import \
     SaveAndActOnATaskPresenterInterface
-from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeTeamDetailsDTO
 from ib_tasks.interactors.stage_dtos import TaskStageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
@@ -469,17 +469,22 @@ class SaveAndActOnATaskPresenterImplementation(
 
     @staticmethod
     def _get_assignee_details(
-            stage_assignee_dto: List[TaskStageAssigneeDetailsDTO]
+            stage_assignee_dto: List[TaskStageAssigneeTeamDetailsDTO]
     ) -> Optional[Dict]:
         if stage_assignee_dto:
             assignee_details_dto = stage_assignee_dto[0].assignee_details
         else:
             return None
         if assignee_details_dto:
+            team_details_dto = stage_assignee_dto[0].team_details
             assignee_details = {
                 "assignee_id": assignee_details_dto.assignee_id,
                 "name": assignee_details_dto.name,
-                "profile_pic_url": assignee_details_dto.profile_pic_url
+                "profile_pic_url": assignee_details_dto.profile_pic_url,
+                "team_info": {
+                    "team_id": team_details_dto.team_id,
+                    "team_name": team_details_dto.name
+                }
             }
             return assignee_details
 
@@ -744,7 +749,7 @@ class SaveAndActOnATaskPresenterImplementation(
     @staticmethod
     def _get_stage_details_and_assignees_details_dict(
             column_stage_dtos: List[ColumnStageDTO],
-            assignee_dtos: List[TaskStageAssigneeDetailsDTO],
+            assignee_dtos: List[TaskStageAssigneeTeamDetailsDTO],
             task_stage_dtos: List[TaskStageDTO]):
 
         assignee_dtos_dict = {}

@@ -115,6 +115,13 @@ class TestGetTasksOverviewForUserInteractor:
         ]
         return response
 
+    @pytest.fixture()
+    def template_storage(self):
+        from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import TaskTemplateStorageInterface
+        from unittest.mock import create_autospec
+        action_storage = create_autospec(TaskTemplateStorageInterface)
+        return action_storage
+
     @pytest.fixture
     def expected_response(self):
         return []
@@ -126,7 +133,7 @@ class TestGetTasksOverviewForUserInteractor:
 
     def test_get_filtered_tasks_overview_with_invalid_project_id(
             self, mocker, stage_storage, task_storage, field_storage,
-            action_storage, task_stage_storage):
+            action_storage, task_stage_storage, template_storage):
         # Arrange
         user_id = 'user_id'
         task_ids = [1, 2, 3]
@@ -148,7 +155,8 @@ class TestGetTasksOverviewForUserInteractor:
             task_storage=task_storage,
             field_storage=field_storage,
             action_storage=action_storage,
-            task_stage_storage=task_stage_storage
+            task_stage_storage=task_stage_storage,
+            template_storage=template_storage
         )
 
         # Act
@@ -168,7 +176,7 @@ class TestGetTasksOverviewForUserInteractor:
 
     def test_get_filtered_tasks_overview_with_user_not_in_project_id(
             self, mocker, stage_storage, task_storage, field_storage,
-            action_storage, task_stage_storage):
+            action_storage, task_stage_storage, template_storage):
         # Arrange
         user_id = 'user_id'
         task_ids = [1, 2, 3]
@@ -195,7 +203,8 @@ class TestGetTasksOverviewForUserInteractor:
             task_storage=task_storage,
             field_storage=field_storage,
             action_storage=action_storage,
-            task_stage_storage=task_stage_storage
+            task_stage_storage=task_stage_storage,
+            template_storage=template_storage
         )
 
         # Act
@@ -217,7 +226,7 @@ class TestGetTasksOverviewForUserInteractor:
 
     def test_get_filtered_tasks_overview_with_task_ids_not_in_project_id(
             self, mocker, stage_storage, task_storage, field_storage,
-            action_storage, task_stage_storage):
+            action_storage, task_stage_storage, template_storage):
         # Arrange
         user_id = 'user_id'
         task_ids = [1, 2, 3]
@@ -248,7 +257,8 @@ class TestGetTasksOverviewForUserInteractor:
             task_storage=task_storage,
             field_storage=field_storage,
             action_storage=action_storage,
-            task_stage_storage=task_stage_storage
+            task_stage_storage=task_stage_storage,
+            template_storage=template_storage
         )
 
         # Act
@@ -268,7 +278,9 @@ class TestGetTasksOverviewForUserInteractor:
 
     def test_get_filtered_tasks_overview_for_user_with_valid_details(
             self, mocker, task_actions_fields, expected_response, stage_storage, snapshot,
-            task_storage, field_storage, action_storage, task_stage_storage, stage_ids_dto):
+            task_storage, field_storage, action_storage, task_stage_storage, stage_ids_dto,
+            template_storage
+    ):
         # Arrange
         user_id = 'user_id'
         task_ids = [1, 2]
@@ -282,7 +294,8 @@ class TestGetTasksOverviewForUserInteractor:
             task_storage=task_storage,
             field_storage=field_storage,
             action_storage=action_storage,
-            task_stage_storage=task_stage_storage
+            task_stage_storage=task_stage_storage,
+            template_storage=template_storage
         )
         fields_and_actions = task_actions_fields
         stage_ids = ['stage_id_1', "stage_id_2"]

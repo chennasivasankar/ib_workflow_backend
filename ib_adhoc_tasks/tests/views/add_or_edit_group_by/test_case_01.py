@@ -22,8 +22,8 @@ class TestCase01AddOrEditGroupByAPITestCase(TestUtils):
             'order': 1,
             'group_by_id': None
         }
-        path_params = {"project_id": "ibgroup"}
-        query_params = {}
+        path_params = {}
+        query_params = {"project_id": "ibgroup"}
         headers = {}
         self.make_api_call(body=body,
                            path_params=path_params,
@@ -39,8 +39,8 @@ class TestCase01AddOrEditGroupByAPITestCase(TestUtils):
             'order': 2,
             'group_by_id': setup["group_by_id"]
         }
-        path_params = {"project_id": setup["project_id"]}
-        query_params = {}
+        path_params = {}
+        query_params = {"project_id": setup["project_id"]}
         headers = {}
         self.make_api_call(body=body,
                            path_params=path_params,

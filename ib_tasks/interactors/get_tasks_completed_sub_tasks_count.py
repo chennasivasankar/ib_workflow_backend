@@ -96,5 +96,5 @@ class GetTasksCompletedSubTasksCount:
 
         if invalid_task_ids:
             from ib_tasks.exceptions.task_custom_exceptions import \
-                InvalidTaskException
-            raise InvalidTaskException()
+                InvalidTaskIds
+            raise InvalidTaskIds(invalid_task_ids)

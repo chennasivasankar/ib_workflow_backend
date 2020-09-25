@@ -6,9 +6,9 @@ from ib_tasks.interactors.get_task_details_interactor import \
     GetTaskDetailsInteractor
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
-from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldDisplayNameDTO
+    FieldDisplayNameDTO, FieldNameDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO, TaskStagesDTO, StageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
@@ -21,10 +21,14 @@ from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
 from ib_tasks.storages.fields_storage_implementation import \
     FieldsStorageImplementation
+from ib_tasks.storages.gof_storage_implementation import \
+    GoFStorageImplementation
 from ib_tasks.storages.storage_implementation import \
     StagesStorageImplementation
 from ib_tasks.storages.task_stage_storage_implementation import \
     TaskStageStorageImplementation
+from ib_tasks.storages.task_template_storage_implementation import \
+    TaskTemplateStorageImplementation
 from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
 
@@ -87,8 +91,8 @@ class ServiceInterface:
 
     @staticmethod
     def get_assignees_for_task_stages(
-            task_stage_dtos: List[GetTaskDetailsDTO]) -> List[
-        TaskStageAssigneeDetailsDTO]:
+            task_stage_dtos: List[GetTaskDetailsDTO], project_id: str
+    ) -> List[TaskStageAssigneeTeamDetailsDTO]:
         from ib_tasks.interactors.get_stages_assignees_details_interactor \
             import \
             GetStagesAssigneesDetailsInteractor
@@ -99,7 +103,7 @@ class ServiceInterface:
         )
         return \
             assignees_interactor.get_stages_assignee_details_by_given_task_ids(
-                task_stage_dtos=task_stage_dtos
+                task_stage_dtos=task_stage_dtos, project_id=project_id
             )
 
     @staticmethod
@@ -243,5 +247,24 @@ class ServiceInterface:
         task_with_completed_sub_tasks_count_dtos = \
             interactor.get_tasks_completed_sub_tasks_count(
                 task_ids=task_ids
-        )
+            )
         return task_with_completed_sub_tasks_count_dtos
+
+    def get_task_template_field_dtos(
+            self, user_id: str, project_ids: List[str], template_id: str
+    ) -> List[FieldNameDTO]:
+        # TODO need to write test cases
+        from ib_tasks.interactors.get_templates_fields_to_project_ids import \
+            GetProjectsTemplatesFieldsInteractor
+        task_template_storage = TaskTemplateStorageImplementation()
+        gof_storage = GoFStorageImplementation()
+        field_storage = FieldsStorageImplementation()
+        interactor = GetProjectsTemplatesFieldsInteractor(
+            task_template_storage=task_template_storage,
+            gof_storage=gof_storage,
+            field_storage=field_storage
+        )
+
+        return interactor.get_task_template_field_dtos(
+            user_id=user_id, project_ids=project_ids, template_id=template_id
+        )
