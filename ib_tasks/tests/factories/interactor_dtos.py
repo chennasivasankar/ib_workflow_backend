@@ -48,7 +48,7 @@ from ib_tasks.interactors.task_template_dtos import \
      CreateTransitionChecklistTemplateWithTaskDisplayIdDTO)
 from ib_tasks.tests.factories.adapter_dtos import (AssigneeDetailsDTOFactory,
                                                    UserDetailsDTO,
-                                                   TeamInfoDTOFactory)
+                                                   TeamInfoDTOFactory, TeamDetailsDTOFactory)
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -639,6 +639,11 @@ class TaskStageAssigneeTeamDetailsDTOFactory(factory.Factory):
     def assignee_details(self):
         AssigneeWithTeamDetailsDTOFactory.reset_sequence()
         return AssigneeWithTeamDetailsDTOFactory()
+
+    @factory.lazy_attribute
+    def team_details(self):
+        TeamDetailsDTOFactory.reset_sequence()
+        return TeamDetailsDTOFactory()
 
 
 class AssigneesDTOFactory(factory.Factory):
