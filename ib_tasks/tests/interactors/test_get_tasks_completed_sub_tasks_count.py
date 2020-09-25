@@ -63,6 +63,27 @@ class TestGetTasksCompletedSubTasksCount:
             )
         return task_with_completed_sub_task_count_dtos
 
+    def test_given_invalid_task_ids_raise_exception(
+            self, task_storage_mock, task_stage_storage_mock
+    ):
+        # Arrange
+        from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
+        task_ids = [1, 2, 3, 4, 5, 6]
+        interactor = GetTasksCompletedSubTasksCount(
+            task_stage_storage=task_stage_storage_mock,
+            task_storage=task_storage_mock
+        )
+        invalid_task_ids = [5, 6]
+        valid_task_ids = [1, 2, 3, 4]
+        task_storage_mock.get_valid_task_ids.return_value = valid_task_ids
+
+        # Act
+        with pytest.raises(InvalidTaskIds) as err:
+            interactor.get_tasks_completed_sub_tasks_count(task_ids)
+
+        # Assert
+        assert err.value.invalid_task_ids == invalid_task_ids
+
     def test_given_task_ids_returns_task_with_completed_sub_tasks_count_dtos(
             self, task_stage_storage_mock, task_storage_mock, all_task_ids,
             task_with_completed_sub_task_count_dtos,
