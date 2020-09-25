@@ -4,11 +4,13 @@ Author: Pavankumar Pamuru
 
 """
 from dataclasses import dataclass
+from datetime import datetime
 from typing import List, Any, Optional
 
 from django.conf import settings
 from elasticsearch_dsl import Document, Nested, InnerDoc, Text, Integer
 
+from ib_tasks.constants.enum import Priority
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import TaskStageAssigneeTeamIdDTO
 
 TASK_INDEX_NAME = 'task-{}'.format(settings.STAGE)
@@ -26,6 +28,10 @@ class ElasticTaskDTO:
     template_id: Optional[str]
     task_id: int
     title: str
+    description: str
+    start_date: datetime
+    due_date: datetime
+    priority: Priority
     fields: List[ElasticFieldDTO]
     stages: List[TaskStageAssigneeTeamIdDTO]
 
