@@ -5,10 +5,9 @@ Author: Pavankumar Pamuru
 """
 from dataclasses import dataclass
 
+from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException, \
     UserIsNotInProjectException
-
-from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.fields_custom_exceptions import \
     LimitShouldBeGreaterThanZeroException, \
     OffsetShouldBeGreaterThanZeroException
@@ -31,6 +30,7 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import
     TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import TaskTemplateStorageInterface
 
 
 @dataclass
@@ -49,7 +49,8 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
                  action_storage: ActionStorageInterface,
                  filter_storage: FilterStorageInterface,
                  elasticsearch_storage: ElasticSearchStorageInterface,
-                 task_stage_storage: TaskStageStorageInterface):
+                 task_stage_storage: TaskStageStorageInterface,
+                 template_storage: TaskTemplateStorageInterface):
         self.task_stage_storage = task_stage_storage
         self.filter_storage = filter_storage
         self.stage_storage = stage_storage
@@ -57,6 +58,7 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
         self.field_storage = field_storage
         self.action_storage = action_storage
         self.elasticsearch_storage = elasticsearch_storage
+        self.template_storage = template_storage
 
     def get_filtered_tasks_overview_for_user_wrapper(
             self, project_tasks_parameter: ProjectTasksParameterDTO,
@@ -114,7 +116,8 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
             task_storage=self.task_storage,
             field_storage=self.field_storage,
             action_storage=self.action_storage,
-            task_stage_storage=self.task_stage_storage
+            task_stage_storage=self.task_stage_storage,
+            template_storage=self.template_storage
         )
         from ib_tasks.interactors.get_task_ids_by_applying_filters_interactor import \
             FilterTasksParameter

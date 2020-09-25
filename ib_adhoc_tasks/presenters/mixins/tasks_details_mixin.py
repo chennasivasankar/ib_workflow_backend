@@ -178,12 +178,16 @@ class TaskDetailsMixin:
 
     @staticmethod
     def _get_assignee_with_team_details(
-            assignee_dto: AssigneeDetailsDTO, team_dto: TeamDetailsDTO
+            assignee_dto: Optional[AssigneeDetailsDTO], team_dto: Optional[TeamDetailsDTO]
     ):
-        team_info = {
-            "team_id": team_dto.team_id,
-            "team_name": team_dto.name
-        }
+        if assignee_dto is None:
+            return None
+        team_info = None
+        if team_dto:
+            team_info = {
+                "team_id": team_dto.team_id,
+                "team_name": team_dto.name
+            }
         assignee_details = {
             "assignee_id": assignee_dto.assignee_id,
             "name": assignee_dto.name,
