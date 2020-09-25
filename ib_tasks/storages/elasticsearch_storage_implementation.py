@@ -62,14 +62,16 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             body=json.loads(task_dict))
 
     def _get_task_dict(self, elastic_task_dto: ElasticTaskDTO):
+        start_date, due_date = self._get_start_date_and_due_date(
+            elastic_task_dto)
         task_dict = {
             "project_id": elastic_task_dto.project_id,
             "template_id": elastic_task_dto.template_id,
             "task_id": elastic_task_dto.task_id,
             "title": elastic_task_dto.title,
             "description": elastic_task_dto.description,
-            "start_date": elastic_task_dto.start_date,
-            "due_date": elastic_task_dto.due_date,
+            "start_date": start_date,
+            "due_date": due_date,
             "priority": elastic_task_dto.priority
         }
         fields_dict = {}
@@ -90,6 +92,28 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             }
             for task_stage_assignees_dto in task_stage_assignees_dtos
         ]
+
+    def _get_start_date_and_due_date(
+            self, task_base_details_dto: ElasticTaskDTO
+    ):
+        start_date, due_date = None, None
+        if task_base_details_dto.start_date is not None:
+            start_date = self._convert_datetime_object_to_string(
+                task_base_details_dto.start_date
+            )
+        if task_base_details_dto.due_date is not None:
+            due_date = self._convert_datetime_object_to_string(
+                task_base_details_dto.due_date
+            )
+        return start_date, due_date
+
+    @staticmethod
+    def _convert_datetime_object_to_string(
+            datetime_obj: datetime
+    ) -> str:
+        from ib_adhoc_tasks.constants.constants import DATETIME_FORMAT
+        datetime_in_string_format = datetime_obj.strftime(DATETIME_FORMAT)
+        return datetime_in_string_format
 
     def filter_tasks(
             self, filter_dtos: List[ApplyFilterDTO], offset: int,
