@@ -10,11 +10,13 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_tasks.constants.enum import FieldTypes
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...common_fixtures.adapters.roles_service import \
+from ib_tasks.tests.views.create_task import APP_NAME, OPERATION_NAME, \
+    REQUEST_METHOD, URL_SUFFIX
+from ib_tasks.tests.common_fixtures.adapters.roles_service import \
     get_user_role_ids_based_on_project_mock
-from ...common_fixtures.storages import elastic_storage_implementation_mock
-from ...factories.models import StageGoFFactory
+from ib_tasks.tests.common_fixtures.storages import \
+    elastic_storage_implementation_mock
+from ib_tasks.tests.factories import models
 
 
 class TestCase01CreateTaskAPITestCase(TestUtils):
@@ -115,7 +117,7 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
             gof_id=factory.Iterator(gof_selector_gof_ids))
         payment_type_gof = GoFFactory.create(gof_id="FIN_PAYMENT_TYPE")
         gof_objects = gof_selector_objects + [payment_type_gof]
-        StageGoFFactory.create_batch(
+        models.StageGoFFactory.create_batch(
             size=len(gof_objects), stage=stage,
             gof=factory.Iterator(gof_objects))
         fields = FieldFactory.create_batch(

@@ -1,15 +1,14 @@
 import enum
 
 
-class GroupByEnum(enum.Enum):
+class GroupByKey(enum.Enum):
     STAGE = "STAGE"
     ASSIGNEE = "ASSIGNEE"
-
-
-class GroupByType(enum.Enum):
-    STAGE = "STAGE"
-    ASSIGNEE = "ASSIGNEE"
-    FIELD = "FIELD"
+    TITLE = "title"
+    DESCRIPTION = "description"
+    START_DATE = "start_date"
+    DUE_DATE = "due_date"
+    PRIORITY = "priority"
 
 
 class ViewType(enum.Enum):

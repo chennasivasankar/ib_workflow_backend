@@ -30,12 +30,12 @@ class SubTasksInteractor:
         task_id = service.task_service.get_task_id(
             task_display_id=get_subtasks_parameter_dto.task_id
         )
-        get_subtasks_parameter_dto.task_id = task_id
+        # get_subtasks_parameter_dto.task_id = task_id
         project_id = service.task_service.get_project_id_based_on_task_id(
-            task_id=get_subtasks_parameter_dto.task_id
+            task_id=task_id
         )
         subtask_ids = service.task_service.get_subtask_ids_for_task_id(
-            task_id=get_subtasks_parameter_dto.task_id
+            task_id=task_id
         )
         from ib_adhoc_tasks.adapters.dtos import TasksDetailsInputDTO
         task_details_input_dto = TasksDetailsInputDTO(
@@ -44,8 +44,7 @@ class SubTasksInteractor:
             user_id=get_subtasks_parameter_dto.user_id,
             view_type=get_subtasks_parameter_dto.view_type
         )
-        complete_subtasks_details_dto = service.task_service \
-            .get_task_complete_details_dto(
+        complete_subtasks_details_dto = service.task_service.get_task_complete_details_dto(
             task_details_input_dto=task_details_input_dto
         )
         return subtask_ids, complete_subtasks_details_dto

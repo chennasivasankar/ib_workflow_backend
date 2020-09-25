@@ -7,18 +7,17 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from freezegun import freeze_time
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...common_fixtures.adapters.auth_service import \
+from ib_tasks.tests.views.save_and_act_on_a_task import APP_NAME, \
+    OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ib_tasks.tests.common_fixtures.adapters.auth_service import \
     get_projects_info_for_given_ids_mock, get_valid_project_ids_mock, \
     validate_if_user_is_in_project_mock
-from ...common_fixtures.adapters.roles_service import \
+from ib_tasks.tests.common_fixtures.adapters.roles_service import \
     get_user_role_ids_based_on_project_mock
-from ...common_fixtures.storages import elastic_storage_implementation_mock
-from ...factories.adapter_dtos import ProjectDetailsDTOFactory
-from ...factories.models import (
-    TaskFactory, StageActionFactory, StageFactory, GoFFactory,
-    TaskTemplateFactory, FieldFactory, GoFToTaskTemplateFactory,
-    StageGoFFactory, FieldRoleFactory, StagePermittedRolesFactory)
+from ib_tasks.tests.common_fixtures.storages import \
+    elastic_storage_implementation_mock
+from ib_tasks.tests.factories.adapter_dtos import ProjectDetailsDTOFactory
+from ib_tasks.tests.factories import models
 
 
 class TestCase43SaveAndActOnATaskAPITestCase(TestUtils):
@@ -30,17 +29,17 @@ class TestCase43SaveAndActOnATaskAPITestCase(TestUtils):
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
-        TaskFactory.reset_sequence()
-        StageActionFactory.reset_sequence()
-        StageFactory.reset_sequence()
-        GoFFactory.reset_sequence()
-        TaskTemplateFactory.reset_sequence()
-        FieldFactory.reset_sequence()
-        GoFToTaskTemplateFactory.reset_sequence()
-        StageGoFFactory.reset_sequence()
-        FieldRoleFactory.reset_sequence()
+        models.TaskFactory.reset_sequence()
+        models.StageActionFactory.reset_sequence()
+        models.StageFactory.reset_sequence()
+        models.GoFFactory.reset_sequence()
+        models.TaskTemplateFactory.reset_sequence()
+        models.FieldFactory.reset_sequence()
+        models.GoFToTaskTemplateFactory.reset_sequence()
+        models.StageGoFFactory.reset_sequence()
+        models.FieldRoleFactory.reset_sequence()
         ProjectDetailsDTOFactory.reset_sequence()
-        StagePermittedRolesFactory.reset_sequence()
+        models.StagePermittedRolesFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
@@ -61,29 +60,29 @@ class TestCase43SaveAndActOnATaskAPITestCase(TestUtils):
         get_valid_project_ids_mock(mocker, [project_id])
         validate_if_user_is_in_project_mock(mocker, True)
 
-        template = TaskTemplateFactory.create(template_id=template_id)
-        task = TaskFactory.create(
+        template = models.TaskTemplateFactory.create(template_id=template_id)
+        task = models.TaskFactory.create(
             task_display_id=task_display_id, template_id=template_id,
             project_id=project_id)
-        gof = GoFFactory.create(gof_id=gof_id)
+        gof = models.GoFFactory.create(gof_id=gof_id)
 
-        field = FieldFactory.create(
+        field = models.FieldFactory.create(
             field_id=field_id, gof=gof,
             field_type=FieldTypes.PLAIN_TEXT.value)
 
-        GoFToTaskTemplateFactory.create(task_template=template, gof=gof)
-        stage = StageFactory.create(
+        models.GoFToTaskTemplateFactory.create(task_template=template, gof=gof)
+        stage = models.StageFactory.create(
             id=stage_id, task_template_id=template.template_id)
-        action_stage = StageFactory(id=3)
-        StageGoFFactory.create(stage=stage, gof=gof)
-        action = StageActionFactory.create(
+        action_stage = models.StageFactory(id=3)
+        models.StageGoFFactory.create(stage=stage, gof=gof)
+        action = models.StageActionFactory.create(
             id=action_id, stage=action_stage, action_type=None)
 
-        FieldRoleFactory.create(
+        models.FieldRoleFactory.create(
             role="FIN_PAYMENT_REQUESTER", field=field,
             permission_type=PermissionTypes.WRITE.value)
-        StagePermittedRolesFactory.create(stage=stage,
-                                          role_id="FIN_PAYMENT_REQUESTER")
+        models.StagePermittedRolesFactory.create(stage=stage,
+                                                 role_id="FIN_PAYMENT_REQUESTER")
 
     @freeze_time("2020-09-09 12:00:00")
     @pytest.mark.django_db

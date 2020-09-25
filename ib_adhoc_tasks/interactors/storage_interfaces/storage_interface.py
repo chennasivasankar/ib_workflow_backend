@@ -34,3 +34,6 @@ class StorageInterface(abc.ABC):
     ) -> List[GroupByDetailsDTO]:
         pass
 
+    @abc.abstractmethod
+    def get_view_types_of_user(self, user_id: str) -> List[str]:
+        pass
