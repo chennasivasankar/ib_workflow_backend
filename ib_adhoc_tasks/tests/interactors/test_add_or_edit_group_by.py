@@ -27,11 +27,13 @@ class TestGetGroupByInteractor:
     ):
         from ib_adhoc_tasks.tests.factories.storage_dtos import \
             GroupByResponseDTOFactory, AddOrEditGroupByParameterDTOFactory
+        user_id = "user_id_1"
         add_or_edit_group_by_parameter_dto = AddOrEditGroupByParameterDTOFactory(
-            group_by_id=None
+            group_by_id=None, user_id=user_id
         )
         group_by_response_dto = GroupByResponseDTOFactory()
         storage.add_group_by.return_value = group_by_response_dto
+        storage.get_view_types_of_user.return_value = []
         presenter.get_response_for_add_or_edit_group_by.return_value = mock.Mock()
 
         interactor.add_or_edit_group_by_wrapper(
@@ -39,6 +41,7 @@ class TestGetGroupByInteractor:
             presenter=presenter
         )
 
+        storage.get_view_types_of_user.assert_called_once_with(user_id=user_id)
         storage.add_group_by.assert_called_once_with(
             add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto
         )
