@@ -49,12 +49,17 @@ class GroupByInteractor:
             add_or_edit_group_by_parameter_dto: AddOrEditGroupByParameterDTO,
             presenter: AddOrEditGroupByPresenterInterface
     ):
-        group_by_response_dto = self.add_or_edit_group_by(
-            add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto
-        )
-        return presenter.get_response_for_add_or_edit_group_by(
-            group_by_response_dto=group_by_response_dto
-        )
+        try:
+            group_by_response_dto = self.add_or_edit_group_by(
+                add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto
+            )
+            return presenter.get_response_for_add_or_edit_group_by(
+                group_by_response_dto=group_by_response_dto
+            )
+        except UserNotAllowedToCreateMoreThanOneGroupByInListView:
+            return presenter.get_response_for_user_not_allowed_to_create_more_than_one_group_by_in_list_view()
+        except UserNotAllowedToCreateMoreThanTwoGroupByInKanbanView:
+            return presenter.get_response_for_user_not_allowed_to_create_more_than_two_group_by_in_kanban_view()
 
     def add_or_edit_group_by(
             self,
@@ -117,22 +122,18 @@ class GroupByInteractor:
     def _validate_is_group_by_for_list_view_is_possible(
             view_types: List[str]
     ):
-        group_by_for_list_view_count = 0
-        for view_type in view_types:
-            if view_type == ViewType.LIST.value:
-                group_by_for_list_view_count += 1
-        if group_by_for_list_view_count > 1:
+        group_by_for_list_view_count = view_types.count(ViewType.LIST.value)
+        if group_by_for_list_view_count >= 1:
             raise UserNotAllowedToCreateMoreThanOneGroupByInListView
 
     @staticmethod
     def _validate_is_group_by_for_kanban_view_is_possible(
             view_types: List[str]
     ):
-        group_by_for_kanban_view_count = 0
-        for view_type in view_types:
-            if view_type == ViewType.KANBAN.value:
-                group_by_for_kanban_view_count += 1
-        if group_by_for_kanban_view_count > 1:
+        group_by_for_kanban_view_count = view_types.count(
+            ViewType.KANBAN.value
+        )
+        if group_by_for_kanban_view_count >= 2:
             raise UserNotAllowedToCreateMoreThanTwoGroupByInKanbanView
 
     @staticmethod

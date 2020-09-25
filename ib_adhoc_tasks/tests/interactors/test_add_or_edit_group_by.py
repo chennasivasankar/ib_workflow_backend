@@ -72,3 +72,47 @@ class TestGetGroupByInteractor:
         presenter.get_response_for_add_or_edit_group_by.assert_called_once_with(
             group_by_response_dto=group_by_response_dto
         )
+
+    def test_given_data_to_create_group_by_list_view_as_one_group_by_already_exists_returns_exception_response(
+            self, interactor, presenter, storage
+    ):
+        from ib_adhoc_tasks.tests.factories.storage_dtos import \
+            AddOrEditGroupByParameterDTOFactory
+        user_id = "user_id_1"
+        add_or_edit_group_by_parameter_dto = AddOrEditGroupByParameterDTOFactory(
+            group_by_id=None, user_id=user_id
+        )
+        storage.get_view_types_of_user.return_value = ['LIST']
+        presenter.get_response_for_user_not_allowed_to_create_more_than_one_group_by_in_list_view \
+            .return_value = mock.Mock()
+
+        interactor.add_or_edit_group_by_wrapper(
+            add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto,
+            presenter=presenter
+        )
+
+        storage.get_view_types_of_user.assert_called_once_with(user_id=user_id)
+        presenter.get_response_for_user_not_allowed_to_create_more_than_one_group_by_in_list_view \
+            .assert_called_once()
+
+    def test_given_data_to_create_group_by_kanban_view_as_two_group_by_already_exists_returns_exception_response(
+            self, interactor, presenter, storage
+    ):
+        from ib_adhoc_tasks.tests.factories.storage_dtos import \
+            AddOrEditGroupByParameterDTOFactory
+        user_id = "user_id_1"
+        add_or_edit_group_by_parameter_dto = AddOrEditGroupByParameterDTOFactory(
+            group_by_id=None, user_id=user_id
+        )
+        storage.get_view_types_of_user.return_value = ['KANBAN', 'KANBAN']
+        presenter.get_response_for_user_not_allowed_to_create_more_than_two_group_by_in_kanban_view \
+            .return_value = mock.Mock()
+
+        interactor.add_or_edit_group_by_wrapper(
+            add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto,
+            presenter=presenter
+        )
+
+        storage.get_view_types_of_user.assert_called_once_with(user_id=user_id)
+        presenter.get_response_for_user_not_allowed_to_create_more_than_two_group_by_in_kanban_view \
+            .assert_called_once()

@@ -169,6 +169,11 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_permitted_stage_ids_to_user_roles(
+            self, user_roles: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
     def get_task_current_stages(self, task_id) -> List[str]:
         pass
 

@@ -12,7 +12,7 @@ class GetUserPermittedStageIds:
             self, user_roles: List[str]
     ) -> List[str]:
         self._validate_user_roles(user_roles)
-        stage_ids = self.stage_storage.get_stage_ids_having_actions(
+        stage_ids = self.stage_storage.get_permitted_stage_ids_to_user_roles(
             user_roles=user_roles
         )
         return stage_ids
