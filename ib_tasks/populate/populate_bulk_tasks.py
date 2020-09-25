@@ -9,7 +9,7 @@ from ib_tasks.interactors.create_or_update_task.create_task_interactor import \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldIdWithGoFIdDTO
 from ib_tasks.interactors.task_dtos import FieldValuesDTO, GoFFieldsDTO, \
-    CreateTaskDTO
+    CreateTaskDTO, BasicTaskDetailsDTO
 from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
 from ib_tasks.storages.create_or_update_task_storage_implementation import \
@@ -94,11 +94,16 @@ class PopulateBulkTasks:
         self.elastic_storage = ElasticSearchStorageImplementation()
         self.task_stage_storage = TaskStageStorageImplementation()
 
-    def populate_bulk_tasks(self):
+    @staticmethod
+    def get_sheet_records_and_headers():
         sheet = get_google_sheet("OTG Model Bulk Tasks Creation")
         worksheet = sheet.worksheet("Task Primary Information")
         all_tasks_details = worksheet.get_all_records()
         col_headers = worksheet.row_values(1)
+        return all_tasks_details, col_headers
+
+    def populate_bulk_tasks(self):
+        all_tasks_details, col_headers = self.get_sheet_records_and_headers()
         self._validate_field_ids(col_headers)
         create_task_dtos = self._prepare_create_task_dtos(all_tasks_details)
         interactor = CreateTaskInteractor(
@@ -130,14 +135,16 @@ class PopulateBulkTasks:
             self._validate_priority_value(title, priority)
             priority = priority.upper()
             gof_fields_dtos = self._prepare_gof_fields_dtos(task_details)
+            basic_task_details_dto = BasicTaskDetailsDTO(
+                project_id=self.project_id,
+                task_template_id=self.task_template_id,
+                created_by_id=self.user_id, action_id=self.action_id,
+                title=title, description=description,
+                start_datetime=start_datetime, due_datetime=due_datetime,
+                priority=priority)
             create_task_dtos.append(
                 CreateTaskDTO(
-                    project_id=self.project_id,
-                    task_template_id=self.task_template_id,
-                    created_by_id=self.user_id, action_id=self.action_id,
-                    title=title, description=description,
-                    start_datetime=start_datetime, due_datetime=due_datetime,
-                    priority=priority,
+                    basic_task_details_dto=basic_task_details_dto,
                     gof_fields_dtos=gof_fields_dtos))
         return create_task_dtos
 

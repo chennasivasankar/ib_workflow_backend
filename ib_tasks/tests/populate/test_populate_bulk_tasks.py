@@ -1,8 +1,8 @@
 import json
-from unittest.mock import Mock
 
 import factory
 import pytest
+from freezegun import freeze_time
 
 from ib_tasks.models import Task
 from ib_tasks.tests.common_fixtures.adapters.roles_service import \
@@ -146,12 +146,14 @@ class TestPopulateBulkTasks:
                 "FIN_PAYMENT_REQUESTOR_NAME": "Danerys stormborn"
             }
         ]
-        worksheet_mock_object = Mock()
-        sheet_mock = mocker.patch(
-            "ib_tasks.utils.get_google_sheet.get_google_sheet")
-        sheet_mock.worksheet.return_value = worksheet_mock_object
-        worksheet_mock_object.get_all_records.return_value = records
+        sheet_records_mock = \
+            mocker.patch("ib_tasks.populate.populate_bulk_tasks"
+                         ".PopulateBulkTasks.get_sheet_records_and_headers")
+        sheet_records_mock.return_value = records, [
+            "FIN_PAYMENT_REQUESTOR_NAME"]
 
+    @freeze_time("2020-09-09 12:00:00")
+    @pytest.mark.django_db
     def test_with_valid_details(self, setup, get_sheet_records_mock, snapshot):
         # Arrange
         action_id, template_id, project_id, user_id = setup
@@ -177,22 +179,31 @@ class TestPopulateBulkTasks:
 
         task_id = task_object.id
 
-        snapshot.assert_match(task_object.id, 'task_id')
-        snapshot.assert_match(task_object.template_id, 'template_id')
-        snapshot.assert_match(task_object.title, 'task_title')
-        snapshot.assert_match(task_object.description, 'task_description')
-        snapshot.assert_match(str(task_object.start_date), 'task_start_date')
-        snapshot.assert_match(str(task_object.due_date), 'task_due_date')
-        snapshot.assert_match(task_object.priority, 'task_priority')
+        snapshot.assert_match(
+            task_object.id, f'task-{task_id}: task_id')
+        snapshot.assert_match(
+            task_object.template_id, f'task-{task_id}: template_id')
+        snapshot.assert_match(
+            task_object.title, f'task-{task_id}: task_title')
+        snapshot.assert_match(
+            task_object.description, f'task-{task_id}: task_description')
+        snapshot.assert_match(
+            str(task_object.start_date), f'task-{task_id}: task_start_date')
+        snapshot.assert_match(
+            str(task_object.due_date), f'task-{task_id}: task_due_date')
+        snapshot.assert_match(
+            task_object.priority, f'task-{task_id}: task_priority')
 
         task_gofs = TaskGoF.objects.filter(task_id=task_id)
         counter = 1
         for task_gof in task_gofs:
             snapshot.assert_match(
-                task_gof.same_gof_order, f'same_gof_order_{counter}')
-            snapshot.assert_match(task_gof.gof_id, f'gof_id_{counter}')
+                task_gof.same_gof_order,
+                f'task-{task_id}: same_gof_order_{counter}')
+            snapshot.assert_match(task_gof.gof_id,
+                                  f'task-{task_id}: gof_id_{counter}')
             snapshot.assert_match(task_gof.task_id,
-                                  f'gof_task_id_{counter}')
+                                  f'task-{task_id}: gof_task_id_{counter}')
             counter = counter + 1
 
         task_gof_fields = TaskGoFField.objects.filter(
@@ -200,33 +211,41 @@ class TestPopulateBulkTasks:
         counter = 1
         for task_gof_field in task_gof_fields:
             snapshot.assert_match(task_gof_field.task_gof_id,
-                                  f'task_gof_{counter}')
-            snapshot.assert_match(task_gof_field.field_id, f'field_{counter}')
-            snapshot.assert_match(task_gof_field.field_response,
-                                  f'field_response_{counter}')
+                                  f'task-{task_id}: task_gof_{counter}')
+            snapshot.assert_match(
+                task_gof_field.field_id, f'task-{task_id}: field_{counter}')
+            snapshot.assert_match(
+                task_gof_field.field_response,
+                f'task-{task_id}: field_response_{counter}')
             counter = counter + 1
 
         current_task_stages = CurrentTaskStage.objects.filter(task_id=task_id)
         counter = 1
         for current_task_stage in current_task_stages:
             snapshot.assert_match(
-                current_task_stage.task_id, f'task_id_{counter}')
+                current_task_stage.task_id,
+                f'task-{task_id}: task_id_{counter}')
             snapshot.assert_match(
-                current_task_stage.stage_id, f'task_stage_{counter}'
-            )
+                current_task_stage.stage_id,
+                f'task-{task_id}: task_stage_{counter}')
             counter += 1
 
         task_stage_histories = TaskStageHistory.objects.filter(task_id=task_id)
         for task_stage_history in task_stage_histories:
             snapshot.assert_match(
-                task_stage_history.task_id, f'task_id_{counter}')
+                task_stage_history.task_id,
+                f'task-{task_id}: task_id_{counter}')
             snapshot.assert_match(
-                task_stage_history.stage, f'stage_{counter}')
+                task_stage_history.stage, f'task-{task_id}: stage_{counter}')
             snapshot.assert_match(
-                task_stage_history.team_id, f'team_id_{counter}')
+                task_stage_history.team_id,
+                f'task-{task_id}: team_id_{counter}')
             snapshot.assert_match(
-                task_stage_history.assignee_id, f'assignee_id_{counter}')
+                task_stage_history.assignee_id,
+                f'task-{task_id}: assignee_id_{counter}')
             snapshot.assert_match(
-                task_stage_history.joined_at, f'joined_at_{counter}')
+                task_stage_history.joined_at,
+                f'task-{task_id}: joined_at_{counter}')
             snapshot.assert_match(
-                task_stage_history.left_at, f'left_at_{counter}')
+                task_stage_history.left_at,
+                f'task-{task_id}: left_at_{counter}')
