@@ -8,13 +8,15 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from freezegun import freeze_time
 
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
+from ib_tasks.tests.common_fixtures.adapters.project_service import \
+    get_valid_project_ids_mock
 from ib_tasks.tests.views.save_and_act_on_a_task import APP_NAME, \
     OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ib_tasks.tests.common_fixtures.adapters.auth_service import \
-    get_projects_info_for_given_ids_mock, get_valid_project_ids_mock, \
+    get_projects_info_for_given_ids_mock, get_valid_project_ids_mock as auth_service_project_ids_mock, \
     validate_if_user_is_in_project_mock, \
     prepare_empty_permitted_user_details_mock, \
-    get_team_info_for_given_user_ids_mock
+    get_team_info_for_given_user_ids_mock, get_user_id_team_details_dtos_mock
 from ib_tasks.tests.common_fixtures.adapters.roles_service import \
     get_some_user_role_ids
 from ib_tasks.tests.common_fixtures.storages import \
@@ -86,7 +88,11 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
             project_id=project_id)
         project_info_mock = get_projects_info_for_given_ids_mock(mocker)
         project_info_mock.return_value = [project_info_dtos]
-        get_valid_project_ids_mock(mocker, [project_id])
+        auth_service_project_ids_mock(mocker, [project_id])
+        project_mock = get_valid_project_ids_mock(mocker)
+        project_mock.return_value = [project_id]
+        get_projects_info_for_given_ids_mock(mocker)
+        get_user_id_team_details_dtos_mock(mocker)
         validate_if_user_is_in_project_mock(mocker, True)
         get_assignees_details_dtos_mock.return_value = [
             AssigneeDetailsDTOFactory(assignee_id="assignee_id_1")]

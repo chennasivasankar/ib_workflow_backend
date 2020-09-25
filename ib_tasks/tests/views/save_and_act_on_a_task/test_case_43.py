@@ -7,11 +7,14 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from freezegun import freeze_time
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
+from ib_tasks.tests.common_fixtures.adapters.project_service import \
+    get_valid_project_ids_mock
 from ib_tasks.tests.views.save_and_act_on_a_task import APP_NAME, \
     OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ib_tasks.tests.common_fixtures.adapters.auth_service import \
-    get_projects_info_for_given_ids_mock, get_valid_project_ids_mock, \
-    validate_if_user_is_in_project_mock
+    get_projects_info_for_given_ids_mock, \
+    get_valid_project_ids_mock as auth_service_project_ids_mock, \
+    validate_if_user_is_in_project_mock, get_user_id_team_details_dtos_mock
 from ib_tasks.tests.common_fixtures.adapters.roles_service import \
     get_user_role_ids_based_on_project_mock
 from ib_tasks.tests.common_fixtures.storages import \
@@ -57,7 +60,11 @@ class TestCase43SaveAndActOnATaskAPITestCase(TestUtils):
             project_id=project_id)
         project_info_mock = get_projects_info_for_given_ids_mock(mocker)
         project_info_mock.return_value = [project_info_dtos]
-        get_valid_project_ids_mock(mocker, [project_id])
+        auth_service_project_ids_mock(mocker, [project_id])
+        project_mock = get_valid_project_ids_mock(mocker)
+        project_mock.return_value = [project_id]
+        get_projects_info_for_given_ids_mock(mocker)
+        get_user_id_team_details_dtos_mock(mocker)
         validate_if_user_is_in_project_mock(mocker, True)
 
         template = models.TaskTemplateFactory.create(template_id=template_id)
@@ -81,8 +88,6 @@ class TestCase43SaveAndActOnATaskAPITestCase(TestUtils):
         models.FieldRoleFactory.create(
             role="FIN_PAYMENT_REQUESTER", field=field,
             permission_type=PermissionTypes.WRITE.value)
-        models.StagePermittedRolesFactory.create(stage=stage,
-                                                 role_id="FIN_PAYMENT_REQUESTER")
 
     @freeze_time("2020-09-09 12:00:00")
     @pytest.mark.django_db

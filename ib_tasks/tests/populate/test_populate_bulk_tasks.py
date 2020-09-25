@@ -5,6 +5,10 @@ import pytest
 from freezegun import freeze_time
 
 from ib_tasks.models import Task
+from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+    get_user_id_team_details_dtos_mock
+from ib_tasks.tests.common_fixtures.adapters.project_service import \
+    get_valid_project_ids_mock
 from ib_tasks.tests.common_fixtures.adapters.roles_service import \
     get_user_role_ids_based_on_project_mock
 from ib_tasks.tests.common_fixtures.storages import \
@@ -53,8 +57,9 @@ class TestPopulateBulkTasks:
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
         from ib_tasks.tests.common_fixtures.adapters.auth_service import \
-            validate_if_user_is_in_project_mock, \
-            get_valid_project_ids_mock, get_projects_info_for_given_ids_mock, \
+            validate_if_user_is_in_project_mock, get_valid_project_ids_mock \
+            as auth_service_project_ids_mock,\
+            get_projects_info_for_given_ids_mock, \
             get_team_info_for_given_user_ids_mock, \
             prepare_permitted_user_details_mock
         from ib_tasks.tests.common_fixtures. \
@@ -65,9 +70,12 @@ class TestPopulateBulkTasks:
         get_user_role_ids(mocker)
         is_user_in_project = True
         validate_if_user_is_in_project_mock(mocker, is_user_in_project)
-        get_valid_project_ids_mock(mocker, [project_id])
+        auth_service_project_ids_mock(mocker, [project_id])
+        project_mock = get_valid_project_ids_mock(mocker)
+        project_mock.return_value = [project_id]
         get_projects_info_for_given_ids_mock(mocker)
         get_team_info_for_given_user_ids_mock(mocker)
+        get_user_id_team_details_dtos_mock(mocker)
         get_user_role_ids_based_on_project_mock(mocker)
         prepare_permitted_user_details_mock_method = \
             prepare_permitted_user_details_mock(mocker)
