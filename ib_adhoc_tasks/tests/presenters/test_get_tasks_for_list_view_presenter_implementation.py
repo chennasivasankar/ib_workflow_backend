@@ -113,7 +113,8 @@ class TestGetTasksForListViewPresenterImplementation:
         from ib_adhoc_tasks.tests.factories.adapter_dtos import \
             TaskIdWithCompletedSubTasksCountDTOFactory
         TaskIdWithCompletedSubTasksCountDTOFactory.reset_sequence(0)
-        completed_sub_tasks_count_dtos = TaskIdWithCompletedSubTasksCountDTOFactory \
+        completed_sub_tasks_count_dtos = \
+            TaskIdWithCompletedSubTasksCountDTOFactory \
             .create_batch(size=16, task_id=factory.Iterator(task_ids))
         return completed_sub_tasks_count_dtos
 
@@ -177,21 +178,34 @@ class TestGetTasksForListViewPresenterImplementation:
             value=response.content
         )
 
+    @pytest.fixture
+    def task_details_with_group_info_list_view_dto(
+            self, group_details_dtos, task_complete_details_dto,
+            sub_tasks_count_dtos, completed_sub_tasks_count_dtos
+    ):
+        from ib_adhoc_tasks.interactors.presenter_interfaces \
+            .get_tasks_for_list_view_presenter_interface import \
+            TaskDetailsWithGroupInfoForListViewDTO
+        total_groups_count = 3
+        task_details_with_group_info_list_view_dto = \
+            TaskDetailsWithGroupInfoForListViewDTO(
+                group_details_dtos=group_details_dtos,
+                task_details_dto=task_complete_details_dto,
+                total_groups_count=total_groups_count,
+                task_with_sub_tasks_count_dtos=sub_tasks_count_dtos,
+                task_completed_sub_tasks_count_dtos=completed_sub_tasks_count_dtos
+            )
+        return task_details_with_group_info_list_view_dto
+
     def test_given_group_details_dtos_and_task_details_dtos_returns_group_info_task_details(
-            self, task_complete_details_dto, presenter, group_details_dtos,
-            sub_tasks_count_dtos, completed_sub_tasks_count_dtos,
-            snapshot
+            self, task_complete_details_dto, presenter,
+            snapshot, task_details_with_group_info_list_view_dto
     ):
         # Arrange
-        total_groups_count = 3
 
         # Act
         response = presenter.get_task_details_group_by_info_response(
-            group_details_dtos=group_details_dtos,
-            task_details_dto=task_complete_details_dto,
-            total_groups_count=total_groups_count,
-            sub_tasks_count_dtos=sub_tasks_count_dtos,
-            completed_sub_tasks_count_dtos=completed_sub_tasks_count_dtos
+            task_details_with_group_info_list_view_dto
         )
 
         # Arrange

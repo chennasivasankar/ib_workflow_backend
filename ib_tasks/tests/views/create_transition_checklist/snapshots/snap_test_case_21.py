@@ -12,5 +12,5 @@ snapshots['TestCase21CreateTransitionChecklistAPITestCase.test_case status_code'
 snapshots['TestCase21CreateTransitionChecklistAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_VALUE_FOR_DROPDOWN',
-    'response': "Invalid dropdown value: Others for field: field_1! Try with these dropdown values: ['Mr', 'Mrs']"
+    'response': "Invalid dropdown value: Others for field: DISPLAY_NAME-0! Try with these dropdown values: ['Mr', 'Mrs']"
 }

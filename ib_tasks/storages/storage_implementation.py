@@ -680,7 +680,7 @@ class StagesStorageImplementation(StageStorageInterface):
         return stage_ids
 
     def get_stages_permitted_gof_ids(
-            self, stage_ids: List[str], gof_ids: List[str]
+            self, stage_ids: List[int], gof_ids: List[str]
     ) -> List[str]:
         gof_ids = StageGoF.objects.filter(
             stage_id__in=stage_ids, gof_id__in=gof_ids
@@ -734,6 +734,16 @@ class StagesStorageImplementation(StageStorageInterface):
     def validate_stage_id(self, stage_id: int) -> bool:
         does_exists = Stage.objects.filter(id=stage_id).exists()
         return does_exists
+
+    def get_stage_ids_of_templates(
+            self, template_ids: List[str]
+    ) -> List[str]:
+        stage_ids_queryset = Stage.objects.filter(
+            task_template_id__in=template_ids).values_list(
+            'stage_id', flat=True)
+
+        stage_ids_list = list(stage_ids_queryset)
+        return stage_ids_list
 
 
 class StorageImplementation(StorageInterface):

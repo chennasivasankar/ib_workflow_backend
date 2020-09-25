@@ -12,7 +12,7 @@ snapshots['TestCase16CreateTransitionChecklistAPITestCase.test_case[www.google.c
 snapshots['TestCase16CreateTransitionChecklistAPITestCase.test_case[www.google.com] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_URL',
-    'response': 'Invalid value for url: www.google.com for field: field_1'
+    'response': 'Invalid value for url: www.google.com for field: DISPLAY_NAME-0'
 }
 
 snapshots['TestCase16CreateTransitionChecklistAPITestCase.test_case[http://google] status_code'] = '400'
@@ -20,5 +20,5 @@ snapshots['TestCase16CreateTransitionChecklistAPITestCase.test_case[http://googl
 snapshots['TestCase16CreateTransitionChecklistAPITestCase.test_case[http://google] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_URL',
-    'response': 'Invalid value for url: http://google for field: field_1'
+    'response': 'Invalid value for url: http://google for field: DISPLAY_NAME-0'
 }

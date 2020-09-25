@@ -6,7 +6,8 @@ from ib_adhoc_tasks.adapters.dtos import TasksCompleteDetailsDTO, \
     TaskIdWithCompletedSubTasksCountDTO, TaskIdWithSubTasksCountDTO
 from ib_adhoc_tasks.interactors.presenter_interfaces \
     .get_tasks_for_list_view_presenter_interface import \
-    GetTasksForListViewPresenterInterface
+    GetTasksForListViewPresenterInterface, \
+    TaskDetailsWithGroupInfoForListViewDTO
 from ib_adhoc_tasks.interactors.storage_interfaces.dtos import GroupDetailsDTO
 from ib_adhoc_tasks.presenters.mixins.tasks_details_mixin import \
     TaskDetailsMixin
@@ -89,14 +90,22 @@ class GetTasksForListViewPresenterImplementation(
         return response_object
 
     def get_task_details_group_by_info_response(
-            self,
-            group_details_dtos: List[GroupDetailsDTO],
-            task_details_dto: TasksCompleteDetailsDTO,
-            total_groups_count: int,
-            sub_tasks_count_dtos: List[TaskIdWithSubTasksCountDTO],
-            completed_sub_tasks_count_dtos:
-            List[TaskIdWithCompletedSubTasksCountDTO]
+            self, task_details_with_group_info_list_view_dto:
+            TaskDetailsWithGroupInfoForListViewDTO
     ):
+        group_details_dtos = \
+            task_details_with_group_info_list_view_dto.group_details_dtos
+        task_details_dto = task_details_with_group_info_list_view_dto\
+            .task_details_dto
+        total_groups_count = \
+            task_details_with_group_info_list_view_dto.total_groups_count
+        sub_tasks_count_dtos = \
+            task_details_with_group_info_list_view_dto\
+                .task_with_sub_tasks_count_dtos
+        completed_sub_tasks_count_dtos = \
+            task_details_with_group_info_list_view_dto\
+                .task_completed_sub_tasks_count_dtos
+
         groups = []
         for group_details_dto in group_details_dtos:
             task_ids = group_details_dto.task_ids

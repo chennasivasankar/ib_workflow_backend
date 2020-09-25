@@ -12,5 +12,5 @@ snapshots['TestCase26CreateTransitionChecklistAPITestCase.test_case status_code'
 snapshots['TestCase26CreateTransitionChecklistAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INCORRECT_MULTI_SELECT_OPTIONS_SELECTED',
-    'response': "Invalid multi select options selected: ['label_3'] for field: field_1! Try with these valid options: ['label_1', 'label_2']"
+    'response': "Invalid multi select options selected: ['label_3'] for field: DISPLAY_NAME-0! Try with these valid options: ['label_1', 'label_2']"
 }

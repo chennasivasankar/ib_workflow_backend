@@ -1,7 +1,8 @@
-from typing import List, Union
+from typing import List
 
 from ib_adhoc_tasks.adapters.dtos import TasksCompleteDetailsDTO, \
-    TasksDetailsInputDTO
+    TasksDetailsInputDTO, TaskIdWithSubTasksCountDTO, \
+    TaskIdWithCompletedSubTasksCountDTO
 from ib_adhoc_tasks.adapters.iam_service import InvalidProjectId, \
     InvalidUserId, InvalidUserForProject
 from ib_adhoc_tasks.constants.enum import ViewType
@@ -11,7 +12,8 @@ from ib_adhoc_tasks.interactors.dtos.dtos import GroupByInfoListViewDTO, \
     TaskOffsetAndLimitValuesDTO, GroupByDTO
 from ib_adhoc_tasks.interactors.presenter_interfaces \
     .get_tasks_for_list_view_presenter_interface import \
-    GetTasksForListViewPresenterInterface
+    GetTasksForListViewPresenterInterface, \
+    TaskDetailsWithGroupInfoForListViewDTO
 from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
     GroupDetailsDTO, \
     GroupByDetailsDTO
@@ -55,44 +57,66 @@ class GetTasksForListViewInteractor:
             self, group_by_info_list_view_dto: GroupByInfoListViewDTO,
             presenter: GetTasksForListViewPresenterInterface
     ):
-        group_details_dtos, task_details_dto, total_groups_count, sub_tasks_count_dtos, completed_sub_tasks_count_dtos = \
+        task_details_with_group_info_list_view_dto = \
             self.get_tasks_for_list_view(group_by_info_list_view_dto)
 
         response = presenter.get_task_details_group_by_info_response(
-            group_details_dtos, task_details_dto, total_groups_count,
-            sub_tasks_count_dtos, completed_sub_tasks_count_dtos
+            task_details_with_group_info_list_view_dto
         )
         return response
 
     def get_tasks_for_list_view(
             self, group_by_info_list_view_dto: GroupByInfoListViewDTO
-    ):
+    ) -> TaskDetailsWithGroupInfoForListViewDTO:
         project_id = group_by_info_list_view_dto.project_id
+        user_id = group_by_info_list_view_dto.user_id
         self._validate_limit_offset_values(group_by_info_list_view_dto)
         self._validate_project_id(project_id)
         group_details_dtos, total_groups_count = self._get_group_details_dtos(
             group_by_info_list_view_dto
         )
         task_ids = self._get_task_ids(group_details_dtos)
-        user_id = group_by_info_list_view_dto.user_id
         task_details_input_dto = TasksDetailsInputDTO(
-            task_ids=task_ids,
-            project_id=project_id,
-            user_id=user_id,
-            view_type=ViewType.LIST.value
+            task_ids=task_ids, project_id=project_id,
+            user_id=user_id, view_type=ViewType.LIST.value
         )
         task_details_dto = self._get_task_details_dto(task_details_input_dto)
+        task_with_sub_tasks_count_dtos = \
+            self._get_task_id_with_sub_tasks_count_dtos(task_ids)
+        task_completed_sub_tasks_count_dtos = \
+            self._get_task_with_completed_sub_tasks_count_dtos(task_ids)
+        task_details_with_group_info_list_view_dto = \
+            TaskDetailsWithGroupInfoForListViewDTO(
+                group_details_dtos=group_details_dtos,
+                total_groups_count=total_groups_count,
+                task_details_dto=task_details_dto,
+                task_with_sub_tasks_count_dtos=task_with_sub_tasks_count_dtos,
+                task_completed_sub_tasks_count_dtos=task_completed_sub_tasks_count_dtos
+            )
+        return task_details_with_group_info_list_view_dto
+
+    @staticmethod
+    def _get_task_id_with_sub_tasks_count_dtos(
+            task_ids: List[int]
+    ) -> List[TaskIdWithSubTasksCountDTO]:
         from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
-        sub_tasks_count_dtos = \
+        task_id_with_sub_tasks_count_dtos = \
             service_adapter.task_service.get_sub_tasks_count_task_ids(
                 task_ids=task_ids
             )
-        completed_sub_tasks_count_dtos = \
+        return task_id_with_sub_tasks_count_dtos
+
+    @staticmethod
+    def _get_task_with_completed_sub_tasks_count_dtos(
+            task_ids: List[int]
+    ) -> List[TaskIdWithCompletedSubTasksCountDTO]:
+        from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        _get_task_with_completed_sub_tasks_count_dtos = \
             service_adapter.task_service \
                 .get_completed_sub_tasks_count_for_task_ids(task_ids=task_ids)
-        # TODO need to prepare a dto
-        return group_details_dtos, task_details_dto, total_groups_count, sub_tasks_count_dtos, completed_sub_tasks_count_dtos
+        return _get_task_with_completed_sub_tasks_count_dtos
 
     @staticmethod
     def _validate_limit_offset_values(
@@ -193,10 +217,7 @@ class GetTasksForListViewInteractor:
         iam_service_adapter = get_service_adapter()
         iam_service = iam_service_adapter.iam_service
         valid_project_ids = iam_service.get_valid_project_ids([project_id])
-        flag = 0
         for valid_project_id in valid_project_ids:
             if valid_project_id == project_id:
-                flag = 1
-                break
-        if flag == 0:
-            raise InvalidProjectId()
+                return
+        raise InvalidProjectId()

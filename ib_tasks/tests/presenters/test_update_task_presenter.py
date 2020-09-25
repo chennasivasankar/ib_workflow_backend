@@ -292,11 +292,12 @@ class TestUpdateTaskPresenterImplementation:
     def test_raise_invalid_fields_given_to_a_gof(self, snapshot, presenter):
         # Arrange
         expected_gof_id = "gof_1"
-        expected_invalid_field_ids = ["field_1", "field_2"]
+        expected_invalid_field_display_names = ["field_1", "field_2"]
 
         from ib_tasks.exceptions.task_custom_exceptions import \
             InvalidFieldsOfGoF
-        err = InvalidFieldsOfGoF(expected_gof_id, expected_invalid_field_ids)
+        err = InvalidFieldsOfGoF(expected_gof_id,
+                                 expected_invalid_field_display_names)
 
         # Act
         response = presenter.raise_invalid_fields_given_to_a_gof(err)
@@ -310,13 +311,12 @@ class TestUpdateTaskPresenterImplementation:
 
     def test_raise_invalid_stage_permitted_gofs(self, snapshot, presenter):
         # Arrange
-        expected_gof_ids = ["gof_1", "gof_2"]
+        expected_gof_display_names = ["gof_1", "gof_2"]
         stage_id = 1
-        expected_invalid_field_ids = ["field_1", "field_2"]
 
         from ib_tasks.exceptions.gofs_custom_exceptions import \
             InvalidStagePermittedGoFs
-        err = InvalidStagePermittedGoFs(expected_gof_ids, stage_id)
+        err = InvalidStagePermittedGoFs(expected_gof_display_names, stage_id)
 
         # Act
         response_object = presenter.raise_invalid_stage_permitted_gofs(err)
@@ -353,13 +353,13 @@ class TestUpdateTaskPresenterImplementation:
             self, snapshot, presenter):
         # Arrange
         expected_user_id = 'user_1'
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_roles = ["role_1", "role_2"]
 
         from ib_tasks.exceptions.permission_custom_exceptions import \
             UserNeedsFieldWritablePermission
         err = UserNeedsFieldWritablePermission(
-            expected_user_id, expected_field_id, expected_roles)
+            expected_user_id, expected_field_display_name, expected_roles)
 
         # Act
         response_object = \
@@ -373,12 +373,12 @@ class TestUpdateTaskPresenterImplementation:
 
     def test_raise_empty_value_in_required_field(self, snapshot, presenter):
         # Arrange
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             EmptyValueForRequiredField
 
-        err = EmptyValueForRequiredField(expected_field_id)
+        err = EmptyValueForRequiredField(expected_field_display_name)
 
         # Act
         response_object = \
@@ -393,12 +393,13 @@ class TestUpdateTaskPresenterImplementation:
     def test_raise_exception_for_invalid_phone_number_value(
             self, snapshot, presenter):
         # Arrange
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_phone_number = "99987272"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidPhoneNumberValue
-        err = InvalidPhoneNumberValue(expected_field_id, expected_phone_number)
+        err = InvalidPhoneNumberValue(expected_field_display_name,
+                                      expected_phone_number)
 
         # Act
         response_object = presenter.raise_invalid_phone_number_value(err)
@@ -412,12 +413,13 @@ class TestUpdateTaskPresenterImplementation:
     def test_raise_exception_for_invalid_email_address(
             self, snapshot, presenter):
         # Arrange
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_email = "google@google.mail"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidEmailFieldValue
-        err = InvalidEmailFieldValue(expected_field_id, expected_email)
+        err = InvalidEmailFieldValue(expected_field_display_name,
+                                     expected_email)
 
         # Act
         response_object = presenter.raise_invalid_email_address(err)
@@ -431,12 +433,12 @@ class TestUpdateTaskPresenterImplementation:
     def test_raise_exception_for_invalid_url_address(
             self, snapshot, presenter):
         # Arrange
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_url = "http://google.mail"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidURLValue
-        err = InvalidURLValue(expected_field_id, expected_url)
+        err = InvalidURLValue(expected_field_display_name, expected_url)
 
         # Act
         response_object = presenter.raise_invalid_url_address(err)
@@ -449,12 +451,13 @@ class TestUpdateTaskPresenterImplementation:
 
     def test_raise_exception_for_weak_password(self, snapshot, presenter):
         # Arrange
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_password = "admin123"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             NotAStrongPassword
-        err = NotAStrongPassword(expected_field_id, expected_password)
+        err = NotAStrongPassword(expected_field_display_name,
+                                 expected_password)
 
         # Act
         response_object = presenter.raise_weak_password(err)
@@ -468,12 +471,12 @@ class TestUpdateTaskPresenterImplementation:
     def test_raise_exception_for_invalid_number_value(
             self, snapshot, presenter):
         # Arrange
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_number = "98656"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidNumberValue
-        err = InvalidNumberValue(expected_field_id, expected_number)
+        err = InvalidNumberValue(expected_field_display_name, expected_number)
 
         # Act
         response_object = presenter.raise_invalid_number_value(err)
@@ -487,12 +490,12 @@ class TestUpdateTaskPresenterImplementation:
     def test_raise_exception_for_invalid_float_value(
             self, snapshot, presenter):
         # Arrange
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_float = "98656.0.0"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidFloatValue
-        err = InvalidFloatValue(expected_field_id, expected_float)
+        err = InvalidFloatValue(expected_field_display_name, expected_float)
 
         # Act
         response_object = presenter.raise_invalid_float_value(err)
@@ -507,13 +510,14 @@ class TestUpdateTaskPresenterImplementation:
             self, snapshot, presenter):
         # Arrange
         expected_valid_values = ["Mr", "Mrs"]
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_dropdown_value = "city"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidValueForDropdownField
         err = InvalidValueForDropdownField(
-            expected_field_id, expected_dropdown_value, expected_valid_values)
+            expected_field_display_name, expected_dropdown_value,
+            expected_valid_values)
 
         # Act
         response_object = presenter.raise_invalid_dropdown_value(err)
@@ -528,13 +532,14 @@ class TestUpdateTaskPresenterImplementation:
             self, snapshot, presenter):
         # Arrange
         expected_valid_values = ["Mr", "Mrs"]
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_gof_name_value = "city"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             IncorrectNameInGoFSelectorField
         err = IncorrectNameInGoFSelectorField(
-            expected_field_id, expected_gof_name_value, expected_valid_values)
+            expected_field_display_name, expected_gof_name_value,
+            expected_valid_values)
 
         # Act
         response_object = presenter.raise_invalid_name_in_gof_selector(err)
@@ -549,13 +554,14 @@ class TestUpdateTaskPresenterImplementation:
             self, snapshot, presenter):
         # Arrange
         expected_valid_values = ["Mr", "Mrs"]
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_radio_choice = "city"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             IncorrectRadioGroupChoice
         err = IncorrectRadioGroupChoice(
-            expected_field_id, expected_radio_choice, expected_valid_values)
+            expected_field_display_name, expected_radio_choice,
+            expected_valid_values)
 
         # Act
         response_object = presenter. \
@@ -571,13 +577,13 @@ class TestUpdateTaskPresenterImplementation:
             self, snapshot, presenter):
         # Arrange
         expected_valid_values = ["Mr", "Mrs"]
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_checkbox_choices = ["city", "town"]
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             IncorrectCheckBoxOptionsSelected
         err = IncorrectCheckBoxOptionsSelected(
-            expected_field_id, expected_checkbox_choices,
+            expected_field_display_name, expected_checkbox_choices,
             expected_valid_values)
 
         # Act
@@ -594,13 +600,14 @@ class TestUpdateTaskPresenterImplementation:
             self, snapshot, presenter):
         # Arrange
         expected_valid_values = ["Mr", "Mrs"]
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_multi_select_options_selected = ["city", "town"]
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             IncorrectMultiSelectOptionsSelected
         err = IncorrectMultiSelectOptionsSelected(
-            expected_field_id, expected_multi_select_options_selected,
+            expected_field_display_name,
+            expected_multi_select_options_selected,
             expected_valid_values)
 
         # Act
@@ -617,13 +624,13 @@ class TestUpdateTaskPresenterImplementation:
             self, snapshot, presenter):
         # Arrange
         expected_valid_values = ["Mr", "Mrs"]
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_multi_select_labels_selected = ["city", "town"]
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             IncorrectMultiSelectLabelsSelected
         err = IncorrectMultiSelectLabelsSelected(
-            expected_field_id, expected_multi_select_labels_selected,
+            expected_field_display_name, expected_multi_select_labels_selected,
             expected_valid_values)
 
         # Act
@@ -640,13 +647,13 @@ class TestUpdateTaskPresenterImplementation:
             self, snapshot, presenter):
         # Arrange
         expected_given_date_format = "03-05-2020"
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_valid_date_format = "YYYY-MM-DD"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidDateFormat
         err = InvalidDateFormat(
-            expected_field_id, expected_given_date_format,
+            expected_field_display_name, expected_given_date_format,
             expected_valid_date_format)
 
         # Act
@@ -662,13 +669,13 @@ class TestUpdateTaskPresenterImplementation:
             self, snapshot, presenter):
         # Arrange
         expected_given_time_format = "55:04:03"
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_valid_time_format = "HH:MM:SS"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidTimeFormat
         err = InvalidTimeFormat(
-            expected_field_id, expected_given_time_format,
+            expected_field_display_name, expected_given_time_format,
             expected_valid_time_format)
 
         # Act
@@ -682,12 +689,13 @@ class TestUpdateTaskPresenterImplementation:
 
     def test_raise_exception_for_invalid_image_url(self, snapshot, presenter):
         # Arrange
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_invalid_image_url = "http://google.com"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidUrlForImage
-        err = InvalidUrlForImage(expected_field_id, expected_invalid_image_url)
+        err = InvalidUrlForImage(expected_field_display_name,
+                                 expected_invalid_image_url)
 
         # Act
         response_object = presenter.raise_invalid_image_url(err)
@@ -701,14 +709,14 @@ class TestUpdateTaskPresenterImplementation:
     def test_raise_exception_for_not_acceptable_image_format(
             self, snapshot, presenter):
         # Arrange
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_invalid_image_format = ".png"
         expected_valid_formats = [".jpg", ".jpeg"]
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidImageFormat
         err = InvalidImageFormat(
-            expected_field_id, expected_invalid_image_format,
+            expected_field_display_name, expected_invalid_image_format,
             expected_valid_formats)
 
         # Act
@@ -722,13 +730,13 @@ class TestUpdateTaskPresenterImplementation:
 
     def test_raise_exception_for_invalid_file_url(self, snapshot, presenter):
         # Arrange
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_invalid_file_url = "http://google.com"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidUrlForFile
         err = InvalidUrlForFile(
-            expected_field_id, expected_invalid_file_url)
+            expected_field_display_name, expected_invalid_file_url)
 
         # Act
         response_object = presenter.raise_invalid_file_url(err)
@@ -742,14 +750,14 @@ class TestUpdateTaskPresenterImplementation:
     def test_raise_exception_for_not_acceptable_file_format(
             self, snapshot, presenter):
         # Arrange
-        expected_field_id = "field_1"
+        expected_field_display_name = "field_1"
         expected_invalid_file_format = ".png"
         expected_valid_formats = [".pdf", ".txt"]
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidFileFormat
         err = InvalidFileFormat(
-            expected_field_id, expected_invalid_file_format,
+            expected_field_display_name, expected_invalid_file_format,
             expected_valid_formats)
 
         # Act
