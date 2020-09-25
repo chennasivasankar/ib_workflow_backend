@@ -12,12 +12,12 @@ snapshots['TestCase01GetAdhocTaskTemplateFieldsAndGroupByAPITestCase.test_case s
 snapshots['TestCase01GetAdhocTaskTemplateFieldsAndGroupByAPITestCase.test_case body'] = {
     'all_fields': [
         {
-            'display_name': 'field_display_name0',
-            'group_by_key': 'field_0'
+            'display_name': 'field_display_name2',
+            'group_by_key': 'field_2'
         },
         {
-            'display_name': 'field_display_name1',
-            'group_by_key': 'field_1'
+            'display_name': 'field_display_name3',
+            'group_by_key': 'field_3'
         }
     ],
     'group_by_fields': [

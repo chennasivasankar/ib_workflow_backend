@@ -21,5 +21,25 @@ snapshots['TestCase01GetAdhocTaskTemplateFieldsAPITestCase.test_given_valid_data
     {
         'display_name': 'Assignee',
         'group_by_key': 'ASSIGNEE'
+    },
+    {
+        'display_name': 'Title',
+        'group_by_key': 'title'
+    },
+    {
+        'display_name': 'Description',
+        'group_by_key': 'description'
+    },
+    {
+        'display_name': 'Start_date',
+        'group_by_key': 'start_date'
+    },
+    {
+        'display_name': 'Due_date',
+        'group_by_key': 'due_date'
+    },
+    {
+        'display_name': 'Priority',
+        'group_by_key': 'priority'
     }
 ]
