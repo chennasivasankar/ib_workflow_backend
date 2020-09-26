@@ -14,7 +14,6 @@ class GroupByResponseDTO:
 # todo need to change this after deletion of add_or_edit_wrapper
 @dataclass
 class AddOrEditGroupByParameterDTO:
-    project_id: str
     user_id: str
     view_type: ViewType
     group_by_key: str

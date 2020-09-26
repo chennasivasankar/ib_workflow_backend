@@ -50,15 +50,17 @@ class GroupByInteractor:
 
     def add_or_edit_group_by_wrapper(
             self,
-            add_or_edit_group_by_parameter_dto: AddOrEditGroupByParameterDTO,
+            group_by_key_dtos: List[GroupBYKeyDTO],
+            group_by_parameter: GroupByParameter,
             presenter: AddOrEditGroupByPresenterInterface
     ):
         try:
-            group_by_response_dto = self.add_or_edit_group_by(
-                add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto
+            group_by_response_dtos = self.add_or_edit_group_by(
+                group_by_key_dtos=group_by_key_dtos,
+                group_by_parameter=group_by_parameter
             )
             return presenter.get_response_for_add_or_edit_group_by(
-                group_by_response_dto=group_by_response_dto
+                group_by_response_dtos=group_by_response_dtos
             )
         except UserNotAllowedToCreateMoreThanOneGroupByInListView:
             return presenter.get_response_for_user_not_allowed_to_create_more_than_one_group_by_in_list_view()
@@ -78,8 +80,9 @@ class GroupByInteractor:
                 group_by_parameter=group_by_parameter
             )
         else:
-            group_by_response_dtos = self._validate_is_kanban_view_creation_or_updation_is_possible(
-                group_by_key_dtos=group_by_key_dtos
+            group_by_response_dtos = self._add_or_edit_group_by_for_kanban_view(
+                group_by_key_dtos=group_by_key_dtos,
+                group_by_parameter=group_by_parameter
             )
         from ib_adhoc_tasks.constants.constants import group_by_types_list
         for group_by_response_dto in group_by_response_dtos:
@@ -112,10 +115,11 @@ class GroupByInteractor:
             add_or_edit_group_by_parameter_dto=
             add_or_edit_group_by_parameter_dto
         )
-        return list(group_by_response_dto)
+        return [group_by_response_dto]
 
     def _add_or_edit_group_by_for_kanban_view(
-            self, group_by_key_dtos: List[GroupBYKeyDTO],
+            self,
+            group_by_key_dtos: List[GroupBYKeyDTO],
             group_by_parameter: GroupByParameter
     ):
         self._validate_is_kanban_view_creation_or_updation_is_possible(

@@ -20,7 +20,6 @@ class AddOrEditGroupByParameterDTOFactory(factory.Factory):
     class Meta:
         model = AddOrEditGroupByParameterDTO
 
-    project_id = factory.sequence(lambda number: "project_id_%s" % number)
     user_id = factory.sequence(lambda number: "user_id_%s" % number)
     view_type = factory.Iterator([
         ViewType.LIST.value, ViewType.KANBAN.value
