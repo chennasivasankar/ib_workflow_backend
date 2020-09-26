@@ -170,12 +170,14 @@ class GetTasksForListViewInteractor:
             user_id=user_id,
             view_type=view_type
         )
-        group_by_keys = [
-            GroupBYKeyDTO(
-                group_by_key=group_by_info_list_view_dto.group_by_key,
-                order=1
-            )
-        ]
+        group_by_keys = []
+        if group_by_info_list_view_dto.group_by_key:
+            group_by_keys = [
+                GroupBYKeyDTO(
+                    group_by_key=group_by_info_list_view_dto.group_by_key,
+                    order=1
+                )
+            ]
         from ib_adhoc_tasks.interactors.group_by_interactor import \
             GroupByInteractor
         group_by_interactor = GroupByInteractor(
