@@ -27,7 +27,7 @@ def api_wrapper(*args, **kwargs):
         group_by_details = [
             GroupBYKeyDTO(
                 group_by_key=group_by.get('group_by_key'),
-                order=group_by.get('group_by_key')
+                order=group_by.get('order')
             )
             for group_by in group_by_keys
         ]
