@@ -252,7 +252,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         template_ids = self.task_storage.get_template_ids_to_task_ids(
             task_ids=[task_id])
         from ib_tasks.constants.constants import ADHOC_TEMPLATE_ID
-        is_not_adhoc_template = not template_ids[0] == ADHOC_TEMPLATE_ID
+        is_not_adhoc_template = not template_ids[0].template_id == ADHOC_TEMPLATE_ID
         if is_not_adhoc_template:
             self._validate_task_delay_reason_updated_or_not(task_id)
 

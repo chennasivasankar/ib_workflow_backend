@@ -19,6 +19,6 @@ class ProjectTemplateDTO(TemplateDTO):
 
 
 @dataclass
-class TaskTemplateDTO:
+class TaskTemplateMapDTO:
     task_id: int
     template_id: str
