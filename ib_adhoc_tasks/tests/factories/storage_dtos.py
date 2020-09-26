@@ -10,24 +10,22 @@ class GroupByResponseDTOFactory(factory.Factory):
     class Meta:
         model = GroupByResponseDTO
 
-    group_by_id = factory.sequence(lambda number: number)
     group_by_key = factory.Iterator(["ASSIGNEE", "STAGE"])
     display_name = factory.Iterator(["ASSIGNEE", "STAGE"])
     order = factory.Iterator([1, 2])
 
 
+# todo need to change this after deletion of add_or_edit_wrapper
 class AddOrEditGroupByParameterDTOFactory(factory.Factory):
     class Meta:
         model = AddOrEditGroupByParameterDTO
 
-    project_id = factory.sequence(lambda number: "project_id_%s" % number)
     user_id = factory.sequence(lambda number: "user_id_%s" % number)
     view_type = factory.Iterator([
         ViewType.LIST.value, ViewType.KANBAN.value
     ])
     group_by_key = factory.Iterator(["ASSIGNEE", "STAGE"])
     order = factory.Iterator([1, 2])
-    group_by_id = factory.sequence(lambda number: number)
 
 
 class GroupByDetailsDTOFactory(factory.Factory):

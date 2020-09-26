@@ -5,7 +5,7 @@ from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO, \
     TaskOffsetAndLimitValuesDTO, TaskIdsForGroupsParameterDTO, GroupByValueDTO, \
     OffsetLimitDTO, GroupByInfoKanbanViewDTO, GroupByInfoListViewDTO, \
     GetSubtasksParameterDTO, GetTaskDetailsInGroupInputDTO, \
-    GetChildGroupsInGroupInputDTO, GroupBYKeyDTO
+    GetChildGroupsInGroupInputDTO, GroupByParameter, GroupBYKeyDTO
 
 
 class GroupByDTOFactory(factory.Factory):
@@ -16,14 +16,6 @@ class GroupByDTOFactory(factory.Factory):
     order = factory.Sequence(lambda n: n)
     limit = 5
     offset = 0
-
-
-class GroupBYKeyDTOFactory(factory.Factory):
-    class Meta:
-        model = GroupBYKeyDTO
-
-    group_by_key = factory.Sequence(lambda n: "group_by_%s" % n)
-    order = factory.Sequence(lambda n: n)
 
 
 class TaskOffsetAndLimitValuesDTOFactory(factory.Factory):
@@ -136,3 +128,20 @@ class GetChildGroupsInGroupInputDTOFactory(factory.Factory):
     group_limit = 5
     group_offset = 0
     group_by_value = factory.Iterator(["GROUP_BY_VALUE_1", "GROUP_BY_VALUE_1"])
+
+
+class GroupByParameterFactory(factory.Factory):
+    class Meta:
+        model = GroupByParameter
+
+    project_id = factory.Sequence(lambda n: "project_id_%d" % n)
+    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
+    view_type = factory.Iterator(["LIST", "KANBAN"])
+
+
+class GroupBYKeyDTOFactory(factory.Factory):
+    class Meta:
+        model = GroupBYKeyDTO
+
+    group_by_key = factory.Iterator(["ASSIGNEE", "STAGE"])
+    order = factory.Iterator([1, 2])
