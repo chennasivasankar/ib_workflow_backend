@@ -169,6 +169,11 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_permitted_stage_ids_to_user_roles(
+            self, user_roles: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
     def get_task_current_stages(self, task_id) -> List[str]:
         pass
 
@@ -225,7 +230,7 @@ class StageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_stages_permitted_gof_ids(
-            self, stage_ids: List[int], gof_ids: List[str]
+            self, stage_ids: List[str], gof_ids: List[str]
     ) -> List[str]:
         pass
 
@@ -261,4 +266,13 @@ class StageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_stage_ids_of_templates(self, template_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_current_task_stages_excluding_virtual_stages(
+            self, task_id: int) -> List[int]:
+        pass
+
+    @abc.abstractmethod
+    def get_recent_task_stage(self, task_id: int) -> List[int]:
         pass

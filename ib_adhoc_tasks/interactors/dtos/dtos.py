@@ -118,3 +118,16 @@ class GetChildGroupsInGroupInputDTO:
 class TemplateFieldsAndGroupByFieldsDTO:
     group_by_fields_dtos: List[GroupByResponseDTO]
     field_dtos: List[FieldIdAndNameDTO]
+
+
+@dataclass
+class GroupBYKeyDTO:
+    group_by_key: str
+    order: int
+
+
+@dataclass
+class GroupByParameter:
+    project_id: str
+    user_id: str
+    view_type: ViewType

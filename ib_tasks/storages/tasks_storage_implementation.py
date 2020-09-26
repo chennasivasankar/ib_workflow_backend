@@ -28,7 +28,7 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TemplateDTO
+    TemplateDTO, TaskTemplateMapDTO
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, \
     GetTaskDetailsDTO, \
     TaskDelayParametersDTO
@@ -771,4 +771,17 @@ class TasksStorageImplementation(TaskStorageInterface):
                 sub_task_ids=task_sub_task_ids_map.get(task_id, [])
             )
             for task_id in task_ids
+        ]
+
+    def get_template_ids_to_task_ids(
+            self, task_ids: List[int]
+    ) -> List[TaskTemplateMapDTO]:
+        task_objs = Task.objects.filter(id__in=task_ids) \
+            .values('id', 'template_id')
+        return [
+            TaskTemplateMapDTO(
+                task_id=task_obj['id'],
+                template_id=task_obj['template_id']
+            )
+            for task_obj in task_objs
         ]

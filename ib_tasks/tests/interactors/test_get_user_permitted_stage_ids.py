@@ -41,7 +41,7 @@ class TestGetUserPermittedStageIds(StorageMockClass):
         role_ids = ["role_1", "role_2", "role_3"]
         roles_mock.return_value = role_ids
         stage_ids = ["stage_1", "stage_2"]
-        stage_storage.get_stage_ids_having_actions.return_value = stage_ids
+        stage_storage.get_permitted_stage_ids_to_user_roles.return_value = stage_ids
 
         # Act
         response_stage_ids = interactor \

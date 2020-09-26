@@ -2,13 +2,14 @@
 # snapshottest: v1 - https://goo.gl/zC4yUc
 from __future__ import unicode_literals
 
-from snapshottest import Snapshot, GenericRepr
+from snapshottest import GenericRepr, Snapshot
 
 
 snapshots = Snapshot()
 
 snapshots['TestStorageImplementation.test_given_user_id_and_view_type_list_returns_group_by_details_dtos group_by_details_dtos'] = [
-    GenericRepr("GroupByDetailsDTO(group_by='ASSIGNEE', order=1)")
+    GenericRepr("GroupByDetailsDTO(group_by='ASSIGNEE', order=1)"),
+    GenericRepr("GroupByDetailsDTO(group_by='STAGE', order=2)")
 ]
 
 snapshots['TestStorageImplementation.test_given_user_id_and_view_type_kanban_returns_group_by_details_dtos group_by_details_dtos'] = [
