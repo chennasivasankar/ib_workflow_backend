@@ -107,8 +107,13 @@ class GroupByInteractor:
             group_by_key_dtos=group_by_key_dtos
         )
         is_group_by_key_dtos_empty = not group_by_key_dtos
+        group_by_response_dtos = None
         if is_group_by_key_dtos_empty:
-            group_by_key_dtos = self._get_default_group_by_key_dtos_for_list_view()
+            group_by_response_dtos, group_by_key_dtos = self._get_existing_group_by_key_dtos_for_list_view(
+                user_id=group_by_parameter.user_id, view_type=group_by_parameter.view_type
+            )
+        if group_by_response_dtos:
+            return group_by_response_dtos
         add_or_edit_group_by_parameter_dto = AddOrEditGroupByParameterDTO(
             user_id=group_by_parameter.user_id,
             view_type=group_by_parameter.view_type,
@@ -129,10 +134,16 @@ class GroupByInteractor:
         self._validate_is_kanban_view_creation_or_updation_is_possible(
             group_by_key_dtos=group_by_key_dtos
         )
+        group_by_response_dtos = None
         is_group_by_key_dtos_empty = not group_by_key_dtos
         if is_group_by_key_dtos_empty:
-            group_by_key_dtos = \
-                self._get_default_group_by_key_dto_for_kanban_view()
+            group_by_response_dtos, group_by_key_dtos = \
+                self._get_existing_group_by_key_dto_for_kanban_view(
+                    user_id=group_by_parameter.user_id,
+                    view_type=group_by_parameter.view_type
+                )
+        if group_by_response_dtos:
+            return group_by_response_dtos
         self.storage.delete_all_user_group_by(
             user_id=group_by_parameter.user_id, view_type=group_by_parameter.view_type
         )
@@ -178,20 +189,26 @@ class GroupByInteractor:
         )
         return field_display_name
 
-    @staticmethod
-    def _get_default_group_by_key_dtos_for_list_view():
+    def _get_existing_group_by_key_dtos_for_list_view(self, user_id: str, view_type: ViewType):
         from ib_adhoc_tasks.constants.constants import GROUP_BY_KEY_1
+        group_by_response_dtos = \
+            self.storage.get_group_by_dtos(
+                user_id=user_id, view_type=view_type
+            )
         group_by_key_dtos = [
             GroupBYKeyDTO(group_by_key=GROUP_BY_KEY_1, order=1)
         ]
-        return group_by_key_dtos
+        return group_by_response_dtos, group_by_key_dtos
 
-    @staticmethod
-    def _get_default_group_by_key_dto_for_kanban_view():
+    def _get_existing_group_by_key_dto_for_kanban_view(self, user_id: str, view_type: ViewType):
         from ib_adhoc_tasks.constants.constants import \
             GROUP_BY_KEY_1, GROUP_BY_KEY_2
+        group_by_response_dtos = \
+            self.storage.get_group_by_dtos(
+                user_id=user_id, view_type=view_type
+            )
         group_by_key_dtos = [
             GroupBYKeyDTO(group_by_key=GROUP_BY_KEY_1, order=1),
             GroupBYKeyDTO(group_by_key=GROUP_BY_KEY_2, order=2)
         ]
-        return group_by_key_dtos
+        return group_by_response_dtos, group_by_key_dtos
