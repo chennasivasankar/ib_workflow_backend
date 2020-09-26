@@ -1,15 +1,19 @@
-from typing import List
-
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_adhoc_tasks.adapters.dtos import TasksCompleteDetailsDTO, \
-    TaskIdWithCompletedSubTasksCountDTO, TaskIdWithSubTasksCountDTO
 from ib_adhoc_tasks.interactors.presenter_interfaces \
     .get_tasks_for_list_view_presenter_interface import \
     GetTasksForListViewPresenterInterface, \
     TaskDetailsWithGroupInfoForListViewDTO
-from ib_adhoc_tasks.interactors.storage_interfaces.dtos import GroupDetailsDTO, \
-    GroupByResponseDTO
+from ib_adhoc_tasks.interactors.storage_interfaces.dtos import GroupByResponseDTO
+from ib_adhoc_tasks.presenters.mixins.tasks_details_mixin import \
+    TaskDetailsMixin
+from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
+
+from ib_adhoc_tasks.interactors.presenter_interfaces \
+    .get_tasks_for_list_view_presenter_interface import \
+    GetTasksForListViewPresenterInterface, \
+    TaskDetailsWithGroupInfoForListViewDTO
+from ib_adhoc_tasks.interactors.storage_interfaces.dtos import GroupByResponseDTO
 from ib_adhoc_tasks.presenters.mixins.tasks_details_mixin import \
     TaskDetailsMixin
 
@@ -115,10 +119,12 @@ class GetTasksForListViewPresenterImplementation(
                 task_ids, task_details_dto, sub_tasks_count_dtos,
                 completed_sub_tasks_count_dtos
             )
+            group_by_display_name = "Empty value for" + group_by_response_dto.group_by_key
+            if group_details_dto.group_by_display_name:
+                group_by_display_name = group_details_dto.group_by_display_name,
             each_group_details = {
                 "group_by_value": group_details_dto.group_by_value,
-                "group_by_display_name":
-                    group_details_dto.group_by_display_name,
+                "group_by_display_name": group_by_display_name,
                 "total_tasks": group_details_dto.total_tasks,
                 "tasks": tasks
             }
