@@ -44,7 +44,7 @@ class StorageInterface(abc.ABC):
     def add_or_edit_group_by_for_list_view(
             self,
             add_or_edit_group_by_parameter_dto: AddOrEditGroupByParameterDTO
-    ):
+    ) -> GroupByResponseDTO:
         pass
 
     @abc.abstractmethod
@@ -56,5 +56,5 @@ class StorageInterface(abc.ABC):
             self,
             group_by_parameter: GroupByParameter,
             group_by_key_dtos: List[GroupBYKeyDTO]
-    ):
+    ) -> List[GroupByResponseDTO]:
         pass
