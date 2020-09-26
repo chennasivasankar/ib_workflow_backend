@@ -13,7 +13,8 @@ from ib_adhoc_tasks.interactors.presenter_interfaces \
     .get_tasks_for_kanban_view_presenter_interface import \
     GetTasksForKanbanViewPresenterInterface, TaskDetailsWithGroupByInfoDTO
 from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
-    GroupByDetailsDTO, GroupDetailsDTO, ChildGroupCountDTO
+    GroupByDetailsDTO, GroupDetailsDTO, ChildGroupCountDTO, \
+    AddOrEditGroupByParameterDTO
 from ib_adhoc_tasks.interactors.storage_interfaces.elastic_storage_interface \
     import \
     ElasticStorageInterface
@@ -151,9 +152,29 @@ class GetTasksForKanbanViewInteractor:
         user_id = group_by_info_kanban_view_dto.user_id
         project_id = group_by_info_kanban_view_dto.project_id
         view_type = ViewType.KANBAN.value
-        group_by_details_dtos = self.storage.get_group_by_details_dtos(
-            user_id, view_type
+        group_by_keys_parameter = AddOrEditGroupByParameterDTO(
+            project_id=group_by_info_kanban_view_dto.project_id,
+            user_id=group_by_info_kanban_view_dto.user_id,
+            view_type=view_type,
+            group_by_key=group_by_info_kanban_view_dto.group_by_key,
+            group_by_id=group_by_info_kanban_view_dto.group_by_id,
+            order=group_by_info_kanban_view_dto.order
         )
+        from ib_adhoc_tasks.interactors.group_by_interactor import \
+            GroupByInteractor
+        group_by_interactor = GroupByInteractor(
+            storage=self.storage
+        )
+        group_by_response_dtos = group_by_interactor.add_or_edit_group_by(
+            add_or_edit_group_by_parameter_dto=group_by_keys_parameter
+        )
+        group_by_details_dtos = [
+            GroupByDetailsDTO(
+                group_by=group_by_response_dto.group_by_key,
+                order=group_by_response_dto.order
+            )
+            for group_by_response_dto in group_by_response_dtos
+        ]
         group_by_dtos = self._get_group_by_dtos(
             group_by_details_dtos,
             group_by_info_kanban_view_dto

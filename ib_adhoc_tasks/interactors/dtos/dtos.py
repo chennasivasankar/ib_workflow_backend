@@ -73,6 +73,9 @@ class OffsetLimitDTO:
 class GroupByInfoKanbanViewDTO:
     project_id: str
     user_id: str
+    group_by_key: str
+    group_by_id: Optional[int]
+    order: int
     task_offset_limit_dto: OffsetLimitDTO
     group1_offset_limit_dto: Optional[OffsetLimitDTO]
     group2_offset_limit_dto: Optional[OffsetLimitDTO]
@@ -82,6 +85,8 @@ class GroupByInfoKanbanViewDTO:
 class GroupByInfoListViewDTO:
     project_id: str
     user_id: str
+    group_by_key: str
+    group_by_id: Optional[int]
     task_offset_limit_dto: OffsetLimitDTO
     group_offset_limit_dto: Optional[OffsetLimitDTO]
 

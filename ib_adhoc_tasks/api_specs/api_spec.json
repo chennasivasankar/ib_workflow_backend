@@ -852,18 +852,29 @@
     },
     "GroupByKeys": {
       "allOf": [
-          {
-            "$ref": "#/definitions/GroupByFields"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "group_by_id": {
-                "type": "integer"
-              }
+        {
+          "$ref": "#/definitions/GroupByFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "group_by_id": {
+              "type": "integer"
             }
           }
-        ]
+        }
+      ]
+    },
+    "GroupByKey": {
+      "type": "object",
+        "properties": {
+          "group_by_id": {
+            "type": "integer"
+          },
+          "group_by_key": {
+            "type": "string"
+          }
+        }
     }
   },
   "parameters": {
@@ -1122,7 +1133,7 @@
       "required": true,
       "description": "add group by parameter",
       "schema": {
-        "$ref": "#/definitions/GroupByKeys"
+        "$ref": "#/definitions/GroupByKey"
       }
     },
     "GroupByKanbanParameters": {
@@ -1634,7 +1645,7 @@
   },
   "paths": {
     "/projects/adhoc_board/list_view/tasks/v1/": {
-      "get": {
+      "post": {
         "summary": "Get the adhoc tasks in the project for list view",
         "operationId": "get_adhoc_tasks_for_list_view",
         "security": [
@@ -1678,7 +1689,7 @@
       }
     },
     "/projects/adhoc_board/kanban_view/tasks/v1/": {
-      "get": {
+      "post": {
         "summary": "Get the adhoc tasks in the project for kanban view",
         "operationId": "get_adhoc_tasks_for_kanban_view",
         "security": [
