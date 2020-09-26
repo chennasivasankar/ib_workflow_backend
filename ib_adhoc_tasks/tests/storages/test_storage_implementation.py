@@ -129,7 +129,6 @@ class TestStorageImplementation:
         # Assert
         assert actual_group_by_response_dto == group_by_response_dto
 
-    # todo write it properly
     @pytest.mark.django_db
     def test_delete_all_user_group_by_deletes_all_records_of_user(
             self, storage
@@ -148,3 +147,33 @@ class TestStorageImplementation:
         from ib_adhoc_tasks.models import GroupByInfo
         group_by_objects = GroupByInfo.objects.filter(user_id=user_id)
         assert len(group_by_objects) == 0
+
+    @pytest.mark.django_db
+    def test_add_group_by_for_kanban_view_in_bulk_and_returns_group_by_response_dtos(
+            self, storage
+    ):
+        # Arrange
+        from ib_adhoc_tasks.tests.factories.storage_dtos import \
+            GroupByResponseDTOFactory
+        from ib_adhoc_tasks.tests.factories.interactor_dtos import \
+            GroupByParameterFactory, GroupBYKeyDTOFactory
+        GroupByParameterFactory.reset_sequence(0)
+        GroupByParameterFactory.view_type.reset()
+        GroupByResponseDTOFactory.reset_sequence(0)
+        GroupBYKeyDTOFactory.group_by_key.reset()
+        GroupBYKeyDTOFactory.order.reset()
+        GroupByResponseDTOFactory.group_by_key.reset()
+        GroupByResponseDTOFactory.display_name.reset()
+        GroupByResponseDTOFactory.order.reset()
+        group_by_parameter = GroupByParameterFactory()
+        group_by_key_dtos = [GroupBYKeyDTOFactory()]
+        group_by_response_dtos = [GroupByResponseDTOFactory()]
+
+        # Act
+        actual_group_by_response_dtos = storage.add_group_by_for_kanban_view_in_bulk(
+            group_by_parameter=group_by_parameter,
+            group_by_key_dtos=group_by_key_dtos
+        )
+
+        # Assert
+        assert actual_group_by_response_dtos == group_by_response_dtos
