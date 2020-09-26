@@ -1301,8 +1301,6 @@
                 }
               },
               "required": [
-                "group_by_value",
-                "group_by_display_name",
                 "total_tasks",
                 "tasks"
               ]
