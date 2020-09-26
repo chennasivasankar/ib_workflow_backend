@@ -163,7 +163,7 @@ class GetTasksForKanbanViewInteractor:
             storage=self.storage
         )
         group_by_response_dtos = group_by_interactor.add_or_edit_group_by(
-            group_by_dtos=group_by_info_kanban_view_dto.group_by_details,
+            group_by_key_dtos=group_by_info_kanban_view_dto.group_by_details,
             group_by_parameter=group_by_keys_parameter
         )
         group_by_details_dtos = [
