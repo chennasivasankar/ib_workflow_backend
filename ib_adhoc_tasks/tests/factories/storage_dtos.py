@@ -10,7 +10,6 @@ class GroupByResponseDTOFactory(factory.Factory):
     class Meta:
         model = GroupByResponseDTO
 
-    group_by_id = factory.sequence(lambda number: number)
     group_by_key = factory.Iterator(["ASSIGNEE", "STAGE"])
     display_name = factory.Iterator(["ASSIGNEE", "STAGE"])
     order = factory.Iterator([1, 2])
@@ -28,7 +27,6 @@ class AddOrEditGroupByParameterDTOFactory(factory.Factory):
     ])
     group_by_key = factory.Iterator(["ASSIGNEE", "STAGE"])
     order = factory.Iterator([1, 2])
-    group_by_id = factory.sequence(lambda number: number)
 
 
 class GroupByDetailsDTOFactory(factory.Factory):
