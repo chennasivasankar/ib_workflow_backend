@@ -738,8 +738,6 @@
               }
             },
             "required": [
-              "group_by_value",
-              "group_by_display_name",
               "total_tasks",
               "tasks"
             ]
@@ -748,8 +746,6 @@
       },
       "required": [
         "total_groups",
-        "group_by_value",
-        "group_by_display_name",
         "child_groups"
       ]
     },
