@@ -108,11 +108,11 @@ class GroupByInteractor:
             group_by_key=group_by_key_dtos[0].group_by_key,
             order=group_by_key_dtos[0].order,
         )
-        group_by_response_dtos = self.storage.add_or_edit_group_by_for_list_view(
+        group_by_response_dto = self.storage.add_or_edit_group_by_for_list_view(
             add_or_edit_group_by_parameter_dto=
             add_or_edit_group_by_parameter_dto
         )
-        return group_by_response_dtos
+        return list(group_by_response_dto)
 
     def _add_or_edit_group_by_for_kanban_view(
             self, group_by_key_dtos: List[GroupBYKeyDTO],
