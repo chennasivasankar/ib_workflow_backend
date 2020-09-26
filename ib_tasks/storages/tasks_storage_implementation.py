@@ -772,3 +772,8 @@ class TasksStorageImplementation(TaskStorageInterface):
             )
             for task_id in task_ids
         ]
+
+    def get_template_ids_to_task_ids(self, task_ids: List[int]) -> List[str]:
+        template_ids = Task.objects.filter(id=task_ids) \
+            .values_list('template_id', flat=True)
+        return list(template_ids)
