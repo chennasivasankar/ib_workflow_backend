@@ -1,6 +1,12 @@
 import mock
 import pytest
 
+from ib_adhoc_tasks.constants.enum import ViewType, GroupByKey
+from ib_adhoc_tasks.tests.factories.interactor_dtos import \
+    GroupByParameterFactory, GroupBYKeyDTOFactory
+from ib_adhoc_tasks.tests.factories.storage_dtos import \
+    AddOrEditGroupByParameterDTOFactory, GroupByResponseDTOFactory
+
 
 class TestGetGroupByInteractor:
 
@@ -22,97 +28,181 @@ class TestGetGroupByInteractor:
             GroupByInteractor
         return GroupByInteractor(storage=storage)
 
-    def test_given_valid_data_it_adds_and_returns_group_by_dto(
-            self, interactor, storage, presenter
+    @pytest.fixture
+    def get_dtos_for_add_group_by_for_list(self):
+        GroupByParameterFactory.reset_sequence(0)
+        GroupByParameterFactory.view_type.reset()
+        GroupByResponseDTOFactory.reset_sequence(0)
+        GroupBYKeyDTOFactory.group_by_key.reset()
+        GroupBYKeyDTOFactory.order.reset()
+        GroupByResponseDTOFactory.group_by_key.reset()
+        GroupByResponseDTOFactory.display_name.reset()
+        GroupByResponseDTOFactory.order.reset()
+        AddOrEditGroupByParameterDTOFactory.reset_sequence(0)
+        AddOrEditGroupByParameterDTOFactory.group_by_key.reset()
+        AddOrEditGroupByParameterDTOFactory.order.reset()
+        AddOrEditGroupByParameterDTOFactory.view_type.reset()
+        group_by_parameter = GroupByParameterFactory(
+            view_type=ViewType.LIST.value)
+        group_by_key_dtos = [GroupBYKeyDTOFactory()]
+        group_by_response_dtos = [GroupByResponseDTOFactory()]
+        add_or_edit_group_by_parameter_dto = \
+            AddOrEditGroupByParameterDTOFactory()
+        return {
+            "group_by_parameter": group_by_parameter,
+            "group_by_key_dtos": group_by_key_dtos,
+            "group_by_response_dtos": group_by_response_dtos,
+            "add_or_edit_group_by_parameter_dto":
+                add_or_edit_group_by_parameter_dto
+        }
+
+    @pytest.fixture
+    def get_dtos_for_add_group_by_for_kanban(self):
+        GroupByParameterFactory.reset_sequence(0)
+        GroupByParameterFactory.view_type.reset()
+        GroupByResponseDTOFactory.reset_sequence(0)
+        GroupBYKeyDTOFactory.group_by_key.reset()
+        GroupBYKeyDTOFactory.order.reset()
+        GroupByResponseDTOFactory.group_by_key.reset()
+        GroupByResponseDTOFactory.display_name.reset()
+        GroupByResponseDTOFactory.order.reset()
+        AddOrEditGroupByParameterDTOFactory.reset_sequence(0)
+        group_by_parameter = GroupByParameterFactory(
+            view_type=ViewType.KANBAN.value)
+        group_by_key_dtos = GroupBYKeyDTOFactory.create_batch(size=2)
+        group_by_response_dtos = GroupByResponseDTOFactory.create_batch(size=2)
+        return {
+            "group_by_parameter": group_by_parameter,
+            "group_by_key_dtos": group_by_key_dtos,
+            "group_by_response_dtos": group_by_response_dtos
+        }
+
+    def test_given_valid_data_it_adds_group_by_for_list_and_returns_group_by_response_dto(
+            self, interactor, storage, get_dtos_for_add_group_by_for_list,
+            presenter
     ):
-        from ib_adhoc_tasks.tests.factories.storage_dtos import \
-            GroupByResponseDTOFactory, AddOrEditGroupByParameterDTOFactory
-        user_id = "user_id_1"
-        add_or_edit_group_by_parameter_dto = AddOrEditGroupByParameterDTOFactory(
-            group_by_id=None, user_id=user_id
-        )
-        group_by_response_dto = GroupByResponseDTOFactory()
-        storage.add_group_by.return_value = group_by_response_dto
-        storage.get_view_types_of_user.return_value = []
-        presenter.get_response_for_add_or_edit_group_by.return_value = mock.Mock()
+        group_by_key_dtos = \
+            get_dtos_for_add_group_by_for_list["group_by_key_dtos"]
+        group_by_parameter = \
+            get_dtos_for_add_group_by_for_list["group_by_parameter"]
+        add_or_edit_group_by_parameter_dto = \
+            get_dtos_for_add_group_by_for_list[
+                "add_or_edit_group_by_parameter_dto"
+            ]
+        group_by_response_dtos = \
+            get_dtos_for_add_group_by_for_list["group_by_response_dtos"]
+        storage.add_or_edit_group_by_for_list_view.return_value = \
+            group_by_response_dtos[0]
 
         interactor.add_or_edit_group_by_wrapper(
-            add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto,
+            group_by_key_dtos=group_by_key_dtos,
+            group_by_parameter=group_by_parameter,
             presenter=presenter
         )
 
-        storage.get_view_types_of_user.assert_called_once_with(user_id=user_id)
-        storage.add_group_by.assert_called_once_with(
-            add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto
+        storage.add_or_edit_group_by_for_list_view.assert_called_once_with(
+            add_or_edit_group_by_parameter_dto=
+            add_or_edit_group_by_parameter_dto
         )
         presenter.get_response_for_add_or_edit_group_by.assert_called_once_with(
-            group_by_response_dto=group_by_response_dto
+            group_by_response_dtos=group_by_response_dtos
         )
 
-    def test_given_valid_data_it_edits_and_returns_group_by_dto(
-            self, interactor, storage, presenter
+    def test_given_empty_group_by_key_list_it_adds_group_by_for_list_and_returns_group_by_response_dto(
+            self, interactor, storage, get_dtos_for_add_group_by_for_list,
+            presenter
     ):
-        from ib_adhoc_tasks.tests.factories.storage_dtos import \
-            GroupByResponseDTOFactory, AddOrEditGroupByParameterDTOFactory
-        add_or_edit_group_by_parameter_dto = AddOrEditGroupByParameterDTOFactory(
-            group_by_id=1
-        )
-        group_by_response_dto = GroupByResponseDTOFactory()
-        storage.edit_group_by.return_value = group_by_response_dto
-        presenter.get_response_for_add_or_edit_group_by.return_value = mock.Mock()
+        group_by_key_dtos = []
+        group_by_parameter = \
+            get_dtos_for_add_group_by_for_list["group_by_parameter"]
+        add_or_edit_group_by_parameter_dto = \
+            get_dtos_for_add_group_by_for_list[
+                "add_or_edit_group_by_parameter_dto"
+            ]
+        add_or_edit_group_by_parameter_dto.group_by_key = \
+            GroupByKey.STAGE.value
+        group_by_response_dtos = \
+            get_dtos_for_add_group_by_for_list["group_by_response_dtos"]
+        group_by_response_dtos[0].group_by_key = GroupByKey.STAGE.value
+        storage.add_or_edit_group_by_for_list_view.return_value = \
+            group_by_response_dtos[0]
 
         interactor.add_or_edit_group_by_wrapper(
-            add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto,
+            group_by_key_dtos=group_by_key_dtos,
+            group_by_parameter=group_by_parameter,
             presenter=presenter
         )
 
-        storage.edit_group_by.assert_called_once_with(
-            add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto
+        storage.add_or_edit_group_by_for_list_view.assert_called_once_with(
+            add_or_edit_group_by_parameter_dto=
+            add_or_edit_group_by_parameter_dto
         )
         presenter.get_response_for_add_or_edit_group_by.assert_called_once_with(
-            group_by_response_dto=group_by_response_dto
+            group_by_response_dtos=group_by_response_dtos
         )
 
-    def test_given_data_to_create_group_by_list_view_as_one_group_by_already_exists_returns_exception_response(
-            self, interactor, presenter, storage
+    def test_given_valid_data_it_adds_group_by_for_kanban_and_returns_group_by_response_dto(
+            self, interactor, storage, get_dtos_for_add_group_by_for_kanban,
+            presenter
     ):
-        from ib_adhoc_tasks.tests.factories.storage_dtos import \
-            AddOrEditGroupByParameterDTOFactory
-        user_id = "user_id_1"
-        add_or_edit_group_by_parameter_dto = AddOrEditGroupByParameterDTOFactory(
-            group_by_id=None, user_id=user_id
-        )
-        storage.get_view_types_of_user.return_value = ['LIST']
-        presenter.get_response_for_user_not_allowed_to_create_more_than_one_group_by_in_list_view \
-            .return_value = mock.Mock()
+        group_by_key_dtos = \
+            get_dtos_for_add_group_by_for_kanban["group_by_key_dtos"]
+        group_by_parameter = \
+            get_dtos_for_add_group_by_for_kanban["group_by_parameter"]
+        group_by_response_dtos = \
+            get_dtos_for_add_group_by_for_kanban["group_by_response_dtos"]
+        storage.add_group_by_for_kanban_view_in_bulk.return_value = \
+            group_by_response_dtos
 
         interactor.add_or_edit_group_by_wrapper(
-            add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto,
+            group_by_key_dtos=group_by_key_dtos,
+            group_by_parameter=group_by_parameter,
             presenter=presenter
         )
 
-        storage.get_view_types_of_user.assert_called_once_with(user_id=user_id)
-        presenter.get_response_for_user_not_allowed_to_create_more_than_one_group_by_in_list_view \
-            .assert_called_once()
-
-    def test_given_data_to_create_group_by_kanban_view_as_two_group_by_already_exists_returns_exception_response(
-            self, interactor, presenter, storage
-    ):
-        from ib_adhoc_tasks.tests.factories.storage_dtos import \
-            AddOrEditGroupByParameterDTOFactory
-        user_id = "user_id_1"
-        add_or_edit_group_by_parameter_dto = AddOrEditGroupByParameterDTOFactory(
-            group_by_id=None, user_id=user_id
+        storage.add_group_by_for_kanban_view_in_bulk.assert_called_once_with(
+            group_by_parameter=group_by_parameter,
+            group_by_key_dtos=group_by_key_dtos
         )
-        storage.get_view_types_of_user.return_value = ['KANBAN', 'KANBAN']
-        presenter.get_response_for_user_not_allowed_to_create_more_than_two_group_by_in_kanban_view \
-            .return_value = mock.Mock()
+        storage.delete_all_user_group_by.assert_called_once_with(
+            user_id=group_by_parameter.user_id
+        )
+        presenter.get_response_for_add_or_edit_group_by.assert_called_once_with(
+            group_by_response_dtos=group_by_response_dtos
+        )
+
+    def test_given_empty_group_by_list_it_adds_group_by_for_kanban_and_returns_group_by_response_dto(
+            self, interactor, storage, get_dtos_for_add_group_by_for_kanban,
+            presenter
+    ):
+        group_by_key_dtos = []
+        from ib_adhoc_tasks.interactors.dtos.dtos import GroupBYKeyDTO
+        expected_group_by_key_dtos = [
+            GroupBYKeyDTO(group_by_key='STAGE', order=1),
+            GroupBYKeyDTO(group_by_key='ASSIGNEE', order=2)
+        ]
+        group_by_parameter = \
+            get_dtos_for_add_group_by_for_kanban["group_by_parameter"]
+        group_by_response_dtos = \
+            get_dtos_for_add_group_by_for_kanban["group_by_response_dtos"]
+        storage.add_group_by_for_kanban_view_in_bulk.return_value = \
+            group_by_response_dtos
 
         interactor.add_or_edit_group_by_wrapper(
-            add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto,
+            group_by_key_dtos=group_by_key_dtos,
+            group_by_parameter=group_by_parameter,
             presenter=presenter
         )
 
-        storage.get_view_types_of_user.assert_called_once_with(user_id=user_id)
-        presenter.get_response_for_user_not_allowed_to_create_more_than_two_group_by_in_kanban_view \
-            .assert_called_once()
+        storage.add_group_by_for_kanban_view_in_bulk.assert_called_once_with(
+            group_by_parameter=group_by_parameter,
+            group_by_key_dtos=expected_group_by_key_dtos
+        )
+        storage.delete_all_user_group_by.assert_called_once_with(
+            user_id=group_by_parameter.user_id
+        )
+        presenter.get_response_for_add_or_edit_group_by.assert_called_once_with(
+            group_by_response_dtos=group_by_response_dtos
+        )
+
+    # todo need to write tests for exception cases
