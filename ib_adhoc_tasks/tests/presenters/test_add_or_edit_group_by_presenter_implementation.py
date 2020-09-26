@@ -24,7 +24,6 @@ class TestAddOrEditGroupByPresenterImplementation:
         expected_response_dict = {
             'display_name': 'ASSIGNEE',
             'group_by_key': 'ASSIGNEE',
-            'group_by_id': 0,
             'order': 2
         }
 

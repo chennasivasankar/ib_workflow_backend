@@ -26,6 +26,14 @@ class TaskOffsetAndLimitValuesDTOFactory(factory.Factory):
     offset = 0
 
 
+class GroupBYKeyDTOFactory(factory.Factory):
+    class Meta:
+        model = GroupBYKeyDTO
+
+    group_by_key = factory.Iterator(["ASSIGNEE", "STAGE"])
+    order = factory.Iterator([1, 2])
+
+
 class TaskIdsForGroupsParameterDTOFactory(factory.Factory):
     class Meta:
         model = TaskIdsForGroupsParameterDTO
@@ -138,10 +146,3 @@ class GroupByParameterFactory(factory.Factory):
     user_id = factory.Sequence(lambda n: "user_id_%d" % n)
     view_type = factory.Iterator(["LIST", "KANBAN"])
 
-
-class GroupBYKeyDTOFactory(factory.Factory):
-    class Meta:
-        model = GroupBYKeyDTO
-
-    group_by_key = factory.Iterator(["ASSIGNEE", "STAGE"])
-    order = factory.Iterator([1, 2])
