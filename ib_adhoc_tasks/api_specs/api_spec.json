@@ -772,12 +772,7 @@
         "order": {
           "type": "integer"
         }
-      },
-      "required": [
-        "group_by_key",
-        "display_name",
-        "order"
-      ]
+      }
     },
     "InvalidPaginationDetailsForViews": {
       "allOf": [
@@ -950,10 +945,7 @@
               "KANBAN"
             ]
           }
-        },
-        "required": [
-          "group_by_values"
-        ]
+        }
       }
     },
     "Group1IdParameter": {
@@ -1161,10 +1153,7 @@
           "group_by_value": {
             "type": "string"
           }
-        },
-        "required": [
-          "group_by_value"
-        ]
+        }
       }
     }
   },
@@ -1562,8 +1551,6 @@
                 }
               },
               "required": [
-                "group_by_value",
-                "group_by_display_name",
                 "total_tasks",
                 "tasks"
               ]
