@@ -16,3 +16,9 @@ class ProjectIdWithTaskTemplateIdDTO:
 @dataclass
 class ProjectTemplateDTO(TemplateDTO):
     project_id: str
+
+
+@dataclass
+class TaskTemplateDTO:
+    task_id: int
+    template_id: str

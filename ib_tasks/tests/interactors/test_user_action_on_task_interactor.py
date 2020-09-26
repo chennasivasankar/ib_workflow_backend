@@ -433,10 +433,13 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
             task_storage_mock, create_task_storage
     ):
         # Arrange
+        task_id = 1
         task_display_id = "task_1"
+        template_ids = ['template_1']
         create_task_storage.get_existing_task_due_date.return_value = \
             datetime.datetime.now() - datetime.timedelta(days=1)
         create_task_storage.check_task_delay_reason_updated_or_not.return_value = False
+        task_storage_mock.get_template_ids_to_task_ids.return_value = template_ids
 
         # Act
         interactor.user_action_on_task_wrapper(
@@ -444,7 +447,10 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
         )
 
         # Assert
-        presenter.get_response_for_task_delay_reason_not_updated.\
+        task_storage_mock.get_template_ids_to_task_ids.assert_called_once_with(
+            task_ids=[task_id]
+        )
+        presenter.get_response_for_task_delay_reason_not_updated. \
             assert_called_once()
 
     @staticmethod

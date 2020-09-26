@@ -249,7 +249,12 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         self._validate_user_permission_to_user(
             self.user_id, action_roles, self.action_id, project_id=project_id
         )
-        self._validate_task_delay_reason_updated_or_not(task_id)
+        template_ids = self.task_storage.get_template_ids_to_task_ids(
+            task_ids=[task_id])
+        from ib_tasks.constants.constants import ADHOC_TEMPLATE_ID
+        is_not_adhoc_template = not template_ids[0] == ADHOC_TEMPLATE_ID
+        if is_not_adhoc_template:
+            self._validate_task_delay_reason_updated_or_not(task_id)
 
     def _validate_present_task_stage_actions(self, task_id: int):
 
@@ -295,14 +300,6 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             raise UserActionPermissionDenied(action_id=action_id)
 
     def _validate_task_delay_reason_is_added(
-            self, updated_due_date: datetime.datetime, task_id: int,
-            stage_id: int
-    ) -> Optional[TaskDelayReasonIsNotUpdated]:
-        self._validate_delay_reason_is_updated_or_not(
-            task_id, stage_id, updated_due_date)
-        return
-
-    def _validate_delay_reason_is_updated_or_not(
             self, task_id: int, stage_id: int,
             updated_due_date: datetime.datetime
     ) -> Optional[TaskDelayReasonIsNotUpdated]:
