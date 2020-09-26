@@ -4,7 +4,8 @@ from typing import List
 
 from ib_adhoc_tasks.adapters.dtos import TasksCompleteDetailsDTO, \
     TaskIdWithSubTasksCountDTO, TaskIdWithCompletedSubTasksCountDTO
-from ib_adhoc_tasks.interactors.storage_interfaces.dtos import GroupDetailsDTO
+from ib_adhoc_tasks.interactors.storage_interfaces.dtos import GroupDetailsDTO, \
+    GroupByResponseDTO
 
 
 @dataclass
@@ -27,7 +28,8 @@ class GetTasksForListViewPresenterInterface(abc.ABC):
     def get_task_details_group_by_info_response(
             self,
             task_details_with_group_info_list_view_dto:
-            TaskDetailsWithGroupInfoForListViewDTO
+            TaskDetailsWithGroupInfoForListViewDTO,
+            group_by_response_dto: GroupByResponseDTO
     ):
         pass
 

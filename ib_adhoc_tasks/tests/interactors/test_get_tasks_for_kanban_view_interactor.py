@@ -113,6 +113,12 @@ class TestGetTasksForKanbanViewInteractor:
         )
         return task_details_with_group_by_info_dto
 
+    @pytest.fixture
+    def group_by_dtos_response(self):
+        from ib_adhoc_tasks.tests.factories.storage_dtos import \
+            GroupByResponseDTOFactory
+        return GroupByResponseDTOFactory.create_batch(2)
+
     @patch.object(IamService, 'get_valid_project_ids')
     def test_given_invalid_project_id_raise_exception(
             self, project_service_mock, storage_mock, elastic_storage_mock,
@@ -140,7 +146,7 @@ class TestGetTasksForKanbanViewInteractor:
 
     @patch.object(GetTaskIdsForViewInteractor, "get_task_ids_for_view")
     def test_given_invalid_user_raise_exception(
-            self, user_mock, presenter_mock, storage_mock,
+            self, user_mock, presenter_mock, storage_mock, group_by_dtos_response,
             elastic_storage_mock, group_by_info_kanban_view_dto, mocker
     ):
         # Arrange
@@ -156,6 +162,9 @@ class TestGetTasksForKanbanViewInteractor:
         )
         mock_object = Mock()
         presenter_mock.raise_invalid_user_id.return_value = mock_object
+        from ib_adhoc_tasks.tests.common_fixtures.interactors import \
+            get_add_group_by_interactor_mock
+        get_add_group_by_interactor_mock(mocker, group_by_dtos_response)
 
         # Act
         response = interactor.get_tasks_for_kanban_view_wrapper(
@@ -170,7 +179,7 @@ class TestGetTasksForKanbanViewInteractor:
 
     @patch.object(GetTaskIdsForViewInteractor, "get_task_ids_for_view")
     def test_given_user_not_exists_for_project_raise_exception(
-            self, user_mock, presenter_mock, storage_mock,
+            self, user_mock, presenter_mock, storage_mock, group_by_dtos_response,
             elastic_storage_mock, group_by_info_kanban_view_dto, mocker
     ):
         # Arrange
@@ -187,6 +196,9 @@ class TestGetTasksForKanbanViewInteractor:
         mock_object = Mock()
         presenter_mock.raise_invalid_user_for_project.return_value = \
             mock_object
+        from ib_adhoc_tasks.tests.common_fixtures.interactors import \
+            get_add_group_by_interactor_mock
+        get_add_group_by_interactor_mock(mocker, group_by_dtos_response)
 
         # Act
         response = interactor.get_tasks_for_kanban_view_wrapper(
@@ -201,7 +213,7 @@ class TestGetTasksForKanbanViewInteractor:
 
     def test_given_invalid_offset_value_raise_exception(
             self, mocker, presenter_mock,  storage_mock, elastic_storage_mock,
-            group_by_info_kanban_view_dto_with_invalid_offset
+            group_by_info_kanban_view_dto_with_invalid_offset, group_by_dtos_response
     ):
         # Arrange
         from ib_adhoc_tasks.tests.common_fixtures.adapters import \
@@ -214,6 +226,9 @@ class TestGetTasksForKanbanViewInteractor:
         )
         mock_object = Mock()
         presenter_mock.raise_invalid_offset_value.return_value = mock_object
+        from ib_adhoc_tasks.tests.common_fixtures.interactors import \
+            get_add_group_by_interactor_mock
+        get_add_group_by_interactor_mock(mocker, group_by_dtos_response)
 
         # Act
         response = interactor.get_tasks_for_kanban_view_wrapper(
@@ -227,7 +242,7 @@ class TestGetTasksForKanbanViewInteractor:
 
     def test_given_invalid_limit_value_raise_exception(
             self, mocker, presenter_mock,  storage_mock, elastic_storage_mock,
-            group_by_info_kanban_view_dto_with_invalid_limit
+            group_by_info_kanban_view_dto_with_invalid_limit, group_by_dtos_response
     ):
         # Arrange
         from ib_adhoc_tasks.tests.common_fixtures.adapters import \
@@ -240,6 +255,9 @@ class TestGetTasksForKanbanViewInteractor:
         )
         mock_object = Mock()
         presenter_mock.raise_invalid_limit_value.return_value = mock_object
+        from ib_adhoc_tasks.tests.common_fixtures.interactors import \
+            get_add_group_by_interactor_mock
+        get_add_group_by_interactor_mock(mocker, group_by_dtos_response)
 
         # Act
         response = interactor.get_tasks_for_kanban_view_wrapper(
@@ -259,7 +277,7 @@ class TestGetTasksForKanbanViewInteractor:
             presenter_mock, mocker, group_details_dtos,
             storage_mock, elastic_storage_mock, child_group_count_dtos,
             group_by_details_dto_when_selected_two_options,
-            task_details_with_group_by_info_dto
+            task_details_with_group_by_info_dto, group_by_dtos_response
     ):
         # Arrange
         total_groups_count = 3
@@ -273,8 +291,6 @@ class TestGetTasksForKanbanViewInteractor:
         view_type = ViewType.KANBAN.value
         get_task_ids_mock.return_value = \
             group_details_dtos, total_groups_count, child_group_count_dtos
-        storage_mock.get_group_by_details_dtos.return_value = \
-            group_by_details_dto_when_selected_two_options
         task_details_mock.return_value = task_details_dtos
         interactor = GetTasksForKanbanViewInteractor(
             storage=storage_mock,
@@ -283,6 +299,9 @@ class TestGetTasksForKanbanViewInteractor:
         mock_object = Mock()
         presenter_mock.get_task_details_group_by_info_response.return_value \
             = mock_object
+        from ib_adhoc_tasks.tests.common_fixtures.interactors import \
+            get_add_group_by_interactor_mock
+        get_add_group_by_interactor_mock(mocker, group_by_dtos_response)
 
         # Act
         response = interactor.get_tasks_for_kanban_view_wrapper(
@@ -292,11 +311,8 @@ class TestGetTasksForKanbanViewInteractor:
 
         # Assert
         assert mock_object == response
-        storage_mock.get_group_by_details_dtos.assert_called_once_with(
-            user_id, view_type
-        )
         presenter_mock.get_task_details_group_by_info_response \
-            .assert_called_once_with(task_details_with_group_by_info_dto)
+            .assert_called_once_with(task_details_with_group_by_info_dto, group_by_dtos_response)
 
     @patch.object(TaskService, "get_task_complete_details_dto")
     @patch.object(GetTaskIdsForViewInteractor, "get_task_ids_for_view")
@@ -306,7 +322,7 @@ class TestGetTasksForKanbanViewInteractor:
             presenter_mock, mocker, group_details_dtos,
             storage_mock, elastic_storage_mock, child_group_count_dtos,
             group_by_details_dto_when_selected_one_options,
-            task_details_with_group_by_info_dto
+            task_details_with_group_by_info_dto, group_by_dtos_response
     ):
         # Arrange
         total_groups_count = 3
@@ -320,8 +336,6 @@ class TestGetTasksForKanbanViewInteractor:
         view_type = ViewType.KANBAN.value
         get_task_ids_mock.return_value = \
             group_details_dtos, total_groups_count, child_group_count_dtos
-        storage_mock.get_group_by_details_dtos.return_value = \
-            group_by_details_dto_when_selected_one_options
         task_details_mock.return_value = task_details_dtos
         interactor = GetTasksForKanbanViewInteractor(
             storage=storage_mock,
@@ -330,6 +344,9 @@ class TestGetTasksForKanbanViewInteractor:
         mock_object = Mock()
         presenter_mock.get_task_details_group_by_info_response.return_value \
             = mock_object
+        from ib_adhoc_tasks.tests.common_fixtures.interactors import \
+            get_add_group_by_interactor_mock
+        get_add_group_by_interactor_mock(mocker, group_by_dtos_response)
 
         # Act
         response = interactor.get_tasks_for_kanban_view_wrapper(
@@ -339,8 +356,5 @@ class TestGetTasksForKanbanViewInteractor:
 
         # Assert
         assert mock_object == response
-        storage_mock.get_group_by_details_dtos.assert_called_once_with(
-            user_id, view_type
-        )
         presenter_mock.get_task_details_group_by_info_response \
-            .assert_called_once_with(task_details_with_group_by_info_dto)
+            .assert_called_once_with(task_details_with_group_by_info_dto, group_by_dtos_response)

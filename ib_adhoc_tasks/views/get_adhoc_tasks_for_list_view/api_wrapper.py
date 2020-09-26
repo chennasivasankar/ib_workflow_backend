@@ -8,13 +8,16 @@ from .validator_class import ValidatorClass
 def api_wrapper(*args, **kwargs):
     user = kwargs["user"]
     query_params = kwargs['query_params']
-
+    request_body = kwargs.get('request_body')
     user_id = user.user_id
     project_id = query_params["project_id"]
     limit = query_params["limit"]
     offset = query_params["offset"]
     group_limit = query_params["group_limit"]
     group_offset = query_params["group_offset"]
+    group_by_key = None
+    if request_body:
+        group_by_key = request_body.get('group_by_key')
 
     from ib_adhoc_tasks.interactors.get_tasks_for_list_view_interactor import \
         GetTasksForListViewInteractor
@@ -49,6 +52,7 @@ def api_wrapper(*args, **kwargs):
     group_by_info_list_view_dto = GroupByInfoListViewDTO(
         project_id=project_id,
         user_id=user_id,
+        group_by_key=group_by_key,
         task_offset_limit_dto=task_offset_limit_dto,
         group_offset_limit_dto=group_offset_limit_dto
     )

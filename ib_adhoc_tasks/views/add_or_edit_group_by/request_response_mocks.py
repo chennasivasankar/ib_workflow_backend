@@ -2,17 +2,13 @@
 
 REQUEST_BODY_JSON = """
 {
-    "view_type": "LIST",
-    "group_by_key": "string",
-    "order": 1,
-    "group_by_id": 1
+    "group_by_key": "string"
 }
 """
 
 
 RESPONSE_200_JSON = """
 {
-    "group_by_id": 1,
     "group_by_key": "string",
     "display_name": "string",
     "order": 1

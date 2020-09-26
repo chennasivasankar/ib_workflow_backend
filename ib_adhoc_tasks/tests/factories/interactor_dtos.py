@@ -5,7 +5,7 @@ from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO, \
     TaskOffsetAndLimitValuesDTO, TaskIdsForGroupsParameterDTO, GroupByValueDTO, \
     OffsetLimitDTO, GroupByInfoKanbanViewDTO, GroupByInfoListViewDTO, \
     GetSubtasksParameterDTO, GetTaskDetailsInGroupInputDTO, \
-    GetChildGroupsInGroupInputDTO
+    GetChildGroupsInGroupInputDTO, GroupBYKeyDTO
 
 
 class GroupByDTOFactory(factory.Factory):
@@ -16,6 +16,14 @@ class GroupByDTOFactory(factory.Factory):
     order = factory.Sequence(lambda n: n)
     limit = 5
     offset = 0
+
+
+class GroupBYKeyDTOFactory(factory.Factory):
+    class Meta:
+        model = GroupBYKeyDTO
+
+    group_by_key = factory.Sequence(lambda n: "group_by_%s" % n)
+    order = factory.Sequence(lambda n: n)
 
 
 class TaskOffsetAndLimitValuesDTOFactory(factory.Factory):
@@ -62,6 +70,7 @@ class GroupByInfoKanbanViewDTOFactory(factory.Factory):
 
     project_id = factory.sequence(lambda counter: "project_{}".format(counter))
     user_id = factory.sequence((lambda counter: "user_{}".format(counter)))
+    group_by_details = GroupBYKeyDTOFactory.create_batch(2)
 
     @factory.lazy_attribute
     def task_offset_limit_dto(self):
@@ -82,6 +91,7 @@ class GroupByInfoListViewDTOFactory(factory.Factory):
 
     project_id = factory.sequence(lambda counter: "project_{}".format(counter))
     user_id = factory.sequence((lambda counter: "user_{}".format(counter)))
+    group_by_key = factory.Sequence(lambda counter: "group_by_key_{}".format(counter))
 
     @factory.lazy_attribute
     def task_offset_limit_dto(self):

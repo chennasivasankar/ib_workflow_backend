@@ -94,6 +94,12 @@ class TestGetTasksForListViewInteractor:
             group_offset_limit_dto=OffsetLimitDTOFactory(limit=-10)
         )
 
+    @pytest.fixture
+    def group_by_dtos_response(self):
+        from ib_adhoc_tasks.tests.factories.storage_dtos import \
+            GroupByResponseDTOFactory
+        return [GroupByResponseDTOFactory()]
+
     @patch.object(IamService, "get_valid_project_ids")
     def test_given_invalid_project_id_raise_exception(
             self, project_mock, storage_mock, elastic_storage_mock,
@@ -177,7 +183,7 @@ class TestGetTasksForListViewInteractor:
     def test_given_invalid_user_raise_exception(
             self, user_mock, presenter_mock, storage_mock,
             elastic_storage_mock, group_by_info_list_view_dto,
-            group_by_details_dtos, mocker
+            group_by_details_dtos, mocker, group_by_dtos_response
     ):
         # Arrange
         from ib_adhoc_tasks.tests.common_fixtures.adapters import \
@@ -190,6 +196,9 @@ class TestGetTasksForListViewInteractor:
             storage=storage_mock,
             elastic_storage=elastic_storage_mock
         )
+        from ib_adhoc_tasks.tests.common_fixtures.interactors import \
+            get_add_group_by_interactor_mock
+        get_add_group_by_interactor_mock(mocker, group_by_dtos_response)
         mock_object = Mock()
         presenter_mock.raise_invalid_user_id.return_value = mock_object
 
@@ -208,7 +217,7 @@ class TestGetTasksForListViewInteractor:
     def test_given_user_not_exists_for_project_raise_exception(
             self, user_mock, presenter_mock, storage_mock,
             elastic_storage_mock, group_by_info_list_view_dto,
-            group_by_details_dtos, mocker
+            group_by_details_dtos, mocker, group_by_dtos_response
     ):
         # Arrange
         from ib_adhoc_tasks.tests.common_fixtures.adapters import \
@@ -221,6 +230,9 @@ class TestGetTasksForListViewInteractor:
             storage=storage_mock,
             elastic_storage=elastic_storage_mock
         )
+        from ib_adhoc_tasks.tests.common_fixtures.interactors import \
+            get_add_group_by_interactor_mock
+        get_add_group_by_interactor_mock(mocker, group_by_dtos_response)
         mock_object = Mock()
         presenter_mock.raise_invalid_user_for_project.return_value = \
             mock_object
@@ -255,7 +267,7 @@ class TestGetTasksForListViewInteractor:
     def test_given_valid_details_returns_group_details_dtos_and_task_details_dtos(
             self, group_details_mock, task_details_mock,
             task_with_sub_task_count_mock,
-            task_with_completed_sub_task_count_mock,
+            task_with_completed_sub_task_count_mock, group_by_dtos_response,
             group_by_info_list_view_dto, mocker, storage_mock, presenter_mock,
             group_details_dtos, task_details_dtos, elastic_storage_mock,
             group_by_details_dtos, task_with_sub_task_count_dtos,
@@ -289,12 +301,12 @@ class TestGetTasksForListViewInteractor:
             task_with_sub_tasks_count_dtos=task_with_sub_task_count_dtos,
             task_completed_sub_tasks_count_dtos=task_with_completed_sub_task_count_dtos
         )
-
+        from ib_adhoc_tasks.tests.common_fixtures.interactors import \
+            get_add_group_by_interactor_mock
+        get_add_group_by_interactor_mock(mocker, group_by_dtos_response)
         mock_object = Mock()
         presenter_mock.get_task_details_group_by_info_response.return_value \
             = mock_object
-        storage_mock.get_group_by_details_dtos.return_value = \
-            group_by_details_dtos
 
         # Act
         response = interactor.get_tasks_for_list_view_wrapper(
@@ -304,10 +316,7 @@ class TestGetTasksForListViewInteractor:
 
         # Assert
         assert response == mock_object
-        storage_mock.get_group_by_details_dtos.assert_called_once_with(
-            user_id, view_type
-        )
         presenter_mock.get_task_details_group_by_info_response \
             .assert_called_once_with(
-                task_details_with_group_info_list_view_dto
+                task_details_with_group_info_list_view_dto, group_by_dtos_response[0]
             )
