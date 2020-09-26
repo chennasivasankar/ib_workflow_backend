@@ -44,3 +44,11 @@ class UserNotAllowedToCreateMoreThanTwoGroupByInKanbanView(Exception):
 
 class UserNotExistInProject(Exception):
     pass
+
+
+class InvalidNumberOfGroupByKeysForListView(Exception):
+    pass
+
+
+class InvalidNumberOfGroupByKeysForKanbanView(Exception):
+    pass

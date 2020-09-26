@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 from ib_adhoc_tasks.constants.enum import ViewType
 
@@ -13,13 +12,14 @@ class GroupByResponseDTO:
     order: int
 
 
+# todo need to change this after deletion of add_or_edit_wrapper
 @dataclass
 class AddOrEditGroupByParameterDTO:
-    project_id: str
     user_id: str
     view_type: ViewType
     group_by_key: str
     order: int = 1
+    project_id: Optional[str] = None
     group_by_id: Optional[int] = None
 
 

@@ -16,6 +16,7 @@ class GroupByResponseDTOFactory(factory.Factory):
     order = factory.Iterator([1, 2])
 
 
+# todo need to change this after deletion of add_or_edit_wrapper
 class AddOrEditGroupByParameterDTOFactory(factory.Factory):
     class Meta:
         model = AddOrEditGroupByParameterDTO

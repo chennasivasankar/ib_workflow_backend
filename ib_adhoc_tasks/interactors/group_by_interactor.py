@@ -3,7 +3,11 @@ from typing import List
 from ib_adhoc_tasks.constants.enum import ViewType
 from ib_adhoc_tasks.exceptions.custom_exceptions import \
     UserNotAllowedToCreateMoreThanOneGroupByInListView, \
-    UserNotAllowedToCreateMoreThanTwoGroupByInKanbanView
+    UserNotAllowedToCreateMoreThanTwoGroupByInKanbanView, \
+    InvalidNumberOfGroupByKeysForListView, \
+    InvalidNumberOfGroupByKeysForKanbanView
+from ib_adhoc_tasks.interactors.dtos.dtos import GroupBYKeyDTO, \
+    GroupByParameter
 from ib_adhoc_tasks.interactors.presenter_interfaces \
     .group_by_presenter_interface import GetGroupByPresenterInterface, \
     AddOrEditGroupByPresenterInterface
@@ -63,76 +67,123 @@ class GroupByInteractor:
 
     def add_or_edit_group_by(
             self,
-            add_or_edit_group_by_parameter_dto: AddOrEditGroupByParameterDTO
+            group_by_key_dtos: List[GroupBYKeyDTO],
+            group_by_parameter: GroupByParameter
     ):
-        is_group_by_id_exists = add_or_edit_group_by_parameter_dto.group_by_id
-        if is_group_by_id_exists:
-            group_by_response_dto = self.storage.edit_group_by(
-                add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto
+        is_list_view = group_by_parameter.view_type == ViewType.LIST.value
+        group_by_response_dtos = None
+        if is_list_view:
+            group_by_response_dtos = self._add_or_edit_group_by_for_list_view(
+                group_by_key_dtos=group_by_key_dtos,
+                group_by_parameter=group_by_parameter
             )
         else:
-            group_by_response_dto = self._add_group_by(
-                add_or_edit_group_by_parameter_dto=
-                add_or_edit_group_by_parameter_dto
+            group_by_response_dtos = self._validate_is_kanban_view_creation_or_updation_is_possible(
+                group_by_key_dtos=group_by_key_dtos
             )
         from ib_adhoc_tasks.constants.constants import group_by_types_list
-        if group_by_response_dto.group_by_key not in group_by_types_list:
-            group_by_response_dto.display_name = \
-                self._get_field_display_name(
-                    project_id=add_or_edit_group_by_parameter_dto.project_id,
-                    user_id=add_or_edit_group_by_parameter_dto.user_id,
-                    field_id=group_by_response_dto.group_by_key
-                )
-        return group_by_response_dto
+        for group_by_response_dto in group_by_response_dtos:
+            if group_by_response_dto.group_by_key not in group_by_types_list:
+                group_by_response_dto.display_name = \
+                    self._get_field_display_name(
+                        group_by_parameter=group_by_parameter,
+                        field_id=group_by_response_dto.group_by_key
+                    )
+        group_by_response_dtos.sort(key=lambda x: x.order)
+        return group_by_response_dtos
 
-    def _add_group_by(
-            self,
-            add_or_edit_group_by_parameter_dto: AddOrEditGroupByParameterDTO
+    def _add_or_edit_group_by_for_list_view(
+            self, group_by_key_dtos: List[GroupBYKeyDTO],
+            group_by_parameter: GroupByParameter
     ):
-        self._validate_is_creation_possible(
-            add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto
+        self._validate_is_list_view_creation_or_updation_is_possible(
+            group_by_key_dtos=group_by_key_dtos
         )
-
-        group_by_response_dto = self.storage.add_group_by(
-            add_or_edit_group_by_parameter_dto=add_or_edit_group_by_parameter_dto
+        is_group_by_key_dtos_empty = len(group_by_key_dtos) == 0
+        if is_group_by_key_dtos_empty:
+            group_by_key_dtos = self._get_default_group_by_key_dtos_for_list_view()
+        add_or_edit_group_by_parameter_dto = AddOrEditGroupByParameterDTO(
+            user_id=group_by_parameter.user_id,
+            view_type=group_by_parameter.view_type,
+            group_by_key=group_by_key_dtos[0].group_by_key,
+            order=group_by_key_dtos[0].order,
         )
-        return group_by_response_dto
+        group_by_response_dtos = self.storage.add_or_edit_group_by_for_list_view(
+            add_or_edit_group_by_parameter_dto=
+            add_or_edit_group_by_parameter_dto
+        )
+        return group_by_response_dtos
 
-    def _validate_is_creation_possible(
-            self,
-            add_or_edit_group_by_parameter_dto: AddOrEditGroupByParameterDTO
+    def _add_or_edit_group_by_for_kanban_view(
+            self, group_by_key_dtos: List[GroupBYKeyDTO],
+            group_by_parameter: GroupByParameter
     ):
-        view_types = self.storage.get_view_types_of_user(
-            user_id=add_or_edit_group_by_parameter_dto.user_id
+        self._validate_is_kanban_view_creation_or_updation_is_possible(
+            group_by_key_dtos=group_by_key_dtos
         )
-        if len(view_types) >= 2:
-            raise UserNotAllowedToCreateMoreThanTwoGroupByInKanbanView
+        is_group_by_key_dtos_empty = len(group_by_key_dtos) == 0
+        if is_group_by_key_dtos_empty:
+            group_by_key_dtos = \
+                self._get_default_group_by_key_dto_for_kanban_view()
+        self.storage.delete_all_user_group_by(
+            user_id=group_by_parameter.user_id
+        )
+        group_by_response_dtos = \
+            self.storage.add_group_by_for_kanban_view_in_bulk(
+                group_by_parameter=group_by_parameter,
+                group_by_key_dtos=group_by_key_dtos
+            )
+        return group_by_response_dtos
 
     @staticmethod
-    def _validate_is_group_by_for_list_view_is_possible(
-            view_types: List[str]
+    def _validate_is_list_view_creation_or_updation_is_possible(
+            group_by_key_dtos: List[GroupBYKeyDTO]
     ):
-        group_by_for_list_view_count = view_types.count(ViewType.LIST.value)
-        if group_by_for_list_view_count >= 1:
-            raise UserNotAllowedToCreateMoreThanOneGroupByInListView
+        length_of_group_by_keys = len(group_by_key_dtos)
+        is_not_creation_or_updation_possible = length_of_group_by_keys > 1
+        if is_not_creation_or_updation_possible:
+            raise InvalidNumberOfGroupByKeysForListView
 
     @staticmethod
-    def _validate_is_group_by_for_kanban_view_is_possible(
-            view_types: List[str]
+    def _validate_is_kanban_view_creation_or_updation_is_possible(
+            group_by_key_dtos: List[GroupBYKeyDTO]
     ):
-        group_by_for_kanban_view_count = view_types.count(
-            ViewType.KANBAN.value
+        length_of_group_by_keys = len(group_by_key_dtos)
+        is_creation_or_updation_possible = (
+                length_of_group_by_keys == 0 or length_of_group_by_keys == 2
         )
-        if group_by_for_kanban_view_count >= 2:
-            raise UserNotAllowedToCreateMoreThanTwoGroupByInKanbanView
+        is_not_creation_or_updation_possible = not is_creation_or_updation_possible
+        if is_not_creation_or_updation_possible:
+            raise InvalidNumberOfGroupByKeysForKanbanView
 
     @staticmethod
     def _get_field_display_name(
-            project_id: str, user_id: str, field_id: str
+            group_by_parameter: GroupByParameter, field_id: str
     ) -> str:
-        from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
+        from ib_adhoc_tasks.adapters.service_adapter import \
+            get_service_adapter
         service = get_service_adapter()
         field_display_name = service.task_service.get_field_display_name(
-            project_id=project_id, user_id=user_id, field_id=field_id
+            project_id=group_by_parameter.project_id,
+            user_id=group_by_parameter.user_id,
+            field_id=field_id
         )
         return field_display_name
+
+    @staticmethod
+    def _get_default_group_by_key_dtos_for_list_view():
+        from ib_adhoc_tasks.constants.constants import GROUP_BY_KEY_1
+        group_by_key_dtos = [
+            GroupBYKeyDTO(group_by_key=GROUP_BY_KEY_1, order=1)
+        ]
+        return group_by_key_dtos
+
+    @staticmethod
+    def _get_default_group_by_key_dto_for_kanban_view():
+        from ib_adhoc_tasks.constants.constants import \
+            GROUP_BY_KEY_1, GROUP_BY_KEY_2
+        group_by_key_dtos = [
+            GroupBYKeyDTO(group_by_key=GROUP_BY_KEY_1, order=1),
+            GroupBYKeyDTO(group_by_key=GROUP_BY_KEY_2, order=2)
+        ]
+        return group_by_key_dtos
