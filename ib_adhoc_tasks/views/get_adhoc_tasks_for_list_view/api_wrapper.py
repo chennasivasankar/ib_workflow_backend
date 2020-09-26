@@ -8,7 +8,7 @@ from .validator_class import ValidatorClass
 def api_wrapper(*args, **kwargs):
     user = kwargs["user"]
     query_params = kwargs['query_params']
-    request_body = kwargs.get('request_body')
+    request_data = kwargs.get('request_data')
     user_id = user.user_id
     project_id = query_params["project_id"]
     limit = query_params["limit"]
@@ -16,8 +16,8 @@ def api_wrapper(*args, **kwargs):
     group_limit = query_params["group_limit"]
     group_offset = query_params["group_offset"]
     group_by_key = None
-    if request_body:
-        group_by_key = request_body.get('group_by_key')
+    if request_data:
+        group_by_key = request_data.get('group_by_key')
 
     from ib_adhoc_tasks.interactors.get_tasks_for_list_view_interactor import \
         GetTasksForListViewInteractor

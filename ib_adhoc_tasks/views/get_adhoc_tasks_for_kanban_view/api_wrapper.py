@@ -18,10 +18,10 @@ def api_wrapper(*args, **kwargs):
     group1_offset = query_params["group1_offset"]
     group2_limit = query_params["group2_limit"]
     group2_offset = query_params["group2_offset"]
-    request_body = kwargs.get('request_body')
+    request_data = kwargs.get('request_data')
     group_by_keys = None
-    if request_body:
-        group_by_keys = request_body.get('group_by_keys')
+    if request_data:
+        group_by_keys = request_data.get('group_by_keys')
     group_by_details = []
     if group_by_keys:
         group_by_details = [
