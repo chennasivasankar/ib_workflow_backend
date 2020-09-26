@@ -37,14 +37,18 @@ class GroupByInteractor:
         group_by_response_dtos = self.storage.get_group_by_dtos(
             user_id=user_id, view_type=view_type
         )
+        group_by_parameter_dto = GroupByParameter(
+            user_id=user_id,
+            project_id=project_id,
+            view_type=view_type
+        )
         from ib_adhoc_tasks.constants.constants import group_by_types_list
         for group_by_response_dto in group_by_response_dtos:
             if group_by_response_dto.group_by_key not in group_by_types_list:
-                group_by_response_dto.display_name = \
-                    self._get_field_display_name(
-                        project_id=project_id, user_id=user_id,
-                        field_id=group_by_response_dto.group_by_key
-                    )
+                group_by_response_dto.display_name = self._get_field_display_name(
+                    group_by_parameter=group_by_parameter_dto,
+                    field_id=group_by_response_dto.group_by_key
+                )
         group_by_response_dtos.sort(key=lambda x: x.order)
         return group_by_response_dtos
 
@@ -102,7 +106,7 @@ class GroupByInteractor:
         self._validate_is_list_view_creation_or_updation_is_possible(
             group_by_key_dtos=group_by_key_dtos
         )
-        is_group_by_key_dtos_empty = len(group_by_key_dtos) == 0
+        is_group_by_key_dtos_empty = not group_by_key_dtos
         if is_group_by_key_dtos_empty:
             group_by_key_dtos = self._get_default_group_by_key_dtos_for_list_view()
         add_or_edit_group_by_parameter_dto = AddOrEditGroupByParameterDTO(
@@ -125,7 +129,7 @@ class GroupByInteractor:
         self._validate_is_kanban_view_creation_or_updation_is_possible(
             group_by_key_dtos=group_by_key_dtos
         )
-        is_group_by_key_dtos_empty = len(group_by_key_dtos) == 0
+        is_group_by_key_dtos_empty = not group_by_key_dtos
         if is_group_by_key_dtos_empty:
             group_by_key_dtos = \
                 self._get_default_group_by_key_dto_for_kanban_view()
