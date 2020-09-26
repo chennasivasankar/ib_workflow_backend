@@ -197,8 +197,8 @@ class TestGetTasksForListViewInteractor:
             elastic_storage=elastic_storage_mock
         )
         from ib_adhoc_tasks.tests.common_fixtures.interactors import \
-            get_group_by_interactor_mock
-        get_group_by_interactor_mock(mocker, group_by_dtos_response)
+            get_add_group_by_interactor_mock
+        get_add_group_by_interactor_mock(mocker, group_by_dtos_response)
         mock_object = Mock()
         presenter_mock.raise_invalid_user_id.return_value = mock_object
 
@@ -231,8 +231,8 @@ class TestGetTasksForListViewInteractor:
             elastic_storage=elastic_storage_mock
         )
         from ib_adhoc_tasks.tests.common_fixtures.interactors import \
-            get_group_by_interactor_mock
-        get_group_by_interactor_mock(mocker, group_by_dtos_response)
+            get_add_group_by_interactor_mock
+        get_add_group_by_interactor_mock(mocker, group_by_dtos_response)
         mock_object = Mock()
         presenter_mock.raise_invalid_user_for_project.return_value = \
             mock_object
@@ -302,8 +302,8 @@ class TestGetTasksForListViewInteractor:
             task_completed_sub_tasks_count_dtos=task_with_completed_sub_task_count_dtos
         )
         from ib_adhoc_tasks.tests.common_fixtures.interactors import \
-            get_group_by_interactor_mock
-        get_group_by_interactor_mock(mocker, group_by_dtos_response)
+            get_add_group_by_interactor_mock
+        get_add_group_by_interactor_mock(mocker, group_by_dtos_response)
         mock_object = Mock()
         presenter_mock.get_task_details_group_by_info_response.return_value \
             = mock_object
@@ -318,5 +318,5 @@ class TestGetTasksForListViewInteractor:
         assert response == mock_object
         presenter_mock.get_task_details_group_by_info_response \
             .assert_called_once_with(
-                task_details_with_group_info_list_view_dto
+                task_details_with_group_info_list_view_dto, group_by_dtos_response[0]
             )

@@ -774,7 +774,6 @@
         }
       },
       "required": [
-        "group_by_id",
         "group_by_key",
         "display_name",
         "order"
