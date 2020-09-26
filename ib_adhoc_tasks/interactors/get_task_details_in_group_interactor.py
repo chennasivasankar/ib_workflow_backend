@@ -1,8 +1,15 @@
-from ib_adhoc_tasks.interactors.dtos.dtos import GetTaskDetailsInGroupInputDTO, \
+from typing import List
+
+from ib_adhoc_tasks.adapters.dtos import TaskIdWithSubTasksCountDTO, \
+    TaskIdWithCompletedSubTasksCountDTO
+from ib_adhoc_tasks.interactors.dtos.dtos import \
+    GetTaskDetailsInGroupInputDTO, \
     GroupByValueDTO, TaskIdsForGroupsParameterDTO
-from ib_adhoc_tasks.interactors.presenter_interfaces.get_task_details_in_group_presenter_interface import \
+from ib_adhoc_tasks.interactors.presenter_interfaces \
+    .get_task_details_in_group_presenter_interface import \
     GetTaskDetailsInGroupPresenterInterface
-from ib_adhoc_tasks.interactors.storage_interfaces.elastic_storage_interface import \
+from ib_adhoc_tasks.interactors.storage_interfaces.elastic_storage_interface \
+    import \
     ElasticStorageInterface
 from ib_adhoc_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
@@ -23,13 +30,45 @@ class GetTaskDetailsInGroupInteractor:
     ):
         tasks_complete_details_dto, task_ids_and_count_dto = \
             self.get_task_details_in_group(
-                get_task_details_in_group_input_dto=get_task_details_in_group_input_dto
+                get_task_details_in_group_input_dto
+                =get_task_details_in_group_input_dto
             )
+        task_ids = task_ids_and_count_dto.task_ids
+        task_with_sub_tasks_count_dtos = \
+            self._get_task_id_with_sub_tasks_count_dtos(task_ids)
+        task_completed_sub_tasks_count_dtos = \
+            self._get_task_with_completed_sub_tasks_count_dtos(task_ids)
         response = presenter.get_task_details_in_group_response(
             tasks_complete_details_dto=tasks_complete_details_dto,
-            task_ids_and_count_dto=task_ids_and_count_dto
+            task_ids_and_count_dto=task_ids_and_count_dto,
+            task_with_sub_tasks_count_dtos=task_with_sub_tasks_count_dtos,
+            task_completed_sub_tasks_count_dtos
+            =task_completed_sub_tasks_count_dtos
         )
         return response
+
+    @staticmethod
+    def _get_task_id_with_sub_tasks_count_dtos(
+            task_ids: List[int]
+    ) -> List[TaskIdWithSubTasksCountDTO]:
+        from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        task_id_with_sub_tasks_count_dtos = \
+            service_adapter.task_service.get_sub_tasks_count_task_ids(
+                task_ids=task_ids
+            )
+        return task_id_with_sub_tasks_count_dtos
+
+    @staticmethod
+    def _get_task_with_completed_sub_tasks_count_dtos(
+            task_ids: List[int]
+    ) -> List[TaskIdWithCompletedSubTasksCountDTO]:
+        from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        _get_task_with_completed_sub_tasks_count_dtos = \
+            service_adapter.task_service \
+                .get_completed_sub_tasks_count_for_task_ids(task_ids=task_ids)
+        return _get_task_with_completed_sub_tasks_count_dtos
 
     def get_task_details_in_group(
             self,
@@ -62,14 +101,16 @@ class GetTaskDetailsInGroupInteractor:
             offset=get_task_details_in_group_input_dto.offset
         )
 
-        from ib_adhoc_tasks.interactors.get_task_ids_for_group_interactor import \
+        from ib_adhoc_tasks.interactors.get_task_ids_for_group_interactor \
+            import \
             GetTaskIdsForGroupInteractor
         get_task_ids_for_group_interactor = GetTaskIdsForGroupInteractor(
             elastic_storage=self.elastic_storage
         )
         task_ids_and_count_dto = \
             get_task_ids_for_group_interactor.get_task_ids_for_groups(
-                task_ids_for_groups_parameter_dto=task_ids_for_groups_parameter_dto
+                task_ids_for_groups_parameter_dto
+                =task_ids_for_groups_parameter_dto
             )
         from ib_adhoc_tasks.adapters.dtos import TasksDetailsInputDTO
         task_details_input_dto = TasksDetailsInputDTO(
