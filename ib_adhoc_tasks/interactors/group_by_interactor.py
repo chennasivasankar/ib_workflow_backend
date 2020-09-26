@@ -102,8 +102,7 @@ class GroupByInteractor:
             self,
             add_or_edit_group_by_parameter_dto: AddOrEditGroupByParameterDTO
     ):
-        view_types = self.storage \
-            .get_view_types_of_user(
+        view_types = self.storage.get_view_types_of_user(
             user_id=add_or_edit_group_by_parameter_dto.user_id
         )
         if len(view_types) >= 2:
