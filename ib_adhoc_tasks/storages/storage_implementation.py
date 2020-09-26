@@ -88,7 +88,7 @@ class StorageImplementation(StorageInterface):
             add_or_edit_group_by_parameter_dto: AddOrEditGroupByParameterDTO
     ) -> GroupByResponseDTO:
         from ib_adhoc_tasks.models import GroupByInfo
-        group_by_info_object = GroupByInfo.objects.create(
+        group_by_info_object, boolean = GroupByInfo.objects.get_or_create(
             user_id=add_or_edit_group_by_parameter_dto.user_id,
             group_by=add_or_edit_group_by_parameter_dto.group_by_key,
             view_type=add_or_edit_group_by_parameter_dto.view_type,
