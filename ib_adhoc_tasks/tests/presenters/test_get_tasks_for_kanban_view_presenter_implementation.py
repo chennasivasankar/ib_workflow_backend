@@ -136,6 +136,12 @@ class TestGetTasksForKanbanViewPresenterImplementation:
         )
         return task_details_with_group_by_info_dto
 
+    @pytest.fixture
+    def group_by_dtos_response(self):
+        from ib_adhoc_tasks.tests.factories.storage_dtos import \
+            GroupByResponseDTOFactory
+        return GroupByResponseDTOFactory.create_batch(2)
+
     def test_raise_invalid_offset_value(self, snapshot, presenter):
         # Arrange
 
@@ -198,13 +204,13 @@ class TestGetTasksForKanbanViewPresenterImplementation:
 
     def test_given_task_details_group_by_info_dto_returns_group_info_task_details(
             self, task_complete_details_dto, presenter, group_details_dtos,
-            snapshot, task_details_with_group_by_info_dto
+            snapshot, task_details_with_group_by_info_dto, group_by_dtos_response
     ):
         # Arrange
 
         # Act
         response = presenter.get_task_details_group_by_info_response(
-            task_details_with_group_by_info_dto
+            task_details_with_group_by_info_dto, group_by_dtos_response
         )
 
         # Arrange

@@ -18,6 +18,11 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_raise_invalid_use
 snapshots['TestGetTasksForListViewPresenterImplementation.test_raise_invalid_user_for_project exception_object'] = b'{"response": "User not the member of project", "http_status_code": 404, "res_status": "INVALID_USER_ID_FOR_PROJECT"}'
 
 snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_details_dtos_and_task_details_dtos_returns_group_info_task_details group_by_task_details'] = '''{
+    "group_by_key": {
+        "group_by_key": "ASSIGNEE",
+        "display_name": "ASSIGNEE",
+        "order": 1
+    },
     "total_groups": 3,
     "groups": [
         {
