@@ -9,7 +9,7 @@ from ib_adhoc_tasks.interactors.presenter_interfaces \
     GetTasksForKanbanViewPresenterInterface, TaskDetailsWithGroupByInfoDTO
 from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
     GroupDetailsDTO, \
-    ChildGroupCountDTO
+    ChildGroupCountDTO, GroupByResponseDTO
 from ib_adhoc_tasks.presenters.mixins.tasks_details_mixin import \
     TaskDetailsMixin
 
@@ -93,7 +93,8 @@ class GetTasksForKanbanViewPresenterImplementation(
 
     def get_task_details_group_by_info_response(
             self,
-            task_details_with_group_by_info_dto: TaskDetailsWithGroupByInfoDTO
+            task_details_with_group_by_info_dto: TaskDetailsWithGroupByInfoDTO,
+            group_by_response_dtos: List[GroupByResponseDTO]
     ):
         group_details_dtos = \
             task_details_with_group_by_info_dto.group_details_dtos
@@ -123,7 +124,17 @@ class GetTasksForKanbanViewPresenterImplementation(
             }
             groups.append(each_group)
 
+        group_by_keys = [
+            {
+                "group_by_key": group_by_response_dto.group_by_key,
+                "display_name": group_by_response_dto.display_name,
+                "order": group_by_response_dto.order
+            }
+            for group_by_response_dto in group_by_response_dtos
+        ]
+
         all_group_details = {
+            "group_by_keys": group_by_keys,
             "total_groups": total_groups_count,
             "groups": groups
         }

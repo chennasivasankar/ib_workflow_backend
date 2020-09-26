@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 from ib_adhoc_tasks.adapters.dtos import TasksCompleteDetailsDTO, \
     TasksDetailsInputDTO
@@ -8,13 +8,13 @@ from ib_adhoc_tasks.constants.enum import ViewType
 from ib_adhoc_tasks.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue
 from ib_adhoc_tasks.interactors.dtos.dtos import GroupByInfoKanbanViewDTO, \
-    OffsetLimitDTO, GroupByDTO, TaskOffsetAndLimitValuesDTO
+    OffsetLimitDTO, GroupByDTO, TaskOffsetAndLimitValuesDTO, GroupByParameter
 from ib_adhoc_tasks.interactors.presenter_interfaces \
     .get_tasks_for_kanban_view_presenter_interface import \
     GetTasksForKanbanViewPresenterInterface, TaskDetailsWithGroupByInfoDTO
 from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
     GroupByDetailsDTO, GroupDetailsDTO, ChildGroupCountDTO, \
-    AddOrEditGroupByParameterDTO
+    AddOrEditGroupByParameterDTO, GroupByResponseDTO
 from ib_adhoc_tasks.interactors.storage_interfaces.elastic_storage_interface \
     import \
     ElasticStorageInterface
@@ -55,21 +55,21 @@ class GetTasksForKanbanViewInteractor:
             self, group_by_info_kanban_view_dto: GroupByInfoKanbanViewDTO,
             presenter: GetTasksForKanbanViewPresenterInterface
     ):
-        task_details_with_group_by_info_dto = self.get_tasks_for_kanban_view(
+        task_details_with_group_by_info_dto, group_by_response_dtos = self.get_tasks_for_kanban_view(
             group_by_info_kanban_view_dto)
 
         response = presenter.get_task_details_group_by_info_response(
-            task_details_with_group_by_info_dto)
+            task_details_with_group_by_info_dto, group_by_response_dtos)
         return response
 
     def get_tasks_for_kanban_view(
             self, group_by_info_kanban_view_dto: GroupByInfoKanbanViewDTO
-    ) -> TaskDetailsWithGroupByInfoDTO:
+    ) -> Tuple[TaskDetailsWithGroupByInfoDTO, List[GroupByResponseDTO]]:
         project_id = group_by_info_kanban_view_dto.project_id
         user_id = group_by_info_kanban_view_dto.user_id
         self._validate_project_id(project_id)
         self._validate_limit_offset_values(group_by_info_kanban_view_dto)
-        group_details_dtos, total_groups_count, child_group_count_dtos = \
+        group_details_dtos, total_groups_count, child_group_count_dtos, group_by_response_dtos = \
             self._get_group_details_dtos(
                 group_by_info_kanban_view_dto)
         task_ids = self._get_task_ids(group_details_dtos)
@@ -86,7 +86,7 @@ class GetTasksForKanbanViewInteractor:
             child_group_count_dtos=child_group_count_dtos,
             task_details_dtos=task_details_dtos
         )
-        return task_details_with_group_by_info_dto
+        return task_details_with_group_by_info_dto, group_by_response_dtos
 
     @staticmethod
     def _validate_limit_offset_values(
@@ -148,17 +148,14 @@ class GetTasksForKanbanViewInteractor:
     def _get_group_details_dtos(
             self,
             group_by_info_kanban_view_dto: GroupByInfoKanbanViewDTO
-    ) -> (List[GroupDetailsDTO], int, List[ChildGroupCountDTO]):
+    ) -> Tuple[List[GroupDetailsDTO], int, List[ChildGroupCountDTO], List[GroupByResponseDTO]]:
         user_id = group_by_info_kanban_view_dto.user_id
         project_id = group_by_info_kanban_view_dto.project_id
         view_type = ViewType.KANBAN.value
-        group_by_keys_parameter = AddOrEditGroupByParameterDTO(
-            project_id=group_by_info_kanban_view_dto.project_id,
-            user_id=group_by_info_kanban_view_dto.user_id,
-            view_type=view_type,
-            group_by_key=group_by_info_kanban_view_dto.group_by_key,
-            group_by_id=group_by_info_kanban_view_dto.group_by_id,
-            order=group_by_info_kanban_view_dto.order
+        group_by_keys_parameter = GroupByParameter(
+            project_id=project_id,
+            user_id=user_id,
+            view_type=view_type
         )
         from ib_adhoc_tasks.interactors.group_by_interactor import \
             GroupByInteractor
@@ -166,7 +163,8 @@ class GetTasksForKanbanViewInteractor:
             storage=self.storage
         )
         group_by_response_dtos = group_by_interactor.add_or_edit_group_by(
-            add_or_edit_group_by_parameter_dto=group_by_keys_parameter
+            group_by_dtos=group_by_info_kanban_view_dto.group_by_details,
+            group_by_parameter=group_by_keys_parameter
         )
         group_by_details_dtos = [
             GroupByDetailsDTO(
@@ -200,7 +198,7 @@ class GetTasksForKanbanViewInteractor:
                 =task_offset_and_limit_values_dto,
                 user_id=user_id
             )
-        return group_details_dtos, total_groups_count, child_group_count_dtos
+        return group_details_dtos, total_groups_count, child_group_count_dtos, group_by_response_dtos
 
     def _get_group_by_dtos(
             self, group_by_details_dtos: List[GroupByDetailsDTO],

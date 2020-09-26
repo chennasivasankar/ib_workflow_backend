@@ -15,8 +15,7 @@ def api_wrapper(*args, **kwargs):
     offset = query_params["offset"]
     group_limit = query_params["group_limit"]
     group_offset = query_params["group_offset"]
-    group_by_key = request_body['group_by_key']
-    group_by_id = request_body.get('group_by_id')
+    group_by_key = request_body.get('group_by_key')
 
     from ib_adhoc_tasks.interactors.get_tasks_for_list_view_interactor import \
         GetTasksForListViewInteractor
@@ -52,7 +51,6 @@ def api_wrapper(*args, **kwargs):
         project_id=project_id,
         user_id=user_id,
         group_by_key=group_by_key,
-        group_by_id=group_by_id,
         task_offset_limit_dto=task_offset_limit_dto,
         group_offset_limit_dto=group_offset_limit_dto
     )

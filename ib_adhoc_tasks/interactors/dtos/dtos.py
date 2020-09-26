@@ -8,6 +8,19 @@ from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
 
 
 @dataclass
+class GroupBYKeyDTO:
+    group_by_key: str
+    order: int
+
+
+@dataclass
+class GroupByParameter:
+    project_id: str
+    user_id: str
+    view_type: ViewType
+
+
+@dataclass
 class GroupByDTO:
     group_by_value: GroupByKey
     order: int
@@ -73,9 +86,7 @@ class OffsetLimitDTO:
 class GroupByInfoKanbanViewDTO:
     project_id: str
     user_id: str
-    group_by_key: str
-    group_by_id: Optional[int]
-    order: int
+    group_by_details: List[GroupBYKeyDTO]
     task_offset_limit_dto: OffsetLimitDTO
     group1_offset_limit_dto: Optional[OffsetLimitDTO]
     group2_offset_limit_dto: Optional[OffsetLimitDTO]
@@ -86,7 +97,6 @@ class GroupByInfoListViewDTO:
     project_id: str
     user_id: str
     group_by_key: str
-    group_by_id: Optional[int]
     task_offset_limit_dto: OffsetLimitDTO
     group_offset_limit_dto: Optional[OffsetLimitDTO]
 
@@ -123,16 +133,3 @@ class GetChildGroupsInGroupInputDTO:
 class TemplateFieldsAndGroupByFieldsDTO:
     group_by_fields_dtos: List[GroupByResponseDTO]
     field_dtos: List[FieldIdAndNameDTO]
-
-
-@dataclass
-class GroupBYKeyDTO:
-    group_by_key: str
-    order: int
-
-
-@dataclass
-class GroupByParameter:
-    project_id: str
-    user_id: str
-    view_type: ViewType

@@ -8,7 +8,8 @@ from ib_adhoc_tasks.interactors.presenter_interfaces \
     .get_tasks_for_list_view_presenter_interface import \
     GetTasksForListViewPresenterInterface, \
     TaskDetailsWithGroupInfoForListViewDTO
-from ib_adhoc_tasks.interactors.storage_interfaces.dtos import GroupDetailsDTO
+from ib_adhoc_tasks.interactors.storage_interfaces.dtos import GroupDetailsDTO, \
+    GroupByResponseDTO
 from ib_adhoc_tasks.presenters.mixins.tasks_details_mixin import \
     TaskDetailsMixin
 
@@ -91,7 +92,8 @@ class GetTasksForListViewPresenterImplementation(
 
     def get_task_details_group_by_info_response(
             self, task_details_with_group_info_list_view_dto:
-            TaskDetailsWithGroupInfoForListViewDTO
+            TaskDetailsWithGroupInfoForListViewDTO,
+            group_by_response_dto: GroupByResponseDTO
     ):
         group_details_dtos = \
             task_details_with_group_info_list_view_dto.group_details_dtos
@@ -122,6 +124,11 @@ class GetTasksForListViewPresenterImplementation(
             }
             groups.append(each_group_details)
         all_group_details = {
+            "group_by_key": {
+                "group_by_key": group_by_response_dto.group_by_key,
+                "display_name": group_by_response_dto.display_name,
+                "order": group_by_response_dto.order
+            },
             "total_groups": total_groups_count,
             "groups": groups
         }

@@ -758,17 +758,11 @@
         "order": {
           "type": "integer"
         }
-      },
-      "required": [
-        "group_by_key"
-      ]
+      }
     },
     "GroupByResponseFields": {
       "type": "object",
       "properties": {
-        "group_by_id": {
-          "type": "integer"
-        },
         "group_by_key": {
           "type": "string"
         },
@@ -847,26 +841,19 @@
       ]
     },
     "GroupByKeys": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/GroupByFields"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "group_by_id": {
-              "type": "integer"
-            }
+      "type": "object",
+      "properties": {
+        "group_by_keys": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GroupByFields"
           }
         }
-      ]
+      }
     },
     "GroupByKey": {
       "type": "object",
         "properties": {
-          "group_by_id": {
-            "type": "integer"
-          },
           "group_by_key": {
             "type": "string"
           }
@@ -1138,10 +1125,7 @@
       "required": true,
       "description": "add group by parameter",
       "schema": {
-        "type": "array",
-        "items": {
-          "$ref": "#/definitions/GroupByKeys"
-        }
+        "$ref": "#/definitions/GroupByKeys"
       }
     },
     "GetSubTasksParameter": {
@@ -1295,7 +1279,7 @@
       "schema": {
         "type": "object",
         "properties": {
-          "group_by_keys": {
+          "group_by_key": {
             "allOf": [
               {
                 "$ref": "#/definitions/GroupByResponseFields"
