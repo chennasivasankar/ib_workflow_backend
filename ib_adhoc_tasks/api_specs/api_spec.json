@@ -756,13 +756,6 @@
     "GroupByFields": {
       "type": "object",
       "properties": {
-        "view_type": {
-          "type": "string",
-          "enum": [
-            "LIST",
-            "KANBAN"
-          ]
-        },
         "group_by_key": {
           "type": "string"
         },
@@ -771,7 +764,6 @@
         }
       },
       "required": [
-        "view_type",
         "group_by_key"
       ]
     },
@@ -857,6 +849,21 @@
         "group_by_key",
         "display_name"
       ]
+    },
+    "GroupByKeys": {
+      "allOf": [
+          {
+            "$ref": "#/definitions/GroupByFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "group_by_id": {
+                "type": "integer"
+              }
+            }
+          }
+        ]
     }
   },
   "parameters": {
@@ -1110,24 +1117,24 @@
       "required": true
     },
     "AddOrEditGroupByParameter": {
-      "name": "add_group_by_parameter",
+      "name": "GroupByKeys",
       "in": "body",
       "required": true,
       "description": "add group by parameter",
       "schema": {
-        "allOf": [
-          {
-            "$ref": "#/definitions/GroupByFields"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "group_by_id": {
-                "type": "integer"
-              }
-            }
-          }
-        ]
+        "$ref": "#/definitions/GroupByKeys"
+      }
+    },
+    "GroupByKanbanParameters": {
+      "name": "GroupByKeys",
+      "in": "body",
+      "required": true,
+      "description": "add group by parameter",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/GroupByKeys"
+        }
       }
     },
     "GetSubTasksParameter": {
@@ -1281,6 +1288,13 @@
       "schema": {
         "type": "object",
         "properties": {
+          "group_by_keys": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/GroupByResponseFields"
+              }
+            ]
+          },
           "total_groups": {
             "type": "integer",
             "format": "int64"
@@ -1327,6 +1341,12 @@
       "schema": {
         "type": "object",
         "properties": {
+          "group_by_keys": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/GroupByResponseFields"
+            }
+          },
           "total_groups": {
             "type": "integer",
             "format": "int64"
@@ -1639,6 +1659,9 @@
           },
           {
             "$ref": "#/parameters/GroupOffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/AddOrEditGroupByParameter"
           }
         ],
         "responses": {
@@ -1686,6 +1709,9 @@
           },
           {
             "$ref": "#/parameters/Group2OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/GroupByKanbanParameters"
           }
         ],
         "responses": {
