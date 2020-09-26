@@ -116,9 +116,9 @@ class GetTasksForKanbanViewPresenterImplementation(
             child_group_dtos = group_by_child_dict[group_by_value]
             child_groups = self._get_child_groups_details_for_each_group(
                 child_group_dtos, task_details_dto, group_by_response_dtos[1])
-            group_by_display_name = "Empty value for" + group_by_response_dtos[0].group_by_key
+            group_by_display_name = "Empty value for " + group_by_response_dtos[0].group_by_key
             if dto.group_by_display_name:
-                group_by_display_name = dto.group_by_display_name,
+                group_by_display_name = dto.group_by_display_name
             each_group = {
                 "total_groups": total_child_groups,
                 "group_by_value": dto.group_by_value,
@@ -186,9 +186,9 @@ class GetTasksForKanbanViewPresenterImplementation(
         for child_group_dto in child_group_dtos:
             task_ids = child_group_dto.task_ids
             tasks = self.get_tasks_details(task_ids, task_details_dto)
-            group_by_display_name = "Empty value for" + group_by_response_dto.group_by_key
-            if child_group_dto.group_by_display_name:
-                group_by_display_name = child_group_dto.group_by_display_name,
+            group_by_display_name = "Empty value for " + group_by_response_dto.group_by_key
+            if child_group_dto.group_by_value:
+                group_by_display_name = child_group_dto.child_group_by_display_name
             each_group_details = {
                 "group_by_value": child_group_dto.child_group_by_value,
                 "group_by_display_name": group_by_display_name,

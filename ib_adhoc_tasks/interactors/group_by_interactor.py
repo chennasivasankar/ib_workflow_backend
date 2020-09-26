@@ -134,7 +134,7 @@ class GroupByInteractor:
             group_by_key_dtos = \
                 self._get_default_group_by_key_dto_for_kanban_view()
         self.storage.delete_all_user_group_by(
-            user_id=group_by_parameter.user_id
+            user_id=group_by_parameter.user_id, view_type=group_by_parameter.view_type
         )
         group_by_response_dtos = \
             self.storage.add_group_by_for_kanban_view_in_bulk(

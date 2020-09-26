@@ -119,9 +119,9 @@ class GetTasksForListViewPresenterImplementation(
                 task_ids, task_details_dto, sub_tasks_count_dtos,
                 completed_sub_tasks_count_dtos
             )
-            group_by_display_name = "Empty value for" + group_by_response_dto.group_by_key
-            if group_details_dto.group_by_display_name:
-                group_by_display_name = group_details_dto.group_by_display_name,
+            group_by_display_name = "Empty value for " + group_by_response_dto.group_by_key
+            if group_details_dto.group_by_value:
+                group_by_display_name = group_details_dto.group_by_display_name
             each_group_details = {
                 "group_by_value": group_details_dto.group_by_value,
                 "group_by_display_name": group_by_display_name,

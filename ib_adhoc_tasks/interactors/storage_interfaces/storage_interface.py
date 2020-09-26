@@ -48,7 +48,7 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def delete_all_user_group_by(self, user_id: str):
+    def delete_all_user_group_by(self, user_id: str, view_type: ViewType):
         pass
 
     @abc.abstractmethod
