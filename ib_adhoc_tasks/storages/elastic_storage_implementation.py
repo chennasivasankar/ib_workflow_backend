@@ -62,6 +62,8 @@ class ElasticStorageImplementation(ElasticStorageInterface):
                 'term',
                 stages__stage_id__keyword=groupby_value_dto.group_by_value
             )
+        elif groupby_value_dto.group_by_display_name in [GroupByKey.START_DATE.value, GroupByKey.DUE_DATE.value]:
+            return Q('term', **{groupby_value_dto.group_by_display_name: groupby_value_dto.group_by_value})
         else:
             attribute = groupby_value_dto.group_by_display_name + '.keyword'
             return Q('term', **{attribute: groupby_value_dto.group_by_value})

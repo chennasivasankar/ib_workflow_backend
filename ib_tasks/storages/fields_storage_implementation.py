@@ -282,8 +282,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
 
     def get_task_stages(self, task_id: int) -> List[str]:
         stage_ids = CurrentTaskStage.objects.filter(
-                task_id=task_id).values_list(
-                'stage__stage_id', flat=True)
+            task_id=task_id).exclude(stage__value=-1).values_list(
+            'stage__stage_id', flat=True)
         return list(stage_ids)
 
     def get_stage_complete_details(self, stage_ids: List[str]) -> \
