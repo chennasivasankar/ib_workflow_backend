@@ -52,7 +52,8 @@ class TestGetTaskIdsForViewInteractor:
         get_valid_project_ids_mock.return_value = valid_project_ids
 
         # Assert
-        from ib_adhoc_tasks.exceptions.custom_exceptions import InvalidProjectId
+        from ib_adhoc_tasks.exceptions.custom_exceptions import \
+            InvalidProjectId
         with pytest.raises(InvalidProjectId):
             interactor.get_task_ids_for_view(
                 project_id=project_id, adhoc_template_id=adhoc_template_id,
@@ -369,7 +370,7 @@ class TestGetTaskIdsForViewInteractor:
             prepare_group_details_dtos,
             task_offset_and_limit_values_dto, prepare_group_count_dto,
             prepare_child_group_count_dtos,
-            stage_id_and_name_dtos, snapshot
+            stage_display_name_value_dtos, snapshot
     ):
         # Arrange
         user_id = "USER_1"
@@ -403,7 +404,7 @@ class TestGetTaskIdsForViewInteractor:
         get_user_permitted_stage_ids_mock.return_value = stage_ids
 
         get_stage_details_mock = get_stage_details_mock(mocker)
-        get_stage_details_mock.return_value = stage_id_and_name_dtos
+        get_stage_details_mock.return_value = stage_display_name_value_dtos
 
         expected_get_group_details_of_project_mock = \
             prepare_group_details_dtos, total_groups_count, prepare_child_group_count_dtos
@@ -486,11 +487,15 @@ class TestGetTaskIdsForViewInteractor:
         return child_group_count_dtos
 
     @pytest.fixture()
-    def stage_id_and_name_dtos(self):
-        from ib_adhoc_tasks.adapters.task_service import StageDisplayNameValueDTO
+    def stage_display_name_value_dtos(self):
+        from ib_adhoc_tasks.adapters.task_service import \
+            StageDisplayNameValueDTO
         stage_id_and_name_dtos = [
             StageDisplayNameValueDTO(stage_id='PR_NEED_CLARIFICATION',
-                                     name='Need Clarification'),
+                                     name='Need Clarification',
+                                     value=2),
             StageDisplayNameValueDTO(stage_id='PR_PAYMENT_REQUEST_DRAFTS',
-                                     name='Payment Request Drafts')]
+                                     name='Payment Request Drafts',
+                                     value=1)
+        ]
         return stage_id_and_name_dtos
