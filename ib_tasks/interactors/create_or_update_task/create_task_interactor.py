@@ -81,6 +81,7 @@ from ib_tasks.interactors.user_action_on_task \
     import InvalidMethodFound
 from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor \
     import UserActionOnTaskInteractor
+from ib_tasks.utils.execution_time_decorator import log_function_call
 
 
 @dataclass
@@ -115,6 +116,7 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
         self.action_storage = action_storage
         self.elastic_storage = elastic_storage
 
+    @log_function_call
     def create_task_wrapper(
             self, presenter: CreateTaskPresenterInterface,
             task_dto: CreateTaskDTO, task_request_json: str
