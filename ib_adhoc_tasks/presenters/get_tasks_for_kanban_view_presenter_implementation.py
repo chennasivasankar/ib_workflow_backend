@@ -117,8 +117,11 @@ class GetTasksForKanbanViewPresenterImplementation(
             child_groups = self._get_child_groups_details_for_each_group(
                 child_group_dtos, task_details_dto, group_by_response_dtos[1])
             group_by_display_name = "Empty value for " + group_by_response_dtos[0].group_by_key
-            if dto.group_by_display_name:
-                group_by_display_name = dto.group_by_display_name
+            if dto.group_by_value:
+                group_by_display_name = self._get_group_by_display_name(
+                    group_by_response_dto=group_by_response_dtos[0],
+                    group_by_display_name=dto.group_by_display_name
+                )
             each_group = {
                 "total_groups": total_child_groups,
                 "group_by_value": dto.group_by_value,
@@ -188,7 +191,10 @@ class GetTasksForKanbanViewPresenterImplementation(
             tasks = self.get_tasks_details(task_ids, task_details_dto)
             group_by_display_name = "Empty value for " + group_by_response_dto.group_by_key
             if child_group_dto.child_group_by_value:
-                group_by_display_name = child_group_dto.child_group_by_display_name
+                group_by_display_name = self._get_group_by_display_name(
+                    group_by_response_dto=group_by_response_dto,
+                    group_by_display_name=child_group_dto.child_group_by_display_name
+                )
             each_group_details = {
                 "group_by_value": child_group_dto.child_group_by_value,
                 "group_by_display_name": group_by_display_name,
@@ -197,3 +203,19 @@ class GetTasksForKanbanViewPresenterImplementation(
             }
             child_groups.append(each_group_details)
         return child_groups
+
+    def _get_group_by_display_name(self, group_by_response_dto: GroupByResponseDTO, group_by_display_name):
+        from ib_adhoc_tasks.constants.enum import GroupByKey
+        if group_by_response_dto.group_by_key in [GroupByKey.START_DATE.value, GroupByKey.DUE_DATE.value]:
+            return self._convert_milliseconds_epoch_time_to_datetime_sting(
+                epoch_time=group_by_display_name
+            )
+        return group_by_display_name
+
+    @staticmethod
+    def _convert_milliseconds_epoch_time_to_datetime_sting(epoch_time: int):
+        import datetime
+        datetime_object = datetime.datetime.fromtimestamp(epoch_time / 1000.0)
+        from ib_adhoc_tasks.constants.constants import DISPLAY_DATE_FORMAT
+        datetime_string = datetime_object.strftime(DISPLAY_DATE_FORMAT)
+        return datetime_string

@@ -7,3 +7,4 @@ ADHOC_TEMPLATE_ID = "ADHOC"
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 GROUP_BY_KEY_1 = GroupByKey.STAGE.value
 GROUP_BY_KEY_2 = GroupByKey.ASSIGNEE.value
+DISPLAY_DATE_FORMAT = "%b %d %Y"
