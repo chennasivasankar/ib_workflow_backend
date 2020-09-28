@@ -487,10 +487,10 @@ class TestGetTaskIdsForViewInteractor:
 
     @pytest.fixture()
     def stage_id_and_name_dtos(self):
-        from ib_adhoc_tasks.adapters.task_service import StageIdAndNameDTO
+        from ib_adhoc_tasks.adapters.task_service import StageDisplayNameValueDTO
         stage_id_and_name_dtos = [
-            StageIdAndNameDTO(stage_id='PR_NEED_CLARIFICATION',
-                              name='Need Clarification'),
-            StageIdAndNameDTO(stage_id='PR_PAYMENT_REQUEST_DRAFTS',
-                              name='Payment Request Drafts')]
+            StageDisplayNameValueDTO(stage_id='PR_NEED_CLARIFICATION',
+                                     name='Need Clarification'),
+            StageDisplayNameValueDTO(stage_id='PR_PAYMENT_REQUEST_DRAFTS',
+                                     name='Payment Request Drafts')]
         return stage_id_and_name_dtos

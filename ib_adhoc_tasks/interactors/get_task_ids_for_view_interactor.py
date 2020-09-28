@@ -2,7 +2,7 @@ import collections
 from typing import List
 
 from ib_adhoc_tasks.adapters.iam_service import UserIdAndNameDTO
-from ib_adhoc_tasks.adapters.task_service import StageIdAndNameDTO
+from ib_adhoc_tasks.adapters.task_service import StageDisplayNameValueDTO
 from ib_adhoc_tasks.constants.enum import GroupByKey
 from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO, \
     TaskOffsetAndLimitValuesDTO
@@ -234,12 +234,18 @@ class GetTaskIdsForViewInteractor:
     @staticmethod
     def _update_group_by_display_name_for_stage(
             group_details_dtos: List[GroupDetailsDTO],
-            stage_id_and_name_dtos: List[StageIdAndNameDTO]
+            stage_id_and_name_dtos: List[StageDisplayNameValueDTO]
     ):
         stage_id_wise_name_dict = {
             stage_id_and_name_dto.stage_id: stage_id_and_name_dto.name
             for stage_id_and_name_dto in stage_id_and_name_dtos
         }
+
+        stage_id_and_name_dtos.sort(key=lambda x: [x.value])
+        stage_order_list = [stage.stage_id for stage in stage_id_and_name_dtos]
+        sorted(group_details_dtos,
+               key=lambda x: stage_order_list.index(x.group_by_value))
+
         for group_details_dto in group_details_dtos:
             group_details_dto.group_by_display_name = \
                 stage_id_wise_name_dict[group_details_dto.group_by_value]
@@ -249,12 +255,18 @@ class GetTaskIdsForViewInteractor:
     @staticmethod
     def _update_child_group_by_display_name_for_stage(
             group_details_dtos: List[GroupDetailsDTO],
-            stage_id_and_name_dtos: List[StageIdAndNameDTO]
+            stage_id_and_name_dtos: List[StageDisplayNameValueDTO]
     ):
         stage_id_wise_name_dict = {
             stage_id_and_name_dto.stage_id: stage_id_and_name_dto.name
             for stage_id_and_name_dto in stage_id_and_name_dtos
         }
+
+        stage_id_and_name_dtos.sort(key=lambda x: [x.value])
+        stage_order_list = [stage.stage_id for stage in stage_id_and_name_dtos]
+        sorted(group_details_dtos,
+               key=lambda x: stage_order_list.index(x.child_group_by_value))
+
         for group_details_dto in group_details_dtos:
             group_details_dto.child_group_by_display_name = \
                 stage_id_wise_name_dict[group_details_dto.child_group_by_value]

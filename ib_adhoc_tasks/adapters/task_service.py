@@ -26,9 +26,10 @@ class InvalidRoleIdsException(Exception):
 
 
 @dataclass
-class StageIdAndNameDTO:
+class StageDisplayNameValueDTO:
     stage_id: str
     name: str
+    value: int = 1
 
 
 class TaskService:
@@ -62,9 +63,10 @@ class TaskService:
             stage_ids=stage_ids
         )
         stage_id_and_name_dtos = [
-            StageIdAndNameDTO(
+            StageDisplayNameValueDTO(
                 stage_id=stage_details_dto.stage_id,
-                name=stage_details_dto.name
+                name=stage_details_dto.name,
+                value=stage_details_dto.value
             )
             for stage_details_dto in stage_details_dtos
         ]
