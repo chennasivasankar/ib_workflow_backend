@@ -8,7 +8,8 @@ class TestGetTaskDetailsInGroupPresenterImplementation:
 
     @pytest.fixture
     def presenter(self):
-        from ib_adhoc_tasks.presenters.get_task_details_in_group_presenter_implementation import \
+        from ib_adhoc_tasks.presenters\
+            .get_task_details_in_group_presenter_implementation import \
             GetTaskDetailsInGroupPresenterImplementation
         return GetTaskDetailsInGroupPresenterImplementation()
 
@@ -35,6 +36,22 @@ class TestGetTaskDetailsInGroupPresenterImplementation:
             size=15
         )
         return task_base_details_dtos
+
+    @pytest.fixture
+    def task_with_sub_task_count_dtos(self, task_ids):
+        from ib_adhoc_tasks.tests.factories.adapter_dtos import \
+            TaskIdWithSubTasksCountDTOFactory
+        return TaskIdWithSubTasksCountDTOFactory.create_batch(
+            size=15, task_id=factory.Iterator(task_ids)
+        )
+
+    @pytest.fixture
+    def task_with_completed_sub_task_count_dtos(self, task_ids):
+        from ib_adhoc_tasks.tests.factories.adapter_dtos import \
+            TaskIdWithCompletedSubTasksCountDTOFactory
+        return TaskIdWithCompletedSubTasksCountDTOFactory.create_batch(
+            size=15, task_id=factory.Iterator(task_ids)
+        )
 
     @pytest.fixture
     def task_stage_complete_details_dtos(self, task_ids, stage_ids):
@@ -94,12 +111,17 @@ class TestGetTaskDetailsInGroupPresenterImplementation:
 
     def test_get_task_details_in_group_response(
             self, presenter, task_complete_details_dto, task_ids_and_count_dto,
-            snapshot
+            snapshot, task_with_sub_task_count_dtos,
+            task_with_completed_sub_task_count_dtos
     ):
         # Act
         response = presenter.get_task_details_in_group_response(
             tasks_complete_details_dto=task_complete_details_dto,
-            task_ids_and_count_dto=task_ids_and_count_dto
+            task_ids_and_count_dto=task_ids_and_count_dto,
+            task_with_sub_tasks_count_dtos=task_with_sub_task_count_dtos,
+            task_completed_sub_tasks_count_dtos
+            =task_with_completed_sub_task_count_dtos
+
         )
 
         # Assert

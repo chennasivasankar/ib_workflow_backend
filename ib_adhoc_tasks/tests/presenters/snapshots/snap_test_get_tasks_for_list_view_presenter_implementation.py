@@ -18,6 +18,11 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_raise_invalid_use
 snapshots['TestGetTasksForListViewPresenterImplementation.test_raise_invalid_user_for_project exception_object'] = b'{"response": "User not the member of project", "http_status_code": 404, "res_status": "INVALID_USER_ID_FOR_PROJECT"}'
 
 snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_details_dtos_and_task_details_dtos_returns_group_info_task_details group_by_task_details'] = '''{
+    "group_by_key": {
+        "group_by_key": "ASSIGNEE",
+        "display_name": "ASSIGNEE",
+        "order": 1
+    },
     "total_groups": 3,
     "groups": [
         {
@@ -74,8 +79,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             }
                         ]
                     },
-                    "sub_tasks_count": 3,
-                    "completed_sub_tasks_count": 3
+                    "sub_tasks_count": 1,
+                    "completed_sub_tasks_count": 1
                 },
                 {
                     "task_id": "task_display1",
@@ -126,8 +131,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             }
                         ]
                     },
-                    "sub_tasks_count": 0,
-                    "completed_sub_tasks_count": 0
+                    "sub_tasks_count": 2,
+                    "completed_sub_tasks_count": 2
                 },
                 {
                     "task_id": "task_display2",
@@ -178,8 +183,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             }
                         ]
                     },
-                    "sub_tasks_count": 1,
-                    "completed_sub_tasks_count": 1
+                    "sub_tasks_count": 3,
+                    "completed_sub_tasks_count": 3
                 },
                 {
                     "task_id": "task_display3",
@@ -230,8 +235,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             }
                         ]
                     },
-                    "sub_tasks_count": 2,
-                    "completed_sub_tasks_count": 2
+                    "sub_tasks_count": 0,
+                    "completed_sub_tasks_count": 0
                 },
                 {
                     "task_id": "task_display4",
@@ -282,8 +287,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             }
                         ]
                     },
-                    "sub_tasks_count": 3,
-                    "completed_sub_tasks_count": 3
+                    "sub_tasks_count": 1,
+                    "completed_sub_tasks_count": 1
                 }
             ]
         },
@@ -341,8 +346,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             }
                         ]
                     },
-                    "sub_tasks_count": 0,
-                    "completed_sub_tasks_count": 0
+                    "sub_tasks_count": 2,
+                    "completed_sub_tasks_count": 2
                 },
                 {
                     "task_id": "task_display6",
@@ -393,8 +398,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             }
                         ]
                     },
-                    "sub_tasks_count": 1,
-                    "completed_sub_tasks_count": 1
+                    "sub_tasks_count": 3,
+                    "completed_sub_tasks_count": 3
                 },
                 {
                     "task_id": "task_display7",
@@ -445,8 +450,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             }
                         ]
                     },
-                    "sub_tasks_count": 2,
-                    "completed_sub_tasks_count": 2
+                    "sub_tasks_count": 0,
+                    "completed_sub_tasks_count": 0
                 },
                 {
                     "task_id": "task_display8",
@@ -497,8 +502,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             }
                         ]
                     },
-                    "sub_tasks_count": 3,
-                    "completed_sub_tasks_count": 3
+                    "sub_tasks_count": 1,
+                    "completed_sub_tasks_count": 1
                 },
                 {
                     "task_id": "task_display9",
@@ -549,8 +554,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             }
                         ]
                     },
-                    "sub_tasks_count": 0,
-                    "completed_sub_tasks_count": 0
+                    "sub_tasks_count": 2,
+                    "completed_sub_tasks_count": 2
                 }
             ]
         },
@@ -608,8 +613,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             }
                         ]
                     },
-                    "sub_tasks_count": 1,
-                    "completed_sub_tasks_count": 1
+                    "sub_tasks_count": 3,
+                    "completed_sub_tasks_count": 3
                 },
                 {
                     "task_id": "task_display11",
@@ -660,8 +665,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             }
                         ]
                     },
-                    "sub_tasks_count": 2,
-                    "completed_sub_tasks_count": 2
+                    "sub_tasks_count": 0,
+                    "completed_sub_tasks_count": 0
                 },
                 {
                     "task_id": "task_display12",
@@ -712,8 +717,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             }
                         ]
                     },
-                    "sub_tasks_count": 3,
-                    "completed_sub_tasks_count": 3
+                    "sub_tasks_count": 1,
+                    "completed_sub_tasks_count": 1
                 },
                 {
                     "task_id": "task_display13",
@@ -764,8 +769,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             }
                         ]
                     },
-                    "sub_tasks_count": 0,
-                    "completed_sub_tasks_count": 0
+                    "sub_tasks_count": 2,
+                    "completed_sub_tasks_count": 2
                 },
                 {
                     "task_id": "task_display14",
@@ -816,8 +821,8 @@ snapshots['TestGetTasksForListViewPresenterImplementation.test_given_group_detai
                             }
                         ]
                     },
-                    "sub_tasks_count": 1,
-                    "completed_sub_tasks_count": 1
+                    "sub_tasks_count": 3,
+                    "completed_sub_tasks_count": 3
                 }
             ]
         }

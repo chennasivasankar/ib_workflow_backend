@@ -5,7 +5,6 @@ class GroupByKey(enum.Enum):
     STAGE = "STAGE"
     ASSIGNEE = "ASSIGNEE"
     TITLE = "title"
-    DESCRIPTION = "description"
     START_DATE = "start_date"
     DUE_DATE = "due_date"
     PRIORITY = "priority"

@@ -197,15 +197,21 @@ class TestGetTasksForListViewPresenterImplementation:
             )
         return task_details_with_group_info_list_view_dto
 
+    @pytest.fixture
+    def group_by_dtos_response(self):
+        from ib_adhoc_tasks.tests.factories.storage_dtos import \
+            GroupByResponseDTOFactory
+        return GroupByResponseDTOFactory()
+
     def test_given_group_details_dtos_and_task_details_dtos_returns_group_info_task_details(
-            self, task_complete_details_dto, presenter,
+            self, task_complete_details_dto, presenter, group_by_dtos_response,
             snapshot, task_details_with_group_info_list_view_dto
     ):
         # Arrange
 
         # Act
         response = presenter.get_task_details_group_by_info_response(
-            task_details_with_group_info_list_view_dto
+            task_details_with_group_info_list_view_dto, group_by_dtos_response
         )
 
         # Arrange

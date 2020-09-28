@@ -14,9 +14,13 @@ class GetAdhocTaskTemplateFieldsPresenterImplementation(
     def get_response_for_get_adhoc_task_template_fields(
             self, field_dtos: List[FieldIdAndNameDTO]
     ):
+        from ib_adhoc_tasks.constants.enum import GroupByKey
         response = [
             self._convert_to_group_by_key_name_dictionary(field_dto=field_dto)
             for field_dto in field_dtos
+            if field_dto.field_id not in [
+                GroupByKey.DUE_DATE.value, GroupByKey.START_DATE.value
+            ]
         ]
         return self.prepare_200_success_response(response_dict=response)
 

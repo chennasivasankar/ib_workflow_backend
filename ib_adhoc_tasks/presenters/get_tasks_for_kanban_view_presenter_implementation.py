@@ -9,7 +9,7 @@ from ib_adhoc_tasks.interactors.presenter_interfaces \
     GetTasksForKanbanViewPresenterInterface, TaskDetailsWithGroupByInfoDTO
 from ib_adhoc_tasks.interactors.storage_interfaces.dtos import \
     GroupDetailsDTO, \
-    ChildGroupCountDTO
+    ChildGroupCountDTO, GroupByResponseDTO
 from ib_adhoc_tasks.presenters.mixins.tasks_details_mixin import \
     TaskDetailsMixin
 
@@ -93,7 +93,8 @@ class GetTasksForKanbanViewPresenterImplementation(
 
     def get_task_details_group_by_info_response(
             self,
-            task_details_with_group_by_info_dto: TaskDetailsWithGroupByInfoDTO
+            task_details_with_group_by_info_dto: TaskDetailsWithGroupByInfoDTO,
+            group_by_response_dtos: List[GroupByResponseDTO]
     ):
         group_details_dtos = \
             task_details_with_group_by_info_dto.group_details_dtos
@@ -114,16 +115,29 @@ class GetTasksForKanbanViewPresenterImplementation(
             )
             child_group_dtos = group_by_child_dict[group_by_value]
             child_groups = self._get_child_groups_details_for_each_group(
-                child_group_dtos, task_details_dto)
+                child_group_dtos, task_details_dto, group_by_response_dtos[1])
+            group_by_display_name = "Empty value for " + group_by_response_dtos[0].group_by_key
+            if dto.group_by_display_name:
+                group_by_display_name = dto.group_by_display_name
             each_group = {
                 "total_groups": total_child_groups,
                 "group_by_value": dto.group_by_value,
-                "group_by_display_name": dto.group_by_display_name,
+                "group_by_display_name": group_by_display_name,
                 "child_groups": child_groups
             }
             groups.append(each_group)
 
+        group_by_keys = [
+            {
+                "group_by_key": group_by_response_dto.group_by_key,
+                "display_name": group_by_response_dto.display_name,
+                "order": group_by_response_dto.order
+            }
+            for group_by_response_dto in group_by_response_dtos
+        ]
+
         all_group_details = {
+            "group_by_keys": group_by_keys,
             "total_groups": total_groups_count,
             "groups": groups
         }
@@ -165,16 +179,19 @@ class GetTasksForKanbanViewPresenterImplementation(
 
     def _get_child_groups_details_for_each_group(
             self, child_group_dtos: List[GroupDetailsDTO],
-            task_details_dto: TasksCompleteDetailsDTO
+            task_details_dto: TasksCompleteDetailsDTO,
+            group_by_response_dto: GroupByResponseDTO
     ) -> List[Dict]:
         child_groups = []
         for child_group_dto in child_group_dtos:
             task_ids = child_group_dto.task_ids
             tasks = self.get_tasks_details(task_ids, task_details_dto)
+            group_by_display_name = "Empty value for " + group_by_response_dto.group_by_key
+            if child_group_dto.child_group_by_value:
+                group_by_display_name = child_group_dto.child_group_by_display_name
             each_group_details = {
                 "group_by_value": child_group_dto.child_group_by_value,
-                "group_by_display_name":
-                    child_group_dto.child_group_by_display_name,
+                "group_by_display_name": group_by_display_name,
                 "total_tasks": child_group_dto.total_tasks,
                 "tasks": tasks
             }

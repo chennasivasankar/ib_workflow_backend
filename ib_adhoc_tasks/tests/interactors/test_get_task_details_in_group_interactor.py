@@ -36,7 +36,8 @@ class TestGetTaskDetailsInGroupInteractor:
 
     @pytest.fixture()
     def interactor(self, storage_mock, elastic_storage_mock):
-        from ib_adhoc_tasks.interactors.get_task_details_in_group_interactor import \
+        from ib_adhoc_tasks.interactors.get_task_details_in_group_interactor \
+            import \
             GetTaskDetailsInGroupInteractor
         interactor = GetTaskDetailsInGroupInteractor(
             storage=storage_mock, elastic_storage=elastic_storage_mock
@@ -46,7 +47,8 @@ class TestGetTaskDetailsInGroupInteractor:
     @staticmethod
     def get_task_ids_for_groups_mock(mocker):
         mock = mocker.patch(
-            "ib_adhoc_tasks.interactors.get_task_ids_for_group_interactor.GetTaskIdsForGroupInteractor.get_task_ids_for_groups"
+            "ib_adhoc_tasks.interactors.get_task_ids_for_group_interactor"
+            ".GetTaskIdsForGroupInteractor.get_task_ids_for_groups"
         )
         return mock
 
@@ -67,16 +69,37 @@ class TestGetTaskDetailsInGroupInteractor:
             )
         return get_task_details_in_group_input_dto
 
+    @pytest.fixture
+    def task_with_sub_task_count_dtos(self):
+        from ib_adhoc_tasks.tests.factories.adapter_dtos import \
+            TaskIdWithSubTasksCountDTOFactory
+        return TaskIdWithSubTasksCountDTOFactory.create_batch(size=3)
+
+    @pytest.fixture
+    def task_with_completed_sub_task_count_dtos(self):
+        from ib_adhoc_tasks.tests.factories.adapter_dtos import \
+            TaskIdWithCompletedSubTasksCountDTOFactory
+        return TaskIdWithCompletedSubTasksCountDTOFactory.create_batch(size=3)
+
+    @patch.object(TaskService, 'get_completed_sub_tasks_count_for_task_ids')
+    @patch.object(TaskService, 'get_sub_tasks_count_task_ids')
     @patch.object(TaskService, "get_task_complete_details_dto")
     def test_with_valid_details_return_response(
-            self, task_details_mock, presenter_mock, storage_mock,
+            self, task_details_mock, task_with_sub_task_count_mock,
+            task_with_completed_sub_task_count_mock,
+            presenter_mock, storage_mock, task_with_sub_task_count_dtos,
             elastic_storage_mock, interactor,
+            task_with_completed_sub_task_count_dtos,
             get_task_details_in_group_input_dto, mocker, task_details_dtos
     ):
         # Arrange
         from ib_adhoc_tasks.interactors.dtos.dtos import \
             TaskIdsForGroupsParameterDTO
         from ib_adhoc_tasks.interactors.dtos.dtos import GroupByValueDTO
+        task_with_sub_task_count_mock.return_value = \
+            task_with_sub_task_count_dtos
+        task_with_completed_sub_task_count_mock.return_value = \
+            task_with_completed_sub_task_count_dtos
         task_ids_for_groups_parameter_dto = TaskIdsForGroupsParameterDTO(
             project_id='project_id_0',
             template_id='ADHOC', user_id='user_0',
@@ -105,7 +128,8 @@ class TestGetTaskDetailsInGroupInteractor:
 
         storage_mock.get_group_by_dtos.return_value = group_by_response_dtos
 
-        get_task_ids_for_groups_mock = self.get_task_ids_for_groups_mock(mocker)
+        get_task_ids_for_groups_mock = self.get_task_ids_for_groups_mock(
+            mocker)
         from ib_adhoc_tasks.interactors.dtos.dtos import TaskIdsAndCountDTO
         get_task_ids_for_groups_mock.return_value = TaskIdsAndCountDTO(
             task_ids=[1, 2, 3, 4],
@@ -120,12 +144,14 @@ class TestGetTaskDetailsInGroupInteractor:
 
         # Act
         response = interactor.get_task_details_in_group_wrapper(
-            get_task_details_in_group_input_dto=get_task_details_in_group_input_dto,
+            get_task_details_in_group_input_dto
+            =get_task_details_in_group_input_dto,
             presenter=presenter_mock
         )
 
         # Assert
-        assert response == expected_presenter_get_task_details_in_group_response
+        assert response == \
+               expected_presenter_get_task_details_in_group_response
         storage_mock.get_group_by_dtos.assert_called_once_with(
             user_id=get_task_details_in_group_input_dto.user_id,
             view_type=get_task_details_in_group_input_dto.view_type
@@ -136,3 +162,5 @@ class TestGetTaskDetailsInGroupInteractor:
         task_details_mock.assert_called_once_with(
             task_details_input_dto=task_details_input_dto
         )
+        task_with_sub_task_count_mock.assert_called_once()
+        task_with_completed_sub_task_count_mock.assert_called_once()

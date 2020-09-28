@@ -5,7 +5,7 @@ from ib_adhoc_tasks.interactors.dtos.dtos import GroupByDTO, \
     TaskOffsetAndLimitValuesDTO, TaskIdsForGroupsParameterDTO, GroupByValueDTO, \
     OffsetLimitDTO, GroupByInfoKanbanViewDTO, GroupByInfoListViewDTO, \
     GetSubtasksParameterDTO, GetTaskDetailsInGroupInputDTO, \
-    GetChildGroupsInGroupInputDTO
+    GetChildGroupsInGroupInputDTO, GroupByParameter, GroupBYKeyDTO
 
 
 class GroupByDTOFactory(factory.Factory):
@@ -24,6 +24,14 @@ class TaskOffsetAndLimitValuesDTOFactory(factory.Factory):
 
     limit = 5
     offset = 0
+
+
+class GroupBYKeyDTOFactory(factory.Factory):
+    class Meta:
+        model = GroupBYKeyDTO
+
+    group_by_key = factory.Iterator(["ASSIGNEE", "STAGE"])
+    order = factory.Iterator([1, 2])
 
 
 class TaskIdsForGroupsParameterDTOFactory(factory.Factory):
@@ -62,6 +70,7 @@ class GroupByInfoKanbanViewDTOFactory(factory.Factory):
 
     project_id = factory.sequence(lambda counter: "project_{}".format(counter))
     user_id = factory.sequence((lambda counter: "user_{}".format(counter)))
+    group_by_details = GroupBYKeyDTOFactory.create_batch(2)
 
     @factory.lazy_attribute
     def task_offset_limit_dto(self):
@@ -82,6 +91,7 @@ class GroupByInfoListViewDTOFactory(factory.Factory):
 
     project_id = factory.sequence(lambda counter: "project_{}".format(counter))
     user_id = factory.sequence((lambda counter: "user_{}".format(counter)))
+    group_by_key = factory.Sequence(lambda counter: "group_by_key_{}".format(counter))
 
     @factory.lazy_attribute
     def task_offset_limit_dto(self):
@@ -126,3 +136,13 @@ class GetChildGroupsInGroupInputDTOFactory(factory.Factory):
     group_limit = 5
     group_offset = 0
     group_by_value = factory.Iterator(["GROUP_BY_VALUE_1", "GROUP_BY_VALUE_1"])
+
+
+class GroupByParameterFactory(factory.Factory):
+    class Meta:
+        model = GroupByParameter
+
+    project_id = factory.Sequence(lambda n: "project_id_%d" % n)
+    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
+    view_type = factory.Iterator(["LIST", "KANBAN"])
+

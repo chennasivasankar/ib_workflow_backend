@@ -752,31 +752,17 @@
     "GroupByFields": {
       "type": "object",
       "properties": {
-        "view_type": {
-          "type": "string",
-          "enum": [
-            "LIST",
-            "KANBAN"
-          ]
-        },
         "group_by_key": {
           "type": "string"
         },
         "order": {
           "type": "integer"
         }
-      },
-      "required": [
-        "view_type",
-        "group_by_key"
-      ]
+      }
     },
     "GroupByResponseFields": {
       "type": "object",
       "properties": {
-        "group_by_id": {
-          "type": "integer"
-        },
         "group_by_key": {
           "type": "string"
         },
@@ -786,13 +772,7 @@
         "order": {
           "type": "integer"
         }
-      },
-      "required": [
-        "group_by_id",
-        "group_by_key",
-        "display_name",
-        "order"
-      ]
+      }
     },
     "InvalidPaginationDetailsForViews": {
       "allOf": [
@@ -853,6 +833,25 @@
         "group_by_key",
         "display_name"
       ]
+    },
+    "GroupByKeys": {
+      "type": "object",
+      "properties": {
+        "group_by_keys": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GroupByFields"
+          }
+        }
+      }
+    },
+    "GroupByKey": {
+      "type": "object",
+        "properties": {
+          "group_by_key": {
+            "type": "string"
+          }
+        }
     }
   },
   "parameters": {
@@ -946,10 +945,7 @@
               "KANBAN"
             ]
           }
-        },
-        "required": [
-          "group_by_values"
-        ]
+        }
       }
     },
     "Group1IdParameter": {
@@ -1106,24 +1102,21 @@
       "required": true
     },
     "AddOrEditGroupByParameter": {
-      "name": "add_group_by_parameter",
+      "name": "GroupByKeys",
       "in": "body",
       "required": true,
       "description": "add group by parameter",
       "schema": {
-        "allOf": [
-          {
-            "$ref": "#/definitions/GroupByFields"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "group_by_id": {
-                "type": "integer"
-              }
-            }
-          }
-        ]
+        "$ref": "#/definitions/GroupByKey"
+      }
+    },
+    "GroupByKanbanParameters": {
+      "name": "GroupByKeys",
+      "in": "body",
+      "required": true,
+      "description": "add group by parameter",
+      "schema": {
+        "$ref": "#/definitions/GroupByKeys"
       }
     },
     "GetSubTasksParameter": {
@@ -1160,10 +1153,7 @@
           "group_by_value": {
             "type": "string"
           }
-        },
-        "required": [
-          "group_by_value"
-        ]
+        }
       }
     }
   },
@@ -1277,6 +1267,13 @@
       "schema": {
         "type": "object",
         "properties": {
+          "group_by_key": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/GroupByResponseFields"
+              }
+            ]
+          },
           "total_groups": {
             "type": "integer",
             "format": "int64"
@@ -1304,8 +1301,6 @@
                 }
               },
               "required": [
-                "group_by_value",
-                "group_by_display_name",
                 "total_tasks",
                 "tasks"
               ]
@@ -1323,6 +1318,12 @@
       "schema": {
         "type": "object",
         "properties": {
+          "group_by_keys": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/GroupByResponseFields"
+            }
+          },
           "total_groups": {
             "type": "integer",
             "format": "int64"
@@ -1548,8 +1549,6 @@
                 }
               },
               "required": [
-                "group_by_value",
-                "group_by_display_name",
                 "total_tasks",
                 "tasks"
               ]
@@ -1610,7 +1609,7 @@
   },
   "paths": {
     "/projects/adhoc_board/list_view/tasks/v1/": {
-      "get": {
+      "post": {
         "summary": "Get the adhoc tasks in the project for list view",
         "operationId": "get_adhoc_tasks_for_list_view",
         "security": [
@@ -1635,6 +1634,9 @@
           },
           {
             "$ref": "#/parameters/GroupOffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/AddOrEditGroupByParameter"
           }
         ],
         "responses": {
@@ -1651,7 +1653,7 @@
       }
     },
     "/projects/adhoc_board/kanban_view/tasks/v1/": {
-      "get": {
+      "post": {
         "summary": "Get the adhoc tasks in the project for kanban view",
         "operationId": "get_adhoc_tasks_for_kanban_view",
         "security": [
@@ -1682,6 +1684,9 @@
           },
           {
             "$ref": "#/parameters/Group2OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/GroupByKanbanParameters"
           }
         ],
         "responses": {

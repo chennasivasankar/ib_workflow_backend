@@ -24,6 +24,7 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
     SubTasksCountDTO, SubTasksIdsDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
     TaskStageAssigneeTeamIdDTO
+from ib_tasks.interactors.storage_interfaces.task_templates_dtos import TaskTemplateMapDTO
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, \
     GetTaskDetailsDTO, \
     TaskDelayParametersDTO
@@ -240,4 +241,10 @@ class TaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_stage_assignee_id_dtos(
             self, task_id: int, stage_ids: List[str]) -> List[TaskStageAssigneeTeamIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_template_ids_to_task_ids(
+            self, task_ids: List[int]
+    ) -> List[TaskTemplateMapDTO]:
         pass

@@ -1,26 +1,25 @@
 from dataclasses import dataclass
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 from ib_adhoc_tasks.constants.enum import ViewType
 
 
 @dataclass
 class GroupByResponseDTO:
-    group_by_id: int
     group_by_key: str
     display_name: str
     order: int
 
 
+# todo need to change this after deletion of add_or_edit_wrapper
 @dataclass
 class AddOrEditGroupByParameterDTO:
-    project_id: str
     user_id: str
     view_type: ViewType
     group_by_key: str
     order: int = 1
-    group_by_id: Optional[int] = None
+
+
 
 
 @dataclass

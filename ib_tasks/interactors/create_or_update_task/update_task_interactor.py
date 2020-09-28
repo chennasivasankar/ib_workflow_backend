@@ -244,7 +244,9 @@ class UpdateTaskInteractor(
         action_type_is_not_no_validations = \
             task_dto.task_basic_details.action_type != \
             ActionTypes.NO_VALIDATIONS.value
-        if action_type_is_not_no_validations:
+        from ib_tasks.constants.constants import ADHOC_TEMPLATE_ID
+        is_not_adhoc_template = not task_template_id == ADHOC_TEMPLATE_ID
+        if action_type_is_not_no_validations or is_not_adhoc_template:
             self._validate_task_delay_reason_is_added_if_due_date_is_changed(
                 updated_due_date=task_dto.task_basic_details.due_datetime,
                 task_id=task_dto.task_basic_details.task_id,

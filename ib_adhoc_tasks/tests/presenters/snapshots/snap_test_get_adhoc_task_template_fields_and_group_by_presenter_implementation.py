@@ -21,13 +21,11 @@ snapshots['TestGetAdhocTaskTemplateFieldsAndGroupByPresenterImplementation.test_
     'group_by_fields': [
         {
             'display_name': 'ASSIGNEE',
-            'group_by_id': 0,
             'group_by_key': 'ASSIGNEE',
             'order': 1
         },
         {
             'display_name': 'STAGE',
-            'group_by_id': 1,
             'group_by_key': 'STAGE',
             'order': 2
         }

@@ -26,7 +26,6 @@ class AddOrEditGroupByPresenterImplementation(
             group_by_response_dto: GroupByResponseDTO
     ):
         return {
-            "group_by_id": group_by_response_dto.group_by_id,
             "group_by_key": group_by_response_dto.group_by_key,
             "display_name": group_by_response_dto.display_name,
             "order": group_by_response_dto.order

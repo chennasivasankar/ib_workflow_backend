@@ -162,16 +162,24 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         is_group_by_value_other_than_stage_and_assignee = \
             (group_by_value != GroupByKey.STAGE.value) and (
                     group_by_value != GroupByKey.ASSIGNEE.value)
+        is_date_time_type = (
+                group_by_value == GroupByKey.START_DATE.value
+                or group_by_value == GroupByKey.DUE_DATE.value
+        )
+
         group_agg = ""
         if is_group_by_value_stage:
             group_agg = A('terms', field='stages.stage_id.keyword',
                           size=limit + offset)
             groups_count_agg = A('cardinality', field='stages.stage_id.keyword')
-        if is_group_by_value_assignee:
+        elif is_group_by_value_assignee:
             group_agg = A('terms', field='stages.assignee_id.keyword',
                           size=limit + offset)
             groups_count_agg = A('cardinality', field='stages.assignee_id.keyword')
-        if is_group_by_value_other_than_stage_and_assignee:
+        elif is_date_time_type:
+            group_agg = A('terms', field=group_by_value, size=limit + offset)
+            groups_count_agg = A('cardinality', field=group_by_value)
+        elif is_group_by_value_other_than_stage_and_assignee:
             attribute = group_by_value + '.keyword'
             group_agg = A('terms', field=attribute, size=limit + offset)
             groups_count_agg = A('cardinality', field=attribute)

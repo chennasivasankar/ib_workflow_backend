@@ -1,8 +1,19 @@
 
 
+REQUEST_BODY_JSON = """
+{
+    "group_by_key": "string"
+}
+"""
+
 
 RESPONSE_200_JSON = """
 {
+    "group_by_key": {
+        "group_by_key": "string",
+        "display_name": "string",
+        "order": 1
+    },
     "total_groups": 1,
     "groups": [
         {

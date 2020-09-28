@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 from ib_adhoc_tasks.adapters.dtos import TasksCompleteDetailsDTO
 from ib_adhoc_tasks.interactors.storage_interfaces.dtos import GroupDetailsDTO, \
-    ChildGroupCountDTO
+    ChildGroupCountDTO, GroupByResponseDTO
 
 
 @dataclass
@@ -24,7 +24,8 @@ class GetTasksForKanbanViewPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def get_task_details_group_by_info_response(
             self,
-            task_details_with_group_by_info_dto: TaskDetailsWithGroupByInfoDTO
+            task_details_with_group_by_info_dto: TaskDetailsWithGroupByInfoDTO,
+            group_by_response_dtos: List[GroupByResponseDTO]
     ):
         pass
 
