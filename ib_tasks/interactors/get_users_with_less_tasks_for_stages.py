@@ -158,7 +158,7 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
             previous_user_details_dto_with_stage_for_next_stage = [
                 stage_with_user_details_dto]
             return previous_user_details_dto_with_stage_for_next_stage
-        return
+        return []
 
     def _get_assignee_with_current_tasks_count_dtos(self) \
             -> List[AssigneeCurrentTasksCountDTO]:
