@@ -14,7 +14,6 @@ class GetStageDetails:
 
     def get_stage_details(self, stage_ids: List[str]) -> \
             List[StageDisplayNameValueDTO]:
-        # TODO Modify tests based on modified return type
         self._validate_stage_ids(stage_ids)
         stage_complete_details_dtos = self.stage_storage \
             .get_stage_display_name_value_dtos_for_stage_ids(

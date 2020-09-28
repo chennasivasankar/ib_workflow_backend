@@ -768,7 +768,6 @@ class StagesStorageImplementation(StageStorageInterface):
     def get_stage_display_name_value_dtos_for_stage_ids(
             self, stage_ids: List[str]
     ) -> List[StageDisplayNameValueDTO]:
-        # TODO need to write tests
         stage_objs = Stage.objects.filter(stage_id__in=stage_ids).values(
             'id', 'stage_id', 'display_name', 'stage_color', 'value')
         stage_detail_dtos = [
