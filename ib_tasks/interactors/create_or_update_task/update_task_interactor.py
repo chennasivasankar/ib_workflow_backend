@@ -240,7 +240,7 @@ class UpdateTaskInteractor(
         action_type_is_not_no_validations = \
             task_dto.task_basic_details.action_type != \
             ActionTypes.NO_VALIDATIONS.value
-        if action_type_is_not_no_validations or is_not_adhoc_template:
+        if action_type_is_not_no_validations and is_not_adhoc_template:
             self.validate_task_dates_and_priority(
                 task_dto.task_basic_details.start_datetime,
                 task_dto.task_basic_details.due_datetime,
@@ -262,7 +262,7 @@ class UpdateTaskInteractor(
             task_template_id=task_template_id, project_id=project_id,
             action_type=task_dto.task_basic_details.action_type,
             stage_id=task_dto.stage_assignee.stage_id)
-        if action_type_is_not_no_validations:
+        if action_type_is_not_no_validations and is_not_adhoc_template:
             self._validate_all_user_permitted_fields_are_filled_or_not(
                 user_id=task_dto.task_basic_details.created_by_id,
                 project_id=project_id,
