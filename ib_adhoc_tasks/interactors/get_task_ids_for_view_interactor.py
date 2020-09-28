@@ -243,8 +243,8 @@ class GetTaskIdsForViewInteractor:
 
         stage_id_and_name_dtos.sort(key=lambda x: [x.value])
         stage_order_list = [stage.stage_id for stage in stage_id_and_name_dtos]
-        sorted(group_details_dtos,
-               key=lambda x: stage_order_list.index(x.group_by_value))
+        group_details_dtos = sorted(group_details_dtos,
+                                    key=lambda x: stage_order_list.index(x.group_by_value))
 
         for group_details_dto in group_details_dtos:
             group_details_dto.group_by_display_name = \
@@ -264,8 +264,8 @@ class GetTaskIdsForViewInteractor:
 
         stage_id_and_name_dtos.sort(key=lambda x: [x.value])
         stage_order_list = [stage.stage_id for stage in stage_id_and_name_dtos]
-        sorted(group_details_dtos,
-               key=lambda x: stage_order_list.index(x.child_group_by_value))
+        group_details_dtos = sorted(group_details_dtos,
+                                    key=lambda x: stage_order_list.index(x.child_group_by_value))
 
         for group_details_dto in group_details_dtos:
             group_details_dto.child_group_by_display_name = \
