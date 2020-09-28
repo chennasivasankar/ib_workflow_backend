@@ -16,6 +16,7 @@ from ...storages.fields_storage_implementation import FieldsStorageImplementatio
 from ...storages.filter_storage_implementation import FilterStorageImplementation
 from ...storages.storage_implementation import StagesStorageImplementation
 from ...storages.task_stage_storage_implementation import TaskStageStorageImplementation
+from ...storages.task_template_storage_implementation import TaskTemplateStorageImplementation
 from ...storages.tasks_storage_implementation import TasksStorageImplementation
 
 
@@ -38,13 +39,15 @@ def api_wrapper(*args, **kwargs):
     elastic_storage = ElasticSearchStorageImplementation()
     presenter = GetFilteredTasksOverviewForUserPresenterImplementation()
     task_stage_storage = TaskStageStorageImplementation()
+    template_storage = TaskTemplateStorageImplementation()
     filter_storage = FilterStorageImplementation()
     interactor = GetTasksToRelevantSearchQuery(
         stage_storage=stage_storage, task_storage=task_storage,
         field_storage=field_storage, action_storage=action_storage,
         elasticsearch_storage=elastic_storage,
         task_stage_storage=task_stage_storage,
-        filter_storage=filter_storage
+        filter_storage=filter_storage,
+        template_storage=template_storage
     )
     response = interactor.get_all_tasks_overview_for_user_wrapper(
         search_query_dto=search_query_dto, presenter=presenter,
