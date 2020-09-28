@@ -36,7 +36,7 @@ class AdhocTaskTemplateFieldsInteractor:
             field_dtos.append(
                 FieldIdAndNameDTO(
                     field_id=item.value,
-                    field_display_name=item.value.capitalize()
+                    field_display_name=item.value.capitalize().replace('_', ' ')
                 )
             )
         return field_dtos
