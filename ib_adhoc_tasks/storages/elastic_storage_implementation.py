@@ -170,6 +170,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         )
 
         group_agg = ""
+        groups_count_agg = ""
         if is_group_by_value_stage:
             group_agg = A('terms', field='stages.stage_id.keyword',
                           size=limit + offset)
