@@ -44,7 +44,8 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
     SubTasksIdsDTO, \
     SubTasksCountDTO, TaskProjectDTO, TaskDisplayIdDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TemplateDTO, ProjectIdWithTaskTemplateIdDTO, ProjectTemplateDTO, TaskTemplateMapDTO
+    TemplateDTO, ProjectIdWithTaskTemplateIdDTO, ProjectTemplateDTO, \
+    TaskTemplateMapDTO
 from ib_tasks.interactors.task_dtos import TaskStatusVariableDTO
 from ib_tasks.models import StageAction
 

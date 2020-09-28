@@ -138,6 +138,13 @@ class StageDetailsDTO:
     name: str
 
 
+@dataclass
+class StageDisplayNameValueDTO:
+    stage_id: str
+    name: str
+    value: int
+
+
 @dataclass()
 class StageDisplayValueDTO:
     stage_id: str

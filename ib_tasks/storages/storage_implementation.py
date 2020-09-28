@@ -23,7 +23,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDetailsDTO, TaskStageHavingAssigneeIdDTO, TaskWithDbStageIdDTO, \
     StageFlowDTO, \
     StageIdWithValueDTO, StageFlowWithActionIdDTO, StageIdWithTemplateIdDTO, \
-    DBStageIdWithGoFIdDTO
+    DBStageIdWithGoFIdDTO, StageDisplayNameValueDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import (
@@ -760,9 +760,25 @@ class StagesStorageImplementation(StageStorageInterface):
         return current_task_stage_ids
 
     def get_recent_task_stage(self, task_id: int) -> List[int]:
-        stage_ids = TaskStageHistory.objects.filter(task_id=task_id, left_at=None)\
+        stage_ids = TaskStageHistory.objects.filter(task_id=task_id,
+                                                    left_at=None) \
             .values_list('stage_id', flat=True)
         return stage_ids
+
+    def get_stage_display_name_value_dtos_for_stage_ids(
+            self, stage_ids: List[str]
+    ) -> List[StageDisplayNameValueDTO]:
+        # TODO need to write tests
+        stage_objs = Stage.objects.filter(stage_id__in=stage_ids).values(
+            'id', 'stage_id', 'display_name', 'stage_color', 'value')
+        stage_detail_dtos = [
+            StageDisplayNameValueDTO(
+                stage_id=stage_obj['stage_id'],
+                name=stage_obj['display_name'],
+                value=stage_obj["value"]
+            )
+            for stage_obj in stage_objs]
+        return stage_detail_dtos
 
 
 class StorageImplementation(StorageInterface):

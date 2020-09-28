@@ -2,7 +2,8 @@ from typing import List
 
 from ib_tasks.exceptions.stage_custom_exceptions import \
     InvalidStageIdsException
-from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    StageDisplayNameValueDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 
@@ -12,10 +13,12 @@ class GetStageDetails:
         self.stage_storage = storage
 
     def get_stage_details(self, stage_ids: List[str]) -> \
-            List[StageDetailsDTO]:
+            List[StageDisplayNameValueDTO]:
+        # TODO Modify tests based on modified return type
         self._validate_stage_ids(stage_ids)
         stage_complete_details_dtos = self.stage_storage \
-            .get_stage_detail_dtos_given_stage_ids(stage_ids=stage_ids)
+            .get_stage_display_name_value_dtos_for_stage_ids(
+            stage_ids=stage_ids)
 
         return stage_complete_details_dtos
 
