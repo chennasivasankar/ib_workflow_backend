@@ -143,7 +143,7 @@ class GroupByInteractor:
                     view_type=group_by_parameter.view_type
                 )
         if group_by_response_dtos:
-            return group_by_response_dtos
+            return sorted(group_by_response_dtos, key=lambda x: x.order)
         self.storage.delete_all_user_group_by(
             user_id=group_by_parameter.user_id, view_type=group_by_parameter.view_type
         )
@@ -152,7 +152,7 @@ class GroupByInteractor:
                 group_by_parameter=group_by_parameter,
                 group_by_key_dtos=group_by_key_dtos
             )
-        return group_by_response_dtos
+        return sorted(group_by_response_dtos, key=lambda x: x.order)
 
     @staticmethod
     def _validate_is_list_view_creation_or_updation_is_possible(

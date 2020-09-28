@@ -232,25 +232,25 @@ class UpdateTaskInteractor(
 
     def _validate_task_details(self, task_dto: UpdateTaskDTO):
         task_id = task_dto.task_basic_details.task_id
-        self.validate_task_dates_and_priority(
-            task_dto.task_basic_details.start_datetime,
-            task_dto.task_basic_details.due_datetime,
-            task_dto.task_basic_details.priority,
-            task_dto.task_basic_details.action_type)
         self._validate_task_id(task_id)
-        self._validate_stage_id(task_dto.stage_assignee.stage_id)
         task_template_id = \
             self.create_task_storage.get_template_id_for_given_task(task_id)
+        from ib_tasks.constants.constants import ADHOC_TEMPLATE_ID
+        is_not_adhoc_template = not task_template_id == ADHOC_TEMPLATE_ID
         action_type_is_not_no_validations = \
             task_dto.task_basic_details.action_type != \
             ActionTypes.NO_VALIDATIONS.value
-        from ib_tasks.constants.constants import ADHOC_TEMPLATE_ID
-        is_not_adhoc_template = not task_template_id == ADHOC_TEMPLATE_ID
-        if action_type_is_not_no_validations or is_not_adhoc_template:
+        if action_type_is_not_no_validations and is_not_adhoc_template:
+            self.validate_task_dates_and_priority(
+                task_dto.task_basic_details.start_datetime,
+                task_dto.task_basic_details.due_datetime,
+                task_dto.task_basic_details.priority,
+                task_dto.task_basic_details.action_type)
             self._validate_task_delay_reason_is_added_if_due_date_is_changed(
                 updated_due_date=task_dto.task_basic_details.due_datetime,
                 task_id=task_dto.task_basic_details.task_id,
                 stage_id=task_dto.stage_assignee.stage_id)
+        self._validate_stage_id(task_dto.stage_assignee.stage_id)
         project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
         base_validations_interactor = GoFsDetailsValidationsInteractor(
             self.task_storage, self.gof_storage,
@@ -262,7 +262,7 @@ class UpdateTaskInteractor(
             task_template_id=task_template_id, project_id=project_id,
             action_type=task_dto.task_basic_details.action_type,
             stage_id=task_dto.stage_assignee.stage_id)
-        if action_type_is_not_no_validations:
+        if action_type_is_not_no_validations and is_not_adhoc_template:
             self._validate_all_user_permitted_fields_are_filled_or_not(
                 user_id=task_dto.task_basic_details.created_by_id,
                 project_id=project_id,

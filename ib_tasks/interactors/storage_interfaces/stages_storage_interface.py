@@ -6,18 +6,13 @@ from ib_tasks.interactors.stage_dtos import DBStageIdWithGoFIdsDTO, \
 from ib_tasks.interactors.stages_dtos import StageDTO, \
     TaskIdWithStageAssigneeDTO, StageAssigneeDTO, StageMinimalDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionRolesDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageDetailsDTO, \
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO, \
     StageFlowDTO, StageIdWithValueDTO, StageFlowWithActionIdDTO, \
     StageIdWithTemplateIdDTO, DBStageIdWithGoFIdDTO, StageDisplayValueDTO, \
-    StageValueDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
-    TaskStagesDTO, TaskTemplateStageDTO, StageValueWithTaskIdsDTO, \
-    TaskIdWithStageDetailsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskStageHavingAssigneeIdDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskWithDbStageIdDTO
+    StageValueDTO, StageRoleDTO, TaskStagesDTO, TaskTemplateStageDTO, \
+    StageValueWithTaskIdsDTO, TaskIdWithStageDetailsDTO, \
+    TaskStageHavingAssigneeIdDTO, TaskWithDbStageIdDTO, \
+    StageDisplayNameValueDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
@@ -275,4 +270,10 @@ class StageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_recent_task_stage(self, task_id: int) -> List[int]:
+        pass
+
+    @abc.abstractmethod
+    def get_stage_display_name_value_dtos_for_stage_ids(
+            self, stage_ids: List[str]
+    ) -> List[StageDisplayNameValueDTO]:
         pass
