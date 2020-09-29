@@ -359,7 +359,8 @@ class StorageImplementation(StorageInterface):
             -> List[str]:
         column_ids = []
         column_objs = Column.objects.filter(board__board_id=board_id)
-        roles = ColumnPermission.objects.filter(column__in=column_objs)
+        roles = ColumnPermission.objects.filter(column__in=column_objs).\
+            select_related('column')
         for role in roles:
             if role.user_role_id == "ALL_ROLES":
                 column_ids.append(role.column.column_id)
