@@ -9,7 +9,7 @@ from ib_iam.interactors.storage_interfaces.dtos import UserDTO, \
     TeamWithUserIdDTO, UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, \
     TeamIdAndNameDTO, RoleIdAndNameDTO, UserIdAndNameDTO, TeamDTO, \
     TeamUserIdsDTO, CompanyDTO, CompanyIdWithEmployeeIdsDTO, \
-    BasicUserDetailsDTO
+    BasicUserDetailsDTO, UserIdWithTokenDTO
 
 
 class UserStorageInterface(abc.ABC):
@@ -244,4 +244,10 @@ class UserStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_user_id_for_given_token(self, token: str) -> Optional[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_user_and_token_dtos(
+            self, tokens: List[str]
+    ) -> List[UserIdWithTokenDTO]:
         pass

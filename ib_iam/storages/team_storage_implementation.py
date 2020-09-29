@@ -149,3 +149,10 @@ class TeamStorageImplementation(TeamStorageInterface):
     def is_team_exist(self, team_id: str) -> bool:
         # todo write tests for this
         return Team.objects.filter(team_id=team_id).exists
+
+    def get_or_create(self, team_id: str, name: str) -> bool:
+        # todo write tests for this
+        _, is_created = Team.objects.get_or_create(
+            team_id=team_id, name=name
+        )
+        return is_created

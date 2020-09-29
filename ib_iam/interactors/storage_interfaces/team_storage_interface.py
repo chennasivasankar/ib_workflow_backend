@@ -79,3 +79,7 @@ class TeamStorageInterface(abc.ABC):
     @abc.abstractmethod
     def is_team_exist(self, team_id: str) -> bool:
         pass
+
+    @abc.abstractmethod
+    def get_or_create(self, team_id: str, name: str) -> bool:
+        pass
