@@ -319,21 +319,19 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
     def test_invalid_board_raises_exception(
             self, presenter, interactor,
             set_up_storage_for_invalid_board,
-            invalid_board_mock, validate_board_id_mock
+            validate_board_id_mock
     ):
         # Arrange
         board_id = "board_1"
         task_display_id = "task_1"
-        from ib_tasks.interactors.user_action_on_task \
-            .user_action_on_task_interactor import InvalidBoardIdException
-        validate_board_id_mock.return_value = InvalidBoardIdException
+        validate_board_id_mock.return_value = False
 
         # Act
         interactor.user_action_on_task_wrapper(presenter=presenter,
                                                task_display_id=task_display_id)
 
         # Assert
-        invalid_board_mock.assert_called_once_with(board_id=board_id)
+        validate_board_id_mock.assert_called_once_with(board_id=board_id)
         dict_obj = presenter.raise_exception_for_invalid_board.call_args.kwargs
         expected_board_id = dict_obj['error_obj'].board_id
         assert board_id == expected_board_id
