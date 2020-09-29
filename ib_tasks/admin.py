@@ -4,7 +4,7 @@ from ib_tasks.models import (Stage, TaskTemplateStatusVariable, StageAction,
                              TaskTemplateInitialStage, TaskStatusVariable,
                              StagePermittedRoles,
                              TaskStageHistory, UserTaskDelayReason,
-                             ProjectTaskTemplate, TaskStageRp)
+                             ProjectTaskTemplate, TaskStageRp, SubTask)
 from ib_tasks.models.action_permitted_roles import ActionPermittedRoles
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
@@ -43,6 +43,7 @@ admin.site.register(TaskTemplateGoFs)
 admin.site.register(UserTaskDelayReason)
 admin.site.register(ProjectTaskTemplate)
 admin.site.register(StageGoF)
+admin.site.register(SubTask)
 
 
 class TaskStageInline(admin.StackedInline):

@@ -8,6 +8,8 @@ from ib_tasks.exceptions.datetime_custom_exceptions import \
     StartDateTimeIsRequired, DueDateTimeWithoutStartDateTimeIsNotValid
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidDateFormat
+from ib_tasks.exceptions.fields_custom_exceptions import \
+    UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import \
     InvalidStagePermittedGoFs
 from ib_tasks.exceptions.stage_custom_exceptions import \
@@ -21,7 +23,7 @@ from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
     UpdateTaskPresenterInterface
-from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO
 from ib_tasks.presenters.mixins.gofs_fields_validation_presenter_mixin import \
@@ -32,6 +34,21 @@ class UpdateTaskPresenterImplementation(
     UpdateTaskPresenterInterface, HTTPResponseMixin,
     GoFsFieldsValidationPresenterMixin
 ):
+    def raise_user_did_not_fill_required_fields(
+            self, err: UserDidNotFillRequiredFields):
+        from ib_tasks.constants.exception_messages import \
+            USER_DID_NOT_FILL_REQUIRED_FIELDS
+        field_display_names = [
+            dto.field_display_name for dto in err.unfilled_field_dtos]
+        message = USER_DID_NOT_FILL_REQUIRED_FIELDS[0].format(
+            field_display_names)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": USER_DID_NOT_FILL_REQUIRED_FIELDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
     def raise_invalid_gof_ids(self, err):
         return self.raise_invalid_gof_ids_exception(err)
 
@@ -312,17 +329,22 @@ class UpdateTaskPresenterImplementation(
 
     @staticmethod
     def _get_assignee_details(
-            stage_assignee_dto: List[TaskStageAssigneeDetailsDTO]
+            stage_assignee_dto: List[TaskStageAssigneeTeamDetailsDTO]
     ) -> Optional[Dict]:
         if stage_assignee_dto:
             assignee_details_dto = stage_assignee_dto[0].assignee_details
         else:
             return None
         if assignee_details_dto:
+            team_details_dto = stage_assignee_dto[0].team_details
             assignee_details = {
                 "assignee_id": assignee_details_dto.assignee_id,
                 "name": assignee_details_dto.name,
-                "profile_pic_url": assignee_details_dto.profile_pic_url
+                "profile_pic_url": assignee_details_dto.profile_pic_url,
+                "team_info": {
+                    "team_id": team_details_dto.team_id,
+                    "team_name": team_details_dto.name
+                }
             }
             return assignee_details
 

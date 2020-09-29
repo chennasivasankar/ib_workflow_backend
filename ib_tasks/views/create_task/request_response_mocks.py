@@ -28,6 +28,7 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_201_JSON = """
 {
+    "created_task_id": "string",
     "task_current_stages_details": {
         "task_id": "string",
         "stages": [

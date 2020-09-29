@@ -1,4 +1,3 @@
-
 {
   "swagger": "2.0",
   "host": "127.0.0.1:8000",
@@ -675,6 +674,36 @@
         "field_id",
         "field_display_name"
       ]
+    },
+    "GroupByOnTasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "group_id": {
+            "type": "string"
+          },
+          "group_name": {
+            "type": "string",
+            "enum": [
+              "Status",
+              "Assignee"
+            ]
+          },
+          "total_groups": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tasks": {
+            "$ref": "#/definitions/TaskCompleteDetails"
+          }
+        },
+        "required": [
+          "group_name",
+          "total_groups",
+          "tasks"
+        ]
+      }
     }
   },
   "parameters": {
@@ -692,6 +721,81 @@
       "description": "limit value",
       "type": "integer",
       "format": "int64",
+      "required": true
+    },
+    "GroupLimitParameter": {
+      "name": "group_limit",
+      "in": "query",
+      "description": "group limit value",
+      "type": "integer",
+      "format": "int64",
+      "required": true,
+      "default": 10
+    },
+    "GroupOffsetParameter": {
+      "name": "group_offset",
+      "in": "query",
+      "description": "group offset value",
+      "type": "integer",
+      "format": "int64",
+      "required": true,
+      "default": 0
+    },
+    "Group1LimitParameter": {
+      "name": "group1_limit",
+      "in": "query",
+      "description": "group1 limit value",
+      "type": "integer",
+      "format": "int64",
+      "required": true,
+      "default": 10
+    },
+    "Group1OffsetParameter": {
+      "name": "group1_offset",
+      "in": "query",
+      "description": "group1 offset value",
+      "type": "integer",
+      "format": "int64",
+      "required": true,
+      "default": 0
+    },
+    "Group2LimitParameter": {
+      "name": "group2_limit",
+      "in": "query",
+      "description": "group2 limit value",
+      "type": "integer",
+      "format": "int64",
+      "required": true,
+      "default": 10
+    },
+    "Group2OffsetParameter": {
+      "name": "group2_offset",
+      "in": "query",
+      "description": "group2 offset value",
+      "type": "integer",
+      "format": "int64",
+      "required": true,
+      "default": 0
+    },
+    "GroupIdParameter": {
+      "name": "group_id",
+      "in": "query",
+      "description": "group id value",
+      "type": "string",
+      "required": true
+    },
+    "Group1IdParameter": {
+      "name": "group1_id",
+      "in": "query",
+      "description": "group1 id value",
+      "type": "string",
+      "required": true
+    },
+    "Group2IdParameter": {
+      "name": "group2_id",
+      "in": "query",
+      "description": "group2 id value",
+      "type": "string",
       "required": true
     },
     "SearchQueryParameter": {
@@ -944,6 +1048,58 @@
         "items": {
           "$ref": "#/definitions/FieldDisplay"
         }
+      }
+    },
+    "SingleGroupByAdhocBoardResponse": {
+      "description": "Apply Single group by on tasks",
+      "schema": {
+        "$ref": "#/definitions/GroupByOnTasks"
+      }
+    },
+    "TwoGroupByAdhocBoardResponse": {
+      "description": "Apply two group bys on tasks",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "group_id": {
+              "type": "string"
+            },
+            "group_name": {
+              "type": "string",
+              "enum": [
+                "Status",
+                "Assignee"
+              ]
+            },
+            "total_count": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "child_groups": {
+              "$ref": "#/definitions/GroupByOnTasks"
+            }
+          },
+          "required": [
+            "group_id",
+            "group_name",
+            "total_count",
+            "child_groups"
+          ]
+        }
+      }
+    },
+    "GetTasksOfProjectByGroupId": {
+      "description": "Get task of project by group id",
+      "schema": {
+        "$ref": "#/definitions/TaskCompleteDetails"
+      }
+    },
+    "GetTasksOfProjectByGroupIds": {
+      "description": "Get task of project by group ids",
+      "schema": {
+        "$ref": "#/definitions/TaskCompleteDetails"
       }
     }
   },
@@ -1225,6 +1381,149 @@
           },
           "400": {
             "$ref": "#/responses/ForbiddenResponse"
+          }
+        }
+      }
+    },
+    "/projects/adhoc_board/single_group_by/tasks/v1/": {
+      "get": {
+        "summary": "Get the adhoc tasks in the project by applying the group by",
+        "operationId": "get_adhoc_tasks_by_group_by",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/GroupLimitParameter"
+          },
+          {
+            "$ref": "#/parameters/GroupOffsetParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/SingleGroupByAdhocBoardResponse"
+          }
+        }
+      }
+    },
+    "/projects/adhoc_board/two_group_by/tasks/v1/": {
+      "get": {
+        "summary": "Get the adhoc tasks in the project by applying the two group by",
+        "operationId": "get_adhoc_tasks_by_two_group_by",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/Group1LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/Group1OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/Group2LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/Group2OffsetParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/TwoGroupByAdhocBoardResponse"
+          }
+        }
+      }
+    },
+    "/projects/adhoc_board/group_by_single_field/tasks/v1/": {
+      "get": {
+        "summary": "Get The Tasks In The Project Based On The Group Id",
+        "operationId": "get_adhoc_tasks_by_group_id",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/GroupIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTasksOfProjectByGroupId"
+          }
+        }
+      }
+    },
+    "/projects/adhoc_board/group_by_two_fields/tasks/v1/": {
+      "get": {
+        "summary": "Get The Tasks In The Project Based On The Group Ids",
+        "operationId": "get_adhoc_tasks_by_group_ids",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectIdParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/Group1IdParameter"
+          },
+          {
+            "$ref": "#/parameters/Group2IdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTasksOfProjectByGroupIds"
           }
         }
       }

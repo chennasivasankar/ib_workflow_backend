@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exception_for_invalid_board invalid_board'] = {
@@ -114,7 +113,7 @@ snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_get_response_for_u
                 'stage_id': 'stage_1'
             }
         ],
-        'task_id': 'task_display_1',
+        'task_id': 'task_display_0',
         'user_has_permission': True
     },
     'task_details': {
@@ -124,7 +123,11 @@ snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_get_response_for_u
             'assignee': {
                 'assignee_id': '123e4567-e89b-12d3-a456-426614174000',
                 'name': 'name_0',
-                'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM'
+                'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM',
+                'team_info': {
+                    'team_id': 'team_0',
+                    'team_name': 'team_name0'
+                }
             },
             'stage_color': 'color_1',
             'stage_display_name': 'stage_display_1',
@@ -134,7 +137,7 @@ snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_get_response_for_u
         'task_overview_fields': [
         ]
     },
-    'task_id': 'task_display_1'
+    'task_id': 'task_display_0'
 }
 
 snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exception_for_reason_is_not_added_to_task reason is not added to task delay'] = {

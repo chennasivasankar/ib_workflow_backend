@@ -155,10 +155,11 @@ class GetTaskStageLogicSatisfiedStagesInteractor:
         right_stage = stage_display_dto.stage
         current_stage = stage_display_logic_dto.current_stage
         func = operator_dict[stage_display_dto.operator]
-        left_stage_value = stage_value_dict[left_stage]
-        right_stage_value = stage_value_dict[right_stage]
-        if func(left_stage_value, right_stage_value):
-            logic_satisfied_stages.append(current_stage)
+        if left_stage:
+            left_stage_value = stage_value_dict[left_stage]
+            right_stage_value = stage_value_dict[right_stage]
+            if func(left_stage_value, right_stage_value):
+                logic_satisfied_stages.append(current_stage)
 
     @staticmethod
     def _get_operator_dict():

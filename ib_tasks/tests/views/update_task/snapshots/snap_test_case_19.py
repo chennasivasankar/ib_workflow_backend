@@ -12,5 +12,5 @@ snapshots['TestCase19UpdateTaskAPITestCase.test_case status_code'] = '400'
 snapshots['TestCase19UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_EMAIL',
-    'response': 'Invalid value for email: email.com for field: FIELD-1'
+    'response': 'Invalid value for email: email.com for field: DISPLAY_NAME-0'
 }

@@ -1,3 +1,4 @@
+import factory
 import pytest
 from mock import create_autospec
 
@@ -8,7 +9,10 @@ from ib_tasks.interactors.create_or_update_task \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldIdWithGoFIdDTO
 from ib_tasks.tests.factories.interactor_dtos import \
-    GoFWritePermissionRolesDTOFactory, FieldWritePermissionRolesDTOFactory
+    GoFWritePermissionRolesDTOFactory, FieldWritePermissionRolesDTOFactory, \
+    GoFFieldsDTOFactory, FieldValuesDTOFactory
+from ib_tasks.tests.factories.storage_dtos import \
+    GoFIdWithGoFDisplayNameDTOFactory, FieldWithGoFDisplayNameDTOFactory
 
 
 class TestTemplateGoFsFieldsBaseValidationsInteractor:
@@ -54,13 +58,17 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         return field_storage
 
     @pytest.fixture
+    def task_template_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import \
+            TaskTemplateStorageInterface
+        return create_autospec(TaskTemplateStorageInterface)
+
+    @pytest.fixture(autouse=True)
     def reset_sequence(self):
-        from ib_tasks.tests.factories.interactor_dtos import \
-            GoFFieldsDTOFactory
         GoFFieldsDTOFactory.reset_sequence()
-        from ib_tasks.tests.factories.interactor_dtos import \
-            FieldValuesDTOFactory
         FieldValuesDTOFactory.reset_sequence()
+        GoFIdWithGoFDisplayNameDTOFactory.reset_sequence()
+        FieldWithGoFDisplayNameDTOFactory.reset_sequence()
 
     @pytest.fixture
     def gof_fields_dtos(self, reset_sequence):
@@ -136,9 +144,12 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
     def test_given_invalid_gof_ids_raise_exception(
             self, task_storage_mock, gof_storage_mock, field_storage_mock,
-            create_task_storage_mock, storage_mock, gof_fields_dtos
+            create_task_storage_mock, storage_mock, gof_fields_dtos,
+            task_template_storage_mock, valid_gof_ids, field_ids
     ):
         # Arrange
+        project_id = "project red"
+        stage_id = 1
         from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
         created_by_id = "123e4567-e89b-12d3-a456-426614174000"
         task_template_id = "template1"
@@ -149,7 +160,8 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         interactor = GoFsDetailsValidationsInteractor(
             gof_storage=gof_storage_mock, task_storage=task_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
-            field_storage=field_storage_mock
+            field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         gof_storage_mock.get_existing_gof_ids.return_value = valid_gof_ids
 
@@ -157,7 +169,9 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         with pytest.raises(InvalidGoFIds) as err:
             interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
-                task_template_id=task_template_id, action_type=action_type)
+                task_template_id=task_template_id, action_type=action_type,
+                project_id=project_id, stage_id=stage_id
+            )
 
         # Assert
         exception_object = err.value
@@ -166,10 +180,12 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
     def test_given_invalid_field_ids_raise_exception(
             self, task_storage_mock, gof_storage_mock, field_storage_mock,
-            create_task_storage_mock, storage_mock, gof_fields_dtos, field_ids,
-            valid_gof_ids
+            create_task_storage_mock, storage_mock, gof_fields_dtos,
+            task_template_storage_mock, valid_gof_ids, field_ids
     ):
         # Arrange
+        project_id = "project red"
+        stage_id = 1
         from ib_tasks.exceptions.fields_custom_exceptions import \
             InvalidFieldIds
         created_by_id = "123e4567-e89b-12d3-a456-426614174000"
@@ -187,7 +203,8 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         interactor = GoFsDetailsValidationsInteractor(
             gof_storage=gof_storage_mock, task_storage=task_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
-            field_storage=field_storage_mock
+            field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         gof_storage_mock.get_existing_gof_ids.return_value = valid_gof_ids
         task_storage_mock.get_existing_field_ids.return_value = valid_field_ids
@@ -196,7 +213,9 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         with pytest.raises(InvalidFieldIds) as err:
             interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
-                task_template_id=task_template_id, action_type=action_type)
+                task_template_id=task_template_id, action_type=action_type,
+                project_id=project_id, stage_id=stage_id
+            )
 
         # Assert
         exception_object = err.value
@@ -206,10 +225,12 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
 
     def test_given_gofs_that_are_not_related_to_given_task_template_raise_exception(
             self, task_storage_mock, gof_storage_mock, field_storage_mock,
-            create_task_storage_mock, storage_mock, gof_fields_dtos, field_ids,
-            valid_gof_ids
+            create_task_storage_mock, storage_mock, gof_fields_dtos,
+            task_template_storage_mock, valid_gof_ids, field_ids
     ):
         # Arrange
+        project_id = "project red"
+        stage_id = 1
         from ib_tasks.exceptions.task_custom_exceptions import \
             InvalidGoFsOfTaskTemplate
         created_by_id = "123e4567-e89b-12d3-a456-426614174000"
@@ -218,7 +239,8 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         interactor = GoFsDetailsValidationsInteractor(
             gof_storage=gof_storage_mock, task_storage=task_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
-            field_storage=field_storage_mock
+            field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         valid_task_template_gof_ids = [valid_gof_ids[0], valid_gof_ids[1]]
         invalid_task_template_gof_ids = [valid_gof_ids[2], valid_gof_ids[3]]
@@ -227,26 +249,50 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         create_task_storage_mock.get_all_gof_ids_related_to_a_task_template \
             .return_value = valid_task_template_gof_ids
 
+        gof_ids = [dto.gof_id for dto in gof_fields_dtos]
+        field_ids = []
+        for gof_fields_dto in gof_fields_dtos:
+            field_ids += [
+                field_value_dto.field_id
+                for field_value_dto in gof_fields_dto.field_values_dtos
+            ]
+        gof_id_with_display_name_dtos = GoFIdWithGoFDisplayNameDTOFactory \
+            .create_batch(size=len(gof_ids), gof_id=factory.Iterator(gof_ids))
+        field_with_gof_display_name_dtos = FieldWithGoFDisplayNameDTOFactory \
+            .create_batch(size=len(field_ids),
+                          field_id=factory.Iterator(field_ids))
+        gof_storage_mock.get_gofs_display_names.return_value = \
+            gof_id_with_display_name_dtos
+        field_storage_mock.get_fields_display_names_with_gof_display_name \
+            .return_value = field_with_gof_display_name_dtos
+        expected_invalid_gof_display_names = [
+            dto.gof_display_name
+            for dto in gof_id_with_display_name_dtos
+            if dto.gof_id in invalid_task_template_gof_ids]
+
         # Act
         with pytest.raises(InvalidGoFsOfTaskTemplate) as err:
             interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
-                task_template_id=task_template_id, action_type=action_type)
+                task_template_id=task_template_id, action_type=action_type,
+                project_id=project_id, stage_id=stage_id
+            )
 
         # Assert
         exception_object = err.value
-        assert exception_object.gof_ids == invalid_task_template_gof_ids
+        assert exception_object.gofs_display_names == expected_invalid_gof_display_names
         assert exception_object.task_template_id == task_template_id
         create_task_storage_mock.get_all_gof_ids_related_to_a_task_template \
-            .assert_called_once_with(
-            task_template_id)
+            .assert_called_once_with(task_template_id)
 
     def test_given_fields_are_not_related_to_given_gofs_raise_exception(
             self, task_storage_mock, gof_storage_mock, field_storage_mock,
-            create_task_storage_mock, storage_mock, gof_fields_dtos, field_ids,
-            valid_gof_ids
+            create_task_storage_mock, storage_mock, gof_fields_dtos,
+            task_template_storage_mock, valid_gof_ids, field_ids
     ):
         # Arrange
+        project_id = "project red"
+        stage_id = 1
         from ib_tasks.exceptions.task_custom_exceptions import \
             InvalidFieldsOfGoF
         created_by_id = "123e4567-e89b-12d3-a456-426614174000"
@@ -255,7 +301,8 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         interactor = GoFsDetailsValidationsInteractor(
             gof_storage=gof_storage_mock, task_storage=task_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
-            field_storage=field_storage_mock
+            field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         field_id_with_gof_id_dtos = [
             FieldIdWithGoFIdDTO(
@@ -277,23 +324,53 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         field_storage_mock.get_field_ids_related_to_given_gof_ids \
             .return_value = field_id_with_gof_id_dtos
 
+        gof_ids = [dto.gof_id for dto in gof_fields_dtos]
+        field_ids = []
+        for gof_fields_dto in gof_fields_dtos:
+            field_ids += [
+                field_value_dto.field_id
+                for field_value_dto in gof_fields_dto.field_values_dtos
+            ]
+        gof_id_with_display_name_dtos = GoFIdWithGoFDisplayNameDTOFactory \
+            .create_batch(size=len(gof_ids), gof_id=factory.Iterator(gof_ids))
+        field_with_gof_display_name_dtos = FieldWithGoFDisplayNameDTOFactory \
+            .create_batch(size=len(field_ids),
+                          field_id=factory.Iterator(field_ids))
+        gof_storage_mock.get_gofs_display_names.return_value = \
+            gof_id_with_display_name_dtos
+        field_storage_mock.get_fields_display_names_with_gof_display_name \
+            .return_value = field_with_gof_display_name_dtos
+        expected_gof_display_name = None
+        for dto in gof_id_with_display_name_dtos:
+            if dto.gof_id == gof_id:
+                expected_gof_display_name = dto.gof_display_name
+        expected_field_display_names = [
+            dto.field_display_name
+            for dto in field_with_gof_display_name_dtos
+            if dto.field_id in invalid_gof_field_ids
+        ]
+
         # Act
         with pytest.raises(InvalidFieldsOfGoF) as err:
             interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
-                task_template_id=task_template_id, action_type=action_type)
+                task_template_id=task_template_id, action_type=action_type,
+                project_id=project_id, stage_id=stage_id
+            )
 
         # Assert
         exception_object = err.value
-        assert exception_object.gof_id == gof_id
-        assert exception_object.field_ids == invalid_gof_field_ids
+        assert exception_object.gof_display_name == expected_gof_display_name
+        assert exception_object.field_display_names == expected_field_display_names
 
     def test_given_duplicate_of_fields_for_given_gofs_raise_exception(
             self, task_storage_mock, gof_storage_mock, field_storage_mock,
-            create_task_storage_mock, storage_mock, gof_fields_dtos, field_ids,
-            valid_gof_ids
+            create_task_storage_mock, storage_mock, gof_fields_dtos,
+            task_template_storage_mock, valid_gof_ids, field_ids
     ):
         # Arrange
+        project_id = "project red"
+        stage_id = 1
         from ib_tasks.exceptions.fields_custom_exceptions import \
             DuplicateFieldIdsToGoF
         created_by_id = "123e4567-e89b-12d3-a456-426614174000"
@@ -302,7 +379,8 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         interactor = GoFsDetailsValidationsInteractor(
             gof_storage=gof_storage_mock, task_storage=task_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
-            field_storage=field_storage_mock
+            field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         field_values_dtos = gof_fields_dtos[0].field_values_dtos
         field_values_dtos[1].field_id = field_values_dtos[0].field_id
@@ -330,7 +408,9 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         with pytest.raises(DuplicateFieldIdsToGoF) as err:
             interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
-                task_template_id=task_template_id, action_type=action_type)
+                task_template_id=task_template_id, action_type=action_type,
+                project_id=project_id, stage_id=stage_id
+            )
 
         # Assert
         exception_object = err.value
@@ -339,72 +419,21 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         field_storage_mock.get_field_ids_related_to_given_gof_ids \
             .assert_called_once()
 
-    def test_given_fields_related_to_given_gofs_and_user_has_no_write_permission_for_given_gofs_raise_exception(
-            self, task_storage_mock, gof_storage_mock, field_storage_mock,
-            create_task_storage_mock, storage_mock, gof_fields_dtos, field_ids,
-            valid_gof_ids, field_id_with_gof_id_dtos, mocker
-    ):
-        # Arrange
-        from ib_tasks.exceptions.permission_custom_exceptions import \
-            UserNeedsGoFWritablePermission
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_some_user_role_ids
-        get_some_user_role_ids_mock_method = get_some_user_role_ids(mocker)
-        created_by_id = "123e4567-e89b-12d3-a456-426614174000"
-        task_template_id = "template1"
-        action_type = ActionTypes.NO_VALIDATIONS.value
-        gof_write_permission_roles_dtos = [
-            GoFWritePermissionRolesDTOFactory(
-                gof_id=valid_gof_ids[0],
-                write_permission_roles=[
-                    'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER'
-                ]
-            )
-        ]
-        gof_id = valid_gof_ids[0]
-        required_roles = ['FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER']
-        interactor = GoFsDetailsValidationsInteractor(
-            gof_storage=gof_storage_mock, task_storage=task_storage_mock,
-            create_task_storage=create_task_storage_mock, storage=storage_mock,
-            field_storage=field_storage_mock
-        )
-        valid_task_template_gof_ids = valid_gof_ids
-        gof_storage_mock.get_existing_gof_ids.return_value = valid_gof_ids
-        task_storage_mock.get_existing_field_ids.return_value = field_ids
-        create_task_storage_mock.get_all_gof_ids_related_to_a_task_template \
-            .return_value = valid_task_template_gof_ids
-        field_storage_mock.get_field_ids_related_to_given_gof_ids \
-            .return_value = field_id_with_gof_id_dtos
-        storage_mock.get_write_permission_roles_for_given_gof_ids \
-            .return_value = gof_write_permission_roles_dtos
-
-        # Act
-        with pytest.raises(UserNeedsGoFWritablePermission) as err:
-            interactor.perform_gofs_details_validations(
-                gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
-                task_template_id=task_template_id, action_type=action_type)
-
-        # Assert
-        exception_object = err.value
-        assert exception_object.user_id == created_by_id
-        assert exception_object.gof_id == gof_id
-        assert exception_object.required_roles == required_roles
-        storage_mock.get_write_permission_roles_for_given_gof_ids \
-            .assert_called_once()
-        get_some_user_role_ids_mock_method.assert_called_once()
-
     def test_given_fields_related_to_given_gofs_and_user_has_no_write_permission_for_given_fields_raise_exception(
             self, task_storage_mock, gof_storage_mock, field_storage_mock,
-            create_task_storage_mock, storage_mock, gof_fields_dtos, field_ids,
-            valid_gof_ids, field_id_with_gof_id_dtos, mocker,
-            gof_write_permission_roles_dtos
+            create_task_storage_mock, storage_mock, gof_fields_dtos,
+            task_template_storage_mock, field_id_with_gof_id_dtos, mocker,
+            gof_write_permission_roles_dtos, valid_gof_ids, field_ids
     ):
         # Arrange
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids_based_on_project_mock
+        user_roles_mock = get_user_role_ids_based_on_project_mock(mocker)
+        user_roles_mock.return_value = []
+        project_id = "project red"
+        stage_id = 1
         from ib_tasks.exceptions.permission_custom_exceptions import \
             UserNeedsFieldWritablePermission
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_some_user_role_ids
-        get_some_user_role_ids_mock_method = get_some_user_role_ids(mocker)
         created_by_id = "123e4567-e89b-12d3-a456-426614174000"
         task_template_id = "template1"
         action_type = ActionTypes.NO_VALIDATIONS.value
@@ -420,7 +449,8 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
         interactor = GoFsDetailsValidationsInteractor(
             gof_storage=gof_storage_mock, task_storage=task_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
-            field_storage=field_storage_mock
+            field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         valid_task_template_gof_ids = valid_gof_ids
         gof_storage_mock.get_existing_gof_ids.return_value = valid_gof_ids
@@ -429,43 +459,69 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
             .return_value = valid_task_template_gof_ids
         field_storage_mock.get_field_ids_related_to_given_gof_ids \
             .return_value = field_id_with_gof_id_dtos
-        storage_mock.get_write_permission_roles_for_given_gof_ids \
-            .return_value = gof_write_permission_roles_dtos
-        storage_mock.get_write_permission_roles_for_given_field_ids \
+        field_storage_mock.get_write_permission_roles_for_given_field_ids \
             .return_value = field_write_permission_roles_dtos
+
+        gof_ids = [dto.gof_id for dto in gof_fields_dtos]
+        field_ids = []
+        for gof_fields_dto in gof_fields_dtos:
+            field_ids += [
+                field_value_dto.field_id
+                for field_value_dto in gof_fields_dto.field_values_dtos
+            ]
+        gof_id_with_display_name_dtos = GoFIdWithGoFDisplayNameDTOFactory \
+            .create_batch(size=len(gof_ids), gof_id=factory.Iterator(gof_ids))
+        field_with_gof_display_name_dtos = FieldWithGoFDisplayNameDTOFactory \
+            .create_batch(size=len(field_ids),
+                          field_id=factory.Iterator(field_ids))
+        gof_storage_mock.get_gofs_display_names.return_value = \
+            gof_id_with_display_name_dtos
+        field_storage_mock.get_fields_display_names_with_gof_display_name \
+            .return_value = field_with_gof_display_name_dtos
+        expected_field_display_name = None
+        for dto in field_with_gof_display_name_dtos:
+            if dto.field_id == field_id:
+                expected_field_display_name = dto.field_display_name
+
 
         # Act
         with pytest.raises(UserNeedsFieldWritablePermission) as err:
             interactor.perform_gofs_details_validations(
                 gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
-                task_template_id=task_template_id, action_type=action_type)
+                task_template_id=task_template_id, action_type=action_type,
+                project_id=project_id, stage_id=stage_id
+            )
 
         # Assert
         exception_object = err.value
         assert exception_object.user_id == created_by_id
-        assert exception_object.field_id == field_id
+        assert exception_object.field_display_name == expected_field_display_name
         assert exception_object.required_roles == required_roles
-        storage_mock.get_write_permission_roles_for_given_field_ids \
+        field_storage_mock.get_write_permission_roles_for_given_field_ids \
             .assert_called_once()
-        get_some_user_role_ids_mock_method.assert_called_once()
+        user_roles_mock.assert_called_once_with(created_by_id, project_id)
 
-    def test_given_fields_related_to_given_gofs_and_user_has_write_permission_for_given_fields_and_gofs_raise_exception(
+    def test_given_fields_related_to_given_gofs_and_user_has_write_permission_for_given_fields_and_gofs_does_not_raise_exception(
             self, task_storage_mock, gof_storage_mock, field_storage_mock,
-            create_task_storage_mock, storage_mock, gof_fields_dtos, field_ids,
-            valid_gof_ids, field_id_with_gof_id_dtos, mocker,
-            gof_write_permission_roles_dtos, field_write_permission_roles_dtos
+            create_task_storage_mock, storage_mock, gof_fields_dtos,
+            task_template_storage_mock, field_id_with_gof_id_dtos, mocker,
+            gof_write_permission_roles_dtos, field_write_permission_roles_dtos,
+            valid_gof_ids, field_ids
     ):
         # Arrange
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_some_user_role_ids
-        get_some_user_role_ids_mock_method = get_some_user_role_ids(mocker)
+            get_user_role_ids_based_on_project_mock
+        user_roles_mock = get_user_role_ids_based_on_project_mock(mocker)
+        project_id = "project red"
+        stage_id = 1
         created_by_id = "123e4567-e89b-12d3-a456-426614174000"
         task_template_id = "template1"
         action_type = ActionTypes.NO_VALIDATIONS.value
         interactor = GoFsDetailsValidationsInteractor(
             gof_storage=gof_storage_mock, task_storage=task_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
-            field_storage=field_storage_mock
+            field_storage=field_storage_mock,
+            task_template_storage=task_template_storage_mock
         )
         valid_task_template_gof_ids = valid_gof_ids
         gof_storage_mock.get_existing_gof_ids.return_value = valid_gof_ids
@@ -474,15 +530,15 @@ class TestTemplateGoFsFieldsBaseValidationsInteractor:
             .return_value = valid_task_template_gof_ids
         field_storage_mock.get_field_ids_related_to_given_gof_ids \
             .return_value = field_id_with_gof_id_dtos
-        storage_mock.get_write_permission_roles_for_given_gof_ids \
-            .return_value = gof_write_permission_roles_dtos
-        storage_mock.get_write_permission_roles_for_given_field_ids \
+        field_storage_mock.get_write_permission_roles_for_given_field_ids \
             .return_value = field_write_permission_roles_dtos
 
         # Act
         interactor.perform_gofs_details_validations(
             gof_fields_dtos=gof_fields_dtos, user_id=created_by_id,
-            task_template_id=task_template_id, action_type=action_type)
+            task_template_id=task_template_id, action_type=action_type,
+            project_id=project_id, stage_id=stage_id
+        )
 
         # Assert
-        get_some_user_role_ids_mock_method.assert_called_once()
+        user_roles_mock.assert_called_once_with(created_by_id, project_id)

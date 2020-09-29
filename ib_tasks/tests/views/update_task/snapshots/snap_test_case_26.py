@@ -12,5 +12,5 @@ snapshots['TestCase26UpdateTaskAPITestCase.test_case status_code'] = '400'
 snapshots['TestCase26UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INCORRECT_RADIO_GROUP_CHOICE',
-    'response': "Invalid radio group choice: radio_group_choice for field: FIELD-1! Try with these valid options: ['interactors', 'storages']"
+    'response': "Invalid radio group choice: radio_group_choice for field: DISPLAY_NAME-0! Try with these valid options: ['interactors', 'storages']"
 }

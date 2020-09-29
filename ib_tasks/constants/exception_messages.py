@@ -291,8 +291,7 @@ STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE = (
     "please assign valid assignees for stages",
     "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE")
 
-TASK_DELAY_REASON_IS_NOT_ADDED = ("""Task {} in Stage {} has missed the
-                                  due date""",
+TASK_DELAY_REASON_IS_NOT_ADDED = ("Task {} in Stage {} has missed the due date",
                                   "REASON_NOT_ADDED_FOR_TASK_DELAY")
 INVALID_STAGE_IDS_FOR_TASK = "Invalid stage_ids : {} for the task_id: {}"
 INVALID_KEY_ERROR = ("invalid key error", "INVALID_KEY_ERROR")
@@ -472,4 +471,9 @@ INVALID_TASK_JSON = (
 INVALID_STAGE_PERMITTED_GOFS = (
     "{} gof ids are not permitted for the stage {}",
     "INVALID_STAGE_PERMITTED_GOFS"
+)
+
+INVALID_PARENT_TASK_ID = (
+    "{} is an invalid parent task id, please give a valid parent task id",
+    "INVALID_PARENT_TASK_ID"
 )

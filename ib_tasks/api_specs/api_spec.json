@@ -283,7 +283,6 @@
             }
          },
          "required":[
-            "task_gofs",
             "action_id",
             "task_template_id",
             "title",
@@ -525,6 +524,58 @@
             "enable_add_another",
             "max_columns",
             "fields"
+         ]
+      },
+      "CreateSubTaskRequestBody":{
+        "type":"object",
+         "properties":{
+            "project_id":{
+               "type":"string"
+            },
+            "task_template_id":{
+               "type":"string"
+            },
+            "action_id":{
+               "type":"integer"
+            },
+            "parent_task_id":{
+               "type":"string"
+            },
+            "title":{
+               "type":"string"
+            },
+            "description":{
+               "type":"string"
+            },
+            "start_datetime":{
+               "type":"string",
+               "format": "date-time"
+            },
+            "due_datetime":{
+               "type":"string",
+               "format": "date-time"
+            },
+            "priority":{
+               "type":"string",
+               "enum":[
+                  "HIGH",
+                  "MEDIUM",
+                  "LOW"
+               ]
+            },
+            "task_gofs":{
+               "type":"array",
+               "items":{
+                  "$ref":"#/definitions/GoF"
+               }
+            }
+         },
+         "required":[
+            "parent_task_id",
+            "action_id",
+            "task_template_id",
+            "title",
+            "project_id"
          ]
       },
       "PerformActionRequestBody":{
@@ -991,6 +1042,25 @@
          ]
       },
       "CreateTaskFailureResponseBody":{
+         "type":"object",
+         "properties":{
+            "response":{
+               "type":"string"
+            },
+            "http_status_code":{
+               "type":"integer"
+            },
+            "res_status":{
+               "type":"string"
+            }
+         },
+         "required":[
+            "response",
+            "http_status_code",
+            "res_status"
+         ]
+      },
+      "CreateSubTaskFailureResponseBody":{
          "type":"object",
          "properties":{
             "response":{
@@ -1510,6 +1580,9 @@
       "CreateTaskSuccessResponseBody":{
          "type":"object",
          "properties":{
+            "created_task_id": {
+               "type": "string"
+            },
             "task_current_stages_details":{
                "$ref":"#/definitions/TaskWithCurrentStages"
             },
@@ -1518,6 +1591,25 @@
             }
          },
          "required":[
+            "created_task_id",
+            "task_current_stages_details"
+         ]
+      },
+      "CreateSubTaskSuccessResponseBody":{
+         "type":"object",
+         "properties":{
+            "created_task_id": {
+               "type": "string"
+            },
+            "task_current_stages_details":{
+               "$ref":"#/definitions/TaskWithCurrentStages"
+            },
+            "task_details":{
+               "$ref":"#/definitions/TaskOverviewWithStageAndActions"
+            }
+         },
+         "required":[
+            "created_task_id",
             "task_current_stages_details"
          ]
       },
@@ -1683,6 +1775,15 @@
          "required":true,
          "schema":{
             "$ref":"#/definitions/CreateTaskRequestBody"
+         }
+      },
+      "CreateSubTaskBodyParameter":{
+         "in":"body",
+         "name":"CreateSubTaskRequestBody",
+         "description":"give valid details",
+         "required":true,
+         "schema":{
+            "$ref":"#/definitions/CreateSubTaskRequestBody"
          }
       },
       "PerformActionBodyParameter":{
@@ -1967,7 +2068,38 @@
             "$ref":"#/definitions/CreateTaskSuccessResponseBody"
          }
       },
+      "CreateSubTaskSuccessResponse":{
+         "description":"Sub task created successfully",
+         "schema":{
+            "$ref":"#/definitions/CreateSubTaskSuccessResponseBody"
+         }
+      },
       "CreateTaskAccessUnauthorized":{
+         "description":"user does not have access",
+         "schema":{
+            "type":"object",
+            "properties":{
+               "response":{
+                  "type":"string"
+               },
+               "http_status_code":{
+                  "type":"integer"
+               },
+               "res_status":{
+                  "type":"string",
+                  "enum":[
+                     "USER_DO_NOT_HAVE_ACCESS"
+                  ]
+               }
+            },
+            "required":[
+               "response",
+               "http_status_code",
+               "res_status"
+            ]
+         }
+      },
+      "CreateSubTaskAccessUnauthorized":{
          "description":"user does not have access",
          "schema":{
             "type":"object",
@@ -2600,6 +2732,12 @@
       },
       "CreateTaskFailureResponse":{
          "description":"can not create a task",
+         "schema":{
+            "$ref":"#/definitions/CreateTaskFailureResponseBody"
+         }
+      },
+      "CreateSubTaskFailureResponse":{
+         "description":"can not create a sub task",
          "schema":{
             "$ref":"#/definitions/CreateTaskFailureResponseBody"
          }
@@ -3903,6 +4041,36 @@
                }
             }
          }
+      },
+      "/sub_task/v1/": {
+        "post": {
+          "operationId":"create_sub_task",
+          "summary":"create a sub task",
+          "description":"create a sub task with given details",
+          "security":[
+             {
+                "oauth":[
+                   "write"
+                ]
+             }
+          ],
+          "parameters":[
+             {
+                "$ref":"#/parameters/CreateSubTaskBodyParameter"
+             }
+          ],
+          "responses":{
+             "201":{
+                "$ref":"#/responses/CreateSubTaskSuccessResponse"
+             },
+             "400":{
+                "$ref":"#/responses/CreateSubTaskFailureResponse"
+             },
+             "403": {
+                "$ref":"#/responses/CreateSubTaskAccessUnauthorized"
+             }
+          }
+        }
       }
    }
 }

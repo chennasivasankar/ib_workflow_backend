@@ -12,7 +12,7 @@ from ib_tasks.tests.factories.storage_dtos import (
     ActionDTOFactory, StageActionDetailsDTOFactory,
     TaskDetailsDTOFactory,
     TaskGoFDTOFactory, TaskGoFFieldDTOFactory,
-    GoFIdWithGoFDisplayNameDTOFactory, FieldIdWithFieldDisplayNameDTOFactory
+    GoFIdWithGoFDisplayNameDTOFactory, FieldWithGoFDisplayNameDTOFactory, TaskTemplateMapDTOFactory
 )
 from ib_tasks.tests.interactors.super_storage_mock_class import \
     StorageMockClass
@@ -97,14 +97,15 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
 
     @pytest.fixture
     def assignees(self):
-        from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
+        from ib_tasks.interactors.stage_dtos import TaskStageAssigneeTeamDetailsDTO
         from ib_tasks.adapters.dtos import AssigneeDetailsDTO
-        return TaskStageAssigneeDetailsDTO(
-                task_id=1,
-                stage_id='stage_id_1',
-                assignee_details=AssigneeDetailsDTO(assignee_id='1',
-                                                    name='name',
-                                                    profile_pic_url='pavan.com')
+        return TaskStageAssigneeTeamDetailsDTO(
+            task_id=1,
+            stage_id='stage_id_1',
+            assignee_details=AssigneeDetailsDTO(assignee_id='1',
+                                                name='name',
+                                                profile_pic_url='pavan.com'),
+            team_details=None
         )
 
     @staticmethod
@@ -240,8 +241,8 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
 
     @pytest.fixture()
     def field_name_dtos(self):
-        FieldIdWithFieldDisplayNameDTOFactory.reset_sequence(1)
-        field_dtos = FieldIdWithFieldDisplayNameDTOFactory.create_batch(2)
+        FieldWithGoFDisplayNameDTOFactory.reset_sequence(1)
+        field_dtos = FieldWithGoFDisplayNameDTOFactory.create_batch(2)
         return field_dtos
 
     def set_up_storage_for_required_fields(
@@ -421,8 +422,11 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
             task_storage_mock, storage, valid_action_roles_mock
 
     ):
+        TaskTemplateMapDTOFactory.reset_sequence(1)
+        task_template_dtos = TaskTemplateMapDTOFactory.create_batch(1)
         action_storage_mock.get_stage_id_for_given_action_id.return_value = 1
         action_storage_mock.validate_action.return_value = True
+        task_storage_mock.get_template_ids_to_task_ids.return_value = task_template_dtos
 
     def test_when_due_date_is_missed_but_reason_and_due_date_is_not_updated_raises_exception(
             self, presenter, interactor,
@@ -432,6 +436,7 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
             task_storage_mock, create_task_storage
     ):
         # Arrange
+        task_id = 1
         task_display_id = "task_1"
         create_task_storage.get_existing_task_due_date.return_value = \
             datetime.datetime.now() - datetime.timedelta(days=1)
@@ -443,7 +448,10 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
         )
 
         # Assert
-        presenter.get_response_for_task_delay_reason_not_updated.\
+        task_storage_mock.get_template_ids_to_task_ids.assert_called_once_with(
+            task_ids=[task_id]
+        )
+        presenter.get_response_for_task_delay_reason_not_updated. \
             assert_called_once()
 
     @staticmethod

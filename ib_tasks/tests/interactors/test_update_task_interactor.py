@@ -4,19 +4,23 @@ import factory
 import freezegun
 import mock
 import pytest
+from freezegun import freeze_time
 
 from ib_tasks.exceptions.gofs_custom_exceptions import \
-    DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs
+    DuplicateSameGoFOrderForAGoF
 from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
     UpdateTaskInteractor
 from ib_tasks.interactors.stages_dtos import TaskIdWithStageAssigneesDTO
+from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+    get_user_role_ids_based_on_project_mock
 from ib_tasks.tests.factories.interactor_dtos import FieldValuesDTOFactory, \
     GoFFieldsDTOFactory, UpdateTaskWithTaskDisplayIdDTOFactory, \
-    UpdateTaskDTOFactory, StageAssigneeDTOFactory
+    StageAssigneeDTOFactory
 from ib_tasks.tests.factories.storage_dtos import \
     GoFIdWithSameGoFOrderDTOFactory, FieldIdWithTaskGoFIdDTOFactory, \
     TaskGoFDetailsDTOFactory, TaskGoFFieldDTOFactory, \
-    TaskGoFWithTaskIdDTOFactory, FieldIdWithFieldDisplayNameDTOFactory
+    TaskGoFWithTaskIdDTOFactory, FieldWithGoFDisplayNameDTOFactory, \
+    GoFIdWithGoFDisplayNameDTOFactory
 
 
 class TestUpdateTaskInteractor:
@@ -32,7 +36,7 @@ class TestUpdateTaskInteractor:
         TaskGoFFieldDTOFactory.reset_sequence()
         TaskGoFWithTaskIdDTOFactory.reset_sequence()
         StageAssigneeDTOFactory.reset_sequence()
-        FieldIdWithFieldDisplayNameDTOFactory.reset_sequence()
+        FieldWithGoFDisplayNameDTOFactory.reset_sequence()
 
     @pytest.fixture
     def task_storage_mock(self):
@@ -142,6 +146,27 @@ class TestUpdateTaskInteractor:
                ".create_or_update_task_in_elasticsearch_storage"
         return mocker.patch(path)
 
+    @pytest.fixture
+    def task_crud_update_task_mock(self, mocker):
+        path = "ib_tasks.interactors.create_or_update_task" \
+               ".task_crud_operations_interactor" \
+               ".TaskCrudOperationsInteractor.update_task"
+        return mocker.patch(path)
+
+    @pytest.fixture
+    def task_crud_update_task_gofs_mock(self, mocker):
+        path = "ib_tasks.interactors.create_or_update_task" \
+               ".task_crud_operations_interactor" \
+               ".TaskCrudOperationsInteractor.update_task_gofs"
+        return mocker.patch(path)
+
+    @pytest.fixture
+    def task_crud_update_task_gof_fields_mock(self, mocker):
+        path = "ib_tasks.interactors.create_or_update_task" \
+               ".task_crud_operations_interactor" \
+               ".TaskCrudOperationsInteractor.update_task_gof_fields"
+        return mocker.patch(path)
+
     def test_with_invalid_task_display_id(
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
@@ -174,7 +199,7 @@ class TestUpdateTaskInteractor:
         assert response == mock_object
         task_storage_mock.check_is_valid_task_display_id \
             .assert_called_once_with(
-                given_task_display_id)
+            given_task_display_id)
         presenter_mock.raise_invalid_task_display_id.assert_called_once()
         call_args = presenter_mock.raise_invalid_task_display_id.call_args
         error_object = call_args[0][0]
@@ -642,7 +667,7 @@ class TestUpdateTaskInteractor:
             = "template_1"
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = DuplicateSameGoFOrderForAGoF(
-                given_gof_id, [given_same_gof_order])
+            given_gof_id, [given_same_gof_order])
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock,
@@ -734,6 +759,8 @@ class TestUpdateTaskInteractor:
         # Arrange
         given_task_template_id = "template_0"
         given_gof_ids = ["gof_0", "gof_1", "gof_2"]
+        given_gof_display_names = ["gof_display_name_0",
+                                   "gof_display_name_1", "gof_display_name_2"]
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=3, gof_id=factory.Iterator(given_gof_ids)
         )
@@ -753,7 +780,7 @@ class TestUpdateTaskInteractor:
             InvalidGoFsOfTaskTemplate
 
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = InvalidGoFsOfTaskTemplate(given_gof_ids,
+            .side_effect = InvalidGoFsOfTaskTemplate(given_gof_display_names,
                                                      given_task_template_id)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -779,9 +806,9 @@ class TestUpdateTaskInteractor:
             presenter_mock.raise_invalid_gofs_given_to_a_task_template \
                 .call_args
         error_object = call_args[0][0]
-        invalid_gof_ids = error_object.gof_ids
+        invalid_gof_display_names = error_object.gofs_display_names
         invalid_gofs_template_id = error_object.task_template_id
-        assert invalid_gof_ids == given_gof_ids
+        assert invalid_gof_display_names == given_gof_display_names
         assert invalid_gofs_template_id == given_task_template_id
 
     def test_with_invalid_field_ids(
@@ -913,6 +940,10 @@ class TestUpdateTaskInteractor:
         # Arrange
         given_gof_id = "gof_0"
         given_field_ids = ["field_0", "field_0", "field_2"]
+        given_gof_display_name = "gof_display_name_0"
+        given_field_display_names = ["field_display_name_0",
+                                     "field_display_name_1",
+                                     "field_display_name_2"]
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=3, field_id=factory.Iterator(given_field_ids))
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
@@ -934,7 +965,8 @@ class TestUpdateTaskInteractor:
             InvalidFieldsOfGoF
 
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = InvalidFieldsOfGoF(given_gof_id, given_field_ids)
+            .side_effect = InvalidFieldsOfGoF(given_gof_display_name,
+                                              given_field_display_names)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock,
@@ -957,10 +989,10 @@ class TestUpdateTaskInteractor:
         call_args = presenter_mock.raise_invalid_fields_given_to_a_gof \
             .call_args
         error_object = call_args[0][0]
-        invalid_gof_id = error_object.gof_id
-        invalid_field_ids = error_object.field_ids
-        assert invalid_gof_id == given_gof_id
-        assert invalid_field_ids == given_field_ids
+        invalid_gof_display_name = error_object.gof_display_name
+        invalid_field_display_names = error_object.field_display_names
+        assert invalid_gof_display_name == given_gof_display_name
+        assert invalid_field_display_names == given_field_display_names
 
     def test_with_user_who_does_not_have_write_permission_to_a_gof(
             self, task_storage_mock, gof_storage_mock,
@@ -1040,6 +1072,7 @@ class TestUpdateTaskInteractor:
         given_created_by_id = "user_0"
         given_required_user_roles = ["role_1", "role_2"]
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
@@ -1062,7 +1095,8 @@ class TestUpdateTaskInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = UserNeedsFieldWritablePermission(
-            given_created_by_id, given_field_id, given_required_user_roles)
+            given_created_by_id, given_field_display_name,
+            given_required_user_roles)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock,
@@ -1088,10 +1122,10 @@ class TestUpdateTaskInteractor:
             .call_args
         error_object = call_args[0][0]
         user_id = error_object.user_id
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         required_roles = error_object.required_roles
         assert user_id == given_created_by_id
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert required_roles == given_required_user_roles
 
     def test_with_empty_response_to_a_required_field(
@@ -1105,6 +1139,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = ""
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
@@ -1128,7 +1163,7 @@ class TestUpdateTaskInteractor:
             EmptyValueForRequiredField
 
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = EmptyValueForRequiredField(given_field_id)
+            .side_effect = EmptyValueForRequiredField(given_field_display_name)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock,
@@ -1151,8 +1186,8 @@ class TestUpdateTaskInteractor:
         call_args = \
             presenter_mock.raise_empty_value_in_required_field.call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
-        assert invalid_field_id == given_field_id
+        invalid_field_display_name = error_object.field_display_name
+        assert invalid_field_display_name == given_field_display_name
 
     def test_with_invalid_response_to_a_phone_number_field(
             self, task_storage_mock, gof_storage_mock,
@@ -1165,6 +1200,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "890808"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
@@ -1188,7 +1224,7 @@ class TestUpdateTaskInteractor:
             InvalidPhoneNumberValue
 
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = InvalidPhoneNumberValue(given_field_id,
+            .side_effect = InvalidPhoneNumberValue(given_field_display_name,
                                                    given_field_response)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1214,9 +1250,9 @@ class TestUpdateTaskInteractor:
             presenter_mock.raise_invalid_phone_number_value \
                 .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_field_response == given_field_response
 
     def test_with_invalid_response_to_a_email_field(
@@ -1230,6 +1266,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "sljlsjls@gmail"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
@@ -1253,7 +1290,7 @@ class TestUpdateTaskInteractor:
             InvalidEmailFieldValue
 
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = InvalidEmailFieldValue(given_field_id,
+            .side_effect = InvalidEmailFieldValue(given_field_display_name,
                                                   given_field_response)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1279,9 +1316,9 @@ class TestUpdateTaskInteractor:
             presenter_mock.raise_invalid_email_address \
                 .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_field_response == given_field_response
 
     def test_with_invalid_response_to_a_url_field(
@@ -1295,6 +1332,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "invalid url"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
@@ -1318,7 +1356,7 @@ class TestUpdateTaskInteractor:
             InvalidURLValue
 
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = InvalidURLValue(given_field_id,
+            .side_effect = InvalidURLValue(given_field_display_name,
                                            given_field_response)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1344,9 +1382,9 @@ class TestUpdateTaskInteractor:
             presenter_mock.raise_invalid_url_address \
                 .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_field_response == given_field_response
 
     def test_with_weak_password_response_to_a_password_field(
@@ -1360,6 +1398,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "weak password"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
@@ -1383,7 +1422,7 @@ class TestUpdateTaskInteractor:
             NotAStrongPassword
 
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = NotAStrongPassword(given_field_id,
+            .side_effect = NotAStrongPassword(given_field_display_name,
                                               given_field_response)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1409,9 +1448,9 @@ class TestUpdateTaskInteractor:
             presenter_mock.raise_weak_password \
                 .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_field_response == given_field_response
 
     def test_with_invalid_response_to_a_number_field(
@@ -1425,6 +1464,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "two"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
@@ -1448,7 +1488,7 @@ class TestUpdateTaskInteractor:
             InvalidNumberValue
 
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = InvalidNumberValue(given_field_id,
+            .side_effect = InvalidNumberValue(given_field_display_name,
                                               given_field_response)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1474,9 +1514,9 @@ class TestUpdateTaskInteractor:
             presenter_mock.raise_invalid_number_value \
                 .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_field_response == given_field_response
 
     def test_with_invalid_response_to_a_float_field(
@@ -1490,6 +1530,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "two point five"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
@@ -1513,7 +1554,7 @@ class TestUpdateTaskInteractor:
             InvalidFloatValue
 
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = InvalidFloatValue(given_field_id,
+            .side_effect = InvalidFloatValue(given_field_display_name,
                                              given_field_response)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1539,9 +1580,9 @@ class TestUpdateTaskInteractor:
             presenter_mock.raise_invalid_float_value \
                 .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_field_response == given_field_response
 
     def test_with_invalid_response_to_a_dropdown_field(
@@ -1555,6 +1596,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         valid_choices = ["choice 1", "choice 2", "choice 3"]
         given_field_response = '["choice 5"]'
         field_values_dtos = FieldValuesDTOFactory.build_batch(
@@ -1580,7 +1622,7 @@ class TestUpdateTaskInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidValueForDropdownField(
-            given_field_id, given_field_response, valid_choices
+            given_field_display_name, given_field_response, valid_choices
         )
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1606,11 +1648,11 @@ class TestUpdateTaskInteractor:
             presenter_mock.raise_invalid_dropdown_value \
                 .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
         valid_dropdown_choices = error_object.valid_values
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert valid_dropdown_choices == valid_choices
         assert invalid_field_response == given_field_response
 
@@ -1625,6 +1667,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         valid_choices = ["gof selector name 1", "gof selector name 2"]
         given_field_response = '["gof selector name 5"]'
         field_values_dtos = FieldValuesDTOFactory.build_batch(
@@ -1650,7 +1693,7 @@ class TestUpdateTaskInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = IncorrectNameInGoFSelectorField(
-            given_field_id, given_field_response, valid_choices
+            given_field_display_name, given_field_response, valid_choices
         )
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1678,11 +1721,11 @@ class TestUpdateTaskInteractor:
             raise_invalid_name_in_gof_selector \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
         valid_gof_selector_choices = error_object.valid_gof_selector_names
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert valid_gof_selector_choices == valid_choices
         assert invalid_field_response == given_field_response
 
@@ -1697,6 +1740,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         valid_choices = ["choice 1", "choice 2", "choice 3"]
         given_field_response = '["choice 5"]'
         field_values_dtos = FieldValuesDTOFactory.build_batch(
@@ -1722,7 +1766,7 @@ class TestUpdateTaskInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = IncorrectRadioGroupChoice(
-            given_field_id, given_field_response, valid_choices
+            given_field_display_name, given_field_response, valid_choices
         )
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1750,11 +1794,11 @@ class TestUpdateTaskInteractor:
             raise_invalid_choice_in_radio_group_field \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
         valid_radio_group_choices = error_object.valid_radio_group_options
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert valid_radio_group_choices == valid_choices
         assert invalid_field_response == given_field_response
 
@@ -1769,6 +1813,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         valid_choices = ["choice 1", "choice 2", "choice 3"]
         invalid_checkbox_options_selected = ["choice 5"]
         field_values_dtos = FieldValuesDTOFactory.build_batch(
@@ -1794,7 +1839,8 @@ class TestUpdateTaskInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = IncorrectCheckBoxOptionsSelected(
-            given_field_id, invalid_checkbox_options_selected, valid_choices
+            given_field_display_name, invalid_checkbox_options_selected,
+            valid_choices
         )
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1822,11 +1868,11 @@ class TestUpdateTaskInteractor:
             raise_invalid_checkbox_group_options_selected \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_check_box_response = error_object.invalid_checkbox_options
         valid_check_box_choices = error_object.valid_check_box_options
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_check_box_response == invalid_checkbox_options_selected
         assert valid_check_box_choices == valid_choices
 
@@ -1841,6 +1887,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         valid_choices = ["choice 1", "choice 2", "choice 3"]
         invalid_multi_select_options_selected = ["choice 5"]
         field_values_dtos = FieldValuesDTOFactory.build_batch(
@@ -1866,7 +1913,7 @@ class TestUpdateTaskInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = IncorrectMultiSelectOptionsSelected(
-            given_field_id, invalid_multi_select_options_selected,
+            given_field_display_name, invalid_multi_select_options_selected,
             valid_choices
         )
         interactor = UpdateTaskInteractor(
@@ -1895,12 +1942,12 @@ class TestUpdateTaskInteractor:
             raise_invalid_multi_select_options_selected \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_multi_select_options_response = \
             error_object.invalid_multi_select_options
         valid_multi_select_options = error_object.valid_multi_select_options
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_multi_select_options_response == \
                invalid_multi_select_options_selected
         assert valid_multi_select_options == valid_choices
@@ -1916,6 +1963,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         valid_choices = ["choice 1", "choice 2", "choice 3"]
         invalid_multi_select_labels_selected = ["choice 5"]
         field_values_dtos = FieldValuesDTOFactory.build_batch(
@@ -1941,7 +1989,8 @@ class TestUpdateTaskInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = IncorrectMultiSelectLabelsSelected(
-            given_field_id, invalid_multi_select_labels_selected, valid_choices
+            given_field_display_name, invalid_multi_select_labels_selected,
+            valid_choices
         )
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1969,12 +2018,12 @@ class TestUpdateTaskInteractor:
             raise_invalid_multi_select_labels_selected \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_multi_select_labels_response = \
             error_object.invalid_multi_select_labels
         valid_multi_select_labels = error_object.valid_multi_select_labels
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_multi_select_labels_response == \
                invalid_multi_select_labels_selected
         assert valid_multi_select_labels == valid_choices
@@ -1990,6 +2039,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         from ib_tasks.constants.config import DATE_FORMAT
         expected_format = DATE_FORMAT
         given_field_response = "05-04-2020"
@@ -2016,8 +2066,8 @@ class TestUpdateTaskInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidDateFormat(
-                given_field_id, given_field_response, expected_format
-            )
+            given_field_display_name, given_field_response, expected_format
+        )
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock,
@@ -2042,11 +2092,11 @@ class TestUpdateTaskInteractor:
             raise_invalid_date_format \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
         valid_format = error_object.expected_format
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_field_response == given_field_response
         assert valid_format == expected_format
 
@@ -2061,6 +2111,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         from ib_tasks.constants.config import TIME_FORMAT
         expected_format = TIME_FORMAT
         given_field_response = "2:30 PM"
@@ -2087,7 +2138,7 @@ class TestUpdateTaskInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidTimeFormat(
-            given_field_id, given_field_response, expected_format
+            given_field_display_name, given_field_response, expected_format
         )
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -2115,11 +2166,11 @@ class TestUpdateTaskInteractor:
             raise_invalid_time_format \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
         valid_format = error_object.expected_format
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_field_response == given_field_response
         assert valid_format == expected_format
 
@@ -2134,6 +2185,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "invalid image url"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
@@ -2157,7 +2209,7 @@ class TestUpdateTaskInteractor:
             InvalidUrlForImage
 
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = InvalidUrlForImage(given_field_id,
+            .side_effect = InvalidUrlForImage(given_field_display_name,
                                               given_field_response)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -2184,10 +2236,10 @@ class TestUpdateTaskInteractor:
             raise_invalid_image_url \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_image_url = error_object.image_url
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert given_field_response == invalid_image_url
 
     def test_with_invalid_image_format_to_a_image_uploader_field(
@@ -2201,6 +2253,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "invalid image format url"
         given_format = ".svg"
         allowed_formats = [".png", ".jpeg"]
@@ -2226,7 +2279,8 @@ class TestUpdateTaskInteractor:
             InvalidImageFormat
 
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = InvalidImageFormat(given_field_id, given_format,
+            .side_effect = InvalidImageFormat(given_field_display_name,
+                                              given_format,
                                               allowed_formats)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -2254,11 +2308,11 @@ class TestUpdateTaskInteractor:
             raise_not_acceptable_image_format \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         given_invalid_format = error_object.given_format
         valid_formats = error_object.allowed_formats
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert given_invalid_format == given_format
         assert valid_formats == allowed_formats
 
@@ -2273,6 +2327,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "invalid file url"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
@@ -2296,7 +2351,7 @@ class TestUpdateTaskInteractor:
             InvalidUrlForFile
 
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = InvalidUrlForFile(given_field_id,
+            .side_effect = InvalidUrlForFile(given_field_display_name,
                                              given_field_response)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -2324,10 +2379,10 @@ class TestUpdateTaskInteractor:
             raise_invalid_file_url \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_file_url = error_object.file_url
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_file_url == given_field_response
 
     def test_with_invalid_file_format_to_a_file_uploader_field(
@@ -2342,6 +2397,7 @@ class TestUpdateTaskInteractor:
     ):
         # Arrange
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "invalid file format url"
         given_format = ".zip"
         allowed_formats = [".pdf", ".xls"]
@@ -2367,7 +2423,8 @@ class TestUpdateTaskInteractor:
             InvalidFileFormat
 
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = InvalidFileFormat(given_field_id, given_format,
+            .side_effect = InvalidFileFormat(given_field_display_name,
+                                             given_format,
                                              allowed_formats)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -2395,13 +2452,102 @@ class TestUpdateTaskInteractor:
             raise_not_acceptable_file_format \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         given_invalid_format = error_object.given_format
         valid_formats = error_object.allowed_formats
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert given_invalid_format == given_format
         assert valid_formats == allowed_formats
+
+    def test_with_required_and_permitted_fields_not_filled_raise_exception(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock, action_storage_mock,
+            task_stage_storage_mock, task_template_storage_mock,
+            presenter_mock, mock_object,
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            create_or_update_task_in_elasticsearch_storage_mock, mocker
+    ):
+        # Arrange
+        given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
+        given_field_response = "field response"
+        field_values_dtos = FieldValuesDTOFactory.build_batch(
+            size=1, field_id=given_field_id,
+            field_response=given_field_response)
+
+        GoFIdWithGoFDisplayNameDTOFactory.reset_sequence()
+        FieldWithGoFDisplayNameDTOFactory.reset_sequence()
+
+        permitted_field_ids = ["permitted_field_1", "permitted_field_2"]
+        permitted_field_display_names = [
+            "permitted_field_display_name_1", "permitted_field_display_name_2"]
+        permitted_gof_ids = ["permitted_gof"]
+        permitted_gof_display_names = ["permitted_gof_display_name"]
+        permitted_gof_with_display_name_dtos = \
+            GoFIdWithGoFDisplayNameDTOFactory.create_batch(
+                size=1, gof_id=permitted_gof_ids[0],
+                gof_display_name=permitted_gof_display_names[0])
+        field_with_display_name_dtos = \
+            FieldWithGoFDisplayNameDTOFactory.create_batch(
+                size=2,
+                field_id=factory.Iterator(permitted_field_ids),
+                gof_display_name=permitted_gof_display_names[0],
+                field_display_name=factory.Iterator(
+                    permitted_field_display_names))
+
+        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+            size=1, field_values_dtos=field_values_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_id = 1
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        create_task_storage_mock.is_valid_task_id.return_value = True
+        create_task_storage_mock.get_template_id_for_given_task.return_value \
+            = "template_1"
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 5, 7, 10, 15, 30)
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids_based_on_project_mock
+        get_user_role_ids_based_on_project_mock(mocker)
+        task_template_storage_mock.get_template_stage_permitted_gof_ids \
+            .return_value = permitted_gof_ids
+
+        gof_storage_mock.get_user_write_permitted_gof_ids_in_given_gof_ids \
+            .return_value = permitted_gof_with_display_name_dtos
+        field_storage_mock.get_user_writable_fields_for_given_gof_ids \
+            .return_value = field_with_display_name_dtos
+
+        interactor = UpdateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock,
+            storage=storage_mock, field_storage=field_storage_mock,
+            stage_storage=stage_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock,
+            task_template_storage=task_template_storage_mock
+        )
+        presenter_mock.raise_user_did_not_fill_required_fields.return_value \
+            = mock_object
+
+        # Act
+        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_user_did_not_fill_required_fields \
+            .assert_called_once()
+        call_args = presenter_mock.raise_user_did_not_fill_required_fields \
+            .call_args
+        error_object = call_args[0][0]
+        unfilled_fields = error_object.unfilled_field_dtos
+
+        assert unfilled_fields == field_with_display_name_dtos
 
     def test_with_empty_stage_ids_list(
             self, task_storage_mock, gof_storage_mock,
@@ -2416,6 +2562,7 @@ class TestUpdateTaskInteractor:
             create_or_update_task_in_elasticsearch_storage_mock, mocker
     ):
         # Arrange
+        get_user_role_ids_based_on_project_mock(mocker)
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_id = 1
@@ -2498,6 +2645,7 @@ class TestUpdateTaskInteractor:
             create_or_update_task_in_elasticsearch_storage_mock, mocker
     ):
         # Arrange
+        get_user_role_ids_based_on_project_mock(mocker)
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_id = 1
@@ -2573,6 +2721,7 @@ class TestUpdateTaskInteractor:
         invalid_stage_ids = error_object.invalid_stage_ids
         assert invalid_stage_ids == stage_ids
 
+    @freeze_time("2020-09-09 12:00:00")
     def test_with_valid_task_details_updates_task(
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
@@ -2583,9 +2732,12 @@ class TestUpdateTaskInteractor:
             perform_base_validations_for_template_gofs_and_fields_mock,
             update_task_stage_assignees_mock,
             get_filtered_tasks_overview_for_user_mock,
-            create_or_update_task_in_elasticsearch_storage_mock, mocker
+            create_or_update_task_in_elasticsearch_storage_mock,
+            task_crud_update_task_mock, task_crud_update_task_gofs_mock,
+            task_crud_update_task_gof_fields_mock, mocker
     ):
         # Arrange
+        get_user_role_ids_based_on_project_mock(mocker)
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
             start_datetime=datetime.datetime(2020, 9, 21, 16, 21, 3, 556776),
             due_datetime=datetime.datetime(2020, 9, 23, 16, 21, 3, 556776)
@@ -2608,8 +2760,7 @@ class TestUpdateTaskInteractor:
             )
             for gof_fields_dto in task_dto.gof_fields_dtos
         ]
-        create_task_storage_mock \
-            .get_gofs_details_of_task.return_value \
+        create_task_storage_mock.get_gofs_details_of_task.return_value \
             = expected_existing_gofs
         field_ids = []
         for gof_fields_dto in task_dto.gof_fields_dtos:
@@ -2637,9 +2788,8 @@ class TestUpdateTaskInteractor:
         expected_task_gof_details_dtos = TaskGoFDetailsDTOFactory.build_batch(
             size=len(gof_ids), task_gof_id=factory.Iterator([0, 1]),
             gof_id=factory.Iterator(gof_ids),
-            same_gof_order=factory.Iterator(same_gof_orders)
-        )
-        create_task_storage_mock.update_task_gofs.return_value = \
+            same_gof_order=factory.Iterator(same_gof_orders))
+        task_crud_update_task_gofs_mock.return_value = \
             expected_task_gof_details_dtos
         task_gof_ids = [0, 0, 1, 1]
         expected_task_gof_field_dtos = TaskGoFFieldDTOFactory.build_batch(
@@ -2671,16 +2821,14 @@ class TestUpdateTaskInteractor:
             due_datetime=datetime.datetime(2020, 9, 23, 16, 21, 3, 556776),
             priority=Priority.HIGH.value)
 
-        create_task_storage_mock.update_task.assert_called_once_with(
+        task_crud_update_task_mock.assert_called_once_with(
             expected_update_task_basic_details_dto)
-        create_task_storage_mock \
-            .get_gofs_details_of_task \
-            .assert_called_once_with(task_id)
-        create_task_storage_mock.update_task_gofs(
+        create_task_storage_mock.get_gofs_details_of_task.assert_called_once_with(
+            task_id)
+        task_crud_update_task_gofs_mock.assert_called_once_with(
             expected_task_gof_dtos_for_updation)
-        create_task_storage_mock.update_task_gof_fields \
-            .assert_called_once_with(
-                expected_task_gof_field_dtos_for_updation)
+        task_crud_update_task_gof_fields_mock.assert_called_once_with(
+            expected_task_gof_field_dtos_for_updation)
 
     def test_with_invalid_permission_for_assignee_to_given_stage_ids(
             self, task_storage_mock, gof_storage_mock,
@@ -2694,6 +2842,7 @@ class TestUpdateTaskInteractor:
             create_or_update_task_in_elasticsearch_storage_mock, mocker
     ):
         # Arrange
+        get_user_role_ids_based_on_project_mock(mocker)
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_id = 1
@@ -2765,6 +2914,7 @@ class TestUpdateTaskInteractor:
             create_or_update_task_in_elasticsearch_storage_mock, mocker
     ):
         # Arrange
+        get_user_role_ids_based_on_project_mock(mocker)
         task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_id = 1

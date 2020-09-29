@@ -3,6 +3,8 @@ import abc
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueDateTimeHasExpired, DueDateTimeWithoutStartDateTimeIsNotValid, \
     StartDateTimeIsRequired, DueDateTimeIsRequired
+from ib_tasks.exceptions.fields_custom_exceptions import \
+    UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import \
     InvalidStagePermittedGoFs
 from ib_tasks.exceptions.stage_custom_exceptions import \
@@ -187,6 +189,11 @@ class UpdateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_stage_permitted_gofs(self,
-                                           err: InvalidStagePermittedGoFs):
+    def raise_invalid_stage_permitted_gofs(
+            self, err: InvalidStagePermittedGoFs):
+        pass
+
+    @abc.abstractmethod
+    def raise_user_did_not_fill_required_fields(
+            self, err: UserDidNotFillRequiredFields):
         pass

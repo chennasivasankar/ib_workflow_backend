@@ -12,7 +12,7 @@ snapshots['TestCase24SaveAndActOnATaskAPITestCase.test_case[email.com] status_co
 snapshots['TestCase24SaveAndActOnATaskAPITestCase.test_case[email.com] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_EMAIL',
-    'response': 'Invalid value for email: email.com for field: FIELD_ID-1'
+    'response': 'Invalid value for email: email.com for field: DISPLAY_NAME-0'
 }
 
 snapshots['TestCase24SaveAndActOnATaskAPITestCase.test_case[email@gmail] status_code'] = '400'
@@ -20,7 +20,7 @@ snapshots['TestCase24SaveAndActOnATaskAPITestCase.test_case[email@gmail] status_
 snapshots['TestCase24SaveAndActOnATaskAPITestCase.test_case[email@gmail] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_EMAIL',
-    'response': 'Invalid value for email: email@gmail for field: FIELD_ID-1'
+    'response': 'Invalid value for email: email@gmail for field: DISPLAY_NAME-0'
 }
 
 snapshots['TestCase24SaveAndActOnATaskAPITestCase.test_case[@.com] status_code'] = '400'
@@ -28,5 +28,5 @@ snapshots['TestCase24SaveAndActOnATaskAPITestCase.test_case[@.com] status_code']
 snapshots['TestCase24SaveAndActOnATaskAPITestCase.test_case[@.com] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_EMAIL',
-    'response': 'Invalid value for email: @.com for field: FIELD_ID-1'
+    'response': 'Invalid value for email: @.com for field: DISPLAY_NAME-0'
 }

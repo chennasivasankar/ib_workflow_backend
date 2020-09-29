@@ -49,7 +49,7 @@ class GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
             get_users_with_less_tasks_interactor. \
                 get_users_with_less_tasks_in_given_stages(
                 stage_ids=stage_ids_excluding_virtual_stages,
-                project_id=project_id)
+                project_id=project_id, task_id=task_id)
         stages_with_user_details_dtos = \
             stage_with_user_details_and_team_details_dto. \
                 stages_with_user_details_dtos

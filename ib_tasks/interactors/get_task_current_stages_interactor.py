@@ -43,5 +43,5 @@ class GetTaskCurrentStagesInteractor:
             get_roles_service_adapter
         role_service_adapter = get_roles_service_adapter()
         role_service = role_service_adapter.roles_service
-        user_roles = role_service.get_user_role_ids(user_id)
+        user_roles = role_service.get_user_role_ids(user_id=user_id)
         return user_roles

@@ -12,5 +12,5 @@ snapshots['TestCase33SaveAndActOnATaskAPITestCase.test_case status_code'] = '400
 snapshots['TestCase33SaveAndActOnATaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INCORRECT_MULTI_SELECT_LABELS_SELECTED',
-    'response': "Invalid multi select labels selected: ['views'] for field: FIELD_ID-1! Try with these valid options: ['interactors', 'storages']"
+    'response': "Invalid multi select labels selected: ['views'] for field: DISPLAY_NAME-0! Try with these valid options: ['interactors', 'storages']"
 }

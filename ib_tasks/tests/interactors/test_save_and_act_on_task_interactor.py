@@ -6,14 +6,14 @@ import pytest
 from ib_tasks.exceptions.fields_custom_exceptions import \
     UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import \
-    DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs
+    DuplicateSameGoFOrderForAGoF
 from ib_tasks.interactors.create_or_update_task.save_and_act_on_task import \
     SaveAndActOnATaskInteractor
 from ib_tasks.tests.factories.interactor_dtos import \
     SaveAndActOnTaskWithTaskDisplayIdDTOFactory, GoFFieldsDTOFactory, \
     FieldValuesDTOFactory
 from ib_tasks.tests.factories.storage_dtos import \
-    FieldIdWithFieldDisplayNameDTOFactory
+    FieldWithGoFDisplayNameDTOFactory
 
 
 class TestSaveAndActOnATaskInteractor:
@@ -21,7 +21,7 @@ class TestSaveAndActOnATaskInteractor:
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
         SaveAndActOnTaskWithTaskDisplayIdDTOFactory.reset_sequence()
-        FieldIdWithFieldDisplayNameDTOFactory.reset_sequence()
+        FieldWithGoFDisplayNameDTOFactory.reset_sequence()
 
     @pytest.fixture
     def task_storage_mock(self):
@@ -89,7 +89,7 @@ class TestSaveAndActOnATaskInteractor:
 
     @pytest.fixture
     def task_template_storage_mock(self, mocker):
-        from ib_tasks.interactors.storage_interfaces\
+        from ib_tasks.interactors.storage_interfaces \
             .task_template_storage_interface import \
             TaskTemplateStorageInterface
         return mock.create_autospec(TaskTemplateStorageInterface)
@@ -698,10 +698,11 @@ class TestSaveAndActOnATaskInteractor:
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         given_task_template_id = "task_template_1"
         given_gof_ids = ["gof_1", "gof_2"]
+        given_gof_display_names = ["gof_display_name_1", "gof_display_name_2"]
         from ib_tasks.exceptions.task_custom_exceptions import \
             InvalidGoFsOfTaskTemplate
         update_task_mock.side_effect = InvalidGoFsOfTaskTemplate(
-            given_gof_ids, given_task_template_id)
+            given_gof_display_names, given_task_template_id)
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
@@ -728,9 +729,9 @@ class TestSaveAndActOnATaskInteractor:
                 .call_args
         error_object = call_args[0][0]
         task_template_id = error_object.task_template_id
-        invalid_gof_ids = error_object.gof_ids
+        invalid_gof_display_names = error_object.gofs_display_names
         assert task_template_id == given_task_template_id
-        assert invalid_gof_ids == given_gof_ids
+        assert invalid_gof_display_names == given_gof_display_names
 
     def test_with_duplicate_field_ids_to_a_gof(
             self, task_storage_mock, gof_storage_mock,
@@ -792,10 +793,13 @@ class TestSaveAndActOnATaskInteractor:
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         given_gof_id = "gof_1"
         given_field_ids = ["field_1", "field_2"]
+        given_gof_display_name = "gof_display_name_1"
+        given_field_display_names = ["field_display_name_1",
+                                     "field_display_name_2"]
         from ib_tasks.exceptions.task_custom_exceptions import \
             InvalidFieldsOfGoF
         update_task_mock.side_effect = InvalidFieldsOfGoF(
-            given_gof_id, given_field_ids)
+            given_gof_display_name, given_field_display_names)
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
@@ -821,61 +825,10 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock.raise_invalid_fields_given_to_a_gof \
                 .call_args
         error_object = call_args[0][0]
-        gof_id = error_object.gof_id
-        invalid_field_ids = error_object.field_ids
-        assert gof_id == given_gof_id
-        assert invalid_field_ids == given_field_ids
-
-    def test_with_user_who_does_not_have_write_permission_to_a_gof(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock, update_task_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, action_storage_mock, task_stage_storage_mock,
-            task_template_storage_mock, presenter_mock, mock_object
-    ):
-        # Arrange
-        board_id = "board_1"
-        task_request_json = '{"key": "value"}'
-        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
-        given_user_id = "user_1"
-        given_gof_id = "gof_1"
-        given_required_roles = ["role_1", "role2"]
-        from ib_tasks.exceptions.permission_custom_exceptions import \
-            UserNeedsGoFWritablePermission
-        update_task_mock.side_effect = UserNeedsGoFWritablePermission(
-            given_user_id, given_gof_id, given_required_roles)
-        interactor = SaveAndActOnATaskInteractor(
-            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock, storage=storage_mock,
-            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
-            action_storage=action_storage_mock,
-            elastic_storage=elastic_storage_mock,
-            task_stage_storage=task_stage_storage_mock,
-            task_template_storage=task_template_storage_mock
-        )
-        presenter_mock.raise_user_needs_gof_writable_permission \
-            .return_value = \
-            mock_object
-
-        # Act
-        response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json, board_id=board_id)
-
-        # Assert
-        assert response == mock_object
-        presenter_mock.raise_user_needs_gof_writable_permission \
-            .assert_called_once()
-        call_args = \
-            presenter_mock.raise_user_needs_gof_writable_permission \
-                .call_args
-        error_object = call_args[0][0]
-        user_id = error_object.user_id
-        gof_id = error_object.gof_id
-        required_roles = error_object.required_roles
-
-        assert user_id == given_user_id
-        assert gof_id == given_gof_id
-        assert required_roles == given_required_roles
+        gof_display_name = error_object.gof_display_name
+        invalid_field_display_names = error_object.field_display_names
+        assert gof_display_name == given_gof_display_name
+        assert invalid_field_display_names == given_field_display_names
 
     def test_with_user_who_does_not_have_write_permission_to_a_field(
             self, task_storage_mock, gof_storage_mock,
@@ -890,11 +843,12 @@ class TestSaveAndActOnATaskInteractor:
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         given_user_id = "user_1"
         given_field_id = "field_1"
+        given_field_display_name = "field_display_name_1"
         given_required_roles = ["role_1", "role2"]
         from ib_tasks.exceptions.permission_custom_exceptions import \
             UserNeedsFieldWritablePermission
         update_task_mock.side_effect = UserNeedsFieldWritablePermission(
-            given_user_id, given_field_id, given_required_roles)
+            given_user_id, given_field_display_name, given_required_roles)
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
@@ -921,53 +875,12 @@ class TestSaveAndActOnATaskInteractor:
                 .call_args
         error_object = call_args[0][0]
         user_id = error_object.user_id
-        field_id = error_object.field_id
+        field_display_name = error_object.field_display_name
         required_roles = error_object.required_roles
 
         assert user_id == given_user_id
-        assert field_id == given_field_id
+        assert field_display_name == given_field_display_name
         assert required_roles == given_required_roles
-
-    def test_with_unfilled_gofs_which_are_required_and_permitted_to_user(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock, update_task_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, action_storage_mock, task_stage_storage_mock,
-            task_template_storage_mock, presenter_mock, mock_object
-    ):
-        # Arrange
-        board_id = "board_1"
-        task_request_json = '{"key": "value"}'
-        given_gof_display_names = ["gof_display_name_1", "gof_display_name_2"]
-        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
-        update_task_mock.side_effect = UserDidNotFillRequiredGoFs(
-            given_gof_display_names)
-        interactor = SaveAndActOnATaskInteractor(
-            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock, storage=storage_mock,
-            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
-            action_storage=action_storage_mock,
-            elastic_storage=elastic_storage_mock,
-            task_stage_storage=task_stage_storage_mock,
-            task_template_storage=task_template_storage_mock
-        )
-        presenter_mock.raise_user_did_not_fill_required_gofs.return_value = \
-            mock_object
-
-        # Act
-        response = interactor.save_and_act_on_task_wrapper(
-            presenter_mock, task_dto, task_request_json, board_id=board_id)
-
-        # Assert
-        assert response == mock_object
-        presenter_mock.raise_user_did_not_fill_required_gofs \
-            .assert_called_once()
-        call_args = \
-            presenter_mock.raise_user_did_not_fill_required_gofs \
-                .call_args
-        error_object = call_args[0][0]
-        gof_display_names = error_object.gof_display_names
-        assert gof_display_names == given_gof_display_names
 
     def test_with_unfilled_fields_which_are_required_and_permitted_to_user(
             self, task_storage_mock, gof_storage_mock,
@@ -979,7 +892,7 @@ class TestSaveAndActOnATaskInteractor:
         # Arrange
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
-        given_unfilled_field_dtos = FieldIdWithFieldDisplayNameDTOFactory()
+        given_unfilled_field_dtos = FieldWithGoFDisplayNameDTOFactory()
         task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory()
         update_task_mock.side_effect = UserDidNotFillRequiredFields(
             given_unfilled_field_dtos)
@@ -1020,6 +933,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = ""
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
@@ -1031,7 +945,7 @@ class TestSaveAndActOnATaskInteractor:
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             EmptyValueForRequiredField
         update_task_mock \
-            .side_effect = EmptyValueForRequiredField(given_field_id)
+            .side_effect = EmptyValueForRequiredField(given_field_display_name)
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock, storage=storage_mock,
@@ -1055,8 +969,8 @@ class TestSaveAndActOnATaskInteractor:
         call_args = \
             presenter_mock.raise_empty_value_in_required_field.call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
-        assert invalid_field_id == given_field_id
+        invalid_field_display_name = error_object.field_display_name
+        assert invalid_field_display_name == given_field_display_name
 
     def test_with_invalid_response_to_a_phone_number_field(
             self, task_storage_mock, gof_storage_mock,
@@ -1069,6 +983,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "890808"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
@@ -1081,7 +996,7 @@ class TestSaveAndActOnATaskInteractor:
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidPhoneNumberValue
         update_task_mock \
-            .side_effect = InvalidPhoneNumberValue(given_field_id,
+            .side_effect = InvalidPhoneNumberValue(given_field_display_name,
                                                    given_field_response)
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1107,9 +1022,9 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock.raise_invalid_phone_number_value \
                 .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_field_response == given_field_response
 
     def test_with_invalid_response_to_a_email_field(
@@ -1123,6 +1038,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "sljlsjls@gmail"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
@@ -1135,7 +1051,7 @@ class TestSaveAndActOnATaskInteractor:
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidEmailFieldValue
         update_task_mock \
-            .side_effect = InvalidEmailFieldValue(given_field_id,
+            .side_effect = InvalidEmailFieldValue(given_field_display_name,
                                                   given_field_response)
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1161,9 +1077,9 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock.raise_invalid_email_address \
                 .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_field_response == given_field_response
 
     def test_with_invalid_response_to_a_url_field(
@@ -1177,6 +1093,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "invalid url"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
@@ -1189,7 +1106,7 @@ class TestSaveAndActOnATaskInteractor:
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidURLValue
         update_task_mock \
-            .side_effect = InvalidURLValue(given_field_id,
+            .side_effect = InvalidURLValue(given_field_display_name,
                                            given_field_response)
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1215,9 +1132,9 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock.raise_invalid_url_address \
                 .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_field_response == given_field_response
 
     def test_with_weak_password_response_to_a_password_field(
@@ -1231,6 +1148,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "weak password"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
@@ -1243,7 +1161,7 @@ class TestSaveAndActOnATaskInteractor:
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             NotAStrongPassword
         update_task_mock \
-            .side_effect = NotAStrongPassword(given_field_id,
+            .side_effect = NotAStrongPassword(given_field_display_name,
                                               given_field_response)
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1269,9 +1187,9 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock.raise_weak_password \
                 .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_field_response == given_field_response
 
     def test_with_invalid_response_to_a_number_field(
@@ -1285,6 +1203,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "two"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
@@ -1297,7 +1216,7 @@ class TestSaveAndActOnATaskInteractor:
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidNumberValue
         update_task_mock \
-            .side_effect = InvalidNumberValue(given_field_id,
+            .side_effect = InvalidNumberValue(given_field_display_name,
                                               given_field_response)
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1323,9 +1242,9 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock.raise_invalid_number_value \
                 .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_field_response == given_field_response
 
     def test_with_invalid_response_to_a_float_field(
@@ -1339,6 +1258,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "two point five"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
@@ -1351,7 +1271,7 @@ class TestSaveAndActOnATaskInteractor:
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidFloatValue
         update_task_mock \
-            .side_effect = InvalidFloatValue(given_field_id,
+            .side_effect = InvalidFloatValue(given_field_display_name,
                                              given_field_response)
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1377,9 +1297,9 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock.raise_invalid_float_value \
                 .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_field_response == given_field_response
 
     def test_with_invalid_response_to_a_dropdown_field(
@@ -1393,6 +1313,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         valid_choices = ["choice 1", "choice 2", "choice 3"]
         given_field_response = '["choice 5"]'
         field_values_dtos = FieldValuesDTOFactory.build_batch(
@@ -1407,7 +1328,7 @@ class TestSaveAndActOnATaskInteractor:
             InvalidValueForDropdownField
         update_task_mock \
             .side_effect = InvalidValueForDropdownField(
-            given_field_id, given_field_response, valid_choices
+            given_field_display_name, given_field_response, valid_choices
         )
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1433,11 +1354,11 @@ class TestSaveAndActOnATaskInteractor:
             presenter_mock.raise_invalid_dropdown_value \
                 .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
         valid_dropdown_choices = error_object.valid_values
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert valid_dropdown_choices == valid_choices
         assert invalid_field_response == given_field_response
 
@@ -1452,6 +1373,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         valid_choices = ["gof selector name 1", "gof selector name 2"]
         given_field_response = '["gof selector name 5"]'
         field_values_dtos = FieldValuesDTOFactory.build_batch(
@@ -1466,7 +1388,7 @@ class TestSaveAndActOnATaskInteractor:
             IncorrectNameInGoFSelectorField
         update_task_mock \
             .side_effect = IncorrectNameInGoFSelectorField(
-            given_field_id, given_field_response, valid_choices
+            given_field_display_name, given_field_response, valid_choices
         )
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1494,11 +1416,11 @@ class TestSaveAndActOnATaskInteractor:
             raise_invalid_name_in_gof_selector \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
         valid_gof_selector_choices = error_object.valid_gof_selector_names
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert valid_gof_selector_choices == valid_choices
         assert invalid_field_response == given_field_response
 
@@ -1513,6 +1435,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         valid_choices = ["choice 1", "choice 2", "choice 3"]
         given_field_response = '["choice 5"]'
         field_values_dtos = FieldValuesDTOFactory.build_batch(
@@ -1527,7 +1450,7 @@ class TestSaveAndActOnATaskInteractor:
             IncorrectRadioGroupChoice
         update_task_mock \
             .side_effect = IncorrectRadioGroupChoice(
-            given_field_id, given_field_response, valid_choices
+            given_field_display_name, given_field_response, valid_choices
         )
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1555,11 +1478,11 @@ class TestSaveAndActOnATaskInteractor:
             raise_invalid_choice_in_radio_group_field \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
         valid_radio_group_choices = error_object.valid_radio_group_options
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert valid_radio_group_choices == valid_choices
         assert invalid_field_response == given_field_response
 
@@ -1574,6 +1497,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         valid_choices = ["choice 1", "choice 2", "choice 3"]
         invalid_checkbox_options_selected = ["choice 5"]
         field_values_dtos = FieldValuesDTOFactory.build_batch(
@@ -1588,7 +1512,8 @@ class TestSaveAndActOnATaskInteractor:
             IncorrectCheckBoxOptionsSelected
         update_task_mock \
             .side_effect = IncorrectCheckBoxOptionsSelected(
-            given_field_id, invalid_checkbox_options_selected, valid_choices
+            given_field_display_name, invalid_checkbox_options_selected,
+            valid_choices
         )
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1616,11 +1541,11 @@ class TestSaveAndActOnATaskInteractor:
             raise_invalid_checkbox_group_options_selected \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_check_box_response = error_object.invalid_checkbox_options
         valid_check_box_choices = error_object.valid_check_box_options
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_check_box_response == invalid_checkbox_options_selected
         assert valid_check_box_choices == valid_choices
 
@@ -1635,6 +1560,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         valid_choices = ["choice 1", "choice 2", "choice 3"]
         invalid_multi_select_options_selected = ["choice 5"]
         field_values_dtos = FieldValuesDTOFactory.build_batch(
@@ -1649,7 +1575,7 @@ class TestSaveAndActOnATaskInteractor:
             IncorrectMultiSelectOptionsSelected
         update_task_mock \
             .side_effect = IncorrectMultiSelectOptionsSelected(
-            given_field_id, invalid_multi_select_options_selected,
+            given_field_display_name, invalid_multi_select_options_selected,
             valid_choices
         )
         interactor = SaveAndActOnATaskInteractor(
@@ -1678,12 +1604,12 @@ class TestSaveAndActOnATaskInteractor:
             raise_invalid_multi_select_options_selected \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_multi_select_options_response = \
             error_object.invalid_multi_select_options
         valid_multi_select_options = error_object.valid_multi_select_options
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_multi_select_options_response == \
                invalid_multi_select_options_selected
         assert valid_multi_select_options == valid_choices
@@ -1699,6 +1625,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         valid_choices = ["choice 1", "choice 2", "choice 3"]
         invalid_multi_select_labels_selected = ["choice 5"]
         field_values_dtos = FieldValuesDTOFactory.build_batch(
@@ -1713,7 +1640,8 @@ class TestSaveAndActOnATaskInteractor:
             IncorrectMultiSelectLabelsSelected
         update_task_mock \
             .side_effect = IncorrectMultiSelectLabelsSelected(
-            given_field_id, invalid_multi_select_labels_selected, valid_choices
+            given_field_display_name, invalid_multi_select_labels_selected,
+            valid_choices
         )
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1741,12 +1669,12 @@ class TestSaveAndActOnATaskInteractor:
             raise_invalid_multi_select_labels_selected \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_multi_select_labels_response = \
             error_object.invalid_multi_select_labels
         valid_multi_select_labels = error_object.valid_multi_select_labels
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_multi_select_labels_response == \
                invalid_multi_select_labels_selected
         assert valid_multi_select_labels == valid_choices
@@ -1762,6 +1690,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         from ib_tasks.constants.config import DATE_FORMAT
         expected_format = DATE_FORMAT
         given_field_response = "05-04-2020"
@@ -1777,7 +1706,7 @@ class TestSaveAndActOnATaskInteractor:
             InvalidDateFormat
         update_task_mock \
             .side_effect = InvalidDateFormat(
-            given_field_id, given_field_response, expected_format
+            given_field_display_name, given_field_response, expected_format
         )
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1805,11 +1734,11 @@ class TestSaveAndActOnATaskInteractor:
             raise_invalid_date_format \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
         valid_format = error_object.expected_format
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_field_response == given_field_response
         assert valid_format == expected_format
 
@@ -1824,6 +1753,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         from ib_tasks.constants.config import TIME_FORMAT
         expected_format = TIME_FORMAT
         given_field_response = "2:30 PM"
@@ -1839,7 +1769,7 @@ class TestSaveAndActOnATaskInteractor:
             InvalidTimeFormat
         update_task_mock \
             .side_effect = InvalidTimeFormat(
-            given_field_id, given_field_response, expected_format
+            given_field_display_name, given_field_response, expected_format
         )
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1867,11 +1797,11 @@ class TestSaveAndActOnATaskInteractor:
             raise_invalid_time_format \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_field_response = error_object.field_value
         valid_format = error_object.expected_format
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_field_response == given_field_response
         assert valid_format == expected_format
 
@@ -1886,6 +1816,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "invalid image url"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
@@ -1898,7 +1829,7 @@ class TestSaveAndActOnATaskInteractor:
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidUrlForImage
         update_task_mock \
-            .side_effect = InvalidUrlForImage(given_field_id,
+            .side_effect = InvalidUrlForImage(given_field_display_name,
                                               given_field_response)
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1925,10 +1856,10 @@ class TestSaveAndActOnATaskInteractor:
             raise_invalid_image_url \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_image_url = error_object.image_url
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert given_field_response == invalid_image_url
 
     def test_with_invalid_image_format_to_a_image_uploader_field(
@@ -1942,6 +1873,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "invalid image format url"
         given_format = ".svg"
         allowed_formats = [".png", ".jpeg"]
@@ -1956,7 +1888,8 @@ class TestSaveAndActOnATaskInteractor:
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidImageFormat
         update_task_mock \
-            .side_effect = InvalidImageFormat(given_field_id, given_format,
+            .side_effect = InvalidImageFormat(given_field_display_name,
+                                              given_format,
                                               allowed_formats)
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -1984,11 +1917,11 @@ class TestSaveAndActOnATaskInteractor:
             raise_not_acceptable_image_format \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         given_invalid_format = error_object.given_format
         valid_formats = error_object.allowed_formats
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert given_invalid_format == given_format
         assert valid_formats == allowed_formats
 
@@ -2003,6 +1936,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "invalid file url"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
@@ -2015,7 +1949,7 @@ class TestSaveAndActOnATaskInteractor:
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidUrlForFile
         update_task_mock \
-            .side_effect = InvalidUrlForFile(given_field_id,
+            .side_effect = InvalidUrlForFile(given_field_display_name,
                                              given_field_response)
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -2043,10 +1977,10 @@ class TestSaveAndActOnATaskInteractor:
             raise_invalid_file_url \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         invalid_file_url = error_object.file_url
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert invalid_file_url == given_field_response
 
     def test_with_invalid_file_format_to_a_file_uploader_field(
@@ -2060,6 +1994,7 @@ class TestSaveAndActOnATaskInteractor:
         board_id = "board_1"
         task_request_json = '{"key": "value"}'
         given_field_id = "field_0"
+        given_field_display_name = "field_display_name"
         given_field_response = "invalid file format url"
         given_format = ".zip"
         allowed_formats = [".pdf", ".xls"]
@@ -2074,7 +2009,8 @@ class TestSaveAndActOnATaskInteractor:
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidFileFormat
         update_task_mock \
-            .side_effect = InvalidFileFormat(given_field_id, given_format,
+            .side_effect = InvalidFileFormat(given_field_display_name,
+                                             given_format,
                                              allowed_formats)
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -2102,11 +2038,11 @@ class TestSaveAndActOnATaskInteractor:
             raise_not_acceptable_file_format \
             .call_args
         error_object = call_args[0][0]
-        invalid_field_id = error_object.field_id
+        invalid_field_display_name = error_object.field_display_name
         given_invalid_format = error_object.given_format
         valid_formats = error_object.allowed_formats
 
-        assert invalid_field_id == given_field_id
+        assert invalid_field_display_name == given_field_display_name
         assert given_invalid_format == given_format
         assert valid_formats == allowed_formats
 
@@ -2150,7 +2086,7 @@ class TestSaveAndActOnATaskInteractor:
         assert response == mock_object
         presenter_mock.raise_user_action_permission_denied \
             .assert_called_once()
-        call_args = presenter_mock.raise_user_action_permission_denied.\
+        call_args = presenter_mock.raise_user_action_permission_denied. \
             call_args
         error_obj = call_args[0][0]
         action_id = error_obj.action_id
@@ -2439,10 +2375,11 @@ class TestSaveAndActOnATaskInteractor:
             InvalidStagePermittedGoFs
 
         given_gof_ids = ["gof_1", "gof_2"]
+        given_gof_display_names = ["gof_display_name_1", "gof_display_name_2"]
         given_stage_id = 1
 
         user_action_on_task_mock.side_effect = \
-            InvalidStagePermittedGoFs(given_gof_ids, given_stage_id)
+            InvalidStagePermittedGoFs(given_gof_display_names, given_stage_id)
 
         interactor = SaveAndActOnATaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -2467,7 +2404,7 @@ class TestSaveAndActOnATaskInteractor:
             .call_args
         error_object = call_args[0][0]
 
-        gof_ids = error_object.gof_ids
+        gof_display_names = error_object.gof_display_names
         stage_id = error_object.stage_id
-        assert gof_ids == given_gof_ids
+        assert gof_display_names == given_gof_display_names
         assert stage_id == given_stage_id
