@@ -2,8 +2,7 @@ from ib_iam.adapters.dtos import EmailAndPasswordDTO
 from ib_iam.exceptions.custom_exceptions import InvalidEmail, \
     UserAccountDoesNotExist
 from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
-    AuthPresenterInterface, LoginWithUserTokePresenterInterface
-
+    AuthPresenterInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 
@@ -84,29 +83,3 @@ class LoginInteractor:
         is_invalid_email = not re.search(pattern, email)
         if is_invalid_email:
             raise InvalidEmail
-
-    def login_with_token_wrapper(
-            self, token: str, presenter: LoginWithUserTokePresenterInterface
-    ):
-        tokens_dto, is_admin = self.login_with_token(token=token)
-        response = presenter.prepare_response_for_user_tokens_dto_and_is_admin(
-            tokens_dto=tokens_dto, is_admin=is_admin
-        )
-        return response
-
-    def login_with_token(self, token: str):
-        from django.conf import settings
-        user_id = self.storage.get_user_id_for_given_token(token=token)
-        is_user_not_exist = user_id is None
-        if is_user_not_exist:
-            # TODO raise exception
-            pass
-        from ib_iam.adapters.service_adapter import ServiceAdapter
-        service_adapter = ServiceAdapter()
-        expiry_in_seconds = settings.USER_VERIFICATION_EMAIL_EXPIRY_IN_SECONDS
-        user_tokens_dto = service_adapter.auth_service \
-            .create_auth_tokens_for_user(
-            user_id=user_id, expiry_in_seconds=expiry_in_seconds
-        )
-        is_admin = self.storage.is_user_admin(user_id=user_id)
-        return user_tokens_dto, is_admin

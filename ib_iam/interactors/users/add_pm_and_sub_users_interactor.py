@@ -1,8 +1,8 @@
 from collections import defaultdict
 from typing import List
 
-from ib_iam.constants.config import DEFAULT_TEAM_ID, DEFAULT_TEAM_NAME, \
-    LEVEL_0_HIERARCHY, LEVEL_0_NAME, LEVEL_1_HIERARCHY, LEVEL_1_NAME
+from ib_iam.constants.config import LEVEL_0_HIERARCHY, LEVEL_0_NAME, \
+    LEVEL_1_HIERARCHY, LEVEL_1_NAME
 from ib_iam.interactors.dtos.dtos import PMAndSubUsersAuthTokensDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserIdWithTokenDTO

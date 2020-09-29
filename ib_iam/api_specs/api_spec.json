@@ -1175,6 +1175,20 @@
       "in": "query",
       "required": true,
       "type": "string"
+    },
+    "LoginWithTokenParameter": {
+      "name": "login_with_token_parameter",
+      "description": "login with token parameter",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }
     }
   },
   "responses": {
@@ -4090,6 +4104,9 @@
         "parameters": [
           {
             "$ref": "#/parameters/TokenQueryParameter"
+          },
+          {
+            "$ref": "#/parameters/LoginWithTokenParameter"
           }
         ],
         "responses": {
