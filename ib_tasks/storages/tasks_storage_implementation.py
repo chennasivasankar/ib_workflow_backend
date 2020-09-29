@@ -623,13 +623,14 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     def get_task_project_ids(self, task_ids: List[int]) -> \
             List[TaskProjectDTO]:
-        tasks = Task.objects.filter(id__in=task_ids)
+        task_id_and_project_id_dicts = \
+            Task.objects.filter(id__in=task_ids).values('id', 'project_id')
         task_project_dtos = [
             TaskProjectDTO(
-                task_id=task.id,
-                project_id=task.project_id
+                task_id=task_id_and_project_id_dict['id'],
+                project_id=task_id_and_project_id_dict['project_id']
             )
-            for task in tasks
+            for task_id_and_project_id_dict in task_id_and_project_id_dicts
         ]
         return task_project_dtos
 

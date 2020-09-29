@@ -10,6 +10,11 @@ class GoFRole(models.Model):
     permission_type = models.CharField(max_length=100,
                                        choices=Permission_Types)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['role', 'permission_type']),
+        ]
+
     def __str__(self):
         return "{} has {} permission on {} gof".format(
             self.role, self.permission_type, self.gof_id
