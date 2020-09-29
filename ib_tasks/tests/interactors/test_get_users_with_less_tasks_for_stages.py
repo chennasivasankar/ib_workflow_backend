@@ -48,7 +48,8 @@ class TestGetUsersWithLessTasksInGivenStagesInteractor:
         # Arrange
         task_id = 1
         db_stage_ids = [1, 2]
-        role_ids = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
+        project_id = "project_id_1"
+        role_ids = ["FIN_PAYMENT_APPROVER", "FIN_PAYMENT_REQUESTER"]
         TaskWithDbStageIdDTOFactory.reset_sequence()
         stage_storage_mock.get_stage_detail_dtos_given_stage_ids.return_value \
             = stage_details_dtos
@@ -61,8 +62,9 @@ class TestGetUsersWithLessTasksInGivenStagesInteractor:
         stage_storage_mock. \
             get_current_stages_of_all_tasks.return_value = \
             TaskWithDbStageIdDTOFactory.create_batch(2, task_id=1)
-        action_storage_mock.get_stage_ids_having_actions.return_value = [1, 2]
-        stage_storage_mock.get_recent_task_stage.return_value = [1, 2]
+        action_storage_mock.get_stage_ids_having_actions.return_value = \
+            db_stage_ids
+        stage_storage_mock.get_recent_task_stage.return_value = db_stage_ids
         stage_storage_mock. \
             get_stage_details_having_assignees_in_given_stage_ids.\
             return_value = TaskStageHavingAssigneeIdDTOFactory.create_batch(2)
@@ -89,7 +91,7 @@ class TestGetUsersWithLessTasksInGivenStagesInteractor:
         response = get_users_with_less_tasks_interactor.\
             get_users_with_less_tasks_in_given_stages(
                 stage_ids=["stage_id_3", "stage_id_4"],
-                project_id="project_id_1", task_id=task_id)
+                project_id=project_id, task_id=task_id)
 
         # Assert
         snapshot.assert_match(response)
@@ -104,11 +106,9 @@ class TestGetUsersWithLessTasksInGivenStagesInteractor:
         stage_storage_mock. \
             get_current_stages_of_all_tasks.assert_called_once()
         action_storage_mock.get_stage_ids_having_actions.assert_called_once()
-        stage_storage_mock.get_recent_task_stage.assert_called_once_with(
-            task_id=task_id)
-        stage_storage_mock.\
-            get_stage_details_having_assignees_in_given_stage_ids. \
-            assert_called_once_with(task_id=task_id, db_stage_ids=)
+        get_user_details_with_roles_mock_obj.assert_called_once_with(
+            role_ids, project_id
+        )
 
     def test_given_no_task_count_for_user_get_users_with_less_tasks_for_stages(
             self, mocker, stage_storage_mock, task_stage_storage_mock,
@@ -116,6 +116,10 @@ class TestGetUsersWithLessTasksInGivenStagesInteractor:
             snapshot):
         # Arrange
         task_id = 1
+        db_stage_ids = [1, 2]
+        project_id = "project_id_1"
+        role_ids = ["FIN_PAYMENT_APPROVER", "FIN_PAYMENT_REQUESTER"]
+
         TaskWithDbStageIdDTOFactory.reset_sequence()
         stage_storage_mock.get_stage_detail_dtos_given_stage_ids.return_value \
             = stage_details_dtos
@@ -126,8 +130,14 @@ class TestGetUsersWithLessTasksInGivenStagesInteractor:
         stage_storage_mock. \
             get_current_stages_of_all_tasks.return_value = \
             TaskWithDbStageIdDTOFactory.create_batch(2, task_id=1)
-        action_storage_mock.get_stage_ids_having_actions.return_value = [1, 2]
-        stage_storage_mock.get_recent_task_stage.return_value = [1, 2]
+        action_storage_mock.get_stage_ids_having_actions.return_value = \
+            db_stage_ids
+        stage_storage_mock.get_recent_task_stage.return_value = db_stage_ids
+        stage_storage_mock. \
+            get_stage_details_having_assignees_in_given_stage_ids.\
+            return_value = TaskStageHavingAssigneeIdDTOFactory.create_batch(2)
+        get_user_details_with_roles_mock_obj = \
+            get_user_details_with_roles_mock(mocker, role_ids=role_ids)
 
         from ib_tasks.tests.common_fixtures.adapters.auth_service \
             import prepare_permitted_multiple_user_details_mock
@@ -164,6 +174,9 @@ class TestGetUsersWithLessTasksInGivenStagesInteractor:
         stage_storage_mock. \
             get_current_stages_of_all_tasks.assert_called_once()
         action_storage_mock.get_stage_ids_having_actions.assert_called_once()
+        get_user_details_with_roles_mock_obj.assert_called_once_with(
+            role_ids, project_id
+        )
 
     def test_given_equal_task_count_for_user_get_users_with_less_tasks_for_stages(
             self, mocker, stage_storage_mock, task_stage_storage_mock,
@@ -171,6 +184,9 @@ class TestGetUsersWithLessTasksInGivenStagesInteractor:
             snapshot):
         # Arrange
         task_id = 1
+        db_stage_ids = [1, 2]
+        project_id = "project_id_1"
+        role_ids = ["FIN_PAYMENT_APPROVER", "FIN_PAYMENT_REQUESTER"]
         TaskWithDbStageIdDTOFactory.reset_sequence()
         stage_storage_mock.get_stage_detail_dtos_given_stage_ids.return_value \
             = stage_details_dtos
@@ -185,8 +201,14 @@ class TestGetUsersWithLessTasksInGivenStagesInteractor:
         stage_storage_mock. \
             get_current_stages_of_all_tasks.return_value = \
             TaskWithDbStageIdDTOFactory.create_batch(2, task_id=1)
-        action_storage_mock.get_stage_ids_having_actions.return_value = [1, 2]
-        stage_storage_mock.get_recent_task_stage.return_value = [1, 2]
+        action_storage_mock.get_stage_ids_having_actions.return_value = \
+            db_stage_ids
+        stage_storage_mock.get_recent_task_stage.return_value = db_stage_ids
+        stage_storage_mock. \
+            get_stage_details_having_assignees_in_given_stage_ids.\
+            return_value = TaskStageHavingAssigneeIdDTOFactory.create_batch(2)
+        get_user_details_with_roles_mock_obj = \
+            get_user_details_with_roles_mock(mocker, role_ids=role_ids)
 
         from ib_tasks.tests.common_fixtures.adapters.auth_service \
             import prepare_permitted_multiple_user_details_mock
@@ -223,3 +245,6 @@ class TestGetUsersWithLessTasksInGivenStagesInteractor:
         stage_storage_mock. \
             get_current_stages_of_all_tasks.assert_called_once()
         action_storage_mock.get_stage_ids_having_actions.assert_called_once()
+        get_user_details_with_roles_mock_obj.assert_called_once_with(
+            role_ids, project_id
+        )
