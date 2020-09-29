@@ -319,11 +319,14 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
     def test_invalid_board_raises_exception(
             self, presenter, interactor,
             set_up_storage_for_invalid_board,
-            invalid_board_mock
+            invalid_board_mock, validate_board_id_mock
     ):
         # Arrange
         board_id = "board_1"
         task_display_id = "task_1"
+        from ib_tasks.interactors.user_action_on_task \
+            .user_action_on_task_interactor import InvalidBoardIdException
+        validate_board_id_mock.return_value = InvalidBoardIdException
 
         # Act
         interactor.user_action_on_task_wrapper(presenter=presenter,
@@ -406,6 +409,14 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
         validation_mock_obj.return_value = True
         return validation_mock_obj
 
+    @staticmethod
+    @pytest.fixture
+    def validate_board_id_mock(mocker):
+        path = 'ib_tasks.adapters.boards_service.BoardsService' \
+               '.validate_board_id'
+        mock_obj = mocker.patch(path)
+        return mock_obj
+
     @pytest.fixture()
     def current_board_mock(self, mocker):
         path = \
@@ -466,7 +477,8 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
 
     def test_invalid_present_stage_action_raises_exception(
             self, interactor, presenter, storage,
-            set_up_invalid_present_stage_action
+            set_up_invalid_present_stage_action,
+            validate_board_id_mock
     ):
         # Arrange
         task_display_id = "task_1"

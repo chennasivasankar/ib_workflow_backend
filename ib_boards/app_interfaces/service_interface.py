@@ -14,3 +14,9 @@ class BoardServiceInterface:
         board_details_dto = interactor.get_board_details(
             board_id=board_id, stage_ids=stage_ids, user_id=user_id)
         return board_details_dto
+
+    @staticmethod
+    def validate_given_board_id(board_id: str):
+        storage = StorageImplementation()
+        interactor = GetBoardDetailsInteractor(storage)
+        return interactor.validate_board_id(board_id)
