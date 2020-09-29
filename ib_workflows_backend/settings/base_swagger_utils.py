@@ -139,3 +139,8 @@ RESET_PASSWORD_LINK = '{frontend_url}update-password?token='.format(
 USER_VERIFICATION_EMAIL_LINK = "{frontend_url}verify-email?token=".format(
     frontend_url=FRONTEND_URL
 )
+
+# ************************** django silk ************************
+
+SILKY_PYTHON_PROFILER = True
+SILKY_PYTHON_PROFILER_BINARY = True
