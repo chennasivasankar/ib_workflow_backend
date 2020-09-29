@@ -27,23 +27,24 @@ from ib_tasks.documents.elastic_task import *
 class ElasticSearchStorageInterface(abc.ABC):
 
     @abc.abstractmethod
-    def create_task(self, elastic_task_dto: ElasticTaskDTO) -> str:
+    def create_task(self, elastic_task_dto: ElasticTaskDTO, user_id: str) -> str:
         pass
 
     @abc.abstractmethod
-    def update_task(self, task_dto: ElasticTaskDTO):
+    def update_task(self, task_dto: ElasticTaskDTO, user_id: str):
         pass
 
     @abc.abstractmethod
     def filter_tasks(
-            self, filter_dtos: List[ApplyFilterDTO], offset: int, limit:
-            int, stage_ids: List[str], project_id: str, field_type_dtos: List[FieldTypeDTO]) -> Tuple[List[int], int]:
+            self, filter_dtos: List[ApplyFilterDTO], offset: int, limit: int,
+            user_ids: List[str], stage_ids: List[str], project_id: str,
+            field_type_dtos: List[FieldTypeDTO]) -> Tuple[List[int], int]:
         pass
 
     @abc.abstractmethod
     def search_tasks(
             self, search_query_dto: SearchQueryDTO,
-            apply_filter_dtos: List[ApplyFilterDTO],
+            apply_filter_dtos: List[ApplyFilterDTO], user_ids: List[str],
             stage_ids: List[str], field_type_dtos: List[FieldTypeDTO]
     ) -> QueryTasksDTO:
         pass
@@ -51,5 +52,6 @@ class ElasticSearchStorageInterface(abc.ABC):
     def validate_task_id_in_elasticsearch(self, task_id):
         pass
 
-    def filter_tasks_with_stage_ids(self, filter_dtos, task_details_config, field_type_dtos: List[FieldTypeDTO]):
+    def filter_tasks_with_stage_ids(
+            self, filter_dtos, task_details_config, field_type_dtos: List[FieldTypeDTO], user_ids: List[str]):
         pass

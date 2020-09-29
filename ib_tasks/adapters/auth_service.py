@@ -213,3 +213,9 @@ class AuthService:
             user_id=user_id, team_id=team_id
         )
         return superior_id
+
+    def get_user_ids_based_on_user_level(self, project_id: str, user_id: str):
+        return []
+
+    def check_user_in_least_level(self, project_id: str, user_id: str):
+        return True

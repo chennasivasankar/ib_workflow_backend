@@ -785,3 +785,11 @@ class TasksStorageImplementation(TaskStorageInterface):
             )
             for task_obj in task_objs
         ]
+
+    def get_project_id_and_user_id_for_the_task_id(self, task_id: int):
+        task_obj = Task.objects.filter(id=task_id) \
+            .values('created_by', 'project_id')
+        project_id = task_obj[0]['project_id']
+        user_id = task_obj[0]['created_by']
+
+        return project_id, user_id

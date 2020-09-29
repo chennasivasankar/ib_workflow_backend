@@ -40,7 +40,8 @@ class GetTaskIdsBasedOnUserSearchQuery(ValidationMixin):
 
     def get_task_ids_by_applying_search_query(
             self, search_query_dto: SearchQueryDTO, stage_ids: List[str],
-            apply_filters_dto: List[ApplyFilterDTO]) -> QueryTasksDTO:
+            apply_filters_dto: List[ApplyFilterDTO],
+            user_ids: List[str]) -> QueryTasksDTO:
         user_id = search_query_dto.user_id
         project_id = search_query_dto.project_id
         self._validations_of_limit_and_offset(
@@ -66,7 +67,8 @@ class GetTaskIdsBasedOnUserSearchQuery(ValidationMixin):
             search_query_dto=search_query_dto,
             apply_filter_dtos=apply_filters_dto,
             stage_ids=stage_ids,
-            field_type_dtos=field_type_dtos
+            field_type_dtos=field_type_dtos,
+            user_ids=user_ids
         )
         return query_tasks_dto
 

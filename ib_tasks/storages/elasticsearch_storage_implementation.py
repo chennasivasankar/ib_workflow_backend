@@ -23,13 +23,16 @@ from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, SearchQueryDTO
 
 class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
-    def create_task(self, elastic_task_dto: ElasticTaskDTO) -> str:
+    def create_task(self, elastic_task_dto: ElasticTaskDTO, user_id: str) -> str:
         from elasticsearch_dsl import connections
         from django.conf import settings
         es = connections.create_connection(
             hosts=[settings.ELASTICSEARCH_ENDPOINT],
             timeout=20)
-        task_dict = self._get_task_dict(elastic_task_dto)
+        task_dict = self._get_task_dict(
+            elastic_task_dto=elastic_task_dto,
+            user_id=user_id
+        )
         import json
         task_dict = json.dumps(task_dict)
         doc = es.index(
@@ -39,7 +42,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             body=json.loads(task_dict))
         return doc['_id']
 
-    def update_task(self, task_dto: ElasticTaskDTO):
+    def update_task(self, task_dto: ElasticTaskDTO, user_id: str):
         from elasticsearch_dsl import connections
         from django.conf import settings
         es = connections.create_connection(
@@ -51,7 +54,10 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         elastic_search_task_id = ElasticSearchTask.objects.get(
             task_id=task_id
         ).elasticsearch_id
-        task_dict = self._get_task_dict(task_dto)
+        task_dict = self._get_task_dict(
+            elastic_task_dto=task_dto,
+            user_id=user_id
+        )
         import json
         task_dict = json.dumps(task_dict)
         es.index(
@@ -61,10 +67,11 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             id=elastic_search_task_id,
             body=json.loads(task_dict))
 
-    def _get_task_dict(self, elastic_task_dto: ElasticTaskDTO):
+    def _get_task_dict(self, elastic_task_dto: ElasticTaskDTO, user_id: str):
         start_date, due_date = self._get_start_date_and_due_date(
             elastic_task_dto)
         task_dict = {
+            "created_by": user_id,
             "project_id": elastic_task_dto.project_id,
             "template_id": elastic_task_dto.template_id,
             "task_id": elastic_task_dto.task_id,
@@ -116,7 +123,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         return datetime_in_string_format
 
     def filter_tasks(
-            self, filter_dtos: List[ApplyFilterDTO], offset: int,
+            self, filter_dtos: List[ApplyFilterDTO], offset: int, user_ids: List[str],
             stage_ids: List[str], limit: int, project_id: str,
             field_type_dtos: List[FieldTypeDTO]) -> Tuple[List[int], int]:
         from elasticsearch_dsl import connections
@@ -126,7 +133,8 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         search = self._get_filter_task_objects(filter_dtos, field_type_dtos)
 
         query = Q('terms', stages__stage_id__keyword=stage_ids) \
-                & Q('term', project_id__keyword=project_id)
+                & Q('term', project_id__keyword=project_id) \
+                & Q('terms', created_by__keyword=user_ids)
 
         task_objects = search.filter(query)
 
@@ -159,7 +167,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
     def search_tasks(
             self, search_query_dto: SearchQueryDTO,
-            apply_filter_dtos: List[ApplyFilterDTO],
+            apply_filter_dtos: List[ApplyFilterDTO], user_ids: List[str],
             stage_ids: List[str], field_type_dtos: List[FieldTypeDTO]
     ) -> QueryTasksDTO:
         from elasticsearch_dsl import connections
@@ -173,7 +181,8 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from elasticsearch_dsl import Q
         search = self._get_filter_task_objects(apply_filter_dtos, field_type_dtos)
         query = Q('term', project_id__keyword=project_id) \
-                & Q('terms', stages__stage_id__keyword=stage_ids)
+                & Q('terms', stages__stage_id__keyword=stage_ids) \
+                & Q('terms', created_by__keyword=user_ids)
         if search_query:
             query = query & Q("match", title={"query": search_query, "fuzziness": "5"})
         search = search.query(query)
@@ -189,7 +198,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
     def filter_tasks_with_stage_ids(
             self, filter_dtos: List[ApplyFilterDTO], field_type_dtos: List[FieldTypeDTO],
-            task_details_config: TaskDetailsConfigDTO) -> Tuple[
+            task_details_config: TaskDetailsConfigDTO, user_ids: List[str]) -> Tuple[
         List[TaskStageIdsDTO], int]:
         from elasticsearch_dsl import connections
         from django.conf import settings
@@ -200,7 +209,8 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         search = self._get_filter_task_objects(filter_dtos, field_type_dtos)
         search = search.filter('terms', stages__stage_id__keyword=stage_ids)
         query = Q('terms', stages__stage_id__keyword=stage_ids) \
-                & Q('term', project_id__keyword=task_details_config.project_id)
+                & Q('term', project_id__keyword=task_details_config.project_id) \
+                & Q('terms', created_by__keyword=user_ids)
 
         if search_query:
             query = query & Q(
