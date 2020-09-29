@@ -41,20 +41,27 @@ class TestGetTaskIdsInteractor:
             FilterStorageInterface
         return unittest.mock.create_autospec(FilterStorageInterface)
 
+    @pytest.fixture
+    def field_storage(self):
+        from unittest.mock import create_autospec
+        from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+            FieldsStorageInterface
+        return create_autospec(FieldsStorageInterface)
+
     def test_with_invalid_stage_ids_raise_error(
-            self, task_storage, stage_storage, elasticsearch_storage, filter_storage):
+            self, task_storage, stage_storage,
+            elasticsearch_storage, filter_storage, field_storage):
         # Arrange
         stage_ids = [['STAGE_ID_1', 'STAGE_ID_2'],
                      ['STAGE_ID_3', 'STAGE_ID_4']]
-        stage_ids_single_list = ['STAGE_ID_1', 'STAGE_ID_2', 'STAGE_ID_3',
-                                 'STAGE_ID_4']
-        invalid_stage_ids = ['STAGE_ID_1', 'STAGE_ID_2']
+
         valid_stage_ids = ['STAGE_ID_3', 'STAGE_ID_4']
         interactor = GetTaskIdsInteractor(
             stage_storage=stage_storage,
             task_storage=task_storage,
             filter_storage=filter_storage,
-            elasticsearch_storage=elasticsearch_storage
+            elasticsearch_storage=elasticsearch_storage,
+            field_storage=field_storage
         )
         task_config_dtos = [
             TaskDetailsConfigDTO(
@@ -63,7 +70,8 @@ class TestGetTaskIdsInteractor:
                 offset=0,
                 limit=5,
                 search_query="hello",
-                user_id='user_id_1'
+                user_id='user_id_1',
+                project_id='FIN_MAN'
             ),
             TaskDetailsConfigDTO(
                 unique_key="1",
@@ -71,10 +79,12 @@ class TestGetTaskIdsInteractor:
                 offset=0,
                 limit=5,
                 search_query="hello",
-                user_id='user_id_1'
+                user_id='user_id_1',
+                project_id='FIN_MAN'
             )
         ]
         stage_storage.get_existing_stage_ids.return_value = valid_stage_ids
+
         # Act
         from ib_tasks.exceptions.stage_custom_exceptions import \
             InvalidStageIdsListException
@@ -82,7 +92,8 @@ class TestGetTaskIdsInteractor:
             interactor.get_task_ids(task_details_configs=task_config_dtos)
 
     def test_with_invalid_limit_raise_error(
-            self, task_storage, stage_storage, elasticsearch_storage, filter_storage):
+            self, task_storage, stage_storage, elasticsearch_storage,
+            filter_storage, field_storage):
         # Arrange
         stage_ids = [['STAGE_ID_1', 'STAGE_ID_2'],
                      ['STAGE_ID_3', 'STAGE_ID_4']]
@@ -92,7 +103,8 @@ class TestGetTaskIdsInteractor:
             stage_storage=stage_storage,
             task_storage=task_storage,
             filter_storage=filter_storage,
-            elasticsearch_storage=elasticsearch_storage
+            elasticsearch_storage=elasticsearch_storage,
+            field_storage=field_storage
         )
         task_config_dtos = [
             TaskDetailsConfigDTO(
@@ -101,7 +113,8 @@ class TestGetTaskIdsInteractor:
                 offset=0,
                 limit=-2,
                 search_query="hello",
-                user_id='user_id_1'
+                user_id='user_id_1',
+                project_id='FIN_MAN'
             ),
             TaskDetailsConfigDTO(
                 unique_key="1",
@@ -109,7 +122,8 @@ class TestGetTaskIdsInteractor:
                 offset=0,
                 limit=5,
                 search_query="hello",
-                user_id='user_id_1'
+                user_id='user_id_1',
+                project_id='FIN_MAN'
             )
         ]
         stage_storage.get_existing_stage_ids.return_value = stage_ids_single_list
@@ -119,7 +133,8 @@ class TestGetTaskIdsInteractor:
             interactor.get_task_ids(task_details_configs=task_config_dtos)
 
     def test_with_invalid_offset_raise_error(
-            self, task_storage, stage_storage, elasticsearch_storage, filter_storage):
+            self, task_storage, stage_storage, elasticsearch_storage,
+            filter_storage, field_storage):
         # Arrange
         stage_ids = [['STAGE_ID_1', 'STAGE_ID_2'],
                      ['STAGE_ID_3', 'STAGE_ID_4']]
@@ -129,7 +144,8 @@ class TestGetTaskIdsInteractor:
             stage_storage=stage_storage,
             task_storage=task_storage,
             filter_storage=filter_storage,
-            elasticsearch_storage=elasticsearch_storage
+            elasticsearch_storage=elasticsearch_storage,
+            field_storage=field_storage
         )
         task_config_dtos = [
             TaskDetailsConfigDTO(
@@ -138,7 +154,8 @@ class TestGetTaskIdsInteractor:
                 offset=3,
                 limit=2,
                 search_query="hello",
-                user_id='user_id_1'
+                user_id='user_id_1',
+                project_id='FIN_MAN'
             ),
             TaskDetailsConfigDTO(
                 unique_key="1",
@@ -146,7 +163,8 @@ class TestGetTaskIdsInteractor:
                 offset=-3,
                 limit=5,
                 search_query="hello",
-                user_id='user_id_1'
+                user_id='user_id_1',
+                project_id='FIN_MAN'
             )
         ]
         stage_storage.get_existing_stage_ids.return_value = stage_ids_single_list
@@ -156,7 +174,7 @@ class TestGetTaskIdsInteractor:
             interactor.get_task_ids(task_details_configs=task_config_dtos)
 
     def test_with_valid_stage_ids_return_task_ids_with_stage_ids_dict(
-            self, stage_storage, task_storage, snapshot,
+            self, stage_storage, task_storage, snapshot, field_storage,
             elasticsearch_storage, filter_storage, mocker):
         # Arrange
         from ib_tasks.tests.factories.storage_dtos import \
@@ -179,7 +197,8 @@ class TestGetTaskIdsInteractor:
                 offset=0,
                 limit=5,
                 search_query="hello",
-                user_id='user_id_1'
+                user_id='user_id_1',
+                project_id='FIN_MAN'
             ),
             TaskDetailsConfigDTO(
                 unique_key="1",
@@ -187,7 +206,8 @@ class TestGetTaskIdsInteractor:
                 offset=0,
                 limit=5,
                 search_query="hello",
-                user_id='user_id_1'
+                user_id='user_id_1',
+                project_id='FIN_MAN'
             )
         ]
         task_ids_dtos = [
@@ -209,11 +229,11 @@ class TestGetTaskIdsInteractor:
             stage_storage=stage_storage,
             task_storage=task_storage,
             filter_storage=filter_storage,
-            elasticsearch_storage=elasticsearch_storage
+            elasticsearch_storage=elasticsearch_storage,
+            field_storage=field_storage
         )
         stage_storage.get_existing_stage_ids.return_value = stage_ids_single_list
-        elasticsearch_storage.filter_tasks_with_stage_ids.side_effect = [(expected_response[0], 100), (expected_response[1], 100)]
-        task_storage.get_task_ids_for_the_stage_ids.side_effect = [
+        elasticsearch_storage.filter_tasks_with_stage_ids.side_effect = [
             (expected_response[0], 100), (expected_response[1], 100)
         ]
 
@@ -224,7 +244,7 @@ class TestGetTaskIdsInteractor:
 
         # Assert
 
-        stage_storage.get_existing_stage_ids.assert_called_once_with(
+        elasticsearch_storage.filter_tasks_with_stage_ids.assert_called_once_with(
             stage_ids=stage_ids_single_list
         )
         snapshot.assert_match(actual_response, 'response')
