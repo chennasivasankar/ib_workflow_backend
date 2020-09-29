@@ -27,6 +27,7 @@ class ElasticTaskDTO:
     project_id: Optional[str]
     template_id: Optional[str]
     task_id: int
+    created_by: str
     title: str
     description: str
     start_date: datetime
