@@ -41,6 +41,6 @@ class TestCase01UserLoginWithTokenAPITestCase(TestUtils):
         from ib_iam.tests.factories.models import \
             UserAuthTokenFactory, UserDetailsFactory
         UserAuthTokenFactory.create(user_id=user_id, token=token)
-        UserDetailsFactory.create(user_id=user_id, is_admin=True)
+        UserDetailsFactory.create(user_id=user_id, is_admin=False)
         return {"token": token}
     # TODO need to change from implementation

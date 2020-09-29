@@ -38,7 +38,7 @@ class TestLoginInteractor:
             .auth_service_adapter_mocks import create_auth_tokens_for_user_mock
         from ib_iam.tests.factories.adapter_dtos import UserTokensDTOFactory
         token = "user_token"
-        is_admin = True
+        is_admin = False
         user_id = "user_id_1"
         expiry_in_seconds = settings.USER_VERIFICATION_EMAIL_EXPIRY_IN_SECONDS
         user_tokens_dto = UserTokensDTOFactory(user_id=user_id)

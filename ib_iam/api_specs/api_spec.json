@@ -4087,13 +4087,6 @@
         "summary": "User Login with auth code",
         "description": "Login the user and return access token and other details",
         "operationId": "user_login_with_token",
-        "security": [
-          {
-            "oauth": [
-              "write"
-            ]
-          }
-        ],
         "parameters": [
           {
             "$ref": "#/parameters/TokenQueryParameter"

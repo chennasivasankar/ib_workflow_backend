@@ -6,4 +6,4 @@ class UserAuthToken(models.Model):
     token = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"{self.user_id} have tokrn = {self.toke}"
+        return f"{self.user_id} have token = {self.token}"
