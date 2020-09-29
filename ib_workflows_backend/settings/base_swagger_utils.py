@@ -144,4 +144,3 @@ USER_VERIFICATION_EMAIL_LINK = "{frontend_url}verify-email?token=".format(
 
 SILKY_PYTHON_PROFILER = True
 SILKY_PYTHON_PROFILER_BINARY = True
-SILKY_STORAGE_CLASS = 'silk.storage.ProfilerResultStorage'
