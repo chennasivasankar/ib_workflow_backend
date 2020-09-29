@@ -283,8 +283,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
     def get_actions_details(self,
                             action_ids: List[int]) -> \
             List[StageActionDetailsDTO]:
-        action_objs = (StageAction.objects
-                       .filter(id__in=action_ids))
+        action_objs = StageAction.objects.filter(
+            id__in=action_ids).select_related('stage')
         unique_action_objs = list(set(action_objs))
         action_dtos = self._convert_action_objs_to_dtos(unique_action_objs)
         return action_dtos
