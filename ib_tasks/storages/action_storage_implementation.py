@@ -283,27 +283,26 @@ class ActionsStorageImplementation(ActionStorageInterface):
     def get_actions_details(self,
                             action_ids: List[int]) -> \
             List[StageActionDetailsDTO]:
-        action_objs = (StageAction.objects
-                       .filter(id__in=action_ids))
-        unique_action_objs = list(set(action_objs))
-        action_dtos = self._convert_action_objs_to_dtos(unique_action_objs)
+        action_objs = StageAction.objects\
+                       .filter(id__in=action_ids)\
+                       .annotate(normal_stage_id=F('stage__stage_id'))
+        action_dtos = self._convert_action_objs_to_dtos(action_objs)
         return action_dtos
 
     @staticmethod
     def _convert_action_objs_to_dtos(action_objs):
-        action_dtos = []
-        for action in action_objs:
-            action_dtos.append(
-                StageActionDetailsDTO(
-                    action_id=action.id,
-                    name=action.name,
-                    stage_id=action.stage.stage_id,
-                    button_text=action.button_text,
-                    button_color=action.button_color,
-                    action_type=action.action_type,
-                    transition_template_id=action.transition_template_id
-                )
+        action_dtos = [
+            StageActionDetailsDTO(
+                action_id=action.id,
+                name=action.name,
+                stage_id=action.normal_stage_id,
+                button_text=action.button_text,
+                button_color=action.button_color,
+                action_type=action.action_type,
+                transition_template_id=action.transition_template_id
             )
+            for action in action_objs
+        ]
         return action_dtos
 
     def validate_action(self, action_id: int) -> bool:

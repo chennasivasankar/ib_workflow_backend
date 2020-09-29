@@ -1,5 +1,7 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
+
+from ib_iam.interactors.storage_interfaces.dtos import BasicUserDetailsDTO
 
 
 @dataclass
@@ -10,6 +12,11 @@ class UserProfileDTO:
     profile_pic_url: Optional[str] = None
     is_admin: Optional[bool] = False
     is_email_verified: Optional[bool] = None
+
+
+@dataclass
+class UserProfileWithRolesDTO(BasicUserDetailsDTO):
+    roles: List[str] = None
 
 
 @dataclass

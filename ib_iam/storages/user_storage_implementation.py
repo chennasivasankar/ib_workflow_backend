@@ -9,13 +9,33 @@ from ib_iam.interactors.storage_interfaces.dtos import UserDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, \
     CompanyDTO, \
-    CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO
+    CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO, UserIdWithRolesDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface \
     import UserStorageInterface
 from ib_iam.models import ProjectRole
 
 
 class UserStorageImplementation(UserStorageInterface):
+
+    def get_users_project_roles(
+            self, user_ids: List[str], project_id: str
+    ) -> List[UserIdWithRolesDTO]:
+        from ib_iam.models import UserRole
+        user_role_dicts = UserRole.objects.filter(
+            user_id__in=user_ids,
+            project_role__project__project_id=project_id).values(
+                'user_id', 'project_role__role_id')
+        from collections import defaultdict
+        user_role_default_dict = defaultdict(list)
+        for user_role_dict in user_role_dicts:
+            user_id = user_role_dict['user_id']
+            role = user_role_dict['project_role__role_id']
+            user_role_default_dict[user_id].append(role)
+        user_id_with_roles_dtos = []
+        for user_id, roles in user_role_default_dict.items():
+            user_id_with_roles_dtos.append(
+                UserIdWithRolesDTO(user_id=user_id, roles=roles))
+        return user_id_with_roles_dtos
 
     def get_user_ids_who_are_not_admin(self) -> List[str]:
         from ib_iam.models import UserDetails

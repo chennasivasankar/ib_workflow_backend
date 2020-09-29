@@ -13,3 +13,9 @@ class Filter(models.Model):
     is_selected = models.CharField(max_length=100, choices=[
         (item.value, item.value) for item in Status
     ], default=Status.ENABLED.value)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['project_id', 'is_selected', 'created_by']),
+            models.Index(fields=['project_id', 'created_by']),
+        ]

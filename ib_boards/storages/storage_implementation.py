@@ -1,6 +1,9 @@
 import json
 from typing import List, Tuple
 
+from django.db.models import Q
+
+from ib_boards.constants.constants import ALL_ROLES_ID
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
     TaskTemplateStagesDTO, TaskSummaryFieldsDTO, StarOrUnstarParametersDTO, \
     ProjectBoardDTO, ChangeFieldsStatusParameter, ChangeFieldsOrderParameter
@@ -17,8 +20,9 @@ from ib_boards.models.fields_in_list_view import FieldOrder, FieldDisplayStatus
 class StorageImplementation(StorageInterface):
 
     def get_project_id_for_board(self, board_id: str) -> str:
-        board_obj = Board.objects.get(board_id=board_id)
-        return board_obj.project_id
+        board_objs = Board.objects.filter(board_id=board_id).values(
+            'project_id')
+        return board_objs[0]['project_id']
 
     def get_project_id_for_given_column_id(self, column_id: str) -> str:
         column = Column.objects.filter(column_id=column_id).values(
@@ -357,15 +361,14 @@ class StorageImplementation(StorageInterface):
 
     def get_column_ids_for_board(self, board_id: str, user_roles: List[str]) \
             -> List[str]:
-        column_ids = []
-        column_objs = Column.objects.filter(board__board_id=board_id)
-        roles = ColumnPermission.objects.filter(column__in=column_objs)
-        for role in roles:
-            if role.user_role_id == "ALL_ROLES":
-                column_ids.append(role.column.column_id)
-            elif role.user_role_id in user_roles:
-                column_ids.append(role.column.column_id)
-        return sorted(list(set(column_ids)))
+        column_ids = Column.objects.filter(board__board_id=board_id)\
+            .values_list('column_id', flat=True)
+        permitted_column_ids = ColumnPermission.objects\
+            .filter(column__column_id__in=column_ids)\
+            .filter(
+                Q(user_role_id=ALL_ROLES_ID) | Q(user_role_id__in=user_roles)
+            ).values_list('column__column_id', flat=True).distinct()
+        return sorted(permitted_column_ids)
 
     def get_permitted_user_roles_for_board(self, board_id: str) -> List[str]:
         return ["ALL ROLES"]
