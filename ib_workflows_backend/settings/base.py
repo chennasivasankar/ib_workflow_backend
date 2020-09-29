@@ -286,7 +286,6 @@ MIDDLEWARE = [
     'ib_sentry_wrapper.utils.request_id_middleware.RequestIdMiddleware',
     'ib_sentry_wrapper.utils.dsu_data_middleware.DSUDataMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'silk.middleware.SilkyMiddleware',
     # django sessions, usefull in admin
     'corsheaders.middleware.CorsMiddleware',  # cors headers middleware
     'django.middleware.common.CommonMiddleware',
