@@ -84,6 +84,11 @@ class TeamMemberLevelStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_user_id_with_subordinate_user_ids_dto(self, user_id: str) \
+    def get_user_id_with_subordinate_user_ids_dto(self, user_id: str,
+                                                  project_id: str) \
             -> MemberIdWithSubordinateMemberIdsDTO:
+        pass
+
+    @abc.abstractmethod
+    def is_user_in_a_least_level(self, user_id: str, project_id: str) -> bool:
         pass

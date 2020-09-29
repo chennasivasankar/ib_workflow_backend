@@ -134,12 +134,19 @@ class GetTeamMemberLevelsWithMembersInteractor(ValidationMixin):
         return team_member_level_details_dtos
 
     def get_user_id_with_subordinate_user_ids_dto(
-            self, user_id: str
+            self, user_id: str, project_id: str
     ) -> MemberIdWithSubordinateMemberIdsDTO:
         # TODO: write test case
         self.user_storage.validate_user_id(user_id=user_id)
         member_id_with_subordinate_member_ids_dto = \
             self.team_member_level_storage.get_user_id_with_subordinate_user_ids_dto(
-                user_id=user_id
+                user_id=user_id, project_id=project_id
             )
         return member_id_with_subordinate_member_ids_dto
+
+    def is_user_in_a_least_level(self, user_id: str, project_id: str) -> bool:
+        is_user_in_a_least_level = \
+            self.team_member_level_storage.is_user_in_a_least_level(
+                user_id=user_id, project_id=project_id
+            )
+        return is_user_in_a_least_level
