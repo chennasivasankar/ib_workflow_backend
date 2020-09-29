@@ -22,8 +22,14 @@ class AuthUsers:
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
         user_storage = UserStorageImplementation()
+        from ib_iam.storages.elastic_storage_implementation import \
+            ElasticStorageImplementation
+        elastic_storage = ElasticStorageImplementation()
         from ib_iam.interactors.auth_users_interactor import AuthUsersInteractor
-        interactor = AuthUsersInteractor(user_storage=user_storage)
+        interactor = AuthUsersInteractor(
+            user_storage=user_storage,
+            elastic_storage=elastic_storage
+        )
         interactor.auth_user_dtos(auth_user_dtos=auth_user_dtos)
         return
 
@@ -31,7 +37,7 @@ class AuthUsers:
     def _convert_auth_user_dtos(auth_users) -> List[AuthUserDTO]:
         auth_user_dtos = [
             AuthUserDTO(
-                token=auth_user["token"],
+                token=auth_user["auth_token"],
                 email=auth_user["email"],
                 password=auth_user["password"],
                 name=auth_user["name"]

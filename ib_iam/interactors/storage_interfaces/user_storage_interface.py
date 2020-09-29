@@ -246,11 +246,11 @@ class UserStorageInterface(abc.ABC):
     def get_user_id_for_given_token(self, token: str) -> Optional[str]:
         pass
 
-    @abc.abstractmethod
-    def get_user_and_token_dtos(
-            self, tokens: List[str]
-    ) -> List[UserIdWithTokenDTO]:
-        pass
+    # @abc.abstractmethod
+    # def get_user_and_token_dtos(
+    #         self, tokens: List[str]
+    # ) -> List[UserIdWithTokenDTO]:
+    #     pass
 
     @abc.abstractmethod
     def create_auth_user(self, user_id: str, token: str):
