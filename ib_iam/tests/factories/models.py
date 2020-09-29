@@ -2,7 +2,7 @@ import factory
 
 from ib_iam import models
 from ib_iam.models import ProjectRole, Team, Company, Country, State, City, \
-    Project, ProjectTeam
+    Project, ProjectTeam, UserAuthToken
 from ib_iam.models.team_member_level import TeamMemberLevel
 from ib_iam.models.user import UserDetails, TeamUser, UserRole
 
@@ -128,3 +128,11 @@ class ProjectTeamFactory(factory.django.DjangoModelFactory):
 
     project = factory.SubFactory(ProjectFactory)
     team = factory.SubFactory(ProjectFactory)
+
+
+class UserAuthTokenFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = UserAuthToken
+
+    user_id = factory.Sequence(lambda n: 'user_id_%s' % n)
+    token = factory.Sequence(lambda n: 'user_token_%s' % n)
