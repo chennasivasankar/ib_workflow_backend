@@ -7,7 +7,7 @@ from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO, \
     UserIdWithProjectIdAndStatusDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserIdAndNameDTO, \
     TeamIdAndNameDTO, ProjectDTO, TeamWithUserIdDTO, \
-    MemberIdWithSubordinateMemberIdsDTO
+    MemberIdWithSubordinateMemberIdsDTO, ProjectRolesDTO
 from ib_tasks.adapters.dtos import SearchableDetailsDTO
 
 

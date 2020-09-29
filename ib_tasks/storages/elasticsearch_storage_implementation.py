@@ -134,7 +134,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         query = Q('terms', stages__stage_id__keyword=stage_ids) \
                 & Q('term', project_id__keyword=project_id)
 
-        query |= self.prepare_q_object_for_task_conditions(
+        query &= self.prepare_q_object_for_task_conditions(
             task_condition_dtos=task_condition_dtos
         )
 
@@ -186,11 +186,10 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
                 & Q('terms', stages__stage_id__keyword=stage_ids)
         if search_query:
             query = query & Q("match", title={"query": search_query, "fuzziness": "5"})
-        task_condition_query = self.prepare_q_object_for_task_conditions(
+        query &= self.prepare_q_object_for_task_conditions(
             task_condition_dtos=task_condition_dtos
         )
         search = search.query(query)
-        search = search.query(task_condition_query)
         total_tasks_count = search.count()
         task_ids = [
             hit.task_id
@@ -216,7 +215,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         query = Q('terms', stages__stage_id__keyword=stage_ids) \
                 & Q('term', project_id__keyword=task_details_config.project_id)
 
-        query |= self.prepare_q_object_for_task_conditions(
+        query &= self.prepare_q_object_for_task_conditions(
             task_condition_dtos=task_condition_dtos
         )
 
