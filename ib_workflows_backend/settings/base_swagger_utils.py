@@ -19,7 +19,8 @@ from django_swagger_utils.drf_server.utils.general.import_app_settings import \
     import_app_settings
 
 THIRD_PARTY_APPS = [
-    "ib_users"
+    "ib_users",
+    "silk"
 ]
 APPS = [
     "ib_iam",
@@ -27,8 +28,7 @@ APPS = [
     "ib_boards",
     "ib_discussions",
     "ib_utility_tools",
-    "ib_adhoc_tasks",
-    "silk"
+    "ib_adhoc_tasks"
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS
@@ -77,8 +77,7 @@ SWAGGER_UTILS = {
         "ib_boards": {"dsu_version": "1.0"},
         "ib_discussions": {"dsu_version": "1.0"},
         "ib_utility_tools": {"dsu_version": "1.0"},
-        "ib_adhoc_tasks": {"dsu_version": "1.0"},
-        "silk": {"dsu_version": "1.0"},
+        "ib_adhoc_tasks": {"dsu_version": "1.0"}
 
     },
     "HOST": os.environ.get('APIGATEWAY_ENDPOINT', '127.0.0.1:8000'),
@@ -142,5 +141,5 @@ USER_VERIFICATION_EMAIL_LINK = "{frontend_url}verify-email?token=".format(
 
 # ************************** django silk ************************
 
-SILKY_PYTHON_PROFILER = True
-SILKY_PYTHON_PROFILER_BINARY = True
+# SILKY_PYTHON_PROFILER = True
+# SILKY_PYTHON_PROFILER_BINARY = True

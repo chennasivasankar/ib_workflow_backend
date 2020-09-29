@@ -74,7 +74,7 @@ from ib_common.logger.log_custom_formatter import LogCustomFormatter
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'filters': {
         'request_id': {
             '()': 'log_request_id.filters.RequestIDFilter'
@@ -286,6 +286,7 @@ MIDDLEWARE = [
     'ib_sentry_wrapper.utils.request_id_middleware.RequestIdMiddleware',
     'ib_sentry_wrapper.utils.dsu_data_middleware.DSUDataMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'silk.middleware.SilkyMiddleware',
     # django sessions, usefull in admin
     'corsheaders.middleware.CorsMiddleware',  # cors headers middleware
     'django.middleware.common.CommonMiddleware',
@@ -298,7 +299,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # save from clickjack attack ref https://docs.djangoproject.com/en/1.9/ref/clickjacking/
     'django.middleware.locale.LocaleMiddleware',
-    'silk.middleware.SilkyMiddleware',
 ]
 
 ### api log config

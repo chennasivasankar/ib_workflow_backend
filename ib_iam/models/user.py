@@ -31,7 +31,7 @@ class TeamUser(models.Model):
 
 
 class UserRole(models.Model):
-    user_id = models.CharField(max_length=36)
+    user_id = models.CharField(max_length=36, db_index=True)
     project_role = models.ForeignKey('ProjectRole', on_delete=models.CASCADE,
                                      null=True)
 
