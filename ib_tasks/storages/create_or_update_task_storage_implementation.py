@@ -300,8 +300,8 @@ class CreateOrUpdateTaskStorageImplementation(
             priority=task_details_dto.priority
         )
         from ib_tasks.constants.constants import TASK_DISPLAY_ID
-        task_object.task_display_id = TASK_DISPLAY_ID.format(task_object.id)
-        task_object.save()
+        Task.objects.filter(id=task_object.id).update(
+            task_display_id=TASK_DISPLAY_ID.format(task_object.id))
         return task_object.id
 
     def create_task_gofs(
