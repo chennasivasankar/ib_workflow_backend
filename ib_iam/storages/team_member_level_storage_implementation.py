@@ -1,5 +1,7 @@
 from typing import List, Optional
 
+from django.db.models import Min
+
 from ib_iam.exceptions.custom_exceptions import \
     UsersNotBelongToGivenLevelHierarchy, \
     InvalidTeamId, InvalidLevelHierarchyOfTeam, UserNotBelongToTeam
@@ -262,12 +264,9 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
                                                   project_id) \
             -> MemberIdWithSubordinateMemberIdsDTO:
         # TODO: Here assuming user in a single team
-        from ib_iam.models import TeamUser, ProjectTeam
-        team_ids = ProjectTeam.objects.filter(
-            project_id=project_id
-        ).values_list("team_id", flat=True)
+        from ib_iam.models import TeamUser
         user_team_objects = TeamUser.objects.filter(
-            user_id=user_id, team_id__in=team_ids
+            user_id=user_id, team__projectteam__project_id=project_id
         )
         member_id_with_subordinate_member_ids_dto = self.get_member_id_with_subordinate_member_ids_dto(
             user_team_object=user_team_objects[0]
@@ -275,18 +274,17 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
         return member_id_with_subordinate_member_ids_dto
 
     def is_user_in_a_least_level(self, user_id: str, project_id: str) -> bool:
-        from ib_iam.models import ProjectTeam, TeamUser, TeamMemberLevel
-        team_ids = ProjectTeam.objects.filter(
-            project_id=project_id
-        ).values_list("team_id", flat=True)
-        level_hierarchies = TeamMemberLevel.objects.filter(
-            team_id__in=team_ids).values_list("level_hierarchy", flat=True)
-        least_level_hierarchy = min(level_hierarchies)
-        user_team_objects = TeamUser.objects.filter(
-            user_id=user_id, team_id__in=team_ids
-        )
-        user_level_hierarchy = user_team_objects[
-            0].team_member_level.level_hierarchy
+        from ib_iam.models import TeamUser, TeamMemberLevel
+        least_level_hierarchy = TeamMemberLevel.objects.filter(
+            team__projectteam__project_id=project_id
+        ).aggregate(
+            least_level_hierarchy=Min("level_hierarchy")
+        )["least_level_hierarchy"]
+
+        user_level_hierarchy = TeamUser.objects.filter(
+            user_id=user_id, team__projectteam__project_id=project_id
+        ).values_list("team_member_level__level_hierarchy", flat=True)[0]
+
         is_user_in_a_least_level = least_level_hierarchy == user_level_hierarchy
         if is_user_in_a_least_level:
             return True
