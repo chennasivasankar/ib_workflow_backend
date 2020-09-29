@@ -298,6 +298,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # save from clickjack attack ref https://docs.djangoproject.com/en/1.9/ref/clickjacking/
     'django.middleware.locale.LocaleMiddleware',
+    'silk.middleware.SilkyMiddleware',
 ]
 
 ### api log config
