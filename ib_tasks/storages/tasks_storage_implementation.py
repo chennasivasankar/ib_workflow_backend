@@ -72,28 +72,27 @@ class TasksStorageImplementation(TaskStorageInterface):
         else:
             return task_id
 
+    # ToDo change status_variables_dto to status_variable_dtos
     def update_status_variables_to_task(
             self, task_id: int, status_variables_dto: List[StatusVariableDTO]):
 
         status_variable_objs = TaskStatusVariable.objects \
             .filter(task_id=task_id)
         status_variable_dict = \
-            self._get_status_variable_dict(status_variable_objs)
-        for status_variable_dto in status_variables_dto:
-            status_obj = \
-                status_variable_dict[status_variable_dto.status_id]
-            status_obj.variable = status_variable_dto.status_variable
-            status_obj.value = status_variable_dto.value
-            status_obj.save()
+            self._get_status_variable_dict(status_variables_dto)
+        for status_variable_obj in status_variable_objs:
+            stage_id = status_variable_dict[status_variable_obj.id]
+            status_variable_obj.value = stage_id
+        TaskStatusVariable.objects.bulk_update(status_variable_objs, ['value'])
 
     @staticmethod
-    def _get_status_variable_dict(status_variable_objs):
+    def _get_status_variable_dict(status_variable_dtos: List[StatusVariableDTO]):
 
         status_variable_dict = {}
 
-        for status_variable_obj in status_variable_objs:
-            status_id = status_variable_obj.id
-            status_variable_dict[status_id] = status_variable_obj
+        for status_variable_dto in status_variable_dtos:
+            status_id = status_variable_dto.status_id
+            status_variable_dict[status_id] = status_variable_dto.value
         return status_variable_dict
 
     def get_status_variables_to_task(
@@ -625,13 +624,14 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     def get_task_project_ids(self, task_ids: List[int]) -> \
             List[TaskProjectDTO]:
-        tasks = Task.objects.filter(id__in=task_ids)
+        task_id_and_project_id_dicts = \
+            Task.objects.filter(id__in=task_ids).values('id', 'project_id')
         task_project_dtos = [
             TaskProjectDTO(
-                task_id=task.id,
-                project_id=task.project_id
+                task_id=task_id_and_project_id_dict['id'],
+                project_id=task_id_and_project_id_dict['project_id']
             )
-            for task in tasks
+            for task_id_and_project_id_dict in task_id_and_project_id_dicts
         ]
         return task_project_dtos
 
@@ -785,3 +785,11 @@ class TasksStorageImplementation(TaskStorageInterface):
             )
             for task_obj in task_objs
         ]
+
+    def get_project_id_and_user_id_for_the_task_id(self, task_id: int):
+        task_obj = Task.objects.filter(id=task_id) \
+            .values('created_by', 'project_id')
+        project_id = task_obj[0]['project_id']
+        user_id = task_obj[0]['created_by']
+
+        return project_id, user_id

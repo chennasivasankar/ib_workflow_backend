@@ -63,6 +63,11 @@ class UserDetailsDTO:
 
 
 @dataclass
+class UserDetailsWithRolesDTO(UserDetailsDTO):
+    roles: List[str] = None
+
+
+@dataclass
 class SearchableDetailsDTO:
     search_type: Searchable
     id: Union[int, str]

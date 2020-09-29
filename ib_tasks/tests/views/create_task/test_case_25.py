@@ -71,8 +71,7 @@ class TestCase25CreateTaskAPITestCase(TestUtils):
                'stage_actions_logic.stage_1_action_name_1_logic'
         action = StageActionFactory(
             stage=stage, py_function_import_path=path,
-            action_type=None
-        )
+            action_type=None)
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
         gof_obj = GoFFactory.create()

@@ -226,10 +226,9 @@ class StagesStorageImplementation(StageStorageInterface):
     def get_valid_stage_ids_in_given_stage_ids(self, stage_ids: List[str]) -> \
             List[str]:
 
-        stage_ids = list(
-            Stage.objects.filter(stage_id__in=stage_ids).
-                values_list('stage_id', flat=True))
-        return stage_ids
+        stage_ids = Stage.objects.filter(stage_id__in=stage_ids).\
+                values_list('stage_id', flat=True)
+        return list(stage_ids)
 
     def get_valid_db_stage_ids_with_stage_value(
             self, stage_ids: List[int]) -> List[StageIdWithValueDTO]:

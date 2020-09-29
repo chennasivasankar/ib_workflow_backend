@@ -6,10 +6,13 @@ from ib_tasks.tests.factories.models import StageModelFactory, \
     TaskTemplateWithTransitionFactory
 
 
-
-
 @pytest.mark.django_db
 class TestCreateStageActions:
+
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        StageModelFactory.reset_sequence()
+
     @pytest.fixture()
     def stage_actions_dtos(self):
         StageModelFactory.create_batch(size=5)

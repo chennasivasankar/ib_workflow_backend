@@ -1,13 +1,14 @@
 from ib_boards.constants.enum import StartAction
 from ib_boards.exceptions.custom_exceptions import InvalidBoardId
 from ib_boards.interactors.dtos import StarOrUnstarParametersDTO
+from ib_boards.interactors.mixins.validation_mixins import ValidationMixin
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
 
-class StarOrUnstarBoardInteractor:
+class StarOrUnstarBoardInteractor(ValidationMixin):
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
@@ -22,10 +23,7 @@ class StarOrUnstarBoardInteractor:
     def star_or_unstar_board(self, parameters):
         board_id = parameters.board_id
         action = parameters.action
-        is_exists = self.storage.validate_board_id(board_id)
-        does_not_exists = not is_exists
-        if does_not_exists:
-            raise InvalidBoardId
+        self.validate_board_id(board_id)
 
         if action == StartAction.STAR.value:
             self.storage.star_given_board(parameters)

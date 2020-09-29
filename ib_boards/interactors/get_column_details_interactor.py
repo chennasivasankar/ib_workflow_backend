@@ -7,6 +7,7 @@ from ib_boards.interactors.dtos import ColumnParametersDTO, \
     PaginationParametersDTO, ColumnTaskIdsDTO, ColumnTasksDTO
 from ib_boards.interactors.get_tasks_details_for_the_column_ids import \
     ColumnsTasksParametersDTO
+from ib_boards.interactors.mixins.validation_mixins import ValidationMixin
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_boards.interactors.storage_interfaces.dtos import ColumnDetailsDTO, \
@@ -15,16 +16,18 @@ from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
 
-class GetColumnDetailsInteractor:
+class GetColumnDetailsInteractor(ValidationMixin):
 
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
     def get_column_details_wrapper(self, presenter: PresenterInterface,
                                    columns_parameters: ColumnParametersDTO,
-                                   pagination_parameters: PaginationParametersDTO):
+                                   pagination_parameters:
+                                   PaginationParametersDTO):
         try:
-            column_details, task_fields_dtos, task_actions_dtos, column_tasks, task_stage_dtos, assignees_dtos = \
+            column_details, task_fields_dtos, task_actions_dtos, \
+            column_tasks, task_stage_dtos, assignees_dtos = \
                 self.get_column_details(
                     columns_parameters=columns_parameters,
                     pagination_parameters=pagination_parameters
@@ -49,7 +52,7 @@ class GetColumnDetailsInteractor:
         limit = pagination_parameters.limit
         user_id = columns_parameters.user_id
         view_type = columns_parameters.view_type
-        self._validate_board_id(board_id=board_id)
+        self.validate_board_id(board_id=board_id)
 
         project_id = self.storage.get_project_id_for_board(board_id)
         column_dtos = self._get_column_details_dto(board_id, user_id, project_id)
@@ -117,13 +120,6 @@ class GetColumnDetailsInteractor:
         if not has_permission:
             raise UserDonotHaveAccess
         return
-
-    def _validate_board_id(self, board_id: str):
-        is_valid = self.storage.validate_board_id(board_id=board_id)
-        is_invalid = not is_valid
-
-        if is_invalid:
-            raise InvalidBoardId
 
     @staticmethod
     def _get_total_tasks_for_the_columns(

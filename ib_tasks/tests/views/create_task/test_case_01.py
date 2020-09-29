@@ -118,8 +118,7 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         from ib_tasks.constants.enum import PermissionTypes
         GoFRoleFactory.create(
             gof=gof_obj, permission_type=PermissionTypes.WRITE.value,
-            role="FIN_PAYMENT_REQUESTER"
-        )
+            role="FIN_PAYMENT_REQUESTER")
         FieldRoleFactory.create(
             field=field_obj, permission_type=PermissionTypes.WRITE.value,
             role="FIN_PAYMENT_REQUESTER"
