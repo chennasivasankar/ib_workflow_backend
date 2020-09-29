@@ -78,22 +78,20 @@ class TasksStorageImplementation(TaskStorageInterface):
         status_variable_objs = TaskStatusVariable.objects \
             .filter(task_id=task_id)
         status_variable_dict = \
-            self._get_status_variable_dict(status_variable_objs)
-        for status_variable_dto in status_variables_dto:
-            status_obj = \
-                status_variable_dict[status_variable_dto.status_id]
-            status_obj.variable = status_variable_dto.status_variable
-            status_obj.value = status_variable_dto.value
-            status_obj.save()
+            self._get_status_variable_dict(status_variables_dto)
+        for status_variable_obj in status_variable_objs:
+            stage_id = status_variable_dict[status_variable_obj.id]
+            status_variable_obj.value = stage_id
+        TaskStatusVariable.objects.bulk_update(status_variable_objs, ['value'])
 
     @staticmethod
-    def _get_status_variable_dict(status_variable_objs):
+    def _get_status_variable_dict(status_variable_dtos: List[StatusVariableDTO]):
 
         status_variable_dict = {}
 
-        for status_variable_obj in status_variable_objs:
-            status_id = status_variable_obj.id
-            status_variable_dict[status_id] = status_variable_obj
+        for status_variable_dto in status_variable_dtos:
+            status_id = status_variable_dto.status_id
+            status_variable_dict[status_id] = status_variable_dto.value
         return status_variable_dict
 
     def get_status_variables_to_task(
