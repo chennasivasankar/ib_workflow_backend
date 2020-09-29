@@ -248,3 +248,15 @@ class RoleNameAndDescriptionDTO:
 class UserIdAndTeamIdsDTO:
     user_id: str
     team_ids: List[str]
+
+
+@dataclass
+class UserIdWithTokenDTO:
+    user_id: str
+    token: str
+
+
+@dataclass
+class MemberLevelAndHierarchyDTO:
+    member_level_id: str
+    level_hierarchy: int
