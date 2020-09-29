@@ -10,3 +10,4 @@ class FilterCondition(models.Model):
     field = models.ForeignKey(Field, on_delete=models.CASCADE)
     operator = models.CharField(max_length=100, choices=OPERATOR_TYPES)
     value = models.TextField()
+
