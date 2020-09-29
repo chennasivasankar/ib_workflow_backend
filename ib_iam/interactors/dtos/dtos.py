@@ -87,6 +87,15 @@ class UserIdWithProjectIdAndStatusDTO:
     project_id: str
     is_exist: bool
 
+
+@dataclass
+class AuthUserDTO:
+    token: str
+    name: str
+    email: str
+    password: str
+
+
 @dataclass
 class PMAndSubUsersAuthTokensDTO:
     pm_auth_token: str

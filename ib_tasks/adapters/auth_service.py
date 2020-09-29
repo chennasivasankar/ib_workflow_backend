@@ -213,3 +213,19 @@ class AuthService:
             user_id=user_id, team_id=team_id
         )
         return superior_id
+
+    def get_user_ids_based_on_user_level(self, project_id: str, user_id: str):
+        member_id_with_subordinate_member_ids_dto =\
+            self.interface.get_user_id_with_subordinate_user_ids_dto(
+                user_id=user_id,
+                project_id=project_id
+            )
+        user_ids = member_id_with_subordinate_member_ids_dto.subordinate_member_ids
+        user_ids.append(member_id_with_subordinate_member_ids_dto.member_id)
+        return user_ids
+
+    def check_user_in_least_level(self, project_id: str, user_id: str):
+        return self.interface.is_user_in_a_least_level(
+            user_id=user_id,
+            project_id=project_id
+        )

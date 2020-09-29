@@ -6,6 +6,7 @@ Author: Pavankumar Pamuru
 from dataclasses import dataclass
 from typing import List, Tuple
 
+from ib_tasks.interactors.get_task_details_conditions_dtos import TaskFilterDTO
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
@@ -33,7 +34,8 @@ class GetTaskIdsBasedOnUserFilters:
         self.filter_storage = filter_storage
 
     def get_task_ids_by_applying_filters(
-            self, filter_tasks_parameter: FilterTasksParameter
+            self, filter_tasks_parameter: FilterTasksParameter,
+            task_condition_dtos: List[TaskFilterDTO]
     ) -> Tuple[List[int], int]:
         self._validations_of_limit_and_offset(
             offset=filter_tasks_parameter.offset,
@@ -54,7 +56,8 @@ class GetTaskIdsBasedOnUserFilters:
             limit=filter_tasks_parameter.limit,
             stage_ids=filter_tasks_parameter.stage_ids,
             project_id=filter_tasks_parameter.project_id,
-            field_type_dtos=field_type_dtos
+            field_type_dtos=field_type_dtos,
+            task_condition_dtos=task_condition_dtos
         )
         return filtered_task_ids, total_tasks
 

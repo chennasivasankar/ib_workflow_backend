@@ -251,6 +251,12 @@ class UserIdAndTeamIdsDTO:
 
 
 @dataclass
+class ProjectRolesDTO:
+    project_id: str
+    roles: List[str]
+
+
+@dataclass
 class UserIdWithTokenDTO:
     user_id: str
     token: str

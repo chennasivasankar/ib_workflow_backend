@@ -251,3 +251,7 @@ class UserStorageInterface(abc.ABC):
             self, tokens: List[str]
     ) -> List[UserIdWithTokenDTO]:
         pass
+
+    @abc.abstractmethod
+    def create_auth_user(self, user_id: str, token: str):
+        pass
