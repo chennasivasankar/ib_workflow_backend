@@ -6,7 +6,8 @@ from ib_iam.app_interfaces.dtos import UserTeamsDTO, ProjectTeamsAndUsersDTO, \
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO, \
     UserIdWithProjectIdAndStatusDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserIdAndNameDTO, \
-    TeamIdAndNameDTO, ProjectDTO, TeamWithUserIdDTO
+    TeamIdAndNameDTO, ProjectDTO, TeamWithUserIdDTO, \
+    MemberIdWithSubordinateMemberIdsDTO
 from ib_tasks.adapters.dtos import SearchableDetailsDTO
 
 
@@ -478,3 +479,47 @@ class ServiceInterface:
         )
 
         return project_role_ids
+
+    @staticmethod
+    def get_user_id_with_subordinate_user_ids_dto(user_id: str, project_id: str) -> \
+            MemberIdWithSubordinateMemberIdsDTO:
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        user_storage = UserStorageImplementation()
+        from ib_iam.storages.team_member_level_storage_implementation import \
+            TeamMemberLevelStorageImplementation
+        team_member_level_storage = TeamMemberLevelStorageImplementation()
+
+        from ib_iam.interactors.levels.get_team_member_levels_with_members_interactor import \
+            GetTeamMemberLevelsWithMembersInteractor
+        interactor = GetTeamMemberLevelsWithMembersInteractor(
+            user_storage=user_storage,
+            team_member_level_storage=team_member_level_storage
+        )
+        member_id_with_subordinate_member_ids_dto = \
+            interactor.get_user_id_with_subordinate_user_ids_dto(
+                user_id=user_id, project_id=project_id
+            )
+        return member_id_with_subordinate_member_ids_dto
+
+    @staticmethod
+    def is_user_in_a_least_level(user_id: str, project_id: str) -> bool:
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        user_storage = UserStorageImplementation()
+        from ib_iam.storages.team_member_level_storage_implementation import \
+            TeamMemberLevelStorageImplementation
+        team_member_level_storage = TeamMemberLevelStorageImplementation()
+
+        from ib_iam.interactors.levels.get_team_member_levels_with_members_interactor import \
+            GetTeamMemberLevelsWithMembersInteractor
+        interactor = GetTeamMemberLevelsWithMembersInteractor(
+            user_storage=user_storage,
+            team_member_level_storage=team_member_level_storage
+        )
+        is_user_in_a_least_level = \
+            interactor.is_user_in_a_least_level(
+                user_id=user_id, project_id=project_id
+            )
+        return is_user_in_a_least_level
+

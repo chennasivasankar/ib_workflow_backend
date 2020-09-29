@@ -1,6 +1,7 @@
 from typing import List, Optional
 
-from ib_iam.exceptions.custom_exceptions import UsersNotBelongToGivenLevelHierarchy, \
+from ib_iam.exceptions.custom_exceptions import \
+    UsersNotBelongToGivenLevelHierarchy, \
     InvalidTeamId, InvalidLevelHierarchyOfTeam, UserNotBelongToTeam
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
@@ -256,3 +257,39 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
         if is_team_user_objects_not_exists:
             raise UserNotBelongToTeam
         return
+
+    def get_user_id_with_subordinate_user_ids_dto(self, user_id: str,
+                                                  project_id) \
+            -> MemberIdWithSubordinateMemberIdsDTO:
+        # TODO: Here assuming user in a single team
+        from ib_iam.models import TeamUser, ProjectTeam
+        team_ids = ProjectTeam.objects.filter(
+            project_id=project_id
+        ).values_list("team_id", flat=True)
+        user_team_objects = TeamUser.objects.filter(
+            user_id=user_id, team_id__in=team_ids
+        )
+        member_id_with_subordinate_member_ids_dto = self.get_member_id_with_subordinate_member_ids_dto(
+            user_team_object=user_team_objects[0]
+        )
+        return member_id_with_subordinate_member_ids_dto
+
+    def is_user_in_a_least_level(self, user_id: str, project_id: str) -> bool:
+        from ib_iam.models import ProjectTeam, TeamUser, TeamMemberLevel
+        team_ids = ProjectTeam.objects.filter(
+            project_id=project_id
+        ).values_list("team_id", flat=True)
+        level_hierarchies = TeamMemberLevel.objects.filter(
+            team_id__in=team_ids).values_list("level_hierarchy", flat=True)
+        least_level_hierarchy = min(level_hierarchies)
+        print(level_hierarchies)
+        user_team_objects = TeamUser.objects.filter(
+            user_id=user_id, team_id__in=team_ids
+        )
+        user_level_hierarchy = user_team_objects[
+            0].team_member_level.level_hierarchy
+        print(user_level_hierarchy)
+        is_user_in_a_least_level = least_level_hierarchy == user_level_hierarchy
+        if is_user_in_a_least_level:
+            return True
+        return False
