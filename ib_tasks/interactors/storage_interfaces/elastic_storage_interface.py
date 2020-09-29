@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from typing import Tuple
 
 from ib_tasks.constants.enum import Operators
+from ib_tasks.interactors.get_task_details_conditions_dtos import TaskFilterDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldTypeDTO
 from ib_tasks.interactors.task_dtos import SearchQueryDTO
 
@@ -37,14 +38,14 @@ class ElasticSearchStorageInterface(abc.ABC):
     @abc.abstractmethod
     def filter_tasks(
             self, filter_dtos: List[ApplyFilterDTO], offset: int, limit: int,
-            user_ids: List[str], stage_ids: List[str], project_id: str,
+            task_condition_dtos: List[TaskFilterDTO], stage_ids: List[str], project_id: str,
             field_type_dtos: List[FieldTypeDTO]) -> Tuple[List[int], int]:
         pass
 
     @abc.abstractmethod
     def search_tasks(
             self, search_query_dto: SearchQueryDTO,
-            apply_filter_dtos: List[ApplyFilterDTO], user_ids: List[str],
+            apply_filter_dtos: List[ApplyFilterDTO], task_condition_dtos: List[TaskFilterDTO],
             stage_ids: List[str], field_type_dtos: List[FieldTypeDTO]
     ) -> QueryTasksDTO:
         pass
@@ -53,5 +54,7 @@ class ElasticSearchStorageInterface(abc.ABC):
         pass
 
     def filter_tasks_with_stage_ids(
-            self, filter_dtos, task_details_config, field_type_dtos: List[FieldTypeDTO], user_ids: List[str]):
+            self, filter_dtos, task_details_config,
+            field_type_dtos: List[FieldTypeDTO],
+            task_condition_dtos: List[TaskFilterDTO]):
         pass

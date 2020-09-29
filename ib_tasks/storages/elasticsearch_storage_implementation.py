@@ -10,6 +10,7 @@ from elasticsearch_dsl import Q, Search
 from ib_tasks.constants.enum import Operators, FieldTypes
 from ib_tasks.documents.elastic_task import *
 from ib_tasks.documents.elastic_task import ElasticTaskDTO, Task, QueryTasksDTO
+from ib_tasks.interactors.get_task_details_conditions_dtos import TaskFilterDTO
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ApplyFilterDTO
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
@@ -123,7 +124,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         return datetime_in_string_format
 
     def filter_tasks(
-            self, filter_dtos: List[ApplyFilterDTO], offset: int, user_ids: List[str],
+            self, filter_dtos: List[ApplyFilterDTO], offset: int, task_condition_dtos: List[TaskFilterDTO],
             stage_ids: List[str], limit: int, project_id: str,
             field_type_dtos: List[FieldTypeDTO]) -> Tuple[List[int], int]:
         from elasticsearch_dsl import connections
@@ -133,8 +134,11 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         search = self._get_filter_task_objects(filter_dtos, field_type_dtos)
 
         query = Q('terms', stages__stage_id__keyword=stage_ids) \
-                & Q('term', project_id__keyword=project_id) \
-                & Q('terms', created_by__keyword=user_ids)
+                & Q('term', project_id__keyword=project_id)
+
+        query &= self.prepare_q_object_for_task_conditions(
+            task_condition_dtos=task_condition_dtos
+        )
 
         task_objects = search.filter(query)
 
@@ -167,7 +171,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
     def search_tasks(
             self, search_query_dto: SearchQueryDTO,
-            apply_filter_dtos: List[ApplyFilterDTO], user_ids: List[str],
+            apply_filter_dtos: List[ApplyFilterDTO], task_condition_dtos: List[TaskFilterDTO],
             stage_ids: List[str], field_type_dtos: List[FieldTypeDTO]
     ) -> QueryTasksDTO:
         from elasticsearch_dsl import connections
@@ -181,10 +185,12 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from elasticsearch_dsl import Q
         search = self._get_filter_task_objects(apply_filter_dtos, field_type_dtos)
         query = Q('term', project_id__keyword=project_id) \
-                & Q('terms', stages__stage_id__keyword=stage_ids) \
-                & Q('terms', created_by__keyword=user_ids)
+                & Q('terms', stages__stage_id__keyword=stage_ids)
         if search_query:
             query = query & Q("match", title={"query": search_query, "fuzziness": "5"})
+        query &= self.prepare_q_object_for_task_conditions(
+            task_condition_dtos=task_condition_dtos
+        )
         search = search.query(query)
         total_tasks_count = search.count()
         task_ids = [
@@ -198,7 +204,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
     def filter_tasks_with_stage_ids(
             self, filter_dtos: List[ApplyFilterDTO], field_type_dtos: List[FieldTypeDTO],
-            task_details_config: TaskDetailsConfigDTO, user_ids: List[str]) -> Tuple[
+            task_details_config: TaskDetailsConfigDTO, task_condition_dtos: List[TaskFilterDTO]) -> Tuple[
         List[TaskStageIdsDTO], int]:
         from elasticsearch_dsl import connections
         from django.conf import settings
@@ -209,8 +215,11 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         search = self._get_filter_task_objects(filter_dtos, field_type_dtos)
         search = search.filter('terms', stages__stage_id__keyword=stage_ids)
         query = Q('terms', stages__stage_id__keyword=stage_ids) \
-                & Q('term', project_id__keyword=task_details_config.project_id) \
-                & Q('terms', created_by__keyword=user_ids)
+                & Q('term', project_id__keyword=task_details_config.project_id)
+
+        query &= self.prepare_q_object_for_task_conditions(
+            task_condition_dtos=task_condition_dtos
+        )
 
         if search_query:
             query = query & Q(
@@ -423,3 +432,24 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             else:
                 query = query & current_queue
         return query
+
+    def prepare_q_object_for_task_conditions(self, task_condition_dtos: List[TaskFilterDTO],):
+        query = None
+        for item in task_condition_dtos:
+            current_queue = self._prepare_q_object_for_the_task_condition(
+                task_condition_dto=item
+            )
+            if query is None:
+                query = current_queue
+            else:
+                query = query & current_queue
+        if query is None:
+            return Q()
+        return query
+
+    @staticmethod
+    def _prepare_q_object_for_the_task_condition(
+            task_condition_dto: TaskFilterDTO):
+        if task_condition_dto.operator == Operators.EQ.value:
+            attribute = task_condition_dto.field_id + '.keyword'
+            return Q('term', **{attribute: task_condition_dto.value})

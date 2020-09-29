@@ -100,10 +100,10 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
         )
         stage_ids_having_actions = self.stage_storage\
             .get_stage_ids_having_actions(user_roles=user_roles)
-        from ib_tasks.interactors.get_user_ids_based_on_user_level import \
-            GetUserIdsBasedOnUserLevel
-        user_ids_interactor = GetUserIdsBasedOnUserLevel()
-        user_ids = user_ids_interactor.get_user_ids_based_on_user_level(
+        from ib_tasks.interactors.get_task_details_conditions_dtos import \
+            GetConditionsForTaskDetails
+        user_ids_interactor = GetConditionsForTaskDetails()
+        task_condition_dtos = user_ids_interactor.get_conditions_for_the_task_details(
             project_id=project_tasks_parameter.project_id,
             user_id=project_tasks_parameter.user_id
         )
@@ -137,7 +137,7 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
         )
         task_ids, total_tasks = filtered_task_ids_interactor.get_task_ids_by_applying_filters(
             filter_tasks_parameter=filter_tasks_parameter,
-            user_ids=user_ids
+            task_condition_dtos=task_condition_dtos
         )
         project_id = project_tasks_parameter.project_id
         all_tasks_overview_details_dto = task_details_interactor. \

@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 from ib_tasks.documents.elastic_task import QueryTasksDTO
+from ib_tasks.interactors.get_task_details_conditions_dtos import TaskFilterDTO
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface, ApplyFilterDTO
@@ -41,7 +42,7 @@ class GetTaskIdsBasedOnUserSearchQuery(ValidationMixin):
     def get_task_ids_by_applying_search_query(
             self, search_query_dto: SearchQueryDTO, stage_ids: List[str],
             apply_filters_dto: List[ApplyFilterDTO],
-            user_ids: List[str]) -> QueryTasksDTO:
+            task_condition_dtos: List[TaskFilterDTO]) -> QueryTasksDTO:
         user_id = search_query_dto.user_id
         project_id = search_query_dto.project_id
         self._validations_of_limit_and_offset(
@@ -68,7 +69,7 @@ class GetTaskIdsBasedOnUserSearchQuery(ValidationMixin):
             apply_filter_dtos=apply_filters_dto,
             stage_ids=stage_ids,
             field_type_dtos=field_type_dtos,
-            user_ids=user_ids
+            task_condition_dtos=task_condition_dtos
         )
         return query_tasks_dto
 

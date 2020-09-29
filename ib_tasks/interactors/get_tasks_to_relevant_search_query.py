@@ -91,10 +91,10 @@ class GetTasksToRelevantSearchQuery:
         stage_ids_having_actions = self.stage_storage \
             .get_stage_ids_having_actions(user_roles=user_roles)
 
-        from ib_tasks.interactors.get_user_ids_based_on_user_level import \
-            GetUserIdsBasedOnUserLevel
-        user_ids_interactor = GetUserIdsBasedOnUserLevel()
-        user_ids = user_ids_interactor.get_user_ids_based_on_user_level(
+        from ib_tasks.interactors.get_task_details_conditions_dtos import \
+            GetConditionsForTaskDetails
+        user_ids_interactor = GetConditionsForTaskDetails()
+        task_condition_dtos = user_ids_interactor.get_conditions_for_the_task_details(
             project_id=search_query_dto.project_id,
             user_id=search_query_dto.user_id
         )
@@ -110,7 +110,7 @@ class GetTasksToRelevantSearchQuery:
             search_query_dto=search_query_dto,
             stage_ids=stage_ids_having_actions,
             apply_filters_dto=apply_filters_dto,
-            user_ids=user_ids
+            task_condition_dtos=task_condition_dtos
         )
 
         return self._get_all_tasks_overview_details(
