@@ -1,5 +1,6 @@
 import abc
 from typing import List, Optional
+
 from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
 from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidUserIds, \
     InvalidUserIdsForProject, InvalidRoleIdsForProject, InvalidProjectId
@@ -239,4 +240,8 @@ class UserStorageInterface(abc.ABC):
     def validate_project_id(
             self, project_id: str
     ) -> Optional[InvalidProjectId]:
+        pass
+
+    @abc.abstractmethod
+    def get_user_id_for_given_token(self, token: str) -> Optional[str]:
         pass
