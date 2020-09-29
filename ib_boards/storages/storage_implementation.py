@@ -367,8 +367,8 @@ class StorageImplementation(StorageInterface):
             .filter(column__column_id__in=column_ids)\
             .filter(
                 Q(user_role_id=ALL_ROLES_ID) | Q(user_role_id__in=user_roles)
-            ).values_list('column__column_id', flat=True)
-        return sorted(list(set(permitted_column_ids)))
+            ).values_list('column__column_id', flat=True).distinct()
+        return sorted(permitted_column_ids)
 
     def get_permitted_user_roles_for_board(self, board_id: str) -> List[str]:
         return ["ALL ROLES"]

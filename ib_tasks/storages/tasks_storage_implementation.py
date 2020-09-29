@@ -72,6 +72,7 @@ class TasksStorageImplementation(TaskStorageInterface):
         else:
             return task_id
 
+    # ToDo change status_variables_dto to status_variable_dtos
     def update_status_variables_to_task(
             self, task_id: int, status_variables_dto: List[StatusVariableDTO]):
 
