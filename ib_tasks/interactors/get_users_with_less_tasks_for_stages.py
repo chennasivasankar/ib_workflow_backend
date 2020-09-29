@@ -1,5 +1,7 @@
 from typing import List, Tuple, Union, Optional
+
 from ib_tasks.adapters.dtos import UserDetailsDTO, AssigneeDetailsDTO
+from ib_tasks.adapters.dtos import UserIdWIthTeamDetailsDTO
 from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO, \
     StageWithUserDetailsAndTeamDetailsDTO, StageIdWithNameDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -11,7 +13,6 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import TaskStageStorageInterface
-from ib_tasks.adapters.dtos import UserIdWIthTeamDetailsDTO
 
 
 class GetUsersWithLessTasksInGivenStagesInteractor:
@@ -109,7 +110,8 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
             db_stage_ids=db_stage_ids)
         stage_with_user_details_dtos = []
         if len(db_stage_ids) == 1:
-            previous_stage_ids = self.stage_storage.get_recent_task_stage(task_id=task_id)
+            previous_stage_ids = self.stage_storage.get_recent_task_stage(
+                task_id=task_id)
             if len(previous_stage_ids) == 1:
                 stage_with_user_details_dtos = self. \
                     _get_previous_user_details_for_next_stage_if_user_is_permitted(
@@ -127,7 +129,8 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
     def _get_previous_user_details_for_next_stage_if_user_is_permitted(
             self, task_id: int, previous_stage_ids: List[int],
             next_task_stage_ids: List[int], project_id: str,
-            stage_detail_dtos: List[StageDetailsDTO])-> List[StageWithUserDetailsDTO]:
+            stage_detail_dtos: List[StageDetailsDTO]) -> List[
+        StageWithUserDetailsDTO]:
         task_stage_assignee_dto = self.stage_storage. \
             get_stage_details_having_assignees_in_given_stage_ids(
             task_id=task_id, db_stage_ids=previous_stage_ids)
@@ -248,6 +251,12 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
                         = updated_task_count_dto_of_assignee.tasks_count
         return permitted_assignee_with_current_tasks_count_dtos
 
+    @staticmethod
+    def any_in(user_roles: List[str], stage_roles: List[str]) -> bool:
+        from ib_iam.constants.config import ALL_ROLES_ID
+        return any(role in stage_roles for role in
+                   user_roles) or ALL_ROLES_ID in stage_roles
+
     def _get_user_details_dtos_having_less_tasks_for_given_stages_and_roles(
             self, role_ids_group_by_stage_id_dtos: List[StageIdWithRoleIdsDTO],
             stage_detail_dtos: List[StageDetailsDTO], project_id: str) -> \
@@ -258,10 +267,27 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
         auth_service_adapter = AuthService()
         stage_with_user_details_dtos_having_less_tasks, \
         updated_task_count_dtos_for_assignee_having_less_tasks = [], []
+        role_ids = []
+        for role_ids_group_by_stage_id_dto in role_ids_group_by_stage_id_dtos:
+            role_ids += role_ids_group_by_stage_id_dto.role_ids
+        role_ids = sorted(list(set(role_ids)))
+        permitted_user_details_dtos = \
+            auth_service_adapter.get_user_details_with_roles(role_ids,
+                                                             project_id)
+        from collections import defaultdict
+        stage_with_permitted_user_dict = defaultdict(list)
+        for role_ids_group_by_stage_id_dto in role_ids_group_by_stage_id_dtos:
+            stage_id = role_ids_group_by_stage_id_dto.db_stage_id
+            stage_roles = role_ids_group_by_stage_id_dto.role_ids
+            for user_details_dto in permitted_user_details_dtos:
+                user_is_stage_permitted = (
+                    self.any_in(user_details_dto.roles, stage_roles))
+                if user_is_stage_permitted:
+                    stage_with_permitted_user_dict[stage_id].append(
+                        user_details_dto)
         for each_dto in role_ids_group_by_stage_id_dtos:
-            permitted_user_details_dtos = auth_service_adapter. \
-                get_permitted_user_details(role_ids=each_dto.role_ids,
-                                           project_id=project_id)
+            permitted_user_details_dtos = stage_with_permitted_user_dict[
+                each_dto.db_stage_id]
             permitted_assignee_with_current_tasks_count_dtos = self. \
                 _get_permitted_assignee_with_current_tasks_count_dtos(
                 permitted_user_details_dtos,

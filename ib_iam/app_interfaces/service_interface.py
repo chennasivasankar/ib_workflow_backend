@@ -1,6 +1,7 @@
 from typing import List, Optional
 
-from ib_iam.adapters.dtos import UserProfileDTO, SearchQueryWithPaginationDTO
+from ib_iam.adapters.dtos import UserProfileDTO, SearchQueryWithPaginationDTO, \
+    UserProfileWithRolesDTO
 from ib_iam.app_interfaces.dtos import UserTeamsDTO, ProjectTeamsAndUsersDTO, \
     SearchableDTO, ProjectTeamUserDTO
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO, \
@@ -126,6 +127,22 @@ class ServiceInterface:
         )
 
         return user_details_dtos
+
+    @staticmethod
+    def get_user_details_with_roles_for_given_roles(
+            role_ids: List[str], project_id: str
+    ) -> List[UserProfileWithRolesDTO]:
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        from ib_iam.interactors.users.get_users_list_interactor import \
+            GetListOfUsersInteractor
+
+        user_storage = UserStorageImplementation()
+        interactor = GetListOfUsersInteractor(user_storage=user_storage)
+        user_details_with_roles_dtos = interactor.get_user_details_with_roles(
+            role_ids=role_ids, project_id=project_id)
+
+        return user_details_with_roles_dtos
 
     @staticmethod
     def get_user_details_for_the_given_role_ids_based_on_query(
