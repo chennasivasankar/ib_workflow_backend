@@ -19,8 +19,7 @@ from django_swagger_utils.drf_server.utils.general.import_app_settings import \
     import_app_settings
 
 THIRD_PARTY_APPS = [
-    "ib_users",
-    "silk"
+    "ib_users"
 ]
 APPS = [
     "ib_iam",
@@ -138,8 +137,3 @@ RESET_PASSWORD_LINK = '{frontend_url}update-password?token='.format(
 USER_VERIFICATION_EMAIL_LINK = "{frontend_url}verify-email?token=".format(
     frontend_url=FRONTEND_URL
 )
-
-# ************************** django silk ************************
-
-# SILKY_PYTHON_PROFILER = True
-# SILKY_PYTHON_PROFILER_BINARY = True
