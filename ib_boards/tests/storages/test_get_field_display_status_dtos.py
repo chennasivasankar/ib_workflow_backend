@@ -27,9 +27,14 @@ class TestCreateFieldOrderAndStatus:
             StorageImplementation
         return StorageImplementation()
 
-    def test_fields_display_order_and_status_creates(self, storage, snapshot):
+    @pytest.fixture
+    def populate_data(self):
+        from ib_boards.tests.factories.models import ColumnFactory
+        ColumnFactory.create_batch(3)
+
+    def test_fields_display_order_and_status_creates(self, storage, snapshot,
+                                                     populate_data):
         # Arrange
-        import json
         column_id = 'COLUMN_ID_1'
         user_id = 'user_id_0'
         field_ids = [
