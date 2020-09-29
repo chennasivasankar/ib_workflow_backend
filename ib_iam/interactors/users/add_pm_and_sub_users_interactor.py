@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import List
 
 from ib_iam.constants.config import DEFAULT_TEAM_ID, DEFAULT_TEAM_NAME, \
@@ -134,7 +135,8 @@ class PMAndSubUsersInteractor:
         for user_id_with_token_dto in user_id_with_token_dtos:
             user_token_and_id_dictionary[user_id_with_token_dto.token] = \
                 user_id_with_token_dto.user_id
-        pm_id_and_sub_user_ids_dictionary = {}
+        print(user_token_and_id_dictionary)
+        pm_id_and_sub_user_ids_dictionary = defaultdict(list)
         for pm_and_sub_user_dto in pm_and_sub_user_dtos:
             pm_id_and_sub_user_ids_dictionary[
                 user_token_and_id_dictionary[pm_and_sub_user_dto.pm_auth_token]

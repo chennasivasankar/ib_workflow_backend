@@ -155,4 +155,5 @@ class TeamStorageImplementation(TeamStorageInterface):
         _, is_created = Team.objects.get_or_create(
             team_id=team_id, name=name
         )
+        print(is_created)
         return is_created

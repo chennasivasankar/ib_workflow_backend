@@ -3,7 +3,7 @@ from typing import List
 from ib_iam.interactors.dtos.dtos import PMAndSubUsersAuthTokensDTO
 
 
-class Project:
+class AddPMAndSubUsers:
 
     def add_pm_and_sub_users(
             self, spread_sheet_name: str, sub_sheet_name: str
@@ -24,6 +24,9 @@ class Project:
             ProjectStorageImplementation
         project_storage = ProjectStorageImplementation()
         team_storage = TeamStorageImplementation()
+        from ib_iam.storages.team_member_level_storage_implementation import \
+            TeamMemberLevelStorageImplementation
+        team_member_level_storage = TeamMemberLevelStorageImplementation()
         pm_and_sub_user_dtos = self._convert_to_pm_and_sub_user_dtos(
             pm_and_sub_users
         )
@@ -33,7 +36,8 @@ class Project:
         interactor = PMAndSubUsersInteractor(
             project_storage=project_storage,
             user_storage=user_storage,
-            team_storage=team_storage
+            team_storage=team_storage,
+            team_member_level_storage=team_member_level_storage
         )
         interactor.add_pm_and_sub_users(
             pm_and_sub_user_dtos=pm_and_sub_user_dtos

@@ -311,7 +311,7 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
     ) -> str:
         # TODO Write tests for it
         from ib_iam.models import TeamMemberLevel
-        team_member_level_object = TeamMemberLevel.objects.get_or_create(
+        team_member_level_object, _ = TeamMemberLevel.objects.get_or_create(
             team_id=team_id, level_name=level_name,
             level_hierarchy=level_hierarchy
         )
