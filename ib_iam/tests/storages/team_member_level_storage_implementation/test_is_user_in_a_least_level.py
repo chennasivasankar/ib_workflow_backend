@@ -1,7 +1,7 @@
 import pytest
 
 
-class TestMemberIdWithSubordinateMemberIdsDTO:
+class TestIsUserInaLeastLevel:
 
     @pytest.fixture()
     def storage(self):
@@ -111,32 +111,37 @@ class TestMemberIdWithSubordinateMemberIdsDTO:
         ProjectTeamFactory.create(team=team_object, project=project_object)
 
     @pytest.mark.django_db
-    def test_get_member_id_with_subordinate_member_ids_dto(
+    def test_is_user_not_in_a_least_level(
             self, prepare_user_teams_subordinate_members, storage,
             create_project_team
     ):
         # Arrange
         project_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
         user_id = "10be920b-7b4c-49e7-8adb-41a0c18da848"
-        member_id_with_subordinate_ids_dict = {
-            'member_id': '10be920b-7b4c-49e7-8adb-41a0c18da848',
-            'subordinate_member_ids': ['20be920b-7b4c-49e7-8adb-41a0c18da848',
-                                       '30be920b-7b4c-49e7-8adb-41a0c18da848']
-        }
-
-        from ib_iam.tests.factories.storage_dtos import \
-            MemberIdWithSubordinateMemberIdsDTOFactory
-        expected_member_id_with_subordinate_member_ids_dto = \
-            MemberIdWithSubordinateMemberIdsDTOFactory(
-                member_id=member_id_with_subordinate_ids_dict["member_id"],
-                subordinate_member_ids=member_id_with_subordinate_ids_dict[
-                    "subordinate_member_ids"]
-            )
+        is_user_in_a_least_level = False
 
         # Act
-        response = storage.get_user_id_with_subordinate_user_ids_dto(
+        response = storage.is_user_in_a_least_level(
             user_id=user_id, project_id=project_id
         )
 
         # Assert
-        assert response == expected_member_id_with_subordinate_member_ids_dto
+        assert response == is_user_in_a_least_level
+
+    @pytest.mark.django_db
+    def test_is_user_in_a_least_level(
+            self, prepare_user_teams_subordinate_members, storage,
+            create_project_team
+    ):
+        # Arrange
+        project_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+        user_id = "40be920b-7b4c-49e7-8adb-41a0c18da848"
+        is_user_in_a_least_level = True
+
+        # Act
+        response = storage.is_user_in_a_least_level(
+            user_id=user_id, project_id=project_id
+        )
+
+        # Assert
+        assert response == is_user_in_a_least_level
