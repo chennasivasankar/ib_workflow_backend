@@ -10,7 +10,7 @@ snapshots = Snapshot()
 snapshots['TestGetTaskDetailsInGroupPresenterImplementation.test_get_task_details_in_group_response get_task_details_in_group_response'] = {
     'tasks': [
         {
-            'completed_sub_tasks_count': 3,
+            'completed_sub_tasks_count': 2,
             'description': 'description_1',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'LOW',
@@ -37,7 +37,7 @@ snapshots['TestGetTaskDetailsInGroupPresenterImplementation.test_get_task_detail
                 'stage_id': 1
             },
             'start_date': '2020-09-10 05:30:00',
-            'sub_tasks_count': 3,
+            'sub_tasks_count': 2,
             'task_id': 'task_display1',
             'task_overview_fields': [
                 {
@@ -62,7 +62,7 @@ snapshots['TestGetTaskDetailsInGroupPresenterImplementation.test_get_task_detail
             'title': 'title_1'
         },
         {
-            'completed_sub_tasks_count': 0,
+            'completed_sub_tasks_count': 3,
             'description': 'description_2',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'MEDIUM',
@@ -89,7 +89,7 @@ snapshots['TestGetTaskDetailsInGroupPresenterImplementation.test_get_task_detail
                 'stage_id': 2
             },
             'start_date': '2020-09-10 05:30:00',
-            'sub_tasks_count': 0,
+            'sub_tasks_count': 3,
             'task_id': 'task_display2',
             'task_overview_fields': [
                 {
@@ -114,7 +114,7 @@ snapshots['TestGetTaskDetailsInGroupPresenterImplementation.test_get_task_detail
             'title': 'title_2'
         },
         {
-            'completed_sub_tasks_count': 1,
+            'completed_sub_tasks_count': 0,
             'description': 'description_3',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'HIGH',
@@ -141,7 +141,7 @@ snapshots['TestGetTaskDetailsInGroupPresenterImplementation.test_get_task_detail
                 'stage_id': 3
             },
             'start_date': '2020-09-10 05:30:00',
-            'sub_tasks_count': 1,
+            'sub_tasks_count': 0,
             'task_id': 'task_display3',
             'task_overview_fields': [
                 {
@@ -166,7 +166,7 @@ snapshots['TestGetTaskDetailsInGroupPresenterImplementation.test_get_task_detail
             'title': 'title_3'
         },
         {
-            'completed_sub_tasks_count': 2,
+            'completed_sub_tasks_count': 1,
             'description': 'description_4',
             'due_date': '2020-10-10 05:30:00',
             'priority': 'LOW',
@@ -193,7 +193,7 @@ snapshots['TestGetTaskDetailsInGroupPresenterImplementation.test_get_task_detail
                 'stage_id': 4
             },
             'start_date': '2020-09-10 05:30:00',
-            'sub_tasks_count': 2,
+            'sub_tasks_count': 1,
             'task_id': 'task_display4',
             'task_overview_fields': [
                 {
