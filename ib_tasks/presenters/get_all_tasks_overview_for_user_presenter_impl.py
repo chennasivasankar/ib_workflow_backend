@@ -10,7 +10,7 @@ from ib_tasks.interactors.presenter_interfaces \
     .get_all_tasks_overview_for_user_presenter_interface import \
     GetAllTasksOverviewForUserPresenterInterface, \
     GetFilteredTasksOverviewForUserPresenterInterface
-from ib_tasks.interactors.stage_dtos import TaskStageAssigneeDetailsDTO
+from ib_tasks.interactors.stage_dtos import TaskStageAssigneeTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO
 
@@ -164,7 +164,7 @@ class GetAllTasksOverviewForUserPresenterImpl(
 
     @staticmethod
     def _get_assignee_details(
-            stage_assignee_dto: List[TaskStageAssigneeDetailsDTO]
+            stage_assignee_dto: List[TaskStageAssigneeTeamDetailsDTO]
     ) -> Optional[Dict]:
         if stage_assignee_dto:
             assignee_details_dto = stage_assignee_dto[0].assignee_details

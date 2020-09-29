@@ -49,22 +49,23 @@ class GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
             get_users_with_less_tasks_interactor. \
                 get_users_with_less_tasks_in_given_stages(
                 stage_ids=stage_ids_excluding_virtual_stages,
-                project_id=project_id)
+                project_id=project_id, task_id=task_id)
         stages_with_user_details_dtos = \
-            stage_with_user_details_and_team_details_dto.\
+            stage_with_user_details_and_team_details_dto. \
                 stages_with_user_details_dtos
         user_with_team_details_dtos = \
-            stage_with_user_details_and_team_details_dto.\
+            stage_with_user_details_and_team_details_dto. \
                 user_with_team_details_dtos
         stage_assignee_dtos = []
         for stage_with_user_details_dto in stages_with_user_details_dtos:
-            assignee_id = stage_with_user_details_dto.assignee_details_dto.\
+            assignee_id = stage_with_user_details_dto.assignee_details_dto. \
                 assignee_id
             for user_with_team_details_dto in user_with_team_details_dtos:
                 if assignee_id == user_with_team_details_dto.user_id:
                     stage_assignee_dto = StageAssigneeDTO(
                         assignee_id=assignee_id,
-                        db_stage_id=stage_with_user_details_dto.db_stage_id,
+                        db_stage_id=stage_with_user_details_dto
+                            .stage_details_dto.db_stage_id,
                         team_id=user_with_team_details_dto.team_details.team_id)
 
                     stage_assignee_dtos.append(stage_assignee_dto)

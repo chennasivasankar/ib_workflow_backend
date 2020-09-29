@@ -11,6 +11,6 @@ snapshots['TestCase33UpdateTaskAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase33UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'INVALID_TIME_FORMAT',
-    'response': 'given invalid format for time: 2020-09-40 for field: FIELD-1! Try with this format: %Y-%m-%d'
+    'res_status': 'INVALID_DATE_FORMAT',
+    'response': 'given invalid format for date: 2020-09-40 for field: DISPLAY_NAME-0! Try with this format: %Y-%m-%d'
 }

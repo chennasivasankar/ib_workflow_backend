@@ -12,5 +12,5 @@ snapshots['TestCase20UpdateTaskAPITestCase.test_case status_code'] = '400'
 snapshots['TestCase20UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_URL',
-    'response': 'Invalid value for url: google.com for field: FIELD-1'
+    'response': 'Invalid value for url: google.com for field: DISPLAY_NAME-0'
 }

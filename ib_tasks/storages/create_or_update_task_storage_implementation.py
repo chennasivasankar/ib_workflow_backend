@@ -281,7 +281,8 @@ class CreateOrUpdateTaskStorageImplementation(
             description=task_obj.description,
             start_date=task_obj.start_date,
             due_date=task_obj.due_date,
-            priority=task_obj.priority
+            priority=task_obj.priority,
+            task_id=task_obj.id
         )
         return task_base_details_dto
 

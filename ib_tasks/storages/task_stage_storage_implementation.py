@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from django.db.models import Q
+from django.db.models import Q, Max
 
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.stages_dtos import TaskStageHistoryDTO, \
@@ -9,7 +9,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStageAssigneeDTO, CurrentStageDetailsDTO, AssigneeCurrentTasksCountDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
-    TaskStageStorageInterface, TaskStageAssigneeIdDTO
+    TaskStageStorageInterface, TaskStageAssigneeTeamIdDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import CurrentTaskStage, Task, TaskStageHistory, \
     StagePermittedRoles, Stage, TaskStageRp
@@ -129,7 +129,7 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
 
     def get_stage_assignee_id_dtos(
             self, task_stage_dtos: List[GetTaskDetailsDTO]
-    ) -> List[TaskStageAssigneeIdDTO]:
+    ) -> List[TaskStageAssigneeTeamIdDTO]:
         q = None
         for counter, item in enumerate(task_stage_dtos):
             current_queue = Q(
@@ -143,12 +143,40 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
         q = q & Q(assignee_id__isnull=False)
         task_stage_objects = TaskStageHistory.objects.filter(
             q, left_at=None).values('task_id', 'stage__stage_id',
-                                    'assignee_id')
+                                    'assignee_id', 'team_id')
         task_stage_assignee_id_dto = [
-            TaskStageAssigneeIdDTO(
+            TaskStageAssigneeTeamIdDTO(
                 task_id=task_stage_object['task_id'],
                 stage_id=task_stage_object['stage__stage_id'],
-                assignee_id=task_stage_object['assignee_id']
+                assignee_id=task_stage_object['assignee_id'],
+                team_id=task_stage_object['team_id']
+            )
+            for task_stage_object in task_stage_objects
+        ]
+        return task_stage_assignee_id_dto
+
+    def get_task_stage_team_assignee_id_dtos(
+            self, task_stage_dtos: List[GetTaskDetailsDTO]
+    ) -> List[TaskStageAssigneeTeamIdDTO]:
+        q = None
+        for counter, item in enumerate(task_stage_dtos):
+            current_queue = Q(
+                task_id=item.task_id, stage__stage_id=item.stage_id
+            )
+            if counter == 0:
+                q = current_queue
+            q = q | current_queue
+        if q is None:
+            return []
+        task_stage_objects = TaskStageHistory.objects.filter(
+            q, left_at=None).values('task_id', 'stage__stage_id',
+                                    'assignee_id', 'team_id')
+        task_stage_assignee_id_dto = [
+            TaskStageAssigneeTeamIdDTO(
+                task_id=task_stage_object['task_id'],
+                stage_id=task_stage_object['stage__stage_id'],
+                assignee_id=task_stage_object['assignee_id'],
+                team_id=task_stage_object['team_id']
             )
             for task_stage_object in task_stage_objects
         ]
@@ -191,3 +219,38 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
         if objs:
             return objs[0]
         return None
+
+    def get_task_stage_details_dtos(
+            self, task_ids: List[int]
+    ) -> List[GetTaskDetailsDTO]:
+
+        from django.db.models import F
+        task_current_stage_objs = CurrentTaskStage.objects \
+            .filter(task_id__in=task_ids) \
+            .annotate(normal_stage=F('stage__stage_id'))
+        return [
+            GetTaskDetailsDTO(
+                task_id=task_current_stage_obj.task_id,
+                stage_id=task_current_stage_obj.normal_stage
+            ) for task_current_stage_obj in task_current_stage_objs
+        ]
+
+    def get_max_stage_value_for_the_given_template(
+            self, adhoc_task_template_id: str
+    ) -> int:
+        max_value_dict = Stage.objects.filter(
+            task_template_id=adhoc_task_template_id
+        ).aggregate(Max('value'))
+        max_value = max_value_dict['value__max']
+        return max_value
+
+    def get_completed_sub_task_ids(
+            self, all_sub_task_ids: List[int],
+            max_stage_value: int
+    ) -> List[int]:
+        completed_sub_task_ids = CurrentTaskStage.objects.filter(
+            task_id__in=all_sub_task_ids,
+            stage__value=max_stage_value
+        ).values_list('task_id', flat=True)
+        completed_sub_task_ids = list(completed_sub_task_ids)
+        return completed_sub_task_ids

@@ -46,7 +46,7 @@ class UserDTO:
 class AssigneeDetailsDTO:
     assignee_id: str
     name: str
-    profile_pic_url: str
+    profile_pic_url: Optional[str]
 
 
 @dataclass

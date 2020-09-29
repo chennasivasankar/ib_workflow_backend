@@ -17,7 +17,7 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidUrlForImage, InvalidImageFormat, InvalidUrlForFile, \
     InvalidFileFormat
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
-    DuplicateFieldIdsToGoF
+    DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
     DuplicateSameGoFOrderForAGoF, InvalidStagePermittedGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
@@ -187,6 +187,8 @@ class UpdateTaskInteractor(
             return presenter.raise_invalid_file_url(err)
         except InvalidFileFormat as err:
             return presenter.raise_not_acceptable_file_format(err)
+        except UserDidNotFillRequiredFields as err:
+            return presenter.raise_user_did_not_fill_required_fields(err)
         except StageIdsWithInvalidPermissionForAssignee as err:
             return presenter.raise_invalid_stage_assignees(err)
         except StageIdsListEmptyException as err:
@@ -230,23 +232,25 @@ class UpdateTaskInteractor(
 
     def _validate_task_details(self, task_dto: UpdateTaskDTO):
         task_id = task_dto.task_basic_details.task_id
-        self.validate_task_dates_and_priority(
-            task_dto.task_basic_details.start_datetime,
-            task_dto.task_basic_details.due_datetime,
-            task_dto.task_basic_details.priority,
-            task_dto.task_basic_details.action_type)
         self._validate_task_id(task_id)
-        self._validate_stage_id(task_dto.stage_assignee.stage_id)
         task_template_id = \
             self.create_task_storage.get_template_id_for_given_task(task_id)
+        from ib_tasks.constants.constants import ADHOC_TEMPLATE_ID
+        is_not_adhoc_template = not task_template_id == ADHOC_TEMPLATE_ID
         action_type_is_not_no_validations = \
             task_dto.task_basic_details.action_type != \
             ActionTypes.NO_VALIDATIONS.value
-        if action_type_is_not_no_validations:
+        if action_type_is_not_no_validations and is_not_adhoc_template:
+            self.validate_task_dates_and_priority(
+                task_dto.task_basic_details.start_datetime,
+                task_dto.task_basic_details.due_datetime,
+                task_dto.task_basic_details.priority,
+                task_dto.task_basic_details.action_type)
             self._validate_task_delay_reason_is_added_if_due_date_is_changed(
                 updated_due_date=task_dto.task_basic_details.due_datetime,
                 task_id=task_dto.task_basic_details.task_id,
                 stage_id=task_dto.stage_assignee.stage_id)
+        self._validate_stage_id(task_dto.stage_assignee.stage_id)
         project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
         base_validations_interactor = GoFsDetailsValidationsInteractor(
             self.task_storage, self.gof_storage,
@@ -258,6 +262,13 @@ class UpdateTaskInteractor(
             task_template_id=task_template_id, project_id=project_id,
             action_type=task_dto.task_basic_details.action_type,
             stage_id=task_dto.stage_assignee.stage_id)
+        if action_type_is_not_no_validations and is_not_adhoc_template:
+            self._validate_all_user_permitted_fields_are_filled_or_not(
+                user_id=task_dto.task_basic_details.created_by_id,
+                project_id=project_id,
+                gof_fields_dtos=task_dto.gof_fields_dtos,
+                stage_id=task_dto.stage_assignee.stage_id,
+                task_template_id=task_template_id)
 
     def _update_task_details(self, task_dto: UpdateTaskDTO):
         task_crud_interactor = TaskCrudOperationsInteractor(
@@ -309,7 +320,9 @@ class UpdateTaskInteractor(
             stage_storage=self.stage_storage, task_storage=self.task_storage,
             field_storage=self.field_storage,
             action_storage=self.action_storage,
-            task_stage_storage=self.task_stage_storage)
+            task_stage_storage=self.task_stage_storage,
+            template_storage=self.task_template_storage
+        )
         project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
         self._update_task_in_elasticsearch(task_id=task_id)
         all_tasks_overview_details_dto = \
@@ -333,6 +346,73 @@ class UpdateTaskInteractor(
             else:
                 gofs_for_creation.append(task_gof_dto)
         return gofs_for_updation, gofs_for_creation
+
+    def _validate_all_user_permitted_fields_are_filled_or_not(
+            self, user_id: str, project_id: str,
+            gof_fields_dtos: List[GoFFieldsDTO], stage_id: int,
+            task_template_id: str
+    ):
+        user_roles = self._get_user_roles_of_project(user_id, project_id)
+        permitted_gof_ids = self._get_user_writable_gof_ids_based_on_stage(
+            stage_id, user_roles, task_template_id)
+        self._validate_permitted_fields_filled_or_not(
+            user_roles, permitted_gof_ids, gof_fields_dtos)
+
+    @staticmethod
+    def _get_user_roles_of_project(
+            user_id: str, project_id: str) -> List[str]:
+        from ib_tasks.adapters.roles_service_adapter import \
+            get_roles_service_adapter
+        roles_service_adapter = get_roles_service_adapter()
+        user_roles = roles_service_adapter.roles_service \
+            .get_user_role_ids_based_on_project(user_id, project_id)
+        return user_roles
+
+    def _get_user_writable_gof_ids_based_on_stage(
+            self, stage_id: int, user_roles: List[str],
+            task_template_id: str
+    ) -> List[str]:
+        stage_permitted_gof_ids = \
+            self.task_template_storage.get_template_stage_permitted_gof_ids(
+                task_template_id, stage_id)
+        gof_id_with_display_name_dtos = \
+            self.gof_storage.get_user_write_permitted_gof_ids_in_given_gof_ids(
+                user_roles, stage_permitted_gof_ids)
+        user_permitted_gof_ids = [
+            dto.gof_id for dto in gof_id_with_display_name_dtos]
+        return user_permitted_gof_ids
+
+    def _validate_permitted_fields_filled_or_not(
+            self, user_roles: List[str], permitted_gof_ids: List[str],
+            gof_fields_dtos: List[GoFFieldsDTO]):
+        field_id_with_display_name_dtos = \
+            self.field_storage.get_user_writable_fields_for_given_gof_ids(
+                user_roles, permitted_gof_ids)
+        filled_field_ids = []
+        for gof_fields_dto in gof_fields_dtos:
+            filled_field_ids += [
+                field_value_dto.field_id
+                for field_value_dto in gof_fields_dto.field_values_dtos
+            ]
+        self._validate_all_user_permitted_field_ids_are_filled_or_not(
+            field_id_with_display_name_dtos, filled_field_ids)
+
+    @staticmethod
+    def _validate_all_user_permitted_field_ids_are_filled_or_not(
+            permitted_fields, filled_field_ids
+    ) -> Optional[UserDidNotFillRequiredFields]:
+        permitted_field_ids = [
+            permitted_field.field_id for permitted_field in permitted_fields]
+        unfilled_field_ids = list(sorted(
+            set(permitted_field_ids) - set(filled_field_ids)))
+        if unfilled_field_ids:
+            unfilled_field_dtos = [
+                permitted_field
+                for permitted_field in permitted_fields
+                if permitted_field.field_id in unfilled_field_ids
+            ]
+            raise UserDidNotFillRequiredFields(unfilled_field_dtos)
+        return
 
     def _validate_task_id(
             self, task_id: int) -> Optional[InvalidTaskException]:
@@ -378,7 +458,7 @@ class UpdateTaskInteractor(
             task_crud_interactor: TaskCrudOperationsInteractor
     ):
         task_gof_details_dtos = task_crud_interactor.update_task_gofs(
-            task_gof_dtos=task_gof_dtos_for_updation)
+            task_gof_dtos_for_updation)
         task_gof_field_dtos = self.prepare_task_gof_fields_dtos(
             gof_fields_dtos, task_gof_details_dtos)
         task_gof_field_dtos_for_updation, task_gof_field_dtos_for_creation = \

@@ -6,20 +6,28 @@ Author: Pavankumar Pamuru
 
 import abc
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Union
 
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionWithStageIdDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
-    TemplateFieldsDTO
+    TemplateFieldsDTO, TaskBaseDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskIdWithStageValueDTO, StageIdWithTemplateIdDTO, TaskStageIdsDTO, \
-    TaskStagesDTO, StageDTO
+    TaskIdWithStageValueDTO, StageIdWithTemplateIdDTO, TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO, StatusVariableDTO
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO, TaskProjectDTO, TaskDueMissingDTO
-from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO, TaskDelayParametersDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import \
+    TaskDisplayIdDTO, \
+    TaskProjectDTO, TaskDueMissingDTO, \
+    SubTasksCountDTO, SubTasksIdsDTO
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+    TaskStageAssigneeTeamIdDTO
+from ib_tasks.interactors.storage_interfaces.task_templates_dtos import TaskTemplateMapDTO
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, \
+    GetTaskDetailsDTO, \
+    TaskDelayParametersDTO
 
 
 class TaskStorageInterface(abc.ABC):
@@ -72,6 +80,11 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_valid_task_ids(self, task_ids: List[int]) -> Optional[List[int]]:
+        pass
+
+    @abc.abstractmethod
+    def get_valid_task_display_ids(self, task_display_ids: List[str]) -> \
+            Optional[List[str]]:
         pass
 
     @abc.abstractmethod
@@ -140,6 +153,12 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_task_ids_given_task_display_ids(self, task_display_ids: List[
+        str]) -> List[
+        TaskDisplayIdDTO]:
+        pass
+
+    @abc.abstractmethod
     def get_project_id_of_task(self, task_id: int) -> str:
         pass
 
@@ -160,7 +179,8 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_task_ids_from_the_project(self, task_ids: List[int], project_id: str):
+    def get_valid_task_ids_from_the_project(self, task_ids: List[int],
+                                            project_id: str):
         pass
 
     @abc.abstractmethod
@@ -188,4 +208,43 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def update_task_due_datetime(self, due_details: TaskDelayParametersDTO):
+        pass
+
+    @abc.abstractmethod
+    def get_base_details_to_task_ids(
+            self, task_ids: List[int]
+    ) -> List[TaskBaseDetailsDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_sub_tasks_count_to_tasks(
+            self, task_ids: List[int]
+    ) -> List[SubTasksCountDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_sub_task_ids_to_tasks(
+            self, task_ids: List[int]
+    ) -> List[SubTasksIdsDTO]:
+        pass
+
+    @abc.abstractmethod
+    def validate_task_display_id_and_return_task_id(
+            self, task_display_id: str
+    ) -> Union[InvalidTaskDisplayId, int]:
+        pass
+
+    @abc.abstractmethod
+    def add_sub_task(self, created_task_id: int, parent_task_id: int):
+        pass
+
+    @abc.abstractmethod
+    def get_stage_assignee_id_dtos(
+            self, task_id: int, stage_ids: List[str]) -> List[TaskStageAssigneeTeamIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_template_ids_to_task_ids(
+            self, task_ids: List[int]
+    ) -> List[TaskTemplateMapDTO]:
         pass

@@ -16,6 +16,8 @@ from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+    TaskStageAssigneeTeamIdDTO
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, SearchQueryDTO
 
 
@@ -60,11 +62,17 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             body=json.loads(task_dict))
 
     def _get_task_dict(self, elastic_task_dto: ElasticTaskDTO):
+        start_date, due_date = self._get_start_date_and_due_date(
+            elastic_task_dto)
         task_dict = {
             "project_id": elastic_task_dto.project_id,
             "template_id": elastic_task_dto.template_id,
             "task_id": elastic_task_dto.task_id,
-            "title": elastic_task_dto.title
+            "title": elastic_task_dto.title,
+            "description": elastic_task_dto.description,
+            "start_date": start_date,
+            "due_date": due_date,
+            "priority": elastic_task_dto.priority
         }
         fields_dict = {}
         for field in elastic_task_dto.fields:
@@ -76,11 +84,36 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         return task_dict
 
     @staticmethod
-    def _get_stages_dict(stages_ids: List[str]) -> List[Dict[str, Any]]:
+    def _get_stages_dict(task_stage_assignees_dtos: List[TaskStageAssigneeTeamIdDTO]) -> List[Dict[str, Any]]:
         return [
-            {"stage_id": stage_id}
-            for stage_id in stages_ids
+            {
+                "stage_id": task_stage_assignees_dto.stage_id,
+                "assignee_id": task_stage_assignees_dto.assignee_id
+            }
+            for task_stage_assignees_dto in task_stage_assignees_dtos
         ]
+
+    def _get_start_date_and_due_date(
+            self, task_base_details_dto: ElasticTaskDTO
+    ):
+        start_date, due_date = None, None
+        if task_base_details_dto.start_date:
+            start_date = self._convert_datetime_object_to_string(
+                task_base_details_dto.start_date
+            )
+        if task_base_details_dto.due_date:
+            due_date = self._convert_datetime_object_to_string(
+                task_base_details_dto.due_date
+            )
+        return start_date, due_date
+
+    @staticmethod
+    def _convert_datetime_object_to_string(
+            datetime_obj: datetime
+    ) -> str:
+        from ib_tasks.constants.constants import DATE_FORMAT
+        datetime_in_string_format = datetime_obj.strftime(DATE_FORMAT)
+        return datetime_in_string_format
 
     def filter_tasks(
             self, filter_dtos: List[ApplyFilterDTO], offset: int,

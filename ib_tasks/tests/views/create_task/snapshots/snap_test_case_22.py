@@ -12,7 +12,7 @@ snapshots['TestCase22CreateTaskAPITestCase.test_case[iB] status_code'] = '400'
 snapshots['TestCase22CreateTaskAPITestCase.test_case[iB] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_FLOAT_VALUE',
-    'response': 'Invalid float value: iB for field: FIELD_ID-0!'
+    'response': 'Invalid float value: iB for field: DISPLAY_NAME-0!'
 }
 
 snapshots['TestCase22CreateTaskAPITestCase.test_case[500_iB] status_code'] = '400'
@@ -20,5 +20,5 @@ snapshots['TestCase22CreateTaskAPITestCase.test_case[500_iB] status_code'] = '40
 snapshots['TestCase22CreateTaskAPITestCase.test_case[500_iB] body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_FLOAT_VALUE',
-    'response': 'Invalid float value: 500_iB for field: FIELD_ID-0!'
+    'response': 'Invalid float value: 500_iB for field: DISPLAY_NAME-0!'
 }

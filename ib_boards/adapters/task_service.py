@@ -7,7 +7,7 @@ from typing import List, Tuple
 
 from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import TaskTemplateStagesDTO, \
-    TaskSummaryFieldsDTO, TaskStatusDTO, FieldDTO, ColumnTaskIdsDTO, ActionDTO, \
+    FieldDTO, ColumnTaskIdsDTO, ActionDTO, \
     TaskStageDTO, StageAssigneesDTO, AssigneesDTO, FieldNameDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory
@@ -168,11 +168,11 @@ class TaskService:
         ]
 
     def get_tasks_assignees_details(
-            self, task_stage_ids: List[GetTaskDetailsDTO]) -> List[
-        StageAssigneesDTO]:
+            self, task_stage_ids: List[GetTaskDetailsDTO], project_id: str
+    ) -> List[StageAssigneesDTO]:
 
         stage_assignees_dtos = self.interface.get_assignees_for_task_stages(
-            task_stage_dtos=task_stage_ids
+            task_stage_dtos=task_stage_ids, project_id=project_id
         )
         return [
             StageAssigneesDTO(

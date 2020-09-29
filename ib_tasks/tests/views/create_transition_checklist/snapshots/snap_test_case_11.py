@@ -12,5 +12,5 @@ snapshots['TestCase11CreateTransitionChecklistAPITestCase.test_case status_code'
 snapshots['TestCase11CreateTransitionChecklistAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_FIELDS_OF_GOF',
-    'response': "invalid fields ['field_1', 'field_2']  given to the gof gof_1"
+    'response': "invalid fields ['DISPLAY_NAME-0', 'DISPLAY_NAME-1']  given to the gof GOF_DISPLAY_NAME-0"
 }

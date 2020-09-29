@@ -62,7 +62,7 @@ snapshots['TestGetNextStagesRandomAssigneesOfATaskPresenterImpl.test_given_valid
                 }
             },
             'stage_display_name': 'stage_1',
-            'stage_id': 2
+            'stage_id': 1
         },
         {
             'assignee': {
@@ -75,7 +75,7 @@ snapshots['TestGetNextStagesRandomAssigneesOfATaskPresenterImpl.test_given_valid
                 }
             },
             'stage_display_name': 'stage_2',
-            'stage_id': 3
+            'stage_id': 2
         }
     ]
 }

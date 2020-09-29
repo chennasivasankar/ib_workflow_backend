@@ -4,6 +4,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     IncorrectMultiSelectLabelsSelected
 from ib_tasks.interactors.create_or_update_task.field_response_validations. \
     base_field_validation import BaseFieldValidation
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldWithGoFDisplayNameDTO
 
 
 class MultiSelectLabelFieldValidationInteractor(BaseFieldValidation):
@@ -17,7 +19,9 @@ class MultiSelectLabelFieldValidationInteractor(BaseFieldValidation):
         self.valid_multi_select_labels = valid_multi_select_labels
 
     def validate_field_response(
-            self) -> Optional[IncorrectMultiSelectLabelsSelected]:
+            self,
+            field_id_with_display_name_dtos: List[FieldWithGoFDisplayNameDTO]
+    ) -> Optional[IncorrectMultiSelectLabelsSelected]:
         import json
         selected_multi_select_labels = json.loads(self.field_response)
         invalid_multi_select_labels = sorted(list(
@@ -25,8 +29,9 @@ class MultiSelectLabelFieldValidationInteractor(BaseFieldValidation):
                 self.valid_multi_select_labels)
         ))
         if invalid_multi_select_labels:
+            field_display_name = self.get_field_display_name(
+                self.field_id, field_id_with_display_name_dtos)
             raise IncorrectMultiSelectLabelsSelected(
-                self.field_id, invalid_multi_select_labels,
-                self.valid_multi_select_labels
-            )
+                field_display_name, invalid_multi_select_labels,
+                self.valid_multi_select_labels)
         return

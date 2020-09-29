@@ -42,7 +42,7 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
         project_templates = \
             ProjectTaskTemplate.objects.filter(project_id=project_id). \
                 values_list('task_template_id', flat=True)
-        return project_templates
+        return list(project_templates)
 
     def validate_transition_template_id(
             self, transition_checklist_template_id
@@ -375,3 +375,20 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
         gof_ids_of_templates_list = list(gof_ids_of_templates_queryset)
         return gof_ids_of_templates_list
+
+    def get_task_template_ids(self) -> List[str]:
+        task_template_id_queryset = \
+            TaskTemplate.objects.filter(
+                is_transition_template=False
+            ).values_list('template_id', flat=True)
+        task_template_id_list = list(task_template_id_queryset)
+
+        return task_template_id_list
+
+    def get_task_template_ids_of_project_task_templates(self) -> List[str]:
+        task_template_id_queryset = \
+            ProjectTaskTemplate.objects.all().values_list(
+                'task_template_id', flat=True)
+
+        task_template_id_list = list(task_template_id_queryset)
+        return task_template_id_list

@@ -12,5 +12,5 @@ snapshots['TestCase18UpdateTaskAPITestCase.test_case status_code'] = '400'
 snapshots['TestCase18UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_PHONE_NUMBER_VALUE',
-    'response': 'Invalid value for phone number: 93456 for field: FIELD-1'
+    'response': 'Invalid value for phone number: 93456 for field: DISPLAY_NAME-0'
 }

@@ -11,12 +11,13 @@ from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.stage_dtos import TaskStageDTO, \
-    TaskStageAssigneeDetailsDTO
+    TaskStageAssigneeTeamDetailsDTO, \
+    StageIdWithGoFIdsDTO, DBStageIdWithStageIdDTO, DBStageIdWithGoFIdsDTO
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
     UserStagesWithPaginationDTO, StageAssigneeDTO, \
     StageAssigneeWithTeamDetailsDTO, AssigneeWithTeamDetailsDTO, \
-    StageWithUserDetailsDTO, StageIdWithNameDTO, TemplateStageDTO
+    StageWithUserDetailsDTO, TemplateStageDTO, StageIdWithNameDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -28,7 +29,8 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos import \
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskWithDbStageIdDTO, AssigneeCurrentTasksCountDTO, \
     CurrentStageDetailsDTO, StageIdWithValueDTO, StageAssigneeDetailsDTO, \
-    StageActionNamesDTO, CreateStageFlowDTO, StageFlowWithActionIdDTO
+    StageActionNamesDTO, CreateStageFlowDTO, StageFlowWithActionIdDTO, \
+    DBStageIdWithGoFIdDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     TaskDueParametersDTO, \
@@ -38,13 +40,16 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
     TaskDelayParametersDTO, UpdateTaskWithTaskDisplayIdDTO, \
     SaveAndActOnTaskWithTaskDisplayIdDTO, SearchableDTO, SearchQueryDTO, \
-    StageDisplayLogicDTO, BasicTaskDetailsDTO
+    StageDisplayLogicDTO, BasicTaskDetailsDTO, \
+    TaskWithCompletedSubTasksCountDTO, CreateSubTaskDTO
+from ib_tasks.interactors.task_stage_dtos import TasksCompleteDetailsDTO
 from ib_tasks.interactors.task_template_dtos import \
     (CreateTransitionChecklistTemplateDTO,
      CreateTransitionChecklistTemplateWithTaskDisplayIdDTO)
 from ib_tasks.tests.factories.adapter_dtos import (AssigneeDetailsDTOFactory,
                                                    UserDetailsDTO,
-                                                   TeamInfoDTOFactory)
+                                                   TeamInfoDTOFactory,
+                                                   TeamDetailsDTOFactory)
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -388,6 +393,7 @@ class CreateTaskDTOFactory(factory.Factory):
     def gof_fields_dtos(self):
         return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
 
+
 class StageIdWithAssigneeDTOFactory(factory.Factory):
     class Meta:
         model = StageIdWithAssigneeDTO
@@ -511,6 +517,7 @@ class TaskCurrentStageDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def stage_details_dtos(self):
+        CurrentStageDetailsDTOFactory.reset_sequence()
         return [CurrentStageDetailsDTOFactory(),
                 CurrentStageDetailsDTOFactory()]
 
@@ -618,19 +625,26 @@ class AssigneeWithTeamDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def team_info_dto(self):
+        TeamInfoDTOFactory.reset_sequence()
         return TeamInfoDTOFactory()
 
 
-class TaskStageAssigneeDetailsDTOFactory(factory.Factory):
+class TaskStageAssigneeTeamDetailsDTOFactory(factory.Factory):
     class Meta:
-        model = TaskStageAssigneeDetailsDTO
+        model = TaskStageAssigneeTeamDetailsDTO
 
     task_id = factory.sequence(lambda counter: counter + 1)
     stage_id = factory.sequence(lambda counter: 'stage_{}'.format(counter + 1))
 
     @factory.lazy_attribute
     def assignee_details(self):
+        AssigneeWithTeamDetailsDTOFactory.reset_sequence()
         return AssigneeWithTeamDetailsDTOFactory()
+
+    @factory.lazy_attribute
+    def team_details(self):
+        TeamDetailsDTOFactory.reset_sequence()
+        return TeamDetailsDTOFactory()
 
 
 class AssigneesDTOFactory(factory.Factory):
@@ -664,6 +678,7 @@ class AssigneeCurrentTasksCountDTOFactory(factory.Factory):
         lambda counter: 'assignee_{}'.format(counter + 1))
     tasks_count = factory.sequence(
         lambda counter: counter + 1)
+
 
 class StageIdWithNameDTOFactory(factory.Factory):
     class Meta:
@@ -703,3 +718,81 @@ class StageFlowWithActionIdDTOFactory(factory.Factory):
     previous_stage_id = factory.sequence(lambda n: "stage_{}".format(n))
     action_id = factory.sequence(lambda n: n)
     next_stage_id = factory.sequence(lambda n: "stage_{}".format(n + 1))
+
+
+class TasksCompleteDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TasksCompleteDetailsDTO
+
+    @factory.lazy_attribute
+    def task_base_details_dtos(self):
+        from ib_tasks.tests.factories.storage_dtos import \
+            TaskBaseDetailsDTOFactory
+        TaskBaseDetailsDTOFactory.reset_sequence(1)
+        return TaskBaseDetailsDTOFactory.create_batch(2)
+
+    @factory.lazy_attribute
+    def task_stage_details_dtos(self):
+        from ib_tasks.tests.factories.presenter_dtos \
+            import GetTaskStageCompleteDetailsDTOFactory
+        GetTaskStageCompleteDetailsDTOFactory.reset_sequence(1)
+        return GetTaskStageCompleteDetailsDTOFactory.create_batch(2)
+
+    @factory.lazy_attribute
+    def task_stage_assignee_dtos(self):
+        TaskStageAssigneeTeamDetailsDTOFactory.reset_sequence(1)
+        return TaskStageAssigneeTeamDetailsDTOFactory.create_batch(2)
+
+
+class TaskWithCompletedSubTasksCountDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskWithCompletedSubTasksCountDTO
+
+    task_id = factory.sequence(lambda counter: counter)
+    completed_sub_tasks_count = factory.sequence(lambda counter: counter)
+
+
+class StageIdWithGoFIdsDTOFactory(factory.Factory):
+    class Meta:
+        model = StageIdWithGoFIdsDTO
+
+    stage_id = factory.sequence(lambda counter: "stage_{}".format(counter))
+    gof_ids = factory.Sequence(
+        lambda counter: ["gof_{}".format(counter)])
+
+
+class DBStageIdWithStageIdDTOFactory(factory.Factory):
+    class Meta:
+        model = DBStageIdWithStageIdDTO
+
+    db_stage_id = factory.sequence(lambda counter: counter)
+    stage_id = factory.sequence(lambda counter: "stage_{}".format(counter))
+
+
+class DBStageIdWithGoFIdDTOFactory(factory.Factory):
+    class Meta:
+        model = DBStageIdWithGoFIdDTO
+
+    stage_id = factory.sequence(lambda counter: counter)
+    gof_id = factory.sequence(lambda counter: "gof_{}".format(counter))
+
+
+class DBStageIdWithGoFIdsDTOFactory(factory.Factory):
+    class Meta:
+        model = DBStageIdWithGoFIdsDTO
+
+    db_stage_id = factory.sequence(lambda counter: counter)
+    gof_ids = factory.Sequence(
+        lambda counter: ["gof_{}".format(counter)])
+
+
+class CreateSubTaskDTOFactory(factory.Factory):
+    class Meta:
+        model = CreateSubTaskDTO
+
+    parent_task_id = factory.Sequence(lambda c: f"parent_task_{c}")
+    basic_task_details_dto = factory.SubFactory(BasicTaskDetailsDTOFactory)
+
+    @factory.lazy_attribute
+    def gof_fields_dtos(self):
+        return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]

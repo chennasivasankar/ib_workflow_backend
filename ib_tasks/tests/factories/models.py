@@ -11,7 +11,7 @@ from ib_tasks.models import (
     TaskTemplateGlobalConstants,
     TaskStatusVariable, Filter, FilterCondition, TaskLog,
     StagePermittedRoles, ElasticSearchTask, ProjectTaskTemplate, TaskStageRp,
-    StageGoF, StageFlow)
+    StageGoF, StageFlow, SubTask)
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -45,6 +45,14 @@ class TaskFactory(factory.django.DjangoModelFactory):
     priority = Priority.HIGH.value
 
 
+class SubTaskFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = SubTask
+
+    task = factory.SubFactory(TaskFactory)
+    sub_task = factory.SubFactory(TaskFactory)
+
+
 class StageModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Stage
@@ -53,7 +61,7 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     display_name = factory.Sequence(lambda n: "name_%d" % n)
     task_template_id = factory.Sequence(lambda n: "task_template_id_%d" % n)
     value = factory.Sequence(lambda n: n)
-    stage_color = factory.Iterator(["blue", "orange", "green"])
+    stage_color = "orange"
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
     card_info_kanban = json.dumps(['field_id_1', "field_id_2"])
     card_info_list = json.dumps(['field_id_1', "field_id_2"])
@@ -81,7 +89,6 @@ class TaskModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Task
 
-    project_id = factory.Sequence(lambda counter: "project_{}".format(counter))
     task_display_id = factory.sequence(lambda counter: "iB_{}".format(counter))
     template_id = factory.Sequence(lambda n: "template_%d" % (n + 1))
     project_id = factory.Sequence(lambda n: "project_id{}".format(n))

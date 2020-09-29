@@ -7,9 +7,9 @@ from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException, \
 from ib_tasks.exceptions.fields_custom_exceptions import \
     LimitShouldBeGreaterThanZeroException, \
     OffsetShouldBeGreaterThanZeroException
+from ib_tasks.exceptions.filter_exceptions import InvalidFilterCondition
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException
-from ib_tasks.exceptions.filter_exceptions import InvalidFilterCondition
 from ib_tasks.interactors.presenter_interfaces.get_all_tasks_overview_for_user_presenter_interface import \
     GetFilteredTasksOverviewForUserPresenterInterface
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -27,6 +27,7 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import
     TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import SearchQueryDTO
 
 
@@ -38,7 +39,8 @@ class GetTasksToRelevantSearchQuery:
                  action_storage: ActionStorageInterface,
                  filter_storage: FilterStorageInterface,
                  elasticsearch_storage: ElasticSearchStorageInterface,
-                 task_stage_storage: TaskStageStorageInterface):
+                 task_stage_storage: TaskStageStorageInterface,
+                 template_storage: TaskTemplateStorageInterface):
         self.filter_storage = filter_storage
         self.task_stage_storage = task_stage_storage
         self.stage_storage = stage_storage
@@ -46,6 +48,7 @@ class GetTasksToRelevantSearchQuery:
         self.field_storage = field_storage
         self.action_storage = action_storage
         self.elasticsearch_storage = elasticsearch_storage
+        self.template_storage = template_storage
 
     def get_all_tasks_overview_for_user_wrapper(
             self, search_query_dto: SearchQueryDTO,
@@ -116,7 +119,8 @@ class GetTasksToRelevantSearchQuery:
             task_storage=self.task_storage,
             field_storage=self.field_storage,
             action_storage=self.action_storage,
-            task_stage_storage=self.task_stage_storage
+            task_stage_storage=self.task_stage_storage,
+            template_storage=self.template_storage
         )
         all_tasks_overview_details_dto = task_details_interactor. \
             get_filtered_tasks_overview_for_user(

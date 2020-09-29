@@ -134,6 +134,7 @@ class CommentStorageImplementation(CommentStorageInterface):
     def add_mention_users_to_comment(self, comment_id: str,
                                      mention_user_ids: List[str]):
         from ib_discussions.models.comment import CommentWithMentionUserId
+        CommentWithMentionUserId.objects.filter(comment_id=comment_id).delete()
         comment_with_mention_user_ids_objects = [
             CommentWithMentionUserId(comment_id=comment_id,
                                      mention_user_id=mention_user_id)
@@ -147,6 +148,7 @@ class CommentStorageImplementation(CommentStorageInterface):
     ):
         from ib_discussions.models.comment import CommentWithMultiMedia
         from ib_discussions.models.multimedia import MultiMedia
+        CommentWithMultiMedia.objects.filter(comment_id=comment_id).delete()
 
         multimedia_objects = [
             CommentWithMultiMedia(

@@ -11,7 +11,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskWithCompleteStageDetailsDTO
 from ib_tasks.tests.factories.adapter_dtos import TaskBoardsDetailsDTOFactory
 from ib_tasks.tests.factories.interactor_dtos import \
-    TaskStageAssigneeDetailsDTOFactory, FieldDisplayDTOFactory, \
+    TaskStageAssigneeTeamDetailsDTOFactory, FieldDisplayDTOFactory, \
     TaskStageDTOFactory
 from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory
 
@@ -39,7 +39,8 @@ class TaskWithCompleteStageDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def stage_assignee_dto(self):
-        return [TaskStageAssigneeDetailsDTOFactory()]
+        TaskStageAssigneeTeamDetailsDTOFactory.reset_sequence()
+        return [TaskStageAssigneeTeamDetailsDTOFactory()]
 
 
 class GetTaskStageCompleteDetailsDTOFactory(factory.Factory):
@@ -119,10 +120,12 @@ class TaskCompleteDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def actions_dto(self):
+        ActionDTOFactory.reset_sequence()
         return [ActionDTOFactory(), ActionDTOFactory()]
 
     @factory.lazy_attribute
     def field_dtos(self):
+        FieldDisplayDTOFactory.reset_sequence()
         return [FieldDisplayDTOFactory(), FieldDisplayDTOFactory()]
 
     @factory.lazy_attribute
@@ -132,6 +135,6 @@ class TaskCompleteDetailsDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def assignees_details(self):
         return [
-            TaskStageAssigneeDetailsDTOFactory(),
-            TaskStageAssigneeDetailsDTOFactory()
+            TaskStageAssigneeTeamDetailsDTOFactory(),
+            TaskStageAssigneeTeamDetailsDTOFactory()
         ]

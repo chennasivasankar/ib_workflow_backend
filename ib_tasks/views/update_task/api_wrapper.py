@@ -3,25 +3,26 @@ from typing import Dict, List
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
-from .validator_class import ValidatorClass
-from ...interactors.create_or_update_task.update_task_interactor import \
+from ib_tasks.views.update_task.validator_class import ValidatorClass
+from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
     UpdateTaskInteractor
-from ...interactors.task_dtos import FieldValuesDTO, \
+from ib_tasks.interactors.task_dtos import FieldValuesDTO, \
     StageIdWithAssigneeDTO, UpdateTaskWithTaskDisplayIdDTO
-from ...presenters.update_task_presenter import \
+from ib_tasks.presenters.update_task_presenter import \
     UpdateTaskPresenterImplementation
-from ...storages.action_storage_implementation import \
+from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
-from ...storages.elasticsearch_storage_implementation \
-    import ElasticSearchStorageImplementation
-from ...storages.fields_storage_implementation import \
+from ib_tasks.storages.elasticsearch_storage_implementation import \
+    ElasticSearchStorageImplementation
+from ib_tasks.storages.fields_storage_implementation import \
     FieldsStorageImplementation
-from ...storages.gof_storage_implementation import GoFStorageImplementation
-from ...storages.storage_implementation import StorageImplementation, \
+from ib_tasks.storages.gof_storage_implementation import \
+    GoFStorageImplementation
+from ib_tasks.storages.storage_implementation import StorageImplementation, \
     StagesStorageImplementation
-from ...storages.task_stage_storage_implementation import \
+from ib_tasks.storages.task_stage_storage_implementation import \
     TaskStageStorageImplementation
-from ...storages.task_template_storage_implementation import \
+from ib_tasks.storages.task_template_storage_implementation import \
     TaskTemplateStorageImplementation
 
 
