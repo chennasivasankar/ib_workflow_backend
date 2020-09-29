@@ -5,7 +5,8 @@ from ib_iam.interactors.dtos.dtos import UserIdWithProjectIdAndStatusDTO
 from ib_iam.interactors.storage_interfaces.dtos import (
     ProjectWithoutIdDTO, RoleNameAndDescriptionDTO, RoleDTO,
     ProjectWithDisplayIdDTO, UserIdAndTeamIdsDTO, ProjectTeamIdsDTO,
-    ProjectsWithTotalCountDTO, PaginationDTO, ProjectRoleDTO, ProjectDTO
+    ProjectsWithTotalCountDTO, PaginationDTO, ProjectRoleDTO, ProjectDTO,
+    ProjectRolesDTO
 )
 
 
@@ -19,6 +20,11 @@ class ProjectStorageInterface(abc.ABC):
     def get_valid_project_ids(
             self, project_ids: List[str]
     ) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_user_roles_for_projects(self, user_id: str, project_ids: List[
+        str]) -> List[ProjectRolesDTO]:
         pass
 
     @abc.abstractmethod

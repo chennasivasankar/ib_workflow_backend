@@ -140,10 +140,12 @@ class ServiceInterface:
 
         user_storage = UserStorageImplementation()
         interactor = GetListOfUsersInteractor(user_storage=user_storage)
-        user_details_dtos = interactor.get_user_details_for_given_role_ids_based_on_query(
-            role_ids=role_ids, project_id=project_id,
-            search_query_with_pagination_dto=search_query_with_pagination_dto
-        )
+        user_details_dtos = \
+            interactor.get_user_details_for_given_role_ids_based_on_query(
+                role_ids=role_ids, project_id=project_id,
+                search_query_with_pagination_dto
+                =search_query_with_pagination_dto
+            )
 
         return user_details_dtos
 
@@ -215,7 +217,8 @@ class ServiceInterface:
             TeamMemberLevelStorageImplementation
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
-        from ib_iam.interactors.levels.get_team_members_of_level_hierarchy_interactor import \
+        from ib_iam.interactors.levels \
+            .get_team_members_of_level_hierarchy_interactor import \
             GetTeamMembersOfLevelHierarchyInteractor
 
         team_member_level_storage = TeamMemberLevelStorageImplementation()
@@ -263,6 +266,21 @@ class ServiceInterface:
         )
 
         return role_ids
+
+    @staticmethod
+    def get_user_role_ids_for_given_project_ids(user_id: str, project_ids:
+    List[str]) -> List[ProjectRolesDTO]:
+        from ib_iam.storages.project_storage_implementation import \
+            ProjectStorageImplementation
+        from ib_iam.interactors.project_role_interactor import \
+            ProjectRoleInteractor
+
+        project_storage = ProjectStorageImplementation()
+        interactor = ProjectRoleInteractor(project_storage=project_storage)
+        project_roles_dtos = \
+            interactor.get_user_role_ids_for_given_project_ids(
+                user_id=user_id, project_ids=project_ids)
+        return project_roles_dtos
 
     @staticmethod
     def get_valid_project_ids(project_ids: List[str]) -> List[str]:
@@ -380,8 +398,9 @@ class ServiceInterface:
             team_storage=TeamStorageImplementation()
         )
 
-        return interactor.get_team_details_for_given_project_team_user_details_dto(
-            project_team_user_dto=project_team_user_dto)
+        return \
+            interactor.get_team_details_for_given_project_team_user_details_dto(
+                project_team_user_dto=project_team_user_dto)
 
     @staticmethod
     def get_user_team_dtos_for_given_project_teams_and_users_details_dto(
