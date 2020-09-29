@@ -35,15 +35,16 @@ class GetConditionsForTaskDetails(ValidationMixin):
             user_id=user_id
         )
         if is_user_in_least_level:
-            return [
+            task_condition_dtos = [
                 TaskFilterDTO(
                     field_id="created_by",
                     operator=Operators.EQ.value,
                     value=user_id
                 )
             ]
+            return task_condition_dtos
 
-        user_ids = service_adapter.auth_service.get_conditions_for_the_task_details(
+        user_ids = service_adapter.auth_service.get_user_ids_based_on_user_level(
             project_id=project_id,
             user_id=user_id
         )

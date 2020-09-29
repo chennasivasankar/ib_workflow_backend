@@ -282,13 +282,11 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
         level_hierarchies = TeamMemberLevel.objects.filter(
             team_id__in=team_ids).values_list("level_hierarchy", flat=True)
         least_level_hierarchy = min(level_hierarchies)
-        print(level_hierarchies)
         user_team_objects = TeamUser.objects.filter(
             user_id=user_id, team_id__in=team_ids
         )
         user_level_hierarchy = user_team_objects[
             0].team_member_level.level_hierarchy
-        print(user_level_hierarchy)
         is_user_in_a_least_level = least_level_hierarchy == user_level_hierarchy
         if is_user_in_a_least_level:
             return True
