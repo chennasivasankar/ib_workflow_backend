@@ -1,6 +1,7 @@
 from typing import List, Optional
 
-from ib_iam.exceptions.custom_exceptions import UsersNotBelongToGivenLevelHierarchy, \
+from ib_iam.exceptions.custom_exceptions import \
+    UsersNotBelongToGivenLevelHierarchy, \
     InvalidTeamId, InvalidLevelHierarchyOfTeam, UserNotBelongToTeam
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
@@ -256,3 +257,15 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
         if is_team_user_objects_not_exists:
             raise UserNotBelongToTeam
         return
+
+    def get_user_id_with_subordinate_user_ids_dto(self, user_id: str) \
+            -> MemberIdWithSubordinateMemberIdsDTO:
+        # TODO: Here assuming user in a single team
+        from ib_iam.models import TeamUser
+        user_team_objects = TeamUser.objects.filter(
+            user_id=user_id
+        )
+        member_id_with_subordinate_member_ids_dto = self.get_member_id_with_subordinate_member_ids_dto(
+            user_team_object=user_team_objects[0]
+        )
+        return member_id_with_subordinate_member_ids_dto
