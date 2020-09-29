@@ -86,3 +86,11 @@ class UserIdWithProjectIdAndStatusDTO:
     user_id: str
     project_id: str
     is_exist: bool
+
+
+@dataclass
+class AuthUserDTO:
+    token: str
+    name: str
+    email: str
+    password: str

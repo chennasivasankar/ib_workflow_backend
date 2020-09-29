@@ -571,3 +571,7 @@ class UserStorageImplementation(UserStorageInterface):
         if is_project_not_exists:
             raise InvalidProjectId
         return
+
+    def create_auth_user(self, user_id: str, token: str):
+        UserAuthToken.objects.create(user_id=user_id, token=token)
+        return
