@@ -170,6 +170,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
         )
 
         group_agg = ""
+        groups_count_agg = ""
         if is_group_by_value_stage:
             group_agg = A('terms', field='stages.stage_id.keyword',
                           size=limit + offset)
@@ -179,7 +180,7 @@ class ElasticStorageImplementation(ElasticStorageInterface):
                           size=limit + offset)
             groups_count_agg = A('cardinality', field='stages.assignee_id.keyword')
         elif is_date_time_type:
-            group_agg = A('terms', field=group_by_value, size=limit + offset)
+            group_agg = A('terms', field=group_by_value, size=limit + offset, order={"_key": "asc"})
             groups_count_agg = A('cardinality', field=group_by_value)
         elif is_group_by_value_other_than_stage_and_assignee:
             attribute = group_by_value + '.keyword'
