@@ -28,11 +28,11 @@ from ib_tasks.documents.elastic_task import *
 class ElasticSearchStorageInterface(abc.ABC):
 
     @abc.abstractmethod
-    def create_task(self, elastic_task_dto: ElasticTaskDTO, user_id: str) -> str:
+    def create_task(self, elastic_task_dto: ElasticTaskDTO) -> str:
         pass
 
     @abc.abstractmethod
-    def update_task(self, task_dto: ElasticTaskDTO, user_id: str):
+    def update_task(self, task_dto: ElasticTaskDTO):
         pass
 
     @abc.abstractmethod

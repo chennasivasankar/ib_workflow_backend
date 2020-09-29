@@ -24,15 +24,14 @@ from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, SearchQueryDTO
 
 class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
-    def create_task(self, elastic_task_dto: ElasticTaskDTO, user_id: str) -> str:
+    def create_task(self, elastic_task_dto: ElasticTaskDTO) -> str:
         from elasticsearch_dsl import connections
         from django.conf import settings
         es = connections.create_connection(
             hosts=[settings.ELASTICSEARCH_ENDPOINT],
             timeout=20)
         task_dict = self._get_task_dict(
-            elastic_task_dto=elastic_task_dto,
-            user_id=user_id
+            elastic_task_dto=elastic_task_dto
         )
         import json
         task_dict = json.dumps(task_dict)
@@ -43,7 +42,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             body=json.loads(task_dict))
         return doc['_id']
 
-    def update_task(self, task_dto: ElasticTaskDTO, user_id: str):
+    def update_task(self, task_dto: ElasticTaskDTO):
         from elasticsearch_dsl import connections
         from django.conf import settings
         es = connections.create_connection(
@@ -57,7 +56,6 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         ).elasticsearch_id
         task_dict = self._get_task_dict(
             elastic_task_dto=task_dto,
-            user_id=user_id
         )
         import json
         task_dict = json.dumps(task_dict)
@@ -68,11 +66,11 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             id=elastic_search_task_id,
             body=json.loads(task_dict))
 
-    def _get_task_dict(self, elastic_task_dto: ElasticTaskDTO, user_id: str):
+    def _get_task_dict(self, elastic_task_dto: ElasticTaskDTO):
         start_date, due_date = self._get_start_date_and_due_date(
             elastic_task_dto)
         task_dict = {
-            "created_by": user_id,
+            "created_by": elastic_task_dto.created_by,
             "project_id": elastic_task_dto.project_id,
             "template_id": elastic_task_dto.template_id,
             "task_id": elastic_task_dto.task_id,

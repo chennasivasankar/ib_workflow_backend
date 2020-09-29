@@ -43,17 +43,17 @@ class CreateOrUpdateDataInElasticSearchInteractor:
             task_id=task_id, stage_ids=stage_ids
         )
         elastic_task_dto = self._get_elastic_task_dto(
-            task_dto=task_dto,
+            task_dto=task_dto, user_id=user_id,
             task_stage_assignees_dtos=task_stage_assignees_dtos,
             task_id=task_id, project_id=project_id
         )
         if is_task_id_exists:
             self.elasticsearch_storage.update_task(
-                task_dto=elastic_task_dto, user_id=user_id
+                task_dto=elastic_task_dto
             )
         else:
             elastic_task_id = self.elasticsearch_storage.create_task(
-                elastic_task_dto=elastic_task_dto, user_id=user_id
+                elastic_task_dto=elastic_task_dto
             )
             self.task_storage.create_elastic_task(
                 task_id=task_id, elastic_task_id=elastic_task_id
@@ -61,7 +61,7 @@ class CreateOrUpdateDataInElasticSearchInteractor:
 
     def _get_elastic_task_dto(
             self, task_dto: TaskDetailsDTO, task_stage_assignees_dtos: List[TaskStageAssigneeTeamIdDTO],
-            task_id: int, project_id: str) -> ElasticTaskDTO:
+            task_id: int, project_id: str, user_id: str) -> ElasticTaskDTO:
         fields = self._get_field_dtos_with_exact_data_type(
             task_dto=task_dto
         )
@@ -69,6 +69,7 @@ class CreateOrUpdateDataInElasticSearchInteractor:
             project_id=project_id,
             template_id=task_dto.task_base_details_dto.template_id,
             task_id=task_id,
+            created_by=user_id,
             title=task_dto.task_base_details_dto.title,
             description=task_dto.task_base_details_dto.description,
             start_date=task_dto.task_base_details_dto.start_date,
