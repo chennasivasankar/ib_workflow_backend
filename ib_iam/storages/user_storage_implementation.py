@@ -571,3 +571,9 @@ class UserStorageImplementation(UserStorageInterface):
         if is_project_not_exists:
             raise InvalidProjectId
         return
+
+    def get_user_id_for_given_token(self, token: str) -> Optional[str]:
+        # TODO Write tests
+        from ib_iam.models import UserAuthToken
+        user_auth_object = UserAuthToken.objects.get(token=token)
+        return user_auth_object.user_id
