@@ -22,12 +22,12 @@ snapshots['TestCase01GetAdhocTaskTemplateFieldsAndGroupByAPITestCase.test_case b
     ],
     'group_by_fields': [
         {
-            'display_name': 'ASSIGNEE',
+            'display_name': 'Assignee',
             'group_by_key': 'ASSIGNEE',
             'order': 1
         },
         {
-            'display_name': 'STAGE',
+            'display_name': 'Stage',
             'group_by_key': 'STAGE',
             'order': 2
         }

@@ -126,6 +126,7 @@ class TestGetGroupByInteractor:
         group_by_response_dtos[0].group_by_key = GroupByKey.STAGE.value
         storage.add_or_edit_group_by_for_list_view.return_value = \
             group_by_response_dtos[0]
+        storage.get_group_by_dtos.return_value = None
 
         interactor.add_or_edit_group_by_wrapper(
             group_by_key_dtos=group_by_key_dtos,
@@ -165,7 +166,7 @@ class TestGetGroupByInteractor:
             group_by_key_dtos=group_by_key_dtos
         )
         storage.delete_all_user_group_by.assert_called_once_with(
-            user_id=group_by_parameter.user_id
+            user_id=group_by_parameter.user_id, view_type=group_by_parameter.view_type
         )
         presenter.get_response_for_add_or_edit_group_by.assert_called_once_with(
             group_by_response_dtos=group_by_response_dtos
@@ -187,6 +188,7 @@ class TestGetGroupByInteractor:
             get_dtos_for_add_group_by_for_kanban["group_by_response_dtos"]
         storage.add_group_by_for_kanban_view_in_bulk.return_value = \
             group_by_response_dtos
+        storage.get_group_by_dtos.return_value = None
 
         interactor.add_or_edit_group_by_wrapper(
             group_by_key_dtos=group_by_key_dtos,
@@ -199,7 +201,7 @@ class TestGetGroupByInteractor:
             group_by_key_dtos=expected_group_by_key_dtos
         )
         storage.delete_all_user_group_by.assert_called_once_with(
-            user_id=group_by_parameter.user_id
+            user_id=group_by_parameter.user_id, view_type=group_by_parameter.view_type
         )
         presenter.get_response_for_add_or_edit_group_by.assert_called_once_with(
             group_by_response_dtos=group_by_response_dtos

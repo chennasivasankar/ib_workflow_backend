@@ -22,7 +22,7 @@ class TestAddOrEditGroupByPresenterImplementation:
         GroupByResponseDTOFactory.group_by_key.reset()
         group_by_response_dto = GroupByResponseDTOFactory()
         expected_response_dict = {
-            'display_name': 'ASSIGNEE',
+            'display_name': 'Assignee',
             'group_by_key': 'ASSIGNEE',
             'order': 2
         }
