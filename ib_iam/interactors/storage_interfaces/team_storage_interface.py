@@ -1,5 +1,5 @@
 import abc
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from ib_iam.interactors.storage_interfaces.dtos import (
     PaginationDTO, TeamUserIdsDTO, TeamsWithTotalTeamsCountDTO, TeamDTO,
@@ -81,5 +81,5 @@ class TeamStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_or_create(self, team_id: str, name: str) -> bool:
+    def get_or_create(self, name: str) -> Tuple[str, bool]:
         pass

@@ -1,10 +1,13 @@
 from typing import List
 
+from django.db import transaction
+
 from ib_iam.interactors.dtos.dtos import PMAndSubUsersAuthTokensDTO
 
 
 class AddPMAndSubUsers:
 
+    @transaction.atomic()
     def add_pm_and_sub_users(
             self, spread_sheet_name: str, sub_sheet_name: str
     ):
