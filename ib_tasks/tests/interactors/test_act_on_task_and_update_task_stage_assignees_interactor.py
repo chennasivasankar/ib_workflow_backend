@@ -10,13 +10,15 @@ from ib_tasks.interactors.update_task_stage_assignees_interactor import \
 from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
 from ib_tasks.tests.factories.interactor_dtos import StageAssigneeDTOFactory, \
-    FieldDisplayDTOFactory, TaskCurrentStageDetailsDTOFactory
+    FieldDisplayDTOFactory, TaskCurrentStageDetailsDTOFactory, \
+    TaskStageAssigneeTeamDetailsDTOFactory
 
 
 class TestActOnTaskAndUpdateTaskStageAssigneesInteractor:
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
         StageAssigneeDTOFactory.reset_sequence()
+        TaskStageAssigneeTeamDetailsDTOFactory.reset_sequence()
 
     @pytest.fixture
     def task_storage_mock(self):
@@ -108,14 +110,14 @@ class TestActOnTaskAndUpdateTaskStageAssigneesInteractor:
 
     @pytest.fixture
     def assignees(self):
-        from ib_tasks.interactors.stage_dtos import TaskStageAssigneeTeamDetailsDTO
         from ib_tasks.adapters.dtos import AssigneeDetailsDTO
-        return TaskStageAssigneeTeamDetailsDTO(
+        return TaskStageAssigneeTeamDetailsDTOFactory(
             task_id=1,
             stage_id='stage_id_1',
             assignee_details=AssigneeDetailsDTO(assignee_id='1',
                                                 name='name',
-                                                profile_pic_url='pavan.com')
+                                                profile_pic_url='pavan.com'),
+            team_details=None
         )
 
     @pytest.fixture()
@@ -187,8 +189,8 @@ class TestActOnTaskAndUpdateTaskStageAssigneesInteractor:
         # Act
         interactor \
             .act_on_task_interactor_and_update_task_stage_assignees_wrapper(
-            task_display_id=task_display_id, presenter=presenter_mock,
-            stage_assignee_dtos=stage_assignees_dto)
+                task_display_id=task_display_id, presenter=presenter_mock,
+                stage_assignee_dtos=stage_assignees_dto)
 
         presenter_mock.raise_invalid_task_display_id.return_value = \
             mock_object
