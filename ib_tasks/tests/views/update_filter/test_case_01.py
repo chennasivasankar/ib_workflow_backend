@@ -22,7 +22,8 @@ class TestCase01UpdateFilterAPITestCase(TestUtils):
 
         import factory
         from ib_tasks.tests.factories.models import TaskTemplateFactory, \
-            GoFFactory, FieldFactory, FieldRoleFactory, GoFToTaskTemplateFactory
+            GoFFactory, FieldFactory, FieldRoleFactory, \
+            GoFToTaskTemplateFactory
 
         TaskTemplateFactory.reset_sequence()
         GoFFactory.reset_sequence()
@@ -52,10 +53,15 @@ class TestCase01UpdateFilterAPITestCase(TestUtils):
         from ib_tasks.tests.factories.models import FilterConditionFactory
         FilterConditionFactory.create_batch(1, filter_id=1)
 
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids_based_on_project_mock
+        get_user_role_ids_based_on_project_mock(mocker)
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
-        body = {'name': 'string', 'template_id': 'template_1', 'conditions': [{'field_id': 'FIELD_ID-0', 'operator': 'EQ', 'value': 'string'}]}
+        body = {'name': 'string', 'template_id': 'template_1', 'conditions': [
+            {'field_id': 'FIELD_ID-0', 'operator': 'EQ', 'value': 'string'}]}
+
         path_params = {"filter_id": "1"}
         query_params = {}
         headers = {}
