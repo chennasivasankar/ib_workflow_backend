@@ -1,4 +1,4 @@
-from typing import List, Optional, Dict
+from typing import List, Dict
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
@@ -30,8 +30,6 @@ from ib_tasks.exceptions.task_custom_exceptions import \
 from ib_tasks.interactors.dtos.dtos import TaskOverallCompleteDetailsDTO
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import \
-    AllTasksOverviewDetailsDTO
-from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO
 from ib_tasks.interactors.presenter_interfaces \
     .save_and_act_on_task_presenter_interface import \
@@ -39,15 +37,15 @@ from ib_tasks.interactors.presenter_interfaces \
 from ib_tasks.interactors.stage_dtos import TaskStageAssigneeTeamDetailsDTO
 from ib_tasks.interactors.stage_dtos import TaskStageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO
 from ib_tasks.presenters.mixins.gofs_fields_validation_presenter_mixin import \
     GoFsFieldsValidationPresenterMixin
+from ib_tasks.presenters.mixins.task_overview_presenter_mixin import \
+    TaskOverviewDetailsPresenterMixin
 
 
 class SaveAndActOnATaskPresenterImplementation(
     SaveAndActOnATaskPresenterInterface, HTTPResponseMixin,
-    GoFsFieldsValidationPresenterMixin
+    GoFsFieldsValidationPresenterMixin, TaskOverviewDetailsPresenterMixin
 ):
 
     def raise_invalid_gof_ids(self, err):
@@ -431,78 +429,6 @@ class SaveAndActOnATaskPresenterImplementation(
         response_dict['task_details'] = task_overview_details_dict
         response_object = self.prepare_200_success_response(response_dict)
         return response_object
-
-    def _prepare_task_overview_details_dict(
-            self, all_tasks_overview_dto: AllTasksOverviewDetailsDTO
-    ):
-        task_stages_has_no_actions = \
-            not all_tasks_overview_dto.task_with_complete_stage_details_dtos
-        if task_stages_has_no_actions:
-            return None
-        complete_task_stage_details_dto = \
-            all_tasks_overview_dto.task_with_complete_stage_details_dtos[0]
-        task_fields_action_details_dtos = \
-            all_tasks_overview_dto.task_fields_and_action_details_dtos
-        task_stage_details_dto = \
-            complete_task_stage_details_dto.task_with_stage_details_dto
-        task_overview_fields_details, actions_details = \
-            self.task_fields_and_actions_details(
-                task_stage_details_dto.task_id, task_fields_action_details_dtos
-            )
-        assignee = self._get_assignee_details(
-            complete_task_stage_details_dto.stage_assignee_dto)
-        task_overview_details_dict = {
-            "task_id": task_stage_details_dto.task_display_id,
-            "task_overview_fields": task_overview_fields_details,
-            "stage_with_actions": {
-                "stage_id":
-                    task_stage_details_dto.db_stage_id,
-                "stage_display_name":
-                    task_stage_details_dto.stage_display_name,
-                "stage_color":
-                    task_stage_details_dto.stage_color,
-                "assignee": assignee,
-                "actions": actions_details
-            }
-        }
-        return task_overview_details_dict
-
-    @staticmethod
-    def _get_assignee_details(
-            stage_assignee_dto: List[TaskStageAssigneeTeamDetailsDTO]
-    ) -> Optional[Dict]:
-        if stage_assignee_dto:
-            assignee_details_dto = stage_assignee_dto[0].assignee_details
-        else:
-            return None
-        if assignee_details_dto:
-            team_details_dto = stage_assignee_dto[0].team_details
-            assignee_details = {
-                "assignee_id": assignee_details_dto.assignee_id,
-                "name": assignee_details_dto.name,
-                "profile_pic_url": assignee_details_dto.profile_pic_url,
-                "team_info": {
-                    "team_id": team_details_dto.team_id,
-                    "team_name": team_details_dto.name
-                }
-            }
-            return assignee_details
-
-    def task_fields_and_actions_details(
-            self, given_task_id: int,
-            task_fields_and_action_details_dtos: List[
-                GetTaskStageCompleteDetailsDTO]):
-        for each_task_fields_and_action_details_dto in \
-                task_fields_and_action_details_dtos:
-            if given_task_id == \
-                    each_task_fields_and_action_details_dto.task_id:
-                task_overview_fields_details = \
-                    self._get_task_overview_fields_details(
-                        each_task_fields_and_action_details_dto)
-                action_details = self._get_actions_details_of_task_stage(
-                    each_task_fields_and_action_details_dto)
-                return task_overview_fields_details, action_details
-        return [], []
 
     def _get_current_board_details(
             self, task_complete_details_dto: TaskCompleteDetailsDTO):
