@@ -5,7 +5,7 @@ import pytest
 
 from ib_tasks.constants.enum import ActionTypes, ViewType
 from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor \
-    import UserActionOnTaskInteractor
+    import UserActionOnTaskInteractor, InvalidBoardIdException
 from ib_tasks.tests.factories.interactor_dtos import \
     TaskCurrentStageDetailsDTOFactory, FieldDisplayDTOFactory
 from ib_tasks.tests.factories.storage_dtos import (
@@ -107,6 +107,13 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
                                                 profile_pic_url='pavan.com'),
             team_details=None
         )
+
+    @pytest.fixture()
+    def elastic_search_mock(self, mocker):
+        path = 'ib_tasks.interactors' \
+            '.create_or_update_data_in_elasticsearch_interactor' \
+            '.CreateOrUpdateDataInElasticSearchInteractor'
+        return mocker.patch(path)
 
     @staticmethod
     def prepare_task_complete_details(task_id, assignees,
@@ -319,21 +326,19 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
     def test_invalid_board_raises_exception(
             self, presenter, interactor,
             set_up_storage_for_invalid_board,
-            invalid_board_mock, validate_board_id_mock
+            validate_board_id_mock
     ):
         # Arrange
         board_id = "board_1"
         task_display_id = "task_1"
-        from ib_tasks.interactors.user_action_on_task \
-            .user_action_on_task_interactor import InvalidBoardIdException
-        validate_board_id_mock.return_value = InvalidBoardIdException
+        validate_board_id_mock.side_effect = InvalidBoardIdException(board_id)
 
         # Act
         interactor.user_action_on_task_wrapper(presenter=presenter,
                                                task_display_id=task_display_id)
 
         # Assert
-        invalid_board_mock.assert_called_once_with(board_id=board_id)
+        validate_board_id_mock.assert_called_once_with(board_id=board_id)
         dict_obj = presenter.raise_exception_for_invalid_board.call_args.kwargs
         expected_board_id = dict_obj['error_obj'].board_id
         assert board_id == expected_board_id
@@ -558,7 +563,8 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
             get_task_current_stages_mock, filtered_task_overview_user,
             current_board_mock, random_assignee_mock,
             call_action_mock, task_dto, task_complete_details,
-            satisfied_stages_mock, create_task_storage, stage_storage
+            satisfied_stages_mock, create_task_storage, stage_storage,
+            elastic_search_mock
     ):
         # Arrange
         user_id = "user_1"
@@ -597,6 +603,7 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
         current_board_mock.assert_called_once_with(
             task_id=task_id, stage_ids=stage_ids
         )
+        elastic_search_mock.called_once()
         presenter.get_response_for_user_action_on_task.assert_called_once_with(
                 task_complete_details_dto=task_complete_details,
                 task_current_stage_details_dto=task_current_stages_details,

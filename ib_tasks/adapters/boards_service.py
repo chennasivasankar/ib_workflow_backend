@@ -64,6 +64,6 @@ class BoardsService:
     def validate_board_id(self, board_id: str):
         from ib_boards.exceptions.custom_exceptions import InvalidBoardId
         try:
-            self.interface.validate_board_id(board_id)
+            self.interface.validate_given_board_id(board_id)
         except InvalidBoardId:
             raise InvalidBoardIdException(board_id)
