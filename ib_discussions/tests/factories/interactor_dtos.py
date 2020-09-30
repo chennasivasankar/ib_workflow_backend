@@ -1,11 +1,11 @@
 import factory
 
 from ib_discussions.constants.enum import EntityType, MultimediaFormat, \
-    FilterByEnum
+    FilterByEnum, SortByEnum, OrderByEnum
 from ib_discussions.interactors.dtos.dtos import DiscussionWithEntityDetailsDTO, \
     DiscussionIdWithTitleAndDescriptionDTO, MultimediaDTO, \
     UpdateCompleteCommentDTO, CreateCompleteCommentDTO, \
-    CreateCompleteReplyToCommentDTO, FilterByDTO
+    CreateCompleteReplyToCommentDTO, FilterByDTO, SortByDTO
 
 
 class DiscussionWithEntityDetailsDTOFactory(factory.Factory):
@@ -96,3 +96,14 @@ class FilterByDTOFactory(factory.Factory):
     ]
     )
     value = factory.Iterator([True, False])
+
+
+class SortByDTOFactory(factory.Factory):
+    class Meta:
+        model = SortByDTO
+
+    sort_by = factory.Iterator([
+        SortByEnum.LATEST.value, SortByEnum.TOP.value])
+    order = factory.Iterator([
+        OrderByEnum.ASC.value, OrderByEnum.DESC.value
+    ])

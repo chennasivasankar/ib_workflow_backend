@@ -2,13 +2,14 @@ from typing import List
 
 from ib_discussions.adapters.auth_service import UserProfileDTO
 from ib_discussions.constants.enum import EntityType
-from ib_discussions.exceptions.custom_exceptions import DiscussionSetNotFound
+from ib_discussions.exceptions.custom_exceptions import DiscussionSetNotFound, \
+    InvalidOffset, InvalidLimit, InvalidUserId
 from ib_discussions.interactors.dtos.dtos import EntityIdAndEntityTypeDTO, \
     OffsetAndLimitDTO, FilterByDTO, SortByDTO
 from ib_discussions.interactors.presenter_interfaces.dtos import \
     DiscussionIdWithEditableStatusDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
-    GetDiscussionsPresenterInterface
+    GetProjectDiscussionsPresenterInterface
 from ib_discussions.interactors.storage_interfaces.dtos import DiscussionDTO
 from ib_discussions.interactors.storage_interfaces.storage_interface import \
     StorageInterface
@@ -23,21 +24,28 @@ class GetProjectDiscussionInteractor:
             self, entity_id_and_entity_type_dto: EntityIdAndEntityTypeDTO,
             offset_and_limit_dto: OffsetAndLimitDTO, user_id: str,
             filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO,
-            presenter: GetDiscussionsPresenterInterface, project_id: str
+            presenter: GetProjectDiscussionsPresenterInterface, project_id: str
     ):
-        response = self._get_project_discussion_response(
-            entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
-            offset_and_limit_dto=offset_and_limit_dto, presenter=presenter,
-            filter_by_dto=filter_by_dto, sort_by_dto=sort_by_dto,
-            user_id=user_id, project_id=project_id
-        )
+        try:
+            response = self._get_project_discussion_response(
+                entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
+                offset_and_limit_dto=offset_and_limit_dto, presenter=presenter,
+                filter_by_dto=filter_by_dto, sort_by_dto=sort_by_dto,
+                user_id=user_id, project_id=project_id
+            )
+        except InvalidOffset:
+            response = presenter.response_for_invalid_offset()
+        except InvalidLimit:
+            response = presenter.response_for_invalid_limit()
+        except InvalidUserId:
+            response = presenter.response_for_invalid_user_id()
         return response
 
     def _get_project_discussion_response(
             self, entity_id_and_entity_type_dto: EntityIdAndEntityTypeDTO,
             offset_and_limit_dto: OffsetAndLimitDTO, user_id: str,
             filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO,
-            presenter: GetDiscussionsPresenterInterface, project_id: str
+            presenter: GetProjectDiscussionsPresenterInterface, project_id: str
     ):
         discussions_with_users_and_discussion_count_dto, \
         discussion_id_with_editable_status_dtos, discussion_id_with_comments_count_dtos \
@@ -47,7 +55,7 @@ class GetProjectDiscussionInteractor:
             filter_by_dto=filter_by_dto, sort_by_dto=sort_by_dto,
             project_id=project_id
         )
-        return presenter.prepare_response_for_discussions_details_dto(
+        return presenter.prepare_response_for_project_discussions_details_dto(
             discussions_with_users_and_discussion_count_dto=discussions_with_users_and_discussion_count_dto,
             discussion_id_with_editable_status_dtos \
                 =discussion_id_with_editable_status_dtos,

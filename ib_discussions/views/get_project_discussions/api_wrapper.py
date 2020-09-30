@@ -21,9 +21,9 @@ def api_wrapper(*args, **kwargs):
 
     sort_by_dto = _prepare_sort_by_dto(request_data)
 
-    from ib_discussions.presenters.get_discussion_presenter_implementation import \
-        GetDiscussionPresenterImplementation
-    presenter = GetDiscussionPresenterImplementation()
+    from ib_discussions.presenters.get_project_discussions_presenter_implementation import \
+        GetProjectDiscussionsPresenterImplementation
+    presenter = GetProjectDiscussionsPresenterImplementation()
 
     from ib_discussions.storages.storage_implementation import \
         StorageImplementation
