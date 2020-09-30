@@ -245,33 +245,34 @@ class TestGetFiltersDetailsPresenter:
             name="filters", value=json.loads(response_object.content)
         )
 
-    def response(self):
-        from ib_tasks.tests.factories.storage_dtos import TaskTemplateDTOFactory
-        TaskTemplateDTOFactory.reset_sequence()
-        from ib_tasks.tests.factories.storage_dtos \
-            import GoFToTaskTemplateDTOFactory
-        GoFToTaskTemplateDTOFactory.reset_sequence()
-        from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
-            import TaskTemplateFieldsDto
-        return TaskTemplateFieldsDto(
-            task_template_dtos=TaskTemplateDTOFactory.create_batch(size=2),
-            gofs_of_task_templates_dtos=GoFToTaskTemplateDTOFactory.create_batch(size=2),
-            fields_dto=[
-                FieldNameDTO(field_id='field0', gof_id='gof_1', field_display_name='field name'),
-                FieldNameDTO(field_id='field1', gof_id='gof_2', field_display_name='field name')]
-        )
+    @staticmethod
+    def response():
+        from ib_tasks.tests.factories.storage_dtos import \
+            ProjectTemplateDTOFactory, TaskTemplateGofsDTOFactory, \
+            FieldNameDTOFactory
+        from ib_tasks.tests.factories.presenter_dtos import \
+            ProjectTemplateFieldsDTOFactory
+
+        ProjectTemplateDTOFactory.reset_sequence()
+        TaskTemplateGofsDTOFactory.reset_sequence()
+        FieldNameDTOFactory.reset_sequence()
+        ProjectTemplateFieldsDTOFactory.reset_sequence()
+
+        project_task_template_field_dto = \
+            ProjectTemplateFieldsDTOFactory()
+        return project_task_template_field_dto
 
     def test_returns_templates_fields(self, snapshot):
         from ib_tasks.presenters.filter_presenter_implementation \
             import FilterPresenterImplementation
         presenter = FilterPresenterImplementation()
         import json
-        input = self.response()
+        project_task_template_field_dto = self.response()
 
         # Act
         response_object = \
             presenter.get_response_for_get_task_templates_fields(
-                task_template_fields=input
+                task_template_fields=project_task_template_field_dto
             )
 
         # Assert

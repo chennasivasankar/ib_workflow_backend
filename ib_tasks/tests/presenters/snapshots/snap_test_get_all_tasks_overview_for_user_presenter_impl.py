@@ -10,6 +10,8 @@ snapshots = Snapshot()
 snapshots['TestGetAllTasksOverviewForUserPresenterImpl.test_given_valid_details_get_all_tasks_overview_details_response response'] = {
     'tasks': [
         {
+            'due_date': '2020-04-15 04:50:40',
+            'priority': 'HIGH',
             'stage_with_actions': {
                 'actions': [
                     {
@@ -36,6 +38,7 @@ snapshots['TestGetAllTasksOverviewForUserPresenterImpl.test_given_valid_details_
                 'stage_display_name': 'stage_display_1',
                 'stage_id': 1
             },
+            'start_date': '2020-04-05 04:50:40',
             'task_id': 'iBWF-1',
             'task_overview_fields': [
                 {
@@ -43,9 +46,12 @@ snapshots['TestGetAllTasksOverviewForUserPresenterImpl.test_given_valid_details_
                     'field_response': 'value',
                     'field_type': 'Drop down'
                 }
-            ]
+            ],
+            'title': 'title_0'
         },
         {
+            'due_date': '2020-04-15 04:50:40',
+            'priority': 'HIGH',
             'stage_with_actions': {
                 'actions': [
                     {
@@ -72,6 +78,7 @@ snapshots['TestGetAllTasksOverviewForUserPresenterImpl.test_given_valid_details_
                 'stage_display_name': 'stage_display_2',
                 'stage_id': 2
             },
+            'start_date': '2020-04-05 04:50:40',
             'task_id': 'iBWF-2',
             'task_overview_fields': [
                 {
@@ -79,7 +86,8 @@ snapshots['TestGetAllTasksOverviewForUserPresenterImpl.test_given_valid_details_
                     'field_response': 'value',
                     'field_type': 'Drop down'
                 }
-            ]
+            ],
+            'title': 'title_1'
         }
     ],
     'total_tasks': 2
