@@ -84,7 +84,7 @@ class AuthUsersInteractor:
     ):
         from ib_iam.constants.config import \
             DEFAULT_CONFIGURATION_TEAM_NAME, LEVEL_0_HIERARCHY, LEVEL_0_NAME
-        team_id, is_created = self.team_storage.get_or_create(
+        team_id, is_created = self.team_storage.get_or_create_team_with_name(
             name=DEFAULT_CONFIGURATION_TEAM_NAME
         )
         if is_created:

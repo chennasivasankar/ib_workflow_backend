@@ -47,7 +47,7 @@ class PMAndSubUsersInteractor:
         )
 
         for pm_id, user_ids in pm_id_and_sub_user_ids.items():
-            team_id, is_created = self.team_storage.get_or_create(
+            team_id, is_created = self.team_storage.get_or_create_team_with_name(
                 name="team_name_{pm_id}".format(pm_id=pm_id)
             )
             self.team_storage.add_users_to_team(
