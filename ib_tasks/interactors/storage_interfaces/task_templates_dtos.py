@@ -15,7 +15,7 @@ class ProjectIdWithTaskTemplateIdDTO:
 
 @dataclass
 class ProjectTemplateDTO(TemplateDTO):
-    project_id: str
+    project_id: str = None
 
 
 @dataclass
