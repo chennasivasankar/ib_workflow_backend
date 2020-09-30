@@ -63,7 +63,6 @@ class TestCase01CreateSubTaskAPITestCase(TestUtils):
         project_mock.return_value = [project_id]
         get_projects_info_for_given_ids_mock(mocker)
         get_user_id_team_details_dtos_mock(mocker)
-        get_projects_info_for_given_ids_mock(mocker)
         get_team_info_for_given_user_ids_mock(mocker)
         get_user_role_ids_based_on_project_mock(mocker)
         prepare_permitted_user_details_mock_method = \

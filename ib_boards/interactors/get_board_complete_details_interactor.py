@@ -1,21 +1,19 @@
 from typing import List
 
 from ib_boards.adapters.service_adapter import get_service_adapter
-from ib_boards.exceptions.custom_exceptions import InvalidBoardId, \
-    UserDonotHaveAccess
+from ib_boards.exceptions.custom_exceptions import UserDonotHaveAccess
+from ib_boards.interactors.mixins.validation_mixins import ValidationMixin
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
 
-class GetBoardDetailsInteractor:
+class GetBoardDetailsInteractor(ValidationMixin):
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
     def get_board_details(self, board_id: str, stage_ids: List[str],
                           user_id: str):
-        is_valid = self.storage.validate_board_id(board_id)
-        if not is_valid:
-            raise InvalidBoardId
+        self.validate_board_id(board_id)
 
         user_service = get_service_adapter().iam_service
         user_roles = user_service.get_user_roles(user_id)

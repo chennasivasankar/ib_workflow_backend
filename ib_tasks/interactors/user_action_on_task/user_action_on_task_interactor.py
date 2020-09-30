@@ -278,11 +278,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         from ib_tasks.adapters.service_adapter import ServiceAdapter
         adapter = ServiceAdapter()
         board_id = self.board_id
-        valid_board = \
-            adapter.boards_service.validate_board_id(board_id=board_id)
-        is_invalid_board = not valid_board
-        if is_invalid_board:
-            raise InvalidBoardIdException(board_id=board_id)
+        return adapter.boards_service.validate_board_id(board_id=board_id)
 
     @staticmethod
     def _validate_user_permission_to_user(user_id: str,

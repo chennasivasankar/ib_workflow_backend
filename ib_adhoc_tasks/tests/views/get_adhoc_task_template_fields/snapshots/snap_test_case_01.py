@@ -27,15 +27,11 @@ snapshots['TestCase01GetAdhocTaskTemplateFieldsAPITestCase.test_given_valid_data
         'group_by_key': 'title'
     },
     {
-        'display_name': 'Description',
-        'group_by_key': 'description'
-    },
-    {
-        'display_name': 'Start_date',
+        'display_name': 'Start date',
         'group_by_key': 'start_date'
     },
     {
-        'display_name': 'Due_date',
+        'display_name': 'Due date',
         'group_by_key': 'due_date'
     },
     {

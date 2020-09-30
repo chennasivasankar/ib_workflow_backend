@@ -14,6 +14,12 @@ class UserProfileDTO:
 
 
 @dataclass
+class UserIdWithRolesDTO:
+    user_id: str
+    roles: List[str]
+
+
+@dataclass
 class UserDTO:
     user_id: str
     is_admin: bool

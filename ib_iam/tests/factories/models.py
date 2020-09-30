@@ -64,7 +64,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     is_admin = False
 
 
-class TeamMemberLevelFactory(factory.DjangoModelFactory):
+class TeamMemberLevelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TeamMemberLevel
 

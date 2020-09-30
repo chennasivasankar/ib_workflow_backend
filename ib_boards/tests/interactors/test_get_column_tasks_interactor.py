@@ -14,13 +14,13 @@ from ib_boards.interactors.dtos import ColumnTasksParametersDTO, \
     TaskCompleteDetailsDTO
 from ib_boards.interactors.get_column_tasks_interactor import \
     GetColumnTasksInteractor
-from ib_boards.tests.factories.interactor_dtos import  \
+from ib_boards.tests.factories.interactor_dtos import \
     FieldDetailsDTOFactory, GetTaskDetailsDTOFactory, \
-    ColumnTaskIdsDTOFactory, TaskStageIdDTOFactory, ColumnStageIdsDTOFactory, \
+    ColumnTaskIdsDTOFactory, ColumnStageIdsDTOFactory, \
     StageAssigneesDTOFactory
+from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory
 from ib_boards.tests.factories.storage_dtos import TaskDTOFactory, \
-    TaskStageDTOFactory, TaskActionsDTOFactory
-from ib_boards.tests.factories.storage_dtos import TaskDTOFactory, TaskStageDTOFactory
+    TaskStageDTOFactory
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
 
 
@@ -98,7 +98,7 @@ class TestGetColumnTasksInteractor:
         stage_ids = ['STAGE_ID_1', 'STAGE_ID_2', 'STAGE_ID_3']
         return ColumnTaskIdsDTOFactory.create_batch(
             1,
-            task_stage_ids=TaskStageIdDTOFactory.create_batch(
+            task_stage_ids=GetTaskDetailsDTOFactory.create_batch(
                 3, task_id=factory.Iterator(task_ids),
                 stage_id=factory.Iterator(stage_ids)
             )
@@ -106,9 +106,9 @@ class TestGetColumnTasksInteractor:
 
     @pytest.fixture
     def column_tasks_ids_no_duplicates(self):
-        task_stage_ids = [TaskStageIdDTOFactory.create_batch(3),
-                          TaskStageIdDTOFactory.create_batch(3),
-                          TaskStageIdDTOFactory.create_batch(3)]
+        task_stage_ids = [GetTaskDetailsDTOFactory.create_batch(3),
+                          GetTaskDetailsDTOFactory.create_batch(3),
+                          GetTaskDetailsDTOFactory.create_batch(3)]
         return ColumnTaskIdsDTOFactory.create_batch(
             1, task_stage_ids=factory.Iterator(task_stage_ids)
         )
@@ -272,6 +272,7 @@ class TestGetColumnTasksInteractor:
         expected_response = Mock()
         storage_mock.get_project_id_for_given_column_id.return_value = project_id
         storage_mock.get_columns_stage_ids.return_value = column_stage_dtos
+
         presenter_mock.get_response_for_column_tasks. \
             return_value = expected_response
         interactor = GetColumnTasksInteractor(

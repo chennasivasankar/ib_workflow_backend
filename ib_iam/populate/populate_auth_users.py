@@ -8,7 +8,8 @@ from ib_iam.interactors.dtos.dtos import AuthUserDTO
 class AuthUsers:
 
     @transaction.atomic()
-    def populate_auth_users(self, spread_sheet_name: str, sub_sheet_name: str):
+    def populate_auth_users(self, spread_sheet_name: str, sub_sheet_name: str,
+                            project_id: str):
         from ib_iam.populate.spreedsheet_utils import SpreadSheetUtil
         spreadsheet_utils = SpreadSheetUtil()
         auth_users = spreadsheet_utils \
@@ -21,16 +22,31 @@ class AuthUsers:
         )
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
-        user_storage = UserStorageImplementation()
         from ib_iam.storages.elastic_storage_implementation import \
             ElasticStorageImplementation
-        elastic_storage = ElasticStorageImplementation()
+        from ib_iam.storages.team_storage_implementation import \
+            TeamStorageImplementation
+        from ib_iam.storages.team_member_level_storage_implementation import \
+            TeamMemberLevelStorageImplementation
         from ib_iam.interactors.auth_users_interactor import AuthUsersInteractor
+        from ib_iam.storages.project_storage_implementation import \
+            ProjectStorageImplementation
+
+        user_storage = UserStorageImplementation()
+        elastic_storage = ElasticStorageImplementation()
+        team_storage = TeamStorageImplementation()
+        team_member_level_storage = TeamMemberLevelStorageImplementation()
+        project_storage = ProjectStorageImplementation()
+
         interactor = AuthUsersInteractor(
             user_storage=user_storage,
-            elastic_storage=elastic_storage
+            elastic_storage=elastic_storage,
+            team_storage=team_storage,
+            team_member_level_storage=team_member_level_storage,
+            project_storage=project_storage
         )
-        interactor.auth_user_dtos(auth_user_dtos=auth_user_dtos)
+        interactor.auth_user_dtos(auth_user_dtos=auth_user_dtos,
+                                  project_id=project_id)
         return
 
     @staticmethod
@@ -40,7 +56,8 @@ class AuthUsers:
                 token=auth_user["auth_token"],
                 email=auth_user["email"],
                 password=auth_user["password"],
-                name=auth_user["name"]
+                name=auth_user["name"],
+                auth_token_user_id=auth_user["auth_token_user_id"]
             )
             for auth_user in auth_users
         ]

@@ -1,8 +1,12 @@
 from typing import List
 
-from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO, ColumnStageDTO, ColumnDTO
+from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO, ColumnStageDTO, \
+    ColumnDTO
 from ib_tasks.exceptions.permission_custom_exceptions \
     import UserBoardPermissionDenied
+from ib_tasks.interactors.user_action_on_task.user_action_on_task_interactor \
+    import \
+    InvalidBoardIdException
 
 
 class BoardsService:
@@ -58,5 +62,8 @@ class BoardsService:
         ]
 
     def validate_board_id(self, board_id: str):
-        # TODO validate board id
-        return True
+        from ib_boards.exceptions.custom_exceptions import InvalidBoardId
+        try:
+            self.interface.validate_given_board_id(board_id)
+        except InvalidBoardId:
+            raise InvalidBoardIdException(board_id)

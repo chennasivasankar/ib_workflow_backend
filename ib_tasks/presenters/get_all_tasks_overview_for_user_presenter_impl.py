@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Dict, Optional, List
 
 from django.http import response
@@ -11,6 +12,8 @@ from ib_tasks.interactors.presenter_interfaces \
     GetAllTasksOverviewForUserPresenterInterface, \
     GetFilteredTasksOverviewForUserPresenterInterface
 from ib_tasks.interactors.stage_dtos import TaskStageAssigneeTeamDetailsDTO
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    TaskBaseDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO
 
@@ -75,6 +78,11 @@ class GetAllTasksOverviewForUserPresenterImpl(
             task_with_complete_stage_details_dtos
         task_fields_and_action_details_dtos = all_tasks_overview_details_dto. \
             task_fields_and_action_details_dtos
+        task_base_details_dtos = all_tasks_overview_details_dto.task_base_details_dtos
+        task_base_details_dtos_dict = {
+            task_base_details_dto.task_id: task_base_details_dto
+            for task_base_details_dto in task_base_details_dtos
+        }
         task_fields_and_actions_dict = {}
         for task_fields_and_action_details_dto in task_fields_and_action_details_dtos:
             task_fields_and_actions_dict[
@@ -96,24 +104,32 @@ class GetAllTasksOverviewForUserPresenterImpl(
                 task_overview_details_dict = self._get_task_overview_details_dict(
                     each_task_id_with_stage_details_dto,
                     task_fields_and_action_details_dto,
-                    task_with_complete_stage_details_dto)
+                    task_with_complete_stage_details_dto,
+                    task_base_details_dtos_dict[task_id]
+                )
                 task_ids.append(task_id)
                 task_overview_details.append(task_overview_details_dict)
         return task_overview_details
 
-    def _get_task_overview_details_dict(self,
-                                        each_task_id_with_stage_details_dto,
-                                        task_fields_and_action_details_dto,
-                                        task_with_complete_stage_details_dto):
+    def _get_task_overview_details_dict(
+            self, each_task_id_with_stage_details_dto,
+            task_fields_and_action_details_dto,
+            task_with_complete_stage_details_dto, task_base_details_dto):
         task_overview_fields_details, actions_details = self. \
             task_fields_and_actions_details(
-            task_fields_and_action_details_dto
-        )
+                task_fields_and_action_details_dto
+            )
         assignee = self._get_assignee_details(
             task_with_complete_stage_details_dto.stage_assignee_dto
         )
+        start_date, due_date = self._get_start_date_and_due_date(
+            task_base_details_dto)
         task_overview_details_dict = {
             "task_id": each_task_id_with_stage_details_dto.task_display_id,
+            "title": task_base_details_dto.title,
+            "start_date": start_date,
+            "due_date": due_date,
+            "priority": task_base_details_dto.priority,
             "task_overview_fields": task_overview_fields_details,
             "stage_with_actions": {
                 "stage_id":
@@ -184,6 +200,28 @@ class GetAllTasksOverviewForUserPresenterImpl(
             total_tasks: int):
         pass
 
+    def _get_start_date_and_due_date(
+            self, task_base_details_dto: TaskBaseDetailsDTO
+    ):
+        start_date, due_date = None, None
+        if task_base_details_dto.start_date is not None:
+            start_date = self._convert_datetime_object_to_string(
+                task_base_details_dto.start_date
+            )
+        if task_base_details_dto.due_date is not None:
+            due_date = self._convert_datetime_object_to_string(
+                task_base_details_dto.due_date
+            )
+        return start_date, due_date
+
+    @staticmethod
+    def _convert_datetime_object_to_string(
+            datetime_obj: datetime
+    ) -> str:
+        from ib_tasks.constants.constants import DATETIME_FORMAT
+        datetime_in_string_format = datetime_obj.strftime(DATETIME_FORMAT)
+        return datetime_in_string_format
+
 
 class GetFilteredTasksOverviewForUserPresenterImplementation(
     GetAllTasksOverviewForUserPresenterImpl,
@@ -240,3 +278,5 @@ class GetFilteredTasksOverviewForUserPresenterImplementation(
 
         response_object = self.prepare_400_bad_request_response(response_dict)
         return response_object
+
+

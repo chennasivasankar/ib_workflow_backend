@@ -94,6 +94,7 @@ class AuthUserDTO:
     name: str
     email: str
     password: str
+    auth_token_user_id: str = None
 
 
 @dataclass

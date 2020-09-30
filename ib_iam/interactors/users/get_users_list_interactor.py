@@ -1,6 +1,7 @@
 from typing import List
 
-from ib_iam.adapters.dtos import UserProfileDTO, SearchQueryWithPaginationDTO
+from ib_iam.adapters.dtos import UserProfileDTO, SearchQueryWithPaginationDTO, \
+    UserProfileWithRolesDTO
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
     InvalidOffsetValue, InvalidLimitValue, InvalidUserId, \
     InvalidRoleIdsForProject
@@ -150,6 +151,8 @@ class GetListOfUsersInteractor(ValidationMixin):
     def get_user_details_for_given_role_ids(
             self, role_ids: List[str], project_id: str
     ) -> List[UserProfileDTO]:
+        # todo: return type is not UserProfileDTO it is BasicUserDetailsDTO
+        # todo: check once
         from ib_iam.constants.config import ALL_ROLES_ID
         if ALL_ROLES_ID in role_ids:
             user_ids = self.user_storage.get_user_ids_for_given_project(
@@ -164,6 +167,30 @@ class GetListOfUsersInteractor(ValidationMixin):
             user_ids=user_ids
         )
         return user_details_dtos
+
+    def get_user_details_with_roles(
+            self, role_ids: List[str], project_id: str
+    ) -> List[UserProfileWithRolesDTO]:
+        self.user_storage.validate_project_id(project_id)
+        user_details_dtos = self.get_user_details_for_given_role_ids(
+            role_ids, project_id)
+        user_ids = [dto.user_id for dto in user_details_dtos]
+        user_id_with_roles = self.user_storage.get_users_project_roles(
+            user_ids, project_id)
+        from collections import defaultdict
+        user_roles_dict = defaultdict(list)
+        for user_id_with_role in user_id_with_roles:
+            user_roles_dict[user_id_with_role.user_id] = user_id_with_role.roles
+        user_profile_with_roles = [
+            UserProfileWithRolesDTO(
+                user_id=user_details_dto.user_id,
+                name=user_details_dto.name,
+                profile_pic_url=user_details_dto.profile_pic_url,
+                roles=user_roles_dict[user_details_dto.user_id]
+            )
+            for user_details_dto in user_details_dtos
+        ]
+        return user_profile_with_roles
 
     def _validate_role_ids(self, role_ids: List[str]):
         valid_role_ids = self.user_storage.get_valid_role_ids(

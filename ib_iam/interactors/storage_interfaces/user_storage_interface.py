@@ -9,7 +9,7 @@ from ib_iam.interactors.storage_interfaces.dtos import UserDTO, \
     TeamWithUserIdDTO, UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, \
     TeamIdAndNameDTO, RoleIdAndNameDTO, UserIdAndNameDTO, TeamDTO, \
     TeamUserIdsDTO, CompanyDTO, CompanyIdWithEmployeeIdsDTO, \
-    BasicUserDetailsDTO, UserIdWithTokenDTO
+    BasicUserDetailsDTO, UserIdWithRolesDTO, UserIdWithTokenDTO
 
 
 class UserStorageInterface(abc.ABC):
@@ -240,6 +240,12 @@ class UserStorageInterface(abc.ABC):
     def validate_project_id(
             self, project_id: str
     ) -> Optional[InvalidProjectId]:
+        pass
+
+    @abc.abstractmethod
+    def get_users_project_roles(
+            self, user_ids: List[str], project_id: str
+    ) -> List[UserIdWithRolesDTO]:
         pass
 
     @abc.abstractmethod

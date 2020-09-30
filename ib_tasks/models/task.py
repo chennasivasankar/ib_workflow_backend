@@ -6,9 +6,9 @@ from ib_tasks.constants.constants import PRIORITY_TYPES
 
 
 class Task(AbstractDateTimeModel):
-    project_id = models.CharField(max_length=50)
+    project_id = models.CharField(max_length=50, db_index=True)
     task_display_id = models.CharField(
-        max_length=50, unique=True, null=True, blank=True)
+        max_length=50, unique=True, null=True, blank=True, db_index=True)
     template_id = models.CharField(max_length=100)
     created_by = models.CharField(max_length=50)
     title = models.CharField(max_length=100)

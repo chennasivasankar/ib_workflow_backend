@@ -12,16 +12,14 @@ from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import ColumnTasksParametersDTO, \
     TaskIdStageDTO, \
     TaskCompleteDetailsDTO
-from ib_boards.interactors.get_column_tasks_interactor import \
-    GetColumnTasksInteractor
 from ib_boards.tests.factories.interactor_dtos import \
-    FieldDetailsDTOFactory, GetTaskDetailsDTOFactory, \
-    ColumnTaskIdsDTOFactory, TaskStageIdDTOFactory, ColumnStageIdsDTOFactory, \
+    FieldDetailsDTOFactory, ColumnTaskIdsDTOFactory, \
+    GetTaskDetailsDTOFactory, \
+    ColumnStageIdsDTOFactory, \
     StageAssigneesDTOFactory, AllFieldsDTOFactory
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory
 from ib_boards.tests.factories.storage_dtos import TaskDTOFactory, \
     TaskStageDTOFactory
-from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
 
 
 class TestGetColumnTasksInteractor:
@@ -103,7 +101,7 @@ class TestGetColumnTasksInteractor:
         stage_ids = ['STAGE_ID_1', 'STAGE_ID_2', 'STAGE_ID_3']
         return ColumnTaskIdsDTOFactory.create_batch(
             1,
-            task_stage_ids=TaskStageIdDTOFactory.create_batch(
+            task_stage_ids=GetTaskDetailsDTOFactory.create_batch(
                 3, task_id=factory.Iterator(task_ids),
                 stage_id=factory.Iterator(stage_ids)
             )
@@ -111,9 +109,9 @@ class TestGetColumnTasksInteractor:
 
     @pytest.fixture
     def column_tasks_ids_no_duplicates(self):
-        task_stage_ids = [TaskStageIdDTOFactory.create_batch(3),
-                          TaskStageIdDTOFactory.create_batch(3),
-                          TaskStageIdDTOFactory.create_batch(3)]
+        task_stage_ids = [GetTaskDetailsDTOFactory.create_batch(3),
+                          GetTaskDetailsDTOFactory.create_batch(3),
+                          GetTaskDetailsDTOFactory.create_batch(3)]
         return ColumnTaskIdsDTOFactory.create_batch(
             1, task_stage_ids=factory.Iterator(task_stage_ids)
         )
@@ -166,6 +164,7 @@ class TestGetColumnTasksInteractor:
         project_id = "1"
         from ib_boards.tests.factories.storage_dtos import \
             FieldDisplayStatusDTOFactory
+        FieldDisplayStatusDTOFactory.reset_sequence()
         field_display_status_dtos = FieldDisplayStatusDTOFactory.create_batch(2)
         field_ids = [
             field_display_status_dto.field_id

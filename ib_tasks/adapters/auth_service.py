@@ -2,7 +2,8 @@ from typing import List
 
 from ib_tasks.adapters.dtos import UserDetailsDTO, TeamDetailsDTO, \
     UserIdWIthTeamDetailsDTOs, TeamDetailsWithUserIdDTO, \
-    ProjectDetailsDTO, ProjectTeamUserIdsDTO, UserProjectStatusDTO
+    ProjectDetailsDTO, ProjectTeamUserIdsDTO, UserProjectStatusDTO, \
+    UserDetailsWithRolesDTO
 from ib_tasks.interactors.field_dtos import SearchableFieldDetailDTO
 from ib_tasks.interactors.filter_dtos import SearchQueryWithPaginationDTO
 
@@ -74,6 +75,23 @@ class AuthService:
         user_details_dtos = self._get_user_details_dtos(
             user_profile_details_dtos)
         return user_details_dtos
+
+    def get_user_details_with_roles(
+            self, role_ids: List[str], project_id: str
+    ) -> List[UserDetailsWithRolesDTO]:
+        user_details_with_roles = \
+            self.interface.get_user_details_with_roles_for_given_roles(
+                role_ids, project_id)
+
+        user_details_with_roles_dtos = [
+            UserDetailsWithRolesDTO(
+                user_id=user_details.user_id,
+                user_name=user_details.name,
+                profile_pic_url=user_details.profile_pic_url,
+                roles=user_details.roles)
+            for user_details in user_details_with_roles
+        ]
+        return user_details_with_roles_dtos
 
     def get_user_details_for_the_given_role_ids_based_on_query(
             self, role_ids: List[str],

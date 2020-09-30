@@ -6,7 +6,8 @@ Author: Pavankumar Pamuru
 import pytest
 
 from ib_boards.models import Board, Column, ColumnPermission
-from ib_boards.populate.populate_script_for_add_or_delete_columns_for_board import \
+from ib_boards.populate.populate_script_for_add_or_delete_columns_for_board \
+    import \
     InvalidDataFormat, InvalidJsonFormat
 from ib_boards.populate.populate_script_to_create_boards_and_columns import \
     PopulateCreateBoardsAndColumns
@@ -78,6 +79,9 @@ class TestPopulateBoardsAndColumnsInteractor:
         data_dict = populate_dict_with_valid_data()
         populate_script = PopulateCreateBoardsAndColumns()
         user_roles = ["USER", 'ADMIN']
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            validate_task_template_stages_with_id_mock
+        validate_task_template_stages_with_id_mock(mocker)
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             adapter_mock
         adapter_mock = adapter_mock(mocker=mocker,

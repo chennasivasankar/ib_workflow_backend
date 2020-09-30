@@ -7,10 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01GetChildGroupsInGroupAPITestCase.test_case status_code'] = '400'
+snapshots['TestCase01ChangeTheDisplayStatusOfFieldAPITestCase.test_case status_code'] = '400'
 
-snapshots['TestCase01GetChildGroupsInGroupAPITestCase.test_case body'] = {
-    'group_by_value': [
+snapshots['TestCase01ChangeTheDisplayStatusOfFieldAPITestCase.test_case body'] = {
+    'field_id': [
         'This field is required.'
     ]
 }

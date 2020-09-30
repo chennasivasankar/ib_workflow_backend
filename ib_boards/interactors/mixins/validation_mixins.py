@@ -2,7 +2,8 @@ from typing import List
 
 from ib_boards.adapters.iam_service import InvalidProjectIdsException, \
     UserIsNotInProjectException
-from ib_boards.exceptions.custom_exceptions import InvalidProjectId
+from ib_boards.exceptions.custom_exceptions import InvalidProjectId, \
+    InvalidBoardId
 
 
 class ValidationMixin:
@@ -47,3 +48,8 @@ class ValidationMixin:
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         return service_adapter
+
+    def validate_board_id(self, board_id):
+        is_valid = self.storage.validate_board_id(board_id)
+        if not is_valid:
+            raise InvalidBoardId

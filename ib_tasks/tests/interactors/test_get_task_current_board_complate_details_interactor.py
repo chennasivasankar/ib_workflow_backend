@@ -206,6 +206,7 @@ class TestUserActionOnTaskInteractor:
             import GetTaskStageCompleteDetailsDTOFactory
         field_dto = FieldDetailsDTOFactory()
         action_dto = StageActionDetailsDTOFactory(stage_id='stage_1')
+        GetTaskStageCompleteDetailsDTOFactory.reset_sequence()
         task_fields_actions = GetTaskStageCompleteDetailsDTOFactory(
             task_id=task_id,
             field_dtos=[field_dto],
