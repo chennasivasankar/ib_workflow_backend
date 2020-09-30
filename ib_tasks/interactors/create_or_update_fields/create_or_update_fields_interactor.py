@@ -1,3 +1,4 @@
+import json
 from typing import List
 
 from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS, UPLOADERS, \
@@ -133,6 +134,7 @@ class CreateOrUpdateFieldsInteractor:
             if is_field_values_empty:
                 message = EMPTY_FIELD_VALUES.format(field_dto.field_type)
                 raise EmptyValuesForFieldValues(message)
+            field_dto.field_values = json.dumps(field_dto.field_values)
 
     @staticmethod
     def _check_for_field_roles_validations(
