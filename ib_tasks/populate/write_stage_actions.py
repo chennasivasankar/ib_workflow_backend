@@ -5,16 +5,20 @@ def writing_data_to_stage_actions_logic():
     from yapf.yapflib.yapf_api import FormatCode
     from ib_tasks.storages.action_storage_implementation \
         import ActionsStorageImplementation
+    from django.conf import settings
     storage = ActionsStorageImplementation()
     actions_dto = storage.get_database_stage_actions()
-
-    with open('ib_tasks/populate/stage_actions_logic.py', "w") as file_:
+    file_path_name = 'ib_tasks/populate/stage_actions_logic_{}.py'.format(
+        settings.STAGE)
+    with open(file_path_name, "w") as file_:
         content = ''
         for action_dto in actions_dto:
             content += _define_single_method(action_dto=action_dto)
+            action_dto.py_function_import_path = file_path_name
         formatted_content = FormatCode(content)[0]
         file_.write(formatted_content)
         file_.close()
+    storage.update_stage_actions_func_path(actions_dto)
 
 
 def _define_single_method(action_dto: StageActionLogicDTO):

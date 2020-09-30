@@ -340,6 +340,26 @@ class ActionsStorageImplementation(ActionStorageInterface):
             for action_obj in action_objs
         ]
 
+    def update_stage_actions_func_path(
+            self, action_dtos: List[StageActionLogicDTO]
+    ):
+        action_func_path_dict = self._get_action_ids(action_dtos)
+        action_objs = StageAction.objects.all()
+        for action_obj in action_objs:
+            function_path = action_func_path_dict[action_obj.id]
+            action_obj.py_function_import_path = function_path
+        StageAction.objects.bulk_update(action_objs,
+                                        ['py_function_import_path'])
+
+    @staticmethod
+    def _get_action_ids(action_dtos: List[StageActionLogicDTO]
+                        ) -> Dict[int, str]:
+
+        return {
+            action_dto.action_id: action_dto.py_function_import_path
+            for action_dto in action_dtos
+        }
+
     def get_permitted_action_ids_for_given_task_stages(
             self, user_project_roles: List[TaskProjectRolesDTO],
             stage_ids):
