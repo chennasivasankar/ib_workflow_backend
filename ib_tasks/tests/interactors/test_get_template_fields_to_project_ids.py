@@ -57,8 +57,9 @@ class TestGetProjectsTemplatesFieldsInteractor(StorageMockClass):
     @staticmethod
     def set_up_storage(
             projects_mock, project_ids: List[str], user_in_projects_mock,
-            user_roles_mock, role_ids, task_template_storage, template_projects,
-            gof_storage, template_gofs, field_storage, field_dtos
+            user_roles_mock, role_ids, task_template_storage,
+            template_projects, gof_storage, template_gofs, field_storage,
+            field_dtos, common_task_template_ids
     ):
         projects_mock.return_value = project_ids
         user_project_dtos = UserProjectStatusDTOFactory.create_batch(1)
@@ -66,11 +67,12 @@ class TestGetProjectsTemplatesFieldsInteractor(StorageMockClass):
         user_roles_mock.return_value = role_ids
         task_template_storage.get_task_templates_to_project_ids.return_value = \
             template_projects
+        task_template_storage.get_common_task_template_ids.return_value = \
+            common_task_template_ids
         gof_storage.get_user_permitted_template_gof_dtos.return_value = \
             template_gofs
         field_storage.get_user_permitted_gof_field_dtos.return_value = \
             field_dtos
-
 
     def test_given_valid_details_returns_details(
             self, projects_mock, interactor, user_in_projects_mock,
@@ -93,7 +95,8 @@ class TestGetProjectsTemplatesFieldsInteractor(StorageMockClass):
             task_template_storage=task_template_storage,
             template_projects=project_templates,
             gof_storage=gof_storage, template_gofs=template_gofs,
-            field_storage=field_storage, field_dtos=field_dtos
+            field_storage=field_storage, field_dtos=field_dtos,
+            common_task_template_ids=[]
         )
 
         # Act
