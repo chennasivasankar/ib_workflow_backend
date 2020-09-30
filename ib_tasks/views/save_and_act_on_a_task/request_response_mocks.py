@@ -98,6 +98,10 @@ RESPONSE_200_JSON = """
     },
     "task_details": {
         "task_id": "string",
+        "title": "string",
+        "start_date": "2099-12-31 00:00:00",
+        "due_date": "2099-12-31 00:00:00",
+        "priority": "string",
         "task_overview_fields": [
             {
                 "field_type": "PLAIN_TEXT",
