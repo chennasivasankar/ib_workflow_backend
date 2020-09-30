@@ -151,6 +151,8 @@ class TestTaskDetailsValidationsInteractor:
         get_valid_project_ids_mock(mocker, valid_project_ids)
         task_details_validation_storages_dto.task_template_storage.\
             get_project_templates.return_value = task_template_ids_of_project
+        task_details_validation_storages_dto.task_template_storage\
+            .is_common_template.return_value = False
 
         interactor = TaskDetailsValidationsInteractor(
             storages_dto=task_details_validation_storages_dto

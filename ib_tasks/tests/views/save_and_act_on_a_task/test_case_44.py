@@ -15,7 +15,8 @@ from ib_tasks.tests.common_fixtures.adapters.auth_service import \
     get_projects_info_for_given_ids_mock, get_valid_project_ids_mock as auth_service_project_ids_mock, \
     validate_if_user_is_in_project_mock, get_user_id_team_details_dtos_mock
 from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-    get_user_role_ids_based_on_project_mock
+    get_user_role_ids_based_on_project_mock, \
+    get_user_role_ids_based_on_projects_mock
 from ib_tasks.tests.common_fixtures.storages import \
     elastic_storage_implementation_mock
 from ib_tasks.tests.factories.adapter_dtos import ProjectDetailsDTOFactory
@@ -67,6 +68,8 @@ class TestCase44SaveAndActOnATaskAPITestCase(TestUtils):
         get_projects_info_for_given_ids_mock(mocker)
         get_user_id_team_details_dtos_mock(mocker)
         validate_if_user_is_in_project_mock(mocker, True)
+        get_user_role_ids_based_on_projects_mock(mocker,
+                                                 project_ids=[project_id])
 
         template = models.TaskTemplateFactory.create(template_id=template_id)
         models.ProjectTaskTemplateFactory.create(task_template=template,
