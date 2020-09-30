@@ -69,20 +69,6 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
     def validate_and_update_task_stage_assignees(
             self,
             task_id_with_stage_assignees_dto: TaskIdWithStageAssigneesDTO):
-        task_id = task_id_with_stage_assignees_dto.task_id
-        project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
-        from ib_tasks.adapters.service_adapter import get_service_adapter
-        project_service = get_service_adapter().project_service
-        projects_config = project_service.get_projects_config()
-        project_config = projects_config.get(project_id)
-        given_project_has_config = project_config is not None
-
-        if given_project_has_config:
-            assignee_restriction_is_true = project_config.get(
-                "restrict_assignee_to_user")
-            if assignee_restriction_is_true:
-                return
-
         self._validations_of_request(
             task_id_with_stage_assignees_dto=task_id_with_stage_assignees_dto)
         self.update_task_stage_assignees(

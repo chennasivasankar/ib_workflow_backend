@@ -77,7 +77,7 @@ class GetProjectBriefInfoInteractor:
                 config = json.dumps(
                     {
                         "restrict_assignee_to_user": False,
-                        "enable_adhoc_template": False
+                        "enable_adhoc_template": True
                     }
                 )
             project_dto.config = config
