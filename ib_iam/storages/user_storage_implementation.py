@@ -9,7 +9,7 @@ from ib_iam.interactors.storage_interfaces.dtos import UserDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, \
     CompanyDTO, \
-    CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO, UserIdWithRolesDTO, \
+    UserIdWithRolesDTO, \
     CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO, UserIdWithTokenDTO, \
     UserIdAndAuthUserIdDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface \
@@ -26,7 +26,7 @@ class UserStorageImplementation(UserStorageInterface):
         user_role_dicts = UserRole.objects.filter(
             user_id__in=user_ids,
             project_role__project__project_id=project_id).values(
-                'user_id', 'project_role__role_id')
+            'user_id', 'project_role__role_id')
         from collections import defaultdict
         user_role_default_dict = defaultdict(list)
         for user_role_dict in user_role_dicts:
