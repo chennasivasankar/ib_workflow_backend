@@ -18,7 +18,10 @@ class AuthUsersInteractor:
 
     def auth_user_dtos(self, auth_user_dtos: List[AuthUserDTO]):
         for auth_user_dto in auth_user_dtos:
-            self._create_auth_user_details(auth_user_dto=auth_user_dto)
+            try:
+                self._create_auth_user_details(auth_user_dto=auth_user_dto)
+            except:
+                continue
 
     def _create_auth_user_details(self, auth_user_dto: AuthUserDTO):
         from ib_iam.adapters.service_adapter import get_service_adapter
