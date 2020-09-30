@@ -83,3 +83,7 @@ class TeamStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_or_create(self, name: str) -> Tuple[str, bool]:
         pass
+
+    @abc.abstractmethod
+    def get_or_create_team_with_id_and_name(self, team_id, name: str) -> bool:
+        pass

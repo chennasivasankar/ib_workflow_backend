@@ -39,7 +39,7 @@ class LoginWithTokenInteractor:
         is_user_not_exist = user_id is None
         if is_user_not_exist:
             user_id = self._create_user(token=token, name=name)
-        self.add_and_assign_user_to_team(user_id=user_id)
+            self.add_and_assign_user_to_team(user_id=user_id)
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
         expiry_in_seconds = settings.USER_VERIFICATION_EMAIL_EXPIRY_IN_SECONDS
@@ -47,7 +47,7 @@ class LoginWithTokenInteractor:
             .create_auth_tokens_for_user(
             user_id=user_id, expiry_in_seconds=expiry_in_seconds
         )
-        is_admin = self.user_storage.is_user_admin(user_id=user_id)
+        is_admin = False
         return user_tokens_dto, is_admin
 
     def _create_user(self, token: str, name: Optional[str] = None):
@@ -78,7 +78,7 @@ class LoginWithTokenInteractor:
         from ib_iam.constants.config import DEFAULT_TEAM_ID, DEFAULT_TEAM_NAME
         team_id = DEFAULT_TEAM_ID
         team_name = DEFAULT_TEAM_NAME
-        is_created = self.team_storage.get_or_create(
+        is_created = self.team_storage.get_or_create_team_with_id_and_name(
             team_id=team_id, name=team_name
         )
         self.team_storage.add_users_to_team(

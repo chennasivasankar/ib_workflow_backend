@@ -1180,7 +1180,6 @@
       "name": "login_with_token_parameter",
       "description": "login with token parameter",
       "in": "body",
-      "required": true,
       "schema": {
         "type": "object",
         "properties": {
