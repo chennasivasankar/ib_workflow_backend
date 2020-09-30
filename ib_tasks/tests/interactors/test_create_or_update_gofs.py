@@ -176,31 +176,6 @@ class TestCreateOrUpdateGOFs:
         storage_mock.create_gof_roles.assert_not_called()
         storage_mock.update_gofs.assert_not_called()
 
-    @pytest.mark.parametrize("write_permission_roles", [None, []])
-    def test_with_empty_write_permission_roles_raise_exception(
-            self, storage_mock, write_permission_roles
-    ):
-        # Arrange
-        from ib_tasks.exceptions.gofs_custom_exceptions import \
-            GOFWritePermissionsCantBeEmpty
-        gof_roles_dto = GoFRolesDTOFactory(
-            write_permission_roles=write_permission_roles)
-        complete_gof_details_dtos = [
-            CompleteGoFDetailsDTOFactory(gof_roles_dto=gof_roles_dto)
-        ]
-        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
-
-        # Act
-        with pytest.raises(GOFWritePermissionsCantBeEmpty) as err:
-            interactor.create_or_update_gofs(
-                complete_gof_details_dtos=complete_gof_details_dtos
-            )
-
-        # Assert
-        storage_mock.create_gofs.assert_not_called()
-        storage_mock.create_gof_roles.assert_not_called()
-        storage_mock.update_gofs.assert_not_called()
-
     def test_with_duplicate_write_permission_roles_raise_exception(
             self, storage_mock
     ):

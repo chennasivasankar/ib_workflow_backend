@@ -12,6 +12,8 @@ from ib_iam.interactors.storage_interfaces.team_storage_interface import \
     TeamStorageInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
+from ib_workflows_backend.settings.base_swagger_utils import \
+    JGC_DRIVE_PROJECT_ID
 
 
 class LoginWithTokenInteractor:
@@ -54,6 +56,7 @@ class LoginWithTokenInteractor:
                 login_with_token_parameter_dto=login_with_token_parameter_dto
             )
             self.add_team_and_assign_user_to_team(user_id=user_id)
+            self.assign_all_project_roles_to_user(user_id=user_id)
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
         expiry_in_seconds = settings.USER_VERIFICATION_EMAIL_EXPIRY_IN_SECONDS
@@ -109,12 +112,18 @@ class LoginWithTokenInteractor:
             team_id=team_id, user_ids=[user_id]
         )
         if is_created:
-            from ib_workflows_backend.settings.base_swagger_utils import \
-                JGC_DRIVE_PROJECT_ID
             self.project_storage.assign_teams_to_projects(
                 project_id=JGC_DRIVE_PROJECT_ID, team_ids=[team_id]
             )
         self.add_user_to_team_member_level(team_id=team_id, user_id=user_id)
+
+    def assign_all_project_roles_to_user(self, user_id: str):
+        role_ids = self.project_storage.get_project_role_ids(
+            project_id=JGC_DRIVE_PROJECT_ID
+        )
+        self.user_storage.add_roles_to_the_user(
+            user_id=user_id, role_ids=role_ids
+        )
 
     def _create_elastic_user(self, user_id: str, name: str, email: str):
         elastic_user_id = self.elastic_storage.create_elastic_user(

@@ -141,18 +141,19 @@ def get_user_role_ids_based_on_project_mock_exception(mocker):
     return mock
 
 
-def get_user_role_ids_based_on_projects_mock(mocker):
+def get_user_role_ids_based_on_projects_mock(mocker,
+                                             project_ids=["project_id_1"]):
     mock = mocker.patch(
         "ib_tasks.adapters.roles_service.RolesService"
         ".get_user_role_ids_based_on_given_project_ids")
     project_roles = [ProjectRolesDTO(
-        project_id="project_id_1",
+        project_id=project_ids[0],
         roles=['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC',
                'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
                'FIN_COMPLIANCE_APPROVER', 'FIN_PAYMENTS_LEVEL1_VERIFIER',
                'FIN_PAYMENTS_LEVEL2_VERIFIER']),
         ProjectRolesDTO(
-            project_id="project_id_1",
+            project_id=project_ids[0],
             roles=['FIN_PAYMENTS_LEVEL3_VERIFIER',
                    'FIN_PAYMENTS_RP', 'FIN_FINANCE_RP',
                    'FIN_ACCOUNTS_LEVEL1_VERIFIER',

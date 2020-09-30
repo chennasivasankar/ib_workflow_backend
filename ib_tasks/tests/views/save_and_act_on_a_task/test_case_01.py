@@ -13,12 +13,14 @@ from ib_tasks.tests.common_fixtures.adapters.project_service import \
 from ib_tasks.tests.views.save_and_act_on_a_task import APP_NAME, \
     OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ib_tasks.tests.common_fixtures.adapters.auth_service import \
-    get_projects_info_for_given_ids_mock, get_valid_project_ids_mock as auth_service_project_ids_mock, \
+    get_projects_info_for_given_ids_mock, \
+    get_valid_project_ids_mock as auth_service_project_ids_mock, \
     validate_if_user_is_in_project_mock, \
     prepare_empty_permitted_user_details_mock, \
-    get_team_info_for_given_user_ids_mock, get_user_id_team_details_dtos_mock
+    get_team_info_for_given_user_ids_mock, get_user_id_team_details_dtos_mock, \
+    get_user_details_with_roles_mock
 from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-    get_some_user_role_ids
+    get_some_user_role_ids, get_user_role_ids_based_on_projects_mock
 from ib_tasks.tests.common_fixtures.storages import \
     elastic_storage_implementation_mock
 from ib_tasks.tests.factories.adapter_dtos import ProjectDetailsDTOFactory, \
@@ -75,7 +77,8 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids_based_on_project_mock
         get_user_role_ids_based_on_project_mock(mocker)
-        get_some_user_role_ids(mocker)
+        user_roles_mock = get_some_user_role_ids(mocker)
+        user_roles = user_roles_mock.return_value
         elastic_storage_implementation_mock(mocker)
         permitted_user_details_mock = \
             prepare_empty_permitted_user_details_mock(mocker)
@@ -96,6 +99,9 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
         validate_if_user_is_in_project_mock(mocker, True)
         get_assignees_details_dtos_mock.return_value = [
             AssigneeDetailsDTOFactory(assignee_id="assignee_id_1")]
+        get_user_role_ids_based_on_projects_mock(mocker,
+                                                 project_ids=[project_id])
+        get_user_details_with_roles_mock(mocker, user_roles)
 
         template_id = "template_1"
         gofs = GoFFactory.create_batch(size=2)

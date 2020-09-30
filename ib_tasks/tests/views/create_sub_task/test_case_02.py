@@ -19,9 +19,10 @@ from ib_tasks.tests.common_fixtures.adapters.auth_service import \
     get_valid_project_ids_mock as auth_service_project_ids_mock, \
     get_projects_info_for_given_ids_mock, \
     get_team_info_for_given_user_ids_mock, prepare_permitted_user_details_mock, \
-    get_user_id_team_details_dtos_mock
+    get_user_id_team_details_dtos_mock, get_user_details_with_roles_mock
 from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-    get_user_role_ids, get_user_role_ids_based_on_project_mock
+    get_user_role_ids, get_user_role_ids_based_on_project_mock, \
+    get_user_role_ids_based_on_projects_mock
 from ib_tasks.tests.common_fixtures.storages import \
     elastic_storage_implementation_mock
 from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTOFactory, \
@@ -56,7 +57,8 @@ class TestCase02CreateSubTaskAPITestCase(TestUtils):
         variable = "variable0"
 
         elastic_storage_implementation_mock(mocker)
-        get_user_role_ids(mocker)
+        user_roles_mock = get_user_role_ids(mocker)
+        user_roles = user_roles_mock.return_value
         is_user_in_project = True
         validate_if_user_is_in_project_mock(mocker, is_user_in_project)
         auth_service_project_ids_mock(mocker, [project_id])
@@ -64,12 +66,13 @@ class TestCase02CreateSubTaskAPITestCase(TestUtils):
         project_mock.return_value = [project_id]
         get_projects_info_for_given_ids_mock(mocker)
         get_user_id_team_details_dtos_mock(mocker)
-        get_projects_info_for_given_ids_mock(mocker)
         get_team_info_for_given_user_ids_mock(mocker)
         get_user_role_ids_based_on_project_mock(mocker)
+        get_user_role_ids_based_on_projects_mock(mocker, project_ids=[project_id])
         prepare_permitted_user_details_mock_method = \
             prepare_permitted_user_details_mock(mocker)
         assignee_details_dtos_mock_method = assignee_details_dtos_mock(mocker)
+        get_user_details_with_roles_mock(mocker, user_roles)
 
         prepare_permitted_user_details_mock_method.return_value = \
             UserDetailsDTOFactory.create_batch(
