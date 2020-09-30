@@ -10,7 +10,8 @@ from ib_iam.interactors.storage_interfaces.dtos import UserDTO, \
     CompanyIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, \
     CompanyDTO, \
     CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO, UserIdWithRolesDTO, \
-    CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO, UserIdWithTokenDTO
+    CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO, UserIdWithTokenDTO, \
+    UserIdAndAuthUserIdDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface \
     import UserStorageInterface
 from ib_iam.models import ProjectRole
@@ -612,7 +613,7 @@ class UserStorageImplementation(UserStorageInterface):
     def get_user_and_token_dtos(
             self, tokens: List[str]
     ) -> List[UserIdWithTokenDTO]:
-        # TODO Write tests for it
+        # TODO Write tests for it check once is it in usage or not
         from ib_iam.models import UserAuthToken
         user_auth_tokens = UserAuthToken.objects.filter(
             token__in=tokens).values('user_id', 'token')
@@ -623,3 +624,19 @@ class UserStorageImplementation(UserStorageInterface):
             ) for user_auth_token in user_auth_tokens
         ]
         return user_id_with_token_dtos
+
+    def get_user_id_and_auth_user_id(
+            self, auth_user_ids: List[str]
+    ) -> List[UserIdAndAuthUserIdDTO]:
+        # TODO Write tests
+        from ib_iam.models import UserAuthToken
+        user_auth_tokens = UserAuthToken.objects.filter(
+            auth_token_user_id__in=auth_user_ids
+        ).values('user_id', 'auth_token_user_id')
+        user_id_with_auth_user_id_dtos = [
+            UserIdAndAuthUserIdDTO(
+                user_id=user_auth_token["user_id"],
+                auth_user_id=user_auth_token["auth_token_user_id"]
+            ) for user_auth_token in user_auth_tokens
+        ]
+        return user_id_with_auth_user_id_dtos

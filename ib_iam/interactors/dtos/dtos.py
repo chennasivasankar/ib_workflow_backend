@@ -98,13 +98,13 @@ class AuthUserDTO:
 
 
 @dataclass
-class PMAndSubUsersAuthTokensDTO:
-    pm_auth_token: str
-    sub_user_auth_token: str
-
-
-@dataclass
 class LoginWithTokenParameterDTO:
     token: str
     name: Optional[str] = None
     auth_token_user_id: Optional[str] = None
+
+
+@dataclass
+class PMAndSubUsersAuthIdsDTO:
+    pm_auth_user_id: str
+    sub_user_auth_user_id: str
