@@ -8,10 +8,13 @@ from typing import List, Tuple
 from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import TaskTemplateStagesDTO, \
     FieldDTO, ColumnTaskIdsDTO, ActionDTO, \
-    TaskStageDTO, StageAssigneesDTO, AssigneesDTO, FieldNameDTO
+    TaskStageDTO, StageAssigneesDTO, AssigneesDTO, FieldNameDTO, \
+    TaskCommonDetailsDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    TaskBaseDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, \
     GetTaskDetailsDTO
@@ -209,3 +212,29 @@ class TaskService:
             )
             for field_display_name_dto in field_display_name_dtos
         ]
+
+    def get_task_base_details(self, task_ids: List[int]) -> List[TaskCommonDetailsDTO]:
+        task_base_details_dtos = self.interface.get_task_base_details_dtos(
+            task_ids=task_ids
+        )
+        return [
+            self._get_task_base_details_dto(
+                task_base_details_dto=task_base_details_dto
+            )
+            for task_base_details_dto in task_base_details_dtos
+        ]
+
+    @staticmethod
+    def _get_task_base_details_dto(
+            task_base_details_dto: TaskBaseDetailsDTO) -> TaskCommonDetailsDTO:
+        return TaskCommonDetailsDTO(
+            template_id=task_base_details_dto.template_id,
+            project_id=task_base_details_dto.project_id,
+            task_display_id=task_base_details_dto.task_display_id,
+            title=task_base_details_dto.title,
+            description=task_base_details_dto.description,
+            start_date=task_base_details_dto.start_date,
+            due_date=task_base_details_dto.due_date,
+            priority=task_base_details_dto.priority,
+            task_id=task_base_details_dto.id
+        )
