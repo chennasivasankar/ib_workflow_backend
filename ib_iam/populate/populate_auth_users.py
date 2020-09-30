@@ -21,14 +21,24 @@ class AuthUsers:
         )
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
-        user_storage = UserStorageImplementation()
         from ib_iam.storages.elastic_storage_implementation import \
             ElasticStorageImplementation
-        elastic_storage = ElasticStorageImplementation()
+        from ib_iam.storages.team_storage_implementation import \
+            TeamStorageImplementation
+        from ib_iam.storages.team_member_level_storage_implementation import \
+            TeamMemberLevelStorageImplementation
         from ib_iam.interactors.auth_users_interactor import AuthUsersInteractor
+
+        user_storage = UserStorageImplementation()
+        elastic_storage = ElasticStorageImplementation()
+        team_storage = TeamStorageImplementation()
+        team_member_level_storage = TeamMemberLevelStorageImplementation()
+
         interactor = AuthUsersInteractor(
             user_storage=user_storage,
-            elastic_storage=elastic_storage
+            elastic_storage=elastic_storage,
+            team_storage=team_storage,
+            team_member_level_storage=team_member_level_storage
         )
         interactor.auth_user_dtos(auth_user_dtos=auth_user_dtos)
         return
