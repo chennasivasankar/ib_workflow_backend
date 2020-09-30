@@ -24,9 +24,10 @@ LEVEL_1_NAME = "level_1"
 LEVEL_0_HIERARCHY = 0
 LEVEL_1_HIERARCHY = 1
 
+# if we add a new project add every config key even it is false
 PROJECTS_CONFIG = {
     "JGC_DRIVE": {
         "restrict_assignee_to_user": True,
-        "enable_adhoc_template": True
+        "enable_adhoc_template": False
     }
 }
