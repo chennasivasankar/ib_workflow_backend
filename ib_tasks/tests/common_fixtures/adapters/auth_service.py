@@ -236,3 +236,11 @@ def get_user_details_with_roles_mock(mocker, role_ids: List[str]):
         UserDetailsWithRolesDTOFactory.create_batch(size=2, roles=role_ids)
     mock.return_value = user_details_with_roles_dtos
     return mock
+
+
+def validate_project_ids_mock(mocker, project_ids: List[str]):
+    path = "ib_tasks.adapters.auth_service.AuthService.validate_project_ids"
+    mock = mocker.patch(path)
+
+    mock.return_value = project_ids
+    return mock
