@@ -12,16 +12,14 @@ from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import ColumnTasksParametersDTO, \
     TaskIdStageDTO, \
     TaskCompleteDetailsDTO
-from ib_boards.interactors.get_column_tasks_interactor import \
-    GetColumnTasksInteractor
 from ib_boards.tests.factories.interactor_dtos import \
-    FieldDetailsDTOFactory, GetTaskDetailsDTOFactory, \
-    ColumnTaskIdsDTOFactory, GetTaskDetailsDTOFactory, ColumnStageIdsDTOFactory, \
+    FieldDetailsDTOFactory, ColumnTaskIdsDTOFactory, \
+    GetTaskDetailsDTOFactory, \
+    ColumnStageIdsDTOFactory, \
     StageAssigneesDTOFactory, AllFieldsDTOFactory
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory
 from ib_boards.tests.factories.storage_dtos import TaskDTOFactory, \
     TaskStageDTOFactory
-from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
 
 
 class TestGetColumnTasksInteractor:
@@ -166,6 +164,7 @@ class TestGetColumnTasksInteractor:
         project_id = "1"
         from ib_boards.tests.factories.storage_dtos import \
             FieldDisplayStatusDTOFactory
+        FieldDisplayStatusDTOFactory.reset_sequence()
         field_display_status_dtos = FieldDisplayStatusDTOFactory.create_batch(2)
         field_ids = [
             field_display_status_dto.field_id

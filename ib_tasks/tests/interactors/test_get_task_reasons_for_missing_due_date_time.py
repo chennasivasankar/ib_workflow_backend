@@ -139,7 +139,7 @@ class TestGetTaskReasons(StorageMockClass):
         assert result == expected_response
         task_storage.get_task_due_details.assert_called_once_with(
             task_id, stage_id)
-        assignee_details_dtos.assert_called_once_with(user_ids)
+        assignee_details_dtos.assert_called_once_with(sorted(user_ids))
         presenter.get_response_for_get_task_due_details.assert_called_once()
 
     def test_given_valid_details_get_task_due_missing_details(

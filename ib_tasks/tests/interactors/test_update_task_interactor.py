@@ -248,6 +248,7 @@ class TestUpdateTaskInteractor:
         invalid_task_id = error_object.task_id
         assert invalid_task_id == task_id
 
+    @freezegun.freeze_time('2020-09-09 13:00:00')
     def test_with_invalid_stage_id(
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
@@ -267,6 +268,8 @@ class TestUpdateTaskInteractor:
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
         create_task_storage_mock.is_valid_task_id.return_value = True
+        create_task_storage_mock.get_existing_task_due_date.return_value = \
+            datetime.datetime(2020, 9, 8, 7, 6, 5)
         stage_storage_mock.check_is_stage_exists.return_value = False
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
