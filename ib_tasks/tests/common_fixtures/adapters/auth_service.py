@@ -2,6 +2,7 @@ from typing import List
 
 import factory
 
+from ib_tasks.adapters.dtos import UserDetailsWithRolesDTO
 from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTOFactory, \
     TeamDetailsWithUserIdDTOFactory
 from ib_tasks.tests.factories.interactor_dtos import \
