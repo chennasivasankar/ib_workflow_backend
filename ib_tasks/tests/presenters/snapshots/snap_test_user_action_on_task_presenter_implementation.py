@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
+
 snapshots = Snapshot()
 
 snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exception_for_invalid_board invalid_board'] = {
@@ -117,6 +118,8 @@ snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_get_response_for_u
         'user_has_permission': True
     },
     'task_details': {
+        'due_date': '2020-04-15 04:50:40',
+        'priority': 'HIGH',
         'stage_with_actions': {
             'actions': [
             ],
@@ -133,9 +136,11 @@ snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_get_response_for_u
             'stage_display_name': 'stage_display_1',
             'stage_id': 1
         },
+        'start_date': '2020-04-05 04:50:40',
         'task_id': 'iBWF-1',
         'task_overview_fields': [
-        ]
+        ],
+        'title': 'title_0'
     },
     'task_id': 'task_display_0'
 }

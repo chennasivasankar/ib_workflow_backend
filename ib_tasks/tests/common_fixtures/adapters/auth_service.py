@@ -2,7 +2,6 @@ from typing import List
 
 import factory
 
-from ib_tasks.adapters.dtos import UserDetailsWithRolesDTO
 from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTOFactory, \
     TeamDetailsWithUserIdDTOFactory
 from ib_tasks.tests.factories.interactor_dtos import \
@@ -194,6 +193,7 @@ def get_team_info_for_given_user_ids_with_given_names_mock(mocker):
                                                      user_id='123e4567-e89b-12d3-a456-426614174000')
     mock.return_value = user_id_with_team_details_dtos
     return mock
+
 
 def get_project_info_for_given_ids_mock(mocker):
     mock = mocker.patch(

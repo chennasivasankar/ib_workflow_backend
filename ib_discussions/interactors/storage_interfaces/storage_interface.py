@@ -83,3 +83,18 @@ class StorageInterface(abc.ABC):
     def get_comments_count_for_discussions(self, discussion_set_id: str) -> \
             List[DiscussionIdWithCommentsCountDTO]:
         pass
+
+    @abc.abstractmethod
+    def get_project_discussion_dtos(
+            self, discussion_set_id: str, sort_by_dto: SortByDTO,
+            user_ids: List[str], offset_and_limit_dto: OffsetAndLimitDTO,
+            filter_by_dto: FilterByDTO
+    ) -> List[DiscussionDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_total_project_discussion_count(
+            self, discussion_set_id: str,
+            filter_by_dto: FilterByDTO, user_ids: List[str]
+    ) -> int:
+        pass
