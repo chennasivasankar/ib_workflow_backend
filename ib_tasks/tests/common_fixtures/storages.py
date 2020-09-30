@@ -10,6 +10,7 @@ def mock_filter_tasks(mocker):
         'ib_tasks.storages.elasticsearch_storage_implementation.ElasticSearchStorageImplementation.filter_tasks'
     )
     mock.return_value = ([1, 2, 3], 3)
+    return mock
 
 
 def elastic_storage_implementation_mock(mocker):
