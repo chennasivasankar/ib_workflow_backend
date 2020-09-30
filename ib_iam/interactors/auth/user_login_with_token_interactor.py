@@ -40,6 +40,7 @@ class LoginWithTokenInteractor:
     def login_with_token(
             self, login_with_token_parameter_dto: LoginWithTokenParameterDTO
     ):
+        # TODO need to write tests if user not exist
         from django.conf import settings
         user_id = self.user_storage.get_user_id_for_given_token(
             token=login_with_token_parameter_dto.token
