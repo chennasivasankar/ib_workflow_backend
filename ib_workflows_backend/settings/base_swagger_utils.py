@@ -137,3 +137,5 @@ RESET_PASSWORD_LINK = '{frontend_url}update-password?token='.format(
 USER_VERIFICATION_EMAIL_LINK = "{frontend_url}verify-email?token=".format(
     frontend_url=FRONTEND_URL
 )
+
+JGC_DRIVE_PROJECT_ID = os.environ.get("JGC_DRIVE_PROJECT_ID")

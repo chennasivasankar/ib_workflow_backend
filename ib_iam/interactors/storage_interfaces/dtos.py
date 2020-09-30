@@ -260,3 +260,15 @@ class UserIdAndTeamIdsDTO:
 class ProjectRolesDTO:
     project_id: str
     roles: List[str]
+
+
+@dataclass
+class UserIdWithTokenDTO:
+    user_id: str
+    token: str
+
+
+@dataclass
+class MemberLevelAndHierarchyDTO:
+    member_level_id: str
+    level_hierarchy: int

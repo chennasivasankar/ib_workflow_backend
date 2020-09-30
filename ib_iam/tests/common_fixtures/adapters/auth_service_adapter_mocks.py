@@ -65,3 +65,17 @@ def update_is_email_verified_value_mock(mocker):
         "ib_iam.adapters.auth_service.AuthService.update_is_email_verified_value_in_ib_user"
     )
     return mock
+
+
+def create_user_account_with_email_mock(mocker):
+    mock = mocker.patch(
+        "ib_iam.adapters.user_service.UserService.create_user_account_with_email"
+    )
+    return mock
+
+
+def create_user_profile_mock(mocker):
+    mock = mocker.patch(
+        "ib_iam.adapters.user_service.UserService.create_user_profile"
+    )
+    return mock

@@ -1,5 +1,6 @@
 import abc
 from typing import List, Optional
+
 from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
 from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidUserIds, \
     InvalidUserIdsForProject, InvalidRoleIdsForProject, InvalidProjectId
@@ -8,7 +9,7 @@ from ib_iam.interactors.storage_interfaces.dtos import UserDTO, \
     TeamWithUserIdDTO, UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, \
     TeamIdAndNameDTO, RoleIdAndNameDTO, UserIdAndNameDTO, TeamDTO, \
     TeamUserIdsDTO, CompanyDTO, CompanyIdWithEmployeeIdsDTO, \
-    BasicUserDetailsDTO, UserIdWithRolesDTO
+    BasicUserDetailsDTO, UserIdWithRolesDTO, UserIdWithTokenDTO
 
 
 class UserStorageInterface(abc.ABC):
@@ -245,4 +246,20 @@ class UserStorageInterface(abc.ABC):
     def get_users_project_roles(
             self, user_ids: List[str], project_id: str
     ) -> List[UserIdWithRolesDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_user_id_for_given_token(self, token: str) -> Optional[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_user_and_token_dtos(
+            self, tokens: List[str]
+    ) -> List[UserIdWithTokenDTO]:
+        pass
+
+    @abc.abstractmethod
+    def create_auth_user(
+            self, user_id: str, token: str, auth_token_user_id: str
+    ):
         pass
