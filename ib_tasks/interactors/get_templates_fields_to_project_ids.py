@@ -69,9 +69,7 @@ class GetProjectsTemplatesFieldsInteractor(ValidationMixin):
         template_dtos = self.task_template_storage.get_task_templates_to_project_ids(
             project_ids=project_ids
         )
-        template_dtos += self.task_template_storage.get_common_task_template_ids(
-            project_ids=project_ids
-        )
+        template_dtos += self.task_template_storage.get_common_task_template_ids()
         template_ids = self._get_template_ids(template_dtos)
         template_gof_dtos = self.gof_storage.get_user_permitted_template_gof_dtos(
             user_roles=user_roles, template_ids=template_ids)

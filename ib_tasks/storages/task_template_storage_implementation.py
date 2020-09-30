@@ -395,7 +395,7 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
         task_template_id_list = list(task_template_id_queryset)
         return task_template_id_list
 
-    def get_common_task_template_ids(self, project_ids):
+    def get_common_task_template_ids(self):
         common_templates = TaskTemplate.objects.exclude(
             template_id__in=list(ProjectTaskTemplate.objects.values_list(
                 'task_template_id', flat=True
@@ -405,7 +405,6 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
             ProjectTemplateDTO(
                 template_name=common_template['name'],
                 template_id=common_template['template_id'],
-                project_id=project_ids[0]
             )
             for common_template in common_templates
         ]

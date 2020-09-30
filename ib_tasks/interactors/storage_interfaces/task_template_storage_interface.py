@@ -167,5 +167,5 @@ class TaskTemplateStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_common_task_template_ids(self, project_ids):
+    def get_common_task_template_ids(self):
         pass
