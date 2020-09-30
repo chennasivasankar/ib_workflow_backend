@@ -16,7 +16,7 @@ def read_google_sheet(sheet_name: str) -> Spreadsheet:
         "https://www.googleapis.com/auth/drive"
     ]
     creds = ServiceAccountCredentials.from_json_keyfile_name(
-        'ib_boards/utils/ib-worksflows-dev-testing-d86743f0ecd1.json', scope
+        './ib-workflows-9f437d357f89.json', scope
     )
     client = gspread.authorize(creds)
     sheet = client.open(sheet_name)

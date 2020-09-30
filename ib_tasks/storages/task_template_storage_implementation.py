@@ -18,6 +18,11 @@ from ib_tasks.models import TaskTemplate, TaskTemplateGoFs, ProjectTaskTemplate
 
 class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
+    def is_common_template(self, task_template_id: str) -> bool:
+        is_common_template = ProjectTaskTemplate.objects.filter(
+            task_template_id=task_template_id).exists()
+        return not is_common_template
+
     def get_template_stage_permitted_gof_ids(
             self, task_template_id: str, stage_id: int):
         gof_ids = TaskTemplateGoFs.objects.filter(
