@@ -29,11 +29,17 @@ class TaskOverviewDetailsPresenterMixin:
         assignee = self._get_assignee_details(
             complete_task_stage_details_dto.stage_assignee_dto)
         task_base_details = all_tasks_overview_dto.task_base_details_dtos[0]
+        start_date = task_base_details.start_date
+        due_date = task_base_details.due_date
+        if start_date is not None:
+            start_date = str(start_date)
+        if due_date is not None:
+            due_date = str(due_date)
         task_overview_details_dict = {
             "task_id": task_stage_details_dto.task_display_id,
             "title": task_base_details.title,
-            "start_date": task_base_details.start_date,
-            "due_date": task_base_details.due_date,
+            "start_date": start_date,
+            "due_date": due_date,
             "priority": task_base_details.priority,
             "task_overview_fields": task_overview_fields_details,
             "stage_with_actions": {
