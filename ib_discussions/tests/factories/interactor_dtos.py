@@ -4,7 +4,7 @@ from ib_discussions.constants.enum import EntityType, MultimediaFormat
 from ib_discussions.interactors.dtos.dtos import DiscussionWithEntityDetailsDTO, \
     DiscussionIdWithTitleAndDescriptionDTO, MultimediaDTO, \
     UpdateCompleteCommentDTO, CreateCompleteCommentDTO, \
-    CreateCompleteReplyToCommentDTO
+    CreateCompleteReplyToCommentDTO, FilterByDTO
 
 
 class DiscussionWithEntityDetailsDTOFactory(factory.Factory):
