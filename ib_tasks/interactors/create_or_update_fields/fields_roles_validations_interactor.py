@@ -20,7 +20,6 @@ class FieldsRolesValidationsInteractor:
             self, field_roles_dtos: List[FieldRolesDTO]
     ):
         self._check_read_permission_roles_empty(field_roles_dtos)
-        self._check_write_permission_roles_empty(field_roles_dtos)
         self._check_for_duplication_of_read_permissions(field_roles_dtos)
         self._check_for_duplication_of_write_permissions(field_roles_dtos)
         role_ids = self._get_all_role_ids(field_roles_dtos)
@@ -64,26 +63,6 @@ class FieldsRolesValidationsInteractor:
         if field_ids:
             raise EmptyValueForPermissions(
                 EMPTY_VALUE_FOR_READ_PERMISSIONS.format(field_ids)
-            )
-        return
-
-    @staticmethod
-    def _check_write_permission_roles_empty(
-            field_roles_dtos: List[FieldRolesDTO]
-    ) -> Optional[EmptyValueForPermissions]:
-
-        from ib_tasks.constants.exception_messages \
-            import EMPTY_VALUE_FOR_WRITE_PERMISSIONS
-        field_ids = []
-        for field_roles_dto in field_roles_dtos:
-            is_write_permissions_empty = \
-                not field_roles_dto.write_permission_roles
-            if is_write_permissions_empty:
-                field_ids.append(field_roles_dto.field_id)
-
-        if field_ids:
-            raise EmptyValueForPermissions(
-                EMPTY_VALUE_FOR_WRITE_PERMISSIONS.format(field_ids)
             )
         return
 

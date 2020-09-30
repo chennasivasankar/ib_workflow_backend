@@ -245,12 +245,11 @@ class GetTaskTemplatesInteractor:
                         gof_details=field_dto.field_values,
                         gof_ids_having_user_permissions=
                         gof_ids_having_user_permissions)
-                if gof_details_dicts:
-                    gof_details = json.dumps(gof_details_dicts)
-                    field_with_is_field_writable_dto.field_dto.field_values = \
-                        gof_details
-                else:
-                    continue
+
+                gof_details = json.dumps(gof_details_dicts)
+                field_with_is_field_writable_dto.field_dto.field_values = \
+                    gof_details
+
             field_with_is_field_writable_dtos_having_user_permission.append(
                 field_with_is_field_writable_dto)
         filtered_gof_details_with_field_dto,\
@@ -441,13 +440,11 @@ class GetTaskTemplatesInteractor:
                 gof_id for gof_id in gof_ids
                 if gof_id in gof_ids_having_user_permissions
             ]
-            is_user_has_at_least_one_gof_permission = \
+
+            gof_details_dict["gof_ids"] = \
                 gof_ids_of_gof_selector_having_user_permission
-            if is_user_has_at_least_one_gof_permission:
-                gof_details_dict["gof_ids"] = \
-                    gof_ids_of_gof_selector_having_user_permission
-                gof_details_dicts_having_user_permission.append(
-                    gof_details_dict)
+            gof_details_dicts_having_user_permission.append(
+                gof_details_dict)
 
         return gof_details_dicts_having_user_permission
 
