@@ -9,7 +9,7 @@ class AddPMAndSubUsers:
 
     @transaction.atomic()
     def add_pm_and_sub_users(
-            self, spread_sheet_name: str, sub_sheet_name: str
+            self, spread_sheet_name: str, sub_sheet_name: str, project_id: str
     ):
         from ib_iam.populate.spreedsheet_utils import SpreadSheetUtil
         spreadsheet_utils = SpreadSheetUtil()
@@ -43,7 +43,7 @@ class AddPMAndSubUsers:
             team_member_level_storage=team_member_level_storage
         )
         interactor.add_pm_and_sub_users(
-            pm_and_sub_user_dtos=pm_and_sub_user_dtos
+            pm_and_sub_user_dtos=pm_and_sub_user_dtos, project_id=project_id
         )
 
     @staticmethod

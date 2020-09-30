@@ -31,7 +31,8 @@ class PMAndSubUsersInteractor:
         self.user_storage = user_storage
 
     def add_pm_and_sub_users(
-            self, pm_and_sub_user_dtos: List[PMAndSubUsersAuthTokensDTO]
+            self, pm_and_sub_user_dtos: List[PMAndSubUsersAuthTokensDTO],
+            project_id: str
     ):
         user_tokens = self.get_all_user_tokens(
             pm_and_sub_user_dtos=pm_and_sub_user_dtos
@@ -53,9 +54,8 @@ class PMAndSubUsersInteractor:
                 team_id=team_id, user_ids=user_ids + [pm_id]
             )
             if is_created:
-                from ib_iam.constants.config import PROJECT_ID
                 self.project_storage.assign_teams_to_projects(
-                    project_id=PROJECT_ID, team_ids=[team_id]
+                    project_id=project_id, team_ids=[team_id]
                 )
             self.add_pm_and_sub_users_to_levels_for_a_team(
                 pm_id=pm_id, sub_user_ids=user_ids, team_id=team_id
