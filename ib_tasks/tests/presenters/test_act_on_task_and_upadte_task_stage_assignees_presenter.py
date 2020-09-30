@@ -128,9 +128,9 @@ class TestActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation:
         from ib_tasks.exceptions.fields_custom_exceptions import \
             UserDidNotFillRequiredFields
         from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-            FieldIdWithFieldDisplayNameDTO
+            FieldWithGoFDisplayNameDTO
         error = UserDidNotFillRequiredFields(unfilled_field_dtos=[
-            FieldIdWithFieldDisplayNameDTO(
+            FieldWithGoFDisplayNameDTO(
                 field_display_name=field_display_name, field_id=field_id,
                 gof_display_name=gof_display_name)])
 
