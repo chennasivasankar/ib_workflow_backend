@@ -26,6 +26,7 @@ LEVEL_1_HIERARCHY = 1
 
 PROJECTS_CONFIG = {
     "JGC_DRIVE": {
-        "restrict_assignee_to_user": True
+        "restrict_assignee_to_user": True,
+        "enable_adhoc_template": True
     }
 }
