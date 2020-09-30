@@ -125,7 +125,9 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
     def get_task_details(
             self, user_id: str, task_id: int
     ) -> TaskCompleteDetailsDTO:
-
+        self._validate_user_have_permission_for_the_task(
+            user_id=user_id, task_id=task_id
+        )
         task_details_dto = self._get_task_details_dto(task_id)
         project_details_dto = task_details_dto.project_details_dto
         project_id = project_details_dto.project_id
@@ -177,8 +179,8 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         is_user_has_permission = \
             self.task_stage_storage \
                 .is_user_has_permission_for_at_least_one_stage(
-                    stage_ids=stage_ids, user_roles=user_roles
-                )
+                stage_ids=stage_ids, user_roles=user_roles
+            )
         is_user_permission_denied = not is_user_has_permission
         if is_user_permission_denied:
             raise UserPermissionDenied()
@@ -354,9 +356,9 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         permission_field_ids = \
             user_role_validation_interactor \
                 .get_field_ids_having_read_permission_for_user(
-                    user_roles=user_roles, field_ids=field_ids,
-                    field_storage=self.fields_storage
-                )
+                user_roles=user_roles, field_ids=field_ids,
+                field_storage=self.fields_storage
+            )
         permission_task_gof_field_dtos = [
             task_gof_field_dto
             for task_gof_field_dto in task_gof_field_dtos
@@ -380,12 +382,40 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         permission_gof_ids = \
             user_role_validation_interactor \
                 .get_gof_ids_having_read_permission_for_user(
-                    user_roles=user_roles, gof_ids=stage_gof_ids,
-                    gof_storage=self.gof_storage
-                )
+                user_roles=user_roles, gof_ids=stage_gof_ids,
+                gof_storage=self.gof_storage
+            )
         permission_task_gof_dtos = [
             task_gof_dto
             for task_gof_dto in task_gof_dtos
             if task_gof_dto.gof_id in permission_gof_ids
         ]
         return permission_task_gof_dtos
+
+    def _validate_user_have_permission_for_the_task(self, user_id: str,
+                                                    task_id: int):
+        project_id, created_by_id = \
+            self.task_storage.get_project_id_and_user_id_for_the_task_id(
+                task_id=task_id
+            )
+        from ib_tasks.interactors.get_task_details_conditions_dtos import \
+            GetConditionsForTaskDetails
+        user_ids_interactor = GetConditionsForTaskDetails()
+        task_condition_dtos = user_ids_interactor.get_conditions_for_the_task_details(
+            project_id=project_id,
+            user_id=user_id
+        )
+        self._validate_task_have_permissions_to_task(
+            created_by_id=created_by_id, task_condition_dtos=task_condition_dtos
+        )
+
+    @staticmethod
+    def _validate_task_have_permissions_to_task(created_by_id,
+                                                task_condition_dtos):
+        user_ids = [
+            task_condition_dto.value
+            for task_condition_dto in task_condition_dtos
+        ]
+        if created_by_id not in user_ids:
+            raise UserPermissionDenied
+

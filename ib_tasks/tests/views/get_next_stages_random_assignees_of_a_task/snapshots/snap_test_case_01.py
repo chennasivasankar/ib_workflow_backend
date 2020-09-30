@@ -13,12 +13,12 @@ snapshots['TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase.test_case bo
     'stage_assignees': [
         {
             'assignee': {
-                'assignee_id': '123e4567-e89b-12d3-a456-426614174000',
+                'assignee_id': 'user_id_1',
                 'name': 'user_name_1',
-                'profile_pic_url': None,
+                'profile_pic_url': 'profile_pic_1',
                 'team_info': {
-                    'team_id': 'team_0',
-                    'team_name': 'team_name0'
+                    'team_id': 'team_4',
+                    'team_name': 'team_name4'
                 }
             },
             'stage_display_name': 'name_0',
@@ -26,12 +26,12 @@ snapshots['TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase.test_case bo
         },
         {
             'assignee': {
-                'assignee_id': '123e4567-e89b-12d3-a456-426614174000',
-                'name': 'user_name_1',
-                'profile_pic_url': None,
+                'assignee_id': 'user_id_2',
+                'name': 'user_name_2',
+                'profile_pic_url': 'profile_pic_2',
                 'team_info': {
-                    'team_id': 'team_0',
-                    'team_name': 'team_name0'
+                    'team_id': 'team_6',
+                    'team_name': 'team_name6'
                 }
             },
             'stage_display_name': 'name_1',
@@ -39,12 +39,12 @@ snapshots['TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase.test_case bo
         },
         {
             'assignee': {
-                'assignee_id': '123e4567-e89b-12d3-a456-426614174000',
+                'assignee_id': 'user_id_1',
                 'name': 'user_name_1',
-                'profile_pic_url': None,
+                'profile_pic_url': 'profile_pic_1',
                 'team_info': {
-                    'team_id': 'team_0',
-                    'team_name': 'team_name0'
+                    'team_id': 'team_4',
+                    'team_name': 'team_name4'
                 }
             },
             'stage_display_name': 'name_2',

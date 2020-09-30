@@ -1,18 +1,10 @@
 import abc
-import dataclasses
-from typing import List, Optional
 
 from django.http import HttpResponse
 
 from ib_iam.adapters.dtos import UserTokensDTO
-from ib_iam.adapters.dtos import UserProfileDTO
-from ib_iam.interactors.dtos.dtos import CompleteUserProfileDTO
 from ib_iam.interactors.presenter_interfaces.dtos import \
     UserWithExtraDetailsDTO
-from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDTO, TeamDTO, TeamUserIdsDTO, CompanyIdWithEmployeeIdsDTO,
-    UserRoleDTO
-)
 
 
 class AuthPresenterInterface(abc.ABC):
@@ -211,4 +203,13 @@ class UpdateUserPasswordPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def response_for_current_password_mismatch_exception(self):
+        pass
+
+
+class LoginWithUserTokePresenterInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def prepare_response_for_user_tokens_dto_and_is_admin(
+            self, tokens_dto: UserTokensDTO, is_admin: bool
+    ) -> HttpResponse:
         pass

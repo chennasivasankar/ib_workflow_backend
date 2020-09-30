@@ -1168,6 +1168,30 @@
       "schema": {
         "$ref": "#/definitions/ProjectWithTeamIdsAndRolesForUpdateProject"
       }
+    },
+    "TokenQueryParameter": {
+      "name": "token",
+      "description": "token query parameter",
+      "in": "query",
+      "required": true,
+      "type": "string"
+    },
+    "LoginWithTokenParameter": {
+      "name": "login_with_token_parameter",
+      "description": "login with token parameter",
+      "in": "body",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
     }
   },
   "responses": {
@@ -4071,6 +4095,26 @@
           },
           "400": {
             "$ref": "#/responses/BadRequestForGetProjectBriefInfoResponse"
+          }
+        }
+      }
+    },
+    "/login_with_user_token/v1/": {
+      "post": {
+        "summary": "User Login with auth code",
+        "description": "Login the user and return access token and other details",
+        "operationId": "user_login_with_token",
+        "parameters": [
+          {
+            "$ref": "#/parameters/TokenQueryParameter"
+          },
+          {
+            "$ref": "#/parameters/LoginWithTokenParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/LoginSuccessResponse"
           }
         }
       }

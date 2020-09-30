@@ -7,7 +7,8 @@ from ib_iam.exceptions.custom_exceptions import InvalidTeamId, \
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import \
-    TeamMemberLevelDetailsDTO, MemberDTO, MemberIdWithSubordinateMemberIdsDTO
+    TeamMemberLevelDetailsDTO, MemberDTO, MemberIdWithSubordinateMemberIdsDTO, \
+    MemberLevelAndHierarchyDTO
 
 
 class TeamMemberLevelStorageInterface(abc.ABC):
@@ -45,7 +46,8 @@ class TeamMemberLevelStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_immediate_superior_user_id(self, team_id: str, user_id: str) -> str:
+    def get_immediate_superior_user_id(self, team_id: str,
+                                       user_id: str) -> str:
         pass
 
     @abc.abstractmethod
@@ -81,6 +83,18 @@ class TeamMemberLevelStorageInterface(abc.ABC):
     @abc.abstractmethod
     def validate_user_in_a_team(self, team_id: str, user_id: str) \
             -> Optional[UserNotBelongToTeam]:
+        pass
+
+    @abc.abstractmethod
+    def get_team_member_level_id_and_hierarchy(
+            self, team_id: str
+    ) -> List[MemberLevelAndHierarchyDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_or_create_team_member_level_hierarchy(
+            self, team_id: str, level_hierarchy: int, level_name: str
+    ) -> str:
         pass
 
     @abc.abstractmethod
