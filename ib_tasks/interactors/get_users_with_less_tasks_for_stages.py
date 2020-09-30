@@ -1,7 +1,9 @@
-from typing import List, Tuple, Union, Optional
+from typing import List, Tuple, Union, Optional, Dict
 
 from ib_tasks.adapters.dtos import UserDetailsDTO, AssigneeDetailsDTO
 from ib_tasks.adapters.dtos import UserIdWIthTeamDetailsDTO
+from ib_tasks.adapters.service_adapter import get_service_adapter, \
+    ServiceAdapter
 from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO, \
     StageWithUserDetailsAndTeamDetailsDTO, StageIdWithNameDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -33,17 +35,60 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
         db_stage_ids = self._get_db_stage_ids_given_stage_detail_dtos(
             stage_detail_dtos)
 
-        user_details_dtos_having_less_tasks_for_given_stages = self. \
-            _get_previous_user_or_user_having_less_tasks_details_dtos_for_given_stages(
-            db_stage_ids=db_stage_ids, stage_detail_dtos=stage_detail_dtos,
-            project_id=project_id, task_id=task_id)
+        service_adapter = get_service_adapter()
+        project_service = service_adapter.project_service
+        projects_config = project_service.get_projects_config()
+
+        stage_assignee_details = self._assign_created_user_or_random_users(
+            db_stage_ids, project_id, task_id, projects_config,
+            stage_detail_dtos, service_adapter)
         stage_with_user_details_and_team_details_dto = self. \
             _get_stage_with_user_details_and_team_details_dto(
-            stages_with_user_details_dtos=
-            user_details_dtos_having_less_tasks_for_given_stages,
+            stages_with_user_details_dtos=stage_assignee_details,
             project_id=project_id)
 
         return stage_with_user_details_and_team_details_dto
+
+    def _assign_created_user_or_random_users(
+            self, db_stage_ids: List[int], project_id: str,
+            task_id: int, projects_config: Dict,
+            stage_detail_dtos: List[StageDetailsDTO],
+            service_adapter: ServiceAdapter
+    ) -> List[StageWithUserDetailsDTO]:
+        project_config = projects_config.get(project_id)
+        given_project_has_config = project_config is not None
+
+        if given_project_has_config:
+            assignee_restriction_is_true = project_config.get("restrict_assignee_to_user")
+            if assignee_restriction_is_true:
+                return self._stage_assignee_details_of_created_user(
+                    stage_detail_dtos, task_id, service_adapter)
+
+        stages_assignee_details = self. \
+            _get_previous_user_or_user_having_less_tasks_details_dtos_for_given_stages(
+            db_stage_ids=db_stage_ids, stage_detail_dtos=stage_detail_dtos,
+            project_id=project_id, task_id=task_id)
+        return stages_assignee_details
+
+    def _stage_assignee_details_of_created_user(
+            self, stage_details_dtos: List[StageDetailsDTO],
+            task_id: int, service_adapter: ServiceAdapter
+    ) -> List[StageWithUserDetailsDTO]:
+        task_created_user_id = \
+            self.task_stage_storage.get_task_created_by_id(task_id)
+        assignee_details_service = service_adapter.assignee_details_service
+        user_details_dto = assignee_details_service.get_assignees_details_dtos(
+            [task_created_user_id])[0]
+        stage_with_user_details_dtos = []
+        for stage_details_dto in stage_details_dtos:
+            stage_id_with_name_dto = StageIdWithNameDTO(
+                db_stage_id=stage_details_dto.db_stage_id,
+                stage_display_name=stage_details_dto.name)
+            stage_with_user_details_dtos.append(
+                StageWithUserDetailsDTO(
+                    stage_details_dto=stage_id_with_name_dto,
+                    assignee_details_dto=user_details_dto))
+        return stage_with_user_details_dtos
 
     def _get_stage_with_user_details_and_team_details_dto(
             self, stages_with_user_details_dtos: List[StageWithUserDetailsDTO],

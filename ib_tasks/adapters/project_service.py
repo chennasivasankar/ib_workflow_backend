@@ -12,3 +12,6 @@ class ProjectService:
         valid_project_ids = \
             self.interface.get_valid_project_ids(project_ids=project_ids)
         return valid_project_ids
+
+    def get_projects_config(self):
+        return self.interface.get_projects_task_assignee_config()
