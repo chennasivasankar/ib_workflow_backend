@@ -5,7 +5,7 @@ Author: Pavankumar Pamuru
 """
 import pytest
 
-from ib_boards.tests.factories.models import ColumnFactory, BoardFactory
+from ib_boards.tests.factories.models import ColumnFactory
 from ib_boards.tests.factories.models import FieldDisplayStatusFactory, \
     FieldOrderFactory
 
@@ -17,8 +17,6 @@ class TestCreateFieldOrderAndStatus:
     def setup(cls):
         FieldDisplayStatusFactory.reset_sequence()
         FieldOrderFactory.reset_sequence()
-        BoardFactory.reset_sequence()
-        ColumnFactory.reset_sequence()
 
     @classmethod
     def teardown(cls):
@@ -32,6 +30,7 @@ class TestCreateFieldOrderAndStatus:
 
     @pytest.fixture
     def populate_data(self):
+        ColumnFactory.reset_sequence()
         ColumnFactory.create_batch(3)
 
     def test_fields_display_order_and_status_creates(self, storage, snapshot,

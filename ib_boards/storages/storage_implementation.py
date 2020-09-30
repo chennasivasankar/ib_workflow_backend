@@ -12,7 +12,7 @@ from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
 from ib_boards.interactors.storage_interfaces.dtos import ColumnBoardDTO, \
     ColumnStageDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
-    StorageInterface, FieldDisplayStatusDTO, FieldOrderDTO
+    StorageInterface, FieldDisplayStatusDTO
 from ib_boards.models import Board, ColumnPermission, Column, UserStarredBoard
 from ib_boards.models.fields_in_list_view import FieldOrder, FieldDisplayStatus
 
