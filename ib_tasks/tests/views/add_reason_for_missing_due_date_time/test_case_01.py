@@ -1,6 +1,9 @@
 """
-# TODO: given valid details
+given valid details
 """
+import datetime
+
+import freezegun
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
@@ -18,10 +21,13 @@ class TestCase01AddReasonForMissingDueDateTimeAPITestCase(TestUtils):
         from ib_tasks.tests.factories.models import TaskFactory
         TaskFactory.reset_sequence()
         tasks = TaskFactory.create_batch(size=2)
-        from ib_tasks.tests.factories.models import TaskStageHistoryModelFactory
+        from ib_tasks.tests.factories.models import \
+            TaskStageHistoryModelFactory
         TaskStageHistoryModelFactory.reset_sequence()
-        TaskStageHistoryModelFactory(task=tasks[0], assignee_id=api_user.user_id, stage_id=1)
+        TaskStageHistoryModelFactory(task=tasks[0],
+                                     assignee_id=api_user.user_id, stage_id=1)
 
+    @freezegun.freeze_time(datetime.datetime(2020, 8, 9, 1, 2, 3))
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):
         body = {
