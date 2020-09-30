@@ -11,10 +11,13 @@ from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
 from ib_tasks.interactors.presenter_interfaces \
     .get_task_rps_presenter_interface import \
     GetTaskRpsPresenterInterface
-from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
+    StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
-from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import TaskStageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
+    import \
+    TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.task_dtos import GetTaskRPsParametersDTO
@@ -36,7 +39,7 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def get_task_rps_wrapper(self, presenter: GetTaskRpsPresenterInterface,
                              parameters: GetTaskRPsParametersDTO) -> List[
-            UserDetailsDTO]:
+        UserDetailsDTO]:
         try:
             rps_dtos = self.get_task_rps(parameters)
         except InvalidTaskDisplayId as err:
@@ -57,7 +60,7 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
 
         self._validate_stage_id(stage_id)
         self._validate_if_task_is_assigned_to_user(
-                task_id=task_id, user_id=user_id, stage_id=stage_id)
+            task_id=task_id, user_id=user_id, stage_id=stage_id)
         rps_details_dtos = self._get_rps_details(paramters, task_id)
         return rps_details_dtos
 
@@ -67,7 +70,7 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
 
         stage_id = parameters.stage_id
         due_date = self.task_storage.get_task_due_datetime(
-                task_id)
+            task_id)
 
         if due_date is None:
             raise DueDateIsNotAddedException
@@ -78,19 +81,24 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
             rp_ids = self.task_stage_storage.get_rp_ids(task_id, stage_id)
 
             if rp_ids:
-                return service_adapter.auth_service.get_user_details(rp_ids)
+                rp_details_dtos = \
+                    service_adapter.auth_service.get_user_details(
+                        rp_ids)
+                return self._get_rps_in_sequence(rp_details_dtos, rp_ids)
             return []
 
         return self._get_rp_details_if_due_date_is_missed(
-                stage_id, due_date, task_id, user_id)
+            stage_id, due_date, task_id, user_id)
 
     def _get_rp_details_if_due_date_is_missed(self, stage_id: int, due_date,
                                               task_id: int, user_id: str):
         service_adapter = get_service_adapter()
 
         user_team_id = self.task_storage.get_team_id(stage_id, task_id)
-        rp_added_datetime = self.task_stage_storage.get_latest_rp_added_datetime(task_id,
-                                                                      stage_id)
+        rp_added_datetime = \
+            self.task_stage_storage.get_latest_rp_added_datetime(
+                task_id,
+                stage_id)
         if rp_added_datetime and rp_added_datetime < due_date:
             self.add_rp_when_due_date_is_missed(stage_id, task_id, user_id,
                                                 user_team_id)
@@ -103,14 +111,19 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
             return []
 
         rp_details_dtos = service_adapter.auth_service.get_user_details(rp_ids)
+        rp_dtos = self._get_rps_in_sequence(rp_details_dtos, rp_ids)
+
+        return rp_dtos
+
+    @staticmethod
+    def _get_rps_in_sequence(rp_details_dtos, rp_ids):
         rp_dict = {}
         for rp_dto in rp_details_dtos:
             rp_dict[rp_dto.user_id] = rp_dto
         rp_dtos = [
-                rp_dict[rp_id]
-                for rp_id in rp_ids
+            rp_dict[rp_id]
+            for rp_id in rp_ids
         ]
-
         return rp_dtos
 
     def add_rp_when_due_date_is_missed(self, stage_id, task_id, user_id,
@@ -119,16 +132,17 @@ class GetTaskRPsInteractor(GetTaskIdForTaskDisplayIdMixin):
         service_adapter = get_service_adapter()
 
         assignee_id = user_id
-        rp_id = self.task_stage_storage.get_latest_rp_id_if_exists(task_id, stage_id)
+        rp_id = self.task_stage_storage.get_latest_rp_id_if_exists(task_id,
+                                                                   stage_id)
         if rp_id:
             assignee_id = rp_id
         superior_id = \
             service_adapter.auth_service.get_immediate_superior_user_id(
-                    user_id=assignee_id, team_id=user_team_id)
+                user_id=assignee_id, team_id=user_team_id)
         if superior_id:
             self.task_stage_storage.add_superior_to_db(
-                    superior_id=superior_id,
-                    task_id=task_id, stage_id=stage_id)
+                superior_id=superior_id,
+                task_id=task_id, stage_id=stage_id)
 
     def _validate_stage_id(self, stage_id: int):
         is_valid = self.stage_storage.validate_stage_id(stage_id)

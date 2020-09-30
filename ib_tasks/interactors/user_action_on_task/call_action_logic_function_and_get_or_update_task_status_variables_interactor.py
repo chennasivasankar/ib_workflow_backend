@@ -89,16 +89,6 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
             status_dict, status_variable_dtos
         )
 
-    @staticmethod
-    def _get_field_ids(
-            task_gof_fields_dto: List[TaskGoFFieldDTO]
-    ) -> List[str]:
-        field_ids = [
-            dto.field_id
-            for dto in task_gof_fields_dto
-        ]
-        return field_ids
-
     def _get_updated_task_dict(
             self, task_dict: Dict[str, Any]) -> Dict[str, Any]:
         method_object = \
@@ -168,20 +158,6 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
             raise InvalidMethodFound(method_name=method)
         return method_object
 
-    @staticmethod
-    def _get_updated_status_variable_dto(
-            status_dict: Dict[str, str],
-            status_variable_dtos: List[StatusVariableDTO]) -> \
-            List[StatusVariableDTO]:
-        return [
-            StatusVariableDTO(
-                status_id=status_dto.status_id,
-                status_variable=status_dto.status_variable,
-                value=status_dict[status_dto.status_variable]
-            )
-            for status_dto in status_variable_dtos
-        ]
-
     def _get_task_dict(
             self, task_gof_dtos: List[TaskGoFDTO],
             gof_multiple_enable_dict: Dict[str, bool],
@@ -205,36 +181,12 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
         task_dict["status_variables"] = statuses_dict
         return task_dict
 
-    @staticmethod
-    def _update_multiple_and_single_dict(
-            task_gof_fields_dict, gof_multiple_enable_dict,
-            multiple_gof_dict, single_gof_dict, task_gof_dto
-    ):
-        gof_id = task_gof_dto.gof_id
-        task_gof_id = task_gof_dto.task_gof_id
-        fields_dict = task_gof_fields_dict[task_gof_id]
-
-        if gof_multiple_enable_dict.get(gof_id):
-            multiple_gof_dict[gof_id].append(fields_dict)
-        else:
-            single_gof_dict[gof_id] = fields_dict
-
-    @staticmethod
-    def _get_fields_dto_dict(
-            fields_dto: List[FieldValueDTO]) -> Dict[str, Any]:
-
-        field_dict = {}
-        for field_dto in fields_dto:
-            field_dict[field_dto.field_id] = field_dto.value
-        return field_dict
-
     def _get_gof_multiple_enable_dict(
             self, template_id: str) -> Dict[str, bool]:
 
         gof_multiple_enable_dtos = self.gof_storage \
             .get_enable_multiple_gofs_field_to_gof_ids(
-            template_id=template_id
-        )
+                template_id=template_id)
         gof_multiple_enable_dict = {}
         for gof_multiple_enable_dto in gof_multiple_enable_dtos:
             gof_multiple_enable_dict[
@@ -269,15 +221,28 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
             response = float(field_dto.field_response)
         task_gof_fields_dict[task_gof_id][field_id] = response
 
-    @staticmethod
-    def _get_field_type_dict(
-            field_type_dtos: List[FieldTypeDTO]
-    ) -> Dict[str, FieldTypes]:
+    def _get_task_dto(self, task_id: int):
 
-        return {
-            field_type_dto.field_id: field_type_dto.field_type
-            for field_type_dto in field_type_dtos
-        }
+        from ib_tasks.interactors.get_task_base_interactor \
+            import GetTaskBaseInteractor
+        gof_and_status_obj = \
+            GetTaskBaseInteractor(
+                storage=self.create_task_storage,
+                gof_storage=self.gof_storage
+            )
+        task_dto = gof_and_status_obj \
+            .get_task(task_id=task_id)
+        return task_dto
+
+    @staticmethod
+    def _get_field_ids(
+            task_gof_fields_dto: List[TaskGoFFieldDTO]
+    ) -> List[str]:
+        field_ids = [
+            dto.field_id
+            for dto in task_gof_fields_dto
+        ]
+        return field_ids
 
     @staticmethod
     def _check_field_type_number_or_float(
@@ -291,15 +256,49 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
             return True
         return False
 
-    def _get_task_dto(self, task_id: int):
+    @staticmethod
+    def _get_field_type_dict(
+            field_type_dtos: List[FieldTypeDTO]
+    ) -> Dict[str, FieldTypes]:
 
-        from ib_tasks.interactors.get_task_base_interactor \
-            import GetTaskBaseInteractor
-        gof_and_status_obj = \
-            GetTaskBaseInteractor(
-                storage=self.create_task_storage,
-                gof_storage=self.gof_storage
+        return {
+            field_type_dto.field_id: field_type_dto.field_type
+            for field_type_dto in field_type_dtos
+        }
+
+    @staticmethod
+    def _update_multiple_and_single_dict(
+            task_gof_fields_dict, gof_multiple_enable_dict,
+            multiple_gof_dict, single_gof_dict, task_gof_dto
+    ):
+        gof_id = task_gof_dto.gof_id
+        task_gof_id = task_gof_dto.task_gof_id
+        fields_dict = task_gof_fields_dict[task_gof_id]
+
+        if gof_multiple_enable_dict.get(gof_id):
+            multiple_gof_dict[gof_id].append(fields_dict)
+        else:
+            single_gof_dict[gof_id] = fields_dict
+
+    @staticmethod
+    def _get_fields_dto_dict(
+            fields_dto: List[FieldValueDTO]) -> Dict[str, Any]:
+
+        field_dict = {}
+        for field_dto in fields_dto:
+            field_dict[field_dto.field_id] = field_dto.value
+        return field_dict
+
+    @staticmethod
+    def _get_updated_status_variable_dto(
+            status_dict: Dict[str, str],
+            status_variable_dtos: List[StatusVariableDTO]) -> \
+            List[StatusVariableDTO]:
+        return [
+            StatusVariableDTO(
+                status_id=status_dto.status_id,
+                status_variable=status_dto.status_variable,
+                value=status_dict[status_dto.status_variable]
             )
-        task_dto = gof_and_status_obj \
-            .get_task(task_id=task_id)
-        return task_dto
+            for status_dto in status_variable_dtos
+        ]

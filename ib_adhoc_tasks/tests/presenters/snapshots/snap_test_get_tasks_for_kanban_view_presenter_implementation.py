@@ -21,12 +21,12 @@ snapshots['TestGetTasksForKanbanViewPresenterImplementation.test_given_task_deta
     "group_by_keys": [
         {
             "group_by_key": "ASSIGNEE",
-            "display_name": "ASSIGNEE",
+            "display_name": "Assignee",
             "order": 1
         },
         {
             "group_by_key": "STAGE",
-            "display_name": "STAGE",
+            "display_name": "Stage",
             "order": 2
         }
     ],

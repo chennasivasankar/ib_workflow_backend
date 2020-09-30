@@ -221,3 +221,18 @@ def get_team_info_for_given_user_ids_with_given_names_for_controller_mock(mocker
         )
     mock.return_value = user_id_with_team_details_dtos
     return mock
+
+
+def get_user_details_with_roles_mock(mocker, role_ids: List[str]):
+    path = "ib_tasks.adapters.auth_service.AuthService." \
+           "get_user_details_with_roles"
+    mock = mocker.patch(path)
+
+    from ib_tasks.tests.factories.adapter_dtos import \
+        UserDetailsWithRolesDTOFactory, UserDetailsDTOFactory
+    UserDetailsDTOFactory.reset_sequence()
+
+    user_details_with_roles_dtos = \
+        UserDetailsWithRolesDTOFactory.create_batch(size=2, roles=role_ids)
+    mock.return_value = user_details_with_roles_dtos
+    return mock

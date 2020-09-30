@@ -87,8 +87,7 @@ class CreateSubTaskInteractor:
 
     def create_sub_task_wrapper(
             self, presenter: CreateSubTaskPresenterInterface,
-            task_dto: CreateSubTaskDTO, task_request_json: str
-    ):
+            task_dto: CreateSubTaskDTO, task_request_json: str):
         try:
             return self._prepare_create_sub_task_response(
                 task_dto, presenter, task_request_json)

@@ -173,78 +173,9 @@ class TestGetTaskIdsInteractor:
         with pytest.raises(InvalidOffsetValue) as error:
             interactor.get_task_ids(task_details_configs=task_config_dtos)
 
-    def test_with_valid_stage_ids_return_task_ids_with_stage_ids_dict(
-            self, stage_storage, task_storage, snapshot, field_storage,
-            elasticsearch_storage, filter_storage, mocker):
-        # Arrange
-        from ib_tasks.tests.factories.storage_dtos import \
-            TaskStageIdsDTOFactory
-        expected_response = [
-            TaskStageIdsDTOFactory.create_batch(4, stage_id='STAGE_ID_1') +
-            TaskStageIdsDTOFactory.create_batch(4, stage_id='STAGE_ID_2'),
-            TaskStageIdsDTOFactory.create_batch(4, stage_id='STAGE_ID_3') +
-            TaskStageIdsDTOFactory.create_batch(4, stage_id='STAGE_ID_4'),
-
-        ]
-        stage_ids = [['STAGE_ID_1', 'STAGE_ID_2'],
-                     ['STAGE_ID_3', 'STAGE_ID_4']]
-        stage_ids_single_list = ['STAGE_ID_1', 'STAGE_ID_2', 'STAGE_ID_3',
-                                 'STAGE_ID_4']
-        task_config_dtos = [
-            TaskDetailsConfigDTO(
-                unique_key='1',
-                stage_ids=stage_ids[0],
-                offset=0,
-                limit=5,
-                search_query="hello",
-                user_id='user_id_1',
-                project_id='FIN_MAN'
-            ),
-            TaskDetailsConfigDTO(
-                unique_key="1",
-                stage_ids=stage_ids[1],
-                offset=0,
-                limit=5,
-                search_query="hello",
-                user_id='user_id_1',
-                project_id='FIN_MAN'
-            )
-        ]
-        task_ids_dtos = [
-            TaskIdsDTO(
-                unique_key="1",
-                task_stage_ids=expected_response[0],
-                total_tasks=100
-            ),
-            TaskIdsDTO(
-                unique_key="1",
-                task_stage_ids=expected_response[1],
-                total_tasks=100
-            )
-        ]
-        from unittest.mock import call
-        calls = (call(stage_ids=stage_ids[0], offset=0, limit=5),
-                 call(stage_ids=stage_ids[1], offset=0, limit=5))
-        interactor = GetTaskIdsInteractor(
-            stage_storage=stage_storage,
-            task_storage=task_storage,
-            filter_storage=filter_storage,
-            elasticsearch_storage=elasticsearch_storage,
-            field_storage=field_storage
-        )
-        stage_storage.get_existing_stage_ids.return_value = stage_ids_single_list
-        elasticsearch_storage.filter_tasks_with_stage_ids.side_effect = [
-            (expected_response[0], 100), (expected_response[1], 100)
-        ]
-
-        # Act
-        actual_response = interactor.get_task_ids(
-            task_details_configs=task_config_dtos
-        )
-
-        # Assert
-
-        elasticsearch_storage.filter_tasks_with_stage_ids.assert_called_once_with(
-            stage_ids=stage_ids_single_list
-        )
-        snapshot.assert_match(actual_response, 'response')
+    @pytest.fixture()
+    def task_condition_mock(self, mocker):
+        path = 'ib_tasks.interactors.get_task_details_conditions_dtos' \
+               '.GetConditionsForTaskDetails'
+        mock_obj = mocker.patch(path)
+        return mock_obj

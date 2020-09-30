@@ -10,8 +10,7 @@ from ib_tasks.interactors.stage_dtos import TaskStageAssigneeTeamDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldDisplayNameDTO, FieldNameDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO, TaskStagesDTO, StageDetailsDTO, \
-    StageDisplayNameValueDTO
+    GetTaskStageCompleteDetailsDTO, TaskStagesDTO, StageDisplayNameValueDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     SubTasksCountDTO, \
     SubTasksIdsDTO, TaskProjectDTO, TaskDisplayIdDTO

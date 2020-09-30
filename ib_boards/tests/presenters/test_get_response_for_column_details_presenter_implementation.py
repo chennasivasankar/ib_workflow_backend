@@ -29,7 +29,7 @@ class TestGetColumnDetails:
     def get_column_task_details_with_duplicates(self):
         TaskColumnDTOFactory.reset_sequence()
         return TaskColumnDTOFactory.create_batch(size=3) + [TaskColumnDTOFactory(
-            column_id='COLUMN_ID_1', task_id='task_id_0'
+            column_id='COLUMN_ID_1', task_id=1
         )]
 
     @pytest.fixture()

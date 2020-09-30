@@ -9,7 +9,8 @@ import factory
 from ib_boards.constants.enum import DisplayStatus
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
     TaskTemplateStagesDTO, TaskSummaryFieldsDTO, \
-    TaskStatusDTO, FieldDetailsDTO, ActionDetailsDTO, ColumnTaskIdsDTO, StageAssigneesDTO, AssigneesDTO, \
+    TaskStatusDTO, FieldDetailsDTO, ActionDetailsDTO, ColumnTaskIdsDTO, \
+    StageAssigneesDTO, AssigneesDTO, \
     ProjectBoardDTO, \
     FieldNameDTO, GetTaskDetailsDTO
 from ib_boards.interactors.dtos import ColumnTasksDTO
@@ -26,7 +27,6 @@ class TaskColumnDTOFactory(factory.Factory):
     task_display_id = factory.Sequence(lambda n: "task_id_%d" % n)
     task_id = factory.Sequence(lambda n: n)
     stage_id = factory.Sequence(lambda n: f'stage_id_{n}')
-
 
 class ColumnStageIdsDTOFactory(factory.Factory):
     class Meta:
@@ -117,7 +117,6 @@ class GetTaskDetailsDTOFactory(factory.Factory):
         model = GetTaskDetailsDTO
 
     stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
-    task_display_id = factory.Sequence(lambda n: f'TASK_ID_{n + 1}')
     task_id = factory.Sequence(lambda n: n + 1)
 
 
