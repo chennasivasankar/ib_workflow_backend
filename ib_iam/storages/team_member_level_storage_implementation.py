@@ -159,8 +159,7 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
             team_id=team_id, user_id__in=member_ids
         )
         member_id_with_subordinate_member_ids_dtos = [
-            self.get_member_id_with_subordinate_member_ids_dto(
-                user_team_object)
+            self.get_member_id_with_subordinate_member_ids_dto(user_team_object)
             for user_team_object in user_team_objects
         ]
         return member_id_with_subordinate_member_ids_dtos
@@ -269,10 +268,15 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
         user_team_objects = TeamUser.objects.filter(
             user_id=user_id, team__projectteam__project_id=project_id
         )
-        member_id_with_subordinate_member_ids_dto = self.get_member_id_with_subordinate_member_ids_dto(
-            user_team_object=user_team_objects[0]
+        sub_ids = []
+        for user_team_object in user_team_objects:
+            sub_ids += self.get_member_id_with_subordinate_member_ids_dto(
+                user_team_object=user_team_object
+            ).subordinate_member_ids
+        return MemberIdWithSubordinateMemberIdsDTO(
+            member_id=user_id,
+            subordinate_member_ids=sub_ids
         )
-        return member_id_with_subordinate_member_ids_dto
 
     def is_user_in_a_least_level(self, user_id: str, project_id: str) -> bool:
         from ib_iam.models import TeamUser, TeamMemberLevel
