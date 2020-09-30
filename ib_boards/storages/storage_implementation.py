@@ -12,7 +12,7 @@ from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
 from ib_boards.interactors.storage_interfaces.dtos import ColumnBoardDTO, \
     ColumnStageDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
-    StorageInterface, FieldDisplayStatusDTO, FieldOrderDTO
+    StorageInterface, FieldDisplayStatusDTO
 from ib_boards.models import Board, ColumnPermission, Column, UserStarredBoard
 from ib_boards.models.fields_in_list_view import FieldOrder, FieldDisplayStatus
 
@@ -392,9 +392,10 @@ class StorageImplementation(StorageInterface):
             name=board_obj.name
         )
 
-        list_of_column_dtos, column_stages = self._convert_column_details_to_dtos(
-            list(set(stage_related_columns)),
-            stage_ids)
+        list_of_column_dtos, column_stages = \
+            self._convert_column_details_to_dtos(
+                list(set(stage_related_columns)),
+                stage_ids)
         board_details_dto = TaskBoardsDetailsDTO(
             board_dto=board_dto,
             columns_dtos=list_of_column_dtos,
@@ -433,7 +434,9 @@ class StorageImplementation(StorageInterface):
                                 stage_id=stage
                             )
                         )
-        return list_of_column_dtos, column_stages
+        column_dtos = sorted(list_of_column_dtos, key=lambda stage_column:
+        stage_column.column_id)
+        return column_dtos, column_stages
 
     def get_columns_stage_ids(self, column_ids: List[str]) -> \
             List[ColumnStageIdsDTO]:

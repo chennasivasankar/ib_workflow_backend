@@ -14,13 +14,13 @@ from ib_boards.interactors.dtos import ColumnTasksParametersDTO, \
     TaskCompleteDetailsDTO
 from ib_boards.interactors.get_column_tasks_interactor import \
     GetColumnTasksInteractor
-from ib_boards.tests.factories.interactor_dtos import  \
+from ib_boards.tests.factories.interactor_dtos import \
     FieldDetailsDTOFactory, GetTaskDetailsDTOFactory, \
     ColumnTaskIdsDTOFactory, ColumnStageIdsDTOFactory, \
     StageAssigneesDTOFactory
+from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory
 from ib_boards.tests.factories.storage_dtos import TaskDTOFactory, \
-    TaskStageDTOFactory, TaskActionsDTOFactory
-from ib_boards.tests.factories.storage_dtos import TaskDTOFactory, TaskStageDTOFactory
+    TaskStageDTOFactory
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
 
 
@@ -272,6 +272,7 @@ class TestGetColumnTasksInteractor:
         expected_response = Mock()
         storage_mock.get_project_id_for_given_column_id.return_value = project_id
         storage_mock.get_columns_stage_ids.return_value = column_stage_dtos
+
         presenter_mock.get_response_for_column_tasks. \
             return_value = expected_response
         interactor = GetColumnTasksInteractor(

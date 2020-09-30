@@ -178,3 +178,10 @@ class UserIdWIthTeamDetailsDTOsFactory(factory.Factory):
     @factory.lazy_attribute
     def team_details(self):
         return [TeamDetailsDTOFactory()]
+
+
+class UserDetailsWithRolesDTOFactory(UserDetailsDTOFactory):
+    class Meta:
+        model = UserDetailsWithRolesDTO
+
+    roles = ["role_1", "role_2"]

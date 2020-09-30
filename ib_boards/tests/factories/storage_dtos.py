@@ -31,7 +31,7 @@ class TaskActionsDTOFactory(factory.Factory):
     class Meta:
         model = ActionDTO
 
-    task_id = factory.Sequence(lambda n: "task_id_%d" % n)
+    task_id = factory.Sequence(lambda n: n)
     stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
     action_id = factory.Sequence(lambda n: "action_id_%d" % n)
     action_type = factory.Sequence(lambda n: "action_type_%d" % n)
@@ -50,7 +50,7 @@ class TaskStageDTOFactory(factory.Factory):
     class Meta:
         model = TaskStageDTO
 
-    task_id = factory.Sequence(lambda n: "task_id_%d" % n)
+    task_id = factory.Sequence(lambda n: n)
     stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
     db_stage_id = factory.Sequence(lambda n: n)
     display_name = "stage"
@@ -61,7 +61,7 @@ class TaskFieldsDTOFactory(factory.Factory):
     class Meta:
         model = FieldDTO
 
-    task_id = factory.Sequence(lambda n: "task_id_%d" % n)
+    task_id = factory.Sequence(lambda n: n)
     field_id = factory.Sequence(lambda n: "field_id_%d" % n)
     stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
     field_type = factory.Sequence(lambda n: "field_type_%d" % n)

@@ -194,7 +194,7 @@ class TestAddOrDeleteColumnsForBoardInteractor:
             )
 
     def test_with_duplicate_task_template_stages_raise_exception(
-            self, storage_mock, sequence_reset,
+            self, storage_mock, sequence_reset, mocker,
             column_dtos_with_duplicate_task_template_stages,
             mock_valid_task_and_template_ids):
         # Arrange
@@ -202,6 +202,9 @@ class TestAddOrDeleteColumnsForBoardInteractor:
         interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            validate_task_template_stages_with_id_mock
+        validate_task_template_stages_with_id_mock(mocker)
         # Act
         from ib_boards.exceptions.custom_exceptions import \
             DuplicateStagesInTaskTemplateStages
@@ -245,6 +248,9 @@ class TestAddOrDeleteColumnsForBoardInteractor:
         interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            validate_task_template_stages_with_id_mock
+        validate_task_template_stages_with_id_mock(mocker)
 
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             adapter_mock
@@ -274,6 +280,9 @@ class TestAddOrDeleteColumnsForBoardInteractor:
         invalid_column_id = 'COLUMN_ID_2'
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             adapter_mock
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            validate_task_template_stages_with_id_mock
+        validate_task_template_stages_with_id_mock(mocker)
         adapter_mock = adapter_mock(mocker=mocker,
                                     user_roles=user_roles)
         from ib_boards.interactors.storage_interfaces.dtos import \
@@ -310,6 +319,9 @@ class TestAddOrDeleteColumnsForBoardInteractor:
 
         present_column_ids = ['COLUMN_ID_1', 'COLUMN_ID_2', 'COLUMN_ID_3']
         user_roles = ['ALL_ROLES', 'MEMBER', 'USER']
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            validate_task_template_stages_with_id_mock
+        validate_task_template_stages_with_id_mock(mocker)
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             adapter_mock
         adapter_mock = adapter_mock(mocker=mocker,
@@ -348,6 +360,9 @@ class TestAddOrDeleteColumnsForBoardInteractor:
         user_roles = ['ALL_ROLES', 'MEMBER', 'USER']
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             adapter_mock
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            validate_task_template_stages_with_id_mock
+        validate_task_template_stages_with_id_mock(mocker)
         adapter_mock = adapter_mock(mocker=mocker,
                                     user_roles=user_roles)
         interactor = AddOrDeleteColumnsForBoardInteractor(
@@ -384,6 +399,9 @@ class TestAddOrDeleteColumnsForBoardInteractor:
         interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            validate_task_template_stages_with_id_mock
+        validate_task_template_stages_with_id_mock(mocker)
         storage_mock.get_boards_column_ids.return_value = present_column_ids
         storage_mock.get_board_ids_for_column_ids.return_value = []
 

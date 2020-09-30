@@ -116,13 +116,24 @@ def task_details_mock(mocker, task_details: List[TaskCompleteDetailsDTO]):
 
 def task_ids_mock(mocker, task_stage_ids: List[ColumnTaskIdsDTO]):
     mock = mocker.patch(
-        'ib_boards.adapters.task_service.TaskService.get_task_ids_for_stage_ids'
+        'ib_boards.adapters.task_service.TaskService'
+        '.get_task_ids_for_stage_ids'
     )
     mock.return_value = task_stage_ids
     return mock
 
 
-def field_display_name_mock(mocker, field_display_name_dtos: List[FieldNameDTO]):
+def validate_task_template_stages_with_id_mock(mocker):
+    mock = mocker.patch(
+        'ib_boards.adapters.task_service.TaskService'
+        '.validate_task_template_stages_with_id'
+    )
+    mock.return_value = []
+    return mock
+
+
+def field_display_name_mock(mocker,
+                            field_display_name_dtos: List[FieldNameDTO]):
     mock = mocker.patch(
         'ib_boards.adapters.task_service.TaskService.get_field_display_name'
     )

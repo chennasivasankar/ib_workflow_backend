@@ -6,7 +6,7 @@ Author: Pavankumar Pamuru
 import pytest
 
 from ib_boards.tests.factories.models import FieldDisplayStatusFactory, \
-    FieldOrderFactory
+    FieldOrderFactory, ColumnFactory
 
 
 @pytest.mark.django_db
@@ -16,6 +16,7 @@ class TestCreateFieldOrderAndStatus:
     def setup(cls):
         FieldDisplayStatusFactory.reset_sequence()
         FieldOrderFactory.reset_sequence()
+        ColumnFactory.reset_sequence()
 
     @classmethod
     def teardown(cls):
@@ -27,9 +28,14 @@ class TestCreateFieldOrderAndStatus:
             StorageImplementation
         return StorageImplementation()
 
-    def test_fields_display_order_and_status_creates(self, storage):
+    @pytest.fixture
+    def populate_data(self):
+        ColumnFactory.reset_sequence()
+        ColumnFactory.create_batch(3)
+
+    def test_fields_display_order_and_status_creates(self, storage,
+                                                     populate_data):
         # Arrange
-        import json
         column_id = 'COLUMN_ID_1'
         user_id = 'user_id_0'
         field_ids = [

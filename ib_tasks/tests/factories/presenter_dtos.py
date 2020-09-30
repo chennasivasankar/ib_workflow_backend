@@ -13,7 +13,8 @@ from ib_tasks.tests.factories.adapter_dtos import TaskBoardsDetailsDTOFactory
 from ib_tasks.tests.factories.interactor_dtos import \
     TaskStageAssigneeTeamDetailsDTOFactory, FieldDisplayDTOFactory, \
     TaskStageDTOFactory
-from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory
+from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory, \
+    TaskBaseDetailsDTOFactory
 
 
 class TaskIdWithStageDetailsDTOFactory(factory.Factory):
@@ -108,6 +109,11 @@ class AllTasksOverviewDetailsDTOFactory(factory.Factory):
     def task_fields_and_action_details_dtos(self):
         GetTaskStageCompleteDetailsDTOFactory.reset_sequence()
         return [GetTaskStageCompleteDetailsDTOFactory()]
+
+    @factory.lazy_attribute
+    def task_base_details_dtos(self):
+        TaskBaseDetailsDTOFactory.reset_sequence()
+        return [TaskBaseDetailsDTOFactory()]
 
 
 class TaskCompleteDetailsDTOFactory(factory.Factory):

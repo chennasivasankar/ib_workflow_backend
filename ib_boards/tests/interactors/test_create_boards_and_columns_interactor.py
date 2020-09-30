@@ -89,7 +89,9 @@ class TestCreateBoardsAndColumnsInteractor:
         interactor = CreateBoardsAndColumnsInteractor(
             storage=storage_mock
         )
-
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            validate_task_template_stages_with_id_mock
+        validate_task_template_stages_with_id_mock(mocker)
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             adapter_mock
 
@@ -115,6 +117,9 @@ class TestCreateBoardsAndColumnsInteractor:
             mock_valid_task_and_template_ids, mocker):
         # Arrange
         user_roles = ['ALL_ROLES', 'MEMBER', 'USER']
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            validate_task_template_stages_with_id_mock
+        validate_task_template_stages_with_id_mock(mocker)
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             adapter_mock
         adapter_mock = adapter_mock(mocker=mocker,
