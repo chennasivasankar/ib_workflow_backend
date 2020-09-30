@@ -106,9 +106,10 @@ class LoginWithTokenInteractor:
             team_id=team_id, user_ids=[user_id]
         )
         if is_created:
-            from ib_iam.constants.config import PROJECT_ID
+            from ib_workflows_backend.settings.base_swagger_utils import \
+                JGC_DRIVE_PROJECT_ID
             self.project_storage.assign_teams_to_projects(
-                project_id=PROJECT_ID, team_ids=[team_id]
+                project_id=JGC_DRIVE_PROJECT_ID, team_ids=[team_id]
             )
 
     def _create_elastic_user(self, user_id: str, name: str, email: str):
