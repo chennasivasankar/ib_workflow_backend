@@ -142,7 +142,9 @@ class TestTaskDetailsValidationsInteractor:
         assert err.value.args[0] == invalid_project_id
 
     def test_with_invalid_project_id_for_given_project_raises_exception(
-            self, task_details_validation_storages_dto, mocker):
+            self, task_details_validation_storages_dto,
+            gofs_details_validation_interactor_mock,
+            mocker):
         # Arrange
         stage_id = 1
         valid_project_ids = ["project_id_1"]
@@ -151,12 +153,23 @@ class TestTaskDetailsValidationsInteractor:
         get_valid_project_ids_mock(mocker, valid_project_ids)
         task_details_validation_storages_dto.task_template_storage.\
             get_project_templates.return_value = task_template_ids_of_project
+        gofs_details_validation_interactor_mock(mocker)
+
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids_based_on_project_mock
+        get_user_role_ids_based_on_project_mock_obj = \
+            get_user_role_ids_based_on_project_mock(mocker)
+
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            InvalidTaskTemplateOfProject
+        get_user_role_ids_based_on_project_mock_obj.side_effect = \
+            InvalidTaskTemplateOfProject(
+                task_dto.basic_task_details_dto.project_id,
+                task_dto.basic_task_details_dto.task_template_id)
 
         interactor = TaskDetailsValidationsInteractor(
             storages_dto=task_details_validation_storages_dto
         )
-        from ib_tasks.exceptions.task_custom_exceptions import \
-            InvalidTaskTemplateOfProject
 
         # Assert
         with pytest.raises(InvalidTaskTemplateOfProject) as err:
