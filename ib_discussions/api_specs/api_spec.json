@@ -58,7 +58,8 @@
           "enum": [
             "TASK",
             "COLUMN",
-            "BOARD"
+            "BOARD",
+            "PROJECT"
           ]
         }
       },
@@ -427,6 +428,53 @@
       "name": "UpdateCommentParameter",
       "schema": {
         "$ref": "#/definitions/Comment"
+      }
+    },
+    "GetProjectDiscussionsParameter": {
+      "in": "body",
+      "name": "GetProjectDiscussionsParameter",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/EntityDetails"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "filter_by": {
+                "type": "string",
+                "enum": [
+                  "ALL",
+                  "POSTED_BY_ME",
+                  "CLARIFIED",
+                  "NOT_CLARIFIED"
+                ]
+              },
+              "sort_by": {
+                "type": "string",
+                "enum": [
+                  "LATEST",
+                  "TOP"
+                ]
+              }
+            },
+            "required": [
+              "filter_by",
+              "sort_by"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "project_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "project_id"
+            ]
+          }
+        ]
       }
     }
   },
@@ -1022,6 +1070,39 @@
         "parameters": [
           {
             "$ref": "#/parameters/GetDiscussionsParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetQueryParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitQueryParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetDiscussionSuccessResponse"
+          },
+          "400": {
+            "$ref": "#/responses/GetDiscussionBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/get_project_discussions/v1/": {
+      "post": {
+        "operationId": "get_project_discussions",
+        "summary": "Get Project Discussions",
+        "description": "get all project discussion for given entity id and entity type",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/GetProjectDiscussionsParameter"
           },
           {
             "$ref": "#/parameters/OffsetQueryParameter"
