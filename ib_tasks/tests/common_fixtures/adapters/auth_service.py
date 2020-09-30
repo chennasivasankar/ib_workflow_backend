@@ -194,6 +194,7 @@ def get_team_info_for_given_user_ids_with_given_names_mock(mocker):
     mock.return_value = user_id_with_team_details_dtos
     return mock
 
+
 def get_project_info_for_given_ids_mock(mocker):
     mock = mocker.patch(
         "ib_tasks.adapters.auth_service.AuthService.get_projects_info_for_given_ids"

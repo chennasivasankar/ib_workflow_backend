@@ -26,16 +26,15 @@ class TestCase03CreateTaskAPITestCase(TestUtils):
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
         template_id = 'template_1'
-        project_template = "project_template"
+        template_project = "template_project"
         project_id = "project_1"
         from ib_tasks.tests.common_fixtures.adapters.auth_service import \
             get_valid_project_ids_mock
-        get_valid_project_ids_mock(mocker, [project_id])
+        get_valid_project_ids_mock(mocker, [project_id, template_project])
         task_template = TaskTemplateFactory.create(template_id=template_id)
         TaskTemplateInitialStageFactory.create(task_template=task_template)
         ProjectTaskTemplateFactory.create(
-            task_template__template_id="project_template",
-            project_id=project_id)
+            task_template=task_template, project_id=template_project)
         StageActionFactory.create(id=1)
 
     @pytest.mark.django_db
