@@ -95,4 +95,3 @@ class TestAuthUsersInteractor:
             get_or_create_team_member_level_hierarchy.assert_called_once()
         team_member_level_storage_mock. \
             add_members_to_levels_for_a_team.assert_called_once()
-        project_storage_mock.assign_teams_to_projects.assert_called_once()

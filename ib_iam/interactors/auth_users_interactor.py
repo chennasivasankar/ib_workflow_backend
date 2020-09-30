@@ -87,9 +87,10 @@ class AuthUsersInteractor:
         team_id, is_created = self.team_storage.get_or_create(
             name=DEFAULT_CONFIGURATION_TEAM_NAME
         )
-        self.project_storage.assign_teams_to_projects(
-            project_id=project_id, team_ids=[team_id]
-        )
+        if is_created:
+            self.project_storage.assign_teams_to_projects(
+                project_id=project_id, team_ids=[team_id]
+            )
         self.team_storage.add_users_to_team(
             team_id=team_id, user_ids=user_ids
         )

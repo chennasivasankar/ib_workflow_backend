@@ -16,20 +16,24 @@ def api_wrapper(*args, **kwargs):
         ProjectStorageImplementation
     from ib_iam.storages.elastic_storage_implementation import \
         ElasticStorageImplementation
+    from ib_iam.storages.team_member_level_storage_implementation import \
+        TeamMemberLevelStorageImplementation
     user_storage = UserStorageImplementation()
     team_storage = TeamStorageImplementation()
     project_storage = ProjectStorageImplementation()
     elastic_storage = ElasticStorageImplementation()
+    team_member_level_storage = TeamMemberLevelStorageImplementation()
     from ib_iam.interactors.auth.user_login_with_token_interactor import \
         LoginWithTokenInteractor
     interactor = LoginWithTokenInteractor(
         user_storage=user_storage,
         team_storage=team_storage,
         project_storage=project_storage,
-        elastic_storage=elastic_storage
+        elastic_storage=elastic_storage,
+        team_member_level_storage=team_member_level_storage
     )
-    from ib_iam.presenters.login_with_user_token_presenter_implementation import \
-        LoginWithUserTokePresenterImplementation
+    from ib_iam.presenters.login_with_user_token_presenter_implementation \
+        import LoginWithUserTokePresenterImplementation
     presenter = LoginWithUserTokePresenterImplementation()
 
     response = interactor.login_with_token_wrapper(
