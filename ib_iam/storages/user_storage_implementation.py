@@ -572,9 +572,13 @@ class UserStorageImplementation(UserStorageInterface):
             raise InvalidProjectId
         return
 
-    def create_auth_user(self, user_id: str, token: str):
+    def create_auth_user(
+            self, user_id: str, token: str, auth_token_user_id: str
+    ):
         from ib_iam.models import UserAuthToken
-        UserAuthToken.objects.create(user_id=user_id, token=token)
+        UserAuthToken.objects.create(
+            user_id=user_id, token=token, auth_token_user_id=auth_token_user_id
+        )
         return
 
     def get_user_id_for_given_token(self, token: str) -> Optional[str]:
