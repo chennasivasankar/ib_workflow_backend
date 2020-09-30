@@ -604,7 +604,6 @@ class UserStorageImplementation(UserStorageInterface):
         return
 
     def get_user_id_for_given_token(self, token: str) -> Optional[str]:
-        # TODO Write tests
         from ib_iam.models import UserAuthToken
         user_auth_objects = UserAuthToken.objects.filter(token=token)
         if user_auth_objects:
