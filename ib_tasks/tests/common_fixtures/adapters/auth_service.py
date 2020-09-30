@@ -194,7 +194,6 @@ def get_team_info_for_given_user_ids_with_given_names_mock(mocker):
     mock.return_value = user_id_with_team_details_dtos
     return mock
 
-
 def get_project_info_for_given_ids_mock(mocker):
     mock = mocker.patch(
         "ib_tasks.adapters.auth_service.AuthService.get_projects_info_for_given_ids"
@@ -245,4 +244,12 @@ def check_user_in_least_level_mock(mocker, level_status: bool):
            "check_user_in_least_level"
     mock = mocker.patch(path)
     mock.return_value = level_status
+    return mock
+
+
+def validate_project_ids_mock(mocker, project_ids: List[str]):
+    path = "ib_tasks.adapters.auth_service.AuthService.validate_project_ids"
+    mock = mocker.patch(path)
+
+    mock.return_value = project_ids
     return mock
