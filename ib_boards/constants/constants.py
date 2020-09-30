@@ -12,3 +12,4 @@ PROJECT_BOARDS_SUB_SHEET = "Project Boards"
 DISPLAY_STATUSES = [(item.value, item.value) for item in DisplayStatus]
 
 ALL_ROLES_ID = "ALL_ROLES"
+DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
