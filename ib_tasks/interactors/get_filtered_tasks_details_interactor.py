@@ -14,6 +14,8 @@ from ib_tasks.exceptions.fields_custom_exceptions import \
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.get_all_tasks_overview_for_user_presenter_interface import \
     GetFilteredTasksOverviewForUserPresenterInterface
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -68,9 +70,6 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
                 self.get_filtered_tasks_overview_for_user(
                     project_tasks_parameter=project_tasks_parameter
                 )
-        except StageIdsListEmptyException:
-            return presenter.raise_stage_ids_empty_exception()
-
         except LimitShouldBeGreaterThanZeroException:
             return presenter.raise_limit_should_be_greater_than_zero_exception(
             )
@@ -140,13 +139,19 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
             task_condition_dtos=task_condition_dtos
         )
         project_id = project_tasks_parameter.project_id
-        all_tasks_overview_details_dto = task_details_interactor. \
-            get_filtered_tasks_overview_for_user(
-                user_id=project_tasks_parameter.user_id,
-                task_ids=task_ids,
-                view_type=project_tasks_parameter.view_type,
-                project_id=project_id
-            )
+        try:
+            all_tasks_overview_details_dto = task_details_interactor. \
+                get_filtered_tasks_overview_for_user(
+                    user_id=project_tasks_parameter.user_id,
+                    task_ids=task_ids,
+                    view_type=project_tasks_parameter.view_type,
+                    project_id=project_id)
+        except StageIdsListEmptyException:
+            all_tasks_overview_details_dto = AllTasksOverviewDetailsDTO(
+                task_base_details_dtos=[],
+                task_with_complete_stage_details_dtos=[],
+                task_fields_and_action_details_dtos=[])
+            total_tasks = 0
         return all_tasks_overview_details_dto, total_tasks
 
     def _validate_project_data(self, project_id: str, user_id: str):

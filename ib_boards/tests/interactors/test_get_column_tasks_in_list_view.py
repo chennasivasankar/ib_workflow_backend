@@ -193,6 +193,7 @@ class TestGetColumnTasksInteractor:
             task_id=1,
             display_id='IBWF-1'
         )
+        AllFieldsDTOFactory.reset_sequence()
         all_fields = AllFieldsDTOFactory.create_batch(2, display_name=factory.Iterator(['KEY_1', 'KEY_2']))
         complete_tasks_details_dto = CompleteTasksDetailsDTO(
             task_actions_dtos=task_complete_details_dto[0].action_dtos,

@@ -3,7 +3,7 @@ Created on: 03/09/20
 Author: Pavankumar Pamuru
 
 """
-from typing import Tuple, List
+from typing import Tuple, List, Union
 
 from ib_tasks.constants.enum import FieldTypes
 from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException, \
@@ -121,7 +121,7 @@ class CreateOrUpdateOrDeleteFiltersInteractor(ValidationMixin):
         )
 
     def update_filter(
-            self, filter_dto: UpdateFilterDTO,
+            self, filter_dto: Union[UpdateFilterDTO, CreateFilterDTO],
             condition_dtos: List[CreateConditionDTO]):
         filter_id = filter_dto.filter_id
         user_id = filter_dto.user_id

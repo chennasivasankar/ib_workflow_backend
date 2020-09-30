@@ -36,6 +36,7 @@ class TestCase10GetTaskTemplatesAPITestCase(TestUtils):
         FieldFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
+        GoFToTaskTemplateFactory.enable_add_another_gof.reset()
         TaskTemplateInitialStageFactory.reset_sequence()
         StageGoFFactory.reset_sequence()
         StagePermittedRolesFactory.reset_sequence()

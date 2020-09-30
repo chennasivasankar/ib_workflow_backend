@@ -18,6 +18,11 @@ from ib_tasks.models import TaskTemplate, TaskTemplateGoFs, ProjectTaskTemplate
 
 class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
+    def is_common_template(self, task_template_id: str) -> bool:
+        is_common_template = ProjectTaskTemplate.objects.filter(
+            task_template_id=task_template_id).exists()
+        return not is_common_template
+
     def get_template_stage_permitted_gof_ids(
             self, task_template_id: str, stage_id: int):
         gof_ids = TaskTemplateGoFs.objects.filter(
@@ -128,12 +133,9 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
             self, project_ids: List[str]
     ) -> List[ProjectTemplateDTO]:
 
+        query = Q(project_id__in=project_ids) & Q(task_template__is_transition_template=False)
         task_template_objs = ProjectTaskTemplate.objects.filter(
-            (
-                    Q(project_id__in=project_ids) &
-                    Q(task_template__is_transition_template=False)
-            ) | (Q(project_id=None) & Q(
-                task_template__is_transition_template=False))
+            query
         ).annotate(template_name=F('task_template__name'))
         task_template_dtos = self._convert_project_templates_objs_to_dtos(
             task_template_objs=task_template_objs)
@@ -392,3 +394,18 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
         task_template_id_list = list(task_template_id_queryset)
         return task_template_id_list
+
+    def get_common_task_template_ids(self):
+        common_templates = TaskTemplate.objects.exclude(
+            template_id__in=list(ProjectTaskTemplate.objects.values_list(
+                'task_template_id', flat=True
+            ))
+        ).filter(is_transition_template=False).values('template_id', 'name')
+        return [
+            ProjectTemplateDTO(
+                template_name=common_template['name'],
+                template_id=common_template['template_id'],
+            )
+            for common_template in common_templates
+        ]
+

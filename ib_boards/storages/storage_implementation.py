@@ -392,9 +392,10 @@ class StorageImplementation(StorageInterface):
             name=board_obj.name
         )
 
-        list_of_column_dtos, column_stages = self._convert_column_details_to_dtos(
-            list(set(stage_related_columns)),
-            stage_ids)
+        list_of_column_dtos, column_stages = \
+            self._convert_column_details_to_dtos(
+                list(set(stage_related_columns)),
+                stage_ids)
         board_details_dto = TaskBoardsDetailsDTO(
             board_dto=board_dto,
             columns_dtos=list_of_column_dtos,
@@ -433,7 +434,9 @@ class StorageImplementation(StorageInterface):
                                 stage_id=stage
                             )
                         )
-        return list_of_column_dtos, column_stages
+        column_dtos = sorted(list_of_column_dtos, key=lambda stage_column:
+        stage_column.column_id)
+        return column_dtos, column_stages
 
     def get_columns_stage_ids(self, column_ids: List[str]) -> \
             List[ColumnStageIdsDTO]:
@@ -619,9 +622,9 @@ class StorageImplementation(StorageInterface):
         new_field_ids = present_field_ids + extra_field_ids
         field_ids = json.dumps(
             {
-                "field_ids": present_field_ids
+                "field_ids": new_field_ids
             }
         )
-        field_ids_object.fields_order = new_field_ids
+        field_ids_object.fields_order = field_ids
         field_ids_object.save()
 

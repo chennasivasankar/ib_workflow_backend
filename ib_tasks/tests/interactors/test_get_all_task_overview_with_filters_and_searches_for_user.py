@@ -18,9 +18,12 @@ class TestGetTasksOverviewForUserInteractor:
     @classmethod
     def setup_class(cls):
         TaskIdWithStageDetailsDTOFactory.reset_sequence()
+        from ib_tasks.tests.factories.storage_dtos import \
+            TaskBaseDetailsDTOFactory
         from ib_tasks.tests.factories.interactor_dtos import \
             FieldDetailsDTOFactory
         FieldDetailsDTOFactory.reset_sequence()
+        TaskBaseDetailsDTOFactory.reset_sequence()
         from ib_tasks.tests.factories.storage_dtos import \
             StageActionDetailsDTOFactory
         StageActionDetailsDTOFactory.reset_sequence()
@@ -117,7 +120,8 @@ class TestGetTasksOverviewForUserInteractor:
 
     @pytest.fixture()
     def template_storage(self):
-        from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import TaskTemplateStorageInterface
+        from ib_tasks.interactors.storage_interfaces.\
+            task_template_storage_interface import TaskTemplateStorageInterface
         from unittest.mock import create_autospec
         action_storage = create_autospec(TaskTemplateStorageInterface)
         return action_storage
@@ -147,7 +151,8 @@ class TestGetTasksOverviewForUserInteractor:
             mocker=mocker, project_ids=[]
         )
 
-        from ib_tasks.interactors.get_all_task_overview_with_filters_and_searches_for_user \
+        from ib_tasks.interactors.\
+            get_all_task_overview_with_filters_and_searches_for_user \
             import GetTasksOverviewForUserInteractor
 
         interactor = GetTasksOverviewForUserInteractor(
@@ -195,7 +200,8 @@ class TestGetTasksOverviewForUserInteractor:
             mocker=mocker, is_user_in_project=False
         )
 
-        from ib_tasks.interactors.get_all_task_overview_with_filters_and_searches_for_user \
+        from ib_tasks.interactors.\
+            get_all_task_overview_with_filters_and_searches_for_user \
             import GetTasksOverviewForUserInteractor
 
         interactor = GetTasksOverviewForUserInteractor(
@@ -286,7 +292,19 @@ class TestGetTasksOverviewForUserInteractor:
         task_ids = [1, 2]
         project_id = '1'
 
-        from ib_tasks.interactors.get_all_task_overview_with_filters_and_searches_for_user \
+        path = "ib_tasks.interactors.get_task_base_details_interactor." \
+               "GetTasksBaseDetailsInteractor.get_tasks_base_details"
+        get_task_base_details_mock = mocker.patch(path)
+
+        import factory
+        from ib_tasks.tests.factories.storage_dtos import \
+            TaskBaseDetailsDTOFactory
+        task_base_details_dtos = TaskBaseDetailsDTOFactory.create_batch(
+            size=2, task_id=factory.Iterator(task_ids))
+        get_task_base_details_mock.return_value = task_base_details_dtos
+
+        from ib_tasks.interactors.\
+            get_all_task_overview_with_filters_and_searches_for_user \
             import GetTasksOverviewForUserInteractor
 
         interactor = GetTasksOverviewForUserInteractor(

@@ -27,6 +27,7 @@ class TestCase07GetTransitionTemplateAPITestCase(TestUtils):
         FieldFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
+        GoFToTaskTemplateFactory.enable_add_another_gof.reset()
 
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
