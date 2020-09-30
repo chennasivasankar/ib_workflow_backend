@@ -413,7 +413,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
     def _validate_task_have_permissions_to_task(created_by_id,
                                                 task_condition_dtos):
         user_ids = [
-            task_condition_dto.value
+            str(task_condition_dto.value)
             for task_condition_dto in task_condition_dtos
         ]
         if created_by_id not in user_ids:
