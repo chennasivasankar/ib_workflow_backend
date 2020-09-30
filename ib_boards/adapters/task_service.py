@@ -236,5 +236,5 @@ class TaskService:
             start_date=task_base_details_dto.start_date,
             due_date=task_base_details_dto.due_date,
             priority=task_base_details_dto.priority,
-            task_id=task_base_details_dto.id
+            task_id=task_base_details_dto.task_id
         )
