@@ -10,7 +10,7 @@ class SpreadSheetUtil:
 
         from oauth2client.service_account import ServiceAccountCredentials
         credentials = ServiceAccountCredentials.from_json_keyfile_name(
-            "ib_iam/populate/ib-worksflows-dev-testing-d86743f0ecd1.json",
+            './ib-workflows-9f437d357f89.json',
             scope)
 
         self.gc = gspread.authorize(credentials)
