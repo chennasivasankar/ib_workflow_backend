@@ -78,5 +78,7 @@ class TestAuthUsersInteractor:
         assert elastic_storage.create_elastic_user.call_count == 3
         team_storage.get_or_create.assert_called_once()
         team_storage.add_users_to_team.assert_called_once()
-        team_member_level_storage_mock.get_or_create_team_member_level_hierarchy.assert_called_once()
-        team_member_level_storage_mock.add_members_to_levels_for_a_team.assert_called_once()
+        team_member_level_storage_mock. \
+            get_or_create_team_member_level_hierarchy.assert_called_once()
+        team_member_level_storage_mock. \
+            add_members_to_levels_for_a_team.assert_called_once()

@@ -50,7 +50,8 @@ class AuthUsers:
                 token=auth_user["auth_token"],
                 email=auth_user["email"],
                 password=auth_user["password"],
-                name=auth_user["name"]
+                name=auth_user["name"],
+                auth_token_user_id=auth_user["auth_token_user_id"]
             )
             for auth_user in auth_users
         ]

@@ -57,7 +57,9 @@ class AuthUsersInteractor:
             user_id=user_id, name=auth_user_dto.name, is_admin=False
         )
         self.user_storage.create_auth_user(
-            user_id=user_id, token=auth_user_dto.token)
+            user_id=user_id, token=auth_user_dto.token,
+            auth_token_user_id=auth_user_dto.auth_token_user_id
+        )
         self._create_elastic_user(
             user_id=user_id, name=auth_user_dto.name,
             email=auth_user_dto.email
