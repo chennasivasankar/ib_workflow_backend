@@ -4,6 +4,8 @@ from ib_iam.interactors.dtos.dtos import AuthUserDTO, \
     TeamMemberLevelIdWithMemberIdsDTO
 from ib_iam.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
+from ib_iam.interactors.storage_interfaces.project_storage_interface import \
+    ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface import \
     TeamMemberLevelStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
@@ -18,14 +20,17 @@ class AuthUsersInteractor:
             self, user_storage: UserStorageInterface,
             elastic_storage: ElasticSearchStorageInterface,
             team_storage: TeamStorageInterface,
-            team_member_level_storage: TeamMemberLevelStorageInterface
+            team_member_level_storage: TeamMemberLevelStorageInterface,
+            project_storage: ProjectStorageInterface
     ):
         self.user_storage = user_storage
         self.elastic_storage = elastic_storage
         self.team_storage = team_storage
         self.team_member_level_storage = team_member_level_storage
+        self.project_storage = project_storage
 
-    def auth_user_dtos(self, auth_user_dtos: List[AuthUserDTO]):
+    def auth_user_dtos(self, auth_user_dtos: List[AuthUserDTO],
+                       project_id: str):
         user_ids = []
         for auth_user_dto in auth_user_dtos:
             try:
@@ -34,8 +39,8 @@ class AuthUsersInteractor:
             except:
                 continue
             user_ids.append(user_id)
-
-        self.add_auth_users_to_team_and_team_member_levels(user_ids=user_ids)
+        self.add_auth_users_to_team_and_team_member_levels(
+            user_ids=user_ids, project_id=project_id)
         return
 
     def _create_auth_user_details(self, auth_user_dto: AuthUserDTO):
@@ -74,12 +79,16 @@ class AuthUsersInteractor:
             elastic_user_id=elastic_user_id, user_id=user_id
         )
 
-    def add_auth_users_to_team_and_team_member_levels(self,
-                                                      user_ids: List[str]):
+    def add_auth_users_to_team_and_team_member_levels(
+            self, user_ids: List[str], project_id: str
+    ):
         from ib_iam.constants.config import \
             DEFAULT_CONFIGURATION_TEAM_NAME, LEVEL_0_HIERARCHY, LEVEL_0_NAME
         team_id, is_created = self.team_storage.get_or_create(
             name=DEFAULT_CONFIGURATION_TEAM_NAME
+        )
+        self.project_storage.assign_teams_to_projects(
+            project_id=project_id, team_ids=[team_id]
         )
         self.team_storage.add_users_to_team(
             team_id=team_id, user_ids=user_ids
