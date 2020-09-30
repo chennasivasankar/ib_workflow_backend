@@ -75,7 +75,7 @@ class TestAuthUsersInteractor:
             create_user_account_with_email_mock(mocker)
         create_user_profile_mock = create_user_profile_mock(mocker)
 
-        team_storage_mock.get_or_create.return_value = Mock(), False
+        team_storage_mock.get_or_create_team_with_name.return_value = Mock(), False
 
         # Act
         interactor.auth_user_dtos(
@@ -89,10 +89,9 @@ class TestAuthUsersInteractor:
         assert user_storage_mock.create_user.call_count == 3
         assert user_storage_mock.create_auth_user.call_count == 3
         assert elastic_storage_mock.create_elastic_user.call_count == 3
-        team_storage_mock.get_or_create.assert_called_once()
+        team_storage_mock.get_or_create_team_with_name.assert_called_once()
         team_storage_mock.add_users_to_team.assert_called_once()
         team_member_level_storage_mock. \
             get_or_create_team_member_level_hierarchy.assert_called_once()
         team_member_level_storage_mock. \
             add_members_to_levels_for_a_team.assert_called_once()
-        project_storage_mock.assign_teams_to_projects.assert_called_once()

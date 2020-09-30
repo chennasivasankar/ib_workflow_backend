@@ -73,7 +73,7 @@ class GetTaskDueMissingReasonsInteractor(GetTaskIdForTaskDisplayIdMixin):
         task_details = self.task_storage.get_task_due_details(task_id=task_id,
                                                          stage_id=stage_id)
         user_ids = [task.user_id for task in task_details]
-        unique_user_ids = list(set(user_ids))
+        unique_user_ids = sorted(list(set(user_ids)))
         user_service = get_service_adapter().assignee_details_service
         user_dtos = user_service.get_assignees_details_dtos(unique_user_ids)
         users_dict = {}

@@ -1,7 +1,9 @@
 from dataclasses import dataclass
+from datetime import datetime
 from typing import List, Optional
 
 from ib_boards.constants.enum import ViewType, DisplayStatus
+from ib_boards.interactors.storage_interfaces.dtos import AllFieldsDTO
 
 
 @dataclass
@@ -250,3 +252,34 @@ class ChangeFieldsOrderParameter:
 class FieldNameDTO:
     field_id: str
     display_name: str
+
+
+@dataclass
+class TaskCommonDetailsDTO:
+    template_id: str
+    project_id: str
+    task_id: int
+    task_display_id: str
+    title: str
+    description: Optional[str]
+    start_date: datetime
+    due_date: datetime
+    priority: str
+
+
+@dataclass
+class TaskBaseAndCompleteDetailsDTO:
+    task_field_dtos: List[FieldDTO]
+    task_action_dtos: List[ActionDTO]
+    task_stage_color_dtos: List[TaskStageDTO]
+    column_task_ids: List[ColumnTaskIdsDTO]
+    assignees_dtos: List[StageAssigneesDTO]
+    task_base_details_dtos: List[TaskCommonDetailsDTO]
+
+
+@dataclass
+class TaskCompleteDetailsWithAllFieldsDTO:
+    task_complete_details: TaskBaseAndCompleteDetailsDTO
+    all_fields: List[AllFieldsDTO]
+    total_tasks: int
+    task_ids: List[int]

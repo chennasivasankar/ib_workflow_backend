@@ -477,3 +477,6 @@ INVALID_PARENT_TASK_ID = (
     "{} is an invalid parent task id, please give a valid parent task id",
     "INVALID_PARENT_TASK_ID"
 )
+EMPTY_FIELD_VALUES = (
+    "Field type {} having field_values empty"
+)

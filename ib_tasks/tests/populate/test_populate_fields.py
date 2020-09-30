@@ -68,14 +68,6 @@ class TestCreateOrUpdateFields:
         ]
         return field_dtos
 
-    # @pytest.fixture
-    # def populate_gofs(self):
-    #     from ib_tasks.tests.factories.models import GoFFactory
-    #     gof_ids = ["gof1", "gof2"]
-    #     import factory
-    #     GoFFactory.reset_sequence()
-    #     GoFFactory.create_batch(size=2, gof_id=factory.Iterator(gof_ids))
-
     @pytest.fixture
     def valid_field_roles_dtos(self):
         field_roles_dtos = [
@@ -129,7 +121,6 @@ class TestCreateOrUpdateFields:
             FieldDTOFactory(field_id="FIN_SALUATION")
         ]
 
-        duplication_of_field_ids = ["FIN_SALUATION"]
         interactor = CreateOrUpdateFieldsInteractor(storage=storage,
                                                     gof_storage=gof_storage)
 
@@ -250,38 +241,6 @@ class TestCreateOrUpdateFields:
                 field_roles_dtos=field_roles_dtos
             )
 
-        # Assert
-        snapshot.assert_match(name="exception_message = ",
-                              value=str(err.value))
-
-    def test_given_empty_values_for_write_permissions_roles_raise_exception(
-            self, storage, field_dtos, snapshot, gof_storage
-    ):
-        # Arrange
-        from ib_tasks.exceptions.fields_custom_exceptions import \
-            EmptyValueForPermissions
-
-        field_roles_dtos = [
-            FieldRolesDTOFactory(
-                field_id="field1",
-                write_permission_roles=[]
-            ),
-            FieldRolesDTOFactory(
-                field_id="field2",
-                write_permission_roles=[]
-            ),
-            FieldRolesDTOFactory(field_id="filed3")
-        ]
-
-        interactor = CreateOrUpdateFieldsInteractor(storage=storage,
-                                                    gof_storage=gof_storage)
-
-        # Act
-        with pytest.raises(EmptyValueForPermissions) as err:
-            interactor.create_or_update_fields(
-                field_dtos=field_dtos,
-                field_roles_dtos=field_roles_dtos
-            )
         # Assert
         snapshot.assert_match(name="exception_message = ",
                               value=str(err.value))

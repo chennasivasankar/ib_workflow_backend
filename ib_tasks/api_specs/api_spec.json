@@ -167,7 +167,10 @@
                   "FILE_UPLOADER",
                   "SEARCHABLE",
                   "DATE",
-                  "MULTI_SELECT_FIELD"
+                  "MULTI_SELECT_FIELD",
+                  "PLAIN_TEXT_CONTENT",
+                  "HTML_CONTENT",
+                  "MARKDOWN_CONTENT"
                ]
             }
          },

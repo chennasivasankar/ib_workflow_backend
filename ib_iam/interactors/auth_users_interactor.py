@@ -32,10 +32,14 @@ class AuthUsersInteractor:
     def auth_user_dtos(self, auth_user_dtos: List[AuthUserDTO],
                        project_id: str):
         user_ids = []
+        role_ids = self.project_storage.get_project_role_ids(
+            project_id=project_id
+        )
         for auth_user_dto in auth_user_dtos:
             try:
                 user_id = self._create_auth_user_details(
-                    auth_user_dto=auth_user_dto)
+                    auth_user_dto=auth_user_dto, role_ids=role_ids
+                )
             except:
                 continue
             user_ids.append(user_id)
@@ -45,7 +49,9 @@ class AuthUsersInteractor:
                 user_ids=user_ids, project_id=project_id)
         return
 
-    def _create_auth_user_details(self, auth_user_dto: AuthUserDTO):
+    def _create_auth_user_details(
+            self, auth_user_dto: AuthUserDTO, role_ids: List[str]
+    ):
         from ib_iam.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         user_id = service_adapter.user_service.create_user_account_with_email(
@@ -71,6 +77,9 @@ class AuthUsersInteractor:
             user_id=user_id, name=auth_user_dto.name,
             email=auth_user_dto.email
         )
+        self.user_storage.add_roles_to_the_user(
+            user_id=user_id, role_ids=role_ids
+        )
         return user_id
 
     def _create_elastic_user(self, user_id: str, name: str, email: str):
@@ -86,12 +95,13 @@ class AuthUsersInteractor:
     ):
         from ib_iam.constants.config import \
             DEFAULT_CONFIGURATION_TEAM_NAME, LEVEL_0_HIERARCHY, LEVEL_0_NAME
-        team_id, is_created = self.team_storage.get_or_create(
+        team_id, is_created = self.team_storage.get_or_create_team_with_name(
             name=DEFAULT_CONFIGURATION_TEAM_NAME
         )
-        self.project_storage.assign_teams_to_projects(
-            project_id=project_id, team_ids=[team_id]
-        )
+        if is_created:
+            self.project_storage.assign_teams_to_projects(
+                project_id=project_id, team_ids=[team_id]
+            )
         self.team_storage.add_users_to_team(
             team_id=team_id, user_ids=user_ids
         )
