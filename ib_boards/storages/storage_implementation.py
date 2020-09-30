@@ -622,9 +622,9 @@ class StorageImplementation(StorageInterface):
         new_field_ids = present_field_ids + extra_field_ids
         field_ids = json.dumps(
             {
-                "field_ids": present_field_ids
+                "field_ids": new_field_ids
             }
         )
-        field_ids_object.fields_order = new_field_ids
+        field_ids_object.fields_order = field_ids
         field_ids_object.save()
 

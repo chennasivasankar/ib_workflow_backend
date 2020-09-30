@@ -165,3 +165,7 @@ class TaskTemplateStorageInterface(abc.ABC):
     @abc.abstractmethod
     def is_common_template(self, task_template_id: str) -> bool:
         pass
+
+    @abc.abstractmethod
+    def get_common_task_template_ids(self):
+        pass
