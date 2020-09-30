@@ -3,6 +3,7 @@ from django.db import models
 
 class UserAuthToken(models.Model):
     user_id = models.CharField(max_length=36)
+    auth_token_user_id = models.CharField(max_length=36)
     token = models.CharField(max_length=100)
 
     def __str__(self):
