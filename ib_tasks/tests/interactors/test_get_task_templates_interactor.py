@@ -1415,7 +1415,6 @@ class TestGetTaskTemplatesInteractor:
         complete_task_template_dto.gofs_of_task_templates_dtos = []
         complete_task_template_dto.stage_gof_with_template_id_dtos = []
 
-        complete_task_template_dto.field_with_permissions_dtos = []
         assert complete_task_templates == presenter_response_mock
 
         get_user_role_ids_mock_object.assert_called_once_with(user_id=user_id)
