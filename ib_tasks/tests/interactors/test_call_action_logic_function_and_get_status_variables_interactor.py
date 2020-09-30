@@ -1,13 +1,16 @@
 import pytest
 from mock import create_autospec
 
-from ib_tasks.interactors.user_action_on_task.call_action_logic_function_and_get_or_update_task_status_variables_interactor import \
+from ib_tasks.constants.enum import FieldTypes
+from ib_tasks.interactors.user_action_on_task.\
+    call_action_logic_function_and_get_or_update_task_status_variables_interactor \
+    import \
     CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor, \
     InvalidModulePathFound, InvalidMethodFound
 from ib_tasks.tests.factories.storage_dtos import StatusVariableDTOFactory, \
     TaskDetailsDTOFactory, TaskGoFDTOFactory, \
     TaskGoFFieldDTOFactory, GOFMultipleStatusDTOFactory, FieldTypeDTOFactory, \
-    StageDisplayValueDTOFactory
+    StageDisplayValueDTOFactory, TaskBaseDetailsDTOFactory
 
 
 class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
@@ -20,6 +23,7 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
         StatusVariableDTOFactory.reset_sequence()
         TaskGoFDTOFactory.reset_sequence()
         StageDisplayValueDTOFactory.reset_sequence(0)
+        TaskBaseDetailsDTOFactory.reset_sequence()
 
     @pytest.fixture
     def storage_mock(self):
@@ -31,23 +35,24 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
 
     @pytest.fixture
     def create_task_storage(self):
-        from ib_tasks.interactors.storage_interfaces.create_or_update_task_storage_interface import \
+        from ib_tasks.interactors.storage_interfaces.\
+            create_or_update_task_storage_interface import \
             CreateOrUpdateTaskStorageInterface
         storage = create_autospec(CreateOrUpdateTaskStorageInterface)
         return storage
 
     @pytest.fixture
     def task_storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
-            TaskStorageInterface
+        from ib_tasks.interactors.storage_interfaces.task_storage_interface \
+            import TaskStorageInterface
         task_storage = create_autospec(
             TaskStorageInterface)
         return task_storage
 
     @pytest.fixture
     def action_storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
-            ActionStorageInterface
+        from ib_tasks.interactors.storage_interfaces.action_storage_interface \
+            import ActionStorageInterface
         action_storage = create_autospec(
             ActionStorageInterface)
         return action_storage
@@ -75,8 +80,10 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
 
     @staticmethod
     def stage_display_mock(mocker):
-        path = 'ib_tasks.interactors.get_stage_display_logic_interactor.StageDisplayLogicInteractor' \
-               '.get_stage_display_logic_condition'
+        path = \
+            'ib_tasks.interactors.' \
+            'get_stage_display_logic_interactor.StageDisplayLogicInteractor' \
+            '.get_stage_display_logic_condition'
         mock_obj = mocker.patch(path)
         return mock_obj
 
@@ -182,27 +189,31 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
             create_task_storage, task_gof_dtos, field_storage_mock,
             stage_storage_mock, gof_storage_mock):
         # Arrange
+        template_id = "template_0"
+        field_ids = ["field1", "field2", "field3"]
         task_id = 1
         action_id = 1
         path_name = "ib_tasks.populate.stage_ac.stage_1_action_name_1"
-        storage_mock.get_path_name_to_action.return_value = path_name
+        action_storage_mock.get_path_name_to_action.return_value = path_name
         statuses = [StatusVariableDTOFactory()]
 
         single_gof = GOFMultipleStatusDTOFactory(multiple_status=False)
         multiple_gof = GOFMultipleStatusDTOFactory()
-        storage_mock.get_enable_multiple_gofs_field_to_gof_ids.return_value = [
-            single_gof, multiple_gof
-        ]
-        field_type_dtos = FieldTypeDTOFactory.create_batch(size=3)
+        gof_storage_mock.\
+            get_enable_multiple_gofs_field_to_gof_ids.return_value = [
+                single_gof, multiple_gof]
+        field_type_dtos = FieldTypeDTOFactory.create_batch(
+            size=3, field_type=FieldTypes.PLAIN_TEXT.value)
         field_storage_mock.get_field_type_dtos.return_value = \
             field_type_dtos
-        storage_mock.get_status_variables_to_task.return_value = statuses
+        task_storage_mock.get_status_variables_to_task.return_value = statuses
 
         gof_field_dtos = TaskGoFFieldDTOFactory.create_batch(size=3)
         task_dto = TaskDetailsDTOFactory(
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
         )
+
         self.gof_and_fields_mock(mocker, task_dto)
         interactor = \
             CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor(
@@ -214,29 +225,38 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
                 stage_storage=stage_storage_mock, gof_storage=gof_storage_mock
             )
 
-        # Act
+        # Assert
         with pytest.raises(InvalidModulePathFound) as error:
             interactor \
                 .call_action_logic_function_and_get_status_variables_dtos_of_task()
 
-        # Assert
         assert error.value.path_name == path_name
-        storage_mock.get_path_name_to_action.assert_called_once_with(
+        action_storage_mock.get_path_name_to_action.assert_called_once_with(
             action_id=action_id)
+        gof_storage_mock.get_enable_multiple_gofs_field_to_gof_ids. \
+            assert_called_once_with(template_id=template_id)
+        field_storage_mock.get_field_type_dtos.assert_called_once_with(
+            field_ids=field_ids
+        )
+        task_storage_mock.get_status_variables_to_task.assert_called_once_with(
+            task_id=task_id)
 
     def test_given_invalid_method_name_raises_exception(
             self, mocker, storage_mock, action_storage_mock, task_storage_mock,
             create_task_storage, task_gof_dtos, field_storage_mock,
             stage_storage_mock, gof_storage_mock):
         # Arrange
+        template_id = "template_0"
+        field_ids = ["field1", "field2", "field3"]
         task_id = 1
         action_id = 1
 
-        path_name = "ib_tasks.populate.stage_actions_logic.stage_1_action_name_1"
+        path_name = \
+            "ib_tasks.tests.populate.stage_actions_logic.stage_1_action_name_1"
         mock_obj = mocker.patch("importlib.import_module")
         mock_obj.side_effect = InvalidMethodFound(
             method_name="stage_1_action_name_1")
-        storage_mock.get_path_name_to_action.return_value = path_name
+        action_storage_mock.get_path_name_to_action.return_value = path_name
 
         single_gof = GOFMultipleStatusDTOFactory(multiple_status=False)
         multiple_gof = GOFMultipleStatusDTOFactory()
@@ -247,7 +267,11 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
         statuses = [StatusVariableDTOFactory()]
 
         gof_field_dtos = TaskGoFFieldDTOFactory.create_batch(size=3)
-        storage_mock.get_status_variables_to_task.return_value = statuses
+        task_storage_mock.get_status_variables_to_task.return_value = statuses
+        field_type_dtos = FieldTypeDTOFactory.create_batch(
+            size=3, field_type=FieldTypes.PLAIN_TEXT.value)
+        field_storage_mock.get_field_type_dtos.return_value = \
+            field_type_dtos
 
         task_dto = TaskDetailsDTOFactory(
             task_gof_dtos=task_gof_dtos,
@@ -265,34 +289,51 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
                 stage_storage=stage_storage_mock, gof_storage=gof_storage_mock
             )
 
-        # Act
+        # Assert
         with pytest.raises(InvalidMethodFound) as error:
             interactor \
                 .call_action_logic_function_and_get_status_variables_dtos_of_task()
 
-        # Assert
         assert error.value.method_name == "stage_1_action_name_1"
-        storage_mock.get_path_name_to_action.assert_called_once_with(
+        action_storage_mock.get_path_name_to_action.assert_called_once_with(
             action_id=action_id)
+
+        gof_storage_mock.get_enable_multiple_gofs_field_to_gof_ids. \
+            assert_called_once_with(template_id=template_id)
+        field_storage_mock.get_field_type_dtos.assert_called_once_with(
+            field_ids=field_ids
+        )
+        action_storage_mock.get_path_name_to_action.assert_called_once_with(
+            action_id=action_id)
+        task_storage_mock.get_status_variables_to_task.assert_called_once_with(
+            task_id=task_id)
 
     def test_access_invalid_key_raises_invalid_key_error(
             self, mocker, storage_mock, action_storage_mock, task_storage_mock,
             create_task_storage, task_gof_dtos, field_storage_mock,
             stage_storage_mock, gof_storage_mock):
         # Arrange
+        template_id = "template_0"
+        field_ids = ["field1", "field2", "field3"]
         action_id = 1
         task_id = 1
 
-        path_name = "ib_tasks.populate.dynamic_logic_test_file.stage_1_action_name_1"
+        path_name = \
+            "ib_tasks.tests.interactors." \
+            "call_action_logic_testing_file.stage_1_action_name_1"
+        action_storage_mock.get_path_name_to_action.return_value = path_name
 
-        storage_mock.get_path_name_to_action.return_value = path_name
-        statuses = [StatusVariableDTOFactory()]
+        statuses = [StatusVariableDTOFactory(status_variable="variable0")]
         single_gof = GOFMultipleStatusDTOFactory(multiple_status=False)
         multiple_gof = GOFMultipleStatusDTOFactory()
-        storage_mock.get_enable_multiple_gofs_field_to_gof_ids.return_value = [
+        gof_storage_mock.get_enable_multiple_gofs_field_to_gof_ids.return_value = [
             single_gof, multiple_gof
         ]
-        storage_mock.get_status_variables_to_task.return_value = statuses
+        field_type_dtos = FieldTypeDTOFactory.create_batch(
+            size=3, field_type=FieldTypes.PLAIN_TEXT.value)
+        field_storage_mock.get_field_type_dtos.return_value = \
+            field_type_dtos
+        task_storage_mock.get_status_variables_to_task.return_value = statuses
         gof_field_dtos = TaskGoFFieldDTOFactory.create_batch(size=3)
         task_dto = TaskDetailsDTOFactory(
             task_gof_dtos=task_gof_dtos,
@@ -312,11 +353,17 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
         from ib_tasks.exceptions.action_custom_exceptions import \
             InvalidKeyError
 
-        # Act
+        # Assert
         with pytest.raises(InvalidKeyError):
             interactor \
                 .call_action_logic_function_and_get_status_variables_dtos_of_task()
-        # Assert
-        storage_mock.get_path_name_to_action.assert_called_once_with(
-            action_id=action_id
+
+        gof_storage_mock.get_enable_multiple_gofs_field_to_gof_ids. \
+            assert_called_once_with(template_id=template_id)
+        field_storage_mock.get_field_type_dtos.assert_called_once_with(
+            field_ids=field_ids
         )
+        action_storage_mock.get_path_name_to_action.assert_called_once_with(
+            action_id=action_id)
+        task_storage_mock.get_status_variables_to_task.assert_called_once_with(
+            task_id=task_id)
