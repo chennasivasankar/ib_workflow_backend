@@ -11,7 +11,7 @@ from ib_boards.constants.exception_messages import (
     USER_DONOT_HAVE_ACCESS, INVALID_PROJECT_ID, USER_IS_NOT_IN_PROJECT)
 from ib_boards.interactors.dtos import ColumnTasksDTO, FieldDTO, ActionDTO, \
     StarredAndOtherBoardsDTO, TaskStageDTO, StageAssigneesDTO, AssigneesDTO, \
-    TaskBaseAndCompleteDetailsDTO
+    TaskBaseAndCompleteDetailsDTO, TaskCompleteDetailsWithAllFieldsDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetBoardsPresenterInterface, \
     GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO, TaskDisplayIdDTO, \
@@ -414,13 +414,15 @@ class GetColumnTasksListViewPresenterImplementation(
         )
 
     def get_response_for_column_tasks_in_list_view(
-            self, complete_tasks_details_dto: CompleteTasksDetailsDTO, all_fields: List[AllFieldsDTO]):
+            self, task_complete_details: TaskCompleteDetailsWithAllFieldsDTO):
         presenter = GetColumnTasksPresenterImplementation()
         column_tasks_details_dict = presenter.get_column_tasks_details(
-            task_complete_details_dto=complete_tasks_details_dto
+            task_complete_details_dto=task_complete_details.task_complete_details,
+            task_ids=task_complete_details.task_ids,
+            total_tasks=task_complete_details.total_tasks
         )
         all_fields_dict = self._get_all_fields_dict(
-            all_fields=all_fields
+            all_fields=task_complete_details.all_fields
         )
         column_tasks_details_dict.update(all_fields_dict)
         return self.prepare_200_success_response(column_tasks_details_dict)

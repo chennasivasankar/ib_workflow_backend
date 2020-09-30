@@ -8,7 +8,8 @@ from typing import List
 from ib_boards.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue, OffsetValueExceedsTotalTasksCount, \
     UserDoNotHaveAccessToColumn, InvalidStageIds
-from ib_boards.interactors.dtos import ColumnTasksParametersDTO, FieldDTO
+from ib_boards.interactors.dtos import ColumnTasksParametersDTO, FieldDTO, \
+    TaskCompleteDetailsWithAllFieldsDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetColumnTasksListViewPresenterInterface
 from ib_boards.interactors.storage_interfaces.dtos import AllFieldsDTO
@@ -25,7 +26,7 @@ class GetColumnTasksInteractorListView:
             presenter: GetColumnTasksListViewPresenterInterface):
         from ib_boards.exceptions.custom_exceptions import InvalidColumnId
         try:
-            complete_tasks_details_dto, all_fields = self.get_column_tasks(
+            task_complete_details = self.get_column_tasks(
                 column_tasks_parameters=column_tasks_parameters
             )
         except InvalidColumnId:
@@ -41,8 +42,7 @@ class GetColumnTasksInteractorListView:
         except InvalidStageIds as error:
             return presenter.get_response_for_invalid_stage_ids(error=error)
         return presenter.get_response_for_column_tasks_in_list_view(
-            complete_tasks_details_dto=complete_tasks_details_dto,
-            all_fields=all_fields
+            task_complete_details=task_complete_details
         )
 
     def get_column_tasks(self,
@@ -52,10 +52,10 @@ class GetColumnTasksInteractorListView:
         column_tasks_interactor = GetColumnTasksInteractor(
             storage=self.storage
         )
-        complete_tasks_details_dto = column_tasks_interactor.get_column_tasks(
+        task_complete_details, total_tasks, task_ids = column_tasks_interactor.get_column_tasks(
             column_tasks_parameters=column_tasks_parameters
         )
-        field_dtos = complete_tasks_details_dto.task_fields_dtos
+        field_dtos = task_complete_details.task_fields_dtos
         field_ids = []
         for field_dto in field_dtos:
             if field_dto.field_id not in field_ids:
@@ -66,7 +66,12 @@ class GetColumnTasksInteractorListView:
             field_ids=field_ids,
             field_dtos=field_dtos
         )
-        return complete_tasks_details_dto, all_fields
+        return TaskCompleteDetailsWithAllFieldsDTO(
+            task_complete_details=task_complete_details,
+            all_fields=all_fields,
+            total_tasks=total_tasks,
+            task_ids=task_ids
+        )
 
     def _get_all_fields_in_the_column(
             self, column_id: str, user_id: str,

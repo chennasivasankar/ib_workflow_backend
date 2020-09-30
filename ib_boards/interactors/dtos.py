@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from ib_boards.constants.enum import ViewType, DisplayStatus
+from ib_boards.interactors.storage_interfaces.dtos import AllFieldsDTO
 
 
 @dataclass
@@ -274,3 +275,11 @@ class TaskBaseAndCompleteDetailsDTO:
     column_task_ids: List[ColumnTaskIdsDTO]
     assignees_dtos: List[StageAssigneesDTO]
     task_base_details_dtos: List[TaskCommonDetailsDTO]
+
+
+@dataclass
+class TaskCompleteDetailsWithAllFieldsDTO:
+    task_complete_details: TaskBaseAndCompleteDetailsDTO
+    all_fields: List[AllFieldsDTO]
+    total_tasks: int
+    task_ids: List[int]

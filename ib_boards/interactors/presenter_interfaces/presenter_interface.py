@@ -8,7 +8,8 @@ from django.http import response
 from ib_boards.adapters.iam_service import InvalidProjectIdsException
 from ib_boards.interactors.dtos import ActionDTO, \
     TaskCompleteDetailsDTO, FieldDTO, StarredAndOtherBoardsDTO, TaskStageDTO, \
-    StageAssigneesDTO, TaskBaseAndCompleteDetailsDTO
+    StageAssigneesDTO, TaskBaseAndCompleteDetailsDTO, \
+    TaskCompleteDetailsWithAllFieldsDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnCompleteDetails, \
     AllFieldsDTO
 
@@ -174,7 +175,7 @@ class GetColumnTasksListViewPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_column_tasks_in_list_view(
-            self, complete_tasks_details_dto: CompleteTasksDetailsDTO, all_fields: List[AllFieldsDTO]):
+            self, task_complete_details: TaskCompleteDetailsWithAllFieldsDTO):
         pass
 
 
