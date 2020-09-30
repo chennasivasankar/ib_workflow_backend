@@ -199,9 +199,6 @@ class CreateOrUpdateGoFsInteractor:
         self._validate_for_empty_read_permission_roles(
             gof_roles_dtos=gof_roles_dtos
         )
-        self._validate_for_empty_write_permission_roles(
-            gof_roles_dtos=gof_roles_dtos
-        )
 
     def _validate_for_invalid_max_columns(
             self, gof_dtos: List[GoFDTO]

@@ -117,29 +117,6 @@ class TestPopulateGoFs:
             value=str(err.value)
         )
 
-    @pytest.mark.parametrize("write_permissions", [None, []])
-    def test_populate_gofs_with_empty_write_permissions(
-            self, interactor, write_permissions, snapshot
-    ):
-        # Arrange
-        from ib_tasks.exceptions.gofs_custom_exceptions import GOFWritePermissionsCantBeEmpty
-        gof_roles_dtos = GoFRolesDTOFactory.create_batch(
-            size=2, write_permission_roles=write_permissions
-        )
-        complete_gof_details_dtos = CompleteGoFDetailsDTOFactory.create_batch(
-            size=2, gof_roles_dto=factory.Iterator(gof_roles_dtos)
-        )
-
-        # Act
-        with pytest.raises(GOFWritePermissionsCantBeEmpty) as err:
-            interactor.create_or_update_gofs(complete_gof_details_dtos)
-
-        # Assert
-        snapshot.assert_match(
-            name="empty_gof_write_permission_roles_message",
-            value=str(err.value)
-        )
-
     def test_populate_gofs_with_invalid_read_permission_roles(
             self, interactor, snapshot
     ):

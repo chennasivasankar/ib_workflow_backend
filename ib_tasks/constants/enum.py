@@ -27,6 +27,8 @@ class FieldTypes(enum.Enum):
     IMAGE_UPLOADER = "IMAGE_UPLOADER"
     FILE_UPLOADER = "FILE_UPLOADER"
     SEARCHABLE = "SEARCHABLE"
+    HTML_TEXT = "HTML_TEXT"
+    MARKDOWN_TEXT = "MARKDOWN_TEXT"
 
 
 class PermissionTypes(enum.Enum):

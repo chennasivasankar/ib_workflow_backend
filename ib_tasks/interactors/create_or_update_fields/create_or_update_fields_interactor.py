@@ -128,7 +128,8 @@ class CreateOrUpdateFieldsInteractor:
     def _check_for_field_roles_validations(
             field_roles_dtos: List[FieldRolesDTO]
     ):
-        from ib_tasks.interactors.fields_roles_validations_interactor \
+        from ib_tasks.interactors.create_or_update_fields\
+            .fields_roles_validations_interactor \
             import FieldsRolesValidationsInteractor
 
         field_roles_validation_interactor = FieldsRolesValidationsInteractor()

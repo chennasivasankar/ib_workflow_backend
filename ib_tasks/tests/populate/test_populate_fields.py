@@ -254,38 +254,6 @@ class TestCreateOrUpdateFields:
         snapshot.assert_match(name="exception_message = ",
                               value=str(err.value))
 
-    def test_given_empty_values_for_write_permissions_roles_raise_exception(
-            self, storage, field_dtos, snapshot, gof_storage
-    ):
-        # Arrange
-        from ib_tasks.exceptions.fields_custom_exceptions import \
-            EmptyValueForPermissions
-
-        field_roles_dtos = [
-            FieldRolesDTOFactory(
-                field_id="field1",
-                write_permission_roles=[]
-            ),
-            FieldRolesDTOFactory(
-                field_id="field2",
-                write_permission_roles=[]
-            ),
-            FieldRolesDTOFactory(field_id="filed3")
-        ]
-
-        interactor = CreateOrUpdateFieldsInteractor(storage=storage,
-                                                    gof_storage=gof_storage)
-
-        # Act
-        with pytest.raises(EmptyValueForPermissions) as err:
-            interactor.create_or_update_fields(
-                field_dtos=field_dtos,
-                field_roles_dtos=field_roles_dtos
-            )
-        # Assert
-        snapshot.assert_match(name="exception_message = ",
-                              value=str(err.value))
-
     def test_given_duplication_of_values_for_read_permissions_roles_raise_exception(
             self, storage, field_dtos, snapshot, gof_storage
     ):
