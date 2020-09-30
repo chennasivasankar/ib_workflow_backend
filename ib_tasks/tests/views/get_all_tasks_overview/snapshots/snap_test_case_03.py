@@ -7,10 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase03GetAllTasksOverviewAPITestCase.test_case status_code'] = '400'
+snapshots['TestCase03GetAllTasksOverviewAPITestCase.test_case status_code'] = '200'
 
 snapshots['TestCase03GetAllTasksOverviewAPITestCase.test_case body'] = {
-    'project_id': [
-        'This field is required.'
-    ]
+    'tasks': [
+    ],
+    'total_tasks': 0
 }

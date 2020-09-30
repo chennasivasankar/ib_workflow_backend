@@ -7,6 +7,13 @@ from ib_tasks.tests.factories.models import FieldRoleFactory
 @pytest.mark.django_db
 class TestFieldIdsHavingPermission:
 
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        from ib_tasks.tests.factories.models import FieldFactory
+
+        FieldRoleFactory.reset_sequence(1)
+        FieldFactory.reset_sequence(1)
+
     def test_given_field_ids_and_user_roles_returns_field_ids_having_permission_for_roles(
             self, storage, snapshot
     ):

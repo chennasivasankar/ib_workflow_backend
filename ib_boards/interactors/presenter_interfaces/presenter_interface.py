@@ -8,7 +8,8 @@ from django.http import response
 from ib_boards.adapters.iam_service import InvalidProjectIdsException
 from ib_boards.interactors.dtos import ActionDTO, \
     TaskCompleteDetailsDTO, FieldDTO, StarredAndOtherBoardsDTO, TaskStageDTO, \
-    StageAssigneesDTO
+    StageAssigneesDTO, TaskBaseAndCompleteDetailsDTO, \
+    TaskCompleteDetailsWithAllFieldsDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnCompleteDetails, \
     AllFieldsDTO
 
@@ -94,14 +95,10 @@ class PresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_response_for_column_details(self,
-                                        column_details: List[ColumnCompleteDetails],
-                                        task_fields_dtos: List[FieldDTO],
-                                        task_actions_dtos: List[ActionDTO],
-                                        column_tasks: List[ColumnTasksDTO],
-                                        task_stage_dtos: List[TaskStageDTO],
-                                        assignees_dtos: List[StageAssigneesDTO]
-                                        ):
+    def get_response_for_column_details(
+            self, column_details: List[ColumnCompleteDetails],
+            column_tasks: List[ColumnTasksDTO],
+            tasks_complete_details_dto: TaskBaseAndCompleteDetailsDTO):
         pass
 
     @abc.abstractmethod
@@ -143,7 +140,7 @@ class GetColumnTasksPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_column_tasks(
-            self, complete_tasks_details_dto: CompleteTasksDetailsDTO):
+            self, task_complete_details_dto: TaskBaseAndCompleteDetailsDTO, total_tasks: int, task_ids: List[int]):
         pass
 
 
@@ -178,7 +175,7 @@ class GetColumnTasksListViewPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_column_tasks_in_list_view(
-            self, complete_tasks_details_dto: CompleteTasksDetailsDTO, all_fields: List[AllFieldsDTO]):
+            self, task_complete_details: TaskCompleteDetailsWithAllFieldsDTO):
         pass
 
 

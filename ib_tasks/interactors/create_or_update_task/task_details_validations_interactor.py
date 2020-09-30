@@ -122,9 +122,11 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
     ) -> Optional[InvalidTaskTemplateOfProject]:
         project_task_templates = \
             self.task_template_storage.get_project_templates(project_id)
+        common_template = \
+            self.task_template_storage.is_common_template(task_template_id)
         invalid_template_of_project = \
             task_template_id not in project_task_templates
-        if invalid_template_of_project:
+        if invalid_template_of_project and not common_template:
             raise InvalidTaskTemplateOfProject(project_id, task_template_id)
         return
 
