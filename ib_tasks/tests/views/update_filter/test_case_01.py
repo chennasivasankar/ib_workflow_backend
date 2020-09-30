@@ -52,6 +52,9 @@ class TestCase01UpdateFilterAPITestCase(TestUtils):
         from ib_tasks.tests.factories.models import FilterConditionFactory
         FilterConditionFactory.create_batch(1, filter_id=1)
 
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids_based_on_project_mock
+        get_user_role_ids_based_on_project_mock(mocker)
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
