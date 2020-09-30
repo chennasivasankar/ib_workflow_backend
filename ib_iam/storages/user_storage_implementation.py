@@ -438,17 +438,12 @@ class UserStorageImplementation(UserStorageInterface):
         from ib_iam.models import TeamUser
         from ib_iam.models import UserDetails
 
-        from ib_iam.models import ProjectTeam
-        team_ids = ProjectTeam.objects.filter(
-            project_id=project_id
-        ).values_list(
-            "team_id", flat=True
-        )
         user_ids = TeamUser.objects.filter(
-            team_id__in=team_ids
+            team__projectteam__project_id=project_id
         ).values_list(
             "user_id", flat=True
         )
+
         user_ids = list(set(user_ids))
         user_details_objects = UserDetails.objects.filter(
             user_id__in=user_ids
@@ -544,18 +539,13 @@ class UserStorageImplementation(UserStorageInterface):
     def validate_users_for_project(
             self, user_ids: List[str], project_id: str
     ) -> Optional[InvalidUserIdsForProject]:
-        from ib_iam.models import ProjectTeam
-        team_ids = ProjectTeam.objects.filter(
-            project_id=project_id
-        ).values_list(
-            "team_id", flat=True)
-
         from ib_iam.models import TeamUser
         user_ids_in_project = TeamUser.objects.filter(
-            team_id__in=team_ids
+            team__projectteam__project_id=project_id
         ).values_list(
             "user_id", flat=True
         )
+
         invalid_user_ids = [
             user_id
             for user_id in user_ids if user_id not in user_ids_in_project
