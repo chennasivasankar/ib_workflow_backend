@@ -6,8 +6,8 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_boards.tests.common_fixtures.adapters.iam_service import (
-    adapter_mock_to_get_user_role, mock_validate_project_ids,
-    mock_for_validate_if_user_is_in_project)
+    mock_validate_project_ids,
+    mock_for_validate_if_user_is_in_project, mock_get_user_roles)
 from ib_boards.tests.factories.models import UserStarredBoardFactory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
@@ -32,10 +32,12 @@ class TestCase01GetBoardsDetailsAPITestCase(TestUtils):
         UserStarredBoardFactory(board=boards[1], user_id=api_user.user_id)
         UserStarredBoardFactory(board=boards[3], user_id=api_user.user_id)
         UserStarredBoardFactory(board=boards[7], user_id=api_user.user_id)
-        roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC", "FIN_PAYMENT_APPROVER",
-                 "FIN_PAYMENTS_LEVEL1_VERIFIER", "FIN_PAYMENTS_LEVEL2_VERIFIER",
+        roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC",
+                 "FIN_PAYMENT_APPROVER",
+                 "FIN_PAYMENTS_LEVEL1_VERIFIER",
+                 "FIN_PAYMENTS_LEVEL2_VERIFIER",
                  "FIN_PAYMENTS_LEVEL3_VERIFIER"]
-        user_roles = adapter_mock_to_get_user_role(mocker, api_user.user_id)
+        user_roles = mock_get_user_roles(mocker, roles)
         user_roles.return_value = roles
 
         project_ids = [project_id]

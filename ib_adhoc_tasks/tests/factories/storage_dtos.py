@@ -11,7 +11,7 @@ class GroupByResponseDTOFactory(factory.Factory):
         model = GroupByResponseDTO
 
     group_by_key = factory.Iterator(["ASSIGNEE", "STAGE"])
-    display_name = factory.Iterator(["ASSIGNEE", "STAGE"])
+    display_name = factory.Iterator(["Assignee", "Stage"])
     order = factory.Iterator([1, 2])
 
 
