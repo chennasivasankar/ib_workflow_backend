@@ -44,3 +44,9 @@ class ActionDetailsDTO:
 class StageActionDetailsDTO(ActionDetailsDTO):
     action_type: Optional[ActionTypes]
     transition_template_id: Optional[str]
+
+
+@dataclass
+class ActionIdFunctionPathDTO:
+    action_id: int
+    py_function_import_path: str

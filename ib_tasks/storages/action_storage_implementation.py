@@ -13,7 +13,7 @@ from ib_tasks.interactors.stages_dtos import (TemplateStageDTO,
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    StageActionDetailsDTO
+    StageActionDetailsDTO, ActionIdFunctionPathDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO, StageIdActionNameDTO, StageActionIdDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
@@ -341,9 +341,9 @@ class ActionsStorageImplementation(ActionStorageInterface):
         ]
 
     def update_stage_actions_func_path(
-            self, action_dtos: List[StageActionLogicDTO]
+            self, action_dtos: List[ActionIdFunctionPathDTO]
     ):
-        action_func_path_dict = self._get_action_ids(action_dtos)
+        action_func_path_dict = self._get_action_func_path_dict(action_dtos)
         action_objs = StageAction.objects.all()
         for action_obj in action_objs:
             function_path = action_func_path_dict[action_obj.id]
@@ -352,8 +352,9 @@ class ActionsStorageImplementation(ActionStorageInterface):
                                         ['py_function_import_path'])
 
     @staticmethod
-    def _get_action_ids(action_dtos: List[StageActionLogicDTO]
-                        ) -> Dict[int, str]:
+    def _get_action_func_path_dict(
+            action_dtos: List[ActionIdFunctionPathDTO]
+    ) -> Dict[int, str]:
 
         return {
             action_dto.action_id: action_dto.py_function_import_path

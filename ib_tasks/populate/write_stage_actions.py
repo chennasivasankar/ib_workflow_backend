@@ -1,4 +1,6 @@
 from ib_tasks.interactors.stages_dtos import StageActionLogicDTO
+from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+    ActionIdFunctionPathDTO
 
 
 def writing_data_to_stage_actions_logic():
@@ -18,7 +20,14 @@ def writing_data_to_stage_actions_logic():
         formatted_content = FormatCode(content)[0]
         file_.write(formatted_content)
         file_.close()
-    storage.update_stage_actions_func_path(actions_dto)
+    change_action_dtos = [
+        ActionIdFunctionPathDTO(
+            action_id=action_dto.action_id,
+            py_function_import_path=action_dto.py_function_import_path
+        )
+        for action_dto in actions_dto
+    ]
+    storage.update_stage_actions_func_path(change_action_dtos)
 
 
 def _define_single_method(action_dto: StageActionLogicDTO):
