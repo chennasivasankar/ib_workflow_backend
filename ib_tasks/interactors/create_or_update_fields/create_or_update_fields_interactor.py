@@ -1,7 +1,11 @@
 from typing import List
 
-from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS, UPLOADERS
+from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS, UPLOADERS, \
+    FIELD_TYPE_TEXT_WITH_FIELD_VALUES
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
+from ib_tasks.constants.exception_messages import EMPTY_FIELD_VALUES
+from ib_tasks.exceptions.fields_custom_exceptions import \
+    EmptyValuesForFieldValues
 from ib_tasks.interactors.create_or_update_fields \
     .field_type_searchable_validations_interactor \
     import FieldTypeSearchableValidationsInteractor
@@ -123,6 +127,12 @@ class CreateOrUpdateFieldsInteractor:
         if field_type == FieldTypes.SEARCHABLE.value:
             interactor = FieldTypeSearchableValidationsInteractor()
             interactor.field_type_searchable_validations(field_dto)
+
+        if field_type in FIELD_TYPE_TEXT_WITH_FIELD_VALUES:
+            is_field_values_empty = not field_dto.field_values
+            if is_field_values_empty:
+                message = EMPTY_FIELD_VALUES.format(field_dto.field_type)
+                raise EmptyValuesForFieldValues(message)
 
     @staticmethod
     def _check_for_field_roles_validations(
