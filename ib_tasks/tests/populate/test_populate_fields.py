@@ -68,14 +68,6 @@ class TestCreateOrUpdateFields:
         ]
         return field_dtos
 
-    # @pytest.fixture
-    # def populate_gofs(self):
-    #     from ib_tasks.tests.factories.models import GoFFactory
-    #     gof_ids = ["gof1", "gof2"]
-    #     import factory
-    #     GoFFactory.reset_sequence()
-    #     GoFFactory.create_batch(size=2, gof_id=factory.Iterator(gof_ids))
-
     @pytest.fixture
     def valid_field_roles_dtos(self):
         field_roles_dtos = [
@@ -129,7 +121,6 @@ class TestCreateOrUpdateFields:
             FieldDTOFactory(field_id="FIN_SALUATION")
         ]
 
-        duplication_of_field_ids = ["FIN_SALUATION"]
         interactor = CreateOrUpdateFieldsInteractor(storage=storage,
                                                     gof_storage=gof_storage)
 
