@@ -30,7 +30,7 @@ class AddPMAndSubUsers:
         from ib_iam.storages.team_member_level_storage_implementation import \
             TeamMemberLevelStorageImplementation
         team_member_level_storage = TeamMemberLevelStorageImplementation()
-        pm_and_sub_user_ids_dtos = self._convert_to_pm_and_sub_user_ids_dtos(
+        pm_and_sub_user_auth_ids_dtos = self._convert_to_pm_and_sub_user_ids_dtos(
             pm_and_sub_users
         )
 
@@ -43,7 +43,7 @@ class AddPMAndSubUsers:
             team_member_level_storage=team_member_level_storage
         )
         interactor.add_pm_and_sub_users(
-            pm_and_sub_user_ids_dtos=pm_and_sub_user_ids_dtos,
+            pm_and_sub_user_auth_ids_dtos=pm_and_sub_user_auth_ids_dtos,
             project_id=project_id
         )
 
@@ -51,10 +51,10 @@ class AddPMAndSubUsers:
     def _convert_to_pm_and_sub_user_ids_dtos(
             pm_and_sub_users
     ) -> List[PMAndSubUsersAuthIdsDTO]:
-        pm_and_sub_user_ids_dtos = [
+        pm_and_sub_user_auth_ids_dtos = [
             PMAndSubUsersAuthIdsDTO(
                 pm_auth_user_id=pm_and_sub_user['pm_user_id'],
                 sub_user_auth_user_id=pm_and_sub_user['user_user_id']
             ) for pm_and_sub_user in pm_and_sub_users
         ]
-        return pm_and_sub_user_ids_dtos
+        return pm_and_sub_user_auth_ids_dtos
