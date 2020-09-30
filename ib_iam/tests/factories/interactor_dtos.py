@@ -1,11 +1,11 @@
 import factory
 
+from ib_iam.interactors.auth.update_user_password_interactor import \
+    CurrentAndNewPasswordDTO
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, AddUserDetailsDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO, \
     CompleteUserProfileDTO, CompleteTeamMemberLevelsDetailsDTO, \
-    UserIdWithRoleIdsDTO
-from ib_iam.interactors.auth.update_user_password_interactor import \
-    CurrentAndNewPasswordDTO
+    UserIdWithRoleIdsDTO, AuthUserDTO
 from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
 from ib_iam.tests.factories.storage_dtos import MemberDTOFactory, \
     TeamMemberLevelDetailsDTOFactory, \
@@ -104,3 +104,13 @@ class UserIdWithRoleIdsDTOFactory(factory.Factory):
     role_ids = factory.Iterator([
         "ROLE_1", "ROLE_2", "ROLE_3"
     ])
+
+
+class AuthUserDTOFactory(factory.Factory):
+    class Meta:
+        model = AuthUserDTO
+
+    token = factory.sequence(lambda n: "token_{}".format(n))
+    name = factory.sequence(lambda n: "name_{}".format(n))
+    email = factory.sequence(lambda n: "token_{}@gmail.com".format(n))
+    password = "Password123#"

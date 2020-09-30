@@ -15,7 +15,7 @@ from ib_tasks.tests.factories.models import StagePermittedRolesFactory, \
     TaskTemplateFactory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.adapter_dtos import ProjectDetailsDTOFactory, \
-    UserIdWIthTeamDetailsDTOFactory
+    UserIdWIthTeamDetailsDTOFactory, TeamDetailsDTOFactory
 
 
 class TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
@@ -43,6 +43,7 @@ class TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
         ProjectDetailsDTOFactory.reset_sequence()
         UserIdWIthTeamDetailsDTOFactory.reset_sequence()
         ProjectDetailsDTOFactory.reset_sequence()
+        TeamDetailsDTOFactory.reset_sequence()
 
         user_details_mock = prepare_permitted_user_details_mock(mocker)
         user_details_dtos = [
@@ -96,12 +97,23 @@ class TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
             get_team_info_for_given_user_ids_with_given_names_mock, \
             get_project_info_for_given_ids_mock
 
-        get_team_info_for_given_user_ids_with_given_names_mock(
-            mocker)
+        get_team_info_for_given_user_ids_with_given_names_mock_obj = \
+            get_team_info_for_given_user_ids_with_given_names_mock(mocker)
+        user_id_with_team_details_dtos = \
+            UserIdWIthTeamDetailsDTOFactory.create_batch(
+                size=2, user_id=factory.Iterator(['user_id_1', 'user_id_2']))
+        get_team_info_for_given_user_ids_with_given_names_mock_obj.\
+            return_value = user_id_with_team_details_dtos
+
         get_project_info_for_given_ids_mock(mocker)
         project_ids_validation_mock = mocker.patch(
             'ib_tasks.adapters.auth_service.AuthService.validate_project_ids')
         project_ids_validation_mock.return_value = ['project_id_1']
+
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_user_details_with_roles_mock
+        get_user_details_with_roles_mock(
+            mocker, role_ids=["FIN_PAYMENT_APPROVER", "FIN_PAYMENT_REQUESTER"])
 
         body = {"task_id": "IBWF-1", "action_id": 1}
         path_params = {}
