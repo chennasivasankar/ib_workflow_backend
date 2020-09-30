@@ -1,8 +1,8 @@
 from collections import defaultdict
 from typing import List
 
-from ib_iam.constants.config import DEFAULT_TEAM_ID, DEFAULT_TEAM_NAME, \
-    LEVEL_0_HIERARCHY, LEVEL_0_NAME, LEVEL_1_HIERARCHY, LEVEL_1_NAME
+from ib_iam.constants.config import LEVEL_0_HIERARCHY, LEVEL_0_NAME, \
+    LEVEL_1_HIERARCHY, LEVEL_1_NAME
 from ib_iam.interactors.dtos.dtos import PMAndSubUsersAuthTokensDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserIdWithTokenDTO
@@ -58,10 +58,10 @@ class PMAndSubUsersInteractor:
                     project_id=PROJECT_ID, team_ids=[team_id]
                 )
             self.add_pm_and_sub_users_to_levels_for_a_team(
-                pm_id_and_sub_user_ids=pm_id_and_sub_user_ids, team_id=team_id
+                pm_id=pm_id, sub_user_ids=user_ids, team_id=team_id
             )
             self.add_pm_and_sub_users_as_superior_and_members(
-                pm_id_and_sub_user_ids=pm_id_and_sub_user_ids, team_id=team_id
+                pm_id=pm_id, sub_user_ids=user_ids, team_id=team_id
             )
 
     @staticmethod
@@ -78,17 +78,15 @@ class PMAndSubUsersInteractor:
         return user_tokens
 
     def add_pm_and_sub_users_as_superior_and_members(
-            self, pm_id_and_sub_user_ids, team_id: str,
+            self, pm_id: str, sub_user_ids: List[str], team_id: str
     ):
         member_level_hierarchy = 0
         immediate_superior_user_id_with_member_ids_dtos = [
             ImmediateSuperiorUserIdWithUserIdsDTO(
                 immediate_superior_user_id=pm_id,
-                member_ids=user_ids
+                member_ids=sub_user_ids
             )
-            for pm_id, user_ids in pm_id_and_sub_user_ids.items()
         ]
-
         self.team_member_level_storage.add_members_to_superiors(
             team_id=team_id, member_level_hierarchy=member_level_hierarchy,
             immediate_superior_user_id_with_member_ids_dtos=
@@ -96,7 +94,7 @@ class PMAndSubUsersInteractor:
         )
 
     def add_pm_and_sub_users_to_levels_for_a_team(
-            self, pm_id_and_sub_user_ids,
+            self, pm_id: str, sub_user_ids: List[str],
             team_id: str
     ):
         team_member_level_0 = self.team_member_level_storage \
@@ -109,18 +107,14 @@ class PMAndSubUsersInteractor:
             team_id=team_id, level_hierarchy=LEVEL_1_HIERARCHY,
             level_name=LEVEL_1_NAME
         )
-        pm_ids = list(pm_id_and_sub_user_ids.keys())
-        member_ids = []
-        for sub_user_ids in pm_id_and_sub_user_ids.values():
-            member_ids.extend(sub_user_ids)
         team_member_level_id_with_member_ids_dtos = [
             TeamMemberLevelIdWithMemberIdsDTO(
                 team_member_level_id=team_member_level_0,
-                member_ids=pm_ids
+                member_ids=[pm_id]
             ),
             TeamMemberLevelIdWithMemberIdsDTO(
                 team_member_level_id=team_member_level_1,
-                member_ids=member_ids
+                member_ids=sub_user_ids
             )
         ]
         self.team_member_level_storage.add_members_to_levels_for_a_team(
