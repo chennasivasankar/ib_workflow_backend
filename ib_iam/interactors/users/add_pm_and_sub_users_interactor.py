@@ -134,7 +134,6 @@ class PMAndSubUsersInteractor:
 
         pm_id_and_sub_user_ids_dictionary = defaultdict(list)
         for pm_and_sub_user_dto in pm_and_sub_user_dtos:
-            print(pm_and_sub_user_dto)
             pm_id_and_sub_user_ids_dictionary[
                 user_token_and_id_dictionary[pm_and_sub_user_dto.pm_auth_token]
             ].append(
@@ -142,5 +141,4 @@ class PMAndSubUsersInteractor:
                     pm_and_sub_user_dto.sub_user_auth_token
                 ]
             )
-            print(pm_id_and_sub_user_ids_dictionary)
         return pm_id_and_sub_user_ids_dictionary
