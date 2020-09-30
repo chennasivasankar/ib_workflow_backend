@@ -1,6 +1,7 @@
 import factory
 
-from ib_discussions.constants.enum import EntityType, MultimediaFormat
+from ib_discussions.constants.enum import EntityType, MultimediaFormat, \
+    FilterByEnum
 from ib_discussions.interactors.dtos.dtos import DiscussionWithEntityDetailsDTO, \
     DiscussionIdWithTitleAndDescriptionDTO, MultimediaDTO, \
     UpdateCompleteCommentDTO, CreateCompleteCommentDTO, \
@@ -81,3 +82,17 @@ class CreateCompleteReplyToCommentDTOFactory(factory.Factory):
         "20be920b-7b4c-49e7-8adb-41a0c18da848"
     ])
     multimedia_dtos = factory.List([])
+
+
+class FilterByDTOFactory(factory.Factory):
+    class Meta:
+        model = FilterByDTO
+
+    filter_by = factory.Iterator([
+        FilterByEnum.ALL.value,
+        FilterByEnum.POSTED_BY_ME.value,
+        FilterByEnum.CLARIFIED.value,
+        FilterByEnum.NOT_CLARIFIED.value
+    ]
+    )
+    value = factory.Iterator([True, False])
