@@ -309,7 +309,6 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
     def get_or_create_team_member_level_hierarchy(
             self, team_id: str, level_hierarchy: int, level_name: str
     ) -> str:
-        # TODO Write tests for it
         from ib_iam.models import TeamMemberLevel
         team_member_level_object, _ = TeamMemberLevel.objects.get_or_create(
             team_id=team_id, level_name=level_name,

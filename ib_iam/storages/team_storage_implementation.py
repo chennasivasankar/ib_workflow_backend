@@ -150,15 +150,13 @@ class TeamStorageImplementation(TeamStorageInterface):
         # todo write tests for this
         return Team.objects.filter(team_id=team_id).exists
 
-    def get_or_create(self, name: str) -> Tuple[str, bool]:
-        # todo write tests for this
+    def get_or_create_team_with_name(self, name: str) -> Tuple[str, bool]:
         team_object, is_created = Team.objects.get_or_create(
             name=name
         )
         return str(team_object.team_id), is_created
 
     def get_or_create_team_with_id_and_name(self, team_id, name: str) -> bool:
-        # todo write tests for this
         _, is_created = Team.objects.get_or_create(
             team_id=team_id, name=name
         )
