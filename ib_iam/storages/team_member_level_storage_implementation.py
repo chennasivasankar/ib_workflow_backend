@@ -8,7 +8,8 @@ from ib_iam.exceptions.custom_exceptions import \
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import \
-    TeamMemberLevelDetailsDTO, MemberDTO, MemberIdWithSubordinateMemberIdsDTO
+    TeamMemberLevelDetailsDTO, MemberDTO, MemberIdWithSubordinateMemberIdsDTO, \
+    MemberLevelAndHierarchyDTO
 from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface import \
     TeamMemberLevelStorageInterface
 
@@ -289,3 +290,28 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
         if is_user_in_a_least_level:
             return True
         return False
+
+    def get_team_member_level_id_and_hierarchy(
+            self, team_id: str
+    ) -> List[MemberLevelAndHierarchyDTO]:
+        from ib_iam.models import TeamMemberLevel
+        team_memeber_levels = TeamMemberLevel.objects.filter(
+            team_id=team_id
+        ).values('id', 'level_hierarchy')
+        member_level_and_hierarchy_dtos = [
+            MemberLevelAndHierarchyDTO(
+                member_level_id=level_id,
+                level_hierarchy=hierarchy
+            ) for level_id, hierarchy in team_memeber_levels.items()
+        ]
+        return member_level_and_hierarchy_dtos
+
+    def get_or_create_team_member_level_hierarchy(
+            self, team_id: str, level_hierarchy: int, level_name: str
+    ) -> str:
+        from ib_iam.models import TeamMemberLevel
+        team_member_level_object, _ = TeamMemberLevel.objects.get_or_create(
+            team_id=team_id, level_name=level_name,
+            level_hierarchy=level_hierarchy
+        )
+        return str(team_member_level_object.id)

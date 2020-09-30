@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from ib_iam.exceptions.custom_exceptions import InvalidTeamId
 from ib_iam.interactors.storage_interfaces.dtos import (
@@ -149,3 +149,15 @@ class TeamStorageImplementation(TeamStorageInterface):
     def is_team_exist(self, team_id: str) -> bool:
         # todo write tests for this
         return Team.objects.filter(team_id=team_id).exists
+
+    def get_or_create_team_with_name(self, name: str) -> Tuple[str, bool]:
+        team_object, is_created = Team.objects.get_or_create(
+            name=name
+        )
+        return str(team_object.team_id), is_created
+
+    def get_or_create_team_with_id_and_name(self, team_id, name: str) -> bool:
+        _, is_created = Team.objects.get_or_create(
+            team_id=team_id, name=name
+        )
+        return is_created

@@ -3,8 +3,9 @@ from django.contrib import admin
 
 from ib_iam.models import (
     UserDetails, TeamUser, UserRole, Company,
-    ProjectRole, Team, ElasticUserIntermediary, TeamMemberLevel, City, State, Country,
-    Project, ProjectTeam
+    ProjectRole, Team, ElasticUserIntermediary, TeamMemberLevel, City, State,
+    Country,
+    Project, ProjectTeam, UserAuthToken
 )
 
 
@@ -87,3 +88,4 @@ admin.site.register(ProjectTeam, ProjectTeamAdmin)
 admin.site.register(City)
 admin.site.register(State)
 admin.site.register(Country)
+admin.site.register(UserAuthToken)
