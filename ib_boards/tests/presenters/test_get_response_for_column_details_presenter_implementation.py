@@ -15,14 +15,14 @@ class TestGetColumnDetails:
     def get_task_actions_dtos_with_duplicates(self):
         TaskActionsDTOFactory.reset_sequence()
         return TaskActionsDTOFactory.create_batch(size=3) + [TaskActionsDTOFactory(
-            task_id='task_id_0', transition_template_id=None
+            task_id=0, transition_template_id=None
         )]
 
     @pytest.fixture()
     def get_task_fields_dtos_with_duplicates(self):
         TaskFieldsDTOFactory.reset_sequence()
         return TaskFieldsDTOFactory.create_batch(size=3) + [TaskFieldsDTOFactory(
-            task_id='task_id_0'
+            task_id=0
         )]
 
     @pytest.fixture()
@@ -37,7 +37,7 @@ class TestGetColumnDetails:
         TaskActionsDTOFactory.reset_sequence()
         return TaskActionsDTOFactory.create_batch(size=3) + [
             TaskActionsDTOFactory(
-                task_id='task_id_0', action_id='action_id_0'
+                task_id=0, action_id='action_id_0'
             )]
 
     @pytest.fixture()
@@ -45,7 +45,7 @@ class TestGetColumnDetails:
         TaskFieldsDTOFactory.reset_sequence()
         return TaskFieldsDTOFactory.create_batch(size=3) + [
             TaskFieldsDTOFactory(
-                task_id='task_id_0', field_id='field_id_0'
+                task_id=0, field_id='field_id_0'
             )]
 
     @pytest.fixture
@@ -61,11 +61,15 @@ class TestGetColumnDetails:
     @pytest.fixture()
     def get_task_fields_dtos(self):
         TaskFieldsDTOFactory.reset_sequence()
-        tasks = TaskFieldsDTOFactory.create_batch(size=3, task_id="task_id_1", stage_id="stage_id_1")
-        tasks.append(TaskFieldsDTOFactory(task_id="task_id_2", stage_id="stage_id_2", key="key_0"))
-        tasks.append(TaskFieldsDTOFactory(task_id="task_id_2", stage_id="stage_id_2", key="key_4"))
-        tasks.append(TaskFieldsDTOFactory(task_id="task_id_2", stage_id="stage_id_2", key="key_1"))
-        tasks.append(TaskFieldsDTOFactory(task_id="task_id_0", stage_id="stage_id_0"))
+        tasks = TaskFieldsDTOFactory.create_batch(size=3, task_id=1,
+                                                  stage_id="stage_id_1")
+        tasks.append(TaskFieldsDTOFactory(task_id=2, stage_id="stage_id_2",
+                                          key="key_0"))
+        tasks.append(TaskFieldsDTOFactory(task_id=2, stage_id="stage_id_2",
+                                          key="key_4"))
+        tasks.append(TaskFieldsDTOFactory(task_id=2, stage_id="stage_id_2",
+                                          key="key_1"))
+        tasks.append(TaskFieldsDTOFactory(task_id=0, stage_id="stage_id_0"))
         return tasks
 
     @pytest.fixture()
