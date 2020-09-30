@@ -10,23 +10,30 @@ from ib_tasks.tests.factories.models import TaskFactory, \
 @pytest.mark.django_db
 class TestGetTaskDueMissingDetails:
 
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        TaskFactory.reset_sequence()
+        StageModelFactory.reset_sequence()
+        TaskStageModelFactory.reset_sequence()
+        TaskDueDetailsFactory.reset_sequence()
+        TaskStageHistoryModelFactory.reset_sequence()
+
     @pytest.fixture()
     @freeze_time("2020-08-10 12:30:56")
     def populate_data(self):
-        TaskFactory.reset_sequence()
-        StageModelFactory.reset_sequence()
         stage = StageModelFactory()
         tasks = TaskFactory.create_batch(size=3)
-        TaskStageModelFactory.reset_sequence()
         TaskStageModelFactory(task=tasks[0])
-        TaskDueDetailsFactory.reset_sequence()
-        TaskStageHistoryModelFactory.reset_sequence()
         TaskStageHistoryModelFactory.create_batch(size=5, task=tasks[0],
                                                   stage=stage)
         TaskDueDetailsFactory.create_batch(
-            task=tasks[0], size=2, count=1, stage=stage)
+            task=tasks[0], size=2, count=1, stage=stage,
+            due_datetime="2020-08-10 12:30:56"
+        )
         TaskDueDetailsFactory.create_batch(
-            task=tasks[0], size=2, reason_id=-1, count=1)
+            task=tasks[0], size=2, reason_id=-1, count=1,
+            due_datetime="2020-08-10 12:30:56"
+        )
 
     @freeze_time("2020-08-10 12:30:56")
     def test_get_due_details_of_task_given_task_id(self, populate_data,
@@ -45,10 +52,8 @@ class TestGetTaskDueMissingDetails:
     @freeze_time("2020-08-10 12:30:56")
     def test_get_due_details_of_task_when_task_has_no_delays(self, snapshot):
         # Arrange
-        TaskFactory.reset_sequence()
         tasks = TaskFactory.create_batch(size=3)
         stage_id = 1
-        TaskStageHistoryModelFactory.reset_sequence()
         TaskStageHistoryModelFactory(task=tasks[0])
         task_id = 1
         storage = StorageImplementation()
