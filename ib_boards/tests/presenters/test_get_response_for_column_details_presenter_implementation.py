@@ -3,7 +3,7 @@ import pytest
 from ib_boards.presenters.presenter_implementation import \
     PresenterImplementation
 from ib_boards.tests.factories.interactor_dtos import TaskColumnDTOFactory, \
-    StageAssigneesDTOFactory
+    StageAssigneesDTOFactory, AssigneeDetailsDTOFactory
 from ib_boards.tests.factories.storage_dtos import (
     TaskActionsDTOFactory, TaskFieldsDTOFactory,
     ColumnCompleteDetailsDTOFactory, TaskStageDTOFactory)
@@ -29,7 +29,7 @@ class TestGetColumnDetails:
     def get_column_task_details_with_duplicates(self):
         TaskColumnDTOFactory.reset_sequence()
         return TaskColumnDTOFactory.create_batch(size=3) + [TaskColumnDTOFactory(
-            column_id='COLUMN_ID_1', task_id=1
+            column_id='COLUMN_ID_1', task_id=0
         )]
 
     @pytest.fixture()
@@ -50,6 +50,7 @@ class TestGetColumnDetails:
 
     @pytest.fixture
     def task_stage_dtos(self):
+        TaskStageDTOFactory.stage_color.reset()
         TaskStageDTOFactory.reset_sequence()
         return TaskStageDTOFactory.create_batch(size=3)
 
@@ -84,6 +85,7 @@ class TestGetColumnDetails:
 
     @pytest.fixture
     def assignee_dtos(self):
+        AssigneeDetailsDTOFactory.reset_sequence()
         StageAssigneesDTOFactory.reset_sequence()
         return StageAssigneesDTOFactory.create_batch(4)
 

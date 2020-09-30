@@ -12,7 +12,7 @@ from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
     TaskStatusDTO, FieldDetailsDTO, ActionDetailsDTO, ColumnTaskIdsDTO, \
     StageAssigneesDTO, AssigneesDTO, \
     ProjectBoardDTO, \
-    FieldNameDTO, GetTaskDetailsDTO
+    FieldNameDTO, GetTaskDetailsDTO, TaskIdStageDTO
 from ib_boards.interactors.dtos import ColumnTasksDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnStageIdsDTO, \
     AllFieldsDTO
@@ -160,9 +160,23 @@ class AssigneeDetailsDTOFactory(factory.Factory):
     class Meta:
         model = AssigneesDTO
 
-    assignee_id = factory.sequence(lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(counter))
+    assignee_id = factory.sequence(
+        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+            counter))
     name = factory.sequence(lambda counter: "name_{}".format(counter))
-    profile_pic_url = "https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
+    profile_pic_url = "https://www.google.com/search?q=ibhubs&client=ubuntu" \
+                      "&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved" \
+                      "=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw" \
+                      "=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
+
+
+class TaskIdStageDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskIdStageDTO
+
+    stage_id = factory.Sequence(lambda n: f'stage_id_{n}')
+    task_id = factory.Sequence(lambda n: n)
+    task_display_id = factory.Sequence(lambda n: f'task_id_{n}')
 
 
 class StageAssigneesDTOFactory(factory.Factory):
