@@ -49,8 +49,7 @@ class LoginWithTokenInteractor:
         user_id = self.user_storage.get_user_id_for_given_token(
             token=login_with_token_parameter_dto.token
         )
-        is_user_not_exist = user_id is None
-        if is_user_not_exist:
+        if not user_id:
             user_id = self._create_user(
                 login_with_token_parameter_dto=login_with_token_parameter_dto
             )
@@ -71,8 +70,7 @@ class LoginWithTokenInteractor:
         from ib_iam.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         email = login_with_token_parameter_dto.token + "@gmail.com"
-        is_name_not_exist = login_with_token_parameter_dto.name is None
-        if is_name_not_exist:
+        if not login_with_token_parameter_dto.name:
             login_with_token_parameter_dto.name = \
                 login_with_token_parameter_dto.token
         user_id = service_adapter.user_service.create_user_account_with_email(
