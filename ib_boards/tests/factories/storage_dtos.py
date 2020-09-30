@@ -50,7 +50,7 @@ class TaskStageDTOFactory(factory.Factory):
     class Meta:
         model = TaskStageDTO
 
-    task_id = factory.Sequence(lambda n: "task_id_%d" % n)
+    task_id = factory.Sequence(lambda n: n)
     stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
     db_stage_id = factory.Sequence(lambda n: n)
     display_name = "stage"

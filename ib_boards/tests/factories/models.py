@@ -1,7 +1,8 @@
 import factory
 
 from ib_boards.constants.enum import DisplayStatus
-from ib_boards.models import Board, Column, ColumnPermission, UserStarredBoard, \
+from ib_boards.models import Board, Column, ColumnPermission, \
+    UserStarredBoard, \
     FieldDisplayStatus, FieldOrder
 
 
@@ -33,16 +34,6 @@ class ColumnFactory(factory.django.DjangoModelFactory):
     task_selection_config = """
         {
             "FIN_PR":["stage_id_1", "stage_id_2", "stage_id_3"]
-        }
-    """
-    list_brief_view_config = """
-        {
-            "FIN_PR":["PR_PAYMENT_REQUEST_DRAFTS"]
-        }
-    """
-    kanban_brief_view_config = """
-        {
-            "FIN_PR":["PR_PAYMENT_REQUEST_DRAFTS"]
         }
     """
     board = factory.SubFactory(BoardFactory)
