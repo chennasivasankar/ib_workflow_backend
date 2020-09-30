@@ -26,8 +26,7 @@ class GetColumnDetailsInteractor(ValidationMixin):
                                    pagination_parameters:
                                    PaginationParametersDTO):
         try:
-            column_details, task_fields_dtos, task_actions_dtos, \
-            column_tasks, task_stage_dtos, assignees_dtos = \
+            column_details, column_tasks, tasks_complete_details_dto = \
                 self.get_column_details(
                     columns_parameters=columns_parameters,
                     pagination_parameters=pagination_parameters
@@ -41,9 +40,9 @@ class GetColumnDetailsInteractor(ValidationMixin):
         except UserDonotHaveAccess:
             return presenter.response_for_user_donot_have_access_for_board()
         return presenter.get_response_for_column_details(
-            column_tasks=column_tasks, task_actions_dtos=task_actions_dtos,
-            task_fields_dtos=task_fields_dtos, column_details=column_details,
-            task_stage_dtos=task_stage_dtos, assignees_dtos=assignees_dtos)
+            column_tasks=column_tasks, column_details=column_details,
+            tasks_complete_details_dto=tasks_complete_details_dto,
+        )
 
     def get_column_details(self, columns_parameters: ColumnParametersDTO,
                            pagination_parameters: PaginationParametersDTO):
@@ -67,17 +66,17 @@ class GetColumnDetailsInteractor(ValidationMixin):
             search_query=columns_parameters.search_query
         )
         # TODO need to prepare DTO
-        task_field_dtos, task_action_dtos, task_stage_dtos, task_ids_stages_dtos, assignees_dtos = \
+        tasks_complete_details_dto = \
             self._get_column_tasks_complete_details(column_tasks_parameters)
 
         column_tasks = self._get_column_task_ids_map(
-            task_ids_stages_dtos=task_ids_stages_dtos
+            task_ids_stages_dtos=tasks_complete_details_dto.column_task_ids
         )
         column_details = self._get_total_tasks_for_the_columns(
-            task_ids_stages_dtos=task_ids_stages_dtos,
+            task_ids_stages_dtos=tasks_complete_details_dto.column_task_ids,
             column_dtos=column_dtos
         )
-        return column_details, task_field_dtos, task_action_dtos, column_tasks, task_stage_dtos, assignees_dtos
+        return column_details, column_tasks, tasks_complete_details_dto
 
     def _get_column_tasks_complete_details(self,
                                            column_tasks: ColumnsTasksParametersDTO):

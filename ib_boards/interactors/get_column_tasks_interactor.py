@@ -25,7 +25,7 @@ class GetColumnTasksInteractor:
             presenter: GetColumnTasksPresenterInterface):
         from ib_boards.exceptions.custom_exceptions import InvalidColumnId
         try:
-            complete_tasks_details_dto = self.get_column_tasks(
+            task_complete_details_dto, total_tasks, task_ids = self.get_column_tasks(
                 column_tasks_parameters=column_tasks_parameters
             )
         except InvalidColumnId:
@@ -41,7 +41,8 @@ class GetColumnTasksInteractor:
         except InvalidStageIds as error:
             return presenter.get_response_for_invalid_stage_ids(error=error)
         return presenter.get_response_for_column_tasks(
-            complete_tasks_details_dto=complete_tasks_details_dto
+            task_complete_details_dto=task_complete_details_dto, total_tasks=total_tasks,
+            task_ids=task_ids
         )
 
     def get_column_tasks(self,
@@ -71,28 +72,16 @@ class GetColumnTasksInteractor:
         interactor = GetColumnsTasksDetailsInteractor(
             storage=self.storage
         )
-        task_field_dtos, task_action_dtos, task_stage_dtos, task_ids_stages_dtos, assignees_dtos = \
-            interactor.get_column_tasks_with_column_ids(
-                column_tasks_parameters=column_tasks
-            )
-        total_tasks = task_ids_stages_dtos[0].total_tasks
-        task_id_dtos = [
-            TaskDisplayIdDTO(
-                task_id=task_stage_dto.task_id,
-                display_id=task_stage_dto.task_display_id
-            )
-            for task_stage_dto in task_ids_stages_dtos[0].task_stage_ids
-        ]
-        complete_tasks_details_dto = CompleteTasksDetailsDTO(
-            task_fields_dtos=task_field_dtos,
-            task_actions_dtos=task_action_dtos,
-            total_tasks=total_tasks,
-            task_id_dtos=task_id_dtos,
-            task_stage_dtos=task_stage_dtos,
-            assignees_dtos=assignees_dtos,
+        task_complete_details_dto = interactor.get_column_tasks_with_column_ids(
+            column_tasks_parameters=column_tasks
         )
+        task_ids = [
+            task_stage_dto.task_id
+            for task_stage_dto in task_complete_details_dto.column_task_ids[0].task_stage_ids
+        ]
+        total_tasks = task_complete_details_dto.column_task_ids[0].total_tasks
 
-        return complete_tasks_details_dto
+        return task_complete_details_dto, total_tasks, task_ids
 
     def _validate_given_data(self, column_tasks_parameters, project_id):
         column_id = column_tasks_parameters.column_id

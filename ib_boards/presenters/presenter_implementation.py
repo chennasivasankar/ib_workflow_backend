@@ -1,4 +1,5 @@
 from abc import ABC
+from datetime import datetime
 from typing import List
 
 from django.http import response
@@ -9,7 +10,8 @@ from ib_boards.constants.exception_messages import (
     INVALID_BOARD_ID, INVALID_OFFSET_VALUE, INVALID_LIMIT_VALUE,
     USER_DONOT_HAVE_ACCESS, INVALID_PROJECT_ID, USER_IS_NOT_IN_PROJECT)
 from ib_boards.interactors.dtos import ColumnTasksDTO, FieldDTO, ActionDTO, \
-    StarredAndOtherBoardsDTO, TaskStageDTO, StageAssigneesDTO, AssigneesDTO
+    StarredAndOtherBoardsDTO, TaskStageDTO, StageAssigneesDTO, AssigneesDTO, \
+    TaskBaseAndCompleteDetailsDTO, TaskCompleteDetailsWithAllFieldsDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetBoardsPresenterInterface, \
     GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO, TaskDisplayIdDTO, \
@@ -174,29 +176,27 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
         )
 
     def get_response_for_column_tasks(
-            self, complete_tasks_details_dto: CompleteTasksDetailsDTO):
+            self, task_complete_details_dto: TaskBaseAndCompleteDetailsDTO,
+            total_tasks: int, task_ids: List[int]):
         response_dict = self.get_column_tasks_details(
-            complete_tasks_details_dto=complete_tasks_details_dto
+            task_complete_details_dto=task_complete_details_dto,
+            total_tasks=total_tasks, task_ids=task_ids
         )
         return self.prepare_200_success_response(response_dict)
 
     def get_column_tasks_details(
-            self, complete_tasks_details_dto: CompleteTasksDetailsDTO):
+            self, task_complete_details_dto: TaskBaseAndCompleteDetailsDTO,
+            total_tasks: int, task_ids: List[int]):
 
-        task_fields_dtos = complete_tasks_details_dto.task_fields_dtos
-        task_actions_dtos = complete_tasks_details_dto.task_actions_dtos
-        total_tasks = complete_tasks_details_dto.total_tasks
-        task_id_dtos = complete_tasks_details_dto.task_id_dtos
-        task_stage_dtos = complete_tasks_details_dto.task_stage_dtos
-        assignees_dtos = complete_tasks_details_dto.assignees_dtos
-
-        task_ids = [
-            task_id_dto.task_id
-            for task_id_dto in task_id_dtos
-        ]
-        task_ids_map = {}
-        for task_id_dto in task_id_dtos:
-            task_ids_map[task_id_dto.task_id] = task_id_dto.display_id
+        task_fields_dtos = task_complete_details_dto.task_field_dtos
+        task_actions_dtos = task_complete_details_dto.task_action_dtos
+        task_stage_dtos = task_complete_details_dto.task_stage_color_dtos
+        assignees_dtos = task_complete_details_dto.assignees_dtos
+        task_base_details_dtos = task_complete_details_dto.task_base_details_dtos
+        task_base_details_dtos_dict = {
+            task_base_details_dto.task_id: task_base_details_dto
+            for task_base_details_dto in task_base_details_dtos
+        }
 
         task_ids_with_duplicates = task_ids
 
@@ -216,7 +216,7 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
             task_ids=task_ids,
             task_stage_map=task_stage_map,
             assignees_dtos=assignees_dtos,
-            task_ids_map=task_ids_map
+            task_base_details_dtos_dict=task_base_details_dtos_dict
         )
 
         return {
@@ -225,9 +225,10 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
         }
 
     def get_task_details_dict_from_dtos(
-            self, task_fields_dtos: List[FieldDTO], task_ids_map,
+            self, task_fields_dtos: List[FieldDTO],
             task_actions_dtos: List[ActionDTO], task_ids: List[int],
-            task_stage_map, assignees_dtos: List[StageAssigneesDTO]):
+            task_stage_map, assignees_dtos: List[StageAssigneesDTO],
+            task_base_details_dtos_dict):
         from collections import defaultdict
         tasks_fields_map = defaultdict(lambda: [])
         for task_fields_dto in task_fields_dtos:
@@ -253,17 +254,28 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
             actions_list = self._convert_action_dtos_to_dict(
                 action_dtos=tasks_actions_map[task_id]
             )
-            task_dict = self._get_task_details_dict(actions_list,
-                                                    assignees_dtos_dict,
-                                                    fields_list, task_id,
-                                                    task_stage_map, display_id=task_ids_map[task_id])
+            task_dict = self._get_task_details_dict(
+                actions_list=actions_list,
+                assignees_dtos_dict=assignees_dtos_dict,
+                fields_list=fields_list, task_id=task_id,
+                task_stage_map=task_stage_map,
+                task_base_details_dto=task_base_details_dtos_dict[task_id]
+            )
             tasks_list.append(task_dict)
         return tasks_list
 
     def _get_task_details_dict(self, actions_list, assignees_dtos_dict,
-                               fields_list, task_id, task_stage_map, display_id):
+                               fields_list, task_id, task_stage_map,
+                               task_base_details_dto):
+
+        start_date, due_date = self._get_start_date_and_due_date(
+            task_base_details_dto)
         task_dict = {
-            "task_id": display_id,
+            "task_id": task_base_details_dto.task_display_id,
+            "title": task_base_details_dto.title,
+            "start_date": start_date,
+            "due_date": due_date,
+            "priority": task_base_details_dto.priority,
             "task_overview_fields": fields_list,
             "stage_with_actions": {
                 "stage_id": task_stage_map[task_id].db_stage_id,
@@ -325,6 +337,28 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
                 action_ids.append(action_dto.action_id)
         return task_actions_list
 
+    def _get_start_date_and_due_date(
+            self, task_base_details_dto
+    ):
+        start_date, due_date = None, None
+        if task_base_details_dto.start_date is not None:
+            start_date = self._convert_datetime_object_to_string(
+                task_base_details_dto.start_date
+            )
+        if task_base_details_dto.due_date is not None:
+            due_date = self._convert_datetime_object_to_string(
+                task_base_details_dto.due_date
+            )
+        return start_date, due_date
+
+    @staticmethod
+    def _convert_datetime_object_to_string(
+            datetime_obj: datetime
+    ) -> str:
+        from ib_boards.constants.constants import DATETIME_FORMAT
+        datetime_in_string_format = datetime_obj.strftime(DATETIME_FORMAT)
+        return datetime_in_string_format
+
 
 class GetColumnTasksListViewPresenterImplementation(
         HTTPResponseMixin, GetColumnTasksListViewPresenterInterface):
@@ -380,13 +414,15 @@ class GetColumnTasksListViewPresenterImplementation(
         )
 
     def get_response_for_column_tasks_in_list_view(
-            self, complete_tasks_details_dto: CompleteTasksDetailsDTO, all_fields: List[AllFieldsDTO]):
+            self, task_complete_details: TaskCompleteDetailsWithAllFieldsDTO):
         presenter = GetColumnTasksPresenterImplementation()
         column_tasks_details_dict = presenter.get_column_tasks_details(
-            complete_tasks_details_dto=complete_tasks_details_dto
+            task_complete_details_dto=task_complete_details.task_complete_details,
+            task_ids=task_complete_details.task_ids,
+            total_tasks=task_complete_details.total_tasks
         )
         all_fields_dict = self._get_all_fields_dict(
-            all_fields=all_fields
+            all_fields=task_complete_details.all_fields
         )
         column_tasks_details_dict.update(all_fields_dict)
         return self.prepare_200_success_response(column_tasks_details_dict)
@@ -446,15 +482,8 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
 
     def get_response_for_column_details(
             self, column_details: List[ColumnCompleteDetails],
-            task_fields_dtos: List[FieldDTO],
-            task_actions_dtos: List[ActionDTO],
             column_tasks: List[ColumnTasksDTO],
-            task_stage_dtos: List[TaskStageDTO],
-            assignees_dtos: List[StageAssigneesDTO]) -> response.HttpResponse:
-
-        task_ids_map = {}
-        for column_task in column_tasks:
-            task_ids_map[column_task.task_id] = column_task.task_display_id
+            tasks_complete_details_dto: TaskBaseAndCompleteDetailsDTO) -> response.HttpResponse:
 
         from collections import defaultdict
         column_stages_map = defaultdict(lambda: [])
@@ -466,11 +495,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             column_details_dict = self._get_column_complete_details(
                 column_dto=column_dto,
                 column_stages=column_stages_map[column_dto.column_id],
-                task_fields_dtos=task_fields_dtos,
-                task_actions_dtos=task_actions_dtos,
-                task_stage_dtos=task_stage_dtos,
-                assignees_dtos=assignees_dtos,
-                task_ids_map=task_ids_map
+                tasks_complete_details_dto=tasks_complete_details_dto,
             )
             columns_complete_details.append(column_details_dict)
 
@@ -484,11 +509,19 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
     @staticmethod
     def _get_column_complete_details(
             column_dto: ColumnCompleteDetails,
-            task_fields_dtos: List[FieldDTO],
-            task_actions_dtos: List[ActionDTO],
             column_stages: List[ColumnTasksDTO],
-            task_stage_dtos: List[TaskStageDTO],
-            assignees_dtos: List[StageAssigneesDTO], task_ids_map):
+            tasks_complete_details_dto: TaskBaseAndCompleteDetailsDTO):
+
+        task_fields_dtos = tasks_complete_details_dto.task_field_dtos
+        task_actions_dtos = tasks_complete_details_dto.task_action_dtos
+        assignees_dtos = tasks_complete_details_dto.assignees_dtos
+        task_stage_dtos = tasks_complete_details_dto.task_stage_color_dtos
+        task_base_details_dtos = tasks_complete_details_dto.task_base_details_dtos
+
+        task_base_details_dtos_dict = {
+            task_base_details_dto.task_id: task_base_details_dto
+            for task_base_details_dto in task_base_details_dtos
+        }
 
         from collections import defaultdict
         column_tasks_map = defaultdict(lambda: [])
@@ -537,7 +570,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             task_ids=task_ids,
             task_stage_map=task_stage_map,
             assignees_dtos=assignees_dtos_list,
-            task_ids_map=task_ids_map
+            task_base_details_dtos_dict=task_base_details_dtos_dict
         )
 
         return {

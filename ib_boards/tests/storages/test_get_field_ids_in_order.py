@@ -30,6 +30,7 @@ class TestCreateFieldOrderAndStatus:
 
     @pytest.fixture
     def populate_data(self):
+        ColumnFactory.reset_sequence()
         ColumnFactory.create_batch(3)
 
     def test_fields_display_order_and_status_creates(self, storage,

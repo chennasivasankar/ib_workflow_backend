@@ -92,7 +92,7 @@ class TestGetTaskStagesAndActions(StorageMockClass):
                                              stage_storage=stage_storage_mock,
                                              task_storage=task_storage,
                                              action_storage=action_storage,
-                                             field_storage=field_storage)
+                                             field_storage=storage)
 
         # Act
         response = interactor.get_task_stages_and_actions(task_id=task_id,
@@ -132,7 +132,7 @@ class TestGetTaskStagesAndActions(StorageMockClass):
                                              stage_storage=stage_storage_mock,
                                              task_storage=task_storage,
                                              action_storage=action_storage,
-                                             field_storage=field_storage)
+                                             field_storage=storage)
 
         # Act
         response = interactor.get_task_stages_and_actions(
@@ -175,7 +175,7 @@ class TestGetTaskStagesAndActions(StorageMockClass):
                                              stage_storage=stage_storage_mock,
                                              task_storage=task_storage,
                                              action_storage=action_storage,
-                                             field_storage=field_storage)
+                                             field_storage=storage)
 
         # Act
         response = interactor.get_task_stages_and_actions(
@@ -211,7 +211,7 @@ class TestGetTaskStagesAndActions(StorageMockClass):
                                              stage_storage=stage_storage_mock,
                                              task_storage=task_storage,
                                              action_storage=action_storage,
-                                             field_storage=field_storage)
+                                             field_storage=storage)
 
         # Act
         response = interactor.get_task_stages_and_actions(
@@ -251,7 +251,7 @@ class TestGetTaskStagesAndActions(StorageMockClass):
                                              stage_storage=stage_storage_mock,
                                              task_storage=task_storage,
                                              action_storage=action_storage,
-                                             field_storage=field_storage)
+                                             field_storage=storage)
 
         # Act
         response = interactor.get_task_stages_and_actions(
@@ -278,7 +278,7 @@ class TestGetTaskStagesAndActions(StorageMockClass):
                                              stage_storage=stage_storage_mock,
                                              task_storage=task_storage,
                                              action_storage=action_storage,
-                                             field_storage=field_storage)
+                                             field_storage=storage)
 
         # Act
         with pytest.raises(InvalidTaskIdException) as error:
