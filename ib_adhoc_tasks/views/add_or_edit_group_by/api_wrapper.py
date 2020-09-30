@@ -33,9 +33,7 @@ def prepare_add_or_edit_group_by_parameter_dto(kwargs):
         AddOrEditGroupByParameterDTO
     return AddOrEditGroupByParameterDTO(
         user_id=str(user_object.user_id),
-        project_id=kwargs["query_params"]["project_id"],
         view_type=request_data["view_type"],
         group_by_key=request_data["group_by_key"],
-        group_by_id=request_data.get("group_by_id", None),
         order=request_data.get("order", None)
     )

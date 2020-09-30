@@ -1,7 +1,8 @@
 import pytest
 
 from ib_boards.interfaces.service_interface import BoardServiceInterface
-from ib_boards.tests.common_fixtures.adapters.iam_service import adapter_mock_to_get_user_role
+from ib_boards.tests.common_fixtures.adapters.iam_service import \
+    mock_get_user_roles
 from ib_boards.tests.factories.models import ColumnPermissionFactory, \
     ColumnFactory, BoardFactory
 
@@ -27,9 +28,12 @@ class TestServiceInterface:
         board_id = "BOARD_ID_1"
         stages = ["stage_id_1", "stage_id_2", "stage_id_3"]
         user_id = "user_id_1"
-        roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC", "FIN_PAYMENT_APPROVER",
-                 "FIN_PAYMENTS_LEVEL1_VERIFIER", "FIN_PAYMENTS_LEVEL2_VERIFIER", "FIN_PAYMENTS_LEVEL3_VERIFIER"]
-        user_roles = adapter_mock_to_get_user_role(mocker, "361362f1-a5e3-4822-a6ba-30019252e40d")
+        roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC",
+                 "FIN_PAYMENT_APPROVER",
+                 "FIN_PAYMENTS_LEVEL1_VERIFIER",
+                 "FIN_PAYMENTS_LEVEL2_VERIFIER",
+                 "FIN_PAYMENTS_LEVEL3_VERIFIER"]
+        user_roles = mock_get_user_roles(mocker, roles)
         user_roles.return_value = roles
         service = BoardServiceInterface()
 

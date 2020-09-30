@@ -22,7 +22,8 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
-from ib_tasks.interactors.task_dtos import StatusOperandStageDTO
+from ib_tasks.interactors.task_dtos import StatusOperandStageDTO, \
+    StageDisplayLogicDTO
 from ib_tasks.tests.common_fixtures.adapters.roles_service import get_valid_role_ids_in_given_role_ids
 from ib_tasks.tests.factories.storage_dtos import StageDTOFactory, \
     TaskStagesDTOFactory, ValidStageDTOFactory
@@ -139,11 +140,16 @@ class TestCreateOrUpdateStageInformation:
                 task_template_id="task_template_id_2",
                 field_ids=["field_id_1", "field_id_2"]
             )]
-        logic_interactor.return_value = [StatusOperandStageDTO(
-            variable="status1",
-            operator="==",
-            stage="stage_id_1"
-        )]
+        logic_interactor.return_value = [
+            StageDisplayLogicDTO(
+                current_stage='current_stage',
+                display_logic_dto=StatusOperandStageDTO(
+                    variable="status1",
+                    operator="==",
+                    stage="stage_id_1"
+                )
+            )
+        ]
 
         stage_storage.get_existing_status_ids.return_value = ["status1"]
         stage_storage.get_existing_stage_ids.side_effect = [[], []]
@@ -185,11 +191,16 @@ class TestCreateOrUpdateStageInformation:
                 task_template_id="task_template_id_2",
                 field_ids=["field_id_1", "field_id_2"]
             )]
-        logic_interactor.return_value = [StatusOperandStageDTO(
-            variable="status1",
-            operator="==",
-            stage="stage_id_1"
-        )]
+        logic_interactor.return_value = [
+            StageDisplayLogicDTO(
+                current_stage='current_stage',
+                display_logic_dto=StatusOperandStageDTO(
+                    variable="status1",
+                    operator="==",
+                    stage="stage_id_1"
+                )
+            )
+        ]
         get_valid_role_ids_in_given_role_ids(mocker)
         stage_storage.get_existing_status_ids.return_value = ["status1"]
         stage_storage.get_existing_stage_ids.side_effect = [[], ["stage_id_1"]]
@@ -224,11 +235,16 @@ class TestCreateOrUpdateStageInformation:
         mocker_obj.return_value = ["role_id_1", "role_id_2", "role_id_0"]
         storage.validate_stages_related_task_template_ids.return_value = []
         task_stages_dto = create_task_stages_dtos
-        logic_interactor.return_value = [StatusOperandStageDTO(
-            variable="status1",
-            operator="==",
-            stage="stage_id_1"
-        )]
+        logic_interactor.return_value = [
+            StageDisplayLogicDTO(
+                current_stage='current_stage',
+                display_logic_dto=StatusOperandStageDTO(
+                    variable="status1",
+                    operator="==",
+                    stage="stage_id_1"
+                )
+            )
+        ]
         task_template_storage.get_valid_task_template_ids_in_given_task_template_ids. \
             return_value = ["task_template_id_1", "task_template_id_2"]
         stage_storage.get_existing_status_ids.return_value = ["status1"]
@@ -304,11 +320,16 @@ class TestCreateOrUpdateStageInformation:
         storage.get_existing_stage_ids.return_value = [
             "stage_id_1", "stage_id_2"
         ]
-        logic_interactor.return_value = [StatusOperandStageDTO(
-            variable="status1",
-            operator="==",
-            stage="stage_id_1"
-        )]
+        logic_interactor.return_value = [
+            StageDisplayLogicDTO(
+                current_stage='current_stage',
+                display_logic_dto=StatusOperandStageDTO(
+                    variable="status1",
+                    operator="==",
+                    stage="stage_id_1"
+                )
+            )
+        ]
         storage.validate_stages_related_task_template_ids. \
             return_value = ["PR_PENDING RP APPROVAL"]
         task_template_ids = ["task_template_id_1", "task_template_id_2"]
@@ -438,11 +459,16 @@ class TestCreateOrUpdateStageInformation:
         storage.validate_stages_related_task_template_ids.return_value = []
         stage_storage.get_existing_status_ids.return_value = ["status1"]
         task_stages_dto = create_task_stages_dtos
-        logic_interactor.return_value = [StatusOperandStageDTO(
-            variable="status1",
-            operator="==",
-            stage="stage_id_1"
-        )]
+        logic_interactor.return_value = [
+            StageDisplayLogicDTO(
+                current_stage='current_stage',
+                display_logic_dto=StatusOperandStageDTO(
+                    variable="status1",
+                    operator="==",
+                    stage="stage_id_1"
+                )
+            )
+        ]
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import get_valid_role_ids_in_given_role_ids
         mocker_obj = get_valid_role_ids_in_given_role_ids(mocker)
@@ -488,11 +514,16 @@ class TestCreateOrUpdateStageInformation:
         )
         storage = create_autospec(StageStorageInterface)
         task_storage = create_autospec(TaskStorageInterface)
-        logic_interactor.return_value = [StatusOperandStageDTO(
-            variable="status10",
-            operator="==",
-            stage="stage_id_1"
-        )]
+        logic_interactor.return_value = [
+            StageDisplayLogicDTO(
+                current_stage='current_stage',
+                display_logic_dto=StatusOperandStageDTO(
+                    variable="status10",
+                    operator="==",
+                    stage="stage_id_1"
+                )
+            )
+        ]
         storage.get_existing_stage_ids.return_value = []
         storage.get_existing_status_ids.return_value = []
         get_valid_role_ids_in_given_role_ids(mocker)

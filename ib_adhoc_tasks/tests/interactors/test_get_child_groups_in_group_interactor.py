@@ -1,6 +1,8 @@
-from unittest.mock import create_autospec, Mock
+from unittest.mock import create_autospec, Mock, patch
 
 import pytest
+
+from ib_adhoc_tasks.adapters.task_service import TaskService
 
 
 class TestGetChildGroupsInGroupInteractor:
@@ -56,10 +58,34 @@ class TestGetChildGroupsInGroupInteractor:
         )
         return mock
 
+    @pytest.fixture
+    def task_with_completed_sub_task_count_dtos(self):
+        from ib_adhoc_tasks.tests.factories.adapter_dtos import \
+            TaskIdWithCompletedSubTasksCountDTOFactory
+        return TaskIdWithCompletedSubTasksCountDTOFactory.create_batch(size=3)
+
+    @pytest.fixture
+    def task_with_sub_task_count_dtos(self):
+        from ib_adhoc_tasks.tests.factories.adapter_dtos import \
+            TaskIdWithSubTasksCountDTOFactory
+        return TaskIdWithSubTasksCountDTOFactory.create_batch(size=3)
+
+    @pytest.fixture
+    def task_details_dtos(self):
+        from ib_adhoc_tasks.tests.factories.adapter_dtos import \
+            TasksCompleteDetailsDTOFactory
+        return TasksCompleteDetailsDTOFactory()
+
+    @patch.object(TaskService, 'get_completed_sub_tasks_count_for_task_ids')
+    @patch.object(TaskService, 'get_sub_tasks_count_task_ids')
+    @patch.object(TaskService, "get_task_complete_details_dto")
     def test_with_valid_details_return_response(
-            self, interactor, storage_mock, elastic_storage_mock,
+            self, group_details_mock, task_details_mock,
+            task_with_sub_task_count_mock,
+            interactor, storage_mock, elastic_storage_mock,
             presenter_mock, get_child_groups_in_group_input_dto,
-            prepare_group_details_dtos, mocker
+            prepare_group_details_dtos, mocker, task_with_sub_task_count_dtos,
+            task_with_completed_sub_task_count_dtos, task_details_dtos
     ):
         # Arrange
         total_child_groups_count = 10
@@ -79,7 +105,9 @@ class TestGetChildGroupsInGroupInteractor:
             GroupByResponseDTOFactory.create_batch(size=2)
 
         storage_mock.get_group_by_dtos.return_value = group_by_response_dtos
-
+        group_details_mock.return_value = task_details_dtos
+        task_with_sub_task_count_mock.return_value = \
+            task_with_sub_task_count_dtos
         expected_get_group_details_of_project_mock = \
             prepare_group_details_dtos, total_child_groups_count
         elastic_storage_mock.get_child_group_details_of_group.return_value = \
@@ -103,9 +131,10 @@ class TestGetChildGroupsInGroupInteractor:
                expected_prepare_response_for_get_child_groups_in_group_mock
         presenter_mock.prepare_response_for_get_child_groups_in_group. \
             assert_called_once_with(
-            total_child_groups_count=total_child_groups_count,
-            group_details_dtos=prepare_group_details_dtos
-        )
+                total_child_groups_count=total_child_groups_count,
+                group_details_dtos=prepare_group_details_dtos,
+                task_details_dto=task_details_dtos
+            )
 
     @pytest.fixture()
     def prepare_group_details_dtos(self):

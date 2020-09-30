@@ -305,7 +305,9 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             get_user_task_ids_and_max_stage_value_dto_based_on_given_stage_ids. \
             assert_called_once_with(stage_ids=valid_stage_ids,
                                     task_ids=task_ids)
-        stage_storage_mock.get_task_id_with_stage_details_dtos_based_on_stage_value(
+        stage_storage_mock\
+            .get_task_id_with_stage_details_dtos_based_on_stage_value.assert_called_once_with(
+            stage_ids=valid_stage_ids,
             stage_values=[2],
             task_ids_group_by_stage_value_dtos=task_ids_group_by_stage_value_dtos,
         )
@@ -380,7 +382,9 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             get_user_task_ids_and_max_stage_value_dto_based_on_given_stage_ids. \
             assert_called_once_with(stage_ids=valid_stage_ids,
                                     task_ids=task_ids)
-        stage_storage_mock.get_task_id_with_stage_details_dtos_based_on_stage_value(
+        stage_storage_mock\
+            .get_task_id_with_stage_details_dtos_based_on_stage_value.assert_called_once_with(
+            stage_ids=valid_stage_ids,
             stage_values=[2],
             task_ids_group_by_stage_value_dtos=task_ids_group_by_stage_value_dtos,
         )

@@ -19,10 +19,10 @@ class TestCase01GetChildGroupsInGroupAPITestCase(TestUtils):
         path_params = {}
         query_params = {
             'project_id': 'string',
-            'limit': 813,
-            'offset': 459,
+            'limit': 152,
+            'offset': 644,
             'group_limit': 10,
-            'group_offset': 253
+            'group_offset': 27
         }
         headers = {}
         response = self.make_api_call(body=body,
