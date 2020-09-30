@@ -11,6 +11,8 @@ snapshots['TestCase42UpdateTaskAPITestCase.test_case status_code'] = '200'
 
 snapshots['TestCase42UpdateTaskAPITestCase.test_case body'] = {
     'task_details': {
+        'due_date': '2020-10-31 00:00:00',
+        'priority': 'HIGH',
         'stage_with_actions': {
             'actions': [
             ],
@@ -27,9 +29,11 @@ snapshots['TestCase42UpdateTaskAPITestCase.test_case body'] = {
             'stage_display_name': 'display_name_0',
             'stage_id': 1
         },
+        'start_date': '2020-09-20 00:00:00',
         'task_id': 'IBWF-1',
         'task_overview_fields': [
-        ]
+        ],
+        'title': 'updated_title'
     }
 }
 

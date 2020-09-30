@@ -12,6 +12,8 @@ from ib_tasks.tests.common_fixtures.adapters.auth_service import \
     validate_if_user_is_in_project_mock, get_user_id_team_details_dtos_mock
 from ib_tasks.tests.common_fixtures.adapters.project_service import \
     get_valid_project_ids_mock
+from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+    get_user_role_ids_based_on_projects_mock
 from ib_tasks.tests.common_fixtures.interactors import \
     create_or_update_data_into_elastic_search_interactor_mock
 from ib_tasks.tests.common_fixtures.storages import \
@@ -88,6 +90,8 @@ class TestCase42UpdateTaskAPITestCase(TestUtils):
         get_projects_info_for_given_ids_mock(mocker)
         get_user_id_team_details_dtos_mock(mocker)
         validate_if_user_is_in_project_mock(mocker, True)
+        get_user_role_ids_based_on_projects_mock(mocker,
+                                                 project_ids=[project_id])
 
         field = FieldFactory.create(
             field_id=field_id, gof=gof,

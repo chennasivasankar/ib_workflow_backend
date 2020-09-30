@@ -255,6 +255,8 @@ snapshots['TestUpdateTaskPresenterImplementation.test_raise_due_date_time_is_req
 
 snapshots['TestUpdateTaskPresenterImplementation.test_get_update_task_response success_response'] = {
     'task_details': {
+        'due_date': '2020-04-15 04:50:40',
+        'priority': 'HIGH',
         'stage_with_actions': {
             'actions': [
             ],
@@ -271,9 +273,11 @@ snapshots['TestUpdateTaskPresenterImplementation.test_get_update_task_response s
             'stage_display_name': 'stage_display_1',
             'stage_id': 1
         },
+        'start_date': '2020-04-05 04:50:40',
         'task_id': 'iBWF-1',
         'task_overview_fields': [
-        ]
+        ],
+        'title': 'title_0'
     }
 }
 

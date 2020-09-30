@@ -6,7 +6,7 @@ from ib_tasks.tests.factories.presenter_dtos import \
     TaskIdWithStageDetailsDTOFactory, GetTaskStageCompleteDetailsDTOFactory, \
     TaskWithCompleteStageDetailsDTOFactory
 from ib_tasks.tests.factories.storage_dtos import FieldDetailsDTOFactory, \
-    StageActionDetailsDTOFactory
+    StageActionDetailsDTOFactory, TaskBaseDetailsDTOFactory
 
 
 class TestGetAllTasksOverviewForUserPresenterImpl:
@@ -76,6 +76,8 @@ class TestGetAllTasksOverviewForUserPresenterImpl:
         FieldDetailsDTOFactory.reset_sequence()
         StageActionDetailsDTOFactory.reset_sequence()
         TaskWithCompleteStageDetailsDTOFactory.reset_sequence()
+        TaskBaseDetailsDTOFactory.reset_sequence()
+
         task_with_complete_stage_details_dtos = \
             TaskWithCompleteStageDetailsDTOFactory.create_batch(2)
         import factory
@@ -84,11 +86,14 @@ class TestGetAllTasksOverviewForUserPresenterImpl:
                 2, field_dtos=[FieldDetailsDTOFactory()], task_id=factory.Iterator([1, 2]),
                 action_dtos=StageActionDetailsDTOFactory.create_batch(2))
 
+        task_base_details_dtos = TaskBaseDetailsDTOFactory.create_batch(size=2)
         all_tasks_overview_details_dto = AllTasksOverviewDetailsDTO(
             task_with_complete_stage_details_dtos=
             task_with_complete_stage_details_dtos,
             task_fields_and_action_details_dtos=
-            task_fields_and_action_details_dtos)
+            task_fields_and_action_details_dtos,
+            task_base_details_dtos=task_base_details_dtos
+        )
 
         presenter = GetAllTasksOverviewForUserPresenterImpl()
         # Act

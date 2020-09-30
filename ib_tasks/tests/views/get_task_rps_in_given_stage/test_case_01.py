@@ -16,6 +16,9 @@ class TestCase01GetTaskRpsInGivenStageAPITestCase(TestUtils):
 
     @pytest.fixture
     def setup(self, api_user, mocker):
+        import factory
+        rp_ids = ["user_1", "user_2"]
+
         from ib_tasks.tests.factories.models import TaskFactory
         from ib_tasks.tests.common_fixtures.adapters.auth_service import \
             get_immediate_superior_user_id_mock
@@ -25,14 +28,24 @@ class TestCase01GetTaskRpsInGivenStageAPITestCase(TestUtils):
         from ib_tasks.tests.common_fixtures.adapters.auth_service import \
             get_user_dtos_given_user_ids_mock
         user_details_mock = get_user_dtos_given_user_ids_mock(mocker)
+
+        from ib_tasks.tests.factories.storage_dtos import UserDetailsDTOFactory
+        UserDetailsDTOFactory.reset_sequence()
+        user_dtos = UserDetailsDTOFactory.create_batch(
+            size=2, user_id=factory.Iterator(rp_ids))
+        user_details_mock.return_value = user_dtos
+
         TaskFactory.reset_sequence()
         tasks = TaskFactory.create_batch(size=2)
         from ib_tasks.tests.factories.models import TaskStageHistoryModelFactory
         from ib_tasks.tests.factories.models import UserRpInTaskStageFactory
         UserRpInTaskStageFactory.reset_sequence()
-        UserRpInTaskStageFactory.create_batch(size=2, task=tasks[0], stage_id=1)
+        UserRpInTaskStageFactory.create_batch(
+            size=2, task=tasks[0], stage_id=1, rp_id=factory.Iterator(rp_ids)
+        )
         TaskStageHistoryModelFactory.reset_sequence()
-        TaskStageHistoryModelFactory(task=tasks[0], assignee_id=api_user.user_id, stage_id=1)
+        TaskStageHistoryModelFactory(
+            task=tasks[0], assignee_id=api_user.user_id, stage_id=1)
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):
