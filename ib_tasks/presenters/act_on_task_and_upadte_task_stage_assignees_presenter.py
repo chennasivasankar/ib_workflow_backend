@@ -398,5 +398,3 @@ class ActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation(
                 assignees_dict[column_id] = None
             task_stages_dtos_dict[column_id] = task_stages_dict[stage_id]
         return assignees_dict, task_stages_dtos_dict
-
-

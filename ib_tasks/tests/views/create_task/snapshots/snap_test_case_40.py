@@ -22,6 +22,8 @@ snapshots['TestCase40CreateTaskAPITestCase.test_case body'] = {
         'user_has_permission': True
     },
     'task_details': {
+        'due_date': None,
+        'priority': None,
         'stage_with_actions': {
             'actions': [
                 {
@@ -37,8 +39,10 @@ snapshots['TestCase40CreateTaskAPITestCase.test_case body'] = {
             'stage_display_name': 'name_0',
             'stage_id': 1
         },
+        'start_date': None,
         'task_id': 'IBWF-1',
         'task_overview_fields': [
-        ]
+        ],
+        'title': 'task_title'
     }
 }

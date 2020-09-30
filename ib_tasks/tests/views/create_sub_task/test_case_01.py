@@ -7,10 +7,6 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from freezegun import freeze_time
 
 from ib_tasks.constants.constants import ALL_ROLES_ID
-from ib_tasks.tests.common_fixtures.adapters.project_service import \
-    get_valid_project_ids_mock
-from ib_tasks.tests.views.create_sub_task import APP_NAME, OPERATION_NAME, \
-    REQUEST_METHOD, URL_SUFFIX
 from ib_tasks.tests.common_fixtures.adapters.assignees_details_service import \
     assignee_details_dtos_mock
 from ib_tasks.tests.common_fixtures.adapters.auth_service import \
@@ -18,14 +14,19 @@ from ib_tasks.tests.common_fixtures.adapters.auth_service import \
     get_valid_project_ids_mock as auth_service_project_ids_mock, \
     get_projects_info_for_given_ids_mock, \
     get_team_info_for_given_user_ids_mock, prepare_permitted_user_details_mock, \
-    get_user_id_team_details_dtos_mock
+    get_user_id_team_details_dtos_mock, get_user_details_with_roles_mock
+from ib_tasks.tests.common_fixtures.adapters.project_service import \
+    get_valid_project_ids_mock
 from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-    get_user_role_ids, get_user_role_ids_based_on_project_mock
+    get_user_role_ids, get_user_role_ids_based_on_projects_mock, \
+    get_user_role_ids_based_on_project_mock
 from ib_tasks.tests.common_fixtures.storages import \
     elastic_storage_implementation_mock
+from ib_tasks.tests.factories import models
 from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTOFactory, \
     AssigneeDetailsDTOFactory
-from ib_tasks.tests.factories import models
+from ib_tasks.tests.views.create_sub_task import APP_NAME, OPERATION_NAME, \
+    REQUEST_METHOD, URL_SUFFIX
 
 
 class TestCase01CreateSubTaskAPITestCase(TestUtils):
@@ -55,7 +56,8 @@ class TestCase01CreateSubTaskAPITestCase(TestUtils):
         variable = "variable0"
 
         elastic_storage_implementation_mock(mocker)
-        get_user_role_ids(mocker)
+        user_roles_mock = get_user_role_ids(mocker)
+        user_roles = user_roles_mock.return_value
         is_user_in_project = True
         validate_if_user_is_in_project_mock(mocker, is_user_in_project)
         auth_service_project_ids_mock(mocker, [project_id])
@@ -65,9 +67,11 @@ class TestCase01CreateSubTaskAPITestCase(TestUtils):
         get_user_id_team_details_dtos_mock(mocker)
         get_team_info_for_given_user_ids_mock(mocker)
         get_user_role_ids_based_on_project_mock(mocker)
+        get_user_role_ids_based_on_projects_mock(mocker, project_ids=[project_id])
         prepare_permitted_user_details_mock_method = \
             prepare_permitted_user_details_mock(mocker)
         assignee_details_dtos_mock_method = assignee_details_dtos_mock(mocker)
+        get_user_details_with_roles_mock(mocker, user_roles)
 
         prepare_permitted_user_details_mock_method.return_value = \
             UserDetailsDTOFactory.create_batch(
@@ -76,7 +80,8 @@ class TestCase01CreateSubTaskAPITestCase(TestUtils):
             AssigneeDetailsDTOFactory.create_batch(
                 size=2, assignee_id=factory.Iterator(["user_1", "user_2"]))
 
-        template_obj = models.TaskTemplateFactory.create(template_id=template_id)
+        template_obj = models.TaskTemplateFactory.create(
+            template_id=template_id)
         models.TaskFactory.create(task_display_id=parent_task_id,
                                   template_id=template_id)
         models.ProjectTaskTemplateFactory.create(
@@ -92,7 +97,8 @@ class TestCase01CreateSubTaskAPITestCase(TestUtils):
             action_type=None)
         models.ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
-        models.StagePermittedRolesFactory.create(stage=stage, role_id=ALL_ROLES_ID)
+        models.StagePermittedRolesFactory.create(stage=stage,
+                                                 role_id=ALL_ROLES_ID)
         models.TaskTemplateInitialStageFactory.create(
             task_template_id=template_id, stage=stage)
         models.TaskTemplateStatusVariableFactory.create(
