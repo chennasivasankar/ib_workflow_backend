@@ -16,6 +16,8 @@ from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    TaskBaseDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO, \
     TaskWithCompleteStageDetailsDTO
@@ -84,10 +86,13 @@ class GetTasksOverviewForUserInteractor(ValidationMixin):
         ]
         task_fields_and_action_details_dtos = self._get_task_fields_and_action(
             task_id_with_stage_id_dtos, user_id, view_type=view_type)
-
+        task_base_details_dtos = self._get_task_base_details_dtos(
+            task_ids=task_ids
+        )
         from ib_tasks.interactors.presenter_interfaces.dtos import \
             AllTasksOverviewDetailsDTO
         all_tasks_overview_details_dto = AllTasksOverviewDetailsDTO(
+            task_base_details_dtos=task_base_details_dtos,
             task_with_complete_stage_details_dtos
             =task_with_complete_stage_details_dtos,
             task_fields_and_action_details_dtos=
@@ -153,3 +158,14 @@ class GetTasksOverviewForUserInteractor(ValidationMixin):
         ]
         if invalid_task_ids:
             raise TaskIdsNotInProject(invalid_task_ids=invalid_task_ids)
+
+    def _get_task_base_details_dtos(
+            self, task_ids: List[int]) -> List[TaskBaseDetailsDTO]:
+        from ib_tasks.interactors.get_task_base_details_interactor import \
+            GetTasksBaseDetailsInteractor
+        task_base_details_interactor = GetTasksBaseDetailsInteractor(
+            task_storage=self.task_storage
+        )
+        return task_base_details_interactor.get_tasks_base_details(
+            task_ids=task_ids
+        )
