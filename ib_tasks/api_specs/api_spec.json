@@ -578,6 +578,20 @@
             "project_id"
          ]
       },
+      "ValidateTaskFieldsRequestBody": {
+         "type": "object",
+         "properties": {
+           "task_id": {
+              "type": "string"
+           },
+            "action_id": {
+               "type": "integer"
+            }
+         },
+         "required": [
+            "task_id", "action_id"
+          ]
+      },
       "PerformActionRequestBody":{
          "type":"object",
          "properties":{
@@ -1057,6 +1071,25 @@
          ]
       },
       "CreateTaskFailureResponseBody":{
+         "type":"object",
+         "properties":{
+            "response":{
+               "type":"string"
+            },
+            "http_status_code":{
+               "type":"integer"
+            },
+            "res_status":{
+               "type":"string"
+            }
+         },
+         "required":[
+            "response",
+            "http_status_code",
+            "res_status"
+         ]
+      },
+      "ValidateTaskFieldsFailureResponseBody":{
          "type":"object",
          "properties":{
             "response":{
@@ -1801,6 +1834,15 @@
             "$ref":"#/definitions/CreateSubTaskRequestBody"
          }
       },
+      "ValidateTaskFieldsRequestBodyParameter": {
+         "in":"body",
+         "name":"ValidateTaskFieldsRequestBody",
+         "description":"give valid details",
+         "required":true,
+         "schema":{
+            "$ref":"#/definitions/ValidateTaskFieldsRequestBody"
+         }
+      },
       "PerformActionBodyParameter":{
          "in":"body",
          "name":"ActOnTaskRequestBody",
@@ -2088,6 +2130,9 @@
          "schema":{
             "$ref":"#/definitions/CreateSubTaskSuccessResponseBody"
          }
+      },
+      "ValidateTaskFieldsSuccessResponse": {
+         "description": "all task details are filled"
       },
       "CreateTaskAccessUnauthorized":{
          "description":"user does not have access",
@@ -2754,7 +2799,13 @@
       "CreateSubTaskFailureResponse":{
          "description":"can not create a sub task",
          "schema":{
-            "$ref":"#/definitions/CreateTaskFailureResponseBody"
+            "$ref":"#/definitions/CreateSubTaskFailureResponseBody"
+         }
+      },
+      "ValidateTaskFieldsFailureResponse": {
+         "description":"task fields are not filled",
+         "schema":{
+            "$ref":"#/definitions/ValidateTaskFieldsFailureResponseBody"
          }
       },
       "UserActionOnTaskFailureResponse": {
@@ -4083,6 +4134,33 @@
              },
              "403": {
                 "$ref":"#/responses/CreateSubTaskAccessUnauthorized"
+             }
+          }
+        }
+      },
+      "/validate_task_fields_filled_or_not/v1/": {
+        "post": {
+          "operationId":"validate_task_filled_fields",
+          "summary":"validate task fields filled or not",
+          "description":"validates task fields filled or not and raises an error if not",
+          "security":[
+             {
+                "oauth":[
+                   "write"
+                ]
+             }
+          ],
+          "parameters":[
+             {
+                "$ref":"#/parameters/ValidateTaskFieldsRequestBodyParameter"
+             }
+          ],
+          "responses":{
+             "201":{
+                "$ref":"#/responses/ValidateTaskFieldsSuccessResponse"
+             },
+             "400":{
+                "$ref":"#/responses/ValidateTaskFieldsFailureResponse"
              }
           }
         }
