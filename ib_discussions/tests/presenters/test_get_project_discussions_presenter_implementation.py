@@ -14,10 +14,9 @@ class TestGetProjectDiscussionsPresenterImplementation:
         presenter = GetProjectDiscussionsPresenterImplementation()
         return presenter
 
-    def test_raise_exception_for_invalid_user_id(self,
-                                                 presenter):
+    def test_response_for_invalid_user_id(self, presenter):
         # Arrange
-        from ib_discussions.presenters.get_discussion_presenter_implementation import \
+        from ib_discussions.presenters.get_project_discussions_presenter_implementation import \
             INVALID_USER_ID
         expected_response = INVALID_USER_ID[0]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
@@ -34,9 +33,46 @@ class TestGetProjectDiscussionsPresenterImplementation:
         assert response_data["http_status_code"] == expected_http_status_code
         assert response_data["res_status"] == expected_res_status
 
+    def test_response_for_invalid_project_id(self, presenter):
+        # Arrange
+        from ib_discussions.presenters.get_project_discussions_presenter_implementation import \
+            INVALID_PROJECT_ID
+        expected_response = INVALID_PROJECT_ID[0]
+        expected_http_status_code = StatusCode.NOT_FOUND.value
+        expected_res_status = INVALID_PROJECT_ID[1]
+
+        # Act
+        response_obj \
+            = presenter.response_for_invalid_project_id()
+
+        # Assert
+        response_data = json.loads(response_obj.content)
+
+        assert response_data["response"] == expected_response
+        assert response_data["http_status_code"] == expected_http_status_code
+        assert response_data["res_status"] == expected_res_status
+
+    def test_response_for_invalid_user_for_project(self, presenter):
+        # Arrange
+        from ib_discussions.presenters.get_project_discussions_presenter_implementation import \
+            INVALID_USER_FOR_PROJECT
+        expected_response = INVALID_USER_FOR_PROJECT[0]
+        expected_http_status_code = StatusCode.BAD_REQUEST.value
+        expected_res_status = INVALID_USER_FOR_PROJECT[1]
+
+        # Act
+        response_obj = presenter.response_for_invalid_user_for_project()
+
+        # Assert
+        response_data = json.loads(response_obj.content)
+
+        assert response_data["response"] == expected_response
+        assert response_data["http_status_code"] == expected_http_status_code
+        assert response_data["res_status"] == expected_res_status
+
     def test_raise_exception_for_invalid_offset(self, presenter):
         # Arrange
-        from ib_discussions.presenters.create_discussion_presenter_implementation import \
+        from ib_discussions.presenters.get_project_discussions_presenter_implementation import \
             INVALID_OFFSET
         expected_response = INVALID_OFFSET[0]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
@@ -54,7 +90,7 @@ class TestGetProjectDiscussionsPresenterImplementation:
 
     def test_raise_exception_for_invalid_limit(self, presenter):
         # Arrange
-        from ib_discussions.presenters.create_discussion_presenter_implementation import \
+        from ib_discussions.presenters.get_project_discussions_presenter_implementation import \
             INVALID_LIMIT
         expected_response = INVALID_LIMIT[0]
         expected_http_status_code = StatusCode.BAD_REQUEST.value

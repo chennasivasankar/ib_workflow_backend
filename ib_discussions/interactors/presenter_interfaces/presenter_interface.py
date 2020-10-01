@@ -258,5 +258,9 @@ class GetProjectDiscussionsPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def response_for_discussion_set_not_found(self):
+    def response_for_invalid_project_id(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_invalid_user_for_project(self):
         pass

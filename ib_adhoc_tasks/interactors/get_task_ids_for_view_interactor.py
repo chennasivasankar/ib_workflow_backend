@@ -30,7 +30,7 @@ class GetTaskIdsForViewInteractor:
 
         from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
-        service_adapter.iam_service.is_valid_user_id_for_given_project(
+        service_adapter.iam_service.validate_user_id_for_given_project(
             user_id=user_id, project_id=project_id
         )
 
