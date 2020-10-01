@@ -146,10 +146,11 @@ class GetTaskFieldsAndActionsInteractor:
     def _get_fields_dtos(list_of_field_dtos):
         fields_dtos = [
                 FieldDetailsDTO(
-                        field_type=field.field_type,
-                        value=field.value,
-                        key=field.key,
-                        field_id=field.field_id
+                    field_type=field.field_type,
+                    value=field.value,
+                    key=field.key,
+                    order=field.order,
+                    field_id=field.field_id
                 )
                 for field in list_of_field_dtos
         ]
