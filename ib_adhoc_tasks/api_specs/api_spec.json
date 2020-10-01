@@ -310,6 +310,7 @@
         }
       },
       "required": [
+        "template_id",
         "task_id",
         "task_overview_fields",
         "stage_with_actions",

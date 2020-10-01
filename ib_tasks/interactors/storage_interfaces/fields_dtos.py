@@ -73,6 +73,7 @@ class FieldDetailsDTO:
     field_id: str
     key: str
     value: str
+    order: int
 
 
 @dataclass

@@ -156,13 +156,15 @@ class GetAllTasksOverviewForUserPresenterImpl(
     @staticmethod
     def _get_task_overview_fields_details(
             each_task_fields_and_action_details_dto):
+
+        field_dtos = each_task_fields_and_action_details_dto.field_dtos
+        field_dtos.sort(key=lambda x: [x.order])
         task_overview_fields_details = [
             {
                 "field_type": each_field_dto.field_type,
                 "field_display_name": each_field_dto.key,
                 "field_response": each_field_dto.value
-            } for each_field_dto in
-            each_task_fields_and_action_details_dto.field_dtos
+            } for each_field_dto in field_dtos
         ]
         return task_overview_fields_details
 

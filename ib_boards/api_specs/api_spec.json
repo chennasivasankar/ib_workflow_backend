@@ -287,6 +287,7 @@
         }
       },
       "required": [
+        "template_id",
         "task_id",
         "task_overview_fields",
         "stage_with_actions",
@@ -296,6 +297,9 @@
     "TaskOverviewWithStageAndActionsListView": {
       "type": "object",
       "properties": {
+        "template_id": {
+          "type": "string"
+        },
         "task_id": {
           "type": "string"
         },
@@ -324,6 +328,7 @@
         }
       },
       "required": [
+        "template_id",
         "task_id",
         "task_overview_fields",
         "stage_with_actions",

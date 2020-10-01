@@ -10,7 +10,8 @@ from ib_tasks.tests.factories.storage_dtos import \
     UserFieldPermissionDTOFactory, FieldDTOFactory, \
     GoFToTaskTemplateDTOFactory, GoFDTOFactory, \
     FieldPermissionDTOFactory, StageIdWithTemplateIdDTOFactory, \
-    ProjectIdWithTaskTemplateIdDTOFactory, StageGoFWithTemplateIdDTOFactory
+    ProjectIdWithTaskTemplateIdDTOFactory, StageGoFWithTemplateIdDTOFactory, \
+    TaskTemplateMandatoryFieldsDTOFactory
 
 
 class TestGetTaskTemplatesPresenterImplementation:
@@ -28,8 +29,16 @@ class TestGetTaskTemplatesPresenterImplementation:
         StageIdWithTemplateIdDTOFactory.reset_sequence(1)
         ProjectIdWithTaskTemplateIdDTOFactory.reset_sequence(1)
         StageGoFWithTemplateIdDTOFactory.reset_sequence(1)
+        TaskTemplateMandatoryFieldsDTOFactory.reset_sequence(1)
 
-    def test_when_complete_task_template_details_exists(self, snapshot):
+    @pytest.fixture
+    def task_template_mandatory_fields_dtos(self):
+        task_template_mandatory_fields_dtos = \
+            TaskTemplateMandatoryFieldsDTOFactory.create_batch(size=2)
+        return task_template_mandatory_fields_dtos
+
+    def test_when_complete_task_template_details_exists(
+            self, snapshot, task_template_mandatory_fields_dtos):
         # Arrange
         template_ids = ["template_1", "template_2"]
         expected_gof_ids = ['gof_1', 'gof_2']
@@ -84,7 +93,9 @@ class TestGetTaskTemplatesPresenterImplementation:
 
         # Act
         presenter_response_object = presenter.get_task_templates_response(
-            complete_task_templates_dto=complete_task_templates_dto
+            complete_task_templates_dto=complete_task_templates_dto,
+            task_template_mandatory_fields_dtos=
+            task_template_mandatory_fields_dtos
         )
 
         # Assert
@@ -100,6 +111,7 @@ class TestGetTaskTemplatesPresenterImplementation:
 
     def test_when_no_task_templates_exists_returns_empty_list(self, snapshot):
         # Arrange
+        task_template_mandatory_fields_dtos = []
         complete_task_templates_dto = CompleteTaskTemplatesDTO(
             task_template_dtos=[],
             project_id_with_task_template_id_dtos=[],
@@ -114,7 +126,9 @@ class TestGetTaskTemplatesPresenterImplementation:
 
         # Act
         presenter_response_object = presenter.get_task_templates_response(
-            complete_task_templates_dto=complete_task_templates_dto
+            complete_task_templates_dto=complete_task_templates_dto,
+            task_template_mandatory_fields_dtos=
+            task_template_mandatory_fields_dtos
         )
 
         # Assert
@@ -122,7 +136,8 @@ class TestGetTaskTemplatesPresenterImplementation:
         response_content = json.loads(presenter_response_object.content)
         snapshot.assert_match(response_content, 'task_templates')
 
-    def test_when_no_gofs_exists_returns_empty_gofs_list(self, snapshot):
+    def test_when_no_gofs_exists_returns_empty_gofs_list(
+            self, snapshot, task_template_mandatory_fields_dtos):
         # Arrange
         template_ids = ["template_1", "template_2"]
         task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
@@ -154,7 +169,9 @@ class TestGetTaskTemplatesPresenterImplementation:
 
         # Act
         presenter_response_object = presenter.get_task_templates_response(
-            complete_task_templates_dto=complete_task_templates_dto
+            complete_task_templates_dto=complete_task_templates_dto,
+            task_template_mandatory_fields_dtos=
+            task_template_mandatory_fields_dtos
         )
 
         # Assert
@@ -169,7 +186,7 @@ class TestGetTaskTemplatesPresenterImplementation:
             counter = counter + 1
 
     def test_when_no_actions_for_user_exists_returns_empty_actions_list(
-            self, snapshot):
+            self, snapshot, task_template_mandatory_fields_dtos):
         # Arrange
         template_ids = ["template_1", "template_2"]
         expected_gof_ids = ['gof_1', 'gof_2']
@@ -220,7 +237,9 @@ class TestGetTaskTemplatesPresenterImplementation:
 
         # Act
         presenter_response_object = presenter.get_task_templates_response(
-            complete_task_templates_dto=complete_task_templates_dto
+            complete_task_templates_dto=complete_task_templates_dto,
+            task_template_mandatory_fields_dtos=
+            task_template_mandatory_fields_dtos
         )
 
         # Assert
@@ -234,7 +253,8 @@ class TestGetTaskTemplatesPresenterImplementation:
             )
             counter = counter + 1
 
-    def test_when_no_fields_exists_returns_empty_fields_list(self, snapshot):
+    def test_when_no_fields_exists_returns_empty_fields_list(
+            self, snapshot, task_template_mandatory_fields_dtos):
         # Arrange
         template_ids = ["template_1", "template_2"]
         expected_gof_ids = ['gof_1', 'gof_2']
@@ -278,7 +298,9 @@ class TestGetTaskTemplatesPresenterImplementation:
 
         # Act
         presenter_response_object = presenter.get_task_templates_response(
-            complete_task_templates_dto=complete_task_templates_dto
+            complete_task_templates_dto=complete_task_templates_dto,
+            task_template_mandatory_fields_dtos=
+            task_template_mandatory_fields_dtos
         )
 
         # Assert
@@ -293,7 +315,7 @@ class TestGetTaskTemplatesPresenterImplementation:
             counter = counter + 1
 
     def test_when_no_project_templates_exists_returns_project_id_none(
-            self, snapshot):
+            self, snapshot, task_template_mandatory_fields_dtos):
         # Arrange
         template_ids = ["template_1", "template_2"]
         expected_gof_ids = ['gof_1', 'gof_2']
@@ -335,7 +357,9 @@ class TestGetTaskTemplatesPresenterImplementation:
 
         # Act
         presenter_response_object = presenter.get_task_templates_response(
-            complete_task_templates_dto=complete_task_templates_dto
+            complete_task_templates_dto=complete_task_templates_dto,
+            task_template_mandatory_fields_dtos=
+            task_template_mandatory_fields_dtos
         )
 
         # Assert
@@ -365,7 +389,7 @@ class TestGetTaskTemplatesPresenterImplementation:
         snapshot.assert_match(response['response'], 'response')
 
     def test_when_no_task_creation_gofs_exists_returns_empty_list(
-            self, snapshot):
+            self, snapshot, task_template_mandatory_fields_dtos):
         # Arrange
         template_ids = ["template_1", "template_2"]
         expected_gof_ids = ['gof_1', 'gof_2']
@@ -420,7 +444,9 @@ class TestGetTaskTemplatesPresenterImplementation:
 
         # Act
         presenter_response_object = presenter.get_task_templates_response(
-            complete_task_templates_dto=complete_task_templates_dto
+            complete_task_templates_dto=complete_task_templates_dto,
+            task_template_mandatory_fields_dtos=
+            task_template_mandatory_fields_dtos
         )
 
         # Assert
@@ -434,7 +460,8 @@ class TestGetTaskTemplatesPresenterImplementation:
             )
             counter = counter + 1
 
-    def test_when_no_stage_gofs_returns_empty_list(self, snapshot):
+    def test_when_no_stage_gofs_returns_empty_list(
+            self, snapshot, task_template_mandatory_fields_dtos):
         # Arrange
         template_ids = ["template_1", "template_2"]
         expected_gof_ids = ['gof_1', 'gof_2']
@@ -489,7 +516,9 @@ class TestGetTaskTemplatesPresenterImplementation:
 
         # Act
         presenter_response_object = presenter.get_task_templates_response(
-            complete_task_templates_dto=complete_task_templates_dto
+            complete_task_templates_dto=complete_task_templates_dto,
+            task_template_mandatory_fields_dtos=
+            task_template_mandatory_fields_dtos
         )
 
         # Assert

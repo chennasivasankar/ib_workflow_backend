@@ -34,6 +34,7 @@ RESPONSE_200_JSON = """
                     "total_tasks": 1,
                     "tasks": [
                         {
+                            "template_id": "string",
                             "task_id": "string",
                             "title": "string",
                             "description": "string",
