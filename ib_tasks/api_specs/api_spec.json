@@ -588,7 +588,7 @@
               "type": "string"
            },
             "action_id": {
-               "type": "integer"
+               "type": "string"
             }
          },
          "required": [

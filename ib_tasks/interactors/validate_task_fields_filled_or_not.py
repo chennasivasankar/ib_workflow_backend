@@ -3,6 +3,8 @@ from typing import List, Optional
 from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.fields_custom_exceptions import \
     UserDidNotFillRequiredFields
+from ib_tasks.exceptions.task_custom_exceptions import StartDateIsRequired, \
+    DueDateIsRequired, PriorityIsRequired
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.presenter_interfaces.validate_task_fields_presenter import \
@@ -47,14 +49,27 @@ class TaskFieldsFilledValidationInteractor(GetTaskIdForTaskDisplayIdMixin):
             self.validate_task_filled_fields(task_id, action_id, user_id)
         except UserDidNotFillRequiredFields as err:
             return presenter.raise_user_did_not_fill_required_fields(err)
+        except StartDateIsRequired:
+            return presenter.start_date_is_required()
+        except DueDateIsRequired:
+            return presenter.due_date_is_required()
+        except PriorityIsRequired:
+            return presenter.priority_is_required()
 
     def validate_task_filled_fields(
             self, task_id: int, action_id: int, user_id: str):
+        action_type = self.action_storage.get_action_type_for_given_action_id(
+            action_id)
+        action_type_is_no_validations = \
+            action_type == ActionTypes.NO_VALIDATIONS.value
+        if action_type_is_no_validations:
+            return
         project_id = \
             self.task_storage.get_project_id_for_the_task_id(task_id=task_id)
         self._validation_all_user_template_permitted_fields_are_filled_or_not(
             task_id=task_id, project_id=project_id, action_id=action_id,
             user_id=user_id)
+        self._validate_task_base_details(task_id)
 
     def _validation_all_user_template_permitted_fields_are_filled_or_not(
             self, task_id: int, project_id: str, action_id: int,
@@ -119,3 +134,15 @@ class TaskFieldsFilledValidationInteractor(GetTaskIdForTaskDisplayIdMixin):
             ]
             raise UserDidNotFillRequiredFields(unfilled_field_dtos)
         return
+
+    def _validate_task_base_details(self, task_id: int):
+        task_dto = self.task_storage.get_task_base_details_dto(task_id)
+        is_start_date_empty = not task_dto.start_date
+        if is_start_date_empty:
+            raise StartDateIsRequired()
+        is_due_date_empty = not task_dto.due_date
+        if is_due_date_empty:
+            raise DueDateIsRequired()
+        is_priority_empty = not task_dto.priority
+        if is_priority_empty:
+            raise PriorityIsRequired()

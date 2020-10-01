@@ -3,7 +3,7 @@
 REQUEST_BODY_JSON = """
 {
     "task_id": "string",
-    "action_id": 1
+    "action_id": "string"
 }
 """
 

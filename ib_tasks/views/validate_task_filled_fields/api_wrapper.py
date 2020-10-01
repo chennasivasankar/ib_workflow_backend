@@ -23,7 +23,7 @@ def api_wrapper(*args, **kwargs):
     user_id = kwargs['user'].user_id
     request_data = kwargs['request_data']
     task_id = request_data.get('task_id')
-    action_id = request_data.get('action_id')
+    action_id = int(request_data.get('action_id'))
 
     field_storage = FieldsStorageImplementation()
     gof_storage = GoFStorageImplementation()
