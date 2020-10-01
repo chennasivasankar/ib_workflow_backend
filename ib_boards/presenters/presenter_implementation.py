@@ -1,4 +1,3 @@
-from abc import ABC
 from datetime import datetime
 from typing import List
 
@@ -10,16 +9,17 @@ from ib_boards.constants.exception_messages import (
     INVALID_BOARD_ID, INVALID_OFFSET_VALUE, INVALID_LIMIT_VALUE,
     USER_DONOT_HAVE_ACCESS, INVALID_PROJECT_ID, USER_IS_NOT_IN_PROJECT)
 from ib_boards.interactors.dtos import ColumnTasksDTO, FieldDTO, ActionDTO, \
-    StarredAndOtherBoardsDTO, TaskStageDTO, StageAssigneesDTO, AssigneesDTO, \
+    StarredAndOtherBoardsDTO, StageAssigneesDTO, AssigneesDTO, \
     TaskBaseAndCompleteDetailsDTO, TaskCompleteDetailsWithAllFieldsDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetBoardsPresenterInterface, \
-    GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO, TaskDisplayIdDTO, \
-    CompleteTasksDetailsDTO, GetColumnTasksListViewPresenterInterface, \
+    GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO, \
+    GetColumnTasksListViewPresenterInterface, \
     FieldsDisplayStatusPresenterInterface, FieldsDisplayOrderPresenterInterface
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
-from ib_boards.interactors.storage_interfaces.dtos import ColumnCompleteDetails, \
+from ib_boards.interactors.storage_interfaces.dtos import \
+    ColumnCompleteDetails, \
     AllFieldsDTO
 from ib_boards.interactors.storage_interfaces.dtos import (
     TaskFieldsDTO, TaskActionsDTO)
@@ -190,6 +190,7 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
 
         task_fields_dtos = task_complete_details_dto.task_field_dtos
         task_actions_dtos = task_complete_details_dto.task_action_dtos
+        task_actions_dtos.sort(key=lambda x: [x.order])
         task_stage_dtos = task_complete_details_dto.task_stage_color_dtos
         assignees_dtos = task_complete_details_dto.assignees_dtos
         task_base_details_dtos = task_complete_details_dto.task_base_details_dtos
@@ -530,6 +531,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
                 task_fields_dto.stage_id + str(task_fields_dto.task_id)
                 ].append(task_fields_dto)
 
+        task_actions_dtos.sort(key=lambda x: [x.order])
         task_actions_map = defaultdict(lambda: [])
         for task_actions_dto in task_actions_dtos:
             task_actions_map[
