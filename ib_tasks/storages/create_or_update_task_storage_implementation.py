@@ -170,7 +170,8 @@ class CreateOrUpdateTaskStorageImplementation(
         gof_id_with_same_gof_order_dtos = [
             GoFIdWithSameGoFOrderDTO(
                 gof_id=gof_dict['gof_id'],
-                same_gof_order=gof_dict['same_gof_order']
+                same_gof_order=gof_dict['same_gof_order'],
+                task_gof_id=gof_dict['id']
             )
             for gof_dict in gof_dicts
         ]
@@ -194,10 +195,8 @@ class CreateOrUpdateTaskStorageImplementation(
     def update_task_gofs(
             self, task_gof_dtos: List[TaskGoFWithTaskIdDTO]
     ) -> List[TaskGoFDetailsDTO]:
-        task_id = task_gof_dtos[0].task_id
-        gof_ids = [dto.gof_id for dto in task_gof_dtos]
-        task_gof_objects = list(TaskGoF.objects.filter(task_id=task_id,
-                                                       gof_id__in=gof_ids))
+        task_gof_ids = [dto.task_gof_id for dto in task_gof_dtos]
+        task_gof_objects = list(TaskGoF.objects.filter(id__in=task_gof_ids))
         for task_gof_object in task_gof_objects:
             task_gof_dto = self._get_matching_task_gof_dto(
                 task_gof_object, task_gof_dtos)
@@ -219,7 +218,8 @@ class CreateOrUpdateTaskStorageImplementation(
         for task_gof_dto in task_gof_dtos:
             dto_matched = (
                 task_gof_dto.task_id == task_gof_object.task_id and
-                task_gof_dto.gof_id == task_gof_object.gof_id
+                task_gof_dto.gof_id == task_gof_object.gof_id and
+                task_gof_dto.same_gof_order == task_gof_object.same_gof_order
             )
             if dto_matched:
                 return task_gof_dto

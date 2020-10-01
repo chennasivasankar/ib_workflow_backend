@@ -752,6 +752,7 @@ class GoFIdWithSameGoFOrderDTOFactory(factory.Factory):
 
     gof_id = factory.Sequence(lambda c: "gof_{}".format(c))
     same_gof_order = factory.Sequence(lambda c: c)
+    task_gof_id = factory.Sequence(lambda c: c)
 
 
 class FieldIdWithTaskGoFIdDTOFactory(factory.Factory):
