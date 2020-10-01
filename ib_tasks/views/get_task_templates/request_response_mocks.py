@@ -53,7 +53,7 @@ RESPONSE_200_JSON = """
         "task_creation_gof_ids": [
             "string"
         ],
-        "title": {
+        "title_configuration": {
             "display_name": "string",
             "placeholder_text": "string"
         }
