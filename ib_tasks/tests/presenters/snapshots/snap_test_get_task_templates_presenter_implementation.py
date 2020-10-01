@@ -60,7 +60,11 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_complete_task_t
         'gof_1'
     ],
     'template_id': 'template_1',
-    'template_name': 'Task Template 1'
+    'template_name': 'Task Template 1',
+    'title': {
+        'display_name': 'title_display_name_1',
+        'placeholder_text': 'title_placeholder_text_1'
+    }
 }
 
 snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_complete_task_template_details_exists task_template_2'] = {
@@ -116,7 +120,11 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_complete_task_t
         'gof_2'
     ],
     'template_id': 'template_2',
-    'template_name': 'Task Template 2'
+    'template_name': 'Task Template 2',
+    'title': {
+        'display_name': 'title_display_name_2',
+        'placeholder_text': 'title_placeholder_text_2'
+    }
 }
 
 snapshots['TestGetTaskTemplatesPresenterImplementation.test_raise_task_templates_does_not_exists_exception http_status_code'] = 404
@@ -146,7 +154,11 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_gofs_exists_
     'task_creation_gof_ids': [
     ],
     'template_id': 'template_1',
-    'template_name': 'Task Template 1'
+    'template_name': 'Task Template 1',
+    'title': {
+        'display_name': 'title_display_name_1',
+        'placeholder_text': 'title_placeholder_text_1'
+    }
 }
 
 snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_gofs_exists_returns_empty_gofs_list task_template_2'] = {
@@ -167,7 +179,11 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_gofs_exists_
     'task_creation_gof_ids': [
     ],
     'template_id': 'template_2',
-    'template_name': 'Task Template 2'
+    'template_name': 'Task Template 2',
+    'title': {
+        'display_name': 'title_display_name_2',
+        'placeholder_text': 'title_placeholder_text_2'
+    }
 }
 
 snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_fields_exists_returns_empty_fields_list task_template_1'] = {
@@ -204,7 +220,11 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_fields_exist
         'gof_1'
     ],
     'template_id': 'template_1',
-    'template_name': 'Task Template 1'
+    'template_name': 'Task Template 1',
+    'title': {
+        'display_name': 'title_display_name_1',
+        'placeholder_text': 'title_placeholder_text_1'
+    }
 }
 
 snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_fields_exists_returns_empty_fields_list task_template_2'] = {
@@ -241,7 +261,11 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_fields_exist
         'gof_2'
     ],
     'template_id': 'template_2',
-    'template_name': 'Task Template 2'
+    'template_name': 'Task Template 2',
+    'title': {
+        'display_name': 'title_display_name_2',
+        'placeholder_text': 'title_placeholder_text_2'
+    }
 }
 
 snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_project_templates_exists_returns_project_id_none task_template_1'] = {
@@ -278,7 +302,11 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_project_temp
         'gof_1'
     ],
     'template_id': 'template_1',
-    'template_name': 'Task Template 1'
+    'template_name': 'Task Template 1',
+    'title': {
+        'display_name': 'title_display_name_1',
+        'placeholder_text': 'title_placeholder_text_1'
+    }
 }
 
 snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_project_templates_exists_returns_project_id_none task_template_2'] = {
@@ -315,7 +343,11 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_project_temp
         'gof_2'
     ],
     'template_id': 'template_2',
-    'template_name': 'Task Template 2'
+    'template_name': 'Task Template 2',
+    'title': {
+        'display_name': 'title_display_name_2',
+        'placeholder_text': 'title_placeholder_text_2'
+    }
 }
 
 snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_actions_for_user_exists_returns_empty_actions_list task_template_1'] = {
@@ -364,7 +396,11 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_actions_for_
         'gof_1'
     ],
     'template_id': 'template_1',
-    'template_name': 'Task Template 1'
+    'template_name': 'Task Template 1',
+    'title': {
+        'display_name': 'title_display_name_1',
+        'placeholder_text': 'title_placeholder_text_1'
+    }
 }
 
 snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_actions_for_user_exists_returns_empty_actions_list task_template_2'] = {
@@ -413,7 +449,11 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_actions_for_
         'gof_2'
     ],
     'template_id': 'template_2',
-    'template_name': 'Task Template 2'
+    'template_name': 'Task Template 2',
+    'title': {
+        'display_name': 'title_display_name_2',
+        'placeholder_text': 'title_placeholder_text_2'
+    }
 }
 
 snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_task_creation_gofs_exists_returns_empty_list task_template_1'] = {
@@ -469,7 +509,11 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_task_creatio
     'task_creation_gof_ids': [
     ],
     'template_id': 'template_1',
-    'template_name': 'Task Template 1'
+    'template_name': 'Task Template 1',
+    'title': {
+        'display_name': 'title_display_name_1',
+        'placeholder_text': 'title_placeholder_text_1'
+    }
 }
 
 snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_task_creation_gofs_exists_returns_empty_list task_template_2'] = {
@@ -525,7 +569,11 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_task_creatio
     'task_creation_gof_ids': [
     ],
     'template_id': 'template_2',
-    'template_name': 'Task Template 2'
+    'template_name': 'Task Template 2',
+    'title': {
+        'display_name': 'title_display_name_2',
+        'placeholder_text': 'title_placeholder_text_2'
+    }
 }
 
 snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_stage_gofs_returns_empty_list task_template_1'] = {
@@ -575,7 +623,11 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_stage_gofs_r
         'gof_1'
     ],
     'template_id': 'template_1',
-    'template_name': 'Task Template 1'
+    'template_name': 'Task Template 1',
+    'title': {
+        'display_name': 'title_display_name_1',
+        'placeholder_text': 'title_placeholder_text_1'
+    }
 }
 
 snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_stage_gofs_returns_empty_list task_template_2'] = {
@@ -625,5 +677,9 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_stage_gofs_r
         'gof_2'
     ],
     'template_id': 'template_2',
-    'template_name': 'Task Template 2'
+    'template_name': 'Task Template 2',
+    'title': {
+        'display_name': 'title_display_name_2',
+        'placeholder_text': 'title_placeholder_text_2'
+    }
 }
