@@ -174,3 +174,11 @@ class TaskDelayReasonIsNotUpdated(Exception):
 
 class PriorityIsRequired(Exception):
     pass
+
+
+class StartDateIsRequired(Exception):
+    pass
+
+
+class DueDateIsRequired(Exception):
+    pass
