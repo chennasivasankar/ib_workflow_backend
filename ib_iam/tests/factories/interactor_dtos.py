@@ -5,7 +5,7 @@ from ib_iam.interactors.auth.update_user_password_interactor import \
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, AddUserDetailsDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO, \
     CompleteUserProfileDTO, CompleteTeamMemberLevelsDetailsDTO, \
-    UserIdWithRoleIdsDTO, AuthUserDTO
+    UserIdWithRoleIdsDTO, AuthUserDTO, LoginWithTokenParameterDTO
 from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
 from ib_iam.tests.factories.storage_dtos import MemberDTOFactory, \
     TeamMemberLevelDetailsDTOFactory, \
@@ -56,7 +56,8 @@ class TeamMemberLevelIdWithMemberIdsDTOFactory(factory.Factory):
 
     team_member_level_id = factory.Faker("uuid4")
     member_ids = factory.List(
-        [factory.Faker("uuid4"), factory.Faker("uuid4"), factory.Faker("uuid4")]
+        [factory.Faker("uuid4"), factory.Faker("uuid4"),
+         factory.Faker("uuid4")]
     )
 
 
@@ -66,7 +67,8 @@ class ImmediateSuperiorUserIdWithUserIdsDTOFactory(factory.Factory):
 
     immediate_superior_user_id = factory.Faker("uuid4")
     member_ids = factory.List(
-        [factory.Faker("uuid4"), factory.Faker("uuid4"), factory.Faker("uuid4")]
+        [factory.Faker("uuid4"), factory.Faker("uuid4"),
+         factory.Faker("uuid4")]
     )
 
 
@@ -114,3 +116,14 @@ class AuthUserDTOFactory(factory.Factory):
     name = factory.sequence(lambda n: "name_{}".format(n))
     email = factory.sequence(lambda n: "token_{}@gmail.com".format(n))
     password = "Password123#"
+
+
+class LoginWithTokenParameterDTOFactory(factory.Factory):
+    class Meta:
+        model = LoginWithTokenParameterDTO
+
+    token = factory.sequence(lambda n: "token_{}".format(n))
+    name = factory.sequence(lambda n: "name_{}".format(n))
+    auth_token_user_id = factory.sequence(
+        lambda n: "auth_token_user_id_{}".format(n)
+    )

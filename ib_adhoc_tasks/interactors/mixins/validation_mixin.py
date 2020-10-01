@@ -17,7 +17,7 @@ class ValidationMixin:
     def _validate_is_user_exists_in_project(project_id: str, user_id: str):
         from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
-        service_adapter.iam_service.is_valid_user_id_for_given_project(
+        service_adapter.iam_service.validate_user_id_for_given_project(
             user_id=user_id, project_id=project_id
         )
 
@@ -27,7 +27,7 @@ class ValidationMixin:
     ):
         from ib_adhoc_tasks.adapters.service_adapter import get_service_adapter
         service = get_service_adapter()
-        service.iam_service.is_valid_user_id_for_given_project(
+        service.iam_service.validate_user_id_for_given_project(
             project_id=project_id, user_id=user_id
         )
 

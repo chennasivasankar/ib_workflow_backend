@@ -352,6 +352,7 @@ snapshots['TestCreateSubTaskPresenterImplementation.test_get_create_sub_task_res
         'task_id': 'iBWF-1',
         'task_overview_fields': [
         ],
+        'template_id': 'template_0',
         'title': 'title_0'
     }
 }

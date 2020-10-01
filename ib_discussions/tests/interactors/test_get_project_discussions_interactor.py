@@ -54,7 +54,7 @@ class TestGetProjectDiscussionsInteractor:
         user_profile_dtos = UserProfileDTOFactory.create_batch(size=3)
         return user_profile_dtos
 
-    def test_validate_offset_value_raise_exception(
+    def test_invalid_offset_return_response(
             self, presenter_mock, interactor, mocker,
             get_project_discussions_input_dto
     ):
@@ -81,6 +81,70 @@ class TestGetProjectDiscussionsInteractor:
                == expected_presenter_raise_exception_for_invalid_offset_mock
 
         presenter_mock.response_for_invalid_offset.assert_called_once()
+
+    def test_with_invalid_project_id_return_response(
+            self, presenter_mock, interactor, mocker,
+            get_project_discussions_input_dto
+    ):
+        # Arrange
+
+        from ib_discussions.adapters.iam_service import InvalidProjectId
+        from ib_discussions.tests.common_fixtures.adapters import \
+            validate_user_id_for_given_project
+        validate_user_id_for_given_project(mocker, side_effect=InvalidProjectId)
+
+        from ib_discussions.tests.common_fixtures.adapters import \
+            get_subordinate_user_ids_mock
+        get_subordinate_user_ids_mock(mocker)
+
+        expected_presenter_response_for_invalid_project_id_mock = Mock()
+
+        presenter_mock.response_for_invalid_project_id.return_value \
+            = expected_presenter_response_for_invalid_project_id_mock
+
+        # Act
+        response = interactor.get_project_discussions_wrapper(
+            presenter=presenter_mock,
+            get_project_discussions_input_dto=get_project_discussions_input_dto
+        )
+
+        # Assert
+        assert response \
+               == expected_presenter_response_for_invalid_project_id_mock
+
+        presenter_mock.response_for_invalid_project_id.assert_called_once()
+
+    def test_with_invalid_user_for_project_return_response(
+            self, presenter_mock, interactor, mocker,
+            get_project_discussions_input_dto
+    ):
+        # Arrange
+        from ib_discussions.adapters.iam_service import InvalidUserForProject
+        from ib_discussions.tests.common_fixtures.adapters import \
+            validate_user_id_for_given_project
+        validate_user_id_for_given_project(
+            mocker, side_effect=InvalidUserForProject)
+
+        from ib_discussions.tests.common_fixtures.adapters import \
+            get_subordinate_user_ids_mock
+        get_subordinate_user_ids_mock(mocker)
+
+        expected_presenter_response_for_invalid_user_for_project_mock = Mock()
+
+        presenter_mock.response_for_invalid_user_for_project.return_value \
+            = expected_presenter_response_for_invalid_user_for_project_mock
+
+        # Act
+        response = interactor.get_project_discussions_wrapper(
+            presenter=presenter_mock,
+            get_project_discussions_input_dto=get_project_discussions_input_dto
+        )
+
+        # Assert
+        assert response \
+               == expected_presenter_response_for_invalid_user_for_project_mock
+
+        presenter_mock.response_for_invalid_user_for_project.assert_called_once()
 
     def test_validate_limit_value_raise_exception(
             self, presenter_mock, interactor, mocker,
@@ -122,6 +186,9 @@ class TestGetProjectDiscussionsInteractor:
         from ib_discussions.tests.common_fixtures.adapters import \
             get_subordinate_user_ids_mock
         get_subordinate_user_ids_mock = get_subordinate_user_ids_mock(mocker)
+        from ib_discussions.tests.common_fixtures.adapters import \
+            validate_user_id_for_given_project
+        validate_user_id_for_given_project(mocker)
         get_subordinate_user_ids_mock.return_value = user_ids
 
         storage_mock.get_discussion_set_id_if_exists.return_value \

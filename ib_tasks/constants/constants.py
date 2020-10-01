@@ -49,7 +49,7 @@ DATE_FORMAT = "%Y-%m-%d"
 
 STAGE_TASK = "STAGE_TASK"
 
-TASK_DISPLAY_ID = "IBWF-{}"
+TASK_DISPLAY_ID = "JGC-{}"
 
 INTEGER_FIELD_TYPES = [
     FieldTypes.NUMBER.value,

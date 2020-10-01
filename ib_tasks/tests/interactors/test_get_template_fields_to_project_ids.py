@@ -71,7 +71,7 @@ class TestGetProjectsTemplatesFieldsInteractor(StorageMockClass):
             common_task_template_ids
         gof_storage.get_user_permitted_template_gof_dtos.return_value = \
             template_gofs
-        field_storage.get_user_permitted_gof_field_dtos.return_value = \
+        field_storage.get_field_dtos_for_gofs_ids_to_apply_filters.return_value = \
             field_dtos
 
     def test_given_valid_details_returns_details(
@@ -112,7 +112,7 @@ class TestGetProjectsTemplatesFieldsInteractor(StorageMockClass):
             .assert_called_once_with(
                 user_roles=role_ids, template_ids=template_ids
             )
-        field_storage.get_user_permitted_gof_field_dtos \
+        field_storage.get_field_dtos_for_gofs_ids_to_apply_filters \
             .assert_called_once_with(
                 user_roles=role_ids, gof_ids=gof_ids
             )
