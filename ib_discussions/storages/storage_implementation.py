@@ -239,3 +239,42 @@ class StorageImplementation(StorageInterface):
                 discussion_id_with_comments_count_dict["comments_count"]
 
         return list(discussion_id_wise_comments_count_dto_dict.values())
+
+    def get_project_discussion_dtos(
+            self, discussion_set_id: str, sort_by_dto: SortByDTO,
+            user_ids: List[str], offset_and_limit_dto: OffsetAndLimitDTO,
+            filter_by_dto: FilterByDTO
+    ) -> List[DiscussionDTO]:
+        from ib_discussions.models import Discussion
+        discussion_objects = Discussion.objects.filter(
+            discussion_set_id=discussion_set_id,
+            user_id__in=user_ids
+        )
+        filter_discussion_objects = self._get_filter_discussion_objects(
+            filter_by_dto=filter_by_dto, discussion_objects=discussion_objects
+        )
+        sort_discussion_objects = self._get_sort_discussion_objects(
+            sort_by_dto=sort_by_dto,
+            discussion_objects=filter_discussion_objects
+        )
+        offset = offset_and_limit_dto.offset
+        limit = offset_and_limit_dto.limit
+        discussion_objects_after_applying_offset_and_limit \
+            = sort_discussion_objects[offset: offset + limit]
+        complete_discussion_dtos = self._convert_to_discussion_dtos(
+            discussion_objects_after_applying_offset_and_limit
+        )
+        return complete_discussion_dtos
+
+    def get_total_project_discussion_count(
+            self, discussion_set_id: str,
+            filter_by_dto: FilterByDTO, user_ids: List[str]
+    ) -> int:
+        from ib_discussions.models import Discussion
+        discussion_objects = Discussion.objects.filter(
+            discussion_set_id=discussion_set_id, user_id__in=user_ids
+        )
+        filter_discussion_objects = self._get_filter_discussion_objects(
+            filter_by_dto=filter_by_dto, discussion_objects=discussion_objects
+        )
+        return filter_discussion_objects.count()

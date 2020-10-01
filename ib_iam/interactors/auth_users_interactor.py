@@ -32,10 +32,14 @@ class AuthUsersInteractor:
     def auth_user_dtos(self, auth_user_dtos: List[AuthUserDTO],
                        project_id: str):
         user_ids = []
+        role_ids = self.project_storage.get_project_role_ids(
+            project_id=project_id
+        )
         for auth_user_dto in auth_user_dtos:
             try:
                 user_id = self._create_auth_user_details(
-                    auth_user_dto=auth_user_dto)
+                    auth_user_dto=auth_user_dto, role_ids=role_ids
+                )
             except:
                 continue
             user_ids.append(user_id)
@@ -43,7 +47,9 @@ class AuthUsersInteractor:
             user_ids=user_ids, project_id=project_id)
         return
 
-    def _create_auth_user_details(self, auth_user_dto: AuthUserDTO):
+    def _create_auth_user_details(
+            self, auth_user_dto: AuthUserDTO, role_ids: List[str]
+    ):
         from ib_iam.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         user_id = service_adapter.user_service.create_user_account_with_email(
@@ -68,6 +74,9 @@ class AuthUsersInteractor:
         self._create_elastic_user(
             user_id=user_id, name=auth_user_dto.name,
             email=auth_user_dto.email
+        )
+        self.user_storage.add_roles_to_the_user(
+            user_id=user_id, role_ids=role_ids
         )
         return user_id
 

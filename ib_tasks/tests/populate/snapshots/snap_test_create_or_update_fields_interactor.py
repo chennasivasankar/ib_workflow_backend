@@ -13,13 +13,11 @@ snapshots['TestCreateOrUpdateFields.test_given_duplication_of_filed_ids_raise_ex
 
 snapshots['TestCreateOrUpdateFields.test_given_field_display_name_as_empty_raise_exception exception_message = '] = "Invalid fields display names for these field ids ['field2', 'field3']"
 
-snapshots['TestCreateOrUpdateFields.test_given_invalid_field_type_raise_ecxception exception_message = '] = "Field Types should be one of these ['PLAIN_TEXT', 'PHONE_NUMBER', 'EMAIL', 'URL', 'PASSWORD', 'NUMBER', 'FLOAT', 'LONG_TEXT', 'DROPDOWN', 'GOF_SELECTOR', 'RADIO_GROUP', 'CHECKBOX_GROUP', 'MULTI_SELECT_FIELD', 'MULTI_SELECT_LABELS', 'DATE', 'TIME', 'DATE_TIME', 'IMAGE_UPLOADER', 'FILE_UPLOADER', 'SEARCHABLE'] for these field_ids ['field1', 'field2']"
+snapshots['TestCreateOrUpdateFields.test_given_invalid_field_type_raise_ecxception exception_message = '] = "Field Types should be one of these ['PLAIN_TEXT', 'PHONE_NUMBER', 'EMAIL', 'URL', 'PASSWORD', 'NUMBER', 'FLOAT', 'LONG_TEXT', 'DROPDOWN', 'GOF_SELECTOR', 'RADIO_GROUP', 'CHECKBOX_GROUP', 'MULTI_SELECT_FIELD', 'MULTI_SELECT_LABELS', 'DATE', 'TIME', 'DATE_TIME', 'IMAGE_UPLOADER', 'FILE_UPLOADER', 'SEARCHABLE', 'HTML_TEXT', 'MARKDOWN_TEXT'] for these field_ids ['field1', 'field2']"
 
 snapshots['TestCreateOrUpdateFields.test_given_gof_ids_not_in_database_raise_exception exception_message = '] = "Invalid values for gof_ids ['FIN_VENDOR_BASIC_DETAILS', 'Hello', '']"
 
 snapshots['TestCreateOrUpdateFields.test_given_empty_values_for_read_permissions_roles_raise_exception exception_message = '] = "Read Permission roles shouldn't be empty for these fields ids ['field1', 'field2']"
-
-snapshots['TestCreateOrUpdateFields.test_given_empty_values_for_write_permissions_roles_raise_exception exception_message = '] = "Write Permission roles shouldn't be empty for these fields ids ['field1', 'field2']"
 
 snapshots['TestCreateOrUpdateFields.test_given_duplication_of_values_for_read_permissions_roles_raise_exception exception_message = '] = "Repeated roles for read permissions for these fields [{'field_id': 'field1', 'duplication_values_for_read_permissions': ['User']}, {'field_id': 'field2', 'duplication_values_for_read_permissions': ['Admin']}]"
 

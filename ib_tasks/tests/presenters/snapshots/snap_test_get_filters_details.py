@@ -142,7 +142,7 @@ snapshots['TestGetFiltersDetailsPresenter.test_returns_templates_fields filters'
         'GTE',
         'LTE',
         'GT',
-        'LE',
+        'LT',
         'NE',
         'EQ',
         'CONTAINS'
@@ -151,22 +151,12 @@ snapshots['TestGetFiltersDetailsPresenter.test_returns_templates_fields filters'
         {
             'fields': [
                 {
-                    'field_id': 'field0',
-                    'name': 'field name'
+                    'field_id': 'field_0',
+                    'name': 'display_name_0'
                 }
             ],
-            'name': 'Task Template 1',
-            'task_template_id': 'template_1'
-        },
-        {
-            'fields': [
-                {
-                    'field_id': 'field1',
-                    'name': 'field name'
-                }
-            ],
-            'name': 'Task Template 2',
-            'task_template_id': 'template_2'
+            'name': 'Task Template 0',
+            'task_template_id': 'template_0'
         }
     ]
 }
