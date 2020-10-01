@@ -533,8 +533,12 @@ class UpdateTaskInteractor(
     ) -> Optional[TaskDelayReasonIsNotUpdated]:
         existing_due_date = \
             self.create_task_storage.get_existing_task_due_date(task_id)
+        now = datetime.datetime.now()
+
+        if existing_due_date is None:
+            existing_due_date = datetime.datetime.now()
         existing_due_date_is_not_expired = \
-            existing_due_date > datetime.datetime.now()
+            existing_due_date > now
         if existing_due_date_is_not_expired:
             return
         due_date_has_changed = (
