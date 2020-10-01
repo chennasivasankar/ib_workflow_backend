@@ -3,7 +3,6 @@ from typing import List, Optional, Union
 from ib_tasks.exceptions.columns_custom_exceptions import \
     MaxColumnsMustBeAPositiveInteger
 from ib_tasks.exceptions.gofs_custom_exceptions import GOFIdCantBeEmpty, \
-    GOFDisplayNameCantBeEmpty, \
     GOFReadPermissionsCantBeEmpty, GOFWritePermissionsCantBeEmpty, \
     DuplicateReadPermissionRolesForAGoF, DuplicateWritePermissionRolesForAGoF
 from ib_tasks.exceptions.roles_custom_exceptions import \

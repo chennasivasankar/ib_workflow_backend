@@ -9,6 +9,8 @@ from ib_tasks.interactors.create_or_update_gofs import \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFRoleDTO
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
+from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+    get_valid_role_ids_in_given_role_ids
 from ib_tasks.tests.factories.storage_dtos import (
     CompleteGoFDetailsDTOFactory, GoFDTOFactory, GoFRolesDTOFactory
 )
@@ -93,30 +95,6 @@ class TestCreateOrUpdateGOFs:
 
         # Act
         with pytest.raises(GOFIdCantBeEmpty) as err:
-            interactor.create_or_update_gofs(
-                complete_gof_details_dtos=complete_gof_details_dtos
-            )
-
-        # Assert
-        storage_mock.create_gofs.assert_not_called()
-        storage_mock.create_gof_roles.assert_not_called()
-        storage_mock.update_gofs.assert_not_called()
-
-    @pytest.mark.parametrize("gof_display_name", [None, "", "   "])
-    def test_with_invalid_gof_display_name_field_raise_exception(
-            self, gof_display_name, storage_mock
-    ):
-        # Arrange
-        from ib_tasks.exceptions.gofs_custom_exceptions import \
-            GOFDisplayNameCantBeEmpty
-        gof_dto = GoFDTOFactory(gof_display_name=gof_display_name)
-        complete_gof_details_dtos = [
-            CompleteGoFDetailsDTOFactory(gof_dto=gof_dto)
-        ]
-        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
-
-        # Act
-        with pytest.raises(GOFDisplayNameCantBeEmpty) as err:
             interactor.create_or_update_gofs(
                 complete_gof_details_dtos=complete_gof_details_dtos
             )
