@@ -160,6 +160,7 @@ class FieldDetailsDTOFactory(factory.Factory):
     field_id = factory.Sequence(lambda n: "%d" % (n + 1))
     key = factory.Sequence(lambda n: 'key_%d' % (n + 1))
     value = factory.Sequence(lambda n: 'value_%d' % (n + 1))
+    order = 1
 
 
 class ActionDetailsDTOFactory(factory.Factory):
