@@ -25,7 +25,8 @@ from ib_tasks.tests.factories.storage_dtos import \
     FieldDTOFactory, \
     GoFToTaskTemplateDTOFactory, GoFDTOFactory, \
     FieldPermissionDTOFactory, StageIdWithTemplateIdDTOFactory, \
-    ProjectIdWithTaskTemplateIdDTOFactory, StageGoFWithTemplateIdDTOFactory
+    ProjectIdWithTaskTemplateIdDTOFactory, StageGoFWithTemplateIdDTOFactory, \
+    TaskTemplateMandatoryFieldsDTOFactory
 
 
 class TestGetTaskTemplatesInteractor:
@@ -41,6 +42,7 @@ class TestGetTaskTemplatesInteractor:
         StageIdWithTemplateIdDTOFactory.reset_sequence(1)
         ProjectIdWithTaskTemplateIdDTOFactory.reset_sequence(1)
         StageGoFWithTemplateIdDTOFactory.reset_sequence(1)
+        TaskTemplateMandatoryFieldsDTOFactory.reset_sequence(1)
 
     @pytest.fixture
     def task_storage_mock(self):
@@ -180,6 +182,12 @@ class TestGetTaskTemplatesInteractor:
             stage_gof_with_template_id_dtos=stage_gof_with_template_id_dtos
         )
         return complete_task_templates_dto
+
+    @pytest.fixture
+    def task_template_mandatory_fields_dtos(self):
+        task_template_mandatory_fields_dtos = \
+            TaskTemplateMandatoryFieldsDTOFactory.create_batch(size=2)
+        return task_template_mandatory_fields_dtos
 
     @pytest.fixture
     def stage_id_with_template_id_dtos(self):
@@ -324,7 +332,7 @@ class TestGetTaskTemplatesInteractor:
             presenter_response_mock, mocker,
             field_storage_mock, gof_storage_mock, task_template_storage_mock,
             complete_task_template_dto, stage_id_with_template_id_dtos,
-            stage_id_with_gof_id_dtos
+            stage_id_with_gof_id_dtos, task_template_mandatory_fields_dtos
     ):
         # Arrange
         user_id = "user_1"
@@ -360,6 +368,9 @@ class TestGetTaskTemplatesInteractor:
         field_ids_having_writable_permission = \
             self._get_field_ids_having_writable_permission(
                 field_permissions_dtos=field_permissions_dtos)
+
+        task_template_storage_mock.get_template_mandatory_fields_dtos.\
+            side_effect = [task_template_mandatory_fields_dtos, []]
 
         self._make_storage_and_presenter_mocks(
             task_storage_mock, presenter_mock, stage_storage_mock,
@@ -448,8 +459,17 @@ class TestGetTaskTemplatesInteractor:
             assert_called_once_with(
                 stage_ids=stage_ids_of_stage_gofs_with_template_id_dtos,
                 gof_ids=gof_ids_of_task_template_gofs)
+        get_template_mandatory_fields_dtos_call_count = \
+            task_template_storage_mock.\
+            get_template_mandatory_fields_dtos.call_count
+        assert get_template_mandatory_fields_dtos_call_count == 2
+        task_template_storage_mock.\
+            create_template_mandatory_fields_with_default_values. \
+            assert_called_once_with(template_ids=[])
         presenter_mock.get_task_templates_response.assert_called_once_with(
-            complete_task_templates_dto=complete_task_template_dto
+            complete_task_templates_dto=complete_task_template_dto,
+            task_template_mandatory_fields_dtos=
+            task_template_mandatory_fields_dtos
         )
 
     def test_when_no_task_templates_present_raises_exception(
@@ -493,7 +513,7 @@ class TestGetTaskTemplatesInteractor:
             presenter_response_mock, mocker,
             field_storage_mock, gof_storage_mock, task_template_storage_mock,
             complete_task_template_dto, stage_id_with_template_id_dtos,
-            stage_id_with_gof_id_dtos
+            stage_id_with_gof_id_dtos, task_template_mandatory_fields_dtos
     ):
         # Arrange
         complete_task_template_dto.action_with_stage_id_dtos = []
@@ -530,6 +550,9 @@ class TestGetTaskTemplatesInteractor:
         field_ids_having_writable_permission = \
             self._get_field_ids_having_writable_permission(
                 field_permissions_dtos=field_permissions_dtos)
+
+        task_template_storage_mock.get_template_mandatory_fields_dtos.\
+            side_effect = [task_template_mandatory_fields_dtos, []]
 
         self._make_storage_and_presenter_mocks(
             task_storage_mock, presenter_mock, stage_storage_mock,
@@ -618,8 +641,17 @@ class TestGetTaskTemplatesInteractor:
             assert_called_once_with(
                 stage_ids=stage_ids_of_stage_gofs_with_template_id_dtos,
                 gof_ids=gof_ids_of_task_template_gofs)
+        get_template_mandatory_fields_dtos_call_count = \
+            task_template_storage_mock.\
+            get_template_mandatory_fields_dtos.call_count
+        assert get_template_mandatory_fields_dtos_call_count == 2
+        task_template_storage_mock.\
+            create_template_mandatory_fields_with_default_values. \
+            assert_called_once_with(template_ids=[])
         presenter_mock.get_task_templates_response.assert_called_once_with(
-            complete_task_templates_dto=complete_task_template_dto
+            complete_task_templates_dto=complete_task_template_dto,
+            task_template_mandatory_fields_dtos=
+            task_template_mandatory_fields_dtos
         )
 
     def test_when_no_gofs_for_templates_return_empty_gofs_list(
@@ -627,7 +659,7 @@ class TestGetTaskTemplatesInteractor:
             presenter_response_mock, mocker,
             field_storage_mock, gof_storage_mock, task_template_storage_mock,
             complete_task_template_dto, stage_id_with_template_id_dtos,
-            stage_id_with_gof_id_dtos
+            stage_id_with_gof_id_dtos, task_template_mandatory_fields_dtos
     ):
         # Arrange
         user_id = "user_1"
@@ -692,6 +724,9 @@ class TestGetTaskTemplatesInteractor:
         presenter_mock.get_task_templates_response.return_value = \
             presenter_response_mock
 
+        task_template_storage_mock.get_template_mandatory_fields_dtos.\
+            side_effect = [task_template_mandatory_fields_dtos, []]
+
         task_template_interactor = GetTaskTemplatesInteractor(
             task_storage=task_storage_mock, stage_storage=stage_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -754,8 +789,17 @@ class TestGetTaskTemplatesInteractor:
             assert_called_once_with(
                 stage_ids=stage_ids_of_stage_gofs_with_template_id_dtos,
                 gof_ids=gof_ids_of_task_template_gofs)
+        get_template_mandatory_fields_dtos_call_count = \
+            task_template_storage_mock.\
+            get_template_mandatory_fields_dtos.call_count
+        assert get_template_mandatory_fields_dtos_call_count == 2
+        task_template_storage_mock.\
+            create_template_mandatory_fields_with_default_values. \
+            assert_called_once_with(template_ids=[])
         presenter_mock.get_task_templates_response.assert_called_once_with(
-            complete_task_templates_dto=complete_task_template_dto
+            complete_task_templates_dto=complete_task_template_dto,
+            task_template_mandatory_fields_dtos=
+            task_template_mandatory_fields_dtos
         )
 
     def test_when_no_field_permission_dtos_returns_empty_field_permission_dtos_and_empty_gof_dtos(
@@ -763,7 +807,7 @@ class TestGetTaskTemplatesInteractor:
             presenter_response_mock, mocker,
             field_storage_mock, gof_storage_mock, task_template_storage_mock,
             complete_task_template_dto, stage_id_with_template_id_dtos,
-            stage_id_with_gof_id_dtos
+            stage_id_with_gof_id_dtos, task_template_mandatory_fields_dtos
     ):
         # Arrange
         complete_task_template_dto.field_with_permissions_dtos = []
@@ -826,6 +870,8 @@ class TestGetTaskTemplatesInteractor:
         get_user_permitted_stage_ids_in_given_stage_ids_mock_object = \
             get_user_permitted_stage_ids_in_given_stage_ids_mock(
                 mocker, stage_ids_of_stage_gofs_with_template_id_dtos)
+        task_template_storage_mock.get_template_mandatory_fields_dtos.\
+            side_effect = [task_template_mandatory_fields_dtos, []]
 
         presenter_mock.get_task_templates_response.return_value = \
             presenter_response_mock
@@ -893,16 +939,25 @@ class TestGetTaskTemplatesInteractor:
             assert_called_once_with(
                 stage_ids=stage_ids_of_stage_gofs_with_template_id_dtos,
                 gof_ids=gof_ids_of_task_template_gofs)
+        get_template_mandatory_fields_dtos_call_count = \
+            task_template_storage_mock.\
+            get_template_mandatory_fields_dtos.call_count
+        assert get_template_mandatory_fields_dtos_call_count == 2
+        task_template_storage_mock.\
+            create_template_mandatory_fields_with_default_values. \
+            assert_called_once_with(template_ids=[])
         presenter_mock.get_task_templates_response.assert_called_once_with(
-            complete_task_templates_dto=complete_task_template_dto)
-
+            complete_task_templates_dto=complete_task_template_dto,
+            task_template_mandatory_fields_dtos=
+            task_template_mandatory_fields_dtos
+        )
 
     def test_when_no_user_field_permissions_returns_empty_user_field_permissions_list(
             self, task_storage_mock, presenter_mock, stage_storage_mock,
             presenter_response_mock, mocker,
             field_storage_mock, gof_storage_mock, task_template_storage_mock,
             complete_task_template_dto, stage_id_with_template_id_dtos,
-            stage_id_with_gof_id_dtos
+            stage_id_with_gof_id_dtos, task_template_mandatory_fields_dtos
     ):
         # Arrange
         user_id = "user_1"
@@ -964,6 +1019,8 @@ class TestGetTaskTemplatesInteractor:
         get_user_permitted_stage_ids_in_given_stage_ids_mock_object = \
             get_user_permitted_stage_ids_in_given_stage_ids_mock(
                 mocker, stage_ids_of_stage_gofs_with_template_id_dtos)
+        task_template_storage_mock.get_template_mandatory_fields_dtos.\
+            side_effect = [task_template_mandatory_fields_dtos, []]
 
         presenter_mock.get_task_templates_response.return_value = \
             presenter_response_mock
@@ -1031,8 +1088,17 @@ class TestGetTaskTemplatesInteractor:
             assert_called_once_with(
                 stage_ids=stage_ids_of_stage_gofs_with_template_id_dtos,
                 gof_ids=gof_ids_of_task_template_gofs)
+        get_template_mandatory_fields_dtos_call_count = \
+            task_template_storage_mock.\
+            get_template_mandatory_fields_dtos.call_count
+        assert get_template_mandatory_fields_dtos_call_count == 2
+        task_template_storage_mock.\
+            create_template_mandatory_fields_with_default_values. \
+            assert_called_once_with(template_ids=[])
         presenter_mock.get_task_templates_response.assert_called_once_with(
-            complete_task_templates_dto=complete_task_template_dto
+            complete_task_templates_dto=complete_task_template_dto,
+            task_template_mandatory_fields_dtos=
+            task_template_mandatory_fields_dtos
         )
 
     def test_when_no_gofs_to_task_templates_exists_return_empty_gofs_to_task_templates(
@@ -1040,7 +1106,7 @@ class TestGetTaskTemplatesInteractor:
             presenter_response_mock, mocker,
             field_storage_mock, gof_storage_mock, task_template_storage_mock,
             complete_task_template_dto, stage_id_with_template_id_dtos,
-            stage_id_with_gof_id_dtos
+            stage_id_with_gof_id_dtos, task_template_mandatory_fields_dtos
     ):
         # Arrange
         user_id = "user_1"
@@ -1102,6 +1168,8 @@ class TestGetTaskTemplatesInteractor:
         get_user_permitted_stage_ids_in_given_stage_ids_mock_object = \
             get_user_permitted_stage_ids_in_given_stage_ids_mock(
                 mocker, stage_ids_of_stage_gofs_with_template_id_dtos)
+        task_template_storage_mock.get_template_mandatory_fields_dtos.\
+            side_effect = [task_template_mandatory_fields_dtos, []]
 
         presenter_mock.get_task_templates_response.return_value = \
             presenter_response_mock
@@ -1169,8 +1237,17 @@ class TestGetTaskTemplatesInteractor:
             assert_called_once_with(
                 stage_ids=stage_ids_of_stage_gofs_with_template_id_dtos,
                 gof_ids=gof_ids_of_task_template_gofs)
+        get_template_mandatory_fields_dtos_call_count = \
+            task_template_storage_mock.\
+            get_template_mandatory_fields_dtos.call_count
+        assert get_template_mandatory_fields_dtos_call_count == 2
+        task_template_storage_mock.\
+            create_template_mandatory_fields_with_default_values. \
+            assert_called_once_with(template_ids=[])
         presenter_mock.get_task_templates_response.assert_called_once_with(
-            complete_task_templates_dto=complete_task_template_dto
+            complete_task_templates_dto=complete_task_template_dto,
+            task_template_mandatory_fields_dtos=
+            task_template_mandatory_fields_dtos
         )
 
     def test_when_no_project_task_templates_exists_returns_empty_list(
@@ -1178,7 +1255,7 @@ class TestGetTaskTemplatesInteractor:
             presenter_response_mock, mocker,
             field_storage_mock, gof_storage_mock, task_template_storage_mock,
             complete_task_template_dto, stage_id_with_template_id_dtos,
-            stage_id_with_gof_id_dtos
+            stage_id_with_gof_id_dtos, task_template_mandatory_fields_dtos
     ):
         # Arrange
         user_id = "user_1"
@@ -1240,6 +1317,8 @@ class TestGetTaskTemplatesInteractor:
         get_user_permitted_stage_ids_in_given_stage_ids_mock_object = \
             get_user_permitted_stage_ids_in_given_stage_ids_mock(
                 mocker, stage_ids_of_stage_gofs_with_template_id_dtos)
+        task_template_storage_mock.get_template_mandatory_fields_dtos.\
+            side_effect = [task_template_mandatory_fields_dtos, []]
 
         presenter_mock.get_task_templates_response.return_value = \
             presenter_response_mock
@@ -1303,16 +1382,24 @@ class TestGetTaskTemplatesInteractor:
             assert_called_once_with(
                 stage_ids=stage_ids_of_stage_gofs_with_template_id_dtos,
                 gof_ids=gof_ids_of_task_template_gofs)
+        get_template_mandatory_fields_dtos_call_count = \
+            task_template_storage_mock.\
+            get_template_mandatory_fields_dtos.call_count
+        assert get_template_mandatory_fields_dtos_call_count == 2
+        task_template_storage_mock.\
+            create_template_mandatory_fields_with_default_values. \
+            assert_called_once_with(template_ids=[])
         presenter_mock.get_task_templates_response.assert_called_once_with(
-            complete_task_templates_dto=complete_task_template_dto
+            complete_task_templates_dto=complete_task_template_dto,
+            task_template_mandatory_fields_dtos=
+            task_template_mandatory_fields_dtos
         )
-
     def test_when_field_type_gof_selector_with_no_user_permissions_for_gof_ids_returns_without_those_gofs(
             self, task_storage_mock, presenter_mock, stage_storage_mock,
             presenter_response_mock, mocker,
             field_storage_mock, gof_storage_mock, task_template_storage_mock,
             complete_task_template_dto, stage_id_with_template_id_dtos,
-            stage_id_with_gof_id_dtos
+            stage_id_with_gof_id_dtos, task_template_mandatory_fields_dtos
     ):
         # Arrange
         user_id = "user_1"
@@ -1395,6 +1482,9 @@ class TestGetTaskTemplatesInteractor:
             get_user_permitted_stage_ids_in_given_stage_ids_mock(
                 mocker, stage_ids_of_stage_gofs_with_template_id_dtos)
 
+        task_template_storage_mock.get_template_mandatory_fields_dtos.\
+            side_effect = [task_template_mandatory_fields_dtos, []]
+
         presenter_mock.get_task_templates_response.return_value = \
             presenter_response_mock
 
@@ -1462,8 +1552,17 @@ class TestGetTaskTemplatesInteractor:
             assert_called_once_with(
                 stage_ids=stage_ids_of_stage_gofs_with_template_id_dtos,
                 gof_ids=gof_ids_of_task_template_gofs)
+        get_template_mandatory_fields_dtos_call_count = \
+            task_template_storage_mock.\
+            get_template_mandatory_fields_dtos.call_count
+        assert get_template_mandatory_fields_dtos_call_count == 2
+        task_template_storage_mock.\
+            create_template_mandatory_fields_with_default_values. \
+            assert_called_once_with(template_ids=[])
         presenter_mock.get_task_templates_response.assert_called_once_with(
-            complete_task_templates_dto=complete_task_template_dto
+            complete_task_templates_dto=complete_task_template_dto,
+            task_template_mandatory_fields_dtos=
+            task_template_mandatory_fields_dtos
         )
 
     def test_when_no_stage_gofs_exists_returns_empty_stage_gof_dtos(
@@ -1471,7 +1570,7 @@ class TestGetTaskTemplatesInteractor:
             presenter_response_mock, mocker,
             field_storage_mock, gof_storage_mock, task_template_storage_mock,
             complete_task_template_dto, stage_id_with_template_id_dtos,
-            stage_id_with_gof_id_dtos
+            stage_id_with_gof_id_dtos, task_template_mandatory_fields_dtos
     ):
         # Arrange
         user_id = "user_1"
@@ -1535,6 +1634,8 @@ class TestGetTaskTemplatesInteractor:
         get_user_permitted_stage_ids_in_given_stage_ids_mock_object = \
             get_user_permitted_stage_ids_in_given_stage_ids_mock(
                 mocker, stage_ids_of_stage_gofs_with_template_id_dtos)
+        task_template_storage_mock.get_template_mandatory_fields_dtos.\
+            side_effect = [task_template_mandatory_fields_dtos, []]
 
         presenter_mock.get_task_templates_response.return_value = \
             presenter_response_mock
@@ -1598,6 +1699,15 @@ class TestGetTaskTemplatesInteractor:
             assert_called_once_with(
                 stage_ids=stage_ids_of_stage_gofs_with_template_id_dtos,
                 gof_ids=gof_ids_of_task_template_gofs)
+        get_template_mandatory_fields_dtos_call_count = \
+            task_template_storage_mock.\
+            get_template_mandatory_fields_dtos.call_count
+        assert get_template_mandatory_fields_dtos_call_count == 2
+        task_template_storage_mock.\
+            create_template_mandatory_fields_with_default_values. \
+            assert_called_once_with(template_ids=[])
         presenter_mock.get_task_templates_response.assert_called_once_with(
-            complete_task_templates_dto=complete_task_template_dto
+            complete_task_templates_dto=complete_task_template_dto,
+            task_template_mandatory_fields_dtos=
+            task_template_mandatory_fields_dtos
         )
