@@ -13,7 +13,7 @@ from ib_tasks.interactors.stages_dtos import (TemplateStageDTO,
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    StageActionDetailsDTO
+    StageActionDetailsDTO, ActionIdFunctionPathDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO, StageIdActionNameDTO, StageActionIdDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
@@ -283,9 +283,15 @@ class ActionsStorageImplementation(ActionStorageInterface):
     def get_actions_details(self,
                             action_ids: List[int]) -> \
             List[StageActionDetailsDTO]:
-        action_objs = StageAction.objects\
-                       .filter(id__in=action_ids)\
-                       .annotate(normal_stage_id=F('stage__stage_id'))
+        action_objs = StageAction.objects \
+            .filter(id__in=action_ids) \
+            .values('stage_id') \
+            .annotate(normal_stage_id=F(
+            'stage__stage_id')).values('id', 'name', 'normal_stage_id',
+                                       'button_text', 'button_color',
+                                       'action_type', 'order',
+                                       'transition_template_id'). \
+            order_by('order')
         action_dtos = self._convert_action_objs_to_dtos(action_objs)
         return action_dtos
 
@@ -293,13 +299,14 @@ class ActionsStorageImplementation(ActionStorageInterface):
     def _convert_action_objs_to_dtos(action_objs):
         action_dtos = [
             StageActionDetailsDTO(
-                action_id=action.id,
-                name=action.name,
-                stage_id=action.normal_stage_id,
-                button_text=action.button_text,
-                button_color=action.button_color,
-                action_type=action.action_type,
-                transition_template_id=action.transition_template_id
+                action_id=action['id'],
+                name=action['name'],
+                stage_id=action['normal_stage_id'],
+                button_text=action['button_text'],
+                button_color=action['button_color'],
+                action_type=action['action_type'],
+                order=action['order'],
+                transition_template_id=action['transition_template_id']
             )
             for action in action_objs
         ]
@@ -321,8 +328,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
             -> List[int]:
         db_stage_ids = \
             list(StageAction.objects.filter(
-                    stage_id__in=db_stage_ids).values_list(
-                    'stage_id', flat=True).distinct())
+                stage_id__in=db_stage_ids).values_list(
+                'stage_id', flat=True).distinct())
         return db_stage_ids
 
     def get_database_stage_actions(self) -> List[StageActionLogicDTO]:
@@ -339,6 +346,27 @@ class ActionsStorageImplementation(ActionStorageInterface):
             )
             for action_obj in action_objs
         ]
+
+    def update_stage_actions_func_path(
+            self, action_dtos: List[ActionIdFunctionPathDTO]
+    ):
+        action_func_path_dict = self._get_action_func_path_dict(action_dtos)
+        action_objs = StageAction.objects.all()
+        for action_obj in action_objs:
+            function_path = action_func_path_dict[action_obj.id]
+            action_obj.py_function_import_path = function_path
+        StageAction.objects.bulk_update(action_objs,
+                                        ['py_function_import_path'])
+
+    @staticmethod
+    def _get_action_func_path_dict(
+            action_dtos: List[ActionIdFunctionPathDTO]
+    ) -> Dict[int, str]:
+
+        return {
+            action_dto.action_id: action_dto.py_function_import_path
+            for action_dto in action_dtos
+        }
 
     def get_permitted_action_ids_for_given_task_stages(
             self, user_project_roles: List[TaskProjectRolesDTO],

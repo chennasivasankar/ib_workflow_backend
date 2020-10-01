@@ -15,7 +15,7 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageIdWithTemplateIdDTO, StageGoFWithTemplateIdDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TemplateDTO, ProjectIdWithTaskTemplateIdDTO
+    TemplateDTO, ProjectIdWithTaskTemplateIdDTO, TaskTemplateMandatoryFieldsDTO
 
 
 class GetTaskTemplatesPresenterImplementation(
@@ -33,7 +33,10 @@ class GetTaskTemplatesPresenterImplementation(
         return self.prepare_404_not_found_response(response_dict)
 
     def get_task_templates_response(
-            self, complete_task_templates_dto: CompleteTaskTemplatesDTO):
+            self, complete_task_templates_dto: CompleteTaskTemplatesDTO,
+            task_template_mandatory_fields_dtos:
+            List[TaskTemplateMandatoryFieldsDTO]
+    ):
         task_templates_related_data_dict = \
             self._get_task_templates_related_data(
                 complete_task_templates_dto=complete_task_templates_dto
@@ -49,6 +52,10 @@ class GetTaskTemplatesPresenterImplementation(
                 "task_creation_gof_ids_of_templates_dict"]
         stage_gofs_dict_of_templates_dict = task_templates_related_data_dict[
             "stage_gofs_dict_of_templates_dict"]
+        task_templates_mandatory_fields_data_dict = \
+            self._get_task_templates_mandatory_fields_data_dict(
+                task_template_mandatory_fields_dtos=
+                task_template_mandatory_fields_dtos)
 
         for task_template in task_templates_dicts:
             task_template_id = task_template['template_id']
@@ -60,6 +67,8 @@ class GetTaskTemplatesPresenterImplementation(
                 task_creation_gof_ids_of_templates_dict[task_template_id]
             task_template["stage_gofs"] = \
                 stage_gofs_dict_of_templates_dict[task_template_id]
+            task_template["title_configuration"] = \
+                task_templates_mandatory_fields_data_dict[task_template_id]
 
         return self.prepare_200_success_response(task_templates_dicts)
 
@@ -516,3 +525,19 @@ class GetTaskTemplatesPresenterImplementation(
             stage_gof_with_template_id_dtos
         }
         return stage_id_task_template_dict
+
+    @staticmethod
+    def _get_task_templates_mandatory_fields_data_dict(
+            task_template_mandatory_fields_dtos:
+            List[TaskTemplateMandatoryFieldsDTO]) -> Dict:
+        task_templates_mandatory_fields_data_dict = {
+            task_template_mandatory_fields_dto.template_id: {
+                "display_name":
+                    task_template_mandatory_fields_dto.title_display_name,
+                "placeholder_text":
+                    task_template_mandatory_fields_dto.title_placeholder_text
+            }
+            for task_template_mandatory_fields_dto in
+            task_template_mandatory_fields_dtos
+        }
+        return task_templates_mandatory_fields_data_dict

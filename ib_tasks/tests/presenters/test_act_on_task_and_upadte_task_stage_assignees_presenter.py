@@ -272,29 +272,32 @@ class TestActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
-        from ib_tasks.tests.factories.adapter_dtos import ColumnDTOFactory
-        ColumnDTOFactory.reset_sequence(0)
-        from ib_tasks.tests.factories.adapter_dtos import BoardDTOFactory
-        BoardDTOFactory.reset_sequence(0)
-        from ib_tasks.tests.factories.adapter_dtos import ColumnStageDTOFactory
-        ColumnStageDTOFactory.reset_sequence(0)
-        from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory
-        ActionDTOFactory.reset_sequence(0)
+        from ib_tasks.tests.factories.adapter_dtos import BoardDTOFactory, \
+            TeamDetailsDTOFactory, ColumnDTOFactory, ColumnStageDTOFactory
+        from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory, \
+            TaskBaseDetailsDTOFactory
         from ib_tasks.tests.factories.interactor_dtos import \
-            FieldDisplayDTOFactory
-        FieldDisplayDTOFactory.reset_sequence(0)
-        from ib_tasks.tests.factories.presenter_dtos \
-            import AllTasksOverviewDetailsDTOFactory
-        AllTasksOverviewDetailsDTOFactory.reset_sequence()
-        from ib_tasks.tests.factories.presenter_dtos \
-            import TaskIdWithStageDetailsDTOFactory
-        TaskIdWithStageDetailsDTOFactory.reset_sequence()
-        from ib_tasks.tests.factories.interactor_dtos import \
-            AssigneeWithTeamDetailsDTOFactory
-        AssigneeWithTeamDetailsDTOFactory.reset_sequence()
-        from ib_tasks.tests.factories.interactor_dtos import \
+            FieldDisplayDTOFactory, AssigneeWithTeamDetailsDTOFactory, \
             TaskStageAssigneeTeamDetailsDTOFactory
+        from ib_tasks.tests.factories.presenter_dtos \
+            import AllTasksOverviewDetailsDTOFactory, \
+            TaskIdWithStageDetailsDTOFactory, \
+            TaskWithCompleteStageDetailsDTOFactory, \
+            GetTaskStageCompleteDetailsDTOFactory
+
+        ColumnDTOFactory.reset_sequence(0)
+        BoardDTOFactory.reset_sequence(0)
+        ColumnStageDTOFactory.reset_sequence(0)
+        ActionDTOFactory.reset_sequence(0)
+        FieldDisplayDTOFactory.reset_sequence(0)
+        AllTasksOverviewDetailsDTOFactory.reset_sequence()
+        TaskIdWithStageDetailsDTOFactory.reset_sequence()
+        AssigneeWithTeamDetailsDTOFactory.reset_sequence()
         TaskStageAssigneeTeamDetailsDTOFactory.reset_sequence()
+        TaskWithCompleteStageDetailsDTOFactory.reset_sequence()
+        TeamDetailsDTOFactory.reset_sequence()
+        GetTaskStageCompleteDetailsDTOFactory.reset_sequence()
+        TaskBaseDetailsDTOFactory.reset_sequence()
 
     def test_get_response_for_user_action_on_task(
             self, presenter, snapshot, task_complete_details, reset_sequence

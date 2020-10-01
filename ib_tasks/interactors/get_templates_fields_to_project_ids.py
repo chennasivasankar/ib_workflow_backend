@@ -76,7 +76,7 @@ class GetProjectsTemplatesFieldsInteractor(ValidationMixin):
 
         gof_ids = self._get_gof_ids(template_gof_dtos)
 
-        field_dtos = self.field_storage.get_user_permitted_gof_field_dtos(
+        field_dtos = self.field_storage.get_field_dtos_for_gofs_ids_to_apply_filters(
             user_roles=user_roles, gof_ids=gof_ids
         )
         return ProjectTemplateFieldsDTO(
@@ -115,7 +115,7 @@ class GetProjectsTemplatesFieldsInteractor(ValidationMixin):
         )
         gof_ids = self._get_gof_ids(template_gof_dtos)
 
-        field_dtos = self.field_storage.get_user_permitted_gof_field_dtos(
+        field_dtos = self.field_storage.get_field_dtos_for_gofs_ids_to_apply_filters(
             user_roles=user_roles, gof_ids=gof_ids
         )
         return field_dtos

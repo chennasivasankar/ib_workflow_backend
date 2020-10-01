@@ -20,6 +20,14 @@ def api_wrapper(*args, **kwargs):
 
     sort_by_dto = _prepare_sort_by_dto(request_data)
 
+    from ib_discussions.interactors.dtos.dtos import GetDiscussionsInputDTO
+    get_discussions_input_dto = GetDiscussionsInputDTO(
+        user_id=user_id,
+        entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
+        offset_and_limit_dto=offset_and_limit_dto,
+        filter_by_dto=filter_by_dto, sort_by_dto=sort_by_dto
+    )
+
     from ib_discussions.presenters.get_discussion_presenter_implementation import \
         GetDiscussionPresenterImplementation
     presenter = GetDiscussionPresenterImplementation()
@@ -33,10 +41,8 @@ def api_wrapper(*args, **kwargs):
     interactor = GetDiscussionInteractor(storage=storage)
 
     response = interactor.get_discussions_wrapper(
-        entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
-        offset_and_limit_dto=offset_and_limit_dto,
-        filter_by_dto=filter_by_dto, sort_by_dto=sort_by_dto,
-        presenter=presenter, user_id=user_id
+        get_discussions_input_dto=get_discussions_input_dto,
+        presenter=presenter
     )
     return response
 

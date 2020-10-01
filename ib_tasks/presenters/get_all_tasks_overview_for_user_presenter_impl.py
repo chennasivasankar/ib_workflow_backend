@@ -125,6 +125,7 @@ class GetAllTasksOverviewForUserPresenterImpl(
         start_date, due_date = self._get_start_date_and_due_date(
             task_base_details_dto)
         task_overview_details_dict = {
+            "template_id": task_base_details_dto.template_id,
             "task_id": each_task_id_with_stage_details_dto.task_display_id,
             "title": task_base_details_dto.title,
             "start_date": start_date,
@@ -168,14 +169,15 @@ class GetAllTasksOverviewForUserPresenterImpl(
     @staticmethod
     def _get_actions_details_of_task_stage(
             each_task_fields_and_action_details_dto):
+        action_dtos = each_task_fields_and_action_details_dto.action_dtos
+        action_dtos.sort(key=lambda x: [x.order])
         action_details = [{
             "action_id": each_action_dto.action_id,
             "button_text": each_action_dto.button_text,
             "button_color": each_action_dto.button_color,
             "action_type": each_action_dto.action_type,
             "transition_template_id": each_action_dto.transition_template_id
-        } for each_action_dto in
-            each_task_fields_and_action_details_dto.action_dtos]
+        } for each_action_dto in action_dtos]
         return action_details
 
     @staticmethod
