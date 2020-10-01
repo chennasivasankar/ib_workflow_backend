@@ -1,3 +1,5 @@
+from unittest.mock import Mock
+
 import pytest
 
 
@@ -13,10 +15,10 @@ class TestGetProjectDiscussionsInteractor:
 
     @pytest.fixture()
     def presenter_mock(self):
-        from ib_discussions.interactors.presenter_interfaces. \
-            presenter_interface import GetDiscussionsPresenterInterface
         from unittest.mock import create_autospec
-        presenter = create_autospec(GetDiscussionsPresenterInterface)
+        from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
+            GetProjectDiscussionsPresenterInterface
+        presenter = create_autospec(GetProjectDiscussionsPresenterInterface)
         return presenter
 
     @pytest.fixture()
@@ -41,10 +43,10 @@ class TestGetProjectDiscussionsInteractor:
         return offset_and_limit_dto
 
     @pytest.fixture()
-    def initialise_discussions_interactor(self, storage_mock):
-        from ib_discussions.interactors.get_discussions_interactor import \
-            GetDiscussionInteractor
-        interactor = GetDiscussionInteractor(storage=storage_mock)
+    def interactor(self, storage_mock):
+        from ib_discussions.interactors.get_project_discussions_interactor import \
+            GetProjectDiscussionInteractor
+        interactor = GetProjectDiscussionInteractor(storage=storage_mock)
         return interactor
 
     @pytest.fixture()
@@ -81,4 +83,31 @@ class TestGetProjectDiscussionsInteractor:
         user_profile_dtos = UserProfileDTOFactory.create_batch(size=3)
         return user_profile_dtos
 
+    def test_validate_offset_value_raise_exception(
+            self, presenter_mock, entity_id_and_entity_type_dto,
+            offset_and_limit_dto, interactor,
+            filter_by_dto, sort_by_dto
+    ):
+        # Arrange
+        project_id = "FIN_MAN"
+        offset_and_limit_dto.offset = -1
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
 
+        expected_presenter_raise_exception_for_invalid_offset_mock = Mock()
+
+        presenter_mock.response_for_invalid_offset.return_value \
+            = expected_presenter_raise_exception_for_invalid_offset_mock
+
+        # Act
+        response = interactor.get_project_discussions_wrapper(
+            entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
+            offset_and_limit_dto=offset_and_limit_dto, presenter=presenter_mock,
+            sort_by_dto=sort_by_dto, filter_by_dto=filter_by_dto,
+            user_id=user_id, project_id=project_id
+        )
+
+        # Assert
+        assert response \
+               == expected_presenter_raise_exception_for_invalid_offset_mock
+
+        presenter_mock.response_for_invalid_offset.assert_called_once()
