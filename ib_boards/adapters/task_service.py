@@ -148,7 +148,8 @@ class TaskService:
                 field_type=field_dto.field_type,
                 key=field_dto.key,
                 value=field_dto.value,
-                stage_id=stage_id
+                stage_id=stage_id,
+                order=field_dto.order
             )
             for field_dto in field_dtos
         ]

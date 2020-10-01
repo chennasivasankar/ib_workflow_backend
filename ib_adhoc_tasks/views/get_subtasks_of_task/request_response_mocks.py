@@ -13,6 +13,7 @@ RESPONSE_200_JSON = """
     "parent_task_id": "string",
     "tasks": [
         {
+            "template_id": "string",
             "task_id": "string",
             "title": "string",
             "description": "string",
