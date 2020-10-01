@@ -42,7 +42,7 @@ class GetSheetDataForTaskCreationConfig:
                 "Role": str,
                 "Logic": str,
                 "Button Text": str,
-                "order": int,
+                "Order": int,
                 Optional("Button Colour"): str,
                 Optional("Action Type"): str,
                 Optional("Transition Template ID"): str

@@ -75,7 +75,7 @@ class PopulateFields:
                 validation_regex=validation_regex,
                 order=int(order)
             )
-            print(field_dto)
+
             field_dtos.append(field_dto)
         return field_dtos
 
