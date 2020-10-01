@@ -13,5 +13,5 @@ class TaskTemplateTitle(models.Model):
 
     def __str__(self):
         return "{} is title of {}".format(
-            self.display_name, self.task_template_id
+            self.title_display_name, self.task_template_id
         )
