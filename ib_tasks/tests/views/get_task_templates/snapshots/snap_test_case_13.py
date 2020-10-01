@@ -137,7 +137,11 @@ snapshots['TestCase13GetTaskTemplatesAPITestCase.test_case body'] = [
             'gof_1'
         ],
         'template_id': 'template_1',
-        'template_name': 'Template 1'
+        'template_name': 'Template 1',
+        'title_configuration': {
+            'display_name': 'Title',
+            'placeholder_text': 'Title'
+        }
     },
     {
         'actions': [
@@ -266,6 +270,10 @@ snapshots['TestCase13GetTaskTemplatesAPITestCase.test_case body'] = [
             'gof_2'
         ],
         'template_id': 'template_2',
-        'template_name': 'Template 2'
+        'template_name': 'Template 2',
+        'title_configuration': {
+            'display_name': 'Title',
+            'placeholder_text': 'Title'
+        }
     }
 ]

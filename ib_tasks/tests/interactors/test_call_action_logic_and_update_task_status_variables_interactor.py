@@ -11,7 +11,7 @@ from ib_tasks.interactors.user_action_on_task \
 from ib_tasks.tests.factories.storage_dtos import (
     StatusVariableDTOFactory, GOFMultipleStatusDTOFactory,
     TaskGoFFieldDTOFactory, TaskGoFDTOFactory, TaskDetailsDTOFactory,
-    FieldTypeDTOFactory
+    FieldTypeDTOFactory, TaskBaseDetailsDTOFactory
 )
 from ib_tasks.tests.interactors.super_storage_mock_class import \
     StorageMockClass
@@ -21,7 +21,6 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
 
     @pytest.fixture()
     def task_gof_dtos(self):
-        TaskGoFDTOFactory.reset_sequence()
         task_gof_dtos = [
             TaskGoFDTOFactory(task_gof_id=1, gof_id="gof1", same_gof_order=1),
             TaskGoFDTOFactory(task_gof_id=2, gof_id="gof2", same_gof_order=1),
@@ -36,7 +35,6 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
 
     @pytest.fixture()
     def single_task_gof_dtos(self):
-        TaskGoFDTOFactory.reset_sequence()
         task_gof_dtos = [
             TaskGoFDTOFactory(task_gof_id=1, gof_id="gof1", same_gof_order=1),
             TaskGoFDTOFactory(task_gof_id=2, gof_id="gof2", same_gof_order=1),
@@ -68,14 +66,19 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         )
         return interactor
 
-    @classmethod
-    def setup(cls):
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
         GOFMultipleStatusDTOFactory.reset_sequence()
         TaskGoFFieldDTOFactory.reset_sequence(1)
         StatusVariableDTOFactory.reset_sequence()
         TaskDetailsDTOFactory.reset_sequence()
-        StatusVariableDTOFactory.reset_sequence()
         FieldTypeDTOFactory.reset_sequence(1)
+        TaskGoFDTOFactory.reset_sequence()
+        TaskBaseDetailsDTOFactory.reset_sequence()
+
+        from ib_tasks.tests.factories.adapter_dtos import \
+            ProjectDetailsDTOFactory
+        ProjectDetailsDTOFactory.reset_sequence()
 
     @staticmethod
     @pytest.fixture()
@@ -89,7 +92,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         statuses = [StatusVariableDTOFactory()]
         task_storage.get_status_variables_to_task.return_value = statuses
         from ib_tasks.constants.enum import FieldTypes
-        FieldTypeDTOFactory.reset_sequence(1)
+
         field_type_dtos = FieldTypeDTOFactory.create_batch(
             3, field_type=FieldTypes.PLAIN_TEXT.value
         )
@@ -98,7 +101,6 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
     @staticmethod
     @pytest.fixture()
     def task_dto(task_gof_dtos):
-        TaskGoFFieldDTOFactory.reset_sequence(1)
         gof_field_dtos = TaskGoFFieldDTOFactory.create_batch(size=3)
         task_dto = TaskDetailsDTOFactory(
             task_gof_dtos=task_gof_dtos,
@@ -168,7 +170,6 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         mock_obj = mocker.patch(path_name)
         action_storage_mock.get_path_name_to_action.return_value = path_name
         task_dto_mock.return_value = task_dto
-        StatusVariableDTOFactory.reset_sequence()
         statuses = [StatusVariableDTOFactory()]
 
         # Act
@@ -230,7 +231,6 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         gof_field_dtos = TaskGoFFieldDTOFactory.create_batch(size=3)
         multiple_gofs = \
             GOFMultipleStatusDTOFactory.create_batch(3, multiple_status=False)
-        TaskGoFFieldDTOFactory.reset_sequence(1)
         gof_storage.get_enable_multiple_gofs_field_to_gof_ids \
             .return_value = multiple_gofs
         statuses = [StatusVariableDTOFactory()]
@@ -329,7 +329,6 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         action_id = 1
         path_name = "ib_tasks.tests.interactors.call_action_logic_testing_file.stage_1_action_name_3"
         action_storage_mock.get_path_name_to_action.return_value = path_name
-        StatusVariableDTOFactory.reset_sequence()
         expected_status = [
             StatusVariableDTOFactory(value='stage_2')
         ]

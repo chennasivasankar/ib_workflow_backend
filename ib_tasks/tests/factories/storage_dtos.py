@@ -159,6 +159,7 @@ class StageActionDetailsDTOFactory(factory.Factory):
     action_type = factory.Sequence(lambda n: "action_type_%d" % (n + 1))
     transition_template_id = factory.Sequence(
         lambda n: 'template_id_%d' % (n + 1))
+    order = factory.Sequence(lambda n: (n + 1))
 
 
 class TaskStagesDTOFactory(factory.Factory):

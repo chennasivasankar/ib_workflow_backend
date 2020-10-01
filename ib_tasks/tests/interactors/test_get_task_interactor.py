@@ -419,28 +419,26 @@ class TestGetTaskInteractor:
             fields_storage_mock, storage_mock,
             task_storage_mock, action_storage_mock, stage_storage_mock,
             task_stage_storage_mock, reset_sequence, gof_storage_mock,
-            mocker
+            get_conditions_for_the_task_details_mock, mocker
     ):
         # Arrange
-        from ib_tasks.exceptions.task_custom_exceptions \
-            import InvalidTaskIdException
         project_id = "project_1"
-        user_id = "user1"
+        user_id = "user_1"
         task_display_id = "IBWF-1"
         task_id = 1
         task_storage_mock.get_project_id_and_user_id_for_the_task_id.\
             return_value = project_id, user_id
 
-        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
-            get_valid_project_ids_mock, validate_if_user_is_in_project_mock,\
-            check_user_in_least_level_mock
-
         get_valid_project_ids_mock(mocker, [project_id])
         validate_if_user_is_in_project_mock(mocker, True)
         check_user_in_least_level_mock(mocker, True)
+        get_conditions_for_the_task_details_mock(mocker)
 
+        from ib_tasks.exceptions.task_custom_exceptions \
+            import InvalidTaskIdException
         exception_object = InvalidTaskIdException(task_id)
         get_task_mock.side_effect = exception_object
+
         presenter_mock.raise_exception_for_invalid_task_id.return_value = \
             mock_object
         interactor = GetTaskInteractor(
