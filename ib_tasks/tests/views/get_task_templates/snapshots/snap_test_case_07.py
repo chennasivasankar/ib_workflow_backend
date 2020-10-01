@@ -36,7 +36,7 @@ snapshots['TestCase07GetTaskTemplatesAPITestCase.test_case body'] = [
         ],
         'template_id': 'template_1',
         'template_name': 'Template 1',
-        'title': {
+        'title_configuration': {
             'display_name': 'Title',
             'placeholder_text': 'Title'
         }
@@ -67,7 +67,7 @@ snapshots['TestCase07GetTaskTemplatesAPITestCase.test_case body'] = [
         ],
         'template_id': 'template_2',
         'template_name': 'Template 2',
-        'title': {
+        'title_configuration': {
             'display_name': 'Title',
             'placeholder_text': 'Title'
         }
