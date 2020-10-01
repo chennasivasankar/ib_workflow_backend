@@ -281,7 +281,7 @@ class TestActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation:
             TaskBaseDetailsDTOFactory
         from ib_tasks.tests.factories.interactor_dtos import \
             FieldDisplayDTOFactory, AssigneeWithTeamDetailsDTOFactory, \
-            TaskStageAssigneeTeamDetailsDTOFactory
+            TaskStageAssigneeTeamDetailsDTOFactory, TaskStageDTOFactory
         from ib_tasks.tests.factories.presenter_dtos \
             import AllTasksOverviewDetailsDTOFactory, \
             TaskIdWithStageDetailsDTOFactory, \
@@ -302,9 +302,10 @@ class TestActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation:
         GetTaskStageCompleteDetailsDTOFactory.reset_sequence()
         TaskBaseDetailsDTOFactory.reset_sequence()
         TaskCurrentStageDetailsDTOFactory.reset_sequence(1)
+        TaskStageDTOFactory.reset_sequence()
 
     def test_get_response_for_user_action_on_task(
-            self, presenter, snapshot, task_complete_details, reset_sequence
+            self, presenter, snapshot, task_complete_details
     ):
         # Arrange
         task_current_stage_details_dto = TaskCurrentStageDetailsDTOFactory()
