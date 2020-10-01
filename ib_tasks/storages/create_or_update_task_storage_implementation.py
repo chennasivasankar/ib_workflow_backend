@@ -302,7 +302,7 @@ class CreateOrUpdateTaskStorageImplementation(
             priority=task_details_dto.priority
         )
         Task.objects.filter(id=task_object.id).update(
-            task_display_id=project_prefix.format(task_object.id))
+            task_display_id=(project_prefix + '-' + str(task_object.id)))
         return task_object.id
 
     def create_task_gofs(
