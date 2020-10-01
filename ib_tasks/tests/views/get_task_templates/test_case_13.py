@@ -1,6 +1,6 @@
 """
-test when fields having gof selector that does not have stage permissions for
-gof ids returns without that field
+test when fields having gof selector that does not have stage permissions
+for gof ids returns empty gof ids list
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils

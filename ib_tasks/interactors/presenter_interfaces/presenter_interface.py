@@ -109,3 +109,15 @@ class PresenterInterface(abc.ABC):
             self, err: UserDidNotFillRequiredFields):
         pass
 
+    @abc.abstractmethod
+    def start_date_is_required(self):
+        pass
+
+    @abc.abstractmethod
+    def due_date_is_required(self):
+        pass
+
+    @abc.abstractmethod
+    def priority_is_required(self):
+        pass
+

@@ -11,7 +11,8 @@ from ib_tasks.exceptions.fields_custom_exceptions import \
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied
 from ib_tasks.exceptions.task_custom_exceptions import (
-    InvalidTaskException, InvalidTaskDisplayId, TaskDelayReasonIsNotUpdated)
+    InvalidTaskException, InvalidTaskDisplayId, TaskDelayReasonIsNotUpdated,
+    PriorityIsRequired, StartDateIsRequired, DueDateIsRequired)
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.mixins.get_user_act_on_task_response import GetUserActOnTaskResponse
@@ -111,6 +112,12 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         except TaskDelayReasonIsNotUpdated as err:
             return presenter.get_response_for_task_delay_reason_not_updated(
                 err)
+        except StartDateIsRequired:
+            return presenter.start_date_is_required()
+        except DueDateIsRequired:
+            return presenter.due_date_is_required()
+        except PriorityIsRequired:
+            return presenter.priority_is_required()
         return presenter.get_response_for_user_action_on_task(
             task_complete_details_dto=task_complete_details_dto,
             task_current_stage_details_dto=task_current_stage_details_dto,
@@ -122,8 +129,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         stage_ids, project_id, updated_task_dto = self.user_action_on_task(
             task_id)
         self._set_next_stage_assignees_to_task_and_update_in_db(
-            task_id=task_id, stage_ids=stage_ids
-        )
+            task_id=task_id, stage_ids=stage_ids)
         task_complete_details_dto, task_current_stage_details_dto, \
         all_tasks_overview_details_dto = self.get_user_act_on_task_response(
             task_dto=updated_task_dto, task_id=task_id,
@@ -140,8 +146,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
 
         self._validations_for_task_action(task_id, project_id)
         self._validation_all_user_template_permitted_fields_are_filled_or_not(
-            task_id=task_id, project_id=project_id
-        )
+            task_id=task_id, project_id=project_id)
         self._validate_present_task_stage_actions(task_id=task_id)
         updated_task_dto = \
             self._call_logic_and_update_status_variables_and_get_stage_ids(
@@ -163,6 +168,19 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
                 self.action_id)
             self._validate_all_user_template_permitted_fields_are_filled_or_not(
                 self.user_id, task_id, project_id, stage_id)
+            self._validate_task_base_details(task_id)
+
+    def _validate_task_base_details(self, task_id: int):
+        task_dto = self.task_storage.get_task_base_details_dto(task_id)
+        is_start_date_empty = not task_dto.start_date
+        if is_start_date_empty:
+            raise StartDateIsRequired()
+        is_due_date_empty = not task_dto.due_date
+        if is_due_date_empty:
+            raise DueDateIsRequired()
+        is_priority_empty = not task_dto.priority
+        if is_priority_empty:
+            raise PriorityIsRequired()
 
     def _validate_task_delay_reason_updated_or_not(self, task_id):
 

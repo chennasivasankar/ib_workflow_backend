@@ -21,10 +21,13 @@ from ib_tasks.interactors.get_task_stages_and_actions \
     import GetTaskStagesAndActions
 from ib_tasks.interactors.user_role_validation_interactor import \
     UserRoleValidationInteractor
+from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+    get_valid_project_ids_mock, validate_if_user_is_in_project_mock, \
+    check_user_in_least_level_mock
 from ib_tasks.tests.factories.adapter_dtos import ProjectDetailsDTOFactory, \
     TeamInfoDTOFactory
 from ib_tasks.tests.factories.interactor_dtos import \
-    StageAssigneeWithTeamDetailsDTOFactory
+    StageAssigneeWithTeamDetailsDTOFactory, TaskFilterDTOFactory
 from ib_tasks.tests.factories.storage_dtos import \
     StageActionDetailsDTOFactory, \
     FieldSearchableDTOFactory
@@ -361,6 +364,18 @@ class TestGetTaskInteractor:
         )
         return task_complete_details_dto
 
+    @pytest.fixture()
+    def get_conditions_for_the_task_details_mock(self, mocker):
+        mock_method = mocker.patch(
+            "ib_tasks.interactors.get_task_details_conditions_dtos."
+            "GetConditionsForTaskDetails.get_conditions_for_the_task_details"
+        )
+
+        task_filter_dtos = \
+            TaskFilterDTOFactory.create_batch(size=2, value="user_1")
+        mock_method.return_value = task_filter_dtos
+        return mock_method
+
     def test_given_invalid_task_display_id_raise_exception(
             self, presenter_mock,
             mock_object, task_crud_storage_mock,
@@ -403,14 +418,27 @@ class TestGetTaskInteractor:
             mock_object, task_crud_storage_mock,
             fields_storage_mock, storage_mock,
             task_storage_mock, action_storage_mock, stage_storage_mock,
-            task_stage_storage_mock, reset_sequence, gof_storage_mock
+            task_stage_storage_mock, reset_sequence, gof_storage_mock,
+            mocker
     ):
         # Arrange
         from ib_tasks.exceptions.task_custom_exceptions \
             import InvalidTaskIdException
+        project_id = "project_1"
         user_id = "user1"
         task_display_id = "IBWF-1"
         task_id = 1
+        task_storage_mock.get_project_id_and_user_id_for_the_task_id.\
+            return_value = project_id, user_id
+
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_valid_project_ids_mock, validate_if_user_is_in_project_mock,\
+            check_user_in_least_level_mock
+
+        get_valid_project_ids_mock(mocker, [project_id])
+        validate_if_user_is_in_project_mock(mocker, True)
+        check_user_in_least_level_mock(mocker, True)
+
         exception_object = InvalidTaskIdException(task_id)
         get_task_mock.side_effect = exception_object
         presenter_mock.raise_exception_for_invalid_task_id.return_value = \
@@ -439,14 +467,26 @@ class TestGetTaskInteractor:
             mock_object, task_crud_storage_mock,
             fields_storage_mock, storage_mock,
             task_storage_mock, action_storage_mock, stage_storage_mock,
-            task_stage_storage_mock, reset_sequence, gof_storage_mock
+            task_stage_storage_mock, reset_sequence, gof_storage_mock,
+            get_conditions_for_the_task_details_mock, mocker
     ):
         # Arrange
-        user_id = "user1"
+        user_id = "user_1"
         task_display_id = "IBWF-1"
         invalid_project_ids = ["project_id1"]
+
+        get_valid_project_ids_mock(mocker, [])
+        validate_if_user_is_in_project_mock(mocker, True)
+        check_user_in_least_level_mock(mocker, True)
+
+        task_storage_mock.get_project_id_and_user_id_for_the_task_id.\
+            return_value = invalid_project_ids[0], user_id
+
         from ib_tasks.adapters.auth_service import InvalidProjectIdsException
+
         exception_object = InvalidProjectIdsException(invalid_project_ids)
+        get_conditions_for_the_task_details_mock(mocker)
+
         get_task_mock.side_effect = exception_object
         presenter_mock.raise_invalid_project_id.return_value = \
             mock_object
@@ -480,12 +520,20 @@ class TestGetTaskInteractor:
             task_stage_storage_mock, task_details_dto, user_roles, gof_ids,
             permission_task_gof_dtos, field_ids, permission_field_ids,
             permission_task_gof_field_dtos, mock_object, permission_gof_ids,
-            reset_sequence, gof_storage_mock, stages_and_actions_details_dtos
+            reset_sequence, gof_storage_mock, stages_and_actions_details_dtos,
+            get_conditions_for_the_task_details_mock, mocker
     ):
+        project_id = "project_1"
         user_role_mock.return_value = user_roles
-        user_id = "user1"
+        user_id = "user_1"
         task_id = 1
         task_display_id = "IBWF-1"
+
+        get_valid_project_ids_mock(mocker, [])
+        validate_if_user_is_in_project_mock(mocker, True)
+        check_user_in_least_level_mock(mocker, True)
+        get_conditions_for_the_task_details_mock(mocker)
+
         get_task_mock.return_value = task_details_dto
         get_task_stages_and_actions_mock.return_value = \
             stages_and_actions_details_dtos
@@ -495,6 +543,13 @@ class TestGetTaskInteractor:
         task_stage_storage_mock \
             .is_user_has_permission_for_at_least_one_stage.return_value = False
         presenter_mock.raise_user_permission_denied.return_value = mock_object
+
+        get_valid_project_ids_mock(mocker, [project_id])
+        validate_if_user_is_in_project_mock(mocker, True)
+        check_user_in_least_level_mock(mocker, True)
+
+        task_storage_mock.get_project_id_and_user_id_for_the_task_id.\
+            return_value = project_id, user_id
 
         interactor = GetTaskInteractor(
             storage=storage_mock, fields_storage=fields_storage_mock,
@@ -537,13 +592,23 @@ class TestGetTaskInteractor:
             permission_task_gof_dtos, field_ids, permission_field_ids,
             permission_task_gof_field_dtos, task_complete_details_dto,
             mock_object, stages_and_actions_details_dtos, permission_gof_ids,
-            reset_sequence, gof_storage_mock
+            reset_sequence, gof_storage_mock,
+            get_conditions_for_the_task_details_mock, mocker
     ):
         # Arrange
+        project_id = "project_1"
         user_roles_mock.return_value = user_roles
-        user_id = "user1"
+        user_id = "user_1"
         task_id = 1
         task_display_id = "IBWF-1"
+
+        get_valid_project_ids_mock(mocker, [])
+        validate_if_user_is_in_project_mock(mocker, True)
+        check_user_in_least_level_mock(mocker, True)
+        get_conditions_for_the_task_details_mock(mocker)
+        task_storage_mock.get_project_id_and_user_id_for_the_task_id.\
+            return_value = project_id, user_id
+
         from ib_tasks.exceptions.task_custom_exceptions import \
             InvalidStageIdsForTask
         from ib_tasks.constants.exception_messages import \
@@ -611,13 +676,23 @@ class TestGetTaskInteractor:
             permission_task_gof_dtos, field_ids, permission_field_ids,
             permission_task_gof_field_dtos, task_complete_details_dto,
             mock_object, stages_and_actions_details_dtos, permission_gof_ids,
-            reset_sequence, gof_storage_mock, stage_ids
+            reset_sequence, gof_storage_mock, stage_ids,
+            get_conditions_for_the_task_details_mock, mocker
     ):
         # Arrange
+        project_id = "project_1"
         user_roles_mock.return_value = user_roles
-        user_id = "user1"
+        user_id = "user_1"
         task_id = 1
         task_display_id = "IBWF-1"
+
+        get_valid_project_ids_mock(mocker, [])
+        validate_if_user_is_in_project_mock(mocker, True)
+        check_user_in_least_level_mock(mocker, True)
+        get_conditions_for_the_task_details_mock(mocker)
+        task_storage_mock.get_project_id_and_user_id_for_the_task_id.\
+            return_value = project_id, user_id
+
         get_task_mock.return_value = task_details_dto
         stage_assignee_details_dtos_mock.return_value = \
             stage_assignee_details_dtos
@@ -881,13 +956,23 @@ class TestGetTaskInteractor:
             permission_task_gof_field_dtos_with_field_type_searchable,
             field_searchable_dtos,
             task_complete_details_dto_with_field_type_searchable,
-            gof_storage_mock, stage_storage_mock, stage_ids
+            gof_storage_mock, stage_storage_mock, stage_ids,
+            get_conditions_for_the_task_details_mock, mocker
     ):
         # Arrange
+        project_id = "project_1"
         user_roles_mock.return_value = user_roles
-        user_id = "user1"
+        user_id = "user_1"
         task_id = 1
         task_display_id = "IBWF-1"
+
+        get_valid_project_ids_mock(mocker, [])
+        validate_if_user_is_in_project_mock(mocker, True)
+        check_user_in_least_level_mock(mocker, True)
+        get_conditions_for_the_task_details_mock(mocker)
+        task_storage_mock.get_project_id_and_user_id_for_the_task_id.\
+            return_value = project_id, user_id
+
         get_task_mock.return_value = \
             task_details_dto_with_some_fields_searchable_type
         stage_assignee_details_dtos_mock.return_value = \
@@ -958,16 +1043,26 @@ class TestGetTaskInteractor:
             permission_task_gof_field_dtos_with_field_type_searchable,
             field_searchable_dtos_with_invalid_city_ids,
             task_complete_details_dto_with_field_type_searchable,
-            gof_storage_mock, stage_storage_mock
+            gof_storage_mock, stage_storage_mock,
+            get_conditions_for_the_task_details_mock, mocker
     ):
         # Arrange
+        project_id = "project_1"
         user_roles_mock.return_value = user_roles
         invalid_city_ids = [100, 110]
         exception_object = InvalidCityIdsException(invalid_city_ids)
         searchable_exception_mock.side_effect = exception_object
-        user_id = "user1"
+        user_id = "user_1"
         task_id = 1
         task_display_id = "IBWF-1"
+
+        get_valid_project_ids_mock(mocker, [])
+        validate_if_user_is_in_project_mock(mocker, True)
+        check_user_in_least_level_mock(mocker, True)
+        get_conditions_for_the_task_details_mock(mocker)
+        task_storage_mock.get_project_id_and_user_id_for_the_task_id.\
+            return_value = project_id, user_id
+
         get_task_mock.return_value = \
             task_details_dto_with_some_fields_searchable_type
         get_task_stages_and_actions_mock.return_value = \
@@ -1029,9 +1124,11 @@ class TestGetTaskInteractor:
             mock_object, permission_gof_ids, reset_sequence,
             permission_task_gof_field_dtos_with_field_type_searchable,
             task_complete_details_dto_with_field_type_searchable,
-            gof_storage_mock, stage_storage_mock
+            gof_storage_mock, stage_storage_mock,
+            get_conditions_for_the_task_details_mock, mocker
     ):
         # Arrange
+        project_id = "project_1"
         user_roles_mock.return_value = user_roles
         searchable_field_ids = ["field0", "field2"]
         field_response = ["200", "300"]
@@ -1044,9 +1141,17 @@ class TestGetTaskInteractor:
         )
         exception_object = InvalidStateIdsException(invalid_state_ids)
         searchable_exception_mock.side_effect = exception_object
-        user_id = "user1"
+        user_id = "user_1"
         task_id = 1
         task_display_id = "IBWF-1"
+
+        get_valid_project_ids_mock(mocker, [])
+        validate_if_user_is_in_project_mock(mocker, True)
+        check_user_in_least_level_mock(mocker, True)
+        get_conditions_for_the_task_details_mock(mocker)
+        task_storage_mock.get_project_id_and_user_id_for_the_task_id.\
+            return_value = project_id, user_id
+
         get_task_mock.return_value = \
             task_details_dto_with_some_fields_searchable_type
         get_task_stages_and_actions_mock.return_value = \
@@ -1108,9 +1213,11 @@ class TestGetTaskInteractor:
             mock_object, permission_gof_ids, reset_sequence,
             permission_task_gof_field_dtos_with_field_type_searchable,
             task_complete_details_dto_with_field_type_searchable,
-            gof_storage_mock, stage_storage_mock
+            gof_storage_mock, stage_storage_mock,
+            get_conditions_for_the_task_details_mock, mocker
     ):
         # Arrange
+        project_id = "project_1"
         user_roles_mock.return_value = user_roles
         searchable_field_ids = ["field0", "field2"]
         field_response = ["200", "300"]
@@ -1123,9 +1230,17 @@ class TestGetTaskInteractor:
         )
         exception_object = InvalidCountryIdsException(invalid_country_ids)
         searchable_exception_mock.side_effect = exception_object
-        user_id = "user1"
+        user_id = "user_1"
         task_id = 1
         task_display_id = "IBWF-1"
+
+        get_valid_project_ids_mock(mocker, [])
+        validate_if_user_is_in_project_mock(mocker, True)
+        check_user_in_least_level_mock(mocker, True)
+        get_conditions_for_the_task_details_mock(mocker)
+        task_storage_mock.get_project_id_and_user_id_for_the_task_id.\
+            return_value = project_id, user_id
+
         get_task_mock.return_value = \
             task_details_dto_with_some_fields_searchable_type
         get_task_stages_and_actions_mock.return_value = \
@@ -1187,9 +1302,11 @@ class TestGetTaskInteractor:
             mock_object, permission_gof_ids, reset_sequence,
             permission_task_gof_field_dtos_with_field_type_searchable,
             task_complete_details_dto_with_field_type_searchable,
-            gof_storage_mock, stage_storage_mock
+            gof_storage_mock, stage_storage_mock,
+            get_conditions_for_the_task_details_mock, mocker
     ):
         # Arrange
+        project_id = "project_1"
         user_roles_mock.return_value = user_roles
         searchable_field_ids = ["field0", "field2"]
         field_response = [
@@ -1205,9 +1322,17 @@ class TestGetTaskInteractor:
         )
         exception_object = InvalidUserIdsException(invalid_user_ids)
         searchable_exception_mock.side_effect = exception_object
-        user_id = "user1"
+        user_id = "user_1"
         task_id = 1
         task_display_id = "IBWF-1"
+
+        get_valid_project_ids_mock(mocker, [])
+        validate_if_user_is_in_project_mock(mocker, True)
+        check_user_in_least_level_mock(mocker, True)
+        get_conditions_for_the_task_details_mock(mocker)
+        task_storage_mock.get_project_id_and_user_id_for_the_task_id.\
+            return_value = project_id, user_id
+
         get_task_mock.return_value = \
             task_details_dto_with_some_fields_searchable_type
         get_task_stages_and_actions_mock.return_value = \
@@ -1268,13 +1393,23 @@ class TestGetTaskInteractor:
             permission_task_gof_dtos, field_ids, permission_field_ids,
             permission_task_gof_field_dtos, task_complete_details_dto,
             mock_object, stages_and_actions_details_dtos, permission_gof_ids,
-            reset_sequence, gof_storage_mock, stage_storage_mock
+            reset_sequence, gof_storage_mock, stage_storage_mock,
+            get_conditions_for_the_task_details_mock, mocker
     ):
         # Arrange
+        project_id = "project_1"
         user_roles_mock.return_value = user_roles
-        user_id = "user1"
+        user_id = "user_1"
         task_id = 1
         task_display_id = "IBWF-1"
+
+        get_valid_project_ids_mock(mocker, [])
+        validate_if_user_is_in_project_mock(mocker, True)
+        check_user_in_least_level_mock(mocker, True)
+        get_conditions_for_the_task_details_mock(mocker)
+        task_storage_mock.get_project_id_and_user_id_for_the_task_id.\
+            return_value = project_id, user_id
+
         get_task_mock.return_value = task_details_dto
         from ib_tasks.adapters.assignees_details_service import \
             InvalidUserIdException
@@ -1405,13 +1540,23 @@ class TestGetTaskInteractor:
             permission_task_gof_dtos, field_ids, permission_field_ids,
             permission_task_gof_field_dtos, task_complete_details_dto,
             mock_object, stages_and_actions_details_dtos, permission_gof_ids,
-            reset_sequence, gof_storage_mock, stage_storage_mock
+            reset_sequence, gof_storage_mock, stage_storage_mock,
+            get_conditions_for_the_task_details_mock, mocker
     ):
         # Arrange
+        project_id = "project_1"
         user_role_mock.return_value = user_roles
-        user_id = "user1"
+        user_id = "user_1"
         task_id = 1
         task_display_id = "IBWF-1"
+
+        get_valid_project_ids_mock(mocker, [])
+        validate_if_user_is_in_project_mock(mocker, True)
+        check_user_in_least_level_mock(mocker, True)
+        get_conditions_for_the_task_details_mock(mocker)
+        task_storage_mock.get_project_id_and_user_id_for_the_task_id.\
+            return_value = project_id, user_id
+
         get_task_mock.return_value = task_details_dto
         invalid_user_ids = ["123e4567-e89b-12d3-a456-426614174000"]
         from ib_tasks.adapters.auth_service import \

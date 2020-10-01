@@ -1,5 +1,6 @@
 import json
 
+import factory
 import pytest
 
 from ib_discussions.constants.enum import StatusCode
@@ -91,14 +92,21 @@ class TestGetDiscussionsPresenterImplementation:
         ]
         from ib_discussions.tests.factories.storage_dtos import \
             DiscussionDTOFactory
-        discussion_dtos = [
-            DiscussionDTOFactory(
-                discussion_set_id=discussion_set_id,
-                user_id=user_profile_dtos[i].user_id,
-                discussion_id=discussion_ids[i]
-            )
-            for i in range(0, 3)
-        ]
+        DiscussionDTOFactory.reset_sequence()
+        DiscussionDTOFactory.is_clarified.reset()
+        # discussion_dtos = [
+        #     DiscussionDTOFactory(
+        #         discussion_set_id=discussion_set_id,
+        #         user_id=user_profile_dtos[i].user_id,
+        #         discussion_id=discussion_ids[i]
+        #     )
+        #     for i in range(0, 3)
+        # ]
+        discussion_dtos = DiscussionDTOFactory.create_batch(
+            size=3, discussion_set_id=discussion_set_id,
+            user_id=factory.Iterator(user_ids),
+            discussion_id=factory.Iterator(discussion_ids)
+        )
         from ib_discussions.interactors.presenter_interfaces.dtos import \
             DiscussionsWithUsersAndDiscussionCountDTO
         discussions_details_dto = DiscussionsWithUsersAndDiscussionCountDTO(
@@ -143,6 +151,7 @@ class TestGetDiscussionsPresenterImplementation:
         ]
         from ib_discussions.tests.factories.storage_dtos import \
             DiscussionIdWithCommentsCountDTOFactory
+        DiscussionIdWithCommentsCountDTOFactory.comments_count.reset()
         discussion_with_comments_count_dtos = [
             DiscussionIdWithCommentsCountDTOFactory(
                 discussion_id=discussion_id_with_comments_count_dict[

@@ -3,10 +3,11 @@ from datetime import timedelta, datetime
 import factory
 
 from ib_tasks.adapters.dtos import UserDTO, AssigneeDetailsDTO
-from ib_tasks.constants.enum import Searchable, Priority
+from ib_tasks.constants.enum import Searchable, Priority, Operators
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
 from ib_tasks.interactors.filter_dtos import SearchQueryWithPaginationDTO
+from ib_tasks.interactors.get_task_details_conditions_dtos import TaskFilterDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
@@ -796,3 +797,12 @@ class CreateSubTaskDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def gof_fields_dtos(self):
         return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
+
+
+class TaskFilterDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskFilterDTO
+
+    field_id = factory.Sequence(lambda counter: f"field_{counter}")
+    operator = Operators.GT.value
+    value = factory.sequence(lambda counter: f"value_{counter}")

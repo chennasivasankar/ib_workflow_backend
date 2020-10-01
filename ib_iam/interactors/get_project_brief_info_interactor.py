@@ -1,3 +1,4 @@
+import json
 from typing import List
 
 from ib_iam.exceptions.custom_exceptions import UserDoesNotExist
@@ -58,8 +59,28 @@ class GetProjectBriefInfoInteractor:
         if is_user_not_exists:
             raise UserDoesNotExist
         project_dtos = self.project_storage.get_user_project_dtos(
-            user_id=user_id
-        )
+            user_id=user_id)
+        project_dtos = self._update_projects_config_value(project_dtos)
+        return project_dtos
+
+    @staticmethod
+    def _update_projects_config_value(
+            project_dtos: List[ProjectWithDisplayIdDTO]):
+        from ib_iam.constants.config import PROJECTS_CONFIG
+        projects_config = PROJECTS_CONFIG
+        for project_dto in project_dtos:
+            current_project_config = projects_config.get(
+                project_dto.project_id)
+            if current_project_config is not None:
+                config = json.dumps(current_project_config)
+            else:
+                config = json.dumps(
+                    {
+                        "restrict_assignee_to_user": False,
+                        "enable_adhoc_template": True
+                    }
+                )
+            project_dto.config = config
         return project_dtos
 
     # def _validate_limit_and_offset(

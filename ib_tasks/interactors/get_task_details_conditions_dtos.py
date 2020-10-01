@@ -30,24 +30,14 @@ class GetConditionsForTaskDetails(ValidationMixin):
         from ib_tasks.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
 
-        is_user_in_least_level = service_adapter.auth_service.check_user_in_least_level(
-            project_id=project_id,
-            user_id=user_id
-        )
-        if is_user_in_least_level:
-            task_condition_dtos = [
-                TaskFilterDTO(
-                    field_id="created_by",
-                    operator=Operators.EQ.value,
-                    value=user_id
-                )
-            ]
-            return task_condition_dtos
-
         user_ids = service_adapter.auth_service.get_user_ids_based_on_user_level(
             project_id=project_id,
             user_id=user_id
         )
+        if user_id not in user_ids:
+            user_ids.append(user_id)
+        user_ids = list(set(user_ids))
+
         return [
             TaskFilterDTO(
                 field_id="created_by",

@@ -405,12 +405,12 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             project_id=project_id,
             user_id=user_id
         )
-        self._validate_task_have_permissions_to_task(
+        self._validate_user_have_permissions_to_task(
             created_by_id=created_by_id, task_condition_dtos=task_condition_dtos
         )
 
     @staticmethod
-    def _validate_task_have_permissions_to_task(created_by_id,
+    def _validate_user_have_permissions_to_task(created_by_id,
                                                 task_condition_dtos):
         user_ids = [
             str(task_condition_dto.value)
