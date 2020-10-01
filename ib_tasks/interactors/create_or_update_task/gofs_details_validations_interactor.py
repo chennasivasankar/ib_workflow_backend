@@ -2,7 +2,7 @@ from typing import List, Optional, Union
 
 from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
-    DuplicateFieldIdsToGoF, FieldsFilledAlreadyBySomeone
+    DuplicateFieldIdsToGoF
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
     DuplicateSameGoFOrderForAGoF, InvalidStagePermittedGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
@@ -60,45 +60,7 @@ class GoFsDetailsValidationsInteractor(GetGoFsFieldsDisplayNameMixin):
             task_template_id, gof_ids, gof_fields_dtos, stage_id)
         self._validate_user_permission_on_given_fields(
             field_ids, user_id, project_id)
-        self._validate_unique_fields_are_not_filled_again(
-            field_ids, project_id, task_template_id)
         self._validate_given_field_responses(gof_fields_dtos, action_type)
-
-    def _validate_unique_fields_are_not_filled_again(
-            self, given_field_ids: List[str], project_id: str,
-            task_template_id: str):
-        unique_field_ids = \
-            self.field_storage.get_unique_field_ids_in_given_field_ids(
-                given_field_ids)
-        if unique_field_ids:
-            self._validate_that_unique_fields_are_not_filled_in_another_task(
-                given_field_ids, project_id, task_template_id,
-                unique_field_ids)
-        return
-
-    def _validate_that_unique_fields_are_not_filled_in_another_task(
-            self, given_field_ids: List[str], project_id: str,
-            task_template_id: str, unique_field_ids: List[str]
-    ) -> Optional[FieldsFilledAlreadyBySomeone]:
-        already_filled_fields_details = \
-            self.task_storage.get_filled_fields_for_given_project_template(
-                project_id, task_template_id, unique_field_ids)
-        given_unique_field_ids = self._get_given_unique_field_ids(
-            given_field_ids, unique_field_ids)
-        if given_unique_field_ids:
-            unique_field_display_names = self.get_field_display_names(
-                given_unique_field_ids, already_filled_fields_details)
-            raise FieldsFilledAlreadyBySomeone(unique_field_display_names)
-        return
-
-    @staticmethod
-    def _get_given_unique_field_ids(
-            given_field_ids, unique_field_ids) -> List[str]:
-        given_unique_field_ids = []
-        for given_field_id in given_field_ids:
-            if given_field_id in unique_field_ids:
-                given_unique_field_ids.append(given_field_id)
-        return given_unique_field_ids
 
     def _validate_gof_details_and_get_gof_ids(
             self, gof_fields_dtos: List[GoFFieldsDTO]) -> List[str]:

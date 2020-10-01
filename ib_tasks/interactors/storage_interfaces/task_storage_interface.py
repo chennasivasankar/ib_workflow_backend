@@ -266,3 +266,9 @@ class TaskStorageInterface(abc.ABC):
             self, project_id: str, task_template_id: str,
             unique_field_ids: List[str]) -> List[FieldWithGoFDisplayNameDTO]:
         pass
+
+    @abc.abstractmethod
+    def get_filled_fields_if_filled_in_another_task_than_given_task(
+            self, task_id: int, unique_field_ids: List[str]
+    ) -> List[FieldWithGoFDisplayNameDTO]:
+        pass

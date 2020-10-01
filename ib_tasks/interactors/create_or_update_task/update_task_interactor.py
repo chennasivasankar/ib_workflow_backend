@@ -268,6 +268,8 @@ class UpdateTaskInteractor(
             task_template_id=task_template_id, project_id=project_id,
             action_type=task_dto.task_basic_details.action_type,
             stage_id=task_dto.stage_assignee.stage_id)
+        field_ids = self._get_field_ids_which_does_not_have_empty_response(
+            task_dto.gof_fields_dtos)
         if action_type_is_not_no_validations and is_not_adhoc_template:
             self._validate_all_user_permitted_fields_are_filled_or_not(
                 user_id=task_dto.task_basic_details.created_by_id,
@@ -275,7 +277,31 @@ class UpdateTaskInteractor(
                 gof_fields_dtos=task_dto.gof_fields_dtos,
                 stage_id=task_dto.stage_assignee.stage_id,
                 task_template_id=task_template_id)
+            self._validate_unique_fields_filled_validation(
+                field_ids, task_id)
         return project_id
+
+    def _validate_unique_fields_filled_validation(
+            self, field_ids: List[str], task_id: int):
+        from ib_tasks.interactors.create_or_update_task \
+            .validate_unique_fields_filled_or_not import \
+            ValidateUniqueFieldsFilledInteractor
+        validation_interactor = ValidateUniqueFieldsFilledInteractor(
+            self.field_storage, self.task_storage)
+        validation_interactor.validate_unique_fields_filled_in_task_updation(
+            field_ids, task_id)
+
+    @staticmethod
+    def _get_field_ids_which_does_not_have_empty_response(
+            gof_fields_dtos: List[GoFFieldsDTO]) -> List[str]:
+        field_ids = []
+        for gof_fields_dto in gof_fields_dtos:
+            field_ids += [
+                field_value_dto.field_id
+                for field_value_dto in gof_fields_dto.field_values_dtos
+                if field_value_dto.field_response.strip()
+            ]
+        return field_ids
 
     def _update_task_details(self, task_dto: UpdateTaskDTO):
         task_crud_interactor = TaskCrudOperationsInteractor(
