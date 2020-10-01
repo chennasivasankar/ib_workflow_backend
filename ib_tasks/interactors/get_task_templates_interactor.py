@@ -23,7 +23,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import TaskTemplateStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TemplateDTO
+    TemplateDTO, TaskTemplateMandatoryFieldsDTO
 from ib_tasks.interactors.user_role_validation_interactor import \
     UserRoleValidationInteractor
 
@@ -56,18 +56,23 @@ class GetTaskTemplatesInteractor:
         from ib_tasks.exceptions.task_custom_exceptions import \
             TaskTemplatesDoesNotExists
         try:
-            complete_task_templates_dto = \
+            complete_task_templates_dto,\
+                task_template_mandatory_fields_dtos = \
                 self.get_task_templates(user_id=user_id)
         except TaskTemplatesDoesNotExists:
             return presenter.raise_task_templates_does_not_exists_exception()
 
         complete_task_templates_response_object = \
             presenter.get_task_templates_response(
-                complete_task_templates_dto=complete_task_templates_dto
+                complete_task_templates_dto=complete_task_templates_dto,
+                task_template_mandatory_fields_dtos=
+                task_template_mandatory_fields_dtos
             )
         return complete_task_templates_response_object
 
-    def get_task_templates(self, user_id: str):
+    def get_task_templates(
+            self, user_id: str
+    ) -> (CompleteTaskTemplatesDTO, List[TaskTemplateMandatoryFieldsDTO]):
 
         from ib_tasks.adapters.roles_service_adapter import \
             get_roles_service_adapter
@@ -75,14 +80,20 @@ class GetTaskTemplatesInteractor:
         user_roles = \
             service_adapter.roles_service.get_user_role_ids(user_id=user_id)
 
-        complete_task_templates_dto = \
+        complete_task_templates_dto, task_template_mandatory_fields_dtos = \
             self._get_complete_task_templates_dto(user_roles=user_roles)
-        return complete_task_templates_dto
+        return complete_task_templates_dto, task_template_mandatory_fields_dtos
 
     def _get_complete_task_templates_dto(
-            self, user_roles: List[str]) -> CompleteTaskTemplatesDTO:
+            self, user_roles: List[str]
+    ) -> (CompleteTaskTemplatesDTO, List[TaskTemplateMandatoryFieldsDTO]):
         task_templates_dtos = \
             self.task_template_storage.get_task_templates_dtos()
+        task_template_ids = self._get_task_template_ids(
+            task_templates_dtos=task_templates_dtos)
+        task_template_mandatory_fields_dtos = \
+            self._get_task_template_mandatory_fields_dtos(
+                task_template_ids=task_template_ids)
         self._validate_task_templates_are_exists(
             task_templates_dtos=task_templates_dtos)
         project_id_with_task_template_id_dtos = \
@@ -93,8 +104,6 @@ class GetTaskTemplatesInteractor:
         action_with_stage_id_dtos = self._get_action_with_stage_id_dtos(
             stage_id_with_template_id_dtos=
             initial_stage_id_with_template_id_dtos)
-        task_template_ids = self._get_task_template_ids(
-            task_templates_dtos=task_templates_dtos)
         gof_details_with_field_dto = \
             self._get_gof_details_with_field_dtos_of_task_templates(
                 task_template_ids=task_template_ids, user_roles=user_roles)
@@ -111,7 +120,7 @@ class GetTaskTemplatesInteractor:
                 stage_gof_with_template_id_dtos=
                 stage_gof_with_template_id_dtos)
 
-        return CompleteTaskTemplatesDTO(
+        complete_task_templates_dto = (CompleteTaskTemplatesDTO(
             task_template_dtos=task_templates_dtos,
             project_id_with_task_template_id_dtos=
             project_id_with_task_template_id_dtos,
@@ -124,7 +133,36 @@ class GetTaskTemplatesInteractor:
             field_with_permissions_dtos=filtered_gof_details_with_field_dto.
             field_with_is_field_writable_dtos,
             stage_gof_with_template_id_dtos=
-            filtered_stage_gof_with_template_id_dtos)
+            filtered_stage_gof_with_template_id_dtos))
+        return complete_task_templates_dto, task_template_mandatory_fields_dtos
+
+    def _get_task_template_mandatory_fields_dtos(
+            self, task_template_ids: List[str]
+    ) -> List[TaskTemplateMandatoryFieldsDTO]:
+        existing_task_template_mandatory_fields_dtos = \
+            self.task_template_storage.get_template_mandatory_fields_dtos(
+                template_ids=task_template_ids)
+        template_ids_of_existing_task_template_mandatory_fields = [
+            task_template_mandatory_fields_dto.template_id
+            for task_template_mandatory_fields_dto in
+            existing_task_template_mandatory_fields_dtos
+        ]
+        template_ids_to_create = [
+            task_template_id
+            for task_template_id in task_template_ids
+            if task_template_id not in
+            template_ids_of_existing_task_template_mandatory_fields
+        ]
+        self.task_template_storage.\
+            create_template_mandatory_fields_with_default_values(
+                template_ids=template_ids_to_create)
+        created_task_template_mandatory_fields_dtos = \
+            self.task_template_storage.get_template_mandatory_fields_dtos(
+                template_ids=template_ids_to_create)
+        task_template_mandatory_fields_dtos = \
+            existing_task_template_mandatory_fields_dtos + \
+            created_task_template_mandatory_fields_dtos
+        return task_template_mandatory_fields_dtos
 
     def _get_gof_details_with_field_dtos_of_task_templates(
             self, task_template_ids: List[str], user_roles: List[str]

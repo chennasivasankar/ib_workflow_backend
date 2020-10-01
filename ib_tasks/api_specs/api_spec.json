@@ -522,7 +522,6 @@
          },
          "required":[
             "gof_id",
-            "gof_display_name",
             "order",
             "enable_add_another",
             "max_columns",
@@ -2285,6 +2284,29 @@
                   },
                   "required": [
                     "task_creation_gof_ids"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "object",
+                      "properties": {
+                        "display_name": {
+                          "type": "string"
+                        },
+                        "placeholder_text": {
+                          "type": "string"
+                        }
+                      },
+                  "required": [
+                    "display_name",
+                    "placeholder_text"
+                  ]
+                    }
+                  },
+                  "required": [
+                    "title"
                   ]
                 }
               ]

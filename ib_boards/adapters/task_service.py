@@ -164,6 +164,7 @@ class TaskService:
                 button_color=action_dto.button_color,
                 task_id=task_id,
                 stage_id=stage_id,
+                order=action_dto.order,
                 action_type=action_dto.action_type,
                 transition_template_id=action_dto.transition_template_id
             )

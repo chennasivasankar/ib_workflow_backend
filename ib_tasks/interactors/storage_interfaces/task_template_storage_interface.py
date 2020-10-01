@@ -8,7 +8,7 @@ from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TemplateDTO, ProjectIdWithTaskTemplateIdDTO
+    TemplateDTO, ProjectIdWithTaskTemplateIdDTO, TaskTemplateMandatoryFieldsDTO
 
 
 class TaskTemplateStorageInterface(abc.ABC):
@@ -168,4 +168,15 @@ class TaskTemplateStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_common_task_template_ids(self):
+        pass
+
+    @abc.abstractmethod
+    def get_template_mandatory_fields_dtos(
+            self, template_ids: List[str]
+    ) ->  List[TaskTemplateMandatoryFieldsDTO]:
+        pass
+
+    @abc.abstractmethod
+    def create_template_mandatory_fields_with_default_values(
+            self, template_ids: List[str]):
         pass
