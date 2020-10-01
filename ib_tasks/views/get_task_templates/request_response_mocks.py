@@ -52,7 +52,11 @@ RESPONSE_200_JSON = """
         ],
         "task_creation_gof_ids": [
             "string"
-        ]
+        ],
+        "title": {
+            "title_display_name": "string",
+            "title_placeholder_text": "string"
+        }
     }
 ]
 """

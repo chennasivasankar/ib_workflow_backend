@@ -2218,6 +2218,29 @@
                   "required": [
                     "task_creation_gof_ids"
                   ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "object",
+                      "properties": {
+                        "title_display_name": {
+                          "type": "string"
+                        },
+                        "title_placeholder_text": {
+                          "type": "string"
+                        }
+                      },
+                  "required": [
+                    "title_display_name",
+                    "title_placeholder_text"
+                  ]
+                    }
+                  },
+                  "required": [
+                    "title"
+                  ]
                 }
               ]
             }
