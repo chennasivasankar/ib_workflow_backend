@@ -91,6 +91,7 @@ class TestGetProjectDiscussionsPresenterImplementation:
         ]
         from ib_discussions.tests.factories.storage_dtos import \
             DiscussionDTOFactory
+        DiscussionDTOFactory.is_clarified.reset()
         discussion_dtos = [
             DiscussionDTOFactory(
                 discussion_set_id=discussion_set_id,

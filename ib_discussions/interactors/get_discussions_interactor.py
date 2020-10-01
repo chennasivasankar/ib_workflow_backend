@@ -65,7 +65,7 @@ class GetDiscussionInteractor:
             offset_and_limit_dto: OffsetAndLimitDTO, user_id: str,
             filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO,
     ):
-        self._validate_limit_offset_entity_id_and_entity_type(
+        self._validate_limit_and_offset(
             offset_and_limit_dto)
         discussion_set_id = self._get_discussion_set_id(
             entity_id=entity_id_and_entity_type_dto.entity_id,
@@ -100,7 +100,7 @@ class GetDiscussionInteractor:
         return discussions_with_users_and_discussion_count_dto, discussion_id_with_editable_status_dtos, \
                discussion_id_with_comments_count_dtos
 
-    def _validate_limit_offset_entity_id_and_entity_type(
+    def _validate_limit_and_offset(
             self, offset_and_limit_dto: OffsetAndLimitDTO
     ):
         self._validate_offset(offset_and_limit_dto.offset)

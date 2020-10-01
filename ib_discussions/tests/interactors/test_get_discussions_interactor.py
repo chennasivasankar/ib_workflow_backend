@@ -75,6 +75,7 @@ class TestGetDiscussionsInteractor:
         total_count = 3
         from ib_discussions.tests.factories.storage_dtos import \
             DiscussionDTOFactory
+        DiscussionDTOFactory.is_clarified.reset()
         complete_discussion_dtos = [
             DiscussionDTOFactory(discussion_set_id=discussion_set_id)
             for _ in range(1, total_count)
