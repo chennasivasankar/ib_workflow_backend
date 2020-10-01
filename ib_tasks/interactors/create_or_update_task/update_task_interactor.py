@@ -358,9 +358,11 @@ class UpdateTaskInteractor(
     ):
         gofs_for_updation, gofs_for_creation = [], []
         for task_gof_dto in task_gof_dtos:
-            gof_already_exists = self._is_gof_already_exists(
-                task_gof_dto.gof_id, task_gof_dto.same_gof_order,
-                existing_gofs)
+            gof_already_exists, task_gof_id = \
+                self._get_task_gof_id_if_exists_for_gof(
+                    task_gof_dto.gof_id, task_gof_dto.same_gof_order,
+                    existing_gofs)
+            task_gof_dto.task_gof_id = task_gof_id
             if gof_already_exists:
                 gofs_for_updation.append(task_gof_dto)
             else:
@@ -515,17 +517,17 @@ class UpdateTaskInteractor(
         return False
 
     @staticmethod
-    def _is_gof_already_exists(
+    def _get_task_gof_id_if_exists_for_gof(
             gof_id: str, same_gof_order: int,
             existing_gofs_with_same_gof_order: List[GoFIdWithSameGoFOrderDTO]
-    ) -> bool:
+    ) -> Tuple[bool, Optional[int]]:
         for existing_gof in existing_gofs_with_same_gof_order:
             gof_already_exists = (
                     gof_id == existing_gof.gof_id and
                     same_gof_order == existing_gof.same_gof_order)
             if gof_already_exists:
-                return True
-        return False
+                return True, existing_gof.task_gof_id
+        return False, None
 
     def _validate_task_delay_reason_is_added_if_due_date_is_changed(
             self, updated_due_date: datetime.datetime, task_id: int,

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 
@@ -10,6 +10,7 @@ class TaskGoFWithTaskIdDTO:
     task_id: int
     gof_id: str
     same_gof_order: int
+    task_gof_id: int = None
 
 
 @dataclass
