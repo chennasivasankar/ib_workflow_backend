@@ -7,7 +7,8 @@ from ib_discussions.exceptions.custom_exceptions import DiscussionIdNotFound, \
 from ib_discussions.interactors.dtos.dtos import \
     DiscussionWithEntityDetailsDTO, \
     OffsetAndLimitDTO, FilterByDTO, SortByDTO, \
-    DiscussionIdWithTitleAndDescriptionDTO, GetProjectDiscussionsInputDTO
+    DiscussionIdWithTitleAndDescriptionDTO, GetProjectDiscussionsInputDTO, \
+    GetDiscussionsInputDTO
 from ib_discussions.interactors.storage_interfaces.dtos import \
     DiscussionDTO, DiscussionIdWithCommentsCountDTO
 
@@ -35,8 +36,8 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_discussion_dtos(
-            self, discussion_set_id: str, sort_by_dto: SortByDTO,
-            offset_and_limit_dto: OffsetAndLimitDTO, filter_by_dto: FilterByDTO
+            self, discussion_set_id: str,
+            get_discussions_input_dto: GetDiscussionsInputDTO
     ) -> List[DiscussionDTO]:
         pass
 

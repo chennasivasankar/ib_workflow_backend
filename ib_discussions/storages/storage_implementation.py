@@ -8,7 +8,8 @@ from ib_discussions.exceptions.custom_exceptions import DiscussionIdNotFound, \
 from ib_discussions.interactors.dtos.dtos import \
     DiscussionWithEntityDetailsDTO, \
     OffsetAndLimitDTO, FilterByDTO, SortByDTO, \
-    DiscussionIdWithTitleAndDescriptionDTO, GetProjectDiscussionsInputDTO
+    DiscussionIdWithTitleAndDescriptionDTO, GetProjectDiscussionsInputDTO, \
+    GetDiscussionsInputDTO
 from ib_discussions.interactors.storage_interfaces.dtos import \
     DiscussionDTO, DiscussionIdWithCommentsCountDTO
 from ib_discussions.interactors.storage_interfaces.storage_interface import \
@@ -54,20 +55,22 @@ class StorageImplementation(StorageInterface):
         return
 
     def get_discussion_dtos(
-            self, discussion_set_id: str, sort_by_dto: SortByDTO,
-            offset_and_limit_dto: OffsetAndLimitDTO, filter_by_dto: FilterByDTO
+            self, discussion_set_id: str,
+            get_discussions_input_dto: GetDiscussionsInputDTO
     ) -> List[DiscussionDTO]:
         from ib_discussions.models import Discussion
         discussion_objects = Discussion.objects.filter(
             discussion_set_id=discussion_set_id
         )
         filter_discussion_objects = self._get_filter_discussion_objects(
-            filter_by_dto=filter_by_dto, discussion_objects=discussion_objects
+            filter_by_dto=get_discussions_input_dto.filter_by_dto,
+            discussion_objects=discussion_objects
         )
         sort_discussion_objects = self._get_sort_discussion_objects(
-            sort_by_dto=sort_by_dto,
+            sort_by_dto=get_discussions_input_dto.sort_by_dto,
             discussion_objects=filter_discussion_objects
         )
+        offset_and_limit_dto = get_discussions_input_dto.offset_and_limit_dto
         offset = offset_and_limit_dto.offset
         limit = offset_and_limit_dto.limit
         discussion_objects_after_applying_offset_and_limit \

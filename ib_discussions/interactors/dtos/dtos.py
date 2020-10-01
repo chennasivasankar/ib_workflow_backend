@@ -87,3 +87,12 @@ class GetProjectDiscussionsInputDTO:
     offset_and_limit_dto: OffsetAndLimitDTO
     filter_by_dto: FilterByDTO
     sort_by_dto: SortByDTO
+
+
+@dataclass
+class GetDiscussionsInputDTO:
+    user_id: str
+    entity_id_and_entity_type_dto: EntityIdAndEntityTypeDTO
+    offset_and_limit_dto: OffsetAndLimitDTO
+    filter_by_dto: FilterByDTO
+    sort_by_dto: SortByDTO

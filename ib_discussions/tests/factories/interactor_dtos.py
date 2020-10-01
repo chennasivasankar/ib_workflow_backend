@@ -6,7 +6,8 @@ from ib_discussions.interactors.dtos.dtos import DiscussionWithEntityDetailsDTO,
     DiscussionIdWithTitleAndDescriptionDTO, MultimediaDTO, \
     UpdateCompleteCommentDTO, CreateCompleteCommentDTO, \
     CreateCompleteReplyToCommentDTO, FilterByDTO, SortByDTO, \
-    GetProjectDiscussionsInputDTO, EntityIdAndEntityTypeDTO, OffsetAndLimitDTO
+    GetProjectDiscussionsInputDTO, EntityIdAndEntityTypeDTO, OffsetAndLimitDTO, \
+    GetDiscussionsInputDTO
 
 
 class DiscussionWithEntityDetailsDTOFactory(factory.Factory):
@@ -135,6 +136,18 @@ class GetProjectDiscussionsInputDTOFactory(factory.Factory):
 
     user_id = factory.sequence(lambda n: "user_id_{}".format(n))
     project_id = factory.sequence(lambda n: "project_id_{}".format(n))
+    entity_id_and_entity_type_dto = factory.SubFactory(
+        EntityIdAndEntityTypeDTOFactory)
+    offset_and_limit_dto = factory.SubFactory(OffsetAndLimitDTOFactory)
+    filter_by_dto = factory.SubFactory(FilterByDTOFactory)
+    sort_by_dto = factory.SubFactory(SortByDTOFactory)
+
+
+class GetDiscussionsInputDTOFactory(factory.Factory):
+    class Meta:
+        model = GetDiscussionsInputDTO
+
+    user_id = factory.sequence(lambda n: "user_id_{}".format(n))
     entity_id_and_entity_type_dto = factory.SubFactory(
         EntityIdAndEntityTypeDTOFactory)
     offset_and_limit_dto = factory.SubFactory(OffsetAndLimitDTOFactory)
