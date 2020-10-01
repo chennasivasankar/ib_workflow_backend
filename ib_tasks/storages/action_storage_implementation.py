@@ -283,9 +283,11 @@ class ActionsStorageImplementation(ActionStorageInterface):
     def get_actions_details(self,
                             action_ids: List[int]) -> \
             List[StageActionDetailsDTO]:
-        action_objs = StageAction.objects\
-                       .filter(id__in=action_ids)\
-                       .annotate(normal_stage_id=F('stage__stage_id'))
+        action_objs = StageAction.objects \
+            .filter(id__in=action_ids) \
+            .values('stage_id') \
+            .annotate(normal_stage_id=F(
+            'stage__stage_id').order_by('order'))
         action_dtos = self._convert_action_objs_to_dtos(action_objs)
         return action_dtos
 
@@ -299,6 +301,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
                 button_text=action.button_text,
                 button_color=action.button_color,
                 action_type=action.action_type,
+                order=action.order,
                 transition_template_id=action.transition_template_id
             )
             for action in action_objs
