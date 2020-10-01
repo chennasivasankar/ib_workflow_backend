@@ -6,8 +6,8 @@ from ib_iam.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
-from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface import \
-    TeamMemberLevelStorageInterface
+from ib_iam.interactors.storage_interfaces \
+    .team_member_level_storage_interface import TeamMemberLevelStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
     TeamStorageInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \

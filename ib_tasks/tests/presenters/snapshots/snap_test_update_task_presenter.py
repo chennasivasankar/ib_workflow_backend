@@ -277,6 +277,7 @@ snapshots['TestUpdateTaskPresenterImplementation.test_get_update_task_response s
         'task_id': 'iBWF-1',
         'task_overview_fields': [
         ],
+        'template_id': 'template_0',
         'title': 'title_0'
     }
 }

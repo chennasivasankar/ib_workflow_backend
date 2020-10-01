@@ -256,6 +256,9 @@
     "TaskOverviewWithStageAndActions": {
       "type": "object",
       "properties": {
+        "template_id": {
+          "type": "string"
+        },
         "task_id": {
           "type": "string"
         },

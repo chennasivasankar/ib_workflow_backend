@@ -48,7 +48,7 @@ class FieldsStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_user_permitted_gof_field_dtos(
+    def get_field_dtos_for_gofs_ids_to_apply_filters(
             self, user_roles: List[str], gof_ids: List[str]
     ) -> List[FieldNameDTO]:
         pass
