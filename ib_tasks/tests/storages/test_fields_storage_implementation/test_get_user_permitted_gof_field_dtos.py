@@ -31,7 +31,7 @@ class TestGetUserPermissionGofFieldDTOS:
         gof_ids = ["gof_1"]
 
         # Act
-        result = storage.get_user_permitted_gof_field_dtos(
+        result = storage.get_field_dtos_for_gofs_ids_to_apply_filters(
             gof_ids=gof_ids, user_roles=['FIN_PAYMENT_REQUESTER'])
 
         # Assert
@@ -45,7 +45,7 @@ class TestGetUserPermissionGofFieldDTOS:
         gof_ids = ["gof_1"]
 
         # Act
-        result = storage.get_user_permitted_gof_field_dtos(
+        result = storage.get_field_dtos_for_gofs_ids_to_apply_filters(
             gof_ids=gof_ids, user_roles=["role_1", "role_2"])
 
         # Assert
