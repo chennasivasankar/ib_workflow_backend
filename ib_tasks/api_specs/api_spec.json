@@ -522,7 +522,6 @@
          },
          "required":[
             "gof_id",
-            "gof_display_name",
             "order",
             "enable_add_another",
             "max_columns",
