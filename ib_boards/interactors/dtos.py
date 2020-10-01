@@ -111,6 +111,7 @@ class FieldDTO:
     key: str
     value: str
     stage_id: str
+    order: int
 
 
 @dataclass
