@@ -11,6 +11,7 @@ class StageAction(models.Model):
     logic = models.TextField()
     action_type = models.CharField(max_length=100, default='', blank=True,
                                    null=True)
+    order = models.IntegerField(default=1)
     transition_template = models.ForeignKey(
         "TaskTemplate", on_delete=models.CASCADE, null=True, blank=True
     )
