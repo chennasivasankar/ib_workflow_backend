@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
+
 snapshots = Snapshot()
 
 snapshots['TestCase05GetTaskTemplatesAPITestCase.test_case status_code'] = '200'
@@ -34,7 +35,11 @@ snapshots['TestCase05GetTaskTemplatesAPITestCase.test_case body'] = [
         'task_creation_gof_ids': [
         ],
         'template_id': 'template_1',
-        'template_name': 'Template 1'
+        'template_name': 'Template 1',
+        'title_configuration': {
+            'display_name': 'Title',
+            'placeholder_text': 'Title'
+        }
     },
     {
         'actions': [
@@ -61,6 +66,10 @@ snapshots['TestCase05GetTaskTemplatesAPITestCase.test_case body'] = [
         'task_creation_gof_ids': [
         ],
         'template_id': 'template_2',
-        'template_name': 'Template 2'
+        'template_name': 'Template 2',
+        'title_configuration': {
+            'display_name': 'Title',
+            'placeholder_text': 'Title'
+        }
     }
 ]
