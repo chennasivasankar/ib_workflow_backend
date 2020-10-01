@@ -4,7 +4,7 @@ from typing import List, Dict
 from django.db.models import F, Q
 
 from ib_tasks.constants.constants import ALL_ROLES_ID
-from ib_tasks.constants.enum import PermissionTypes, ViewType
+from ib_tasks.constants.enum import PermissionTypes, ViewType, FieldTypes
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     (FieldCompleteDetailsDTO, FieldDTO, UserFieldPermissionDTO,
      FieldIdWithGoFIdDTO, StageTaskFieldsDTO,
@@ -148,9 +148,12 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             self, user_roles: List[str], gof_ids: List[str]
     ) -> List[FieldNameDTO]:
 
+        query = Q(field__gof_id__in=gof_ids) \
+                & (Q(role__in=user_roles) | Q(role=ALL_ROLES_ID))
         field_ids = FieldRole.objects.filter(
-                Q(field__gof_id__in=gof_ids),
-                (Q(role__in=user_roles) | Q(role=ALL_ROLES_ID))
+            query
+        ).exclude(
+            field__field_type=FieldTypes.SEARCHABLE.value
         ).values_list('field_id', flat=True)
 
         field_objs = Field.objects.filter(field_id__in=field_ids)
