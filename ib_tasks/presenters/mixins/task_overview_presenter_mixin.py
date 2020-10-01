@@ -37,6 +37,7 @@ class TaskOverviewDetailsPresenterMixin:
             due_date = str(due_date)
         task_overview_details_dict = {
             "task_id": task_stage_details_dto.task_display_id,
+            "template_id": task_base_details.template_id,
             "title": task_base_details.title,
             "start_date": start_date,
             "due_date": due_date,
