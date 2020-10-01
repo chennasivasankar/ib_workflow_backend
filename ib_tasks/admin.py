@@ -21,6 +21,8 @@ from ib_tasks.models.task_gof_field import TaskGoFField
 from ib_tasks.models.task_log import TaskLog
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
+from ib_tasks.models.task_template_mandatory_fields import \
+    TaskTemplateMandatoryFields
 
 admin.site.register(StageFlow)
 admin.site.register(ActionPermittedRoles)
@@ -44,6 +46,7 @@ admin.site.register(UserTaskDelayReason)
 admin.site.register(ProjectTaskTemplate)
 admin.site.register(StageGoF)
 admin.site.register(SubTask)
+admin.site.register(TaskTemplateMandatoryFields)
 
 
 class TaskStageInline(admin.StackedInline):
@@ -67,8 +70,9 @@ class TaskStageRPAdmin(admin.ModelAdmin):
 
 
 class StagesActionsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'stage_name', 'name', 'button_text', 'button_color')
-    list_editable = ('button_text', 'button_color')
+    list_display = ('id', 'stage_name', 'name', 'button_text',
+                    'button_color', 'order')
+    list_editable = ('button_text', 'button_color', 'order')
 
     def stage_name(self, obj):
         return "%s" % obj.stage.stage_id

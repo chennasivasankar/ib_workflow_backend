@@ -522,7 +522,6 @@
          },
          "required":[
             "gof_id",
-            "gof_display_name",
             "order",
             "enable_add_another",
             "max_columns",
@@ -1113,7 +1112,10 @@
                   "DUPLICATE_STAGE_IDS",
                   "INVALID_STAGE_IDS",
                   "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE",
-                  "VIRTUAL_STAGE_IDS"
+                  "VIRTUAL_STAGE_IDS",
+                  "DUE_DATE_TIME_IS_REQUIRED",
+                  "START_DATE_TIME_IS_REQUIRED",
+                  "PRIORITY_IS_REQUIRED"
                ]
             }
          },
@@ -2217,6 +2219,29 @@
                   },
                   "required": [
                     "task_creation_gof_ids"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "object",
+                      "properties": {
+                        "display_name": {
+                          "type": "string"
+                        },
+                        "placeholder_text": {
+                          "type": "string"
+                        }
+                      },
+                  "required": [
+                    "display_name",
+                    "placeholder_text"
+                  ]
+                    }
+                  },
+                  "required": [
+                    "title"
                   ]
                 }
               ]

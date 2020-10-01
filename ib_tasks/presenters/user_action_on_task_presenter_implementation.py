@@ -499,3 +499,41 @@ class UserActionOnTaskPresenterImplementation(
                 assignees_dict[column_id] = None
             task_stages_dtos_dict[column_id] = task_stages_dict[stage_id]
         return assignees_dict, task_stages_dtos_dict
+
+    def start_date_is_required(self):
+        from ib_tasks.constants.exception_messages import \
+            START_DATE_TIME_IS_REQUIRED
+        response_message = START_DATE_TIME_IS_REQUIRED[0]
+        response_dict = {
+            "response": response_message,
+            "http_status_code": 400,
+            "res_status": START_DATE_TIME_IS_REQUIRED[1]
+        }
+
+        response_object = self.prepare_400_bad_request_response(response_dict)
+        return response_object
+
+    def due_date_is_required(self):
+        from ib_tasks.constants.exception_messages import \
+            DUE_DATE_TIME_IS_REQUIRED
+        response_message = DUE_DATE_TIME_IS_REQUIRED[0]
+        response_dict = {
+            "response": response_message,
+            "http_status_code": 400,
+            "res_status": DUE_DATE_TIME_IS_REQUIRED[1]
+        }
+
+        response_object = self.prepare_400_bad_request_response(response_dict)
+        return response_object
+
+    def priority_is_required(self):
+        from ib_tasks.constants.exception_messages import PRIORITY_IS_REQUIRED
+        response_message = PRIORITY_IS_REQUIRED[0]
+        response_dict = {
+            "response": response_message,
+            "http_status_code": 400,
+            "res_status": PRIORITY_IS_REQUIRED[1]
+        }
+
+        response_object = self.prepare_400_bad_request_response(response_dict)
+        return response_object

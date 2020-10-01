@@ -11,7 +11,7 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageIdWithTemplateIdDTO, StageGoFWithTemplateIdDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TemplateDTO, ProjectIdWithTaskTemplateIdDTO
+    TemplateDTO, ProjectIdWithTaskTemplateIdDTO, TaskTemplateMandatoryFieldsDTO
 
 
 @dataclass
@@ -34,5 +34,8 @@ class GetTaskTemplatesPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_task_templates_response(
-            self, complete_task_templates_dto: CompleteTaskTemplatesDTO):
+            self, complete_task_templates_dto: CompleteTaskTemplatesDTO,
+            task_template_mandatory_fields_dtos:
+            List[TaskTemplateMandatoryFieldsDTO]
+    ):
         pass
