@@ -4,14 +4,15 @@ import pytest
 @pytest.mark.django_db
 class TestGetUserPermissionGofFieldDTOS:
 
-
-    def expected_response(self):
+    @staticmethod
+    def expected_response():
         from ib_tasks.tests.factories.storage_dtos import FieldNameDTOFactory
         FieldNameDTOFactory.reset_sequence(1)
         field_name_dtos = FieldNameDTOFactory.create_batch(1)
         return field_name_dtos
 
-    def set_up_storage(self):
+    @staticmethod
+    def set_up_storage():
         from ib_tasks.tests.factories.models import (
             FieldFactory, FieldRoleFactory, GoFFactory
         )
@@ -23,6 +24,34 @@ class TestGetUserPermissionGofFieldDTOS:
         )
         FieldRoleFactory.create_batch(2, field=fields[0])
 
+    @staticmethod
+    def expected_response_without_searchable_fields():
+        from ib_tasks.tests.factories.storage_dtos import FieldNameDTOFactory
+        FieldNameDTOFactory.reset_sequence(1)
+        field_name_dtos = FieldNameDTOFactory.create_batch(
+            1, field_id='field_2', gof_id='gof_2'
+        )
+        return field_name_dtos
+
+    @staticmethod
+    def set_up_storage_with_searchable_fields():
+        from ib_tasks.tests.factories.models import (
+            FieldFactory, FieldRoleFactory, GoFFactory
+        )
+        FieldRoleFactory.reset_sequence()
+        GoFFactory.reset_sequence()
+        FieldFactory.reset_sequence(1)
+        from ib_tasks.constants.enum import FieldTypes
+        fields = FieldFactory.create_batch(
+            1, field_id="field_1", display_name="display_name_1",
+            field_type=FieldTypes.SEARCHABLE.value
+        )
+        new_fields = FieldFactory.create_batch(
+            1, field_id="field_2", display_name="display_name_1"
+        )
+        FieldRoleFactory.create_batch(2, field=fields[0])
+        FieldRoleFactory.create_batch(2, field=new_fields[0])
+
     def test_get_user_field_permission_dtos(self, storage):
 
         # Arrange
@@ -32,7 +61,7 @@ class TestGetUserPermissionGofFieldDTOS:
 
         # Act
         result = storage.get_field_dtos_for_gofs_ids_to_apply_filters(
-            gof_ids=gof_ids, user_roles=['FIN_PAYMENT_REQUESTER'])
+            gof_ids=gof_ids, user_roles=['FIN_PAYMENT_REQUESTER', "FIN_PAYMENT_APPROVER"])
 
         # Assert
         assert result == expected
@@ -50,3 +79,18 @@ class TestGetUserPermissionGofFieldDTOS:
 
         # Assert
         assert result == expected
+
+    def test_get_field_dtos_for_gofs_ids_to_apply_filters(self, storage):
+
+        # Arrange
+        self.set_up_storage_with_searchable_fields()
+        expected = self.expected_response_without_searchable_fields()
+        gof_ids = ["gof_1", 'gof_2']
+
+        # Act
+        result = storage.get_field_dtos_for_gofs_ids_to_apply_filters(
+            gof_ids=gof_ids, user_roles=['FIN_PAYMENT_REQUESTER'])
+
+        # Assert
+        assert result == expected
+
