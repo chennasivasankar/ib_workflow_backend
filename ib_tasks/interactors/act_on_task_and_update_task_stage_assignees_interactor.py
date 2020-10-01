@@ -14,7 +14,8 @@ from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee, \
     VirtualStageIdsException
 from ib_tasks.exceptions.task_custom_exceptions import (
-    InvalidTaskDisplayId, TaskDelayReasonIsNotUpdated)
+    InvalidTaskDisplayId, TaskDelayReasonIsNotUpdated, StartDateIsRequired,
+    DueDateIsRequired, PriorityIsRequired)
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.mixins.get_user_act_on_task_response import GetUserActOnTaskResponse
@@ -133,6 +134,12 @@ class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
         except TaskDelayReasonIsNotUpdated as err:
             return presenter.get_response_for_task_delay_reason_not_updated(
                 err)
+        except StartDateIsRequired:
+            return presenter.start_date_is_required()
+        except DueDateIsRequired:
+            return presenter.due_date_is_required()
+        except PriorityIsRequired:
+            return presenter.priority_is_required()
 
     def act_on_task_interactor_and_update_task_stage_assignees(
             self, task_id: int, stage_assignee_dtos: List[StageAssigneeDTO]):

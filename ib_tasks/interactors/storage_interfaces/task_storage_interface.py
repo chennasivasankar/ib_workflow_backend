@@ -27,7 +27,7 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import TaskTemplateMapDTO
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, \
     GetTaskDetailsDTO, \
-    TaskDelayParametersDTO
+    TaskDelayParametersDTO, TaskDTO
 
 
 class TaskStorageInterface(abc.ABC):
@@ -251,4 +251,8 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_project_id_and_user_id_for_the_task_id(self, task_id: int):
+        pass
+
+    @abc.abstractmethod
+    def get_task_base_details_dto(self, task_id: int) -> TaskDTO:
         pass
