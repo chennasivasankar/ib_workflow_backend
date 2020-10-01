@@ -80,6 +80,22 @@ class IamService:
         )
         return user_role_ids
 
+    def validate_user_id_for_given_project(
+            self, user_id: str, project_id: str
+    ):
+        try:
+            is_invalid_user_id_for_given_project = \
+                not self.interface.is_valid_user_id_for_given_project(
+                    user_id=user_id, project_id=project_id
+                )
+        except InvalidUserId:
+            raise InvalidUserId
+        except InvalidProjectId:
+            raise InvalidProjectId
+
+        if is_invalid_user_id_for_given_project:
+            raise InvalidUserForProject
+
     @staticmethod
     def _prepare_user_id_and_name_dtos(user_profile_dtos):
         user_id_and_name_dtos = [
