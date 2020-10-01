@@ -517,7 +517,8 @@ class ServiceInterface:
         return project_role_ids
 
     @staticmethod
-    def get_user_id_with_subordinate_user_ids_dto(user_id: str, project_id: str) -> \
+    def get_user_id_with_subordinate_user_ids_dto(user_id: str,
+                                                  project_id: str) -> \
             MemberIdWithSubordinateMemberIdsDTO:
         from ib_iam.storages.user_storage_implementation import \
             UserStorageImplementation
@@ -559,3 +560,7 @@ class ServiceInterface:
             )
         return is_user_in_a_least_level
 
+    @staticmethod
+    def get_projects_task_assignee_config():
+        from ib_iam.constants.config import PROJECTS_CONFIG
+        return PROJECTS_CONFIG

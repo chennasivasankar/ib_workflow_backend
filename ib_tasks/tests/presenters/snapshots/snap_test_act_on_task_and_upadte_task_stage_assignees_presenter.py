@@ -34,14 +34,7 @@ snapshots['TestActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation.test_
 snapshots['TestActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation.test_raise_exception_for_reason_is_not_added_to_task reason is not added to task delay'] = {
     'http_status_code': 404,
     'res_status': 'REASON_NOT_ADDED_FOR_TASK_DELAY',
-    'response': '''Task IBWF-1 in Stage PR APPROVALS has missed the
-                                  due date'''
-}
-
-snapshots['TestActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation.test_raise_user_did_not_fill_required_fields required fields are not filled by user'] = {
-    'http_status_code': 400,
-    'res_status': 'USER_DID_NOT_FILL_REQUIRED_FIELDS',
-    'response': "user did not fill required fields: ['field_display_1']"
+    'response': 'Task IBWF-1 in Stage PR APPROVALS has missed the due date'
 }
 
 snapshots['TestActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation.test_raise_exception_for_invalid_present_actions invalid present stage action'] = {
@@ -161,21 +154,35 @@ snapshots['TestActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation.test_
         'user_has_permission': True
     },
     'task_details': {
+        'due_date': '2020-04-15 04:50:40',
+        'priority': 'HIGH',
         'stage_with_actions': {
             'actions': [
             ],
             'assignee': {
                 'assignee_id': '123e4567-e89b-12d3-a456-426614174000',
                 'name': 'name_0',
-                'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM'
+                'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM',
+                'team_info': {
+                    'team_id': 'team_0',
+                    'team_name': 'team_name0'
+                }
             },
             'stage_color': 'color_1',
             'stage_display_name': 'stage_display_1',
             'stage_id': 1
         },
+        'start_date': '2020-04-05 04:50:40',
         'task_id': 'iBWF-1',
         'task_overview_fields': [
-        ]
+        ],
+        'title': 'title_0'
     },
     'task_id': 'task_display_1'
+}
+
+snapshots['TestActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation.test_raise_user_did_not_fill_required_fields required fields are not filled by user'] = {
+    'http_status_code': 400,
+    'res_status': 'USER_DID_NOT_FILL_REQUIRED_FIELDS',
+    'response': "user did not fill required fields: ['field_display_1']"
 }

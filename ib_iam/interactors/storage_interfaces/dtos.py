@@ -201,6 +201,7 @@ class ProjectWithDisplayIdDTO:
     name: str
     description: Optional[str] = None
     logo_url: Optional[str] = None
+    config = None
 
 
 @dataclass

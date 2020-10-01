@@ -35,7 +35,8 @@ class GetProjectBriefInfoPresenterImplementation(
                 "project_id": project_dto.project_id,
                 "project_display_id": project_dto.display_id,
                 "name": project_dto.name,
-                "logo_url": project_dto.logo_url
+                "logo_url": project_dto.logo_url,
+                "config": project_dto.config
             }
             for project_dto in project_dtos
         ]

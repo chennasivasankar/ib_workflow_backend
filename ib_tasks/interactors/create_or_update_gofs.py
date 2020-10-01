@@ -194,12 +194,8 @@ class CreateOrUpdateGoFsInteractor:
         self._validate_for_empty_gof_ids(
             gof_dtos=gof_dtos, gof_roles_dtos=gof_roles_dtos
         )
-        self._validate_for_empty_gof_display_names(gof_dtos=gof_dtos)
         self._validate_for_invalid_max_columns(gof_dtos=gof_dtos)
         self._validate_for_empty_read_permission_roles(
-            gof_roles_dtos=gof_roles_dtos
-        )
-        self._validate_for_empty_write_permission_roles(
             gof_roles_dtos=gof_roles_dtos
         )
 
@@ -237,19 +233,6 @@ class CreateOrUpdateGoFsInteractor:
             gof_id_is_empty = self._is_empty_field(field=gof_roles_dto.gof_id)
             if gof_id_is_empty:
                 raise GOFIdCantBeEmpty(EMPTY_GOF_ID_MESSAGE)
-        return
-
-    def _validate_for_empty_gof_display_names(
-            self, gof_dtos: List[GoFDTO]
-    ) -> Optional[GOFDisplayNameCantBeEmpty]:
-        from ib_tasks.constants.exception_messages import \
-            EMPTY_GOF_NAME_MESSAGE
-        for gof_dto in gof_dtos:
-            invalid_display_name = self._is_empty_field(
-                field=gof_dto.gof_display_name
-            )
-            if invalid_display_name:
-                raise GOFDisplayNameCantBeEmpty(EMPTY_GOF_NAME_MESSAGE)
         return
 
     def _validate_for_empty_read_permission_roles(

@@ -3,7 +3,7 @@ import pytest
 from ib_tasks.models import StageAction, ActionPermittedRoles
 from ib_tasks.tests.factories.interactor_dtos import StageActionDTOFactory
 from ib_tasks.tests.factories.models import StageModelFactory, \
-    TaskTemplateWithTransitionFactory
+    TaskTemplateWithTransitionFactory, TaskTemplateFactory
 
 
 @pytest.mark.django_db
@@ -12,11 +12,15 @@ class TestCreateStageActions:
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
         StageModelFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence()
+        StageActionDTOFactory.reset_sequence()
 
     @pytest.fixture()
     def stage_actions_dtos(self):
         StageModelFactory.create_batch(size=5)
-        TaskTemplateWithTransitionFactory.create_batch(size=4)
+
+        TaskTemplateWithTransitionFactory.create_batch(
+            size=4, is_transition_template=True)
         return StageActionDTOFactory.create_batch(size=4)
 
     def test_with_action_details_creates_action(

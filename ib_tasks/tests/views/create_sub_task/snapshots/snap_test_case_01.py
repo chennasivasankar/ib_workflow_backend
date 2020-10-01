@@ -22,6 +22,8 @@ snapshots['TestCase01CreateSubTaskAPITestCase.test_case body'] = {
         'user_has_permission': True
     },
     'task_details': {
+        'due_date': '2099-10-09 00:00:00',
+        'priority': 'HIGH',
         'stage_with_actions': {
             'actions': [
                 {
@@ -37,9 +39,11 @@ snapshots['TestCase01CreateSubTaskAPITestCase.test_case body'] = {
             'stage_display_name': 'name_0',
             'stage_id': 1
         },
+        'start_date': '2020-09-09 00:00:00',
         'task_id': 'IBWF-2',
         'task_overview_fields': [
-        ]
+        ],
+        'title': 'Sub Task'
     }
 }
 

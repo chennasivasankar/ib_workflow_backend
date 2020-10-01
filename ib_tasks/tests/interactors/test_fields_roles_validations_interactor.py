@@ -1,7 +1,8 @@
 import pytest
 from ib_tasks.tests.factories.storage_dtos \
     import FieldRolesDTOFactory
-from ib_tasks.interactors.fields_roles_validations_interactor \
+from ib_tasks.interactors.create_or_update_fields\
+    .fields_roles_validations_interactor \
     import FieldsRolesValidationsInteractor
 
 
@@ -32,44 +33,6 @@ class TestFieldsRolesValidationsInteractor:
                 read_permission_roles=[]
             ),
             FieldRolesDTOFactory(field_id="field3")
-        ]
-
-        interactor = FieldsRolesValidationsInteractor()
-
-        # Act
-        with pytest.raises(EmptyValueForPermissions) as err:
-            interactor.fields_roles_validations(
-                field_roles_dtos=field_roles_dtos
-            )
-
-        # Assert
-        assert str(err.value) == exception_message
-
-    def test_given_empty_values_for_write_permissions_roles_raise_exception(
-            self
-    ):
-        # Arrange
-        from ib_tasks.constants.exception_messages \
-            import EMPTY_VALUE_FOR_WRITE_PERMISSIONS
-        from ib_tasks.exceptions.fields_custom_exceptions \
-            import EmptyValueForPermissions
-
-        field_ids_with_write_permissions_empty = ["field1", "field2"]
-
-        exception_message = EMPTY_VALUE_FOR_WRITE_PERMISSIONS.format(
-            field_ids_with_write_permissions_empty
-        )
-
-        field_roles_dtos = [
-            FieldRolesDTOFactory(
-                field_id="field1",
-                write_permission_roles=[]
-            ),
-            FieldRolesDTOFactory(
-                field_id="field2",
-                write_permission_roles=[]
-            ),
-            FieldRolesDTOFactory(field_id="filed3")
         ]
 
         interactor = FieldsRolesValidationsInteractor()
