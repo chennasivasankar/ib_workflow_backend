@@ -1,10 +1,13 @@
 from typing import List, Optional
 
 from ib_tasks.constants.enum import ActionTypes
+from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.fields_custom_exceptions import \
     UserDidNotFillRequiredFields
+from ib_tasks.exceptions.permission_custom_exceptions import \
+    UserActionPermissionDenied
 from ib_tasks.exceptions.task_custom_exceptions import StartDateIsRequired, \
-    DueDateIsRequired, PriorityIsRequired
+    DueDateIsRequired, PriorityIsRequired, InvalidTaskDisplayId
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.presenter_interfaces.validate_task_fields_presenter import \
@@ -46,7 +49,14 @@ class TaskFieldsFilledValidationInteractor(GetTaskIdForTaskDisplayIdMixin):
             presenter: ValidateTaskFieldsPresenterInterface):
         try:
             task_id = self.get_task_id_for_task_display_id(task_display_id)
-            self.validate_task_filled_fields(task_id, action_id, user_id)
+            return self._get_response(task_id, action_id, user_id, presenter)
+        except InvalidTaskDisplayId as err:
+            return presenter.raise_invalid_task_display_id(err)
+        except InvalidActionException as err:
+            return presenter.raise_exception_for_invalid_action(err)
+        except UserActionPermissionDenied as err:
+            return presenter.raise_exception_for_user_action_permission_denied(
+                err)
         except UserDidNotFillRequiredFields as err:
             return presenter.raise_user_did_not_fill_required_fields(err)
         except StartDateIsRequired:
@@ -56,16 +66,28 @@ class TaskFieldsFilledValidationInteractor(GetTaskIdForTaskDisplayIdMixin):
         except PriorityIsRequired:
             return presenter.priority_is_required()
 
+    def _get_response(self, task_id, action_id, user_id, presenter):
+        self.validate_task_filled_fields(task_id, action_id, user_id)
+        return presenter.get_success_response()
+
     def validate_task_filled_fields(
             self, task_id: int, action_id: int, user_id: str):
+        project_id = \
+            self.task_storage.get_project_id_for_the_task_id(task_id=task_id)
+        is_valid_action = self.action_storage.validate_action(action_id)
+        invalid_action_id = not is_valid_action
+        if invalid_action_id:
+            raise InvalidActionException(action_id)
+        action_roles = self.action_storage.get_action_roles(
+            action_id=action_id)
+        self._validate_user_permission_to_user(
+            user_id, action_roles, action_id, project_id=project_id)
         action_type = self.action_storage.get_action_type_for_given_action_id(
             action_id)
         action_type_is_no_validations = \
             action_type == ActionTypes.NO_VALIDATIONS.value
         if action_type_is_no_validations:
             return
-        project_id = \
-            self.task_storage.get_project_id_for_the_task_id(task_id=task_id)
         self._validation_all_user_template_permitted_fields_are_filled_or_not(
             task_id=task_id, project_id=project_id, action_id=action_id,
             user_id=user_id)
@@ -146,3 +168,18 @@ class TaskFieldsFilledValidationInteractor(GetTaskIdForTaskDisplayIdMixin):
         is_priority_empty = not task_dto.priority
         if is_priority_empty:
             raise PriorityIsRequired()
+
+    @staticmethod
+    def _validate_user_permission_to_user(
+            user_id: str, action_roles: List[str], action_id: int,
+            project_id: str):
+
+        from ib_tasks.interactors.user_role_validation_interactor \
+            import UserRoleValidationInteractor
+        interactor = UserRoleValidationInteractor()
+        permit = interactor.does_user_has_required_permission(
+            user_id=user_id, role_ids=action_roles, project_id=project_id
+        )
+        is_permission_denied = not permit
+        if is_permission_denied:
+            raise UserActionPermissionDenied(action_id=action_id)

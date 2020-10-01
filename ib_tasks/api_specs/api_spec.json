@@ -2138,7 +2138,27 @@
          }
       },
       "ValidateTaskFieldsSuccessResponse": {
-         "description": "all task details are filled"
+         "description": "all task details are filled",
+         "schema":{
+            "type":"object",
+            "properties":{
+               "response":{
+                  "type":"string",
+                  "example": "all task required fields are filled"
+               },
+               "http_status_code":{
+                  "type":"integer"
+               },
+               "res_status":{
+                  "type":"string"
+               }
+            },
+            "required":[
+               "response",
+               "http_status_code",
+               "res_status"
+            ]
+         }
       },
       "CreateTaskAccessUnauthorized":{
          "description":"user does not have access",
@@ -4162,10 +4182,16 @@
              }
           ],
           "responses":{
-             "201":{
+             "200":{
                 "$ref":"#/responses/ValidateTaskFieldsSuccessResponse"
              },
              "400":{
+                "$ref":"#/responses/ValidateTaskFieldsFailureResponse"
+             },
+             "404":{
+                "$ref":"#/responses/ValidateTaskFieldsFailureResponse"
+             },
+             "403":{
                 "$ref":"#/responses/ValidateTaskFieldsFailureResponse"
              }
           }

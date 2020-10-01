@@ -1,5 +1,5 @@
 """
-test with invalid task display id
+test with invalid action id
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -7,7 +7,7 @@ from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import TaskFactory
 
 
-class TestCase01ValidateTaskFilledFieldsAPITestCase(TestUtils):
+class TestCase02ValidateTaskFilledFieldsAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -26,7 +26,7 @@ class TestCase01ValidateTaskFilledFieldsAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
-        body = {'task_id': 'IBWF-2', 'action_id': "1"}
+        body = {'task_id': 'IBWF-1', 'action_id': "1"}
         path_params = {}
         query_params = {}
         headers = {}

@@ -1,7 +1,10 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
+from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.fields_custom_exceptions import \
     UserDidNotFillRequiredFields
+from ib_tasks.exceptions.permission_custom_exceptions import \
+    UserActionPermissionDenied
 from ib_tasks.interactors.presenter_interfaces.validate_task_fields_presenter import \
     ValidateTaskFieldsPresenterInterface
 
@@ -9,6 +12,60 @@ from ib_tasks.interactors.presenter_interfaces.validate_task_fields_presenter im
 class ValidateTaskFieldsPresenterImplementation(
     ValidateTaskFieldsPresenterInterface, HTTPResponseMixin
 ):
+    def get_success_response(self):
+        data = {
+            "response": "all task required fields are filled",
+            "http_status_code": 200,
+            "res_status": "TASK_FIELDS_VALIDATED_SUCCESSFULLY"
+        }
+        return self.prepare_200_success_response(data)
+
+    def raise_invalid_task_display_id(self, err):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_TASK_DISPLAY_ID
+        message = INVALID_TASK_DISPLAY_ID[0].format(err.task_display_id)
+        data = {
+            "response": message,
+            "http_status_code": 404,
+            "res_status": INVALID_TASK_DISPLAY_ID[1]
+        }
+        return self.prepare_404_not_found_response(data)
+
+    def raise_exception_for_invalid_action(
+            self, error_obj: InvalidActionException):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_ACTION_ID
+
+        response_message = INVALID_ACTION_ID[0].format(
+            str(error_obj.action_id)
+        )
+        response_dict = {
+            "response": response_message,
+            "http_status_code": 404,
+            "res_status": INVALID_ACTION_ID[1]
+        }
+
+        response_object = self.prepare_404_not_found_response(response_dict)
+        return response_object
+
+    def raise_exception_for_user_action_permission_denied(
+            self, error_obj: UserActionPermissionDenied):
+        from ib_tasks.constants.exception_messages import \
+            USER_DO_NOT_HAVE_ACCESS
+
+        response_message = USER_DO_NOT_HAVE_ACCESS[0].format(
+            str(error_obj.action_id)
+        )
+        response_dict = {
+            "response": response_message,
+            "http_status_code": 403,
+            "res_status": USER_DO_NOT_HAVE_ACCESS[1]
+        }
+
+        response_object = self.prepare_403_forbidden_response(response_dict)
+        return response_object
+
+
     def raise_user_did_not_fill_required_fields(
             self, err: UserDidNotFillRequiredFields):
         from ib_tasks.constants.exception_messages import \

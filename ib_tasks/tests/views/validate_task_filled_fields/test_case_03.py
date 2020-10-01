@@ -1,13 +1,15 @@
 """
-test with invalid task display id
+test with a action which is not permitted to user
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...factories.models import TaskFactory
+from ...common_fixtures.adapters.roles_service import \
+    get_user_role_ids_based_on_project_mock
+from ...factories.models import TaskFactory, StageActionFactory
 
 
-class TestCase01ValidateTaskFilledFieldsAPITestCase(TestUtils):
+class TestCase03ValidateTaskFilledFieldsAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -17,16 +19,21 @@ class TestCase01ValidateTaskFilledFieldsAPITestCase(TestUtils):
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
         TaskFactory.reset_sequence()
+        StageActionFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
-    def setup(self):
+    def setup(self, mocker):
         task_id = "IBWF-1"
+        action_id = 1
 
         TaskFactory.create(task_display_id=task_id)
+        StageActionFactory.create(id=action_id)
+        user_roles_mock = get_user_role_ids_based_on_project_mock(mocker)
+        user_roles_mock.return_value = []
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
-        body = {'task_id': 'IBWF-2', 'action_id': "1"}
+        body = {'task_id': 'IBWF-1', 'action_id': "1"}
         path_params = {}
         query_params = {}
         headers = {}
