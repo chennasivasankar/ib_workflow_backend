@@ -254,7 +254,7 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
             actions_list = self._convert_action_dtos_to_dict(
                 action_dtos=tasks_actions_map[task_id]
             )
-            actions_list.sort(key=lambda x: [x.order])
+
             task_dict = self._get_task_details_dict(
                 actions_list=actions_list,
                 assignees_dtos_dict=assignees_dtos_dict,
@@ -324,6 +324,7 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
     def _convert_action_dtos_to_dict(action_dtos: List[ActionDTO]):
         task_actions_list = []
         action_ids = []
+        action_dtos.sort(key=lambda x: [x.order])
         for action_dto in action_dtos:
             if action_dto.action_id not in action_ids:
                 task_actions_list.append(
