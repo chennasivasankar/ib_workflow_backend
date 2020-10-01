@@ -1,24 +1,22 @@
 import json
 
-import factory
 import pytest
 
 from ib_discussions.constants.enum import StatusCode
 
 
-class TestGetDiscussionsPresenterImplementation:
+class TestGetProjectDiscussionsPresenterImplementation:
 
     @pytest.fixture()
     def presenter(self):
-        from ib_discussions.presenters.get_discussion_presenter_implementation import \
-            GetDiscussionPresenterImplementation
-        presenter = GetDiscussionPresenterImplementation()
+        from ib_discussions.presenters.get_project_discussions_presenter_implementation import \
+            GetProjectDiscussionsPresenterImplementation
+        presenter = GetProjectDiscussionsPresenterImplementation()
         return presenter
 
-    def test_raise_exception_for_invalid_user_id(self,
-                                                 presenter):
+    def test_response_for_invalid_user_id(self, presenter):
         # Arrange
-        from ib_discussions.presenters.get_discussion_presenter_implementation import \
+        from ib_discussions.presenters.get_project_discussions_presenter_implementation import \
             INVALID_USER_ID
         expected_response = INVALID_USER_ID[0]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
@@ -35,9 +33,46 @@ class TestGetDiscussionsPresenterImplementation:
         assert response_data["http_status_code"] == expected_http_status_code
         assert response_data["res_status"] == expected_res_status
 
+    def test_response_for_invalid_project_id(self, presenter):
+        # Arrange
+        from ib_discussions.presenters.get_project_discussions_presenter_implementation import \
+            INVALID_PROJECT_ID
+        expected_response = INVALID_PROJECT_ID[0]
+        expected_http_status_code = StatusCode.NOT_FOUND.value
+        expected_res_status = INVALID_PROJECT_ID[1]
+
+        # Act
+        response_obj \
+            = presenter.response_for_invalid_project_id()
+
+        # Assert
+        response_data = json.loads(response_obj.content)
+
+        assert response_data["response"] == expected_response
+        assert response_data["http_status_code"] == expected_http_status_code
+        assert response_data["res_status"] == expected_res_status
+
+    def test_response_for_invalid_user_for_project(self, presenter):
+        # Arrange
+        from ib_discussions.presenters.get_project_discussions_presenter_implementation import \
+            INVALID_USER_FOR_PROJECT
+        expected_response = INVALID_USER_FOR_PROJECT[0]
+        expected_http_status_code = StatusCode.BAD_REQUEST.value
+        expected_res_status = INVALID_USER_FOR_PROJECT[1]
+
+        # Act
+        response_obj = presenter.response_for_invalid_user_for_project()
+
+        # Assert
+        response_data = json.loads(response_obj.content)
+
+        assert response_data["response"] == expected_response
+        assert response_data["http_status_code"] == expected_http_status_code
+        assert response_data["res_status"] == expected_res_status
+
     def test_raise_exception_for_invalid_offset(self, presenter):
         # Arrange
-        from ib_discussions.presenters.create_discussion_presenter_implementation import \
+        from ib_discussions.presenters.get_project_discussions_presenter_implementation import \
             INVALID_OFFSET
         expected_response = INVALID_OFFSET[0]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
@@ -55,7 +90,7 @@ class TestGetDiscussionsPresenterImplementation:
 
     def test_raise_exception_for_invalid_limit(self, presenter):
         # Arrange
-        from ib_discussions.presenters.create_discussion_presenter_implementation import \
+        from ib_discussions.presenters.get_project_discussions_presenter_implementation import \
             INVALID_LIMIT
         expected_response = INVALID_LIMIT[0]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
@@ -92,21 +127,15 @@ class TestGetDiscussionsPresenterImplementation:
         ]
         from ib_discussions.tests.factories.storage_dtos import \
             DiscussionDTOFactory
-        DiscussionDTOFactory.reset_sequence()
         DiscussionDTOFactory.is_clarified.reset()
-        # discussion_dtos = [
-        #     DiscussionDTOFactory(
-        #         discussion_set_id=discussion_set_id,
-        #         user_id=user_profile_dtos[i].user_id,
-        #         discussion_id=discussion_ids[i]
-        #     )
-        #     for i in range(0, 3)
-        # ]
-        discussion_dtos = DiscussionDTOFactory.create_batch(
-            size=3, discussion_set_id=discussion_set_id,
-            user_id=factory.Iterator(user_ids),
-            discussion_id=factory.Iterator(discussion_ids)
-        )
+        discussion_dtos = [
+            DiscussionDTOFactory(
+                discussion_set_id=discussion_set_id,
+                user_id=user_profile_dtos[i].user_id,
+                discussion_id=discussion_ids[i]
+            )
+            for i in range(0, 3)
+        ]
         from ib_discussions.interactors.presenter_interfaces.dtos import \
             DiscussionsWithUsersAndDiscussionCountDTO
         discussions_details_dto = DiscussionsWithUsersAndDiscussionCountDTO(
@@ -151,7 +180,6 @@ class TestGetDiscussionsPresenterImplementation:
         ]
         from ib_discussions.tests.factories.storage_dtos import \
             DiscussionIdWithCommentsCountDTOFactory
-        DiscussionIdWithCommentsCountDTOFactory.comments_count.reset()
         discussion_with_comments_count_dtos = [
             DiscussionIdWithCommentsCountDTOFactory(
                 discussion_id=discussion_id_with_comments_count_dict[
@@ -164,13 +192,13 @@ class TestGetDiscussionsPresenterImplementation:
         ]
         return discussion_with_comments_count_dtos
 
-    def test_prepare_response_for_discussions_details_dto(
+    def test_prepare_response_for_project_discussions_details_dto(
             self, presenter, get_discussions_details_dto,
             get_discussion_id_with_editable_status_dtos, snapshot,
             get_comments_for_discussion_dtos
     ):
         # Act
-        response_object = presenter.prepare_response_for_discussions_details_dto(
+        response_object = presenter.prepare_response_for_project_discussions_details_dto(
             discussions_with_users_and_discussion_count_dto=get_discussions_details_dto,
             discussion_id_with_editable_status_dtos=get_discussion_id_with_editable_status_dtos,
             discussion_id_with_comments_count_dtos=get_comments_for_discussion_dtos

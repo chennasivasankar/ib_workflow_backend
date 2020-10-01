@@ -49,9 +49,13 @@ def append_action_dict(action_dict: Dict[str, Any]):
     from ib_tasks.interactors.stages_dtos import StageActionDTO
     stage_id = action_dict["stage_id"]
     action_name = action_dict["action_name"]
-    function_path = 'ib_tasks.populate.stage_actions_logic.'
+    from django.conf import settings
+    function_path = 'ib_tasks.populate.stage_actions_logic_{}.'.format(
+        settings.STAGE
+    )
     function_name = f'{stage_id}_{action_name}'
-    function_name = function_name.replace(' ', '_').replace('-', '_').replace('\n', '')
+    function_name = function_name.replace(' ', '_').replace('-', '_').replace(
+        '\n', '')
     function_path = function_path + function_name
     return StageActionDTO(
         stage_id=action_dict['stage_id'].strip('\n'),

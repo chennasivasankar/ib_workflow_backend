@@ -67,7 +67,7 @@ class GetTaskTemplatesPresenterImplementation(
                 task_creation_gof_ids_of_templates_dict[task_template_id]
             task_template["stage_gofs"] = \
                 stage_gofs_dict_of_templates_dict[task_template_id]
-            task_template["title"] = \
+            task_template["title_configuration"] = \
                 task_templates_mandatory_fields_data_dict[task_template_id]
 
         return self.prepare_200_success_response(task_templates_dicts)

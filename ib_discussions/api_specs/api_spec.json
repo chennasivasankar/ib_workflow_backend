@@ -1025,6 +1025,79 @@
           }
         ]
       }
+    },
+    "GetProjectDiscussionsNotFoundResponse": {
+      "description": "get project discussion not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_PROJECT_ID"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetProjectDiscussionSuccessResponse": {
+      "description": "get project discussions success response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "discussions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Discussion"
+            }
+          },
+          "total_count": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "discussions",
+          "total_count"
+        ]
+      }
+    },
+    "GetProjectDiscussionBadRequestResponse": {
+      "description": "get project discussions bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_OFFSET",
+                  "INVALID_LIMIT",
+                  "INVALID_USER_ID",
+                  "INVALID_USER_FOR_PROJECT"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
     }
   },
   "paths": {
@@ -1113,10 +1186,13 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/GetDiscussionSuccessResponse"
+            "$ref": "#/responses/GetProjectDiscussionSuccessResponse"
           },
           "400": {
-            "$ref": "#/responses/GetDiscussionBadRequestResponse"
+            "$ref": "#/responses/GetProjectDiscussionBadRequestResponse"
+          },
+          "404": {
+            "$ref": "#/responses/GetProjectDiscussionsNotFoundResponse"
           }
         }
       }

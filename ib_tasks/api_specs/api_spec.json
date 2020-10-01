@@ -2289,7 +2289,7 @@
                 {
                   "type": "object",
                   "properties": {
-                    "title": {
+                    "title_configuration": {
                       "type": "object",
                       "properties": {
                         "display_name": {
@@ -2306,7 +2306,7 @@
                     }
                   },
                   "required": [
-                    "title"
+                    "title_configuration"
                   ]
                 }
               ]
