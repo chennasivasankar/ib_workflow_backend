@@ -31,7 +31,7 @@ from .task_template_initial_stages import TaskTemplateInitialStage
 from .task_template_status_variable import TaskTemplateStatusVariable
 from .template_status_variables import TaskTemplateStatusVariables
 from .user_task_delay_reason import UserTaskDelayReason
-from .task_template_title import TaskTemplateTitle
+from .task_template_mandatory_fields import TaskTemplateMandatoryFields
 
 __all__ = [
     "SubTask",
@@ -60,5 +60,5 @@ __all__ = [
     "TaskTemplateInitialStage",
     "StagePermittedRoles",
     "UserTaskDelayReason", "ProjectTaskTemplate",
-    "TaskStageRp", "StageGoF", "TaskTemplateTitle"
+    "TaskStageRp", "StageGoF", "TaskTemplateMandatoryFields"
 ]

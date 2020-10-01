@@ -522,7 +522,6 @@
          },
          "required":[
             "gof_id",
-            "gof_display_name",
             "order",
             "enable_add_another",
             "max_columns",
@@ -2225,16 +2224,16 @@
                     "title": {
                       "type": "object",
                       "properties": {
-                        "title_display_name": {
+                        "display_name": {
                           "type": "string"
                         },
-                        "title_placeholder_text": {
+                        "placeholder_text": {
                           "type": "string"
                         }
                       },
                   "required": [
-                    "title_display_name",
-                    "title_placeholder_text"
+                    "display_name",
+                    "placeholder_text"
                   ]
                     }
                   },

@@ -54,8 +54,8 @@ RESPONSE_200_JSON = """
             "string"
         ],
         "title": {
-            "title_display_name": "string",
-            "title_placeholder_text": "string"
+            "display_name": "string",
+            "placeholder_text": "string"
         }
     }
 ]
