@@ -1112,7 +1112,10 @@
                   "DUPLICATE_STAGE_IDS",
                   "INVALID_STAGE_IDS",
                   "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE",
-                  "VIRTUAL_STAGE_IDS"
+                  "VIRTUAL_STAGE_IDS",
+                  "DUE_DATE_TIME_IS_REQUIRED",
+                  "START_DATE_TIME_IS_REQUIRED",
+                  "PRIORITY_IS_REQUIRED"
                ]
             }
          },

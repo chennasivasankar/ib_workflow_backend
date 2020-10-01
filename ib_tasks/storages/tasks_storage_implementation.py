@@ -31,7 +31,7 @@ from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO, TaskTemplateMapDTO
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, \
     GetTaskDetailsDTO, \
-    TaskDelayParametersDTO
+    TaskDelayParametersDTO, TaskDTO
 from ib_tasks.models import Stage, TaskTemplate, CurrentTaskStage, \
     TaskTemplateStatusVariable, TaskStageHistory, TaskStatusVariable, SubTask
 from ib_tasks.models.field import Field
@@ -793,3 +793,12 @@ class TasksStorageImplementation(TaskStorageInterface):
         user_id = task_obj[0]['created_by']
 
         return project_id, user_id
+
+    def get_task_base_details_dto(self, task_id: int) -> TaskDTO:
+        task_obj = Task.objects.get(id=task_id)
+        task_dto = TaskDTO(
+            start_date=task_obj.start_date,
+            due_date=task_obj.due_date,
+            priority=task_obj.priority
+        )
+        return task_dto

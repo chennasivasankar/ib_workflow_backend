@@ -70,8 +70,9 @@ class TaskStageRPAdmin(admin.ModelAdmin):
 
 
 class StagesActionsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'stage_name', 'name', 'button_text', 'button_color')
-    list_editable = ('button_text', 'button_color')
+    list_display = ('id', 'stage_name', 'name', 'button_text',
+                    'button_color', 'order')
+    list_editable = ('button_text', 'button_color', 'order')
 
     def stage_name(self, obj):
         return "%s" % obj.stage.stage_id
