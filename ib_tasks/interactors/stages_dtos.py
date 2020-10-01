@@ -5,7 +5,6 @@ from typing import Optional, List
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO, \
     UserIdWIthTeamDetailsDTOs, UserDetailsDTO, UserIdWIthTeamDetailsDTO, \
     TeamInfoDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import StageFlowDTO
 
 
 @dataclass
@@ -37,6 +36,7 @@ class StageActionDTO:
     button_text: str
     button_color: Optional[str]
     action_type: Optional[str]
+    order: int
     transition_template_id: Optional[str]
 
 

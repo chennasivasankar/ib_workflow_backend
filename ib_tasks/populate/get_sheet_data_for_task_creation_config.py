@@ -42,6 +42,7 @@ class GetSheetDataForTaskCreationConfig:
                 "Role": str,
                 "Logic": str,
                 "Button Text": str,
+                "order": int,
                 Optional("Button Colour"): str,
                 Optional("Action Type"): str,
                 Optional("Transition Template ID"): str
@@ -65,6 +66,7 @@ class GetSheetDataForTaskCreationConfig:
             "button_text": field_record["Button Text"],
             "button_color": field_record["Button Colour"],
             "action_type": field_record["Action Type"],
+            "order": field_record["Order"],
             "transition_template_id": field_record["Transition Template ID"]
         }
 
@@ -73,12 +75,14 @@ class GetSheetDataForTaskCreationConfig:
             "TaskTemplate ID*": "FIN_PR",
             "Stage ID*": "PR_PAYMENT_REQUEST_DRAFTS",
             "Stage Display Name": "Payment Request Drafts",
-            "Stage Display Logic": "Value [Status1]== Value[PR_PAYMENT_REQUEST_DRAFTS]",
+            "Stage Display Logic": "Value [Status1]== Value["
+                                   "PR_PAYMENT_REQUEST_DRAFTS]",
             "Action name": "Save Draft",
             "Role": "ALL_ROLES",
             "Logic": "Status1 = PR_PAYMENT_REQUEST_DRAFTS",
             "Button Text": "Save Draft",
-            "Button Colour": "Blue"
+            "Button Colour": "Blue",
+            "Order": 1
 
         }
         self.data_sheet.raise_exception_for_valid_format(valid_format)

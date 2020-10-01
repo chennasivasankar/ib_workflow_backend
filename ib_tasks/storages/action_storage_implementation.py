@@ -141,6 +141,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
                 logic=stage_action.logic,
                 py_function_import_path=stage_action.function_path,
                 action_type=stage_action.action_type,
+                order=stage_action.order,
                 transition_template_id=stage_action.transition_template_id,
                 button_text=stage_action.button_text,
                 button_color=stage_action.button_color
@@ -185,11 +186,12 @@ class ActionsStorageImplementation(ActionStorageInterface):
             action_obj.py_function_import_path = action_dto.function_path
             action_obj.button_text = action_dto.button_text
             action_obj.action_type = action_dto.action_type
+            action_obj.order = action_dto.order
             action_obj.transition_template_id = \
                 action_dto.transition_template_id
             action_obj.button_color = action_dto.button_color
         attributes = [
-            "logic", "py_function_import_path", "button_text",
+            "logic", "py_function_import_path", "button_text", 'order',
             "action_type", "transition_template_id", "button_color"
         ]
         StageAction.objects.bulk_update(action_objs, attributes)

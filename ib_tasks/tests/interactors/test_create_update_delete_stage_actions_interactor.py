@@ -8,7 +8,7 @@ from ib_tasks.exceptions.task_custom_exceptions import \
 from ib_tasks.interactors.create_or_update_or_delete_stage_actions import (
     EmptyStageDisplayLogic, DuplicateStageButtonsException,
     DuplicateStageActionNamesException, EmptyStageButtonText,
-    CreateOrUpdateOrDeleteStageActions
+    CreateOrUpdateOrDeleteStageActions, InvalidOrderForActions
 )
 from ib_tasks.interactors.storage_interfaces.action_storage_interface \
     import ActionStorageInterface
@@ -75,12 +75,35 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
         storage.get_valid_stage_ids \
             .assert_called_once_with(stage_ids=stage_ids)
-        template_storage.get_valid_transition_template_ids.\
+        template_storage.get_valid_transition_template_ids. \
             assert_called_once_with(transition_ids)
 
     @staticmethod
-    def test_given_invalid_roles_raises_exception(mocker):
+    def test_given_invalid_order_raises_exception():
+        # Arrange
+        StageActionDTOFactory.reset_sequence(0)
+        actions_dto = StageActionDTOFactory.create_batch(size=2, order=0)
+        stage_ids = ["stage_id_1", "stage_id_2"]
+        storage = create_autospec(ActionStorageInterface)
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        storage.get_valid_stage_ids.return_value = ["stage_id_1", "stage_id_2"]
+        template_storage.get_valid_transition_template_ids.return_value = []
+        interactor = CreateOrUpdateOrDeleteStageActions(
+            storage=storage,
+            template_storage=template_storage
+        )
 
+        # Act
+        with pytest.raises(InvalidOrderForActions) as err:
+            interactor.create_or_update_or_delete_stage_actions(
+                action_dtos=actions_dto
+            )
+        # Assert
+        storage.get_valid_stage_ids \
+            .assert_called_once_with(stage_ids=stage_ids)
+
+    @staticmethod
+    def test_given_invalid_roles_raises_exception(mocker):
         # Arrange
         expected_stage_roles = {
             "stage_id_1": ["ROLE_1", "ROLE_2"],
