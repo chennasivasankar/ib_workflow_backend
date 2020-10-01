@@ -146,7 +146,6 @@ class GetTaskTemplatesInteractor:
             task_template_mandatory_fields_dto.template_id
             for task_template_mandatory_fields_dto in
             existing_task_template_mandatory_fields_dtos
-            if task_template_mandatory_fields_dto.template_id
         ]
         template_ids_to_create = [
             task_template_id
@@ -156,7 +155,7 @@ class GetTaskTemplatesInteractor:
         ]
         self.task_template_storage.\
             create_template_mandatory_fields_with_default_values(
-                template_ids=task_template_ids)
+                template_ids=template_ids_to_create)
         created_task_template_mandatory_fields_dtos = \
             self.task_template_storage.get_template_mandatory_fields_dtos(
                 template_ids=template_ids_to_create)
