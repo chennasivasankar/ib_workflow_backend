@@ -190,7 +190,6 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
 
         task_fields_dtos = task_complete_details_dto.task_field_dtos
         task_actions_dtos = task_complete_details_dto.task_action_dtos
-        task_actions_dtos.sort(key=lambda x: [x.order])
         task_stage_dtos = task_complete_details_dto.task_stage_color_dtos
         assignees_dtos = task_complete_details_dto.assignees_dtos
         task_base_details_dtos = task_complete_details_dto.task_base_details_dtos
@@ -255,6 +254,7 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
             actions_list = self._convert_action_dtos_to_dict(
                 action_dtos=tasks_actions_map[task_id]
             )
+            actions_list.sort(key=lambda x: [x.order])
             task_dict = self._get_task_details_dict(
                 actions_list=actions_list,
                 assignees_dtos_dict=assignees_dtos_dict,
@@ -531,7 +531,6 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
                 task_fields_dto.stage_id + str(task_fields_dto.task_id)
                 ].append(task_fields_dto)
 
-        task_actions_dtos.sort(key=lambda x: [x.order])
         task_actions_map = defaultdict(lambda: [])
         for task_actions_dto in task_actions_dtos:
             task_actions_map[
