@@ -485,6 +485,7 @@ class FieldDetailsDTOFactory(factory.Factory):
     field_type = "Drop down"
     key = "key"
     value = "value"
+    order = 1
 
 
 class FieldDetailsDTOWithTaskIdFactory(factory.Factory):

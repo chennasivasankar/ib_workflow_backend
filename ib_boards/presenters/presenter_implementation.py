@@ -308,6 +308,7 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
     def _convert_fields_dtos_to_dict(field_dtos: List[FieldDTO]):
         task_fields_list = []
         field_ids = []
+        field_dtos.sort(key=lambda x: [x.order])
         for field_dto in field_dtos:
             if field_dto.field_id not in field_ids:
                 task_fields_list.append(
