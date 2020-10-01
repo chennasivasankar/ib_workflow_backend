@@ -41,6 +41,7 @@ RESPONSE_200_JSON = """
             "total_tasks": 1,
             "tasks": [
                 {
+                    "template_id": "string",
                     "task_id": "string",
                     "title": "string",
                     "start_date": "2099-12-31 00:00:00",
@@ -79,4 +80,3 @@ RESPONSE_200_JSON = """
     ]
 }
 """
-
