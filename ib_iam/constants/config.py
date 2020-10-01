@@ -31,3 +31,4 @@ PROJECTS_CONFIG = {
         "enable_adhoc_template": False
     }
 }
+PROJECT_DEFAULT_PREFIX = "IBWF-{}"

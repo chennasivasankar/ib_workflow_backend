@@ -699,3 +699,17 @@ class ProjectInteractor(ValidationMixin):
             project_id=project_id
         )
         return project_role_ids
+
+    def get_project_prefix(self, project_id: str):
+        is_valid_project = self.project_storage.is_valid_project_id(
+            project_id=project_id
+        )
+        is_invalid_project = not is_valid_project
+
+        if is_invalid_project:
+            # ToDo pass project id in exception
+            raise InvalidProjectId
+        project_prefix = \
+            self.project_storage.get_project_prefix(project_id=project_id)
+
+        return project_prefix
