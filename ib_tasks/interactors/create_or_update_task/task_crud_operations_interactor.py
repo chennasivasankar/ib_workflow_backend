@@ -18,12 +18,13 @@ class TaskCrudOperationsInteractor:
         self.storage = create_task_storage
 
     def create_task(
-            self, task_details_dto: BasicTaskDetailsDTO, project_id: str
+            self, task_details_dto: BasicTaskDetailsDTO
     ) -> int:
         from ib_tasks.adapters.project_service import ProjectService
         project_service = ProjectService()
         project_prefix = \
-            project_service.get_project_prefix(project_id=project_id)
+            project_service.get_project_prefix(
+                project_id=task_details_dto.project_id)
 
         created_task_id = self.storage.create_task(
             task_details_dto=task_details_dto, project_prefix=project_prefix)
