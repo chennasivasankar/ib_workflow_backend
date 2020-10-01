@@ -129,8 +129,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         stage_ids, project_id, updated_task_dto = self.user_action_on_task(
             task_id)
         self._set_next_stage_assignees_to_task_and_update_in_db(
-            task_id=task_id, stage_ids=stage_ids
-        )
+            task_id=task_id, stage_ids=stage_ids)
         task_complete_details_dto, task_current_stage_details_dto, \
         all_tasks_overview_details_dto = self.get_user_act_on_task_response(
             task_dto=updated_task_dto, task_id=task_id,
@@ -147,8 +146,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
 
         self._validations_for_task_action(task_id, project_id)
         self._validation_all_user_template_permitted_fields_are_filled_or_not(
-            task_id=task_id, project_id=project_id
-        )
+            task_id=task_id, project_id=project_id)
         self._validate_present_task_stage_actions(task_id=task_id)
         updated_task_dto = \
             self._call_logic_and_update_status_variables_and_get_stage_ids(

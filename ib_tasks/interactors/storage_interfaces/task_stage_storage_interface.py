@@ -121,3 +121,7 @@ class TaskStageStorageInterface(abc.ABC):
             max_stage_value: int
     ) -> List[int]:
         pass
+
+    @abc.abstractmethod
+    def get_task_created_by_id(self, task_id: int):
+        pass

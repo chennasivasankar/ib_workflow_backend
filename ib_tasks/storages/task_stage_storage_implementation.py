@@ -17,6 +17,11 @@ from ib_tasks.models import CurrentTaskStage, Task, TaskStageHistory, \
 
 class TaskStageStorageImplementation(TaskStageStorageInterface):
 
+    # todo: move this method to task storage
+    def get_task_created_by_id(self, task_id: int):
+        created_by_id = Task.objects.get(id=task_id).created_by
+        return created_by_id
+
     def get_stage_details(self, stage_ids: List[int]) -> List[StageMinimalDTO]:
 
         stage_objs = Stage.objects.filter(id__in=stage_ids)

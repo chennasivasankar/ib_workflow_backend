@@ -8,7 +8,8 @@ RESPONSE_200_JSON = """
             "project_id": "string",
             "project_display_id": "string",
             "name": "string",
-            "logo_url": "string"
+            "logo_url": "string",
+            "config": "string"
         }
     ]
 }
