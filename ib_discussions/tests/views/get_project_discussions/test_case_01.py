@@ -22,10 +22,14 @@ class TestCase01GetProjectDiscussionsAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, snapshot, prepare_get_project_discussions_mock_setup,
-                  prepare_discussion_setup):
+                  prepare_discussion_setup, mocker):
         from ib_discussions.constants.enum import EntityType
         from ib_discussions.constants.enum import SortByEnum
         from ib_discussions.constants.enum import FilterByEnum
+        from ib_discussions.tests.common_fixtures.adapters import \
+            validate_user_id_for_given_project
+
+        validate_user_id_for_given_project(mocker)
 
         entity_id = '31be920b-7b4c-49e7-8adb-41a0c18da848'
         entity_type = EntityType.TASK.value

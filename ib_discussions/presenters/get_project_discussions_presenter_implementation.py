@@ -30,6 +30,16 @@ DISCUSSION_SET_NOT_FOUND = (
     "DISCUSSION_SET_NOT_FOUND"
 )
 
+INVALID_PROJECT_ID = (
+    "Please send valid project id",
+    "INVALID_PROJECT_ID"
+)
+
+INVALID_USER_FOR_PROJECT = (
+    "Please send valid user for project",
+    "INVALID_USER_FOR_PROJECT"
+)
+
 
 class GetProjectDiscussionsPresenterImplementation(
     GetProjectDiscussionsPresenterInterface, HTTPResponseMixin
@@ -65,13 +75,23 @@ class GetProjectDiscussionsPresenterImplementation(
             response_dict=response_dict
         )
 
-    def response_for_discussion_set_not_found(self):
+    def response_for_invalid_project_id(self):
         response_dict = {
-            "response": DISCUSSION_SET_NOT_FOUND[0],
+            "response": INVALID_PROJECT_ID[0],
             "http_status_code": StatusCode.NOT_FOUND.value,
-            "res_status": DISCUSSION_SET_NOT_FOUND[1]
+            "res_status": INVALID_PROJECT_ID[1]
         }
         return self.prepare_404_not_found_response(response_dict=response_dict)
+
+    def response_for_invalid_user_for_project(self):
+        response_dict = {
+            "response": INVALID_USER_FOR_PROJECT[0],
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": INVALID_USER_FOR_PROJECT[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict
+        )
 
     def prepare_response_for_project_discussions_details_dto(
             self,

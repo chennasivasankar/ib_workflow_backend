@@ -24,6 +24,8 @@ class GetProjectDiscussionInteractor:
             get_project_discussions_input_dto: GetProjectDiscussionsInputDTO,
             presenter: GetProjectDiscussionsPresenterInterface
     ):
+        from ib_discussions.adapters.iam_service import \
+            InvalidProjectId, InvalidUserForProject
         try:
             response = self._get_project_discussion_response(
                 presenter=presenter,
@@ -35,6 +37,10 @@ class GetProjectDiscussionInteractor:
             response = presenter.response_for_invalid_limit()
         except InvalidUserId:
             response = presenter.response_for_invalid_user_id()
+        except InvalidProjectId:
+            response = presenter.response_for_invalid_project_id()
+        except InvalidUserForProject:
+            response = presenter.response_for_invalid_user_for_project()
         return response
 
     def _get_project_discussion_response(
@@ -58,7 +64,7 @@ class GetProjectDiscussionInteractor:
             self,
             get_project_discussions_input_dto: GetProjectDiscussionsInputDTO
     ):
-        self._validate_limit_and_offset(
+        self._validate_get_project_discussions_input_dto(
             get_project_discussions_input_dto=get_project_discussions_input_dto
         )
         discussion_dtos, discussion_set_id, total_discussions_count = \
@@ -180,7 +186,7 @@ class GetProjectDiscussionInteractor:
         )
         return user_ids
 
-    def _validate_limit_and_offset(
+    def _validate_get_project_discussions_input_dto(
             self,
             get_project_discussions_input_dto: GetProjectDiscussionsInputDTO
     ):
@@ -188,6 +194,13 @@ class GetProjectDiscussionInteractor:
             get_project_discussions_input_dto.offset_and_limit_dto
         self._validate_offset(offset_and_limit_dto.offset)
         self._validate_limit(offset_and_limit_dto.limit)
+
+        from ib_discussions.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        service_adapter.iam_service.validate_user_id_for_given_project(
+            user_id=get_project_discussions_input_dto.user_id,
+            project_id=get_project_discussions_input_dto.project_id
+        )
         return
 
     @staticmethod
