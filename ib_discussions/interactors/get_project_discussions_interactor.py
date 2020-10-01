@@ -1,14 +1,14 @@
-from typing import List
+from typing import List, Optional
 
 from ib_discussions.adapters.auth_service import UserProfileDTO
-from ib_discussions.constants.enum import EntityType
-from ib_discussions.exceptions.custom_exceptions import DiscussionSetNotFound
-from ib_discussions.interactors.dtos.dtos import EntityIdAndEntityTypeDTO, \
-    OffsetAndLimitDTO, FilterByDTO, SortByDTO
+from ib_discussions.exceptions.custom_exceptions import DiscussionSetNotFound, \
+    InvalidOffset, InvalidLimit, InvalidUserId
+from ib_discussions.interactors.dtos.dtos import GetProjectDiscussionsInputDTO, \
+    EntityIdAndEntityTypeDTO
 from ib_discussions.interactors.presenter_interfaces.dtos import \
     DiscussionIdWithEditableStatusDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
-    GetDiscussionsPresenterInterface
+    GetProjectDiscussionsPresenterInterface
 from ib_discussions.interactors.storage_interfaces.dtos import DiscussionDTO
 from ib_discussions.interactors.storage_interfaces.storage_interface import \
     StorageInterface
@@ -20,62 +20,57 @@ class GetProjectDiscussionInteractor:
         self.storage = storage
 
     def get_project_discussions_wrapper(
-            self, entity_id_and_entity_type_dto: EntityIdAndEntityTypeDTO,
-            offset_and_limit_dto: OffsetAndLimitDTO, user_id: str,
-            filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO,
-            presenter: GetDiscussionsPresenterInterface, project_id: str
+            self,
+            get_project_discussions_input_dto: GetProjectDiscussionsInputDTO,
+            presenter: GetProjectDiscussionsPresenterInterface
     ):
-        response = self._get_project_discussion_response(
-            entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
-            offset_and_limit_dto=offset_and_limit_dto, presenter=presenter,
-            filter_by_dto=filter_by_dto, sort_by_dto=sort_by_dto,
-            user_id=user_id, project_id=project_id
-        )
+        from ib_discussions.adapters.iam_service import \
+            InvalidProjectId, InvalidUserForProject
+        try:
+            response = self._get_project_discussion_response(
+                presenter=presenter,
+                get_project_discussions_input_dto=get_project_discussions_input_dto
+            )
+        except InvalidOffset:
+            response = presenter.response_for_invalid_offset()
+        except InvalidLimit:
+            response = presenter.response_for_invalid_limit()
+        except InvalidUserId:
+            response = presenter.response_for_invalid_user_id()
+        except InvalidProjectId:
+            response = presenter.response_for_invalid_project_id()
+        except InvalidUserForProject:
+            response = presenter.response_for_invalid_user_for_project()
         return response
 
     def _get_project_discussion_response(
-            self, entity_id_and_entity_type_dto: EntityIdAndEntityTypeDTO,
-            offset_and_limit_dto: OffsetAndLimitDTO, user_id: str,
-            filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO,
-            presenter: GetDiscussionsPresenterInterface, project_id: str
+            self,
+            get_project_discussions_input_dto: GetProjectDiscussionsInputDTO,
+            presenter: GetProjectDiscussionsPresenterInterface
     ):
         discussions_with_users_and_discussion_count_dto, \
-        discussion_id_with_editable_status_dtos, discussion_id_with_comments_count_dtos \
-            = self.get_discussions_details_dto(
-            entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
-            offset_and_limit_dto=offset_and_limit_dto, user_id=user_id,
-            filter_by_dto=filter_by_dto, sort_by_dto=sort_by_dto,
-            project_id=project_id
-        )
-        return presenter.prepare_response_for_discussions_details_dto(
+        discussion_id_with_editable_status_dtos, discussion_id_with_comments_count_dtos = \
+            self.get_project_discussions_details_dto(
+                get_project_discussions_input_dto=get_project_discussions_input_dto
+            )
+        return presenter.prepare_response_for_project_discussions_details_dto(
             discussions_with_users_and_discussion_count_dto=discussions_with_users_and_discussion_count_dto,
             discussion_id_with_editable_status_dtos \
                 =discussion_id_with_editable_status_dtos,
             discussion_id_with_comments_count_dtos=discussion_id_with_comments_count_dtos
         )
 
-    def get_discussions_details_dto(
-            self, entity_id_and_entity_type_dto: EntityIdAndEntityTypeDTO,
-            offset_and_limit_dto: OffsetAndLimitDTO, user_id: str,
-            filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO, project_id: str
+    def get_project_discussions_details_dto(
+            self,
+            get_project_discussions_input_dto: GetProjectDiscussionsInputDTO
     ):
-        discussion_set_id = self._get_discussion_set_id(
-            entity_id=entity_id_and_entity_type_dto.entity_id,
-            entity_type=entity_id_and_entity_type_dto.entity_type
+        self._validate_get_project_discussions_input_dto(
+            get_project_discussions_input_dto=get_project_discussions_input_dto
         )
-        user_ids = self._get_subordinate_user_ids(
-            project_id=project_id, user_id=user_id
-        )
-        discussion_dtos = self.storage.get_project_discussion_dtos(
-            discussion_set_id=discussion_set_id,
-            offset_and_limit_dto=offset_and_limit_dto,
-            filter_by_dto=filter_by_dto, sort_by_dto=sort_by_dto,
-            user_ids=user_ids
-        )
-        total_discussions_count = self.storage.get_total_project_discussion_count(
-            discussion_set_id=discussion_set_id, filter_by_dto=filter_by_dto,
-            user_ids=user_ids
-        )
+        discussion_dtos, discussion_set_id, total_discussions_count = \
+            self._get_project_discussions_details(
+                get_project_discussions_input_dto
+            )
         user_profile_dtos = self._get_user_profile_dtos(
             discussion_dtos=discussion_dtos
         )
@@ -85,7 +80,8 @@ class GetProjectDiscussionInteractor:
             )
         discussion_id_with_editable_status_dtos = \
             self._prepare_discussion_id_with_editable_status_dtos(
-                discussion_dtos=discussion_dtos, user_id=user_id
+                discussion_dtos=discussion_dtos,
+                user_id=get_project_discussions_input_dto.user_id
             )
         from ib_discussions.interactors.presenter_interfaces.dtos import \
             DiscussionsWithUsersAndDiscussionCountDTO
@@ -97,9 +93,34 @@ class GetProjectDiscussionInteractor:
         return discussions_with_users_and_discussion_count_dto, discussion_id_with_editable_status_dtos, \
                discussion_id_with_comments_count_dtos
 
+    def _get_project_discussions_details(
+            self,
+            get_project_discussions_input_dto: GetProjectDiscussionsInputDTO
+    ):
+        discussion_set_id = self._get_discussion_set_id(
+            entity_id_and_entity_type_dto=get_project_discussions_input_dto.entity_id_and_entity_type_dto
+        )
+        user_ids = self._get_subordinate_user_ids(
+            project_id=get_project_discussions_input_dto.project_id,
+            user_id=get_project_discussions_input_dto.user_id
+        )
+        discussion_dtos = self.storage.get_project_discussion_dtos(
+            discussion_set_id=discussion_set_id,
+            get_project_discussions_input_dto=get_project_discussions_input_dto,
+            user_ids=user_ids
+        )
+        total_discussions_count = self.storage.get_total_project_discussion_count(
+            discussion_set_id=discussion_set_id,
+            filter_by_dto=get_project_discussions_input_dto.filter_by_dto,
+            user_ids=user_ids
+        )
+        return discussion_dtos, discussion_set_id, total_discussions_count
+
     def _get_discussion_set_id(
-            self, entity_id: str, entity_type: EntityType
+            self, entity_id_and_entity_type_dto: EntityIdAndEntityTypeDTO
     ) -> str:
+        entity_id = entity_id_and_entity_type_dto.entity_id
+        entity_type = entity_id_and_entity_type_dto.entity_type
         try:
             discussion_set_id = self.storage.get_discussion_set_id_if_exists(
                 entity_id=entity_id, entity_type=entity_type
@@ -164,3 +185,34 @@ class GetProjectDiscussionInteractor:
             project_id=project_id, user_id=user_id
         )
         return user_ids
+
+    def _validate_get_project_discussions_input_dto(
+            self,
+            get_project_discussions_input_dto: GetProjectDiscussionsInputDTO
+    ):
+        offset_and_limit_dto = \
+            get_project_discussions_input_dto.offset_and_limit_dto
+        self._validate_offset(offset_and_limit_dto.offset)
+        self._validate_limit(offset_and_limit_dto.limit)
+
+        from ib_discussions.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        service_adapter.iam_service.validate_user_id_for_given_project(
+            user_id=get_project_discussions_input_dto.user_id,
+            project_id=get_project_discussions_input_dto.project_id
+        )
+        return
+
+    @staticmethod
+    def _validate_offset(offset: int) -> Optional[InvalidOffset]:
+        is_invalid_offset = offset < 0
+        if is_invalid_offset:
+            raise InvalidOffset
+        return
+
+    @staticmethod
+    def _validate_limit(limit: int) -> Optional[InvalidLimit]:
+        is_invalid_limit = limit < 0
+        if is_invalid_limit:
+            raise InvalidLimit
+        return

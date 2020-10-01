@@ -7,6 +7,7 @@ class EntityType(BaseEnumClass, Enum):
     TASK = "TASK"
     COLUMN = "COLUMN"
     BOARD = "BOARD"
+    PROJECT = "PROJECT"
 
 
 class StatusCode(Enum):

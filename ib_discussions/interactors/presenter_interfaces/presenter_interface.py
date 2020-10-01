@@ -230,3 +230,37 @@ class DeleteCommentPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def prepare_response_for_delete_comment(self):
         pass
+
+
+class GetProjectDiscussionsPresenterInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def response_for_invalid_offset(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_invalid_limit(self):
+        pass
+
+    @abc.abstractmethod
+    def prepare_response_for_project_discussions_details_dto(
+            self,
+            discussions_with_users_and_discussion_count_dto: DiscussionsWithUsersAndDiscussionCountDTO,
+            discussion_id_with_editable_status_dtos: List[
+                DiscussionIdWithEditableStatusDTO],
+            discussion_id_with_comments_count_dtos: List[
+                DiscussionIdWithCommentsCountDTO]
+    ):
+        pass
+
+    @abc.abstractmethod
+    def response_for_invalid_user_id(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_invalid_project_id(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_invalid_user_for_project(self):
+        pass

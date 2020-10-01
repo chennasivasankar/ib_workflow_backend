@@ -4,8 +4,7 @@ from ib_discussions.adapters.auth_service import UserProfileDTO
 from ib_discussions.constants.enum import EntityType
 from ib_discussions.exceptions.custom_exceptions import InvalidOffset, \
     InvalidLimit, InvalidUserId, DiscussionSetNotFound
-from ib_discussions.interactors.dtos.dtos import OffsetAndLimitDTO, \
-    FilterByDTO, SortByDTO, EntityIdAndEntityTypeDTO
+from ib_discussions.interactors.dtos.dtos import GetDiscussionsInputDTO
 from ib_discussions.interactors.presenter_interfaces.dtos import \
     DiscussionIdWithEditableStatusDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
@@ -20,17 +19,14 @@ class GetDiscussionInteractor:
         self.storage = storage
 
     def get_discussions_wrapper(
-            self, entity_id_and_entity_type_dto: EntityIdAndEntityTypeDTO,
-            offset_and_limit_dto: OffsetAndLimitDTO, user_id: str,
-            filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO,
+            self,
+            get_discussions_input_dto: GetDiscussionsInputDTO,
             presenter: GetDiscussionsPresenterInterface
     ):
         try:
             response = self._get_discussions_response(
-                entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
-                offset_and_limit_dto=offset_and_limit_dto, presenter=presenter,
-                filter_by_dto=filter_by_dto, sort_by_dto=sort_by_dto,
-                user_id=user_id
+                get_discussions_input_dto=get_discussions_input_dto,
+                presenter=presenter,
             )
         except InvalidOffset:
             response = presenter.response_for_invalid_offset()
@@ -41,18 +37,14 @@ class GetDiscussionInteractor:
         return response
 
     def _get_discussions_response(
-            self, entity_id_and_entity_type_dto: EntityIdAndEntityTypeDTO,
-            offset_and_limit_dto: OffsetAndLimitDTO, user_id: str,
-            filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO,
+            self, get_discussions_input_dto: GetDiscussionsInputDTO,
             presenter: GetDiscussionsPresenterInterface
     ):
         discussions_with_users_and_discussion_count_dto, \
-        discussion_id_with_editable_status_dtos, discussion_id_with_comments_count_dtos \
-            = self.get_discussions_details_dto(
-            entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
-            offset_and_limit_dto=offset_and_limit_dto, user_id=user_id,
-            filter_by_dto=filter_by_dto, sort_by_dto=sort_by_dto
-        )
+        discussion_id_with_editable_status_dtos, discussion_id_with_comments_count_dtos = \
+            self.get_discussions_details_dto(
+                get_discussions_input_dto=get_discussions_input_dto
+            )
         return presenter.prepare_response_for_discussions_details_dto(
             discussions_with_users_and_discussion_count_dto=discussions_with_users_and_discussion_count_dto,
             discussion_id_with_editable_status_dtos \
@@ -61,24 +53,15 @@ class GetDiscussionInteractor:
         )
 
     def get_discussions_details_dto(
-            self, entity_id_and_entity_type_dto: EntityIdAndEntityTypeDTO,
-            offset_and_limit_dto: OffsetAndLimitDTO, user_id: str,
-            filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO,
+            self, get_discussions_input_dto: GetDiscussionsInputDTO
     ):
-        self._validate_limit_offset_entity_id_and_entity_type(
-            offset_and_limit_dto)
-        discussion_set_id = self._get_discussion_set_id(
-            entity_id=entity_id_and_entity_type_dto.entity_id,
-            entity_type=entity_id_and_entity_type_dto.entity_type
+        self._validate_limit_and_offset(
+            get_discussions_input_dto=get_discussions_input_dto
         )
-        discussion_dtos = self.storage.get_discussion_dtos(
-            discussion_set_id=discussion_set_id,
-            offset_and_limit_dto=offset_and_limit_dto,
-            filter_by_dto=filter_by_dto, sort_by_dto=sort_by_dto
-        )
-        total_discussions_count = self.storage.get_total_discussion_count(
-            discussion_set_id=discussion_set_id, filter_by_dto=filter_by_dto
-        )
+        discussion_dtos, discussion_set_id, total_discussions_count = \
+            self._get_discussion_details(
+                get_discussions_input_dto=get_discussions_input_dto
+            )
         user_profile_dtos = self._get_user_profile_dtos(
             discussion_dtos=discussion_dtos
         )
@@ -88,7 +71,8 @@ class GetDiscussionInteractor:
             )
         discussion_id_with_editable_status_dtos = \
             self._prepare_discussion_id_with_editable_status_dtos(
-                discussion_dtos=discussion_dtos, user_id=user_id
+                discussion_dtos=discussion_dtos,
+                user_id=get_discussions_input_dto.user_id
             )
         from ib_discussions.interactors.presenter_interfaces.dtos import \
             DiscussionsWithUsersAndDiscussionCountDTO
@@ -100,9 +84,28 @@ class GetDiscussionInteractor:
         return discussions_with_users_and_discussion_count_dto, discussion_id_with_editable_status_dtos, \
                discussion_id_with_comments_count_dtos
 
-    def _validate_limit_offset_entity_id_and_entity_type(
-            self, offset_and_limit_dto: OffsetAndLimitDTO
+    def _get_discussion_details(
+            self, get_discussions_input_dto: GetDiscussionsInputDTO):
+        entity_id_and_entity_type_dto = \
+            get_discussions_input_dto.entity_id_and_entity_type_dto
+        discussion_set_id = self._get_discussion_set_id(
+            entity_id=entity_id_and_entity_type_dto.entity_id,
+            entity_type=entity_id_and_entity_type_dto.entity_type
+        )
+        discussion_dtos = self.storage.get_discussion_dtos(
+            discussion_set_id=discussion_set_id,
+            get_discussions_input_dto=get_discussions_input_dto
+        )
+        total_discussions_count = self.storage.get_total_discussion_count(
+            discussion_set_id=discussion_set_id,
+            filter_by_dto=get_discussions_input_dto.filter_by_dto
+        )
+        return discussion_dtos, discussion_set_id, total_discussions_count
+
+    def _validate_limit_and_offset(
+            self, get_discussions_input_dto: GetDiscussionsInputDTO
     ):
+        offset_and_limit_dto = get_discussions_input_dto.offset_and_limit_dto
         self._validate_offset(offset_and_limit_dto.offset)
         self._validate_limit(offset_and_limit_dto.limit)
         return

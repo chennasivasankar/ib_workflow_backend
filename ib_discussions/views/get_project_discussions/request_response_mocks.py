@@ -41,3 +41,11 @@ RESPONSE_400_JSON = """
 }
 """
 
+RESPONSE_404_JSON = """
+{
+    "response": "string",
+    "http_status_code": 1,
+    "res_status": "INVALID_PROJECT_ID"
+}
+"""
+
