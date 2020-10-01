@@ -272,6 +272,7 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
         start_date, due_date = self._get_start_date_and_due_date(
             task_base_details_dto)
         task_dict = {
+            "template_id": task_base_details_dto.template_id,
             "task_id": task_base_details_dto.task_display_id,
             "title": task_base_details_dto.title,
             "start_date": start_date,
