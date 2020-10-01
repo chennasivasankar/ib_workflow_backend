@@ -283,9 +283,9 @@ class ActionsStorageImplementation(ActionStorageInterface):
     def get_actions_details(self,
                             action_ids: List[int]) -> \
             List[StageActionDetailsDTO]:
-        action_objs = StageAction.objects\
-                       .filter(id__in=action_ids)\
-                       .annotate(normal_stage_id=F('stage__stage_id'))
+        action_objs = StageAction.objects \
+            .filter(id__in=action_ids) \
+            .annotate(normal_stage_id=F('stage__stage_id'))
         action_dtos = self._convert_action_objs_to_dtos(action_objs)
         return action_dtos
 
@@ -321,8 +321,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
             -> List[int]:
         db_stage_ids = \
             list(StageAction.objects.filter(
-                    stage_id__in=db_stage_ids).values_list(
-                    'stage_id', flat=True).distinct())
+                stage_id__in=db_stage_ids).values_list(
+                'stage_id', flat=True).distinct())
         return db_stage_ids
 
     def get_database_stage_actions(self) -> List[StageActionLogicDTO]:
