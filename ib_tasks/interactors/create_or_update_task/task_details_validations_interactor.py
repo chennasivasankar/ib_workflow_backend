@@ -29,7 +29,8 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import TaskTemplateStorageInterface
-from ib_tasks.interactors.task_dtos import CreateTaskDTO, GoFFieldsDTO
+from ib_tasks.interactors.task_dtos import CreateTaskDTO, GoFFieldsDTO, \
+    FieldValuesDTO
 
 
 @dataclass
@@ -61,6 +62,10 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
         task_template_id = task_dto.basic_task_details_dto.task_template_id
 
         self._validate_task_basic_details(task_dto, action_type)
+        gof_field_dtos = \
+            self._filter_field_values_dtos_by_excluding_emtpy_response(
+                task_dto.gof_fields_dtos)
+        task_dto.gof_fields_dtos = gof_field_dtos
         self._validate_gofs_details(task_dto, action_type, stage_id)
         action_type_is_not_no_validations = \
             action_type != ActionTypes.NO_VALIDATIONS.value
@@ -70,6 +75,26 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
                 project_id=task_dto.basic_task_details_dto.project_id,
                 gof_fields_dtos=task_dto.gof_fields_dtos,
                 stage_id=stage_id, task_template_id=task_template_id)
+
+    def _filter_field_values_dtos_by_excluding_emtpy_response(
+            self, gof_fields_dtos: List[GoFFieldsDTO]
+    ) -> List[GoFFieldsDTO]:
+        for gof_fields_dto in gof_fields_dtos:
+            gof_fields_dto.field_values_dtos = self._exclude_empty_responses(
+                gof_fields_dto.field_values_dtos)
+        return gof_fields_dtos
+
+    @staticmethod
+    def _exclude_empty_responses(
+            field_values_dtos: List[FieldValuesDTO]) -> List[FieldValuesDTO]:
+        index = 0
+        while index < len(field_values_dtos):
+            response_is_emtpy = \
+                not field_values_dtos[index].field_response.strip()
+            if response_is_emtpy:
+                del field_values_dtos[index]
+            index += 1
+        return field_values_dtos
 
     def _validate_action_id_and_get_action_type(
             self, action_id: int

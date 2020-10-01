@@ -159,3 +159,9 @@ class UserDidNotFillRequiredFields(Exception):
     def __init__(
             self, unfilled_field_dtos: List[FieldWithGoFDisplayNameDTO]):
         self.unfilled_field_dtos = unfilled_field_dtos
+
+
+class FieldsFilledAlreadyBySomeone(Exception):
+
+    def __init__(self, field_display_names: List[str]):
+        self.field_display_names = field_display_names

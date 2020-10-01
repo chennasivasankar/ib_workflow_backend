@@ -9,7 +9,7 @@ class PopulateFields:
     def create_or_update_fields(self, spread_sheet_name: str):
         from ib_tasks.constants.constants import FIELD_SUB_SHEET_TITLE
 
-        from ib_tasks.interactors.create_or_update_fields\
+        from ib_tasks.interactors.create_or_update_fields \
             .create_or_update_fields_interactor \
             import CreateOrUpdateFieldsInteractor
         from ib_tasks.utils.get_google_sheet import get_google_sheet
@@ -42,6 +42,11 @@ class PopulateFields:
             allowed_formats = field_record["Allowed Formats"].strip()
             validation_regex = field_record["Validation - RegEx"].strip()
             order = field_record["Order"]
+            is_unique = field_record["unique"]
+            is_field_unique = False
+            unique_is_yes = is_unique.strip() == "Yes"
+            if unique_is_yes:
+                is_field_unique = True
 
             required = self.get_required_bool_value_based_on_given_input(
                 required)
@@ -73,7 +78,8 @@ class PopulateFields:
                 error_message=error_message,
                 allowed_formats=allowed_formats,
                 validation_regex=validation_regex,
-                order=int(order)
+                order=int(order),
+                is_field_unique=is_field_unique
             )
             print(field_dto)
             field_dtos.append(field_dto)

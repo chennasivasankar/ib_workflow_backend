@@ -12,6 +12,8 @@ from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionWithStageIdDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldWithGoFDisplayNameDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO, TaskBaseDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
@@ -24,7 +26,8 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
     SubTasksCountDTO, SubTasksIdsDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
     TaskStageAssigneeTeamIdDTO
-from ib_tasks.interactors.storage_interfaces.task_templates_dtos import TaskTemplateMapDTO
+from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
+    TaskTemplateMapDTO
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, \
     GetTaskDetailsDTO, \
     TaskDelayParametersDTO, TaskDTO
@@ -240,7 +243,8 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_stage_assignee_id_dtos(
-            self, task_id: int, stage_ids: List[str]) -> List[TaskStageAssigneeTeamIdDTO]:
+            self, task_id: int, stage_ids: List[str]) -> List[
+        TaskStageAssigneeTeamIdDTO]:
         pass
 
     @abc.abstractmethod
@@ -255,4 +259,10 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_task_base_details_dto(self, task_id: int) -> TaskDTO:
+        pass
+
+    @abc.abstractmethod
+    def get_filled_fields_for_given_project_template(
+            self, project_id: str, task_template_id: str,
+            unique_field_ids: List[str]) -> List[FieldWithGoFDisplayNameDTO]:
         pass
