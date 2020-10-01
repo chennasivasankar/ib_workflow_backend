@@ -3,6 +3,9 @@ import json
 
 import pytest
 
+from ib_tasks.tests.factories.interactor_dtos import \
+    TaskCurrentStageDetailsDTOFactory
+
 
 class TestActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation:
     @pytest.fixture
@@ -298,14 +301,12 @@ class TestActOnTaskAndUpdateTaskStageAssigneesPresenterImplementation:
         TeamDetailsDTOFactory.reset_sequence()
         GetTaskStageCompleteDetailsDTOFactory.reset_sequence()
         TaskBaseDetailsDTOFactory.reset_sequence()
+        TaskCurrentStageDetailsDTOFactory.reset_sequence(1)
 
     def test_get_response_for_user_action_on_task(
             self, presenter, snapshot, task_complete_details, reset_sequence
     ):
         # Arrange
-        from ib_tasks.tests.factories.interactor_dtos import \
-            TaskCurrentStageDetailsDTOFactory
-        TaskCurrentStageDetailsDTOFactory.reset_sequence(1)
         task_current_stage_details_dto = TaskCurrentStageDetailsDTOFactory()
         from ib_tasks.tests.factories.presenter_dtos import \
             AllTasksOverviewDetailsDTOFactory
