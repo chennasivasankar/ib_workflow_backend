@@ -7,7 +7,7 @@ from ib_tasks.exceptions.datetime_custom_exceptions import \
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidDateFormat
 from ib_tasks.exceptions.fields_custom_exceptions import \
-    UserDidNotFillRequiredFields
+    UserDidNotFillRequiredFields, FieldsFilledAlreadyBySomeone
 from ib_tasks.exceptions.gofs_custom_exceptions import \
     InvalidStagePermittedGoFs
 from ib_tasks.exceptions.stage_custom_exceptions import \
@@ -58,6 +58,10 @@ class UpdateTaskPresenterImplementation(
     UpdateTaskPresenterInterface, HTTPResponseMixin,
     GoFsFieldsValidationPresenterMixin, TaskOverviewDetailsPresenterMixin
 ):
+    def raise_fields_already_filled_by_someone(
+            self, err: FieldsFilledAlreadyBySomeone):
+        return self.raise_fields_already_filled_by_someone_exception(err)
+
     def raise_user_did_not_fill_required_fields(
             self, err: UserDidNotFillRequiredFields):
         from ib_tasks.constants.exception_messages import \

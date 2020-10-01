@@ -376,7 +376,7 @@ class GoFsFieldsValidationPresenterMixin:
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_fields_already_filled_by_someone(
+    def raise_fields_already_filled_by_someone_exception(
             self, err: FieldsFilledAlreadyBySomeone):
         from ib_tasks.constants.exception_messages import \
             FIELDS_ALREADY_FILLED_BY_SOMEONE

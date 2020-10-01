@@ -14,7 +14,7 @@ from ib_tasks.exceptions.datetime_custom_exceptions import \
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidDateFormat
 from ib_tasks.exceptions.fields_custom_exceptions import \
-    UserDidNotFillRequiredFields
+    UserDidNotFillRequiredFields, FieldsFilledAlreadyBySomeone
 from ib_tasks.exceptions.gofs_custom_exceptions import \
     UserDidNotFillRequiredGoFs, InvalidStagePermittedGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
@@ -47,6 +47,10 @@ class SaveAndActOnATaskPresenterImplementation(
     SaveAndActOnATaskPresenterInterface, HTTPResponseMixin,
     GoFsFieldsValidationPresenterMixin, TaskOverviewDetailsPresenterMixin
 ):
+
+    def raise_fields_already_filled_by_someone(
+            self, err: FieldsFilledAlreadyBySomeone):
+        return self.raise_fields_already_filled_by_someone_exception(err)
 
     def raise_invalid_gof_ids(self, err):
         return self.raise_invalid_gof_ids_exception(err)

@@ -4,7 +4,7 @@ from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidDateFormat
 from ib_tasks.exceptions.fields_custom_exceptions import \
-    UserDidNotFillRequiredFields
+    UserDidNotFillRequiredFields, FieldsFilledAlreadyBySomeone
 from ib_tasks.exceptions.gofs_custom_exceptions import \
     DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId, \
@@ -23,6 +23,10 @@ class CreateOrUpdateTransitionChecklistPresenterImplementation(
     CreateOrUpdateTransitionChecklistPresenterInterface,
     HTTPResponseMixin, GoFsFieldsValidationPresenterMixin
 ):
+    def raise_fields_already_filled_by_someone(
+            self, err: FieldsFilledAlreadyBySomeone):
+        return self.raise_fields_already_filled_by_someone_exception(err)
+
     def raise_invalid_gof_ids(self, err):
         return self.raise_invalid_gof_ids_exception(err)
 

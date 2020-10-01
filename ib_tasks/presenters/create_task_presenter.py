@@ -75,7 +75,7 @@ class CreateTaskPresenterImplementation(
 
     def raise_fields_already_filled_by_someone(
             self, err: FieldsFilledAlreadyBySomeone):
-        return self.raise_fields_already_filled_by_someone()
+        return self.raise_fields_already_filled_by_someone_exception(err)
 
     def raise_invalid_gof_ids(self, err):
         return self.raise_invalid_gof_ids_exception(err)
