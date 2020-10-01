@@ -119,10 +119,10 @@ def populate_data(spread_sheet_name: str):
         spread_sheet_name=spread_sheet_name
     )
 
-    # stage_flows = GetSheetDataForStageFlows()
-    # stage_flows.get_data_from_stage_flows_sub_sheet(
-    #     spread_sheet_name=spread_sheet_name
-    # )
+    stage_flows = GetSheetDataForStageFlows()
+    stage_flows.get_data_from_stage_flows_sub_sheet(
+        spread_sheet_name=spread_sheet_name
+    )
 
     stage_gofs = PopulateStageGoFs()
     stage_gofs.populate_stage_gofs(spread_sheet_name=spread_sheet_name)
