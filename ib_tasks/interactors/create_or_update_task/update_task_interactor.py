@@ -223,14 +223,17 @@ class UpdateTaskInteractor(
     def update_task(
             self, task_dto: UpdateTaskDTO) -> AllTasksOverviewDetailsDTO:
         task_id = task_dto.task_basic_details.task_id
-        self._validate_task_details(task_dto)
+        project_id = self._validate_task_details_and_get_project_id(task_dto)
         self._update_task_details(task_dto)
+        self._update_stage_assignee_only_if_assignee_restriction_is_false(
+            task_id, task_dto.stage_assignee, project_id)
         self._update_stage_assignee(task_id, task_dto.stage_assignee)
         all_tasks_overview_details_dto = self._get_task_overview_details(
             task_id, task_dto.task_basic_details.created_by_id)
         return all_tasks_overview_details_dto
 
-    def _validate_task_details(self, task_dto: UpdateTaskDTO):
+    def _validate_task_details_and_get_project_id(
+            self, task_dto: UpdateTaskDTO) -> str:
         task_id = task_dto.task_basic_details.task_id
         self._validate_task_id(task_id)
         task_template_id = \
@@ -269,6 +272,7 @@ class UpdateTaskInteractor(
                 gof_fields_dtos=task_dto.gof_fields_dtos,
                 stage_id=task_dto.stage_assignee.stage_id,
                 task_template_id=task_template_id)
+        return project_id
 
     def _update_task_details(self, task_dto: UpdateTaskDTO):
         task_crud_interactor = TaskCrudOperationsInteractor(
@@ -297,6 +301,22 @@ class UpdateTaskInteractor(
             self._update_task_gofs_and_fields(
                 gofs_for_updation, gof_fields_dtos,
                 existing_fields, task_crud_interactor)
+
+    def _update_stage_assignee_only_if_assignee_restriction_is_false(
+            self, task_id: int, stage_assignee: StageIdWithAssigneeDTO,
+            project_id: str):
+        from ib_tasks.adapters.service_adapter import get_service_adapter
+        project_service = get_service_adapter().project_service
+        projects_config = project_service.get_projects_config()
+        project_config = projects_config.get(project_id)
+        given_project_has_config = project_config is not None
+
+        if given_project_has_config:
+            assignee_restriction_is_true = project_config.get(
+                "restrict_assignee_to_user")
+            if assignee_restriction_is_true:
+                return
+        self._update_stage_assignee(task_id, stage_assignee)
 
     def _update_stage_assignee(
             self, task_id: int, stage_assignee: StageIdWithAssigneeDTO):

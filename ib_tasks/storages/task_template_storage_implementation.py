@@ -12,7 +12,8 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TemplateDTO, ProjectTemplateDTO, ProjectIdWithTaskTemplateIdDTO
+    TemplateDTO, ProjectTemplateDTO, ProjectIdWithTaskTemplateIdDTO, \
+    TaskTemplateMandatoryFieldsDTO
 from ib_tasks.models import TaskTemplate, TaskTemplateGoFs, ProjectTaskTemplate
 
 
@@ -409,3 +410,45 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
             for common_template in common_templates
         ]
 
+    def get_template_mandatory_fields_dtos(
+            self, template_ids: List[str]
+    ) -> List[TaskTemplateMandatoryFieldsDTO]:
+        from ib_tasks.models.task_template_mandatory_fields import \
+            TaskTemplateMandatoryFields
+        task_template_mandatory_fields_objs = \
+            TaskTemplateMandatoryFields.objects.filter(
+                task_template_id__in=template_ids)
+        task_template_mandatory_fields_dtos = \
+            self._convert_task_template_mandatory_fields_to_dtos(
+                task_template_mandatory_fields_objs=
+                task_template_mandatory_fields_objs)
+        return task_template_mandatory_fields_dtos
+
+    def create_template_mandatory_fields_with_default_values(
+            self, template_ids: List[str]):
+        from ib_tasks.models.task_template_mandatory_fields import \
+            TaskTemplateMandatoryFields
+        task_template_mandatory_field_objs = [
+            TaskTemplateMandatoryFields(task_template_id=template_id)
+            for template_id in template_ids
+        ]
+        TaskTemplateMandatoryFields.objects.bulk_create(
+            task_template_mandatory_field_objs)
+
+    @staticmethod
+    def _convert_task_template_mandatory_fields_to_dtos(
+            task_template_mandatory_fields_objs
+    ) -> List[TaskTemplateMandatoryFieldsDTO]:
+        task_template_mandatory_fields_dtos = [
+            TaskTemplateMandatoryFieldsDTO(
+                template_id=
+                task_template_mandatory_fields_obj.task_template_id,
+                title_display_name=
+                task_template_mandatory_fields_obj.title_display_name,
+                title_placeholder_text=
+                task_template_mandatory_fields_obj.title_placeholder_text
+            )
+            for task_template_mandatory_fields_obj in
+            task_template_mandatory_fields_objs
+        ]
+        return task_template_mandatory_fields_dtos
