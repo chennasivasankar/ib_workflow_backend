@@ -411,6 +411,7 @@ snapshots['TestSaveAndActOnATaskPresenterImplementation.test_get_save_and_act_on
         'task_id': 'iBWF-1',
         'task_overview_fields': [
         ],
+        'template_id': 'template_0',
         'title': 'title_0'
     },
     'task_id': 'task_display_0'
