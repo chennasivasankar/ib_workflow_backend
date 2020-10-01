@@ -7,7 +7,8 @@ from ib_iam.exceptions.custom_exceptions import (
     ProjectNameAlreadyExists, ProjectDisplayIdAlreadyExists, DuplicateTeamIds,
     TeamIdsAreInvalid, UserIsNotAdmin, InvalidProjectId, RoleIdsAreDuplicated,
     RoleIdsAreInvalid, InvalidUserIds, InvalidUserId, InvalidProjectIds,
-    DuplicateRoleNamesExists, RoleNamesAlreadyExists, InvalidTeamId
+    DuplicateRoleNamesExists, RoleNamesAlreadyExists, InvalidTeamId,
+    InvalidProjectIdException
 )
 from ib_iam.interactors.dtos.dtos import (
     ProjectWithTeamIdsAndRolesDTO, CompleteProjectDetailsDTO,
@@ -707,8 +708,7 @@ class ProjectInteractor(ValidationMixin):
         is_invalid_project = not is_valid_project
 
         if is_invalid_project:
-            # ToDo pass project id in exception
-            raise InvalidProjectId
+            raise InvalidProjectIdException(project_id=project_id)
         project_prefix = \
             self.project_storage.get_project_prefix(project_id=project_id)
 

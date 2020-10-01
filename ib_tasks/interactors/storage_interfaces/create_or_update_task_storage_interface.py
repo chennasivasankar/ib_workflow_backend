@@ -53,7 +53,9 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_task(self, task_details_dto: BasicTaskDetailsDTO) -> int:
+    def create_task(
+            self, task_details_dto: BasicTaskDetailsDTO, project_prefix: str
+    ) -> int:
         pass
 
     @abc.abstractmethod

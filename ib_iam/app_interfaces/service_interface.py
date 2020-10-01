@@ -586,11 +586,12 @@ class ServiceInterface:
             team_storage=team_storage
         )
 
-        from ib_iam.exceptions.custom_exceptions import InvalidProjectId
+        from ib_iam.exceptions.custom_exceptions import \
+            InvalidProjectIdException
         try:
             project_prefix = \
                 interactor.get_project_prefix(project_id=project_id)
-        except InvalidProjectId as err:
+        except InvalidProjectIdException as err:
             raise err
 
         return project_prefix
