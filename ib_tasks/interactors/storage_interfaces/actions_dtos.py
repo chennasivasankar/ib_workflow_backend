@@ -43,4 +43,5 @@ class ActionDetailsDTO:
 @dataclass
 class StageActionDetailsDTO(ActionDetailsDTO):
     action_type: Optional[ActionTypes]
+    order: int
     transition_template_id: Optional[str]

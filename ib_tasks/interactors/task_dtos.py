@@ -213,7 +213,15 @@ class GetTaskRPsParametersDTO:
     user_id: str
     stage_id: int
 
+
 @dataclass
 class TaskWithCompletedSubTasksCountDTO:
     task_id: int
     completed_sub_tasks_count: int
+
+
+@dataclass
+class TaskDTO:
+    start_date: Optional[datetime.datetime]
+    due_date: Optional[datetime.datetime]
+    priority: Optional[Priority]

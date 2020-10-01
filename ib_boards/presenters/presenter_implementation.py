@@ -1,4 +1,3 @@
-from abc import ABC
 from datetime import datetime
 from typing import List
 
@@ -10,16 +9,17 @@ from ib_boards.constants.exception_messages import (
     INVALID_BOARD_ID, INVALID_OFFSET_VALUE, INVALID_LIMIT_VALUE,
     USER_DONOT_HAVE_ACCESS, INVALID_PROJECT_ID, USER_IS_NOT_IN_PROJECT)
 from ib_boards.interactors.dtos import ColumnTasksDTO, FieldDTO, ActionDTO, \
-    StarredAndOtherBoardsDTO, TaskStageDTO, StageAssigneesDTO, AssigneesDTO, \
+    StarredAndOtherBoardsDTO, StageAssigneesDTO, AssigneesDTO, \
     TaskBaseAndCompleteDetailsDTO, TaskCompleteDetailsWithAllFieldsDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetBoardsPresenterInterface, \
-    GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO, TaskDisplayIdDTO, \
-    CompleteTasksDetailsDTO, GetColumnTasksListViewPresenterInterface, \
+    GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO, \
+    GetColumnTasksListViewPresenterInterface, \
     FieldsDisplayStatusPresenterInterface, FieldsDisplayOrderPresenterInterface
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
-from ib_boards.interactors.storage_interfaces.dtos import ColumnCompleteDetails, \
+from ib_boards.interactors.storage_interfaces.dtos import \
+    ColumnCompleteDetails, \
     AllFieldsDTO
 from ib_boards.interactors.storage_interfaces.dtos import (
     TaskFieldsDTO, TaskActionsDTO)
@@ -254,6 +254,7 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
             actions_list = self._convert_action_dtos_to_dict(
                 action_dtos=tasks_actions_map[task_id]
             )
+
             task_dict = self._get_task_details_dict(
                 actions_list=actions_list,
                 assignees_dtos_dict=assignees_dtos_dict,
@@ -323,6 +324,7 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
     def _convert_action_dtos_to_dict(action_dtos: List[ActionDTO]):
         task_actions_list = []
         action_ids = []
+        action_dtos.sort(key=lambda x: [x.order])
         for action_dto in action_dtos:
             if action_dto.action_id not in action_ids:
                 task_actions_list.append(
