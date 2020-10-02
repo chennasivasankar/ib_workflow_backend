@@ -141,3 +141,7 @@ USER_VERIFICATION_EMAIL_LINK = "{frontend_url}verify-email?token=".format(
 JGC_DRIVE_PROJECT_ID = os.environ.get(
     "JGC_DRIVE_PROJECT_ID", "JGC_DRIVE_PROJECT_ID"
 )
+
+JGC_DEFAULT_ROLE = os.environ.get(
+    "JGC_DEFAULT_ROLE", "JGC_USER"
+)

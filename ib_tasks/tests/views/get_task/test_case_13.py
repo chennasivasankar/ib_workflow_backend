@@ -1,5 +1,5 @@
 """
-# TODO: Update test case description
+test with user not a member of project raise exception
 """
 from unittest.mock import patch
 
@@ -8,6 +8,7 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_tasks.adapters.auth_service import AuthService
+from ib_tasks.adapters.roles_service import RolesService
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.tests.factories.models import (
     TaskFactory,
@@ -17,7 +18,8 @@ from ib_tasks.tests.factories.models import (
     GoFFactory,
     FieldRoleFactory,
     FieldFactory, CurrentTaskStageModelFactory, StageModelFactory,
-    TaskStageHistoryModelFactory, StagePermittedRolesFactory
+    TaskStageHistoryModelFactory, StagePermittedRolesFactory,
+    TaskTemplateFactory
 )
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
@@ -41,10 +43,14 @@ class TestCase13GetTaskAPITestCase(TestUtils):
         StageModelFactory.reset_sequence()
         CurrentTaskStageModelFactory.reset_sequence()
         TaskStageHistoryModelFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence()
 
     @pytest.fixture
-    def setup(self, reset_factories):
-        task_obj = TaskFactory(project_id="project0")
+    def setup(self, reset_factories, api_user):
+        user_id = api_user.user_id
+        task_obj = TaskFactory(project_id="project0", created_by=user_id)
+        template_id = task_obj.template_id
+        TaskTemplateFactory(template_id=template_id)
         gof_objs = GoFFactory.create_batch(size=3)
         task_gof_objs = TaskGoFFactory.create_batch(
             size=3, task=task_obj, gof=factory.Iterator(gof_objs)
@@ -96,12 +102,21 @@ class TestCase13GetTaskAPITestCase(TestUtils):
         )
 
     @pytest.mark.django_db
-    @patch.object(AuthService, "get_user_id_team_details_dtos")
-    def test_case(self, user_id_team_details_dtos_mock, snapshot, setup,
-                  mocker):
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids_based_on_project_mock
-        get_user_role_ids_based_on_project_mock(mocker)
+    @patch.object(AuthService, "get_user_ids_based_on_user_level")
+    @patch.object(RolesService, "get_user_role_ids_based_on_project")
+    def test_case(self, user_id_team_details_dtos_mock, user_ids_mock,
+                  snapshot, setup, mocker, api_user):
+        user_id = api_user.user_id
+        user_ids_mock.return_value = [user_id]
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_valid_project_ids_mock
+        get_valid_project_ids_mock(mocker, project_ids=["project0"])
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            validate_if_user_is_in_project_mock
+        validate_if_user_is_in_project_mock(mocker, True)
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_projects_info_for_given_ids_mock
+        get_projects_info_for_given_ids_mock(mocker)
         from ib_tasks.tests.common_fixtures.adapters \
             .assignees_details_service \
             import assignee_details_dtos_mock
