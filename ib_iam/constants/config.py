@@ -13,6 +13,8 @@ PROJECT_ID_PREFIX = "project_{}"
 ROLE_ID_PREFIX = "role_{}"
 EMAIL_VALIDATION_PATTERN = "(^[a-zA-Z]+[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]*[a-zA-Z]+$)"
 
+DEFAULT_PASSWORD = "Password123#"
+
 DEFAULT_TEAM_ID = 'b8cb1520-279a-44bb-95bf-bbca3aa057ba'
 DEFAULT_TEAM_NAME = "DEFAULT_TEAM_NAME"
 
