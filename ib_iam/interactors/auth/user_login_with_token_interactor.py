@@ -125,7 +125,7 @@ class LoginWithTokenInteractor:
 
         from django.conf import settings
         default_role_dict = settings.JGC_DEFAULT_ROLE
-        role_id = default_role_dict.get("JGC_DEFAULT_ROLE", None)
+        role_id = default_role_dict.get("JGC_DEFAULT_ROLE", "JGC_USER")
 
         self.user_storage.add_roles_to_the_user(
             user_id=user_id, role_ids=[role_id]
