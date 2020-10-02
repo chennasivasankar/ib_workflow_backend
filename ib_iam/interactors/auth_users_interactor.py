@@ -52,8 +52,12 @@ class AuthUsersInteractor:
     ):
         from ib_iam.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
+        is_email_empty = not auth_user_dto.email
+        if is_email_empty:
+            auth_user_dto.email = auth_user_dto.token + "@gmail.com"
+        from ib_iam.constants.config import DEFAULT_PASSWORD
         user_id = service_adapter.user_service.create_user_account_with_email(
-            email=auth_user_dto.email, password=auth_user_dto.password
+            email=auth_user_dto.email, password=DEFAULT_PASSWORD
         )
         from ib_iam.adapters.dtos import UserProfileDTO
         user_profile_dto = UserProfileDTO(

@@ -42,7 +42,7 @@ class PopulateFields:
             allowed_formats = field_record["Allowed Formats"].strip()
             validation_regex = field_record["Validation - RegEx"].strip()
             order = field_record["Order"]
-            is_unique = field_record["unique"]
+            is_unique = field_record["Unique"]
             is_field_unique = False
             unique_is_yes = is_unique.strip().lower() == "yes"
             if unique_is_yes:

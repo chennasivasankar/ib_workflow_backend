@@ -19,6 +19,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import (
     TaskTemplateStageDTO, StageDetailsDTO)
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskProjectRolesDTO
+from ib_tasks.interactors.task_dtos import FieldValuesDTO
 from ib_tasks.models import (CurrentTaskStage, Stage, TaskGoFField, FieldRole,
                              TaskTemplateGoFs, Field)
 
