@@ -255,9 +255,11 @@ class TestGetTaskPresenterImplementation:
 
     def test_raise_invalid_project_id(self, presenter, snapshot):
         # Arrange
-        from ib_tasks.adapters.auth_service import InvalidProjectIdsException
-        project_ids = ["project1"]
-        err = InvalidProjectIdsException(project_ids=project_ids)
+
+        invalid_project_ids = ["project1"]
+        from ib_tasks.exceptions.adapter_exceptions import \
+            InvalidProjectIdsException
+        err = InvalidProjectIdsException(invalid_project_ids=invalid_project_ids)
 
         # Act
         response_object = presenter.raise_invalid_project_id(err)
