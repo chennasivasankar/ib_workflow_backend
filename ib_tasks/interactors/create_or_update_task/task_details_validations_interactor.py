@@ -68,6 +68,9 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
         task_dto.gof_fields_dtos = gof_field_dtos
         self._validate_gofs_details(task_dto, action_type, stage_id)
         field_ids = self._get_field_ids(task_dto.gof_fields_dtos)
+        self._validate_unique_fields_filled_validation(
+            field_ids, task_dto.basic_task_details_dto.project_id,
+            task_dto.basic_task_details_dto.task_template_id)
         action_type_is_not_no_validations = \
             action_type != ActionTypes.NO_VALIDATIONS.value
         if action_type_is_not_no_validations:
@@ -76,9 +79,6 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
                 project_id=task_dto.basic_task_details_dto.project_id,
                 gof_fields_dtos=task_dto.gof_fields_dtos,
                 stage_id=stage_id, task_template_id=task_template_id)
-            self._validate_unique_fields_filled_validation(
-                field_ids, task_dto.basic_task_details_dto.project_id,
-                task_dto.basic_task_details_dto.task_template_id)
 
     def _validate_unique_fields_filled_validation(
             self, field_ids: List[str], project_id: str,

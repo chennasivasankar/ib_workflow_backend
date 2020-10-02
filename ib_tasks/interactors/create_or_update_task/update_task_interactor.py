@@ -270,6 +270,8 @@ class UpdateTaskInteractor(
             stage_id=task_dto.stage_assignee.stage_id)
         field_ids = self._get_field_ids_which_does_not_have_empty_response(
             task_dto.gof_fields_dtos)
+        self._validate_unique_fields_filled_validation(
+            field_ids, task_id)
         if action_type_is_not_no_validations and is_not_adhoc_template:
             self._validate_all_user_permitted_fields_are_filled_or_not(
                 user_id=task_dto.task_basic_details.created_by_id,
@@ -277,8 +279,6 @@ class UpdateTaskInteractor(
                 gof_fields_dtos=task_dto.gof_fields_dtos,
                 stage_id=task_dto.stage_assignee.stage_id,
                 task_template_id=task_template_id)
-            self._validate_unique_fields_filled_validation(
-                field_ids, task_id)
         return project_id
 
     def _validate_unique_fields_filled_validation(
