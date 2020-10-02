@@ -1,5 +1,7 @@
 """
-# TODO: Update test case description
+success test cases with task complete details (gofs, fields, stages, actions)
+when there are no assignee for some stages
+
 """
 from unittest.mock import patch
 
@@ -44,8 +46,11 @@ class TestCase03GetTaskAPITestCase(TestUtils):
         TaskStageHistoryModelFactory.reset_sequence()
 
     @pytest.fixture
-    def setup(self, reset_factories):
-        task_obj = TaskFactory(project_id="project0")
+    def setup(self, reset_factories, api_user):
+        user_id = api_user.user_id
+        task_obj = TaskFactory(
+            project_id="project0", created_by=user_id
+        )
         template_id = task_obj.template_id
         TaskTemplateFactory(template_id=template_id)
         gof_objs = GoFFactory.create_batch(size=3)
@@ -111,9 +116,20 @@ class TestCase03GetTaskAPITestCase(TestUtils):
         )
 
     @pytest.mark.django_db
+    @patch.object(AuthService, "get_user_ids_based_on_user_level")
     @patch.object(AuthService, "get_user_id_team_details_dtos")
-    def test_case(self, user_id_team_details_dtos_mock, snapshot, setup,
-                  mocker):
+    def test_case(
+            self, user_id_team_details_dtos_mock, user_ids_mock,
+            snapshot, setup, mocker, api_user
+    ):
+        user_id = api_user.user_id
+        user_ids_mock.return_value = [user_id]
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_valid_project_ids_mock
+        get_valid_project_ids_mock(mocker, project_ids=["project0"])
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            validate_if_user_is_in_project_mock
+        validate_if_user_is_in_project_mock(mocker, True)
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids_based_on_project_mock
         get_user_role_ids_based_on_project_mock(mocker)

@@ -1,5 +1,5 @@
 """
-# TODO: Update test case description
+test with invalid project id raise exception
 """
 from unittest.mock import patch
 
@@ -52,6 +52,9 @@ class TestCase10GetTaskAPITestCase(TestUtils):
     def test_case(
             self, project_info_mock, snapshot, setup, mocker
     ):
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            validate_if_user_is_in_project_mock
+        validate_if_user_is_in_project_mock(mocker, False)
         project_ids = ["project0"]
         exception_object = InvalidProjectIdsException(project_ids)
         project_info_mock.side_effect = exception_object
