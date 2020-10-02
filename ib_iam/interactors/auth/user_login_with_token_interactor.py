@@ -119,11 +119,16 @@ class LoginWithTokenInteractor:
         self.add_user_to_team_member_level(team_id=team_id, user_id=user_id)
 
     def assign_all_project_roles_to_user(self, user_id: str):
-        role_ids = self.project_storage.get_project_role_ids(
-            project_id=JGC_DRIVE_PROJECT_ID
-        )
+        # role_ids = self.project_storage.get_project_role_ids(
+        #     project_id=JGC_DRIVE_PROJECT_ID
+        # )
+
+        from django.conf import settings
+        default_role_dict = settings.JGC_DEFAULT_ROLE
+        role_id = default_role_dict.get("JGC_DEFAULT_ROLE", None)
+
         self.user_storage.add_roles_to_the_user(
-            user_id=user_id, role_ids=role_ids
+            user_id=user_id, role_ids=[role_id]
         )
 
     def _create_elastic_user(self, user_id: str, name: str, email: str):

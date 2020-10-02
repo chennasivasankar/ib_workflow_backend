@@ -9,7 +9,7 @@ class AuthUsers:
 
     @transaction.atomic()
     def populate_auth_users(self, spread_sheet_name: str, sub_sheet_name: str,
-                            project_id: str):
+                            project_id: str, role_id: str):
         from ib_iam.populate.spreedsheet_utils import SpreadSheetUtil
         spreadsheet_utils = SpreadSheetUtil()
         auth_users = spreadsheet_utils \
@@ -46,7 +46,8 @@ class AuthUsers:
             project_storage=project_storage
         )
         interactor.auth_user_dtos(auth_user_dtos=auth_user_dtos,
-                                  project_id=project_id)
+                                  project_id=project_id, role_ids=[role_id]
+                                  )
         return
 
     @staticmethod
