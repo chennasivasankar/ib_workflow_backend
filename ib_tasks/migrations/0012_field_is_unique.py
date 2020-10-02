@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ib_tasks', '0011_merge_20201001_1418'),
+        ('ib_tasks', '0011_tasktemplatemandatoryfields'),
     ]
 
     operations = [
