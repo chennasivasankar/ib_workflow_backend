@@ -5,12 +5,11 @@ from django.db import transaction
 from ib_iam.interactors.dtos.dtos import PMAndSubUsersAuthTokensDTO
 
 
-class AddPMAndSubUsers:
+class RemovePMAndSubUsersDefaultTeam:
 
     @transaction.atomic()
-    def add_pm_and_sub_users(
-            self, spread_sheet_name: str, sub_sheet_name: str, project_id: str,
-            update_teams_of_users: bool
+    def remove_pm_and_sub_users_default_team(
+            self, spread_sheet_name: str, sub_sheet_name: str, project_id: str
     ):
         from ib_iam.populate.spreedsheet_utils import SpreadSheetUtil
         spreadsheet_utils = SpreadSheetUtil()
@@ -31,9 +30,12 @@ class AddPMAndSubUsers:
         from ib_iam.storages.team_member_level_storage_implementation import \
             TeamMemberLevelStorageImplementation
         team_member_level_storage = TeamMemberLevelStorageImplementation()
-        pm_and_sub_user_dtos = self._convert_to_pm_and_sub_user_dtos(
-            pm_and_sub_users
-        )
+        pm_and_sub_user_auth_tokens = []
+        for pm_and_sub_user in pm_and_sub_users:
+            pm_and_sub_user_auth_tokens.extend([
+                pm_and_sub_user['pm_auth_token'],
+                pm_and_sub_user['user_auth_token']
+            ])
 
         from ib_iam.interactors.users.add_pm_and_sub_users_interactor import \
             PMAndSubUsersInteractor
@@ -43,19 +45,6 @@ class AddPMAndSubUsers:
             team_storage=team_storage,
             team_member_level_storage=team_member_level_storage
         )
-        interactor.add_pm_and_sub_users(
-            pm_and_sub_user_dtos=pm_and_sub_user_dtos, project_id=project_id,
-            update_teams_of_users=update_teams_of_users
+        interactor.remove_user_default_team(
+            pm_and_sub_user_auth_tokens=pm_and_sub_user_auth_tokens
         )
-
-    @staticmethod
-    def _convert_to_pm_and_sub_user_dtos(
-            pm_and_sub_users
-    ) -> List[PMAndSubUsersAuthTokensDTO]:
-        pm_and_sub_user_dtos = [
-            PMAndSubUsersAuthTokensDTO(
-                pm_auth_token=pm_and_sub_user['pm_auth_token'],
-                sub_user_auth_token=pm_and_sub_user['user_auth_token']
-            ) for pm_and_sub_user in pm_and_sub_users
-        ]
-        return pm_and_sub_user_dtos
