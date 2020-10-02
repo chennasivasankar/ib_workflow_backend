@@ -15,7 +15,7 @@ from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     VirtualStageIdsException
 from ib_tasks.exceptions.task_custom_exceptions import (
     InvalidTaskDisplayId, TaskDelayReasonIsNotUpdated, StartDateIsRequired,
-    DueDateIsRequired, PriorityIsRequired)
+    DueDateIsRequired, PriorityIsRequired, InvalidTaskJson)
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.mixins.get_user_act_on_task_response import GetUserActOnTaskResponse
@@ -146,6 +146,8 @@ class ActOnTaskAndUpdateTaskStageAssigneesInteractor(
             return presenter.due_date_is_required()
         except PriorityIsRequired:
             return presenter.priority_is_required()
+        except InvalidTaskJson as err:
+            return presenter.raise_invalid_task_json(err)
 
     def _create_task_log(self, task_log_dto: CreateTaskLogDTO):
         from ib_tasks.interactors.task_log_interactor import TaskLogInteractor

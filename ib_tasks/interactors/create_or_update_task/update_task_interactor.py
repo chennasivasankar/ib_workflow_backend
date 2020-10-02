@@ -27,7 +27,7 @@ from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId, \
-    TaskDelayReasonIsNotUpdated, PriorityIsRequired
+    TaskDelayReasonIsNotUpdated, PriorityIsRequired, InvalidTaskJson
 from ib_tasks.interactors.create_or_update_task. \
     gofs_details_validations_interactor import \
     GoFsDetailsValidationsInteractor
@@ -196,6 +196,8 @@ class UpdateTaskInteractor(
             return presenter.raise_stage_ids_list_empty_exception(err)
         except InvalidStageIdsListException as err:
             return presenter.raise_invalid_stage_ids_list_exception(err)
+        except InvalidTaskJson as err:
+            return presenter.raise_invalid_task_json(err)
 
     def _prepare_update_task_response(
             self, task_dto: UpdateTaskWithTaskDisplayIdDTO,

@@ -12,7 +12,8 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied
 from ib_tasks.exceptions.task_custom_exceptions import (
     InvalidTaskException, InvalidTaskDisplayId, TaskDelayReasonIsNotUpdated,
-    PriorityIsRequired, StartDateIsRequired, DueDateIsRequired)
+    PriorityIsRequired, StartDateIsRequired, DueDateIsRequired,
+    InvalidTaskJson)
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.mixins.get_user_act_on_task_response import GetUserActOnTaskResponse
@@ -124,6 +125,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             return presenter.due_date_is_required()
         except PriorityIsRequired:
             return presenter.priority_is_required()
+        except InvalidTaskJson as err:
+            return presenter.raise_invalid_task_json(err)
         return presenter.get_response_for_user_action_on_task(
             task_complete_details_dto=task_complete_details_dto,
             task_current_stage_details_dto=task_current_stage_details_dto,

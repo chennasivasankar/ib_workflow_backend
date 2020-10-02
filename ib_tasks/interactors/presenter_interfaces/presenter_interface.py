@@ -7,7 +7,7 @@ from ib_tasks.exceptions.gofs_custom_exceptions import \
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import \
-    TaskDelayReasonIsNotUpdated
+    TaskDelayReasonIsNotUpdated, InvalidTaskJson
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO, AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
@@ -121,3 +121,6 @@ class PresenterInterface(abc.ABC):
     def priority_is_required(self):
         pass
 
+    @abc.abstractmethod
+    def raise_invalid_task_json(self, err: InvalidTaskJson):
+        pass

@@ -13,7 +13,8 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
 from ib_tasks.exceptions.stage_custom_exceptions import \
     InvalidStageIdsListException, StageIdsListEmptyException
 from ib_tasks.exceptions.task_custom_exceptions import (InvalidTaskException,
-                                                        TaskDelayReasonIsNotUpdated)
+                                                        TaskDelayReasonIsNotUpdated,
+                                                        InvalidTaskJson)
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO, AllTasksOverviewDetailsDTO
@@ -537,3 +538,12 @@ class UserActionOnTaskPresenterImplementation(
 
         response_object = self.prepare_400_bad_request_response(response_dict)
         return response_object
+
+    def raise_invalid_task_json(self, err: InvalidTaskJson):
+        from ib_tasks.constants.exception_messages import INVALID_TASK_JSON
+        data = {
+            "response": INVALID_TASK_JSON[0],
+            "http_status_code": 400,
+            "res_status": INVALID_TASK_JSON[1]
+        }
+        return self.prepare_400_bad_request_response(data)
