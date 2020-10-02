@@ -54,4 +54,4 @@ class GetGoFsFieldsDisplayNameMixin:
             field_id_matched = field_dto.field_id in field_ids
             if field_id_matched:
                 field_display_names.append(field_dto.field_display_name)
-        return field_display_names
+        return sorted(list(set(field_display_names)))

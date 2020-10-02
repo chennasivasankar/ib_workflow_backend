@@ -67,9 +67,9 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
                 task_dto.gof_fields_dtos)
         task_dto.gof_fields_dtos = gof_field_dtos
         self._validate_gofs_details(task_dto, action_type, stage_id)
-        field_ids = self._get_field_ids(task_dto.gof_fields_dtos)
+        field_value_dtos = self._get_field_ids(task_dto.gof_fields_dtos)
         self._validate_unique_fields_filled_validation(
-            field_ids, task_dto.basic_task_details_dto.project_id,
+            field_value_dtos, task_dto.basic_task_details_dto.project_id,
             task_dto.basic_task_details_dto.task_template_id)
         action_type_is_not_no_validations = \
             action_type != ActionTypes.NO_VALIDATIONS.value
@@ -81,7 +81,7 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
                 stage_id=stage_id, task_template_id=task_template_id)
 
     def _validate_unique_fields_filled_validation(
-            self, field_ids: List[str], project_id: str,
+            self, field_values_dtos: List[FieldValuesDTO], project_id: str,
             task_template_id: str):
         from ib_tasks.interactors.create_or_update_task \
             .validate_unique_fields_filled_or_not import \
@@ -89,17 +89,18 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
         validation_interactor = ValidateUniqueFieldsFilledInteractor(
             self.field_storage, self.task_storage)
         validation_interactor.validate_unique_fields_filled_in_task_creation(
-            field_ids, project_id, task_template_id)
+            field_values_dtos, project_id, task_template_id)
 
     @staticmethod
-    def _get_field_ids(gof_fields_dtos: List[GoFFieldsDTO]) -> List[str]:
-        field_ids = []
+    def _get_field_ids(
+            gof_fields_dtos: List[GoFFieldsDTO]) -> List[FieldValuesDTO]:
+        field_values_dtos = []
         for gof_fields_dto in gof_fields_dtos:
-            field_ids += [
-                field_value_dto.field_id
+            field_values_dtos += [
+                field_value_dto
                 for field_value_dto in gof_fields_dto.field_values_dtos
             ]
-        return field_ids
+        return field_values_dtos
 
     def _filter_field_values_dtos_by_excluding_emtpy_response(
             self, gof_fields_dtos: List[GoFFieldsDTO]
