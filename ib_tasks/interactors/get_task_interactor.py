@@ -1,12 +1,14 @@
 from typing import List, Optional
 
 from ib_tasks.adapters.assignees_details_service import InvalidUserIdException
-from ib_tasks.adapters.auth_service import InvalidProjectIdsException, \
+from ib_tasks.adapters.auth_service import  \
     TeamsNotExistForGivenProjectException, UsersNotExistsForGivenTeamsException
 from ib_tasks.adapters.roles_service import UserNotAMemberOfAProjectException
 from ib_tasks.adapters.searchable_details_service import \
     InvalidUserIdsException, InvalidStateIdsException, \
     InvalidCountryIdsException, InvalidCityIdsException
+from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException, \
+    UserIsNotInProjectException
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException, InvalidStageIdsForTask, \
     InvalidTaskDisplayId, UserPermissionDenied
@@ -73,44 +75,33 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return self.get_task_details_response(user_id, task_display_id,
                                                   presenter)
         except InvalidTaskIdException as err:
-            response = presenter.raise_exception_for_invalid_task_id(err)
-            return response
+            return presenter.raise_exception_for_invalid_task_id(err)
         except InvalidStageIdsForTask as err:
-            response = presenter.raise_invalid_stage_ids_for_task(err)
-            return response
+            return presenter.raise_invalid_stage_ids_for_task(err)
         except InvalidTaskDisplayId as err:
-            response = presenter.raise_invalid_task_display_id(err)
-            return response
+            return presenter.raise_invalid_task_display_id(err)
         except UserPermissionDenied:
-            response = presenter.raise_user_permission_denied()
-            return response
+            return presenter.raise_user_permission_denied()
         except InvalidCityIdsException as err:
-            response = presenter.raise_invalid_searchable_records_found()
-            return response
+            return presenter.raise_invalid_searchable_records_found()
         except InvalidStateIdsException:
-            response = presenter.raise_invalid_searchable_records_found()
-            return response
+            return presenter.raise_invalid_searchable_records_found()
         except InvalidCountryIdsException:
-            response = presenter.raise_invalid_searchable_records_found()
-            return response
+            return presenter.raise_invalid_searchable_records_found()
         except InvalidUserIdsException:
-            response = presenter.raise_invalid_searchable_records_found()
-            return response
+            return presenter.raise_invalid_searchable_records_found()
         except InvalidProjectIdsException as err:
-            response = presenter.raise_invalid_project_id(err)
-            return response
+            return presenter.raise_invalid_project_id(err)
         except TeamsNotExistForGivenProjectException as err:
-            response = presenter.raise_teams_does_not_exists_for_project(err)
-            return response
+            return presenter.raise_teams_does_not_exists_for_project(err)
         except UsersNotExistsForGivenTeamsException as err:
-            response = presenter.raise_users_not_exist_for_given_teams(err)
-            return response
+            return presenter.raise_users_not_exist_for_given_teams(err)
         except InvalidUserIdException:
-            response = presenter.raise_invalid_user()
-            return response
+            return presenter.raise_invalid_user()
         except UserNotAMemberOfAProjectException:
-            response = presenter.raise_user_not_a_member_of_project()
-            return response
+            return presenter.raise_user_not_a_member_of_project()
+        except UserIsNotInProjectException:
+            return presenter.raise_user_not_a_member_of_project()
 
     def get_task_details_response(
             self, user_id: str, task_display_id: str,
@@ -142,7 +133,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             )
 
         stage_assignee_details_dtos = \
-            self._stage_assignee_with_team_details_dtos(
+            self._get_stage_assignee_with_team_details_dtos(
                 task_id, stage_ids, project_id
             )
 
@@ -185,7 +176,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         if is_user_permission_denied:
             raise UserPermissionDenied()
 
-    def _stage_assignee_with_team_details_dtos(
+    def _get_stage_assignee_with_team_details_dtos(
             self, task_id: int, stage_ids: List[int], project_id: str
     ) -> List[StageAssigneeWithTeamDetailsDTO]:
         from ib_tasks.interactors.get_stages_assignees_details_interactor \
