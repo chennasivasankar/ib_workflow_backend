@@ -343,6 +343,13 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
             ) for single_task_gof_dto in single_task_gof_dtos
         ]
 
+    def get_task_gof_field_response(self):
+        TaskGoFFieldDTOFactory.reset_sequence(1)
+        gof_field_dtos = [TaskGoFFieldDTOFactory(
+            field_response="field_update")]
+        gof_field_dtos += TaskGoFFieldDTOFactory.create_batch(size=2)
+        return gof_field_dtos
+
     def test_given_valid_details_updates_statuses(
             self, set_up_storage_for_all_single_gofs,
             create_task_storage, field_storage,
@@ -354,6 +361,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
     ):
         # Arrange
         expected_task_gofs = self.get_task_gof_response(single_task_gof_dtos)
+        expected_task_gof_field_dtos = self.get_task_gof_field_response()
         action_id = 1
         path_name = "ib_tasks.tests.interactors.call_action_logic_testing_file.stage_1_action_name_3"
         action_storage_mock.get_path_name_to_action.return_value = path_name
@@ -373,5 +381,9 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         task_storage.update_status_variables_to_task.assert_called_once_with(
             task_id=1, status_variables_dto=expected_status
         )
+        task_crud_update_task_gofs_mock.assert_called_once_with(
+            expected_task_gofs)
+        task_crud_update_task_gof_fields_mock.assert_called_once_with(
+            expected_task_gof_field_dtos)
 
     # TODO fields update test case
