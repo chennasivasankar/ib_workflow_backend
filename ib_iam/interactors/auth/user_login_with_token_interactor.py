@@ -76,8 +76,9 @@ class LoginWithTokenInteractor:
         if not login_with_token_parameter_dto.name:
             login_with_token_parameter_dto.name = \
                 login_with_token_parameter_dto.token
+        from ib_iam.constants.config import DEFAULT_PASSWORD
         user_id = service_adapter.user_service.create_user_account_with_email(
-            email=email, password=email
+            email=email, password=DEFAULT_PASSWORD
         )
         from ib_iam.adapters.dtos import UserProfileDTO
         user_profile_dto = UserProfileDTO(

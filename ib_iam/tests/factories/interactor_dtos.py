@@ -115,7 +115,6 @@ class AuthUserDTOFactory(factory.Factory):
     token = factory.sequence(lambda n: "token_{}".format(n))
     name = factory.sequence(lambda n: "name_{}".format(n))
     email = factory.sequence(lambda n: "token_{}@gmail.com".format(n))
-    password = "Password123#"
 
 
 class LoginWithTokenParameterDTOFactory(factory.Factory):
