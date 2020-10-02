@@ -41,6 +41,8 @@ def api_wrapper(*args, **kwargs):
     stage_id = request_data.get('stage_assignee').get('stage_id')
     assignee_id = request_data.get('stage_assignee').get('assignee_id')
     assignee_team_id = request_data.get('stage_assignee').get('team_id')
+    request_data['start_datetime'] = str(request_data.get('start_datetime'))
+    request_data['due_datetime'] = str(request_data.get('due_datetime'))
     request_json = json.dumps(request_data)
 
     from ib_tasks.interactors.task_dtos import GoFFieldsDTO
