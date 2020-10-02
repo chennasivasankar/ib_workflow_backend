@@ -67,6 +67,7 @@ class TaskFieldsDTOFactory(factory.Factory):
     field_type = factory.Sequence(lambda n: "field_type_%d" % n)
     key = factory.Sequence(lambda n: "key_%d" % n)
     value = factory.Sequence(lambda n: "value_%d" % n)
+    order = factory.Sequence(lambda n: n)
 
 
 class ColumnCompleteDetailsDTOFactory(factory.Factory):
