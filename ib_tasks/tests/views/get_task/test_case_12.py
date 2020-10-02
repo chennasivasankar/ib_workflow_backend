@@ -18,7 +18,8 @@ from ib_tasks.tests.factories.models import (
     GoFFactory,
     FieldRoleFactory,
     FieldFactory, CurrentTaskStageModelFactory, StageModelFactory,
-    TaskStageHistoryModelFactory, StagePermittedRolesFactory
+    TaskStageHistoryModelFactory, StagePermittedRolesFactory,
+    TaskTemplateFactory
 )
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
@@ -42,11 +43,14 @@ class TestCase12GetTaskAPITestCase(TestUtils):
         StageModelFactory.reset_sequence()
         CurrentTaskStageModelFactory.reset_sequence()
         TaskStageHistoryModelFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence()
 
     @pytest.fixture
     def setup(self, reset_factories, api_user):
         user_id = api_user.user_id
         task_obj = TaskFactory(project_id="project0", created_by=user_id)
+        template_id = task_obj.template_id
+        TaskTemplateFactory(template_id=template_id)
         gof_objs = GoFFactory.create_batch(size=3)
         task_gof_objs = TaskGoFFactory.create_batch(
             size=3, task=task_obj, gof=factory.Iterator(gof_objs)

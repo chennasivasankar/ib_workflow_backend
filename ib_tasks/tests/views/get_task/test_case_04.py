@@ -11,7 +11,8 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from ib_tasks.adapters.auth_service import AuthService
 from ib_tasks.tests.factories.models import (
     TaskFactory, StageModelFactory, CurrentTaskStageModelFactory,
-    TaskStageHistoryModelFactory, StagePermittedRolesFactory
+    TaskStageHistoryModelFactory, StagePermittedRolesFactory,
+    TaskTemplateFactory
 )
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
@@ -29,11 +30,16 @@ class TestCase04GetTaskAPITestCase(TestUtils):
         CurrentTaskStageModelFactory.reset_sequence()
         TaskStageHistoryModelFactory.reset_sequence()
         StagePermittedRolesFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence()
 
     @pytest.fixture
     def setup(self, reset_factories, api_user):
         user_id = api_user.user_id
-        task_obj = TaskFactory(project_id="project0", created_by=user_id)
+        task_obj = TaskFactory(
+            project_id="project0", created_by=user_id
+        )
+        template_id = task_obj.template_id
+        TaskTemplateFactory(template_id=template_id)
         stage_objs = StageModelFactory.create_batch(size=4)
         CurrentTaskStageModelFactory.create_batch(size=4, task=task_obj,
                                                   stage=factory.Iterator(

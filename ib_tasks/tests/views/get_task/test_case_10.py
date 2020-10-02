@@ -19,6 +19,7 @@ from ib_tasks.tests.factories.models import (
     FieldRoleFactory,
     FieldFactory, StageModelFactory, CurrentTaskStageModelFactory,
     TaskStageHistoryModelFactory, StagePermittedRolesFactory,
+    TaskTemplateFactory,
 )
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
@@ -42,10 +43,13 @@ class TestCase10GetTaskAPITestCase(TestUtils):
         StageModelFactory.reset_sequence()
         CurrentTaskStageModelFactory.reset_sequence()
         TaskStageHistoryModelFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence()
 
     @pytest.fixture
     def setup(self, reset_factories):
-        TaskFactory(task_display_id="IBWF-1", project_id="project0")
+        task_obj = TaskFactory(task_display_id="IBWF-1", project_id="project0")
+        template_id = task_obj.template_id
+        TaskTemplateFactory(template_id=template_id)
 
     @pytest.mark.django_db
     @patch.object(AuthService, "get_projects_info_for_given_ids")
