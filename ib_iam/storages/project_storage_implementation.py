@@ -346,3 +346,10 @@ class ProjectStorageImplementation(ProjectStorageInterface):
             for project_object in project_objects
         ]
         return project_dtos
+
+    def get_project_prefix(self, project_id: str) -> str:
+        project_prefix_queryset = Project.objects.filter(
+            project_id=project_id).values_list('project_prefix', flat=True)
+
+        project_prefix = project_prefix_queryset.first()
+        return project_prefix

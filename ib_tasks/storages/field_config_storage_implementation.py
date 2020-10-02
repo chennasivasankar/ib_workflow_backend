@@ -57,7 +57,8 @@ class FieldConfigStorageImplementation(FieldConfigStorageInterface):
                 error_messages=field_dto.error_message,
                 validation_regex=field_dto.validation_regex,
                 gof_id=field_dto.gof_id,
-                order=field_dto.order
+                order=field_dto.order,
+                is_unique=field_dto.is_field_unique
             )
             for field_dto in field_dtos
         ]

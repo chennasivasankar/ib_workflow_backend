@@ -42,6 +42,7 @@ class GetSheetDataForStageActions:
             "roles": field_record["Role"],
             "button_text": field_record["Button Text"],
             "button_color": field_record["Button Colour"],
+            "order": field_record["Order"],
             "action_type": field_record["Action Type"],
             "transition_template_id": field_record["Transition Template ID"]
         }
@@ -57,6 +58,7 @@ class GetSheetDataForStageActions:
                 "Role": And(str, len),
                 "Logic": And(str, len),
                 "Button Text": And(str, len),
+                "Order": int,
                 Optional("Button Colour"): str,
                 Optional("Action Type"): str,
                 Optional("Transition Template ID"): str
@@ -72,14 +74,16 @@ class GetSheetDataForStageActions:
     def _raise_exception_for_valid_stage_actions_format(self):
         valid_format = {
             "Stage ID*": "PR_PAYMENT_REQUEST_DRAFTS",
-            "Stage Display Logic": "Value [Status1] == Value[PR_PAYMENT_REQUEST_DRAFTS]",
+            "Stage Display Logic": "Value [Status1] == Value["
+                                   "PR_PAYMENT_REQUEST_DRAFTS]",
             "Action name": "Save Draft",
             "Role": "ALL_ROLES",
             "Logic": "Status1 = PR_PAYMENT_REQUEST_DRAFTS",
             "Button Text": "Save Draft",
             "Button Colour": "Blue",
             "Transition Template ID": "transition_template_id",
-            "Action Type": "NO VALIDATIONS"
+            "Action Type": "NO VALIDATIONS",
+            "Order": 1
 
         }
         self.data_sheet.raise_exception_for_valid_format(valid_format)

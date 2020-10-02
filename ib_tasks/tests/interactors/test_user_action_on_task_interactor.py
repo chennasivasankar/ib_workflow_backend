@@ -12,7 +12,8 @@ from ib_tasks.tests.factories.storage_dtos import (
     ActionDTOFactory, StageActionDetailsDTOFactory,
     TaskDetailsDTOFactory,
     TaskGoFDTOFactory, TaskGoFFieldDTOFactory,
-    GoFIdWithGoFDisplayNameDTOFactory, FieldWithGoFDisplayNameDTOFactory, TaskTemplateMapDTOFactory
+    GoFIdWithGoFDisplayNameDTOFactory, FieldWithGoFDisplayNameDTOFactory,
+    TaskTemplateMapDTOFactory
 )
 from ib_tasks.tests.interactors.super_storage_mock_class import \
     StorageMockClass
@@ -288,7 +289,7 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
     @pytest.fixture()
     def set_up_storage_for_invalid_board(
             storage, task_storage_mock,
-            user_in_project_mock, action_storage_mock
+            user_in_project_mock
     ):
         task_id = 1
         project_id = "FIN_MAN"
@@ -299,9 +300,6 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
         task_storage_mock.get_project_id_for_the_task_id \
             .return_value = project_id
         user_in_project_mock.return_value = True
-        validation_type = ActionTypes.NO_VALIDATIONS.value
-        action_storage_mock.get_action_type_for_given_action_id \
-            .return_value = validation_type
 
     @staticmethod
     @pytest.fixture()
@@ -474,11 +472,14 @@ class TestUserActionOnTaskInteractor(StorageMockClass):
     @pytest.fixture()
     def set_up_invalid_present_stage_action(
             create_task_storage, set_up_storage_for_due_date_missed,
-            valid_action_roles_mock
+            valid_action_roles_mock, action_storage_mock
     ):
         create_task_storage.get_existing_task_due_date.return_value = \
             datetime.datetime.now() - datetime.timedelta(days=1)
         create_task_storage.check_task_delay_reason_updated_or_not.return_value = True
+        validation_type = ActionTypes.NO_VALIDATIONS.value
+        action_storage_mock.get_action_type_for_given_action_id \
+            .return_value = validation_type
 
     def test_invalid_present_stage_action_raises_exception(
             self, interactor, presenter, storage,

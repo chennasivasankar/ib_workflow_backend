@@ -2,6 +2,8 @@ import uuid
 
 from django.db import models
 
+from ib_iam.constants.config import PROJECT_DEFAULT_PREFIX
+
 
 def generate_project_id():
     from ib_iam.constants.config import PROJECT_ID_PREFIX
@@ -18,6 +20,8 @@ class Project(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(null=True, blank=True)
     logo_url = models.URLField(null=True, blank=True)
+    project_prefix = models.CharField(
+        max_length=50, default=PROJECT_DEFAULT_PREFIX)
 
 
 class ProjectTeam(models.Model):

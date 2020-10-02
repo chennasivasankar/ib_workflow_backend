@@ -145,3 +145,7 @@ class FieldsStorageInterface(abc.ABC):
             self, field_ids: List[str]
     ) -> List[FieldWithGoFDisplayNameDTO]:
         pass
+
+    @abc.abstractmethod
+    def get_unique_field_ids_in_given_field_ids(self, field_ids: List[str]):
+        pass

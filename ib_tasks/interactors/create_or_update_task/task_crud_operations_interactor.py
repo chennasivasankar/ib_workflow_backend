@@ -17,8 +17,17 @@ class TaskCrudOperationsInteractor:
             self, create_task_storage: CreateOrUpdateTaskStorageInterface):
         self.storage = create_task_storage
 
-    def create_task(self, task_details_dto: BasicTaskDetailsDTO) -> int:
-        created_task_id = self.storage.create_task(task_details_dto)
+    def create_task(
+            self, task_details_dto: BasicTaskDetailsDTO
+    ) -> int:
+        from ib_tasks.adapters.project_service import ProjectService
+        project_service = ProjectService()
+        project_prefix = \
+            project_service.get_project_prefix(
+                project_id=task_details_dto.project_id)
+
+        created_task_id = self.storage.create_task(
+            task_details_dto=task_details_dto, project_prefix=project_prefix)
         return created_task_id
 
     def create_task_gofs(

@@ -8,7 +8,7 @@ from ib_tasks.exceptions.datetime_custom_exceptions import \
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidDateFormat
 from ib_tasks.exceptions.fields_custom_exceptions import \
-    UserDidNotFillRequiredFields
+    UserDidNotFillRequiredFields, FieldsFilledAlreadyBySomeone
 from ib_tasks.exceptions.gofs_custom_exceptions import \
     UserDidNotFillRequiredGoFs, InvalidStagePermittedGoFs
 from ib_tasks.exceptions.stage_custom_exceptions import \
@@ -19,9 +19,6 @@ from ib_tasks.exceptions.task_custom_exceptions import PriorityIsRequired, \
     InvalidTaskJson, InvalidTaskDisplayId
 from ib_tasks.interactors.create_or_update_task.create_task_interactor import \
     CompleteTaskDetailsDTO
-from ib_tasks.interactors.presenter_interfaces.dtos import \
-    AllTasksOverviewDetailsDTO
-from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 
 
 class CreateSubTaskPresenterInterface(abc.ABC):
@@ -252,4 +249,9 @@ class CreateSubTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_invalid_parent_task_id(self, err: InvalidTaskDisplayId):
+        pass
+
+    @abc.abstractmethod
+    def raise_fields_already_filled_by_someone(
+            self, err: FieldsFilledAlreadyBySomeone):
         pass

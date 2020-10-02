@@ -27,6 +27,7 @@ class FieldDTO:
     allowed_formats: Optional[List[str]]
     validation_regex: Optional[str]
     order: int
+    is_field_unique: bool = False
 
 
 @dataclass()
