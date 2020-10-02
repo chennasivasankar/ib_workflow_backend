@@ -26,6 +26,10 @@ class ActionStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_action_logic_to_action(self, action_id: int) -> str:
+        pass
+
+    @abc.abstractmethod
     def get_path_name_to_action(self, action_id: int) -> str:
         pass
 

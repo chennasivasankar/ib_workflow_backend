@@ -47,16 +47,22 @@ def _validate_action_logic(action_logic: str):
 
 def append_action_dict(action_dict: Dict[str, Any]):
     from ib_tasks.interactors.stages_dtos import StageActionDTO
-    action_logic = action_dict['action_logic']
-    action_logic_lines = action_logic.split("\n")
-    new_action_logic = "\n".join(action_logic_lines)
-    import json
+    stage_id = action_dict["stage_id"]
+    action_name = action_dict["action_name"]
+    from django.conf import settings
+    function_path = 'ib_tasks.populate.stage_actions_logic_{}.'.format(
+        settings.STAGE
+    )
+    function_name = f'{stage_id}_{action_name}'
+    function_name = function_name.replace(' ', '_').replace('-', '_').replace(
+        '\n', '')
+    function_path = function_path + function_name
     return StageActionDTO(
         stage_id=action_dict['stage_id'].strip('\n'),
         action_name=action_dict['action_name'],
-        logic=json.loads(new_action_logic),
+        logic=action_dict['action_logic'],
         roles=action_dict['roles'],
-        function_path='path',
+        function_path=function_path,
         button_text=action_dict['button_text'],
         button_color=action_dict.get("button_color"),
         action_type=action_dict['action_type'],
