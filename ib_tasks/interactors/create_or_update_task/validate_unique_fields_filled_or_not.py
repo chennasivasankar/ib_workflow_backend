@@ -110,4 +110,4 @@ class ValidateUniqueFieldsFilledInteractor(GetGoFsFieldsDisplayNameMixin):
                     field.field_response == given_field.field_response)
                 if same_field_response_for_unique_field:
                     given_unique_field_ids.append(given_field.field_id)
-        return given_unique_field_ids
+        return sorted(list(set(given_unique_field_ids)))
