@@ -74,7 +74,7 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO, \
     UpdateTaskWithTaskDisplayIdDTO, GoFFieldsDTO, StageIdWithAssigneeDTO, \
-    UpdateTaskBasicDetailsDTO
+    UpdateTaskBasicDetailsDTO, CreateTaskLogDTO
 from ib_tasks.interactors.update_task_stage_assignees_interactor import \
     UpdateTaskStageAssigneesInteractor
 
@@ -107,10 +107,11 @@ class UpdateTaskInteractor(
 
     def update_task_wrapper(
             self, presenter: UpdateTaskPresenterInterface,
-            task_dto: UpdateTaskWithTaskDisplayIdDTO
-    ):
+            task_dto: UpdateTaskWithTaskDisplayIdDTO,
+            request_json: str):
         try:
-            return self._prepare_update_task_response(task_dto, presenter)
+            return self._prepare_update_task_response(
+                task_dto, presenter, request_json)
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
         except InvalidTaskException as err:
@@ -198,7 +199,7 @@ class UpdateTaskInteractor(
 
     def _prepare_update_task_response(
             self, task_dto: UpdateTaskWithTaskDisplayIdDTO,
-            presenter: UpdateTaskPresenterInterface):
+            presenter: UpdateTaskPresenterInterface, request_json: str):
         all_tasks_overview_details_dto = self.update_task_with_task_display_id(
             task_dto)
         return presenter.get_update_task_response(
@@ -218,7 +219,13 @@ class UpdateTaskInteractor(
             task_basic_details=task_basic_details,
             stage_assignee=task_dto.stage_assignee,
             gof_fields_dtos=task_dto.gof_fields_dtos)
-        return self.update_task(task_dto_with_db_task_id)
+        all_tasks_overview_details_dto = self.update_task(
+            task_dto_with_db_task_id)
+        task_log_dto = CreateTaskLogDTO(
+            task_id=task_id, user_id=task_dto.created_by_id,
+            action_id=task_dto.action_id, task_json=task_request_json)
+        self._create_task_log(task_log_dto)
+        return all_tasks_overview_details_dto
 
     def update_task(
             self, task_dto: UpdateTaskDTO) -> AllTasksOverviewDetailsDTO:

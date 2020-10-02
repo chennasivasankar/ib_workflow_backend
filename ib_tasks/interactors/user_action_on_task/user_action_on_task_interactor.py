@@ -44,6 +44,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import TaskTemplateStorageInterface
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO
 
 
 class InvalidBoardIdException(Exception):
@@ -85,7 +86,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         self.task_template_storage = task_template_storage
 
     def user_action_on_task_wrapper(
-            self, presenter: PresenterInterface, task_display_id: str):
+            self, presenter: PresenterInterface, task_display_id: str,
+            request_json: str):
 
         try:
             task_id = self.get_task_id_for_task_display_id(task_display_id)
@@ -93,6 +95,10 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             all_tasks_overview_dto = \
                 self.user_action_on_task_and_set_random_assignees(
                     task_id=task_id)
+            task_log_dto = CreateTaskLogDTO(
+                task_id=task_id, user_id=self.user_id,
+                action_id=self.action_id, task_json=request_json)
+            self._create_task_log(task_log_dto)
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
         except InvalidBoardIdException as err:
@@ -123,6 +129,18 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             task_current_stage_details_dto=task_current_stage_details_dto,
             all_tasks_overview_dto=all_tasks_overview_dto
         )
+
+    def _create_task_log(self, task_log_dto: CreateTaskLogDTO):
+        from ib_tasks.interactors.task_log_interactor import TaskLogInteractor
+        task_log_interactor = TaskLogInteractor(
+            storage=self.storage, task_storage=self.task_storage,
+            action_storage=self.action_storage
+        )
+        create_task_log_dto = CreateTaskLogDTO(
+            task_json=task_log_dto.task_json,
+            task_id=task_log_dto.task_id, user_id=task_log_dto.user_id,
+            action_id=task_log_dto.action_id)
+        task_log_interactor.create_task_log(create_task_log_dto)
 
     def user_action_on_task_and_set_random_assignees(self, task_id: int):
 

@@ -1,3 +1,5 @@
+import json
+
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
@@ -35,6 +37,7 @@ def api_wrapper(*args, **kwargs):
                           team_id=each_stage_assignee_item['team_id'])
          for
          each_stage_assignee_item in stage_assignees]
+    request_json = json.dumps(request_dict)
     from ib_tasks.storages.create_or_update_task_storage_implementation \
         import CreateOrUpdateTaskStorageImplementation
     from ib_tasks.storages.fields_storage_implementation \
@@ -71,5 +74,5 @@ def api_wrapper(*args, **kwargs):
     response = interactor.\
         act_on_task_interactor_and_update_task_stage_assignees_wrapper(
         presenter=presenter, task_display_id=task_display_id,
-        stage_assignee_dtos=stage_assignee_dtos)
+        stage_assignee_dtos=stage_assignee_dtos, request_json=request_json)
     return response
