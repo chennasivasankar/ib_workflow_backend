@@ -86,6 +86,7 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
         interactor.update_task_gofs(task_gof_with_task_id_dtos)
         interactor.update_task_gof_fields(task_gof_fields_dto)
         self._update_task_status_variables(status_dict, status_variables_dto)
+        task_dto.task_gof_field_dtos = task_gof_fields_dto
         return task_dto
 
     def _call_action_logic_function(
