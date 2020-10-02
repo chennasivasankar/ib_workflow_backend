@@ -10,7 +10,8 @@ from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDTO, ActionWithStageIdDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldDetailsDTO, FieldCompleteDetailsDTO, FieldWithGoFDisplayNameDTO
+    FieldDetailsDTO, FieldCompleteDetailsDTO, FieldWithGoFDisplayNameDTO, \
+    FieldDetailsWithFilledResponse
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO, TaskBaseDetailsDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
@@ -45,43 +46,46 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     def get_filled_fields_if_filled_in_another_task_than_given_task(
             self, task_id: int, unique_field_ids: List[str]
-    ) -> List[FieldWithGoFDisplayNameDTO]:
+    ) -> List[FieldDetailsWithFilledResponse]:
         task_gof_field_dicts = TaskGoFField.objects.filter(
             field_id__in=unique_field_ids).exclude(
             Q(task_gof__task_id=task_id) | Q(field_response="")).values(
             'field__field_id', 'field__display_name',
-            'field__gof__display_name')
-        field_with_gof_display_name_dtos = \
+            'field__gof__display_name', 'field_response')
+        field_details_with_filled_response = \
             self._prepare_field_with_gof_name_dtos(task_gof_field_dicts)
-        return field_with_gof_display_name_dtos
+        return field_details_with_filled_response
 
     def get_filled_fields_for_given_project_template(
             self, project_id: str, task_template_id: str,
-            unique_field_ids: List[str]) -> List[FieldWithGoFDisplayNameDTO]:
+            unique_field_ids: List[str]
+    ) -> List[FieldDetailsWithFilledResponse]:
         task_gof_field_dicts = TaskGoFField.objects.filter(
             field_id__in=unique_field_ids,
             task_gof__task__project_id=project_id,
             task_gof__task__template_id=task_template_id).exclude(
             field_response="").values(
             'field__field_id', 'field__display_name',
-            'field__gof__display_name')
-        field_with_gof_display_name_dtos = \
+            'field__gof__display_name', 'field_response')
+        field_details_with_filled_response = \
             self._prepare_field_with_gof_name_dtos(task_gof_field_dicts)
-        return field_with_gof_display_name_dtos
+        return field_details_with_filled_response
 
     @staticmethod
     def _prepare_field_with_gof_name_dtos(
             task_gof_field_dicts: List[Dict]
-    ) -> List[FieldWithGoFDisplayNameDTO]:
-        field_with_gof_name_dtos = [
-            FieldWithGoFDisplayNameDTO(
+    ) -> List[FieldDetailsWithFilledResponse]:
+        field_details_with_filled_response = [
+            FieldDetailsWithFilledResponse(
                 field_id=task_gof_field_dict['field__field_id'],
                 field_display_name=task_gof_field_dict['field__display_name'],
-                gof_display_name=task_gof_field_dict['field__gof__display_name']
+                gof_display_name=task_gof_field_dict[
+                    'field__gof__display_name'],
+                field_response=task_gof_field_dict['field_response']
             )
             for task_gof_field_dict in task_gof_field_dicts
         ]
-        return field_with_gof_name_dtos
+        return field_details_with_filled_response
 
     def get_stage_assignee_id_dtos(
             self, task_id: int, stage_ids: List[str]) -> List[TaskStageAssigneeTeamIdDTO]:

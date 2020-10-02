@@ -139,6 +139,11 @@ class FieldWithGoFDisplayNameDTO:
 
 
 @dataclass
+class FieldDetailsWithFilledResponse(FieldWithGoFDisplayNameDTO):
+    field_response: str
+
+
+@dataclass
 class FieldTypeDTO:
     field_id: str
     field_type: FieldTypes

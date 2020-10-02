@@ -13,7 +13,7 @@ from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionWithStageIdDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldWithGoFDisplayNameDTO
+    FieldDetailsWithFilledResponse
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO, TaskBaseDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
@@ -264,11 +264,12 @@ class TaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_filled_fields_for_given_project_template(
             self, project_id: str, task_template_id: str,
-            unique_field_ids: List[str]) -> List[FieldWithGoFDisplayNameDTO]:
+            unique_field_ids: List[str]
+    ) -> List[FieldDetailsWithFilledResponse]:
         pass
 
     @abc.abstractmethod
     def get_filled_fields_if_filled_in_another_task_than_given_task(
             self, task_id: int, unique_field_ids: List[str]
-    ) -> List[FieldWithGoFDisplayNameDTO]:
+    ) -> List[FieldDetailsWithFilledResponse]:
         pass
