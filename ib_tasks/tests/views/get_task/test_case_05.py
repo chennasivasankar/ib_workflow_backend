@@ -1,11 +1,13 @@
 """
-# TODO: Update test case description
+test with invalid city ids for searchable raise exceception
 """
+from unittest.mock import patch
 
 import factory
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
+from ib_tasks.adapters.auth_service import AuthService
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Searchable
 from ib_tasks.tests.factories.models import (
     TaskFactory,
@@ -39,8 +41,11 @@ class TestCase05GetTaskAPITestCase(TestUtils):
         TaskGoFFieldFactory.reset_sequence()
 
     @pytest.fixture
-    def setup(self, reset_factories):
-        task_obj = TaskFactory(task_display_id="iBWF-1", project_id="project0")
+    def setup(self, reset_factories, api_user):
+        user_id = api_user.user_id
+        task_obj = TaskFactory(
+            task_display_id="iBWF-1", project_id="project0", created_by=user_id
+        )
         template_id = task_obj.template_id
         TaskTemplateFactory(template_id=template_id)
         gof_objs = GoFFactory.create_batch(size=3)
@@ -117,9 +122,18 @@ class TestCase05GetTaskAPITestCase(TestUtils):
         )
 
     @pytest.mark.django_db
+    @patch.object(AuthService, "get_user_ids_based_on_user_level")
     def test_case(
-            self, snapshot, setup, mocker
+            self, user_ids_mock, snapshot, setup, mocker, api_user
     ):
+        user_id = api_user.user_id
+        user_ids_mock.return_value = [user_id]
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            get_valid_project_ids_mock
+        get_valid_project_ids_mock(mocker, project_ids=["project0"])
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            validate_if_user_is_in_project_mock
+        validate_if_user_is_in_project_mock(mocker, True)
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids_based_on_project_mock
         get_user_role_ids_based_on_project_mock(mocker)
