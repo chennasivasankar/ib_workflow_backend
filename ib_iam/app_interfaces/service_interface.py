@@ -564,3 +564,34 @@ class ServiceInterface:
     def get_projects_task_assignee_config():
         from ib_iam.constants.config import PROJECTS_CONFIG
         return PROJECTS_CONFIG
+
+    @staticmethod
+    def get_project_prefix(project_id: str) -> str:
+        # ToDo refactor storage arguments to interactor
+        #  because only one storage needed
+
+        from ib_iam.storages.project_storage_implementation import \
+            ProjectStorageImplementation
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        from ib_iam.storages.team_storage_implementation import \
+            TeamStorageImplementation
+        from ib_iam.interactors.project_interactor import ProjectInteractor
+
+        project_storage = ProjectStorageImplementation()
+        user_storage = UserStorageImplementation()
+        team_storage = TeamStorageImplementation()
+        interactor = ProjectInteractor(
+            project_storage=project_storage, user_storage=user_storage,
+            team_storage=team_storage
+        )
+
+        from ib_iam.exceptions.custom_exceptions import \
+            InvalidProjectIdException
+        try:
+            project_prefix = \
+                interactor.get_project_prefix(project_id=project_id)
+        except InvalidProjectIdException as err:
+            raise err
+
+        return project_prefix
