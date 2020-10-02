@@ -66,6 +66,7 @@ def append_action_dict(action_dict: Dict[str, Any]):
         button_text=action_dict['button_text'],
         button_color=action_dict.get("button_color"),
         action_type=action_dict['action_type'],
+        order=action_dict["order"],
         transition_template_id=action_dict['transition_template_id']
     )
 
@@ -81,6 +82,7 @@ def validation_for_action_dict(actions_dict: List[Dict]):
             "button_text": str,
             Optional("button_color"): str,
             "action_type": str,
+            "order": int,
             "transition_template_id": str
         }],
         ignore_extra_keys=True
@@ -102,6 +104,7 @@ def raise_exception_for_valid_format():
         "button_text": "button_text_1",
         "button_color": "button_color_1",
         "action_type": "NO VALIDATIONS",
+        "order": 1,
         "transition_template_id": "transition_id"
     }
     import json

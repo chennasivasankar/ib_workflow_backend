@@ -92,6 +92,7 @@ class StageActionDTOFactory(factory.Factory):
     roles = factory.Sequence(lambda n: [f'ROLE_{n + 1}', f'ROLE_{n + 2}'])
     button_text = factory.Sequence(lambda n: 'button_text_%d' % (n + 1))
     action_type = "action_type"
+    order = factory.Sequence(lambda n: (n + 1))
     transition_template_id = factory.Sequence(
         lambda n: "template_%d" % (n + 1))
     button_color = factory.Sequence(lambda n: 'button_color_%d' % (n + 1))

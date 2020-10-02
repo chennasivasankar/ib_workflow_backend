@@ -76,7 +76,8 @@ def populate_data_for_adhoc_tasks(spread_sheet_name: str):
 @transaction.atomic()
 def populate_data(spread_sheet_name: str):
     task_template = PopulateTaskTemplates()
-    task_template.populate_task_templates(spread_sheet_name=spread_sheet_name)
+    task_template.populate_task_templates(
+        spread_sheet_name=spread_sheet_name)
 
     gofs = PopulateGoFs()
     gofs.create_or_update_gofs(spread_sheet_name=spread_sheet_name)

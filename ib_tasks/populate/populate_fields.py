@@ -81,7 +81,7 @@ class PopulateFields:
                 order=int(order),
                 is_field_unique=is_field_unique
             )
-            print(field_dto)
+
             field_dtos.append(field_dto)
         return field_dtos
 
