@@ -44,7 +44,7 @@ class PopulateFields:
             order = field_record["Order"]
             is_unique = field_record["unique"]
             is_field_unique = False
-            unique_is_yes = is_unique.strip() == "Yes"
+            unique_is_yes = is_unique.strip().lower() == "Yes"
             if unique_is_yes:
                 is_field_unique = True
 
