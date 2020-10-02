@@ -286,7 +286,9 @@ class CreateOrUpdateTaskStorageImplementation(
         )
         return task_base_details_dto
 
-    def create_task(self, task_details_dto: BasicTaskDetailsDTO) -> int:
+    def create_task(
+            self, task_details_dto: BasicTaskDetailsDTO, project_prefix: str
+    ) -> int:
         from ib_tasks.models.task import Task
         task_object = Task.objects.create(
             task_display_id=None,
@@ -299,9 +301,8 @@ class CreateOrUpdateTaskStorageImplementation(
             due_date=task_details_dto.due_datetime,
             priority=task_details_dto.priority
         )
-        from ib_tasks.constants.constants import TASK_DISPLAY_ID
         Task.objects.filter(id=task_object.id).update(
-            task_display_id=TASK_DISPLAY_ID.format(task_object.id))
+            task_display_id=(project_prefix + '-' + str(task_object.id)))
         return task_object.id
 
     def create_task_gofs(

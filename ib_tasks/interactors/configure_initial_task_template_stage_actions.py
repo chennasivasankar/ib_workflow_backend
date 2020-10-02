@@ -148,6 +148,7 @@ class ConfigureInitialTaskTemplateStageActions:
                 button_text=task_dto.button_text,
                 button_color=task_dto.button_color,
                 action_type=task_dto.action_type,
+                order=task_dto.order,
                 transition_template_id=task_dto.transition_template_id
             )
             for task_dto in tasks_dto

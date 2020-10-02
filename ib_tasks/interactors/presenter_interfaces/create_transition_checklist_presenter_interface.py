@@ -1,7 +1,7 @@
 import abc
 
 from ib_tasks.exceptions.fields_custom_exceptions import \
-    UserDidNotFillRequiredFields
+    UserDidNotFillRequiredFields, FieldsFilledAlreadyBySomeone
 from ib_tasks.exceptions.gofs_custom_exceptions import \
     UserDidNotFillRequiredGoFs
 
@@ -153,4 +153,9 @@ class CreateOrUpdateTransitionChecklistPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_user_did_not_fill_required_fields(
             self, err: UserDidNotFillRequiredFields):
+        pass
+
+    @abc.abstractmethod
+    def raise_fields_already_filled_by_someone(
+            self, err: FieldsFilledAlreadyBySomeone):
         pass

@@ -6,7 +6,7 @@ from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueDateTimeWithoutStartDateTimeIsNotValid, StartDateTimeIsRequired, \
     DueDateTimeIsRequired, DueDateTimeHasExpired
 from ib_tasks.exceptions.fields_custom_exceptions import \
-    UserDidNotFillRequiredFields
+    UserDidNotFillRequiredFields, FieldsFilledAlreadyBySomeone
 from ib_tasks.exceptions.gofs_custom_exceptions import \
     UserDidNotFillRequiredGoFs, InvalidStagePermittedGoFs
 from ib_tasks.exceptions.stage_custom_exceptions import \
@@ -249,4 +249,9 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_invalid_stage_permitted_gofs(self,
                                            err: InvalidStagePermittedGoFs):
+        pass
+
+    @abc.abstractmethod
+    def raise_fields_already_filled_by_someone(
+            self, err: FieldsFilledAlreadyBySomeone):
         pass

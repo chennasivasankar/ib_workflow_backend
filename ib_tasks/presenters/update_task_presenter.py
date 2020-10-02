@@ -7,39 +7,14 @@ from ib_tasks.exceptions.datetime_custom_exceptions import \
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidDateFormat
 from ib_tasks.exceptions.fields_custom_exceptions import \
-    UserDidNotFillRequiredFields
+    UserDidNotFillRequiredFields, FieldsFilledAlreadyBySomeone
 from ib_tasks.exceptions.gofs_custom_exceptions import \
     InvalidStagePermittedGoFs
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
     InvalidStageIdsListException, StageIdsListEmptyException
 from ib_tasks.exceptions.task_custom_exceptions import \
-    InvalidTaskTemplateIds, \
-    InvalidTaskDisplayId, \
-    TaskDelayReasonIsNotUpdated, PriorityIsRequired
-from ib_tasks.interactors.presenter_interfaces.dtos import \
-    AllTasksOverviewDetailsDTO
-from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
-    UpdateTaskPresenterInterface
-from ib_tasks.presenters.mixins.gofs_fields_validation_presenter_mixin import \
-    GoFsFieldsValidationPresenterMixin
-from ib_tasks.presenters.mixins.task_overview_presenter_mixin import \
-    TaskOverviewDetailsPresenterMixin
-from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
-
-from ib_tasks.exceptions.datetime_custom_exceptions import \
-    StartDateIsAheadOfDueDate, \
-    DueDateTimeHasExpired, DueDateTimeIsRequired, \
-    StartDateTimeIsRequired, DueDateTimeWithoutStartDateTimeIsNotValid
-from ib_tasks.exceptions.field_values_custom_exceptions import \
-    InvalidDateFormat
-from ib_tasks.exceptions.fields_custom_exceptions import \
-    UserDidNotFillRequiredFields
-from ib_tasks.exceptions.gofs_custom_exceptions import \
-    InvalidStagePermittedGoFs
-from ib_tasks.exceptions.stage_custom_exceptions import \
-    StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
-    InvalidStageIdsListException, StageIdsListEmptyException
+    InvalidTaskJson
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
     InvalidTaskDisplayId, \
@@ -58,6 +33,10 @@ class UpdateTaskPresenterImplementation(
     UpdateTaskPresenterInterface, HTTPResponseMixin,
     GoFsFieldsValidationPresenterMixin, TaskOverviewDetailsPresenterMixin
 ):
+    def raise_fields_already_filled_by_someone(
+            self, err: FieldsFilledAlreadyBySomeone):
+        return self.raise_fields_already_filled_by_someone_exception(err)
+
     def raise_user_did_not_fill_required_fields(
             self, err: UserDidNotFillRequiredFields):
         from ib_tasks.constants.exception_messages import \
@@ -339,5 +318,14 @@ class UpdateTaskPresenterImplementation(
             "response": response_message,
             "http_status_code": 400,
             "res_status": INVALID_TASK_TEMPLATE_IDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_task_json(self, err: InvalidTaskJson):
+        from ib_tasks.constants.exception_messages import INVALID_TASK_JSON
+        data = {
+            "response": INVALID_TASK_JSON[0],
+            "http_status_code": 400,
+            "res_status": INVALID_TASK_JSON[1]
         }
         return self.prepare_400_bad_request_response(data)

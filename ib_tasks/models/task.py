@@ -9,7 +9,7 @@ class Task(AbstractDateTimeModel):
     project_id = models.CharField(max_length=50, db_index=True)
     task_display_id = models.CharField(
         max_length=50, unique=True, null=True, blank=True, db_index=True)
-    template_id = models.CharField(max_length=100)
+    template = models.ForeignKey("ib_tasks.TaskTemplate", on_delete=models.CASCADE)
     created_by = models.CharField(max_length=50)
     title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)

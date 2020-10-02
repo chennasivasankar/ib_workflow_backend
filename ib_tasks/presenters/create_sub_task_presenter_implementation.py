@@ -12,7 +12,7 @@ from ib_tasks.exceptions.datetime_custom_exceptions import \
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidDateFormat
 from ib_tasks.exceptions.fields_custom_exceptions import \
-    UserDidNotFillRequiredFields
+    UserDidNotFillRequiredFields, FieldsFilledAlreadyBySomeone
 from ib_tasks.exceptions.gofs_custom_exceptions import \
     DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs, \
     InvalidStagePermittedGoFs
@@ -44,6 +44,10 @@ class CreateSubTaskPresenterImplementation(
     CreateSubTaskPresenterInterface, HTTPResponseMixin,
     GoFsFieldsValidationPresenterMixin, TaskOverviewDetailsPresenterMixin
 ):
+
+    def raise_fields_already_filled_by_someone(
+            self, err: FieldsFilledAlreadyBySomeone):
+        return self.raise_fields_already_filled_by_someone_exception(err)
 
     def raise_invalid_parent_task_id(self, err: InvalidTaskDisplayId):
         from ib_tasks.constants.exception_messages import \

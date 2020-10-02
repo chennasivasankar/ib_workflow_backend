@@ -25,11 +25,8 @@ from .task_log import TaskLog
 from .task_stage_rp import TaskStageRp
 from .task_status_variable import TaskStatusVariable, TaskStatusVariable
 from .task_template import TaskTemplate, TaskTemplate
-from .task_template_global_constants import TaskTemplateGlobalConstants, \
-    TaskTemplateGlobalConstants
 from .task_template_initial_stages import TaskTemplateInitialStage
 from .task_template_status_variable import TaskTemplateStatusVariable
-from .template_status_variables import TaskTemplateStatusVariables
 from .user_task_delay_reason import UserTaskDelayReason
 from .task_template_mandatory_fields import TaskTemplateMandatoryFields
 
@@ -46,16 +43,13 @@ __all__ = [
     "Stage",
     "StageAction",
     "TaskTemplateStatusVariable",
-    "TaskTemplateStatusVariables",
-    "TaskTemplateGlobalConstants",
     "Field", "FieldRole", "GoF", "GoFRole",
-    "Stage", "StageAction", "TaskTemplateStatusVariables",
+    "Stage", "StageAction",
     "TaskTemplate", "Task", "TaskGoF", "TaskGoFField", "TaskLog",
     "GlobalConstant", "CurrentTaskStage", "TaskTemplateGoFs",
     "GlobalConstant", "CurrentTaskStage",
     "TaskTemplateGoFs",
     "TaskTemplateStatusVariable",
-    "TaskTemplateStatusVariables",
     "TaskTemplateInitialStage",
     "TaskTemplateInitialStage",
     "StagePermittedRoles",

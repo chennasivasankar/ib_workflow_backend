@@ -20,7 +20,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidUrlForImage, InvalidImageFormat, InvalidUrlForFile, \
     InvalidFileFormat
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
-    DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
+    DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields, \
+    FieldsFilledAlreadyBySomeone
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
     DuplicateSameGoFOrderForAGoF, UserDidNotFillRequiredGoFs, \
     InvalidStagePermittedGoFs
@@ -148,6 +149,8 @@ class SaveAndActOnATaskInteractor(
             return presenter.raise_user_needs_field_writable_permission(err)
         except UserDidNotFillRequiredFields as err:
             return presenter.raise_user_did_not_fill_required_fields(err)
+        except FieldsFilledAlreadyBySomeone as err:
+            return presenter.raise_fields_already_filled_by_someone(err)
         except EmptyValueForRequiredField as err:
             return presenter.raise_empty_value_in_required_field(err)
         except InvalidPhoneNumberValue as err:

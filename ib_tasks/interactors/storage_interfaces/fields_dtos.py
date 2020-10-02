@@ -27,6 +27,7 @@ class FieldDTO:
     allowed_formats: Optional[List[str]]
     validation_regex: Optional[str]
     order: int
+    is_field_unique: bool = False
 
 
 @dataclass()
@@ -135,6 +136,11 @@ class FieldWithGoFDisplayNameDTO:
     field_id: str
     gof_display_name: str
     field_display_name: str
+
+
+@dataclass
+class FieldDetailsWithFilledResponse(FieldWithGoFDisplayNameDTO):
+    field_response: str
 
 
 @dataclass

@@ -12,10 +12,12 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied
 from ib_tasks.exceptions.task_custom_exceptions import (
     InvalidTaskException, InvalidTaskDisplayId, TaskDelayReasonIsNotUpdated,
-    PriorityIsRequired, StartDateIsRequired, DueDateIsRequired)
+    PriorityIsRequired, StartDateIsRequired, DueDateIsRequired,
+    InvalidTaskJson)
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
-from ib_tasks.interactors.mixins.get_user_act_on_task_response import GetUserActOnTaskResponse
+from ib_tasks.interactors.mixins.get_user_act_on_task_response import \
+    GetUserActOnTaskResponse
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
@@ -44,6 +46,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import TaskTemplateStorageInterface
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO
 
 
 class InvalidBoardIdException(Exception):
@@ -85,7 +88,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         self.task_template_storage = task_template_storage
 
     def user_action_on_task_wrapper(
-            self, presenter: PresenterInterface, task_display_id: str):
+            self, presenter: PresenterInterface, task_display_id: str,
+            request_json: str):
 
         try:
             task_id = self.get_task_id_for_task_display_id(task_display_id)
@@ -93,6 +97,10 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             all_tasks_overview_dto = \
                 self.user_action_on_task_and_set_random_assignees(
                     task_id=task_id)
+            task_log_dto = CreateTaskLogDTO(
+                task_id=task_id, user_id=self.user_id,
+                action_id=self.action_id, task_json=request_json)
+            self._create_task_log(task_log_dto)
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
         except InvalidBoardIdException as err:
@@ -118,11 +126,25 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             return presenter.due_date_is_required()
         except PriorityIsRequired:
             return presenter.priority_is_required()
+        except InvalidTaskJson as err:
+            return presenter.raise_invalid_task_json(err)
         return presenter.get_response_for_user_action_on_task(
             task_complete_details_dto=task_complete_details_dto,
             task_current_stage_details_dto=task_current_stage_details_dto,
             all_tasks_overview_dto=all_tasks_overview_dto
         )
+
+    def _create_task_log(self, task_log_dto: CreateTaskLogDTO):
+        from ib_tasks.interactors.task_log_interactor import TaskLogInteractor
+        task_log_interactor = TaskLogInteractor(
+            storage=self.storage, task_storage=self.task_storage,
+            action_storage=self.action_storage
+        )
+        create_task_log_dto = CreateTaskLogDTO(
+            task_json=task_log_dto.task_json,
+            task_id=task_log_dto.task_id, user_id=task_log_dto.user_id,
+            action_id=task_log_dto.action_id)
+        task_log_interactor.create_task_log(create_task_log_dto)
 
     def user_action_on_task_and_set_random_assignees(self, task_id: int):
 
@@ -143,9 +165,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             self.task_storage.get_project_id_for_the_task_id(task_id=task_id)
         self.validate_if_user_is_in_project(
             project_id=project_id, user_id=self.user_id)
-
-        self._validations_for_task_action(task_id, project_id)
-        self._validation_all_user_template_permitted_fields_are_filled_or_not(
+        self._validations_for_task_action(project_id)
+        self._validate_task_due_date_and_user_template_permitted_fields_are_filled_or_not(
             task_id=task_id, project_id=project_id)
         self._validate_present_task_stage_actions(task_id=task_id)
         updated_task_dto = \
@@ -156,14 +177,22 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         self._update_task_stages(stage_ids=stage_ids, task_id=task_id)
         return stage_ids, project_id, updated_task_dto
 
-    def _validation_all_user_template_permitted_fields_are_filled_or_not(
+    def _validate_task_due_date_and_user_template_permitted_fields_are_filled_or_not(
             self, task_id: int, project_id: str
     ):
+        template_ids = self.task_storage.get_template_ids_to_task_ids(
+            task_ids=[task_id])
+        from ib_tasks.constants.constants import ADHOC_TEMPLATE_ID
+        is_normal_template = \
+            not template_ids[0].template_id == ADHOC_TEMPLATE_ID
         action_type = self.action_storage.get_action_type_for_given_action_id(
             self.action_id)
-        action_type_is_not_no_validations = \
+        is_action_type_validations = \
             action_type != ActionTypes.NO_VALIDATIONS.value
-        if action_type_is_not_no_validations:
+        if is_normal_template and is_action_type_validations:
+            self._validate_task_delay_reason_updated_or_not(task_id)
+
+        if is_action_type_validations:
             stage_id = self.action_storage.get_stage_id_for_given_action_id(
                 self.action_id)
             self._validate_all_user_template_permitted_fields_are_filled_or_not(
@@ -253,7 +282,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
             .call_action_logic_function_and_update_task_status_variables()
         return task_dto
 
-    def _validations_for_task_action(self, task_id: int, project_id: str):
+    def _validations_for_task_action(self, project_id: str):
 
         if self.board_id:
             self._validate_board_id()
@@ -267,12 +296,6 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin,
         self._validate_user_permission_to_user(
             self.user_id, action_roles, self.action_id, project_id=project_id
         )
-        template_ids = self.task_storage.get_template_ids_to_task_ids(
-            task_ids=[task_id])
-        from ib_tasks.constants.constants import ADHOC_TEMPLATE_ID
-        is_not_adhoc_template = not template_ids[0].template_id == ADHOC_TEMPLATE_ID
-        if is_not_adhoc_template:
-            self._validate_task_delay_reason_updated_or_not(task_id)
 
     def _validate_present_task_stage_actions(self, task_id: int):
 

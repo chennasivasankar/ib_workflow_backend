@@ -17,7 +17,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidUrlForImage, InvalidImageFormat, InvalidUrlForFile, \
     InvalidFileFormat
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
-    DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
+    DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields, \
+    FieldsFilledAlreadyBySomeone
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
     DuplicateSameGoFOrderForAGoF, InvalidStagePermittedGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
@@ -27,7 +28,7 @@ from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId, \
-    TaskDelayReasonIsNotUpdated, PriorityIsRequired
+    TaskDelayReasonIsNotUpdated, PriorityIsRequired, InvalidTaskJson
 from ib_tasks.interactors.create_or_update_task. \
     gofs_details_validations_interactor import \
     GoFsDetailsValidationsInteractor
@@ -74,7 +75,7 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO, \
     UpdateTaskWithTaskDisplayIdDTO, GoFFieldsDTO, StageIdWithAssigneeDTO, \
-    UpdateTaskBasicDetailsDTO
+    UpdateTaskBasicDetailsDTO, CreateTaskLogDTO, FieldValuesDTO
 from ib_tasks.interactors.update_task_stage_assignees_interactor import \
     UpdateTaskStageAssigneesInteractor
 
@@ -107,10 +108,11 @@ class UpdateTaskInteractor(
 
     def update_task_wrapper(
             self, presenter: UpdateTaskPresenterInterface,
-            task_dto: UpdateTaskWithTaskDisplayIdDTO
-    ):
+            task_dto: UpdateTaskWithTaskDisplayIdDTO,
+            request_json: str):
         try:
-            return self._prepare_update_task_response(task_dto, presenter)
+            return self._prepare_update_task_response(
+                task_dto, presenter, request_json)
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
         except InvalidTaskException as err:
@@ -149,6 +151,8 @@ class UpdateTaskInteractor(
             return presenter.raise_user_needs_gof_writable_permission(err)
         except UserNeedsFieldWritablePermission as err:
             return presenter.raise_user_needs_field_writable_permission(err)
+        except FieldsFilledAlreadyBySomeone as err:
+            return presenter.raise_fields_already_filled_by_someone(err)
         except EmptyValueForRequiredField as err:
             return presenter.raise_empty_value_in_required_field(err)
         except InvalidPhoneNumberValue as err:
@@ -195,17 +199,19 @@ class UpdateTaskInteractor(
             return presenter.raise_stage_ids_list_empty_exception(err)
         except InvalidStageIdsListException as err:
             return presenter.raise_invalid_stage_ids_list_exception(err)
+        except InvalidTaskJson as err:
+            return presenter.raise_invalid_task_json(err)
 
     def _prepare_update_task_response(
             self, task_dto: UpdateTaskWithTaskDisplayIdDTO,
-            presenter: UpdateTaskPresenterInterface):
+            presenter: UpdateTaskPresenterInterface, request_json: str):
         all_tasks_overview_details_dto = self.update_task_with_task_display_id(
-            task_dto)
+            task_dto, request_json)
         return presenter.get_update_task_response(
             all_tasks_overview_details_dto)
 
     def update_task_with_task_display_id(
-            self, task_dto: UpdateTaskWithTaskDisplayIdDTO):
+            self, task_dto: UpdateTaskWithTaskDisplayIdDTO, request_json: str):
         task_display_id = task_dto.task_display_id
         task_id = self.get_task_id_for_task_display_id(task_display_id)
         task_basic_details = UpdateTaskBasicDetailsDTO(
@@ -218,7 +224,25 @@ class UpdateTaskInteractor(
             task_basic_details=task_basic_details,
             stage_assignee=task_dto.stage_assignee,
             gof_fields_dtos=task_dto.gof_fields_dtos)
-        return self.update_task(task_dto_with_db_task_id)
+        all_tasks_overview_details_dto = self.update_task(
+            task_dto_with_db_task_id)
+        task_log_dto = CreateTaskLogDTO(
+            task_id=task_id, user_id=task_dto.created_by_id,
+            action_id=None, task_json=request_json)
+        self._create_task_log(task_log_dto)
+        return all_tasks_overview_details_dto
+
+    def _create_task_log(self, task_log_dto: CreateTaskLogDTO):
+        from ib_tasks.interactors.task_log_interactor import TaskLogInteractor
+        task_log_interactor = TaskLogInteractor(
+            storage=self.storage, task_storage=self.task_storage,
+            action_storage=self.action_storage
+        )
+        create_task_log_dto = CreateTaskLogDTO(
+            task_json=task_log_dto.task_json,
+            task_id=task_log_dto.task_id, user_id=task_log_dto.user_id,
+            action_id=task_log_dto.action_id)
+        task_log_interactor.create_task_log(create_task_log_dto)
 
     def update_task(
             self, task_dto: UpdateTaskDTO) -> AllTasksOverviewDetailsDTO:
@@ -265,6 +289,9 @@ class UpdateTaskInteractor(
             task_template_id=task_template_id, project_id=project_id,
             action_type=task_dto.task_basic_details.action_type,
             stage_id=task_dto.stage_assignee.stage_id)
+        fields = self._get_fields_which_does_not_have_empty_response(
+            task_dto.gof_fields_dtos)
+        self._validate_unique_fields_filled_validation(fields, task_id)
         if action_type_is_not_no_validations and is_not_adhoc_template:
             self._validate_all_user_permitted_fields_are_filled_or_not(
                 user_id=task_dto.task_basic_details.created_by_id,
@@ -273,6 +300,27 @@ class UpdateTaskInteractor(
                 stage_id=task_dto.stage_assignee.stage_id,
                 task_template_id=task_template_id)
         return project_id
+
+    def _validate_unique_fields_filled_validation(
+            self, fields: List[FieldValuesDTO], task_id: int):
+        from ib_tasks.interactors.create_or_update_task \
+            .validate_unique_fields_filled_or_not import \
+            ValidateUniqueFieldsFilledInteractor
+        validation_interactor = ValidateUniqueFieldsFilledInteractor(
+            self.field_storage, self.task_storage)
+        validation_interactor.validate_unique_fields_filled_in_task_updation(
+            fields, task_id)
+
+    @staticmethod
+    def _get_fields_which_does_not_have_empty_response(
+            gof_fields_dtos: List[GoFFieldsDTO]) -> List[FieldValuesDTO]:
+        field_values_dtos = []
+        for gof_fields_dto in gof_fields_dtos:
+            field_values_dtos += [
+                field_value_dto
+                for field_value_dto in gof_fields_dto.field_values_dtos
+            ]
+        return field_values_dtos
 
     def _update_task_details(self, task_dto: UpdateTaskDTO):
         task_crud_interactor = TaskCrudOperationsInteractor(

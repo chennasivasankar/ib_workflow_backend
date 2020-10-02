@@ -37,6 +37,14 @@ class DuplicateStageActionNamesException(Exception):
         self.stage_actions = stage_actions
 
 
+class InvalidOrderForActions(Exception):
+    def __init__(self, action_names: List[str]):
+        self.action_names = action_names
+
+    def __str__(self):
+        return f"invalid order for action {self.action_names}"
+
+
 class CreateOrUpdateOrDeleteStageActions:
 
     def __init__(self, storage: ActionStorageInterface,
@@ -51,6 +59,7 @@ class CreateOrUpdateOrDeleteStageActions:
         self._validations_for_stage_ids(stage_ids=stage_ids)
         transition_template_ids = \
             self._get_transition_template_ids(action_dtos)
+        self._validate_order_for_stage_action(action_dtos)
         self._validations_for_transition_template_ids(transition_template_ids)
         self._validations_for_action_roles(action_dtos)
         self._validations_for_empty_stage_display_logic(action_dtos)
@@ -71,7 +80,9 @@ class CreateOrUpdateOrDeleteStageActions:
         invalid_transition_ids = [
             transition_id
             for transition_id in transition_template_ids
-            if transition_id.strip() and transition_id not in valid_transition_template_ids
+            if
+            transition_id.strip() and transition_id not in
+            valid_transition_template_ids
         ]
         if invalid_transition_ids:
             raise InvalidTransitionTemplateIds(invalid_transition_ids)
@@ -91,6 +102,15 @@ class CreateOrUpdateOrDeleteStageActions:
             raise DuplicateStageActionNamesException(
                 stage_actions=stage_actions
             )
+
+    @staticmethod
+    def _validate_order_for_stage_action(action_dtos: List[StageActionDTO]):
+        invalid_order_action_names = [
+            action_dto.action_name for action_dto in action_dtos if
+            action_dto.order < 1
+        ]
+        if invalid_order_action_names:
+            raise InvalidOrderForActions(invalid_order_action_names)
 
     @staticmethod
     def _get_transition_template_ids(actions_dto: List[StageActionDTO]):
@@ -170,7 +190,8 @@ class CreateOrUpdateOrDeleteStageActions:
             if not action_dto.roles == [ALL_ROLES_ID]:
                 stage_id = action_dto.stage_id
                 self._validation_for_action_roles(
-                    action_dto.roles, valid_roles, invalid_stage_roles, stage_id)
+                    action_dto.roles, valid_roles, invalid_stage_roles,
+                    stage_id)
 
         is_invalid_stage_roles_present = invalid_stage_roles
 

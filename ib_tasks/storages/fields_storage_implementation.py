@@ -19,11 +19,18 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import (
     TaskTemplateStageDTO, StageDetailsDTO)
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskProjectRolesDTO
+from ib_tasks.interactors.task_dtos import FieldValuesDTO
 from ib_tasks.models import (CurrentTaskStage, Stage, TaskGoFField, FieldRole,
                              TaskTemplateGoFs, Field)
 
 
 class FieldsStorageImplementation(FieldsStorageInterface):
+
+    def get_unique_field_ids_in_given_field_ids(self, field_ids: List[str]):
+        unique_field_ids = Field.objects.filter(
+            field_id__in=field_ids, is_unique=True).values_list(
+                'field_id', flat=True)
+        return unique_field_ids
 
     def get_fields_display_names_with_gof_display_name(
             self, field_ids: List[str]) -> List[FieldWithGoFDisplayNameDTO]:

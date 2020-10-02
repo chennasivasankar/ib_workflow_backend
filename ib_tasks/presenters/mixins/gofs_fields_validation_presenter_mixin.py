@@ -6,7 +6,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidValueForDropdownField, InvalidFloatValue, InvalidNumberValue, \
     NotAStrongPassword, InvalidURLValue, InvalidEmailFieldValue, \
     InvalidPhoneNumberValue, EmptyValueForRequiredField, InvalidDateFormat
-from ib_tasks.exceptions.fields_custom_exceptions import DuplicateFieldIdsToGoF
+from ib_tasks.exceptions.fields_custom_exceptions import \
+    DuplicateFieldIdsToGoF, FieldsFilledAlreadyBySomeone
 from ib_tasks.exceptions.gofs_custom_exceptions import \
     InvalidStagePermittedGoFs
 from ib_tasks.exceptions.permission_custom_exceptions import \
@@ -229,7 +230,8 @@ class GoFsFieldsValidationPresenterMixin:
         from ib_tasks.constants.exception_messages import \
             INCORRECT_NAME_IN_GOF_SELECTOR_FIELD
         response_message = INCORRECT_NAME_IN_GOF_SELECTOR_FIELD[0].format(
-            err.field_value, err.field_display_name, err.valid_gof_selector_names
+            err.field_value, err.field_display_name,
+            err.valid_gof_selector_names
         )
         data = {
             "response": response_message,
@@ -243,7 +245,8 @@ class GoFsFieldsValidationPresenterMixin:
         from ib_tasks.constants.exception_messages import \
             INCORRECT_RADIO_GROUP_CHOICE
         response_message = INCORRECT_RADIO_GROUP_CHOICE[0].format(
-            err.field_value, err.field_display_name, err.valid_radio_group_options
+            err.field_value, err.field_display_name,
+            err.valid_radio_group_options
         )
         data = {
             "response": response_message,
@@ -300,7 +303,8 @@ class GoFsFieldsValidationPresenterMixin:
     def raise_invalid_date_format_exception(self, err: InvalidDateFormat):
         from ib_tasks.constants.exception_messages import \
             INVALID_DATE_FORMAT
-        message = INVALID_DATE_FORMAT[0].format(err.field_value, err.field_display_name,
+        message = INVALID_DATE_FORMAT[0].format(err.field_value,
+                                                err.field_display_name,
                                                 err.expected_format)
         data = {
             "response": message,
@@ -369,5 +373,18 @@ class GoFsFieldsValidationPresenterMixin:
             "response": response_message,
             "http_status_code": 400,
             "res_status": INVALID_FILE_FORMAT[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_fields_already_filled_by_someone_exception(
+            self, err: FieldsFilledAlreadyBySomeone):
+        from ib_tasks.constants.exception_messages import \
+            FIELDS_ALREADY_FILLED_BY_SOMEONE
+        response_message = FIELDS_ALREADY_FILLED_BY_SOMEONE[0].format(
+            err.field_display_names)
+        data = {
+            "response": response_message,
+            "http_status_code": 400,
+            "res_status": FIELDS_ALREADY_FILLED_BY_SOMEONE[1]
         }
         return self.prepare_400_bad_request_response(data)

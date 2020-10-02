@@ -1,6 +1,5 @@
-from ib_tasks.interactors.storage_interfaces.action_storage_interface import ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_storage_interface \
-    import TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
+    ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
@@ -38,18 +37,21 @@ class TaskLogInteractor:
             raise TaskDoesNotExists(
                 INVALID_TASK_ID[0].format(create_task_log_dto.task_id)
             )
-        is_action_exists = self.action_storage.validate_action(
-            action_id=create_task_log_dto.action_id
-        )
+        action_id = create_task_log_dto.action_id
+        action_id_is_not_none = action_id is not None
+        if action_id_is_not_none:
+            self._validate_action_id(action_id)
+        return
+
+    def _validate_action_id(self, action_id: int):
+        is_action_exists = self.action_storage.validate_action(action_id)
         is_action_not_exists = not is_action_exists
         if is_action_not_exists:
             from ib_tasks.exceptions.action_custom_exceptions import \
                 ActionDoesNotExists
             from ib_tasks.constants.exception_messages import \
                 INVALID_ACTION_ID
-            raise ActionDoesNotExists(INVALID_ACTION_ID[0].format(
-                create_task_log_dto.action_id)
-            )
+            raise ActionDoesNotExists(INVALID_ACTION_ID[0].format(action_id))
 
     @staticmethod
     def _validate_task_json_string(task_json: str):

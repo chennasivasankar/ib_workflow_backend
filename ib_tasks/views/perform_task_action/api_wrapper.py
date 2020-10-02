@@ -1,3 +1,5 @@
+import json
+
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
@@ -23,6 +25,7 @@ def api_wrapper(*args, **kwargs):
     action_id = int(request_dict['action_id'])
     board_id = request_dict.get('board_id')
     view_type = request_dict.get('view_type', None)
+    request_json = json.dumps(request_dict)
     from ib_tasks.storages.create_or_update_task_storage_implementation \
         import CreateOrUpdateTaskStorageImplementation
     from ib_tasks.storages.fields_storage_implementation \
@@ -57,5 +60,5 @@ def api_wrapper(*args, **kwargs):
     )
 
     response = interactor.user_action_on_task_wrapper(
-        presenter=presenter, task_display_id=task_id)
+        presenter=presenter, task_display_id=task_id, request_json=request_json)
     return response

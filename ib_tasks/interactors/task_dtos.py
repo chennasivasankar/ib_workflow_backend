@@ -167,7 +167,7 @@ class CreateTaskLogDTO:
     task_json: str
     task_id: int
     user_id: str
-    action_id: int
+    action_id: Optional[int]
 
 
 @dataclass

@@ -20,7 +20,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import (
     InvalidFileFormat
 )
 from ib_tasks.exceptions.fields_custom_exceptions import (
-    InvalidFieldIds, DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields
+    InvalidFieldIds, DuplicateFieldIdsToGoF, UserDidNotFillRequiredFields,
+    FieldsFilledAlreadyBySomeone
 )
 from ib_tasks.exceptions.gofs_custom_exceptions import (
     InvalidGoFIds, DuplicateSameGoFOrderForAGoF, InvalidStagePermittedGoFs
@@ -162,6 +163,8 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
             return presenter.raise_user_needs_field_writable_permission(err)
         except UserDidNotFillRequiredFields as err:
             return presenter.raise_user_did_not_fill_required_fields(err)
+        except FieldsFilledAlreadyBySomeone as err:
+            return presenter.raise_fields_already_filled_by_someone(err)
         except EmptyValueForRequiredField as err:
             return presenter.raise_empty_value_in_required_field(err)
         except InvalidPhoneNumberValue as err:
@@ -247,8 +250,7 @@ class CreateTaskInteractor(TaskOperationsUtilitiesMixin):
         from ib_tasks.interactors.task_log_interactor import TaskLogInteractor
         task_log_interactor = TaskLogInteractor(
             storage=self.storage, task_storage=self.task_storage,
-            action_storage=self.action_storage
-        )
+            action_storage=self.action_storage)
         create_task_log_dto = CreateTaskLogDTO(
             task_json=task_log_dto.task_json,
             task_id=task_log_dto.task_id, user_id=task_log_dto.user_id,

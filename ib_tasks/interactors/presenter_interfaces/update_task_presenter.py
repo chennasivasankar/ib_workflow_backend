@@ -4,14 +4,14 @@ from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueDateTimeHasExpired, DueDateTimeWithoutStartDateTimeIsNotValid, \
     StartDateTimeIsRequired, DueDateTimeIsRequired
 from ib_tasks.exceptions.fields_custom_exceptions import \
-    UserDidNotFillRequiredFields
+    UserDidNotFillRequiredFields, FieldsFilledAlreadyBySomeone
 from ib_tasks.exceptions.gofs_custom_exceptions import \
     InvalidStagePermittedGoFs
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee, InvalidStageId, \
     StageIdsListEmptyException, InvalidStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId, \
-    TaskDelayReasonIsNotUpdated, PriorityIsRequired
+    TaskDelayReasonIsNotUpdated, PriorityIsRequired, InvalidTaskJson
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 
@@ -196,4 +196,13 @@ class UpdateTaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_user_did_not_fill_required_fields(
             self, err: UserDidNotFillRequiredFields):
+        pass
+
+    @abc.abstractmethod
+    def raise_fields_already_filled_by_someone(
+            self, err: FieldsFilledAlreadyBySomeone):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_task_json(self, err: InvalidTaskJson):
         pass

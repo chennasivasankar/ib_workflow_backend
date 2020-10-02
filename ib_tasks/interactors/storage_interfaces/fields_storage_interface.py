@@ -13,6 +13,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskTemplateStageDTO, StageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskProjectRolesDTO
+from ib_tasks.interactors.task_dtos import FieldValuesDTO
 
 
 class FieldsStorageInterface(abc.ABC):
@@ -144,4 +145,8 @@ class FieldsStorageInterface(abc.ABC):
     def get_fields_display_names_with_gof_display_name(
             self, field_ids: List[str]
     ) -> List[FieldWithGoFDisplayNameDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_unique_field_ids_in_given_field_ids(self, field_ids: List[str]):
         pass

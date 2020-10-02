@@ -291,8 +291,9 @@ STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE = (
     "please assign valid assignees for stages",
     "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE")
 
-TASK_DELAY_REASON_IS_NOT_ADDED = ("Task {} in Stage {} has missed the due date",
-                                  "REASON_NOT_ADDED_FOR_TASK_DELAY")
+TASK_DELAY_REASON_IS_NOT_ADDED = (
+"Task {} in Stage {} has missed the due date",
+"REASON_NOT_ADDED_FOR_TASK_DELAY")
 INVALID_STAGE_IDS_FOR_TASK = "Invalid stage_ids : {} for the task_id: {}"
 INVALID_KEY_ERROR = ("invalid key error", "INVALID_KEY_ERROR")
 
@@ -481,3 +482,7 @@ EMPTY_FIELD_VALUES = (
     "Field type {} having field_values empty"
 )
 
+FIELDS_ALREADY_FILLED_BY_SOMEONE = (
+    "{} fields are already entered by someone",
+    "FIELDS_ALREADY_FILLED_BY_SOMEONE"
+)

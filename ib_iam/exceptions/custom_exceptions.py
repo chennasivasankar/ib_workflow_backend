@@ -214,3 +214,8 @@ class UsersNotBelongToGivenLevelHierarchy(Exception):
 
 class UserNotBelongToTeam(Exception):
     pass
+
+
+class InvalidProjectIdException(Exception):
+    def __init__(self, project_id: str):
+        self.project_id = project_id
