@@ -1,4 +1,4 @@
-from typing import List, Any, Dict, Tuple
+from typing import List, Any, Dict
 
 from ib_tasks.constants.enum import FieldTypes
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -88,18 +88,26 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
             task_gof_dtos, gof_multiple_enable_dict,
             task_gof_fields_dto_dict, status_variable_dtos)
         task_dict = self._get_updated_task_dict(task_dict)
-        # TODO update fields
+        from ib_tasks.interactors.create_or_update_task \
+            .task_crud_operations_interactor \
+            import TaskCrudOperationsInteractor
+        interactor = TaskCrudOperationsInteractor(
+            create_task_storage=self.create_task_storage)
         task_gof_with_task_id_dtos = self._convert_and_update_task_gof_dtos(
             task_gof_dtos, self.task_id)
         task_gof_fields_dto = self._prepare_task_gof_fields_dtos(
-            task_dict, task_dto.task_gof_dtos, task_dto.task_gof_field_dtos)
+            task_dict, task_dto.task_gof_dtos, task_dto.task_gof_field_dtos
+        )
+        interactor.update_task_gofs(task_gof_with_task_id_dtos)
+        interactor.update_task_gof_fields(task_gof_fields_dto)
         status_dict = task_dict.get("status_variables", {})
         return (
             status_dict, status_variable_dtos
         )
 
+    @staticmethod
     def _convert_and_update_task_gof_dtos(
-            self, task_gof_dtos: List[TaskGoFDTO], task_id: int
+            task_gof_dtos: List[TaskGoFDTO], task_id: int
     ) -> List[TaskGoFWithTaskIdDTO]:
         task_gof_with_task_id_dtos = [
             TaskGoFWithTaskIdDTO(
@@ -109,12 +117,7 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
                 task_gof_id=task_gof_dto.task_gof_id
             ) for task_gof_dto in task_gof_dtos
         ]
-        from ib_tasks.interactors.create_or_update_task \
-            .task_crud_operations_interactor \
-            import TaskCrudOperationsInteractor
-        interactor = TaskCrudOperationsInteractor(
-            create_task_storage=self.create_task_storage)
-        interactor.update_task_gofs(task_gof_dtos=task_gof_with_task_id_dtos)
+        return task_gof_with_task_id_dtos
 
     def _prepare_task_gof_fields_dtos(
             self, task_dict: Dict, task_gofs: List[TaskGoFDTO],
@@ -144,7 +147,10 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
             task_gof_id: int, field_id: str,
     ) -> List[TaskGoFFieldDTO]:
         gof_field_dicts = task_dict.get(gof_id)
-        field_dict = gof_field_dicts[same_gof_order]
+        if same_gof_order:
+            field_dict = gof_field_dicts[same_gof_order]
+        else:
+            field_dict = task_dict.get(gof_id)
         field_response = field_dict.get(field_id)
         task_gof_field_dto = TaskGoFFieldDTO(
             task_gof_id=task_gof_id, field_id=field_id,
