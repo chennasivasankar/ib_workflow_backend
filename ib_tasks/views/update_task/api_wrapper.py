@@ -1,3 +1,4 @@
+import json
 from typing import Dict, List
 
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
@@ -40,6 +41,7 @@ def api_wrapper(*args, **kwargs):
     stage_id = request_data.get('stage_assignee').get('stage_id')
     assignee_id = request_data.get('stage_assignee').get('assignee_id')
     assignee_team_id = request_data.get('stage_assignee').get('team_id')
+    request_json = json.dumps(request_data)
 
     from ib_tasks.interactors.task_dtos import GoFFieldsDTO
 
@@ -90,7 +92,7 @@ def api_wrapper(*args, **kwargs):
         task_stage_storage=task_stage_storage,
         task_template_storage=task_template_storage)
     response = interactor.update_task_wrapper(
-        task_dto=task_dto, presenter=presenter)
+        task_dto=task_dto, presenter=presenter, request_json=request_json)
     return response
 
 

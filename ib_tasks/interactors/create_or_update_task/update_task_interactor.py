@@ -201,12 +201,12 @@ class UpdateTaskInteractor(
             self, task_dto: UpdateTaskWithTaskDisplayIdDTO,
             presenter: UpdateTaskPresenterInterface, request_json: str):
         all_tasks_overview_details_dto = self.update_task_with_task_display_id(
-            task_dto)
+            task_dto, request_json)
         return presenter.get_update_task_response(
             all_tasks_overview_details_dto)
 
     def update_task_with_task_display_id(
-            self, task_dto: UpdateTaskWithTaskDisplayIdDTO):
+            self, task_dto: UpdateTaskWithTaskDisplayIdDTO, request_json: str):
         task_display_id = task_dto.task_display_id
         task_id = self.get_task_id_for_task_display_id(task_display_id)
         task_basic_details = UpdateTaskBasicDetailsDTO(
@@ -223,9 +223,21 @@ class UpdateTaskInteractor(
             task_dto_with_db_task_id)
         task_log_dto = CreateTaskLogDTO(
             task_id=task_id, user_id=task_dto.created_by_id,
-            action_id=task_dto.action_id, task_json=task_request_json)
+            action_id=None, task_json=request_json)
         self._create_task_log(task_log_dto)
         return all_tasks_overview_details_dto
+
+    def _create_task_log(self, task_log_dto: CreateTaskLogDTO):
+        from ib_tasks.interactors.task_log_interactor import TaskLogInteractor
+        task_log_interactor = TaskLogInteractor(
+            storage=self.storage, task_storage=self.task_storage,
+            action_storage=self.action_storage
+        )
+        create_task_log_dto = CreateTaskLogDTO(
+            task_json=task_log_dto.task_json,
+            task_id=task_log_dto.task_id, user_id=task_log_dto.user_id,
+            action_id=task_log_dto.action_id)
+        task_log_interactor.create_task_log(create_task_log_dto)
 
     def update_task(
             self, task_dto: UpdateTaskDTO) -> AllTasksOverviewDetailsDTO:
