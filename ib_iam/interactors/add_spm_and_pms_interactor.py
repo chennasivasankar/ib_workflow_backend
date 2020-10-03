@@ -2,7 +2,7 @@ from typing import List
 
 from ib_iam.interactors.dtos.dtos import SpmAndPmUsersAuthTokensDTO, \
     ImmediateSuperiorUserIdWithUserIdsDTO
-from ib_iam.interactors.storage_interfaces.dtos import UserIdWithTokenDTO
+from ib_iam.interactors.storage_interfaces.dtos import UserIdAndAuthUserIdDTO
 from ib_iam.interactors.storage_interfaces.team_member_level_storage_interface import \
     TeamMemberLevelStorageInterface
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
@@ -28,15 +28,16 @@ class AddSpmAndPmsInteractor:
             spm_and_pm_users_auth_token_dtos: List[SpmAndPmUsersAuthTokensDTO],
             project_id: str
     ):
-        user_tokens = self._get_all_user_tokens(
+        auth_user_ids = self._get_auth_user_ids(
             spm_and_pm_users_auth_token_dtos=spm_and_pm_users_auth_token_dtos
         )
-        user_id_with_token_dtos = self.user_storage.get_user_and_token_dtos(
-            tokens=user_tokens
-        )
+        user_id_with_auth_user_id_dtos = \
+            self.user_storage.get_user_id_and_auth_user_id(
+                auth_user_ids=auth_user_ids
+            )
 
         spm_id_and_pm_id_dict = self._get_spm_id_and_pm_id_dict(
-            user_id_with_token_dtos=user_id_with_token_dtos,
+            user_id_with_auth_user_id_dtos=user_id_with_auth_user_id_dtos,
             spm_and_pm_users_auth_token_dtos=spm_and_pm_users_auth_token_dtos
         )
         user_id_with_team_id_dtos = self.team_storage.get_user_with_team_dtos(
@@ -56,33 +57,33 @@ class AddSpmAndPmsInteractor:
             )
 
     @staticmethod
-    def _get_all_user_tokens(
+    def _get_auth_user_ids(
             spm_and_pm_users_auth_token_dtos: List[SpmAndPmUsersAuthTokensDTO]
     ):
         user_tokens = []
         for spm_and_pm_users_auth_token_dto in spm_and_pm_users_auth_token_dtos:
             user_tokens.extend(
-                [spm_and_pm_users_auth_token_dto.pm_auth_token,
-                 spm_and_pm_users_auth_token_dto.spm_auth_token]
+                [spm_and_pm_users_auth_token_dto.pm_auth_token_user_id,
+                 spm_and_pm_users_auth_token_dto.spm_auth_token_user_id]
             )
         user_tokens = list(set(user_tokens))
         return user_tokens
 
     @staticmethod
     def _get_spm_id_and_pm_id_dict(
-            user_id_with_token_dtos: List[UserIdWithTokenDTO],
+            user_id_with_auth_user_id_dtos: List[UserIdAndAuthUserIdDTO],
             spm_and_pm_users_auth_token_dtos: List[SpmAndPmUsersAuthTokensDTO]
     ):
         token_with_user_id_dict = {
-            user_id_with_token_dto.token: user_id_with_token_dto.user_id
-            for user_id_with_token_dto in user_id_with_token_dtos
+            user_id_with_auth_user_id_dto.auth_user_id: user_id_with_auth_user_id_dto.user_id
+            for user_id_with_auth_user_id_dto in user_id_with_auth_user_id_dtos
         }
 
         spm_id_and_pm_id_dict = {
             token_with_user_id_dict[
-                spm_and_pm_users_auth_token_dto.spm_auth_token]:
+                spm_and_pm_users_auth_token_dto.spm_auth_token_user_id]:
                 token_with_user_id_dict[
-                    spm_and_pm_users_auth_token_dto.pm_auth_token]
+                    spm_and_pm_users_auth_token_dto.pm_auth_token_user_id]
             for spm_and_pm_users_auth_token_dto in
             spm_and_pm_users_auth_token_dtos
         }

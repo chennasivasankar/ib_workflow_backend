@@ -111,8 +111,8 @@ class LoginWithTokenParameterDTO:
 
 @dataclass
 class SpmAndPmUsersAuthTokensDTO:
-    spm_auth_token: str
-    pm_auth_token: str
+    spm_auth_token_user_id: str
+    pm_auth_token_user_id: str
 
 
 @dataclass
