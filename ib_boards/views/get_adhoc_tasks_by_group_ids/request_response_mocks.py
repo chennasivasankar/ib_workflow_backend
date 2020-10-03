@@ -1,35 +1,5 @@
 
 
-REQUEST_BODY_JSON = """
-{
-    "view_type": "LIST"
-}
-"""
-
-
-RESPONSE_403_JSON = """
-{
-    "response": "string",
-    "http_status_code": 1,
-    "res_status": "USER_NOT_HAVE_ACCESS_TO_COLUMN"
-}
-"""
-
-RESPONSE_400_JSON = """
-{
-    "response": "string",
-    "http_status_code": 1,
-    "res_status": "INVALID_OFFSET_VALUE"
-}
-"""
-
-RESPONSE_404_JSON = """
-{
-    "response": "string",
-    "http_status_code": 1,
-    "res_status": "INVALID_COLUMN_ID"
-}
-"""
 
 RESPONSE_200_JSON = """
 {
@@ -69,14 +39,6 @@ RESPONSE_200_JSON = """
                     }
                 ]
             }
-        }
-    ],
-    "all_fields": [
-        {
-            "field_id": "string",
-            "field_display_name": "string",
-            "display_order": 1,
-            "display_status": "HIDE"
         }
     ]
 }

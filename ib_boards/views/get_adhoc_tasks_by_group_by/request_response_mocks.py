@@ -1,26 +1,19 @@
 
 
-REQUEST_BODY_JSON = """
-{
-    "group_by_value": "string"
-}
-"""
-
 
 RESPONSE_200_JSON = """
-{
-    "total_child_groups": 1,
-    "child_groups": [
-        {
-            "group_by_value": "string",
-            "group_by_display_name": "string",
+[
+    {
+        "group_id": "string",
+        "group_name": "Status",
+        "total_groups": 1,
+        "tasks": {
             "total_tasks": 1,
             "tasks": [
                 {
                     "template_id": "string",
                     "task_id": "string",
                     "title": "string",
-                    "description": "string",
                     "start_date": "2099-12-31 00:00:00",
                     "due_date": "2099-12-31 00:00:00",
                     "priority": "string",
@@ -39,27 +32,22 @@ RESPONSE_200_JSON = """
                         "assignee": {
                             "assignee_id": "string",
                             "name": "string",
-                            "profile_pic_url": "string",
-                            "team_info": {
-                                "team_id": "string",
-                                "team_name": "string"
-                            }
+                            "profile_pic_url": "string"
                         },
                         "actions": [
                             {
                                 "action_id": 1,
                                 "action_type": "NO_VALIDATIONS",
+                                "transition_template_id": "string",
                                 "button_text": "string",
                                 "button_color": "string"
                             }
                         ]
-                    },
-                    "sub_tasks_count": 1,
-                    "completed_sub_tasks_count": 1
+                    }
                 }
             ]
         }
-    ]
-}
+    }
+]
 """
 
