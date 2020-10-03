@@ -263,3 +263,7 @@ class UserStorageInterface(abc.ABC):
             self, user_id: str, token: str, auth_token_user_id: str
     ):
         pass
+
+    @abc.abstractmethod
+    def get_user_invitation_code(self, user_id) -> str:
+        pass
