@@ -32,6 +32,7 @@ class AuthUsersInteractor:
     def auth_user_dtos(self, auth_user_dtos: List[AuthUserDTO],
                        project_id: str, role_ids: List[str],
                        is_assign_auth_token_users_to_team: bool):
+        failure_dtos = []
         user_ids = []
         # role_ids = self.project_storage.get_project_role_ids(
         #     project_id=project_id
@@ -41,13 +42,14 @@ class AuthUsersInteractor:
                 user_id = self._create_auth_user_details(
                     auth_user_dto=auth_user_dto, role_ids=role_ids
                 )
-            except:
+            except Exception:
+                failure_dtos.append(auth_user_dto)
                 continue
             user_ids.append(user_id)
         if is_assign_auth_token_users_to_team:
             self.add_auth_users_to_team_and_team_member_levels(
                 user_ids=user_ids, project_id=project_id)
-        return
+        return failure_dtos
 
     def _create_auth_user_details(
             self, auth_user_dto: AuthUserDTO, role_ids: List[str]

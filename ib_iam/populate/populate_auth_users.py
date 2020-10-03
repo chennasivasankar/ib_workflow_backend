@@ -47,18 +47,25 @@ class AuthUsers:
             project_storage=project_storage
         )
 
-        chunk_size = 1000
+        chunk_size = 500
         max_value = int((len(auth_user_dtos) / chunk_size) + 1)
         import time
+        values = []
         for i in range(max_value):
+            a = time.time()
             interactor.auth_user_dtos(
                 auth_user_dtos=auth_user_dtos[i * chunk_size:(i + 1) * chunk_size],
                 project_id=project_id,
                 role_ids=role_ids,
                 is_assign_auth_token_users_to_team=is_assign_auth_token_users_to_team
             )
+            b = time.time()
+            print("Time Elapsed: ", b-a)
+            print("Iteration {} out of {}".format(i+1, max_value))
+            values.append(b-a)
             time.sleep(5)
             input("Enter any key to proceed next: ")
+        print("Average Time Delay: ", sum(values)/len(values))
         return
 
     @staticmethod
