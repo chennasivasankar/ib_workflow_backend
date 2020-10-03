@@ -19,6 +19,11 @@ from ib_iam.models import ProjectRole
 
 class UserStorageImplementation(UserStorageInterface):
 
+    def get_user_invitation_code(self, user_id) -> str:
+        from ib_iam.models import UserAuthToken
+        user_auth_object = UserAuthToken.objects.get(user_id=user_id)
+        return user_auth_object.invitation_code
+
     def get_users_project_roles(
             self, user_ids: List[str], project_id: str
     ) -> List[UserIdWithRolesDTO]:

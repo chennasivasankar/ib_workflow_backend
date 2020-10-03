@@ -271,3 +271,7 @@ class UserStorageInterface(abc.ABC):
             self, auth_user_ids: List[str]
     ) -> List[UserIdAndAuthUserIdDTO]:
         pass
+
+    @abc.abstractmethod
+    def get_user_invitation_code(self, user_id) -> str:
+        pass
