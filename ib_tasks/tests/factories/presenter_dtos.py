@@ -82,6 +82,7 @@ class ProjectTemplateFieldsDTOFactory(factory.Factory):
 class StageFlowCompleteDetailsDTOFactory(factory.Factory):
     class Meta:
         model = StageFlowCompleteDetailsDTO
+    url_link = "https://onthegomodel.com/ccbp"
 
     @factory.lazy_attribute
     def stage_dtos(self):

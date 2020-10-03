@@ -63,9 +63,11 @@ class GetPermittedTemplateStageFlowToUser(ValidationMixin):
             self.action_storage.get_user_permitted_action_ids_given_stage_ids(
                 user_roles=user_roles, stage_ids=stage_ids
             )
+        from django.conf import settings
+        url_link = settings.CCBP_USER_WORKFLOW_LINK
         return self._get_stage_flow_complete_details_dto(
             stage_ids=stage_ids, action_ids=action_ids,
-            stage_dtos=stage_dtos
+            stage_dtos=stage_dtos, url_link=url_link
         )
 
     @staticmethod
@@ -137,15 +139,18 @@ class GetPermittedTemplateStageFlowToUser(ValidationMixin):
             self.action_storage.get_action_ids_given_stage_ids(
                 stage_ids=stage_ids
             )
+        from django.conf import settings
+        url_link = settings.CCBP_COMPLETE_WORKFLOW_LINK
         return self._get_stage_flow_complete_details_dto(
             stage_ids=stage_ids, action_ids=action_ids,
-            stage_dtos=stage_dtos
+            stage_dtos=stage_dtos, url_link=url_link
         )
 
     def _get_stage_flow_complete_details_dto(
             self, stage_ids: List[int],
             action_ids: List[int],
-            stage_dtos: List[StageMinimalDTO]
+            stage_dtos: List[StageMinimalDTO],
+            url_link: str
     ) -> StageFlowCompleteDetailsDTO:
 
         stage_flow_dtos = self.stage_storage.get_stage_flows_to_user(
@@ -153,5 +158,6 @@ class GetPermittedTemplateStageFlowToUser(ValidationMixin):
         )
         return StageFlowCompleteDetailsDTO(
             stage_dtos=stage_dtos,
-            stage_flow_dtos=stage_flow_dtos
+            stage_flow_dtos=stage_flow_dtos,
+            url_link=url_link
         )

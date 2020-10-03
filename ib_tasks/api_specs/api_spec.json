@@ -1776,20 +1776,25 @@
         "type": "object",
         "properties": {
           "stages": {
-            "type": "array",
-            "items": {
-              "$ref":"#/definitions/StageResponseBody"
-            }
+             "type": "array",
+             "items": {
+                "$ref": "#/definitions/StageResponseBody"
+             }
           },
-          "actions": {
-            "type": "array",
-            "items": {
-              "$ref":"#/definitions/ActionFlowBody"
-            }
-          }
+           "actions": {
+              "type": "array",
+              "items": {
+                 "$ref": "#/definitions/ActionFlowBody"
+              }
+           },
+           "url": {
+              "type": "string"
+           }
         },
         "required": [
-          "stages", "actions"
+           "stages",
+           "actions",
+           "url"
         ]
       }
    },
