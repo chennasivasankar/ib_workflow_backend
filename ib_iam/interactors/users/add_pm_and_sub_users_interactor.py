@@ -2,7 +2,7 @@ from collections import defaultdict
 from typing import List
 
 from ib_iam.constants.config import LEVEL_0_HIERARCHY, LEVEL_0_NAME, \
-    LEVEL_1_HIERARCHY, LEVEL_1_NAME
+    LEVEL_1_HIERARCHY, LEVEL_1_NAME, DEFAULT_TEAM_ID
 from ib_iam.interactors.dtos.dtos import PMAndSubUsersAuthTokensDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserIdWithTokenDTO, \
@@ -56,7 +56,7 @@ class PMAndSubUsersInteractor:
                 team_id=team_id, user_ids=user_ids + [pm_id]
             )
             team_user_id_dtos.append(
-                TeamUserIdsDTO(team_id=team_id, user_ids=user_ids + [pm_id])
+                TeamUserIdsDTO(team_id=team_id, user_ids=user_ids)
             )
             if is_created:
                 self.project_storage.assign_teams_to_projects(
@@ -156,4 +156,14 @@ class PMAndSubUsersInteractor:
     def update_users_with_their_new_teams(
             self, team_user_id_dtos: List[TeamUserIdsDTO]
     ):
-        pass
+        user_ids = []
+        for team_user_id_dto in team_user_id_dtos:
+            user_ids.extend(team_user_id_dto.user_ids)
+        self.team_storage.delete_members_from_team(
+            team_id=DEFAULT_TEAM_ID, user_ids=user_ids
+        )
+        from ib_iam.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        service_adapter.task_service.update_user_teams_in_task_stage_history(
+            team_user_id_dtos=team_user_id_dtos, old_team_id=DEFAULT_TEAM_ID
+        )
