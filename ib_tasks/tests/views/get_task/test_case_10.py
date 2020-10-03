@@ -1,5 +1,5 @@
 """
-# TODO: Update test case description
+test with invalid project id raise exception
 """
 from unittest.mock import patch
 
@@ -19,6 +19,7 @@ from ib_tasks.tests.factories.models import (
     FieldRoleFactory,
     FieldFactory, StageModelFactory, CurrentTaskStageModelFactory,
     TaskStageHistoryModelFactory, StagePermittedRolesFactory,
+    TaskTemplateFactory,
 )
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
@@ -42,16 +43,22 @@ class TestCase10GetTaskAPITestCase(TestUtils):
         StageModelFactory.reset_sequence()
         CurrentTaskStageModelFactory.reset_sequence()
         TaskStageHistoryModelFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence()
 
     @pytest.fixture
     def setup(self, reset_factories):
-        TaskFactory(task_display_id="IBWF-1", project_id="project0")
+        task_obj = TaskFactory(task_display_id="IBWF-1", project_id="project0")
+        template_id = task_obj.template_id
+        TaskTemplateFactory(template_id=template_id)
 
     @pytest.mark.django_db
     @patch.object(AuthService, "get_projects_info_for_given_ids")
     def test_case(
             self, project_info_mock, snapshot, setup, mocker
     ):
+        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
+            validate_if_user_is_in_project_mock
+        validate_if_user_is_in_project_mock(mocker, False)
         project_ids = ["project0"]
         exception_object = InvalidProjectIdsException(project_ids)
         project_info_mock.side_effect = exception_object

@@ -1,6 +1,7 @@
 from typing import List
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
+
 from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateDBId
 from ib_tasks.interactors.presenter_interfaces.get_template_stage_flow_presenter_interface import \
@@ -57,7 +58,9 @@ class GetTemplateStageFlowPresenterImplementation(
         stage_flow_dtos = stage_flow_complete_details_dto.stage_flow_dtos
         response_dict = {
             "stages": self._convert_stage_dtos_to_stages_dict(stage_dtos),
-            "actions": self._convert_stage_flow_dtos_to_stage_flows_dict(stage_flow_dtos)
+            "actions": self._convert_stage_flow_dtos_to_stage_flows_dict(
+                stage_flow_dtos),
+            "url": stage_flow_complete_details_dto.url_link
         }
         response_object = self.prepare_200_success_response(response_dict)
         return response_object

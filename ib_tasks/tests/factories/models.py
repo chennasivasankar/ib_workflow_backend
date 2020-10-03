@@ -8,7 +8,6 @@ from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     UserTaskDelayReason, Task, TaskGoF, TaskGoFField,
-    TaskTemplateGlobalConstants,
     TaskStatusVariable, Filter, FilterCondition, TaskLog,
     StagePermittedRoles, ElasticSearchTask, ProjectTaskTemplate, TaskStageRp,
     StageGoF, StageFlow, SubTask)
@@ -168,16 +167,6 @@ class TaskStatusVariableFactory(factory.django.DjangoModelFactory):
     task_id = factory.Sequence(lambda n: "%d" % n)
     variable = factory.Sequence(lambda n: "status_variable_%d" % n)
     value = factory.Sequence(lambda n: "value_%d" % n)
-
-
-class TaskTemplateGlobalConstantsFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = TaskTemplateGlobalConstants
-
-    task_template_id = factory.Sequence(lambda n: n)
-    variable = factory.Sequence(lambda n: "variable%d" % n)
-    value = factory.Sequence(lambda n: "value%d" % n)
-    data_type = factory.Sequence(lambda n: "data_type_%d" % n)
 
 
 class GoFFactory(factory.django.DjangoModelFactory):
