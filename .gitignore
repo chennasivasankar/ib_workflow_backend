@@ -63,7 +63,7 @@ env_*.sh
 
 task_pr.py
 task_vendor.py
-#*.ipynb
+*.ipynb
 Aggregations.ipynb
 SankarAggregationPractice.ipynb
 Testing.ipynb
