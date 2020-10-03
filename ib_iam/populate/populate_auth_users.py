@@ -46,10 +46,19 @@ class AuthUsers:
             team_member_level_storage=team_member_level_storage,
             project_storage=project_storage
         )
-        interactor.auth_user_dtos(
-            auth_user_dtos=auth_user_dtos, project_id=project_id,
-            role_ids=role_ids,
-            is_assign_auth_token_users_to_team=is_assign_auth_token_users_to_team)
+
+        chunk_size = 1000
+        max_value = int((len(auth_user_dtos) / chunk_size) + 1)
+        import time
+        for i in range(max_value):
+            interactor.auth_user_dtos(
+                auth_user_dtos=auth_user_dtos[i * chunk_size:(i + 1) * chunk_size],
+                project_id=project_id,
+                role_ids=role_ids,
+                is_assign_auth_token_users_to_team=is_assign_auth_token_users_to_team
+            )
+            time.sleep(5)
+            input("Enter any key to proceed next: ")
         return
 
     @staticmethod
