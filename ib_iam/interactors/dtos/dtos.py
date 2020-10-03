@@ -107,3 +107,9 @@ class LoginWithTokenParameterDTO:
     token: str
     name: Optional[str] = None
     auth_token_user_id: Optional[str] = None
+
+
+@dataclass
+class SpmAndPmUsersAuthTokensDTO:
+    spm_auth_token: str
+    pm_auth_token: str

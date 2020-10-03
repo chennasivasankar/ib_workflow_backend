@@ -23,9 +23,11 @@ DEFAULT_CONFIGURATION_TEAM_NAME = 'DEFAULT_CONFIGURATION_TEAM_NAME'
 
 LEVEL_0_NAME = "level_0"
 LEVEL_1_NAME = "level_1"
+LEVEL_2_NAME = "level_2"
+
 LEVEL_0_HIERARCHY = 0
 LEVEL_1_HIERARCHY = 1
-
+LEVEL_2_HIERARCHY = 2
 # if we add a new project add every config key even it is false
 PROJECTS_CONFIG = {
     "JGC_DRIVE": {

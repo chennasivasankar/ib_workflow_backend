@@ -4,7 +4,7 @@ from ib_iam.exceptions.custom_exceptions import InvalidTeamId
 from ib_iam.interactors.storage_interfaces.dtos import (
     TeamNameAndDescriptionDTO, TeamIdAndNameDTO, PaginationDTO, TeamUserIdsDTO,
     TeamsWithTotalTeamsCountDTO, TeamWithTeamIdAndUserIdsDTO, TeamDTO,
-    TeamWithUserIdDTO)
+    TeamWithUserIdDTO, UserWithTeamDTO)
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
     TeamStorageInterface
 from ib_iam.models import Team, TeamUser
@@ -161,3 +161,23 @@ class TeamStorageImplementation(TeamStorageInterface):
             team_id=team_id, name=name
         )
         return is_created
+
+    def get_user_with_team_dtos(self, user_ids: List[str]) -> List[UserWithTeamDTO]:
+        team_user_objects = TeamUser.objects.filter(user_id__in=user_ids)
+        user_with_team_dtos = [
+            UserWithTeamDTO(
+                user_id=team_user_object.user_id,
+                team_id=team_user_object.team_id
+            )
+            for team_user_object in team_user_objects
+        ]
+        return user_with_team_dtos
+
+    def add_user_to_team(
+            self, user_id: str, team_id: str, team_member_level_id: str
+    ):
+        TeamUser.objects.create(
+            user_id=user_id, team_id=team_id,
+            team_member_level_id=team_member_level_id
+        )
+        return
