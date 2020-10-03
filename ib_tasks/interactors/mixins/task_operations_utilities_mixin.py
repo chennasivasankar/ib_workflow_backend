@@ -84,8 +84,11 @@ class TaskOperationsUtilitiesMixin:
     def validate_task_dates_and_priority(
             self, start_datetime: datetime.datetime,
             due_datetime: datetime.datetime, priority: Priority,
-            action_type: Optional[ActionTypes]) -> Optional[Exception]:
+            action_type: Optional[ActionTypes], template_is_adhoc: bool
+    ) -> Optional[Exception]:
 
+        if template_is_adhoc:
+            return
         self._validate_due_datetime_without_start_datetime(
             start_datetime, due_datetime)
         action_type_is_no_validations = \
