@@ -6,6 +6,7 @@ from .validator_class import ValidatorClass
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
+    # TODO Need to write tests
     login_with_token_parameter_dto = \
         convert_to_login_with_token_parameter_dto(kwargs)
     from ib_iam.storages.user_storage_implementation import \

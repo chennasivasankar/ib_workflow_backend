@@ -2,7 +2,7 @@ from typing import List
 
 from django.db import transaction
 
-from ib_iam.interactors.dtos.dtos import PMAndSubUsersAuthTokensDTO
+from ib_iam.interactors.dtos.dtos import PMAndSubUsersAuthIdsDTO
 
 
 class AddPMAndSubUsers:
@@ -31,7 +31,7 @@ class AddPMAndSubUsers:
         from ib_iam.storages.team_member_level_storage_implementation import \
             TeamMemberLevelStorageImplementation
         team_member_level_storage = TeamMemberLevelStorageImplementation()
-        pm_and_sub_user_dtos = self._convert_to_pm_and_sub_user_dtos(
+        pm_and_sub_user_auth_ids_dtos = self._convert_to_pm_and_sub_user_ids_dtos(
             pm_and_sub_users
         )
 
@@ -44,18 +44,18 @@ class AddPMAndSubUsers:
             team_member_level_storage=team_member_level_storage
         )
         interactor.add_pm_and_sub_users(
-            pm_and_sub_user_dtos=pm_and_sub_user_dtos, project_id=project_id,
-            update_teams_of_users=update_teams_of_users
+            pm_and_sub_user_auth_ids_dtos=pm_and_sub_user_auth_ids_dtos,
+            project_id=project_id, update_teams_of_users=update_teams_of_users
         )
 
     @staticmethod
-    def _convert_to_pm_and_sub_user_dtos(
+    def _convert_to_pm_and_sub_user_ids_dtos(
             pm_and_sub_users
-    ) -> List[PMAndSubUsersAuthTokensDTO]:
-        pm_and_sub_user_dtos = [
-            PMAndSubUsersAuthTokensDTO(
-                pm_auth_token=pm_and_sub_user['pm_auth_token'],
-                sub_user_auth_token=pm_and_sub_user['user_auth_token']
+    ) -> List[PMAndSubUsersAuthIdsDTO]:
+        pm_and_sub_user_auth_ids_dtos = [
+            PMAndSubUsersAuthIdsDTO(
+                pm_auth_user_id=pm_and_sub_user['pm_user_id'],
+                sub_user_auth_user_id=pm_and_sub_user['user_user_id']
             ) for pm_and_sub_user in pm_and_sub_users
         ]
-        return pm_and_sub_user_dtos
+        return pm_and_sub_user_auth_ids_dtos

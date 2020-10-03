@@ -26,6 +26,9 @@ LEVEL_1_NAME = "level_1"
 LEVEL_0_HIERARCHY = 0
 LEVEL_1_HIERARCHY = 1
 
+IS_ASSIGN_AUTH_TOKEN_USERS_TO_TEAM = False
+
+
 # if we add a new project add every config key even it is false
 PROJECTS_CONFIG = {
     "JGC_DRIVE": {

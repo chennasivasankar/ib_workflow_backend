@@ -43,8 +43,10 @@ class AuthUsersInteractor:
             except:
                 continue
             user_ids.append(user_id)
-        self.add_auth_users_to_team_and_team_member_levels(
-            user_ids=user_ids, project_id=project_id)
+        from ib_iam.constants.config import IS_ASSIGN_AUTH_TOKEN_USERS_TO_TEAM
+        if IS_ASSIGN_AUTH_TOKEN_USERS_TO_TEAM:
+            self.add_auth_users_to_team_and_team_member_levels(
+                user_ids=user_ids, project_id=project_id)
         return
 
     def _create_auth_user_details(
