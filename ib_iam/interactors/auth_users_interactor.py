@@ -54,6 +54,12 @@ class AuthUsersInteractor:
     ):
         from ib_iam.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
+        is_auth_token_empty = not auth_user_dto.token
+        if is_auth_token_empty:
+            auth_user_dto.token = self._generate_uuid4()
+        is_auth_token_user_id_empty = not auth_user_dto.auth_token_user_id
+        if is_auth_token_user_id_empty:
+            auth_user_dto.auth_token_user_id = self._generate_uuid4()
         is_email_empty = not auth_user_dto.email
         if is_email_empty:
             auth_user_dto.email = auth_user_dto.token + "@gmail.com"
@@ -126,3 +132,8 @@ class AuthUsersInteractor:
             team_member_level_id_with_member_ids_dtos,
         )
         return
+
+    @staticmethod
+    def _generate_uuid4():
+        import uuid
+        return str(uuid.uuid4())
