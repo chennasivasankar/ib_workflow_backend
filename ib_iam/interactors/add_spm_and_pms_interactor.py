@@ -35,19 +35,17 @@ class AddSpmAndPmsInteractor:
             self.user_storage.get_user_id_and_auth_user_id(
                 auth_user_ids=auth_user_ids
             )
-
         spm_id_and_pm_id_dict = self._get_spm_id_and_pm_id_dict(
             user_id_with_auth_user_id_dtos=user_id_with_auth_user_id_dtos,
             spm_and_pm_users_auth_token_dtos=spm_and_pm_users_auth_token_dtos
         )
         user_id_with_team_id_dtos = self.team_storage.get_user_with_team_dtos(
-            user_ids=list(spm_id_and_pm_id_dict.keys())
+            user_ids=list(spm_id_and_pm_id_dict.values())
         )
         user_id_with_team_id_dict = {
             user_id_with_team_id_dto.user_id: user_id_with_team_id_dto.team_id
             for user_id_with_team_id_dto in user_id_with_team_id_dtos
         }
-
         for spm_user_id, pm_user_id in spm_id_and_pm_id_dict.items():
             team_id = user_id_with_team_id_dict[pm_user_id]
             self._add_user_to_team(team_id=team_id, user_id=spm_user_id)
@@ -104,7 +102,7 @@ class AddSpmAndPmsInteractor:
 
     def _add_spm_to_pm_as_superior(
             self, pm_user_id: str, spm_user_id: str, team_id: str):
-        member_level_hierarchy = 0
+        member_level_hierarchy = 1
         immediate_superior_user_id_with_member_ids_dtos = [
             ImmediateSuperiorUserIdWithUserIdsDTO(
                 immediate_superior_user_id=spm_user_id,
