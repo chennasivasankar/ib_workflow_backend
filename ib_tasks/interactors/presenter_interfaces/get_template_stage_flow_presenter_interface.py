@@ -12,6 +12,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import StageFlowDTO
 class StageFlowCompleteDetailsDTO:
     stage_dtos: List[StageMinimalDTO]
     stage_flow_dtos: List[StageFlowDTO]
+    url_link: str
 
 
 class GetTemplateStageFlowPresenterInterface(abc.ABC):

@@ -107,7 +107,7 @@ class TestGetPermittedTemplateStageFlowToUser(StorageMockClass):
     @staticmethod
     @pytest.fixture()
     def interactor(task_template_storage, stage_storage, action_storage_mock):
-        from ib_tasks.interactors.get_permitted_template_stage_flow_to_user \
+        from ib_tasks.interactors.get_permitted_and_complete_template_stage_flow_to_user \
             import GetPermittedTemplateStageFlowToUser
         interactor = GetPermittedTemplateStageFlowToUser(
             template_storage=task_template_storage,
