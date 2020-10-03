@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_tasks.constants.enum import ViewType
-from ib_tasks.interactors.dtos.dtos import TasksDetailsInputDTO
+from ib_tasks.interactors.dtos.dtos import TasksDetailsInputDTO, TeamUserIdsDTO
 from ib_tasks.interactors.get_task_details_interactor import \
     GetTaskDetailsInteractor
 from ib_tasks.interactors.get_task_fields_and_actions import \
@@ -165,7 +165,8 @@ class ServiceInterface:
         return stage_ids
 
     @staticmethod
-    def get_stage_details(stage_ids: List[str]) -> List[StageDisplayNameValueDTO]:
+    def get_stage_details(stage_ids: List[str]) -> List[
+        StageDisplayNameValueDTO]:
         from ib_tasks.storages.storage_implementation import \
             StagesStorageImplementation
         storage = StagesStorageImplementation()
@@ -273,7 +274,8 @@ class ServiceInterface:
         )
 
     @staticmethod
-    def get_task_base_details_dtos(task_ids: List[int]) -> List[TaskBaseDetailsDTO]:
+    def get_task_base_details_dtos(task_ids: List[int]) -> List[
+        TaskBaseDetailsDTO]:
         from ib_tasks.interactors.get_task_base_details_interactor import \
             GetTasksBaseDetailsInteractor
         task_storage = TasksStorageImplementation()
@@ -282,4 +284,18 @@ class ServiceInterface:
         )
         return task_base_details_interactor.get_tasks_base_details(
             task_ids=task_ids
+        )
+
+    @staticmethod
+    def update_user_teams_in_task_stage_history(
+            team_user_id_dtos: List[TeamUserIdsDTO], old_team_id: str
+    ):
+        from ib_tasks.interactors.update_user_teams_in_task_stage_history \
+            import UpdateUserTeamsInTaskStageHistory
+        stage_storage = StagesStorageImplementation()
+        interactor = UpdateUserTeamsInTaskStageHistory(
+            stage_storage=stage_storage
+        )
+        interactor.update_user_teams_in_task_stage_history(
+            team_user_id_dtos=team_user_id_dtos, old_team_id=old_team_id
         )
