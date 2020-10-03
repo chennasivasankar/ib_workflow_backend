@@ -60,6 +60,14 @@ class AuthUsersInteractor:
         is_auth_token_user_id_empty = not auth_user_dto.auth_token_user_id
         if is_auth_token_user_id_empty:
             auth_user_dto.auth_token_user_id = self._generate_uuid4()
+        is_country_code_empty = not auth_user_dto.country_code
+        if is_country_code_empty:
+            auth_user_dto.country_code = "91"
+        is_phone_number_empty = not auth_user_dto.phone_number
+        if is_phone_number_empty:
+            auth_user_dto.phone_number = None
+            auth_user_dto.country_code = None
+
         is_email_empty = not auth_user_dto.email
         if is_email_empty:
             auth_user_dto.email = auth_user_dto.token + "@gmail.com"
@@ -70,7 +78,8 @@ class AuthUsersInteractor:
         from ib_iam.adapters.dtos import UserProfileDTO
         user_profile_dto = UserProfileDTO(
             user_id=user_id, name=auth_user_dto.name,
-            email=auth_user_dto.email
+            email=auth_user_dto.email, country_code=auth_user_dto.country_code,
+            phone_number=auth_user_dto.phone_number
         )
 
         service_adapter.user_service.create_user_profile(
