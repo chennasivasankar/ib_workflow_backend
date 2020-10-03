@@ -637,3 +637,10 @@ class UserStorageImplementation(UserStorageInterface):
             ) for user_auth_token in user_auth_tokens
         ]
         return user_id_with_auth_user_id_dtos
+
+    def get_all_invitation_codes_of_auth_user(self) -> List[str]:
+        from ib_iam.models import UserAuthToken
+        invitation_codes = UserAuthToken.objects.values_list(
+            'invitation_code', flat=True
+        )
+        return invitation_codes

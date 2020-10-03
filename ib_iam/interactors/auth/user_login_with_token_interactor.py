@@ -1,3 +1,5 @@
+from typing import Optional
+
 from ib_iam.interactors.dtos.dtos import LoginWithTokenParameterDTO, \
     TeamMemberLevelIdWithMemberIdsDTO
 from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
@@ -93,9 +95,11 @@ class LoginWithTokenInteractor:
             user_id=user_id, is_admin=False,
             name=login_with_token_parameter_dto.name
         )
+        invitation_code = self._get_unique_invitation_code()
         self.user_storage.create_auth_user(
             user_id=user_id, token=login_with_token_parameter_dto.token,
-            auth_token_user_id=login_with_token_parameter_dto.auth_token_user_id
+            auth_token_user_id=login_with_token_parameter_dto.auth_token_user_id,
+            invitation_code=invitation_code
         )
         self._create_elastic_user(
             user_id=user_id, name=login_with_token_parameter_dto.name,
@@ -155,3 +159,33 @@ class LoginWithTokenInteractor:
             team_member_level_id_with_member_ids_dtos=
             team_member_level_id_with_member_ids_dtos
         )
+
+    def _get_unique_invitation_code(self) -> Optional[str]:
+        invitation_codes_from_db = self.user_storage \
+            .get_all_invitation_codes_of_auth_user()
+        for i in range(3):
+            invitation_code = self._generate_unique_invitation_code()
+            is_invitation_code_exists_in_db = \
+                invitation_code not in invitation_codes_from_db
+            if is_invitation_code_exists_in_db:
+                return invitation_code
+
+    @staticmethod
+    def _generate_unique_invitation_code() -> str:
+        import random
+        import string
+
+        letters = string.ascii_uppercase
+        letters = letters.replace("I", "")
+        letters = letters.replace("O", "")
+        letters = letters.replace("L", "")
+
+        digits = string.digits
+        digits = digits.replace("0", "")
+        digits = digits.replace("1", "")
+
+        letters_and_digits = letters + digits
+        print("letters_and_digits: ", letters_and_digits)
+        invitation_code = ''.join(
+            random.choice(letters_and_digits) for i in range(4))
+        return invitation_code
