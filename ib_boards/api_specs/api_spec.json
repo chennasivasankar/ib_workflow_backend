@@ -165,7 +165,8 @@
             "FILE_UPLOADER",
             "SEARCHABLE",
             "DATE",
-            "MULTI_SELECT_FIELD"
+            "MULTI_SELECT_FIELD",
+            "TEXT_SHARABLE_FIELD"
           ]
         }
       },
