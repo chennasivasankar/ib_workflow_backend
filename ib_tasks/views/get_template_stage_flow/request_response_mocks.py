@@ -16,7 +16,8 @@ RESPONSE_200_JSON = """
             "action_name": "string",
             "next_stage": 1
         }
-    ]
+    ],
+    "url": "string"
 }
 """
 
