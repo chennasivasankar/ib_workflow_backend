@@ -144,10 +144,10 @@ def JGC_CREATE_LEAD_Create_Beneficiary(task_dict, global_constants,
     import uuid
 
     task_dict["JGC_LEAD_DETAILS"][
-        "JGC_URL1"] = "https://onthegomodel.com/?unique_id={}".format(
+        "JGC_URL1"] = "https://onthegomodel.com/ccbp?prospect={}".format(
             str(uuid.uuid4()))
     task_dict["JGC_LEAD_DETAILS"][
-        "JGC_URL2"] = "https://onthegomodel.com/?unique_id={}".format(
+        "JGC_URL2"] = "https://onthegomodel.com/ccbp?prospect={}".format(
             str(uuid.uuid4()))
     return task_dict
 
