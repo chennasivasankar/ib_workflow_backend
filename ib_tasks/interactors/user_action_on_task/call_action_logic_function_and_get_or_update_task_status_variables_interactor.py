@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import List, Any, Dict
+from typing import List, Any, Dict, Tuple
 
 from ib_tasks.constants.enum import FieldTypes
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -69,6 +69,7 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
 
     def call_action_logic_function_and_update_task_status_variables(
             self) -> TaskDetailsDTO:
+        updated_task_gof_dtos = []
         task_dto = self._get_task_dto(self.task_id)
         status_dict, status_variables_dto, task_gof_dtos, task_dict, gof_multiple_enable_dict = \
             self._call_action_logic_function(task_dto=task_dto)
@@ -77,11 +78,12 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
             import TaskCrudOperationsInteractor
         interactor = TaskCrudOperationsInteractor(
             create_task_storage=self.create_task_storage)
-        task_gof_with_task_id_dtos = self._convert_and_update_task_gof_dtos(
-            task_gof_dtos, self.task_id, task_dict
-        )
-        updated_task_gof_dtos = \
-            interactor.update_task_gofs(task_gof_with_task_id_dtos)
+        creation_gofs, updation_gofs = self._convert_and_update_task_gof_dtos(
+            task_gof_dtos, self.task_id, task_dict)
+        if creation_gofs:
+            interactor.create_task_gofs(creation_gofs)
+        if updation_gofs:
+            updated_task_gof_dtos = interactor.update_task_gofs(updation_gofs)
 
         task_gof_fields_dto = self._prepare_task_gof_fields_dtos_v2(
             task_dict, updated_task_gof_dtos, task_dto.task_gof_field_dtos,
@@ -116,8 +118,8 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
     def _convert_and_update_task_gof_dtos(
             task_gof_dtos: List[TaskGoFDTO], task_id: int,
             task_dict: Dict
-    ) -> List[TaskGoFWithTaskIdDTO]:
-        task_gof_with_task_id_dtos = [
+    ) -> Tuple[List[TaskGoFWithTaskIdDTO], List[TaskGoFWithTaskIdDTO]]:
+        updation_gofs = [
             TaskGoFWithTaskIdDTO(
                 task_id=task_id,
                 gof_id=task_gof_dto.gof_id,
@@ -127,6 +129,7 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
         ]
 
         existing_gof_ids = [item.gof_id for item in task_gof_dtos]
+        creation_gofs = []
         for gof_id in task_dict:
             if gof_id == "status_variables":
                 continue
@@ -136,7 +139,7 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
             else:
                 number_of_such_gofs = len(task_dict[gof_id])
             if gof_id not in existing_gof_ids:
-                task_gof_with_task_id_dtos.extend(
+                creation_gofs.extend(
                     [TaskGoFWithTaskIdDTO(
                         task_id=task_id,
                         gof_id=gof_id,
@@ -145,8 +148,7 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
                     ) for same_order_gof in range(number_of_such_gofs)
                         ]
                 )
-
-        return task_gof_with_task_id_dtos
+        return creation_gofs, updation_gofs
 
     def _prepare_task_gof_fields_dtos_v2(
             self, task_dict: Dict, task_gofs: List[TaskGoFDTO],
