@@ -5,12 +5,8 @@ from ib_iam.constants.config import LEVEL_0_HIERARCHY, LEVEL_0_NAME, \
     LEVEL_1_HIERARCHY, LEVEL_1_NAME, DEFAULT_TEAM_ID
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelIdWithMemberIdsDTO, \
     ImmediateSuperiorUserIdWithUserIdsDTO, PMAndSubUsersAuthIdsDTO
-from ib_iam.interactors.storage_interfaces.dtos import UserIdAndAuthUserIdDTO
-    LEVEL_1_HIERARCHY, LEVEL_1_NAME, DEFAULT_TEAM_ID
-from ib_iam.interactors.dtos.dtos import PMAndSubUsersAuthTokensDTO, \
-    TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
-from ib_iam.interactors.storage_interfaces.dtos import UserIdWithTokenDTO, \
-    TeamUserIdsDTO
+from ib_iam.interactors.storage_interfaces.dtos import \
+    UserIdAndAuthUserIdDTO, TeamUserIdsDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces \
