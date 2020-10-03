@@ -5,8 +5,9 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.adapters.auth_service import \
     UsersNotExistsForGivenTeamsException, \
-    TeamsNotExistForGivenProjectException, InvalidProjectIdsException
+    TeamsNotExistForGivenProjectException
 from ib_tasks.constants.constants import DATETIME_FORMAT
+from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskIdException, \
     InvalidStageIdsForTask, InvalidTaskDisplayId
@@ -54,7 +55,7 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
 
     def raise_invalid_project_id(self, err: InvalidProjectIdsException):
         from ib_tasks.constants.exception_messages import INVALID_PROJECT_ID
-        project_id = err.project_ids[0]
+        project_id = err.invalid_project_ids[0]
         response_message = INVALID_PROJECT_ID[0].format(project_id)
         data = {
             "response": response_message,

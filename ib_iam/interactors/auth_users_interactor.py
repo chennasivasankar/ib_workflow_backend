@@ -30,11 +30,11 @@ class AuthUsersInteractor:
         self.project_storage = project_storage
 
     def auth_user_dtos(self, auth_user_dtos: List[AuthUserDTO],
-                       project_id: str):
+                       project_id: str, role_ids: List[str]):
         user_ids = []
-        role_ids = self.project_storage.get_project_role_ids(
-            project_id=project_id
-        )
+        # role_ids = self.project_storage.get_project_role_ids(
+        #     project_id=project_id
+        # )
         for auth_user_dto in auth_user_dtos:
             try:
                 user_id = self._create_auth_user_details(

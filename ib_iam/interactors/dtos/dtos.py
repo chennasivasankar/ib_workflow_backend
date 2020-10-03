@@ -93,7 +93,14 @@ class AuthUserDTO:
     token: str
     name: str
     email: str
+    password: str
     auth_token_user_id: str = None
+
+
+@dataclass
+class PMAndSubUsersAuthTokensDTO:
+    pm_auth_token: str
+    sub_user_auth_token: str
 
 
 @dataclass
@@ -104,6 +111,6 @@ class LoginWithTokenParameterDTO:
 
 
 @dataclass
-class PMAndSubUsersAuthIdsDTO:
-    pm_auth_user_id: str
-    sub_user_auth_user_id: str
+class SpmAndPmUsersAuthTokensDTO:
+    spm_auth_token: str
+    pm_auth_token: str

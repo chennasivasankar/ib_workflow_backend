@@ -13,7 +13,7 @@ from ib_iam.interactors.storage_interfaces.team_storage_interface import \
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 from ib_workflows_backend.settings.base_swagger_utils import \
-    JGC_DRIVE_PROJECT_ID
+    JGC_DRIVE_PROJECT_ID, JGC_DEFAULT_ROLE
 
 
 class LoginWithTokenInteractor:
@@ -120,11 +120,14 @@ class LoginWithTokenInteractor:
         self.add_user_to_team_member_level(team_id=team_id, user_id=user_id)
 
     def assign_all_project_roles_to_user(self, user_id: str):
-        role_ids = self.project_storage.get_project_role_ids(
-            project_id=JGC_DRIVE_PROJECT_ID
-        )
+        # role_ids = self.project_storage.get_project_role_ids(
+        #     project_id=JGC_DRIVE_PROJECT_ID
+        # )
+
+        role_id = JGC_DEFAULT_ROLE
+
         self.user_storage.add_roles_to_the_user(
-            user_id=user_id, role_ids=role_ids
+            user_id=user_id, role_ids=[role_id]
         )
 
     def _create_elastic_user(self, user_id: str, name: str, email: str):

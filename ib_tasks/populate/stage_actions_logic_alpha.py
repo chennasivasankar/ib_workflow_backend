@@ -1,18 +1,3 @@
-def CREATE_STAGE_Create_Task(task_dict, global_constants, stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "TO_DO"
-    return task_dict
-
-
-def IN_PROGRESS_To_Be_Reviewed(task_dict, global_constants, stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "TO_BE_REVIEWED"
-    return task_dict
-
-
-def IN_PROGRESS_To_Do(task_dict, global_constants, stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "TO_DO"
-    return task_dict
-
-
 def JGC_CALL1_ATTEMPTED_Not_answered(task_dict, global_constants,
                                      stage_value_dict):
     task_dict["status_variables"]["Status1"] = "JGC_CALL1_REATTEMPT"
@@ -69,12 +54,6 @@ def JGC_CALL2_ATTEMPTED_Decision_Pending(task_dict, global_constants,
     return task_dict
 
 
-def JGC_CALL2_ATTEMPTED_Have_more_queries(task_dict, global_constants,
-                                          stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "JGC_ESCALATED_TO_CENTRAL_TEAM"
-    return task_dict
-
-
 def JGC_CALL2_ATTEMPTED_Interested_in_course(task_dict, global_constants,
                                              stage_value_dict):
     task_dict["status_variables"]["Status1"] = "JGC_REGISTRATION_PENDING"
@@ -112,12 +91,6 @@ def JGC_CALL2_REATTEMPT_Decision_Pending(task_dict, global_constants,
     return task_dict
 
 
-def JGC_CALL2_REATTEMPT_Have_more_queries(task_dict, global_constants,
-                                          stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "JGC_ESCALATED_TO_CENTRAL_TEAM"
-    return task_dict
-
-
 def JGC_CALL2_REATTEMPT_Interested_in_course(task_dict, global_constants,
                                              stage_value_dict):
     task_dict["status_variables"]["Status1"] = "JGC_REGISTRATION_PENDING"
@@ -149,6 +122,12 @@ def JGC_CALL2_REATTEMPT_Want_to_explore_more(task_dict, global_constants,
     return task_dict
 
 
+def JGC_CREATE_LEAD_Create_Beneficiary(task_dict, global_constants,
+                                       stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "JGC_LEADS"
+    return task_dict
+
+
 def JGC_CREATE_LEAD_Make_Call_1(task_dict, global_constants, stage_value_dict):
     task_dict["status_variables"]["Status1"] = "JGC_CALL1_ATTEMPTED"
     return task_dict
@@ -157,6 +136,12 @@ def JGC_CREATE_LEAD_Make_Call_1(task_dict, global_constants, stage_value_dict):
 def JGC_CREATE_LEAD_Save_as_Draft(task_dict, global_constants,
                                   stage_value_dict):
     task_dict["status_variables"]["Status1"] = "JGC_DRAFTS"
+    return task_dict
+
+
+def JGC_DRAFTS_Create_Beneficiary(task_dict, global_constants,
+                                  stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "JGC_LEADS"
     return task_dict
 
 
@@ -173,12 +158,6 @@ def JGC_DRAFTS_Save_Draft(task_dict, global_constants, stage_value_dict):
 def JGC_EXPLORING_FREE_ACCESS_Decision_Pending(task_dict, global_constants,
                                                stage_value_dict):
     task_dict["status_variables"]["Status1"] = "JGC_FOLLOWUP_CALL"
-    return task_dict
-
-
-def JGC_EXPLORING_FREE_ACCESS_Have_more_queries(task_dict, global_constants,
-                                                stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "JGC_ESCALATED_TO_CENTRAL_TEAM"
     return task_dict
 
 
@@ -201,12 +180,6 @@ def JGC_EXPLORING_FREE_ACCESS_Registration_complete(task_dict,
     return task_dict
 
 
-def JGC_FOLLOWUP_CALL_Have_more_queries(task_dict, global_constants,
-                                        stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "JGC_ESCALATED_TO_CENTRAL_TEAM"
-    return task_dict
-
-
 def JGC_FOLLOWUP_CALL_Interested_in_course(task_dict, global_constants,
                                            stage_value_dict):
     task_dict["status_variables"]["Status1"] = "JGC_REGISTRATION_PENDING"
@@ -225,12 +198,40 @@ def JGC_FOLLOWUP_CALL_Registration_complete(task_dict, global_constants,
     return task_dict
 
 
+def JGC_LEADS_Discard(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "JGC_LEAD_DISCARDED"
+    return task_dict
+
+
+def JGC_LEADS_Make_Call_1(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "JGC_CALL1_ATTEMPTED"
+    return task_dict
+
+
+def JGC_LEAD_LOST_Interested_in_course(task_dict, global_constants,
+                                       stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "JGC_REGISTRATION_PENDING"
+    return task_dict
+
+
+def JGC_LEAD_LOST_Want_to_explore_more(task_dict, global_constants,
+                                       stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "JGC_EXPLORING_FREE_ACCESS"
+    return task_dict
+
+
 def JGC_MAKE_CALL2_Make_Call_2(task_dict, global_constants, stage_value_dict):
     task_dict["status_variables"]["Status1"] = "JGC_CALL2_ATTEMPTED"
     return task_dict
 
 
-def JGC_REGISTRATION_PENDING_Registration_Complete(task_dict, global_constants,
+def JGC_REGISTRATION_PENDING_Not_interested(task_dict, global_constants,
+                                            stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "JGC_LEAD_LOST"
+    return task_dict
+
+
+def JGC_REGISTRATION_PENDING_Registration_complete(task_dict, global_constants,
                                                    stage_value_dict):
     task_dict["status_variables"]["Status1"] = "JGC_SUCCESSFUL_LEAD"
     return task_dict
@@ -245,18 +246,6 @@ def PR_CREATE_PAYMENT_REQUEST_Save_as_Draft(task_dict, global_constants,
 def PR_CREATE_PAYMENT_REQUEST_Submit_for_Approval(task_dict, global_constants,
                                                   stage_value_dict):
     task_dict["status_variables"]["Status1"] = "PR_PENDING_RP_APPROVAL"
-    return task_dict
-
-
-def PR_CREATE_VENDOR_Save_as_Draft(task_dict, global_constants,
-                                   stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "VENDOR_DRAFTS"
-    return task_dict
-
-
-def PR_CREATE_VENDOR_Submit_for_Approval(task_dict, global_constants,
-                                         stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "VENDOR_PENDING_RP_APPROVAL"
     return task_dict
 
 
@@ -463,6 +452,7 @@ def PR_PENDING_PAYMENTS_LEVEL2_VERIFICATION_Verify(task_dict, global_constants,
 def PR_PENDING_PAYMENTS_LEVEL3_VERIFICATION_Agreement_Mismatch(
         task_dict, global_constants, stage_value_dict):
     task_dict["status_variables"]["Status4"] = "PR_PENDING_COMPLIANCE_APPROVAL"
+
     return task_dict
 
 
@@ -676,115 +666,4 @@ def PR_UPLOAD_INVOICES_AND_STATUS_Upload_Invoices(task_dict, global_constants,
                                                   stage_value_dict):
     task_dict["status_variables"][
         "Status8"] = "PR_UPLOAD_BANK_AND_CMS_STATEMENT"
-    return task_dict
-
-
-def REVIEW_REJECTED_To_Do(task_dict, global_constants, stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "TO_DO"
-    return task_dict
-
-
-def TO_BE_REVIEWED_Done(task_dict, global_constants, stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "DONE"
-    return task_dict
-
-
-def TO_BE_REVIEWED_In_Progress(task_dict, global_constants, stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "IN_PROGRESS"
-    return task_dict
-
-
-def TO_BE_REVIEWED_Review_Rejected(task_dict, global_constants,
-                                   stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "REVIEW_REJECTED"
-    return task_dict
-
-
-def TO_BE_REVIEWED_To_Do(task_dict, global_constants, stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "TO_DO"
-    return task_dict
-
-
-def TO_DO_In_Progress(task_dict, global_constants, stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "IN_PROGRESS"
-    return task_dict
-
-
-def VENDOR_DRAFTS_Discard(task_dict, global_constants, stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "VENDOR_DISCARDED"
-    return task_dict
-
-
-def VENDOR_DRAFTS_Save_Draft(task_dict, global_constants, stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "VENDOR_DRAFTS"
-    return task_dict
-
-
-def VENDOR_DRAFTS_Submit_for_Approval(task_dict, global_constants,
-                                      stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "VENDOR_PENDING_RP_APPROVAL"
-    return task_dict
-
-
-def VENDOR_PENDING_ACCOUNTS_LEVEL5_VERIFICATION_Verify(task_dict,
-                                                       global_constants,
-                                                       stage_value_dict):
-    task_dict["status_variables"][
-        "Status3"] = "VENDOR_ACCOUNTS_LEVEL5_VERIFICATION_COMPLETED"
-
-    if task_dict["status_variables"][
-            "Status1"] == "VENDOR_PAYMENTS_LEVEL5_VERIFICATION_COMPLETED" and task_dict[
-                "status_variables"][
-                    "Status2"] == "VENDOR_PAYMENTS_LEVEL4_VERIFICATION_COMPLETED":
-        task_dict["status_variables"][
-            "Status4"] = "VENDOR_VERIFICATION_COMPLETED"
-    return task_dict
-
-
-def VENDOR_PENDING_PAYMENTS_LEVEL4_VERIFICATION_Verify(task_dict,
-                                                       global_constants,
-                                                       stage_value_dict):
-    task_dict["status_variables"][
-        "Status2"] = "VENDOR_PAYMENTS_LEVEL4_VERIFICATION_COMPLETED"
-
-    if task_dict["status_variables"][
-            "Status1"] == "VENDOR_PAYMENTS_LEVEL5_VERIFICATION_COMPLETED" and task_dict[
-                "status_variables"][
-                    "Status3"] == "VENDOR_ACCOUNTS_LEVEL5_VERIFICATION_COMPLETED":
-        task_dict["status_variables"][
-            "Status4"] = "VENDOR_VERIFICATION_COMPLETED"
-    return task_dict
-
-
-def VENDOR_PENDING_PAYMENTS_LEVEL5_VERIFICATION_Verify(task_dict,
-                                                       global_constants,
-                                                       stage_value_dict):
-    task_dict["status_variables"][
-        "Status1"] = "VENDOR_PAYMENTS_LEVEL5_VERIFICATION_COMPLETED"
-
-    if task_dict["status_variables"][
-            "Status2"] == "VENDOR_PAYMENTS_LEVEL4_VERIFICATION_COMPLETED" and task_dict[
-                "status_variables"][
-                    "Status3"] == "VENDOR_ACCOUNTS_LEVEL5_VERIFICATION_COMPLETED":
-        task_dict["status_variables"][
-            "Status4"] = "VENDOR_VERIFICATION_COMPLETED"
-
-    return task_dict
-
-
-def VENDOR_PENDING_RP_APPROVAL_Approve(task_dict, global_constants,
-                                       stage_value_dict):
-    task_dict["status_variables"][
-        "Status1"] = "VENDOR_PENDING_PAYMENTS_LEVEL5_VERIFICATION"
-    task_dict["status_variables"][
-        "Status2"] = "VENDOR_PENDING_PAYMENTS_LEVEL4_VERIFICATION"
-    task_dict["status_variables"][
-        "Status3"] = "VENDOR_PENDING_ACCOUNTS_LEVEL5_VERIFICATION"
-
-    return task_dict
-
-
-def VENDOR_PENDING_RP_APPROVAL_Reject(task_dict, global_constants,
-                                      stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "VENDOR_REJECTED"
     return task_dict

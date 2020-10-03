@@ -687,7 +687,7 @@ class StagesStorageImplementation(StageStorageInterface):
         return stage_ids
 
     def get_stages_permitted_gof_ids(
-            self, stage_ids: List[str], gof_ids: List[str]
+            self, stage_ids: List[int], gof_ids: List[str]
     ) -> List[str]:
         gof_ids = StageGoF.objects.filter(
             stage_id__in=stage_ids, gof_id__in=gof_ids
