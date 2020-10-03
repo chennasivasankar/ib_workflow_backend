@@ -270,6 +270,18 @@ class UserIdWithTokenDTO:
 
 
 @dataclass
+class UserIdAndAuthUserIdDTO:
+    user_id: str
+    auth_user_id: str
+
+
+@dataclass
 class MemberLevelAndHierarchyDTO:
     member_level_id: str
     level_hierarchy: int
+
+
+@dataclass
+class UserWithTeamDTO:
+    user_id: str
+    team_id: str

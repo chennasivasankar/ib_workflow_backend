@@ -20,3 +20,9 @@ class TasksDetailsInputDTO:
     project_id: str
     user_id: str
     view_type: ViewType
+
+
+@dataclass
+class TeamUserIdsDTO:
+    team_id: str
+    user_ids: List[str]
