@@ -78,12 +78,15 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
         interactor = TaskCrudOperationsInteractor(
             create_task_storage=self.create_task_storage)
         task_gof_with_task_id_dtos = self._convert_and_update_task_gof_dtos(
-            task_gof_dtos, self.task_id)
+            task_gof_dtos, self.task_id, task_dict
+        )
+        updated_task_gof_dtos = \
+            interactor.update_task_gofs(task_gof_with_task_id_dtos)
+
         task_gof_fields_dto = self._prepare_task_gof_fields_dtos_v2(
-            task_dict, task_dto.task_gof_dtos, task_dto.task_gof_field_dtos,
+            task_dict, updated_task_gof_dtos, task_dto.task_gof_field_dtos,
             gof_multiple_enable_dict
         )
-        interactor.update_task_gofs(task_gof_with_task_id_dtos)
         interactor.update_task_gof_fields(task_gof_fields_dto)
         self._update_task_status_variables(status_dict, status_variables_dto)
         task_dto.task_gof_field_dtos = task_gof_fields_dto
@@ -111,7 +114,8 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
 
     @staticmethod
     def _convert_and_update_task_gof_dtos(
-            task_gof_dtos: List[TaskGoFDTO], task_id: int
+            task_gof_dtos: List[TaskGoFDTO], task_id: int,
+            task_dict: Dict
     ) -> List[TaskGoFWithTaskIdDTO]:
         task_gof_with_task_id_dtos = [
             TaskGoFWithTaskIdDTO(
@@ -121,6 +125,27 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
                 task_gof_id=task_gof_dto.task_gof_id
             ) for task_gof_dto in task_gof_dtos
         ]
+
+        existing_gof_ids = [item.gof_id for item in task_gof_dtos]
+        for gof_id in task_dict:
+            if gof_id == "status_variables":
+                continue
+
+            if isinstance(task_dict[gof_id], dict):
+                number_of_such_gofs = 1
+            else:
+                number_of_such_gofs = len(task_dict[gof_id])
+            if gof_id not in existing_gof_ids:
+                task_gof_with_task_id_dtos.extend(
+                    [TaskGoFWithTaskIdDTO(
+                        task_id=task_id,
+                        gof_id=gof_id,
+                        same_gof_order=same_order_gof,
+                        task_gof_id=None
+                    ) for same_order_gof in range(number_of_such_gofs)
+                        ]
+                )
+
         return task_gof_with_task_id_dtos
 
     def _prepare_task_gof_fields_dtos_v2(

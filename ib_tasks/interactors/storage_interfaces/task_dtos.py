@@ -10,7 +10,7 @@ class TaskGoFWithTaskIdDTO:
     task_id: int
     gof_id: str
     same_gof_order: int
-    task_gof_id: int = None
+    task_gof_id: Optional[int] = None
 
 
 @dataclass

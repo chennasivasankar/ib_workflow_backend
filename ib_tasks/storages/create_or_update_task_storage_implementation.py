@@ -195,8 +195,14 @@ class CreateOrUpdateTaskStorageImplementation(
     def update_task_gofs(
             self, task_gof_dtos: List[TaskGoFWithTaskIdDTO]
     ) -> List[TaskGoFDetailsDTO]:
-        task_gof_ids = [dto.task_gof_id for dto in task_gof_dtos]
+        task_gof_ids = [
+            dto.task_gof_id for dto in task_gof_dtos if dto.task_gof_id
+        ]
         task_gof_objects = list(TaskGoF.objects.filter(id__in=task_gof_ids))
+        task_gofs_to_create = [
+            task_gof_dto for task_gof_dto in task_gof_dtos
+            if task_gof_dto.task_gof_id is None
+        ]
         for task_gof_object in task_gof_objects:
             task_gof_dto = self._get_matching_task_gof_dto(
                 task_gof_object, task_gof_dtos)
@@ -209,6 +215,7 @@ class CreateOrUpdateTaskStorageImplementation(
         task_gof_details_dtos = self._prepare_task_gof_details_dtos(
             task_gof_objects
         )
+        task_gof_details_dtos += self.create_task_gofs(task_gofs_to_create)
         return task_gof_details_dtos
 
     @staticmethod
@@ -235,7 +242,7 @@ class CreateOrUpdateTaskStorageImplementation(
         task_gof_field_objects = \
             TaskGoFField.objects.filter(task_gof_id__in=task_gof_ids)
 
-        gof_fields_dict =  defaultdict(lambda: [])
+        gof_fields_dict = defaultdict(lambda: [])
         for task_gof_field_object in task_gof_field_objects:
             task_gof_field_dto = self._get_matching_task_gof_field_dto(
                 task_gof_field_object, task_gof_field_dtos
@@ -250,6 +257,7 @@ class CreateOrUpdateTaskStorageImplementation(
         TaskGoFField.objects.bulk_update(
             task_gof_field_objects, ['field_response']
         )
+        from ib_tasks.models import Field
         task_gof_fields_to_create = []
         for field_dto in task_gof_field_dtos:
             field_ids = gof_fields_dict[field_dto.task_gof_id]
@@ -263,6 +271,9 @@ class CreateOrUpdateTaskStorageImplementation(
                     )
                 )
         TaskGoFField.objects.bulk_create(task_gof_fields_to_create)
+        # for item in task_gof_fields_to_create:
+        #     item.save()
+        # return task_gof_fields_to_create
 
     @staticmethod
     def _get_matching_task_gof_field_dto(
