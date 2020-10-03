@@ -3,7 +3,8 @@ from typing import List, Optional, Tuple
 
 from ib_iam.interactors.storage_interfaces.dtos import (
     PaginationDTO, TeamUserIdsDTO, TeamsWithTotalTeamsCountDTO, TeamDTO,
-    TeamNameAndDescriptionDTO, TeamIdAndNameDTO, TeamWithUserIdDTO
+    TeamNameAndDescriptionDTO, TeamIdAndNameDTO, TeamWithUserIdDTO,
+    UserWithTeamDTO
 )
 
 
@@ -86,4 +87,14 @@ class TeamStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_or_create_team_with_id_and_name(self, team_id, name: str) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def get_user_with_team_dtos(self, user_ids: List[str]) -> List[UserWithTeamDTO]:
+        pass
+
+    @abc.abstractmethod
+    def add_user_to_team(
+            self, user_id: str, team_id: str, team_member_level_id: str
+    ):
         pass
