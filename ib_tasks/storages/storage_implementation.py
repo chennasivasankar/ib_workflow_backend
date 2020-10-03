@@ -784,7 +784,7 @@ class StagesStorageImplementation(StageStorageInterface):
     ):
         # TODO optimise it and write tests for it
         for team_user_id_dto in team_user_id_dtos:
-            TaskStageHistory.object.filter(
+            TaskStageHistory.objects.filter(
                 team_id=old_team_id,
                 assignee_id__in=team_user_id_dto.user_ids
             ).update(team_id=team_user_id_dto.team_id)

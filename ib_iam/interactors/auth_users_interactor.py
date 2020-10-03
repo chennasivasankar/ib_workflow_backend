@@ -30,7 +30,8 @@ class AuthUsersInteractor:
         self.project_storage = project_storage
 
     def auth_user_dtos(self, auth_user_dtos: List[AuthUserDTO],
-                       project_id: str, role_ids: List[str]):
+                       project_id: str, role_ids: List[str],
+                       is_assign_auth_token_users_to_team: bool):
         user_ids = []
         # role_ids = self.project_storage.get_project_role_ids(
         #     project_id=project_id
@@ -43,8 +44,7 @@ class AuthUsersInteractor:
             except:
                 continue
             user_ids.append(user_id)
-        from ib_iam.constants.config import IS_ASSIGN_AUTH_TOKEN_USERS_TO_TEAM
-        if IS_ASSIGN_AUTH_TOKEN_USERS_TO_TEAM:
+        if is_assign_auth_token_users_to_team:
             self.add_auth_users_to_team_and_team_member_levels(
                 user_ids=user_ids, project_id=project_id)
         return

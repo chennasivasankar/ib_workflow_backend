@@ -113,3 +113,9 @@ class LoginWithTokenParameterDTO:
 class SpmAndPmUsersAuthTokensDTO:
     spm_auth_token: str
     pm_auth_token: str
+
+
+@dataclass
+class PMAndSubUsersAuthIdsDTO:
+    pm_auth_user_id: str
+    sub_user_auth_user_id: str

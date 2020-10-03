@@ -117,11 +117,11 @@ class PMAndSubUsersInteractor:
         )
         team_member_level_id_with_member_ids_dtos = [
             TeamMemberLevelIdWithMemberIdsDTO(
-                team_member_level_id=team_member_level_0,
+                team_member_level_id=team_member_level_1,
                 member_ids=[pm_id]
             ),
             TeamMemberLevelIdWithMemberIdsDTO(
-                team_member_level_id=team_member_level_1,
+                team_member_level_id=team_member_level_0,
                 member_ids=sub_user_ids
             )
         ]
@@ -164,6 +164,6 @@ class PMAndSubUsersInteractor:
         )
         from ib_iam.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
-        service_adapter.task_service.update_user_teams_in_task_stage_history(
+        service_adapter.task_service.update_users_with_their_new_teams(
             team_user_id_dtos=team_user_id_dtos, old_team_id=DEFAULT_TEAM_ID
         )
