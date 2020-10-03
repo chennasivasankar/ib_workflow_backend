@@ -5,7 +5,7 @@ import pytest
 
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.constants.config import DEFAULT_TEAM_ID, DEFAULT_TEAM_NAME, \
-    LEVEL_0_HIERARCHY, LEVEL_0_NAME
+    LEVEL_0_HIERARCHY, LEVEL_0_NAME, DEFAULT_PASSWORD
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelIdWithMemberIdsDTO
 from ib_iam.tests.factories.adapter_dtos import UserTokensDTOFactory
 from ib_workflows_backend.settings.base_swagger_utils import \
@@ -177,7 +177,7 @@ class TestLoginWithTokenInteractor:
             token=token
         )
         create_user_account_with_email_mock.assert_called_once_with(
-            email=email, password=email
+            email=email, password=DEFAULT_PASSWORD
         )
         create_user_profile_mock.assert_called_once_with(
             user_id=user_id, user_profile_dto=user_profile_dto
