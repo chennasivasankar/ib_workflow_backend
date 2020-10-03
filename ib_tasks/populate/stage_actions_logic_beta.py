@@ -97,12 +97,58 @@ def CCBP_CALL2_REATTEMPT_Want_to_explore_more(task_dict, global_constants,
 def CCBP_CREATE_LEAD_Create_Beneficiary(task_dict, global_constants,
                                         stage_value_dict):
     task_dict["status_variables"]["Status1"] = "CCBP_LEADS"
+
+    if not task_dict.get("CCBP_SHAREABLE_LINKS", {}).get("CCBP_INVITE_CODE"):
+        import uuid
+        invite_code = str(uuid.uuid4())[:8]
+
+        sharable_links_gof = task_dict.get("CCBP_SHAREABLE_LINKS", {})
+
+        sharable_links_gof["CCBP_INVITE_CODE"] = invite_code
+
+        sharable_links_gof[
+            "CCBP_OTG_WEBSITE"] = "https://www.onthegomodel.com/?prospect={}".format(
+                invite_code)
+        sharable_links_gof[
+            "CCBP_FREE_ACCESS_PORTAL"] = "https://webinar.ibhubs.co/xpm-ccbp-limited-access-portal/?prospect={}".format(
+                invite_code)
+        sharable_links_gof[
+            "CCBP_CCBP_WEBSITE"] = "https://www.onthegomodel.com/ccbp/?prospect={}".format(
+                invite_code)
+        sharable_links_gof[
+            "CCBP_MORE_DETAILS_ABOUT_PROGRAM"] = "https://onthegomodel.com/jgcycle?prospect={}".format(
+                invite_code)
+
+        task_dict["CCBP_SHAREABLE_LINKS"] = sharable_links_gof
     return task_dict
 
 
 def CCBP_CREATE_LEAD_Make_Call_1(task_dict, global_constants,
                                  stage_value_dict):
     task_dict["status_variables"]["Status1"] = "CCBP_CALL1_ATTEMPTED"
+
+    if not task_dict.get("CCBP_SHAREABLE_LINKS", {}).get("CCBP_INVITE_CODE"):
+        import uuid
+        invite_code = str(uuid.uuid4())[:8]
+
+        sharable_links_gof = task_dict.get("CCBP_SHAREABLE_LINKS", {})
+
+        sharable_links_gof["CCBP_INVITE_CODE"] = invite_code
+
+        sharable_links_gof[
+            "CCBP_OTG_WEBSITE"] = "https://www.onthegomodel.com/?prospect={}".format(
+                invite_code)
+        sharable_links_gof[
+            "CCBP_FREE_ACCESS_PORTAL"] = "https://webinar.ibhubs.co/xpm-ccbp-limited-access-portal/?prospect={}".format(
+                invite_code)
+        sharable_links_gof[
+            "CCBP_CCBP_WEBSITE"] = "https://www.onthegomodel.com/ccbp/?prospect={}".format(
+                invite_code)
+        sharable_links_gof[
+            "CCBP_MORE_DETAILS_ABOUT_PROGRAM"] = "https://onthegomodel.com/jgcycle?prospect={}".format(
+                invite_code)
+
+        task_dict["CCBP_SHAREABLE_LINKS"] = sharable_links_gof
     return task_dict
 
 
@@ -116,46 +162,56 @@ def CCBP_DRAFTS_Create_Beneficiary(task_dict, global_constants,
                                    stage_value_dict):
     task_dict["status_variables"]["Status1"] = "CCBP_LEADS"
 
-    import uuid
-    invite_code = str(uuid.uuid4())[:8]
+    if not task_dict.get("CCBP_SHAREABLE_LINKS", {}).get("CCBP_INVITE_CODE"):
+        import uuid
+        invite_code = str(uuid.uuid4())[:8]
 
-    task_dict["CCBP_SHAREABLE_LINKS"]["CCBP_INVITE_CODE"] = invite_code
+        sharable_links_gof = task_dict.get("CCBP_SHAREABLE_LINKS", {})
 
-    task_dict["CCBP_SHAREABLE_LINKS"][
-        "CCBP_OTG_WEBSITE"] = "https://www.onthegomodel.com/?prospect={}".format(
-            invite_code)
-    task_dict["CCBP_SHAREABLE_LINKS"][
-        "CCBP_FREE_ACCESS_PORTAL"] = "https://webinar.ibhubs.co/xpm-ccbp-limited-access-portal/?prospect={}".format(
-            invite_code)
-    task_dict["CCBP_SHAREABLE_LINKS"][
-        "CCBP_CCBP_WEBSITE"] = "https://www.onthegomodel.com/ccbp/?prospect={}".format(
-            invite_code)
-    task_dict["CCBP_SHAREABLE_LINKS"][
-        "CCBP_MORE_DETAILS_ABOUT_PROGRAM"] = "https://onthegomodel.com/jgcycle?prospect={}".format(
-            invite_code)
+        sharable_links_gof["CCBP_INVITE_CODE"] = invite_code
+
+        sharable_links_gof[
+            "CCBP_OTG_WEBSITE"] = "https://www.onthegomodel.com/?prospect={}".format(
+                invite_code)
+        sharable_links_gof[
+            "CCBP_FREE_ACCESS_PORTAL"] = "https://webinar.ibhubs.co/xpm-ccbp-limited-access-portal/?prospect={}".format(
+                invite_code)
+        sharable_links_gof[
+            "CCBP_CCBP_WEBSITE"] = "https://www.onthegomodel.com/ccbp/?prospect={}".format(
+                invite_code)
+        sharable_links_gof[
+            "CCBP_MORE_DETAILS_ABOUT_PROGRAM"] = "https://onthegomodel.com/jgcycle?prospect={}".format(
+                invite_code)
+
+        task_dict["CCBP_SHAREABLE_LINKS"] = sharable_links_gof
     return task_dict
 
 
 def CCBP_DRAFTS_Make_Call_1(task_dict, global_constants, stage_value_dict):
     task_dict["status_variables"]["Status1"] = "CCBP_CALL1_ATTEMPTED"
 
-    import uuid
-    invite_code = str(uuid.uuid4())[:8]
+    if not task_dict.get("CCBP_SHAREABLE_LINKS", {}).get("CCBP_INVITE_CODE"):
+        import uuid
+        invite_code = str(uuid.uuid4())[:8]
 
-    task_dict["CCBP_SHAREABLE_LINKS"]["CCBP_INVITE_CODE"] = invite_code
+        sharable_links_gof = task_dict.get("CCBP_SHAREABLE_LINKS", {})
 
-    task_dict["CCBP_SHAREABLE_LINKS"][
-        "CCBP_CCBP_INVITE_LINK"] = "https://onthegomodel.com/ccbp?prospect={}".format(
-            invite_code)
-    task_dict["CCBP_SHAREABLE_LINKS"][
-        "CCBP_XPM_INVITE_LINK"] = "https://onthegomodel.com/xpm?prospect={}".format(
-            invite_code)
-    task_dict["CCBP_SHAREABLE_LINKS"][
-        "CCBP_OTG_INVITE_LINK"] = "https://onthegomodel.com/otg?prospect={}".format(
-            invite_code)
-    task_dict["CCBP_SHAREABLE_LINKS"][
-        "CCBP_JGC_INVITE_LINK"] = "https://onthegomodel.com/jgcycle?prospect={}".format(
-            invite_code)
+        sharable_links_gof["CCBP_INVITE_CODE"] = invite_code
+
+        sharable_links_gof[
+            "CCBP_OTG_WEBSITE"] = "https://www.onthegomodel.com/?prospect={}".format(
+                invite_code)
+        sharable_links_gof[
+            "CCBP_FREE_ACCESS_PORTAL"] = "https://webinar.ibhubs.co/xpm-ccbp-limited-access-portal/?prospect={}".format(
+                invite_code)
+        sharable_links_gof[
+            "CCBP_CCBP_WEBSITE"] = "https://www.onthegomodel.com/ccbp/?prospect={}".format(
+                invite_code)
+        sharable_links_gof[
+            "CCBP_MORE_DETAILS_ABOUT_PROGRAM"] = "https://onthegomodel.com/jgcycle?prospect={}".format(
+                invite_code)
+
+        task_dict["CCBP_SHAREABLE_LINKS"] = sharable_links_gof
     return task_dict
 
 
