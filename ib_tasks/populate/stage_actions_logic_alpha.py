@@ -140,6 +140,15 @@ def JGC_CALL2_REATTEMPT_Want_to_explore_more(task_dict, global_constants,
 def JGC_CREATE_LEAD_Create_Beneficiary(task_dict, global_constants,
                                        stage_value_dict):
     task_dict["status_variables"]["Status1"] = "JGC_LEADS"
+
+    import uuid
+
+    task_dict["JGC_LEAD_DETAILS"][
+        "JGC_URL1"] = "http://https://onthegomodel.com/?unique_id={}".format(
+            str(uuid.uuid4()))
+    task_dict["JGC_LEAD_DETAILS"][
+        "JGC_URL2"] = "http://https://onthegomodel.com/?unique_id={}".format(
+            str(uuid.uuid4()))
     return task_dict
 
 
@@ -358,7 +367,6 @@ def PR_PENDING_COMPLIANCE_APPROVAL_Verify(task_dict, global_constants,
                                           stage_value_dict):
     task_dict["status_variables"][
         "Status4"] = "PR_PENDING_PAYMENTS_LEVEL3_VERIFICATION"
-
     return task_dict
 
 
@@ -467,7 +475,6 @@ def PR_PENDING_PAYMENTS_LEVEL2_VERIFICATION_Verify(task_dict, global_constants,
 def PR_PENDING_PAYMENTS_LEVEL3_VERIFICATION_Agreement_Mismatch(
         task_dict, global_constants, stage_value_dict):
     task_dict["status_variables"]["Status4"] = "PR_PENDING_COMPLIANCE_APPROVAL"
-
     return task_dict
 
 
