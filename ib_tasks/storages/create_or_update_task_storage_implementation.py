@@ -227,12 +227,15 @@ class CreateOrUpdateTaskStorageImplementation(
 
     def update_task_gof_fields(self,
                                task_gof_field_dtos: List[TaskGoFFieldDTO]):
+        from collections import defaultdict
         task_gof_ids = [
             task_gof_field_dto.task_gof_id
             for task_gof_field_dto in task_gof_field_dtos
         ]
         task_gof_field_objects = \
             TaskGoFField.objects.filter(task_gof_id__in=task_gof_ids)
+
+        gof_fields_dict =  defaultdict(lambda: [])
         for task_gof_field_object in task_gof_field_objects:
             task_gof_field_dto = self._get_matching_task_gof_field_dto(
                 task_gof_field_object, task_gof_field_dtos
@@ -240,9 +243,26 @@ class CreateOrUpdateTaskStorageImplementation(
             if task_gof_field_dto is not None:
                 task_gof_field_object.field_response = \
                     task_gof_field_dto.field_response
+            gof_fields_dict[task_gof_field_object.task_gof_id].append(
+                task_gof_field_object.field_id
+            )
+
         TaskGoFField.objects.bulk_update(
             task_gof_field_objects, ['field_response']
         )
+        task_gof_fields_to_create = []
+        for field_dto in task_gof_field_dtos:
+            field_ids = gof_fields_dict[field_dto.task_gof_id]
+            is_not_empty = bool(field_dto.field_response)
+            if field_dto.field_id not in field_ids and is_not_empty:
+                task_gof_fields_to_create.append(
+                    TaskGoFField(
+                        task_gof_id=field_dto.task_gof_id,
+                        field_id=field_dto.field_id,
+                        field_response=field_dto.field_response
+                    )
+                )
+        TaskGoFField.objects.bulk_create(task_gof_fields_to_create)
 
     @staticmethod
     def _get_matching_task_gof_field_dto(
