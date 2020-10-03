@@ -585,11 +585,14 @@ class UserStorageImplementation(UserStorageInterface):
         return
 
     def create_auth_user(
-            self, user_id: str, token: str, auth_token_user_id: str
+            self, user_id: str, token: str, auth_token_user_id: str,
+            invitation_code: Optional[str] = None
     ):
         from ib_iam.models import UserAuthToken
         UserAuthToken.objects.create(
-            user_id=user_id, token=token, auth_token_user_id=auth_token_user_id
+            user_id=user_id, token=token,
+            auth_token_user_id=auth_token_user_id,
+            invitation_code=invitation_code
         )
         return
 

@@ -261,7 +261,8 @@ class UserStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_auth_user(
-            self, user_id: str, token: str, auth_token_user_id: str
+            self, user_id: str, token: str, auth_token_user_id: str,
+            invitation_code: Optional[str] = None
     ):
         pass
 

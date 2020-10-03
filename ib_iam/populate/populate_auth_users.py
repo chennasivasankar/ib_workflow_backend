@@ -68,7 +68,8 @@ class AuthUsers:
                 token=auth_user["auth_token"],
                 email=auth_user["email"],
                 name=auth_user["name"],
-                auth_token_user_id=auth_user["user_id"]
+                auth_token_user_id=auth_user["user_id"],
+                invitation_code=auth_user["invitation_code"]
             )
             for auth_user in auth_users
         ]

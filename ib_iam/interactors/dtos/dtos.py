@@ -94,6 +94,7 @@ class AuthUserDTO:
     name: str
     email: str
     auth_token_user_id: str = None
+    invitation_code: Optional[str] = None
 
 
 @dataclass
