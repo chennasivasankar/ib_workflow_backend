@@ -28,7 +28,7 @@ class AddSpmAndPmsInteractor:
             spm_and_pm_users_auth_token_dtos: List[SpmAndPmUsersAuthTokensDTO],
             project_id: str
     ):
-        user_tokens = self._get_all_user_tokens(
+        auth_user_ids = self._get_auth_user_ids(
             spm_and_pm_users_auth_token_dtos=spm_and_pm_users_auth_token_dtos
         )
         user_id_with_token_dtos = self.user_storage.get_user_and_token_dtos(
@@ -56,14 +56,14 @@ class AddSpmAndPmsInteractor:
             )
 
     @staticmethod
-    def _get_all_user_tokens(
+    def _get_auth_user_ids(
             spm_and_pm_users_auth_token_dtos: List[SpmAndPmUsersAuthTokensDTO]
     ):
         user_tokens = []
         for spm_and_pm_users_auth_token_dto in spm_and_pm_users_auth_token_dtos:
             user_tokens.extend(
-                [spm_and_pm_users_auth_token_dto.pm_auth_token,
-                 spm_and_pm_users_auth_token_dto.spm_auth_token]
+                [spm_and_pm_users_auth_token_dto.pm_auth_token_user_id,
+                 spm_and_pm_users_auth_token_dto.spm_auth_token_user_id]
             )
         user_tokens = list(set(user_tokens))
         return user_tokens
