@@ -4146,7 +4146,7 @@
          }
       },
       "/get_user_invitation_code/v1/":{
-         "post":{
+         "get":{
             "summary":"get user invitation code",
             "description":"Login the user and return access token and other details",
             "operationId":"get_user_invitation_code",
