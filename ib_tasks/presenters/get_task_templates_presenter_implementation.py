@@ -43,8 +43,9 @@ class GetTaskTemplatesPresenterImplementation(
             )
         task_templates_dicts = \
             task_templates_related_data_dict["task_templates_dicts"]
-        actions_of_templates_dict = \
-            task_templates_related_data_dict["actions_of_templates_dict"]
+        stage_with_actions_of_templates_dict = \
+            task_templates_related_data_dict[
+                "stage_with_actions_of_templates_dict"]
         complete_gof_details_dict = \
             task_templates_related_data_dict["complete_gof_details_dict"]
         task_creation_gof_ids_of_templates_dict = \
@@ -59,8 +60,8 @@ class GetTaskTemplatesPresenterImplementation(
 
         for task_template in task_templates_dicts:
             task_template_id = task_template['template_id']
-            task_template['actions'] = actions_of_templates_dict[
-                task_template_id]
+            task_template['stage_with_actions'] = \
+                stage_with_actions_of_templates_dict[task_template_id]
             task_template['group_of_fields'] = complete_gof_details_dict[
                 task_template_id]
             task_template['task_creation_gof_ids'] = \
@@ -82,11 +83,13 @@ class GetTaskTemplatesPresenterImplementation(
                 project_id_with_task_template_id_dtos=
                 complete_task_templates_dto.
                 project_id_with_task_template_id_dtos)
-        actions_of_templates_dict = self._get_actions_of_templates_dict(
-            action_with_stage_id_dtos=
-            complete_task_templates_dto.action_with_stage_id_dtos,
-            stage_id_with_template_id_dtos=
-            complete_task_templates_dto.initial_stage_id_with_template_id_dtos)
+        stage_with_actions_of_templates_dict = \
+            self._get_stage_with_actions_of_of_templates_dict(
+                action_with_stage_id_dtos=
+                complete_task_templates_dto.action_with_stage_id_dtos,
+                stage_id_with_template_id_dtos=
+                complete_task_templates_dto.
+                initial_stage_id_with_template_id_dtos)
         gof_details_with_field_details_dict = \
             self._get_gof_details_with_field_details_dict(
                 gofs_of_task_templates_dtos=
@@ -113,7 +116,8 @@ class GetTaskTemplatesPresenterImplementation(
             )
         return {
             "task_templates_dicts": task_templates_dicts,
-            "actions_of_templates_dict": actions_of_templates_dict,
+            "stage_with_actions_of_templates_dict":
+                stage_with_actions_of_templates_dict,
             "complete_gof_details_dict": gof_details_with_field_details_dict,
             "task_creation_gof_ids_of_templates_dict":
                 task_creation_gof_ids_of_templates_dict,
@@ -174,11 +178,13 @@ class GetTaskTemplatesPresenterImplementation(
             )
         return task_templates_with_project_id_details_list
 
-    def _get_actions_of_templates_dict(
+    def _get_stage_with_actions_of_of_templates_dict(
             self, action_with_stage_id_dtos: List[ActionWithStageIdDTO],
             stage_id_with_template_id_dtos: List[StageIdWithTemplateIdDTO]
     ) -> Dict:
 
+        # ToDo Refactor this method for a single stage
+        #  if task template exists at one stage initially
         stage_ids_group_by_template_id_dict = collections.defaultdict(list)
         for stage_id_with_template_id_dto in stage_id_with_template_id_dtos:
             stage_ids_group_by_template_id_dict[
@@ -190,7 +196,7 @@ class GetTaskTemplatesPresenterImplementation(
                 action_with_stage_id_dtos=action_with_stage_id_dtos,
             )
 
-        actions_of_templates_dict = collections.defaultdict(list)
+        template_stage_dict = {}
         for template_id, stage_ids in stage_ids_group_by_template_id_dict.items():
             for stage_id in stage_ids:
                 action_dicts_list = \
@@ -198,8 +204,12 @@ class GetTaskTemplatesPresenterImplementation(
                         action_with_stage_id_dtos=
                         actions_with_stage_id_dto_dict[stage_id]
                     )
-                actions_of_templates_dict[template_id] += action_dicts_list
-        return actions_of_templates_dict
+                stage_with_actions_dict = {
+                    "stage_id": stage_id,
+                    "actions": action_dicts_list
+                }
+                template_stage_dict[template_id] = stage_with_actions_dict
+        return template_stage_dict
 
     def _get_gofs_of_templates_dict(
             self, gofs_of_task_templates_dtos: List[GoFToTaskTemplateDTO],

@@ -440,9 +440,11 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
     def get_user_permitted_task_template_ids(
             self, user_roles: List[str]) -> List[str]:
+
+        from ib_tasks.constants.constants import ALL_ROLES_ID
         task_template_ids_queryset = \
             TaskTemplatePermittedRoles.objects.filter(
-                role_id__in=user_roles).values_list(
+              Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)).values_list(
                 'task_template_id', flat=True)
         task_template_ids_list = list(task_template_ids_queryset)
         return task_template_ids_list
