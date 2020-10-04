@@ -55,7 +55,7 @@ class GetTasksToRelevantSearchQuery:
             presenter: GetFilteredTasksOverviewForUserPresenterInterface,
             apply_filters_dto: List[ApplyFilterDTO]):
         try:
-            filtered_tasks_overview_details_dto, total_tasks, column_task_count = \
+            filtered_tasks_overview_details_dto, total_tasks, column_task_count, display_name = \
                 self.get_tasks_for_search_query(search_query_dto,
                                                 apply_filters_dto)
         except StageIdsListEmptyException:
@@ -74,7 +74,8 @@ class GetTasksToRelevantSearchQuery:
                 error=error)
         return presenter.get_response_for_filtered_tasks_overview_details_response(
             filtered_tasks_overview_details_dto=filtered_tasks_overview_details_dto,
-            total_tasks=total_tasks, column_task_count=column_task_count
+            total_tasks=total_tasks, column_task_count=column_task_count,
+            display_name=display_name
         )
 
     def get_tasks_for_search_query(
@@ -116,12 +117,12 @@ class GetTasksToRelevantSearchQuery:
         all_tasks_overview_details_dto, total_tasks = self._get_all_tasks_overview_details(
             query_tasks_dto, view_type, user_id, project_id
         )
-        column_task_count = self._get_tasks_count_for_stages_in_column(
+        column_task_count, display_name = self._get_tasks_count_for_stages_in_column(
             user_id=user_id,
             project_id=project_id,
             task_condition_dtos=task_condition_dtos
         )
-        return all_tasks_overview_details_dto, total_tasks, column_task_count
+        return all_tasks_overview_details_dto, total_tasks, column_task_count, display_name
 
     def _get_all_tasks_overview_details(self, query_tasks_dto: QueryTasksDTO,
                                         view_type: ViewType,
@@ -161,7 +162,8 @@ class GetTasksToRelevantSearchQuery:
         from ib_tasks.constants.constants import PROJECT_COLUMNS
         if project_id not in PROJECT_COLUMNS.key():
             return 0
-        column_id = PROJECT_COLUMNS[project_id]
+        column_id = PROJECT_COLUMNS[project_id]['column_id']
+        display_name = PROJECT_COLUMNS[project_id]['display_name']
         from ib_tasks.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         stage_ids = service_adapter.boards_service.get_stage_ids_for_the_column(
@@ -193,4 +195,4 @@ class GetTasksToRelevantSearchQuery:
             filter_dtos=[],
             field_type_dtos=[]
         )
-        return tasks_count
+        return tasks_count, display_name

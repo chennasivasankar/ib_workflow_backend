@@ -2717,9 +2717,21 @@
                "total_tasks":{
                   "type":"integer"
                },
-               "column_task_count": {
-                  "type": "integer",
-                  "format": "int64"
+               "completed_task_details": {
+                  "type": "object",
+                  "properties": {
+                     "count": {
+                        "type": "integer",
+                        "format": "int64"
+                     },
+                     "display_name": {
+                        "type": "string"
+                     }
+                  },
+                  "required": [
+                    "count",
+                     "display_name"
+                  ]
                }
             },
             "required":[

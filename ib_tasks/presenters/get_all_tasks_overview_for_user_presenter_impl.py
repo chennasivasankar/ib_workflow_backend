@@ -229,13 +229,16 @@ class GetFilteredTasksOverviewForUserPresenterImplementation(
     def get_response_for_filtered_tasks_overview_details_response(
             self,
             filtered_tasks_overview_details_dto: AllTasksOverviewDetailsDTO,
-            total_tasks: int, column_task_count: int):
+            total_tasks: int, column_task_count: int, display_name: str):
         task_overview_details = self.get_task_overview_details(
             filtered_tasks_overview_details_dto)
         all_tasks_overview_details_response_dict = {
             'tasks': task_overview_details,
             'total_tasks': total_tasks,
-            "column_task_count": column_task_count
+            'completed_task_details': {
+                'count': column_task_count,
+                'display_name': display_name
+            }
         }
         return self.prepare_200_success_response(
             response_dict=all_tasks_overview_details_response_dict)

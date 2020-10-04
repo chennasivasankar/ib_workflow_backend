@@ -66,7 +66,7 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
             self, project_tasks_parameter: ProjectTasksParameterDTO,
             presenter: GetFilteredTasksOverviewForUserPresenterInterface):
         try:
-            filtered_tasks_overview_details_dto, total_tasks, column_task_count = \
+            filtered_tasks_overview_details_dto, total_tasks, column_task_count, display_name = \
                 self.get_filtered_tasks_overview_for_user(
                     project_tasks_parameter=project_tasks_parameter
                 )
@@ -82,7 +82,8 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
                 raise_offset_should_be_greater_than_zero_exception()
         return presenter.get_response_for_filtered_tasks_overview_details_response(
             filtered_tasks_overview_details_dto=filtered_tasks_overview_details_dto,
-            total_tasks=total_tasks, column_task_count=column_task_count
+            total_tasks=total_tasks, column_task_count=column_task_count,
+            display_name=display_name
         )
 
     def get_filtered_tasks_overview_for_user(
@@ -152,12 +153,12 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
                 task_with_complete_stage_details_dtos=[],
                 task_fields_and_action_details_dtos=[])
             total_tasks = 0
-        column_task_count = self._get_tasks_count_for_stages_in_column(
+        column_task_count, display_name = self._get_tasks_count_for_stages_in_column(
             user_id=project_tasks_parameter.user_id,
             project_id=project_tasks_parameter.project_id,
             task_condition_dtos=task_condition_dtos
         )
-        return all_tasks_overview_details_dto, total_tasks, column_task_count
+        return all_tasks_overview_details_dto, total_tasks, column_task_count, display_name
 
     def _validate_project_data(self, project_id: str, user_id: str):
 
@@ -170,7 +171,8 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
         from ib_tasks.constants.constants import PROJECT_COLUMNS
         if project_id in PROJECT_COLUMNS.keys():
             return 0
-        column_id = PROJECT_COLUMNS[project_id]
+        column_id = PROJECT_COLUMNS[project_id]['column_id']
+        display_name = PROJECT_COLUMNS[project_id]['display_name']
         from ib_tasks.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         stage_ids = service_adapter.boards_service.get_stage_ids_for_the_column(
@@ -202,4 +204,4 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
             filter_dtos=[],
             field_type_dtos=[]
         )
-        return tasks_count
+        return tasks_count, display_name
