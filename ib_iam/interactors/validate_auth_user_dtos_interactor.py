@@ -1,5 +1,7 @@
-from typing import List
+from collections import Counter
+from typing import List, Tuple
 
+from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.interactors.dtos.dtos import AuthUserDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
@@ -223,8 +225,75 @@ class ValidateAuthUserDTOsInteractor:
                 passed_dtos.append(dto)
         return failed_dtos, passed_dtos
 
+    @staticmethod
+    def _validate_already_email_exists(
+            auth_user_dtos: List[AuthUserDTO], user_profile_dtos: List[UserProfileDTO]
+    ) -> Tuple[List[AuthUserDTO], List[AuthUserDTO]]:
+        existing_emails = [
+            user_profile_dto.email
+            for user_profile_dto in user_profile_dtos
+        ]
 
+        failed_dtos = []
+        passed_dtos = []
+        for auth_user_dto in auth_user_dtos:
+            if auth_user_dto.email in existing_emails:
+                failed_dtos.append(auth_user_dto)
+            else:
+                passed_dtos.append(auth_user_dto)
+        return failed_dtos, passed_dtos
 
+    @staticmethod
+    def _validate_duplicate_emails(
+            auth_user_dtos: List[AuthUserDTO]
+    ) -> Tuple[List[AuthUserDTO], List[AuthUserDTO]]:
+        emails = [auth_user_dto.email for auth_user_dto in auth_user_dtos]
+        emails_count_dict = Counter(emails)
+
+        failed_dtos = []
+        passed_dtos = []
+        for auth_user_dto in auth_user_dtos:
+            if emails_count_dict[auth_user_dto.email] > 1:
+                failed_dtos.append(auth_user_dto)
+            else:
+                passed_dtos.append(auth_user_dto)
+        return failed_dtos, passed_dtos
+
+    @staticmethod
+    def _validate_already_phone_number_exists(
+            auth_user_dtos: List[AuthUserDTO],
+            user_profile_dtos: List[UserProfileDTO]
+    ) -> Tuple[List[AuthUserDTO], List[AuthUserDTO]]:
+        existing_phone_numbers = [
+            user_profile_dto.phone_number
+            for user_profile_dto in user_profile_dtos
+        ]
+
+        failed_dtos = []
+        passed_dtos = []
+        for auth_user_dto in auth_user_dtos:
+            if auth_user_dto.phone_number in existing_phone_numbers:
+                failed_dtos.append(auth_user_dto)
+            else:
+                passed_dtos.append(auth_user_dto)
+        return failed_dtos, passed_dtos
+
+    @staticmethod
+    def _validate_duplicate_phone_numbers(
+            auth_user_dtos: List[AuthUserDTO]
+    ) -> Tuple[List[AuthUserDTO], List[AuthUserDTO]]:
+        phone_numbers = [
+            auth_user_dto.phone_number for auth_user_dto in auth_user_dtos]
+        phone_numbers_count_dict = Counter(phone_numbers)
+
+        failed_dtos = []
+        passed_dtos = []
+        for auth_user_dto in auth_user_dtos:
+            if phone_numbers_count_dict[auth_user_dto.phone_number] > 1:
+                failed_dtos.append(auth_user_dto)
+            else:
+                passed_dtos.append(auth_user_dto)
+        return failed_dtos, passed_dtos
 
     @staticmethod
     def _generate_uuid4():
