@@ -83,7 +83,7 @@ PROJECT_COLUMNS = {
         "column_id": "JGCC_SUCCESSFUL_LEAD",
         "display_name": "Registrations"
     },
-    "APJ": {
+    "APJ_4_0": {
         "column_id": "APJC_CHILD",
         "display_name": "Registrations"
     },
@@ -95,15 +95,27 @@ PROJECT_COLUMNS = {
 
 WORKFLOW_URL_LINK = {
     "JGC_DRIVE": {
-        "CCBP_COMPLETE_WORKFLOW_LINK": "https://d2rj3iig8nko29.cloudfront.net/website-static/complete-workflow.pdf",
-        "CCBP_USER_WORKFLOW_LINK": "https://d2rj3iig8nko29.cloudfront.net/website-static/complete-workflow.pdf"
+        "CCBP_COMPLETE_WORKFLOW_LINK":
+            "https://d2rj3iig8nko29.cloudfront.net/website-static/complete"
+            "-workflow.pdf",
+        "CCBP_USER_WORKFLOW_LINK":
+            "https://d2rj3iig8nko29.cloudfront.net/website-static/complete"
+            "-workflow.pdf"
     },
-    "APJ": {
-        "CCBP_COMPLETE_WORKFLOW_LINK": "https://d2rj3iig8nko29.cloudfront.net/website-static/apj-project-workflow.pdf",
-        "CCBP_USER_WORKFLOW_LINK": "https://d2rj3iig8nko29.cloudfront.net/website-static/apj-project-workflow.pdf"
+    "APJ_4_0": {
+        "CCBP_COMPLETE_WORKFLOW_LINK":
+            "https://d2rj3iig8nko29.cloudfront.net/website-static/apj"
+            "-project-workflow.pdf",
+        "CCBP_USER_WORKFLOW_LINK":
+            "https://d2rj3iig8nko29.cloudfront.net/website-static/apj"
+            "-project-workflow.pdf"
     },
     "MAHATMA": {
-        "CCBP_COMPLETE_WORKFLOW_LINK": "https://d2rj3iig8nko29.cloudfront.net/website-static/mahatma-project-workflow.pdf",
-        "CCBP_USER_WORKFLOW_LINK": "https://d2rj3iig8nko29.cloudfront.net/website-static/mahatma-project-workflow.pdf"
+        "CCBP_COMPLETE_WORKFLOW_LINK":
+            "https://d2rj3iig8nko29.cloudfront.net/website-static/mahatma"
+            "-project-workflow.pdf",
+        "CCBP_USER_WORKFLOW_LINK":
+            "https://d2rj3iig8nko29.cloudfront.net/website-static/mahatma"
+            "-project-workflow.pdf"
     }
 }
