@@ -45,7 +45,9 @@ class AuthUsers:
             project_storage=project_storage
         )
         valid_auth_user_dtos = \
-            self._validate_auth_user_dtos(auth_user_dtos=auth_user_dtos)
+            self._validate_auth_user_dtos(
+                auth_user_dtos=auth_user_dtos, user_storage=user_storage
+            )
 
         permission_to_create_users = input(
             "Do you want to create: True or False")
@@ -94,18 +96,17 @@ class AuthUsers:
 
     @staticmethod
     def _validate_auth_user_dtos(
-            auth_user_dtos: List[AuthUserDTO]
+            auth_user_dtos: List[AuthUserDTO], user_storage
     ) -> List[AuthUserDTO]:
         from ib_iam.interactors.validate_auth_user_dtos_interactor import \
             ValidateAuthUserDTOsInteractor
-        from ib_iam.storages.user_storage_implementation import \
-            UserStorageImplementation
+        # from ib_iam.storages.user_storage_implementation import \
+            # UserStorageImplementation
 
-        user_storage = UserStorageImplementation()
         interactor = ValidateAuthUserDTOsInteractor(
             user_storage=user_storage
         )
-        valid_auth_user_dtos = interactor.validate_auth_users_dtos(
+        valid_auth_user_dtos = interactor.validate_auth_user_dtos(
             auth_user_dtos=auth_user_dtos
         )
         return valid_auth_user_dtos

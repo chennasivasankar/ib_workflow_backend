@@ -10,9 +10,7 @@ from ib_iam.interactors.storage_interfaces.dtos import UserDTO, \
     TeamIdAndNameDTO, RoleIdAndNameDTO, UserIdAndNameDTO, TeamDTO, \
     TeamUserIdsDTO, CompanyDTO, CompanyIdWithEmployeeIdsDTO, \
     BasicUserDetailsDTO, UserIdWithRolesDTO, UserIdWithTokenDTO, \
-    UserIdAndAuthUserIdDTO
-from ib_iam.interactors.validate_auth_user_dtos_interactor import \
-    AuthTokenUserDetailsDTO
+    UserIdAndAuthUserIdDTO, AuthTokenUserDetailsDTO
 
 
 class UserStorageInterface(abc.ABC):

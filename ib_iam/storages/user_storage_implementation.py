@@ -11,11 +11,9 @@ from ib_iam.interactors.storage_interfaces.dtos import UserDTO, \
     CompanyDTO, \
     UserIdWithRolesDTO, \
     CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO, UserIdWithTokenDTO, \
-    UserIdAndAuthUserIdDTO
+    UserIdAndAuthUserIdDTO, AuthTokenUserDetailsDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface \
     import UserStorageInterface
-from ib_iam.interactors.validate_auth_user_dtos_interactor import \
-    AuthTokenUserDetailsDTO
 from ib_iam.models import ProjectRole
 
 

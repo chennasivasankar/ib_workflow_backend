@@ -285,3 +285,11 @@ class MemberLevelAndHierarchyDTO:
 class UserWithTeamDTO:
     user_id: str
     team_id: str
+
+
+@dataclass
+class AuthTokenUserDetailsDTO:
+    user_id: str
+    auth_token_user_id: str
+    token: str
+    invitation_code: str

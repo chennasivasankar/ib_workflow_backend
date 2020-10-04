@@ -17,7 +17,8 @@ from ib_iam.interactors.storage_interfaces.user_storage_interface import \
 class AuthUsersInteractor:
 
     def __init__(
-            self, user_storage: UserStorageInterface,
+            self,
+            user_storage: UserStorageInterface,
             elastic_storage: ElasticSearchStorageInterface,
             team_storage: TeamStorageInterface,
             team_member_level_storage: TeamMemberLevelStorageInterface,

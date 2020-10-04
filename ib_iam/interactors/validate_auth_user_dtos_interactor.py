@@ -1,17 +1,8 @@
-from dataclasses import dataclass
 from typing import List
 
 from ib_iam.interactors.dtos.dtos import AuthUserDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
-
-
-@dataclass
-class AuthTokenUserDetailsDTO:
-    user_id: str
-    auth_token_user_id: str
-    token: str
-    invitation_code: str
 
 
 class ValidateAuthUserDTOsInteractor:
@@ -23,6 +14,11 @@ class ValidateAuthUserDTOsInteractor:
         self.user_storage = user_storage
 
     def validate_auth_user_dtos(self, auth_user_dtos: List[AuthUserDTO]):
+
+        for auth_user_dto in auth_user_dtos:
+            self._update_empty_values_auth_user_dto(
+                auth_user_dto=auth_user_dto
+            )
         existing_user_ids = self.user_storage.get_all_user_ids()
 
         from ib_iam.adapters.service_adapter import get_service_adapter
@@ -68,11 +64,12 @@ class ValidateAuthUserDTOsInteractor:
                 valid_auth_user_dtos.append(auth_user_dto)
         exceptions_and_valid_dtos_dict = \
             self._validate_user_auth_details(
-                auth_user_dtos=valid_auth_user_dtos)
+                auth_user_dtos=valid_auth_user_dtos
+            )
         exceptions_and_valid_dtos_dict.update(exceptions)
         print(exceptions_and_valid_dtos_dict)
-        valid_auth_user_dtos = exceptions_and_valid_dtos_dict[
-            "valid_auth_user_dtos"]
+        valid_auth_user_dtos = \
+            exceptions_and_valid_dtos_dict["valid_auth_user_dtos"]
         return valid_auth_user_dtos
 
     def _validate_user_auth_details(self, auth_user_dtos: List[AuthUserDTO]):
@@ -87,6 +84,7 @@ class ValidateAuthUserDTOsInteractor:
             auth_tokens_from_db.append(auth_token_user_dto.token)
             auth_token_user_ids_from_db.append(
                 auth_token_user_dto.auth_token_user_id)
+
         duplicate_invitation_codes = []
         duplicate_auth_tokens = []
         duplicate_auth_token_user_ids = []
@@ -105,23 +103,23 @@ class ValidateAuthUserDTOsInteractor:
                 duplicate_auth_token_user_ids.append(auth_user_dto)
             else:
                 valid_auth_user_dtos.append(auth_user_dto)
-        valid_auth_user_dtos_to_populate = \
+        valid_auth_user_dtos_to_populate, exceptions_dict_with_valid_auth_user_dtos = \
             self._validate_duplicates_in_given_auth_user_dtos(
-                auth_user_dtos=valid_auth_user_dtos,
-                duplicate_invitation_codes=duplicate_invitation_codes
+                auth_user_dtos=valid_auth_user_dtos
             )
+        exceptions_dict_with_valid_auth_user_dtos.update(
+            {
+                "duplicate_invitation_codes": duplicate_invitation_codes,
+                "duplicate_auth_tokens": duplicate_auth_tokens,
+                "duplicate_auth_token_user_ids": duplicate_auth_token_user_ids,
+                "valid_auth_user_dtos": valid_auth_user_dtos_to_populate
+            }
+        )
+        return exceptions_dict_with_valid_auth_user_dtos
 
-        return {
-            "duplicate_invitation_codes": duplicate_invitation_codes,
-            "duplicate_auth_tokens": duplicate_auth_tokens,
-            "duplicate_auth_token_user_ids": duplicate_auth_token_user_ids,
-            "valid_auth_user_dtos": valid_auth_user_dtos_to_populate
-        }
-
+    @staticmethod
     def _validate_duplicates_in_given_auth_user_dtos(
-            self, auth_user_dtos: List[AuthUserDTO],
-            duplicate_invitation_codes, duplicate_auth_tokens,
-            duplicate_auth_token_user_ids
+            auth_user_dtos: List[AuthUserDTO]
     ):
         valid_auth_user_dtos = []
         invitation_codes = [
@@ -136,6 +134,9 @@ class ValidateAuthUserDTOsInteractor:
             auth_user_dto.auth_token_user_id
             for auth_user_dto in auth_user_dtos
         ]
+        already_existing_invitation_codes = []
+        already_existing_auth_tokens = []
+        already_existing_auth_token_user_ids = []
         for auth_user_dto in auth_user_dtos:
             is_invitation_code_already_exists = \
                 invitation_codes.count(auth_user_dto.invitation_code) > 1
@@ -144,14 +145,91 @@ class ValidateAuthUserDTOsInteractor:
             is_auth_token_user_id_exists = \
                 auth_token_user_ids.count(auth_user_dto.auth_token_user_id) > 1
             if is_invitation_code_already_exists:
-                duplicate_invitation_codes.append(auth_user_dto)
+                already_existing_invitation_codes.append(auth_user_dto)
             elif is_auth_token_already_exists:
-                duplicate_auth_tokens.append(auth_user_dto)
+                already_existing_auth_tokens.append(auth_user_dto)
             elif is_auth_token_user_id_exists:
-                duplicate_auth_token_user_ids.append(auth_user_dto)
+                already_existing_auth_token_user_ids.append(auth_user_dto)
             else:
                 valid_auth_user_dtos.append(auth_user_dto)
-        return valid_auth_user_dtos
+        exceptions_dict = {
+            "already_existing_invitation_codes": already_existing_invitation_codes,
+            "already_existing_auth_tokens": already_existing_auth_tokens,
+            "already_existing_auth_token_user_ids": already_existing_auth_token_user_ids
+        }
+        return valid_auth_user_dtos, exceptions_dict
+
+    def _update_empty_values_auth_user_dto(self, auth_user_dto: AuthUserDTO):
+        is_auth_token_empty = not auth_user_dto.token
+        if is_auth_token_empty:
+            auth_user_dto.token = self._generate_uuid4()
+        is_auth_token_user_id_empty = not auth_user_dto.auth_token_user_id
+        if is_auth_token_user_id_empty:
+            auth_user_dto.auth_token_user_id = self._generate_uuid4()
+        is_country_code_empty = not auth_user_dto.country_code
+        if is_country_code_empty:
+            auth_user_dto.country_code = "91"
+        is_phone_number_empty = not auth_user_dto.phone_number
+        if is_phone_number_empty:
+            auth_user_dto.phone_number = None
+            auth_user_dto.country_code = None
+        is_email_empty = not auth_user_dto.email
+        if is_email_empty:
+            auth_user_dto.email = auth_user_dto.token + "@gmail.com"
+
+    def _validate_duplicate_user_ids(self, dtos):
+        user_ids = [dto.user_id for dto in dtos]
+
+        from collections import Counter
+        user_id_count_dict = Counter(user_ids)
+
+        failed_dtos = []
+        passed_dtos = []
+        for dto in dtos:
+            if user_id_count_dict[dto.user_id] > 1:
+                failed_dtos.append(dto)
+            else:
+                passed_dtos.append(dto)
+
+        return failed_dtos, passed_dtos
+
+    def _validate_duplicate_auth_tokens(self, dtos):
+        tokens = [dto.user_id for dto in dtos]
+
+        from collections import Counter
+        token_count_dict = Counter(tokens)
+
+        failed_dtos = []
+        passed_dtos = []
+        for dto in dtos:
+            if token_count_dict[dto.token] > 1:
+                failed_dtos.append(dto)
+            else:
+                passed_dtos.append(dto)
+        return failed_dtos, passed_dtos
+
+    def _validate_duplicate_invitation_code(self, dtos):
+        invitation_codes = [dto.user_id for dto in dtos]
+
+        from collections import Counter
+        invitation_code_count_dict = Counter(invitation_codes)
+
+        failed_dtos = []
+        passed_dtos = []
+        for dto in dtos:
+            if invitation_code_count_dict[dto.invitation_code] > 1:
+                failed_dtos.append(dto)
+            else:
+                passed_dtos.append(dto)
+        return failed_dtos, passed_dtos
+
+
+
+
+    @staticmethod
+    def _generate_uuid4():
+        import uuid
+        return str(uuid.uuid4())
 
 # # TODO invitation code not empty
 # # invitation code not be a  duplicate, check in given dtos and database too
