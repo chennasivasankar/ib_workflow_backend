@@ -208,7 +208,10 @@ class ValidateAuthUserDTOsInteractor:
         failed_dtos = []
         passed_dtos = []
         for auth_user_dto in auth_user_dtos:
-            if auth_user_dto.email in existing_emails:
+            is_email_empty = not auth_user_dto.email
+            if is_email_empty:
+                passed_dtos.append(auth_user_dto)
+            elif auth_user_dto.email in existing_emails:
                 failed_dtos.append(auth_user_dto)
             else:
                 passed_dtos.append(auth_user_dto)
@@ -243,7 +246,10 @@ class ValidateAuthUserDTOsInteractor:
         failed_dtos = []
         passed_dtos = []
         for auth_user_dto in auth_user_dtos:
-            if auth_user_dto.phone_number in existing_phone_numbers:
+            is_phone_number_empty = not auth_user_dto.phone_number
+            if is_phone_number_empty:
+                passed_dtos.append(auth_user_dto)
+            elif auth_user_dto.phone_number in existing_phone_numbers:
                 failed_dtos.append(auth_user_dto)
             else:
                 passed_dtos.append(auth_user_dto)
