@@ -276,6 +276,10 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def is_transition_checklist_task(self, task_id: int) -> bool:
+        pass
+
+    @abc.abstractmethod
     def create_transition_template_task_entry(
             self, task_id: int, action_id: int,
             created_transition_task_id: int

@@ -104,6 +104,7 @@ class TaskTemplateFactory(factory.django.DjangoModelFactory):
 
     template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
     name = factory.sequence(lambda n: "Template {}".format(n + 1))
+    is_transition_template = False
 
 
 class TaskTemplateWithTransitionFactory(TaskTemplateFactory):

@@ -66,7 +66,7 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
             self, project_tasks_parameter: ProjectTasksParameterDTO,
             presenter: GetFilteredTasksOverviewForUserPresenterInterface):
         try:
-            filtered_tasks_overview_details_dto, total_tasks = \
+            filtered_tasks_overview_details_dto, total_tasks, column_task_count, display_name = \
                 self.get_filtered_tasks_overview_for_user(
                     project_tasks_parameter=project_tasks_parameter
                 )
@@ -82,7 +82,8 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
                 raise_offset_should_be_greater_than_zero_exception()
         return presenter.get_response_for_filtered_tasks_overview_details_response(
             filtered_tasks_overview_details_dto=filtered_tasks_overview_details_dto,
-            total_tasks=total_tasks
+            total_tasks=total_tasks, column_task_count=column_task_count,
+            display_name=display_name
         )
 
     def get_filtered_tasks_overview_for_user(
@@ -152,11 +153,34 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
                 task_with_complete_stage_details_dtos=[],
                 task_fields_and_action_details_dtos=[])
             total_tasks = 0
-        return all_tasks_overview_details_dto, total_tasks
+        column_task_count, display_name = self._get_tasks_count_for_stages_in_column(
+            user_id=project_tasks_parameter.user_id,
+            project_id=project_tasks_parameter.project_id,
+            task_condition_dtos=task_condition_dtos
+        )
+        return all_tasks_overview_details_dto, total_tasks, column_task_count, display_name
 
     def _validate_project_data(self, project_id: str, user_id: str):
 
         self.validate_given_project_ids(project_ids=[project_id])
         self.validate_if_user_is_in_project(
             project_id=project_id, user_id=user_id
+        )
+
+    def _get_tasks_count_for_stages_in_column(self, project_id: str,
+                                              user_id: str,
+                                              task_condition_dtos):
+        from ib_tasks.interactors.get_completed_tasks_count import \
+            GetCompletedTasks
+        tasks_count_interactor = GetCompletedTasks(
+            field_storage=self.field_storage,
+            filter_storage=self.filter_storage,
+            elasticsearch_storage=self.elasticsearch_storage,
+            stage_storage=self.stage_storage,
+            task_storage=self.task_storage
+        )
+        return tasks_count_interactor.get_tasks_count_for_stages_in_column(
+            project_id=project_id,
+            user_id=user_id,
+            task_condition_dtos=task_condition_dtos
         )

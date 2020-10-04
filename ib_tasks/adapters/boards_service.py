@@ -67,3 +67,10 @@ class BoardsService:
             self.interface.validate_given_board_id(board_id)
         except InvalidBoardId:
             raise InvalidBoardIdException(board_id)
+
+    def get_stage_ids_for_the_column(self, column_id: str):
+
+        column_stage_dtos = self.interface.get_stage_ids_based_on_column(
+            column_id=column_id
+        )
+        return column_stage_dtos[0].stage_ids
