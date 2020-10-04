@@ -66,7 +66,7 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
             self, project_tasks_parameter: ProjectTasksParameterDTO,
             presenter: GetFilteredTasksOverviewForUserPresenterInterface):
         try:
-            filtered_tasks_overview_details_dto, total_tasks = \
+            filtered_tasks_overview_details_dto, total_tasks, column_task_count = \
                 self.get_filtered_tasks_overview_for_user(
                     project_tasks_parameter=project_tasks_parameter
                 )
@@ -82,7 +82,7 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
                 raise_offset_should_be_greater_than_zero_exception()
         return presenter.get_response_for_filtered_tasks_overview_details_response(
             filtered_tasks_overview_details_dto=filtered_tasks_overview_details_dto,
-            total_tasks=total_tasks
+            total_tasks=total_tasks, column_task_count=column_task_count
         )
 
     def get_filtered_tasks_overview_for_user(
@@ -152,7 +152,12 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
                 task_with_complete_stage_details_dtos=[],
                 task_fields_and_action_details_dtos=[])
             total_tasks = 0
-        return all_tasks_overview_details_dto, total_tasks
+        column_task_count = self._get_tasks_count_for_stages_in_column(
+            user_id=project_tasks_parameter.user_id,
+            project_id=project_tasks_parameter.project_id,
+            task_condition_dtos=task_condition_dtos
+        )
+        return all_tasks_overview_details_dto, total_tasks, column_task_count
 
     def _validate_project_data(self, project_id: str, user_id: str):
 
@@ -160,3 +165,39 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
         self.validate_if_user_is_in_project(
             project_id=project_id, user_id=user_id
         )
+
+    def _get_tasks_count_for_stages_in_column(self, project_id: str, user_id: str, task_condition_dtos):
+        from ib_tasks.constants.constants import PROJECT_COLUMNS
+        column_id = PROJECT_COLUMNS[project_id]
+        from ib_tasks.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        stage_ids = service_adapter.boards_service.get_stage_ids_for_the_column(
+            column_id=column_id
+        )
+        from ib_tasks.interactors.get_task_ids_interactor import \
+            GetTaskIdsInteractor
+        tasks_count_interactor = GetTaskIdsInteractor(
+            field_storage=self.field_storage,
+            filter_storage=self.filter_storage,
+            elasticsearch_storage=self.elasticsearch_storage,
+            stage_storage=self.stage_storage,
+            task_storage=self.task_storage
+        )
+        from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
+        task_details_config = TaskDetailsConfigDTO(
+            unique_key=column_id,
+            stage_ids=stage_ids,
+            user_id=user_id,
+            limit=1,
+            offset=0,
+            search_query=None,
+            project_id=project_id
+        )
+
+        task_ids, tasks_count = tasks_count_interactor.get_task_ids_by_applying_filters(
+            task_details_config=task_details_config,
+            task_condition_dtos=task_condition_dtos,
+            filter_dtos=[],
+            field_type_dtos=[]
+        )
+        return tasks_count

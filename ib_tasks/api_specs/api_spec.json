@@ -2716,6 +2716,10 @@
                },
                "total_tasks":{
                   "type":"integer"
+               },
+               "column_task_count": {
+                  "type": "integer",
+                  "format": "int64"
                }
             },
             "required":[

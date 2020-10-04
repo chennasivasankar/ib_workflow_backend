@@ -43,7 +43,8 @@ RESPONSE_200_JSON = """
             }
         }
     ],
-    "total_tasks": 1
+    "total_tasks": 1,
+    "column_task_count": 1
 }
 """
 

@@ -198,12 +198,6 @@ class GetAllTasksOverviewForUserPresenterImpl(
             }
             return assignee_details
 
-    def get_response_for_filtered_tasks_overview_details_response(
-            self,
-            filtered_tasks_overview_details_dto: AllTasksOverviewDetailsDTO,
-            total_tasks: int):
-        pass
-
     def _get_start_date_and_due_date(
             self, task_base_details_dto: TaskBaseDetailsDTO
     ):
@@ -235,12 +229,13 @@ class GetFilteredTasksOverviewForUserPresenterImplementation(
     def get_response_for_filtered_tasks_overview_details_response(
             self,
             filtered_tasks_overview_details_dto: AllTasksOverviewDetailsDTO,
-            total_tasks: int):
+            total_tasks: int, column_task_count: int):
         task_overview_details = self.get_task_overview_details(
             filtered_tasks_overview_details_dto)
         all_tasks_overview_details_response_dict = {
             'tasks': task_overview_details,
-            'total_tasks': total_tasks
+            'total_tasks': total_tasks,
+            "column_task_count": column_task_count
         }
         return self.prepare_200_success_response(
             response_dict=all_tasks_overview_details_response_dict)

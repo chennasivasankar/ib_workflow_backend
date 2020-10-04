@@ -34,7 +34,7 @@ class GetFilteredTasksOverviewForUserPresenterInterface(GetAllTasksOverviewForUs
     def get_response_for_filtered_tasks_overview_details_response(
             self,
             filtered_tasks_overview_details_dto: AllTasksOverviewDetailsDTO,
-            total_tasks: int):
+            total_tasks: int, column_task_count: int):
         pass
 
     @abc.abstractmethod
