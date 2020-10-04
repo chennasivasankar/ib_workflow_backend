@@ -378,3 +378,8 @@ class ProjectStorageImplementation(ProjectStorageInterface):
         project_ids = ProjectTeam.objects.filter(team_id=team_id) \
             .values_list('project_id', flat=True)
         return list(project_ids)
+
+    def get_all_project_role_ids(self) -> List[str]:
+        # TODO write tests
+        role_ids = ProjectRole.objects.values_list('role_id', flat=True)
+        return list(role_ids)

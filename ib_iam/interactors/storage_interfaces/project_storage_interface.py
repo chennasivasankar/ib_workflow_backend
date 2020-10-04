@@ -176,3 +176,7 @@ class ProjectStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_project_ids_for_given_team(self, team_id: str) -> List[str]:
         pass
+
+    @abc.abstractmethod
+    def get_all_project_role_ids(self) -> List[str]:
+        pass

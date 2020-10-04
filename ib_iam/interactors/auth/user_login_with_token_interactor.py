@@ -77,14 +77,16 @@ class LoginWithTokenInteractor:
             user_id=user_id
         )
         role_ids = JGC_DEFAULT_ROLE.split(",")
+        all_role_ids_from_db = self.project_storage.get_all_project_role_ids()
+        valid_role_ids = list(set(role_ids) & set(all_role_ids_from_db))
         project_ids = self.project_storage.get_project_ids_for_given_roles(
-            role_ids=role_ids
+            role_ids=valid_role_ids
         )
         self._assign_team_to_projects(
             team_id=team_id, project_ids=project_ids
         )
         self.assign_given_roles_to_user(
-            user_id=user_id, role_ids=role_ids
+            user_id=user_id, role_ids=valid_role_ids
         )
         return user_id
 
