@@ -56,6 +56,13 @@ EMAIL_IS_NOT_VERIFY = (
 
 class AuthPresenterImplementation(AuthPresenterInterface, HTTPResponseMixin):
 
+    def get_success_response(self, invitation_code):
+        response_dict = {
+            "invitation_code": invitation_code
+        }
+        return self.prepare_200_success_response(
+            response_dict=response_dict)
+
     def raise_exception_for_login_with_not_verify_email(self):
         response_dict = {
             "response": EMAIL_IS_NOT_VERIFY[0],

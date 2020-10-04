@@ -1470,6 +1470,20 @@
             ]
          }
       },
+      "UserInvitationCodeSuccessResponse": {
+         "description":"user invitation code",
+         "schema":{
+            "type":"object",
+            "properties":{
+               "invitation_code":{
+                  "type":"string"
+               }
+            },
+            "required":[
+               "invitation_code"
+            ]
+         }
+      },
       "LoginBadRequestResponse":{
          "description":"login bad request response",
          "schema":{
@@ -4127,6 +4141,26 @@
             "responses":{
                "200":{
                   "$ref":"#/responses/LoginSuccessResponse"
+               }
+            }
+         }
+      },
+      "/get_user_invitation_code/v1/":{
+         "get":{
+            "summary":"get user invitation code",
+            "description":"Login the user and return access token and other details",
+            "operationId":"get_user_invitation_code",
+            "security":[
+               {
+                  "oauth":[
+                     "read"
+                  ]
+               }
+            ],
+            "parameters":[],
+            "responses":{
+               "200":{
+                  "$ref":"#/responses/UserInvitationCodeSuccessResponse"
                }
             }
          }
