@@ -5,7 +5,7 @@ from ib_iam.models import (
     UserDetails, TeamUser, UserRole, Company,
     ProjectRole, Team, ElasticUserIntermediary, TeamMemberLevel, City, State,
     Country,
-    Project, ProjectTeam, UserAuthToken
+    Project, ProjectTeam, UserAuthToken, District
 )
 
 
@@ -89,3 +89,4 @@ admin.site.register(City)
 admin.site.register(State)
 admin.site.register(Country)
 admin.site.register(UserAuthToken)
+admin.site.register(District)
