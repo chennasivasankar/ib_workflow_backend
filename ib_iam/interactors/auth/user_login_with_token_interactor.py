@@ -185,7 +185,7 @@ class LoginWithTokenInteractor:
         digits = digits.replace("1", "")
 
         letters_and_digits = letters + digits
-        print("letters_and_digits: ", letters_and_digits)
+        # print("letters_and_digits: ", letters_and_digits)
         invitation_code = ''.join(
             random.choice(letters_and_digits) for i in range(4))
         return invitation_code
