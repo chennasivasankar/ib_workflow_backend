@@ -63,8 +63,11 @@ class GetPermittedTemplateStageFlowToUser(ValidationMixin):
             self.action_storage.get_user_permitted_action_ids_given_stage_ids(
                 user_roles=user_roles, stage_ids=stage_ids
             )
-        from django.conf import settings
-        url_link = settings.CCBP_USER_WORKFLOW_LINK
+        from ib_tasks.interactors.get_project_constants import \
+            GetProjectSpecificConstants
+        interactor = GetProjectSpecificConstants()
+        url_link = interactor.get_complete_stages_project_url_links(
+            project_id=project_id)
         return self._get_stage_flow_complete_details_dto(
             stage_ids=stage_ids, action_ids=action_ids,
             stage_dtos=stage_dtos, url_link=url_link
@@ -139,8 +142,11 @@ class GetPermittedTemplateStageFlowToUser(ValidationMixin):
             self.action_storage.get_action_ids_given_stage_ids(
                 stage_ids=stage_ids
             )
-        from django.conf import settings
-        url_link = settings.CCBP_COMPLETE_WORKFLOW_LINK
+        from ib_tasks.interactors.get_project_constants import \
+            GetProjectSpecificConstants
+        interactor = GetProjectSpecificConstants()
+        url_link = interactor.get_permitted_stages_project_url_links(
+            project_id=project_id)
         return self._get_stage_flow_complete_details_dto(
             stage_ids=stage_ids, action_ids=action_ids,
             stage_dtos=stage_dtos, url_link=url_link

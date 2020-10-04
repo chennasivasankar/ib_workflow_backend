@@ -18,13 +18,13 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 
 
-class GetCompletedTasks:
+class GetProjectSpecificConstants:
     def __init__(
-            self, stage_storage: StageStorageInterface,
-            task_storage: TaskStorageInterface,
-            field_storage: FieldsStorageInterface,
-            filter_storage: FilterStorageInterface,
-            elasticsearch_storage: ElasticSearchStorageInterface):
+            self, stage_storage: StageStorageInterface = None,
+            task_storage: TaskStorageInterface = None,
+            field_storage: FieldsStorageInterface = None,
+            filter_storage: FilterStorageInterface = None,
+            elasticsearch_storage: ElasticSearchStorageInterface = None):
         self.field_storage = field_storage
         self.elasticsearch_storage = elasticsearch_storage
         self.filter_storage = filter_storage
@@ -32,7 +32,8 @@ class GetCompletedTasks:
         self.task_storage = task_storage
 
     def get_tasks_count_for_stages_in_column(
-            self, project_id: str, user_id: str, task_condition_dtos: List[TaskFilterDTO],):
+            self, project_id: str, user_id: str,
+            task_condition_dtos: List[TaskFilterDTO], ):
         from ib_tasks.constants.constants import PROJECT_COLUMNS
         if project_id not in PROJECT_COLUMNS.keys():
             return 0, "No Completed Registrations"
@@ -70,3 +71,15 @@ class GetCompletedTasks:
             field_type_dtos=[]
         )
         return tasks_count, display_name
+
+    @staticmethod
+    def get_complete_stages_project_url_links(project_id: str) -> str:
+        from ib_tasks.constants.constants import WORKFLOW_URL_LINK
+        url_link = WORKFLOW_URL_LINK[project_id]["CCBP_COMPLETE_WORKFLOW_LINK"]
+        return url_link
+
+    @staticmethod
+    def get_permitted_stages_project_url_links(project_id: str) -> str:
+        from ib_tasks.constants.constants import WORKFLOW_URL_LINK
+        url_link = WORKFLOW_URL_LINK[project_id]["CCBP_USER_WORKFLOW_LINK"]
+        return url_link

@@ -32,7 +32,8 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import
     TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import TaskTemplateStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import \
+    TaskTemplateStorageInterface
 
 
 @dataclass
@@ -170,9 +171,9 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
     def _get_tasks_count_for_stages_in_column(self, project_id: str,
                                               user_id: str,
                                               task_condition_dtos):
-        from ib_tasks.interactors.get_completed_tasks_count import \
-            GetCompletedTasks
-        tasks_count_interactor = GetCompletedTasks(
+        from ib_tasks.interactors.get_project_constants import \
+            GetProjectSpecificConstants
+        tasks_count_interactor = GetProjectSpecificConstants(
             field_storage=self.field_storage,
             filter_storage=self.filter_storage,
             elasticsearch_storage=self.elasticsearch_storage,

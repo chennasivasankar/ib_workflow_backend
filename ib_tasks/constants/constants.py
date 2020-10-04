@@ -92,3 +92,18 @@ PROJECT_COLUMNS = {
         "display_name": "Registrations"
     }
 }
+
+WORKFLOW_URL_LINK = {
+    "JGC_DRIVE": {
+        "CCBP_COMPLETE_WORKFLOW_LINK": "https://www.onthegomodel.com/jgcycle",
+        "CCBP_USER_WORKFLOW_LINK": "https://www.onthegomodel.com/jgcycle"
+    },
+    "APJ": {
+        "CCBP_COMPLETE_WORKFLOW_LINK": "https://www.onthegomodel.com/free-education-for-children",
+        "CCBP_USER_WORKFLOW_LINK": "https://www.onthegomodel.com/free-education-for-children"
+    },
+    "MAHATMA": {
+        "CCBP_COMPLETE_WORKFLOW_LINK": "https://ibhubs.co/india-mahatma/",
+        "CCBP_USER_WORKFLOW_LINK": "https://ibhubs.co/india-mahatma/"
+    }
+}

@@ -146,10 +146,3 @@ JGC_DEFAULT_ROLE = os.environ.get(
     "JGC_DEFAULT_ROLE", "JGC_USER"
 )
 
-# StageFlow URLs
-CCBP_COMPLETE_WORKFLOW_LINK = os.environ.get(
-    "CCBP_COMPLETE_WORKFLOW_LINK", "https://onthegomodel.com/ccbp"
-)
-CCBP_USER_WORKFLOW_LINK = os.environ.get(
-    "CCBP_USER_WORKFLOW_LINK", "https://onthegomodel.com/ccbp"
-)
