@@ -36,15 +36,18 @@ IS_ASSIGN_AUTH_TOKEN_USERS_TO_TEAM = False
 PROJECTS_CONFIG = {
     "JGC_DRIVE": {
         "restrict_assignee_to_user": True,
-        "enable_adhoc_template": False
+        "enable_adhoc_template": False,
+        "enable_queries": True
     },
     "APJ_4_0": {
         "restrict_assignee_to_user": True,
-        "enable_adhoc_template": False
+        "enable_adhoc_template": False,
+        "enable_queries": False
     },
     "MAHATMA": {
         "restrict_assignee_to_user": True,
-        "enable_adhoc_template": False
+        "enable_adhoc_template": False,
+        "enable_queries": False
     }
 }
 
