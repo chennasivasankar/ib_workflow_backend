@@ -73,13 +73,13 @@ class AuthUsers:
     def _convert_auth_user_dtos(auth_users) -> List[AuthUserDTO]:
         auth_user_dtos = [
             AuthUserDTO(
-                token=auth_user["auth_token"],
-                email=auth_user["email"],
+                token=auth_user.get("auth_token", ""),
+                email=auth_user.get("email", ""),
                 name=auth_user["name"],
-                auth_token_user_id=auth_user["user_id"],
+                auth_token_user_id=auth_user.get("user_id", ""),
                 invitation_code=auth_user["invitation_code"],
-                phone_number=auth_user["phone_number"],
-                country_code=auth_user["country_code"]
+                phone_number=auth_user.get("phone_number", ""),
+                country_code=auth_user.get("country_code", "")
             )
             for auth_user in auth_users
         ]
