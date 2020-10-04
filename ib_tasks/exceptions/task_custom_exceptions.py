@@ -182,3 +182,7 @@ class StartDateIsRequired(Exception):
 
 class DueDateIsRequired(Exception):
     pass
+
+
+class TransitionCheckListTask(Exception):
+    pass
