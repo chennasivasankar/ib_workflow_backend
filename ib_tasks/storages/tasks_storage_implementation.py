@@ -10,8 +10,7 @@ from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDTO, ActionWithStageIdDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldDetailsDTO, FieldCompleteDetailsDTO, FieldWithGoFDisplayNameDTO, \
-    FieldDetailsWithFilledResponse
+    FieldDetailsDTO, FieldCompleteDetailsDTO, FieldDetailsWithFilledResponse
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO, TaskBaseDetailsDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
@@ -46,10 +45,14 @@ from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 class TasksStorageImplementation(TaskStorageInterface):
 
     def create_transition_template_task_entry(
-            self, task_id: int, action_id: int):
-        from ib_tasks.models.transition_template_tasks import TransitionTemplateTasks
+            self, task_id: int, action_id: int,
+            created_transition_task_id: int
+    ):
+        from ib_tasks.models.transition_template_tasks import \
+            TransitionTemplateTasks
         TransitionTemplateTasks.objects.create(
-            task_id=task_id, action_id=action_id)
+            task_id=task_id, action_id=action_id,
+            transition_task_id=created_transition_task_id)
 
     def create_transition_task(
             self, transition_task_creation_dto: TransitionTaskCreationDTO

@@ -5,6 +5,9 @@ from ib_tasks.models import Task, StageAction
 
 class TransitionTemplateTasks(models.Model):
     task = models.ForeignKey(
+        Task, null=True, on_delete=models.SET_NULL,
+        related_name="transition_tasks")
+    transition_task = models.ForeignKey(
         Task, null=True, on_delete=models.SET_NULL)
     action = models.ForeignKey(
         StageAction, null=True, on_delete=models.SET_NULL)

@@ -1,4 +1,4 @@
-from typing import Optional, List, Tuple
+from typing import Optional, List
 
 from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
@@ -29,8 +29,6 @@ from ib_tasks.interactors.create_or_update_task \
     GoFsDetailsValidationsInteractor
 from ib_tasks.interactors.create_or_update_task.task_crud_operations_interactor import \
     TaskCrudOperationsInteractor
-from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
-from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.mixins.task_operations_utilities_mixin import \
@@ -60,7 +58,8 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO
 from ib_tasks.interactors.task_template_dtos import \
     CreateTransitionChecklistTemplateDTO, \
-    CreateTransitionChecklistTemplateWithTaskDisplayIdDTO, TransitionTaskCreationDTO
+    CreateTransitionChecklistTemplateWithTaskDisplayIdDTO, \
+    TransitionTaskCreationDTO
 
 
 class CreateTransitionChecklistInteractor(
@@ -236,12 +235,13 @@ class CreateTransitionChecklistInteractor(
         action_id = transition_template_dto.action_id
         template_id = transition_template_dto.transition_checklist_template_id
         created_by = transition_template_dto.created_by_id
-        self.task_storage.create_transition_template_task_entry(
-            task_id, action_id)
         transition_task_creation_dto = TransitionTaskCreationDTO(
             template_id=template_id, created_by=created_by)
         created_transition_task_id = \
-            self.task_storage.create_transition_task(transition_task_creation_dto)
+            self.task_storage.create_transition_task(
+                transition_task_creation_dto)
+        self.task_storage.create_transition_template_task_entry(
+            task_id, action_id, created_transition_task_id)
         checklist_gofs = transition_template_dto.transition_checklist_gofs
         task_gofs = self._prepare_task_gof_dtos(
             checklist_gofs, created_transition_task_id)
