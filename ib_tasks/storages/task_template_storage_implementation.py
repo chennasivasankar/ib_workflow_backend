@@ -471,14 +471,15 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
             task_template_role_values: List[Dict]
     ) -> List[TaskTemplateRolesDTO]:
         import collections
-        role_ids_group_by_task_template_ids = collections.defaultdict(List)
+        role_ids_group_by_task_template_ids = collections.defaultdict(list)
         for task_template_role_value in task_template_role_values:
             role_ids_group_by_task_template_ids[
                 task_template_role_value['task_template_id']
             ].append(task_template_role_value['role_id'])
 
         task_template_role_dtos = []
-        for task_template_id, role_ids in role_ids_group_by_task_template_ids:
+        for task_template_id, role_ids in \
+                role_ids_group_by_task_template_ids.items():
             task_template_role_dtos.append(
                 TaskTemplateRolesDTO(
                     task_template_id=task_template_id,

@@ -159,12 +159,11 @@ class AddProjectAndRolesToTaskTemplatesInteractor:
     @staticmethod
     def _make_roles_of_task_templates_dict(
             task_template_role_dtos: List[TaskTemplateRolesDTO]) -> Dict:
-        import collections
-        role_ids_group_by_task_template_ids = collections.defaultdict(List)
+        role_ids_group_by_task_template_ids = {}
         for task_template_role_dto in task_template_role_dtos:
             role_ids_group_by_task_template_ids[
                 task_template_role_dto.task_template_id
-            ].append(task_template_role_dto.role_ids)
+            ] = task_template_role_dto.role_ids
         return role_ids_group_by_task_template_ids
 
     @staticmethod
@@ -174,9 +173,15 @@ class AddProjectAndRolesToTaskTemplatesInteractor:
     ) -> List[TaskTemplateRolesDTO]:
         task_template_role_dtos_to_create = []
         for task_template_role_dto in task_template_role_dtos:
-            existing_roles_of_task_template = \
-                existing_roles_of_task_templates_dict[
-                    task_template_role_dto.task_template_id]
+            is_template_having_roles = \
+                task_template_role_dto.task_template_id in \
+                existing_roles_of_task_templates_dict.keys()
+
+            existing_roles_of_task_template = []
+            if is_template_having_roles:
+                existing_roles_of_task_template = \
+                    existing_roles_of_task_templates_dict[
+                        task_template_role_dto.task_template_id]
 
             role_ids_to_create = [
                 role_id for role_id in task_template_role_dto.role_ids
