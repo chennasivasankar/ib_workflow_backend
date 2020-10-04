@@ -1478,10 +1478,7 @@
                "invitation_code":{
                   "type":"string"
                }
-            },
-            "required":[
-               "invitation_code"
-            ]
+            }
          }
       },
       "LoginBadRequestResponse":{

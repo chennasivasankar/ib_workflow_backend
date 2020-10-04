@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from ib_tasks.adapters.assignees_details_service import InvalidUserIdException
-from ib_tasks.adapters.auth_service import  \
+from ib_tasks.adapters.auth_service import \
     TeamsNotExistForGivenProjectException, UsersNotExistsForGivenTeamsException
 from ib_tasks.adapters.roles_service import UserNotAMemberOfAProjectException
 from ib_tasks.adapters.searchable_details_service import \
@@ -9,10 +9,13 @@ from ib_tasks.adapters.searchable_details_service import \
     InvalidCountryIdsException, InvalidCityIdsException, \
     InvalidDistrictIdsException
 from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException, \
+    InvalidCountryIdsException, InvalidCityIdsException
+from ib_tasks.exceptions.adapter_exceptions import \
+    InvalidProjectIdsException, \
     UserIsNotInProjectException
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException, InvalidStageIdsForTask, \
-    InvalidTaskDisplayId, UserPermissionDenied
+    InvalidTaskDisplayId, UserPermissionDenied, TransitionCheckListTask
 from ib_tasks.interactors.get_task_base_interactor \
     import GetTaskBaseInteractor
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
@@ -105,6 +108,8 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             return presenter.raise_user_not_a_member_of_project()
         except UserIsNotInProjectException:
             return presenter.raise_user_not_a_member_of_project()
+        except TransitionCheckListTask:
+            return presenter.raise_user_permission_denied()
 
     def get_task_details_response(
             self, user_id: str, task_display_id: str,
@@ -119,6 +124,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
     def get_task_details(
             self, user_id: str, task_id: int
     ) -> TaskCompleteDetailsDTO:
+        self._check_task_is_a_transition_checklist_task(task_id)
         self._validate_user_have_permission_for_the_task(
             user_id=user_id, task_id=task_id
         )
@@ -146,6 +152,13 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             stage_assignee_with_team_details_dtos=stage_assignee_details_dtos
         )
         return task_complete_details_dto
+
+    def _check_task_is_a_transition_checklist_task(self, task_id: int):
+        is_transition_checklist_task = \
+            self.task_storage.is_transition_checklist_task(
+                task_id)
+        if is_transition_checklist_task:
+            raise TransitionCheckListTask()
 
     def _get_task_details_dto(self, task_id: int) -> TaskDetailsDTO:
         get_task_base_interactor = GetTaskBaseInteractor(
@@ -395,12 +408,14 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         from ib_tasks.interactors.get_task_details_conditions_dtos import \
             GetConditionsForTaskDetails
         user_ids_interactor = GetConditionsForTaskDetails()
-        task_condition_dtos = user_ids_interactor.get_conditions_for_the_task_details(
-            project_id=project_id,
-            user_id=user_id
-        )
+        task_condition_dtos = \
+            user_ids_interactor.get_conditions_for_the_task_details(
+                project_id=project_id,
+                user_id=user_id
+            )
         self._validate_user_have_permissions_to_task(
-            created_by_id=created_by_id, task_condition_dtos=task_condition_dtos
+            created_by_id=created_by_id,
+            task_condition_dtos=task_condition_dtos
         )
 
     @staticmethod
@@ -412,4 +427,3 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         ]
         if created_by_id not in user_ids:
             raise UserPermissionDenied
-
