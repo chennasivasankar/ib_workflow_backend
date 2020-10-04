@@ -4,7 +4,8 @@ from ib_tasks.exceptions.adapter_exceptions \
     import InvalidProjectIdsException, UserIsNotInProjectException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateDBId
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
-from ib_tasks.interactors.presenter_interfaces.get_template_stage_flow_presenter_interface import \
+from ib_tasks.interactors.presenter_interfaces \
+    .get_template_stage_flow_presenter_interface import \
     GetTemplateStageFlowPresenterInterface, StageFlowCompleteDetailsDTO
 from ib_tasks.interactors.stages_dtos import StageMinimalDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -66,7 +67,7 @@ class GetPermittedTemplateStageFlowToUser(ValidationMixin):
         from ib_tasks.interactors.get_project_constants import \
             GetProjectSpecificConstants
         interactor = GetProjectSpecificConstants()
-        url_link = interactor.get_complete_stages_project_url_links(
+        url_link = interactor.get_permitted_stages_project_url_links(
             project_id=project_id)
         return self._get_stage_flow_complete_details_dto(
             stage_ids=stage_ids, action_ids=action_ids,
@@ -145,7 +146,7 @@ class GetPermittedTemplateStageFlowToUser(ValidationMixin):
         from ib_tasks.interactors.get_project_constants import \
             GetProjectSpecificConstants
         interactor = GetProjectSpecificConstants()
-        url_link = interactor.get_permitted_stages_project_url_links(
+        url_link = interactor.get_complete_stages_project_url_links(
             project_id=project_id)
         return self._get_stage_flow_complete_details_dto(
             stage_ids=stage_ids, action_ids=action_ids,
