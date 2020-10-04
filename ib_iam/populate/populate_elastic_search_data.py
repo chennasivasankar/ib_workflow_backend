@@ -14,6 +14,7 @@ def populate_data():
     populate_elastic_search_country_data()
     populate_elastic_search_state_data()
     populate_elastic_search_city_data()
+    populate_elastic_search_district_data()
 
 
 def populate_existing_users_to_elastic_search_database():
