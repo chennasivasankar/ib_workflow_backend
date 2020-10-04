@@ -44,16 +44,15 @@ class AuthUsers:
             team_member_level_storage=team_member_level_storage,
             project_storage=project_storage
         )
-        valid_auth_user_dtos = \
+        valid_auth_user_dtos, exceptions = \
             self._validate_auth_user_dtos(
                 auth_user_dtos=auth_user_dtos, user_storage=user_storage
             )
 
-        permission_to_create_users = input(
-            "Do you want to create: True or False")
+        permission_to_create_users = input("Do you want to create: Y or N")
 
-        if permission_to_create_users is False:
-            return
+        if permission_to_create_users == "N":
+            return valid_auth_user_dtos, exceptions
 
         chunk_size = 500
         max_value = int((len(valid_auth_user_dtos) / chunk_size) + 1)
@@ -76,7 +75,7 @@ class AuthUsers:
             values.append(b - a)
             time.sleep(10)
         print("Average Time Delay: ", sum(values) / len(values))
-        return all_failed_data
+        return all_failed_data, exceptions
 
     @staticmethod
     def _convert_auth_user_dtos(auth_users) -> List[AuthUserDTO]:
