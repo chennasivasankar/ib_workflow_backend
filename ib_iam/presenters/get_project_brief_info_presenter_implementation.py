@@ -37,7 +37,7 @@ class GetProjectBriefInfoPresenterImplementation(
             "MAHATMA": 3,
         }
         project_dtos.sort(
-            key=lambda x: project_order_dict.get(x.project_id)
+            key=lambda x: project_order_dict.get(x.project_id, 1000)
         )
 
         project_list = [
