@@ -4,7 +4,7 @@ REQUEST_BODY_JSON = """
 {
     "users": [
         {
-            "user_id": "89d96f4b-c19d-4e69-8eae-e818f3123b09",
+            "user_id": "27d7b750-8625-4bfc-98d7-8a5156e9cbd2",
             "role_ids": [
                 "string"
             ]

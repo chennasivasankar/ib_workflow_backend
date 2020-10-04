@@ -39,6 +39,7 @@ class PermissionTypes(enum.Enum):
 
 
 class Searchable(enum.Enum):
+    DISTRICT = "DISTRICT"
     CITY = "CITY"
     STATE = "STATE"
     COUNTRY = "COUNTRY"
@@ -46,7 +47,6 @@ class Searchable(enum.Enum):
     USER = "USER"
     COMPANY = "COMPANY"
     TEAM = "TEAM"
-    DISTRICT = "DISTRICT"
 
 
 class Operators(enum.Enum):

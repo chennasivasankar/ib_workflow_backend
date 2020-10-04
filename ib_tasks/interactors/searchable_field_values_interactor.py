@@ -29,8 +29,7 @@ class SearchableFieldValuesInteractor:
             )
         except OffsetShouldBeGreaterThanOrEqualToMinusOneException:
             return presenter. \
-                raise_offset_should_be_greater_than_or_equal_to_minus_one_exception(
-            )
+                raise_offset_should_be_greater_than_or_equal_to_minus_one_exception()
 
         return presenter.get_searchable_field_values_response(
             searchable_value_detail_dtos)
@@ -71,6 +70,11 @@ class SearchableFieldValuesInteractor:
         elif search_type == Searchable.CITY.value:
             adapter = get_service_adapter()
             return adapter.search_service.get_search_cities(
+                offset=offset, limit=limit, search_query=search_query
+            )
+        elif search_type == Searchable.DISTRICT.value:
+            adapter = get_service_adapter()
+            return adapter.search_service.get_search_districts(
                 offset=offset, limit=limit, search_query=search_query
             )
 
