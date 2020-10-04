@@ -2,7 +2,7 @@ import json
 from typing import List
 
 from ib_tasks.adapters.dtos import SearchableDetailsDTO
-from ib_tasks.constants.enum import ViewType, Searchable, FieldTypes
+from ib_tasks.constants.enum import ViewType, FieldTypes, Searchable
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     (StageTaskFieldsDTO, FieldDetailsDTOWithTaskId, TaskTemplateStageFieldsDTO)
@@ -63,9 +63,13 @@ class GetTaskFieldsInteractor:
 
     @staticmethod
     def _searchable_condition(field_dto):
-        return field_dto.field_type == FieldTypes.SEARCHABLE.value and \
-               field_dto.field_values == Searchable.USER.value and \
-               field_dto.value
+        searchable_field = field_dto.field_type == \
+                           FieldTypes.SEARCHABLE.value and \
+                           field_dto.value
+        if searchable_field:
+            if field_dto.field_values != Searchable.USER.value:
+                field_dto.value = int(field_dto.value)
+        return searchable_field
 
     @staticmethod
     def _get_searchable_details_dtos(
@@ -95,11 +99,14 @@ class GetTaskFieldsInteractor:
         response_id = searchable_dto.id
         field_response = field_dto.value
         field_value = field_dto.field_values
-        condition = field_value == search_type and field_response == \
-                    response_id
-        if condition:
-            response = json.loads(searchable_dto.value)
-            field_dto.value = response['name']
+        valid_searchable_field = field_value == search_type and \
+                                 field_response == response_id
+        if valid_searchable_field:
+            if searchable_dto.search_type == Searchable.USER.value:
+                response = json.loads(searchable_dto.value)
+                field_dto.value = response['name']
+            else:
+                field_dto.value = searchable_dto.value
 
     @staticmethod
     def _get_field_ids(stage_fields_dtos: List[TaskTemplateStageFieldsDTO]):
