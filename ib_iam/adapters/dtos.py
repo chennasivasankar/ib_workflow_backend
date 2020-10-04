@@ -12,6 +12,8 @@ class UserProfileDTO:
     profile_pic_url: Optional[str] = None
     is_admin: Optional[bool] = False
     is_email_verified: Optional[bool] = None
+    phone_number: Optional[str] = None
+    country_code: Optional[str] = None
 
 
 @dataclass

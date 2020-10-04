@@ -56,17 +56,13 @@ class AuthUsersInteractor:
     ):
         from ib_iam.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
-        is_email_empty = not auth_user_dto.email
-        if is_email_empty:
-            auth_user_dto.email = auth_user_dto.token + "@gmail.com"
+        self._update_empty_values_auth_user_dto(auth_user_dto=auth_user_dto)
         from ib_iam.constants.config import DEFAULT_PASSWORD
         user_id = service_adapter.user_service.create_user_account_with_email(
             email=auth_user_dto.email, password=DEFAULT_PASSWORD
         )
-        from ib_iam.adapters.dtos import UserProfileDTO
-        user_profile_dto = UserProfileDTO(
-            user_id=user_id, name=auth_user_dto.name,
-            email=auth_user_dto.email
+        user_profile_dto = self._get_user_profile_dto(
+            auth_user_dto=auth_user_dto, user_id=user_id
         )
 
         service_adapter.user_service.create_user_profile(
@@ -77,7 +73,8 @@ class AuthUsersInteractor:
         )
         self.user_storage.create_auth_user(
             user_id=user_id, token=auth_user_dto.token,
-            auth_token_user_id=auth_user_dto.auth_token_user_id
+            auth_token_user_id=auth_user_dto.auth_token_user_id,
+            invitation_code=auth_user_dto.invitation_code
         )
         self._create_elastic_user(
             user_id=user_id, name=auth_user_dto.name,
@@ -87,6 +84,34 @@ class AuthUsersInteractor:
             user_id=user_id, role_ids=role_ids
         )
         return user_id
+
+    @staticmethod
+    def _get_user_profile_dto(auth_user_dto: AuthUserDTO, user_id: str):
+        from ib_iam.adapters.dtos import UserProfileDTO
+        user_profile_dto = UserProfileDTO(
+            user_id=user_id, name=auth_user_dto.name,
+            email=auth_user_dto.email, country_code=auth_user_dto.country_code,
+            phone_number=auth_user_dto.phone_number
+        )
+        return user_profile_dto
+
+    def _update_empty_values_auth_user_dto(self, auth_user_dto: AuthUserDTO):
+        is_auth_token_empty = not auth_user_dto.token
+        if is_auth_token_empty:
+            auth_user_dto.token = self._generate_uuid4()
+        is_auth_token_user_id_empty = not auth_user_dto.auth_token_user_id
+        if is_auth_token_user_id_empty:
+            auth_user_dto.auth_token_user_id = self._generate_uuid4()
+        is_country_code_empty = not auth_user_dto.country_code
+        if is_country_code_empty:
+            auth_user_dto.country_code = "91"
+        is_phone_number_empty = not auth_user_dto.phone_number
+        if is_phone_number_empty:
+            auth_user_dto.phone_number = None
+            auth_user_dto.country_code = None
+        is_email_empty = not auth_user_dto.email
+        if is_email_empty:
+            auth_user_dto.email = auth_user_dto.token + "@gmail.com"
 
     def _create_elastic_user(self, user_id: str, name: str, email: str):
         elastic_user_id = self.elastic_storage.create_elastic_user(
@@ -127,3 +152,8 @@ class AuthUsersInteractor:
             team_member_level_id_with_member_ids_dtos,
         )
         return
+
+    @staticmethod
+    def _generate_uuid4():
+        import uuid
+        return str(uuid.uuid4())

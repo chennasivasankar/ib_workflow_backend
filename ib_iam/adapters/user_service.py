@@ -66,10 +66,13 @@ class UserService:
         try:
             create_user_profile_dto = CreateUserProfileDTO(
                 name=user_profile_dto.name,
-                email=user_profile_dto.email
+                email=user_profile_dto.email,
+                phone_number=user_profile_dto.phone_number,
+                country_code=user_profile_dto.country_code
             )
             self.interface.create_user_profile(
-                user_id=user_id, user_profile=create_user_profile_dto)
+                user_id=user_id, user_profile=create_user_profile_dto
+            )
         except InvalidEmailException:
             raise InvalidEmail
 
