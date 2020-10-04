@@ -37,6 +37,15 @@ PROJECTS_CONFIG = {
     "JGC_DRIVE": {
         "restrict_assignee_to_user": True,
         "enable_adhoc_template": False
+    },
+    "APJ_4_0": {
+        "restrict_assignee_to_user": True,
+        "enable_adhoc_template": False
+    },
+    "MAHATMA": {
+        "restrict_assignee_to_user": True,
+        "enable_adhoc_template": False
     }
 }
+
 PROJECT_DEFAULT_PREFIX = "IBWF"

@@ -43,7 +43,11 @@ RESPONSE_200_JSON = """
             }
         }
     ],
-    "total_tasks": 1
+    "total_tasks": 1,
+    "completed_task_details": {
+        "count": 1,
+        "display_name": "string"
+    }
 }
 """
 

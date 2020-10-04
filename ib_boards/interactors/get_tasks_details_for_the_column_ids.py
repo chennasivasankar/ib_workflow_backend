@@ -45,9 +45,7 @@ class GetColumnsTasksDetailsInteractor:
         search_query = column_tasks_parameters.search_query
         self._validate_offset_value(offset=offset)
         self._validate_limit_value(limit=limit)
-        column_stage_dtos = self.storage.get_columns_stage_ids(
-            column_ids=column_ids
-        )
+        column_stage_dtos = self.get_column_stage_dtos(column_ids)
         task_ids_stages_dtos = self._get_task_ids_for_given_stages(
             column_stage_dtos=column_stage_dtos,
             limit=limit,
@@ -65,6 +63,12 @@ class GetColumnsTasksDetailsInteractor:
             )
 
         return tasks_complete_details
+
+    def get_column_stage_dtos(self, column_ids: List[str]):
+        column_stage_dtos = self.storage.get_columns_stage_ids(
+            column_ids=column_ids
+        )
+        return column_stage_dtos
 
     @staticmethod
     def _validate_offset_value(offset: int):
