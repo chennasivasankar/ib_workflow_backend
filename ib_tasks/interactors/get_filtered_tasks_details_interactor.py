@@ -170,7 +170,7 @@ class GetTaskDetailsByFilterInteractor(ValidationMixin):
     def _get_tasks_count_for_stages_in_column(self, project_id: str, user_id: str, task_condition_dtos):
         from ib_tasks.constants.constants import PROJECT_COLUMNS
         if project_id not in PROJECT_COLUMNS.keys():
-            return 0
+            return 0, "No Completed Registrations"
         column_id = PROJECT_COLUMNS[project_id]['column_id']
         display_name = PROJECT_COLUMNS[project_id]['display_name']
         from ib_tasks.adapters.service_adapter import get_service_adapter

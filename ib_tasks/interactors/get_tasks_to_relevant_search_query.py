@@ -161,7 +161,7 @@ class GetTasksToRelevantSearchQuery:
                                               task_condition_dtos):
         from ib_tasks.constants.constants import PROJECT_COLUMNS
         if project_id not in PROJECT_COLUMNS.key():
-            return 0
+            return 0, "No Completed Registrations"
         column_id = PROJECT_COLUMNS[project_id]['column_id']
         display_name = PROJECT_COLUMNS[project_id]['display_name']
         from ib_tasks.adapters.service_adapter import get_service_adapter
