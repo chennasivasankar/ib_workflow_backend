@@ -29,3 +29,9 @@ class CreateTransitionChecklistTemplateWithTaskDisplayIdDTO:
     action_id: int
     stage_id: int
     transition_checklist_gofs: List[GoFFieldsDTO]
+
+
+@dataclass
+class TaskTemplateRolesDTO:
+    task_template_id: str
+    role_ids: List[str]

@@ -14,7 +14,9 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO, ProjectTemplateDTO, ProjectIdWithTaskTemplateIdDTO, \
     TaskTemplateMandatoryFieldsDTO
-from ib_tasks.models import TaskTemplate, TaskTemplateGoFs, ProjectTaskTemplate
+from ib_tasks.interactors.task_template_dtos import TaskTemplateRolesDTO
+from ib_tasks.models import TaskTemplate, TaskTemplateGoFs, \
+    ProjectTaskTemplate, TaskTemplatePermittedRoles
 
 
 class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
@@ -438,14 +440,65 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
     def get_user_permitted_task_template_ids(
             self, user_roles: List[str]) -> List[str]:
-        from ib_tasks.models.task_templates_permitted_roles import \
-            TaskTemplatePermittedRoles
         task_template_ids_queryset = \
             TaskTemplatePermittedRoles.objects.filter(
                 role_id__in=user_roles).values_list(
                 'task_template_id', flat=True)
         task_template_ids_list = list(task_template_ids_queryset)
         return task_template_ids_list
+
+    def create_task_template_permitted_roles(
+            self, task_template_role_dtos: List[TaskTemplateRolesDTO]):
+        task_template_role_objs = self._make_task_template_permitted_role_objs(
+            task_template_role_dtos=task_template_role_dtos
+        )
+        TaskTemplatePermittedRoles.objects.bulk_create(task_template_role_objs)
+
+    def get_existing_role_dtos_of_task_templates(
+            self, task_template_ids: List[str]) -> List[TaskTemplateRolesDTO]:
+        task_template_role_values = TaskTemplatePermittedRoles.objects.filter(
+            task_template_id__in=task_template_ids
+        ).values('task_template_id', 'role_id')
+
+        task_template_role_dtos = self._convert_task_template_role_dtos(
+            task_template_role_values=task_template_role_values)
+        return task_template_role_dtos
+
+    @staticmethod
+    def _convert_task_template_role_dtos(
+            task_template_role_values: List[Dict]
+    ) -> List[TaskTemplateRolesDTO]:
+        import collections
+        role_ids_group_by_task_template_ids = collections.defaultdict(List)
+        for task_template_role_value in task_template_role_values:
+            role_ids_group_by_task_template_ids[
+                task_template_role_value['task_template_id']
+            ].append(task_template_role_value['role_id'])
+
+        task_template_role_dtos = []
+        for task_template_id, role_ids in role_ids_group_by_task_template_ids:
+            task_template_role_dtos.append(
+                TaskTemplateRolesDTO(
+                    task_template_id=task_template_id,
+                    role_ids=role_ids
+                )
+            )
+        return task_template_role_dtos
+
+    @staticmethod
+    def _make_task_template_permitted_role_objs(
+            task_template_role_dtos: List[TaskTemplateRolesDTO]):
+        task_template_role_objs = []
+        for task_template_roles_dto in task_template_role_dtos:
+            for role_id in task_template_roles_dto.role_ids:
+                task_template_role_objs.append(
+                    TaskTemplatePermittedRoles(
+                        task_template_id=
+                        task_template_roles_dto.task_template_id,
+                        role_id=role_id
+                    )
+                )
+        return task_template_role_objs
 
     @staticmethod
     def _convert_task_template_mandatory_fields_to_dtos(

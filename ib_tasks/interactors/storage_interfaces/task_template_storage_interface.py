@@ -9,6 +9,7 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO, ProjectIdWithTaskTemplateIdDTO, TaskTemplateMandatoryFieldsDTO
+from ib_tasks.interactors.task_template_dtos import TaskTemplateRolesDTO
 
 
 class TaskTemplateStorageInterface(abc.ABC):
@@ -185,4 +186,14 @@ class TaskTemplateStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_user_permitted_task_template_ids(
             self, user_roles: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def create_task_template_permitted_roles(
+            self, task_template_role_dtos: List[TaskTemplateRolesDTO]):
+        pass
+
+    @abc.abstractmethod
+    def get_existing_role_dtos_of_task_templates(
+            self, task_template_ids: List[str]) -> List[TaskTemplateRolesDTO]:
         pass

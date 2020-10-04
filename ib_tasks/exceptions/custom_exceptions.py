@@ -334,3 +334,8 @@ class DuplicateTaskTemplateIdsGivenToAProject(Exception):
     def __init__(self, task_template_ids: List[str]):
         self.task_template_ids = task_template_ids
 
+
+class DuplicateRoleIdsGivenToATaskTemplate(Exception):
+    def __init__(self, task_template_id: str, role_ids: List[str]):
+        self.task_template_id = task_template_id
+        self.role_ids = role_ids

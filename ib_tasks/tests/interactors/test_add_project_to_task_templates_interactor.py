@@ -1,8 +1,8 @@
 import mock
 import pytest
 
-from ib_tasks.interactors.add_project_to_task_templates_interactor import \
-    AddProjectToTaskTemplatesInteractor
+from ib_tasks.interactors.add_project_and_roles_to_task_templates_interactor import \
+    AddProjectAndRolesToTaskTemplatesInteractor
 
 
 class TestAddProjectToTaskTemplatesInteractor:
@@ -22,7 +22,7 @@ class TestAddProjectToTaskTemplatesInteractor:
         task_template_ids = ["template_1", "template_1"]
         expected_duplicate_task_template_ids = ["template_1"]
 
-        interactor = AddProjectToTaskTemplatesInteractor(
+        interactor = AddProjectAndRolesToTaskTemplatesInteractor(
             task_template_storage=task_template_storage_mock
         )
         from ib_tasks.exceptions.custom_exceptions import \
@@ -41,7 +41,7 @@ class TestAddProjectToTaskTemplatesInteractor:
         project_id = "CCBP"
         task_template_ids = ["template_1", "template_2"]
 
-        interactor = AddProjectToTaskTemplatesInteractor(
+        interactor = AddProjectAndRolesToTaskTemplatesInteractor(
             task_template_storage=task_template_storage_mock
         )
         from ib_tasks.exceptions.task_custom_exceptions import \
@@ -60,7 +60,7 @@ class TestAddProjectToTaskTemplatesInteractor:
         project_id = "CCBP"
         task_template_ids = ["template_1", "template_2"]
 
-        interactor = AddProjectToTaskTemplatesInteractor(
+        interactor = AddProjectAndRolesToTaskTemplatesInteractor(
             task_template_storage=task_template_storage_mock
         )
         task_template_storage_mock. \
@@ -86,7 +86,7 @@ class TestAddProjectToTaskTemplatesInteractor:
         project_id = "CCBP"
         task_template_ids = ["template_1", "template_2"]
 
-        interactor = AddProjectToTaskTemplatesInteractor(
+        interactor = AddProjectAndRolesToTaskTemplatesInteractor(
             task_template_storage=task_template_storage_mock
         )
         task_template_storage_mock. \
@@ -122,7 +122,7 @@ class TestAddProjectToTaskTemplatesInteractor:
         new_template_ids_of_project = ["template_2"]
         existing_template_ids_of_project = ["template_1"]
 
-        interactor = AddProjectToTaskTemplatesInteractor(
+        interactor = AddProjectAndRolesToTaskTemplatesInteractor(
             task_template_storage=task_template_storage_mock
         )
         task_template_storage_mock. \

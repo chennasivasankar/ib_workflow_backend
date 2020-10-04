@@ -32,7 +32,7 @@ from ib_tasks.populate.transition_template import PopulateTransitionTemplates
 @transaction.atomic()
 def populate_projects_for_task_templates(spread_sheet_name: str):
     projects_for_task_templates = PopulateProjectsForTaskTemplates()
-    projects_for_task_templates.populate_projects_for_task_template(
+    projects_for_task_templates.populate_projects_and_roles_for_task_template(
         spread_sheet_name=spread_sheet_name)
 
 

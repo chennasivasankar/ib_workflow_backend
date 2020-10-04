@@ -486,3 +486,12 @@ FIELDS_ALREADY_FILLED_BY_SOMEONE = (
     "{} fields are already entered by someone",
     "FIELDS_ALREADY_FILLED_BY_SOMEONE"
 )
+
+DUPLICATE_ROLE_IDS_GIVEN_TO_TASK_TEMPLATE = (
+    "duplicate roles: {} given to task template: {}",
+    "DUPLICATE_ROLE_IDS_GIVEN_TO_TASK_TEMPLATE"
+)
+
+INVALID_ROLE_IDS = (
+    "Given role ids: {} are not valid", "INVALID_ROLE_IDS"
+)
