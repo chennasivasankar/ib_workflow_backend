@@ -33,6 +33,7 @@ from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, \
     GetTaskDetailsDTO, \
     TaskDelayParametersDTO, TaskDTO
+from ib_tasks.interactors.task_template_dtos import TransitionTaskCreationDTO
 from ib_tasks.models import Stage, TaskTemplate, CurrentTaskStage, \
     TaskTemplateStatusVariable, TaskStageHistory, TaskStatusVariable, SubTask
 from ib_tasks.models.field import Field
@@ -43,6 +44,26 @@ from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 
 class TasksStorageImplementation(TaskStorageInterface):
+
+    def create_transition_template_task_entry(
+            self, task_id: int, action_id: int):
+        from ib_tasks.models.transition_template_tasks import TransitionTemplateTasks
+        TransitionTemplateTasks.objects.create(
+            task_id=task_id, action_id=action_id)
+
+    def create_transition_task(
+            self, transition_task_creation_dto: TransitionTaskCreationDTO
+    ) -> int:
+        template_id = transition_task_creation_dto.template_id
+        created_by = transition_task_creation_dto.created_by
+        from ib_tasks.constants.config import TRANSITION_TASK_TITLE
+        from ib_tasks.constants.config import TRANSITION_TASK_PREFIX
+        task = Task.objects.create(
+            template_id=template_id, created_by=created_by,
+            title=TRANSITION_TASK_TITLE, project_id=None)
+        Task.objects.filter(id=task.id).update(
+            task_display_id=(TRANSITION_TASK_PREFIX + '-' + str(task.id)))
+        return task.id
 
     def get_filled_fields_if_filled_in_another_task_than_given_task(
             self, task_id: int, unique_field_ids: List[str]

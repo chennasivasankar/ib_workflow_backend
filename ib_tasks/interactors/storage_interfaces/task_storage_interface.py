@@ -31,6 +31,7 @@ from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, \
     GetTaskDetailsDTO, \
     TaskDelayParametersDTO, TaskDTO
+from ib_tasks.interactors.task_template_dtos import TransitionTaskCreationDTO
 
 
 class TaskStorageInterface(abc.ABC):
@@ -272,4 +273,14 @@ class TaskStorageInterface(abc.ABC):
     def get_filled_fields_if_filled_in_another_task_than_given_task(
             self, task_id: int, unique_field_ids: List[str]
     ) -> List[FieldDetailsWithFilledResponse]:
+        pass
+
+    @abc.abstractmethod
+    def create_transition_template_task_entry(self, task_id: int, action_id: int):
+        pass
+
+    @abc.abstractmethod
+    def create_transition_task(
+            self, transition_task_creation_dto: TransitionTaskCreationDTO
+    ) -> int:
         pass

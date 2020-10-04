@@ -28,3 +28,6 @@ STRONG_PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[" \
 """
 
 TASK_DISPLAY_ID_PREFIX = "IBWF-"
+
+TRANSITION_TASK_TITLE = "Transition Task"
+TRANSITION_TASK_PREFIX = "IBWF-TRNS"

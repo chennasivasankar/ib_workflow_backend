@@ -79,4 +79,3 @@ class SubTasksCountDTO:
 class SubTasksIdsDTO:
     task_id: int
     sub_task_ids: List[int]
-

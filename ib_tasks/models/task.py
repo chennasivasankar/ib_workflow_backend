@@ -6,7 +6,8 @@ from ib_tasks.constants.constants import PRIORITY_TYPES
 
 
 class Task(AbstractDateTimeModel):
-    project_id = models.CharField(max_length=50, db_index=True)
+    project_id = models.CharField(
+        max_length=50, db_index=True, null=True, blank=True)
     task_display_id = models.CharField(
         max_length=50, unique=True, null=True, blank=True, db_index=True)
     template = models.ForeignKey("ib_tasks.TaskTemplate", on_delete=models.CASCADE)
@@ -20,8 +21,7 @@ class Task(AbstractDateTimeModel):
         null=True, blank=True)
 
     def __str__(self):
-        return "{}".format(
-            self.task_display_id)
+        return "{}".format(self.task_display_id)
 
 
 class ElasticSearchTask(models.Model):
