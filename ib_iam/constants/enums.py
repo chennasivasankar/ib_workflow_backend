@@ -20,4 +20,4 @@ class Searchable(enum.Enum):
     USER = "USER"
     COMPANY = "COMPANY"
     TEAM = "TEAM"
-
+    DISTRICT = "DISTRICT"
