@@ -162,3 +162,17 @@ class ProjectStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_project_prefix(self, project_id: str) -> str:
         pass
+
+    @abc.abstractmethod
+    def assign_teams_to_projects_bulk(
+            self, project_team_ids_dtos: List[ProjectTeamIdsDTO]
+    ):
+        pass
+
+    @abc.abstractmethod
+    def get_project_ids_for_given_roles(self, role_ids: List[str]):
+        pass
+
+    @abc.abstractmethod
+    def get_project_ids_for_given_team(self, team_id: str) -> List[str]:
+        pass
