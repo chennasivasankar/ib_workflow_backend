@@ -62,7 +62,7 @@ from ib_tasks.interactors.task_template_dtos import \
     TransitionTaskCreationDTO
 
 
-class CreateTransitionChecklistInteractor(
+class CreateTransitionTemplateTaskInteractor(
     GetTaskIdForTaskDisplayIdMixin, TaskOperationsUtilitiesMixin
 ):
 
@@ -85,13 +85,13 @@ class CreateTransitionChecklistInteractor(
         self.create_task_storage = create_or_update_task_storage
         self.task_template_storage = task_template_storage
 
-    def create_transition_checklist_wrapper(
+    def create_transition_template_task_wrapper(
             self,
             transition_template_dto:
             CreateTransitionChecklistTemplateWithTaskDisplayIdDTO,
             presenter: CreateOrUpdateTransitionChecklistPresenterInterface):
         try:
-            return self._prepare_create_or_update_transition_checklist_response(
+            return self._prepare_create_transition_template_task_response(
                 transition_template_dto, presenter)
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
@@ -168,7 +168,7 @@ class CreateTransitionChecklistInteractor(
         except InvalidFileFormat as err:
             return presenter.raise_not_acceptable_file_format(err)
 
-    def _prepare_create_or_update_transition_checklist_response(
+    def _prepare_create_transition_template_task_response(
             self,
             transition_template_dto:
             CreateTransitionChecklistTemplateWithTaskDisplayIdDTO,
@@ -184,18 +184,19 @@ class CreateTransitionChecklistInteractor(
             action_id=transition_template_dto.action_id,
             stage_id=transition_template_dto.stage_id,
             transition_checklist_gofs=checklist_gofs)
-        self.create_transition_checklist(transition_template_dto)
+        self.create_transition_template_task(transition_template_dto)
         response = presenter.get_create_transition_checklist_response()
         return response
 
-    def create_transition_checklist(
+    def create_transition_template_task(
             self,
             transition_template_dto: CreateTransitionChecklistTemplateDTO):
-        self._validate_transition_checklist_details(transition_template_dto)
+        self._validate_transition_template_task_details(
+            transition_template_dto)
         self._create_gofs_and_fields_of_transition_template(
             transition_template_dto)
 
-    def _validate_transition_checklist_details(
+    def _validate_transition_template_task_details(
             self,
             transition_template_dto: CreateTransitionChecklistTemplateDTO):
         self._validate_task_id(transition_template_dto.task_id)
