@@ -273,3 +273,7 @@ class TaskStorageInterface(abc.ABC):
             self, task_id: int, unique_field_ids: List[str]
     ) -> List[FieldDetailsWithFilledResponse]:
         pass
+
+    @abc.abstractmethod
+    def is_transition_checklist_task(self, task_id: int) -> bool:
+        pass

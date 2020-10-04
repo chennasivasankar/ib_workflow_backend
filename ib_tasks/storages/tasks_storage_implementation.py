@@ -846,3 +846,8 @@ class TasksStorageImplementation(TaskStorageInterface):
             priority=task_obj.priority
         )
         return task_dto
+
+    def is_transition_checklist_task(self, task_id: int) -> bool:
+        task_obj = Task.objects.get(id=task_id)
+        is_transition_checklist_task = task_obj.template.is_transition_template
+        return is_transition_checklist_task
