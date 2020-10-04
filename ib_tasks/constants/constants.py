@@ -95,15 +95,15 @@ PROJECT_COLUMNS = {
 
 WORKFLOW_URL_LINK = {
     "JGC_DRIVE": {
-        "CCBP_COMPLETE_WORKFLOW_LINK": "https://www.onthegomodel.com/jgcycle",
-        "CCBP_USER_WORKFLOW_LINK": "https://www.onthegomodel.com/jgcycle"
+        "CCBP_COMPLETE_WORKFLOW_LINK": "https://d2rj3iig8nko29.cloudfront.net/website-static/complete-workflow.pdf",
+        "CCBP_USER_WORKFLOW_LINK": "https://d2rj3iig8nko29.cloudfront.net/website-static/complete-workflow.pdf"
     },
     "APJ": {
-        "CCBP_COMPLETE_WORKFLOW_LINK": "https://www.onthegomodel.com/free-education-for-children",
-        "CCBP_USER_WORKFLOW_LINK": "https://www.onthegomodel.com/free-education-for-children"
+        "CCBP_COMPLETE_WORKFLOW_LINK": "https://d2rj3iig8nko29.cloudfront.net/website-static/apj-project-workflow.pdf",
+        "CCBP_USER_WORKFLOW_LINK": "https://d2rj3iig8nko29.cloudfront.net/website-static/apj-project-workflow.pdf"
     },
     "MAHATMA": {
-        "CCBP_COMPLETE_WORKFLOW_LINK": "https://ibhubs.co/india-mahatma/",
-        "CCBP_USER_WORKFLOW_LINK": "https://ibhubs.co/india-mahatma/"
+        "CCBP_COMPLETE_WORKFLOW_LINK": "https://d2rj3iig8nko29.cloudfront.net/website-static/mahatma-project-workflow.pdf",
+        "CCBP_USER_WORKFLOW_LINK": "https://d2rj3iig8nko29.cloudfront.net/website-static/mahatma-project-workflow.pdf"
     }
 }
