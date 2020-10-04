@@ -8,8 +8,6 @@ from ib_tasks.adapters.searchable_details_service import \
     InvalidUserIdsException, InvalidStateIdsException, \
     InvalidCountryIdsException, InvalidCityIdsException, \
     InvalidDistrictIdsException
-from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException, \
-    InvalidCountryIdsException, InvalidCityIdsException
 from ib_tasks.exceptions.adapter_exceptions import \
     InvalidProjectIdsException, \
     UserIsNotInProjectException
