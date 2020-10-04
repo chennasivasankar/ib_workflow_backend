@@ -5,7 +5,7 @@ Author: Pavankumar Pamuru
 """
 
 
-def populate_date(spread_sheet_name: str, sub_sheet_name: str):
+def populate_data(spread_sheet_name: str, sub_sheet_name: str):
     populate_elastic_search_state_data(
         spread_sheet_name=spread_sheet_name,
         sub_sheet_name=sub_sheet_name
@@ -14,7 +14,10 @@ def populate_date(spread_sheet_name: str, sub_sheet_name: str):
         spread_sheet_name=spread_sheet_name,
         sub_sheet_name=sub_sheet_name
     )
-    populate_to_elasticsearch()
+    from ib_iam.populate.populate_elastic_search_data import \
+        copy_districts_to_es, copy_states_to_es
+    copy_districts_to_es()
+    copy_states_to_es()
 
 
 def get_spread_sheet_data(spread_sheet_name: str, sub_sheet_name: str):
@@ -99,9 +102,3 @@ def populate_elastic_search_district_data(spread_sheet_name: str, sub_sheet_name
         for district_name in district_names
     ]
     District.objects.bulk_create(countries)
-
-
-def populate_to_elasticsearch():
-    from ib_iam.populate.populate_elastic_search_data import \
-        populate_data_to_elasticsearch
-    populate_data_to_elasticsearch()
