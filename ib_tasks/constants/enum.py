@@ -30,6 +30,7 @@ class FieldTypes(enum.Enum):
     PLAIN_TEXT_CONTENT = "PLAIN_TEXT_CONTENT"
     HTML_CONTENT = "HTML_CONTENT"
     MARKDOWN_CONTENT = "MARKDOWN_CONTENT"
+    TEXT_SHARABLE_FIELD = "TEXT_SHARABLE_FIELD"
 
 
 class PermissionTypes(enum.Enum):
@@ -45,6 +46,7 @@ class Searchable(enum.Enum):
     USER = "USER"
     COMPANY = "COMPANY"
     TEAM = "TEAM"
+    DISTRICT = "DISTRICT"
 
 
 class Operators(enum.Enum):

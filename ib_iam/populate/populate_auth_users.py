@@ -7,9 +7,9 @@ from ib_iam.interactors.dtos.dtos import AuthUserDTO
 
 class AuthUsers:
 
-    @transaction.atomic()
     def populate_auth_users(self, spread_sheet_name: str, sub_sheet_name: str,
-                            project_id: str):
+                            project_id: str, role_ids: List[str],
+                            is_assign_auth_token_users_to_team: bool):
         from ib_iam.populate.spreedsheet_utils import SpreadSheetUtil
         spreadsheet_utils = SpreadSheetUtil()
         auth_users = spreadsheet_utils \
@@ -28,7 +28,8 @@ class AuthUsers:
             TeamStorageImplementation
         from ib_iam.storages.team_member_level_storage_implementation import \
             TeamMemberLevelStorageImplementation
-        from ib_iam.interactors.auth_users_interactor import AuthUsersInteractor
+        from ib_iam.interactors.auth_users_interactor import \
+            AuthUsersInteractor
         from ib_iam.storages.project_storage_implementation import \
             ProjectStorageImplementation
 
@@ -45,9 +46,28 @@ class AuthUsers:
             team_member_level_storage=team_member_level_storage,
             project_storage=project_storage
         )
-        interactor.auth_user_dtos(auth_user_dtos=auth_user_dtos,
-                                  project_id=project_id)
-        return
+
+        chunk_size = 500
+        max_value = int((len(auth_user_dtos) / chunk_size) + 1)
+        import time
+        values = []
+        all_failed_data = []
+        for i in range(max_value):
+            a = time.time()
+            failed_data = interactor.auth_user_dtos(
+                auth_user_dtos=auth_user_dtos[i * chunk_size:(i + 1) * chunk_size],
+                project_id=project_id,
+                role_ids=role_ids,
+                is_assign_auth_token_users_to_team=is_assign_auth_token_users_to_team
+            )
+            b = time.time()
+            print("Time Elapsed: ", b-a, failed_data)
+            all_failed_data += failed_data
+            print("Iteration {} out of {}".format(i+1, max_value))
+            values.append(b-a)
+            time.sleep(10)
+        print("Average Time Delay: ", sum(values)/len(values))
+        return all_failed_data
 
     @staticmethod
     def _convert_auth_user_dtos(auth_users) -> List[AuthUserDTO]:
@@ -56,7 +76,10 @@ class AuthUsers:
                 token=auth_user["auth_token"],
                 email=auth_user["email"],
                 name=auth_user["name"],
-                auth_token_user_id=auth_user["auth_token_user_id"]
+                auth_token_user_id=auth_user["user_id"],
+                invitation_code=auth_user["invitation_code"],
+                phone_number=auth_user["phone_number"],
+                country_code=auth_user["country_code"]
             )
             for auth_user in auth_users
         ]

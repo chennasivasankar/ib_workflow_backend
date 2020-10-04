@@ -77,3 +77,18 @@ FIELD_TYPE_TEXT_WITH_FIELD_VALUES = [
 ]
 
 TASK_TEMPLATE_TITLE_DEFAULT_NAME = "Title"
+
+PROJECT_COLUMNS = {
+    "JGC_DRIVE": {
+        "column_id": "JGCC_SUCCESSFUL_LEAD",
+        "display_name": "Registrations"
+    },
+    "APJ": {
+        "column_id": "APJC_CHILD",
+        "display_name": "Registrations"
+    },
+    "MAHATMA": {
+        "column_id": "MHTMC_VILLAGES",
+        "display_name": "Registrations"
+    }
+}

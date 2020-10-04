@@ -137,10 +137,12 @@ class TaskDetailsValidationsInteractor(TaskOperationsUtilitiesMixin):
 
         self._validate_project_id(project_id)
         self._validate_task_template_project_id(project_id, task_template_id)
+        from ib_tasks.constants.constants import ADHOC_TEMPLATE_ID
+        template_is_adhoc = task_template_id == ADHOC_TEMPLATE_ID
         self.validate_task_dates_and_priority(
             task_dto.basic_task_details_dto.start_datetime,
             task_dto.basic_task_details_dto.due_datetime,
-            task_dto.basic_task_details_dto.priority, action_type)
+            task_dto.basic_task_details_dto.priority, action_type, template_is_adhoc)
 
     def _validate_gofs_details(
             self, task_dto: CreateTaskDTO, action_type: ActionTypes,

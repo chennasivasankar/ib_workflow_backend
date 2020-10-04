@@ -2,6 +2,7 @@ from typing import List
 
 from ib_boards.interactors.get_board_complete_details_interactor import \
     GetBoardDetailsInteractor
+from ib_boards.interactors.storage_interfaces.dtos import ColumnStageIdsDTO
 from ib_boards.storages.storage_implementation import StorageImplementation
 
 
@@ -20,3 +21,16 @@ class BoardServiceInterface:
         storage = StorageImplementation()
         interactor = GetBoardDetailsInteractor(storage)
         return interactor.validate_board_id(board_id)
+
+    @staticmethod
+    def get_stage_ids_based_on_column(column_id: str) -> List[ColumnStageIdsDTO]:
+        storage = StorageImplementation()
+        from ib_boards.interactors.get_tasks_details_for_the_column_ids import \
+            GetColumnsTasksDetailsInteractor
+        interactor = GetColumnsTasksDetailsInteractor(
+            storage=storage
+        )
+        column_stage_dtos = interactor.get_column_stage_dtos(
+            column_ids=[column_id]
+        )
+        return column_stage_dtos

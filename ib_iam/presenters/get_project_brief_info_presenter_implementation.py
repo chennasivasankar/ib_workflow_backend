@@ -30,6 +30,17 @@ class GetProjectBriefInfoPresenterImplementation(
     def success_response_for_get_project_brief_info(
             self, project_dtos: List[ProjectWithDisplayIdDTO]
     ):
+        # TODO: Fix me
+        project_order_dict = {
+            "JGC_DRIVE": 1,
+            "APJ_4_0": 2,
+            "MAHATMA": 3,
+        }
+        project_dtos.sort(
+            key=lambda x: project_order_dict.get(x.project_id, 1000),
+            reverse=True
+        )
+
         project_list = [
             {
                 "project_id": project_dto.project_id,

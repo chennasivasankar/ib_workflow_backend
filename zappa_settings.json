@@ -27,6 +27,33 @@
     },
     "manage_roles": false
   },
+  "alpha_worker": {
+    "project_name": "ib-workflows-backend",
+    "s3_bucket": "ib-workflows-backend-code-bucket",
+    "memory_size": 1536,
+    "timeout_seconds": 300,
+    "aws_region": "ap-south-1",
+    "keep_warm": false,
+    "certificate_arn": "arn:aws:acm:us-east-1:607092105028:certificate/163b7c28-92eb-49bd-a60d-5094769276be",
+    "django_settings": "ib_workflows_backend.settings.alpha",
+    "cloudwatch_log_level": "INFO",
+    "cloudwatch_data_trace": true,
+    "cloudwatch_metrics_enabled": true,
+    "touch": false,
+    "exception_handler": "ib_sentry_wrapper.utils.zappa_sentry.capture_exceptions",
+    "runtime": "python3.7",
+    "vpc_config": {
+      "SubnetIds": [
+        "subnet-89f666c4",
+        "subnet-69f76724"
+      ],
+      "SecurityGroupIds": [
+        "sg-7071bb18"
+      ]
+    },
+    "manage_roles": true,
+    "lambda_concurrency": 1
+  },
   "beta": {
     "project_name": "ib-workflows-backend",
     "s3_bucket": "ib-workflows-backend-code-bucket",

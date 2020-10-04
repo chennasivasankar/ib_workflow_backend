@@ -94,6 +94,9 @@ class AuthUserDTO:
     name: str
     email: str
     auth_token_user_id: str = None
+    invitation_code: Optional[str] = None
+    phone_number: Optional[str] = None
+    country_code: Optional[str] = None
 
 
 @dataclass
@@ -107,3 +110,15 @@ class LoginWithTokenParameterDTO:
     token: str
     name: Optional[str] = None
     auth_token_user_id: Optional[str] = None
+
+
+@dataclass
+class SpmAndPmUsersAuthTokensDTO:
+    spm_auth_token_user_id: str
+    pm_auth_token_user_id: str
+
+
+@dataclass
+class PMAndSubUsersAuthIdsDTO:
+    pm_auth_user_id: str
+    sub_user_auth_user_id: str

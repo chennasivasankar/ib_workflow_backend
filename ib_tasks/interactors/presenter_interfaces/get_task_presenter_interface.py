@@ -2,8 +2,9 @@ import abc
 from dataclasses import dataclass
 from typing import List
 
-from ib_tasks.adapters.auth_service import InvalidProjectIdsException, \
+from ib_tasks.adapters.auth_service import \
     TeamsNotExistForGivenProjectException, UsersNotExistsForGivenTeamsException
+from ib_tasks.exceptions.adapter_exceptions import InvalidProjectIdsException
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskIdException, \
     InvalidStageIdsForTask, InvalidTaskDisplayId

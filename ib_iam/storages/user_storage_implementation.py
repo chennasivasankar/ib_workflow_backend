@@ -9,14 +9,20 @@ from ib_iam.interactors.storage_interfaces.dtos import UserDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, \
     CompanyDTO, \
-    CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO, UserIdWithRolesDTO, \
-    CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO, UserIdWithTokenDTO
+    UserIdWithRolesDTO, \
+    CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO, UserIdWithTokenDTO, \
+    UserIdAndAuthUserIdDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface \
     import UserStorageInterface
 from ib_iam.models import ProjectRole
 
 
 class UserStorageImplementation(UserStorageInterface):
+
+    def get_user_invitation_code(self, user_id) -> str:
+        from ib_iam.models import UserAuthToken
+        user_auth_object = UserAuthToken.objects.get(user_id=user_id)
+        return user_auth_object.invitation_code
 
     def get_users_project_roles(
             self, user_ids: List[str], project_id: str
@@ -25,7 +31,7 @@ class UserStorageImplementation(UserStorageInterface):
         user_role_dicts = UserRole.objects.filter(
             user_id__in=user_ids,
             project_role__project__project_id=project_id).values(
-                'user_id', 'project_role__role_id')
+            'user_id', 'project_role__role_id')
         from collections import defaultdict
         user_role_default_dict = defaultdict(list)
         for user_role_dict in user_role_dicts:
@@ -584,11 +590,14 @@ class UserStorageImplementation(UserStorageInterface):
         return
 
     def create_auth_user(
-            self, user_id: str, token: str, auth_token_user_id: str
+            self, user_id: str, token: str, auth_token_user_id: str,
+            invitation_code: Optional[str] = None
     ):
         from ib_iam.models import UserAuthToken
         UserAuthToken.objects.create(
-            user_id=user_id, token=token, auth_token_user_id=auth_token_user_id
+            user_id=user_id, token=token,
+            auth_token_user_id=auth_token_user_id,
+            invitation_code=invitation_code
         )
         return
 
@@ -601,6 +610,7 @@ class UserStorageImplementation(UserStorageInterface):
     def get_user_and_token_dtos(
             self, tokens: List[str]
     ) -> List[UserIdWithTokenDTO]:
+        # TODO Write tests for it check once is it in usage or not
         from ib_iam.models import UserAuthToken
         user_auth_tokens = UserAuthToken.objects.filter(
             token__in=tokens).values('user_id', 'token')
@@ -611,3 +621,26 @@ class UserStorageImplementation(UserStorageInterface):
             ) for user_auth_token in user_auth_tokens
         ]
         return user_id_with_token_dtos
+
+    def get_user_id_and_auth_user_id(
+            self, auth_user_ids: List[str]
+    ) -> List[UserIdAndAuthUserIdDTO]:
+        # TODO Write tests
+        from ib_iam.models import UserAuthToken
+        user_auth_tokens = UserAuthToken.objects.filter(
+            auth_token_user_id__in=auth_user_ids
+        ).values('user_id', 'auth_token_user_id')
+        user_id_with_auth_user_id_dtos = [
+            UserIdAndAuthUserIdDTO(
+                user_id=user_auth_token["user_id"],
+                auth_user_id=user_auth_token["auth_token_user_id"]
+            ) for user_auth_token in user_auth_tokens
+        ]
+        return user_id_with_auth_user_id_dtos
+
+    def get_all_invitation_codes_of_auth_user(self) -> List[str]:
+        from ib_iam.models import UserAuthToken
+        invitation_codes = UserAuthToken.objects.values_list(
+            'invitation_code', flat=True
+        )
+        return invitation_codes

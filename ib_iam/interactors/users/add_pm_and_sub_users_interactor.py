@@ -2,10 +2,11 @@ from collections import defaultdict
 from typing import List
 
 from ib_iam.constants.config import LEVEL_0_HIERARCHY, LEVEL_0_NAME, \
-    LEVEL_1_HIERARCHY, LEVEL_1_NAME
-from ib_iam.interactors.dtos.dtos import PMAndSubUsersAuthTokensDTO, \
-    TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
-from ib_iam.interactors.storage_interfaces.dtos import UserIdWithTokenDTO
+    LEVEL_1_HIERARCHY, LEVEL_1_NAME, DEFAULT_TEAM_ID
+from ib_iam.interactors.dtos.dtos import TeamMemberLevelIdWithMemberIdsDTO, \
+    ImmediateSuperiorUserIdWithUserIdsDTO, PMAndSubUsersAuthIdsDTO
+from ib_iam.interactors.storage_interfaces.dtos import \
+    UserIdAndAuthUserIdDTO, TeamUserIdsDTO
 from ib_iam.interactors.storage_interfaces.project_storage_interface import \
     ProjectStorageInterface
 from ib_iam.interactors.storage_interfaces \
@@ -31,27 +32,29 @@ class PMAndSubUsersInteractor:
         self.user_storage = user_storage
 
     def add_pm_and_sub_users(
-            self, pm_and_sub_user_dtos: List[PMAndSubUsersAuthTokensDTO],
-            project_id: str
+            self, pm_and_sub_user_auth_ids_dtos: List[PMAndSubUsersAuthIdsDTO],
+            project_id: str, update_teams_of_users: bool
     ):
-        user_tokens = self.get_all_user_tokens(
-            pm_and_sub_user_dtos=pm_and_sub_user_dtos
+        auth_user_ids = self._get_all_auth_user_ids(
+            pm_and_sub_user_auth_ids_dtos=pm_and_sub_user_auth_ids_dtos
         )
-        user_id_with_token_dtos = self.user_storage.get_user_and_token_dtos(
-            tokens=user_tokens
+        user_id_with_auth_user_id_dtos = self.user_storage \
+            .get_user_id_and_auth_user_id(auth_user_ids=auth_user_ids)
+        pm_id_and_sub_user_ids_dictionary = self.get_pm_and_sub_users(
+            user_id_with_auth_user_id_dtos=user_id_with_auth_user_id_dtos,
+            pm_and_sub_user_auth_ids_dtos=pm_and_sub_user_auth_ids_dtos
         )
+        team_user_id_dtos = []
 
-        pm_id_and_sub_user_ids = self.get_pm_and_sub_users(
-            user_id_with_token_dtos=user_id_with_token_dtos,
-            pm_and_sub_user_dtos=pm_and_sub_user_dtos
-        )
-
-        for pm_id, user_ids in pm_id_and_sub_user_ids.items():
+        for pm_id, user_ids in pm_id_and_sub_user_ids_dictionary.items():
             team_id, is_created = self.team_storage.get_or_create_team_with_name(
                 name="team_name_{pm_id}".format(pm_id=pm_id)
             )
             self.team_storage.add_users_to_team(
                 team_id=team_id, user_ids=user_ids + [pm_id]
+            )
+            team_user_id_dtos.append(
+                TeamUserIdsDTO(team_id=team_id, user_ids=user_ids)
             )
             if is_created:
                 self.project_storage.assign_teams_to_projects(
@@ -64,18 +67,23 @@ class PMAndSubUsersInteractor:
                 pm_id=pm_id, sub_user_ids=user_ids, team_id=team_id
             )
 
-    @staticmethod
-    def get_all_user_tokens(
-            pm_and_sub_user_dtos: List[PMAndSubUsersAuthTokensDTO]
-    ):
-        user_tokens = []
-        for pm_and_sub_user_dto in pm_and_sub_user_dtos:
-            user_tokens.extend(
-                [pm_and_sub_user_dto.pm_auth_token,
-                 pm_and_sub_user_dto.sub_user_auth_token]
+        if update_teams_of_users:
+            self.update_users_with_their_new_teams(
+                team_user_id_dtos=team_user_id_dtos
             )
-        user_tokens = list(set(user_tokens))
-        return user_tokens
+
+    @staticmethod
+    def _get_all_auth_user_ids(
+            pm_and_sub_user_auth_ids_dtos: List[PMAndSubUsersAuthIdsDTO]
+    ):
+        auth_user_ids = []
+        for pm_and_sub_user_auth_ids_dto in pm_and_sub_user_auth_ids_dtos:
+            auth_user_ids.extend(
+                [pm_and_sub_user_auth_ids_dto.pm_auth_user_id,
+                 pm_and_sub_user_auth_ids_dto.sub_user_auth_user_id]
+            )
+        auth_user_ids = list(set(auth_user_ids))
+        return auth_user_ids
 
     def add_pm_and_sub_users_as_superior_and_members(
             self, pm_id: str, sub_user_ids: List[str], team_id: str
@@ -109,11 +117,11 @@ class PMAndSubUsersInteractor:
         )
         team_member_level_id_with_member_ids_dtos = [
             TeamMemberLevelIdWithMemberIdsDTO(
-                team_member_level_id=team_member_level_0,
+                team_member_level_id=team_member_level_1,
                 member_ids=[pm_id]
             ),
             TeamMemberLevelIdWithMemberIdsDTO(
-                team_member_level_id=team_member_level_1,
+                team_member_level_id=team_member_level_0,
                 member_ids=sub_user_ids
             )
         ]
@@ -124,21 +132,38 @@ class PMAndSubUsersInteractor:
 
     @staticmethod
     def get_pm_and_sub_users(
-            user_id_with_token_dtos: List[UserIdWithTokenDTO],
-            pm_and_sub_user_dtos
+            user_id_with_auth_user_id_dtos: List[UserIdAndAuthUserIdDTO],
+            pm_and_sub_user_auth_ids_dtos: List[PMAndSubUsersAuthIdsDTO]
     ):
-        user_token_and_id_dictionary = {}
-        for user_id_with_token_dto in user_id_with_token_dtos:
-            user_token_and_id_dictionary[user_id_with_token_dto.token] = \
-                user_id_with_token_dto.user_id
+        user_auth_id_and_user_id_dictionary = {}
+        for user_id_with_auth_user_id_dto in user_id_with_auth_user_id_dtos:
+            user_auth_id_and_user_id_dictionary[
+                user_id_with_auth_user_id_dto.auth_user_id
+            ] = user_id_with_auth_user_id_dto.user_id
 
         pm_id_and_sub_user_ids_dictionary = defaultdict(list)
-        for pm_and_sub_user_dto in pm_and_sub_user_dtos:
+        for pm_and_sub_user_auth_ids_dto in pm_and_sub_user_auth_ids_dtos:
             pm_id_and_sub_user_ids_dictionary[
-                user_token_and_id_dictionary[pm_and_sub_user_dto.pm_auth_token]
+                user_auth_id_and_user_id_dictionary[
+                    pm_and_sub_user_auth_ids_dto.pm_auth_user_id]
             ].append(
-                user_token_and_id_dictionary[
-                    pm_and_sub_user_dto.sub_user_auth_token
+                user_auth_id_and_user_id_dictionary[
+                    pm_and_sub_user_auth_ids_dto.sub_user_auth_user_id
                 ]
             )
         return pm_id_and_sub_user_ids_dictionary
+
+    def update_users_with_their_new_teams(
+            self, team_user_id_dtos: List[TeamUserIdsDTO]
+    ):
+        user_ids = []
+        for team_user_id_dto in team_user_id_dtos:
+            user_ids.extend(team_user_id_dto.user_ids)
+        self.team_storage.delete_members_from_team(
+            team_id=DEFAULT_TEAM_ID, user_ids=user_ids
+        )
+        from ib_iam.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        service_adapter.task_service.update_users_with_their_new_teams(
+            team_user_id_dtos=team_user_id_dtos, old_team_id=DEFAULT_TEAM_ID
+        )

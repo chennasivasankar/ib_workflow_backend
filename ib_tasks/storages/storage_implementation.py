@@ -5,6 +5,7 @@ from django.db.models import Q
 
 from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.constants.enum import PermissionTypes
+from ib_tasks.interactors.dtos.dtos import TeamUserIdsDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stage_dtos import DBStageIdWithGoFIdsDTO, \
     DBStageIdWithStageIdDTO
@@ -226,8 +227,8 @@ class StagesStorageImplementation(StageStorageInterface):
     def get_valid_stage_ids_in_given_stage_ids(self, stage_ids: List[str]) -> \
             List[str]:
 
-        stage_ids = Stage.objects.filter(stage_id__in=stage_ids).\
-                values_list('stage_id', flat=True)
+        stage_ids = Stage.objects.filter(stage_id__in=stage_ids). \
+            values_list('stage_id', flat=True)
         return list(stage_ids)
 
     def get_valid_db_stage_ids_with_stage_value(
@@ -686,7 +687,7 @@ class StagesStorageImplementation(StageStorageInterface):
         return stage_ids
 
     def get_stages_permitted_gof_ids(
-            self, stage_ids: List[str], gof_ids: List[str]
+            self, stage_ids: List[int], gof_ids: List[str]
     ) -> List[str]:
         gof_ids = StageGoF.objects.filter(
             stage_id__in=stage_ids, gof_id__in=gof_ids
@@ -777,6 +778,16 @@ class StagesStorageImplementation(StageStorageInterface):
             )
             for stage_obj in stage_objs]
         return stage_detail_dtos
+
+    def update_user_teams_in_task_stage_history(
+            self, team_user_id_dtos: List[TeamUserIdsDTO], old_team_id: str
+    ):
+        # TODO optimise it and write tests for it
+        for team_user_id_dto in team_user_id_dtos:
+            TaskStageHistory.objects.filter(
+                team_id=old_team_id,
+                assignee_id__in=team_user_id_dto.user_ids
+            ).update(team_id=team_user_id_dto.team_id)
 
 
 class StorageImplementation(StorageInterface):

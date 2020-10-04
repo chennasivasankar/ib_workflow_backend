@@ -5,6 +5,7 @@ class UserAuthToken(models.Model):
     user_id = models.CharField(max_length=36)
     auth_token_user_id = models.CharField(max_length=36, null=True, blank=True)
     token = models.CharField(max_length=100)
+    invitation_code = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
         return f"{self.user_id} have token = {self.token}"

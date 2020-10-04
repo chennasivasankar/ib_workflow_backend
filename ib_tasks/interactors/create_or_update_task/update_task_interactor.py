@@ -263,16 +263,17 @@ class UpdateTaskInteractor(
         task_template_id = \
             self.create_task_storage.get_template_id_for_given_task(task_id)
         from ib_tasks.constants.constants import ADHOC_TEMPLATE_ID
-        is_not_adhoc_template = not task_template_id == ADHOC_TEMPLATE_ID
+        template_is_adhoc = task_template_id == ADHOC_TEMPLATE_ID
+        is_normal_template = not template_is_adhoc
         action_type_is_not_no_validations = \
             task_dto.task_basic_details.action_type != \
             ActionTypes.NO_VALIDATIONS.value
-        if action_type_is_not_no_validations and is_not_adhoc_template:
-            self.validate_task_dates_and_priority(
-                task_dto.task_basic_details.start_datetime,
-                task_dto.task_basic_details.due_datetime,
-                task_dto.task_basic_details.priority,
-                task_dto.task_basic_details.action_type)
+        self.validate_task_dates_and_priority(
+            task_dto.task_basic_details.start_datetime,
+            task_dto.task_basic_details.due_datetime,
+            task_dto.task_basic_details.priority,
+            task_dto.task_basic_details.action_type, template_is_adhoc)
+        if action_type_is_not_no_validations and is_normal_template:
             self._validate_task_delay_reason_is_added_if_due_date_is_changed(
                 updated_due_date=task_dto.task_basic_details.due_datetime,
                 task_id=task_dto.task_basic_details.task_id,
@@ -292,7 +293,7 @@ class UpdateTaskInteractor(
         fields = self._get_fields_which_does_not_have_empty_response(
             task_dto.gof_fields_dtos)
         self._validate_unique_fields_filled_validation(fields, task_id)
-        if action_type_is_not_no_validations and is_not_adhoc_template:
+        if action_type_is_not_no_validations and is_normal_template:
             self._validate_all_user_permitted_fields_are_filled_or_not(
                 user_id=task_dto.task_basic_details.created_by_id,
                 project_id=project_id,

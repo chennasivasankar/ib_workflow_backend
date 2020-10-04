@@ -1,3 +1,5 @@
+from typing import Optional, List
+
 from ib_iam.interactors.dtos.dtos import LoginWithTokenParameterDTO, \
     TeamMemberLevelIdWithMemberIdsDTO
 from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
@@ -12,8 +14,7 @@ from ib_iam.interactors.storage_interfaces.team_storage_interface import \
     TeamStorageInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
-from ib_workflows_backend.settings.base_swagger_utils import \
-    JGC_DRIVE_PROJECT_ID
+from ib_workflows_backend.settings.base_swagger_utils import JGC_DEFAULT_ROLE
 
 
 class LoginWithTokenInteractor:
@@ -47,16 +48,15 @@ class LoginWithTokenInteractor:
     def login_with_token(
             self, login_with_token_parameter_dto: LoginWithTokenParameterDTO
     ):
+        # TODO need to write tests if user not exist
         from django.conf import settings
         user_id = self.user_storage.get_user_id_for_given_token(
             token=login_with_token_parameter_dto.token
         )
         if not user_id:
-            user_id = self._create_user(
+            user_id = self._create_user_team_user_role_and_assign_team_to_projects(
                 login_with_token_parameter_dto=login_with_token_parameter_dto
             )
-            self.add_team_and_assign_user_to_team(user_id=user_id)
-            self.assign_all_project_roles_to_user(user_id=user_id)
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
         expiry_in_seconds = settings.USER_VERIFICATION_EMAIL_EXPIRY_IN_SECONDS
@@ -66,6 +66,29 @@ class LoginWithTokenInteractor:
         )
         is_admin = False
         return user_tokens_dto, is_admin
+
+    def _create_user_team_user_role_and_assign_team_to_projects(
+            self, login_with_token_parameter_dto: LoginWithTokenParameterDTO
+    ):
+        user_id = self._create_user(
+            login_with_token_parameter_dto=login_with_token_parameter_dto
+        )
+        team_id, is_team_created = self.add_team_and_assign_user_to_team(
+            user_id=user_id
+        )
+        role_ids = JGC_DEFAULT_ROLE.split(",")
+        all_role_ids_from_db = self.project_storage.get_all_project_role_ids()
+        valid_role_ids = list(set(role_ids) & set(all_role_ids_from_db))
+        project_ids = self.project_storage.get_project_ids_for_given_roles(
+            role_ids=valid_role_ids
+        )
+        self._assign_team_to_projects(
+            team_id=team_id, project_ids=project_ids
+        )
+        self.assign_given_roles_to_user(
+            user_id=user_id, role_ids=valid_role_ids
+        )
+        return user_id
 
     def _create_user(
             self, login_with_token_parameter_dto: LoginWithTokenParameterDTO
@@ -92,9 +115,11 @@ class LoginWithTokenInteractor:
             user_id=user_id, is_admin=False,
             name=login_with_token_parameter_dto.name
         )
+        invitation_code = self._get_unique_invitation_code()
         self.user_storage.create_auth_user(
             user_id=user_id, token=login_with_token_parameter_dto.token,
-            auth_token_user_id=login_with_token_parameter_dto.auth_token_user_id
+            auth_token_user_id=login_with_token_parameter_dto.auth_token_user_id,
+            invitation_code=invitation_code
         )
         self._create_elastic_user(
             user_id=user_id, name=login_with_token_parameter_dto.name,
@@ -106,22 +131,32 @@ class LoginWithTokenInteractor:
         from ib_iam.constants.config import DEFAULT_TEAM_ID, DEFAULT_TEAM_NAME
         team_id = DEFAULT_TEAM_ID
         team_name = DEFAULT_TEAM_NAME
-        is_created = self.team_storage.get_or_create_team_with_id_and_name(
+        is_team_created = self.team_storage.get_or_create_team_with_id_and_name(
             team_id=team_id, name=team_name
         )
         self.team_storage.add_users_to_team(
             team_id=team_id, user_ids=[user_id]
         )
-        if is_created:
-            self.project_storage.assign_teams_to_projects(
-                project_id=JGC_DRIVE_PROJECT_ID, team_ids=[team_id]
-            )
         self.add_user_to_team_member_level(team_id=team_id, user_id=user_id)
+        return team_id, is_team_created
 
-    def assign_all_project_roles_to_user(self, user_id: str):
-        role_ids = self.project_storage.get_project_role_ids(
-            project_id=JGC_DRIVE_PROJECT_ID
-        )
+    def _assign_team_to_projects(self, team_id: str, project_ids: List[str]):
+        from ib_iam.interactors.storage_interfaces.dtos import \
+            ProjectTeamIdsDTO
+        team_existing_project_ids = self.project_storage \
+            .get_project_ids_for_given_team(team_id=team_id)
+        project_ids_to_add_team = list(
+            set(project_ids) - set(team_existing_project_ids))
+        if project_ids_to_add_team:
+            project_team_ids_dtos = [
+                ProjectTeamIdsDTO(project_id=project_id, team_ids=[team_id])
+                for project_id in project_ids_to_add_team
+            ]
+            self.project_storage.assign_teams_to_projects_bulk(
+                project_team_ids_dtos=project_team_ids_dtos
+            )
+
+    def assign_given_roles_to_user(self, user_id: str, role_ids: List[str]):
         self.user_storage.add_roles_to_the_user(
             user_id=user_id, role_ids=role_ids
         )
@@ -151,3 +186,33 @@ class LoginWithTokenInteractor:
             team_member_level_id_with_member_ids_dtos=
             team_member_level_id_with_member_ids_dtos
         )
+
+    def _get_unique_invitation_code(self) -> Optional[str]:
+        invitation_codes_from_db = self.user_storage \
+            .get_all_invitation_codes_of_auth_user()
+        for i in range(3):
+            invitation_code = self._generate_unique_invitation_code()
+            is_invitation_code_exists_in_db = \
+                invitation_code not in invitation_codes_from_db
+            if is_invitation_code_exists_in_db:
+                return invitation_code
+
+    @staticmethod
+    def _generate_unique_invitation_code() -> str:
+        import random
+        import string
+
+        letters = string.ascii_uppercase
+        letters = letters.replace("I", "")
+        letters = letters.replace("O", "")
+        letters = letters.replace("L", "")
+
+        digits = string.digits
+        digits = digits.replace("0", "")
+        digits = digits.replace("1", "")
+
+        letters_and_digits = letters + digits
+        # print("letters_and_digits: ", letters_and_digits)
+        invitation_code = ''.join(
+            random.choice(letters_and_digits) for i in range(4))
+        return invitation_code

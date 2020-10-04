@@ -50,28 +50,6 @@ class TestPopulateGoFs:
             name="empty_gof_id_message", value=str(err.value)
         )
 
-    @pytest.mark.parametrize("gof_display_name", [None, "", "  "])
-    def test_populate_gofs_with_empty_gof_display_names(
-            self, interactor, gof_display_name, snapshot
-    ):
-        # Arrange
-        from ib_tasks.exceptions.gofs_custom_exceptions import GOFDisplayNameCantBeEmpty
-        gof_dtos = GoFDTOFactory.create_batch(
-            size=2, gof_display_name=gof_display_name
-        )
-        complete_gof_details_dtos = CompleteGoFDetailsDTOFactory.create_batch(
-            size=2, gof_dto=factory.Iterator(gof_dtos)
-        )
-
-        # Act
-        with pytest.raises(GOFDisplayNameCantBeEmpty) as err:
-            interactor.create_or_update_gofs(complete_gof_details_dtos)
-
-        # Assert
-        snapshot.assert_match(
-            name="empty_gof_display_name_message", value=str(err.value)
-        )
-
     @pytest.mark.parametrize("max_columns", [0, -1])
     def test_populate_gofs_with_invalid_max_columns_value(
             self, interactor, max_columns, snapshot

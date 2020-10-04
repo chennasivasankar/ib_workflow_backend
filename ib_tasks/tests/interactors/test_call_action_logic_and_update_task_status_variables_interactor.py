@@ -11,7 +11,7 @@ from ib_tasks.interactors.user_action_on_task \
 from ib_tasks.tests.factories.storage_dtos import (
     StatusVariableDTOFactory, GOFMultipleStatusDTOFactory,
     TaskGoFFieldDTOFactory, TaskGoFDTOFactory, TaskDetailsDTOFactory,
-    FieldTypeDTOFactory, TaskBaseDetailsDTOFactory
+    FieldTypeDTOFactory, TaskBaseDetailsDTOFactory, TaskGoFWithTaskIdDTOFactory
 )
 from ib_tasks.tests.interactors.super_storage_mock_class import \
     StorageMockClass
@@ -22,9 +22,9 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
     @pytest.fixture()
     def task_gof_dtos(self):
         task_gof_dtos = [
-            TaskGoFDTOFactory(task_gof_id=1, gof_id="gof1", same_gof_order=1),
-            TaskGoFDTOFactory(task_gof_id=2, gof_id="gof2", same_gof_order=1),
-            TaskGoFDTOFactory(task_gof_id=3, gof_id="gof2", same_gof_order=2),
+            TaskGoFDTOFactory(task_gof_id=1, gof_id="gof1", same_gof_order=0),
+            TaskGoFDTOFactory(task_gof_id=2, gof_id="gof2", same_gof_order=0),
+            TaskGoFDTOFactory(task_gof_id=3, gof_id="gof2", same_gof_order=1),
         ]
         return task_gof_dtos
 
@@ -36,9 +36,9 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
     @pytest.fixture()
     def single_task_gof_dtos(self):
         task_gof_dtos = [
-            TaskGoFDTOFactory(task_gof_id=1, gof_id="gof1", same_gof_order=1),
-            TaskGoFDTOFactory(task_gof_id=2, gof_id="gof2", same_gof_order=1),
-            TaskGoFDTOFactory(task_gof_id=3, gof_id="gof3", same_gof_order=1),
+            TaskGoFDTOFactory(task_gof_id=1, gof_id="gof1", same_gof_order=0),
+            TaskGoFDTOFactory(task_gof_id=2, gof_id="gof2", same_gof_order=0),
+            TaskGoFDTOFactory(task_gof_id=3, gof_id="gof3", same_gof_order=0),
         ]
         return task_gof_dtos
 
@@ -109,7 +109,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         return task_dto
 
     @staticmethod
-    def tt_given_invalid_path_raises_exception(
+    def test_given_invalid_path_raises_exception(
             interactor, action_storage_mock,
             task_dto_mock, task_dto,
             set_up_storage
@@ -131,7 +131,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         )
 
     @staticmethod
-    def te_given_invalid_method_name_raises_exception(
+    def test_given_invalid_method_name_raises_exception(
             interactor, action_storage_mock, task_dto_mock,
             task_dto, mocker, set_up_storage
     ):
@@ -199,7 +199,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         field_storage.get_field_type_dtos.return_value = field_type_dtos
 
     @staticmethod
-    def tes_given_all_multiple_gofs(
+    def test_given_all_multiple_gofs(
             mocker, task_gof_dtos, create_task_storage,
             field_storage, interactor, action_storage_mock, task_dto_mock,
             set_up_storage_for_all_multiple_gofs, task_dto
@@ -247,7 +247,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         return task_dto
 
     @staticmethod
-    def te_given_all_single_gofs(
+    def test_given_all_single_gofs(
             mocker, single_task_gof_dtos,
             create_task_storage, field_storage,
             interactor, action_storage_mock, task_dto_mock,
@@ -274,7 +274,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         )
 
     @staticmethod
-    def te_access_invalid_key_raises_invalid_key_error(
+    def test_access_invalid_key_raises_invalid_key_error(
             task_gof_dtos, interactor, action_storage_mock,
             create_task_storage, set_up_storage_for_all_multiple_gofs,
             field_storage, task_dto_mock, task_dto
@@ -297,7 +297,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         )
 
     @staticmethod
-    def te_do_bad_function_invalid_custom_logic_exception(
+    def test_do_bad_function_invalid_custom_logic_exception(
             task_gof_dtos, create_task_storage,
             field_storage, interactor, action_storage_mock,
             task_dto_mock, task_dto, set_up_storage_for_all_single_gofs
@@ -320,15 +320,54 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
             action_id=action_id
         )
 
-    @staticmethod
-    def tt_given_valid_details_updates_statuses(set_up_storage_for_all_single_gofs,
-                                                  create_task_storage, field_storage,
-                                                  interactor, action_storage_mock,
-                                                  task_storage, task_dto_mock):
+    @pytest.fixture
+    def task_crud_update_task_gofs_mock(self, mocker):
+        path = "ib_tasks.interactors.create_or_update_task" \
+               ".task_crud_operations_interactor" \
+               ".TaskCrudOperationsInteractor.update_task_gofs"
+        return mocker.patch(path)
+
+    @pytest.fixture
+    def task_crud_update_task_gof_fields_mock(self, mocker):
+        path = "ib_tasks.interactors.create_or_update_task" \
+               ".task_crud_operations_interactor" \
+               ".TaskCrudOperationsInteractor.update_task_gof_fields"
+        return mocker.patch(path)
+
+    def get_task_gof_response(self, single_task_gof_dtos):
+        return [
+            TaskGoFWithTaskIdDTOFactory(
+                task_id=1,
+                gof_id=single_task_gof_dto.gof_id,
+                same_gof_order=single_task_gof_dto.same_gof_order,
+                task_gof_id=single_task_gof_dto.task_gof_id
+            ) for single_task_gof_dto in single_task_gof_dtos
+        ]
+
+    def get_task_gof_field_response(self):
+        TaskGoFFieldDTOFactory.reset_sequence(1)
+        gof_field_dtos = [TaskGoFFieldDTOFactory(
+            field_response="field_update")]
+        gof_field_dtos += TaskGoFFieldDTOFactory.create_batch(size=2)
+        return gof_field_dtos
+
+    def test_given_valid_details_updates_statuses(
+            self, set_up_storage_for_all_single_gofs,
+            create_task_storage, field_storage,
+            interactor, action_storage_mock,
+            task_storage, task_dto_mock,
+            task_crud_update_task_gofs_mock,
+            task_crud_update_task_gof_fields_mock,
+            single_task_gof_dtos
+    ):
         # Arrange
+        expected_task_gofs = self.get_task_gof_response(single_task_gof_dtos)
+        expected_task_gof_field_dtos = self.get_task_gof_field_response()
         action_id = 1
         path_name = "ib_tasks.tests.interactors.call_action_logic_testing_file.stage_1_action_name_3"
         action_storage_mock.get_action_logic_to_action.return_value = path_name
+        action_storage_mock.get_path_name_to_action.return_value = path_name
+        StatusVariableDTOFactory.reset_sequence()
         expected_status = [
             StatusVariableDTOFactory(value='stage_2')
         ]
@@ -344,5 +383,9 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         task_storage.update_status_variables_to_task.assert_called_once_with(
             task_id=1, status_variables_dto=expected_status
         )
+        task_crud_update_task_gofs_mock.assert_called_once_with(
+            expected_task_gofs)
+        task_crud_update_task_gof_fields_mock.assert_called_once_with(
+            expected_task_gof_field_dtos)
 
     # TODO fields update test case

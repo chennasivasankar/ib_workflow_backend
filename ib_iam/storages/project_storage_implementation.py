@@ -353,3 +353,33 @@ class ProjectStorageImplementation(ProjectStorageInterface):
 
         project_prefix = project_prefix_queryset.first()
         return project_prefix
+
+    def assign_teams_to_projects_bulk(
+            self, project_team_ids_dtos: List[ProjectTeamIdsDTO]
+    ):
+        # TODO write tests
+        project_teams = [
+            ProjectTeam(
+                project_id=project_team_ids_dto.project_id, team_id=team_id
+            )
+            for project_team_ids_dto in project_team_ids_dtos
+            for team_id in project_team_ids_dto.team_ids
+        ]
+        ProjectTeam.objects.bulk_create(project_teams)
+
+    def get_project_ids_for_given_roles(self, role_ids: List[str]):
+        # TODO write tests
+        project_ids = ProjectRole.objects.filter(role_id__in=role_ids) \
+            .values_list('project_id', flat=True)
+        return list(set(project_ids))
+
+    def get_project_ids_for_given_team(self, team_id: str) -> List[str]:
+        # TODO write tests
+        project_ids = ProjectTeam.objects.filter(team_id=team_id) \
+            .values_list('project_id', flat=True)
+        return list(project_ids)
+
+    def get_all_project_role_ids(self) -> List[str]:
+        # TODO write tests
+        role_ids = ProjectRole.objects.values_list('role_id', flat=True)
+        return list(role_ids)

@@ -1,3 +1,18 @@
+def CREATE_STAGE_Create_Task(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "TO_DO"
+    return task_dict
+
+
+def IN_PROGRESS_To_Be_Reviewed(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "TO_BE_REVIEWED"
+    return task_dict
+
+
+def IN_PROGRESS_To_Do(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "TO_DO"
+    return task_dict
+
+
 def JGC_CALL1_ATTEMPTED_Not_answered(task_dict, global_constants,
                                      stage_value_dict):
     task_dict["status_variables"]["Status1"] = "JGC_CALL1_REATTEMPT"
@@ -125,6 +140,15 @@ def JGC_CALL2_REATTEMPT_Want_to_explore_more(task_dict, global_constants,
 def JGC_CREATE_LEAD_Create_Beneficiary(task_dict, global_constants,
                                        stage_value_dict):
     task_dict["status_variables"]["Status1"] = "JGC_LEADS"
+
+    import uuid
+
+    task_dict["JGC_LEAD_DETAILS"][
+        "JGC_URL1"] = "https://onthegomodel.com/ccbp?prospect={}".format(
+            str(uuid.uuid4())[:8])
+    task_dict["JGC_LEAD_DETAILS"][
+        "JGC_URL2"] = "https://onthegomodel.com/ccbp?prospect={}".format(
+            str(uuid.uuid4())[:8])
     return task_dict
 
 
@@ -343,7 +367,6 @@ def PR_PENDING_COMPLIANCE_APPROVAL_Verify(task_dict, global_constants,
                                           stage_value_dict):
     task_dict["status_variables"][
         "Status4"] = "PR_PENDING_PAYMENTS_LEVEL3_VERIFICATION"
-
     return task_dict
 
 
@@ -452,7 +475,6 @@ def PR_PENDING_PAYMENTS_LEVEL2_VERIFICATION_Verify(task_dict, global_constants,
 def PR_PENDING_PAYMENTS_LEVEL3_VERIFICATION_Agreement_Mismatch(
         task_dict, global_constants, stage_value_dict):
     task_dict["status_variables"]["Status4"] = "PR_PENDING_COMPLIANCE_APPROVAL"
-
     return task_dict
 
 
@@ -666,4 +688,35 @@ def PR_UPLOAD_INVOICES_AND_STATUS_Upload_Invoices(task_dict, global_constants,
                                                   stage_value_dict):
     task_dict["status_variables"][
         "Status8"] = "PR_UPLOAD_BANK_AND_CMS_STATEMENT"
+    return task_dict
+
+
+def REVIEW_REJECTED_To_Do(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "TO_DO"
+    return task_dict
+
+
+def TO_BE_REVIEWED_Done(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "DONE"
+    return task_dict
+
+
+def TO_BE_REVIEWED_In_Progress(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "IN_PROGRESS"
+    return task_dict
+
+
+def TO_BE_REVIEWED_Review_Rejected(task_dict, global_constants,
+                                   stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "REVIEW_REJECTED"
+    return task_dict
+
+
+def TO_BE_REVIEWED_To_Do(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "TO_DO"
+    return task_dict
+
+
+def TO_DO_In_Progress(task_dict, global_constants, stage_value_dict):
+    task_dict["status_variables"]["Status1"] = "IN_PROGRESS"
     return task_dict

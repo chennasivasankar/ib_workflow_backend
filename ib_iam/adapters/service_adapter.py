@@ -9,6 +9,11 @@ class ServiceAdapter:
         from .auth_service import AuthService
         return AuthService()
 
+    @property
+    def task_service(self):
+        from .task_service import TaskService
+        return TaskService()
+
 
 def get_service_adapter():
     return ServiceAdapter()
