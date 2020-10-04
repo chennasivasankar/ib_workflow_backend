@@ -11,7 +11,7 @@ from ib_iam.interactors.storage_interfaces.dtos import UserDTO, \
     CompanyDTO, \
     UserIdWithRolesDTO, \
     CompanyIdWithEmployeeIdsDTO, BasicUserDetailsDTO, UserIdWithTokenDTO, \
-    UserIdAndAuthUserIdDTO
+    UserIdAndAuthUserIdDTO, AuthTokenUserDetailsDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface \
     import UserStorageInterface
 from ib_iam.models import ProjectRole
@@ -644,3 +644,23 @@ class UserStorageImplementation(UserStorageInterface):
             'invitation_code', flat=True
         )
         return invitation_codes
+
+    def get_all_user_ids(self) -> List[str]:
+        from ib_iam.models import UserDetails
+        user_ids = UserDetails.objects.values_list("user_id", flat=True)
+        converted_user_ids = [str(user_id) for user_id in user_ids]
+        return converted_user_ids
+
+    def get_all_auth_token_user_dtos(self) -> List[AuthTokenUserDetailsDTO]:
+        # TODO Write tests
+        from ib_iam.models import UserAuthToken
+        user_auth_objects = UserAuthToken.objects.all()
+        auth_token_user_dtos = [
+            AuthTokenUserDetailsDTO(
+                user_id=user_auth_object.user_id,
+                auth_token_user_id=user_auth_object.auth_token_user_id,
+                token=user_auth_object.token,
+                invitation_code=user_auth_object.invitation_code
+            ) for user_auth_object in user_auth_objects
+        ]
+        return auth_token_user_dtos

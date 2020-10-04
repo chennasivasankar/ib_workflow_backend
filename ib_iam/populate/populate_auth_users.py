@@ -1,7 +1,5 @@
 from typing import List
 
-from django.db import transaction
-
 from ib_iam.interactors.dtos.dtos import AuthUserDTO
 
 
@@ -46,41 +44,68 @@ class AuthUsers:
             team_member_level_storage=team_member_level_storage,
             project_storage=project_storage
         )
+        valid_auth_user_dtos, exceptions = \
+            self._validate_auth_user_dtos(
+                auth_user_dtos=auth_user_dtos, user_storage=user_storage
+            )
+
+        permission_to_create_users = input("Do you want to create: Y or N")
+
+        if permission_to_create_users == "N":
+            return valid_auth_user_dtos, exceptions
 
         chunk_size = 500
-        max_value = int((len(auth_user_dtos) / chunk_size) + 1)
+        max_value = int((len(valid_auth_user_dtos) / chunk_size) + 1)
         import time
         values = []
         all_failed_data = []
         for i in range(max_value):
             a = time.time()
             failed_data = interactor.auth_user_dtos(
-                auth_user_dtos=auth_user_dtos[i * chunk_size:(i + 1) * chunk_size],
+                auth_user_dtos=valid_auth_user_dtos[
+                               i * chunk_size:(i + 1) * chunk_size],
                 project_id=project_id,
                 role_ids=role_ids,
                 is_assign_auth_token_users_to_team=is_assign_auth_token_users_to_team
             )
             b = time.time()
-            print("Time Elapsed: ", b-a, failed_data)
+            print("Time Elapsed: ", b - a, failed_data)
             all_failed_data += failed_data
-            print("Iteration {} out of {}".format(i+1, max_value))
-            values.append(b-a)
+            print("Iteration {} out of {}".format(i + 1, max_value))
+            values.append(b - a)
             time.sleep(10)
-        print("Average Time Delay: ", sum(values)/len(values))
-        return all_failed_data
+        print("Average Time Delay: ", sum(values) / len(values))
+        return all_failed_data, exceptions
 
     @staticmethod
     def _convert_auth_user_dtos(auth_users) -> List[AuthUserDTO]:
         auth_user_dtos = [
             AuthUserDTO(
-                token=auth_user["auth_token"],
-                email=auth_user["email"],
+                token=auth_user.get("auth_token", ""),
+                email=auth_user.get("email", ""),
                 name=auth_user["name"],
-                auth_token_user_id=auth_user["user_id"],
+                auth_token_user_id=auth_user.get("user_id", ""),
                 invitation_code=auth_user["invitation_code"],
-                phone_number=auth_user["phone_number"],
-                country_code=auth_user["country_code"]
+                phone_number=auth_user.get("phone_number", ""),
+                country_code=auth_user.get("country_code", "")
             )
             for auth_user in auth_users
         ]
         return auth_user_dtos
+
+    @staticmethod
+    def _validate_auth_user_dtos(
+            auth_user_dtos: List[AuthUserDTO], user_storage
+    ) -> List[AuthUserDTO]:
+        from ib_iam.interactors.validate_auth_user_dtos_interactor import \
+            ValidateAuthUserDTOsInteractor
+        # from ib_iam.storages.user_storage_implementation import \
+            # UserStorageImplementation
+
+        interactor = ValidateAuthUserDTOsInteractor(
+            user_storage=user_storage
+        )
+        valid_auth_user_dtos = interactor.validate_auth_user_dtos(
+            auth_user_dtos=auth_user_dtos
+        )
+        return valid_auth_user_dtos
