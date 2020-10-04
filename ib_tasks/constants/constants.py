@@ -14,7 +14,6 @@ Permission_Types = [(item.value, item.value) for item in PermissionTypes]
 OPERATOR_TYPES = [(item.value, item.value) for item in Operators]
 OPERATORS = [item.value for item in Operators]
 
-
 Field_Types = [(item.value, item.value) for item in FieldTypes]
 
 VALID_FIELD_TYPES = [field_type.value for field_type in FieldTypes]
@@ -96,24 +95,21 @@ PROJECT_COLUMNS = {
 WORKFLOW_URL_LINK = {
     "JGC_DRIVE": {
         "CCBP_COMPLETE_WORKFLOW_LINK":
-            "https://d2rj3iig8nko29.cloudfront.net/website-static/complete"
-            "-workflow.pdf",
+            "https://d2rj3iig8nko29.cloudfront.net/website-static/task-framework.pdf",
         "CCBP_USER_WORKFLOW_LINK":
             "https://d2rj3iig8nko29.cloudfront.net/website-static/complete"
             "-workflow.pdf"
     },
     "APJ_4_0": {
         "CCBP_COMPLETE_WORKFLOW_LINK":
-            "https://d2rj3iig8nko29.cloudfront.net/website-static/apj"
-            "-project-workflow.pdf",
+            "https://d2rj3iig8nko29.cloudfront.net/website-static/task-framework.pdf",
         "CCBP_USER_WORKFLOW_LINK":
             "https://d2rj3iig8nko29.cloudfront.net/website-static/apj"
             "-project-workflow.pdf"
     },
     "MAHATMA": {
         "CCBP_COMPLETE_WORKFLOW_LINK":
-            "https://d2rj3iig8nko29.cloudfront.net/website-static/mahatma"
-            "-project-workflow.pdf",
+            "https://d2rj3iig8nko29.cloudfront.net/website-static/task-framework.pdf",
         "CCBP_USER_WORKFLOW_LINK":
             "https://d2rj3iig8nko29.cloudfront.net/website-static/mahatma"
             "-project-workflow.pdf"
