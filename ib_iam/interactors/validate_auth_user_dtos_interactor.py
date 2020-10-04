@@ -150,7 +150,10 @@ class ValidateAuthUserDTOsInteractor:
         failed_dtos = []
         passed_dtos = []
         for dto in dtos:
-            if invitation_code_count_dict[dto.invitation_code] > 1:
+            is_invitation_code_empty = not dto.invitation_code
+            if is_invitation_code_empty:
+                passed_dtos.append(dto)
+            elif invitation_code_count_dict[dto.invitation_code] > 1:
                 failed_dtos.append(dto)
             else:
                 passed_dtos.append(dto)
@@ -257,7 +260,10 @@ class ValidateAuthUserDTOsInteractor:
         failed_dtos = []
         passed_dtos = []
         for auth_user_dto in auth_user_dtos:
-            if phone_numbers_count_dict[auth_user_dto.phone_number] > 1:
+            is_phone_number_empty = not auth_user_dto.phone_number
+            if is_phone_number_empty:
+                passed_dtos.append(auth_user_dto)
+            elif phone_numbers_count_dict[auth_user_dto.phone_number] > 1:
                 failed_dtos.append(auth_user_dto)
             else:
                 passed_dtos.append(auth_user_dto)
