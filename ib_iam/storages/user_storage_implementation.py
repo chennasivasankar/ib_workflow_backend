@@ -19,6 +19,11 @@ from ib_iam.models import ProjectRole
 
 class UserStorageImplementation(UserStorageInterface):
 
+    def get_user_invitation_code(self, user_id) -> str:
+        from ib_iam.models import UserAuthToken
+        user_auth_object = UserAuthToken.objects.get(user_id=user_id)
+        return user_auth_object.invitation_code
+
     def get_users_project_roles(
             self, user_ids: List[str], project_id: str
     ) -> List[UserIdWithRolesDTO]:
@@ -585,11 +590,14 @@ class UserStorageImplementation(UserStorageInterface):
         return
 
     def create_auth_user(
-            self, user_id: str, token: str, auth_token_user_id: str
+            self, user_id: str, token: str, auth_token_user_id: str,
+            invitation_code: Optional[str] = None
     ):
         from ib_iam.models import UserAuthToken
         UserAuthToken.objects.create(
-            user_id=user_id, token=token, auth_token_user_id=auth_token_user_id
+            user_id=user_id, token=token,
+            auth_token_user_id=auth_token_user_id,
+            invitation_code=invitation_code
         )
         return
 
@@ -629,3 +637,10 @@ class UserStorageImplementation(UserStorageInterface):
             ) for user_auth_token in user_auth_tokens
         ]
         return user_id_with_auth_user_id_dtos
+
+    def get_all_invitation_codes_of_auth_user(self) -> List[str]:
+        from ib_iam.models import UserAuthToken
+        invitation_codes = UserAuthToken.objects.values_list(
+            'invitation_code', flat=True
+        )
+        return invitation_codes

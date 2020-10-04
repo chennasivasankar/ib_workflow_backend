@@ -261,7 +261,8 @@ class UserStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_auth_user(
-            self, user_id: str, token: str, auth_token_user_id: str
+            self, user_id: str, token: str, auth_token_user_id: str,
+            invitation_code: Optional[str] = None
     ):
         pass
 
@@ -269,4 +270,12 @@ class UserStorageInterface(abc.ABC):
     def get_user_id_and_auth_user_id(
             self, auth_user_ids: List[str]
     ) -> List[UserIdAndAuthUserIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_user_invitation_code(self, user_id) -> str:
+        pass
+
+    @abc.abstractmethod
+    def get_all_invitation_codes_of_auth_user(self) -> List[str]:
         pass
