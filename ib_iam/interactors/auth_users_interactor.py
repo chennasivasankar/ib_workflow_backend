@@ -35,15 +35,12 @@ class AuthUsersInteractor:
                        is_assign_auth_token_users_to_team: bool):
         failure_dtos = []
         user_ids = []
-        # role_ids = self.project_storage.get_project_role_ids(
-        #     project_id=project_id
-        # )
         for auth_user_dto in auth_user_dtos:
             try:
                 user_id = self._create_auth_user_details(
                     auth_user_dto=auth_user_dto, role_ids=role_ids
                 )
-            except Exception:
+            except Exception as err:
                 failure_dtos.append(auth_user_dto)
                 continue
             user_ids.append(user_id)
