@@ -5,6 +5,18 @@ Author: Pavankumar Pamuru
 """
 
 
+def populate_date(spread_sheet_name: str, sub_sheet_name: str):
+    populate_elastic_search_state_data(
+        spread_sheet_name=spread_sheet_name,
+        sub_sheet_name=sub_sheet_name
+    )
+    populate_elastic_search_district_data(
+        spread_sheet_name=spread_sheet_name,
+        sub_sheet_name=sub_sheet_name
+    )
+    populate_to_elasticsearch()
+
+
 def get_spread_sheet_data(spread_sheet_name: str, sub_sheet_name: str):
     from ib_iam.populate.spreedsheet_utils import SpreadSheetUtil
     spreadsheet_utils = SpreadSheetUtil()
@@ -23,7 +35,7 @@ def populate_elastic_search_country_data(spread_sheet_name: str, sub_sheet_name:
         sub_sheet_name=sub_sheet_name
     )
     country_names = [
-        country['Name']
+        country['countries']
         for country in countries
     ]
     from ib_iam.models import Country
@@ -41,7 +53,7 @@ def populate_elastic_search_state_data(spread_sheet_name: str, sub_sheet_name: s
         sub_sheet_name=sub_sheet_name
     )
     state_names = [
-        state['Name']
+        state['states']
         for state in states
     ]
     from ib_iam.models import State
@@ -59,7 +71,7 @@ def populate_elastic_search_city_data(spread_sheet_name: str, sub_sheet_name: st
         sub_sheet_name=sub_sheet_name
     )
     city_names = [
-        city['Name']
+        city['cities']
         for city in cities
     ]
     from ib_iam.models import City
@@ -77,7 +89,7 @@ def populate_elastic_search_district_data(spread_sheet_name: str, sub_sheet_name
         sub_sheet_name=sub_sheet_name
     )
     district_names = [
-        district['Name']
+        district['districts']
         for district in districts
     ]
     from ib_iam.models import District

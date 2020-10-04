@@ -24,7 +24,6 @@ def populate_data_to_elasticsearch():
     copy_districts_to_es()
 
 
-
 def populate_existing_users_to_elastic_search_database():
     storage = ElasticStorageImplementation()
     user_ids = list(
