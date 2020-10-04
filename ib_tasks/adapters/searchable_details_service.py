@@ -24,6 +24,11 @@ class InvalidCityIdsException(Exception):
         self.city_ids = city_ids
 
 
+class InvalidDistrictIdsException(Exception):
+    def __init__(self, district_ids: List[int]):
+        self.district_ids = district_ids
+
+
 class SearchableDetailsService:
 
     @property
@@ -37,10 +42,13 @@ class SearchableDetailsService:
         from ib_iam.exceptions.custom_exceptions import (
             InvalidCityIds, InvalidStateIds, InvalidCountryIds, InvalidUserIds
         )
+        from ib_iam.exceptions.custom_exceptions import InvalidDistrictIds
         try:
             return self._get_searchable_details_dtos(searchable_dtos)
         except InvalidCityIds as err:
             raise InvalidCityIdsException(err.city_ids)
+        except InvalidDistrictIds as err:
+            raise InvalidDistrictIdsException(err.district_ids)
         except InvalidStateIds as err:
             raise InvalidStateIdsException(err.state_ids)
         except InvalidCountryIds as err:
