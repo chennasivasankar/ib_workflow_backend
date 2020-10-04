@@ -110,7 +110,8 @@ class ValidateAuthUserDTOsInteractor:
         )
         return user_profile_dtos
 
-    def _validate_duplicate_user_ids(self, dtos):
+    @staticmethod
+    def _validate_duplicate_user_ids(dtos):
         user_ids = [dto.auth_token_user_id for dto in dtos]
 
         from collections import Counter
@@ -126,7 +127,8 @@ class ValidateAuthUserDTOsInteractor:
 
         return failed_dtos, passed_dtos
 
-    def _validate_duplicate_auth_tokens(self, dtos):
+    @staticmethod
+    def _validate_duplicate_auth_tokens(dtos):
         tokens = [dto.token for dto in dtos]
 
         from collections import Counter
@@ -141,7 +143,8 @@ class ValidateAuthUserDTOsInteractor:
                 passed_dtos.append(dto)
         return failed_dtos, passed_dtos
 
-    def _validate_duplicate_invitation_code(self, dtos):
+    @staticmethod
+    def _validate_duplicate_invitation_code(dtos):
         invitation_codes = [dto.invitation_code for dto in dtos]
 
         from collections import Counter
@@ -159,8 +162,9 @@ class ValidateAuthUserDTOsInteractor:
                 passed_dtos.append(dto)
         return failed_dtos, passed_dtos
 
+    @staticmethod
     def _validate_already_existing_invitation_code(
-            self, dtos, invitation_codes_from_db: List[str]
+            dtos, invitation_codes_from_db: List[str]
     ):
         failed_dtos = []
         passed_dtos = []
@@ -171,8 +175,9 @@ class ValidateAuthUserDTOsInteractor:
                 passed_dtos.append(dto)
         return failed_dtos, passed_dtos
 
+    @staticmethod
     def _validate_already_existing_auth_tokens(
-            self, dtos, auth_tokens_from_db: List[str]
+            dtos, auth_tokens_from_db: List[str]
     ):
         failed_dtos = []
         passed_dtos = []
@@ -183,8 +188,9 @@ class ValidateAuthUserDTOsInteractor:
                 passed_dtos.append(dto)
         return failed_dtos, passed_dtos
 
+    @staticmethod
     def _validate_already_existing_user_ids(
-            self, dtos, user_ids_from_db: List[str]
+            dtos, user_ids_from_db: List[str]
     ):
         failed_dtos = []
         passed_dtos = []
@@ -326,19 +332,3 @@ class ValidateAuthUserDTOsInteractor:
     def _generate_uuid4():
         import uuid
         return str(uuid.uuid4())
-
-# # TODO invitation code not empty
-# # invitation code not be a  duplicate, check in given dtos and database too
-# # Can duplicate auth tokens exists, check in given dtos and database too
-# # Can duplicate auth token user_id exists, check in given dtos and database too
-#
-#
-# # either of email or phone number should exists
-# # duplicate email exists, check in given dtos and database too
-# # Can duplicate phone_number exists, check in given dtos and database too
-#
-# {
-#     "field": "",
-#     "cause": ""
-#              "auth_user_dict"
-# }
