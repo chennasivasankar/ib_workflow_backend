@@ -211,3 +211,48 @@ class ElasticStorageImplementation(ElasticSearchStorageInterface):
             for hit in search[offset: offset + limit]
         ]
         return city_dtos
+
+    def create_elastic_district(self, district_dto: ElasticDistrictDTO):
+        from elasticsearch_dsl import connections
+        from django.conf import settings
+        connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+                                      timeout=20)
+        district_obj = District(
+            district_id=district_dto.district_id, district_name=district_dto.district_name
+        )
+        district_obj.save()
+        elastic_district_id = district_obj.meta.id
+        return elastic_district_id
+
+    def search_districts(
+            self, offset: int, limit: int, search_query: str
+    ) -> List[ElasticDistrictDTO]:
+        from elasticsearch_dsl import connections
+        from django.conf import settings
+        connections.create_connection(
+            hosts=[settings.ELASTICSEARCH_ENDPOINT],
+            timeout=20
+        )
+        from elasticsearch_dsl import Q, Search
+
+        search = Search(index=DISTRICT_INDEX_NAME)
+        if search_query:
+            search = search.query(
+                Q(
+                    "multi_match", query=search_query, type='bool_prefix',
+                    fields=[
+                        "district_name",
+                        "district_name._2gram",
+                        "district_name._3gram",
+                        "district_name._index_prefix"
+                    ]
+                )
+            )
+        district_dtos = [
+            ElasticDistrictDTO(
+                district_id=hit.district_id,
+                district_name=hit.district_name
+            )
+            for hit in search[offset: offset + limit]
+        ]
+        return district_dtos

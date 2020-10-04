@@ -6,7 +6,8 @@ from ib_tasks.adapters.auth_service import \
 from ib_tasks.adapters.roles_service import UserNotAMemberOfAProjectException
 from ib_tasks.adapters.searchable_details_service import \
     InvalidUserIdsException, InvalidStateIdsException, \
-    InvalidCountryIdsException, InvalidCityIdsException
+    InvalidCountryIdsException, InvalidCityIdsException, \
+    InvalidDistrictIdsException
 from ib_tasks.exceptions.adapter_exceptions import \
     InvalidProjectIdsException, \
     UserIsNotInProjectException
@@ -86,6 +87,8 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         except InvalidCityIdsException as err:
             return presenter.raise_invalid_searchable_records_found()
         except InvalidStateIdsException:
+            return presenter.raise_invalid_searchable_records_found()
+        except InvalidDistrictIdsException:
             return presenter.raise_invalid_searchable_records_found()
         except InvalidCountryIdsException:
             return presenter.raise_invalid_searchable_records_found()

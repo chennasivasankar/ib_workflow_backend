@@ -9,9 +9,10 @@ from ib_iam.models.team import Team
 from ib_iam.models.team_member_level import TeamMemberLevel
 from ib_iam.models.user import UserRole, TeamUser, UserDetails
 from ib_iam.models.auth import UserAuthToken
+from ib_iam.models.district import District
 
 __all__ = [
     "ProjectRole", "Team", "Company", "TeamUser", "UserRole", "UserDetails",
     "TeamUser", "ElasticUserIntermediary", "Country", "State", "City",
-    "TeamMemberLevel", "Project", "ProjectTeam", "UserAuthToken"
+    "TeamMemberLevel", "Project", "ProjectTeam", "UserAuthToken", "District"
 ]

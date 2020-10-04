@@ -48,3 +48,16 @@ class SearchService:
                 name=city_dto.city_name
             ) for city_dto in city_dtos
         ]
+    
+    def get_search_districts(self, offset: int, limit: int, search_query: str):
+        district_dtos = self.interface.get_search_districts(
+            offset=offset, limit=limit, search_query=search_query
+        )
+        return [
+            SearchableFieldDetailDTO(
+                id=str(district_dto.district_id),
+                name=district_dto.district_name
+            ) for district_dto in district_dtos
+        ]
+    
+    

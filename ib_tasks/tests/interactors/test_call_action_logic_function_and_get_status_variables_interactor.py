@@ -2,7 +2,7 @@ import pytest
 from mock import create_autospec
 
 from ib_tasks.constants.enum import FieldTypes
-from ib_tasks.interactors.user_action_on_task.\
+from ib_tasks.interactors.user_action_on_task. \
     call_action_logic_function_and_get_or_update_task_status_variables_interactor \
     import \
     CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor, \
@@ -152,7 +152,7 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
         )
         get_task_mock_obj = self.gof_and_fields_mock(mocker, task_dto)
 
-        action_storage_mock.get_path_name_to_action.return_value = path_name
+        action_storage_mock.get_action_logic_to_action.return_value = path_name
         statuses = [StatusVariableDTOFactory()]
         task_storage_mock.get_status_variables_to_task.return_value = statuses
         interactor = \
@@ -176,7 +176,7 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
             field_ids=field_ids
         )
         get_task_mock_obj.assert_called_once_with(task_id=task_id)
-        action_storage_mock.get_path_name_to_action.assert_called_once_with(
+        action_storage_mock.get_action_logic_to_action.assert_called_once_with(
             action_id=action_id)
         task_storage_mock.get_status_variables_to_task.assert_called_once_with(
             task_id=task_id)
@@ -194,7 +194,7 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
         task_id = 1
         action_id = 1
         path_name = "ib_tasks.populate.stage_ac.stage_1_action_name_1"
-        action_storage_mock.get_path_name_to_action.return_value = path_name
+        action_storage_mock.get_action_logic_to_action.return_value = path_name
         statuses = [StatusVariableDTOFactory()]
 
         single_gof = GOFMultipleStatusDTOFactory(multiple_status=False)
@@ -231,7 +231,7 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
                 .call_action_logic_function_and_get_status_variables_dtos_of_task()
 
         assert error.value.path_name == path_name
-        action_storage_mock.get_path_name_to_action.assert_called_once_with(
+        action_storage_mock.get_action_logic_to_action.assert_called_once_with(
             action_id=action_id)
         gof_storage_mock.get_enable_multiple_gofs_field_to_gof_ids. \
             assert_called_once_with(template_id=template_id)
@@ -256,7 +256,7 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
         mock_obj = mocker.patch("importlib.import_module")
         mock_obj.side_effect = InvalidMethodFound(
             method_name="stage_1_action_name_1")
-        action_storage_mock.get_path_name_to_action.return_value = path_name
+        action_storage_mock.get_action_logic_to_action.return_value = path_name
 
         single_gof = GOFMultipleStatusDTOFactory(multiple_status=False)
         multiple_gof = GOFMultipleStatusDTOFactory()
@@ -295,7 +295,7 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
                 .call_action_logic_function_and_get_status_variables_dtos_of_task()
 
         assert error.value.method_name == "stage_1_action_name_1"
-        action_storage_mock.get_path_name_to_action.assert_called_once_with(
+        action_storage_mock.get_action_logic_to_action.assert_called_once_with(
             action_id=action_id)
 
         gof_storage_mock.get_enable_multiple_gofs_field_to_gof_ids. \
@@ -303,7 +303,7 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
         field_storage_mock.get_field_type_dtos.assert_called_once_with(
             field_ids=field_ids
         )
-        action_storage_mock.get_path_name_to_action.assert_called_once_with(
+        action_storage_mock.get_action_logic_to_action.assert_called_once_with(
             action_id=action_id)
         task_storage_mock.get_status_variables_to_task.assert_called_once_with(
             task_id=task_id)
@@ -321,7 +321,7 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
         path_name = \
             "ib_tasks.tests.interactors." \
             "call_action_logic_testing_file.stage_1_action_name_1"
-        action_storage_mock.get_path_name_to_action.return_value = path_name
+        action_storage_mock.get_action_logic_to_action.return_value = path_name
 
         statuses = [StatusVariableDTOFactory(status_variable="variable0")]
         single_gof = GOFMultipleStatusDTOFactory(multiple_status=False)
@@ -363,7 +363,7 @@ class TestCallActionLogicFunctionAndGetTaskStatusVariablesInteractor:
         field_storage_mock.get_field_type_dtos.assert_called_once_with(
             field_ids=field_ids
         )
-        action_storage_mock.get_path_name_to_action.assert_called_once_with(
+        action_storage_mock.get_action_logic_to_action.assert_called_once_with(
             action_id=action_id)
         task_storage_mock.get_status_variables_to_task.assert_called_once_with(
             task_id=task_id)

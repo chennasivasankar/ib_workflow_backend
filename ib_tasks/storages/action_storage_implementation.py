@@ -37,6 +37,11 @@ class ActionsStorageImplementation(ActionStorageInterface):
             obj.role_id for obj in action_permitted_role_objs
         ]
 
+    def get_action_logic_to_action(self, action_id: int) -> str:
+
+        action_objs = StageAction.objects.filter(id=action_id).values('logic')
+        return action_objs[0]['logic']
+
     def get_path_name_to_action(self, action_id: int) -> str:
 
         action_obj = StageAction.objects.get(id=action_id)

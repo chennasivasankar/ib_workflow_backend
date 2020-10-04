@@ -39,3 +39,11 @@ class SearchableStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_valid_country_ids(self, country_ids: List[int]) -> List[int]:
         pass
+
+    @abc.abstractmethod
+    def get_valid_district_ids(self, district_ids: List[int]) -> List[int]:
+        pass
+
+    @abc.abstractmethod
+    def get_searchable_type_district_details_dtos(self, valid_district_ids: List[int]) -> List[SearchableDetailsDTO]:
+        pass

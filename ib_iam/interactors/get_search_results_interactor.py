@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_iam.documents.elastic_docs import ElasticCountryDTO, ElasticStateDTO, \
-    ElasticCityDTO
+    ElasticCityDTO, ElasticDistrictDTO
 from ib_iam.interactors.storage_interfaces.elastic_storage_interface \
     import ElasticSearchStorageInterface
 
@@ -42,3 +42,11 @@ class GetSearchResultsInteractor:
             offset=offset, limit=limit, search_query=search_query
         )
         return city_dtos
+    
+    def search_districts_results(
+            self, offset: int, limit: int, search_query: str
+    ) -> List[ElasticDistrictDTO]:
+        district_dtos = self.elastic_storage.search_districts(
+            offset=offset, limit=limit, search_query=search_query
+        )
+        return district_dtos
