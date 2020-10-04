@@ -133,7 +133,7 @@ class GetTaskIdsInteractor:
             self, task_details_config: TaskDetailsConfigDTO,
             filter_dtos: List[ApplyFilterDTO], field_type_dtos: List[FieldTypeDTO],
             task_condition_dtos: List[TaskFilterDTO]) -> TaskIdsDTO:
-        task_stage_dtos, total_count = self._get_task_ids_by_applying_filters(
+        task_stage_dtos, total_count = self.get_task_ids_by_applying_filters(
             task_details_config=task_details_config, filter_dtos=filter_dtos,
             field_type_dtos=field_type_dtos, task_condition_dtos=task_condition_dtos
         )
@@ -144,7 +144,7 @@ class GetTaskIdsInteractor:
             total_tasks=total_count
         )
 
-    def _get_task_ids_by_applying_filters(
+    def get_task_ids_by_applying_filters(
             self, task_details_config: TaskDetailsConfigDTO, task_condition_dtos: List[TaskFilterDTO],
             filter_dtos: List[ApplyFilterDTO], field_type_dtos: List[FieldTypeDTO]) -> Tuple[List[TaskStageIdsDTO], int]:
         filtered_task_ids, total_tasks = self.elasticsearch_storage.filter_tasks_with_stage_ids(

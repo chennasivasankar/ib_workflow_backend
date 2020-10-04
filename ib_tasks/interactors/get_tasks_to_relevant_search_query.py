@@ -27,7 +27,8 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import
     TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import TaskTemplateStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import \
+    TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import SearchQueryDTO
 
 
@@ -55,7 +56,7 @@ class GetTasksToRelevantSearchQuery:
             presenter: GetFilteredTasksOverviewForUserPresenterInterface,
             apply_filters_dto: List[ApplyFilterDTO]):
         try:
-            filtered_tasks_overview_details_dto, total_tasks = \
+            filtered_tasks_overview_details_dto, total_tasks, column_task_count, display_name = \
                 self.get_tasks_for_search_query(search_query_dto,
                                                 apply_filters_dto)
         except StageIdsListEmptyException:
@@ -74,7 +75,8 @@ class GetTasksToRelevantSearchQuery:
                 error=error)
         return presenter.get_response_for_filtered_tasks_overview_details_response(
             filtered_tasks_overview_details_dto=filtered_tasks_overview_details_dto,
-            total_tasks=total_tasks
+            total_tasks=total_tasks, column_task_count=column_task_count,
+            display_name=display_name
         )
 
     def get_tasks_for_search_query(
@@ -113,9 +115,15 @@ class GetTasksToRelevantSearchQuery:
             task_condition_dtos=task_condition_dtos
         )
 
-        return self._get_all_tasks_overview_details(
+        all_tasks_overview_details_dto, total_tasks = self._get_all_tasks_overview_details(
             query_tasks_dto, view_type, user_id, project_id
         )
+        column_task_count, display_name = self._get_tasks_count_for_stages_in_column(
+            user_id=user_id,
+            project_id=project_id,
+            task_condition_dtos=task_condition_dtos
+        )
+        return all_tasks_overview_details_dto, total_tasks, column_task_count, display_name
 
     def _get_all_tasks_overview_details(self, query_tasks_dto: QueryTasksDTO,
                                         view_type: ViewType,
@@ -131,10 +139,38 @@ class GetTasksToRelevantSearchQuery:
             task_stage_storage=self.task_stage_storage,
             template_storage=self.template_storage
         )
-        all_tasks_overview_details_dto = task_details_interactor. \
-            get_filtered_tasks_overview_for_user(
-                user_id=user_id, task_ids=query_tasks_dto.task_ids,
-                view_type=view_type,
-                project_id=project_id
-            )
-        return all_tasks_overview_details_dto, query_tasks_dto.total_tasks_count
+        total_tasks = query_tasks_dto.total_tasks_count
+        try:
+            all_tasks_overview_details_dto = task_details_interactor. \
+                get_filtered_tasks_overview_for_user(
+                    user_id=user_id, task_ids=query_tasks_dto.task_ids,
+                    view_type=view_type,
+                    project_id=project_id
+                )
+        except StageIdsListEmptyException:
+            from ib_tasks.interactors.presenter_interfaces.dtos import \
+                AllTasksOverviewDetailsDTO
+            all_tasks_overview_details_dto = AllTasksOverviewDetailsDTO(
+                task_base_details_dtos=[],
+                task_with_complete_stage_details_dtos=[],
+                task_fields_and_action_details_dtos=[])
+            total_tasks = 0
+        return all_tasks_overview_details_dto, total_tasks
+
+    def _get_tasks_count_for_stages_in_column(self, project_id: str,
+                                              user_id: str,
+                                              task_condition_dtos):
+        from ib_tasks.interactors.get_completed_tasks_count import \
+            GetCompletedTasks
+        tasks_count_interactor = GetCompletedTasks(
+            field_storage=self.field_storage,
+            filter_storage=self.filter_storage,
+            elasticsearch_storage=self.elasticsearch_storage,
+            stage_storage=self.stage_storage,
+            task_storage=self.task_storage
+        )
+        return tasks_count_interactor.get_tasks_count_for_stages_in_column(
+            project_id=project_id,
+            user_id=user_id,
+            task_condition_dtos=task_condition_dtos
+        )
