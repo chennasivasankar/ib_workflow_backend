@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
 from ib_iam.exceptions.custom_exceptions import InvalidUserIdsForProject, \
-    InvalidRoleIdsForProject, InvalidProjectId
+    InvalidRoleIdsForProject, InvalidProjectId, UserAuthTokenDoesNotExist
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, \
     TeamWithUserIdDTO, \
@@ -21,8 +21,11 @@ class UserStorageImplementation(UserStorageInterface):
 
     def get_user_invitation_code(self, user_id) -> str:
         from ib_iam.models import UserAuthToken
-        user_auth_object = UserAuthToken.objects.get(user_id=user_id)
-        return user_auth_object.invitation_code
+        try:
+            user_auth_object = UserAuthToken.objects.get(user_id=user_id)
+            return user_auth_object.invitation_code
+        except UserAuthToken.DoesNotExist:
+            raise UserAuthTokenDoesNotExist
 
     def get_users_project_roles(
             self, user_ids: List[str], project_id: str

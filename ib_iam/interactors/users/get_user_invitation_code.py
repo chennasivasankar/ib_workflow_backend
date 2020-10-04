@@ -1,3 +1,4 @@
+from ib_iam.exceptions.custom_exceptions import UserAuthTokenDoesNotExist
 from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import AuthPresenterInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface import UserStorageInterface
 
@@ -8,8 +9,10 @@ class GetUserInvitationCodeInteractor:
 
     def get_user_invitation_code_wrapper(
             self, user_id: str, presenter: AuthPresenterInterface):
-        invitation_code = self.get_user_invitation_code(
-            user_id)
+        try:
+            invitation_code = self.get_user_invitation_code(user_id=user_id)
+        except UserAuthTokenDoesNotExist:
+            invitation_code = ""
         response = presenter.get_success_response(invitation_code)
         return response
 

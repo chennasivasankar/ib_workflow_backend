@@ -224,3 +224,7 @@ class UserNotBelongToTeam(Exception):
 class InvalidProjectIdException(Exception):
     def __init__(self, project_id: str):
         self.project_id = project_id
+
+
+class UserAuthTokenDoesNotExist(Exception):
+    pass

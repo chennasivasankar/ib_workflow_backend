@@ -3,7 +3,7 @@
 REQUEST_BODY_JSON = """
 {
     "name": "string",
-    "user_id": "c82a638b-7fdf-4ad8-ab64-bac6345cd6a1"
+    "user_id": "89d96f4b-c19d-4e69-8eae-e818f3123b09"
 }
 """
 
