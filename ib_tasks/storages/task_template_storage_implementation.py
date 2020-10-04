@@ -122,9 +122,10 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
             ).values_list("template_id", flat=True))
         return valid_template_ids
 
-    def get_task_templates_dtos(self) -> List[TemplateDTO]:
+    def get_task_templates_dtos(
+            self, task_template_ids: List[str]) -> List[TemplateDTO]:
         task_template_objs = TaskTemplate.objects.filter(
-            is_transition_template=False
+            template_id__in=task_template_ids, is_transition_template=False
         )
         task_template_dtos = self._convert_task_templates_objs_to_dtos(
             task_template_objs=task_template_objs)
@@ -434,6 +435,17 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
         ]
         TaskTemplateMandatoryFields.objects.bulk_create(
             task_template_mandatory_field_objs)
+
+    def get_user_permitted_task_template_ids(
+            self, user_roles: List[str]) -> List[str]:
+        from ib_tasks.models.task_templates_permitted_roles import \
+            TaskTemplatePermittedRoles
+        task_template_ids_queryset = \
+            TaskTemplatePermittedRoles.objects.filter(
+                role_id__in=user_roles).values_list(
+                'task_template_id', flat=True)
+        task_template_ids_list = list(task_template_ids_queryset)
+        return task_template_ids_list
 
     @staticmethod
     def _convert_task_template_mandatory_fields_to_dtos(

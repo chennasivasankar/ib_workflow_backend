@@ -80,15 +80,27 @@ class GetTaskTemplatesInteractor:
         user_roles = \
             service_adapter.roles_service.get_user_role_ids(user_id=user_id)
 
-        complete_task_templates_dto, task_template_mandatory_fields_dtos = \
-            self._get_complete_task_templates_dto(user_roles=user_roles)
+        user_permitted_task_template_ids = \
+            self.task_template_storage.get_user_permitted_task_template_ids(
+                user_roles=user_roles)
+        if user_permitted_task_template_ids:
+            complete_task_templates_dto, task_template_mandatory_fields_dtos = \
+                self._get_complete_task_templates_dto(
+                    user_roles=user_roles,
+                    task_template_ids=user_permitted_task_template_ids)
+        else:
+            from ib_tasks.exceptions.task_custom_exceptions import \
+                TaskTemplatesDoesNotExists
+            raise TaskTemplatesDoesNotExists()
+
         return complete_task_templates_dto, task_template_mandatory_fields_dtos
 
     def _get_complete_task_templates_dto(
-            self, user_roles: List[str]
+            self, user_roles: List[str], task_template_ids: List[str]
     ) -> (CompleteTaskTemplatesDTO, List[TaskTemplateMandatoryFieldsDTO]):
         task_templates_dtos = \
-            self.task_template_storage.get_task_templates_dtos()
+            self.task_template_storage.get_task_templates_dtos(
+                task_template_ids=task_template_ids)
         task_template_ids = self._get_task_template_ids(
             task_templates_dtos=task_templates_dtos)
         task_template_mandatory_fields_dtos = \

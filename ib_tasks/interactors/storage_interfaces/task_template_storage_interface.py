@@ -47,7 +47,8 @@ class TaskTemplateStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_templates_dtos(self) -> List[TemplateDTO]:
+    def get_task_templates_dtos(
+            self, task_template_ids: List[str]) -> List[TemplateDTO]:
         pass
 
     @abc.abstractmethod
@@ -179,4 +180,9 @@ class TaskTemplateStorageInterface(abc.ABC):
     @abc.abstractmethod
     def create_template_mandatory_fields_with_default_values(
             self, template_ids: List[str]):
+        pass
+
+    @abc.abstractmethod
+    def get_user_permitted_task_template_ids(
+            self, user_roles: List[str]) -> List[str]:
         pass

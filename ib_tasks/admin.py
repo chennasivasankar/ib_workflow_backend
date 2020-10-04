@@ -23,6 +23,8 @@ from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models.task_template_mandatory_fields import \
     TaskTemplateMandatoryFields
+from ib_tasks.models.task_templates_permitted_roles import \
+    TaskTemplatePermittedRoles
 
 admin.site.register(StageFlow)
 admin.site.register(ActionPermittedRoles)
@@ -47,6 +49,7 @@ admin.site.register(ProjectTaskTemplate)
 admin.site.register(StageGoF)
 admin.site.register(SubTask)
 admin.site.register(TaskTemplateMandatoryFields)
+admin.site.register(TaskTemplatePermittedRoles)
 
 
 class TaskStageInline(admin.StackedInline):
