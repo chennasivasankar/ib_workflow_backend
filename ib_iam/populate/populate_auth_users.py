@@ -1,7 +1,5 @@
 from typing import List
 
-from django.db import transaction
-
 from ib_iam.interactors.dtos.dtos import AuthUserDTO
 
 
@@ -46,27 +44,36 @@ class AuthUsers:
             team_member_level_storage=team_member_level_storage,
             project_storage=project_storage
         )
+        valid_auth_user_dtos = \
+            self._validate_auth_user_dtos(auth_user_dtos=auth_user_dtos)
+
+        permission_to_create_users = input(
+            "Do you want to create: True or False")
+
+        if permission_to_create_users is False:
+            return
 
         chunk_size = 500
-        max_value = int((len(auth_user_dtos) / chunk_size) + 1)
+        max_value = int((len(valid_auth_user_dtos) / chunk_size) + 1)
         import time
         values = []
         all_failed_data = []
         for i in range(max_value):
             a = time.time()
             failed_data = interactor.auth_user_dtos(
-                auth_user_dtos=auth_user_dtos[i * chunk_size:(i + 1) * chunk_size],
+                auth_user_dtos=valid_auth_user_dtos[
+                               i * chunk_size:(i + 1) * chunk_size],
                 project_id=project_id,
                 role_ids=role_ids,
                 is_assign_auth_token_users_to_team=is_assign_auth_token_users_to_team
             )
             b = time.time()
-            print("Time Elapsed: ", b-a, failed_data)
+            print("Time Elapsed: ", b - a, failed_data)
             all_failed_data += failed_data
-            print("Iteration {} out of {}".format(i+1, max_value))
-            values.append(b-a)
+            print("Iteration {} out of {}".format(i + 1, max_value))
+            values.append(b - a)
             time.sleep(10)
-        print("Average Time Delay: ", sum(values)/len(values))
+        print("Average Time Delay: ", sum(values) / len(values))
         return all_failed_data
 
     @staticmethod
@@ -84,3 +91,21 @@ class AuthUsers:
             for auth_user in auth_users
         ]
         return auth_user_dtos
+
+    @staticmethod
+    def _validate_auth_user_dtos(
+            auth_user_dtos: List[AuthUserDTO]
+    ) -> List[AuthUserDTO]:
+        from ib_iam.interactors.validate_auth_user_dtos_interactor import \
+            ValidateAuthUserDTOsInteractor
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+
+        user_storage = UserStorageImplementation()
+        interactor = ValidateAuthUserDTOsInteractor(
+            user_storage=user_storage
+        )
+        valid_auth_user_dtos = interactor.validate_auth_users_dtos(
+            auth_user_dtos=auth_user_dtos
+        )
+        return valid_auth_user_dtos

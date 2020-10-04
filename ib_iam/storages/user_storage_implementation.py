@@ -644,3 +644,9 @@ class UserStorageImplementation(UserStorageInterface):
             'invitation_code', flat=True
         )
         return invitation_codes
+
+    def get_all_user_ids(self) -> List[str]:
+        from ib_iam.models import UserDetails
+        user_ids = UserDetails.objects.values_list("user_id", flat=True)
+        converted_user_ids = [str(user_id) for user_id in user_ids]
+        return converted_user_ids
