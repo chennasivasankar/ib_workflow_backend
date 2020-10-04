@@ -227,6 +227,19 @@ class ServiceInterface:
         )
 
     @staticmethod
+    def get_search_districts(offset: int, limit: int, search_query: str):
+        from ib_iam.storages.elastic_storage_implementation \
+            import ElasticStorageImplementation
+        elastic_storage = ElasticStorageImplementation()
+        from ib_iam.interactors.get_search_results_interactor \
+            import GetSearchResultsInteractor
+        interactor = GetSearchResultsInteractor(
+            elastic_storage=elastic_storage)
+        return interactor.search_districts_results(
+            offset=offset, limit=limit, search_query=search_query
+        )
+
+    @staticmethod
     def get_immediate_superior_user_id(
             team_id: str, user_id: str
     ) -> Optional[str]:

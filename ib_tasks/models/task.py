@@ -20,8 +20,7 @@ class Task(AbstractDateTimeModel):
         null=True, blank=True)
 
     def __str__(self):
-        return "{}".format(
-            self.task_display_id)
+        return "{}".format(self.task_display_id)
 
 
 class ElasticSearchTask(models.Model):

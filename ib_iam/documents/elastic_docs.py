@@ -8,6 +8,7 @@ USER_INDEX_NAME = 'user-{}'.format(settings.STAGE)
 COUNTRY_INDEX_NAME = 'country-{}'.format(settings.STAGE)
 STATE_INDEX_NAME = 'state-{}'.format(settings.STAGE)
 CITY_INDEX_NAME = 'city-{}'.format(settings.STAGE)
+DISTRICT_INDEX_NAME = 'district-{}'.format(settings.STAGE)
 
 
 @dataclass()
@@ -53,6 +54,20 @@ class State(Document):
 
     class Index:
         name = STATE_INDEX_NAME
+
+
+@dataclass()
+class ElasticDistrictDTO:
+    district_id: int
+    district_name: Optional[str]
+
+
+class District(Document):
+    district_id = Integer()
+    district_name = SearchAsYouType()
+
+    class Index:
+        name = DISTRICT_INDEX_NAME
 
 
 @dataclass()

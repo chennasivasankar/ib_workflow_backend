@@ -31,6 +31,7 @@ from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, \
     GetTaskDetailsDTO, \
     TaskDelayParametersDTO, TaskDTO
+from ib_tasks.interactors.task_template_dtos import TransitionTaskCreationDTO
 
 
 class TaskStorageInterface(abc.ABC):
@@ -276,4 +277,17 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def is_transition_checklist_task(self, task_id: int) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def create_transition_template_task_entry(
+            self, task_id: int, action_id: int,
+            created_transition_task_id: int
+    ):
+        pass
+
+    @abc.abstractmethod
+    def create_transition_task(
+            self, transition_task_creation_dto: TransitionTaskCreationDTO
+    ) -> int:
         pass

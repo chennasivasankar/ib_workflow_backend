@@ -144,6 +144,11 @@ class InvalidCountryIds(Exception):
         self.country_ids = country_ids
 
 
+class InvalidDistrictIds(Exception):
+    def __init__(self, district_ids: List[int]):
+        self.district_ids = district_ids
+
+
 class InvalidProjectId(Exception):
     pass
 

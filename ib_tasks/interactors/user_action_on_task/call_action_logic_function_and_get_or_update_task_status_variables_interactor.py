@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import List, Any, Dict
+from typing import List, Any, Dict, Tuple
 
 from ib_tasks.constants.enum import FieldTypes
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -21,7 +21,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface \
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
-    TaskGoFWithTaskIdDTO
+    TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 
@@ -79,18 +79,25 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
             import TaskCrudOperationsInteractor
         interactor = TaskCrudOperationsInteractor(
             create_task_storage=self.create_task_storage)
-        task_gof_with_task_id_dtos = self._convert_and_update_task_gof_dtos(
-            task_gof_dtos, self.task_id, task_dict
-        )
-        updated_task_gof_dtos = \
-            interactor.update_task_gofs(task_gof_with_task_id_dtos)
+        creation_gofs, updation_gofs = self._convert_and_update_task_gof_dtos(
+            task_gof_dtos, self.task_id, task_dict)
+        task_gof_details_dtos = interactor.create_task_gofs(creation_gofs)
+        updated_task_gof_dtos = interactor.update_task_gofs(updation_gofs)
+        updated_task_gof_dtos += task_gof_details_dtos
 
         task_gof_fields_dto = self._prepare_task_gof_fields_dtos_v2(
             task_dict, updated_task_gof_dtos, task_dto.task_gof_field_dtos,
-            gof_multiple_enable_dict
-        )
+            gof_multiple_enable_dict)
         interactor.update_task_gof_fields(task_gof_fields_dto)
         self._update_task_status_variables(status_dict, status_variables_dto)
+        task_gof_details_dtos = task_gof_details_dtos + updated_task_gof_dtos
+        task_gof_dtos = [
+            TaskGoFDTO(
+                task_gof_id=dto.task_gof_id, gof_id=dto.gof_id,
+                same_gof_order=dto.same_gof_order)
+            for dto in task_gof_details_dtos
+        ]
+        task_dto.task_gof_dtos = task_gof_dtos
         task_dto.task_gof_field_dtos = task_gof_fields_dto
         return task_dto
 
@@ -118,8 +125,8 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
     def _convert_and_update_task_gof_dtos(
             task_gof_dtos: List[TaskGoFDTO], task_id: int,
             task_dict: Dict
-    ) -> List[TaskGoFWithTaskIdDTO]:
-        task_gof_with_task_id_dtos = [
+    ) -> Tuple[List[TaskGoFWithTaskIdDTO], List[TaskGoFWithTaskIdDTO]]:
+        updation_gofs = [
             TaskGoFWithTaskIdDTO(
                 task_id=task_id,
                 gof_id=task_gof_dto.gof_id,
@@ -129,6 +136,8 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
         ]
 
         existing_gof_ids = [item.gof_id for item in task_gof_dtos]
+        creation_gofs = []
+        create_field_dtos = []
         for gof_id in task_dict:
             if gof_id == "status_variables":
                 continue
@@ -138,7 +147,7 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
             else:
                 number_of_such_gofs = len(task_dict[gof_id])
             if gof_id not in existing_gof_ids:
-                task_gof_with_task_id_dtos.extend(
+                creation_gofs.extend(
                     [TaskGoFWithTaskIdDTO(
                         task_id=task_id,
                         gof_id=gof_id,
@@ -148,10 +157,11 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
                         ]
                 )
 
-        return task_gof_with_task_id_dtos
+        return creation_gofs, updation_gofs
 
+    @staticmethod
     def _prepare_task_gof_fields_dtos_v2(
-            self, task_dict: Dict, task_gofs: List[TaskGoFDTO],
+            task_dict: Dict, task_gofs: List[TaskGoFDetailsDTO],
             task_gof_fields: List[TaskGoFFieldDTO],
             gof_multiple_enable_dict: Dict[str, bool]
     ) -> List[TaskGoFFieldDTO]:

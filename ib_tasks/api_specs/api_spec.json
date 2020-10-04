@@ -1918,7 +1918,8 @@
             "USER",
             "COUNTRY",
             "STATE",
-            "CITY"
+            "CITY",
+            "DISTRICT"
          ]
       },
       "LimitParameter":{

@@ -3,10 +3,8 @@ from typing import List, Dict
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
-from ib_tasks.views.create_transition_checklist.validator_class import \
-    ValidatorClass
-from ib_tasks.interactors.create_or_update_transition_checklist_template import \
-    CreateOrUpdateTransitionChecklistTemplateInteractor
+from ib_tasks.interactors.create_transition_template_task import \
+    CreateTransitionTemplateTaskInteractor
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, FieldValuesDTO
 from ib_tasks.interactors.task_template_dtos import \
     CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
@@ -25,6 +23,8 @@ from ib_tasks.storages.task_template_storage_implementation import \
     TaskTemplateStorageImplementation
 from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
+from ib_tasks.views.create_transition_checklist.validator_class import \
+    ValidatorClass
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -65,13 +65,13 @@ def api_wrapper(*args, **kwargs):
 
     presenter = CreateOrUpdateTransitionChecklistPresenterImplementation()
 
-    interactor = CreateOrUpdateTransitionChecklistTemplateInteractor(
+    interactor = CreateTransitionTemplateTaskInteractor(
         create_or_update_task_storage=create_task_storage,
         template_storage=template_storage, task_storage=task_storage,
         gof_storage=gof_storage, storage=storage, field_storage=field_storage,
         stage_action_storage=stage_action_storage,
         task_template_storage=task_template_storage)
-    response = interactor.create_or_update_transition_checklist_wrapper(
+    response = interactor.create_transition_template_task_wrapper(
         transition_template_dto, presenter)
     return response
 
