@@ -117,7 +117,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         # Arrange
         action_id = 1
         path_name = "ib_tasks.tests.interactors.stage_ac.stage_1_action_name_1"
-        action_storage_mock.get_path_name_to_action.return_value = path_name
+        action_storage_mock.get_action_logic_to_action.return_value = path_name
         task_dto_mock.return_value = task_dto
 
         # Act
@@ -126,7 +126,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
 
         # Assert
         assert error.value.path_name == path_name
-        action_storage_mock.get_path_name_to_action.assert_called_once_with(
+        action_storage_mock.get_action_logic_to_action.assert_called_once_with(
             action_id=action_id
         )
 
@@ -141,7 +141,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         mock_obj = mocker.patch("importlib.import_module")
         mock_obj.side_effect = \
             InvalidMethodFound(method_name="stage_1_action_name_1")
-        action_storage_mock.get_path_name_to_action.return_value = path_name
+        action_storage_mock.get_action_logic_to_action.return_value = path_name
         task_dto_mock.return_value = task_dto
 
         # Act
@@ -150,7 +150,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
 
         # Assert
         assert error.value.method_name == "stage_1_action_name_1"
-        action_storage_mock.get_path_name_to_action.assert_called_once_with(
+        action_storage_mock.get_action_logic_to_action.assert_called_once_with(
             action_id=action_id
         )
 
@@ -168,7 +168,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
                           'status_variables': {'variable_1': 'stage_1'}}
         path_name = "ib_tasks.tests.interactors.call_action_logic_testing_file.stage_1_action_name_3"
         mock_obj = mocker.patch(path_name)
-        action_storage_mock.get_path_name_to_action.return_value = path_name
+        action_storage_mock.get_action_logic_to_action.return_value = path_name
         task_dto_mock.return_value = task_dto
         statuses = [StatusVariableDTOFactory()]
 
@@ -184,6 +184,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
 
     @pytest.fixture()
     def set_up_storage_for_all_multiple_gofs(self, gof_storage, task_storage, field_storage):
+        self.setup()
         single_gof = GOFMultipleStatusDTOFactory()
         multiple_gof = GOFMultipleStatusDTOFactory()
         gof_storage.get_enable_multiple_gofs_field_to_gof_ids.return_value = [
@@ -210,7 +211,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
                           'status_variables': {'variable_1': 'stage_1'}}
         path_name = "ib_tasks.tests.interactors.call_action_logic_testing_file.stage_1_action_name_3"
         mock_obj = mocker.patch(path_name)
-        action_storage_mock.get_path_name_to_action.return_value = path_name
+        action_storage_mock.get_action_logic_to_action.return_value = path_name
         task_dto_mock.return_value = task_dto
 
         # Act
@@ -259,7 +260,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
                           'status_variables': {'variable_1': 'stage_1'}}
         path_name = "ib_tasks.tests.interactors.call_action_logic_testing_file.stage_1_action_name_1"
         mock_obj = mocker.patch(path_name)
-        action_storage_mock.get_path_name_to_action.return_value = path_name
+        action_storage_mock.get_action_logic_to_action.return_value = path_name
         task_dto_mock.return_value = set_up_storage_for_all_single_gofs
 
         # Act
@@ -281,7 +282,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         # Arrange
         action_id = 1
         path_name = "ib_tasks.tests.interactors.call_action_logic_testing_file.stage_1_action_name_1"
-        action_storage_mock.get_path_name_to_action.return_value = path_name
+        action_storage_mock.get_action_logic_to_action.return_value = path_name
         task_dto_mock.return_value = task_dto
         from ib_tasks.exceptions.action_custom_exceptions import \
             InvalidKeyError
@@ -291,7 +292,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
             interactor.call_action_logic_function_and_update_task_status_variables()
 
         # Assert
-        action_storage_mock.get_path_name_to_action.assert_called_once_with(
+        action_storage_mock.get_action_logic_to_action.assert_called_once_with(
             action_id=action_id
         )
 
@@ -304,7 +305,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         # Arrange
         action_id = 1
         path_name = "ib_tasks.tests.interactors.call_action_logic_testing_file.stage_1_action_name_2"
-        action_storage_mock.get_path_name_to_action.return_value = path_name
+        action_storage_mock.get_action_logic_to_action.return_value = path_name
 
         task_dto_mock.return_value = task_dto
         from ib_tasks.exceptions.action_custom_exceptions \
@@ -315,7 +316,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
             interactor.call_action_logic_function_and_update_task_status_variables()
 
         # Assert
-        action_storage_mock.get_path_name_to_action.assert_called_once_with(
+        action_storage_mock.get_action_logic_to_action.assert_called_once_with(
             action_id=action_id
         )
 
@@ -364,6 +365,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         expected_task_gof_field_dtos = self.get_task_gof_field_response()
         action_id = 1
         path_name = "ib_tasks.tests.interactors.call_action_logic_testing_file.stage_1_action_name_3"
+        action_storage_mock.get_action_logic_to_action.return_value = path_name
         action_storage_mock.get_path_name_to_action.return_value = path_name
         StatusVariableDTOFactory.reset_sequence()
         expected_status = [
@@ -375,7 +377,7 @@ class TestUpdateTaskStatusVariablesInteractor(StorageMockClass):
         interactor.call_action_logic_function_and_update_task_status_variables()
 
         # Assert
-        action_storage_mock.get_path_name_to_action.assert_called_once_with(
+        action_storage_mock.get_action_logic_to_action.assert_called_once_with(
             action_id=action_id
         )
         task_storage.update_status_variables_to_task.assert_called_once_with(

@@ -18,6 +18,8 @@ from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+    TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -182,8 +184,9 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
 
     def _get_updated_task_dict(
             self, task_dict: Dict[str, Any]) -> Dict[str, Any]:
-        method_object = \
-            self._get_method_object_for_condition(action_id=self.action_id)
+        action_logic = self.action_storage.get_action_logic_to_action(
+            action_id=self.action_id
+        )
         global_constants = \
             self._get_global_constants_to_task(task_id=self.task_id)
         stage_value_dict = \
@@ -191,15 +194,17 @@ class CallActionLogicFunctionAndGetOrUpdateTaskStatusVariablesInteractor:
         from ib_tasks.exceptions.action_custom_exceptions \
             import InvalidKeyError, InvalidCustomLogicException
         try:
-            task_dict = method_object(
-                task_dict=task_dict, global_constants=global_constants,
-                stage_value_dict=stage_value_dict
+            exec(
+                action_logic, {
+                    "task_dict": task_dict,
+                    "global_constants": global_constants,
+                    "stage_value_dict": stage_value_dict
+                }
             )
         except KeyError:
             raise InvalidKeyError()
         except:
             raise InvalidCustomLogicException()
-
         return task_dict
 
     def _update_task_status_variables(
