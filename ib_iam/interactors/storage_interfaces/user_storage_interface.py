@@ -279,3 +279,7 @@ class UserStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_all_invitation_codes_of_auth_user(self) -> List[str]:
         pass
+
+    @abc.abstractmethod
+    def get_all_user_ids(self) -> List[str]:
+        pass
