@@ -11,6 +11,8 @@ from ib_iam.interactors.storage_interfaces.dtos import UserDTO, \
     TeamUserIdsDTO, CompanyDTO, CompanyIdWithEmployeeIdsDTO, \
     BasicUserDetailsDTO, UserIdWithRolesDTO, UserIdWithTokenDTO, \
     UserIdAndAuthUserIdDTO
+from ib_iam.interactors.validate_auth_user_dtos_interactor import \
+    AuthTokenUserDetailsDTO
 
 
 class UserStorageInterface(abc.ABC):
@@ -282,4 +284,8 @@ class UserStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_all_user_ids(self) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_all_auth_token_user_dtos(self) -> List[AuthTokenUserDetailsDTO]:
         pass

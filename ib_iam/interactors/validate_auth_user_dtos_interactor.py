@@ -1,8 +1,17 @@
+from dataclasses import dataclass
 from typing import List
 
 from ib_iam.interactors.dtos.dtos import AuthUserDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
+
+
+@dataclass
+class AuthTokenUserDetailsDTO:
+    user_id: str
+    auth_token_user_id: str
+    token: str
+    invitation_code: str
 
 
 class ValidateAuthUserDTOsInteractor:
@@ -57,15 +66,27 @@ class ValidateAuthUserDTOsInteractor:
                 exceptions["duplicate_phone_numbers"].append(auth_user_dto)
             else:
                 valid_auth_user_dtos.append(auth_user_dto)
-        print(exceptions)
+        exceptions_and_valid_dtos_dict = \
+            self._validate_user_auth_details(
+                auth_user_dtos=valid_auth_user_dtos)
+        exceptions_and_valid_dtos_dict.update(exceptions)
+        print(exceptions_and_valid_dtos_dict)
+        valid_auth_user_dtos = exceptions_and_valid_dtos_dict[
+            "valid_auth_user_dtos"]
         return valid_auth_user_dtos
-        self._validate_user_auth_details(auth_user_dtos=auth_user_dtos)
 
     def _validate_user_auth_details(self, auth_user_dtos: List[AuthUserDTO]):
+        auth_token_user_dtos = self.user_storage.get_all_auth_token_user_dtos()
         valid_auth_user_dtos = []
         invitation_codes_from_db = []
         auth_tokens_from_db = []
         auth_token_user_ids_from_db = []
+        for auth_token_user_dto in auth_token_user_dtos:
+            invitation_codes_from_db.append(
+                auth_token_user_dto.invitation_code)
+            auth_tokens_from_db.append(auth_token_user_dto.token)
+            auth_token_user_ids_from_db.append(
+                auth_token_user_dto.auth_token_user_id)
         duplicate_invitation_codes = []
         duplicate_auth_tokens = []
         duplicate_auth_token_user_ids = []
@@ -94,8 +115,6 @@ class ValidateAuthUserDTOsInteractor:
             "duplicate_invitation_codes": duplicate_invitation_codes,
             "duplicate_auth_tokens": duplicate_auth_tokens,
             "duplicate_auth_token_user_ids": duplicate_auth_token_user_ids,
-            "duplicate_emails": [],
-            "duplicate_phone_numbers": [],
             "valid_auth_user_dtos": valid_auth_user_dtos_to_populate
         }
 
@@ -133,7 +152,6 @@ class ValidateAuthUserDTOsInteractor:
             else:
                 valid_auth_user_dtos.append(auth_user_dto)
         return valid_auth_user_dtos
-
 
 # # TODO invitation code not empty
 # # invitation code not be a  duplicate, check in given dtos and database too
