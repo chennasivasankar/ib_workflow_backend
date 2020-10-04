@@ -22,8 +22,8 @@ from ib_tasks.populate.populate_gofs_to_task_templates import \
     PopulateGoFsToTaskTemplate
 from ib_tasks.populate.populate_gofs_to_transition_templates import \
     PopulateGoFsToTransitionTemplate
-from ib_tasks.populate.populate_projects_for_task_templates import \
-    PopulateProjectsForTaskTemplates
+from ib_tasks.populate.populate_projects_and_roles_for_task_templates import \
+    PopulateProjectsAndRolesForTaskTemplates
 from ib_tasks.populate.populate_stage_gofs import PopulateStageGoFs
 from ib_tasks.populate.task_templates import PopulateTaskTemplates
 from ib_tasks.populate.transition_template import PopulateTransitionTemplates
@@ -31,7 +31,8 @@ from ib_tasks.populate.transition_template import PopulateTransitionTemplates
 
 @transaction.atomic()
 def populate_projects_for_task_templates(spread_sheet_name: str):
-    projects_for_task_templates = PopulateProjectsForTaskTemplates()
+    # ToDo Rename method as populate_projects_and_roles_to_task_templates
+    projects_for_task_templates = PopulateProjectsAndRolesForTaskTemplates()
     projects_for_task_templates.populate_projects_and_roles_for_task_template(
         spread_sheet_name=spread_sheet_name)
 

@@ -8,7 +8,7 @@ from ib_tasks.storages.task_template_storage_implementation import \
     TaskTemplateStorageImplementation
 
 
-class PopulateProjectsForTaskTemplates:
+class PopulateProjectsAndRolesForTaskTemplates:
 
     @property
     def data_sheet(self):
