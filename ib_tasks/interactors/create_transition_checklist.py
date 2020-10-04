@@ -60,7 +60,7 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO
 from ib_tasks.interactors.task_template_dtos import \
     CreateTransitionChecklistTemplateDTO, \
-    CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
+    CreateTransitionChecklistTemplateWithTaskDisplayIdDTO, TransitionTaskCreationDTO
 
 
 class CreateTransitionChecklistInteractor(
@@ -193,7 +193,7 @@ class CreateTransitionChecklistInteractor(
             self,
             transition_template_dto: CreateTransitionChecklistTemplateDTO):
         self._validate_transition_checklist_details(transition_template_dto)
-        self._create_or_update_gofs_and_fields_of_transition_template(
+        self._create_gofs_and_fields_of_transition_template(
             transition_template_dto)
 
     def _validate_transition_checklist_details(
@@ -224,14 +224,75 @@ class CreateTransitionChecklistInteractor(
         if action_type_is_not_no_validations:
             self._validate_all_user_stage_permitted_fields_are_filled_or_not(
                 transition_template_dto.created_by_id,
-                transition_template_dto.task_id, project_id, stage_id)
+                transition_template_dto.task_id, project_id, stage_id,
+                transition_template_dto.transition_checklist_template_id)
 
-    def _create_or_update_gofs_and_fields_of_transition_template(
+    def _create_gofs_and_fields_of_transition_template(
             self,
             transition_template_dto: CreateTransitionChecklistTemplateDTO):
         task_crud_interactor = TaskCrudOperationsInteractor(
             self.create_task_storage)
-        # todo: create everything
+        task_id = transition_template_dto.task_id
+        action_id = transition_template_dto.action_id
+        template_id = transition_template_dto.transition_checklist_template_id
+        created_by = transition_template_dto.created_by_id
+        self.task_storage.create_transition_template_task_entry(
+            task_id, action_id)
+        transition_task_creation_dto = TransitionTaskCreationDTO(
+            template_id=template_id, created_by=created_by)
+        created_transition_task_id = \
+            self.task_storage.create_transition_task(transition_task_creation_dto)
+        checklist_gofs = transition_template_dto.transition_checklist_gofs
+        task_gofs = self._prepare_task_gof_dtos(
+            checklist_gofs, created_transition_task_id)
+        task_gof_details = task_crud_interactor.create_task_gofs(task_gofs)
+        task_gof_fields = self._prepare_task_gof_fields(
+            task_gof_details, checklist_gofs)
+        task_crud_interactor.create_task_gof_fields(task_gof_fields)
+
+    @staticmethod
+    def _prepare_task_gof_dtos(
+            checklist_gofs: List[GoFFieldsDTO],
+            created_transition_task_id: int
+    ) -> List[TaskGoFWithTaskIdDTO]:
+        task_gofs = [
+            TaskGoFWithTaskIdDTO(
+                task_id=created_transition_task_id,
+                gof_id=checklist_gof.gof_id,
+                same_gof_order=checklist_gof.same_gof_order)
+            for checklist_gof in checklist_gofs
+        ]
+        return task_gofs
+
+    def _prepare_task_gof_fields(
+            self, task_gof_details: List[TaskGoFDetailsDTO],
+            checklist_gofs: List[GoFFieldsDTO]
+    ) -> List[TaskGoFFieldDTO]:
+        task_gof_fields = []
+        for checklist_gof in checklist_gofs:
+            task_gof_id = self._get_task_gof_id_for_gof(
+                task_gof_details, checklist_gof.gof_id,
+                checklist_gof.same_gof_order)
+            task_gof_fields += [
+                TaskGoFFieldDTO(
+                    task_gof_id=task_gof_id,
+                    field_id=checklist_gof_field.field_id,
+                    field_response=checklist_gof_field.field_response)
+                for checklist_gof_field in checklist_gof.field_values_dtos
+            ]
+        return task_gof_fields
+
+    @staticmethod
+    def _get_task_gof_id_for_gof(
+            task_gof_details: List[TaskGoFDetailsDTO],
+            gof_id: str, same_gof_order: int) -> Optional[int]:
+        for task_gof in task_gof_details:
+            gof_matched = (
+                    task_gof.gof_id == gof_id and
+                    task_gof.same_gof_order == same_gof_order)
+            if gof_matched:
+                return task_gof.task_gof_id
+        return
 
     def _perform_gof_details_validation(
             self,
@@ -314,20 +375,17 @@ class CreateTransitionChecklistInteractor(
         return duplicate_values
 
     def _validate_all_user_stage_permitted_fields_are_filled_or_not(
-            self, user_id: str, task_id: int, project_id: str, stage_id: int
+            self, user_id: str, task_id: int, project_id: str, stage_id: int,
+            transition_template_id: str
     ):
-        # todo: get transition template stage permitted gofs
         from ib_tasks.adapters.roles_service_adapter import \
             get_roles_service_adapter
         roles_service_adapter = get_roles_service_adapter()
         user_roles = roles_service_adapter.roles_service \
             .get_user_role_ids_based_on_project(user_id, project_id)
-        task_template_id = \
-            self.create_task_storage.get_template_id_for_given_task(
-                task_id)
         template_gof_ids = \
             self.task_template_storage.get_template_stage_permitted_gof_ids(
-                task_template_id=task_template_id, stage_id=stage_id)
+                task_template_id=transition_template_id, stage_id=stage_id)
         gof_id_with_display_name_dtos = \
             self.gof_storage.get_user_write_permitted_gof_ids_in_given_gof_ids(
                 user_roles, template_gof_ids)
