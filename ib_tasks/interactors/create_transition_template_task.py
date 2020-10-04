@@ -234,10 +234,12 @@ class CreateTransitionTemplateTaskInteractor(
             self.create_task_storage)
         task_id = transition_template_dto.task_id
         action_id = transition_template_dto.action_id
+        project_id = self.task_storage.get_project_id_for_the_task_id(task_id)
         template_id = transition_template_dto.transition_checklist_template_id
         created_by = transition_template_dto.created_by_id
         transition_task_creation_dto = TransitionTaskCreationDTO(
-            template_id=template_id, created_by=created_by)
+            template_id=template_id, created_by=created_by,
+            project_id=project_id)
         created_transition_task_id = \
             self.task_storage.create_transition_task(
                 transition_task_creation_dto)

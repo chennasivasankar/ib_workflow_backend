@@ -59,11 +59,12 @@ class TasksStorageImplementation(TaskStorageInterface):
     ) -> int:
         template_id = transition_task_creation_dto.template_id
         created_by = transition_task_creation_dto.created_by
+        project_id = transition_task_creation_dto.project_id
         from ib_tasks.constants.config import TRANSITION_TASK_TITLE
         from ib_tasks.constants.config import TRANSITION_TASK_PREFIX
         task = Task.objects.create(
             template_id=template_id, created_by=created_by,
-            title=TRANSITION_TASK_TITLE, project_id=None)
+            title=TRANSITION_TASK_TITLE, project_id=project_id)
         Task.objects.filter(id=task.id).update(
             task_display_id=(TRANSITION_TASK_PREFIX + '-' + str(task.id)))
         return task.id

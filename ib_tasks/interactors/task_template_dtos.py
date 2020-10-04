@@ -35,3 +35,4 @@ class CreateTransitionChecklistTemplateWithTaskDisplayIdDTO:
 class TransitionTaskCreationDTO:
     template_id: str
     created_by: str
+    project_id: str
