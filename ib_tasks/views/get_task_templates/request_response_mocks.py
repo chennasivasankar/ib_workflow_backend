@@ -7,15 +7,18 @@ RESPONSE_200_JSON = """
         "template_id": "string",
         "project_id": "string",
         "template_name": "string",
-        "actions": [
-            {
-                "action_id": 1,
-                "action_type": "NO_VALIDATIONS",
-                "transition_template_id": "string",
-                "button_text": "string",
-                "button_color": "string"
-            }
-        ],
+        "stage_with_actions": {
+            "stage_id": 1,
+            "actions": [
+                {
+                    "action_id": 1,
+                    "action_type": "NO_VALIDATIONS",
+                    "transition_template_id": "string",
+                    "button_text": "string",
+                    "button_color": "string"
+                }
+            ]
+        },
         "group_of_fields": [
             {
                 "gof_id": "string",

@@ -1371,11 +1371,22 @@
             "template_name":{
                "type":"string"
             },
-            "actions":{
-               "type":"array",
-               "items":{
-                  "$ref":"#/definitions/Action"
-               }
+            "stage_with_actions": {
+              "type": "object",
+              "properties": {
+                "stage_id": {
+                  "type": "integer"
+                },
+                "actions":{
+                   "type":"array",
+                   "items":{
+                      "$ref":"#/definitions/Action"
+                   }
+                }
+              },
+              "required": [
+                "stage_id"
+              ]
             },
             "group_of_fields":{
                "type":"array",
@@ -1387,8 +1398,8 @@
          "required":[
             "template_id",
             "template_name",
-            "actions",
-            "group_of_fields"
+            "group_of_fields",
+            "stage_with_actions"
          ]
       },
       "FilterDetailsCompleteDetails":{
