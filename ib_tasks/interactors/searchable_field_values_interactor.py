@@ -72,6 +72,11 @@ class SearchableFieldValuesInteractor:
             return adapter.search_service.get_search_cities(
                 offset=offset, limit=limit, search_query=search_query
             )
+        elif search_type == Searchable.DISTRICT.value:
+            adapter = get_service_adapter()
+            return adapter.search_service.get_search_districts(
+                offset=offset, limit=limit, search_query=search_query
+            )
 
     @staticmethod
     def _get_name_and_profile_pic(user_dto: AssigneeDetailsDTO):

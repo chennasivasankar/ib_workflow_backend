@@ -1,7 +1,7 @@
 from ib_iam.documents.elastic_docs import (
     ElasticCountryDTO, ElasticStateDTO, ElasticCityDTO,
     USER_INDEX_NAME, COUNTRY_INDEX_NAME, STATE_INDEX_NAME,
-    CITY_INDEX_NAME
+    CITY_INDEX_NAME, ElasticDistrictDTO
 )
 from ib_iam.models import (
     UserDetails, Country, State, City, ElasticUserIntermediary
@@ -203,6 +203,62 @@ def copy_cities_to_es():
     storage = ElasticStorageImplementation()
     for state_dto in city_dtos:
         storage.create_elastic_city(city_dto=state_dto)
+
+
+def populate_elastic_search_district_data():
+    district_dtos = [
+        ElasticDistrictDTO(
+            district_id=1,
+            district_name="Sri Potti Sriramula Nellore"
+        ),
+        ElasticDistrictDTO(
+            district_id=2,
+            district_name="Kadapa"
+        ),
+        ElasticDistrictDTO(
+            district_id=3,
+            district_name="Chittor"
+        ),
+        ElasticDistrictDTO(
+            district_id=4,
+            district_name="Ananthapur"
+        ),
+        ElasticDistrictDTO(
+            district_id=5,
+            district_name="Kurnool"
+        ),
+        ElasticDistrictDTO(
+            district_id=6,
+            district_name="Visakapatnam"
+        ),
+        ElasticDistrictDTO(
+            district_id=6,
+            district_name="West Godavari"
+        )
+    ]
+    from ib_iam.models import District
+    District.objects.all().delete()
+    countries = [
+        District(name=country_dto.district_name)
+        for country_dto in district_dtos
+    ]
+    District.objects.bulk_create(countries)
+    copy_districts_to_es()
+
+
+def copy_districts_to_es():
+    from ib_iam.models import District
+    district_objs = District.objects.all()
+    district_dtos = [
+        ElasticDistrictDTO(
+            district_id=district_obj.id,
+            district_name=district_obj.name
+        )
+        for district_obj in district_objs
+    ]
+    storage = ElasticStorageImplementation()
+    for state_dto in district_dtos:
+        storage.create_elastic_district(district_dto=state_dto)
 
 
 def delete_elastic_search_data():
