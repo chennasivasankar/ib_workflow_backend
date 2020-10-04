@@ -95,3 +95,29 @@ class SearchableStorageImplementation(SearchableStorageInterface):
             for country_details in country_details_set
         ]
         return searchable_type_country_details_dtos
+
+    def get_valid_district_ids(self, district_ids: List[int]) -> List[int]:
+        from ib_iam.models import District
+        valid_district_ids = list(
+            District.objects.filter(
+                id__in=district_ids
+            ).values_list('id', flat=True)
+        )
+        return valid_district_ids
+
+    def get_searchable_type_district_details_dtos(
+            self, valid_district_ids: List[int]) -> List[SearchableDetailsDTO]:
+        from ib_iam.models import District
+        district_details_set = District.objects.filter(
+            id__in=valid_district_ids
+        ).values_list('id', 'name')
+        searchable_type_district_details_dtos = [
+            SearchableDetailsDTO(
+                search_type=Searchable.DISTRICT.value,
+                id=district_details[0],
+                value=district_details[1]
+            )
+            for district_details in district_details_set
+        ]
+        return searchable_type_district_details_dtos
+

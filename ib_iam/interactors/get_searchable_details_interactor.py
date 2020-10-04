@@ -5,7 +5,7 @@ from ib_iam.adapters.service_adapter import get_service_adapter
 from ib_iam.app_interfaces.dtos import SearchableDTO
 from ib_iam.constants.enums import Searchable
 from ib_iam.exceptions.custom_exceptions import InvalidStateIds, \
-    InvalidCountryIds, InvalidUserIds, InvalidCityIds
+    InvalidCountryIds, InvalidUserIds, InvalidCityIds, InvalidDistrictIds
 from ib_iam.interactors.storage_interfaces.dtos import SearchableDetailsDTO
 from ib_iam.interactors.storage_interfaces.searchable_storage_interface \
     import \
@@ -35,11 +35,16 @@ class GetSearchableDetailsInteractor:
             self._get_searchable_type_user_details_dtos(
                 searchable_dtos
             )
+        searchable_type_district_details_dtos = \
+            self._get_searchable_type_district_details_dtos(
+                searchable_dtos
+            )
         searchable_details_dtos = (
                 searchable_type_city_details_dtos +
                 searchable_type_state_details_dtos +
                 searchable_type_country_details_dtos +
-                searchable_type_user_details_dtos
+                searchable_type_user_details_dtos +
+                searchable_type_district_details_dtos
         )
         return searchable_details_dtos
 
@@ -218,4 +223,41 @@ class GetSearchableDetailsInteractor:
                 invalid_ids.append(country_id)
         if invalid_ids:
             raise InvalidCountryIds(invalid_ids)
+        return
+
+    def _get_searchable_type_district_details_dtos(
+            self, searchable_dtos: List[SearchableDTO]
+    ) -> List[SearchableDetailsDTO]:
+        searchable_type_district_dtos = [
+            searchable_dto
+            for searchable_dto in searchable_dtos
+            if searchable_dto.search_type == Searchable.DISTRICT.value
+        ]
+        is_searchable_type_district_dtos_empty = not \
+            searchable_type_district_dtos
+        if is_searchable_type_district_dtos_empty:
+            return []
+
+        district_ids = [
+            searchable_type_district_dto.id
+            for searchable_type_district_dto in searchable_type_district_dtos
+        ]
+        valid_district_ids = self.storage.get_valid_district_ids(district_ids)
+        self._validate_district_ids(district_ids, valid_district_ids)
+        searchable_type_district_details_dtos = \
+            self.storage.get_searchable_type_district_details_dtos(
+                valid_district_ids)
+        return searchable_type_district_details_dtos
+
+    @staticmethod
+    def _validate_district_ids(
+            district_ids: List[int],
+            valid_district_ids: List[int]
+    ):
+        invalid_ids = []
+        for district_id in district_ids:
+            if district_id not in valid_district_ids:
+                invalid_ids.append(district_id)
+        if invalid_ids:
+            raise InvalidDistrictIds(invalid_ids)
         return
